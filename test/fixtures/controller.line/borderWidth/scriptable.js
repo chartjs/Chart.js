@@ -9,7 +9,8 @@ module.exports = {
 					data: [4, 5, 10, null, -10, -5],
 					borderColor: '#0000ff',
 					borderWidth: function(ctx) {
-						return ctx.datasetIndex === 0 ? 20 : 10;
+						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
+						return index === 0 ? 20 : 10;
 					}
 				},
 				{
@@ -26,7 +27,8 @@ module.exports = {
 					fill: false,
 					borderColor: '#ff0000',
 					borderWidth: function(ctx) {
-						return ctx.datasetIndex === 0 ? 20 : 10;
+						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
+						return index === 0 ? 20 : 10;
 					},
 				},
 				point: {
