@@ -1,0 +1,24 @@
+{
+    "config": {
+        "type": "doughnut",
+        "data": {
+            "labels": ["0"],
+            "datasets": [{
+                "data": [10]
+            }]
+        },
+        "options": {
+            "responsive": false,
+			"legend": {
+				"position": "top",
+				"align": "center"
+			}
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

@@ -104,6 +104,10 @@ var Legend = Element.extend({
 	initialize: function(config) {
 		helpers.extend(this, config);
 
+		if (this.options && !this.options.align) {
+			// to maintain backward compatibility with existing default
+			this.options.align = this.isHorizontal() ? 'center' : 'start';
+		}
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];
 
@@ -255,7 +259,7 @@ var Legend = Element.extend({
 
 					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width) {
 						totalHeight += fontSize + labelOpts.padding;
-						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = labelOpts.padding;
+						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
 					}
 
 					// Store the hitbox width and height here. Final position will be updated in `draw`
@@ -274,6 +278,7 @@ var Legend = Element.extend({
 			} else {
 				var vPadding = labelOpts.padding;
 				var columnWidths = me.columnWidths = [];
+				var columnHeights = me.columnHeights = [];
 				var totalWidth = labelOpts.padding;
 				var currentColWidth = 0;
 				var currentColHeight = 0;
@@ -287,7 +292,7 @@ var Legend = Element.extend({
 					if (i > 0 && currentColHeight + itemHeight > minSize.height - vPadding) {
 						totalWidth += currentColWidth + labelOpts.padding;
 						columnWidths.push(currentColWidth); // previous column width
-
+						columnHeights.push(currentColHeight);
 						currentColWidth = 0;
 						currentColHeight = 0;
 					}
@@ -307,6 +312,7 @@ var Legend = Element.extend({
 
 				totalWidth += currentColWidth;
 				columnWidths.push(currentColWidth);
+				columnHeights.push(currentColHeight);
 				minSize.width += totalWidth;
 			}
 		}
@@ -329,6 +335,8 @@ var Legend = Element.extend({
 		var globalDefaults = defaults.global;
 		var defaultColor = globalDefaults.defaultColor;
 		var lineDefault = globalDefaults.elements.line;
+		var legendHeight = me.height;
+		var columnHeights = me.columnHeights;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
 
@@ -408,19 +416,30 @@ var Legend = Element.extend({
 				}
 			};
 
+			var alignmentOffset = function(dimension, blockSize) {
+				if (opts.align === 'start') {
+					return labelOpts.padding;
+				} else if (opts.align === 'end') {
+					return dimension - blockSize;
+				}
+				// default to center
+				return (dimension - blockSize + labelOpts.padding) / 2;
+			};
+
 			// Horizontal
 			var isHorizontal = me.isHorizontal();
+			var line = 0;
 			if (isHorizontal) {
 				cursor = {
-					x: me.left + ((legendWidth - lineWidths[0]) / 2) + labelOpts.padding,
+					x: me.left + alignmentOffset(legendWidth, lineWidths[line]),
 					y: me.top + labelOpts.padding,
-					line: 0
+					line: line
 				};
 			} else {
 				cursor = {
 					x: me.left + labelOpts.padding,
-					y: me.top + labelOpts.padding,
-					line: 0
+					y: me.top + alignmentOffset(legendHeight, columnHeights[line]),
+					line: line
 				};
 			}
 
@@ -438,12 +457,12 @@ var Legend = Element.extend({
 					if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
 						y = cursor.y += itemHeight;
 						cursor.line++;
-						x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2) + labelOpts.padding;
+						x = cursor.x = me.left + alignmentOffset(legendWidth, lineWidths[cursor.line]);
 					}
 				} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
 					x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-					y = cursor.y = me.top + labelOpts.padding;
 					cursor.line++;
+					y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
 				}
 
 				drawLegendBox(x, y, legendItem);
@@ -459,7 +478,6 @@ var Legend = Element.extend({
 				} else {
 					cursor.y += itemHeight;
 				}
-
 			});
 		}
 	},
