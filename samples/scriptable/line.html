@@ -27,8 +27,7 @@
 		utils.srand(110);
 
 		function getLineColor(ctx) {
-			var newColor = utils.color(ctx.datasetIndex);
-			return newColor;
+			return utils.color(ctx.datasetIndex);
 		}
 
 		function alternatePointStyles(ctx) {
@@ -37,8 +36,7 @@
 		}
 
 		function makeHalfAsOpaque(ctx) {
-			var c = getLineColor(ctx);
-			return utils.transparentize(c);
+			return utils.transparentize(getLineColor(ctx));
 		}
 
 		function adjustRadiusBasedOnData(ctx) {
