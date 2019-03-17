@@ -9,10 +9,7 @@ module.exports = {
 					data: [4, 5, 10, null, -10, -5],
 					borderColor: '#0000ff',
 					borderWidth: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						return dataTotal > 0 ? 20 : 10;
+						return ctx.datasetIndex === 0 ? 20 : 10;
 					}
 				},
 				{
@@ -29,15 +26,15 @@ module.exports = {
 					fill: false,
 					borderColor: '#ff0000',
 					borderWidth: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						return dataTotal > 0 ? 20 : 2;
+						return ctx.datasetIndex === 0 ? 20 : 10;
 					},
 				},
 				point: {
 					radius: 10,
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

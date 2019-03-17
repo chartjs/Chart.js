@@ -8,12 +8,10 @@ module.exports = {
 					// option in dataset
 					data: [4, 5, 10, null, -10, -5],
 					backgroundColor: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var c = dataTotal >= 0 ? '#D60000' : '#44DE28';
-
-						return c;
+						var index = ctx.datasetIndex;
+						return index === 0 ? '#ff0000'
+							: index === 1 ? '#00ff00'
+							: '#ff00ff'
 					}
 				},
 				{
@@ -28,17 +26,19 @@ module.exports = {
 			elements: {
 				line: {
 					backgroundColor: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var c = dataTotal >= 0 ? '#D60000' : '#44DE28';
-
-						return c;
-					},
+						var index = ctx.datasetIndex;
+						return index === 0 ? '#ff0000'
+							: index === 1 ? '#00ff00'
+							: '#ff00ff'
+					}
 				},
 				point: {
 					radius: 10,
+					backgroundColor: '#0000ff'
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

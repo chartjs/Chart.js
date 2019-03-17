@@ -9,12 +9,7 @@ module.exports = {
 					data: [-2, -6, -4, -8, -6, -10],
 					backgroundColor: '#ff0000',
 					fill: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var fill = dataTotal > 0 ? true : false;
-
-						return fill;
+						return ctx.datasetIndex === 0 ? true : false;
 					}
 				},
 				{
@@ -30,14 +25,12 @@ module.exports = {
 				line: {
 					backgroundColor: '#00ff00',
 					fill: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var fill = dataTotal > 0 ? true : false;
-
-						return fill;
+						return ctx.datasetIndex === 0 ? true : false;
 					}
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

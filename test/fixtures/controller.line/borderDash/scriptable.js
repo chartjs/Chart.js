@@ -8,12 +8,7 @@ module.exports = {
 					// option in dataset
 					data: [4, 5, 10, null, -10, -5],
 					borderDash: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var dashLength = dataTotal > 0 ? [5] : [10];
-
-						return dashLength;
+						return ctx.datasetIndex === 0 ? [5] : [10];
 					}
 				},
 				{
@@ -27,19 +22,17 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#D60000',
+					borderColor: '#00ff00',
 					borderDash: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var dashLength = dataTotal > 0 ? [5] : [10];
-
-						return dashLength;
+						return ctx.datasetIndex === 0 ? [5] : [10];
 					}
 				},
 				point: {
 					radius: 10,
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

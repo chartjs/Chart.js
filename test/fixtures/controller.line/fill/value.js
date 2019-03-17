@@ -25,6 +25,9 @@ module.exports = {
 					fill: true,
 				}
 			},
+			layout: {
+				padding: 32
+			},
 			scales: {
 				xAxes: [{display: false}],
 				yAxes: [{display: false}]

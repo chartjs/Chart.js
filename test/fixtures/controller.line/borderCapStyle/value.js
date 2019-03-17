@@ -2,21 +2,21 @@ module.exports = {
 	config: {
 		type: 'line',
 		data: {
-			labels: [0, 1, 2, 3, 4],
+			labels: [0, 1, 2, 3],
 			datasets: [
 				{
 					// option in dataset
-					data: [4, null, 3, 3],
+					data: [null, 3, 3],
 					borderCapStyle: 'round',
 				},
 				{
 					// option in dataset
-					data: [4, null, 2, 2],
+					data: [null, 2, 2],
 					borderCapStyle: 'square',
 				},
 				{
 					// option in element (fallback)
-					data: [0, null, 1, 1],
+					data: [null, 1, 1],
 				}
 			]
 		},
@@ -35,10 +35,7 @@ module.exports = {
 				}
 			},
 			layout: {
-				padding: {
-					left: 40,
-					right: 40
-				}
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

@@ -2,25 +2,20 @@ module.exports = {
 	config: {
 		type: 'line',
 		data: {
-			labels: [0, 1, 2, 3, 4, 5],
+			labels: [0, 1, 2, 3],
 			datasets: [
 				{
 					// option in dataset
-					data: [1, 1, 1, 1, 1, 1],
+					data: [1, 1, 1, 1],
 					borderColor: '#ff0000',
 					borderDash: [20],
 					borderDashOffset: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var offset = dataTotal > 0 ? 5.0 : 0.0;
-
-						return offset;
+						return ctx.datasetIndex === 0 ? 5.0 : 0.0;
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [-1, -1, -1, -1, -1, -1],
+					data: [0, 0, 0 ,0],
 				}
 			]
 		},
@@ -32,18 +27,16 @@ module.exports = {
 					borderColor: '#00ff00',
 					borderDash: [20],
 					borderDashOffset: function(ctx) {
-						var dataTotal = ctx.dataset.data.reduce(function(a, b) {
-							return a + b;
-						});
-						var offset = dataTotal > 0 ? 5.0 : 0.0;
-
-						return offset;
+						return ctx.datasetIndex === 0 ? 5.0 : 0.0;
 					},
 					fill: false,
 				},
 				point: {
 					radius: 10,
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

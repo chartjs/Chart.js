@@ -27,6 +27,9 @@ module.exports = {
 					radius: 10,
 				}
 			},
+			layout: {
+				padding: 32
+			},
 			scales: {
 				xAxes: [{display: false}],
 				yAxes: [{display: false}]

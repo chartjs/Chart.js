@@ -13,7 +13,7 @@ module.exports = {
 				},
 				{
 					// option in element (fallback)
-					data: [0.75, 0.75, 0.75, 0.75, 0.75, 0.75]
+					data: [0, 0, 0, 0, 0, 0]
 				}
 			]
 		},
@@ -30,6 +30,9 @@ module.exports = {
 				point: {
 					radius: 10,
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],
