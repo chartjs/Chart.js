@@ -9,14 +9,12 @@ module.exports = {
 					data: [0, 4, 2, 6, 4, 8],
 					borderColor: '#ff0000',
 					cubicInterpolationMode: function(ctx) {
-						var mode = ctx.datasetIndex === 0 ? 'monotone' : 'default';
-
-						return mode;
+						return ctx.datasetIndex === 0 ? 'monotone' : 'default';
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [0, 4, 2, 6, 4, 8],
+					data: [2, 6, 4, 8, 6, 10],
 				}
 			]
 		},
@@ -26,13 +24,15 @@ module.exports = {
 			elements: {
 				line: {
 					borderColor: '#00ff00',
+					borderWidth: 20,
 					cubicInterpolationMode: function(ctx) {
-						var mode = ctx.datasetIndex === 0 ? 'monotone' : 'default';
-
-						return mode;
+						return ctx.datasetIndex === 0 ? 'monotone' : 'default';
 					},
 					fill: false
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],
