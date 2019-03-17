@@ -29,14 +29,14 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#ff0000',
-					borderWidth: 32,
 					borderCapStyle: function(ctx) {
 						var index = (ctx.datasetIndex % 3);
 						return index === 0 ? 'round'
 							: index === 1 ? 'square'
 							: 'butt';
-					}
+					},
+					borderColor: '#ff0000',
+					borderWidth: 32
 				},
 				point: {
 					radius: 10,

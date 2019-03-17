@@ -33,8 +33,8 @@ module.exports = {
 					}
 				},
 				point: {
-					radius: 10,
-					backgroundColor: '#0000ff'
+					backgroundColor: '#0000ff',
+					radius: 10
 				}
 			},
 			layout: {

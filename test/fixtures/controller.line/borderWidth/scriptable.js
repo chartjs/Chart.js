@@ -24,12 +24,12 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
 					borderColor: '#ff0000',
 					borderWidth: function(ctx) {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? 20 : 10;
 					},
+					fill: false,
 				},
 				point: {
 					radius: 10,

@@ -25,8 +25,8 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#00ff00',
 					borderCapStyle: 'butt',
+					borderColor: '#00ff00',
 					borderWidth: 32,
 					fill: false,
 				},

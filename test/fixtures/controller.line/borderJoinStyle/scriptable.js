@@ -38,8 +38,8 @@ module.exports = {
 							:  index === 1 ? 'miter'
 							:  'bevel';
 					},
-					fill: false,
 					borderWidth: 25,
+					fill: false,
 					tension: 0
 				}
 			},
