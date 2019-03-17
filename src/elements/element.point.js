@@ -67,9 +67,6 @@ module.exports = Element.extend({
 		var radius = vm.radius;
 		var x = vm.x;
 		var y = vm.y;
-		var globalDefaults = defaults.global;
-		var defaultColor = globalDefaults.defaultColor; // eslint-disable-line no-shadow
-		var valueOrDefault = helpers.valueOrDefault;
 
 		if (vm.skip) {
 			return;
@@ -77,9 +74,9 @@ module.exports = Element.extend({
 
 		// Clipping for Points.
 		if (chartArea === undefined || helpers.canvas._isPointInArea(vm, chartArea)) {
-			ctx.strokeStyle = valueOrDefault(vm.borderColor, defaultColor);
-			ctx.lineWidth = valueOrDefault(vm.borderWidth, globalDefaults.elements.point.borderWidth);
-			ctx.fillStyle = valueOrDefault(vm.backgroundColor, defaultColor);
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = vm.borderWidth;
+			ctx.fillStyle = vm.backgroundColor;
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}
 	}

@@ -387,6 +387,12 @@ module.exports = DatasetController.extend({
 		var values = {};
 		var i, ilen, key;
 
+		var defaultColor = defaults.global.defaultColor;
+		var defaultOptions = {
+			backgroundColor: defaultColor,
+			borderColor: defaultColor,
+		};
+
 		// Scriptable options
 		var context = {
 			chart: chart,
@@ -407,7 +413,8 @@ module.exports = DatasetController.extend({
 			values[key] = resolve([
 				custom[key],
 				dataset[key],
-				options[key]
+				options[key],
+				defaultOptions[key]
 			], context, index);
 		}
 

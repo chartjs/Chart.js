@@ -26,11 +26,8 @@ module.exports = Element.extend({
 		var ctx = me._chart.ctx;
 		var spanGaps = vm.spanGaps;
 		var points = me._children.slice(); // clone array
-		var globalDefaults = defaults.global;
-		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
 		var index, current, previous, currentVM;
-		var valueOrDefault = helpers.valueOrDefault;
 
 		// If we are looping, adding the first point again
 		if (me._loop && points.length) {
@@ -40,17 +37,17 @@ module.exports = Element.extend({
 		ctx.save();
 
 		// Stroke Line Options
-		ctx.lineCap = valueOrDefault(vm.borderCapStyle, globalOptionLineElements.borderCapStyle);
+		ctx.lineCap = vm.borderCapStyle;
 
 		// IE 9 and 10 do not support line dash
 		if (ctx.setLineDash) {
-			ctx.setLineDash(valueOrDefault(vm.borderDash, globalOptionLineElements.borderDash));
+			ctx.setLineDash(vm.borderDash);
 		}
 
-		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
-		ctx.lineJoin = valueOrDefault(vm.borderJoinStyle, globalOptionLineElements.borderJoinStyle);
-		ctx.lineWidth = valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
-		ctx.strokeStyle = valueOrDefault(vm.borderColor, globalDefaults.defaultColor);
+		ctx.lineDashOffset = vm.borderDashOffset;
+		ctx.lineJoin = vm.borderJoinStyle;
+		ctx.lineWidth = vm.borderWidth;
+		ctx.strokeStyle = vm.borderColor;
 
 		// Stroke Line
 		ctx.beginPath();
