@@ -190,21 +190,20 @@ module.exports = DatasetController.extend({
 		// Scriptable options
 		var context = {
 			chart: chart,
-			dataIndex: undefined,
 			dataset: dataset,
 			datasetIndex: datasetIndex
 		};
 
 		var keys = [
 			'backgroundColor',
-			'borderColor',
-			'borderWidth',
 			'borderCapStyle',
+			'borderColor',
 			'borderDash',
 			'borderDashOffset',
 			'borderJoinStyle',
-			'fill',
-			'cubicInterpolationMode'
+			'borderWidth',
+			'cubicInterpolationMode',
+			'fill'
 		];
 
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {
