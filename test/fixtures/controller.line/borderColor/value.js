@@ -20,10 +20,11 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#00ff00',
+					borderColor: '#0000ff',
 					fill: false,
 				},
 				point: {
+					borderColor: '#0000ff',
 					radius: 10,
 				}
 			},
