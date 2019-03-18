@@ -36,7 +36,8 @@ module.exports = {
 							: 'butt';
 					},
 					borderColor: '#ff0000',
-					borderWidth: 32
+					borderWidth: 32,
+					fill: false
 				},
 				point: {
 					radius: 10,
