@@ -32,7 +32,9 @@ module.exports = {
 					fill: false,
 				},
 				point: {
-					radius: 10,
+					borderColor: '#00ff00',
+					borderWidth: 5,
+					radius: 10
 				}
 			},
 			layout: {
