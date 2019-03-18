@@ -19,17 +19,20 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `titleFontSize` | `number` | `12` | Title font size.
 | `titleFontStyle` | `string` | `'bold'` | Title font style.
 | `titleFontColor` | `Color` | `'#fff'` | Title font color.
+| `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
 | `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
 | `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
 | `bodyFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Body line font.
 | `bodyFontSize` | `number` | `12` | Body font size.
 | `bodyFontStyle` | `string` | `'normal'` | Body font style.
 | `bodyFontColor` | `Color` | `'#fff'` | Body font color.
+| `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
 | `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
 | `footerFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Footer font.
 | `footerFontSize` | `number` | `12` | Footer font size.
 | `footerFontStyle` | `string` | `'bold'` | Footer font style.
 | `footerFontColor` | `Color` | `'#fff'` | Footer font color.
+| `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
 | `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
 | `xPadding` | `number` | `6` | Padding to add on left and right of tooltip.
@@ -73,6 +76,16 @@ Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
     };
 };
 ```
+
+### Alignment
+
+The `titleAlign`, `bodyAlign` and `footerAlign` options define the horizontal position of the text lines with respect to the tooltip box. The following values are supported.
+
+* `'left'` (default)
+* `'right'`
+* `'center'`
+
+These options are only applied to text lines. Color boxes are always aligned to the left edge.
 
 ### Sort Callback
 
