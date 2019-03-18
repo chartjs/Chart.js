@@ -102,22 +102,23 @@ function getBoxWidth(labelOpts, fontSize) {
 var Legend = Element.extend({
 
 	initialize: function(config) {
-		helpers.extend(this, config);
+		var me = this;
+		helpers.extend(me, config);
 
-		if (this.options && !this.options.align) {
+		if (me.options && !me.align) {
 			// to maintain backward compatibility with existing default
-			this.options.align = this.isHorizontal() ? 'center' : 'start';
+			me.options.align = me.isHorizontal() ? 'center' : 'start';
 		}
 		// Contains hit boxes for each dataset (in dataset order)
-		this.legendHitBoxes = [];
+		me.legendHitBoxes = [];
 
 		/**
  		 * @private
  		 */
-		this._hoveredItem = null;
+		me._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
-		this.doughnutMode = false;
+		me.doughnutMode = false;
 	},
 
 	// These methods are ordered by lifecycle. Utilities then follow.

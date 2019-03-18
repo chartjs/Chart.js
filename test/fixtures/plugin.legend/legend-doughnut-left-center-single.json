@@ -1,24 +1,23 @@
 {
-    "config": {
-        "type": "doughnut",
-        "data": {
-            "labels": ["0"],
-            "datasets": [{
-                "data": [10]
-            }]
-        },
-        "options": {
-            "responsive": false,
+	"config": {
+		"type": "doughnut",
+		"data": {
+			"labels": [""],
+			"datasets": [{
+				"data": [10]
+			}]
+		},
+		"options": {
 			"legend": {
 				"position": "left",
 				"align": "center"
 			}
-        }
-    },
-    "options": {
-        "canvas": {
-            "height": 256,
-            "width": 512
-        }
-    }
+		}
+	},
+	"options": {
+		"canvas": {
+			"height": 256,
+			"width": 512
+		}
+	}
 }

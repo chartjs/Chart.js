@@ -2,15 +2,14 @@
 	"config": {
 		"type": "doughnut",
 		"data": {
-			"labels": [""],
+			"labels": ["", "", "", "", "", ""],
 			"datasets": [{
-				"data": [10]
+				"data": [10, 20, 30, 40, 50]
 			}]
 		},
 		"options": {
 			"legend": {
-				"position": "top",
-				"align": "center"
+				"position": "left"
 			}
 		}
 	},
