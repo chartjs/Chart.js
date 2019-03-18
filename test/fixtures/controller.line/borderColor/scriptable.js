@@ -11,12 +11,12 @@ module.exports = {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? '#ff0000'
 							: index === 1 ? '#00ff00'
-							: '#ff00ff';
+							: '#0000ff';
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [-4, -5, -10, null, 10, 5],
+					data: [-4, -5, -10, null, 10, 5]
 				}
 			]
 		},
@@ -29,12 +29,15 @@ module.exports = {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? '#ff0000'
 							: index === 1 ? '#00ff00'
-							: '#ff00ff';
+							: '#0000ff';
 					},
+					borderWidth: 10,
 					fill: false
 				},
 				point: {
-					radius: 10,
+					borderColor: '#ff0000',
+					borderWidth: 10,
+					radius: 16
 				}
 			},
 			layout: {
