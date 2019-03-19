@@ -275,14 +275,12 @@ var helpers = {
 	 * @param {object} argN - Additional objects containing properties to merge in target.
 	 * @returns {object} The `target` object.
 	 */
-	extend: Object.assing ? Object.assign : function(target) {
-		var setFn = function(value, key) {
-			target[key] = value;
-		};
-		for (var i = 1, ilen = arguments.length; i < ilen; ++i) {
-			helpers.each(arguments[i], setFn);
-		}
-		return target;
+	extend: Object.assign || function() {
+		return helpers.merge(arguments[0], [].slice.call(arguments, 1), {
+			merger: function(key, target, source) {
+				target[key] = source[key];
+			}
+		});
 	},
 
 	/**
