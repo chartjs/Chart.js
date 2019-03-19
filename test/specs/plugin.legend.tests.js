@@ -6,6 +6,7 @@ describe('Legend block tests', function() {
 		expect(Chart.defaults.global.legend).toEqual({
 			display: true,
 			position: 'top',
+			align: 'center',
 			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 			reverse: false,
 			weight: 1000,

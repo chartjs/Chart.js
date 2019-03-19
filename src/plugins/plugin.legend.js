@@ -12,6 +12,7 @@ defaults._set('global', {
 	legend: {
 		display: true,
 		position: 'top',
+		align: 'center',
 		fullWidth: true,
 		reverse: false,
 		weight: 1000,
@@ -105,10 +106,6 @@ var Legend = Element.extend({
 		var me = this;
 		helpers.extend(me, config);
 
-		if (me.options && !me.align) {
-			// to maintain backward compatibility with existing default
-			me.options.align = me.isHorizontal() ? 'center' : 'start';
-		}
 		// Contains hit boxes for each dataset (in dataset order)
 		me.legendHitBoxes = [];
 
@@ -258,7 +255,7 @@ var Legend = Element.extend({
 					var boxWidth = getBoxWidth(labelOpts, fontSize);
 					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
-					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width) {
+					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width - labelOpts.padding) {
 						totalHeight += fontSize + labelOpts.padding;
 						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
 					}
@@ -418,29 +415,29 @@ var Legend = Element.extend({
 			};
 
 			var alignmentOffset = function(dimension, blockSize) {
-				if (opts.align === 'start') {
+				switch (opts.align) {
+				case 'start':
 					return labelOpts.padding;
-				} else if (opts.align === 'end') {
+				case 'end':
 					return dimension - blockSize;
+				default: // center
+					return (dimension - blockSize + labelOpts.padding) / 2;
 				}
-				// default to center
-				return (dimension - blockSize + labelOpts.padding) / 2;
 			};
 
 			// Horizontal
 			var isHorizontal = me.isHorizontal();
-			var line = 0;
 			if (isHorizontal) {
 				cursor = {
-					x: me.left + alignmentOffset(legendWidth, lineWidths[line]),
+					x: me.left + alignmentOffset(legendWidth, lineWidths[0]),
 					y: me.top + labelOpts.padding,
-					line: line
+					line: 0
 				};
 			} else {
 				cursor = {
 					x: me.left + labelOpts.padding,
-					y: me.top + alignmentOffset(legendHeight, columnHeights[line]),
-					line: line
+					y: me.top + alignmentOffset(legendHeight, columnHeights[0]),
+					line: 0
 				};
 			}
 

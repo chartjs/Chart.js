@@ -26,8 +26,8 @@ Position of the legend. Options are:
 
 ## Align
 Alignment of the legend. Options are:
-* `'start'` (default for left/right positioned legends)
-* `'center'` (default for top/bottom positioned legends)
+* `'start'`
+* `'center'`
 * `'end'`
 
 Defaults to `'center'` for unrecognized values.
