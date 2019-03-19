@@ -275,7 +275,7 @@ var helpers = {
 	 * @param {object} argN - Additional objects containing properties to merge in target.
 	 * @returns {object} The `target` object.
 	 */
-	extend: function(target) {
+	extend: Object.assing ? Object.assign : function(target) {
 		var setFn = function(value, key) {
 			target[key] = value;
 		};
