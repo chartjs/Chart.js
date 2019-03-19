@@ -275,10 +275,10 @@ var helpers = {
 	 * @param {object} argN - Additional objects containing properties to merge in target.
 	 * @returns {object} The `target` object.
 	 */
-	extend: Object.assign || function() {
-		return helpers.merge(arguments[0], [].slice.call(arguments, 1), {
-			merger: function(key, target, source) {
-				target[key] = source[key];
+	extend: Object.assign || function(target) {
+		return helpers.merge(target, [].slice.call(arguments, 1), {
+			merger: function(key, dst, src) {
+				dst[key] = src[key];
 			}
 		});
 	},
