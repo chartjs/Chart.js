@@ -71,7 +71,7 @@ module.exports = function() {
 	};
 	helpers.almostWhole = function(x, epsilon) {
 		var rounded = Math.round(x);
-		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
+		return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 	};
 	helpers.max = function(array) {
 		return array.reduce(function(max, value) {

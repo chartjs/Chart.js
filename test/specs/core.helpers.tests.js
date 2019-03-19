@@ -46,6 +46,8 @@ describe('Core helper tests', function() {
 	it('should correctly determine if a numbers are essentially whole', function() {
 		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
 		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
+		expect(helpers.almostWhole(1234567890123, 0.0001)).toBe(true);
+		expect(helpers.almostWhole(1234567890123.001, 0.0001)).toBe(false);
 	});
 
 	it('should generate integer ids', function() {
@@ -81,6 +83,8 @@ describe('Core helper tests', function() {
 		expect(helpers._decimalPlaces('1')).toBe(undefined);
 		expect(helpers._decimalPlaces('')).toBe(undefined);
 		expect(helpers._decimalPlaces(undefined)).toBe(undefined);
+		expect(helpers._decimalPlaces(12345678.1234)).toBe(4);
+		expect(helpers._decimalPlaces(1234567890.1234567)).toBe(7);
 	});
 
 	it('should get an angle from a point', function() {
