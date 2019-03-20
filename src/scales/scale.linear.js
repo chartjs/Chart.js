@@ -113,7 +113,7 @@ module.exports = LinearScaleBase.extend({
 							return;
 						}
 
-						if (me.min === null || me.min > value.min) {
+						if (me.min === null || value.min < me.min) {
 							me.min = value.min;
 						}
 

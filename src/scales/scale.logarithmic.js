@@ -120,7 +120,7 @@ module.exports = Scale.extend({
 						var values = valuesPerStack[key];
 						var value = me._parseValue(rawValue);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.max < 0 || value.max < 0) {
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
 							return;
 						}
 						values[index] = values[index] || 0;
@@ -149,7 +149,7 @@ module.exports = Scale.extend({
 							return;
 						}
 
-						if (me.min === null || me.min > value.min) {
+						if (me.min === null || value.min < me.min) {
 							me.min = value.min;
 						}
 
