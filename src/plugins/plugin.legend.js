@@ -255,7 +255,7 @@ var Legend = Element.extend({
 					var boxWidth = getBoxWidth(labelOpts, fontSize);
 					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
-					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width - labelOpts.padding) {
+					if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
 						totalHeight += fontSize + labelOpts.padding;
 						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
 					}
@@ -280,14 +280,13 @@ var Legend = Element.extend({
 				var totalWidth = labelOpts.padding;
 				var currentColWidth = 0;
 				var currentColHeight = 0;
-				var itemHeight = fontSize + vPadding;
 
 				helpers.each(me.legendItems, function(legendItem, i) {
 					var boxWidth = getBoxWidth(labelOpts, fontSize);
 					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 					// If too tall, go to new column
-					if (i > 0 && currentColHeight + itemHeight > minSize.height - vPadding) {
+					if (i > 0 && currentColHeight + fontSize + 2 * vPadding > minSize.height) {
 						totalWidth += currentColWidth + labelOpts.padding;
 						columnWidths.push(currentColWidth); // previous column width
 						columnHeights.push(currentColHeight);
@@ -297,7 +296,7 @@ var Legend = Element.extend({
 
 					// Get max width
 					currentColWidth = Math.max(currentColWidth, itemWidth);
-					currentColHeight += itemHeight;
+					currentColHeight += fontSize + vPadding;
 
 					// Store the hitbox width and height here. Final position will be updated in `draw`
 					hitboxes[i] = {
