@@ -7,16 +7,13 @@ module.exports = {
 				{
 					// option in dataset
 					data: [4, 5, 10, null, -10, -5],
-					backgroundColor: function(ctx) {
-						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
-						return index === 0 ? '#ff0000'
-							: index === 1 ? '#00ff00'
-							: '#ff00ff';
+					borderDash: function(ctx) {
+						return ctx.datasetIndex === 0 ? [5] : [10];
 					}
 				},
 				{
 					// option in element (fallback)
-					data: [-4, -5, -10, null, 10, 5],
+					data: [-4, -5, -10, null, 10, 5]
 				}
 			]
 		},
@@ -25,16 +22,13 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					backgroundColor: function(ctx) {
-						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
-						return index === 0 ? '#ff0000'
-							: index === 1 ? '#00ff00'
-							: '#ff00ff';
+					borderColor: '#00ff00',
+					borderDash: function(ctx) {
+						return ctx.datasetIndex === 0 ? [5] : [10];
 					}
 				},
 				point: {
-					backgroundColor: '#0000ff',
-					radius: 10
+					radius: 10,
 				}
 			},
 			layout: {

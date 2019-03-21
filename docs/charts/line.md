@@ -43,15 +43,15 @@ The line chart allows a number of properties to be specified for each dataset. T
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
-| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
-| [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
-| [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
-| [`borderWidth`](#line-styling) | `number` | - | - | `3`
-| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `''`
-| [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderCapStyle`](#line-styling) | `string` | Yes | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderDash`](#line-styling) | `number[]` | Yes | - | `[]`
+| [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
+| [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
+| [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
+| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `''`
+| [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`

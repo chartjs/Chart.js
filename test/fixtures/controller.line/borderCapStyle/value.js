@@ -2,16 +2,21 @@ module.exports = {
 	config: {
 		type: 'line',
 		data: {
-			labels: [0, 1, 2, 3, 4, 5],
+			labels: [0, 1, 2, 3],
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, 10, null, -10, -5],
-					borderColor: '#ff0000'
+					data: [null, 3, 3],
+					borderCapStyle: 'round',
+				},
+				{
+					// option in dataset
+					data: [null, 2, 2],
+					borderCapStyle: 'square',
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5],
+					data: [null, 1, 1],
 				}
 			]
 		},
@@ -20,11 +25,12 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#0000ff',
+					borderCapStyle: 'butt',
+					borderColor: '#00ff00',
+					borderWidth: 32,
 					fill: false,
 				},
 				point: {
-					borderColor: '#0000ff',
 					radius: 10,
 				}
 			},

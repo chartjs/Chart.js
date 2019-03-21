@@ -6,12 +6,14 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, 10, null, -10, -5],
-					borderColor: '#ff0000'
+					data: [1, 1, 1, 1, 1, 1],
+					borderColor: '#ff0000',
+					borderDash: [20],
+					borderDashOffset: 5.0
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5],
+					data: [0, 0, 0, 0, 0, 0]
 				}
 			]
 		},
@@ -20,11 +22,12 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#0000ff',
+					borderColor: '#00ff00',
+					borderDash: [20],
+					borderDashOffset: 0.0, // default
 					fill: false,
 				},
 				point: {
-					borderColor: '#0000ff',
 					radius: 10,
 				}
 			},

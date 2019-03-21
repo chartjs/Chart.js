@@ -7,7 +7,7 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
-					pointBackgroundColor: '#ff0000'
+					backgroundColor: '#ff0000'
 				},
 				{
 					// option in element (fallback)
@@ -20,12 +20,14 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
+					backgroundColor: '#00ff00'
 				},
 				point: {
-					backgroundColor: '#00ff00',
-					radius: 10,
+					radius: 10
 				}
+			},
+			layout: {
+				padding: 32
 			},
 			scales: {
 				xAxes: [{display: false}],

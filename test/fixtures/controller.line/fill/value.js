@@ -6,12 +6,13 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, 10, null, -10, -5],
-					borderColor: '#ff0000'
+					data: [-2, -6, -4, -8, -6, -10],
+					backgroundColor: '#ff0000',
+					fill: false
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5],
+					data: [0, 4, 2, 6, 4, 8],
 				}
 			]
 		},
@@ -20,12 +21,8 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#0000ff',
-					fill: false,
-				},
-				point: {
-					borderColor: '#0000ff',
-					radius: 10,
+					backgroundColor: '#00ff00',
+					fill: true,
 				}
 			},
 			layout: {

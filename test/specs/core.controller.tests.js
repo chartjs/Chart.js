@@ -65,12 +65,12 @@ describe('Chart', function() {
 
 		it('should initialize config with default options', function() {
 			var callback = function() {};
-
 			var defaults = Chart.defaults;
+
 			defaults.global.responsiveAnimationDuration = 42;
 			defaults.global.hover.onHover = callback;
-			defaults.line.hover.mode = 'x-axis';
 			defaults.line.spanGaps = true;
+			defaults.line.hover.mode = 'x-axis';
 
 			var chart = acquireChart({
 				type: 'line'
@@ -83,10 +83,16 @@ describe('Chart', function() {
 			expect(options.responsiveAnimationDuration).toBe(42);
 			expect(options.hover.onHover).toBe(callback);
 			expect(options.hover.mode).toBe('x-axis');
+
+			defaults.global.responsiveAnimationDuration = 0;
+			defaults.global.hover.onHover = null;
+			defaults.line.spanGaps = false;
+			defaults.line.hover.mode = 'label';
 		});
 
 		it('should override default options', function() {
 			var defaults = Chart.defaults;
+
 			defaults.global.responsiveAnimationDuration = 42;
 			defaults.line.hover.mode = 'x-axis';
 			defaults.line.spanGaps = true;
@@ -110,6 +116,10 @@ describe('Chart', function() {
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
+
+			defaults.global.responsiveAnimationDuration = 0;
+			defaults.line.hover.mode = 'label';
+			defaults.line.spanGaps = false;
 		});
 
 		it('should override axis positions that are incorrect', function() {
