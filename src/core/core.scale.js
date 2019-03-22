@@ -7,7 +7,6 @@ var Ticks = require('./core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-var resolve = helpers.options.resolve;
 
 defaults._set('scale', {
 	display: true,
@@ -101,16 +100,14 @@ function computeTextSize(context, tick, font) {
 }
 
 function parseFontOptions(options, nestedOpts) {
-	var globalDefaults = defaults.global;
-	var size = resolve([nestedOpts.fontSize, options.fontSize, globalDefaults.defaultFontSize]);
-	var style = resolve([nestedOpts.fontStyle, options.fontStyle, globalDefaults.defaultFontStyle]);
-	var family = resolve([nestedOpts.fontFamily, options.fontFamily, globalDefaults.defaultFontFamily]);
-
-	return {
-		string: helpers.fontString(size, style, family),
-		lineHeight: helpers.options.toLineHeight(resolve([nestedOpts.lineHeight, options.lineHeight, globalDefaults.defaultLineHeight]), size),
-		color: resolve([nestedOpts.fontColor, options.fontColor, globalDefaults.defaultFontColor])
-	};
+	return helpers.extend(helpers.options._parseFont({
+		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
+		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
+		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
+		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
+	}), {
+		color: helpers.options.resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
+	});
 }
 
 function parseTickFontOptions(options) {
