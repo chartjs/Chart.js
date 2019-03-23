@@ -668,8 +668,10 @@ module.exports = Scale.extend({
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
 		var nestedTickOpts = major ? majorTickOpts : tickOpts.minor;
 		var formatter = helpers.options.resolve([
-			nestedTickOpts.callback, nestedTickOpts.userCallback,
-			tickOpts.callback, tickOpts.userCallback
+			nestedTickOpts.callback,
+			nestedTickOpts.userCallback,
+			tickOpts.callback,
+			tickOpts.userCallback
 		]);
 
 		return formatter ? formatter(label, index, ticks) : label;
