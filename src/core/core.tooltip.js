@@ -813,27 +813,24 @@ var exports = Element.extend({
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
-			lines = bodyItem.lines;
-			for (j = 0, jlen = lines.length; j < jlen; ++j) {
-				// Draw Legend-like boxes if needed
-				if (drawColorBoxes) {
-					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+			// Draw Legend-like boxes if needed
+			if (drawColorBoxes) {
+				// Fill a white rect so that colours merge nicely if the opacity is < 1
+				ctx.fillStyle = vm.legendColorBackground;
+				ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
-					// Border
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = labelColors.borderColor;
-					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+				// Border
+				ctx.lineWidth = 1;
+				ctx.strokeStyle = labelColors.borderColor;
+				ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
-					// Inner square
-					ctx.fillStyle = labelColors.backgroundColor;
-					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-					ctx.fillStyle = textColor;
-				}
-
-				fillLineOfText(lines[j]);
+				// Inner square
+				ctx.fillStyle = labelColors.backgroundColor;
+				ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+				ctx.fillStyle = textColor;
 			}
+
+			helpers.each(bodyItem.lines, fillLineOfText);
 
 			helpers.each(bodyItem.after, fillLineOfText);
 		}
