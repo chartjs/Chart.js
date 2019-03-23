@@ -244,27 +244,54 @@ var Legend = Element.extend({
 			minSize.height = me.maxHeight; // fill all the height
 		}
 
+		var getMaxLineWidth = function(textLines) {
+			return textLines.map(function(textLine) {
+				return ctx.measureText(textLine).width;
+			}).reduce(function(acc, v) {
+				return v > acc ? v : acc;
+			}, 0);
+		};
+
 		// Increase sizes here
 		if (display) {
 			ctx.font = labelFont.string;
 
 			if (isHorizontal) {
+
 				// Labels
 
 				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
 				var lineWidths = me.lineWidths = [0];
-				var totalHeight = 0;
+				var lineHeights = me.lineHeights = [];
+				var currentLineHeight = 0;
+				var lineIndex = 0;
 
 				ctx.textAlign = 'left';
 				ctx.textBaseline = 'middle';
 
 				helpers.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+					var width, height;
 
-					if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
-						totalHeight += fontSize + labelOpts.padding;
+					if (helpers.isArray(legendItem.text)) {
+						width = getMaxLineWidth(legendItem.text);
+						height = fontSize * legendItem.text.length + labelOpts.padding;
+					} else {
+						width = ctx.measureText(legendItem.text).width;
+						height = fontSize + labelOpts.padding;
+					}
+					width += getBoxWidth(labelOpts, fontSize) + (fontSize / 2);
+
+					if (lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
+						lineHeights.push(currentLineHeight);
+						currentLineHeight = 0;
 						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
+						lineIndex++;
+					}
+
+					legendItem.lineOrColumnIndex = lineIndex;
+
+					if (height > currentLineHeight) {
+						currentLineHeight = height;
 					}
 
 					// Store the hitbox width and height here. Final position will be updated in `draw`
@@ -272,13 +299,16 @@ var Legend = Element.extend({
 						left: 0,
 						top: 0,
 						width: width,
-						height: fontSize
+						height: height,
 					};
 
 					lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
 				});
 
-				minSize.height += totalHeight;
+				lineHeights.push(currentLineHeight);
+				minSize.height += lineHeights.reduce(function(acc, v) {
+					return acc + v;
+				}, 0);
 
 			} else {
 				var vPadding = labelOpts.padding;
@@ -287,30 +317,43 @@ var Legend = Element.extend({
 				var totalWidth = labelOpts.padding;
 				var currentColWidth = 0;
 				var currentColHeight = 0;
+				var columnIndex = 0;
 
 				helpers.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+					var itemWidth;
+					var height;
+
+					if (helpers.isArray(legendItem.text)) {
+						itemWidth = getMaxLineWidth(legendItem.text);
+						height = fontSize * legendItem.text.length;
+					} else {
+						itemWidth = ctx.measureText(legendItem.text).width;
+						height = fontSize;
+					}
+					itemWidth += getBoxWidth(labelOpts, fontSize) + (fontSize / 2);
 
 					// If too tall, go to new column
-					if (i > 0 && currentColHeight + fontSize + 2 * vPadding > minSize.height) {
+					if (currentColHeight + fontSize + 2 * vPadding > minSize.height) {
 						totalWidth += currentColWidth + labelOpts.padding;
 						columnWidths.push(currentColWidth); // previous column width
 						columnHeights.push(currentColHeight);
 						currentColWidth = 0;
 						currentColHeight = 0;
+						columnIndex++;
 					}
+
+					legendItem.lineOrColumnIndex = columnIndex;
 
 					// Get max width
 					currentColWidth = Math.max(currentColWidth, itemWidth);
-					currentColHeight += fontSize + vPadding;
+					currentColHeight += height + vPadding;
 
 					// Store the hitbox width and height here. Final position will be updated in `draw`
 					hitboxes[i] = {
 						left: 0,
 						top: 0,
 						width: itemWidth,
-						height: fontSize
+						height: height
 					};
 				});
 
@@ -341,8 +384,10 @@ var Legend = Element.extend({
 		var lineDefault = globalDefaults.elements.line;
 		var legendHeight = me.height;
 		var columnHeights = me.columnHeights;
+		var columnWidths = me.columnWidths;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
+		var lineHeights = me.lineHeights;
 
 		if (opts.display) {
 			var ctx = me.ctx;
@@ -403,20 +448,45 @@ var Legend = Element.extend({
 
 				ctx.restore();
 			};
+
+			var drawStrikeThrough = function(x, y, w) {
+				ctx.beginPath();
+				ctx.lineWidth = 2;
+				ctx.moveTo(x, y);
+				ctx.lineTo(x + w, y);
+				ctx.stroke();
+			};
+
+			var drawCrossOver = function(x, y, w, h) {
+				ctx.beginPath();
+				ctx.lineWidth = 2;
+				ctx.moveTo(x, y);
+				ctx.lineTo(x + w, y + h);
+				ctx.moveTo(x, y + h);
+				ctx.lineTo(x + w, y);
+				ctx.stroke();
+			};
+
 			var fillText = function(x, y, legendItem, textWidth) {
 				var halfFontSize = fontSize / 2;
 				var xLeft = boxWidth + halfFontSize + x;
 				var yMiddle = y + halfFontSize;
 
-				ctx.fillText(legendItem.text, xLeft, yMiddle);
+				if (helpers.isArray(legendItem.text)) {
+					helpers.each(legendItem.text, function(textLine, index) {
+						var lineOffset = index * fontSize;
+						ctx.fillText(textLine, xLeft, yMiddle + lineOffset);
+					});
+				} else {
+					ctx.fillText(legendItem.text, xLeft, yMiddle);
+				}
 
 				if (legendItem.hidden) {
-					// Strikethrough the text if hidden
-					ctx.beginPath();
-					ctx.lineWidth = 2;
-					ctx.moveTo(xLeft, yMiddle);
-					ctx.lineTo(xLeft + textWidth, yMiddle);
-					ctx.stroke();
+					if (helpers.isArray(legendItem.text)) {
+						drawCrossOver(xLeft, yMiddle, textWidth, (legendItem.text.length - 1) * (fontSize - 1));
+					} else {
+						drawStrikeThrough(xLeft, yMiddle, textWidth);
+					}
 				}
 			};
 
@@ -447,40 +517,53 @@ var Legend = Element.extend({
 				};
 			}
 
-			var itemHeight = fontSize + labelOpts.padding;
 			helpers.each(me.legendItems, function(legendItem, i) {
-				var textWidth = ctx.measureText(legendItem.text).width;
+				var textWidth, height, boxTopOffset;
+
+				if (legendItem.lineOrColumnIndex > cursor.line) {
+					if (isHorizontal) {
+						cursor.y += lineHeights[cursor.line];
+						cursor.line = legendItem.lineOrColumnIndex;
+						cursor.x = me.left + alignmentOffset(legendWidth, lineWidths[cursor.line]);
+					} else {
+						cursor.x += columnWidths[cursor.line] + labelOpts.padding;
+						cursor.line = legendItem.lineOrColumnIndex;
+						cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
+					}
+				}
+
+				if (helpers.isArray(legendItem.text)) {
+					textWidth = legendItem.text.map(function(textLine) {
+						return ctx.measureText(textLine).width;
+					}).reduce(function(acc, v) {
+						return v > acc ? v : acc;
+					}, 0);
+					boxTopOffset = fontSize / 2 * (legendItem.text.length - 1);
+					height = fontSize * legendItem.text.length;
+				} else {
+					textWidth = ctx.measureText(legendItem.text).width;
+					boxTopOffset = 0;
+					height = fontSize;
+				}
+
 				var width = boxWidth + (fontSize / 2) + textWidth;
 				var x = cursor.x;
 				var y = cursor.y;
 
-				// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
-				// instead of me.right and me.bottom because me.width and me.height
-				// may have been changed since me.minSize was calculated
-				if (isHorizontal) {
-					if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
-						y = cursor.y += itemHeight;
-						cursor.line++;
-						x = cursor.x = me.left + alignmentOffset(legendWidth, lineWidths[cursor.line]);
-					}
-				} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
-					x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-					cursor.line++;
-					y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
-				}
+				var topOffset = isHorizontal ? Math.trunc((lineHeights[cursor.line] - hitboxes[i].height) / 2) : 0;
 
-				drawLegendBox(x, y, legendItem);
+				drawLegendBox(x, y + boxTopOffset + topOffset, legendItem);
 
 				hitboxes[i].left = x;
 				hitboxes[i].top = y;
 
 				// Fill the actual label
-				fillText(x, y, legendItem, textWidth);
+				fillText(x, y + topOffset, legendItem, textWidth);
 
 				if (isHorizontal) {
 					cursor.x += width + labelOpts.padding;
 				} else {
-					cursor.y += itemHeight;
+					cursor.y += height + labelOpts.padding;
 				}
 			});
 		}
