@@ -245,7 +245,7 @@ helpers.extend(DatasetController.prototype, {
 	_configure: function() {
 		var me = this;
 		var dataset = me.getDataset();
-		var datasetDefaults = defaults.global.datasets[me._type];
+		var datasetDefaults = helpers.clone(defaults.global.datasets[me._type]) || {};
 		var userOpts = {};
 		var keys = Object.keys(dataset);
 		var i, ilen, key;
@@ -255,7 +255,6 @@ helpers.extend(DatasetController.prototype, {
 				userOpts[key] = helpers.clone(dataset[key]);
 			}
 		}
-		datasetDefaults = datasetDefaults !== undefined ? helpers.clone(datasetDefaults) : {};
 		me._cfg = helpers.merge(datasetDefaults, userOpts);
 	},
 

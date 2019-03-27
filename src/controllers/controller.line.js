@@ -216,8 +216,8 @@ module.exports = DatasetController.extend({
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
-		values.spanGaps = resolve([datasetOpts.spanGaps, options.spanGaps]);
-		values.tension = resolve([datasetOpts.tension, elementOptions.tension]);
+		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault(datasetOpts.tension, elementOptions.tension);
 		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, elementOptions.stepped]);
 
 		return values;
