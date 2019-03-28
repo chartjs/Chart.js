@@ -60,6 +60,14 @@ var INTERVALS = {
 
 var UNITS = Object.keys(INTERVALS);
 
+function deprecated(value, previous, current) {
+	if (value !== undefined) {
+		console.warn(
+			'time scale: "' + previous+ '" is deprecated. ' +
+			'Please use "' + current + '" instead');
+	}
+}
+
 function sorter(a, b) {
 	return a - b;
 }
@@ -481,17 +489,9 @@ module.exports = Scale.extend({
 		var adapter = me._adapter = new adapters._date(options.adapters.date);
 
 		// DEPRECATIONS: output a message only one time per update
-		if (time.format) {
-			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
-		}
-
-		if (time.min) {
-			console.warn('options.time.min is deprecated. Please use options.ticks.min');
-		}
-
-		if (time.max) {
-			console.warn('options.time.max is deprecated. Please use options.ticks.max');
-		}
+	    deprecated(time.format, 'time.format', 'time.parser');
+    	deprecated(time.min, 'time.min', 'ticks.min');
+    	deprecated(time.max, 'time.max', 'ticks.max');
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
