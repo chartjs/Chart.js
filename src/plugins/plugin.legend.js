@@ -71,17 +71,17 @@ defaults._set('global', {
 	},
 
 	legendCallback: function(chart) {
-		var text = document.createElement('ul');
-		text.setAttribute('class', chart.id + '-legend');
+		var list = document.createElement('ul');
+		list.setAttribute('class', chart.id + '-legend');
 		for (var i = 0; i < chart.data.datasets.length; i++) {
-			var listItem = text.appendChild(document.createElement('li'));
+			var listItem = list.appendChild(document.createElement('li'));
 			var listItemSpan = listItem.appendChild(document.createElement('span'));
 			listItemSpan.style.backgroundColor = chart.data.datasets[i].backgroundColor;
 			if (chart.data.datasets[i].label) {
 				listItem.appendChild(document.createTextNode(chart.data.datasets[i].label));
 			}
 		}
-		return text;
+		return list;
 	}
 });
 
