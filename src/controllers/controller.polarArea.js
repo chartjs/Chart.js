@@ -32,8 +32,8 @@ defaults._set('polarArea', {
 
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
-		var text = document.createElement('ul');
-		text.setAttribute('class', chart.id + '-legend');
+		var list = document.createElement('ul');
+		list.setAttribute('class', chart.id + '-legend');
 
 		var data = chart.data;
 		var datasets = data.datasets;
@@ -41,7 +41,7 @@ defaults._set('polarArea', {
 
 		if (datasets.length) {
 			for (var i = 0; i < datasets[0].data.length; ++i) {
-				var listItem = text.appendChild(document.createElement('li'));
+				var listItem = list.appendChild(document.createElement('li'));
 				var listItemSpan = listItem.appendChild(document.createElement('span'));
 				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
@@ -50,7 +50,7 @@ defaults._set('polarArea', {
 			}
 		}
 
-		return text;
+		return list;
 	},
 	legend: {
 		labels: {
