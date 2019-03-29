@@ -82,10 +82,10 @@ defaults._set('global', {
 		text.setAttribute('class', chart.id + '-legend');
 		for (var i = 0; i < chart.data.datasets.length; i++) {
 			var listItem = text.appendChild(document.createElement('li'));
-			var listItemText = listItem.appendChild(document.createElement('span'));
-			listItemText.style.backgroundColor = chart.data.datasets[i].backgroundColor;
+			var listItemSpan = listItem.appendChild(document.createElement('span'));
+			listItemSpan.style.backgroundColor = chart.data.datasets[i].backgroundColor;
 			if (chart.data.datasets[i].label) {
-				listItemText.appendChild(document.createTextNode(chart.data.datasets[i].label));
+				listItem.appendChild(document.createTextNode(chart.data.datasets[i].label));
 			}
 		}
 		return text;
