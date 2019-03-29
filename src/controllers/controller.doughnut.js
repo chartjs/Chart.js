@@ -22,8 +22,8 @@ defaults._set('doughnut', {
 		mode: 'single'
 	},
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
+		var text = document.createElement('ul');
+		text.setAttribute('class', chart.id + '-legend');
 
 		var data = chart.data;
 		var datasets = data.datasets;
@@ -31,16 +31,16 @@ defaults._set('doughnut', {
 
 		if (datasets.length) {
 			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+				var listItem = text.appendChild(document.createElement('li'));
+				var listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return text;
 	},
 	legend: {
 		labels: {
