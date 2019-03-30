@@ -50,7 +50,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | - | - | `3`
-| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `''`
+| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `undefined`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
