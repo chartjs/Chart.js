@@ -161,7 +161,7 @@ Now when you click the legend in this chart, the visibility of the first two dat
 
 ## HTML Legends
 
-Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML string for the legend.
+Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML fragment for the legend.
 
 To configure how this legend is generated, you can change the `legendCallback` config property.
 
@@ -171,7 +171,7 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         legendCallback: function(chart) {
-            // Return the HTML string here.
+            // Return the HTML fragment here.
         }
     }
 });
