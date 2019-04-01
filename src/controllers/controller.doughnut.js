@@ -22,6 +22,7 @@ defaults._set('doughnut', {
 		mode: 'single'
 	},
 	legendCallback: function(chart) {
+		var fragment = document.createDocumentFragment();
 		var list = document.createElement('ul');
 		list.setAttribute('class', chart.id + '-legend');
 
@@ -38,9 +39,11 @@ defaults._set('doughnut', {
 					listItem.appendChild(document.createTextNode(labels[i]));
 				}
 			}
+
+			fragment.appendChild(list);
 		}
 
-		return list;
+		return fragment;
 	},
 	legend: {
 		labels: {
