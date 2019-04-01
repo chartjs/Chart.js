@@ -11,7 +11,7 @@ First, we need to have a canvas in our page.
 Now that we have a canvas we can use, we need to include Chart.js in our page.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 ```
 
 Now, we can create a chart. We add a script to our page:

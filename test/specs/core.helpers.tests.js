@@ -46,6 +46,8 @@ describe('Core helper tests', function() {
 	it('should correctly determine if a numbers are essentially whole', function() {
 		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
 		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
+		expect(helpers.almostWhole(1234567890123, 0.0001)).toBe(true);
+		expect(helpers.almostWhole(1234567890123.001, 0.0001)).toBe(false);
 	});
 
 	it('should generate integer ids', function() {
@@ -73,14 +75,16 @@ describe('Core helper tests', function() {
 	});
 
 	it('should get the correct number of decimal places', function() {
-		expect(helpers.decimalPlaces(100)).toBe(0);
-		expect(helpers.decimalPlaces(1)).toBe(0);
-		expect(helpers.decimalPlaces(0)).toBe(0);
-		expect(helpers.decimalPlaces(0.01)).toBe(2);
-		expect(helpers.decimalPlaces(-0.01)).toBe(2);
-		expect(helpers.decimalPlaces('1')).toBe(undefined);
-		expect(helpers.decimalPlaces('')).toBe(undefined);
-		expect(helpers.decimalPlaces(undefined)).toBe(undefined);
+		expect(helpers._decimalPlaces(100)).toBe(0);
+		expect(helpers._decimalPlaces(1)).toBe(0);
+		expect(helpers._decimalPlaces(0)).toBe(0);
+		expect(helpers._decimalPlaces(0.01)).toBe(2);
+		expect(helpers._decimalPlaces(-0.01)).toBe(2);
+		expect(helpers._decimalPlaces('1')).toBe(undefined);
+		expect(helpers._decimalPlaces('')).toBe(undefined);
+		expect(helpers._decimalPlaces(undefined)).toBe(undefined);
+		expect(helpers._decimalPlaces(12345678.1234)).toBe(4);
+		expect(helpers._decimalPlaces(1234567890.1234567)).toBe(7);
 	});
 
 	it('should get an angle from a point', function() {

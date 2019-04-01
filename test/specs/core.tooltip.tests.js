@@ -137,11 +137,11 @@ describe('Core.Tooltip', function() {
 				footer: [],
 				caretPadding: 2,
 				labelColors: [{
-					borderColor: 'rgb(255, 0, 0)',
-					backgroundColor: 'rgb(0, 255, 0)'
+					borderColor: globalDefaults.defaultColor,
+					backgroundColor: globalDefaults.defaultColor
 				}, {
-					borderColor: 'rgb(0, 0, 255)',
-					backgroundColor: 'rgb(0, 255, 255)'
+					borderColor: globalDefaults.defaultColor,
+					backgroundColor: globalDefaults.defaultColor
 				}]
 			}));
 
@@ -338,8 +338,8 @@ describe('Core.Tooltip', function() {
 			caretPadding: 2,
 			labelTextColors: ['#fff'],
 			labelColors: [{
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}]
 		}));
 
@@ -488,11 +488,11 @@ describe('Core.Tooltip', function() {
 			caretPadding: 2,
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}, {
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}]
 		}));
 
@@ -547,6 +547,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -568,11 +569,11 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}, {
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}]
 		}));
 
@@ -629,6 +630,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
 
 		expect(tooltip._view).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -646,8 +648,8 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}]
 		}));
 	});
@@ -1088,11 +1090,11 @@ describe('Core.Tooltip', function() {
 			caretPadding: 2,
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
-				borderColor: 'rgb(255, 0, 0)',
-				backgroundColor: 'rgb(0, 255, 0)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}, {
-				borderColor: 'rgb(0, 0, 255)',
-				backgroundColor: 'rgb(0, 255, 255)'
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
 			}]
 		}));
 	});
