@@ -423,15 +423,14 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getIndexAngle: function(index) {
-		var angleMultiplier = (Math.PI * 2) / getValueCount(this);
-		var startAngle = this.chart.options && this.chart.options.startAngle ?
-			this.chart.options.startAngle :
-			0;
-
-		var startAngleRadians = startAngle * Math.PI * 2 / 360;
+		var angleMultiplier = 360 / getValueCount(this);
+		var options = this.chart.options || {};
+		var startAngle = options.startAngle || 0;
 
 		// Start from the top instead of right, so remove a quarter of the circle
-		return index * angleMultiplier + startAngleRadians;
+		var angle = (index * angleMultiplier + startAngle) % 360;
+
+		return (angle < 0 ? angle + 360 : angle) * Math.PI * 2 / 360;
 	},
 
 	getDistanceFromCenterForValue: function(value) {

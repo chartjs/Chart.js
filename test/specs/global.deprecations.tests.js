@@ -1,4 +1,12 @@
 describe('Deprecations', function() {
+	describe('Version 2.9.0', function() {
+		describe('Chart.Scale.mergeTicksOptions', function() {
+			it('should be defined as a function', function() {
+				expect(typeof Chart.Scale.prototype.mergeTicksOptions).toBe('function');
+			});
+		});
+	});
+
 	describe('Version 2.8.0', function() {
 		[
 			['Bar', 'bar'],

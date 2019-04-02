@@ -26,6 +26,8 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `min` | `number` | | User defined minimum value for the scale, overrides minimum value from data.
+| `max` | `number` | | User defined maximum value for the scale, overrides maximum value from data.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
 | `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
