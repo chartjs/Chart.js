@@ -245,7 +245,8 @@ helpers.extend(DatasetController.prototype, {
 	_configure: function() {
 		var me = this;
 		var dataset = me.getDataset();
-		var datasetDefaults = helpers.clone(defaults.global.datasets[me._type]) || {};
+		var chartDefaults = me.chart.options.datasets;
+		var datasetDefaults = helpers.merge({}, [defaults.global.datasets[me._type], chartDefaults ? chartDefaults[me._type] : {}]);
 		var userOpts = {};
 		var keys = Object.keys(dataset);
 		var i, ilen, key;

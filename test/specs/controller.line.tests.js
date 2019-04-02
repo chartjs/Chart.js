@@ -573,7 +573,7 @@ describe('Chart.controllers.line', function() {
 		expect(meta.dataset._model.borderWidth).toBe(0.55);
 	});
 
-	describe('dataset defaults', function() {
+	describe('dataset global defaults', function() {
 		beforeEach(function() {
 			this._defaults = Chart.helpers.clone(Chart.defaults.global.datasets.line);
 		});
@@ -583,7 +583,7 @@ describe('Chart.controllers.line', function() {
 			delete this._defaults;
 		});
 
-		it('should utilize the dataset default options', function() {
+		it('should utilize the dataset global default options', function() {
 			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
 			var defaults = Chart.defaults.global.datasets.line;
 			defaults.spanGaps = true;
@@ -623,6 +623,87 @@ describe('Chart.controllers.line', function() {
 			expect(model.fill).toBe('start');
 			expect(model.cubicInterpolationMode).toBe('monotone');
 		});
+
+		it('should be overriden by user-supplied values', function() {
+			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+			var defaults = Chart.defaults.global.datasets.line;
+			defaults.spanGaps = true;
+			defaults.tension = 0.231;
+
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 0],
+						label: 'dataset1',
+						spanGaps: true,
+						backgroundColor: '#dad'
+					}],
+					labels: ['label1', 'label2']
+				},
+				options: {
+					datasets: {
+						line: {
+							tension: 0.345,
+							backgroundColor: '#add'
+						}
+					}
+				}
+			});
+
+			var model = chart.getDatasetMeta(0).dataset._model;
+
+			// dataset-level option overrides global default
+			expect(model.spanGaps).toBe(true);
+			// chart-level default overrides global default
+			expect(model.tension).toBe(0.345);
+			// dataset-level option overrides chart-level default
+			expect(model.backgroundColor).toBe('#dad');
+		});
+	});
+
+	it('should obey the chart-level dataset options', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [0, 0],
+					label: 'dataset1'
+				}],
+				labels: ['label1', 'label2']
+			},
+			options: {
+				datasets: {
+					line: {
+						spanGaps: true,
+						tension: 0.231,
+						backgroundColor: '#add',
+						borderWidth: '#daa',
+						borderColor: '#dad',
+						borderCapStyle: 'round',
+						borderDash: [0],
+						borderDashOffset: 0.871,
+						borderJoinStyle: 'miter',
+						fill: 'start',
+						cubicInterpolationMode: 'monotone'
+					}
+				}
+			}
+		});
+
+		var model = chart.getDatasetMeta(0).dataset._model;
+
+		expect(model.spanGaps).toBe(true);
+		expect(model.tension).toBe(0.231);
+		expect(model.backgroundColor).toBe('#add');
+		expect(model.borderWidth).toBe('#daa');
+		expect(model.borderColor).toBe('#dad');
+		expect(model.borderCapStyle).toBe('round');
+		expect(model.borderDash).toEqual([0]);
+		expect(model.borderDashOffset).toBe(0.871);
+		expect(model.borderJoinStyle).toBe('miter');
+		expect(model.fill).toBe('start');
+		expect(model.cubicInterpolationMode).toBe('monotone');
 	});
 
 	it('should obey the dataset options', function() {
