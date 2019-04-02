@@ -42,3 +42,5 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+
+The third parameter passed to the callback function is an array of labels, but in the time scale, it is an array of `{label: string, major: boolean}` objects.

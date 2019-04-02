@@ -99,6 +99,24 @@ function computeTextSize(context, tick, font) {
 		context.measureText(tick).width;
 }
 
+function parseFontOptions(options, nestedOpts) {
+	return helpers.extend(helpers.options._parseFont({
+		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
+		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
+		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
+		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
+	}), {
+		color: helpers.options.resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
+	});
+}
+
+function parseTickFontOptions(options) {
+	var minor = parseFontOptions(options, options.minor);
+	var major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
+
+	return {minor: minor, major: major};
+}
+
 module.exports = Element.extend({
 	/**
 	 * Get the padding needed for the scale
@@ -128,29 +146,16 @@ module.exports = Element.extend({
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
 
+	/**
+	 * Provided for backward compatibility, not available anymore
+	 * @function Chart.Scale.mergeTicksOptions
+	 * @deprecated since version 2.8.0
+	 * @todo remove at version 3
+	 */
 	mergeTicksOptions: function() {
-		var ticks = this.options.ticks;
-		if (ticks.minor === false) {
-			ticks.minor = {
-				display: false
-			};
-		}
-		if (ticks.major === false) {
-			ticks.major = {
-				display: false
-			};
-		}
-		for (var key in ticks) {
-			if (key !== 'major' && key !== 'minor') {
-				if (typeof ticks.minor[key] === 'undefined') {
-					ticks.minor[key] = ticks[key];
-				}
-				if (typeof ticks.major[key] === 'undefined') {
-					ticks.major[key] = ticks[key];
-				}
-			}
-		}
+		// noop
 	},
+
 	beforeUpdate: function() {
 		helpers.callback(this.options.beforeUpdate, [this]);
 	},
@@ -628,7 +633,7 @@ module.exports = Element.extend({
 	_autoSkip: function(ticks) {
 		var me = this;
 		var isHorizontal = me.isHorizontal();
-		var optionTicks = me.options.ticks.minor;
+		var optionTicks = me.options.ticks;
 		var tickCount = ticks.length;
 		var skipRatio = false;
 		var maxTicks = optionTicks.maxTicksLimit;
@@ -673,7 +678,7 @@ module.exports = Element.extend({
 	_tickSize: function() {
 		var me = this;
 		var isHorizontal = me.isHorizontal();
-		var optionTicks = me.options.ticks.minor;
+		var optionTicks = me.options.ticks;
 
 		// Calculate space needed by label in axis direction.
 		var rot = helpers.toRadians(me.labelRotation);
@@ -683,7 +688,7 @@ module.exports = Element.extend({
 		var padding = optionTicks.autoSkipPadding || 0;
 		var w = (me.longestLabelWidth + padding) || 0;
 
-		var tickFont = helpers.options._parseFont(optionTicks);
+		var tickFont = parseTickFontOptions(optionTicks).minor;
 		var h = (me._maxLabelLines * tickFont.lineHeight + padding) || 0;
 
 		// Calculate space needed for 1 tick in axis direction.
@@ -732,10 +737,7 @@ module.exports = Element.extend({
 
 		var chart = me.chart;
 		var context = me.ctx;
-		var globalDefaults = defaults.global;
-		var defaultFontColor = globalDefaults.defaultFontColor;
-		var optionTicks = options.ticks.minor;
-		var optionMajorTicks = options.ticks.major || optionTicks;
+		var optionTicks = options.ticks;
 		var gridLines = options.gridLines;
 		var scaleLabel = options.scaleLabel;
 		var position = options.position;
@@ -744,20 +746,15 @@ module.exports = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
-		var parseFont = helpers.options._parseFont;
 		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
-		var tickFontColor = valueOrDefault(optionTicks.fontColor, defaultFontColor);
-		var tickFont = parseFont(optionTicks);
-		var lineHeight = tickFont.lineHeight;
-		var majorTickFontColor = valueOrDefault(optionMajorTicks.fontColor, defaultFontColor);
-		var majorTickFont = parseFont(optionMajorTicks);
+		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
 
 		var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
 
-		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaultFontColor);
-		var scaleLabelFont = parseFont(scaleLabel);
+		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.global.defaultFontColor);
+		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var labelRotationRadians = helpers.toRadians(me.labelRotation);
 
@@ -794,6 +791,8 @@ module.exports = Element.extend({
 			}
 
 			var label = tick.label;
+			var tickFont = tick.major ? tickFonts.major : tickFonts.minor;
+			var lineHeight = tickFont.lineHeight;
 			var lineWidth, lineColor, borderDash, borderDashOffset;
 			if (index === me.zeroLineIndex && options.offset === gridLines.offsetGridLines) {
 				// Draw the first index specially
@@ -918,12 +917,14 @@ module.exports = Element.extend({
 			}
 
 			if (optionTicks.display) {
+				var tickFont = itemToDraw.major ? tickFonts.major : tickFonts.minor;
+
 				// Make sure we draw text in the correct color and font
 				context.save();
 				context.translate(itemToDraw.labelX, itemToDraw.labelY);
 				context.rotate(itemToDraw.rotation);
-				context.font = itemToDraw.major ? majorTickFont.string : tickFont.string;
-				context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
+				context.font = tickFont.string;
+				context.fillStyle = tickFont.color;
 				context.textBaseline = 'middle';
 				context.textAlign = itemToDraw.textAlign;
 
@@ -933,7 +934,7 @@ module.exports = Element.extend({
 					for (var i = 0; i < label.length; ++i) {
 						// We just make sure the multiline element is a string here..
 						context.fillText('' + label[i], 0, y);
-						y += lineHeight;
+						y += tickFont.lineHeight;
 					}
 				} else {
 					context.fillText(label, 0, y);

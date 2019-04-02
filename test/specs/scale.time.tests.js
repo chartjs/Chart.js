@@ -616,6 +616,131 @@ describe('Time scale tests', function() {
 		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
 	});
 
+	describe('when ticks.callback is specified', function() {
+		beforeEach(function() {
+			this.chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						xAxisID: 'xScale0',
+						data: [0, 0]
+					}],
+					labels: ['2015-01-01T20:00:00', '2015-01-01T20:01:00']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'xScale0',
+							type: 'time',
+							ticks: {
+								callback: function(value) {
+									return '<' + value + '>';
+								}
+							}
+						}]
+					}
+				}
+			});
+			this.scale = this.chart.scales.xScale0;
+		});
+
+		it('should get the correct labels for ticks', function() {
+			var scale = this.scale;
+
+			expect(scale._ticks.map(function(tick) {
+				return tick.major;
+			})).toEqual([true, false, false, false, false, false, true]);
+			expect(scale.ticks).toEqual(['<8:00:00 pm>', '<8:00:10 pm>', '<8:00:20 pm>', '<8:00:30 pm>', '<8:00:40 pm>', '<8:00:50 pm>', '<8:01:00 pm>']);
+		});
+
+		it('should update ticks.callback correctly', function() {
+			var chart = this.chart;
+			var scale = this.scale;
+
+			chart.options.scales.xAxes[0].ticks.callback = function(value) {
+				return '{' + value + '}';
+			};
+			chart.update();
+			expect(scale.ticks).toEqual(['{8:00:00 pm}', '{8:00:10 pm}', '{8:00:20 pm}', '{8:00:30 pm}', '{8:00:40 pm}', '{8:00:50 pm}', '{8:01:00 pm}']);
+		});
+	});
+
+	describe('when ticks.major.callback and ticks.minor.callback are specified', function() {
+		beforeEach(function() {
+			this.chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						xAxisID: 'xScale0',
+						data: [0, 0]
+					}],
+					labels: ['2015-01-01T20:00:00', '2015-01-01T20:01:00']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'xScale0',
+							type: 'time',
+							ticks: {
+								callback: function(value) {
+									return '<' + value + '>';
+								},
+								major: {
+									enabled: true,
+									callback: function(value) {
+										return '[' + value + ']';
+									}
+								},
+								minor: {
+									callback: function(value) {
+										return '(' + value + ')';
+									}
+								}
+							}
+						}]
+					}
+				}
+			});
+			this.scale = this.chart.scales.xScale0;
+		});
+
+		it('should get the correct labels for major and minor ticks', function() {
+			var scale = this.scale;
+
+			expect(scale._ticks.map(function(tick) {
+				return tick.major;
+			})).toEqual([true, false, false, false, false, false, true]);
+			expect(scale.ticks).toEqual(['[8:00 pm]', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '[8:01 pm]']);
+		});
+
+		it('should only use ticks.minor callback if ticks.major.enabled is false', function() {
+			var chart = this.chart;
+			var scale = this.scale;
+
+			chart.options.scales.xAxes[0].ticks.major.enabled = false;
+			chart.update();
+			expect(scale.ticks).toEqual(['(8:00:00 pm)', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '(8:01:00 pm)']);
+		});
+
+		it('should use ticks.callback if ticks.major.callback is omitted', function() {
+			var chart = this.chart;
+			var scale = this.scale;
+
+			chart.options.scales.xAxes[0].ticks.major.callback = undefined;
+			chart.update();
+			expect(scale.ticks).toEqual(['<8:00 pm>', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '<8:01 pm>']);
+		});
+
+		it('should use ticks.callback if ticks.minor.callback is omitted', function() {
+			var chart = this.chart;
+			var scale = this.scale;
+
+			chart.options.scales.xAxes[0].ticks.minor.callback = undefined;
+			chart.update();
+			expect(scale.ticks).toEqual(['[8:00 pm]', '<8:00:10 pm>', '<8:00:20 pm>', '<8:00:30 pm>', '<8:00:40 pm>', '<8:00:50 pm>', '[8:01 pm]']);
+		});
+	});
+
 	it('should get the correct label when time is specified as a string', function() {
 		var chart = window.acquireChart({
 			type: 'line',

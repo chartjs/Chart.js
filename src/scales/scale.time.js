@@ -678,11 +678,17 @@ module.exports = Scale.extend({
 		var majorUnit = me._majorUnit;
 		var majorFormat = formats[majorUnit];
 		var majorTime = +adapter.startOf(time, majorUnit);
-		var majorTickOpts = options.ticks.major;
+		var tickOpts = options.ticks;
+		var majorTickOpts = tickOpts.major;
 		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		var tickOpts = major ? majorTickOpts : options.ticks.minor;
-		var formatter = valueOrDefault(tickOpts.callback, tickOpts.userCallback);
+		var nestedTickOpts = major ? majorTickOpts : tickOpts.minor;
+		var formatter = helpers.options.resolve([
+			nestedTickOpts.callback,
+			nestedTickOpts.userCallback,
+			tickOpts.callback,
+			tickOpts.userCallback
+		]);
 
 		return formatter ? formatter(label, index, ticks) : label;
 	},
