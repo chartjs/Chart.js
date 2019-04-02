@@ -80,7 +80,7 @@ defaults._set('global', {
 			labelColor: function(tooltipItem, chart) {
 				var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
 				var activeElement = meta.data[tooltipItem.index];
-				var view = activeElement._view;
+				var view = activeElement.$previousStyle || activeElement._view;
 				return {
 					borderColor: view.borderColor,
 					backgroundColor: view.backgroundColor
@@ -492,8 +492,25 @@ function getBeforeAfterBodyLines(callback) {
 
 var exports = Element.extend({
 	initialize: function() {
-		this._model = getBaseModel(this._options);
-		this._lastActive = [];
+		var me = this;
+		me._model = getBaseModel(me._options);
+		me._view = {};
+		me._lastActive = [];
+	},
+
+	transition: function(easingValue) {
+		var me = this;
+		var options = me._options;
+
+		if (me._lastEvent && me._chart.animating) {
+			// Lets react to changes during animation
+			me._active = me._chart.getElementsAtEventForMode(me._lastEvent, options.mode, options);
+			me.update(true);
+			me.pivot();
+			me._lastActive = me.active;
+		}
+
+		Element.prototype.transition.call(me, easingValue);
 	},
 
 	// Get the title
@@ -967,8 +984,10 @@ var exports = Element.extend({
 		// Find Active Elements for tooltips
 		if (e.type === 'mouseout') {
 			me._active = [];
+			me._lastEvent = null;
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+			me._lastEvent = e;
 		}
 
 		// Remember Last Actives
