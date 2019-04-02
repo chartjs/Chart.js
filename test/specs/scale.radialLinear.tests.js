@@ -485,4 +485,62 @@ describe('Test the radial linear scale', function() {
 			expect(radToNearestDegree(chart.scale.getIndexAngle(x))).toBe((slice * x));
 		}
 	});
+
+	it('should correctly get the correct label alignment for all points', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+			},
+			options: {
+				scale: {
+					pointLabels: {
+						callback: function(value, index) {
+							return index.toString();
+						}
+					},
+					ticks: {
+						display: false
+					}
+				}
+			}
+		});
+
+		var scale = chart.scale;
+
+		[{
+			startAngle: 30,
+			textAlign: ['right', 'right', 'left', 'left', 'left'],
+			y: [82, 366, 506, 319, 53]
+		}, {
+			startAngle: -30,
+			textAlign: ['right', 'right', 'left', 'left', 'right'],
+			y: [319, 506, 366, 82, 53]
+		}, {
+			startAngle: 750,
+			textAlign: ['right', 'right', 'left', 'left', 'left'],
+			y: [82, 366, 506, 319, 53]
+		}].forEach(function(expected) {
+			chart.options.startAngle = expected.startAngle;
+			chart.update();
+
+			scale.ctx = window.createMockContext();
+			chart.draw();
+
+			scale.ctx.getCalls().filter(function(x) {
+				return x.name === 'setTextAlign';
+			}).forEach(function(x, i) {
+				expect(x.args[0]).toBe(expected.textAlign[i]);
+			});
+
+			scale.ctx.getCalls().filter(function(x) {
+				return x.name === 'fillText';
+			}).map(function(x, i) {
+				expect(x.args[2]).toBeCloseToPixel(expected.y[i]);
+			});
+		});
+	});
 });
