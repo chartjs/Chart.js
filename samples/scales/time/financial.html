@@ -52,11 +52,11 @@
 
 			var date = moment('Jan 01 1990', 'MMM DD YYYY');
 			var now = moment();
-			var data = [randomBar(date, 30)];
+			var data = [];
 			var unit = document.getElementById('unit').value;
 			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit)) {
 				if (date.isoWeekday() <= 5) {
-					data.push(randomBar(date, data[data.length - 1].y));
+					data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
 				}
 			}
 
