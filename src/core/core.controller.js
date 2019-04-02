@@ -489,7 +489,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.tooltip.initialize();
 
 		// Last active contains items that were previously hovered.
-		me.lastActive = me.lastActive || [];
+		me.lastActive = [];
 
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
