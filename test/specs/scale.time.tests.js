@@ -372,6 +372,47 @@ describe('Time scale tests', function() {
 		});
 
 		it('should use the min option when less than first label for building ticks', function() {
+			config.ticks.min = '2014-12-29T04:00:00';
+
+			var scale = createScale(mockData, config);
+			expect(scale.ticks[0]).toEqual('Jan 1');
+		});
+
+		it('should use the min option when greater than first label for building ticks', function() {
+			config.ticks.min = '2015-01-02T04:00:00';
+
+			var scale = createScale(mockData, config);
+			expect(scale.ticks[0]).toEqual('Jan 2');
+		});
+
+		it('should use the max option when greater than last label for building ticks', function() {
+			config.ticks.max = '2015-01-05T06:00:00';
+
+			var scale = createScale(mockData, config);
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 3');
+		});
+
+		it('should use the max option when less than last label for building ticks', function() {
+			config.ticks.max = '2015-01-02T23:00:00';
+
+			var scale = createScale(mockData, config);
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 2');
+		});
+	});
+
+	describe('when specifying limits in a deprecated fashion', function() {
+		var mockData = {
+			labels: ['2015-01-01T20:00:00', '2015-01-02T20:00:00', '2015-01-03T20:00:00'],
+		};
+
+		var config;
+		beforeEach(function() {
+			config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+			config.ticks.source = 'labels';
+			config.time.unit = 'day';
+		});
+
+		it('should use the min option when less than first label for building ticks', function() {
 			config.time.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
