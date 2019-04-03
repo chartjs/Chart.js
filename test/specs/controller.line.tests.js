@@ -585,18 +585,20 @@ describe('Chart.controllers.line', function() {
 
 		it('should utilize the dataset global default options', function() {
 			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
-			var defaults = Chart.defaults.global.datasets.line;
-			defaults.spanGaps = true;
-			defaults.tension = 0.231;
-			defaults.backgroundColor = '#add';
-			defaults.borderWidth = '#daa';
-			defaults.borderColor = '#dad';
-			defaults.borderCapStyle = 'round';
-			defaults.borderDash = [0];
-			defaults.borderDashOffset = 0.871;
-			defaults.borderJoinStyle = 'miter';
-			defaults.fill = 'start';
-			defaults.cubicInterpolationMode = 'monotone';
+
+			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+				spanGaps: true,
+				tension: 0.231,
+				backgroundColor: '#add',
+				borderWidth: '#daa',
+				borderColor: '#dad',
+				borderCapStyle: 'round',
+				borderDash: [0],
+				borderDashOffset: 0.871,
+				borderJoinStyle: 'miter',
+				fill: 'start',
+				cubicInterpolationMode: 'monotone'
+			});
 
 			var chart = window.acquireChart({
 				type: 'line',
@@ -626,9 +628,11 @@ describe('Chart.controllers.line', function() {
 
 		it('should be overriden by user-supplied values', function() {
 			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
-			var defaults = Chart.defaults.global.datasets.line;
-			defaults.spanGaps = true;
-			defaults.tension = 0.231;
+
+			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+				spanGaps: true,
+				tension: 0.231
+			});
 
 			var chart = window.acquireChart({
 				type: 'line',

@@ -1,6 +1,5 @@
 'use strict';
 
-var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
@@ -244,19 +243,16 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_configure: function() {
 		var me = this;
-		var dataset = me.getDataset();
-		var chartDefaults = me.chart.options.datasets;
-		var datasetDefaults = helpers.merge({}, [defaults.global.datasets[me._type], chartDefaults ? chartDefaults[me._type] : {}]);
-		var userOpts = {};
-		var keys = Object.keys(dataset);
-		var i, ilen, key;
-		for (i = 0, ilen = keys.length; i < ilen; i++) {
-			key = keys[i];
-			if (key !== '_meta' && key !== 'data') {
-				userOpts[key] = helpers.clone(dataset[key]);
+		me._config = helpers.merge({}, [
+			me.chart.options.datasets[me._type],
+			me.getDataset(),
+		], {
+			merger: function(key, target, source) {
+				if (key !== '_meta' && key !== 'data') {
+					helpers._merger(key, target, source);
+				}
 			}
-		}
-		me._cfg = helpers.merge(datasetDefaults, userOpts);
+		});
 	},
 
 	_update: function() {

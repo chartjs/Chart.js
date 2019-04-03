@@ -43,7 +43,7 @@ module.exports = DatasetController.extend({
 		var options = me.chart.options;
 		var scale = me.getScaleForId(meta.yAxisID);
 		var dataset = me.getDataset();
-		var showLine = me._showLine = valueOrDefault(me._cfg.showLine, options.showLines);
+		var showLine = me._showLine = valueOrDefault(me._config.showLine, options.showLines);
 		var i, ilen;
 
 		// Update Line
@@ -178,7 +178,7 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var datasetIndex = me.index;
 		var dataset = chart.data.datasets[datasetIndex];
-		var datasetOpts = me._cfg;
+		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var options = chart.options;
 		var elementOptions = options.elements.line;

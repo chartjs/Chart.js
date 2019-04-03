@@ -34,11 +34,17 @@ var chartDifferentHoverMode = new Chart(ctx, {
 
 ## Dataset Configuration
 
-Options may be configured directly on the dataset. The default option values can be changed globally across a dataset type. E.g. an option may be given a default value for all `line` datasets as demonstrated below.
+Options may be configured directly on the dataset. The dataset options can be changed at 3 different levels and are evaluated with the following priority:
 
-Chart.js merges user-specified dataset configuration with the dataset defaults. This way you can be as specific as you would like in your individual dataset configuration, while still changing the defaults for all datasets where applicable. The dataset general options are defined in `Chart.defaults.global.datasets.type` where `type` corresponds to the dataset type. You may also set `chart.options.datasets.type` to set the default at the chart level instead of globally. Dataset options take precedence over element options. If you set a dataset type default option, it will override all corresponding element options. The defaults for each dataset type are discussed in the documentation for that chart type.
+- per dataset: dataset.*
+- per chart: options.datasets[type].*
+- or globally: Chart.defaults.global.datalabels[type].*
 
-The following example would set the `showLine` option to 'false' for all line datasets where this was not overridden by the options passed to the dataset on creation.
+where type corresponds to the dataset type.
+
+*Note:* dataset options take precedence over element options.
+
+The following example would set the `showLine` option to 'false' for all line datasets except for those overridden by options passed to the dataset on creation.
 
 ```javascript
 // Do not show lines for all datasets by default
