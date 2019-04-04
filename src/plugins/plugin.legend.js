@@ -78,7 +78,6 @@ defaults._set('global', {
 	},
 
 	legendCallback: function(chart) {
-		var fragment = document.createDocumentFragment();
 		var list = document.createElement('ul');
 		list.setAttribute('class', chart.id + '-legend');
 
@@ -91,11 +90,9 @@ defaults._set('global', {
 					listItem.appendChild(document.createTextNode(chart.data.datasets[i].label));
 				}
 			}
-
-			fragment.appendChild(list);
 		}
 
-		return fragment;
+		return list.outerHTML;
 	}
 });
 

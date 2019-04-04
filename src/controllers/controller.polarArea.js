@@ -31,8 +31,7 @@ defaults._set('polarArea', {
 	},
 
 	startAngle: -0.5 * Math.PI,
-	legendCallback: function (chart) {
-		var fragment = document.createDocumentFragment();
+	legendCallback: function(chart) {
 		var list = document.createElement('ul');
 		list.setAttribute('class', chart.id + '-legend');
 
@@ -49,11 +48,9 @@ defaults._set('polarArea', {
 					listItem.appendChild(document.createTextNode(labels[i]));
 				}
 			}
-
-			fragment.appendChild(list);
 		}
 
-		return fragment;
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
