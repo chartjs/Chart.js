@@ -72,16 +72,16 @@ defaults._set('global', {
 
 	legendCallback: function(chart) {
 		var list = document.createElement('ul');
+		var i, ilen, listItem, listItemSpan;
+
 		list.setAttribute('class', chart.id + '-legend');
 
-		if (datasets.length) {
-			for (var i = 0; i < chart.data.datasets.length; i++) {
-				var listItem = list.appendChild(document.createElement('li'));
-				var listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = chart.data.datasets[i].backgroundColor;
-				if (chart.data.datasets[i].label) {
-					listItem.appendChild(document.createTextNode(chart.data.datasets[i].label));
-				}
+		for (i = 0, ilen = chart.data.datasets.length || 0; i < ilen; i++) {
+			listItem = list.appendChild(document.createElement('li'));
+			listItemSpan = listItem.appendChild(document.createElement('span'));
+			listItemSpan.style.backgroundColor = chart.data.datasets[i].backgroundColor;
+			if (chart.data.datasets[i].label) {
+				listItem.appendChild(document.createTextNode(chart.data.datasets[i].label));
 			}
 		}
 
