@@ -102,12 +102,8 @@ describe('Default Configs', function() {
 				options: config
 			});
 
-			var expectedLegend = document.createDocumentFragment();
-			var expectedLegendList = document.createElement('ul');
-			expectedLegendList.setAttribute('class', chart.id + '-legend');
-			expectedLegendList.innerHTML = '<li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li>';
-			expectedLegend.appendChild(expectedLegendList);
-			expect(chart.generateLegend().firstElementChild.outerHTML).toBe(expectedLegend.firstElementChild.outerHTML);
+			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
+			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
 		it('should return correct legend label objects', function() {
@@ -222,12 +218,8 @@ describe('Default Configs', function() {
 				options: config
 			});
 
-			var expectedLegend = document.createDocumentFragment();
-			var expectedLegendList = document.createElement('ul');
-			expectedLegendList.setAttribute('class', chart.id + '-legend');
-			expectedLegendList.innerHTML = '<li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li>';
-			expectedLegend.appendChild(expectedLegendList);
-			expect(chart.generateLegend().firstElementChild.outerHTML).toBe(expectedLegend.firstElementChild.outerHTML);
+			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color:red"></span>label1</li><li><span style="background-color:green"></span>label2</li></ul>';
+			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
 		it('should return correct legend label objects', function() {
