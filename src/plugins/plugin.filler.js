@@ -223,6 +223,7 @@ function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 	// building first area curve (normal)
 	fillAreaPointsSet.push(curve0[0]);
 	for (i = 1; i < len0; ++i) {
+		curve0[i].flip = false;
 		fillAreaPointsSet.push(curve0[i]);
 		if (below) {
 			clipAreaPointsSet.push(curve0[i]);
@@ -230,6 +231,7 @@ function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 	}
 
 	// joining the two area curves
+	curve1[len1 - 1].joint = true;
 	fillAreaPointsSet.push(curve1[len1 - 1]);
 
 	// building opposite area curve (reverse)
@@ -237,6 +239,7 @@ function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 		if (above) {
 			clipAreaPointsSet.push(curve1[i]);
 		}
+		curve1[i - 1].flip = true;
 		fillAreaPointsSet.push(curve1[i - 1]);
 	}
 	if (above || below) {
@@ -259,7 +262,7 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	var len1 = 0;
 	var fillAreaPointsSets = [];
 	var clipAreaPointsSets = [];
-	var specMode = mode === 'above' || mode === 'below';
+	var specMode = mode === 'all' || mode === 'above' || mode === 'below';
 	var i, ilen, index, p0, p1, d0, d1, sets;
 
 	ctx.save();
@@ -303,26 +306,32 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	}
 
 	var j, jlen, set;
-	for (i = 0; i < clipAreaPointsSets.length; i++) {
-		set = clipAreaPointsSets[i];
-		jlen = set.length;
-		// Have edge lines straight
-		ctx.moveTo(set[0].x, set[0].y);
-		ctx.lineTo(set[1].x, set[1].y);
-		for (j = 2; j < jlen - 1; j++) {
-			helpers.canvas.lineTo(ctx, set[j - 1], set[j]);
+	if (mode !== 'all') {
+		for (i = 0; i < clipAreaPointsSets.length; i++) {
+			set = clipAreaPointsSets[i];
+			jlen = set.length;
+			// Have edge lines straight
+			ctx.moveTo(set[0].x, set[0].y);
+			ctx.lineTo(set[1].x, set[1].y);
+			for (j = 2; j < jlen - 1; j++) {
+				helpers.canvas.lineTo(ctx, set[j - 1], set[j]);
+			}
+			ctx.lineTo(set[j].x, set[j].y);
 		}
-		ctx.lineTo(set[j].x, set[j].y);
+		ctx.closePath();
+		ctx.clip();
+		ctx.beginPath();
 	}
-	ctx.closePath();
-	ctx.clip();
-	ctx.beginPath();
 	for (i = 0; i < fillAreaPointsSets.length; i++) {
 		set = fillAreaPointsSets[i];
 		jlen = set.length;
 		ctx.moveTo(set[0].x, set[0].y);
 		for (j = 1; j < jlen; j++) {
-			helpers.canvas.lineTo(ctx, set[j - 1], set[j], set[j].flip);
+			if (set[j].joint) {
+				ctx.lineTo(set[j].x, set[j].y);
+			} else {
+				helpers.canvas.lineTo(ctx, set[j - 1], set[j], set[j].flip);
+			}
 		}
 	}
 
@@ -373,7 +382,7 @@ module.exports = {
 
 	beforeDatasetDraw: function(chart, args) {
 		var meta = args.meta.$filler;
-		var mode = chart.options.plugins.filler.mode || '';
+		var mode = chart.options.plugins.filler.mode || 'all';
 		if (!meta) {
 			return;
 		}
