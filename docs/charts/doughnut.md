@@ -84,7 +84,7 @@ The following values are supported for `borderAlign`.
 * `'center'` (default)
 * `'inner'`
 
-When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders are not overlap.
+When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all borders will not overlap.
 
 ### Interactions
 
