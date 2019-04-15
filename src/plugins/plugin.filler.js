@@ -296,23 +296,29 @@ module.exports = {
 		}
 	},
 
-	beforeDatasetDraw: function(chart, args) {
-		var meta = args.meta.$filler;
-		if (!meta) {
-			return;
-		}
-
+	beforeDatasetsDraw: function(chart) {
+		var count = (chart.data.datasets || []).length - 1;
 		var ctx = chart.ctx;
-		var el = meta.el;
-		var view = el._view;
-		var points = el._children || [];
-		var mapper = meta.mapper;
-		var color = view.backgroundColor || defaults.global.defaultColor;
+		var meta, i, el, view, points, mapper, color;
 
-		if (mapper && color && points.length) {
-			helpers.canvas.clipArea(ctx, chart.chartArea);
-			doFill(ctx, points, mapper, view, color, el._loop);
-			helpers.canvas.unclipArea(ctx);
+		for (i = count; i >= 0; --i) {
+			meta = chart.getDatasetMeta(i).$filler;
+
+			if (!meta || !meta.visible) {
+				continue;
+			}
+
+			el = meta.el;
+			view = el._view;
+			points = el._children || [];
+			mapper = meta.mapper;
+			color = view.backgroundColor || defaults.global.defaultColor;
+
+			if (mapper && color && points.length) {
+				helpers.canvas.clipArea(ctx, chart.chartArea);
+				doFill(ctx, points, mapper, view, color, el._loop);
+				helpers.canvas.unclipArea(ctx);
+			}
 		}
 	}
 };
