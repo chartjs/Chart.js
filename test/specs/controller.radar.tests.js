@@ -443,4 +443,24 @@ describe('Chart.controllers.radar', function() {
 		expect(meta0.data[0]._model.radius).toBe(10);
 		expect(meta1.data[0]._model.radius).toBe(20);
 	});
+
+	it('should return same id for index and value scale', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 15, 0, 4],
+					pointBorderWidth: 0
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4']
+			},
+			options: {
+				scale: {id: 'test'}
+			}
+		});
+
+		var controller = chart.getDatasetMeta(0).controller;
+		expect(controller._getIndexScaleId()).toBe('test');
+		expect(controller._getValueScaleId()).toBe('test');
+	});
 });
