@@ -191,33 +191,21 @@ function isDrawable(point) {
 }
 
 function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
-	var i, above, below;
+	var i;
 	var fillAreaPointsSet = [];
 	var clipAreaPointsSet = [];
+	var above = mode === 'above';
+	var below = mode === 'below';
 
 	if (!len0 || !len1) {
 		return;
 	}
 
-	switch (mode) {
-	case 'above':
-		above = true;
-		break;
-	case 'below':
-		below = true;
-		break;
-	default:
-		above = false;
-		below = false;
-	}
-
-	if (below || above) {
-		if (above) {
-			clipAreaPointsSet.push({x: curve1[len1 - 1].x, y: area.top});
-		} else {
-			clipAreaPointsSet.push({x: curve0[0].x, y: area.top});
-			clipAreaPointsSet.push(curve0[0]);
-		}
+	if (above) {
+		clipAreaPointsSet.push({x: curve1[len1 - 1].x, y: area.top});
+	} else if (below) {
+		clipAreaPointsSet.push({x: curve0[0].x, y: area.top});
+		clipAreaPointsSet.push(curve0[0]);
 	}
 
 	// building first area curve (normal)
@@ -237,6 +225,7 @@ function drawArea(ctx, curve0, curve1, len0, len1, mode, area) {
 	// building opposite area curve (reverse)
 	for (i = len1 - 1; i > 0; --i) {
 		if (above) {
+			curve1[i].flip = true;
 			clipAreaPointsSet.push(curve1[i]);
 		}
 		curve1[i - 1].flip = true;
@@ -262,8 +251,11 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	var len1 = 0;
 	var fillAreaPointsSets = [];
 	var clipAreaPointsSets = [];
-	var specMode = mode === 'all' || mode === 'above' || mode === 'below';
-	var i, ilen, index, p0, p1, d0, d1, sets;
+	var i, ilen, index, p0, p1, d0, d1, sets, j, jlen, set;
+
+	if (mode !== 'above' && mode !== 'below') {
+		mode = 'all';
+	}
 
 	ctx.save();
 	ctx.beginPath();
@@ -281,7 +273,7 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 		} else if (len0 && len1) {
 			if (!span) {
 				sets = drawArea(ctx, curve0, curve1, len0, len1, mode, area);
-				if (specMode && sets) {
+				if (sets) {
 					clipAreaPointsSets.push(sets[0]);
 					fillAreaPointsSets.push(sets[1]);
 				}
@@ -300,12 +292,11 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 	}
 
 	sets = drawArea(ctx, curve0, curve1, len0, len1, mode, area);
-	if (specMode && sets) {
+	if (sets) {
 		clipAreaPointsSets.push(sets[0]);
 		fillAreaPointsSets.push(sets[1]);
 	}
 
-	var j, jlen, set;
 	if (mode !== 'all') {
 		for (i = 0; i < clipAreaPointsSets.length; i++) {
 			set = clipAreaPointsSets[i];
@@ -314,7 +305,7 @@ function doFill(ctx, points, mapper, view, color, loop, mode, area) {
 			ctx.moveTo(set[0].x, set[0].y);
 			ctx.lineTo(set[1].x, set[1].y);
 			for (j = 2; j < jlen - 1; j++) {
-				helpers.canvas.lineTo(ctx, set[j - 1], set[j]);
+				helpers.canvas.lineTo(ctx, set[j - 1], set[j], set[j].flip);
 			}
 			ctx.lineTo(set[j].x, set[j].y);
 		}
