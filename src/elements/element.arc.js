@@ -15,14 +15,22 @@ defaults._set('global', {
 	}
 });
 
-function pathArc(ctx, x, y, innerRadius, outerRadius, startAngle, endAngle) {
+function pathArc(ctx, x, y, args) {
+	var innerRadius = args.innerRadius;
+	var outerRadius = args.outerRadius;
+	var startAngle = args.startAngle;
+	var endAngle = args.endAngle;
+
 	ctx.beginPath();
 	ctx.arc(x, y, outerRadius, startAngle, endAngle);
 	ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
 	ctx.closePath();
 }
 
-function clipArc(ctx, vm, startAngle, endAngle, pixelMargin) {
+function clipArc(ctx, vm, args) {
+	var startAngle = args.startAngle;
+	var endAngle = args.endAngle;
+	var pixelMargin = args.pixelMargin;
 	var angleMargin = pixelMargin / vm.outerRadius;
 
 	// Draw an inner border by cliping the arc and drawing a double-width border
@@ -124,17 +132,29 @@ module.exports = Element.extend({
 		if (vm.circumference > Math.PI * 2) {
 			tA = startAngle;
 			startAngle += (endAngle - startAngle) % (Math.PI * 2);
-			pathArc(ctx, x, y, innerRadius, outerRadius, tA, startAngle);
+			pathArc(ctx, x, y, {
+				innerRadius: innerRadius, outerRadius: outerRadius,
+				startAngle: tA, endAngle: startAngle
+			});
 			ctx.fill();
 		}
 
-		pathArc(ctx, x, y, innerRadius, outerRadius, startAngle, endAngle);
+		pathArc(ctx, x, y, {
+			innerRadius: innerRadius, outerRadius: outerRadius,
+			startAngle: startAngle, endAngle: endAngle
+		});
 		ctx.fill();
 
 		if (vm.borderWidth) {
 			if (vm.borderAlign === 'inner') {
-				clipArc(ctx, vm, startAngle, endAngle, pixelMargin);
-				pathArc(ctx, x, y, innerRadius, vm.outerRadius, startAngle, endAngle);
+				clipArc(ctx, vm, {
+					startAngle: startAngle, endAngle: endAngle,
+					pixelMargin: pixelMargin
+				});
+				pathArc(ctx, x, y, {
+					innerRadius: innerRadius, outerRadius: vm.outerRadius,
+					startAngle: startAngle, endAngle: endAngle
+				});
 
 				ctx.lineWidth = vm.borderWidth * 2;
 				ctx.lineJoin = 'round';
