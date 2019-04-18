@@ -15,6 +15,30 @@ defaults._set('global', {
 	}
 });
 
+function pathArc(ctx, x, y, innerRadius, outerRadius, startAngle, endAngle) {
+	ctx.beginPath();
+	ctx.arc(x, y, outerRadius, startAngle, endAngle);
+	ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+	ctx.closePath();
+}
+
+function clipArc(ctx, vm, startAngle, endAngle, pixelMargin) {
+	var angleMargin = pixelMargin / vm.outerRadius;
+
+	// Draw an inner border by cliping the arc and drawing a double-width border
+	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
+	ctx.beginPath();
+	ctx.arc(vm.x, vm.y, vm.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
+	if (vm.innerRadius > pixelMargin) {
+		angleMargin = pixelMargin / vm.innerRadius;
+		ctx.arc(vm.x, vm.y, vm.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
+	} else {
+		ctx.arc(vm.x, vm.y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
+	}
+	ctx.closePath();
+	ctx.clip();
+}
+
 module.exports = Element.extend({
 	inLabelRange: function(mouseX) {
 		var vm = this._view;
@@ -84,45 +108,33 @@ module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
-		var sA = vm.startAngle;
-		var eA = vm.endAngle;
+		var startAngle = vm.startAngle;
+		var endAngle = vm.endAngle;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
-		var angleMargin;
-
-		if (vm.circumference > Math.PI * 2) {
-			sA += (eA - sA) % (Math.PI * 2);
-		}
+		var outerRadius = Math.max(vm.outerRadius - pixelMargin, 0);
+		var innerRadius = vm.innerRadius;
+		var x = vm.x;
+		var y = vm.y;
+		var tA;
 
 		ctx.save();
 
-		ctx.beginPath();
-		ctx.arc(vm.x, vm.y, Math.max(vm.outerRadius - pixelMargin, 0), sA, eA);
-		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-		ctx.closePath();
-
 		ctx.fillStyle = vm.backgroundColor;
+
+		if (vm.circumference > Math.PI * 2) {
+			tA = startAngle;
+			startAngle += (endAngle - startAngle) % (Math.PI * 2);
+			pathArc(ctx, x, y, innerRadius, outerRadius, tA, startAngle);
+			ctx.fill();
+		}
+
+		pathArc(ctx, x, y, innerRadius, outerRadius, startAngle, endAngle);
 		ctx.fill();
 
 		if (vm.borderWidth) {
 			if (vm.borderAlign === 'inner') {
-				// Draw an inner border by cliping the arc and drawing a double-width border
-				// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
-				ctx.beginPath();
-				angleMargin = pixelMargin / vm.outerRadius;
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA - angleMargin, eA + angleMargin);
-				if (vm.innerRadius > pixelMargin) {
-					angleMargin = pixelMargin / vm.innerRadius;
-					ctx.arc(vm.x, vm.y, vm.innerRadius - pixelMargin, eA + angleMargin, sA - angleMargin, true);
-				} else {
-					ctx.arc(vm.x, vm.y, pixelMargin, eA + Math.PI / 2, sA - Math.PI / 2);
-				}
-				ctx.closePath();
-				ctx.clip();
-
-				ctx.beginPath();
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA, eA);
-				ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-				ctx.closePath();
+				clipArc(ctx, vm, startAngle, endAngle, pixelMargin);
+				pathArc(ctx, x, y, innerRadius, vm.outerRadius, startAngle, endAngle);
 
 				ctx.lineWidth = vm.borderWidth * 2;
 				ctx.lineJoin = 'round';
