@@ -30,7 +30,7 @@ module.exports = Element.extend({
 
 		if (vm) {
 			var pointRelativePosition = helpers.getAngleFromPoint(vm, {x: chartX, y: chartY});
-			var	angle = pointRelativePosition.angle;
+			var angle = pointRelativePosition.angle;
 			var distance = pointRelativePosition.distance;
 
 			// Sanitise angle range
@@ -88,6 +88,10 @@ module.exports = Element.extend({
 		var eA = vm.endAngle;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
 		var angleMargin;
+
+		if (vm.circumference > Math.PI * 2) {
+			sA += (eA - sA) % (Math.PI * 2);
+		}
 
 		ctx.save();
 
