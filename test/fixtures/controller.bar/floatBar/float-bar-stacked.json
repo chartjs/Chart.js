@@ -19,16 +19,16 @@
             "legend": false,
             "scales": {
                 "xAxes": [{
+                    "display": false,
                     "stacked": true,
                     "ticks": {
-                        "display": false
+                        "min": -8,
+                        "max": 12
                     }
                 }],
                 "yAxes": [{
-                    "stacked": true,
-                    "ticks": {
-                        "display": false
-                    }
+                    "display": false,
+                    "stacked": true
                 }]
             }
         }
