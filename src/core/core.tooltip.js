@@ -503,7 +503,7 @@ var exports = Element.extend({
 		var options = me._options;
 
 		if (me._lastEvent && me._chart.animating) {
-			// Lets react to changes during animation
+			// Let's react to changes during animation
 			me._active = me._chart.getElementsAtEventForMode(me._lastEvent, options.mode, options);
 			me.update(true);
 			me.pivot();

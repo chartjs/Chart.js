@@ -676,7 +676,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.tooltip.transition(easingValue);
 
 		if (me._lastEvent && me.animating) {
-			// If, during animation, element under mouse changes, lets react to that.
+			// If, during animation, element under mouse changes, let's react to that.
 			me.active = me.getElementsAtEventForMode(me._lastEvent, hoverOptions.mode, hoverOptions);
 			if (!helpers.arrayEquals(me.active, me.lastActive)) {
 				me._updateHoverStyles();
@@ -947,7 +947,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
 		}
 
-		// Built in hover styling
+		// Built-in hover styling
 		if (me.active.length && hoverOptions.mode) {
 			me.updateHoverStyle(me.active, hoverOptions.mode, true);
 		}
