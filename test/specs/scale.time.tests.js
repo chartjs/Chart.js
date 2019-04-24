@@ -298,7 +298,7 @@ describe('Time scale tests', function() {
 		expect(ticks).toEqual(['8PM', '9PM', '10PM', '11PM', '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM']);
 	});
 
-	it('build ticks honoring the minUnit', function() {
+	it('should build ticks honoring the minUnit', function() {
 		var mockData = {
 			labels: ['2015-01-01T20:00:00', '2015-01-02T21:00:00'], // days
 		};
@@ -314,6 +314,26 @@ describe('Time scale tests', function() {
 		var ticks = getTicksLabels(scale);
 
 		expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3']);
+	});
+
+	it('should build ticks based on the appropriate label capacity', function() {
+		var mockData = {
+			labels: [
+				'2012-01-01', '2013-01-01', '2014-01-01', '2015-01-01',
+				'2016-01-01', '2017-01-01', '2018-01-01', '2019-01-01'
+			]
+		};
+
+		var config = Chart.helpers.mergeIf({
+			time: {
+				unit: 'year'
+			}
+		}, Chart.scaleService.getScaleDefaults('time'));
+
+		var scale = createScale(mockData, config);
+		var ticks = getTicksLabels(scale);
+
+		expect(ticks).toEqual(['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019']);
 	});
 
 	it('should build ticks using the config diff', function() {
