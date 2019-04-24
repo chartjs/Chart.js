@@ -3,6 +3,7 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
+var TAU = Math.PI * 2;
 
 defaults._set('global', {
 	elements: {
@@ -14,13 +15,6 @@ defaults._set('global', {
 		}
 	}
 });
-
-function pathArc(ctx, arc) {
-	ctx.beginPath();
-	ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
-	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
-	ctx.closePath();
-}
 
 function clipArc(ctx, arc) {
 	var startAngle = arc.startAngle;
@@ -42,6 +36,55 @@ function clipArc(ctx, arc) {
 	}
 	ctx.closePath();
 	ctx.clip();
+}
+
+function drawFullCircleBorders(ctx, vm, arc, inner) {
+	var endAngle = arc.endAngle;
+	var i;
+
+	if (inner) {
+		arc.endAngle = arc.startAngle + TAU;
+		clipArc(ctx, arc);
+		arc.endAngle = endAngle;
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.startAngle + TAU, arc.startAngle, true);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.startAngle + TAU);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+}
+
+function drawBorder(ctx, vm, arc) {
+	var inner = vm.borderAlign === 'inner';
+
+	if (inner) {
+		ctx.lineWidth = vm.borderWidth * 2;
+		ctx.lineJoin = 'round';
+	} else {
+		ctx.lineWidth = vm.borderWidth;
+		ctx.lineJoin = 'bevel';
+	}
+
+	if (vm.endAngle > arc.endAngle) {
+		drawFullCircleBorders(ctx, vm, arc, inner);
+	}
+
+	if (inner) {
+		clipArc(ctx, arc);
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.endAngle);
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+	ctx.closePath();
+	ctx.stroke();
 }
 
 module.exports = Element.extend({
@@ -66,13 +109,13 @@ module.exports = Element.extend({
 			var startAngle = vm.startAngle;
 			var endAngle = vm.endAngle;
 			while (endAngle < startAngle) {
-				endAngle += 2.0 * Math.PI;
+				endAngle += TAU;
 			}
 			while (angle > endAngle) {
-				angle -= 2.0 * Math.PI;
+				angle -= TAU;
 			}
 			while (angle < startAngle) {
-				angle += 2.0 * Math.PI;
+				angle += TAU;
 			}
 
 			// Check if within the range of the open/close angle
@@ -114,8 +157,6 @@ module.exports = Element.extend({
 		var ctx = this._chart.ctx;
 		var vm = this._view;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
-		var TAU = Math.PI * 2;
-		var circumference = vm.endAngle - vm.startAngle;
 		var arc = {
 			x: vm.x,
 			y: vm.y,
@@ -123,44 +164,36 @@ module.exports = Element.extend({
 			outerRadius: Math.max(vm.outerRadius - pixelMargin, 0),
 			pixelMargin: pixelMargin,
 			startAngle: vm.startAngle,
-			endAngle: vm.endAngle
+			endAngle: vm.endAngle,
+			fullCircles: Math.floor(vm.circumference / TAU)
 		};
+		var i;
 
 		ctx.save();
 
 		ctx.fillStyle = vm.backgroundColor;
+		ctx.strokeStyle = vm.borderColor;
 
-		if (circumference > TAU) {
+		if (arc.fullCircles) {
 			arc.endAngle = arc.startAngle + TAU;
-			pathArc(ctx, arc);
-			for (; circumference > TAU; circumference -= TAU) {
+			ctx.beginPath();
+			ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+			ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+			ctx.closePath();
+			for (i = 0; i < arc.fullCircles; ++i) {
 				ctx.fill();
 			}
-			arc.endAngle = arc.startAngle + circumference;
+			arc.endAngle = arc.startAngle + vm.circumference % TAU;
 		}
-		pathArc(ctx, arc);
+
+		ctx.beginPath();
+		ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+		ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+		ctx.closePath();
 		ctx.fill();
 
-		if (vm.endAngle > arc.endAngle) {
-			arc.startAngle = arc.endAngle - TAU;
-		}
-
 		if (vm.borderWidth) {
-			if (vm.borderAlign === 'inner') {
-				clipArc(ctx, arc);
-
-				arc.outerRadius = vm.outerRadius;
-
-				ctx.lineWidth = vm.borderWidth * 2;
-				ctx.lineJoin = 'round';
-			} else {
-				ctx.lineWidth = vm.borderWidth;
-				ctx.lineJoin = 'bevel';
-			}
-			pathArc(ctx, arc);
-
-			ctx.strokeStyle = vm.borderColor;
-			ctx.stroke();
+			drawBorder(ctx, vm, arc);
 		}
 
 		ctx.restore();
