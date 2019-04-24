@@ -46,6 +46,10 @@ function drawFullCircleBorders(ctx, vm, arc, inner) {
 		arc.endAngle = arc.startAngle + TAU;
 		clipArc(ctx, arc);
 		arc.endAngle = endAngle;
+		if (arc.endAngle === arc.startAngle && arc.fullCircles) {
+			arc.endAngle += TAU;
+			arc.fullCircles--;
+		}
 	}
 
 	ctx.beginPath();
@@ -72,7 +76,7 @@ function drawBorder(ctx, vm, arc) {
 		ctx.lineJoin = 'bevel';
 	}
 
-	if (vm.endAngle > arc.endAngle) {
+	if (arc.fullCircles) {
 		drawFullCircleBorders(ctx, vm, arc, inner);
 	}
 
