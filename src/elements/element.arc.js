@@ -15,33 +15,30 @@ defaults._set('global', {
 	}
 });
 
-function pathArc(ctx, x, y, args) {
-	var innerRadius = args.innerRadius;
-	var outerRadius = args.outerRadius;
-	var startAngle = args.startAngle;
-	var endAngle = args.endAngle;
-
+function pathArc(ctx, arc) {
 	ctx.beginPath();
-	ctx.arc(x, y, outerRadius, startAngle, endAngle);
-	ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+	ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
 	ctx.closePath();
 }
 
-function clipArc(ctx, vm, args) {
-	var startAngle = args.startAngle;
-	var endAngle = args.endAngle;
-	var pixelMargin = args.pixelMargin;
-	var angleMargin = pixelMargin / vm.outerRadius;
+function clipArc(ctx, arc) {
+	var startAngle = arc.startAngle;
+	var endAngle = arc.endAngle;
+	var pixelMargin = arc.pixelMargin;
+	var angleMargin = pixelMargin / arc.outerRadius;
+	var x = arc.x;
+	var y = arc.y;
 
 	// Draw an inner border by cliping the arc and drawing a double-width border
 	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
 	ctx.beginPath();
-	ctx.arc(vm.x, vm.y, vm.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
-	if (vm.innerRadius > pixelMargin) {
-		angleMargin = pixelMargin / vm.innerRadius;
-		ctx.arc(vm.x, vm.y, vm.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
+	ctx.arc(x, y, arc.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
+	if (arc.innerRadius > pixelMargin) {
+		angleMargin = pixelMargin / arc.innerRadius;
+		ctx.arc(x, y, arc.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
 	} else {
-		ctx.arc(vm.x, vm.y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
+		ctx.arc(x, y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
 	}
 	ctx.closePath();
 	ctx.clip();
@@ -116,45 +113,43 @@ module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
-		var startAngle = vm.startAngle;
-		var endAngle = vm.endAngle;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
-		var outerRadius = Math.max(vm.outerRadius - pixelMargin, 0);
-		var innerRadius = vm.innerRadius;
-		var x = vm.x;
-		var y = vm.y;
-		var tA;
+		var TAU = Math.PI * 2;
+		var circumference = vm.endAngle - vm.startAngle;
+		var arc = {
+			x: vm.x,
+			y: vm.y,
+			innerRadius: vm.innerRadius,
+			outerRadius: Math.max(vm.outerRadius - pixelMargin, 0),
+			pixelMargin: pixelMargin,
+			startAngle: vm.startAngle,
+			endAngle: vm.endAngle
+		};
 
 		ctx.save();
 
 		ctx.fillStyle = vm.backgroundColor;
 
-		if (vm.circumference > Math.PI * 2) {
-			tA = startAngle;
-			startAngle += (endAngle - startAngle) % (Math.PI * 2);
-			pathArc(ctx, x, y, {
-				innerRadius: innerRadius, outerRadius: outerRadius,
-				startAngle: tA, endAngle: startAngle
-			});
-			ctx.fill();
+		if (circumference > TAU) {
+			arc.endAngle = arc.startAngle + TAU;
+			pathArc(ctx, arc);
+			for (; circumference > TAU; circumference -= TAU) {
+				ctx.fill();
+			}
+			arc.endAngle = arc.startAngle + circumference;
 		}
-
-		pathArc(ctx, x, y, {
-			innerRadius: innerRadius, outerRadius: outerRadius,
-			startAngle: startAngle, endAngle: endAngle
-		});
+		pathArc(ctx, arc);
 		ctx.fill();
+
+		if (vm.endAngle > arc.endAngle) {
+			arc.startAngle = arc.endAngle - TAU;
+		}
 
 		if (vm.borderWidth) {
 			if (vm.borderAlign === 'inner') {
-				clipArc(ctx, vm, {
-					startAngle: startAngle, endAngle: endAngle,
-					pixelMargin: pixelMargin
-				});
-				pathArc(ctx, x, y, {
-					innerRadius: innerRadius, outerRadius: vm.outerRadius,
-					startAngle: startAngle, endAngle: endAngle
-				});
+				clipArc(ctx, arc);
+
+				arc.outerRadius = vm.outerRadius;
 
 				ctx.lineWidth = vm.borderWidth * 2;
 				ctx.lineJoin = 'round';
@@ -162,6 +157,7 @@ module.exports = Element.extend({
 				ctx.lineWidth = vm.borderWidth;
 				ctx.lineJoin = 'bevel';
 			}
+			pathArc(ctx, arc);
 
 			ctx.strokeStyle = vm.borderColor;
 			ctx.stroke();
