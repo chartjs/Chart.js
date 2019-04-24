@@ -458,7 +458,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 		plugins._invalidate(me);
 
-		if (plugins.notify(me, 'beforeUpdate') === false) {
+		if (plugins.notify(me, 'beforeUpdate', [config]) === false) {
 			return;
 		}
 
@@ -493,7 +493,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.lastActive = [];
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		plugins.notify(me, 'afterUpdate');
+		plugins.notify(me, 'afterUpdate', [config]);
 
 		if (me._bufferedRender) {
 			me._bufferedRequest = {
@@ -587,12 +587,12 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var duration = valueOrDefault(config.duration, animationOptions && animationOptions.duration);
 		var lazy = config.lazy;
 
-		if (plugins.notify(me, 'beforeRender') === false) {
+		if (plugins.notify(me, 'beforeRender', [config]) === false) {
 			return;
 		}
 
 		var onComplete = function(animation) {
-			plugins.notify(me, 'afterRender');
+			plugins.notify(me, 'afterRender', [config]);
 			helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
 		};
 
