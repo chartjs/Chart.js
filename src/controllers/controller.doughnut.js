@@ -145,18 +145,16 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var chartArea = chart.chartArea;
 		var opts = chart.options;
-		var availableWidth = chartArea.right - chartArea.left;
-		var availableHeight = chartArea.bottom - chartArea.top;
-		var minSize = Math.min(availableWidth, availableHeight);
+		var size = {width: 1, height: 1};
 		var offset = {x: 0, y: 0};
 		var meta = me.getMeta();
 		var arcs = meta.data;
 		var cutoutPercentage = opts.cutoutPercentage;
 		var circumference = opts.circumference;
 		var chartWeight = me._getRingWeight(me.index);
-		var i, ilen;
+		var maxWidth, maxHeight, i, ilen;
 
-		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
+		// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
 		if (circumference < Math.PI * 2.0) {
 			var startAngle = opts.rotation % (Math.PI * 2.0);
 			startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
@@ -170,8 +168,7 @@ module.exports = DatasetController.extend({
 			var cutout = cutoutPercentage / 100.0;
 			var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
 			var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
-			var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
-			minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
+			size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
 			offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
 		}
 
@@ -180,7 +177,9 @@ module.exports = DatasetController.extend({
 		}
 
 		chart.borderWidth = me.getMaxBorderWidth();
-		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
+		maxWidth = (chartArea.right - chartArea.left - chart.borderWidth) / size.width;
+		maxHeight = (chartArea.bottom - chartArea.top - chart.borderWidth) / size.height;
+		chart.outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
 		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
 		chart.offsetX = offset.x * chart.outerRadius;
