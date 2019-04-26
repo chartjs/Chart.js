@@ -217,7 +217,7 @@ module.exports = DatasetController.extend({
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
 		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(datasetOpts.tension, elementOptions.tension);
+		values.tension = valueOrDefault(datasetOpts.lineTension, elementOptions.tension);
 		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, elementOptions.stepped]);
 
 		return values;

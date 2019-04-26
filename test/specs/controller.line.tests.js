@@ -588,7 +588,7 @@ describe('Chart.controllers.line', function() {
 
 			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
 				spanGaps: true,
-				tension: 0.231,
+				lineTension: 0.231,
 				backgroundColor: '#add',
 				borderWidth: '#daa',
 				borderColor: '#dad',
@@ -631,7 +631,7 @@ describe('Chart.controllers.line', function() {
 
 			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
 				spanGaps: true,
-				tension: 0.231
+				lineTension: 0.231
 			});
 
 			var chart = window.acquireChart({
@@ -648,7 +648,7 @@ describe('Chart.controllers.line', function() {
 				options: {
 					datasets: {
 						line: {
-							tension: 0.345,
+							lineTension: 0.345,
 							backgroundColor: '#add'
 						}
 					}
@@ -680,7 +680,7 @@ describe('Chart.controllers.line', function() {
 				datasets: {
 					line: {
 						spanGaps: true,
-						tension: 0.231,
+						lineTension: 0.231,
 						backgroundColor: '#add',
 						borderWidth: '#daa',
 						borderColor: '#dad',
@@ -718,7 +718,7 @@ describe('Chart.controllers.line', function() {
 					data: [0, 0],
 					label: 'dataset1',
 					spanGaps: true,
-					tension: 0.231,
+					lineTension: 0.231,
 					backgroundColor: '#add',
 					borderWidth: '#daa',
 					borderColor: '#dad',
