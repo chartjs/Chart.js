@@ -30,7 +30,7 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `callback` | `function` | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).
-| `display` | `boolean` | `true` | If true, show tick marks.
+| `display` | <code>boolean&#124;string</code> | `true` | Controls visibility of tick marks (visible when `true`, hidden when `false`). When `'above'`, tick marks are drawn above datasets.
 | `fontColor` | `Color` | `'#666'` | Font color for tick labels.
 | `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the tick labels, follows CSS font-family options.
 | `fontSize` | `number` | `12` | Font size for the tick labels.
