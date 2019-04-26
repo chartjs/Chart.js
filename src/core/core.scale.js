@@ -733,7 +733,7 @@ module.exports = Element.extend({
 		var options = me.options;
 		var optionTicks = options.ticks;
 
-		if (!me._isVisible()) {
+		if (!me._isVisible() || (above && optionTicks.display !== 'above')) {
 			return;
 		}
 

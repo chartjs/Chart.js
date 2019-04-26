@@ -484,7 +484,7 @@ module.exports = LinearScaleBase.extend({
 		var gridLineOpts = opts.gridLines;
 		var tickOpts = opts.ticks;
 
-		if (!opts.display) {
+		if (!opts.display || (above && tickOpts.display !== 'above')) {
 			return;
 		}
 
