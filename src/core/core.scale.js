@@ -726,14 +726,14 @@ module.exports = Element.extend({
 	/**
 	 * Actually draw the scale on the canvas
 	 * @param {object} chartArea - the area of the chart to draw full grid lines on
-	 * @param {boolean} top - drawing on top / after datasets
+	 * @param {boolean} above - drawing above (after) of datasets
 	 */
-	draw: function(chartArea, top) {
+	draw: function(chartArea, above) {
 		var me = this;
 		var options = me.options;
 		var optionTicks = options.ticks;
 
-		if (!me._isVisible() || (top && optionTicks.display !== 'top')) {
+		if (!me._isVisible()) {
 			return;
 		}
 
@@ -892,7 +892,7 @@ module.exports = Element.extend({
 			var glWidth = itemToDraw.glWidth;
 			var glColor = itemToDraw.glColor;
 
-			if (gridLines.display && glWidth && glColor && !top) {
+			if (gridLines.display && glWidth && glColor && !above) {
 				context.save();
 				context.lineWidth = glWidth;
 				context.strokeStyle = glColor;
@@ -917,7 +917,7 @@ module.exports = Element.extend({
 				context.restore();
 			}
 
-			if (optionTicks.display && (optionTicks.display === 'top') === top) {
+			if (optionTicks.display && (optionTicks.display === 'above') === above) {
 				var tickFont = itemToDraw.major ? tickFonts.major : tickFonts.minor;
 
 				// Make sure we draw text in the correct color and font

@@ -476,15 +476,15 @@ module.exports = LinearScaleBase.extend({
 	/**
 	 * Actually draw the scale on the canvas
 	 * @param {object} chartArea - the area of the chart
-	 * @param {boolean} top - drawing on top / after datasets
+	 * @param {boolean} above - drawing above (after) of datasets
 	 */
-	draw: function(chartArea, top) {
+	draw: function(chartArea, above) {
 		var me = this;
 		var opts = me.options;
 		var gridLineOpts = opts.gridLines;
 		var tickOpts = opts.ticks;
 
-		if (!opts.display || (top && tickOpts.display !== 'top')) {
+		if (!opts.display) {
 			return;
 		}
 
@@ -492,7 +492,7 @@ module.exports = LinearScaleBase.extend({
 		var startAngle = this.getIndexAngle(0);
 		var tickFont = helpers.options._parseFont(tickOpts);
 
-		if (!top && (opts.angleLines.display || opts.pointLabels.display)) {
+		if (!above && (opts.angleLines.display || opts.pointLabels.display)) {
 			drawPointLabels(me);
 		}
 
@@ -502,7 +502,7 @@ module.exports = LinearScaleBase.extend({
 				var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
 
 				// Draw circular lines around the scale
-				if (gridLineOpts.display && index !== 0 && !top) {
+				if (gridLineOpts.display && index !== 0 && !above) {
 					drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
 				}
 
@@ -514,8 +514,8 @@ module.exports = LinearScaleBase.extend({
 					ctx.translate(me.xCenter, me.yCenter);
 					ctx.rotate(startAngle);
 
-					// Backdrop is drawn behind even if label is drawn on top
-					if (tickOpts.showLabelBackdrop && !top) {
+					// Backdrop is drawn below even if label is drawn above
+					if (tickOpts.showLabelBackdrop && !above) {
 						var labelWidth = ctx.measureText(label).width;
 						ctx.fillStyle = tickOpts.backdropColor;
 						ctx.fillRect(
@@ -526,7 +526,7 @@ module.exports = LinearScaleBase.extend({
 						);
 					}
 
-					if ((tickOpts.display === 'top') === top) {
+					if ((tickOpts.display === 'above') === above) {
 						ctx.textAlign = 'center';
 						ctx.textBaseline = 'middle';
 						ctx.fillStyle = tickFontColor;
