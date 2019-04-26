@@ -774,9 +774,12 @@ module.exports = Scale.extend({
 	 */
 	getLabelCapacity: function(exampleTime) {
 		var me = this;
+		var timeOpts = me.options.time;
+		var displayFormats = timeOpts.displayFormats;
 
 		// pick the longest format (milliseconds) for guestimation
-		var format = me.options.time.displayFormats.millisecond;
+		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
+
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var tickLabelWidth = me.getLabelWidth(exampleLabel);
 		var innerWidth = me.isHorizontal() ? me.width : me.height;
