@@ -161,7 +161,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	reset: function() {
-		this.update(true);
+		this._update(true);
 	},
 
 	/**
@@ -255,10 +255,10 @@ helpers.extend(DatasetController.prototype, {
 		});
 	},
 
-	_update: function() {
+	_update: function(reset) {
 		var me = this;
 		me._configure();
-		me.update();
+		me.update(reset);
 	},
 
 	update: helpers.noop,

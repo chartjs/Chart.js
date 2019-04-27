@@ -109,6 +109,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = chart.data.datasets[me.index];
+		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var options = chart.options.elements.point;
 		var values = {};
@@ -141,8 +142,8 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[ELEMENT_OPTIONS[key]],
-				dataset[key],
+				datasetOpts[ELEMENT_OPTIONS[key]],
+				datasetOpts[key],
 				options[key]
 			], context, index);
 		}
@@ -157,6 +158,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = chart.data.datasets[me.index];
+		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var options = chart.options.elements.line;
 		var values = {};
@@ -177,7 +179,7 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[key],
+				datasetOpts[key],
 				options[key]
 			]);
 		}

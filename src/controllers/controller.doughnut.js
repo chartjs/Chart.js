@@ -305,7 +305,12 @@ module.exports = DatasetController.extend({
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
 			arc = arcs[i];
-			options = controller ? controller._resolveElementOptions(arc, i) : arc._options;
+			if (controller) {
+				controller._configure();
+				options = controller._resolveElementOptions(arc, i);
+			} else {
+				options = arc._options;
+			}
 			if (options.borderAlign !== 'inner') {
 				borderWidth = options.borderWidth;
 				hoverWidth = options.hoverBorderWidth;
@@ -343,6 +348,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
+		var datasetOpts = me._config;
 		var custom = arc.custom || {};
 		var options = chart.options.elements.arc;
 		var values = {};
@@ -370,7 +376,7 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[key],
+				datasetOpts[key],
 				options[key]
 			], context, index);
 		}

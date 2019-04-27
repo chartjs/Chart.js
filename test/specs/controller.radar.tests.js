@@ -154,7 +154,7 @@ describe('Chart.controllers.radar', function() {
 		});
 
 		// Now update controller and ensure proper updates
-		meta.controller.update();
+		meta.controller._update();
 
 		[
 			{x: 256, y: 120, cppx: 246, cppy: 120, cpnx: 272, cpny: 120},
@@ -198,7 +198,7 @@ describe('Chart.controllers.radar', function() {
 		chart.data.datasets[0].pointBorderColor = 'rgb(56, 57, 58)';
 		chart.data.datasets[0].pointBorderWidth = 1.123;
 
-		meta.controller.update();
+		meta.controller._update();
 
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			backgroundColor: 'rgb(98, 98, 98)',
@@ -256,7 +256,7 @@ describe('Chart.controllers.radar', function() {
 			hitRadius: 5,
 		};
 
-		meta.controller.update();
+		meta.controller._update();
 
 		expect(meta.dataset._model).toEqual(jasmine.objectContaining({
 			backgroundColor: 'rgb(55, 55, 54)',
