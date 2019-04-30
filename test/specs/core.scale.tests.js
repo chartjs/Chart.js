@@ -208,6 +208,43 @@ describe('Core.scale', function() {
 		});
 	});
 
+	it('should add the correct padding for long tick labels', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: [
+					'This is a very long label',
+					'This is a very long label'
+				],
+				datasets: [{
+					data: [0, 1]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'foo'
+					}],
+					yAxes: [{
+						display: false
+					}]
+				},
+				legend: {
+					display: false
+				}
+			}
+		}, {
+			canvas: {
+				height: 100,
+				width: 200
+			}
+		});
+
+		var scale = chart.scales.foo;
+		expect(scale.left).toBeGreaterThan(100);
+		expect(scale.right).toBeGreaterThan(190);
+	});
+
 	describe('given the axes display option is set to auto', function() {
 		describe('for the x axes', function() {
 			it('should draw the axes if at least one associated dataset is visible', function() {
