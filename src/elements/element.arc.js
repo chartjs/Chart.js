@@ -3,6 +3,7 @@
 var defaults = require('../core/core.defaults');
 var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
+var TAU = Math.PI * 2;
 
 defaults._set('global', {
 	elements: {
@@ -14,6 +15,81 @@ defaults._set('global', {
 		}
 	}
 });
+
+function clipArc(ctx, arc) {
+	var startAngle = arc.startAngle;
+	var endAngle = arc.endAngle;
+	var pixelMargin = arc.pixelMargin;
+	var angleMargin = pixelMargin / arc.outerRadius;
+	var x = arc.x;
+	var y = arc.y;
+
+	// Draw an inner border by cliping the arc and drawing a double-width border
+	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
+	ctx.beginPath();
+	ctx.arc(x, y, arc.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
+	if (arc.innerRadius > pixelMargin) {
+		angleMargin = pixelMargin / arc.innerRadius;
+		ctx.arc(x, y, arc.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
+	} else {
+		ctx.arc(x, y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
+	}
+	ctx.closePath();
+	ctx.clip();
+}
+
+function drawFullCircleBorders(ctx, vm, arc, inner) {
+	var endAngle = arc.endAngle;
+	var i;
+
+	if (inner) {
+		arc.endAngle = arc.startAngle + TAU;
+		clipArc(ctx, arc);
+		arc.endAngle = endAngle;
+		if (arc.endAngle === arc.startAngle && arc.fullCircles) {
+			arc.endAngle += TAU;
+			arc.fullCircles--;
+		}
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.startAngle + TAU, arc.startAngle, true);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.startAngle + TAU);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+}
+
+function drawBorder(ctx, vm, arc) {
+	var inner = vm.borderAlign === 'inner';
+
+	if (inner) {
+		ctx.lineWidth = vm.borderWidth * 2;
+		ctx.lineJoin = 'round';
+	} else {
+		ctx.lineWidth = vm.borderWidth;
+		ctx.lineJoin = 'bevel';
+	}
+
+	if (arc.fullCircles) {
+		drawFullCircleBorders(ctx, vm, arc, inner);
+	}
+
+	if (inner) {
+		clipArc(ctx, arc);
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.endAngle);
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+	ctx.closePath();
+	ctx.stroke();
+}
 
 module.exports = Element.extend({
 	inLabelRange: function(mouseX) {
@@ -30,20 +106,20 @@ module.exports = Element.extend({
 
 		if (vm) {
 			var pointRelativePosition = helpers.getAngleFromPoint(vm, {x: chartX, y: chartY});
-			var	angle = pointRelativePosition.angle;
+			var angle = pointRelativePosition.angle;
 			var distance = pointRelativePosition.distance;
 
 			// Sanitise angle range
 			var startAngle = vm.startAngle;
 			var endAngle = vm.endAngle;
 			while (endAngle < startAngle) {
-				endAngle += 2.0 * Math.PI;
+				endAngle += TAU;
 			}
 			while (angle > endAngle) {
-				angle -= 2.0 * Math.PI;
+				angle -= TAU;
 			}
 			while (angle < startAngle) {
-				angle += 2.0 * Math.PI;
+				angle += TAU;
 			}
 
 			// Check if within the range of the open/close angle
@@ -84,51 +160,44 @@ module.exports = Element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
-		var sA = vm.startAngle;
-		var eA = vm.endAngle;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
-		var angleMargin;
+		var arc = {
+			x: vm.x,
+			y: vm.y,
+			innerRadius: vm.innerRadius,
+			outerRadius: Math.max(vm.outerRadius - pixelMargin, 0),
+			pixelMargin: pixelMargin,
+			startAngle: vm.startAngle,
+			endAngle: vm.endAngle,
+			fullCircles: Math.floor(vm.circumference / TAU)
+		};
+		var i;
 
 		ctx.save();
 
-		ctx.beginPath();
-		ctx.arc(vm.x, vm.y, Math.max(vm.outerRadius - pixelMargin, 0), sA, eA);
-		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-		ctx.closePath();
-
 		ctx.fillStyle = vm.backgroundColor;
+		ctx.strokeStyle = vm.borderColor;
+
+		if (arc.fullCircles) {
+			arc.endAngle = arc.startAngle + TAU;
+			ctx.beginPath();
+			ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+			ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+			ctx.closePath();
+			for (i = 0; i < arc.fullCircles; ++i) {
+				ctx.fill();
+			}
+			arc.endAngle = arc.startAngle + vm.circumference % TAU;
+		}
+
+		ctx.beginPath();
+		ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+		ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+		ctx.closePath();
 		ctx.fill();
 
 		if (vm.borderWidth) {
-			if (vm.borderAlign === 'inner') {
-				// Draw an inner border by cliping the arc and drawing a double-width border
-				// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
-				ctx.beginPath();
-				angleMargin = pixelMargin / vm.outerRadius;
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA - angleMargin, eA + angleMargin);
-				if (vm.innerRadius > pixelMargin) {
-					angleMargin = pixelMargin / vm.innerRadius;
-					ctx.arc(vm.x, vm.y, vm.innerRadius - pixelMargin, eA + angleMargin, sA - angleMargin, true);
-				} else {
-					ctx.arc(vm.x, vm.y, pixelMargin, eA + Math.PI / 2, sA - Math.PI / 2);
-				}
-				ctx.closePath();
-				ctx.clip();
-
-				ctx.beginPath();
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA, eA);
-				ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-				ctx.closePath();
-
-				ctx.lineWidth = vm.borderWidth * 2;
-				ctx.lineJoin = 'round';
-			} else {
-				ctx.lineWidth = vm.borderWidth;
-				ctx.lineJoin = 'bevel';
-			}
-
-			ctx.strokeStyle = vm.borderColor;
-			ctx.stroke();
+			drawBorder(ctx, vm, arc);
 		}
 
 		ctx.restore();
