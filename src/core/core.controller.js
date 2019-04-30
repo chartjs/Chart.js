@@ -141,13 +141,6 @@ function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
 }
 
-function eventInArea(e, area) {
-	return e.x > area.left
-		&& e.x < area.right
-		&& e.y > area.top
-		&& e.y < area.bottom;
-}
-
 var Chart = function(item, config) {
 	this.construct(item, config);
 	return this;
@@ -1001,7 +994,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
-			if (options.onClick && eventInArea(e, me.chartArea)) {
+			if (options.onClick && helpers.canvas._isPointInArea(e, me.chartArea)) {
 				// Use e.native here for backwards compatibility
 				options.onClick.call(me, e.native, me.active);
 			}
