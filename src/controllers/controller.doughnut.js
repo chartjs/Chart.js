@@ -5,7 +5,6 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
 var PI = Math.PI;
@@ -124,6 +123,19 @@ module.exports = DatasetController.extend({
 	dataElementType: elements.Arc,
 
 	linkScales: helpers.noop,
+
+	/**
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+	],
 
 	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
 	getRingIndex: function(datasetIndex) {
@@ -343,49 +355,6 @@ module.exports = DatasetController.extend({
 		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
 		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
 		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveElementOptions: function(arc, index) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = me.getDataset();
-		var datasetOpts = me._config;
-		var custom = arc.custom || {};
-		var options = chart.options.elements.arc;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'borderAlign',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
 	},
 
 	/**

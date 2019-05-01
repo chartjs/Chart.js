@@ -33,6 +33,20 @@ module.exports = DatasetController.extend({
 
 	linkScales: helpers.noop,
 
+	/**
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderWidth',
+		'borderColor',
+		'borderCapStyle',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'fill'
+	],
+
 	update: function(reset) {
 		var me = this;
 		var meta = me.getMeta();
@@ -54,7 +68,7 @@ module.exports = DatasetController.extend({
 		line._children = points;
 		line._loop = true;
 		// Model
-		line._model = me._resolveLineOptions(line);
+		line._model = me._resolveElementOptions(line);
 
 		line.pivot();
 
@@ -112,9 +126,18 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_resolveElementOptions: function(element, index) {
-		return index >= 0
-			? this._resolvePointOptions(element, index)
-			: this._resolveLineOptions(element);
+		var me = this;
+		var datasetOpts, values;
+
+		if (index >= 0) {
+			return me._resolvePointOptions(element, index);
+		}
+
+		datasetOpts = me._config;
+		values = DatasetController.prototype._resolveElementOptions.apply(me, arguments);
+		values.tension = valueOrDefault(datasetOpts.lineTension, me.chart.options.elements.line.tension);
+
+		return values;
 	},
 
 	/**
@@ -162,44 +185,6 @@ module.exports = DatasetController.extend({
 				options[key]
 			], context, index);
 		}
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveLineOptions: function(element) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
-		var datasetOpts = me._config;
-		var custom = element.custom || {};
-		var options = chart.options.elements.line;
-		var values = {};
-		var i, ilen, key;
-
-		var keys = [
-			'backgroundColor',
-			'borderWidth',
-			'borderColor',
-			'borderCapStyle',
-			'borderDash',
-			'borderDashOffset',
-			'borderJoinStyle',
-			'fill'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
-			]);
-		}
-
-		values.tension = valueOrDefault(dataset.lineTension, options.tension);
 
 		return values;
 	},

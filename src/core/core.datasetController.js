@@ -94,6 +94,23 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	dataElementType: null,
 
+	/**
+	 * Element option keys to be resolved in _resolveElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderColor',
+		'borderCapStyle',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'pointStyle'
+	],
+
 	initialize: function(chart, datasetIndex) {
 		var me = this;
 		me.chart = chart;
@@ -310,6 +327,7 @@ helpers.extend(DatasetController.prototype, {
 			index = index || 0;
 			element = meta.data[index];
 		}
+		me._configure();
 		style = me._resolveElementOptions(element || {}, index);
 
 		if (style.fill === false || style.fill === null) {
@@ -322,8 +340,35 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function() {
-		throw new Error('This method is not implemented.');
+	_resolveElementOptions: function(element, index) {
+		var me = this;
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var custom = element.custom || {};
+		var type = index >= 0 ? me.dataElementType : me.datasetElementType;
+		var options = chart.options.elements[type.prototype._type];
+		var keys = me._optionKeys;
+		var values = {};
+		var i, ilen, key;
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataIndex: index,
+			dataset: me.getDataset(),
+			datasetIndex: me.index
+		};
+
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			values[key] = resolve([
+				custom[key],
+				datasetOpts[key],
+				options[key]
+			], context, index);
+		}
+
+		return values;
 	},
 
 	removeHoverStyle: function(element) {

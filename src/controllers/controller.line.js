@@ -35,6 +35,21 @@ module.exports = DatasetController.extend({
 
 	dataElementType: elements.Point,
 
+	/**
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'cubicInterpolationMode',
+		'fill'
+	],
+
 	update: function(reset) {
 		var me = this;
 		var meta = me.getMeta();
@@ -59,7 +74,7 @@ module.exports = DatasetController.extend({
 			// Data
 			line._children = points;
 			// Model
-			line._model = me._resolveLineOptions(line);
+			line._model = me._resolveElementOptions(line);
 
 			line.pivot();
 		}
@@ -126,9 +141,27 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_resolveElementOptions: function(element, index) {
-		return index >= 0
-			? this._resolvePointOptions(element, index)
-			: this._resolveLineOptions(element);
+		var me = this;
+		var datasetOpts, custom, options, lineOptions, values;
+
+		if (index >= 0) {
+			return me._resolvePointOptions(element, index);
+		}
+
+		datasetOpts = me._config;
+		custom = element.custom || {};
+		options = me.chart.options;
+		lineOptions = options.elements.line;
+		values = DatasetController.prototype._resolveElementOptions.apply(me, arguments);
+
+		// The default behavior of lines is to break at null values, according
+		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
+		// This option gives lines the ability to span gaps
+		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault(datasetOpts.lineTension, lineOptions.tension);
+		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, lineOptions.stepped]);
+
+		return values;
 	},
 
 	/**
@@ -176,59 +209,6 @@ module.exports = DatasetController.extend({
 				options[key]
 			], context, index);
 		}
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveLineOptions: function(element) {
-		var me = this;
-		var chart = me.chart;
-		var datasetIndex = me.index;
-		var dataset = chart.data.datasets[datasetIndex];
-		var datasetOpts = me._config;
-		var custom = element.custom || {};
-		var options = chart.options;
-		var elementOptions = options.elements.line;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataset: dataset,
-			datasetIndex: datasetIndex
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderCapStyle',
-			'borderColor',
-			'borderDash',
-			'borderDashOffset',
-			'borderJoinStyle',
-			'borderWidth',
-			'cubicInterpolationMode',
-			'fill'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				elementOptions[key]
-			], context);
-		}
-
-		// The default behavior of lines is to break at null values, according
-		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
-		// This option gives lines the ability to span gaps
-		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(datasetOpts.lineTension, elementOptions.tension);
-		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, elementOptions.stepped]);
 
 		return values;
 	},

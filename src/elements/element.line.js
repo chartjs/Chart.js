@@ -26,6 +26,8 @@ defaults._set('global', {
 });
 
 module.exports = Element.extend({
+	_type: 'line',
+
 	draw: function() {
 		var me = this;
 		var vm = me._view;

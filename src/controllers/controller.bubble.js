@@ -48,6 +48,22 @@ module.exports = DatasetController.extend({
 	dataElementType: elements.Point,
 
 	/**
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+		'hoverRadius',
+		'hitRadius',
+		'pointStyle',
+		'rotation'
+	],
+
+	/**
 	 * @protected
 	 */
 	update: function(reset) {
@@ -125,14 +141,11 @@ module.exports = DatasetController.extend({
 	_resolveElementOptions: function(point, index) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
+		var dataset = me.getDataset();
 		var datasetOpts = me._config;
 		var custom = point.custom || {};
-		var options = chart.options.elements.point;
-		var data = dataset.data[index];
-		var values = {};
-		var i, ilen, key;
+		var data = dataset.data[index] || {};
+		var values = DatasetController.prototype._resolveElementOptions.apply(me, arguments);
 
 		// Scriptable options
 		var context = {
@@ -142,34 +155,12 @@ module.exports = DatasetController.extend({
 			datasetIndex: me.index
 		};
 
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-			'hoverRadius',
-			'hitRadius',
-			'pointStyle',
-			'rotation'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
-			], context, index);
-		}
-
 		// Custom radius resolution
 		values.radius = resolve([
 			custom.radius,
-			data ? data.r : undefined,
-			dataset.radius,
-			options.radius
+			data.r,
+			datasetOpts.radius,
+			chart.options.elements.point.radius
 		], context, index);
 
 		return values;

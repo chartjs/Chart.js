@@ -5,8 +5,6 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var resolve = helpers.options.resolve;
-
 defaults._set('bar', {
 	hover: {
 		mode: 'label'
@@ -119,6 +117,16 @@ function computeFlexCategoryTraits(index, ruler, options) {
 module.exports = DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
+
+	/**
+	 * @private
+	 */
+	_optionKeys: [
+		'backgroundColor',
+		'borderColor',
+		'borderSkipped',
+		'borderWidth'
+	],
 
 	initialize: function() {
 		var me = this;
@@ -372,46 +380,5 @@ module.exports = DatasetController.extend({
 		}
 
 		helpers.canvas.unclipArea(chart.ctx);
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveElementOptions: function(rectangle, index) {
-		var me = this;
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
-		var datasetOpts = me._config;
-		var custom = rectangle.custom || {};
-		var options = chart.options.elements.rectangle;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderSkipped',
-			'borderWidth'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
 	}
 });
