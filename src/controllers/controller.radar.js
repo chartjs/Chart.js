@@ -27,13 +27,6 @@ module.exports = DatasetController.extend({
 		return this.chart.scale.id;
 	},
 
-	/**
-	 * @private
-	 */
-	_getIndexScaleId: function() {
-		return this.chart.scale.id;
-	},
-
 	datasetElementType: elements.Line,
 
 	dataElementType: elements.Point,
