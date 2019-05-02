@@ -325,7 +325,7 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
-	 * @params {number} index - data index
+	 * @param {number} index - data index
 	 * @return {IStyleInterface} style object
 	 */
 	getStyle: function(index) {
