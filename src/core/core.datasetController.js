@@ -346,7 +346,7 @@ helpers.extend(DatasetController.prototype, {
 		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var type = index >= 0 ? me.dataElementType : me.datasetElementType;
-		var options = chart.options.elements[type.prototype._type];
+		var options = chart.options.elements[type.prototype._type] || {};
 		var keys = me._optionKeys;
 		var values = {};
 		var i, ilen, key;
