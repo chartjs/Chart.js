@@ -95,18 +95,30 @@ helpers.extend(DatasetController.prototype, {
 	dataElementType: null,
 
 	/**
-	 * Element option keys to be resolved in _resolveElementOptions.
+	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
 	 * A derived controller may override this to resolve controller-specific options.
 	 * The keys defined here are for backward compatibility for legend styles.
 	 * @private
 	 */
-	_optionKeys: [
+	_datasetElementOptions: [
 		'backgroundColor',
-		'borderColor',
 		'borderCapStyle',
+		'borderColor',
 		'borderDash',
 		'borderDashOffset',
 		'borderJoinStyle',
+		'borderWidth'
+	],
+
+	/**
+	 * Data element option keys to be resolved in _resolveDataElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
 		'borderWidth',
 		'pointStyle'
 	],
@@ -319,16 +331,16 @@ helpers.extend(DatasetController.prototype, {
 	getStyle: function(index) {
 		var me = this;
 		var meta = me.getMeta();
-		var element, style;
+		var dataset = meta.dataset;
+		var style;
 
-		if (meta.dataset && index === undefined) {
-			element = meta.dataset;
+		me._configure();
+		if (dataset && index === undefined) {
+			style = me._resolveDatasetElementOptions(dataset || {});
 		} else {
 			index = index || 0;
-			element = meta.data[index];
+			style = me._resolveDataElementOptions(meta.data[index] || {}, index);
 		}
-		me._configure();
-		style = me._resolveElementOptions(element || {}, index);
 
 		if (style.fill === false || style.fill === null) {
 			style.backgroundColor = 'rgba(0,0,0,0)';
@@ -340,16 +352,47 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(element, index) {
+	_resolveDatasetElementOptions: function(element) {
 		var me = this;
 		var chart = me.chart;
 		var datasetOpts = me._config;
 		var custom = element.custom || {};
-		var type = index >= 0 ? me.dataElementType : me.datasetElementType;
-		var options = chart.options.elements[type.prototype._type] || {};
-		var keys = me._optionKeys;
+		var options = chart.options.elements[me.datasetElementType.prototype._type] || {};
+		var elementOptions = me._datasetElementOptions;
 		var values = {};
 		var i, ilen, key;
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataset: me.getDataset(),
+			datasetIndex: me.index
+		};
+
+		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+			key = elementOptions[i];
+			values[key] = resolve([
+				custom[key],
+				datasetOpts[key],
+				options[key]
+			], context);
+		}
+
+		return values;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveDataElementOptions: function(element, index) {
+		var me = this;
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var custom = element.custom || {};
+		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
+		var elementOptions = me._dataElementOptions;
+		var values = {};
+		var keys, i, ilen, key;
 
 		// Scriptable options
 		var context = {
@@ -359,13 +402,26 @@ helpers.extend(DatasetController.prototype, {
 			datasetIndex: me.index
 		};
 
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
-			], context, index);
+		if (helpers.isArray(elementOptions)) {
+			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+				key = elementOptions[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[key],
+					options[key]
+				], context, index);
+			}
+		} else {
+			keys = Object.keys(elementOptions);
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[elementOptions[key]],
+					datasetOpts[key],
+					options[key]
+				], context, index);
+			}
 		}
 
 		return values;

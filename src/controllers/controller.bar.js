@@ -121,7 +121,7 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_optionKeys: [
+	_dataElementOptions: [
 		'backgroundColor',
 		'borderColor',
 		'borderSkipped',
@@ -155,7 +155,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
-		var options = me._resolveElementOptions(rectangle, index);
+		var options = me._resolveDataElementOptions(rectangle, index);
 
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);

@@ -38,7 +38,7 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_optionKeys: [
+	_datasetElementOptions: [
 		'backgroundColor',
 		'borderCapStyle',
 		'borderColor',
@@ -49,6 +49,23 @@ module.exports = DatasetController.extend({
 		'cubicInterpolationMode',
 		'fill'
 	],
+
+	/**
+	 * @private
+	 */
+	_dataElementOptions: {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	},
 
 	update: function(reset) {
 		var me = this;
@@ -74,7 +91,7 @@ module.exports = DatasetController.extend({
 			// Data
 			line._children = points;
 			// Model
-			line._model = me._resolveElementOptions(line);
+			line._model = me._resolveDatasetElementOptions(line);
 
 			line.pivot();
 		}
@@ -106,7 +123,7 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var x, y;
 
-		var options = me._resolvePointOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
@@ -140,19 +157,13 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(element, index) {
+	_resolveDatasetElementOptions: function(element) {
 		var me = this;
-		var datasetOpts, custom, options, lineOptions, values;
-
-		if (index >= 0) {
-			return me._resolvePointOptions(element, index);
-		}
-
-		datasetOpts = me._config;
-		custom = element.custom || {};
-		options = me.chart.options;
-		lineOptions = options.elements.line;
-		values = DatasetController.prototype._resolveElementOptions.apply(me, arguments);
+		var datasetOpts = me._config;
+		var custom = element.custom || {};
+		var options = me.chart.options;
+		var lineOptions = options.elements.line;
+		var values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
@@ -160,55 +171,6 @@ module.exports = DatasetController.extend({
 		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(datasetOpts.lineTension, lineOptions.tension);
 		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, lineOptions.stepped]);
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
-	_resolvePointOptions: function(element, index) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
-		var datasetOpts = me._config;
-		var custom = element.custom || {};
-		var options = chart.options.elements.point;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var ELEMENT_OPTIONS = {
-			backgroundColor: 'pointBackgroundColor',
-			borderColor: 'pointBorderColor',
-			borderWidth: 'pointBorderWidth',
-			hitRadius: 'pointHitRadius',
-			hoverBackgroundColor: 'pointHoverBackgroundColor',
-			hoverBorderColor: 'pointHoverBorderColor',
-			hoverBorderWidth: 'pointHoverBorderWidth',
-			hoverRadius: 'pointHoverRadius',
-			pointStyle: 'pointStyle',
-			radius: 'pointRadius',
-			rotation: 'pointRotation'
-		};
-		var keys = Object.keys(ELEMENT_OPTIONS);
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				datasetOpts[ELEMENT_OPTIONS[key]],
-				datasetOpts[key],
-				options[key]
-			], context, index);
-		}
 
 		return values;
 	},

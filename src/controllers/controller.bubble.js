@@ -50,7 +50,7 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_optionKeys: [
+	_dataElementOptions: [
 		'backgroundColor',
 		'borderColor',
 		'borderWidth',
@@ -86,7 +86,7 @@ module.exports = DatasetController.extend({
 		var custom = point.custom || {};
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveElementOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
@@ -138,14 +138,14 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(point, index) {
+	_resolveDataElementOptions: function(point, index) {
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
 		var datasetOpts = me._config;
 		var custom = point.custom || {};
 		var data = dataset.data[index] || {};
-		var values = DatasetController.prototype._resolveElementOptions.apply(me, arguments);
+		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
 
 		// Scriptable options
 		var context = {
