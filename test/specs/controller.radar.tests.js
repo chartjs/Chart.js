@@ -444,7 +444,7 @@ describe('Chart.controllers.radar', function() {
 		expect(meta1.data[0]._model.radius).toBe(20);
 	});
 
-	it('should return same id for index and value scale', function() {
+	it('should return id for value scale', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
 			data: {
@@ -460,7 +460,6 @@ describe('Chart.controllers.radar', function() {
 		});
 
 		var controller = chart.getDatasetMeta(0).controller;
-		expect(controller._getIndexScaleId()).toBe('test');
 		expect(controller._getValueScaleId()).toBe('test');
 	});
 });
