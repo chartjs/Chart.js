@@ -103,6 +103,14 @@ module.exports = {
 		item.fullWidth = item.fullWidth || false;
 		item.position = item.position || 'top';
 		item.weight = item.weight || 0;
+		item._layers = item._layers || function() {
+			return [{
+				z: 0,
+				draw: function() {
+					item.draw.apply(item, arguments);
+				}
+			}];
+		};
 
 		chart.boxes.push(item);
 	},
