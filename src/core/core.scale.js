@@ -802,7 +802,8 @@ module.exports = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var autoSkipEnabled = optionTicks.display && (optionTicks.source === 'auto' || optionTicks.autoSkip);
+		var ticks = autoSkipEnabled ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
