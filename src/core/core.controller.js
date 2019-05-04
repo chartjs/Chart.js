@@ -664,10 +664,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// currently be part of layers. Instead, we draw
 		// layers <= 0 before(default, backward compat), and the rest after
 		layers = me._layers;
-		for (i = 0; i < layers.length; ++i) {
-			if (layers[i].z > 0) {
-				break;
-			}
+		for (i = 0; i < layers.length && layers[i].z <= 0; ++i) {
 			layers[i].draw(me.chartArea);
 		}
 

@@ -961,7 +961,7 @@ var Scale = Element.extend({
 			glWidth = item.glWidth;
 			glColor = item.glColor;
 
-			if (gridLines.display && glWidth && glColor) {
+			if (glWidth && glColor) {
 				ctx.save();
 				ctx.lineWidth = glWidth;
 				ctx.strokeStyle = glColor;
@@ -1122,11 +1122,7 @@ var Scale = Element.extend({
 		var tz = opts.ticks && opts.ticks.z || 0;
 		var gz = opts.gridLines && opts.gridLines.z || 0;
 
-		if (!me._isVisible()) {
-			return [];
-		}
-
-		if (tz === gz || me.draw !== me._draw) {
+		if (!me._isVisible() || tz === gz || me.draw !== me._draw) {
 			// backward compatibility: draw has been overridden by custom scale
 			return [{
 				z: tz,
