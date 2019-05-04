@@ -37,6 +37,20 @@
 	<button id="update">update</button>
 	<script>
 		function generateData() {
+			/**
+			 * Returns true if outside 9:30am-4pm on a weekday
+			 */
+			function outsideMarketHours(date) {
+				if (date.isoWeekday() > 5) {
+					return true;
+				}
+				if ((unit == 'second' || unit == 'minute' || unit == 'hour')
+						&& ((date.hour() < 9 && date.minute() < 30) || date.hour() > 16)) {
+					return true;
+				}
+				return false;
+			}
+
 			function randomNumber(min, max) {
 				return Math.random() * (max - min) + min;
 			}
@@ -54,10 +68,14 @@
 			var now = moment();
 			var data = [];
 			var unit = document.getElementById('unit').value;
-			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit)) {
-				if (date.isoWeekday() <= 5) {
-					data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
+			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+				if (outsideMarketHours(date)) {
+					date = date.clone().add(8 - date.isoWeekday(), 'day');
+					if ((unit == 'second' || unit == 'minute' || unit == 'hour')) {
+						date = date.hour(9).minute(30).second(0);
+					}
 				}
+				data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
 			}
 
 			return data;
