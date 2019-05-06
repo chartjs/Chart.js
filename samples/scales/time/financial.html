@@ -39,13 +39,20 @@
 		function generateData() {
 			var unit = document.getElementById('unit').value;
 
+			function unitLessThanDay() {
+				return unit === 'second' || unit === 'minute' || unit === 'hour';
+			}
+
+			function beforeNineThirty(date) {
+				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
+			}
+
 			// Returns true if outside 9:30am-4pm on a weekday
 			function outsideMarketHours(date) {
 				if (date.isoWeekday() > 5) {
 					return true;
 				}
-				if ((unit === 'second' || unit === 'minute' || unit === 'hour')
-						&& ((date.hour() < 9 && date.minute() < 30) || date.hour() > 16)) {
+				if (unitLessThanDay() && (beforeNineThirty(date) || date.hour() > 16)) {
 					return true;
 				}
 				return false;
@@ -69,8 +76,10 @@
 			var data = [];
 			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
 				if (outsideMarketHours(date)) {
-					date = date.clone().add(date.isoWeekday() > 5 ? 8 - date.isoWeekday() : 1, 'day');
-					if ((unit === 'second' || unit === 'minute' || unit === 'hour')) {
+					if (unitLessThanDay() && !beforeNineThirty(date)) {
+						date = date.clone().add(date.isoWeekday() > 5 ? 8 - date.isoWeekday() : 1, 'day');
+					}
+					if (unitLessThanDay()) {
 						date = date.hour(9).minute(30).second(0);
 					}
 				}
