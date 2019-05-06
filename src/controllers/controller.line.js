@@ -29,10 +29,6 @@ defaults._set('line', {
 	}
 });
 
-function lineEnabled(dataset, options) {
-	return valueOrDefault(dataset.showLine, options.showLines);
-}
-
 module.exports = DatasetController.extend({
 
 	datasetElementType: elements.Line,
@@ -44,9 +40,10 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
+		var options = me.chart.options;
 		var scale = me.getScaleForId(meta.yAxisID);
 		var dataset = me.getDataset();
-		var showLine = lineEnabled(dataset, me.chart.options);
+		var showLine = me._showLine = valueOrDefault(me._config.showLine, options.showLines);
 		var i, ilen;
 
 		// Update Line
@@ -132,6 +129,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = chart.data.datasets[me.index];
+		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var options = chart.options.elements.point;
 		var values = {};
@@ -164,8 +162,8 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[ELEMENT_OPTIONS[key]],
-				dataset[key],
+				datasetOpts[ELEMENT_OPTIONS[key]],
+				datasetOpts[key],
 				options[key]
 			], context, index);
 		}
@@ -181,6 +179,7 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var datasetIndex = me.index;
 		var dataset = chart.data.datasets[datasetIndex];
+		var datasetOpts = me._config;
 		var custom = element.custom || {};
 		var options = chart.options;
 		var elementOptions = options.elements.line;
@@ -210,7 +209,7 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[key],
+				datasetOpts[key],
 				elementOptions[key]
 			], context);
 		}
@@ -218,9 +217,9 @@ module.exports = DatasetController.extend({
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
-		values.spanGaps = valueOrDefault(dataset.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(dataset.lineTension, elementOptions.tension);
-		values.steppedLine = resolve([custom.steppedLine, dataset.steppedLine, elementOptions.stepped]);
+		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault(datasetOpts.lineTension, elementOptions.tension);
+		values.steppedLine = resolve([custom.steppedLine, datasetOpts.steppedLine, elementOptions.stepped]);
 
 		return values;
 	},
@@ -319,11 +318,11 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var points = meta.data || [];
 		var area = chart.chartArea;
+		var i = 0;
 		var ilen = points.length;
 		var halfBorderWidth;
-		var i = 0;
 
-		if (lineEnabled(me.getDataset(), chart.options)) {
+		if (me._showLine) {
 			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
 
 			helpers.canvas.clipArea(chart.ctx, {

@@ -31,3 +31,40 @@ var chartDifferentHoverMode = new Chart(ctx, {
     }
 });
 ```
+
+## Dataset Configuration
+
+Options may be configured directly on the dataset. The dataset options can be changed at 3 different levels and are evaluated with the following priority:
+
+- per dataset: dataset.*
+- per chart: options.datasets[type].*
+- or globally: Chart.defaults.global.datasets[type].*
+
+where type corresponds to the dataset type.
+
+*Note:* dataset options take precedence over element options.
+
+The following example would set the `showLine` option to 'false' for all line datasets except for those overridden by options passed to the dataset on creation.
+
+```javascript
+// Do not show lines for all datasets by default
+Chart.defaults.global.datasets.line.showLine = false;
+
+// This chart would show a line only for the third dataset
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            data: [0, 0],
+        }, {
+            data: [0, 1]
+        }, {
+            data: [1, 0],
+            showLine: true // overrides the `line` dataset default
+        }, {
+            type: 'scatter', // 'line' dataset default does not affect this dataset since it's a 'scatter'
+            data: [1, 1]
+        }]
+    }
+});
+```

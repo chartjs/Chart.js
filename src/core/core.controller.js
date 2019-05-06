@@ -567,7 +567,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		meta.controller.update();
+		meta.controller._update();
 
 		plugins.notify(me, 'afterDatasetUpdate', [args]);
 	},

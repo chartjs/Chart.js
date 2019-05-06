@@ -248,6 +248,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
+		var datasetOpts = me._config;
 		var custom = arc.custom || {};
 		var options = chart.options.elements.arc;
 		var values = {};
@@ -275,7 +276,7 @@ module.exports = DatasetController.extend({
 			key = keys[i];
 			values[key] = resolve([
 				custom[key],
-				dataset[key],
+				datasetOpts[key],
 				options[key]
 			], context, index);
 		}
