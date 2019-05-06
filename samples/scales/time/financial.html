@@ -97,7 +97,6 @@
 
 		var color = Chart.helpers.color;
 		var cfg = {
-			type: 'bar',
 			data: {
 				datasets: [{
 					label: 'CHRT - Chart.js Corporation',
@@ -119,6 +118,7 @@
 					xAxes: [{
 						type: 'time',
 						distribution: 'series',
+						offset: true,
 						ticks: {
 							major: {
 								enabled: true,
@@ -158,6 +158,9 @@
 						}
 					}],
 					yAxes: [{
+						gridLines: {
+							drawBorder: false
+						},
 						scaleLabel: {
 							display: true,
 							labelString: 'Closing price ($)'

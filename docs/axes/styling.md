@@ -22,7 +22,7 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `zeroLineColor` | `Color` | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
 | `zeroLineBorderDash` | `number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `zeroLineBorderDashOffset` | `number` | `0.0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `offsetGridLines` | `boolean` | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a category scale in a bar chart by default.
+| `offsetGridLines` | `boolean` | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default.
 | `z` | `number` | `0` | z-index of gridline layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
 ## Tick Configuration
