@@ -97,7 +97,6 @@ describe('Time scale tests', function() {
 			},
 			time: {
 				parser: false,
-				format: false,
 				unit: false,
 				round: false,
 				isoWeekday: false,
@@ -433,28 +432,28 @@ describe('Time scale tests', function() {
 		});
 
 		it('should use the min option when less than first label for building ticks', function() {
-			config.time.min = '2014-12-29T04:00:00';
+			config.ticks.min = '2014-12-29T04:00:00';
 
 			var scale = createScale(mockData, config);
 			expect(scale.ticks[0]).toEqual('Jan 1');
 		});
 
 		it('should use the min option when greater than first label for building ticks', function() {
-			config.time.min = '2015-01-02T04:00:00';
+			config.ticks.min = '2015-01-02T04:00:00';
 
 			var scale = createScale(mockData, config);
 			expect(scale.ticks[0]).toEqual('Jan 2');
 		});
 
 		it('should use the max option when greater than last label for building ticks', function() {
-			config.time.max = '2015-01-05T06:00:00';
+			config.ticks.max = '2015-01-05T06:00:00';
 
 			var scale = createScale(mockData, config);
 			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 3');
 		});
 
 		it('should use the max option when less than last label for building ticks', function() {
-			config.time.max = '2015-01-02T23:00:00';
+			config.ticks.max = '2015-01-02T23:00:00';
 
 			var scale = createScale(mockData, config);
 			expect(scale.ticks[scale.ticks.length - 1]).toEqual('Jan 2');
@@ -853,7 +852,7 @@ describe('Time scale tests', function() {
 				scales: {
 					xAxes: [{
 						type: 'time',
-						time: {
+						ticks: {
 							min: moment().subtract(1, 'months'),
 							max: moment(),
 						}
@@ -910,8 +909,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2051';
+				options.ticks.min = '2012';
+				options.ticks.max = '2051';
 				chart.update();
 
 				expect(scale.min).toEqual(+moment('2012', 'YYYY'));
@@ -924,8 +923,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2017';
-				options.time.max = '2042';
+				options.ticks.min = '2017';
+				options.ticks.max = '2042';
 				chart.update();
 
 				expect(scale.min).toEqual(+moment('2017', 'YYYY'));
@@ -1004,8 +1003,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2051';
+				options.ticks.min = '2012';
+				options.ticks.max = '2051';
 				chart.update();
 
 				expect(scale.min).toEqual(+moment('2012', 'YYYY'));
@@ -1018,8 +1017,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2017';
-				options.time.max = '2043';
+				options.ticks.min = '2017';
+				options.ticks.max = '2043';
 				chart.update();
 
 				expect(scale.min).toEqual(+moment('2017', 'YYYY'));
@@ -1103,7 +1102,7 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
+				options.ticks.min = '2012';
 				chart.update();
 
 				var start = scale.left;
@@ -1117,7 +1116,7 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.max = '2050';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;
@@ -1131,8 +1130,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2050';
+				options.ticks.min = '2012';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;
@@ -1187,8 +1186,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2050';
+				options.ticks.min = '2012';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;
@@ -1280,7 +1279,7 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	describe('when time.min and/or time.max are defined', function() {
+	describe('when ticks.min and/or ticks.max are defined', function() {
 		['auto', 'data', 'labels'].forEach(function(source) {
 			['data', 'ticks'].forEach(function(bounds) {
 				describe('and ticks.source is "' + source + '" and bounds "' + bounds + '"', function() {
@@ -1320,8 +1319,8 @@ describe('Time scale tests', function() {
 						var min = '02/19 07:00';
 						var max = '02/24 08:00';
 
-						options.time.min = min;
-						options.time.max = max;
+						options.ticks.min = min;
+						options.ticks.max = max;
 						chart.update();
 
 						expect(scale.min).toEqual(+moment(min, 'MM/DD HH:mm'));
@@ -1340,8 +1339,8 @@ describe('Time scale tests', function() {
 						var min = '02/21 07:00';
 						var max = '02/22 20:00';
 
-						options.time.min = min;
-						options.time.max = max;
+						options.ticks.min = min;
+						options.ticks.max = max;
 						chart.update();
 
 						expect(scale.min).toEqual(+moment(min, 'MM/DD HH:mm'));
@@ -1414,8 +1413,8 @@ describe('Time scale tests', function() {
 					var scale = chart.scales.x;
 					var options = chart.options.scales.xAxes[0];
 
-					options.time.min = '2012';
-					options.time.max = '2051';
+					options.ticks.min = '2012';
+					options.ticks.max = '2051';
 					chart.update();
 
 					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
@@ -1427,8 +1426,8 @@ describe('Time scale tests', function() {
 					var scale = chart.scales.x;
 					var options = chart.options.scales.xAxes[0];
 
-					options.time.min = '2012';
-					options.time.max = '2051';
+					options.ticks.min = '2012';
+					options.ticks.max = '2051';
 					options.offset = true;
 					chart.update();
 
@@ -1541,7 +1540,7 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
+				options.ticks.min = '2012';
 				chart.update();
 
 				var start = scale.left;
@@ -1556,7 +1555,7 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.max = '2050';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;
@@ -1571,8 +1570,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2050';
+				options.ticks.min = '2012';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;
@@ -1629,8 +1628,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var options = chart.options.scales.xAxes[0];
 
-				options.time.min = '2012';
-				options.time.max = '2050';
+				options.ticks.min = '2012';
+				options.ticks.max = '2050';
 				chart.update();
 
 				var start = scale.left;

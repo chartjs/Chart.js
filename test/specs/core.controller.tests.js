@@ -1170,7 +1170,7 @@ describe('Chart', function() {
 					responsive: true,
 					scales: {
 						xAxes: [{
-							type: 'time'
+							type: 'category'
 						}],
 						yAxes: [{
 							scaleLabel: {

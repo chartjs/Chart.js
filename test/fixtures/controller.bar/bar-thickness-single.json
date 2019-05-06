@@ -18,10 +18,11 @@
                     "display": false,
                     "barPercentage": 1,
                     "categoryPercentage": 1,
-                    "ticks": {
-                        "source": "labels"
-                    },
                     "time": {
+                        "parser": "YYYY"
+                    },
+                    "ticks": {
+                        "source": "labels",
                         "min": "2013"
                     }
                 }],

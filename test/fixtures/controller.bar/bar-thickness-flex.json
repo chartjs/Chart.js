@@ -19,6 +19,9 @@
                     "barPercentage": 1,
                     "categoryPercentage": 1,
                     "barThickness": "flex",
+                    "time": {
+                        "parser": "YYYY"
+                    },
                     "ticks": {
                         "source": "labels"
                     }
