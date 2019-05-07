@@ -74,12 +74,13 @@
 			var date = moment('Jan 01 1990', 'MMM DD YYYY');
 			var now = moment();
 			var data = [];
+			var lessThanDay = unitLessThanDay();
 			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
 				if (outsideMarketHours(date)) {
-					if (unitLessThanDay() && !beforeNineThirty(date)) {
+					if (!lessThanDay || !beforeNineThirty(date)) {
 						date = date.clone().add(date.isoWeekday() > 5 ? 8 - date.isoWeekday() : 1, 'day');
 					}
-					if (unitLessThanDay()) {
+					if (lessThanDay) {
 						date = date.hour(9).minute(30).second(0);
 					}
 				}
