@@ -119,8 +119,8 @@ module.exports = Scale.extend({
 					helpers.each(dataset.data, function(rawValue, index) {
 						var values = valuesPerStack[key];
 						var value = +me.getRightValue(rawValue);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
+						// invalid values are ignored
+						if (isNaN(value) || value < 0) {
 							return;
 						}
 						values[index] = values[index] || 0;
@@ -142,10 +142,10 @@ module.exports = Scale.extend({
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
+					helpers.each(dataset.data, function(rawValue) {
 						var value = +me.getRightValue(rawValue);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
+						// invalid values are ignored
+						if (isNaN(value) || value < 0) {
 							return;
 						}
 

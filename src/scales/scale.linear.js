@@ -71,7 +71,7 @@ module.exports = LinearScaleBase.extend({
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
 						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
+						if (isNaN(value)) {
 							return;
 						}
 
@@ -101,9 +101,9 @@ module.exports = LinearScaleBase.extend({
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
+					helpers.each(dataset.data, function(rawValue) {
 						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
+						if (isNaN(value)) {
 							return;
 						}
 
