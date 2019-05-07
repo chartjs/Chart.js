@@ -142,7 +142,6 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
-		var datasetOpts = me._config;
 		var custom = point.custom || {};
 		var data = dataset.data[index] || {};
 		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
@@ -159,7 +158,7 @@ module.exports = DatasetController.extend({
 		values.radius = resolve([
 			custom.radius,
 			data.r,
-			datasetOpts.radius,
+			me._config.radius,
 			chart.options.elements.point.radius
 		], context, index);
 
