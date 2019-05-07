@@ -47,6 +47,13 @@ module.exports = Scale.extend({
 		me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
 	},
 
+	convertTicksToLabels: function() {
+		var me = this;
+		me.zeroLineIndex = 0;
+	
+		Chart.Scale.prototype.convertTicksToLabels.call(me);
+	},
+
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
