@@ -587,6 +587,32 @@ module.exports = Scale.extend({
 			datasets: datasets,
 			labels: labels
 		};
+
+		timestamps = me._userProvidedTimestamps();
+		if (options.bounds === 'ticks' && timestamps.length) {
+			min = timestamps[0];
+			max = timestamps[timestamps.length - 1];
+		}
+
+		// Enforce limits with user min/max options
+		me.min = parse(me, getMin(options)) || min;
+		me.max = parse(me, getMax(options)) || max;
+	},
+
+	/**
+	 * @private
+	 */
+	_userProvidedTimestamps: function() {
+		var me = this;
+		switch (me.options.ticks.source) {
+		case 'data':
+			return me._timestamps.data;
+		case 'labels':
+			return me._timestamps.labels;
+		case 'auto':
+		default:
+			return;
+		}
 	},
 
 	buildTicks: function() {
@@ -595,30 +621,13 @@ module.exports = Scale.extend({
 		var max = me.max;
 		var options = me.options;
 		var timeOpts = options.time;
-		var timestamps = [];
+		var timestamps = me._userProvidedTimestamps();
 		var ticks = [];
 		var i, ilen, timestamp;
 
-		switch (options.ticks.source) {
-		case 'data':
-			timestamps = me._timestamps.data;
-			break;
-		case 'labels':
-			timestamps = me._timestamps.labels;
-			break;
-		case 'auto':
-		default:
+		if (typeof timestamps === 'undefined') {
 			timestamps = generate(me, min, max, me.getLabelCapacity(min), options);
 		}
-
-		if (options.bounds === 'ticks' && timestamps.length) {
-			min = timestamps[0];
-			max = timestamps[timestamps.length - 1];
-		}
-
-		// Enforce limits with user min/max options
-		min = parse(me, getMin(options)) || min;
-		max = parse(me, getMax(options)) || max;
 
 		// Remove ticks outside the min/max range
 		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
@@ -627,9 +636,6 @@ module.exports = Scale.extend({
 				ticks.push(timestamp);
 			}
 		}
-
-		me.min = min;
-		me.max = max;
 
 		// PRIVATE
 		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
