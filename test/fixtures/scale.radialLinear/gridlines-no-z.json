@@ -2,11 +2,11 @@
     "config": {
         "type": "radar",
         "data": {
-			"labels": ["A", "B", "C", "D", "E"],
-			"datasets": [{
-				"backgroundColor": "rgba(255, 0, 0, 1)",
-				"data": [1,2,3,3,3]
-			}]
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{
+                "backgroundColor": "rgba(255, 0, 0, 1)",
+                "data": [1,2,3,3,3]
+            }]
         },
         "options": {
             "responsive": false,

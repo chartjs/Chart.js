@@ -511,7 +511,7 @@ module.exports = LinearScaleBase.extend({
 			return;
 		}
 
-		var startAngle = this.getIndexAngle(0);
+		var startAngle = me.getIndexAngle(0);
 		var tickFont = helpers.options._parseFont(tickOpts);
 		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
 		var offset, width;
