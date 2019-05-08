@@ -1058,7 +1058,7 @@ var Scale = Element.extend({
 	/**
 	 * @private
 	 */
-	_drawTitle: function(/* chartArea */) {
+	_drawTitle: function() {
 		var me = this;
 		var ctx = me.ctx;
 		var options = me.options;
