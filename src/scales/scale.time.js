@@ -765,7 +765,9 @@ module.exports = Scale.extend({
 		var sinRotation = Math.sin(angle);
 		var tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
 
-		return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		return me.isHorizontal()
+			? (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation)
+			: (tickLabelWidth * sinRotation) + (tickFontSize * cosRotation);
 	},
 
 	/**
