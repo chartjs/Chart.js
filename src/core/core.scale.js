@@ -232,8 +232,9 @@ module.exports = Element.extend({
 		helpers.callback(this.options.beforeUpdate, [this]);
 	},
 
-	update: function(maxWidth, maxHeight, margins) {
+	update: function(maxWidth, maxHeight, margins /** @private subsequentCall */) {
 		var me = this;
+		var subsequentCall = arguments[3];
 		var i, ilen, labels, label, ticks, tick;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -259,9 +260,11 @@ module.exports = Element.extend({
 		me.afterSetDimensions();
 
 		// Data min/max
-		me.beforeDataLimits();
-		me.determineDataLimits();
-		me.afterDataLimits();
+		if (!subsequentCall) {
+			me.beforeDataLimits();
+			me.determineDataLimits();
+			me.afterDataLimits();
+		}
 
 		// Ticks - `this.ticks` is now DEPRECATED!
 		// Internal ticks are now stored as objects in the PRIVATE `this._ticks` member
@@ -320,7 +323,6 @@ module.exports = Element.extend({
 		me.afterUpdate();
 
 		return me.minSize;
-
 	},
 	afterUpdate: function() {
 		helpers.callback(this.options.afterUpdate, [this]);

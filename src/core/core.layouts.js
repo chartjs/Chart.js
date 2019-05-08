@@ -275,9 +275,9 @@ module.exports = {
 
 					// Don't use min size here because of label rotation. When the labels are rotated, their rotation highly depends
 					// on the margin. Sometimes they need to increase in size slightly
-					box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin);
+					box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin, true);
 				} else {
-					box.update(minBoxSize.width, maxChartAreaHeight);
+					box.update(minBoxSize.width, maxChartAreaHeight, undefined, true);
 				}
 			}
 		}
@@ -303,7 +303,7 @@ module.exports = {
 			};
 
 			if (minBoxSize) {
-				box.update(minBoxSize.width, maxChartAreaHeight, scaleMargin);
+				box.update(minBoxSize.width, maxChartAreaHeight, scaleMargin, true);
 			}
 		}
 
