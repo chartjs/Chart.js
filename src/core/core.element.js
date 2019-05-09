@@ -58,6 +58,7 @@ var Element = function(configuration) {
 };
 
 helpers.extend(Element.prototype, {
+	_type: undefined,
 
 	initialize: function() {
 		this.hidden = false;

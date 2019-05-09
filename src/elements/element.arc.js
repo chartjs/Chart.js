@@ -92,6 +92,8 @@ function drawBorder(ctx, vm, arc) {
 }
 
 module.exports = Element.extend({
+	_type: 'arc',
+
 	inLabelRange: function(mouseX) {
 		var vm = this._view;
 
