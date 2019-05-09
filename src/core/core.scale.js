@@ -189,7 +189,7 @@ function parseTickFontOptions(options) {
 	return {minor: minor, major: major};
 }
 
-module.exports = Element.extend({
+var Scale = Element.extend({
 	/**
 	 * Get the padding needed for the scale
 	 * @method getPadding
@@ -252,6 +252,7 @@ module.exports = Element.extend({
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
+		me._itemsToDraw = null;
 
 		// Dimensions
 		me.beforeSetDimensions();
@@ -780,22 +781,14 @@ module.exports = Element.extend({
 	},
 
 	/**
-	 * Actually draw the scale on the canvas
-	 * @param {object} chartArea - the area of the chart to draw full grid lines on
+	 * @private
 	 */
-	draw: function(chartArea) {
+	_computeItemsToDraw: function(chartArea) {
 		var me = this;
-		var options = me.options;
-
-		if (!me._isVisible()) {
-			return;
-		}
-
 		var chart = me.chart;
-		var context = me.ctx;
+		var options = me.options;
 		var optionTicks = options.ticks;
 		var gridLines = options.gridLines;
-		var scaleLabel = options.scaleLabel;
 		var position = options.position;
 
 		var isRotated = me.labelRotation !== 0;
@@ -809,12 +802,11 @@ module.exports = Element.extend({
 
 		var tl = getTickMarkLength(gridLines);
 
-		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.global.defaultFontColor);
-		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
-		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var labelRotationRadians = helpers.toRadians(me.labelRotation);
 
-		var itemsToDraw = [];
+		var items = [];
+
+		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
 
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
 		var alignPixel = helpers._alignPixel;
@@ -837,8 +829,6 @@ module.exports = Element.extend({
 			tickStart = borderValue + axisWidth / 2;
 			tickEnd = me.left + tl;
 		}
-
-		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
 
 		helpers.each(ticks, function(tick, index) {
 			// autoskipper skipped this tick (#4635)
@@ -919,7 +909,7 @@ module.exports = Element.extend({
 				}
 			}
 
-			itemsToDraw.push({
+			items.push({
 				tx1: tx1,
 				ty1: ty1,
 				tx2: tx2,
@@ -937,107 +927,74 @@ module.exports = Element.extend({
 				rotation: -1 * labelRotationRadians,
 				label: label,
 				major: tick.major,
+				font: tick.major ? tickFonts.major : tickFonts.minor,
 				textOffset: textOffset,
 				textAlign: textAlign
 			});
 		});
 
-		// Draw all of the tick labels, tick marks, and grid lines at the correct places
-		helpers.each(itemsToDraw, function(itemToDraw) {
-			var glWidth = itemToDraw.glWidth;
-			var glColor = itemToDraw.glColor;
+		items.ticksLength = ticks.length;
+		items.borderValue = borderValue;
 
-			if (gridLines.display && glWidth && glColor) {
-				context.save();
-				context.lineWidth = glWidth;
-				context.strokeStyle = glColor;
-				if (context.setLineDash) {
-					context.setLineDash(itemToDraw.glBorderDash);
-					context.lineDashOffset = itemToDraw.glBorderDashOffset;
+		return items;
+	},
+
+	/**
+	 * @private
+	 */
+	_drawGrid: function(chartArea) {
+		var me = this;
+		var ctx = me.ctx;
+		var chart = me.chart;
+		var gridLines = me.options.gridLines;
+
+		if (!gridLines.display) {
+			return;
+		}
+
+		var alignPixel = helpers._alignPixel;
+		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
+		var glWidth, glColor;
+
+		helpers.each(items, function(item) {
+			glWidth = item.glWidth;
+			glColor = item.glColor;
+
+			if (glWidth && glColor) {
+				ctx.save();
+				ctx.lineWidth = glWidth;
+				ctx.strokeStyle = glColor;
+				if (ctx.setLineDash) {
+					ctx.setLineDash(item.glBorderDash);
+					ctx.lineDashOffset = item.glBorderDashOffset;
 				}
 
-				context.beginPath();
+				ctx.beginPath();
 
 				if (gridLines.drawTicks) {
-					context.moveTo(itemToDraw.tx1, itemToDraw.ty1);
-					context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
+					ctx.moveTo(item.tx1, item.ty1);
+					ctx.lineTo(item.tx2, item.ty2);
 				}
 
 				if (gridLines.drawOnChartArea) {
-					context.moveTo(itemToDraw.x1, itemToDraw.y1);
-					context.lineTo(itemToDraw.x2, itemToDraw.y2);
+					ctx.moveTo(item.x1, item.y1);
+					ctx.lineTo(item.x2, item.y2);
 				}
 
-				context.stroke();
-				context.restore();
-			}
-
-			if (optionTicks.display) {
-				var tickFont = itemToDraw.major ? tickFonts.major : tickFonts.minor;
-
-				// Make sure we draw text in the correct color and font
-				context.save();
-				context.translate(itemToDraw.labelX, itemToDraw.labelY);
-				context.rotate(itemToDraw.rotation);
-				context.font = tickFont.string;
-				context.fillStyle = tickFont.color;
-				context.textBaseline = 'middle';
-				context.textAlign = itemToDraw.textAlign;
-
-				var label = itemToDraw.label;
-				var y = itemToDraw.textOffset;
-				if (helpers.isArray(label)) {
-					for (var i = 0; i < label.length; ++i) {
-						// We just make sure the multiline element is a string here..
-						context.fillText('' + label[i], 0, y);
-						y += tickFont.lineHeight;
-					}
-				} else {
-					context.fillText(label, 0, y);
-				}
-				context.restore();
+				ctx.stroke();
+				ctx.restore();
 			}
 		});
-
-		if (scaleLabel.display) {
-			// Draw the scale label
-			var scaleLabelX;
-			var scaleLabelY;
-			var rotation = 0;
-			var halfLineHeight = scaleLabelFont.lineHeight / 2;
-
-			if (isHorizontal) {
-				scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
-				scaleLabelY = position === 'bottom'
-					? me.bottom - halfLineHeight - scaleLabelPadding.bottom
-					: me.top + halfLineHeight + scaleLabelPadding.top;
-			} else {
-				var isLeft = position === 'left';
-				scaleLabelX = isLeft
-					? me.left + halfLineHeight + scaleLabelPadding.top
-					: me.right - halfLineHeight - scaleLabelPadding.top;
-				scaleLabelY = me.top + ((me.bottom - me.top) / 2);
-				rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
-			}
-
-			context.save();
-			context.translate(scaleLabelX, scaleLabelY);
-			context.rotate(rotation);
-			context.textAlign = 'center';
-			context.textBaseline = 'middle';
-			context.fillStyle = scaleLabelFontColor; // render in correct colour
-			context.font = scaleLabelFont.string;
-			context.fillText(scaleLabel.labelString, 0, 0);
-			context.restore();
-		}
 
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			var firstLineWidth = axisWidth;
-			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, ticks.length - 1, 0);
+			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, items.ticksLength - 1, 0);
+			var borderValue = items.borderValue;
 			var x1, x2, y1, y2;
 
-			if (isHorizontal) {
+			if (me.isHorizontal()) {
 				x1 = alignPixel(chart, me.left, firstLineWidth) - firstLineWidth / 2;
 				x2 = alignPixel(chart, me.right, lastLineWidth) + lastLineWidth / 2;
 				y1 = y2 = borderValue;
@@ -1047,12 +1004,149 @@ module.exports = Element.extend({
 				x1 = x2 = borderValue;
 			}
 
-			context.lineWidth = axisWidth;
-			context.strokeStyle = valueAtIndexOrDefault(gridLines.color, 0);
-			context.beginPath();
-			context.moveTo(x1, y1);
-			context.lineTo(x2, y2);
-			context.stroke();
+			ctx.lineWidth = axisWidth;
+			ctx.strokeStyle = valueAtIndexOrDefault(gridLines.color, 0);
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.stroke();
 		}
+	},
+
+	/**
+	 * @private
+	 */
+	_drawLabels: function(chartArea) {
+		var me = this;
+		var ctx = me.ctx;
+		var optionTicks = me.options.ticks;
+
+		if (!optionTicks.display) {
+			return;
+		}
+
+		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
+		var tickFont;
+
+		helpers.each(items, function(item) {
+			tickFont = item.font;
+
+			// Make sure we draw text in the correct color and font
+			ctx.save();
+			ctx.translate(item.labelX, item.labelY);
+			ctx.rotate(item.rotation);
+			ctx.font = tickFont.string;
+			ctx.fillStyle = tickFont.color;
+			ctx.textBaseline = 'middle';
+			ctx.textAlign = item.textAlign;
+
+			var label = item.label;
+			var y = item.textOffset;
+			if (helpers.isArray(label)) {
+				for (var i = 0; i < label.length; ++i) {
+					// We just make sure the multiline element is a string here..
+					ctx.fillText('' + label[i], 0, y);
+					y += tickFont.lineHeight;
+				}
+			} else {
+				ctx.fillText(label, 0, y);
+			}
+			ctx.restore();
+		});
+	},
+
+	/**
+	 * @private
+	 */
+	_drawTitle: function() {
+		var me = this;
+		var ctx = me.ctx;
+		var options = me.options;
+		var scaleLabel = options.scaleLabel;
+
+		if (!scaleLabel.display) {
+			return;
+		}
+
+		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.global.defaultFontColor);
+		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
+		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
+		var halfLineHeight = scaleLabelFont.lineHeight / 2;
+		var position = options.position;
+		var rotation = 0;
+		var scaleLabelX, scaleLabelY;
+
+		if (me.isHorizontal()) {
+			scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
+			scaleLabelY = position === 'bottom'
+				? me.bottom - halfLineHeight - scaleLabelPadding.bottom
+				: me.top + halfLineHeight + scaleLabelPadding.top;
+		} else {
+			var isLeft = position === 'left';
+			scaleLabelX = isLeft
+				? me.left + halfLineHeight + scaleLabelPadding.top
+				: me.right - halfLineHeight - scaleLabelPadding.top;
+			scaleLabelY = me.top + ((me.bottom - me.top) / 2);
+			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
+		}
+
+		ctx.save();
+		ctx.translate(scaleLabelX, scaleLabelY);
+		ctx.rotate(rotation);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
+		ctx.font = scaleLabelFont.string;
+		ctx.fillText(scaleLabel.labelString, 0, 0);
+		ctx.restore();
+	},
+
+	draw: function(chartArea) {
+		var me = this;
+
+		if (!me._isVisible()) {
+			return;
+		}
+
+		me._drawGrid(chartArea);
+		me._drawTitle(chartArea);
+		me._drawLabels(chartArea);
+	},
+
+	/**
+	 * @private
+	 */
+	_layers: function() {
+		var me = this;
+		var opts = me.options;
+		var tz = opts.ticks && opts.ticks.z || 0;
+		var gz = opts.gridLines && opts.gridLines.z || 0;
+
+		if (!me._isVisible() || tz === gz || me.draw !== me._draw) {
+			// backward compatibility: draw has been overridden by custom scale
+			return [{
+				z: tz,
+				draw: function() {
+					me.draw.apply(me, arguments);
+				}
+			}];
+		}
+
+		return [{
+			z: gz,
+			draw: function() {
+				me._drawGrid.apply(me, arguments);
+				me._drawTitle.apply(me, arguments);
+			}
+		}, {
+			z: tz,
+			draw: function() {
+				me._drawLabels.apply(me, arguments);
+			}
+		}];
 	}
 });
+
+Scale.prototype._draw = Scale.prototype.draw;
+
+module.exports = Scale;

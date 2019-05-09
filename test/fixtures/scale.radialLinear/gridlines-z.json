@@ -1,0 +1,34 @@
+{
+    "config": {
+        "type": "radar",
+        "data": {
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{
+                "backgroundColor": "rgba(255, 0, 0, 1)",
+                "data": [1,2,3,3,3]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scale": {
+                "gridLines": {
+                    "color": "rgba(0, 0, 0, 1)",
+                    "lineWidth": 1,
+                    "z": 1
+                },
+                "angleLines": {
+                    "color": "rgba(0, 0, 255, 1)",
+                    "lineWidth": 1
+                },
+                "pointLabels": {
+                    "display": false
+                },
+                "ticks": {
+                    "display": false
+                }
+            }
+        }
+    }
+}

@@ -473,4 +473,137 @@ describe('Core.scale', function() {
 			expect(scale.ticks.length).toBe(0);
 		});
 	});
+
+	describe('_layers', function() {
+		it('should default to one layer', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+		});
+
+		it('should default to one layer for custom scales', function() {
+			var customScale = Chart.Scale.extend({
+				draw: function() {},
+				convertTicksToLabels: function() {
+					return ['tick'];
+				}
+			});
+			Chart.scaleService.registerScaleType('customScale', customScale, {});
+
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'customScale',
+							gridLines: {
+								z: 10
+							},
+							ticks: {
+								z: 20
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+			expect(scale._layers()[0].z).toEqual(20);
+		});
+
+		it('should default to one layer when z is equal between ticks and grid', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							},
+							gridLines: {
+								z: 10
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+		});
+
+
+		it('should return 2 layers when z is not equal between ticks and grid', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+			chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							gridLines: {
+								z: 11
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+			chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							},
+							gridLines: {
+								z: 11
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+		});
+
+	});
 });

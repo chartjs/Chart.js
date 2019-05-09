@@ -169,6 +169,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.aspectRatio = height ? width / height : null;
 		me.options = config.options;
 		me._bufferedRender = false;
+		me._layers = [];
 
 		/**
 		 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
@@ -495,6 +496,12 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
 
+		me._layers.sort(function(a, b) {
+			return a.z === b.z
+				? a._idx - b._idx
+				: a.z - b.z;
+		});
+
 		if (me._bufferedRender) {
 			me._bufferedRequest = {
 				duration: config.duration,
@@ -519,6 +526,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		layouts.update(this, this.width, this.height);
+
+		me._layers = [];
+		helpers.each(me.boxes, function(box) {
+			me._layers.push.apply(me._layers, box._layers());
+		}, me);
+
+		me._layers.forEach(function(item, index) {
+			item._idx = index;
+		});
 
 		/**
 		 * Provided for backward compatibility, use `afterLayout` instead.
@@ -626,6 +642,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 	draw: function(easingValue) {
 		var me = this;
+		var i, layers;
 
 		me.clear();
 
@@ -643,12 +660,21 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		// Draw all the scales
-		helpers.each(me.boxes, function(box) {
-			box.draw(me.chartArea);
-		}, me);
+		// Because of plugin hooks (before/afterDatasetsDraw), datasets can't
+		// currently be part of layers. Instead, we draw
+		// layers <= 0 before(default, backward compat), and the rest after
+		layers = me._layers;
+		for (i = 0; i < layers.length && layers[i].z <= 0; ++i) {
+			layers[i].draw(me.chartArea);
+		}
 
 		me.drawDatasets(easingValue);
+
+		// Rest of layers
+		for (; i < layers.length; ++i) {
+			layers[i].draw(me.chartArea);
+		}
+
 		me._drawTooltip(easingValue);
 
 		plugins.notify(me, 'afterDraw', [easingValue]);
