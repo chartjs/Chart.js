@@ -799,6 +799,10 @@ module.exports = Scale.extend({
 			? (me.width - margins.left - margins.right) / size.w
 			: (me.height - margins.top - margins.bottom) / size.h);
 
+		if (me.options.offset) {
+			capacity--;
+		}
+
 		return capacity > 0 ? capacity : 1;
 	}
 });
