@@ -5,6 +5,7 @@ var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
+var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
@@ -404,23 +405,6 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {start: start, end: end};
 }
 
-function ticksFromTimestamps(scale, values, majorUnit) {
-	var ticks = [];
-	var i, ilen, value, major;
-
-	for (i = 0, ilen = values.length; i < ilen; ++i) {
-		value = values[i];
-		major = majorUnit ? value === +scale._adapter.startOf(value, majorUnit) : false;
-
-		ticks.push({
-			value: value,
-			major: major
-		});
-	}
-
-	return ticks;
-}
-
 var defaultConfig = {
 	position: 'bottom',
 
@@ -464,6 +448,12 @@ var defaultConfig = {
 		 * @since 2.7.0
 		 */
 		source: 'auto',
+
+		isMajor: function(ctx) {
+			var value = ctx.value;
+			var majorUnit = ctx.majorUnit;
+			return majorUnit ? value === +ctx.adapter.startOf(value, majorUnit) : false;
+		},
 
 		major: {
 			enabled: false
@@ -637,7 +627,39 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(me, ticks, me._majorUnit);
+		return me._ticksFromTimestamps(ticks);
+	},
+
+	/**
+	 * @private
+	 */
+	_ticksFromTimestamps: function(values) {
+		var me = this;
+		var isMajor = me.options.ticks.isMajor;
+		var ticks = [];
+		var i, ilen, value, context;
+
+		for (i = 0, ilen = values.length; i < ilen; ++i) {
+			value = values[i];
+
+			// Scriptable options
+			context = {
+				chart: me.chart,
+				adapter: me._adapter,
+				unit: me._unit,
+				majorUnit: me._majorUnit,
+				value: value,
+				values: values,
+				dataIndex: i
+			};
+
+			ticks.push({
+				value: value,
+				major: resolve([isMajor], context)
+			});
+		}
+
+		return ticks;
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -678,7 +700,7 @@ module.exports = Scale.extend({
 		var major = majorTickOpts.enabled && majorUnit && majorFormat && tick && tick.major;
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
 		var nestedTickOpts = major ? majorTickOpts : tickOpts.minor;
-		var formatter = helpers.options.resolve([
+		var formatter = resolve([
 			nestedTickOpts.callback,
 			nestedTickOpts.userCallback,
 			tickOpts.callback,
@@ -785,7 +807,7 @@ module.exports = Scale.extend({
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
+		var exampleLabel = me.tickFormatFunction(exampleTime, 0, me._ticksFromTimestamps([exampleTime], me._majorUnit), format);
 		var size = me._getLabelSize(exampleLabel);
 
 		// Using margins instead of padding because padding is not calculated

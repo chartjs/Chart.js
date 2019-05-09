@@ -94,6 +94,7 @@ describe('Time scale tests', function() {
 				major: {
 					enabled: false
 				},
+				isMajor: defaultConfig.ticks.isMajor,
 			},
 			time: {
 				parser: false,
@@ -108,6 +109,7 @@ describe('Time scale tests', function() {
 
 		// Is this actually a function
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+		expect(defaultConfig.ticks.isMajor).toEqual(jasmine.any(Function));
 	});
 
 	describe('when given inputs of different types', function() {
