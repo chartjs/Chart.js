@@ -83,7 +83,7 @@ defaults._set('global', {
 
 		list.setAttribute('class', chart.id + '-legend');
 
-		for (i = 0, ilen = chart.data.datasets.length || 0; i < ilen; i++) {
+		for (i = 0, ilen = chart.data.datasets.length; i < ilen; i++) {
 			listItem = list.appendChild(document.createElement('li'));
 			listItemSpan = listItem.appendChild(document.createElement('span'));
 			listItemSpan.style.backgroundColor = chart.data.datasets[i].backgroundColor;
