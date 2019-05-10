@@ -315,6 +315,41 @@ describe('Time scale tests', function() {
 		expect(ticks).toEqual(['Jan 1', 'Jan 2', 'Jan 3']);
 	});
 
+	it('should correctly determine the unit', function() {
+		var date = moment('Jan 01 1990', 'MMM DD YYYY');
+		var data = [];
+		for (var i = 0; i < 60; i++) {
+			data.push({x: date.valueOf(), y: Math.random()});
+			date = date.clone().add(1, 'month');
+		}
+
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: data
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						ticks: {
+							source: 'data',
+							autoSkip: true
+						}
+					}],
+				}
+			}
+		});
+
+		var scale = chart.scales.xScale0;
+
+		expect(scale._unit).toEqual('month');
+	});
+
 	it('should build ticks based on the appropriate label capacity', function() {
 		var mockData = {
 			labels: [
