@@ -124,7 +124,7 @@ describe('Time scale tests', function() {
 			};
 
 			var scaleOptions = Chart.scaleService.getScaleDefaults('time');
-			var scale = createScale(mockData, scaleOptions, {width: 1000, height: 200});
+			var scale = createScale(mockData, scaleOptions, {width: 500, height: 200});
 			var ticks = getTicksLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
@@ -135,7 +135,7 @@ describe('Time scale tests', function() {
 			var mockData = {
 				labels: [newDateFromRef(0), newDateFromRef(1), newDateFromRef(2), newDateFromRef(4), newDateFromRef(6), newDateFromRef(7), newDateFromRef(9)], // days
 			};
-			var scale = createScale(mockData, Chart.scaleService.getScaleDefaults('time'), {width: 1000, height: 200});
+			var scale = createScale(mockData, Chart.scaleService.getScaleDefaults('time'), {width: 500, height: 200});
 			var ticks = getTicksLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
@@ -181,7 +181,7 @@ describe('Time scale tests', function() {
 						}],
 					}
 				}
-			}, {canvas: {width: 800, height: 200}});
+			}, {canvas: {width: 400, height: 200}});
 
 			var xScale = chart.scales.xScale0;
 			var ticks = getTicksLabels(xScale);
@@ -229,7 +229,7 @@ describe('Time scale tests', function() {
 						}],
 					}
 				}
-			}, {canvas: {width: 800, height: 200}});
+			}, {canvas: {width: 400, height: 200}});
 
 			var tScale = chart.scales.tScale0;
 			var ticks = getTicksLabels(tScale);
@@ -595,7 +595,7 @@ describe('Time scale tests', function() {
 						}],
 					}
 				}
-			}, {canvas: {width: 800, height: 200}});
+			}, {canvas: {width: 300, height: 200}});
 
 			this.scale = this.chart.scales.xScale0;
 		});

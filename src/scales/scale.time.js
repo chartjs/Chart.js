@@ -272,23 +272,51 @@ function determineStepSize(min, max, unit, capacity) {
 	return factor;
 }
 
-/**
- * Figures out what unit results in an appropriate number of auto-generated ticks
- */
-function determineUnitForAutoTicks(minUnit, min, max, capacity) {
-	var ilen = UNITS.length;
-	var i, interval, factor;
-
-	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
-		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
-
-		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
+function determineMajorUnit(unit) {
+	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
 	}
+}
 
-	return UNITS[ilen - 1];
+/**
+ * Figures out what unit results in an appropriate number of auto-generated ticks
+ */
+function determineUnitsForAutoTicks(scale) {
+	var timeOpts = scale.options.time;
+	var minor = timeOpts.unit;
+	var max = scale.max;
+	var range = max - scale.min;
+	var ilen = UNITS.length;
+	var i, major, interval, steps, factor, capacity;
+
+	if (minor) {
+		major = determineMajorUnit(minor);
+		capacity = scale.getLabelCapacity(max, minor, major);
+	} else {
+		for (i = UNITS.indexOf(timeOpts.minUnit); i < ilen; ++i) {
+			minor = UNITS[i];
+			major = determineMajorUnit(minor);
+			interval = INTERVALS[minor];
+
+			if (interval.common) {
+				steps = interval.steps;
+				factor = steps ? steps[steps.length - 1] : MAX_INTEGER;
+				capacity = scale.getLabelCapacity(max, minor, major);
+
+				if (Math.ceil(range / (factor * interval.size)) <= capacity) {
+					break;
+				}
+			}
+		}
+	}
+
+	return {
+		minor: minor,
+		major: major,
+		capacity: capacity
+	};
 }
 
 /**
@@ -308,26 +336,21 @@ function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
 	return UNITS[minUnit ? UNITS.indexOf(minUnit) : 0];
 }
 
-function determineMajorUnit(unit) {
-	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].common) {
-			return UNITS[i];
-		}
-	}
-}
-
 /**
  * Generates a maximum of `capacity` timestamps between min and max, rounded to the
  * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(scale, min, max, capacity) {
+function generate(scale) {
+	var min = scale.min;
+	var max = scale.max;
 	var adapter = scale._adapter;
 	var options = scale.options;
 	var timeOpts = options.time;
-	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
-	var major = determineMajorUnit(minor);
+	var units = determineUnitsForAutoTicks(scale);
+	var minor = units.minor;
+	var major = units.major;
 	var stepSize = valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
@@ -338,7 +361,7 @@ function generate(scale, min, max, capacity) {
 	var time;
 
 	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
+		stepSize = determineStepSize(min, max, minor, units.capacity);
 	}
 
 	// For 'week' unit, handle the first day of week option
@@ -623,7 +646,7 @@ module.exports = Scale.extend({
 			break;
 		case 'auto':
 		default:
-			timestamps = generate(me, min, max, me.getLabelCapacity(min), options);
+			timestamps = generate(me);
 		}
 
 		if (options.bounds === 'ticks' && timestamps.length) {
@@ -800,19 +823,22 @@ module.exports = Scale.extend({
 	/**
 	 * @private
 	 */
-	getLabelCapacity: function(exampleTime) {
+	getLabelCapacity: function(exampleTime, minor, major) {
 		var me = this;
-		var timeOpts = me.options.time;
+		var options = me.options;
+		var timeOpts = options.time;
 		var displayFormats = timeOpts.displayFormats;
-
-		// pick the longest format (milliseconds) for guestimation
-		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
+		var format = displayFormats[minor || timeOpts.unit] || displayFormats.millisecond;
+		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
 		var size = me._getLabelSize(exampleLabel);
 		var capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
 
-		if (me.options.offset) {
+		if (options.offset) {
 			capacity--;
+		}
+
+		if (major && options.ticks.major.enabled) {
+			capacity = Math.min(capacity, me.getLabelCapacity(exampleTime, major));
 		}
 
 		return capacity > 0 ? capacity : 1;
