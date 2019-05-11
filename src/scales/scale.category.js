@@ -7,19 +7,9 @@ var defaultConfig = {
 };
 
 module.exports = Scale.extend({
-	/**
-	* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
-	* else fall back to data.labels
-	* @private
-	*/
-	getLabels: function() {
-		var data = this.chart.data;
-		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
-	},
-
 	determineDataLimits: function() {
 		var me = this;
-		var labels = me.getLabels();
+		var labels = me._getLabels();
 		me.minIndex = 0;
 		me.maxIndex = labels.length - 1;
 		var findIndex;
@@ -42,7 +32,7 @@ module.exports = Scale.extend({
 
 	buildTicks: function() {
 		var me = this;
-		var labels = me.getLabels();
+		var labels = me._getLabels();
 		// If we are viewing some subset of labels, slice the original array
 		me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
 	},
@@ -72,7 +62,7 @@ module.exports = Scale.extend({
 			valueCategory = me.isHorizontal() ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
-			var labels = me.getLabels();
+			var labels = me._getLabels();
 			value = valueCategory || value;
 			var idx = labels.indexOf(value);
 			index = idx !== -1 ? idx : index;
