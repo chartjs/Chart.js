@@ -148,6 +148,22 @@ function containsItemsWithValueAfterIndex(array, key, value, index) {
 	return false;
 }
 
+function _getLayerArgs(layer, easingValue) {
+	return {
+		meta: layer._meta,
+		index: layer._dsIdx,
+		easingValue: easingValue
+	};
+}
+
+function _shouldDrawLayer(controller, layer, notifyCache, easingValue) {
+	var datasetIndex = layer._dsIdx;
+	if (notifyCache[datasetIndex] === undefined) {
+		notifyCache[datasetIndex] = plugins.notify(controller, 'beforeDatasetDraw', [_getLayerArgs(layer, easingValue)]) !== false;
+	}
+	return notifyCache[datasetIndex];
+}
+
 function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
 }
@@ -712,22 +728,39 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	/**
 	 * @private
 	 */
-	_getVisibleDatasetLayers: function() {
+	_getVisibleDatasetMetas: function() {
 		var me = this;
 		var datasets = (me.data.datasets || []);
-		var visibleLayers = [];
-		var layerIndex = 0;
-		var i, ilen, layers, layer, j, jlen;
+		var metas = [];
+		var i, ilen;
 
 		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
 			if (me.isDatasetVisible(i)) {
-				layers = me.getDatasetMeta(i).controller._layers();
-				for (j = 0, jlen = layers.length; j < jlen; ++j) {
-					layer = layers[j];
-					layer._dsIdx = i;
-					layer._idx = layerIndex++;
-					visibleLayers.push(layer);
-				}
+				metas.push(me.getDatasetMeta(i));
+			}
+		}
+		return metas;
+	},
+
+	/**
+	 * @private
+	 */
+	_getVisibleDatasetLayers: function() {
+		var me = this;
+		var metas = me._getVisibleDatasetMetas();
+		var visibleLayers = [];
+		var layerIndex = 0;
+		var i, ilen, layers, meta, layer, j, jlen;
+
+		for (i = 0, ilen = metas.length; i < ilen; ++i) {
+			meta = metas[i];
+			layers = meta.controller._layers();
+			for (j = 0, jlen = layers.length; j < jlen; ++j) {
+				layer = layers[j];
+				layer._dsIdx = meta.index;
+				layer._idx = layerIndex++;
+				layer._meta = meta;
+				visibleLayers.push(layer);
 			}
 		}
 
@@ -753,28 +786,17 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	_drawDatasets: function(easingValue) {
 		var me = this;
 		var layers = me._datasetLayers;
-		var drawDatasets = {};
-		var i, len, layer, datasetIndex, args;
+		var notifyCache = {};
+		var i, len, layer;
 
 		for (i = 0, len = layers.length; i < len; ++i) {
 			layer = layers[i];
-			datasetIndex = layer._dsIdx;
 
-			args = {
-				meta: me.getDatasetMeta(datasetIndex),
-				index: datasetIndex,
-				easingValue: easingValue
-			};
-
-			if (drawDatasets[datasetIndex] === undefined) {
-				drawDatasets[datasetIndex] = plugins.notify(me, 'beforeDatasetDraw', [args]) !== false;
-			}
-
-			if (drawDatasets[datasetIndex]) {
+			if (_shouldDrawLayer(me, layer, notifyCache, easingValue)) {
 				layer.draw(easingValue);
 
-				if (!containsItemsWithValueAfterIndex(layers, '_dsIdx', datasetIndex, i)) {
-					plugins.notify(me, 'afterDatasetDraw', [args]);
+				if (!containsItemsWithValueAfterIndex(layers, '_dsIdx', layer._dsIdx, i)) {
+					plugins.notify(me, 'afterDatasetDraw', [_getLayerArgs(layer, easingValue)]);
 				}
 			}
 		}
