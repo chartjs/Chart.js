@@ -138,6 +138,14 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
+	_areDataOptsDynamicallyResolved: function() {
+		// disable caching for now since this controller has custom _resolveDataElementOptions implementation
+		return true;
+	},
+
+	/**
+	 * @private
+	 */
 	_resolveDataElementOptions: function(point, index) {
 		var me = this;
 		var chart = me.chart;

@@ -109,6 +109,20 @@ module.exports = {
 	},
 
 	/**
+	 * @private
+	 */
+	_areDynamicallyResolved: function(options) {
+		var i, ilen, option;
+		for (i = 0, ilen = options.length; i < ilen; ++i) {
+			option = options[i];
+			if (helpers.isArray(option) || typeof option === 'function') {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	/**
 	 * Evaluates the given `inputs` sequentially and returns the first defined value.
 	 * @param {Array} inputs - An array of values, falling back to the last value.
 	 * @param {object} [context] - If defined and the current value is a function, the value
