@@ -404,8 +404,9 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {start: start, end: end};
 }
 
-function ticksFromTimestamps(scale, values, majorUnit) {
+function ticksFromTimestamps(scale, values) {
 	var ticks = [];
+	var majorUnit = scale._majorUnit;
 	var i, ilen, value, major;
 
 	for (i = 0, ilen = values.length; i < ilen; ++i) {
@@ -637,7 +638,7 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(me, ticks, me._majorUnit);
+		return ticksFromTimestamps(me, ticks);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -672,10 +673,10 @@ module.exports = Scale.extend({
 		var minorFormat = formats[me._unit];
 		var majorUnit = me._majorUnit;
 		var majorFormat = formats[majorUnit];
-		var majorTime = +adapter.startOf(time, majorUnit);
+		var isMajorTime = isNaN(index) ? false : ticks[index].major;
 		var tickOpts = options.ticks;
 		var majorTickOpts = tickOpts.major;
-		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
+		var major = majorTickOpts.enabled && majorUnit && majorFormat && isMajorTime;
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
 		var nestedTickOpts = major ? majorTickOpts : tickOpts.minor;
 		var formatter = helpers.options.resolve([
@@ -785,7 +786,7 @@ module.exports = Scale.extend({
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
+		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime]), format);
 		var size = me._getLabelSize(exampleLabel);
 
 		// Using margins instead of padding because padding is not calculated
