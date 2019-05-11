@@ -214,7 +214,6 @@ var Scale = Element.extend({
 		return this._ticks;
 	},
 
-
 	/**
 	* @private
 	*/
