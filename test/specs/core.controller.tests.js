@@ -1297,6 +1297,30 @@ describe('Chart', function() {
 				'before-0', 'after-0'
 			]);
 		});
+
+		it('should draw visible datasets in correct order', function() {
+			var sequence = [];
+			var plugin = this.plugin = {
+				beforeDatasetDraw: function(chart, args) {
+					sequence.push('before-' + args.index);
+				},
+				afterDatasetDraw: function(chart, args) {
+					sequence.push('after-' + args.index);
+				}
+			};
+
+			window.acquireChart({
+				type: 'line',
+				data: {datasets: [{z: 10}, {z: 10}, {z: 20}]},
+				plugins: [plugin]
+			});
+
+			expect(sequence).toEqual([
+				'before-1', 'after-1',
+				'before-0', 'after-0',
+				'before-2', 'after-2'
+			]);
+		});
 	});
 
 	describe('controller.update', function() {

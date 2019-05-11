@@ -272,9 +272,11 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_configure: function() {
 		var me = this;
+		var dataset = me.getDataset();
+
 		me._config = helpers.merge({}, [
 			me.chart.options.datasets[me._type],
-			me.getDataset(),
+			dataset,
 		], {
 			merger: function(key, target, source) {
 				if (key !== '_meta' && key !== 'data') {
@@ -320,6 +322,17 @@ helpers.extend(DatasetController.prototype, {
 		for (; i < ilen; ++i) {
 			elements[i].draw();
 		}
+	},
+
+	_layers: function() {
+		var me = this;
+
+		return [{
+			z: me._config.z || 0,
+			draw: function() {
+				me.draw.apply(me, arguments);
+			}
+		}];
 	},
 
 	/**

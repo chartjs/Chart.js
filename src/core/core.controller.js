@@ -685,8 +685,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 */
 	transition: function(easingValue) {
 		var me = this;
+		var i, ilen;
 
-		for (var i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
+		for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
 			if (me.isDatasetVisible(i)) {
 				me.getDatasetMeta(i).controller.transition(easingValue);
 			}
@@ -696,48 +697,85 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
+	 * @private
+	 */
+	_getSortedVisibleDatasetLayers: function() {
+		var me = this;
+		var datasets = (me.data.datasets || []);
+		var visibleLayers = [];
+		var i, ilen, layers, j, jlen;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			if (me.isDatasetVisible(i)) {
+				layers = me.getDatasetMeta(i).controller._layers();
+				for (j = 0, jlen = layers.length; j < jlen; ++j) {
+					layers[j]._dsIdx = i;
+					visibleLayers.push(layers[j]);
+				}
+			}
+		}
+
+		for (i = 0, ilen = visibleLayers.length; i < ilen; ++i) {
+			visibleLayers[i]._idx = i;
+		}
+
+		// layers are sorted by z, reverse dataSetIndex, layer index
+		visibleLayers.sort(function(a, b) {
+			return a.z === b.z
+				? a._dsIdx === b._dsIdx
+					? a._idx - b._idx
+					: b._dsIdx - a._dsIdx
+				: a.z - b.z;
+		});
+
+		return visibleLayers;
+	},
+
+	/**
 	 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
 	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
 	drawDatasets: function(easingValue) {
 		var me = this;
+		var layers = me._getSortedVisibleDatasetLayers();
+		var drawDatasets = {};
+		var i, len, layer, datasetIndex, args, j, more;
 
 		if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
 			return;
 		}
 
-		// Draw datasets reversed to support proper line stacking
-		for (var i = (me.data.datasets || []).length - 1; i >= 0; --i) {
-			if (me.isDatasetVisible(i)) {
-				me.drawDataset(i, easingValue);
+		for (i = 0, len = layers.length; i < len; ++i) {
+			layer = layers[i];
+			datasetIndex = layer._dsIdx;
+
+			args = {
+				meta: me.getDatasetMeta(datasetIndex),
+				index: datasetIndex,
+				easingValue: easingValue
+			};
+
+			if (drawDatasets[datasetIndex] === undefined) {
+				drawDatasets[datasetIndex] = plugins.notify(me, 'beforeDatasetDraw', [args]) !== false;
+			}
+
+			if (drawDatasets[datasetIndex]) {
+				layer.draw(easingValue);
+
+				for (more = false, j = i + 1; j < len; ++j) {
+					if (layers[j]._dsIdx === datasetIndex) {
+						more = true;
+						break;
+					}
+				}
+				if (!more) {
+					plugins.notify(me, 'afterDatasetDraw', [args]);
+				}
 			}
 		}
 
 		plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
-	},
-
-	/**
-	 * Draws dataset at index unless a plugin returns `false` to the `beforeDatasetDraw`
-	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
-	 * @private
-	 */
-	drawDataset: function(index, easingValue) {
-		var me = this;
-		var meta = me.getDatasetMeta(index);
-		var args = {
-			meta: meta,
-			index: index,
-			easingValue: easingValue
-		};
-
-		if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
-			return;
-		}
-
-		meta.controller.draw(easingValue);
-
-		plugins.notify(me, 'afterDatasetDraw', [args]);
 	},
 
 	/**
@@ -807,7 +845,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				controller: null,
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
-				yAxisID: null
+				yAxisID: null,
+				z: 0,
+				index: datasetIndex
 			};
 		}
 
