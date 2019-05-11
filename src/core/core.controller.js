@@ -137,6 +137,17 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
+function containsItemsWithValueAfterIndex(array, key, value, index) {
+	var i, ilen;
+
+	for (i = index + 1, ilen = array.length; i < ilen; ++i) {
+		if (array[i][key] === value) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
 }
@@ -554,14 +565,16 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 */
 	updateDatasets: function() {
 		var me = this;
+		var i, ilen;
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
-		for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
 			me.updateDataset(i);
 		}
+		me._datasetLayers = me._getSortedVisibleDatasetLayers();
 
 		plugins.notify(me, 'afterDatasetsUpdate');
 	},
@@ -699,52 +712,49 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	/**
 	 * @private
 	 */
-	_getSortedVisibleDatasetLayers: function() {
+	_getVisibleDatasetLayers: function() {
 		var me = this;
 		var datasets = (me.data.datasets || []);
 		var visibleLayers = [];
-		var i, ilen, layers, j, jlen;
+		var layerIndex = 0;
+		var i, ilen, layers, layer, j, jlen;
 
 		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
 			if (me.isDatasetVisible(i)) {
 				layers = me.getDatasetMeta(i).controller._layers();
 				for (j = 0, jlen = layers.length; j < jlen; ++j) {
-					layers[j]._dsIdx = i;
-					visibleLayers.push(layers[j]);
+					layer = layers[j];
+					layer._dsIdx = i;
+					layer._idx = layerIndex++;
+					visibleLayers.push(layer);
 				}
 			}
 		}
-
-		for (i = 0, ilen = visibleLayers.length; i < ilen; ++i) {
-			visibleLayers[i]._idx = i;
-		}
-
-		// layers are sorted by z, reverse dataSetIndex, layer index
-		visibleLayers.sort(function(a, b) {
-			return a.z === b.z
-				? a._dsIdx === b._dsIdx
-					? a._idx - b._idx
-					: b._dsIdx - a._dsIdx
-				: a.z - b.z;
-		});
 
 		return visibleLayers;
 	},
 
 	/**
-	 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
-	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
-	drawDatasets: function(easingValue) {
-		var me = this;
-		var layers = me._getSortedVisibleDatasetLayers();
-		var drawDatasets = {};
-		var i, len, layer, datasetIndex, args, j, more;
+	_getSortedVisibleDatasetLayers: function() {
 
-		if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
-			return;
-		}
+		// layers are sorted by z, reverse dataSetIndex, layer index
+		return this._getVisibleDatasetLayers()
+			.sort(function(a, b) {
+				return a.z === b.z
+					? a._dsIdx === b._dsIdx
+						? a._idx - b._idx
+						: b._dsIdx - a._dsIdx
+					: a.z - b.z;
+			});
+	},
+
+	_drawDatasets: function(easingValue) {
+		var me = this;
+		var layers = me._datasetLayers;
+		var drawDatasets = {};
+		var i, len, layer, datasetIndex, args;
 
 		for (i = 0, len = layers.length; i < len; ++i) {
 			layer = layers[i];
@@ -763,17 +773,26 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			if (drawDatasets[datasetIndex]) {
 				layer.draw(easingValue);
 
-				for (more = false, j = i + 1; j < len; ++j) {
-					if (layers[j]._dsIdx === datasetIndex) {
-						more = true;
-						break;
-					}
-				}
-				if (!more) {
+				if (!containsItemsWithValueAfterIndex(layers, '_dsIdx', datasetIndex, i)) {
 					plugins.notify(me, 'afterDatasetDraw', [args]);
 				}
 			}
 		}
+	},
+
+	/**
+	 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
+	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
+	 * @private
+	 */
+	drawDatasets: function(easingValue) {
+		var me = this;
+
+		if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
+			return;
+		}
+
+		me._drawDatasets(easingValue);
 
 		plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
 	},
