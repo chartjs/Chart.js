@@ -197,6 +197,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.options = config.options;
 		me._bufferedRender = false;
 		me._layers = [];
+		me._datasetLayers = [];
 
 		/**
 		 * Provided for backward compatibility, Chart and Chart.Controller have been merged,

@@ -70,3 +70,30 @@ At this point we have a chart rendering how we'd like. It's important to note th
     }
 }
 {% endchartjs %}
+
+## Drawing order
+
+By default, datasets are drawn so that first one is topmost. This can be altered by specifying `z` option to datasets. `z` defaults to `0`.
+
+```javascript
+var mixedChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        datasets: [{
+            label: 'Bar Dataset',
+            data: [10, 20, 30, 40]
+        }, {
+            label: 'Line Dataset',
+            data: [10, 10, 10, 10],
+
+            // Changes this dataset to become a line
+            type: 'line',
+
+            // Draw at z-index 1
+            z: 1
+        }],
+        labels: ['January', 'February', 'March', 'April']
+    },
+    options: options
+});
+```
