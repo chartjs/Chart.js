@@ -887,7 +887,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
 				yAxisID: null,
-				z: 0,
 				index: datasetIndex
 			};
 		}

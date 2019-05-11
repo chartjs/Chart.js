@@ -272,11 +272,10 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_configure: function() {
 		var me = this;
-		var dataset = me.getDataset();
 
 		me._config = helpers.merge({}, [
 			me.chart.options.datasets[me._type],
-			dataset,
+			me.getDataset()
 		], {
 			merger: function(key, target, source) {
 				if (key !== '_meta' && key !== 'data') {
