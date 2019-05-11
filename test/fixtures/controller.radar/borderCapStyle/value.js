@@ -2,17 +2,21 @@ module.exports = {
 	config: {
 		type: 'radar',
 		data: {
-			labels: [0, 1, 2, 3, 4, 5],
+			labels: [0, 1, 2, 3],
 			datasets: [
 				{
 					// option in dataset
-					data: [0, 5, 10, null, -10, -5],
-					borderColor: '#0000ff',
-					borderWidth: 6
+					data: [3, 3, 3, 3],
+					borderCapStyle: 'round'
+				},
+				{
+					// option in dataset
+					data: [2, 2, 2, 2],
+					borderCapStyle: 'square'
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5]
+					data: [1, 1, 1, 1]
 				}
 			]
 		},
@@ -21,18 +25,22 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
+					borderCapStyle: 'butt',
 					borderColor: '#00ff00',
-					borderWidth: 3,
+					borderWidth: 32,
 					fill: false
 				},
 				point: {
 					radius: 10
 				}
 			},
+			layout: {
+				padding: 32
+			},
 			scale: {
 				display: false,
 				ticks: {
-					min: -15
+					beginAtZero: true
 				}
 			}
 		}
