@@ -3,6 +3,7 @@
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
+var _areDynamicallyResolved = helpers.options._areDynamicallyResolved;
 
 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -287,6 +288,12 @@ helpers.extend(DatasetController.prototype, {
 	_update: function(reset) {
 		var me = this;
 		me._configure();
+
+		me._cachedDataOpts = null;
+		if (!me._areDataOptsDynamicallyResolved()) {
+			me._cachedDataOpts = Object.freeze(me._resolveDataElementOptions());
+		}
+
 		me.update(reset);
 	},
 
@@ -386,13 +393,17 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_resolveDataElementOptions: function(element, index) {
 		var me = this;
+		var custom = element && element.custom;
+		var cached = me._cachedDataOpts;
+		if (cached && !custom) {
+			return cached;
+		}
+
 		var chart = me.chart;
 		var datasetOpts = me._config;
-		var custom = element.custom || {};
 		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
 		var elementOptions = me._dataElementOptions;
 		var values = {};
-		var keys, i, ilen, key;
 
 		// Scriptable options
 		var context = {
@@ -402,6 +413,9 @@ helpers.extend(DatasetController.prototype, {
 			datasetIndex: me.index
 		};
 
+		var keys, i, ilen, key;
+
+		custom = custom || {};
 		if (helpers.isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
@@ -425,6 +439,42 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		return values;
+	},
+
+	/**
+	 * @private
+	 */
+	_areDataOptsDynamicallyResolved: function() {
+		var me = this;
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
+		var elementOptions = me._dataElementOptions;
+		var keys, i, ilen, key;
+		if (helpers.isArray(elementOptions)) {
+			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+				key = elementOptions[i];
+				if (_areDynamicallyResolved([
+					datasetOpts[key],
+					options[key]
+				])) {
+					return true;
+				}
+			}
+		} else {
+			keys = Object.keys(elementOptions);
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				if (_areDynamicallyResolved([
+					datasetOpts[elementOptions[key]],
+					datasetOpts[key],
+					options[key]
+				])) {
+					return true;
+				}
+			}
+		}
+		return false;
 	},
 
 	removeHoverStyle: function(element) {
