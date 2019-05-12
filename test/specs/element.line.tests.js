@@ -1665,6 +1665,9 @@ describe('Chart.elements.Line', function() {
 			name: 'lineTo',
 			args: [0, 10]
 		}, {
+			name: 'closePath',
+			args: [],
+		}, {
 			name: 'stroke',
 			args: [],
 		}, {
@@ -1770,9 +1773,6 @@ describe('Chart.elements.Line', function() {
 		}, {
 			name: 'beginPath',
 			args: []
-		}, {
-			name: 'moveTo',
-			args: [0, 10]
 		}, {
 			name: 'moveTo',
 			args: [15, -10]
@@ -1901,6 +1901,9 @@ describe('Chart.elements.Line', function() {
 		}, {
 			name: 'lineTo',
 			args: [0, 10]
+		}, {
+			name: 'closePath',
+			args: [],
 		}, {
 			name: 'stroke',
 			args: [],
@@ -2131,9 +2134,6 @@ describe('Chart.elements.Line', function() {
 		}, {
 			name: 'lineTo',
 			args: [15, -10]
-		}, {
-			name: 'moveTo',
-			args: [0, 10]
 		}, {
 			name: 'stroke',
 			args: [],
