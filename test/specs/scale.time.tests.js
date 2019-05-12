@@ -1456,7 +1456,7 @@ describe('Time scale tests', function() {
 					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
 				});
 
-				it ('should not add offset if min and max extend the labels range and offset is true', function() {
+				it ('should add offset if min and max extend the labels range and offset is true', function() {
 					var chart = this.chart;
 					var scale = chart.scales.x;
 					var options = chart.options.scales.xAxes[0];
@@ -1466,8 +1466,11 @@ describe('Time scale tests', function() {
 					options.offset = true;
 					chart.update();
 
-					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
-					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
+					var numTicks = scale.ticks.length;
+					var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				});
 			});
 		});
