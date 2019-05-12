@@ -183,14 +183,21 @@ module.exports = DatasetController.extend({
 		var yScale = me._yScale;
 		var sumPos = 0;
 		var sumNeg = 0;
-		var i, ds, dsMeta;
+		var rightValue = +yScale.getRightValue(value);
+		var metasets = chart._getSortedVisibleDatasetMetas();
+		var ilen = metasets.length;
+		var i, ds, dsMeta, stackedRightValue;
 
 		if (yScale.options.stacked) {
-			for (i = 0; i < datasetIndex; i++) {
-				ds = chart.data.datasets[i];
-				dsMeta = chart.getDatasetMeta(i);
-				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
-					var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
+			for (i = 0; i < ilen; ++i) {
+				dsMeta = metasets[i];
+				if (dsMeta.index === datasetIndex) {
+					break;
+				}
+
+				ds = chart.data.datasets[dsMeta.index];
+				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id) {
+					stackedRightValue = +yScale.getRightValue(ds.data[index]);
 					if (stackedRightValue < 0) {
 						sumNeg += stackedRightValue || 0;
 					} else {
@@ -199,14 +206,11 @@ module.exports = DatasetController.extend({
 				}
 			}
 
-			var rightValue = Number(yScale.getRightValue(value));
 			if (rightValue < 0) {
 				return yScale.getPixelForValue(sumNeg + rightValue);
 			}
-			return yScale.getPixelForValue(sumPos + rightValue);
 		}
-
-		return yScale.getPixelForValue(value);
+		return yScale.getPixelForValue(sumPos + rightValue);
 	},
 
 	updateBezierControlPoints: function() {

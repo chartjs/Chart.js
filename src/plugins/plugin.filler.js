@@ -354,12 +354,12 @@ module.exports = {
 	},
 
 	beforeDatasetsDraw: function(chart) {
-		var count = (chart.data.datasets || []).length - 1;
+		var metasets = chart._getSortedVisibleDatasetMetas();
 		var ctx = chart.ctx;
 		var meta, i, el, view, points, mapper, color;
 
-		for (i = count; i >= 0; --i) {
-			meta = chart.getDatasetMeta(i).$filler;
+		for (i = metasets.length - 1; i >= 0; --i) {
+			meta = metasets[i].$filler;
 
 			if (!meta || !meta.visible) {
 				continue;
