@@ -62,37 +62,6 @@ function getIntersectItems(chart, position) {
 }
 
 /**
- * Helper function to get the items nearest to the event position considering all visible items in teh chart
- * @param {Chart} chart - the chart to look at elements from
- * @param {object} position - the point to be nearest to
- * @param {boolean} intersect - if true, only consider items that intersect the position
- * @param {function} distanceMetric - function to provide the distance between points
- * @return {ChartElement[]} the nearest items
- */
-function getNearestItems(chart, position, intersect, distanceMetric) {
-	var minDistance = Number.POSITIVE_INFINITY;
-	var nearestItems = [];
-
-	parseVisibleItems(chart, function(element) {
-		if (intersect && !element.inRange(position.x, position.y)) {
-			return;
-		}
-
-		var center = element.getCenterPoint();
-		var distance = distanceMetric(position, center);
-		if (distance < minDistance) {
-			nearestItems = [element];
-			minDistance = distance;
-		} else if (distance === minDistance) {
-			// Can have multiple items at the same distance in which case we sort by size
-			nearestItems.push(element);
-		}
-	});
-
-	return nearestItems;
-}
-
-/**
  * Get a distance metric function for two points based on the
  * axis mode setting
  * @param {string} axis - the axis mode. x|y|xy
@@ -108,12 +77,53 @@ function getDistanceMetricForAxis(axis) {
 	};
 }
 
+/**
+ * Helper function to get the items nearest to the event position,
+ * considering all visible items in the chart
+ * @param {Chart} chart - the chart to look at elements from
+ * @param {object} position - the point to be nearest to
+ * @param {object} options - {axis, intersect, useHitRadius}
+ * @return {ChartElement[]} - the nearest items
+ */
+function getNearestItems(chart, position, options) {
+	var minDistance = Number.POSITIVE_INFINITY;
+	var axis = options.axis || 'xy';
+	var distanceMetric = getDistanceMetricForAxis(axis);
+	var nearestItems = [];
+
+	parseVisibleItems(chart, function(element) {
+		if (options.intersect && !element.inRange(position.x, position.y)) {
+			return;
+		}
+
+		if (options.useHitRadius) {
+			if ((axis === 'x' && !element.inXRange(position.x))
+				|| (axis === 'y' && !element.inYRange(position.y))) {
+				return;
+			}
+		}
+
+		var center = element.getCenterPoint();
+		var distance = distanceMetric(position, center);
+
+		if (distance < minDistance) {
+			nearestItems = [element];
+			minDistance = distance;
+		} else if (distance === minDistance) {
+			// Can have multiple items at the same distance
+			nearestItems.push(element);
+		}
+	});
+
+	return nearestItems;
+}
+
 function indexMode(chart, e, options) {
 	var position = getRelativePosition(e, chart);
 	// Default axis for index mode is 'x' to match old behaviour
-	options.axis = options.axis || 'x';
-	var distanceMetric = getDistanceMetricForAxis(options.axis);
-	var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+	var items = options.intersect
+		? getIntersectItems(chart, position)
+		: getNearestItems(chart, position, {axis: options.axis || 'x', intersect: false});
 	var elements = [];
 
 	if (!items.length) {
@@ -196,9 +206,9 @@ module.exports = {
 		 */
 		dataset: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
-			options.axis = options.axis || 'xy';
-			var distanceMetric = getDistanceMetricForAxis(options.axis);
-			var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+			var items = options.intersect
+				? getIntersectItems(chart, position)
+				: getNearestItems(chart, position, {axis: options.axis || 'xy', intersect: false});
 
 			if (items.length > 0) {
 				items = chart.getDatasetMeta(items[0]._datasetIndex).data;
@@ -240,9 +250,7 @@ module.exports = {
 		 */
 		nearest: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
-			options.axis = options.axis || 'xy';
-			var distanceMetric = getDistanceMetricForAxis(options.axis);
-			return getNearestItems(chart, position, options.intersect, distanceMetric);
+			return getNearestItems(chart, position, options);
 		},
 
 		/**
@@ -255,25 +263,11 @@ module.exports = {
 		 */
 		x: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
-
-			parseVisibleItems(chart, function(element) {
-				if (element.inXRange(position.x)) {
-					items.push(element);
-				}
-
-				if (element.inRange(position.x, position.y)) {
-					intersectsItem = true;
-				}
+			return getNearestItems(chart, position, {
+				axis: 'x',
+				intersect: options.intersect,
+				useHitRadius: true
 			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				items = [];
-			}
-			return items;
 		},
 
 		/**
@@ -286,25 +280,11 @@ module.exports = {
 		 */
 		y: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
-
-			parseVisibleItems(chart, function(element) {
-				if (element.inYRange(position.y)) {
-					items.push(element);
-				}
-
-				if (element.inRange(position.x, position.y)) {
-					intersectsItem = true;
-				}
+			return getNearestItems(chart, position, {
+				axis: 'y',
+				intersect: options.intersect,
+				useHitRadius: true
 			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				items = [];
-			}
-			return items;
 		}
 	}
 };

@@ -605,22 +605,28 @@ describe('Core.Interaction', function() {
 	describe('x mode', function() {
 		beforeEach(function() {
 			this.chart = window.acquireChart({
-				type: 'line',
+				type: 'scatter',
 				data: {
 					datasets: [{
 						label: 'Dataset 1',
-						data: [10, 40, 30],
-						pointRadius: [5, 10, 5],
+						data: [{x: 1, y: 10}, {x: 2, y: 40}, {x: 2, y: 40}, {x: 3, y: 30}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(255, 0, 0)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
 					}, {
 						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointRadius: [10, 10, 10],
+						data: [{x: 1, y: 40}, {x: 2, y: 40}, {x: 2, y: 40}, {x: 3, y: 40}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(0, 0, 255)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
+					}]
+				},
+				options: {
+					elements: {
+						point: {
+							hitRadius: 10
+						}
+					}
 				}
 			});
 		});
@@ -645,15 +651,14 @@ describe('Core.Interaction', function() {
 			};
 
 			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
-			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
+			expect(elements).toEqual([meta0.data[1], meta0.data[2], meta1.data[1], meta1.data[2]]);
 
-			evt = {
-				type: 'click',
-				chart: chart,
-				native: true, // needed otherwise things its a DOM event
-				x: pt.x + 20,
-				y: 0
-			};
+			evt.x += 15;
+
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
+			expect(elements).toEqual([meta0.data[2], meta1.data[2]]);
+
+			evt.x += 10;
 
 			elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
 			expect(elements).toEqual([]);
@@ -690,29 +695,40 @@ describe('Core.Interaction', function() {
 			};
 
 			elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
-			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
+			expect(elements).toEqual([meta0.data[1], meta0.data[2], meta1.data[1], meta1.data[2]]);
+
+			evt.x += 15;
+
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
+			expect(elements).toEqual([meta0.data[2], meta1.data[2]]);
 		});
 	});
 
 	describe('y mode', function() {
 		beforeEach(function() {
 			this.chart = window.acquireChart({
-				type: 'line',
+				type: 'scatter',
 				data: {
 					datasets: [{
 						label: 'Dataset 1',
-						data: [10, 40, 30],
-						pointRadius: [5, 10, 5],
+						data: [{x: 1, y: 10}, {x: 2, y: 40}, {x: 2.001, y: 40.001}, {x: 3, y: 30}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(255, 0, 0)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
 					}, {
 						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointRadius: [10, 10, 10],
+						data: [{x: 1, y: 40}, {x: 2, y: 40}, {x: 2.001, y: 40.001}, {x: 3, y: 40}],
+						pointRadius: [10, 5, 10, 5],
 						pointHoverBorderColor: 'rgb(0, 0, 255)',
 						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
+					}]
+				},
+				options: {
+					elements: {
+						point: {
+							hitRadius: 10
+						}
+					}
 				}
 			});
 		});
@@ -737,7 +753,7 @@ describe('Core.Interaction', function() {
 			};
 
 			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: false});
-			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
+			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[3]]);
 
 			evt = {
 				type: 'click',
@@ -782,7 +798,18 @@ describe('Core.Interaction', function() {
 			};
 
 			elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
-			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
+			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
+
+			evt = {
+				type: 'click',
+				chart: chart,
+				native: true,
+				x: pt.x,
+				y: pt.y + 15,
+			};
+
+			elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
+			expect(elements).toEqual([meta0.data[2], meta1.data[2]]);
 		});
 	});
 });
