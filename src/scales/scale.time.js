@@ -753,10 +753,9 @@ module.exports = Scale.extend({
 	},
 
 	/**
-	 * Crude approximation of what the label width might be
 	 * @private
 	 */
-	getLabelWidth: function(label) {
+	_getLabelSize: function(label) {
 		var me = this;
 		var ticksOpts = me.options.ticks;
 		var tickLabelWidth = me.ctx.measureText(label).width;
@@ -765,7 +764,18 @@ module.exports = Scale.extend({
 		var sinRotation = Math.sin(angle);
 		var tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
 
-		return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		return {
+			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
+			h: (tickLabelWidth * sinRotation) + (tickFontSize * cosRotation)
+		};
+	},
+
+	/**
+	 * Crude approximation of what the label width might be
+	 * @private
+	 */
+	getLabelWidth: function(label) {
+		return this._getLabelSize(label).w;
 	},
 
 	/**
@@ -779,17 +789,19 @@ module.exports = Scale.extend({
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
-		var tickLabelWidth = me.getLabelWidth(exampleLabel);
+		var size = me._getLabelSize(exampleLabel);
 
 		// Using margins instead of padding because padding is not calculated
 		// at this point (buildTicks). Margins are provided from previous calculation
 		// in layout steps 5/6
-		var innerWidth = me.isHorizontal()
-			? me.width - (margins.left + margins.right)
-			: me.height - (margins.top + margins.bottom);
-		var capacity = Math.floor(innerWidth / tickLabelWidth);
+		var capacity = Math.floor(me.isHorizontal()
+			? (me.width - margins.left - margins.right) / size.w
+			: (me.height - margins.top - margins.bottom) / size.h);
+
+		if (me.options.offset) {
+			capacity--;
+		}
 
 		return capacity > 0 ? capacity : 1;
 	}
