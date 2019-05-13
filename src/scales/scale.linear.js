@@ -153,7 +153,7 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return this.getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
+		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	// Utils
