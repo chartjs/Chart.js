@@ -4,7 +4,7 @@
 <head>
 	<title>Line Chart</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-	<script src="../../../dist/Chart.min.js"></script>
+	<script src="../../../dist/Chart.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
@@ -76,7 +76,7 @@
 			var now = moment();
 			var data = [];
 			var lessThanDay = unitLessThanDay();
-			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+			for (; data.length < 600 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
 				if (outsideMarketHours(date)) {
 					if (!lessThanDay || !beforeNineThirty(date)) {
 						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
@@ -112,13 +112,49 @@
 				}]
 			},
 			options: {
+				animation: {
+					duration: 0
+				},
 				scales: {
 					xAxes: [{
 						type: 'time',
 						distribution: 'series',
 						ticks: {
+							major: {
+								enabled: true
+							},
 							source: 'data',
-							autoSkip: true
+							autoSkip: true,
+							autoSkipPadding: 75,
+							maxRotation: 0,
+							sampleSize: 100
+						},
+						afterBuildTicks: function(scale, ticks) {
+							var unit = scale._unit;
+							var majorUnit = scale._majorUnit;
+							var i, ilen, tick, ts, val, lastMajorVal;
+							for (i = 0, ilen = ticks.length; i < ilen; i++) {
+								tick = ticks[i];
+								ts = tick.value;
+								val = moment(ts);
+								if (val.get(majorUnit) === lastMajorVal) {
+									tick.major = false;
+									continue;
+								}
+								lastMajorVal = val.get(majorUnit);
+								if (unit === 'hour' && val.hour() === 9) {
+									tick.major = true;
+									continue;
+								} else if (unit === 'day' && val.date() <= 3 && val.isoWeekday() === 1) {
+									tick.major = true;
+									continue;
+								} else if (unit === 'month' && val.month() === 0) {
+									tick.major = true;
+									continue;
+								}
+								tick.major = majorUnit ? ts === +scale._adapter.startOf(ts, majorUnit) : false;
+							}
+							return ticks;
 						}
 					}],
 					yAxes: [{
