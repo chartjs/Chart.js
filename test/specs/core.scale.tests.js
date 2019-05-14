@@ -34,12 +34,6 @@ describe('Core.scale', function() {
 			});
 		}
 
-		function lastTick(chart) {
-			var xAxis = chart.scales['x-axis-0'];
-			var ticks = xAxis.getTicks();
-			return ticks[ticks.length - 1];
-		}
-
 		it('should display the last tick if it fits evenly with other ticks', function() {
 			var chart = getChart({
 				labels: [
@@ -52,10 +46,12 @@ describe('Core.scale', function() {
 				}]
 			});
 
-			expect(lastTick(chart).label).toEqual('September 2018');
+			var xAxis = chart.scales['x-axis-0'];
+			var ticks = xAxis.getTicks();
+			expect(ticks[ticks.length - 1].label).toEqual('September 2018');
 		});
 
-		it('should not display the last tick if it does not fit evenly', function() {
+		it('should skip every other tick if there are too many to display', function() {
 			var chart = getChart({
 				labels: [
 					'January 2018', 'February 2018', 'March 2018', 'April 2018',
@@ -64,14 +60,16 @@ describe('Core.scale', function() {
 					'January 2019', 'February 2019', 'March 2019', 'April 2019',
 					'May 2019', 'June 2019', 'July 2019', 'August 2019',
 					'September 2019', 'October 2019', 'November 2019', 'December 2019',
-					'January 2020', 'February 2020'
+					'January 2020', 'February 2020', 'March 2020', 'April 2020'
 				],
 				datasets: [{
-					data: [12, 19, 3, 5, 2, 3, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+					data: [12, 19, 3, 5, 2, 3, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 				}]
 			});
 
-			expect(lastTick(chart).label).toBeUndefined();
+			var xAxis = chart.scales['x-axis-0'];
+			var ticks = xAxis.getTicks();
+			expect(ticks[1].label).toBeUndefined();
 		});
 	});
 

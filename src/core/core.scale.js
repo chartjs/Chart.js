@@ -5,6 +5,8 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 var Ticks = require('./core.ticks');
 
+var isArray = helpers.isArray;
+var isNullOrUndef = helpers.isNullOrUndef;
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
@@ -115,15 +117,15 @@ function computeLabelSizes(ctx, tickFonts, ticks, caches) {
 		lineHeight = tickFont.lineHeight;
 		width = height = 0;
 		// Undefined labels and arrays should not be measured
-		if (!helpers.isNullOrUndef(label) && !helpers.isArray(label)) {
+		if (!isNullOrUndef(label) && !isArray(label)) {
 			width = helpers.measureText(ctx, cache.data, cache.gc, width, label);
 			height = lineHeight;
-		} else if (helpers.isArray(label)) {
+		} else if (isArray(label)) {
 			// if it is an array let's measure each element
 			for (j = 0, jlen = label.length; j < jlen; ++j) {
 				nestedLabel = label[j];
 				// Undefined labels and arrays should not be measured
-				if (!helpers.isNullOrUndef(nestedLabel) && !helpers.isArray(nestedLabel)) {
+				if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
 					width = helpers.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
 					height += lineHeight;
 				}
@@ -187,6 +189,85 @@ function parseTickFontOptions(options) {
 	var major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
 
 	return {minor: minor, major: major};
+}
+
+function factorize(value) {
+	var result = [];
+	var sqrt = Math.sqrt(value);
+	var i;
+
+	for (i = 1; i < sqrt; i++) {
+		if (value % i === 0) {
+			result.push(i);
+			result.push(value / i);
+		}
+	}
+	if (Number.isInteger(sqrt)) {
+		result.push(sqrt);
+	}
+
+	result.sort(function(a, b) {
+		return a - b;
+	}).pop();
+	return result;
+}
+
+function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+	var evenMajorSpacing = majorIndices.length > 2 ? majorIndices.reduce(function(acc, val, idx, arr) {
+		return acc && idx > 1 && arr[idx] - arr[idx - 1] === arr[idx - 1] - arr[idx - 2];
+	}, true) : false;
+	var factors, factor, i, spacing;
+
+	// If the major ticks are evenly spaced apart, place the minor ticks
+	// so that they divide the major ticks into even chunks
+	if (evenMajorSpacing) {
+		factors = factorize(evenMajorSpacing);
+		for (i = factors.length - 1; i > 0; i--) {
+			factor = factors[i];
+			if (factor < ticksLimit * evenMajorSpacing / axisLength) {
+				spacing = factor;
+				break;
+			}
+		}
+	}
+	return Math.max(spacing || ticks.length / ticksLimit, 1);
+}
+
+function skipMajors(ticks, majorIndices, spacing) {
+	var ticksToKeep = [];
+	var i;
+
+	spacing = Math.ceil(spacing);
+	for (i = 0; i < majorIndices.length; i += spacing) {
+		ticksToKeep.push(majorIndices[i]);
+	}
+	for (i = 0; i < ticks.length; i++) {
+		if (ticksToKeep.indexOf(i) < 0) {
+			delete ticks[i].label;
+		}
+	}
+}
+
+function skip(ticks, spacing, majorStart, majorEnd) {
+	var ticksToKeep = [];
+	var start = valueOrDefault(majorStart, 0);
+	var end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
+	var length, i, tick;
+
+	spacing = Math.ceil(spacing);
+	if (majorEnd) {
+		length = majorEnd - majorStart;
+		spacing = length / Math.floor(length / spacing);
+	}
+	for (i = 0, tick = start; tick < end; i++) {
+		tick = Math.round(start + i * spacing);
+		ticksToKeep.push(tick);
+	}
+	for (i = Math.max(start, 0); i < end; i++) {
+		if (ticksToKeep.indexOf(i) < 0) {
+			delete ticks[i].label;
+		}
+	}
 }
 
 var Scale = Element.extend({
@@ -375,7 +456,7 @@ var Scale = Element.extend({
 	afterBuildTicks: function(ticks) {
 		var me = this;
 		// ticks is empty for old axis implementations here
-		if (helpers.isArray(ticks) && ticks.length) {
+		if (isArray(ticks) && ticks.length) {
 			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
 		}
 		// Support old implementations (that modified `this.ticks` directly in buildTicks)
@@ -579,7 +660,7 @@ var Scale = Element.extend({
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
 		// Null and undefined values first
-		if (helpers.isNullOrUndef(rawValue)) {
+		if (isNullOrUndef(rawValue)) {
 			return NaN;
 		}
 		// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
@@ -632,7 +713,7 @@ var Scale = Element.extend({
 		var me = this;
 		var offset = me.options.offset;
 		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
+			var innerWidth = me._axisLength();
 			var tickWidth = innerWidth / Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
 			var pixel = (tickWidth * index) + me.paddingLeft;
 
@@ -655,7 +736,7 @@ var Scale = Element.extend({
 	getPixelForDecimal: function(decimal) {
 		var me = this;
 		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
+			var innerWidth = me._axisLength();
 			var valueOffset = (innerWidth * decimal) + me.paddingLeft;
 
 			var finalVal = me.left + valueOffset;
@@ -684,50 +765,50 @@ var Scale = Element.extend({
 			0;
 	},
 
+	_axisLength: function() {
+		var me = this;
+		return me.isHorizontal()
+			? me.width - (me.paddingLeft + me.paddingRight)
+			: me.height - (me.paddingTop + me.paddingBottom);
+	},
+
 	/**
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
 	 * @private
 	 */
 	_autoSkip: function(ticks) {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
-		var optionTicks = me.options.ticks;
-		var tickCount = ticks.length;
-		var skipRatio = false;
-		var maxTicks = optionTicks.maxTicksLimit;
+		var tickOpts = me.options.ticks;
+		var axisLength = me._axisLength();
+		var ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
+		var majorIndices = tickOpts.major.enabled ? ticks.map(function(tick, i) {
+			return tick.major ? i : -1;
+		}).filter(function(val) {
+			return val >= 0;
+		}) : [];
+		var first = majorIndices[0];
+		var last = majorIndices[majorIndices.length - 1];
+		var i, ilen, spacing, avgMajorSpacing;
 
-		// Total space needed to display all ticks. First and last ticks are
-		// drawn as their center at end of axis, so tickCount-1
-		var ticksLength = me._tickSize() * (tickCount - 1);
-
-		// Axis length
-		var axisLength = isHorizontal
-			? me.width - (me.paddingLeft + me.paddingRight)
-			: me.height - (me.paddingTop + me.PaddingBottom);
-
-		var result = [];
-		var i, tick;
-
-		if (ticksLength > axisLength) {
-			skipRatio = 1 + Math.floor(ticksLength / axisLength);
+		// If there are too many major ticks to display them all
+		if (majorIndices.length > ticksLimit) {
+			skipMajors(ticks, majorIndices, majorIndices.length / ticksLimit);
+			return ticks;
 		}
 
-		// if they defined a max number of optionTicks,
-		// increase skipRatio until that number is met
-		if (tickCount > maxTicks) {
-			skipRatio = Math.max(skipRatio, 1 + Math.floor(tickCount / maxTicks));
-		}
+		spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
 
-		for (i = 0; i < tickCount; i++) {
-			tick = ticks[i];
-
-			if (skipRatio > 1 && i % skipRatio > 0) {
-				// leave tick in place but make sure it's not displayed (#4635)
-				delete tick.label;
+		if (majorIndices.length > 0) {
+			for (i = 0, ilen = majorIndices.length - 1; i < ilen; i++) {
+				skip(ticks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			result.push(tick);
+			avgMajorSpacing = majorIndices.length > 1 ? (last - first) / (majorIndices.length - 1) : null;
+			skip(ticks, spacing, isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, spacing, last, isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			return ticks;
 		}
-		return result;
+		skip(ticks, spacing);
+		return ticks;
 	},
 
 	/**
@@ -795,7 +876,8 @@ var Scale = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var autoSkipEnabled = optionTicks.display && (optionTicks.source === 'auto' || optionTicks.autoSkip);
+		var ticks = autoSkipEnabled ? me._autoSkip(me.getTicks()) : me.getTicks();
 		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
@@ -832,7 +914,7 @@ var Scale = Element.extend({
 
 		helpers.each(ticks, function(tick, index) {
 			// autoskipper skipped this tick (#4635)
-			if (helpers.isNullOrUndef(tick.label)) {
+			if (isNullOrUndef(tick.label)) {
 				return;
 			}
 
@@ -855,7 +937,7 @@ var Scale = Element.extend({
 
 			// Common properties
 			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY, textOffset, textAlign;
-			var labelCount = helpers.isArray(label) ? label.length : 1;
+			var labelCount = isArray(label) ? label.length : 1;
 			var lineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
 
 			if (isHorizontal) {
@@ -1042,7 +1124,7 @@ var Scale = Element.extend({
 
 			var label = item.label;
 			var y = item.textOffset;
-			if (helpers.isArray(label)) {
+			if (isArray(label)) {
 				for (var i = 0; i < label.length; ++i) {
 					// We just make sure the multiline element is a string here..
 					ctx.fillText('' + label[i], 0, y);

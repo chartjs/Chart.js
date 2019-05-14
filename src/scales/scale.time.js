@@ -5,6 +5,7 @@ var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
+var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
@@ -15,42 +16,42 @@ var INTERVALS = {
 	millisecond: {
 		common: true,
 		size: 1,
-		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+		steps: 1000
 	},
 	second: {
 		common: true,
 		size: 1000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	minute: {
 		common: true,
 		size: 60000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	hour: {
 		common: true,
 		size: 3600000,
-		steps: [1, 2, 3, 6, 12]
+		steps: 60
 	},
 	day: {
 		common: true,
 		size: 86400000,
-		steps: [1, 2, 5]
+		steps: 30
 	},
 	week: {
 		common: false,
 		size: 604800000,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	month: {
 		common: true,
 		size: 2.628e9,
-		steps: [1, 2, 3]
+		steps: 12
 	},
 	quarter: {
 		common: false,
 		size: 7.884e9,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	year: {
 		common: true,
@@ -248,31 +249,6 @@ function parse(scale, input) {
 }
 
 /**
- * Returns the number of unit to skip to be able to display up to `capacity` number of ticks
- * in `unit` for the given `min` / `max` range and respecting the interval steps constraints.
- */
-function determineStepSize(min, max, unit, capacity) {
-	var range = max - min;
-	var interval = INTERVALS[unit];
-	var milliseconds = interval.size;
-	var steps = interval.steps;
-	var i, ilen, factor;
-
-	if (!steps) {
-		return Math.ceil(range / (capacity * milliseconds));
-	}
-
-	for (i = 0, ilen = steps.length; i < ilen; ++i) {
-		factor = steps[i];
-		if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
-			break;
-		}
-	}
-
-	return factor;
-}
-
-/**
  * Figures out what unit results in an appropriate number of auto-generated ticks
  */
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
@@ -281,7 +257,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
+		factor = interval.steps ? interval.steps / 2 : MAX_INTEGER;
 
 		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
@@ -295,10 +271,9 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
  * Figures out what unit to format a set of ticks with
  */
 function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
-	var ilen = UNITS.length;
 	var i, unit;
 
-	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
+	for (i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
 		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= ticks.length - 1) {
 			return unit;
@@ -308,17 +283,9 @@ function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
 	return UNITS[minUnit ? UNITS.indexOf(minUnit) : 0];
 }
 
-function determineMajorUnit(unit) {
-	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].common) {
-			return UNITS[i];
-		}
-	}
-}
-
 /**
  * Generates a maximum of `capacity` timestamps between min and max, rounded to the
- * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
+ * `minor` unit using the given scale time `options`.
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
@@ -327,50 +294,28 @@ function generate(scale, min, max, capacity) {
 	var options = scale.options;
 	var timeOpts = options.time;
 	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
-	var major = determineMajorUnit(minor);
-	var stepSize = valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
+	var stepSize = resolve([timeOpts.stepSize, timeOpts.unitStepSize, 1]);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	var majorTicksEnabled = options.ticks.major.enabled;
-	var interval = INTERVALS[minor];
 	var first = min;
-	var last = max;
 	var ticks = [];
 	var time;
-
-	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
-	}
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
 		first = +adapter.startOf(first, 'isoWeek', weekday);
-		last = +adapter.startOf(last, 'isoWeek', weekday);
 	}
 
-	// Align first/last ticks on unit
+	// Align first ticks on unit
 	first = +adapter.startOf(first, weekday ? 'day' : minor);
-	last = +adapter.startOf(last, weekday ? 'day' : minor);
 
-	// Make sure that the last tick include max
-	if (last < max) {
-		last = +adapter.add(last, 1, minor);
+	// Prevent browser from freezing in case user options request millions of milliseconds
+	if (adapter.diff(max, min, minor) > 100000 * stepSize) {
+		throw min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor;
 	}
 
-	time = first;
-
-	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
-		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
-		// we first aligned time on the previous `major` unit then add the number of full
-		// stepSize there is between first and the previous major time.
-		time = +adapter.startOf(time, major);
-		time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
-	}
-
-	for (; time < last; time = +adapter.add(time, stepSize, minor)) {
+	for (time = first; time <= max; time = +adapter.add(time, stepSize, minor)) {
 		ticks.push(+time);
 	}
-
-	ticks.push(+time);
 
 	return ticks;
 }
@@ -593,6 +538,7 @@ module.exports = Scale.extend({
 		var timeOpts = options.time;
 		var timestamps = [];
 		var ticks = [];
+		var capacity = me.getLabelCapacity(min);
 		var i, ilen, timestamp;
 
 		switch (options.ticks.source) {
@@ -604,7 +550,7 @@ module.exports = Scale.extend({
 			break;
 		case 'auto':
 		default:
-			timestamps = generate(me, min, max, me.getLabelCapacity(min), options);
+			timestamps = generate(me, min, max, capacity, options);
 		}
 
 		if (options.bounds === 'ticks' && timestamps.length) {
@@ -629,7 +575,10 @@ module.exports = Scale.extend({
 
 		// PRIVATE
 		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
-		me._majorUnit = determineMajorUnit(me._unit);
+		// Make sure the major unit fits. Usually it will just be the next largest unit
+		// But if you have a lot of ticks it could be larger. E.g. if you have 8000 day ticks the majorUnit may be year
+		me._majorUnit = !options.ticks.major.enabled || me._unit === 'year' ? undefined
+			: determineUnitForAutoTicks(UNITS[UNITS.indexOf(me._unit) + 1], me.min, me.max, capacity);
 		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
@@ -674,10 +623,9 @@ module.exports = Scale.extend({
 		var majorFormat = formats[majorUnit];
 		var tick = ticks[index];
 		var tickOpts = options.ticks;
-		var majorTickOpts = tickOpts.major;
-		var major = majorTickOpts.enabled && majorUnit && majorFormat && tick && tick.major;
+		var major = majorUnit && majorFormat && tick && tick.major;
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		var nestedTickOpts = major ? majorTickOpts : tickOpts.minor;
+		var nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
 		var formatter = helpers.options.resolve([
 			nestedTickOpts.callback,
 			nestedTickOpts.userCallback,
