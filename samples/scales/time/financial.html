@@ -17,6 +17,7 @@
 
 <body>
 	<div style="width:1000px">
+		<p>This example demonstrates a time series scale by drawing a financial line chart using just the core library. For more specific functionality for financial charts, please see <a href="https://github.com/chartjs/chartjs-chart-financial">chartjs-chart-financial</a></p>
 		<canvas id="chart1"></canvas>
 	</div>
 	<br>
@@ -37,6 +38,27 @@
 	<button id="update">update</button>
 	<script>
 		function generateData() {
+			var unit = document.getElementById('unit').value;
+
+			function unitLessThanDay() {
+				return unit === 'second' || unit === 'minute' || unit === 'hour';
+			}
+
+			function beforeNineThirty(date) {
+				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
+			}
+
+			// Returns true if outside 9:30am-4pm on a weekday
+			function outsideMarketHours(date) {
+				if (date.isoWeekday() > 5) {
+					return true;
+				}
+				if (unitLessThanDay() && (beforeNineThirty(date) || date.hour() > 16)) {
+					return true;
+				}
+				return false;
+			}
+
 			function randomNumber(min, max) {
 				return Math.random() * (max - min) + min;
 			}
@@ -53,11 +75,17 @@
 			var date = moment('Jan 01 1990', 'MMM DD YYYY');
 			var now = moment();
 			var data = [];
-			var unit = document.getElementById('unit').value;
-			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit)) {
-				if (date.isoWeekday() <= 5) {
-					data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
+			var lessThanDay = unitLessThanDay();
+			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+				if (outsideMarketHours(date)) {
+					if (!lessThanDay || !beforeNineThirty(date)) {
+						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
+					}
+					if (lessThanDay) {
+						date = date.hour(9).minute(30).second(0);
+					}
 				}
+				data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
 			}
 
 			return data;
