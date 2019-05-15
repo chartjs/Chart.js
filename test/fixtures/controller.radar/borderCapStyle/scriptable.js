@@ -2,11 +2,11 @@ module.exports = {
 	config: {
 		type: 'radar',
 		data: {
-			labels: [0, 1, 2, 3],
+			labels: [0, 1, 2],
 			datasets: [
 				{
 					// option in dataset
-					data: [3, 3, 3, 3],
+					data: [null, 3, 3],
 					borderCapStyle: function(ctx) {
 						var index = (ctx.datasetIndex % 2);
 						return index === 0 ? 'round'
@@ -16,11 +16,11 @@ module.exports = {
 				},
 				{
 					// option in element (fallback)
-					data: [2, 2, 2, 2]
+					data: [null, 2, 2]
 				},
 				{
 					// option in element (fallback)
-					data: [1, 1, 1, 1]
+					data: [null, 1, 1]
 				}
 			]
 		},

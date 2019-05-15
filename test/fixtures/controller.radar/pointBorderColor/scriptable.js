@@ -36,6 +36,7 @@ module.exports = {
 							: value > -8 ? '#ff0000'
 							: '#00ff00';
 					},
+					borderWidth: 5,
 					radius: 10
 				}
 			},

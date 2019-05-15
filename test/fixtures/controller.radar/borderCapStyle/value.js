@@ -2,21 +2,21 @@ module.exports = {
 	config: {
 		type: 'radar',
 		data: {
-			labels: [0, 1, 2, 3],
+			labels: [0, 1, 2],
 			datasets: [
 				{
 					// option in dataset
-					data: [3, 3, 3, 3],
+					data: [null, 3, 3],
 					borderCapStyle: 'round'
 				},
 				{
 					// option in dataset
-					data: [2, 2, 2, 2],
+					data: [null, 2, 2],
 					borderCapStyle: 'square'
 				},
 				{
 					// option in element (fallback)
-					data: [1, 1, 1, 1]
+					data: [null, 1, 1]
 				}
 			]
 		},

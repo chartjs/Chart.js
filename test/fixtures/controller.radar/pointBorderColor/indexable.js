@@ -38,6 +38,7 @@ module.exports = {
 						'#8800ff',
 						'#ffff88'
 					],
+					borderWidth: 5,
 					radius: 10
 				}
 			},

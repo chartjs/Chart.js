@@ -6,19 +6,19 @@ module.exports = {
 			datasets: [
 				{
 					// option in dataset
-					data: [3, 3, 3, 3],
+					data: [3, 3, null, 3],
 					borderColor: '#ff0000',
 					borderJoinStyle: 'round'
 				},
 				{
 					// option in element (fallback)
-					data: [2, 2, 2, 2],
+					data: [2, 2, null, 2],
 					borderColor: '#0000ff',
 					borderJoinStyle: 'bevel'
 				},
 				{
 					// option in element (fallback)
-					data: [1, 1, 1, 1]
+					data: [1, 1, null, 1]
 				}
 			]
 		},
