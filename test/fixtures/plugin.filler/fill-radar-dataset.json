@@ -5,11 +5,11 @@
             "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8"],
             "datasets": [{
                 "backgroundColor": "rgba(255, 0, 0, 0.25)",
-                "data": ["NaN", "NaN", 0, -1, 0, 1, 0, -1, 0],
+                "data": [null, null, 0, -1, 0, 1, 0, -1, 0],
                 "fill": 1
             }, {
                 "backgroundColor": "rgba(0, 255, 0, 0.25)",
-                "data": [1, 0, "NaN", 1, 0, "NaN", -1, 0, 1],
+                "data": [1, 0, null, 1, 0, null, -1, 0, 1],
                 "fill": "+1"
             }, {
                 "backgroundColor": "rgba(0, 0, 255, 0.25)",
