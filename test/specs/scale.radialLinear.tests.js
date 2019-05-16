@@ -366,6 +366,20 @@ describe('Test the radial linear scale', function() {
 		expect(chart.scale.pointLabels).toEqual(['0', '1', '2', '3', '4']);
 	});
 
+	it('Should build point labels from falsy values', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78, 20]
+				}],
+				labels: [0, '', undefined, null, NaN, false]
+			}
+		});
+
+		expect(chart.scale.pointLabels).toEqual([0, '', '', '', '', '']);
+	});
+
 	it('should correctly set the center point', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
