@@ -143,6 +143,15 @@ function indexMode(chart, e, options) {
 	return elements;
 }
 
+function xyMode(chart, e, options, axis) {
+	var position = getRelativePosition(e, chart);
+	return getNearestItems(chart, position, {
+		axis: axis,
+		intersect: options.intersect,
+		useHitRadius: true
+	});
+}
+
 /**
  * @interface IInteractionOptions
  */
@@ -260,12 +269,7 @@ module.exports = {
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		x: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			return getNearestItems(chart, position, {
-				axis: 'x',
-				intersect: options.intersect,
-				useHitRadius: true
-			});
+			return xyMode(chart, e, options, 'x');
 		},
 
 		/**
@@ -277,12 +281,7 @@ module.exports = {
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		y: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			return getNearestItems(chart, position, {
-				axis: 'y',
-				intersect: options.intersect,
-				useHitRadius: true
-			});
+			return xyMode(chart, e, options, 'y');
 		}
 	}
 };
