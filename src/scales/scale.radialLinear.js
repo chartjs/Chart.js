@@ -413,7 +413,7 @@ module.exports = LinearScaleBase.extend({
 		var me = this;
 
 		if (helpers.isNullOrUndef(value)) {
-			value = NaN;
+			return NaN;
 		}
 
 		// Take into account half font size + the yPadding of the top value
