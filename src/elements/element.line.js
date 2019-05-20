@@ -37,11 +37,24 @@ module.exports = Element.extend({
 		var globalDefaults = defaults.global;
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
+		var closePath = me._loop;
 		var index, current, previous, currentVM;
 
-		// If we are looping, adding the first point again
 		if (me._loop && points.length) {
-			points.push(points[0]);
+			if (!spanGaps) {
+				for (index = points.length - 1; index >= 0; --index) {
+					// If the line has an open path, shift the point array
+					if (points[index]._view.skip) {
+						points = points.slice(index).concat(points.slice(0, index));
+						closePath = false;
+						break;
+					}
+				}
+			}
+			// If the line has a close path, add the first point again
+			if (closePath) {
+				points.push(points[0]);
+			}
 		}
 
 		ctx.save();
@@ -88,6 +101,10 @@ module.exports = Element.extend({
 					lastDrawnIndex = index;
 				}
 			}
+		}
+
+		if (closePath) {
+			ctx.closePath();
 		}
 
 		ctx.stroke();
