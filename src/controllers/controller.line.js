@@ -278,8 +278,8 @@ module.exports = DatasetController.extend({
 			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
 
 			helpers.canvas.clipArea(chart.ctx, {
-				left: area.left,
-				right: area.right,
+				left: area.left - halfBorderWidth,
+				right: area.right + halfBorderWidth,
 				top: area.top - halfBorderWidth,
 				bottom: area.bottom + halfBorderWidth
 			});
