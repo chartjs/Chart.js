@@ -437,12 +437,12 @@ module.exports = LinearScaleBase.extend({
 		return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
 	},
 
-	getBasePosition: function() {
+	getBasePosition: function(index) {
 		var me = this;
 		var min = me.min;
 		var max = me.max;
 
-		return me.getPointPositionForValue(0,
+		return me.getPointPositionForValue(index || 0,
 			me.beginAtZero ? 0 :
 			min < 0 && max < 0 ? max :
 			min > 0 && max > 0 ? min :

@@ -37,6 +37,12 @@ var mappers = {
 		var x = boundary ? boundary.x : null;
 		var y = boundary ? boundary.y : null;
 
+		if (helpers.isArray(boundary)) {
+			return function(point, i) {
+				return boundary[i];
+			};
+		}
+
 		return function(point) {
 			return {
 				x: x === null ? point.x : x,
@@ -96,7 +102,7 @@ function decodeFill(el, index, count) {
 	}
 }
 
-function computeBoundary(source) {
+function computeLinearBoundary(source) {
 	var model = source.el._model || {};
 	var scale = source.el._scale || {};
 	var fill = source.fill;
@@ -117,8 +123,6 @@ function computeBoundary(source) {
 		target = model.scaleTop === undefined ? scale.top : model.scaleTop;
 	} else if (model.scaleZero !== undefined) {
 		target = model.scaleZero;
-	} else if (scale.getBasePosition) {
-		target = scale.getBasePosition();
 	} else if (scale.getBasePixel) {
 		target = scale.getBasePixel();
 	}
@@ -138,6 +142,44 @@ function computeBoundary(source) {
 	}
 
 	return null;
+}
+
+function computeCircularBoundary(source) {
+	var scale = source.el._scale;
+	var options = scale.options;
+	var length = scale.chart.data.labels.length;
+	var fill = source.fill;
+	var target = [];
+	var start, end, center, i, point;
+
+	if (!length) {
+		return null;
+	}
+
+	start = options.ticks.reverse ? scale.max : scale.min;
+	end = options.ticks.reverse ? scale.min : scale.max;
+	center = scale.getPointPositionForValue(0, start);
+	for (i = 0; i < length; ++i) {
+		point = fill === 'start' || fill === 'end'
+			? scale.getPointPositionForValue(i, fill === 'start' ? start : end)
+			: scale.getBasePosition(i);
+		if (options.gridLines.circular) {
+			point.cx = center.x;
+			point.cy = center.y;
+			point.angle = scale.getIndexAngle(i) - Math.PI / 2;
+		}
+		target.push(point);
+	}
+	return target;
+}
+
+function computeBoundary(source) {
+	var scale = source.el._scale || {};
+
+	if (scale.getPointPositionForValue) {
+		return computeCircularBoundary(source);
+	}
+	return computeLinearBoundary(source);
 }
 
 function resolveTarget(sources, index, propagate) {
@@ -191,7 +233,7 @@ function isDrawable(point) {
 }
 
 function drawArea(ctx, curve0, curve1, len0, len1) {
-	var i;
+	var i, cx, cy, r;
 
 	if (!len0 || !len1) {
 		return;
@@ -201,6 +243,16 @@ function drawArea(ctx, curve0, curve1, len0, len1) {
 	ctx.moveTo(curve0[0].x, curve0[0].y);
 	for (i = 1; i < len0; ++i) {
 		helpers.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
+	}
+
+	if (curve1[0].angle !== undefined) {
+		cx = curve1[0].cx;
+		cy = curve1[0].cy;
+		r = Math.sqrt(Math.pow(curve1[0].x - cx, 2) + Math.pow(curve1[0].y - cy, 2));
+		for (i = len1 - 1; i > 0; --i) {
+			ctx.arc(cx, cy, r, curve1[i].angle, curve1[i - 1].angle, true);
+		}
+		return;
 	}
 
 	// joining the two area curves

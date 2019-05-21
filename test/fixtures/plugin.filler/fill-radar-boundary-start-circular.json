@@ -22,7 +22,10 @@
             "legend": false,
             "title": false,
             "scale": {
-                "display": false
+                "display": false,
+                "gridLines": {
+                    "circular": true
+                }
             },
             "elements": {
                 "point": {
@@ -30,7 +33,7 @@
                 },
                 "line": {
                     "borderColor": "transparent",
-                    "fill": "origin"
+                    "fill": "start"
                 }
             }
         }

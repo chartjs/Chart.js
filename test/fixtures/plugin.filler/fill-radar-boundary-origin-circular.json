@@ -22,7 +22,10 @@
             "legend": false,
             "title": false,
             "scale": {
-                "display": false
+                "display": false,
+                "gridLines": {
+                    "circular": true
+                }
             },
             "elements": {
                 "point": {

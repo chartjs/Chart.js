@@ -30,7 +30,7 @@
                 },
                 "line": {
                     "borderColor": "transparent",
-                    "fill": "origin"
+                    "fill": "start"
                 }
             }
         }
