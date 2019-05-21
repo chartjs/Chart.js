@@ -18,7 +18,7 @@ module.exports = {
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5],
+					data: [4, -5, -10, null, 10, 5]
 				}
 			]
 		},
@@ -27,7 +27,7 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					fill: false,
+					fill: false
 				},
 				point: {
 					backgroundColor: [

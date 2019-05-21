@@ -7,10 +7,11 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
-					backgroundColor: function(ctx) {
-						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
-						return index === 0 ? '#ff0000'
-							: index === 1 ? '#00ff00'
+					pointBorderColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						return value > 8 ? '#ff0000'
+							: value > 0 ? '#00ff00'
+							: value > -8 ? '#0000ff'
 							: '#ff00ff';
 					}
 				},
@@ -25,15 +26,17 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					backgroundColor: function(ctx) {
-						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
-						return index === 0 ? '#ff0000'
-							: index === 1 ? '#00ff00'
-							: '#ff00ff';
-					}
+					fill: false
 				},
 				point: {
-					backgroundColor: '#0000ff',
+					borderColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						return value > 8 ? '#ff00ff'
+							: value > 0 ? '#0000ff'
+							: value > -8 ? '#ff0000'
+							: '#00ff00';
+					},
+					borderWidth: 5,
 					radius: 10
 				}
 			},
