@@ -70,7 +70,11 @@ var exports = {
 		if (style && typeof style === 'object') {
 			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
+				ctx.save();
+				ctx.translate(x, y);
+				ctx.rotate(rad);
+				ctx.drawImage(style, -style.width / 2, -style.height / 2, style.width, style.height);
+				ctx.restore();
 				return;
 			}
 		}
