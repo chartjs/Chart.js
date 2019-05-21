@@ -1646,6 +1646,13 @@ describe('Time scale tests', function() {
 
 	describe('labels', function() {
 		it('should read labels from scale / xLabels / yLabels', function() {
+			var timeOpts = {
+				parser: 'YYYY',
+				unit: 'year',
+				displayFormats: {
+					year: 'YYYY'
+				}
+			};
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -1659,40 +1666,32 @@ describe('Time scale tests', function() {
 							id: 'x',
 							type: 'time',
 							labels: ['2015', '2016', '2017'],
-							time: {
-								parser: 'YYYY',
-							}
+							time: timeOpts
 						},
 						{
 							id: 'x2',
 							type: 'time',
-							time: {
-								parser: 'YYYY',
-							}
+							time: timeOpts
 						}],
 						yAxes: [{
 							id: 'y',
 							type: 'time',
-							time: {
-								parser: 'YYYY',
-							}
+							time: timeOpts
 						},
 						{
 							id: 'y2',
 							type: 'time',
 							labels: ['2005', '2006', '2007'],
-							time: {
-								parser: 'YYYY',
-							}
+							time: timeOpts
 						}]
 					}
 				}
 			});
 
-			expect(getTicksLabels(chart.scales.x)).toEqual(['Jan 2015', 'Jan 2016', 'Jan 2017']);
-			expect(getTicksLabels(chart.scales.x2)).toEqual(['Jan 1985', 'Jan 1986', 'Jan 1987']);
-			expect(getTicksLabels(chart.scales.y)).toEqual(['Jan 1995', 'Jan 1996', 'Jan 1997']);
-			expect(getTicksLabels(chart.scales.y2)).toEqual(['Jan 2005', 'Jan 2006', 'Jan 2007']);
+			expect(getTicksLabels(chart.scales.x)).toEqual(['2015', '2016', '2017']);
+			expect(getTicksLabels(chart.scales.x2)).toEqual(['1985', '1986', '1987']);
+			expect(getTicksLabels(chart.scales.y)).toEqual(['1995', '1996', '1997']);
+			expect(getTicksLabels(chart.scales.y2)).toEqual(['2005', '2006', '2007']);
 		});
 	});
 
