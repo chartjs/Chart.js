@@ -519,7 +519,7 @@ module.exports = Scale.extend({
 		var datasets = [];
 		var labels = [];
 		var i, j, ilen, jlen, data, timestamp;
-		var dataLabels = chart.data.labels || [];
+		var dataLabels = me._getLabels();
 
 		// Convert labels to timestamps
 		for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {

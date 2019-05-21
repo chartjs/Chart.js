@@ -1682,6 +1682,57 @@ describe('Time scale tests', function() {
 		});
 	});
 
+	describe('labels', function() {
+		it('should read labels from scale / xLabels / yLabels', function() {
+			var timeOpts = {
+				parser: 'YYYY',
+				unit: 'year',
+				displayFormats: {
+					year: 'YYYY'
+				}
+			};
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					labels: ['1975', '1976', '1977'],
+					xLabels: ['1985', '1986', '1987'],
+					yLabels: ['1995', '1996', '1997']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'time',
+							labels: ['2015', '2016', '2017'],
+							time: timeOpts
+						},
+						{
+							id: 'x2',
+							type: 'time',
+							time: timeOpts
+						}],
+						yAxes: [{
+							id: 'y',
+							type: 'time',
+							time: timeOpts
+						},
+						{
+							id: 'y2',
+							type: 'time',
+							labels: ['2005', '2006', '2007'],
+							time: timeOpts
+						}]
+					}
+				}
+			});
+
+			expect(getTicksLabels(chart.scales.x)).toEqual(['2015', '2016', '2017']);
+			expect(getTicksLabels(chart.scales.x2)).toEqual(['1985', '1986', '1987']);
+			expect(getTicksLabels(chart.scales.y)).toEqual(['1995', '1996', '1997']);
+			expect(getTicksLabels(chart.scales.y2)).toEqual(['2005', '2006', '2007']);
+		});
+	});
+
 	describe('Deprecations', function() {
 		describe('options.time.displayFormats', function() {
 			it('should generate defaults from adapter presets', function() {

@@ -149,7 +149,7 @@ The `ticks.source` property controls the ticks generation.
 
 * `'auto'`: generates "optimal" ticks based on scale size and time options
 * `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
-* `'labels'`: generates ticks from user given `data.labels` values ONLY
+* `'labels'`: generates ticks from user given `labels` ONLY
 
 ### Parser
 If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to parse the date.
