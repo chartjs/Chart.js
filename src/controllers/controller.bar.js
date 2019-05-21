@@ -170,6 +170,10 @@ module.exports = DatasetController.extend({
 			label: me.chart.data.labels[index]
 		};
 
+		if (helpers.isArray(dataset.data[index])) {
+			rectangle._model.borderSkipped = null;
+		}
+
 		me._updateElementGeometry(rectangle, index, reset);
 
 		rectangle.pivot();
@@ -293,12 +297,13 @@ module.exports = DatasetController.extend({
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
-		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
+		var value = scale._parseValue(datasets[datasetIndex].data[index]);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = meta.stack;
-		var start = 0;
-		var i, imeta, ivalue, base, head, size;
+		var start = value.start === undefined ? 0 : value.max >= 0 && value.min >= 0 ? value.min : value.max;
+		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+		var i, imeta, ivalue, base, head, size, stackLength;
 
 		if (stacked || (stacked === undefined && stack !== undefined)) {
 			for (i = 0; i < datasetIndex; ++i) {
@@ -309,8 +314,10 @@ module.exports = DatasetController.extend({
 					imeta.controller._getValueScaleId() === scale.id &&
 					chart.isDatasetVisible(i)) {
 
-					ivalue = +scale.getRightValue(datasets[i].data[index]);
-					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+					stackLength = scale._parseValue(datasets[i].data[index]);
+					ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
+
+					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
 						start += ivalue;
 					}
 				}
@@ -318,12 +325,12 @@ module.exports = DatasetController.extend({
 		}
 
 		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + value);
+		head = scale.getPixelForValue(start + length);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = minBarLength;
-			if (value >= 0 && !isHorizontal || value < 0 && isHorizontal) {
+			if (length >= 0 && !isHorizontal || length < 0 && isHorizontal) {
 				head = base - minBarLength;
 			} else {
 				head = base + minBarLength;
@@ -374,7 +381,8 @@ module.exports = DatasetController.extend({
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(scale.getRightValue(dataset.data[i]))) {
+			var val = scale._parseValue(dataset.data[i]);
+			if (!isNaN(val.min) && !isNaN(val.max)) {
 				rects[i].draw();
 			}
 		}

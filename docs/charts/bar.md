@@ -213,6 +213,11 @@ You can also specify the dataset as x/y coordinates when using the [time scale](
 data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
 ```
 
+You can also specify the dataset for a bar chart as arrays of two numbers. This will force rendering of bars with gaps between them (floating-bars). First and second numbers in array will correspond the start and the end point of a bar respectively.
+```javascript
+data: [[5,6], [-3,-6]]
+```
+
 ## Stacked Bar Chart
 
 Bar charts can be configured into stacked bar charts by changing the settings on the X and Y axes to enable stacking. Stacked bar charts can be used to show how one data series is made up of a number of smaller pieces.

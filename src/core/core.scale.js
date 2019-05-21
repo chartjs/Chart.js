@@ -586,6 +586,7 @@ var Scale = Element.extend({
 		if ((typeof rawValue === 'number' || rawValue instanceof Number) && !isFinite(rawValue)) {
 			return NaN;
 		}
+
 		// If it is in fact an object, dive in one more level
 		if (rawValue) {
 			if (this.isHorizontal()) {
@@ -599,6 +600,45 @@ var Scale = Element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	/**
+	* @private
+	*/
+	_parseValue: function(value) {
+		var start, end, min, max;
+
+		if (helpers.isArray(value)) {
+			start = +this.getRightValue(value[0]);
+			end = +this.getRightValue(value[1]);
+			min = Math.min(start, end);
+			max = Math.max(start, end);
+		} else {
+			value = +this.getRightValue(value);
+			start = undefined;
+			end = value;
+			min = value;
+			max = value;
+		}
+
+		return {
+			min: min,
+			max: max,
+			start: start,
+			end: end
+		};
+	},
+
+	/**
+	* @private
+	*/
+	_getScaleLabel: function(rawValue) {
+		var v = this._parseValue(rawValue);
+		if (v.start !== undefined) {
+			return '[' + v.start + ', ' + v.end + ']';
+		}
+
+		return +this.getRightValue(rawValue);
 	},
 
 	/**

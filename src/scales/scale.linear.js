@@ -70,20 +70,25 @@ module.exports = LinearScaleBase.extend({
 
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
+						var value = me._parseValue(rawValue);
+
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 							return;
 						}
 
 						positiveValues[index] = positiveValues[index] || 0;
 						negativeValues[index] = negativeValues[index] || 0;
 
+						if (value.min === 0 && !opts.ticks.beginAtZero) {
+							value.min = value.max;
+						}
+
 						if (opts.relativePoints) {
 							positiveValues[index] = 100;
-						} else if (value < 0) {
-							negativeValues[index] += value;
+						} else if (value.min < 0 || value.max < 0) {
+							negativeValues[index] += value.min;
 						} else {
-							positiveValues[index] += value;
+							positiveValues[index] += value.max;
 						}
 					});
 				}
@@ -102,21 +107,18 @@ module.exports = LinearScaleBase.extend({
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
+						var value = me._parseValue(rawValue);
+
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
 							return;
 						}
 
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
+						if (me.min === null || value.min < me.min) {
+							me.min = value.min;
 						}
 
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
+						if (me.max === null || me.max < value.max) {
+							me.max = value.max;
 						}
 					});
 				}
@@ -151,7 +153,7 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	// Utils

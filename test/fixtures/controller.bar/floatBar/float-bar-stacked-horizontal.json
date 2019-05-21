@@ -1,0 +1,43 @@
+{
+    "config": {
+        "type": "horizontalBar",
+        "data": {
+            "labels": ["2030", "2034", "2038", "2042"],
+            "datasets": [{
+                "backgroundColor": "#FF6384",
+                "data": [11, [6,2], [-4,-7], -2]
+            }, {
+                "backgroundColor": "#36A2EB",
+                "data": [[1,2], [3,4], [-2,-3], [1,4]]
+            }, {
+                "backgroundColor": "#FFCE56",
+                "data": [[0,1], [1,2], [-2,-1], [1,-7]]
+            }]
+        },
+        "options": {
+            "title": false,
+            "legend": false,
+            "scales": {
+                "xAxes": [{
+                    "display": false,
+                    "stacked": true
+                }],
+                "yAxes": [{
+                    "display": false,
+                    "stacked": true,
+                    "ticks": {
+                        "min": -8,
+                        "max": 12
+                    }
+                }]
+            }
+        }
+    },
+    "debug": false,
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
