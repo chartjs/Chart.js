@@ -73,8 +73,8 @@ module.exports = DatasetController.extend({
 		var line = meta.dataset;
 		var points = meta.data || [];
 		var options = me.chart.options;
-		var dataset = me.getDataset();
-		var showLine = me._showLine = valueOrDefault(me._config.showLine, options.showLines);
+		var datasetOpts = me._config;
+		var showLine = me._showLine = valueOrDefault(datasetOpts.showLine, options.showLines);
 		var i, ilen;
 
 		me._xScale = me.getScaleForId(meta.xAxisID);
@@ -83,8 +83,8 @@ module.exports = DatasetController.extend({
 		// Update Line
 		if (showLine) {
 			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
-				dataset.lineTension = dataset.tension;
+			if ((datasetOpts.tension !== undefined) && (datasetOpts.lineTension === undefined)) {
+				datasetOpts.lineTension = datasetOpts.tension;
 			}
 
 			// Utility
