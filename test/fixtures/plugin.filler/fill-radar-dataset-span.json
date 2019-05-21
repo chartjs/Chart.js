@@ -27,7 +27,7 @@
         },
         "options": {
             "responsive": false,
-            "spanGaps": false,
+            "spanGaps": true,
             "legend": false,
             "title": false,
             "scale": {
@@ -39,7 +39,7 @@
                 },
                 "line": {
                     "borderColor": "transparent",
-                    "tension": 0.5
+                    "tension": 0
                 }
             }
         }

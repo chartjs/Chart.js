@@ -27,6 +27,7 @@
         },
         "options": {
             "responsive": false,
+            "spanGaps": false,
             "legend": false,
             "title": false,
             "scale": {
