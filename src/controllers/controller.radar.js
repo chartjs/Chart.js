@@ -143,12 +143,12 @@ module.exports = DatasetController.extend({
 	 */
 	_resolveDatasetElementOptions: function() {
 		var me = this;
-		var datasetOpts = me._config;
+		var config = me._config;
 		var options = me.chart.options;
 		var values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
-		values.spanGaps = valueOrDefault(datasetOpts.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(datasetOpts.lineTension, options.elements.line.tension);
+		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
 
 		return values;
 	},
