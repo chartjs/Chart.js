@@ -1059,6 +1059,23 @@ describe('Chart', function() {
 			expect(yScale.options.ticks.max).toBe(10);
 		});
 
+		it ('should assign unique scale IDs', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{id: 'x-axis-0'}, {}, {}],
+						yAxes: [{id: 'y-axis-1'}, {}, {}]
+					}
+				}
+			});
+
+			expect(Object.keys(chart.scales).sort()).toEqual([
+				'x-axis-0', 'x-axis-1', 'x-axis-2',
+				'y-axis-1', 'y-axis-2', 'y-axis-3'
+			]);
+		});
+
 		it ('should remove discarded scale', function() {
 			var chart = acquireChart({
 				type: 'line',
