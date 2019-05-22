@@ -242,6 +242,7 @@ var Scale = Element.extend({
 
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
+		var tickOpts = me.options.ticks;
 		var i, ilen, labels, label, ticks, tick;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -261,6 +262,7 @@ var Scale = Element.extend({
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
 		me._itemsToDraw = null;
+		me._fitted = false;
 
 		// Dimensions
 		me.beforeSetDimensions();
@@ -315,7 +317,13 @@ var Scale = Element.extend({
 			}
 		}
 
-		me._ticks = ticks;
+		me._labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(tickOpts), ticks, me.longestTextCache);
+		if (tickOpts.display && tickOpts.autoSkip) {
+			me._ticks = me._autoSkip(ticks);
+			me._labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(tickOpts), ticks, me.longestTextCache);
+		} else {
+			me._ticks = ticks;
+		}
 
 		// Tick Rotation
 		me.beforeCalculateTickRotation();
@@ -420,7 +428,7 @@ var Scale = Element.extend({
 		var labelSizes, maxLabelWidth, maxLabelHeight, maxWidth, tickWidth, maxHeight, maxLabelDiagonal;
 
 		if (me._isVisible() && tickOpts.display) {
-			labelSizes = me._labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(tickOpts), ticks, me.longestTextCache);
+			labelSizes = me._labelSizes;
 
 			if (minRotation < maxRotation && ticks.length > 1 && me.isHorizontal()) {
 				maxLabelWidth = labelSizes.widest.width;
@@ -556,6 +564,7 @@ var Scale = Element.extend({
 
 		me.width = minSize.width;
 		me.height = minSize.height;
+		me._fitted = true;
 	},
 
 	/**
@@ -732,13 +741,26 @@ var Scale = Element.extend({
 			0;
 	},
 
+	_axisLength: function() {
+		var me = this;
+		var isFitted = me._fitted;
+		var margins = me.margins;
+
+		return me.isHorizontal()
+			? isFitted
+				? me.width - me.paddingLeft - me.paddingRight
+				: (me.width || me.maxWidth) - margins.left - margins.right
+			: isFitted
+				? me.height - me.paddingTop - me.paddingBottom
+				: (me.height || me.maxHeight) - margins.top - margins.bottom;
+	},
+
 	/**
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
 	 * @private
 	 */
 	_autoSkip: function(ticks) {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
 		var optionTicks = me.options.ticks;
 		var tickCount = ticks.length;
 		var skipRatio = false;
@@ -749,9 +771,7 @@ var Scale = Element.extend({
 		var ticksLength = me._tickSize() * (tickCount - 1);
 
 		// Axis length
-		var axisLength = isHorizontal
-			? me.width - (me.paddingLeft + me.paddingRight)
-			: me.height - (me.paddingTop + me.PaddingBottom);
+		var axisLength = me._axisLength();
 
 		var result = [];
 		var i, tick;
@@ -787,7 +807,7 @@ var Scale = Element.extend({
 		var optionTicks = me.options.ticks;
 
 		// Calculate space needed by label in axis direction.
-		var rot = helpers.toRadians(me.labelRotation);
+		var rot = helpers.toRadians(valueOrDefault(me.labelRotation, optionTicks.maxRotation));
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
@@ -843,7 +863,7 @@ var Scale = Element.extend({
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
 
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = me.getTicks();
 		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
