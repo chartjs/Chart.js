@@ -748,25 +748,26 @@ var exports = Element.extend({
 
 	drawTitle: function(pt, vm, ctx) {
 		var title = vm.title;
+		var length = title.length;
+		var titleFontSize, titleSpacing, i;
 
-		if (title.length) {
+		if (length) {
 			pt.x = getAlignedX(vm, vm._titleAlign);
 
 			ctx.textAlign = vm._titleAlign;
-			ctx.textBaseline = 'top';
+			ctx.textBaseline = 'middle';
 
-			var titleFontSize = vm.titleFontSize;
-			var titleSpacing = vm.titleSpacing;
+			titleFontSize = vm.titleFontSize;
+			titleSpacing = vm.titleSpacing;
 
 			ctx.fillStyle = vm.titleFontColor;
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
-			var i, len;
-			for (i = 0, len = title.length; i < len; ++i) {
-				ctx.fillText(title[i], pt.x, pt.y);
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(title[i], pt.x, pt.y + titleFontSize / 2);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
-				if (i + 1 === title.length) {
+				if (i + 1 === length) {
 					pt.y += vm.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
 				}
 			}
@@ -779,22 +780,21 @@ var exports = Element.extend({
 		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
 		var drawColorBoxes = vm.displayColors;
-		var labelColors = vm.labelColors;
 		var xLinePadding = 0;
 		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
-		var textColor;
+
+		var fillLineOfText = function(line) {
+			ctx.fillText(line, pt.x + xLinePadding, pt.y + bodyFontSize / 2);
+			pt.y += bodyFontSize + bodySpacing;
+		};
+
+		var bodyItem, textColor, labelColors, lines, i, j, ilen, jlen;
 
 		ctx.textAlign = bodyAlign;
-		ctx.textBaseline = 'top';
+		ctx.textBaseline = 'middle';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 		pt.x = getAlignedX(vm, bodyAlign);
-
-		// Before Body
-		var fillLineOfText = function(line) {
-			ctx.fillText(line, pt.x + xLinePadding, pt.y);
-			pt.y += bodyFontSize + bodySpacing;
-		};
 
 		// Before body lines
 		ctx.fillStyle = vm.bodyFontColor;
@@ -805,12 +805,16 @@ var exports = Element.extend({
 			: 0;
 
 		// Draw body lines now
-		helpers.each(body, function(bodyItem, i) {
+		for (i = 0, ilen = body.length; i < ilen; ++i) {
+			bodyItem = body[i];
 			textColor = vm.labelTextColors[i];
+			labelColors = vm.labelColors[i];
+
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
-			helpers.each(bodyItem.lines, function(line) {
+			lines = bodyItem.lines;
+			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
@@ -819,20 +823,20 @@ var exports = Element.extend({
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = labelColors[i].borderColor;
+					ctx.strokeStyle = labelColors.borderColor;
 					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = labelColors[i].backgroundColor;
+					ctx.fillStyle = labelColors.backgroundColor;
 					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
-				fillLineOfText(line);
-			});
+				fillLineOfText(lines[j]);
+			}
 
 			helpers.each(bodyItem.after, fillLineOfText);
-		});
+		}
 
 		// Reset back to 0 for after body
 		xLinePadding = 0;
@@ -844,21 +848,25 @@ var exports = Element.extend({
 
 	drawFooter: function(pt, vm, ctx) {
 		var footer = vm.footer;
+		var length = footer.length;
+		var footerFontSize, i;
 
-		if (footer.length) {
+		if (length) {
 			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
 			ctx.textAlign = vm._footerAlign;
-			ctx.textBaseline = 'top';
+			ctx.textBaseline = 'middle';
+
+			footerFontSize = vm.footerFontSize;
 
 			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.font = helpers.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
-			helpers.each(footer, function(line) {
-				ctx.fillText(line, pt.x, pt.y);
-				pt.y += vm.footerFontSize + vm.footerSpacing;
-			});
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(footer[i], pt.x, pt.y + footerFontSize / 2);
+				pt.y += footerFontSize + vm.footerSpacing;
+			}
 		}
 	},
 

@@ -1208,14 +1208,14 @@ describe('Core.Tooltip', function() {
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['left']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['title', 105, 105]},
+				{name: 'fillText', args: ['title', 105, 111]},
 				{name: 'setTextAlign', args: ['left']},
 				{name: 'setFillStyle', args: ['#fff']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['label', 105, 123]},
+				{name: 'fillText', args: ['label', 105, 129]},
 				{name: 'setTextAlign', args: ['left']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'fillText', args: ['footer', 105, 147]},
 				{name: 'restore', args: []}
 			]));
 		});
@@ -1228,14 +1228,14 @@ describe('Core.Tooltip', function() {
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['right']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'fillText', args: ['title', 195, 111]},
 				{name: 'setTextAlign', args: ['right']},
 				{name: 'setFillStyle', args: ['#fff']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['label', 195, 123]},
+				{name: 'fillText', args: ['label', 195, 129]},
 				{name: 'setTextAlign', args: ['right']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['footer', 195, 141]},
+				{name: 'fillText', args: ['footer', 195, 147]},
 				{name: 'restore', args: []}
 			]));
 		});
@@ -1248,14 +1248,14 @@ describe('Core.Tooltip', function() {
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['center']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['title', 150, 105]},
+				{name: 'fillText', args: ['title', 150, 111]},
 				{name: 'setTextAlign', args: ['center']},
 				{name: 'setFillStyle', args: ['#fff']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'fillText', args: ['label', 150, 129]},
 				{name: 'setTextAlign', args: ['center']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['footer', 150, 141]},
+				{name: 'fillText', args: ['footer', 150, 147]},
 				{name: 'restore', args: []}
 			]));
 		});
@@ -1268,14 +1268,14 @@ describe('Core.Tooltip', function() {
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['right']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['title', 195, 105]},
+				{name: 'fillText', args: ['title', 195, 111]},
 				{name: 'setTextAlign', args: ['center']},
 				{name: 'setFillStyle', args: ['#fff']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['label', 150, 123]},
+				{name: 'fillText', args: ['label', 150, 129]},
 				{name: 'setTextAlign', args: ['left']},
 				{name: 'setFillStyle', args: ['#fff']},
-				{name: 'fillText', args: ['footer', 105, 141]},
+				{name: 'fillText', args: ['footer', 105, 147]},
 				{name: 'restore', args: []}
 			]));
 		});
