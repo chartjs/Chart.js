@@ -69,12 +69,12 @@ module.exports = DatasetController.extend({
 		var line = meta.dataset;
 		var points = meta.data || [];
 		var scale = me.chart.scale;
-		var dataset = me.getDataset();
+		var config = me._config;
 		var i, ilen;
 
 		// Compatibility: If the properties are defined with only the old name, use those values
-		if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
-			dataset.lineTension = dataset.tension;
+		if (config.tension !== undefined && config.lineTension === undefined) {
+			config.lineTension = config.tension;
 		}
 
 		// Utility
