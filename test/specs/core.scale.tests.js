@@ -69,7 +69,14 @@ describe('Core.scale', function() {
 
 			var xAxis = chart.scales['x-axis-0'];
 			var ticks = xAxis.getTicks();
-			expect(ticks[1].label).toBeUndefined();
+			for (var i = 0; i < ticks.length; i++) {
+				var label = ticks[i].label;
+				if (i % 2 === 0) {
+					expect(label).toBeDefined();
+				} else {
+					expect(label).toBeUndefined();
+				}
+			}
 		});
 	});
 

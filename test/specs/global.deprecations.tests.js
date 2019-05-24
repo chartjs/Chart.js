@@ -333,7 +333,7 @@ describe('Deprecations', function() {
 				var chart = window.acquireChart({
 					type: 'line',
 					data: {
-						labels: ['2015-01-01T20:00:00', '2015-01-01T22:00:00'],
+						labels: ['2015-01-01T20:00:00', '2015-01-01T23:00:00'],
 					},
 					options: {
 						scales: {

@@ -202,7 +202,7 @@ function factorize(value) {
 			result.push(value / i);
 		}
 	}
-	if (Number.isInteger(sqrt)) {
+	if (sqrt === (sqrt | 0)) { // if value is a square number
 		result.push(sqrt);
 	}
 
@@ -233,16 +233,27 @@ function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 	return Math.max(spacing || ticks.length / ticksLimit, 1);
 }
 
+function getMajorIndices(ticks) {
+	var result = [];
+	var i, ilen;
+	for (i = 0, ilen = ticks.length; i < ilen; i++) {
+		if (ticks[i].major) {
+			result.push(i);
+		}
+	}
+	return result;
+}
+
 function skipMajors(ticks, majorIndices, spacing) {
-	var ticksToKeep = [];
+	var ticksToKeep = {};
 	var i;
 
 	spacing = Math.ceil(spacing);
 	for (i = 0; i < majorIndices.length; i += spacing) {
-		ticksToKeep.push(majorIndices[i]);
+		ticksToKeep[majorIndices[i]] = 1;
 	}
 	for (i = 0; i < ticks.length; i++) {
-		if (ticksToKeep.indexOf(i) < 0) {
+		if (!ticksToKeep[i]) {
 			delete ticks[i].label;
 		}
 	}
@@ -781,11 +792,7 @@ var Scale = Element.extend({
 		var tickOpts = me.options.ticks;
 		var axisLength = me._axisLength();
 		var ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
-		var majorIndices = tickOpts.major.enabled ? ticks.map(function(tick, i) {
-			return tick.major ? i : -1;
-		}).filter(function(val) {
-			return val >= 0;
-		}) : [];
+		var majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
 		var first = majorIndices[0];
 		var last = majorIndices[majorIndices.length - 1];
 		var i, ilen, spacing, avgMajorSpacing;
