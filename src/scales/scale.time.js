@@ -539,17 +539,15 @@ module.exports = Scale.extend({
 		var timestamps = [];
 		var ticks = [];
 		var capacity = me.getLabelCapacity(min);
+		var source = options.ticks.source;
+		var distribution = options.distribution;
 		var i, ilen, timestamp;
 
-		switch (options.ticks.source) {
-		case 'data':
+		if (source === 'data' || (source === 'auto' && distribution === 'series')) {
 			timestamps = me._timestamps.data;
-			break;
-		case 'labels':
+		} else if (source === 'labels') {
 			timestamps = me._timestamps.labels;
-			break;
-		case 'auto':
-		default:
+		} else {
 			timestamps = generate(me, min, max, capacity, options);
 		}
 
@@ -579,7 +577,7 @@ module.exports = Scale.extend({
 		// But if you have a lot of ticks it could be larger. E.g. if you have 8000 day ticks the majorUnit may be year
 		me._majorUnit = !options.ticks.major.enabled || me._unit === 'year' ? undefined
 			: determineUnitForAutoTicks(UNITS[UNITS.indexOf(me._unit) + 1], me.min, me.max, capacity);
-		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+		me._table = buildLookupTable(me._timestamps.data, min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
 		if (options.ticks.reverse) {
