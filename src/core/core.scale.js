@@ -260,7 +260,7 @@ function skipMajors(ticks, majorIndices, spacing) {
 }
 
 function skip(ticks, spacing, majorStart, majorEnd) {
-	var ticksToKeep = [];
+	var ticksToKeep = {};
 	var start = valueOrDefault(majorStart, 0);
 	var end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
 	var length, i, tick;
@@ -272,10 +272,10 @@ function skip(ticks, spacing, majorStart, majorEnd) {
 	}
 	for (i = 0, tick = start; tick < end; i++) {
 		tick = Math.round(start + i * spacing);
-		ticksToKeep.push(tick);
+		ticksToKeep[tick] = 1;
 	}
 	for (i = Math.max(start, 0); i < end; i++) {
-		if (ticksToKeep.indexOf(i) < 0) {
+		if (!ticksToKeep[i]) {
 			delete ticks[i].label;
 		}
 	}
