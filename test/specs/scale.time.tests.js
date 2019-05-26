@@ -13,6 +13,7 @@ describe('Time scale tests', function() {
 			id: scaleID
 		});
 
+		scale.chart.width = 400;
 		scale.update(400, 50);
 		return scale;
 	}
@@ -123,7 +124,8 @@ describe('Time scale tests', function() {
 
 			var scaleOptions = Chart.scaleService.getScaleDefaults('time');
 			var scale = createScale(mockData, scaleOptions);
-			scale.update(1000, 200);
+			scale.chart.width = 1100;
+			scale.update(1100, 200);
 			var ticks = getTicksLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
@@ -135,7 +137,8 @@ describe('Time scale tests', function() {
 				labels: [newDateFromRef(0), newDateFromRef(1), newDateFromRef(2), newDateFromRef(4), newDateFromRef(6), newDateFromRef(7), newDateFromRef(9)], // days
 			};
 			var scale = createScale(mockData, Chart.scaleService.getScaleDefaults('time'));
-			scale.update(1000, 200);
+			scale.chart.width = 1100;
+			scale.update(1100, 200);
 			var ticks = getTicksLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
@@ -184,6 +187,7 @@ describe('Time scale tests', function() {
 			});
 
 			var xScale = chart.scales.xScale0;
+			xScale.chart.width = 800;
 			xScale.update(800, 200);
 			var ticks = getTicksLabels(xScale);
 
@@ -233,6 +237,7 @@ describe('Time scale tests', function() {
 			});
 
 			var tScale = chart.scales.tScale0;
+			tScale.chart.width = 800;
 			tScale.update(800, 200);
 			var ticks = getTicksLabels(tScale);
 
@@ -291,6 +296,7 @@ describe('Time scale tests', function() {
 		config.time.unit = 'hour';
 
 		var scale = createScale(mockData, config);
+		scale.chart.width = 2500;
 		scale.update(2500, 200);
 		var ticks = getTicksLabels(scale);
 
@@ -384,6 +390,7 @@ describe('Time scale tests', function() {
 		}, Chart.scaleService.getScaleDefaults('time'));
 
 		var scale = createScale(mockData, config);
+		scale.chart.width = 800;
 		scale.update(800, 200);
 		var ticks = getTicksLabels(scale);
 
@@ -703,8 +710,8 @@ describe('Time scale tests', function() {
 
 			expect(scale._ticks.map(function(tick) {
 				return tick.major;
-			})).toEqual([true, false, false, false, true]);
-			expect(scale.ticks).toEqual(['<8:00:00 pm>', '<8:00:15 pm>', '<8:00:30 pm>', '<8:00:45 pm>', '<8:01:00 pm>']);
+			})).toEqual([true, false, false, false, false, false, true]);
+			expect(scale.ticks).toEqual(['<8:00:00 pm>', '<8:00:10 pm>', '<8:00:20 pm>', '<8:00:30 pm>', '<8:00:40 pm>', '<8:00:50 pm>', '<8:01:00 pm>']);
 		});
 
 		it('should update ticks.callback correctly', function() {
@@ -715,7 +722,7 @@ describe('Time scale tests', function() {
 				return '{' + value + '}';
 			};
 			chart.update();
-			expect(scale.ticks).toEqual(['{8:00:00 pm}', '{8:00:15 pm}', '{8:00:30 pm}', '{8:00:45 pm}', '{8:01:00 pm}']);
+			expect(scale.ticks).toEqual(['{8:00:00 pm}', '{8:00:10 pm}', '{8:00:20 pm}', '{8:00:30 pm}', '{8:00:40 pm}', '{8:00:50 pm}', '{8:01:00 pm}']);
 		});
 	});
 
@@ -763,8 +770,8 @@ describe('Time scale tests', function() {
 
 			expect(scale._ticks.map(function(tick) {
 				return tick.major;
-			})).toEqual([true, false, false, false, true]);
-			expect(scale.ticks).toEqual(['[[8:00 pm]]', '(8:00:15 pm)', '(8:00:30 pm)', '(8:00:45 pm)', '[[8:01 pm]]']);
+			})).toEqual([true, false, false, false, false, false, true]);
+			expect(scale.ticks).toEqual(['[[8:00 pm]]', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '[[8:01 pm]]']);
 		});
 
 		it('should only use ticks.minor callback if ticks.major.enabled is false', function() {
@@ -773,7 +780,7 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.major.enabled = false;
 			chart.update();
-			expect(scale.ticks).toEqual(['(8:00:00 pm)', '(8:00:15 pm)', '(8:00:30 pm)', '(8:00:45 pm)', '(8:01:00 pm)']);
+			expect(scale.ticks).toEqual(['(8:00:00 pm)', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '(8:01:00 pm)']);
 		});
 
 		it('should use ticks.callback if ticks.major.callback is omitted', function() {
@@ -782,7 +789,7 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.major.callback = undefined;
 			chart.update();
-			expect(scale.ticks).toEqual(['<8:00 pm>', '(8:00:15 pm)', '(8:00:30 pm)', '(8:00:45 pm)', '<8:01 pm>']);
+			expect(scale.ticks).toEqual(['<8:00 pm>', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '<8:01 pm>']);
 		});
 
 		it('should use ticks.callback if ticks.minor.callback is omitted', function() {
@@ -791,7 +798,7 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.minor.callback = undefined;
 			chart.update();
-			expect(scale.ticks).toEqual(['[[8:00 pm]]', '<8:00:15 pm>', '<8:00:30 pm>', '<8:00:45 pm>', '[[8:01 pm]]']);
+			expect(scale.ticks).toEqual(['[[8:00 pm]]', '<8:00:10 pm>', '<8:00:20 pm>', '<8:00:30 pm>', '<8:00:40 pm>', '<8:00:50 pm>', '[[8:01 pm]]']);
 		});
 	});
 

@@ -779,25 +779,32 @@ module.exports = Scale.extend({
 	 */
 	getLabelCapacity: function(exampleTime) {
 		var me = this;
-		var timeOpts = me.options.time;
+		var options = me.options;
+		var timeOpts = options.time;
 		var displayFormats = timeOpts.displayFormats;
-		var margins = me.margins;
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
 		var size = me._getLabelSize(exampleLabel);
+		var labelSize, scaleSize, chartSize, capacity;
 
-		// Using margins instead of padding because padding is not calculated
-		// at this point (buildTicks). Margins are provided from previous calculation
-		// in layout steps 5/6
-		var capacity = Math.floor(me.isHorizontal()
-			? (me.width - margins.left - margins.right) / size.w
-			: (me.height - margins.top - margins.bottom) / size.h);
-
-		if (me.options.offset) {
-			capacity--;
+		if (me.isHorizontal()) {
+			labelSize = size.w;
+			scaleSize = me.width;
+			chartSize = me.chart.width;
+		} else {
+			labelSize = size.h;
+			scaleSize = me.height;
+			chartSize = me.chart.height;
 		}
+
+		if (options.offset) {
+			scaleSize -= labelSize;
+		} else {
+			scaleSize = Math.min(scaleSize, chartSize - labelSize / 2) - labelSize / 2;
+		}
+		capacity = Math.floor(scaleSize / labelSize);
 
 		return capacity > 0 ? capacity : 1;
 	}
