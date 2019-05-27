@@ -553,25 +553,30 @@ module.exports = function() {
 
 		ctx.font = font;
 		var longest = 0;
-		helpers.each(arrayOfThings, function(thing) {
+		var ilen = arrayOfThings.length;
+		var i, j, jlen, thing, nestedThing;
+		for (i = 0; i < ilen; i++) {
+			thing = arrayOfThings[i];
+
 			// Undefined strings and arrays should not be measured
 			if (thing !== undefined && thing !== null && helpers.isArray(thing) !== true) {
 				longest = helpers.measureText(ctx, data, gc, longest, thing);
 			} else if (helpers.isArray(thing)) {
 				// if it is an array lets measure each element
 				// to do maybe simplify this function a bit so we can do this more recursively?
-				helpers.each(thing, function(nestedThing) {
+				for (j = 0, jlen = thing.length; j < jlen; j++) {
+					nestedThing = thing[j];
 					// Undefined strings and arrays should not be measured
 					if (nestedThing !== undefined && nestedThing !== null && !helpers.isArray(nestedThing)) {
 						longest = helpers.measureText(ctx, data, gc, longest, nestedThing);
 					}
-				});
+				}
 			}
-		});
+		}
 
 		var gcLen = gc.length / 2;
 		if (gcLen > arrayOfThings.length) {
-			for (var i = 0; i < gcLen; i++) {
+			for (i = 0; i < gcLen; i++) {
 				delete data[gc[i]];
 			}
 			gc.splice(0, gcLen);
@@ -589,6 +594,10 @@ module.exports = function() {
 		}
 		return longest;
 	};
+
+	/**
+	 * @deprecated
+	 */
 	helpers.numberOfLabelLines = function(arrayOfThings) {
 		var numberOfLines = 1;
 		helpers.each(arrayOfThings, function(thing) {
