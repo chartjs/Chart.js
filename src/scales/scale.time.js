@@ -787,7 +787,7 @@ module.exports = Scale.extend({
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
 		var size = me._getLabelSize(exampleLabel);
-		var labelSize, scaleSize, chartSize, capacity;
+		var labelSize, scaleSize, chartSize;
 
 		if (me.isHorizontal()) {
 			labelSize = size.w;
@@ -799,14 +799,16 @@ module.exports = Scale.extend({
 			chartSize = me.chart.height;
 		}
 
+		// If offset is true, the scale size is reduced by the half label size on each edge.
+		// If false, it is reduced if the chart doesn't have enough margin for the half label
+		// size on one edge and by the half size on the other edge. See #6300 for details.
 		if (options.offset) {
 			scaleSize -= labelSize;
 		} else {
 			scaleSize = Math.min(scaleSize, chartSize - labelSize / 2) - labelSize / 2;
 		}
-		capacity = Math.floor(scaleSize / labelSize);
 
-		return capacity > 0 ? capacity : 1;
+		return Math.max(Math.floor(scaleSize / labelSize), 1);
 	}
 });
 
