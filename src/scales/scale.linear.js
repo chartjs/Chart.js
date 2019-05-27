@@ -27,8 +27,8 @@ module.exports = LinearScaleBase.extend({
 		}
 
 		// First Calculate the range
-		me.min = null;
-		me.max = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
@@ -93,10 +93,8 @@ module.exports = LinearScaleBase.extend({
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-				var minVal = helpers.min(values);
-				var maxVal = helpers.max(values);
-				me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-				me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+				me.min = Math.min(me.min, helpers.min(values));
+				me.max = Math.max(me.max, helpers.max(values));
 			});
 
 		} else {
@@ -111,20 +109,15 @@ module.exports = LinearScaleBase.extend({
 							continue;
 						}
 
-						if (me.min === null || value.min < me.min) {
-							me.min = value.min;
-						}
-
-						if (me.max === null || me.max < value.max) {
-							me.max = value.max;
-						}
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
 					}
 				}
 			}
 		}
 
-		me.min = isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
-		me.max = isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
+		me.min = helpers.isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
+		me.max = helpers.isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
 
 		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 		this.handleTickRangeOptions();

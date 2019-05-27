@@ -453,7 +453,7 @@ describe('Linear Scale', function() {
 		});
 
 		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
-		expect(chart.scales.yScale0.min).toBe(-1);
+		expect(chart.scales.yScale0.min).toBe(0);
 		expect(chart.scales.yScale0.max).toBe(1);
 	});
 
@@ -829,10 +829,11 @@ describe('Linear Scale', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
+				labels: [-1, 1],
 				datasets: [{
 					xAxisID: 'xScale0',
 					yAxisID: 'yScale0',
-					data: []
+					data: [-1, 1]
 				}],
 			},
 			options: {

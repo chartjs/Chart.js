@@ -80,9 +80,9 @@ module.exports = Scale.extend({
 		var datasetIndex, meta, value, data, i, ilen;
 
 		// Calculate Range
-		me.min = null;
-		me.max = null;
-		me.minNotZero = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
+		me.minNotZero = Number.POSITIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
@@ -131,8 +131,8 @@ module.exports = Scale.extend({
 				if (valuesForType.length > 0) {
 					var minVal = helpers.min(valuesForType);
 					var maxVal = helpers.max(valuesForType);
-					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+					me.min = Math.min(me.min, minVal);
+					me.max = Math.max(me.max, maxVal);
 				}
 			});
 
@@ -148,21 +148,20 @@ module.exports = Scale.extend({
 							continue;
 						}
 
-						if (me.min === null || value.min < me.min) {
-							me.min = value.min;
-						}
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
 
-						if (me.max === null || me.max < value.max) {
-							me.max = value.max;
-						}
-
-						if (value.min !== 0 && (me.minNotZero === null || value.min < me.minNotZero)) {
-							me.minNotZero = value.min;
+						if (value.min !== 0) {
+							me.minNotZero = Math.min(value.min, me.minNotZero);
 						}
 					}
 				}
 			}
 		}
+
+		me.min = helpers.isFinite(me.min) ? me.min : null;
+		me.max = helpers.isFinite(me.max) ? me.max : null;
+		me.minNotZero = helpers.isFinite(me.minNotZero) ? me.minNotZero : null;
 
 		// Common base implementation to handle ticks.min, ticks.max
 		this.handleTickRangeOptions();

@@ -45,8 +45,8 @@ describe('Test tick generators', function() {
 		var xAxis = chart.scales['x-axis-0'];
 		var yAxis = chart.scales['y-axis-0'];
 
-		expect(xAxis.ticks).toEqual(['-1', '-0.8', '-0.6', '-0.4', '-0.2', '0', '0.2', '0.4', '0.6', '0.8', '1']);
-		expect(yAxis.ticks).toEqual(['1', '0.8', '0.6', '0.4', '0.2', '0', '-0.2', '-0.4', '-0.6', '-0.8', '-1']);
+		expect(xAxis.ticks).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
+		expect(yAxis.ticks).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
 	});
 
 	it('Should generate logarithmic spaced ticks with correct precision', function() {
