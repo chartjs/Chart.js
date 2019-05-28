@@ -101,7 +101,11 @@ module.exports = Scale.extend({
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticks[index], index + this.minIndex);
+		var ticks = this.ticks;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index], index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {

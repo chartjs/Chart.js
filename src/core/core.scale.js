@@ -476,8 +476,7 @@ var Scale = Element.extend({
 
 		// Width
 		if (isHorizontal) {
-			// subtract the margins to line up with the chartArea if we are a full width scale
-			minSize.width = me.isFullWidth() ? me.maxWidth - me.margins.left - me.margins.right : me.maxWidth;
+			minSize.width = me.maxWidth;
 		} else if (display) {
 			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
 		}
@@ -565,10 +564,10 @@ var Scale = Element.extend({
 	handleMargins: function() {
 		var me = this;
 		if (me.margins) {
-			me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
-			me.paddingTop = Math.max(me.paddingTop - me.margins.top, 0);
-			me.paddingRight = Math.max(me.paddingRight - me.margins.right, 0);
-			me.paddingBottom = Math.max(me.paddingBottom - me.margins.bottom, 0);
+			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
+			me.margins.top = Math.max(me.paddingTop, me.margins.top);
+			me.margins.right = Math.max(me.paddingRight, me.margins.right);
+			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
 		}
 	},
 
@@ -679,21 +678,21 @@ var Scale = Element.extend({
 	getPixelForTick: function(index) {
 		var me = this;
 		var offset = me.options.offset;
+		var numTicks = me._ticks.length;
+		if (index < 0 || index > numTicks - 1) {
+			return null;
+		}
 		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-			var tickWidth = innerWidth / Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
-			var pixel = (tickWidth * index) + me.paddingLeft;
+			var tickWidth = me.width / Math.max((numTicks - (offset ? 0 : 1)), 1);
+			var pixel = (tickWidth * index);
 
 			if (offset) {
 				pixel += tickWidth / 2;
 			}
 
-			var finalVal = me.left + pixel;
-			finalVal += me.isFullWidth() ? me.margins.left : 0;
-			return finalVal;
+			return me.left + pixel;
 		}
-		var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-		return me.top + (index * (innerHeight / (me._ticks.length - 1)));
+		return me.top + (index * (me.height / (numTicks - 1)));
 	},
 
 	/**
@@ -702,15 +701,9 @@ var Scale = Element.extend({
 	 */
 	getPixelForDecimal: function(decimal) {
 		var me = this;
-		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-			var valueOffset = (innerWidth * decimal) + me.paddingLeft;
-
-			var finalVal = me.left + valueOffset;
-			finalVal += me.isFullWidth() ? me.margins.left : 0;
-			return finalVal;
-		}
-		return me.top + (decimal * me.height);
+		return me.isHorizontal()
+			? me.left + decimal * me.width
+			: me.top + decimal * me.height;
 	},
 
 	/**
@@ -749,9 +742,7 @@ var Scale = Element.extend({
 		var ticksLength = me._tickSize() * (tickCount - 1);
 
 		// Axis length
-		var axisLength = isHorizontal
-			? me.width - (me.paddingLeft + me.paddingRight)
-			: me.height - (me.paddingTop + me.PaddingBottom);
+		var axisLength = isHorizontal ? me.width : me.height;
 
 		var result = [];
 		var i, tick;

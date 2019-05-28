@@ -907,16 +907,16 @@ describe('Linear Scale', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
+		var yScale = chart.scales.yScale0;
 		expect(xScale.paddingTop).toBeCloseToPixel(0);
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
-		expect(xScale.paddingLeft).toBeCloseToPixel(0);
-		expect(xScale.paddingRight).toBeCloseToPixel(0);
+		expect(xScale.paddingLeft).toBeCloseToPixel(12);
+		expect(xScale.paddingRight).toBeCloseToPixel(13.5);
 		expect(xScale.width).toBeCloseToPixel(468 - 6); // minus lineSpace
 		expect(xScale.height).toBeCloseToPixel(30);
 
-		var yScale = chart.scales.yScale0;
-		expect(yScale.paddingTop).toBeCloseToPixel(0);
-		expect(yScale.paddingBottom).toBeCloseToPixel(0);
+		expect(yScale.paddingTop).toBeCloseToPixel(7);
+		expect(yScale.paddingBottom).toBeCloseToPixel(7);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
 		expect(yScale.width).toBeCloseToPixel(30 + 6); // plus lineSpace
@@ -929,13 +929,13 @@ describe('Linear Scale', function() {
 
 		expect(xScale.paddingTop).toBeCloseToPixel(0);
 		expect(xScale.paddingBottom).toBeCloseToPixel(0);
-		expect(xScale.paddingLeft).toBeCloseToPixel(0);
-		expect(xScale.paddingRight).toBeCloseToPixel(0);
+		expect(xScale.paddingLeft).toBeCloseToPixel(12);
+		expect(xScale.paddingRight).toBeCloseToPixel(13.5);
 		expect(xScale.width).toBeCloseToPixel(440);
 		expect(xScale.height).toBeCloseToPixel(53);
 
-		expect(yScale.paddingTop).toBeCloseToPixel(0);
-		expect(yScale.paddingBottom).toBeCloseToPixel(0);
+		expect(yScale.paddingTop).toBeCloseToPixel(7);
+		expect(yScale.paddingBottom).toBeCloseToPixel(7);
 		expect(yScale.paddingLeft).toBeCloseToPixel(0);
 		expect(yScale.paddingRight).toBeCloseToPixel(0);
 		expect(yScale.width).toBeCloseToPixel(58);

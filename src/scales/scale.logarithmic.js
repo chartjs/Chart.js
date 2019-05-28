@@ -247,7 +247,11 @@ module.exports = Scale.extend({
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.tickValues[index]);
+		var ticks = this.tickValues;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index]);
 	},
 
 	/**
