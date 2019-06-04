@@ -703,7 +703,7 @@ describe('Time scale tests', function() {
 
 			expect(scale._ticks.map(function(tick) {
 				return tick.major;
-			})).toEqual([true, undefined, undefined, undefined, true]);
+			})).toEqual([true, false, false, false, true]);
 			expect(scale.ticks).toEqual(['<8:00:00 pm>', '<8:00:15 pm>', '<8:00:30 pm>', '<8:00:45 pm>', '<8:01:00 pm>']);
 		});
 
@@ -763,7 +763,7 @@ describe('Time scale tests', function() {
 
 			expect(scale._ticks.map(function(tick) {
 				return tick.major;
-			})).toEqual([true, undefined, undefined, undefined, true]);
+			})).toEqual([true, false, false, false, true]);
 			expect(scale.ticks).toEqual(['[[8:00 pm]]', '(8:00:15 pm)', '(8:00:30 pm)', '(8:00:45 pm)', '[[8:01 pm]]']);
 		});
 

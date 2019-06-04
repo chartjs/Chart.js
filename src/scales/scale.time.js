@@ -404,15 +404,15 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {start: start, end: end};
 }
 
-function setMajorTicks(scale, indices, ticks, majorUnit) {
+function setMajorTicks(scale, ticks, map, majorUnit) {
 	var adapter = scale._adapter;
 	var first = +adapter.startOf(ticks[0].value, majorUnit);
 	var last = ticks[ticks.length - 1].value;
 	var major, index;
 
 	for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
-		index = indices[major];
-		if (typeof index !== 'undefined') {
+		index = map[major];
+		if (!isNaN(index)) {
 			ticks[index].major = true;
 		}
 	}
@@ -421,22 +421,23 @@ function setMajorTicks(scale, indices, ticks, majorUnit) {
 
 function ticksFromTimestamps(scale, values, majorUnit) {
 	var ticks = [];
-	var ts = {};
+	var map = {};
 	var ilen = values.length;
 	var i, value;
 
 	for (i = 0; i < ilen; ++i) {
 		value = values[i];
-		ts[value] = i;
+		map[value] = i;
 
 		ticks.push({
-			value: value
+			value: value,
+			major: false
 		});
 	}
 
 	// We set the major ticks separately from the above loop because calling startOf for every tick
 	// is expensive when there is a large number of ticks
-	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ts, ticks, majorUnit);
+	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
 }
 
 var defaultConfig = {
