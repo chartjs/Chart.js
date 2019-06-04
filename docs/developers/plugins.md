@@ -106,7 +106,8 @@ var chart = new Chart(ctx, {
 
 ## Plugin Core API
 
-Available hooks (as of version 2.7):
+Available hooks (as of version 2.7):  
+(For more informations like parameters or return value of hooks, please refer to [this](https://github.com/chartjs/Chart.js/blob/2f874fde622ebd2c3b45c668861659f17e1254e9/src/core/core.plugins.js#L173-L382).)
 
 * `beforeInit`
 * `afterInit`
