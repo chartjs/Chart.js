@@ -412,7 +412,7 @@ function setMajorTicks(scale, ticks, map, majorUnit) {
 
 	for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
 		index = map[major];
-		if (!isNaN(index)) {
+		if (index >= 0) {
 			ticks[index].major = true;
 		}
 	}
