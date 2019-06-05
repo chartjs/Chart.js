@@ -663,8 +663,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 */
 	transition: function(easingValue) {
 		var me = this;
-		var options = me.options || {};
-		var hoverOptions = options.hover;
 		var i, ilen;
 
 		for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
@@ -677,11 +675,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 		if (me._lastEvent && me.animating) {
 			// If, during animation, element under mouse changes, let's react to that.
-			me.active = me.getElementsAtEventForMode(me._lastEvent, hoverOptions.mode, hoverOptions);
-			if (!helpers.arrayEquals(me.active, me.lastActive)) {
-				me._updateHoverStyles();
-				me.lastActive = me.active;
-			}
+			me.handleEvent(me._lastEvent);
 		}
 	},
 
@@ -1023,7 +1017,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			me._lastEvent = null;
 		} else {
 			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
-			me._lastEvent = e;
+			if (me._lastEvent !== 'click') {
+				me._lastEvent = e;
+			}
 		}
 
 		// Invoke onHover hook

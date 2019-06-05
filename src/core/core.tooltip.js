@@ -987,7 +987,9 @@ var exports = Element.extend({
 			me._lastEvent = null;
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
-			me._lastEvent = e;
+			if (me._lastEvent !== 'click') {
+				me._lastEvent = e;
+			}
 		}
 
 		// Remember Last Actives
