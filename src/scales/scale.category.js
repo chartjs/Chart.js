@@ -1,5 +1,6 @@
 'use strict';
 
+var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
 var defaultConfig = {
@@ -49,22 +50,28 @@ module.exports = Scale.extend({
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value
-	getPixelForValue: function(value, index) {
+	getPixelForValue: function(value, index, datasetIndex) {
 		var me = this;
 		var offset = me.options.offset;
+
 		// 1 is added because we need the length but we have the indexes
 		var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1)), 1);
 
+		var valueCategory, labels, idx;
+
+		if (index !== undefined && datasetIndex !== undefined) {
+			value = me.chart.data.datasets[datasetIndex].data[index];
+		}
+
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
-		var valueCategory;
-		if (value !== undefined && value !== null) {
+		if (!helpers.isNullOrUndef(value)) {
 			valueCategory = me.isHorizontal() ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
-			var labels = me._getLabels();
-			value = valueCategory || value;
-			var idx = labels.indexOf(value);
+			labels = me._getLabels();
+			value = helpers.valueOrDefault(valueCategory, value);
+			idx = labels.indexOf(value);
 			index = idx !== -1 ? idx : index;
 		}
 
@@ -89,7 +96,7 @@ module.exports = Scale.extend({
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticks[index], index + this.minIndex, null);
+		return this.getPixelForValue(this.ticks[index], index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {
