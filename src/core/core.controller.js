@@ -794,6 +794,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	getDatasetMeta: function(datasetIndex) {
 		var me = this;
 		var dataset = me.data.datasets[datasetIndex];
+		if (!dataset) {
+			dataset = {};
+		}
 		if (!dataset._meta) {
 			dataset._meta = {};
 		}
