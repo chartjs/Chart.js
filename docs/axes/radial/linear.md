@@ -88,7 +88,7 @@ let options = {
 
 ## Angle Line Options
 
-The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options. Note that these options only apply if `angleLines.display` is true.
+The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -100,7 +100,7 @@ The following options are used to configure angled lines that radiate from the c
 
 ## Point Label Options
 
-The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options. Note that these options only apply if `pointLabels.display` is true.
+The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
