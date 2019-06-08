@@ -59,7 +59,7 @@ module.exports = Scale.extend({
 
 		var valueCategory, labels, idx;
 
-		if (index !== undefined && datasetIndex !== undefined) {
+		if (!helpers.isNullOrUndef(index) && !helpers.isNullOrUndef(datasetIndex)) {
 			value = me.chart.data.datasets[datasetIndex].data[index];
 		}
 
