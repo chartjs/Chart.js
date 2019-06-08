@@ -58,7 +58,7 @@ describe('Time scale tests', function() {
 		expect(defaultConfig).toEqual({
 			display: true,
 			gridLines: {
-				color: 'rgba(0, 0, 0, 0.1)',
+				color: 'rgba(0,0,0,0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,

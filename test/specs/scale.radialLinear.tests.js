@@ -13,7 +13,7 @@ describe('Test the radial linear scale', function() {
 		expect(defaultConfig).toEqual({
 			angleLines: {
 				display: true,
-				color: 'rgba(0, 0, 0, 0.1)',
+				color: 'rgba(0,0,0,0.1)',
 				lineWidth: 1,
 				borderDash: [],
 				borderDashOffset: 0.0
@@ -22,7 +22,7 @@ describe('Test the radial linear scale', function() {
 			display: true,
 			gridLines: {
 				circular: false,
-				color: 'rgba(0, 0, 0, 0.1)',
+				color: 'rgba(0,0,0,0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,

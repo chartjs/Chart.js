@@ -89,12 +89,12 @@ describe('Core.scale', function() {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: false,
-		expected: [-63.5, 64.5, 192.5, 320.5, 448.5]
+		expected: [64.5, 192.5, 320.5, 448.5]
 	}, {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [0.5, 102.5, 204.5, 307.5, 409.5]
+		expected: [0.5, 102.5, 204.5, 307.5, 409.5, 512.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: false,
@@ -109,16 +109,16 @@ describe('Core.scale', function() {
 		labels: ['tick1'],
 		offsetGridLines: true,
 		offset: false,
-		expected: [-511.5]
+		expected: [512.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [0.5]
+		expected: [0.5, 512.5]
 	}];
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for ' + test.labels.length + ' gridLine(s) for the horizontal scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it('should get the correct pixels for gridLine(s) for the horizontal scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -163,7 +163,7 @@ describe('Core.scale', function() {
 	});
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for ' + test.labels.length + ' gridLine(s) for the vertical scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it('should get the correct pixels for gridLine(s) for the vertical scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
