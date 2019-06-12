@@ -3,6 +3,8 @@
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
+var isNullOrUndef = helpers.isNullOrUndef;
+
 var defaultConfig = {
 	position: 'bottom'
 };
@@ -73,13 +75,13 @@ module.exports = Scale.extend({
 		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
 		var valueCategory, labels, idx, pixel;
 
-		if (!helpers.isNullOrUndef(index) && !helpers.isNullOrUndef(datasetIndex)) {
+		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
 			value = me.chart.data.datasets[datasetIndex].data[index];
 		}
 
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
-		if (!helpers.isNullOrUndef(value)) {
+		if (!isNullOrUndef(value)) {
 			valueCategory = isHorizontal ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
