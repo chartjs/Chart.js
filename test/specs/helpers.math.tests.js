@@ -1,7 +1,9 @@
 'use strict';
 
+
 describe('Chart.helpers.math', function() {
-	var factorize = Chart.helpers.math._factorize;
+	var math = Chart.helpers.math;
+	var factorize = math._factorize;
 
 	it('should factorize', function() {
 		expect(factorize(1000)).toEqual([1, 2, 4, 5, 8, 10, 20, 25, 40, 50, 100, 125, 200, 250, 500]);
@@ -12,5 +14,15 @@ describe('Chart.helpers.math', function() {
 		expect(factorize(4)).toEqual([1, 2]);
 		expect(factorize(-1)).toEqual([]);
 		expect(factorize(2.76)).toEqual([]);
+	});
+
+	it('should do a log10 operation', function() {
+		expect(math.log10(0)).toBe(-Infinity);
+
+		// Check all allowed powers of 10, which should return integer values
+		var maxPowerOf10 = Math.floor(math.log10(Number.MAX_VALUE));
+		for (var i = 0; i < maxPowerOf10; i += 1) {
+			expect(math.log10(Math.pow(10, i))).toBe(i);
+		}
 	});
 });
