@@ -94,7 +94,7 @@ describe('Core.scale', function() {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [-0.5, 102.5, 204.5, 307.5, 409.5]
+		expected: [0.5, 102.5, 204.5, 307.5, 409.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: false,

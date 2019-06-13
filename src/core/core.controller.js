@@ -546,6 +546,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 		me._layers = [];
 		helpers.each(me.boxes, function(box) {
+			// _configure is called twice, once in core.scale.update and once here.
+			// Here the boxes are fully updated and at their final positions.
+			if (box._configure) {
+				box._configure();
+			}
 			me._layers.push.apply(me._layers, box._layers());
 		}, me);
 

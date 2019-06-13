@@ -1551,11 +1551,11 @@ describe('Time scale tests', function() {
 				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
 				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
 
-				expect(scale.getValueForPixel(scale.left + firstTickInterval / 2)).toBeCloseToTime({
+				expect(scale.getValueForPixel(scale.left + lastTickInterval / 2)).toBeCloseToTime({
 					value: moment('2042-01-01T00:00:00'),
 					unit: 'hour',
 				});
-				expect(scale.getValueForPixel(scale.left + scale.width - lastTickInterval / 2)).toBeCloseToTime({
+				expect(scale.getValueForPixel(scale.left + scale.width - firstTickInterval / 2)).toBeCloseToTime({
 					value: moment('2017-01-01T00:00:00'),
 					unit: 'hour',
 				});

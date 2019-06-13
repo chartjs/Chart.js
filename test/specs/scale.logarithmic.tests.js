@@ -862,6 +862,8 @@ describe('Logarithmic Scale tests', function() {
 				type: 'logarithmic'
 			}];
 			Chart.helpers.extend(scaleConfig, setup.scale);
+			scaleConfig[setup.axis + 'Axes'][0].type = 'logarithmic';
+
 			var description = 'dataset has stack option and ' + setup.describe
 				+ ' and axis is "' + setup.axis + '";';
 			describe(description, function() {

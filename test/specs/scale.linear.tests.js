@@ -1196,4 +1196,86 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
 		expect(chart.scales.yScale0.max).toBeGreaterThan(chart.scales.yScale0.min);
 	});
+
+	it('Should get correct pixel values when horizontal', function() {
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: {
+				datasets: [{
+					data: [0.05, -25, 10, 15, 20, 25, 30, 35]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'x',
+						type: 'linear',
+					}]
+				}
+			}
+		});
+
+		var start = chart.chartArea.left;
+		var end = chart.chartArea.right;
+		var min = -30;
+		var max = 40;
+		var scale = chart.scales.x;
+
+		expect(scale.getPixelForValue(max)).toBeCloseToPixel(end);
+		expect(scale.getPixelForValue(min)).toBeCloseToPixel(start);
+		expect(scale.getValueForPixel(end)).toBeCloseTo(max, 4);
+		expect(scale.getValueForPixel(start)).toBeCloseTo(min, 4);
+
+		scale.options.ticks.reverse = true;
+		chart.update();
+
+		start = chart.chartArea.left;
+		end = chart.chartArea.right;
+
+		expect(scale.getPixelForValue(max)).toBeCloseToPixel(start);
+		expect(scale.getPixelForValue(min)).toBeCloseToPixel(end);
+		expect(scale.getValueForPixel(end)).toBeCloseTo(min, 4);
+		expect(scale.getValueForPixel(start)).toBeCloseTo(max, 4);
+	});
+
+	it('Should get correct pixel values when vertical', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [0.05, -25, 10, 15, 20, 25, 30, 35]
+				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						id: 'y',
+						type: 'linear',
+					}]
+				}
+			}
+		});
+
+		var start = chart.chartArea.bottom;
+		var end = chart.chartArea.top;
+		var min = -30;
+		var max = 40;
+		var scale = chart.scales.y;
+
+		expect(scale.getPixelForValue(max)).toBeCloseToPixel(end);
+		expect(scale.getPixelForValue(min)).toBeCloseToPixel(start);
+		expect(scale.getValueForPixel(end)).toBeCloseTo(max, 4);
+		expect(scale.getValueForPixel(start)).toBeCloseTo(min, 4);
+
+		scale.options.ticks.reverse = true;
+		chart.update();
+
+		start = chart.chartArea.bottom;
+		end = chart.chartArea.top;
+
+		expect(scale.getPixelForValue(max)).toBeCloseToPixel(start);
+		expect(scale.getPixelForValue(min)).toBeCloseToPixel(end);
+		expect(scale.getValueForPixel(end)).toBeCloseTo(min, 4);
+		expect(scale.getValueForPixel(start)).toBeCloseTo(max, 4);
+	});
 });

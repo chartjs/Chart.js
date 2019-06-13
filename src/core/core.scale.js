@@ -70,9 +70,7 @@ function getPixelForGridLine(scale, index, offsetGridLines) {
 
 	if (offsetGridLines) {
 		if (scale.getTicks().length === 1) {
-			lineValue -= scale.isHorizontal() ?
-				Math.max(lineValue - scale.left, scale.right - lineValue) :
-				Math.max(lineValue - scale.top, scale.bottom - lineValue);
+			lineValue -= Math.max(lineValue - scale._startPixel, scale._endPixel - lineValue);
 		} else if (index === 0) {
 			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
 		} else {
@@ -318,6 +316,12 @@ var Scale = Element.extend({
 
 		me._ticks = ticks;
 
+		// _configure is called twice, once here, once from core.controller.updateLayout.
+		// Here we haven't been positioned yet, but dimensions are correct.
+		// Variables set in _configure are needed for calculateTickRotation, and
+		// it's ok that coordinates are not correct there, only dimensions matter.
+		me._configure();
+
 		// Tick Rotation
 		me.beforeCalculateTickRotation();
 		me.calculateTickRotation();
@@ -332,6 +336,30 @@ var Scale = Element.extend({
 		return me.minSize;
 
 	},
+
+	/**
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		var reversePixels = me.options.ticks.reverse;
+		var startPixel, endPixel;
+
+		if (me.isHorizontal()) {
+			startPixel = me.left;
+			endPixel = me.right;
+		} else {
+			startPixel = me.top;
+			endPixel = me.bottom;
+			// by default vertical scales are from bottom to top, so pixels are reversed
+			reversePixels = !reversePixels;
+		}
+		me._startPixel = startPixel;
+		me._endPixel = endPixel;
+		me._reversePixels = reversePixels;
+		me._length = endPixel - startPixel;
+	},
+
 	afterUpdate: function() {
 		helpers.callback(this.options.afterUpdate, [this]);
 	},
@@ -576,10 +604,11 @@ var Scale = Element.extend({
 
 	// Shared Methods
 	isHorizontal: function() {
-		return this.options.position === 'top' || this.options.position === 'bottom';
+		var pos = this.options.position;
+		return pos === 'top' || pos === 'bottom';
 	},
 	isFullWidth: function() {
-		return (this.options.fullWidth);
+		return this.options.fullWidth;
 	},
 
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
@@ -693,20 +722,11 @@ var Scale = Element.extend({
 		var me = this;
 		var offset = me.options.offset;
 		var numTicks = me._ticks.length;
-		if (index < 0 || index > numTicks - 1) {
-			return null;
-		}
-		if (me.isHorizontal()) {
-			var tickWidth = me.width / Math.max((numTicks - (offset ? 0 : 1)), 1);
-			var pixel = (tickWidth * index);
+		var tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
 
-			if (offset) {
-				pixel += tickWidth / 2;
-			}
-
-			return me.left + pixel;
-		}
-		return me.top + (index * (me.height / (numTicks - 1)));
+		return index < 0 || index > numTicks - 1
+			? null
+			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
 	},
 
 	/**
@@ -715,9 +735,17 @@ var Scale = Element.extend({
 	 */
 	getPixelForDecimal: function(decimal) {
 		var me = this;
-		return me.isHorizontal()
-			? me.left + decimal * me.width
-			: me.top + decimal * me.height;
+
+		if (me._reversePixels) {
+			decimal = 1 - decimal;
+		}
+
+		return me._startPixel + decimal * me._length;
+	},
+
+	getDecimalForPixel: function(pixel) {
+		var decimal = (pixel - this._startPixel) / this._length;
+		return Math.min(1, Math.max(0, this._reversePixels ? 1 - decimal : decimal));
 	},
 
 	/**
@@ -745,7 +773,6 @@ var Scale = Element.extend({
 	 */
 	_autoSkip: function(ticks) {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
 		var optionTicks = me.options.ticks;
 		var tickCount = ticks.length;
 		var skipRatio = false;
@@ -755,9 +782,7 @@ var Scale = Element.extend({
 		// drawn as their center at end of axis, so tickCount-1
 		var ticksLength = me._tickSize() * (tickCount - 1);
 
-		// Axis length
-		var axisLength = isHorizontal ? me.width : me.height;
-
+		var axisLength = me._length;
 		var result = [];
 		var i, tick;
 
@@ -788,7 +813,6 @@ var Scale = Element.extend({
 	 */
 	_tickSize: function() {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
 		var optionTicks = me.options.ticks;
 
 		// Calculate space needed by label in axis direction.
@@ -802,7 +826,7 @@ var Scale = Element.extend({
 		var h = labelSizes ? labelSizes.highest.height + padding : 0;
 
 		// Calculate space needed for 1 tick in axis direction.
-		return isHorizontal
+		return me.isHorizontal()
 			? h * cos > w * sin ? w / cos : h / sin
 			: h * sin < w * cos ? h / cos : w / sin;
 	},
@@ -1130,7 +1154,7 @@ var Scale = Element.extend({
 		var scaleLabelX, scaleLabelY;
 
 		if (me.isHorizontal()) {
-			scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
+			scaleLabelX = me.left + me.width / 2; // midpoint of the width
 			scaleLabelY = position === 'bottom'
 				? me.bottom - halfLineHeight - scaleLabelPadding.bottom
 				: me.top + halfLineHeight + scaleLabelPadding.top;
@@ -1139,7 +1163,7 @@ var Scale = Element.extend({
 			scaleLabelX = isLeft
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
-			scaleLabelY = me.top + ((me.bottom - me.top) / 2);
+			scaleLabelY = me.top + me.height / 2;
 			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
 		}
 

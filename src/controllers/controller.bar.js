@@ -32,7 +32,7 @@ defaults._set('bar', {
  * @private
  */
 function computeMinSampleSize(scale, pixels) {
-	var min = scale.isHorizontal() ? scale.width : scale.height;
+	var min = scale._length;
 	var ticks = scale.getTicks();
 	var prev, curr, i, ilen;
 
@@ -42,7 +42,7 @@ function computeMinSampleSize(scale, pixels) {
 
 	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
-		min = i > 0 ? Math.min(min, curr - prev) : min;
+		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
 	}
 
@@ -262,9 +262,6 @@ module.exports = DatasetController.extend({
 		var scale = me._getIndexScale();
 		var stackCount = me.getStackCount();
 		var datasetIndex = me.index;
-		var isHorizontal = scale.isHorizontal();
-		var start = isHorizontal ? scale.left : scale.top;
-		var end = start + (isHorizontal ? scale.width : scale.height);
 		var pixels = [];
 		var i, ilen, min;
 
@@ -279,8 +276,8 @@ module.exports = DatasetController.extend({
 		return {
 			min: min,
 			pixels: pixels,
-			start: start,
-			end: end,
+			start: scale._startPixel,
+			end: scale._endPixel,
 			stackCount: stackCount,
 			scale: scale
 		};

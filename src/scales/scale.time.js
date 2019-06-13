@@ -596,7 +596,6 @@ module.exports = Scale.extend({
 		me.max = Math.max(min + 1, max);
 
 		// PRIVATE
-		me._horizontal = me.isHorizontal();
 		me._table = [];
 		me._timestamps = {
 			data: timestamps,
@@ -611,16 +610,16 @@ module.exports = Scale.extend({
 		var max = me.max;
 		var options = me.options;
 		var timeOpts = options.time;
-		var timestamps = [];
+		var timestamps = me._timestamps;
 		var ticks = [];
 		var i, ilen, timestamp;
 
 		switch (options.ticks.source) {
 		case 'data':
-			timestamps = me._timestamps.data;
+			timestamps = timestamps.data;
 			break;
 		case 'labels':
-			timestamps = me._timestamps.labels;
+			timestamps = timestamps.labels;
 			break;
 		case 'auto':
 		default:
@@ -725,13 +724,8 @@ module.exports = Scale.extend({
 	getPixelForOffset: function(time) {
 		var me = this;
 		var offsets = me._offsets;
-		var size = me._horizontal ? me.width : me.height;
 		var pos = interpolate(me._table, 'time', time, 'pos');
-		var offset = size * (offsets.start + pos) * offsets.factor;
-
-		return me.options.ticks.reverse ?
-			(me._horizontal ? me.right : me.bottom) - offset :
-			(me._horizontal ? me.left : me.top) + offset;
+		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	},
 
 	getPixelForValue: function(value, index, datasetIndex) {
@@ -761,11 +755,7 @@ module.exports = Scale.extend({
 	getValueForPixel: function(pixel) {
 		var me = this;
 		var offsets = me._offsets;
-		var size = me._horizontal ? me.width : me.height;
-		var offset = me.options.ticks.reverse ?
-			(me._horizontal ? me.right : me.bottom) - pixel :
-			pixel - (me._horizontal ? me.left : me.top);
-		var pos = offset / size / offsets.factor - offsets.start;
+		var pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
