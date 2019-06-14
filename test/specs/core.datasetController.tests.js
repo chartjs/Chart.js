@@ -221,6 +221,45 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data.length).toBe(42);
 	});
 
+	it('should re-synchronize metadata when scaleID changes', function() {
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [],
+					xAxisID: 'firstXScaleID',
+					yAxisID: 'firstYScaleID',
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'firstXScaleID'
+					}, {
+						id: 'secondXScaleID'
+					}],
+					yAxes: [{
+						id: 'firstYScaleID'
+					}, {
+						id: 'secondYScaleID'
+					}]
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.xAxisID).toBe('firstXScaleID');
+		expect(meta.yAxisID).toBe('firstYScaleID');
+
+		chart.data.datasets[0].xAxisID = 'secondXScaleID';
+		chart.data.datasets[0].yAxisID = 'secondYScaleID';
+		chart.update();
+
+		expect(meta.xAxisID).toBe('secondXScaleID');
+		expect(meta.yAxisID).toBe('secondYScaleID');
+	});
+
 	it('should cleanup attached properties when the reference changes or when the chart is destroyed', function() {
 		var data0 = [0, 1, 2, 3, 4, 5];
 		var data1 = [6, 7, 8];
