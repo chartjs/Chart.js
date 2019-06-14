@@ -401,7 +401,7 @@ function computeOffsets(table, ticks, min, max, options) {
 		}
 	}
 
-	return {start: start, end: end};
+	return {start: start, end: end, factor: 1 / (start + 1 + end)};
 }
 
 function ticksFromTimestamps(scale, values, majorUnit) {
@@ -707,7 +707,7 @@ module.exports = Scale.extend({
 		var offsets = me._offsets;
 		var size = me._horizontal ? me.width : me.height;
 		var pos = interpolate(me._table, 'time', time, 'pos');
-		var offset = size * (offsets.start + pos) / (offsets.start + 1 + offsets.end);
+		var offset = size * (offsets.start + pos) * offsets.factor;
 
 		return me.options.ticks.reverse ?
 			(me._horizontal ? me.right : me.bottom) - offset :
@@ -745,7 +745,7 @@ module.exports = Scale.extend({
 		var offset = me.options.ticks.reverse ?
 			(me._horizontal ? me.right : me.bottom) - pixel :
 			pixel - (me._horizontal ? me.left : me.top);
-		var pos = (size ? offset / size : 0) * (offsets.start + 1 + offsets.end) - offsets.start;
+		var pos = offset / size / offsets.factor - offsets.start;
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
