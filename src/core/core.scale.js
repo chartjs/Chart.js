@@ -67,12 +67,12 @@ defaults._set('scale', {
 
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	var lineValue = scale.getPixelForTick(index);
-	var range;
+	var dimension;
 
 	if (offsetGridLines) {
 		if (scale.getTicks().length === 1) {
-			range = scale._getRange();
-			lineValue -= Math.max(lineValue - range.start, range.end - lineValue);
+			dimension = scale._getDimension();
+			lineValue -= Math.max(lineValue - dimension.start, dimension.end - lineValue);
 		} else if (index === 0) {
 			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
 		} else {
@@ -651,7 +651,7 @@ var Scale = Element.extend({
 	/**
 	 * @private
 	 */
-	_getRange: function() {
+	_getDimension: function() {
 		var me = this;
 		if (me.isHorizontal()) {
 			return {

@@ -81,8 +81,8 @@ module.exports = Scale.extend({
 		var options = me.options;
 		var offset = options.offset;
 		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
-		var range = me._getRange();
-		var valueDimension = range.size / offsetAmt;
+		var dimension = me._getDimension();
+		var valueDimension = dimension.size / offsetAmt;
 		var valueCategory, labels, idx, pixel;
 
 		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
@@ -107,7 +107,7 @@ module.exports = Scale.extend({
 			pixel += valueDimension / 2;
 		}
 
-		return options.ticks.reverse ? range.end - pixel : range.start + pixel;
+		return options.ticks.reverse ? dimension.end - pixel : dimension.start + pixel;
 	},
 
 	getPixelForTick: function(index) {
@@ -125,10 +125,10 @@ module.exports = Scale.extend({
 		var options = me.options;
 		var offset = options.offset;
 		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
-		var range = me._getRange();
-		var valueDimension = range.size / offsetAmt;
+		var dimension = me._getDimension();
+		var valueDimension = dimension.size / offsetAmt;
 
-		pixel = options.ticks.reverse ? range.end - pixel : pixel - range.start;
+		pixel = options.ticks.reverse ? dimension.end - pixel : pixel - dimension.start;
 
 		if (offset) {
 			pixel -= valueDimension / 2;

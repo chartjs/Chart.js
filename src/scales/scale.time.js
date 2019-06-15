@@ -724,11 +724,11 @@ module.exports = Scale.extend({
 	getPixelForOffset: function(time) {
 		var me = this;
 		var offsets = me._offsets;
-		var range = me._getRange();
+		var dimension = me._getDimension();
 		var pos = interpolate(me._table, 'time', time, 'pos');
-		var offset = range.size * (offsets.start + pos) * offsets.factor;
+		var offset = dimension.size * (offsets.start + pos) * offsets.factor;
 
-		return me.options.ticks.reverse ? range.end - offset : range.start + offset;
+		return me.options.ticks.reverse ? dimension.end - offset : dimension.start + offset;
 	},
 
 	getPixelForValue: function(value, index, datasetIndex) {
@@ -758,9 +758,9 @@ module.exports = Scale.extend({
 	getValueForPixel: function(pixel) {
 		var me = this;
 		var offsets = me._offsets;
-		var range = me._getRange();
-		var offset = me.options.ticks.reverse ? range.end - pixel : pixel - range.start;
-		var pos = offset / range.size / offsets.factor - offsets.start;
+		var dimension = me._getDimension();
+		var offset = me.options.ticks.reverse ? dimension.end - pixel : pixel - dimension.start;
+		var pos = offset / dimension.size / offsets.factor - offsets.start;
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
