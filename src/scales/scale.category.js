@@ -124,9 +124,11 @@ module.exports = Scale.extend({
 		var me = this;
 		var options = me.options;
 		var offset = options.offset;
-		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
+		var tickCount = me._ticks.length;
+		var offsetAmt = Math.max(tickCount - (offset ? 0 : 1), 1);
 		var dimension = me._getDimension();
 		var valueDimension = dimension.size / offsetAmt;
+		var value;
 
 		pixel = options.ticks.reverse ? dimension.end - pixel : pixel - dimension.start;
 
@@ -134,7 +136,9 @@ module.exports = Scale.extend({
 			pixel -= valueDimension / 2;
 		}
 
-		return Math.round(pixel / valueDimension) + me.minIndex;
+		value = Math.round(pixel / valueDimension);
+
+		return Math.min(Math.max(value, 0), tickCount - 1) + me.minIndex;
 	},
 
 	getBasePixel: function() {
