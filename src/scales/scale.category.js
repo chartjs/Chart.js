@@ -49,30 +49,40 @@ module.exports = Scale.extend({
 		var maxIndex = me.maxIndex;
 
 		// If we are viewing some subset of labels, slice the original array
-		me.ticks = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
+		var ticks = me.ticks = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
+
+		if (me.options.ticks.reverse) {
+			me.ticks = ticks.slice().reverse();
+		}
+	},
+
+	convertTicksToLabels: function() {
+		var me = this;
+
+		me._tickValues = me.ticks.slice();
+		Scale.prototype.convertTicksToLabels.call(me);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
+		var labels = me._getLabels();
 
 		if (chart.getDatasetMeta(datasetIndex).controller._getValueScaleId() === me.id) {
 			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
 
-		return me.ticks[index - me.minIndex];
+		return labels[index];
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value
 	getPixelForValue: function(value, index, datasetIndex) {
 		var me = this;
-		var offset = me.options.offset;
-
-		// 1 is added because we need the length but we have the indexes
-		var offsetAmt = Math.max(me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1), 1);
-
-		var isHorizontal = me.isHorizontal();
-		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
+		var options = me.options;
+		var offset = options.offset;
+		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
+		var range = me._getRange();
+		var valueDimension = range.size / offsetAmt;
 		var valueCategory, labels, idx, pixel;
 
 		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
@@ -82,7 +92,7 @@ module.exports = Scale.extend({
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
 		if (!isNullOrUndef(value)) {
-			valueCategory = isHorizontal ? value.x : value.y;
+			valueCategory = me.isHorizontal() ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
 			labels = me._getLabels();
@@ -97,38 +107,34 @@ module.exports = Scale.extend({
 			pixel += valueDimension / 2;
 		}
 
-		return (isHorizontal ? me.left : me.top) + pixel;
+		return options.ticks.reverse ? range.end - pixel : range.start + pixel;
 	},
 
 	getPixelForTick: function(index) {
-		var ticks = this.ticks;
+		var me = this;
+
+		var ticks = me._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
-		return this.getPixelForValue(ticks[index], index + this.minIndex);
+		return me.getPixelForValue(ticks[index]);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var offset = me.options.offset;
+		var options = me.options;
+		var offset = options.offset;
 		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
-		var isHorizontal = me.isHorizontal();
-		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
-		var value;
+		var range = me._getRange();
+		var valueDimension = range.size / offsetAmt;
 
-		pixel -= isHorizontal ? me.left : me.top;
+		pixel = options.ticks.reverse ? range.end - pixel : pixel - range.start;
 
 		if (offset) {
 			pixel -= valueDimension / 2;
 		}
 
-		if (pixel <= 0) {
-			value = 0;
-		} else {
-			value = Math.round(pixel / valueDimension);
-		}
-
-		return value + me.minIndex;
+		return Math.round(pixel / valueDimension) + me.minIndex;
 	},
 
 	getBasePixel: function() {

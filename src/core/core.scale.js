@@ -67,12 +67,12 @@ defaults._set('scale', {
 
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	var lineValue = scale.getPixelForTick(index);
+	var range;
 
 	if (offsetGridLines) {
 		if (scale.getTicks().length === 1) {
-			lineValue -= scale.isHorizontal() ?
-				Math.max(lineValue - scale.left, scale.right - lineValue) :
-				Math.max(lineValue - scale.top, scale.bottom - lineValue);
+			range = scale._getRange();
+			lineValue -= Math.max(lineValue - range.start, range.end - lineValue);
 		} else if (index === 0) {
 			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
 		} else {
@@ -648,6 +648,24 @@ var Scale = Element.extend({
 		return +this.getRightValue(rawValue);
 	},
 
+	/**
+	 * @private
+	 */
+	_getRange: function() {
+		var me = this;
+		if (me.isHorizontal()) {
+			return {
+				start: me.left,
+				end: me.right,
+				size: me.right - me.left
+			};
+		}
+		return {
+			start: me.top,
+			end: me.bottom,
+			size: me.bottom - me.top
+		};
+	},
 	/**
 	 * Used to get the value to display in the tooltip for the data at the given index
 	 * @param index

@@ -543,4 +543,91 @@ describe('Category scale tests', function() {
 		expect(yScale.getPixelForValue(null, 3, 0)).toBeCloseToPixel(426);
 		expect(yScale.getPixelForValue(null, 4, 0)).toBeCloseToPixel(88);
 	});
+
+	describe('when ticks.reverse is true', function() {
+		beforeEach(function() {
+			this.chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						xAxisID: 'xScale0',
+						yAxisID: 'yScale0',
+						data: [10, 5, 0, 25, 78]
+					}],
+					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'xScale0',
+							type: 'category',
+							ticks: {
+								reverse: true
+							}
+						}],
+						yAxes: [{
+							id: 'yScale0',
+							type: 'linear'
+						}]
+					}
+				}
+			});
+		});
+
+		it('should get the correct label for the index', function() {
+			var scale = this.chart.scales.xScale0;
+
+			expect(scale.getLabelForIndex(1, 0)).toBe('tick2');
+		});
+
+		it('should generate the correct tick labels', function() {
+			var scale = this.chart.scales.xScale0;
+
+			expect(scale.ticks).toEqual(['tick5', 'tick4', 'tick3', 'tick2', 'tick1']);
+		});
+
+		it('Should get the correct pixel for a value', function() {
+			var chart = this.chart;
+			var scale = chart.scales.xScale0;
+
+			expect(scale.getPixelForValue(null, 4, 0)).toBeCloseToPixel(29);
+			expect(scale.getPixelForValue('tick5')).toBeCloseToPixel(29);
+
+			expect(scale.getPixelForValue(null, 0, 0)).toBeCloseToPixel(496);
+			expect(scale.getPixelForValue('tick1')).toBeCloseToPixel(496);
+
+			scale.options.offset = true;
+			chart.update();
+
+			expect(scale.getPixelForValue(null, 4, 0)).toBeCloseToPixel(77);
+			expect(scale.getPixelForValue('tick5')).toBeCloseToPixel(77);
+
+			expect(scale.getPixelForValue(null, 0, 0)).toBeCloseToPixel(461);
+			expect(scale.getPixelForValue('tick1')).toBeCloseToPixel(461);
+		});
+
+		it('Should get the correct pixel for a value when zoomed', function() {
+			var chart = this.chart;
+			var scale = chart.scales.xScale0;
+
+			scale.options.ticks.min = 'tick2';
+			scale.options.ticks.max = 'tick4';
+			chart.update();
+
+			expect(scale.getPixelForValue(null, 3, 0)).toBeCloseToPixel(29);
+			expect(scale.getPixelForValue('tick4')).toBeCloseToPixel(29);
+
+			expect(scale.getPixelForValue(null, 1, 0)).toBeCloseToPixel(496);
+			expect(scale.getPixelForValue('tick2')).toBeCloseToPixel(496);
+
+			scale.options.offset = true;
+			chart.update();
+
+			expect(scale.getPixelForValue(null, 3, 0)).toBeCloseToPixel(109);
+			expect(scale.getPixelForValue('tick4')).toBeCloseToPixel(109);
+
+			expect(scale.getPixelForValue(null, 1, 0)).toBeCloseToPixel(429);
+			expect(scale.getPixelForValue('tick2')).toBeCloseToPixel(429);
+		});
+	});
 });
