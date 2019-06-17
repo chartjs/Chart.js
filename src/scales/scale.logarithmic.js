@@ -272,25 +272,24 @@ module.exports = Scale.extend({
 		var log10 = helpers.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
 		var offset = 0;
-		var innerDimension, pixel, start, end, sign;
+		var dimensions = me._getDimensions();
+		var innerDimension = dimensions.size;
+		var pixel, start, end, sign;
 
 		value = +me.getRightValue(value);
 		if (reverse) {
 			start = me.end;
 			end = me.start;
-			sign = -1;
 		} else {
 			start = me.start;
 			end = me.end;
-			sign = 1;
 		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			pixel = reverse ? me.right : me.left;
+		if (me.isHorizontal() === !reverse) {
+			pixel = dimensions.start;
+			sign = 1;
 		} else {
-			innerDimension = me.height;
-			sign *= -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
-			pixel = reverse ? me.top : me.bottom;
+			pixel = dimensions.end;
+			sign = -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
 		}
 		if (value !== start) {
 			if (start === 0) { // include zero tick
@@ -312,7 +311,10 @@ module.exports = Scale.extend({
 		var reverse = tickOpts.reverse;
 		var log10 = helpers.log10;
 		var firstTickValue = me._getFirstTickValue(me.minNotZero);
-		var innerDimension, start, end, value;
+		var dimensions = me._getDimensions();
+		var innerDimension = dimensions.size;
+		var value = me.isHorizontal() === !reverse ? pixel - dimensions.start : dimensions.end - pixel;
+		var start, end;
 
 		if (reverse) {
 			start = me.end;
@@ -320,13 +322,6 @@ module.exports = Scale.extend({
 		} else {
 			start = me.start;
 			end = me.end;
-		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			value = reverse ? me.right - pixel : pixel - me.left;
-		} else {
-			innerDimension = me.height;
-			value = reverse ? pixel - me.top : me.bottom - pixel;
 		}
 		if (value !== start) {
 			if (start === 0) { // include zero tick
