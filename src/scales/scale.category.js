@@ -59,7 +59,9 @@ module.exports = Scale.extend({
 	convertTicksToLabels: function() {
 		var me = this;
 
+		// Storing the original labels as they can be modified by user's callback
 		me._tickValues = me.ticks.slice();
+
 		Scale.prototype.convertTicksToLabels.call(me);
 	},
 
@@ -81,8 +83,8 @@ module.exports = Scale.extend({
 		var options = me.options;
 		var offset = options.offset;
 		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
-		var dimension = me._getDimension();
-		var valueDimension = dimension.size / offsetAmt;
+		var dimensions = me._getDimensions();
+		var valueDimension = dimensions.size / offsetAmt;
 		var valueCategory, labels, idx, pixel;
 
 		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
@@ -107,7 +109,7 @@ module.exports = Scale.extend({
 			pixel += valueDimension / 2;
 		}
 
-		return options.ticks.reverse ? dimension.end - pixel : dimension.start + pixel;
+		return options.ticks.reverse ? dimensions.end - pixel : dimensions.start + pixel;
 	},
 
 	getPixelForTick: function(index) {
@@ -126,11 +128,11 @@ module.exports = Scale.extend({
 		var offset = options.offset;
 		var tickCount = me._ticks.length;
 		var offsetAmt = Math.max(tickCount - (offset ? 0 : 1), 1);
-		var dimension = me._getDimension();
-		var valueDimension = dimension.size / offsetAmt;
+		var dimensions = me._getDimensions();
+		var valueDimension = dimensions.size / offsetAmt;
 		var value;
 
-		pixel = options.ticks.reverse ? dimension.end - pixel : pixel - dimension.start;
+		pixel = options.ticks.reverse ? dimensions.end - pixel : pixel - dimensions.start;
 
 		if (offset) {
 			pixel -= valueDimension / 2;
