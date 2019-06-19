@@ -143,9 +143,12 @@ module.exports = DatasetController.extend({
 	 */
 	_resolveDatasetElementOptions: function() {
 		var me = this;
+		var config = me._config;
+		var options = me.chart.options;
 		var values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
-		values.tension = valueOrDefault(me._config.lineTension, me.chart.options.elements.line.tension);
+		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
 
 		return values;
 	},
@@ -156,6 +159,13 @@ module.exports = DatasetController.extend({
 		var area = me.chart.chartArea;
 		var points = meta.data || [];
 		var i, ilen, model, controlPoints;
+
+		// Only consider points that are drawn in case the spanGaps option is used
+		if (meta.dataset._model.spanGaps) {
+			points = points.filter(function(pt) {
+				return !pt._model.skip;
+			});
+		}
 
 		function capControlPoint(pt, min, max) {
 			return Math.max(Math.min(pt, max), min);

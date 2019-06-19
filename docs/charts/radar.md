@@ -87,6 +87,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
+| [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
 
 ### General
 
@@ -125,8 +126,9 @@ The style of the line can be controlled with the following properties:
 | `borderWidth` | The line width (in pixels).
 | `fill` | How to fill the area under the line. See [area charts](area.md).
 | `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines.
+| `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
 
-All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 
