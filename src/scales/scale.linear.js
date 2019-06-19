@@ -22,8 +22,8 @@ module.exports = LinearScaleBase.extend({
 		var DEFAULT_MAX = 1;
 		var datasetIndex, meta, value, data, i, ilen;
 
-		function IDMatches(scaleMeta) {
-			return isHorizontal ? scaleMeta.xAxisID === me.id : scaleMeta.yAxisID === me.id;
+		function IDMatches(datasetMeta) {
+			return isHorizontal ? datasetMeta.xAxisID === me.id : datasetMeta.yAxisID === me.id;
 		}
 
 		// First Calculate the range
