@@ -1,6 +1,9 @@
 'use strict';
 
+var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
+
+var isNullOrUndef = helpers.isNullOrUndef;
 
 var defaultConfig = {
 	position: 'bottom'
@@ -10,31 +13,43 @@ module.exports = Scale.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var labels = me._getLabels();
-		me.minIndex = 0;
-		me.maxIndex = labels.length - 1;
+		var ticksOpts = me.options.ticks;
+		var min = ticksOpts.min;
+		var max = ticksOpts.max;
+		var minIndex = 0;
+		var maxIndex = labels.length - 1;
 		var findIndex;
 
-		if (me.options.ticks.min !== undefined) {
+		if (min !== undefined) {
 			// user specified min value
-			findIndex = labels.indexOf(me.options.ticks.min);
-			me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
+			findIndex = labels.indexOf(min);
+			if (findIndex >= 0) {
+				minIndex = findIndex;
+			}
 		}
 
-		if (me.options.ticks.max !== undefined) {
+		if (max !== undefined) {
 			// user specified max value
-			findIndex = labels.indexOf(me.options.ticks.max);
-			me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
+			findIndex = labels.indexOf(max);
+			if (findIndex >= 0) {
+				maxIndex = findIndex;
+			}
 		}
 
-		me.min = labels[me.minIndex];
-		me.max = labels[me.maxIndex];
+		me.minIndex = minIndex;
+		me.maxIndex = maxIndex;
+		me.min = labels[minIndex];
+		me.max = labels[maxIndex];
 	},
 
 	buildTicks: function() {
 		var me = this;
 		var labels = me._getLabels();
+		var minIndex = me.minIndex;
+		var maxIndex = me.maxIndex;
+
 		// If we are viewing some subset of labels, slice the original array
-		me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
+		me.ticks = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -49,61 +64,58 @@ module.exports = Scale.extend({
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value
-	getPixelForValue: function(value, index) {
+	getPixelForValue: function(value, index, datasetIndex) {
 		var me = this;
 		var offset = me.options.offset;
+
 		// 1 is added because we need the length but we have the indexes
-		var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1)), 1);
+		var offsetAmt = Math.max(me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1), 1);
+
+		var isHorizontal = me.isHorizontal();
+		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
+		var valueCategory, labels, idx, pixel;
+
+		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
+			value = me.chart.data.datasets[datasetIndex].data[index];
+		}
 
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
-		var valueCategory;
-		if (value !== undefined && value !== null) {
-			valueCategory = me.isHorizontal() ? value.x : value.y;
+		if (!isNullOrUndef(value)) {
+			valueCategory = isHorizontal ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
-			var labels = me._getLabels();
-			value = valueCategory || value;
-			var idx = labels.indexOf(value);
+			labels = me._getLabels();
+			value = helpers.valueOrDefault(valueCategory, value);
+			idx = labels.indexOf(value);
 			index = idx !== -1 ? idx : index;
 		}
 
-		if (me.isHorizontal()) {
-			var valueWidth = me.width / offsetAmt;
-			var widthOffset = (valueWidth * (index - me.minIndex));
-
-			if (offset) {
-				widthOffset += (valueWidth / 2);
-			}
-
-			return me.left + widthOffset;
-		}
-		var valueHeight = me.height / offsetAmt;
-		var heightOffset = (valueHeight * (index - me.minIndex));
+		pixel = valueDimension * (index - me.minIndex);
 
 		if (offset) {
-			heightOffset += (valueHeight / 2);
+			pixel += valueDimension / 2;
 		}
 
-		return me.top + heightOffset;
+		return (isHorizontal ? me.left : me.top) + pixel;
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticks[index], index + this.minIndex, null);
+		return this.getPixelForValue(this.ticks[index], index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
 		var offset = me.options.offset;
+		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
+		var isHorizontal = me.isHorizontal();
+		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
 		var value;
-		var offsetAmt = Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
-		var horz = me.isHorizontal();
-		var valueDimension = (horz ? me.width : me.height) / offsetAmt;
 
-		pixel -= horz ? me.left : me.top;
+		pixel -= isHorizontal ? me.left : me.top;
 
 		if (offset) {
-			pixel -= (valueDimension / 2);
+			pixel -= valueDimension / 2;
 		}
 
 		if (pixel <= 0) {

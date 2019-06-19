@@ -390,4 +390,157 @@ describe('Category scale tests', function() {
 		expect(yScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(107);
 		expect(yScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(407);
 	});
+
+	it('Should get the correct pixel for an object value when horizontal', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [
+						{x: 0, y: 10},
+						{x: 1, y: 5},
+						{x: 2, y: 0},
+						{x: 3, y: 25},
+						{x: 0, y: 78}
+					]
+				}],
+				labels: [0, 1, 2, 3]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getPixelForValue({x: 0, y: 10}, 0, 0)).toBeCloseToPixel(29);
+		expect(xScale.getPixelForValue({x: 3, y: 25}, 3, 0)).toBeCloseToPixel(506);
+		expect(xScale.getPixelForValue({x: 0, y: 78}, 4, 0)).toBeCloseToPixel(29);
+	});
+
+	it('Should get the correct pixel for an object value when vertical', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [
+						{x: 0, y: 2},
+						{x: 1, y: 4},
+						{x: 2, y: 0},
+						{x: 3, y: 3},
+						{x: 0, y: 1}
+					]
+				}],
+				labels: [0, 1, 2, 3],
+				yLabels: [0, 1, 2, 3, 4]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'category',
+						position: 'left'
+					}]
+				}
+			}
+		});
+
+		var yScale = chart.scales.yScale0;
+		expect(yScale.getPixelForValue({x: 0, y: 2}, 0, 0)).toBeCloseToPixel(257);
+		expect(yScale.getPixelForValue({x: 0, y: 1}, 4, 0)).toBeCloseToPixel(144);
+	});
+
+	it('Should get the correct pixel for an object value in a bar chart', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [
+						{x: 0, y: 10},
+						{x: 1, y: 5},
+						{x: 2, y: 0},
+						{x: 3, y: 25},
+						{x: 0, y: 78}
+					]
+				}],
+				labels: [0, 1, 2, 3]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'category',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'linear'
+					}]
+				}
+			}
+		});
+
+		var xScale = chart.scales.xScale0;
+		expect(xScale.getPixelForValue(null, 0, 0)).toBeCloseToPixel(89);
+		expect(xScale.getPixelForValue(null, 3, 0)).toBeCloseToPixel(449);
+		expect(xScale.getPixelForValue(null, 4, 0)).toBeCloseToPixel(89);
+	});
+
+	it('Should get the correct pixel for an object value in a horizontal bar chart', function() {
+		var chart = window.acquireChart({
+			type: 'horizontalBar',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					yAxisID: 'yScale0',
+					data: [
+						{x: 10, y: 0},
+						{x: 5, y: 1},
+						{x: 0, y: 2},
+						{x: 25, y: 3},
+						{x: 78, y: 0}
+					]
+				}],
+				labels: [0, 1, 2, 3]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'linear',
+						position: 'bottom'
+					}],
+					yAxes: [{
+						id: 'yScale0',
+						type: 'category'
+					}]
+				}
+			}
+		});
+
+		var yScale = chart.scales.yScale0;
+		expect(yScale.getPixelForValue(null, 0, 0)).toBeCloseToPixel(88);
+		expect(yScale.getPixelForValue(null, 3, 0)).toBeCloseToPixel(426);
+		expect(yScale.getPixelForValue(null, 4, 0)).toBeCloseToPixel(88);
+	});
 });
