@@ -184,7 +184,11 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticksAsNumbers[index]);
+		var ticks = this.ticksAsNumbers;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index]);
 	}
 });
 

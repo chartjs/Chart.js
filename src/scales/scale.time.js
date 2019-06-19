@@ -774,7 +774,7 @@ module.exports = Scale.extend({
 		var me = this;
 		var ticksOpts = me.options.ticks;
 		var tickLabelWidth = me.ctx.measureText(label).width;
-		var angle = helpers.toRadians(ticksOpts.maxRotation);
+		var angle = helpers.toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		var cosRotation = Math.cos(angle);
 		var sinRotation = Math.sin(angle);
 		var tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
@@ -800,19 +800,12 @@ module.exports = Scale.extend({
 		var me = this;
 		var timeOpts = me.options.time;
 		var displayFormats = timeOpts.displayFormats;
-		var margins = me.margins;
 
 		// pick the longest format (milliseconds) for guestimation
 		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
 		var size = me._getLabelSize(exampleLabel);
-
-		// Using margins instead of padding because padding is not calculated
-		// at this point (buildTicks). Margins are provided from previous calculation
-		// in layout steps 5/6
-		var capacity = Math.floor(me.isHorizontal()
-			? (me.width - margins.left - margins.right) / size.w
-			: (me.height - margins.top - margins.bottom) / size.h);
+		var capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
 
 		if (me.options.offset) {
 			capacity--;
