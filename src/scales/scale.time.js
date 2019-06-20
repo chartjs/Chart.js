@@ -283,11 +283,10 @@ function determineMajorUnit(unit) {
 /**
  * Figures out what unit results in an appropriate number of auto-generated ticks
  */
-function determineUnitsForAutoTicks(scale) {
+function determineUnitsForAutoTicks(scale, min, max) {
 	var timeOpts = scale.options.time;
 	var minor = timeOpts.unit;
-	var max = scale.max;
-	var range = max - scale.min;
+	var range = max - min;
 	var ilen = UNITS.length;
 	var i, major, interval, steps, factor, capacity;
 
@@ -342,13 +341,11 @@ function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(scale) {
-	var min = scale.min;
-	var max = scale.max;
+function generate(scale, min, max) {
 	var adapter = scale._adapter;
 	var options = scale.options;
 	var timeOpts = options.time;
-	var units = determineUnitsForAutoTicks(scale);
+	var units = determineUnitsForAutoTicks(scale, min, max);
 	var minor = units.minor;
 	var major = units.major;
 	var stepSize = valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
@@ -646,7 +643,7 @@ module.exports = Scale.extend({
 			break;
 		case 'auto':
 		default:
-			timestamps = generate(me);
+			timestamps = generate(me, min, max);
 		}
 
 		if (options.bounds === 'ticks' && timestamps.length) {
