@@ -739,7 +739,7 @@ var Scale = Element.extend({
 
 		// Total space needed to display all ticks. First and last ticks are
 		// drawn as their center at end of axis, so tickCount-1
-		var ticksLength = me._tickSize() * (tickCount - 1);
+		var ticksLength = me._tickSize() * (tickCount - (me.options.offset ? 0 : 1));
 
 		// Axis length
 		var axisLength = isHorizontal ? me.width : me.height;

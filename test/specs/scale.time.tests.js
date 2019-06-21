@@ -603,7 +603,7 @@ describe('Time scale tests', function() {
 			});
 
 			this.scale = this.chart.scales.xScale0;
-			this.scale.update(800, 200);
+			this.scale.update(700, 200);
 		});
 
 		it('should be bounded by nearest step\'s year start and end', function() {

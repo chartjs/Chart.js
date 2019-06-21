@@ -807,8 +807,8 @@ module.exports = Scale.extend({
 		var size = me._getLabelSize(exampleLabel);
 		var capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
 
-		if (me.options.offset) {
-			capacity--;
+		if (!me.options.offset) {
+			capacity++;
 		}
 
 		return capacity > 0 ? capacity : 1;
