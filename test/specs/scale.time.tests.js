@@ -1517,6 +1517,18 @@ describe('Time scale tests', function() {
 				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left);
 			});
 
+			it ('should reverse the values for pixels', function() {
+				var scale = this.chart.chart.scales.x;
+				expect(scale.getValueForPixel(scale.left)).toBeCloseToTime({
+					value: moment('2042-01-01T00:00:00'),
+					unit: 'hour',
+				});
+				expect(scale.getValueForPixel(scale.left + scale.width)).toBeCloseToTime({
+					value: moment('2017-01-01T00:00:00'),
+					unit: 'hour',
+				});
+			});
+
 			it ('should reverse the bars and add offsets if offset is true', function() {
 				var chart = this.chart;
 				var scale = chart.scales.x;
@@ -1531,6 +1543,28 @@ describe('Time scale tests', function() {
 
 				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+			});
+
+			it ('should reverse the values for pixels if offset is true', function() {
+				var chart = this.chart;
+				var scale = chart.scales.x;
+				var options = chart.options.scales.xAxes[0];
+
+				options.offset = true;
+				chart.update();
+
+				var numTicks = scale.ticks.length;
+				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+
+				expect(scale.getValueForPixel(scale.left + firstTickInterval / 2)).toBeCloseToTime({
+					value: moment('2042-01-01T00:00:00'),
+					unit: 'hour',
+				});
+				expect(scale.getValueForPixel(scale.left + scale.width - lastTickInterval / 2)).toBeCloseToTime({
+					value: moment('2017-01-01T00:00:00'),
+					unit: 'hour',
+				});
 			});
 		});
 	});

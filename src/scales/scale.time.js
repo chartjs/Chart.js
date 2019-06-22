@@ -401,7 +401,7 @@ function computeOffsets(table, ticks, min, max, options) {
 		}
 	}
 
-	return {start: start, end: end};
+	return {start: start, end: end, factor: 1 / (start + 1 + end)};
 }
 
 function setMajorTicks(scale, ticks, map, majorUnit) {
@@ -723,13 +723,14 @@ module.exports = Scale.extend({
 	 */
 	getPixelForOffset: function(time) {
 		var me = this;
-		var isReverse = me.options.ticks.reverse;
+		var offsets = me._offsets;
 		var size = me._horizontal ? me.width : me.height;
-		var start = me._horizontal ? isReverse ? me.right : me.left : isReverse ? me.bottom : me.top;
 		var pos = interpolate(me._table, 'time', time, 'pos');
-		var offset = size * (me._offsets.start + pos) / (me._offsets.start + 1 + me._offsets.end);
+		var offset = size * (offsets.start + pos) * offsets.factor;
 
-		return isReverse ? start - offset : start + offset;
+		return me.options.ticks.reverse ?
+			(me._horizontal ? me.right : me.bottom) - offset :
+			(me._horizontal ? me.left : me.top) + offset;
 	},
 
 	getPixelForValue: function(value, index, datasetIndex) {
@@ -758,9 +759,12 @@ module.exports = Scale.extend({
 
 	getValueForPixel: function(pixel) {
 		var me = this;
+		var offsets = me._offsets;
 		var size = me._horizontal ? me.width : me.height;
-		var start = me._horizontal ? me.left : me.top;
-		var pos = (size ? (pixel - start) / size : 0) * (me._offsets.start + 1 + me._offsets.start) - me._offsets.end;
+		var offset = me.options.ticks.reverse ?
+			(me._horizontal ? me.right : me.bottom) - pixel :
+			pixel - (me._horizontal ? me.left : me.top);
+		var pos = offset / size / offsets.factor - offsets.start;
 		var time = interpolate(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
