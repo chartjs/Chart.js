@@ -72,38 +72,35 @@ module.exports = Scale.extend({
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
-		var data = chart.data;
-		var datasets = data.datasets;
+		var datasets = chart.data.datasets;
 		var isHorizontal = me.isHorizontal();
 		function IDMatches(meta) {
 			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
 		}
+		var datasetIndex, meta, value, data, i, ilen;
 
 		// Calculate Range
-		me.min = null;
-		me.max = null;
-		me.minNotZero = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
+		me.minNotZero = Number.POSITIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				if (hasStacks) {
-					return;
-				}
-
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
 					meta.stack !== undefined) {
 					hasStacks = true;
+					break;
 				}
-			});
+			}
 		}
 
 		if (opts.stacked || hasStacks) {
 			var valuesPerStack = {};
 
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				var key = [
 					meta.type,
 					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
@@ -116,54 +113,55 @@ module.exports = Scale.extend({
 						valuesPerStack[key] = [];
 					}
 
-					helpers.each(dataset.data, function(rawValue, index) {
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
 						var values = valuesPerStack[key];
-						var value = me._parseValue(rawValue);
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
-						values[index] = values[index] || 0;
-						values[index] += value.max;
-					});
+						values[i] = values[i] || 0;
+						values[i] += value.max;
+					}
 				}
-			});
+			}
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				if (valuesForType.length > 0) {
 					var minVal = helpers.min(valuesForType);
 					var maxVal = helpers.max(valuesForType);
-					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+					me.min = Math.min(me.min, minVal);
+					me.max = Math.max(me.max, maxVal);
 				}
 			});
 
 		} else {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden || value.min < 0 || value.max < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
 
-						if (me.min === null || value.min < me.min) {
-							me.min = value.min;
-						}
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
 
-						if (me.max === null || me.max < value.max) {
-							me.max = value.max;
+						if (value.min !== 0) {
+							me.minNotZero = Math.min(value.min, me.minNotZero);
 						}
-
-						if (value.min !== 0 && (me.minNotZero === null || value.min < me.minNotZero)) {
-							me.minNotZero = value.min;
-						}
-					});
+					}
 				}
-			});
+			}
 		}
+
+		me.min = helpers.isFinite(me.min) ? me.min : null;
+		me.max = helpers.isFinite(me.max) ? me.max : null;
+		me.minNotZero = helpers.isFinite(me.minNotZero) ? me.minNotZero : null;
 
 		// Common base implementation to handle ticks.min, ticks.max
 		this.handleTickRangeOptions();

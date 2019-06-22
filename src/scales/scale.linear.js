@@ -16,40 +16,36 @@ module.exports = LinearScaleBase.extend({
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
-		var data = chart.data;
-		var datasets = data.datasets;
+		var datasets = chart.data.datasets;
 		var isHorizontal = me.isHorizontal();
 		var DEFAULT_MIN = 0;
 		var DEFAULT_MAX = 1;
+		var datasetIndex, meta, value, data, i, ilen;
 
-		function IDMatches(meta) {
-			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
+		function IDMatches(datasetMeta) {
+			return isHorizontal ? datasetMeta.xAxisID === me.id : datasetMeta.yAxisID === me.id;
 		}
 
 		// First Calculate the range
-		me.min = null;
-		me.max = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				if (hasStacks) {
-					return;
-				}
-
-				var meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
-					meta.stack !== undefined) {
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
+				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) && meta.stack !== undefined) {
 					hasStacks = true;
+					break;
 				}
-			});
+			}
 		}
 
 		if (opts.stacked || hasStacks) {
 			var valuesPerStack = {};
 
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				var key = [
 					meta.type,
 					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
@@ -69,64 +65,59 @@ module.exports = LinearScaleBase.extend({
 				var negativeValues = valuesPerStack[key].negativeValues;
 
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
+						value = me._parseValue(data[i]);
 
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+							continue;
 						}
 
-						positiveValues[index] = positiveValues[index] || 0;
-						negativeValues[index] = negativeValues[index] || 0;
+						positiveValues[i] = positiveValues[i] || 0;
+						negativeValues[i] = negativeValues[i] || 0;
 
 						if (value.min === 0 && !opts.ticks.beginAtZero) {
 							value.min = value.max;
 						}
 
 						if (opts.relativePoints) {
-							positiveValues[index] = 100;
+							positiveValues[i] = 100;
 						} else if (value.min < 0 || value.max < 0) {
-							negativeValues[index] += value.min;
+							negativeValues[i] += value.min;
 						} else {
-							positiveValues[index] += value.max;
+							positiveValues[i] += value.max;
 						}
-					});
+					}
 				}
-			});
+			}
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-				var minVal = helpers.min(values);
-				var maxVal = helpers.max(values);
-				me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-				me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+				me.min = Math.min(me.min, helpers.min(values));
+				me.max = Math.max(me.max, helpers.max(values));
 			});
 
 		} else {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
-						var value = me._parseValue(rawValue);
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
+						value = me._parseValue(data[i]);
 
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+							continue;
 						}
 
-						if (me.min === null || value.min < me.min) {
-							me.min = value.min;
-						}
-
-						if (me.max === null || me.max < value.max) {
-							me.max = value.max;
-						}
-					});
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
+					}
 				}
-			});
+			}
 		}
 
-		me.min = isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
-		me.max = isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
+		me.min = helpers.isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
+		me.max = helpers.isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
 
 		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 		this.handleTickRangeOptions();
