@@ -158,17 +158,12 @@ function getTickMarkLength(options) {
 	return options.drawTicks ? options.tickMarkLength : 0;
 }
 
-function getScaleLabelHeight(options) {
-	var font, padding;
-
-	if (!options.display) {
+function getScaleLabelHeight(labelOpts) {
+	if (!labelOpts.display) {
 		return 0;
 	}
-
-	font = helpers.options._parseFont(options);
-	padding = helpers.options.toPadding(options.padding);
-
-	return font.lineHeight + padding.height;
+	return helpers.options._parseFont(labelOpts).lineHeight
+		+ helpers.options.toPadding(labelOpts.padding).height;
 }
 
 function parseFontOptions(options, nestedOpts) {
@@ -468,28 +463,28 @@ var Scale = Element.extend({
 		var ticks = me.getTicks();
 		var opts = me.options;
 		var tickOpts = opts.ticks;
-		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
-		var display = me._isVisible();
 		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
+		var thickness;
 
-		// Width
-		if (isHorizontal) {
-			minSize.width = me.maxWidth;
-		} else if (display) {
-			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+		if (!me._isVisible()) {
+			me.width = 0;
+			me.height = 0;
+			return;
 		}
 
-		// height
-		if (!isHorizontal) {
-			minSize.height = me.maxHeight; // fill all the height
-		} else if (display) {
-			minSize.height = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+		thickness = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(opts.scaleLabel);
+		if (isHorizontal) {
+			minSize.width = me.maxWidth;
+			minSize.height = thickness;
+		} else {
+			minSize.width = thickness;
+			minSize.height = me.maxHeight;
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
-		if (tickOpts.display && display) {
+		if (tickOpts.display) {
 			var tickFonts = parseTickFontOptions(tickOpts);
 			var labelSizes = me._labelSizes;
 			var firstLabelSize = labelSizes.first;
