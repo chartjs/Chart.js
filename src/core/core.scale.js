@@ -7,6 +7,8 @@ var Ticks = require('./core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+var parseFont = helpers.options._parseFont;
+var toPadding = helpers.options.toPadding;
 
 defaults._set('scale', {
 	display: true,
@@ -159,15 +161,12 @@ function getTickMarkLength(options) {
 }
 
 function getScaleLabelHeight(labelOpts) {
-	if (!labelOpts.display) {
-		return 0;
-	}
-	return helpers.options._parseFont(labelOpts).lineHeight
-		+ helpers.options.toPadding(labelOpts.padding).height;
+	return !labelOpts.display ? 0 :
+		parseFont(labelOpts).lineHeight + toPadding(labelOpts.padding).height;
 }
 
 function parseFontOptions(options, nestedOpts) {
-	return helpers.extend(helpers.options._parseFont({
+	return helpers.extend(parseFont({
 		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
 		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
@@ -1103,8 +1102,8 @@ var Scale = Element.extend({
 		}
 
 		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.global.defaultFontColor);
-		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
-		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
+		var scaleLabelFont = parseFont(scaleLabel);
+		var scaleLabelPadding = toPadding(scaleLabel.padding);
 		var halfLineHeight = scaleLabelFont.lineHeight / 2;
 		var position = options.position;
 		var rotation = 0;
