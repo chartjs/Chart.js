@@ -613,14 +613,13 @@ var Scale = Element.extend({
 	 */
 	_getLabelSizes: function() {
 		var me = this;
-		var labelSizes;
+		var labelSizes = me._labelSizes;
 
-		if (me._labelSizes) {
-			return me._labelSizes;
+		if (!labelSizes) {
+			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.getTicks(), me.longestTextCache);
+			me.longestLabelWidth = labelSizes.widest.width;
 		}
 
-		me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.getTicks(), me.longestTextCache);
-		me.longestLabelWidth = labelSizes.widest.width;
 		return labelSizes;
 	},
 
