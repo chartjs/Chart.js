@@ -886,6 +886,7 @@ var Scale = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticksLength = ticks.length;
 		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
@@ -899,7 +900,7 @@ var Scale = Element.extend({
 
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
 		var alignPixel = helpers._alignPixel;
-		var borderValue, tickStart, tickEnd;
+		var borderValue, tickStart, tickEnd, i, ilen, tick;
 
 		if (position === 'top') {
 			borderValue = alignPixel(chart, me.bottom, axisWidth);
@@ -919,31 +920,29 @@ var Scale = Element.extend({
 			tickEnd = me.left + tl;
 		}
 
-		if (offsetGridLines) {
-			ticks = ticks.concat([{extra: true}]);
-		}
+		for (i = 0, ilen = ticksLength + (offsetGridLines ? 1 : 0); i < ilen; ++i) {
+			tick = ticks[i] || {};
 
-		helpers.each(ticks, function(tick, index) {
 			var label = tick.label;
-			var extra = tick.extra;
+			var extra = i >= ticksLength;
 
 			// autoskipper skipped this tick (#4635)
 			if (helpers.isNullOrUndef(label) && !extra) {
-				return;
+				continue;
 			}
 
 			var tickFont = tick.major ? tickFonts.major : tickFonts.minor;
 			var lineHeight = tickFont.lineHeight;
 			var lineWidth, lineColor, borderDash, borderDashOffset;
-			if (index === me.zeroLineIndex && options.offset === offsetGridLines) {
+			if (i === me.zeroLineIndex && options.offset === offsetGridLines) {
 				// Draw the first index specially
 				lineWidth = gridLines.zeroLineWidth;
 				lineColor = gridLines.zeroLineColor;
 				borderDash = gridLines.zeroLineBorderDash || [];
 				borderDashOffset = gridLines.zeroLineBorderDashOffset || 0.0;
 			} else {
-				lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, index, 1);
-				lineColor = valueAtIndexOrDefault(gridLines.color, index, 'rgba(0,0,0,0.1)');
+				lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, i, 1);
+				lineColor = valueAtIndexOrDefault(gridLines.color, i, 'rgba(0,0,0,0.1)');
 				borderDash = gridLines.borderDash || [];
 				borderDashOffset = gridLines.borderDashOffset || 0.0;
 			}
@@ -951,7 +950,7 @@ var Scale = Element.extend({
 			// Common properties
 			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY, textOffset, textAlign;
 			var labelCount = helpers.isArray(label) ? label.length : 1;
-			var lineValue = getPixelForGridLine(me, index, offsetGridLines);
+			var lineValue = getPixelForGridLine(me, i, offsetGridLines);
 
 			if (isHorizontal) {
 				var labelYOffset = tl + tickPadding;
@@ -959,7 +958,7 @@ var Scale = Element.extend({
 				tx1 = tx2 = x1 = x2 = alignPixel(chart, lineValue, lineWidth);
 				ty1 = tickStart;
 				ty2 = tickEnd;
-				labelX = me.getPixelForTick(index) + labelOffset; // x values for optionTicks (need to consider offsetLabel option)
+				labelX = me.getPixelForTick(i) + labelOffset; // x values for optionTicks (need to consider offsetLabel option)
 
 				if (position === 'top') {
 					y1 = alignPixel(chart, chartArea.top, axisWidth) + axisWidth / 2;
@@ -980,7 +979,7 @@ var Scale = Element.extend({
 				tx1 = tickStart;
 				tx2 = tickEnd;
 				ty1 = ty2 = y1 = y2 = alignPixel(chart, lineValue, lineWidth);
-				labelY = me.getPixelForTick(index) + labelOffset;
+				labelY = me.getPixelForTick(i) + labelOffset;
 				textOffset = (1 - labelCount) * lineHeight / 2;
 
 				if (position === 'left') {
@@ -1024,9 +1023,9 @@ var Scale = Element.extend({
 					textAlign: textAlign
 				});
 			}
-		});
+		}
 
-		gridLineItems.ticksLength = ticks.length;
+		gridLineItems.ticksLength = ilen;
 		gridLineItems.borderValue = borderValue;
 
 		return {
@@ -1052,9 +1051,10 @@ var Scale = Element.extend({
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
 		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
 		var gridLineItems = items.gridLines;
-		var width, color;
+		var width, color, i, ilen, item;
 
-		helpers.each(gridLineItems, function(item) {
+		for (i = 0, ilen = gridLineItems.length; i < ilen; ++i) {
+			item = gridLineItems[i];
 			width = item.width;
 			color = item.color;
 
@@ -1082,12 +1082,12 @@ var Scale = Element.extend({
 				ctx.stroke();
 				ctx.restore();
 			}
-		});
+		}
 
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			var firstLineWidth = axisWidth;
-			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, gridLineItems.ticksLength - 1, 0);
+			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, gridLineItems.ticksLength - 1, 1);
 			var borderValue = gridLineItems.borderValue;
 			var x1, x2, y1, y2;
 
@@ -1123,9 +1123,11 @@ var Scale = Element.extend({
 		}
 
 		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
-		var tickFont;
+		var labelItems = items.labels;
+		var i, j, ilen, jlen, item, tickFont, label, y;
 
-		helpers.each(items.labels, function(item) {
+		for (i = 0, ilen = labelItems.length; i < ilen; ++i) {
+			item = labelItems[i];
 			tickFont = item.font;
 
 			// Make sure we draw text in the correct color and font
@@ -1137,19 +1139,19 @@ var Scale = Element.extend({
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
 
-			var label = item.label;
-			var y = item.textOffset;
+			label = item.label;
+			y = item.textOffset;
 			if (helpers.isArray(label)) {
-				for (var i = 0; i < label.length; ++i) {
+				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
-					ctx.fillText('' + label[i], 0, y);
+					ctx.fillText('' + label[j], 0, y);
 					y += tickFont.lineHeight;
 				}
 			} else {
 				ctx.fillText(label, 0, y);
 			}
 			ctx.restore();
-		});
+		}
 	},
 
 	/**
