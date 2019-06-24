@@ -534,18 +534,18 @@ module.exports = Scale.extend({
 		var unit = options.time.unit || 'day';
 		var min = MAX_INTEGER;
 		var max = MIN_INTEGER;
+		var timestamps = [];
 		var datasets = [];
 		var labels = [];
-		var timestamps, i, j, ilen, jlen, data, timestamp;
+		var i, j, ilen, jlen, data, timestamp, labelsAdded;
 		var dataLabels = me._getLabels();
 
-		// Convert labels to timestamps
+		// Set labels
 		for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {
 			labels.push(parse(me, dataLabels[i]));
 		}
-		timestamps = labels.slice(0);
 
-		// Convert data to timestamps
+		// Set timestamps
 		for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 			if (chart.isDatasetVisible(i)) {
 				data = chart.data.datasets[i].data;
@@ -561,6 +561,10 @@ module.exports = Scale.extend({
 					}
 				} else {
 					datasets[i] = labels.slice(0);
+					if (!labelsAdded) {
+						timestamps = timestamps.concat(labels);
+						labelsAdded = true;
+					}
 				}
 			} else {
 				datasets[i] = [];
@@ -573,7 +577,9 @@ module.exports = Scale.extend({
 		}
 
 		if (timestamps.length) {
-			timestamps = arrayUnique(timestamps).sort(sorter);
+			if (ilen > 1) {
+				timestamps = arrayUnique(timestamps).sort(sorter);
+			}
 			min = Math.min(min, timestamps[0]);
 			max = Math.max(max, timestamps[timestamps.length - 1]);
 		}
