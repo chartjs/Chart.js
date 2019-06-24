@@ -7,8 +7,9 @@ var Ticks = require('./core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-var parseFont = helpers.options._parseFont;
-var toPadding = helpers.options.toPadding;
+var optionsHelpers = helpers.options;
+var parseFont = optionsHelpers._parseFont;
+var toPadding = optionsHelpers.toPadding;
 
 defaults._set('scale', {
 	display: true,
@@ -453,33 +454,27 @@ var Scale = Element.extend({
 	},
 	fit: function() {
 		var me = this;
-		// Reset
-		var minSize = me.minSize = {
-			width: 0,
-			height: 0
-		};
-
+		var minSize = me.minSize = {};
 		var ticks = me.getTicks();
 		var opts = me.options;
 		var tickOpts = opts.ticks;
 		var gridLineOpts = opts.gridLines;
 		var position = opts.position;
 		var isHorizontal = me.isHorizontal();
-		var thickness;
+		var thickness, minWidth, minHeight;
 
 		if (!me._isVisible()) {
-			me.width = 0;
-			me.height = 0;
+			me.width = me.height = minSize.width = minSize.height = 0;
 			return;
 		}
 
 		thickness = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(opts.scaleLabel);
 		if (isHorizontal) {
-			minSize.width = me.maxWidth;
-			minSize.height = thickness;
+			minWidth = me.maxWidth;
+			minHeight = thickness;
 		} else {
-			minSize.width = thickness;
-			minSize.height = me.maxHeight;
+			minWidth = thickness;
+			minHeight = me.maxHeight;
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
@@ -506,7 +501,7 @@ var Scale = Element.extend({
 					+ cosRotation * (highestLabelSize.height - (isRotated ? highestLabelSize.offset : 0))
 					+ (isRotated ? 0 : lineSpace); // padding
 
-				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
+				minHeight = Math.min(me.maxHeight, minHeight + labelHeight + tickPadding);
 
 				var offsetLeft = me.getPixelForTick(0) - me.left;
 				var offsetRight = me.right - me.getPixelForTick(ticks.length - 1);
@@ -538,7 +533,7 @@ var Scale = Element.extend({
 					// tickPadding is not implemented for horizontal
 					widestLabelSize.width + tickPadding + lineSpace;
 
-				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
+				minWidth = Math.min(me.maxWidth, minWidth + labelWidth);
 
 				me.paddingTop = firstLabelSize.height / 2;
 				me.paddingBottom = lastLabelSize.height / 2;
@@ -547,8 +542,8 @@ var Scale = Element.extend({
 
 		me.handleMargins();
 
-		me.width = minSize.width;
-		me.height = minSize.height;
+		me.width = minSize.width = minWidth;
+		me.height = minSize.height = minHeight;
 	},
 
 	/**
