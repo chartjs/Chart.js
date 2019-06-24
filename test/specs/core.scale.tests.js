@@ -495,6 +495,9 @@ describe('Core.scale', function() {
 		it('should default to one layer for custom scales', function() {
 			var customScale = Chart.Scale.extend({
 				draw: function() {},
+				buildTicks: function() {
+					this.ticks = ['tick'];
+				},
 				convertTicksToLabels: function() {
 					return ['tick'];
 				}

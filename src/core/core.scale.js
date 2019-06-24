@@ -250,9 +250,18 @@ var Scale = Element.extend({
 		helpers.callback(this.options.beforeUpdate, [this]);
 	},
 
+	/**
+	 * @param {number} maxWidth - the max width in pixels
+	 * @param {number} maxHeight - the max height in pixels
+	 * @param {object} margins - the space between the edge of the other scales and edge of the chart
+	 *   This space comes from two sources:
+	 *     - padding - space that's required to show the labels at the edges of the scale
+	 *     - thickness of scales or legends in another orientation
+	 */
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
-		var i, ilen, labels, label, ticks, tick;
+		var tickOpts = me.options.ticks;
+		var i, ilen, labels, ticks;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -271,7 +280,6 @@ var Scale = Element.extend({
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
-		me._ticksToDraw = null;
 		me._gridLineItems = null;
 		me._labelItems = null;
 
@@ -296,10 +304,22 @@ var Scale = Element.extend({
 
 		// New implementations should return an array of objects but for BACKWARD COMPAT,
 		// we still support no return (`this.ticks` internally set by calling this method).
-		ticks = me.buildTicks() || [];
+		ticks = me.buildTicks();
 
 		// Allow modification of ticks in callback.
-		ticks = me.afterBuildTicks(ticks) || ticks;
+		if (ticks) {
+			ticks = me.afterBuildTicks(ticks);
+		} else {
+			// Support old implementations (that modified `this.ticks` directly in buildTicks)
+			me.ticks = me.afterBuildTicks(me.ticks);
+			ticks = [];
+			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
+				ticks.push({
+					value: me.ticks[i],
+					major: false
+				});
+			}
+		}
 
 		me.beforeTickToLabelConversion();
 
@@ -310,22 +330,12 @@ var Scale = Element.extend({
 
 		me.afterTickToLabelConversion();
 
+		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
 		me.ticks = labels;   // BACKWARD COMPATIBILITY
-
-		// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
 
 		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
 		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			label = labels[i];
-			tick = ticks[i];
-			if (!tick) {
-				ticks.push(tick = {
-					label: label,
-					major: false
-				});
-			} else {
-				tick.label = label;
-			}
+			ticks[i].label = labels[i];
 		}
 
 		me._ticks = ticks;
@@ -344,9 +354,12 @@ var Scale = Element.extend({
 		me.beforeFit();
 		me.fit();
 		me.afterFit();
-		//
+		// Auto-skip
+		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me.getTicks()) : ticks;
+
 		me.afterUpdate();
 
+		// TODO: remove minSize as a public property and return value from all layout boxes. It is unused
 		return me.minSize;
 
 	},
@@ -425,13 +438,7 @@ var Scale = Element.extend({
 	buildTicks: helpers.noop,
 	afterBuildTicks: function(ticks) {
 		var me = this;
-		// ticks is empty for old axis implementations here
-		if (helpers.isArray(ticks) && ticks.length) {
-			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
-		}
-		// Support old implementations (that modified `this.ticks` directly in buildTicks)
-		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
-		return ticks;
+		return helpers.callback(me.options.afterBuildTicks, [me, ticks]) || ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
@@ -508,6 +515,7 @@ var Scale = Element.extend({
 			height: 0
 		};
 
+		var chart = me.chart;
 		var opts = me.options;
 		var tickOpts = opts.ticks;
 		var scaleLabelOpts = opts.scaleLabel;
@@ -593,8 +601,13 @@ var Scale = Element.extend({
 
 		me.handleMargins();
 
-		me.width = minSize.width;
-		me.height = minSize.height;
+		if (isHorizontal) {
+			me.width = me._length = chart.width - me.margins.left - me.margins.right;
+			me.height = minSize.height;
+		} else {
+			me.width = minSize.width;
+			me.height = me._length = chart.height - me.margins.top - me.margins.bottom;
+		}
 	},
 
 	/**
@@ -603,12 +616,10 @@ var Scale = Element.extend({
 	 */
 	handleMargins: function() {
 		var me = this;
-		if (me.margins) {
-			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
-			me.margins.top = Math.max(me.paddingTop, me.margins.top);
-			me.margins.right = Math.max(me.paddingRight, me.margins.right);
-			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
-		}
+		me.margins.left = Math.max(me.paddingLeft, me.margins.left);
+		me.margins.top = Math.max(me.paddingTop, me.margins.top);
+		me.margins.right = Math.max(me.paddingRight, me.margins.right);
+		me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
 	},
 
 	afterFit: function() {
@@ -870,25 +881,6 @@ var Scale = Element.extend({
 		return false;
 	},
 
-	_getTicksToDraw: function() {
-		var me = this;
-		var optionTicks = me.options.ticks;
-		var ticks = me._ticksToDraw;
-
-		if (ticks) {
-			return ticks;
-		}
-
-		ticks = me.getTicks();
-
-		if (optionTicks.display && optionTicks.autoSkip) {
-			ticks = me._autoSkip(ticks);
-		}
-
-		me._ticksToDraw = ticks;
-		return ticks;
-	},
-
 	/**
 	 * @private
 	 */
@@ -900,8 +892,9 @@ var Scale = Element.extend({
 		var position = options.position;
 		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
-		var ticks = me._getTicksToDraw();
+		var ticks = me._ticksToDraw;
 		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
+
 		var tl = getTickMarkLength(gridLines);
 		var items = [];
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
@@ -1008,7 +1001,7 @@ var Scale = Element.extend({
 		var position = options.position;
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
-		var ticks = me._getTicksToDraw();
+		var ticks = me._ticksToDraw;
 		var fonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var tl = getTickMarkLength(options.gridLines);
