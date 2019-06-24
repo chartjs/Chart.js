@@ -886,7 +886,7 @@ var Scale = Element.extend({
 		var isHorizontal = me.isHorizontal();
 
 		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
-		var ticksLength = ticks.length;
+		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
 		var tickFonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var labelOffset = optionTicks.labelOffset;
@@ -900,7 +900,7 @@ var Scale = Element.extend({
 
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
 		var alignPixel = helpers._alignPixel;
-		var borderValue, tickStart, tickEnd, i, ilen, tick;
+		var borderValue, tickStart, tickEnd, i, tick;
 
 		if (position === 'top') {
 			borderValue = alignPixel(chart, me.bottom, axisWidth);
@@ -920,11 +920,11 @@ var Scale = Element.extend({
 			tickEnd = me.left + tl;
 		}
 
-		for (i = 0, ilen = ticksLength + (offsetGridLines ? 1 : 0); i < ilen; ++i) {
+		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
 
 			var label = tick.label;
-			var extra = i >= ticksLength;
+			var extra = i >= ticks.length;
 
 			// autoskipper skipped this tick (#4635)
 			if (helpers.isNullOrUndef(label) && !extra) {
@@ -1025,7 +1025,7 @@ var Scale = Element.extend({
 			}
 		}
 
-		gridLineItems.ticksLength = ilen;
+		gridLineItems.ticksLength = ticksLength;
 		gridLineItems.borderValue = borderValue;
 
 		return {
