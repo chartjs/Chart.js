@@ -540,12 +540,10 @@ module.exports = Scale.extend({
 		var i, j, ilen, jlen, data, timestamp, labelsAdded;
 		var dataLabels = me._getLabels();
 
-		// Set labels
 		for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {
 			labels.push(parse(me, dataLabels[i]));
 		}
 
-		// Set timestamps
 		for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 			if (chart.isDatasetVisible(i)) {
 				data = chart.data.datasets[i].data;
@@ -577,9 +575,7 @@ module.exports = Scale.extend({
 		}
 
 		if (timestamps.length) {
-			if (ilen > 1) {
-				timestamps = arrayUnique(timestamps).sort(sorter);
-			}
+			timestamps = ilen > 1 ? arrayUnique(timestamps).sort(sorter) : timestamps.sort(sorter);
 			min = Math.min(min, timestamps[0]);
 			max = Math.max(max, timestamps[timestamps.length - 1]);
 		}
