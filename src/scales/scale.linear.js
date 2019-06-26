@@ -80,13 +80,8 @@ function updateMinMax(scale, meta, data) {
 			continue;
 		}
 
-		if (value.min < scale.min) {
-			scale.min = value.min;
-		}
-
-		if (value.max > scale.max) {
-			scale.max = value.max;
-		}
+		scale.min = Math.min(scale.min, value.min);
+		scale.max = Math.max(scale.max, value.max);
 	}
 }
 

@@ -154,6 +154,14 @@ function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
 }
 
+function compare2Level(l1, l2) {
+	return function(a, b) {
+		return a[l1] === b[l1]
+			? a[l2] - b[l2]
+			: a[l1] - b[l1];
+	};
+}
+
 var Chart = function(item, config) {
 	this.construct(item, config);
 	return this;
@@ -515,11 +523,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
 
-		me._layers.sort(function(a, b) {
-			return a.z === b.z
-				? a._idx - b._idx
-				: a.z - b.z;
-		});
+		me._layers.sort(compare2Level('z', '_idx'));
 
 		if (me._bufferedRender) {
 			me._bufferedRequest = {
@@ -729,11 +733,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 		}
 
-		result.sort(function(a, b) {
-			return a.order === b.order
-				? a.index - b.index
-				: a.order - b.order;
-		});
+		result.sort(compare2Level('order', 'index'));
 
 		return result;
 	},
