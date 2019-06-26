@@ -271,7 +271,9 @@ var Scale = Element.extend({
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
-		me._itemsToDraw = null;
+		me._ticksToDraw = null;
+		me._gridLineItems = null;
+		me._labelItems = null;
 
 		// Dimensions
 		me.beforeSetDimensions();
@@ -869,71 +871,84 @@ var Scale = Element.extend({
 		return false;
 	},
 
+	_getTicksToDraw: function() {
+		var me = this;
+		var optionTicks = me.options.ticks;
+		var ticks = me._ticksToDraw;
+
+		if (ticks) {
+			return ticks;
+		}
+
+		ticks = me.getTicks();
+
+		if (optionTicks.display && optionTicks.autoSkip) {
+			ticks = me._autoSkip(ticks);
+		}
+
+		me._ticksToDraw = ticks;
+		return ticks;
+	},
+
 	/**
 	 * @private
 	 */
-	_computeItemsToDraw: function(chartArea) {
+	_computeGridLineItems: function(chartArea) {
 		var me = this;
 		var chart = me.chart;
 		var options = me.options;
-		var optionTicks = options.ticks;
 		var gridLines = options.gridLines;
 		var position = options.position;
 		var offsetGridLines = gridLines.offsetGridLines;
-
-		var isRotated = me.labelRotation !== 0;
-		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
-
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
+		var ticks = me._getTicksToDraw();
 		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
-		var tickFonts = parseTickFontOptions(optionTicks);
-		var tickPadding = optionTicks.padding;
-		var labelOffset = optionTicks.labelOffset;
-
 		var tl = getTickMarkLength(gridLines);
-
-		var labelRotationRadians = helpers.toRadians(me.labelRotation);
-
-		var gridLineItems = [];
-		var labelItems = [];
-
+		var items = [];
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var axisHalfWidth = axisWidth / 2;
 		var alignPixel = helpers._alignPixel;
-		var borderValue, tickStart, tickEnd, i, tick;
+		var alignBorderValue = function(pixel) {
+			return alignPixel(chart, pixel, axisWidth);
+		};
+		var borderValue, i, tick, label, lineValue, alignedLineValue;
+		var tx1, ty1, tx2, ty2, x1, y1, x2, y2, lineWidth, lineColor, borderDash, borderDashOffset;
 
 		if (position === 'top') {
-			borderValue = alignPixel(chart, me.bottom, axisWidth);
-			tickStart = me.bottom - tl;
-			tickEnd = borderValue - axisWidth / 2;
+			borderValue = alignBorderValue(me.bottom);
+			ty1 = me.bottom - tl;
+			ty2 = borderValue - axisHalfWidth;
+			y1 = alignBorderValue(chartArea.top) + axisHalfWidth;
+			y2 = chartArea.bottom;
 		} else if (position === 'bottom') {
-			borderValue = alignPixel(chart, me.top, axisWidth);
-			tickStart = borderValue + axisWidth / 2;
-			tickEnd = me.top + tl;
+			borderValue = alignBorderValue(me.top);
+			y1 = chartArea.top;
+			y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
+			ty1 = borderValue + axisHalfWidth;
+			ty2 = me.top + tl;
 		} else if (position === 'left') {
-			borderValue = alignPixel(chart, me.right, axisWidth);
-			tickStart = me.right - tl;
-			tickEnd = borderValue - axisWidth / 2;
+			borderValue = alignBorderValue(me.right);
+			tx1 = me.right - tl;
+			tx2 = borderValue - axisHalfWidth;
+			x1 = alignBorderValue(chartArea.left) + axisHalfWidth;
+			x2 = chartArea.right;
 		} else {
-			borderValue = alignPixel(chart, me.left, axisWidth);
-			tickStart = borderValue + axisWidth / 2;
-			tickEnd = me.left + tl;
+			borderValue = alignBorderValue(me.left);
+			x1 = chartArea.left;
+			x2 = alignBorderValue(chartArea.right) - axisHalfWidth;
+			tx1 = borderValue + axisHalfWidth;
+			tx2 = me.left + tl;
 		}
 
 		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
-
-			var label = tick.label;
-			var extra = i >= ticks.length;
+			label = tick.label;
 
 			// autoskipper skipped this tick (#4635)
-			if (helpers.isNullOrUndef(label) && !extra) {
+			if (helpers.isNullOrUndef(label) && i < ticks.length) {
 				continue;
 			}
 
-			var tickFont = tick.major ? tickFonts.major : tickFonts.minor;
-			var lineHeight = tickFont.lineHeight;
-			var lineWidth, lineColor, borderDash, borderDashOffset;
 			if (i === me.zeroLineIndex && options.offset === offsetGridLines) {
 				// Draw the first index specially
 				lineWidth = gridLines.zeroLineWidth;
@@ -947,91 +962,111 @@ var Scale = Element.extend({
 				borderDashOffset = gridLines.borderDashOffset || 0.0;
 			}
 
-			// Common properties
-			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY, textOffset, textAlign;
-			var labelCount = helpers.isArray(label) ? label.length : 1;
-			var lineValue = getPixelForGridLine(me, i, offsetGridLines);
+			lineValue = getPixelForGridLine(me, i, offsetGridLines);
+
+			// Skip if the pixel is out of the range
+			if (lineValue === undefined) {
+				continue;
+			}
+
+			alignedLineValue = alignPixel(chart, lineValue, lineWidth);
 
 			if (isHorizontal) {
-				var labelYOffset = tl + tickPadding;
-
-				tx1 = tx2 = x1 = x2 = alignPixel(chart, lineValue, lineWidth);
-				ty1 = tickStart;
-				ty2 = tickEnd;
-				labelX = me.getPixelForTick(i) + labelOffset; // x values for optionTicks (need to consider offsetLabel option)
-
-				if (position === 'top') {
-					y1 = alignPixel(chart, chartArea.top, axisWidth) + axisWidth / 2;
-					y2 = chartArea.bottom;
-					textOffset = ((!isRotated ? 0.5 : 1) - labelCount) * lineHeight;
-					textAlign = !isRotated ? 'center' : 'left';
-					labelY = me.bottom - labelYOffset;
-				} else {
-					y1 = chartArea.top;
-					y2 = alignPixel(chart, chartArea.bottom, axisWidth) - axisWidth / 2;
-					textOffset = (!isRotated ? 0.5 : 0) * lineHeight;
-					textAlign = !isRotated ? 'center' : 'right';
-					labelY = me.top + labelYOffset;
-				}
+				tx1 = tx2 = x1 = x2 = alignedLineValue;
 			} else {
-				var labelXOffset = (isMirrored ? 0 : tl) + tickPadding;
-
-				tx1 = tickStart;
-				tx2 = tickEnd;
-				ty1 = ty2 = y1 = y2 = alignPixel(chart, lineValue, lineWidth);
-				labelY = me.getPixelForTick(i) + labelOffset;
-				textOffset = (1 - labelCount) * lineHeight / 2;
-
-				if (position === 'left') {
-					x1 = alignPixel(chart, chartArea.left, axisWidth) + axisWidth / 2;
-					x2 = chartArea.right;
-					textAlign = isMirrored ? 'left' : 'right';
-					labelX = me.right - labelXOffset;
-				} else {
-					x1 = chartArea.left;
-					x2 = alignPixel(chart, chartArea.right, axisWidth) - axisWidth / 2;
-					textAlign = isMirrored ? 'right' : 'left';
-					labelX = me.left + labelXOffset;
-				}
+				ty1 = ty2 = y1 = y2 = alignedLineValue;
 			}
 
-			if (lineValue !== undefined) {
-				gridLineItems.push({
-					tx1: tx1,
-					ty1: ty1,
-					tx2: tx2,
-					ty2: ty2,
-					x1: x1,
-					y1: y1,
-					x2: x2,
-					y2: y2,
-					width: lineWidth,
-					color: lineColor,
-					borderDash: borderDash,
-					borderDashOffset: borderDashOffset,
-				});
-			}
-
-			if (!extra) {
-				labelItems.push({
-					x: labelX,
-					y: labelY,
-					rotation: -labelRotationRadians,
-					label: label,
-					font: tick.major ? tickFonts.major : tickFonts.minor,
-					textOffset: textOffset,
-					textAlign: textAlign
-				});
-			}
+			items.push({
+				tx1: tx1,
+				ty1: ty1,
+				tx2: tx2,
+				ty2: ty2,
+				x1: x1,
+				y1: y1,
+				x2: x2,
+				y2: y2,
+				width: lineWidth,
+				color: lineColor,
+				borderDash: borderDash,
+				borderDashOffset: borderDashOffset,
+			});
 		}
 
-		gridLineItems.ticksLength = ticksLength;
-		gridLineItems.borderValue = borderValue;
+		items.ticksLength = ticksLength;
+		items.borderValue = borderValue;
 
-		return {
-			gridLines: gridLineItems,
-			labels: labelItems
-		};
+		return items;
+	},
+
+	/**
+	 * @private
+	 */
+	_computeLabelItems: function() {
+		var me = this;
+		var options = me.options;
+		var optionTicks = options.ticks;
+		var position = options.position;
+		var isMirrored = optionTicks.mirror;
+		var isHorizontal = me.isHorizontal();
+		var ticks = me._getTicksToDraw();
+		var fonts = parseTickFontOptions(optionTicks);
+		var tickPadding = optionTicks.padding;
+		var tl = getTickMarkLength(options.gridLines);
+		var rotation = -helpers.toRadians(me.labelRotation);
+		var items = [];
+		var i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+
+		if (position === 'top') {
+			y = me.bottom - tl - tickPadding;
+			textAlign = !rotation ? 'center' : 'left';
+		} else if (position === 'bottom') {
+			y = me.top + tl + tickPadding;
+			textAlign = !rotation ? 'center' : 'right';
+		} else if (position === 'left') {
+			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
+			textAlign = isMirrored ? 'left' : 'right';
+		} else {
+			x = me.right + (isMirrored ? 0 : tl) + tickPadding;
+			textAlign = isMirrored ? 'right' : 'left';
+		}
+
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			tick = ticks[i];
+			label = tick.label;
+
+			// autoskipper skipped this tick (#4635)
+			if (helpers.isNullOrUndef(label)) {
+				continue;
+			}
+
+			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
+			font = tick.major ? fonts.major : fonts.minor;
+			lineHeight = font.lineHeight;
+			lineCount = helpers.isArray(label) ? label.length : 1;
+
+			if (isHorizontal) {
+				x = pixel;
+				textOffset = position === 'top'
+					? ((!rotation ? 0.5 : 1) - lineCount) * lineHeight
+					: (!rotation ? 0.5 : 0) * lineHeight;
+			} else {
+				y = pixel;
+				textOffset = (1 - lineCount) * lineHeight / 2;
+			}
+
+			items.push({
+				x: x,
+				y: y,
+				rotation: rotation,
+				label: label,
+				font: font,
+				textOffset: textOffset,
+				textAlign: textAlign
+			});
+		}
+
+		return items;
 	},
 
 	/**
@@ -1039,22 +1074,21 @@ var Scale = Element.extend({
 	 */
 	_drawGrid: function(chartArea) {
 		var me = this;
-		var ctx = me.ctx;
-		var chart = me.chart;
 		var gridLines = me.options.gridLines;
 
 		if (!gridLines.display) {
 			return;
 		}
 
+		var ctx = me.ctx;
+		var chart = me.chart;
 		var alignPixel = helpers._alignPixel;
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
-		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
-		var gridLineItems = items.gridLines;
+		var items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
 		var width, color, i, ilen, item;
 
-		for (i = 0, ilen = gridLineItems.length; i < ilen; ++i) {
-			item = gridLineItems[i];
+		for (i = 0, ilen = items.length; i < ilen; ++i) {
+			item = items[i];
 			width = item.width;
 			color = item.color;
 
@@ -1087,8 +1121,8 @@ var Scale = Element.extend({
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			var firstLineWidth = axisWidth;
-			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, gridLineItems.ticksLength - 1, 1);
-			var borderValue = gridLineItems.borderValue;
+			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, items.ticksLength - 1, 1);
+			var borderValue = items.borderValue;
 			var x1, x2, y1, y2;
 
 			if (me.isHorizontal()) {
@@ -1113,21 +1147,20 @@ var Scale = Element.extend({
 	/**
 	 * @private
 	 */
-	_drawLabels: function(chartArea) {
+	_drawLabels: function() {
 		var me = this;
-		var ctx = me.ctx;
 		var optionTicks = me.options.ticks;
 
 		if (!optionTicks.display) {
 			return;
 		}
 
-		var items = me._itemsToDraw || (me._itemsToDraw = me._computeItemsToDraw(chartArea));
-		var labelItems = items.labels;
+		var ctx = me.ctx;
+		var items = me._labelItems || (me._labelItems = me._computeLabelItems());
 		var i, j, ilen, jlen, item, tickFont, label, y;
 
-		for (i = 0, ilen = labelItems.length; i < ilen; ++i) {
-			item = labelItems[i];
+		for (i = 0, ilen = items.length; i < ilen; ++i) {
+			item = items[i];
 			tickFont = item.font;
 
 			// Make sure we draw text in the correct color and font
@@ -1208,8 +1241,8 @@ var Scale = Element.extend({
 		}
 
 		me._drawGrid(chartArea);
-		me._drawTitle(chartArea);
-		me._drawLabels(chartArea);
+		me._drawTitle();
+		me._drawLabels();
 	},
 
 	/**
