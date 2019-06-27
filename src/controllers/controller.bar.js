@@ -118,7 +118,7 @@ function getMatchingVisibleMetas(scale) {
 	var isHorizontal = scale.isHorizontal();
 	return scale.chart._getSortedVisibleDatasetMetas()
 		.filter(function(meta) {
-			return meta.bar && isHorizontal ? meta.xAxisID === scale.id : meta.yAxisID === scale.id;
+			return meta.bar && (isHorizontal ? meta.xAxisID === scale.id : meta.yAxisID === scale.id);
 		});
 }
 
@@ -216,9 +216,8 @@ module.exports = DatasetController.extend({
 	 */
 	_getStacks: function(last) {
 		var me = this;
-		var chart = me.chart;
 		var scale = me._getIndexScale();
-		var metasets = chart._getSortedVisibleDatasetMetas();
+		var metasets = getMatchingVisibleMetas(scale);
 		var stacked = scale.options.stacked;
 		var ilen = metasets.length;
 		var stacks = [];
@@ -226,10 +225,13 @@ module.exports = DatasetController.extend({
 
 		for (i = 0; i < ilen; ++i) {
 			meta = metasets[i];
-			if (meta.bar &&
-				(stacked === false ||
-				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
-				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+			// stacked   | meta.stack
+			//           | found | not found | undefined
+			// false     |   x   |     x     |     x
+			// true      |       |     x     |
+			// undefined |       |     x     |     x
+			if (stacked === false || stacks.indexOf(meta.stack) === -1 ||
+				(stacked === undefined && meta.stack === undefined)) {
 				stacks.push(meta.stack);
 			}
 			if (meta.index === last) {

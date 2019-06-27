@@ -41,31 +41,40 @@ function getOrCreateStack(stacks, stacked, meta) {
 	return stacks[key];
 }
 
+function isInvalidOrHidden(value, meta, i) {
+	return isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden;
+}
+
+function updateStackAtIndex(stack, i, value, opts) {
+	var pos = stack.pos;
+	var neg = stack.neg;
+
+	pos[i] = pos[i] || 0;
+	neg[i] = neg[i] || 0;
+
+	if (opts.relativePoints) {
+		pos[i] = 100;
+	} else if (value.min < 0 || value.max < 0) {
+		neg[i] += value.min;
+	} else {
+		pos[i] += value.max;
+	}
+}
+
 function stackData(scale, stacks, meta, data) {
 	var opts = scale.options;
 	var stacked = opts.stacked;
 	var stack = getOrCreateStack(stacks, stacked, meta);
-	var pos = stack.pos;
-	var neg = stack.neg;
 	var ilen = data.length;
 	var i, value;
 
 	for (i = 0; i < ilen; ++i) {
 		value = scale._parseValue(data[i]);
-		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+		if (isInvalidOrHidden(value, meta, i)) {
 			continue;
 		}
 
-		pos[i] = pos[i] || 0;
-		neg[i] = neg[i] || 0;
-
-		if (opts.relativePoints) {
-			pos[i] = 100;
-		} else if (value.min < 0 || value.max < 0) {
-			neg[i] += value.min;
-		} else {
-			pos[i] += value.max;
-		}
+		updateStackAtIndex(stack, i, value, opts);
 	}
 }
 
@@ -75,8 +84,7 @@ function updateMinMax(scale, meta, data) {
 
 	for (i = 0; i < ilen; ++i) {
 		value = scale._parseValue(data[i]);
-
-		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+		if (isInvalidOrHidden(value, meta, i)) {
 			continue;
 		}
 
