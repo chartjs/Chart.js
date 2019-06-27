@@ -107,6 +107,7 @@ var Title = Element.extend({
 		var me = this;
 		var opts = me.options;
 		var minSize = me.minSize = {};
+		var isHorizontal = me.isHorizontal();
 		var lineCount, textSize;
 
 		if (!opts.display) {
@@ -115,10 +116,10 @@ var Title = Element.extend({
 		}
 
 		lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		textSize = (lineCount * parseFont(opts).lineHeight) + (opts.padding * 2);
+		textSize = lineCount * parseFont(opts).lineHeight + opts.padding * 2;
 
-		me.width = minSize.width = me.isHorizontal() ? me.maxWidth : textSize;
-		me.height = minSize.height = me.isHorizontal() ? textSize : me.maxHeight;
+		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
+		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	},
 	afterFit: noop,
 
@@ -146,20 +147,22 @@ var Title = Element.extend({
 		var left = me.left;
 		var bottom = me.bottom;
 		var right = me.right;
-		var maxWidth, titleX, titleY;
+		var text = opts.text;
+		var y = 0;
+		var maxWidth, titleX, titleY, i;
 
 		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
 		ctx.font = fontOpts.string;
 
 		// Horizontal
 		if (me.isHorizontal()) {
-			titleX = left + ((right - left) / 2); // midpoint of the width
-			titleY = top + offset;
 			maxWidth = right - left;
+			titleX = left + maxWidth / 2; // midpoint of the width
+			titleY = top + offset;
 		} else {
-			titleX = opts.position === 'left' ? left + offset : right - offset;
-			titleY = top + ((bottom - top) / 2);
 			maxWidth = bottom - top;
+			titleX = opts.position === 'left' ? left + offset : right - offset;
+			titleY = top + maxWidth / 2;
 			rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
 		}
 
@@ -169,10 +172,8 @@ var Title = Element.extend({
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		var text = opts.text;
 		if (helpers.isArray(text)) {
-			var y = 0;
-			for (var i = 0; i < text.length; ++i) {
+			for (i = 0; i < text.length; ++i) {
 				ctx.fillText(text[i], 0, y, maxWidth);
 				y += lineHeight;
 			}
