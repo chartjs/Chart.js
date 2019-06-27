@@ -257,6 +257,7 @@ var Scale = Element.extend({
 			bottom: 0
 		}, margins);
 
+		me._labelSizes = null;
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
@@ -419,31 +420,31 @@ var Scale = Element.extend({
 		var labelRotation = minRotation;
 		var labelSizes, maxLabelWidth, maxLabelHeight, maxWidth, tickWidth, maxHeight, maxLabelDiagonal;
 
-		if (me._isVisible() && tickOpts.display) {
-			labelSizes = me._labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(tickOpts), ticks, me.longestTextCache);
+		if (!me._isVisible() || !tickOpts.display || minRotation >= maxRotation || ticks.length <= 1 || !me.isHorizontal()) {
+			me.labelRotation = minRotation;
+			return;
+		}
 
-			if (minRotation < maxRotation && ticks.length > 1 && me.isHorizontal()) {
-				maxLabelWidth = labelSizes.widest.width;
-				maxLabelHeight = labelSizes.highest.height - labelSizes.highest.offset;
+		labelSizes = me._getLabelSizes();
+		maxLabelWidth = labelSizes.widest.width;
+		maxLabelHeight = labelSizes.highest.height - labelSizes.highest.offset;
 
-				// Estimate the width of each grid based on the canvas width, the maximum
-				// label width and the number of tick intervals
-				maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
-				tickWidth = options.offset ? me.maxWidth / ticks.length : maxWidth / (ticks.length - 1);
+		// Estimate the width of each grid based on the canvas width, the maximum
+		// label width and the number of tick intervals
+		maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
+		tickWidth = options.offset ? me.maxWidth / ticks.length : maxWidth / (ticks.length - 1);
 
-				// Allow 3 pixels x2 padding either side for label readability
-				if (maxLabelWidth + 6 > tickWidth) {
-					tickWidth = maxWidth / (ticks.length - (options.offset ? 0.5 : 1));
-					maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
-						- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
-					maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
-					labelRotation = helpers.toDegrees(Math.min(
-						Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
-						Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
-					));
-					labelRotation = Math.max(minRotation, Math.min(maxRotation, labelRotation));
-				}
-			}
+		// Allow 3 pixels x2 padding either side for label readability
+		if (maxLabelWidth + 6 > tickWidth) {
+			tickWidth = maxWidth / (ticks.length - (options.offset ? 0.5 : 1));
+			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
+				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
+			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
+			labelRotation = helpers.toDegrees(Math.min(
+				Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
+				Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
+			));
+			labelRotation = Math.max(minRotation, Math.min(maxRotation, labelRotation));
 		}
 
 		me.labelRotation = labelRotation;
@@ -491,7 +492,7 @@ var Scale = Element.extend({
 		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display) {
 			var tickFonts = parseTickFontOptions(tickOpts);
-			var labelSizes = me._labelSizes;
+			var labelSizes = me._getLabelSizes();
 			var firstLabelSize = labelSizes.first;
 			var lastLabelSize = labelSizes.last;
 			var widestLabelSize = labelSizes.widest;
@@ -501,8 +502,6 @@ var Scale = Element.extend({
 
 			if (isHorizontal) {
 				// A horizontal axis is more constrained by the height.
-				me.longestLabelWidth = widestLabelSize.width;
-
 				var isRotated = me.labelRotation !== 0;
 				var angleRadians = helpers.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
@@ -610,8 +609,23 @@ var Scale = Element.extend({
 	},
 
 	/**
-	* @private
-	*/
+	 * @private
+	 */
+	_getLabelSizes: function() {
+		var me = this;
+		var labelSizes = me._labelSizes;
+
+		if (!labelSizes) {
+			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.getTicks(), me.longestTextCache);
+			me.longestLabelWidth = labelSizes.widest.width;
+		}
+
+		return labelSizes;
+	},
+
+	/**
+	 * @private
+	 */
 	_parseValue: function(value) {
 		var start, end, min, max;
 
@@ -782,7 +796,7 @@ var Scale = Element.extend({
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
-		var labelSizes = me._labelSizes;
+		var labelSizes = me._getLabelSizes();
 		var padding = optionTicks.autoSkipPadding || 0;
 		var w = labelSizes ? labelSizes.widest.width + padding : 0;
 		var h = labelSizes ? labelSizes.highest.height + padding : 0;
