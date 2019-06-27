@@ -14,6 +14,10 @@ var exports = {
 		var sqrt = Math.sqrt(value);
 		var i;
 
+		if (!Number.isInteger(value) || value <= 0) {
+			throw new Error('_factorize expects a positive integer, but received ' + value);
+		}
+
 		for (i = 1; i < sqrt; i++) {
 			if (value % i === 0) {
 				result.push(i);

@@ -10,5 +10,11 @@ describe('Chart.helpers.math', function() {
 		expect(factorize(24)).toEqual([1, 2, 3, 4, 6, 8, 12]);
 		expect(factorize(12)).toEqual([1, 2, 3, 4, 6]);
 		expect(factorize(4)).toEqual([1, 2]);
+		expect(function() {
+			factorize(-1);
+		}).toThrow(new Error('_factorize expects a positive integer, but received -1'));
+		expect(function() {
+			factorize(2.76);
+		}).toThrow(new Error('_factorize expects a positive integer, but received 2.76'));
 	});
 });
