@@ -10,7 +10,6 @@ describe('Chart.helpers.math', function() {
 		expect(factorize(24)).toEqual([1, 2, 3, 4, 6, 8, 12]);
 		expect(factorize(12)).toEqual([1, 2, 3, 4, 6]);
 		expect(factorize(4)).toEqual([1, 2]);
-		expect(factorize(4)).toEqual([1, 2]);
 		expect(factorize(-1)).toEqual([]);
 		expect(factorize(2.76)).toEqual([]);
 	});
