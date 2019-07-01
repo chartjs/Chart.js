@@ -77,7 +77,7 @@ the color of the bars is generally set this way.
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | - | Yes | `1`
 | [`label`](#general) | `string` | - | - | `''`
-| [`order`](#general) | `number` | - | - | 0
+| [`order`](#general) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 

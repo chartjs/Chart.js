@@ -81,7 +81,7 @@ var mixedChart = new Chart(ctx, {
     data: {
         datasets: [{
             label: 'Bar Dataset',
-            data: [10, 20, 30, 40]
+            data: [10, 20, 30, 40],
             // this dataset is drawn below
             order: 1
         }, {

@@ -54,7 +54,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
-| [`order`](#general) | `number` | - | - | 0
+| [`order`](#general) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
