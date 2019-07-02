@@ -721,14 +721,16 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	/**
 	 * @private
 	 */
-	_getSortedDatasetMetas: function() {
+	_getSortedDatasetMetas: function(filterVisible) {
 		var me = this;
 		var datasets = me.data.datasets || [];
 		var result = [];
 		var i, ilen;
 
 		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
-			result.push(me.getDatasetMeta(i));
+			if (!filterVisible || me.isDatasetVisible(i)) {
+				result.push(me.getDatasetMeta(i));
+			}
 		}
 
 		result.sort(compare2Level('order', 'index'));
@@ -740,20 +742,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * @private
 	 */
 	_getSortedVisibleDatasetMetas: function() {
-		var me = this;
-		var datasets = me.data.datasets || [];
-		var result = [];
-		var i, ilen;
-
-		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
-			if (me.isDatasetVisible(i)) {
-				result.push(me.getDatasetMeta(i));
-			}
-		}
-
-		result.sort(compare2Level('order', 'index'));
-
-		return result;
+		return this._getSortedDatasetMetas(true);
 	},
 
 	/**
