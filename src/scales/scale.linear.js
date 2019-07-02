@@ -14,15 +14,6 @@ var defaultConfig = {
 var DEFAULT_MIN = 0;
 var DEFAULT_MAX = 1;
 
-function getMatchingVisibleMetas(scale) {
-	var isHorizontal = scale.isHorizontal();
-
-	return scale.chart._getSortedVisibleDatasetMetas()
-		.filter(function(meta) {
-			return isHorizontal ? meta.xAxisID === scale.id : meta.yAxisID === scale.id;
-		});
-}
-
 function getOrCreateStack(stacks, stacked, meta) {
 	var key = [
 		meta.type,
@@ -41,40 +32,31 @@ function getOrCreateStack(stacks, stacked, meta) {
 	return stacks[key];
 }
 
-function isInvalidOrHidden(value, meta, i) {
-	return isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden;
-}
-
-function updateStackAtIndex(stack, i, value, opts) {
-	var pos = stack.pos;
-	var neg = stack.neg;
-
-	pos[i] = pos[i] || 0;
-	neg[i] = neg[i] || 0;
-
-	if (opts.relativePoints) {
-		pos[i] = 100;
-	} else if (value.min < 0 || value.max < 0) {
-		neg[i] += value.min;
-	} else {
-		pos[i] += value.max;
-	}
-}
-
 function stackData(scale, stacks, meta, data) {
 	var opts = scale.options;
 	var stacked = opts.stacked;
 	var stack = getOrCreateStack(stacks, stacked, meta);
+	var pos = stack.pos;
+	var neg = stack.neg;
 	var ilen = data.length;
 	var i, value;
 
 	for (i = 0; i < ilen; ++i) {
 		value = scale._parseValue(data[i]);
-		if (isInvalidOrHidden(value, meta, i)) {
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
 			continue;
 		}
 
-		updateStackAtIndex(stack, i, value, opts);
+		pos[i] = pos[i] || 0;
+		neg[i] = neg[i] || 0;
+
+		if (opts.relativePoints) {
+			pos[i] = 100;
+		} else if (value.min < 0 || value.max < 0) {
+			neg[i] += value.min;
+		} else {
+			pos[i] += value.max;
+		}
 	}
 }
 
@@ -84,7 +66,7 @@ function updateMinMax(scale, meta, data) {
 
 	for (i = 0; i < ilen; ++i) {
 		value = scale._parseValue(data[i]);
-		if (isInvalidOrHidden(value, meta, i)) {
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
 			continue;
 		}
 
@@ -99,7 +81,7 @@ module.exports = LinearScaleBase.extend({
 		var opts = me.options;
 		var chart = me.chart;
 		var datasets = chart.data.datasets;
-		var metasets = getMatchingVisibleMetas(me);
+		var metasets = me._getMatchingVisibleMetas();
 		var hasStacks = opts.stacked;
 		var stacks = {};
 		var ilen = metasets.length;

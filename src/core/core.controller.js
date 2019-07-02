@@ -721,6 +721,24 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	/**
 	 * @private
 	 */
+	_getSortedDatasetMetas: function() {
+		var me = this;
+		var datasets = me.data.datasets || [];
+		var result = [];
+		var i, ilen;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			result.push(me.getDatasetMeta(i));
+		}
+
+		result.sort(compare2Level('order', 'index'));
+
+		return result;
+	},
+
+	/**
+	 * @private
+	 */
 	_getSortedVisibleDatasetMetas: function() {
 		var me = this;
 		var datasets = me.data.datasets || [];

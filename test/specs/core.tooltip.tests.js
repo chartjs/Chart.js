@@ -581,6 +581,165 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 
+	it('Should allow reversing items', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'label',
+					reverse: true
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[1];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			// Positioning
+			xAlign: 'left',
+			yAlign: 'center',
+
+			// Text
+			title: ['Point 2'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Dataset 2: 40'],
+				after: []
+			}, {
+				before: [],
+				lines: ['Dataset 1: 20'],
+				after: []
+			}],
+			afterBody: [],
+			footer: [],
+			labelColors: [{
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
+			}, {
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
+			}]
+		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(267);
+		expect(tooltip._view.y).toBeCloseToPixel(155);
+	});
+
+	it('Should follow dataset order', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)',
+					order: 10
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)',
+					order: 5
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'label'
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[1];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+		var globalDefaults = Chart.defaults.global;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			// Positioning
+			xAlign: 'left',
+			yAlign: 'center',
+
+			// Text
+			title: ['Point 2'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Dataset 2: 40'],
+				after: []
+			}, {
+				before: [],
+				lines: ['Dataset 1: 20'],
+				after: []
+			}],
+			afterBody: [],
+			footer: [],
+			labelColors: [{
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
+			}, {
+				borderColor: globalDefaults.defaultColor,
+				backgroundColor: globalDefaults.defaultColor
+			}]
+		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(267);
+		expect(tooltip._view.y).toBeCloseToPixel(155);
+	});
+
 	it('should filter items from the tooltip using the callback', function() {
 		var chart = window.acquireChart({
 			type: 'line',

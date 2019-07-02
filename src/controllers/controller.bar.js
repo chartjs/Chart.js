@@ -114,14 +114,6 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	};
 }
 
-function getMatchingVisibleMetas(scale) {
-	var isHorizontal = scale.isHorizontal();
-	return scale.chart._getSortedVisibleDatasetMetas()
-		.filter(function(meta) {
-			return meta.bar && (isHorizontal ? meta.xAxisID === scale.id : meta.yAxisID === scale.id);
-		});
-}
-
 module.exports = DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
@@ -217,7 +209,7 @@ module.exports = DatasetController.extend({
 	_getStacks: function(last) {
 		var me = this;
 		var scale = me._getIndexScale();
-		var metasets = getMatchingVisibleMetas(scale);
+		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var stacked = scale.options.stacked;
 		var ilen = metasets.length;
 		var stacks = [];
@@ -311,7 +303,7 @@ module.exports = DatasetController.extend({
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
-		var metasets = getMatchingVisibleMetas(scale);
+		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var value = scale._parseValue(datasets[datasetIndex].data[index]);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
