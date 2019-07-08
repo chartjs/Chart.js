@@ -18,6 +18,13 @@ bower install chart.js --save
 
 ## CDN
 
+### PageCDN
+[![pagecdn](https://img.shields.io/cdnjs/v/Chart.js.svg?style=flat-square&maxAge=600)](https://pagecdn.com/lib/chart.js)
+
+Chart.js built files are available on [PageCDN](https://pagecdn.com/):
+
+https://pagecdn.com/lib/chart.js
+
 ### CDNJS
 [![cdnjs](https://img.shields.io/cdnjs/v/Chart.js.svg?style=flat-square&maxAge=600)](https://cdnjs.com/libraries/Chart.js)
 
