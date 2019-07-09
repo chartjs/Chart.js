@@ -31,7 +31,7 @@ describe('Time scale tests', function() {
 					compare: function(actual, expected) {
 						var result = false;
 
-						var diff = actual.diff(expected.value, expected.unit, true);
+						var diff = moment(actual).diff(expected.value, expected.unit, true);
 						result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.01);
 
 						return {

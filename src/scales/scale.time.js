@@ -766,10 +766,7 @@ module.exports = Scale.extend({
 			(me._horizontal ? me.right : me.bottom) - pixel :
 			pixel - (me._horizontal ? me.left : me.top);
 		var pos = offset / size / offsets.factor - offsets.start;
-		var time = interpolate(me._table, 'pos', pos, 'time');
-
-		// DEPRECATION, we should return time directly
-		return me._adapter._create(time);
+		return interpolate(me._table, 'pos', pos, 'time');
 	},
 
 	/**
