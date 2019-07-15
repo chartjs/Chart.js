@@ -265,20 +265,32 @@ function getBaseModel(tooltipOpts, chart) {
 	};
 	var i, ilen, key;
 	var keys = [
-		'bodyFontColor', 'bodyFontSize',
-		'titleFontColor', 'titleFontSize',
-		'titleSpacing', 'titleMarginBottom',
-		'footerFontColor', 'footerFontSize',
-		'footerSpacing', 'footerMarginTop',
-		'caretSize', 'cornerRadius', 'backgroundColor',
-		'displayColors', 'borderColor', 'borderWidth',
+		'backgroundColor',
+		'bodyFontColor',
+		'bodyFontSize',
+		'borderColor',
+		'borderWidth',
+		'caretSize',
+		'cornerRadius',
+		'displayColors',
+		'footerFontColor',
+		'footerFontSize',
+		'footerMarginTop',
+		'footerSpacing',
+		'titleFontColor',
+		'titleFontSize',
+		'titleMarginBottom',
+		'titleSpacing',
 	];
 	var underscoreKeys = [
-		'bodyFontFamily', 'bodyFontStyle',
-		'titleFontFamily', 'titleFontStyle',
+		'bodyFontFamily',
+		'bodyFontStyle',
+		'footerAlign',
+		'footerFontFamily',
+		'footerFontStyle',
 		'titleAlign',
-		'footerFontFamily', 'footerFontStyle',
-		'footerAlign'
+		'titleFontFamily',
+		'titleFontStyle',
 	];
 
 	var model = {
