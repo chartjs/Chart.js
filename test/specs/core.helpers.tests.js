@@ -26,16 +26,6 @@ describe('Core helper tests', function() {
 		expect(helpers.sign(-5)).toBe(-1);
 	});
 
-	it('should do a log10 operation', function() {
-		expect(helpers.log10(0)).toBe(-Infinity);
-
-		// Check all allowed powers of 10, which should return integer values
-		var maxPowerOf10 = Math.floor(helpers.log10(Number.MAX_VALUE));
-		for (var i = 0; i < maxPowerOf10; i += 1) {
-			expect(helpers.log10(Math.pow(10, i))).toBe(i);
-		}
-	});
-
 	it('should correctly determine if two numbers are essentially equal', function() {
 		expect(helpers.almostEquals(0, Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
 		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);

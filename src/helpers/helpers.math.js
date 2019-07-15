@@ -1,5 +1,7 @@
 'use strict';
 
+var helpers = require('./helpers.core');
+
 /**
  * @alias Chart.helpers.math
  * @namespace
@@ -28,7 +30,28 @@ var exports = {
 			return a - b;
 		}).pop();
 		return result;
+	},
+
+	log10: Math.log10 || function(x) {
+		var exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
+		// Check for whole powers of 10,
+		// which due to floating point rounding error should be corrected.
+		var powerOf10 = Math.round(exponent);
+		var isPowerOf10 = x === Math.pow(10, powerOf10);
+
+		return isPowerOf10 ? powerOf10 : exponent;
 	}
 };
 
 module.exports = exports;
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.math.log10 instead.
+ * @namespace Chart.helpers.log10
+ * @deprecated since version 2.9.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.log10 = exports.log10;

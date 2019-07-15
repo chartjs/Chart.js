@@ -63,17 +63,30 @@ module.exports = Scale.extend({
 		return me.ticks[index - me.minIndex];
 	},
 
+	_configure: function() {
+		var me = this;
+		var offset = me.options.offset;
+		var ticks = me.ticks;
+
+		Scale.prototype._configure.call(me);
+
+		if (!me.isHorizontal()) {
+			// For backward compatibility, vertical category scale reverse is inverted.
+			me._reversePixels = !me._reversePixels;
+		}
+
+		if (!ticks) {
+			return;
+		}
+
+		me._startValue = me.minIndex - (offset ? 0.5 : 0);
+		me._valueRange = Math.max(ticks.length - (offset ? 0 : 1), 1);
+	},
+
 	// Used to get data value locations.  Value can either be an index or a numerical value
 	getPixelForValue: function(value, index, datasetIndex) {
 		var me = this;
-		var offset = me.options.offset;
-
-		// 1 is added because we need the length but we have the indexes
-		var offsetAmt = Math.max(me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1), 1);
-
-		var isHorizontal = me.isHorizontal();
-		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
-		var valueCategory, labels, idx, pixel;
+		var valueCategory, labels, idx;
 
 		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
 			value = me.chart.data.datasets[datasetIndex].data[index];
@@ -82,53 +95,31 @@ module.exports = Scale.extend({
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
 		if (!isNullOrUndef(value)) {
-			valueCategory = isHorizontal ? value.x : value.y;
+			valueCategory = me.isHorizontal() ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
 			labels = me._getLabels();
 			value = helpers.valueOrDefault(valueCategory, value);
 			idx = labels.indexOf(value);
 			index = idx !== -1 ? idx : index;
+			if (isNaN(index)) {
+				index = value;
+			}
 		}
-
-		pixel = valueDimension * (index - me.minIndex);
-
-		if (offset) {
-			pixel += valueDimension / 2;
-		}
-
-		return (isHorizontal ? me.left : me.top) + pixel;
+		return me.getPixelForDecimal((index - me._startValue) / me._valueRange);
 	},
 
 	getPixelForTick: function(index) {
 		var ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index], index + this.minIndex);
+		return index < 0 || index > ticks.length - 1
+			? null
+			: this.getPixelForValue(ticks[index], index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var offset = me.options.offset;
-		var offsetAmt = Math.max(me._ticks.length - (offset ? 0 : 1), 1);
-		var isHorizontal = me.isHorizontal();
-		var valueDimension = (isHorizontal ? me.width : me.height) / offsetAmt;
-		var value;
-
-		pixel -= isHorizontal ? me.left : me.top;
-
-		if (offset) {
-			pixel -= valueDimension / 2;
-		}
-
-		if (pixel <= 0) {
-			value = 0;
-		} else {
-			value = Math.round(pixel / valueDimension);
-		}
-
-		return value + me.minIndex;
+		var value = Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
+		return Math.min(Math.max(value, 0), me.ticks.length - 1);
 	},
 
 	getBasePixel: function() {
