@@ -8,6 +8,7 @@ var helpers = require('../helpers/index');
 var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('radar', {
+	spanGaps: false,
 	scale: {
 		type: 'radialLinear'
 	},
