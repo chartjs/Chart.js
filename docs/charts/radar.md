@@ -143,7 +143,11 @@ The interaction with each point can be controlled with the following properties:
 
 ## Configuration Options
 
-Unlike other charts, the radar chart has no chart specific options.
+The radar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `spanGaps` | `boolean` | `false` | If false, NaN data causes a break in the line.
 
 ## Scale Options
 
