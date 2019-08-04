@@ -1,6 +1,6 @@
 # Summary
 
-* [← Chart.js](https://www.chartjs.org)
+* [Chart.js](https://www.chartjs.org)
 * [Introduction](README.md)
 * [Getting Started](getting-started/README.md)
   * [Installation](getting-started/installation.md)
