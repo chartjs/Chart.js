@@ -626,8 +626,8 @@ var exports = Element.extend({
 
 			// Determine colors for boxes
 			helpers.each(tooltipItems, function(tooltipItem) {
-				labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
-				labelTextColors.push(opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
+				labelColors.push(...opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
+				labelTextColors.push(...opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
 			});
 
 
