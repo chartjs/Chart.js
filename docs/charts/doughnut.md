@@ -60,9 +60,9 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+| [`hoverBackgroundColor`](#interations) | [`Color[]`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [`Color[]`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | `number[]` | Yes | Yes | `undefined`
 | [`weight`](#styling) | `number` | - | - | `1`
 
 ### Styling
