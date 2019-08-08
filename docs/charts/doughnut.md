@@ -57,7 +57,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
-| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderColor`](#styling) | [`Color[]`](../general/colors.md) | Yes | Yes | `'#fff'`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
