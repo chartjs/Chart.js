@@ -55,14 +55,14 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`backgroundColor`](#styling) | [<code>Color&#124;Color[]</code>](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
-| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
-| [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
+| [`borderColor`](#styling) | [<code>Color&#124;Color[]</code>](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderWidth`](#styling) | <code>number&#124;number[]</code> | Yes | Yes | `2`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+| [`hoverBackgroundColor`](#interations) | [<code>Color&#124;Color[]</code>](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions) | [<code>Color&#124;Color[]</code>](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions) | <code>number&#124;number[]</code> | Yes | Yes | `undefined`
 | [`weight`](#styling) | `number` | - | - | `1`
 
 ### Styling
