@@ -789,7 +789,7 @@ var exports = Element.extend({
 		var drawColorBoxes = vm.displayColors;
 		var xLinePadding = 0;
 		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
-		
+
 		var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
 
 		var fillLineOfText = function(line) {
@@ -862,7 +862,7 @@ var exports = Element.extend({
 		var footer = vm.footer;
 		var length = footer.length;
 		var footerFontSize, i;
-		
+
 		if (length) {
 			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
 

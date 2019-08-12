@@ -1,33 +1,34 @@
 'use strict';
 
-var getRtlAdapter = function (rectX, width) {
+var getRtlAdapter = function(rectX, width) {
 	return {
-		x: function (x) {
+		x: function(x) {
 			return rectX + rectX + width - x;
 		},
-		setWidth: function (w) {
+		setWidth: function(w) {
 			width = w;
 		},
 		textAlign: function(align) {
-			if (align === 'center') return align;
+			if (align === 'center') {
+				return align;
+			}
 			return align === 'right' ? 'left' : 'right';
 		},
 		xPlus: function(x, value) {
 			return x - value;
 		},
-		leftForLtr: function(x, width) {
-			return x - width;
+		leftForLtr: function(x, itemWidth) {
+			return x - itemWidth;
 		},
 	};
 };
 
-var getLtrAdapter = function () {
+var getLtrAdapter = function() {
 	return {
-		x: function (x) {
+		x: function(x) {
 			return x;
 		},
-		setWidth: function (w) {
-			width = w;
+		setWidth: function(w) { // eslint-disable-line no-unused-vars
 		},
 		textAlign: function(align) {
 			return align;
@@ -35,23 +36,23 @@ var getLtrAdapter = function () {
 		xPlus: function(x, value) {
 			return x + value;
 		},
-		leftForLtr: function(x, width) {
+		leftForLtr: function(x, _itemWidth) { // eslint-disable-line no-unused-vars
 			return x;
 		},
 	};
 };
 
-var getAdapter = function (rtl, rectX, width) {
+var getAdapter = function(rtl, rectX, width) {
 	if (rtl) {
 		return getRtlAdapter(rectX, width);
-	} else {
-		return getLtrAdapter();
 	}
-}
+
+	return getLtrAdapter();
+};
 
 var overrideTextDirection = function(ctx, direction) {
 	delete ctx.prevTextDirection;
-	
+
 	if (direction === 'ltr' || direction === 'rtl') {
 		var original = [
 			ctx.canvas.style.getPropertyValue('direction'),
@@ -64,8 +65,9 @@ var overrideTextDirection = function(ctx, direction) {
 };
 
 var restoreTextDirection = function(ctx) {
-	if (ctx.prevTextDirection === undefined)
+	if (ctx.prevTextDirection === undefined) {
 		return;
+	}
 
 	var original = ctx.prevTextDirection;
 	delete ctx.prevTextDirection;
