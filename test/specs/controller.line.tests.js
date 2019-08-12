@@ -951,7 +951,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(1);
-		expect(meta.controller.getStackCount()).toBe(4);
+		expect(meta.controller._getStacks().length).toBe(4);
 	});
 
 	it('should correctly count the number of stacks when a group is not specified and the scale is stacked', function() {
@@ -979,7 +979,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(1);
-		expect(meta.controller.getStackCount()).toBe(1);
+		expect(meta.controller._getStacks().length).toBe(1);
 	});
 
 	it('should correctly count the number of stacks when a group is not specified and the scale is not stacked', function() {
@@ -1007,7 +1007,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(1);
-		expect(meta.controller.getStackCount()).toBe(4);
+		expect(meta.controller._getStacks().length).toBe(4);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for some', function() {
@@ -1025,7 +1025,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(3);
+		expect(meta.controller._getStacks().length).toBe(3);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for some and the scale is stacked', function() {
@@ -1053,7 +1053,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(2);
+		expect(meta.controller._getStacks().length).toBe(2);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for some and the scale is not stacked', function() {
@@ -1081,7 +1081,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(4);
+		expect(meta.controller._getStacks().length).toBe(4);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for all', function() {
@@ -1099,7 +1099,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(2);
+		expect(meta.controller._getStacks().length).toBe(2);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for all and the scale is stacked', function() {
@@ -1127,7 +1127,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(2);
+		expect(meta.controller._getStacks().length).toBe(2);
 	});
 
 	it('should correctly count the number of stacks when a group is specified for all and the scale is not stacked', function() {
@@ -1155,7 +1155,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(3);
-		expect(meta.controller.getStackCount()).toBe(4);
+		expect(meta.controller._getStacks().length).toBe(4);
 	});
 
 	it('should correctly get the stack index accounting for datasets of other types and hidden datasets', function() {

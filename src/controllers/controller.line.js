@@ -201,7 +201,7 @@ module.exports = DatasetController.extend({
 			for (i = 0; i < datasetIndex; i++) {
 				ds = chart.data.datasets[i];
 				dsMeta = chart.getDatasetMeta(i);
-				if (stackIndex != me.getStackIndex(i, dsMeta.stack)){
+				if (stackIndex !== me.getStackIndex(i, dsMeta.stack)) {
 					continue;
 				}
 				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
@@ -357,14 +357,6 @@ module.exports = DatasetController.extend({
 		}
 
 		return stacks;
-	},
-
-	/**
-	 * Returns the effective number of stacks based on groups and line visibility.
-	 * @private
-	 */
-	getStackCount: function() {
-		return this._getStacks().length;
 	},
 
 	/**
