@@ -1,43 +1,51 @@
 'use strict';
 
-var getRtlAdapter = function (rtl, rectX, width) {
+var getRtlAdapter = function (rectX, width) {
+	return {
+		x: function (x) {
+			return rectX + rectX + width - x;
+		},
+		setWidth: function (w) {
+			width = w;
+		},
+		textAlign: function(align) {
+			if (align === 'center') return align;
+			return align === 'right' ? 'left' : 'right';
+		},
+		xPlus: function(x, value) {
+			return x - value;
+		},
+		leftForLtr: function(x, width) {
+			return x - width;
+		},
+	};
+};
+
+var getLtrAdapter = function () {
+	return {
+		x: function (x) {
+			return x;
+		},
+		setWidth: function (w) {
+			width = w;
+		},
+		textAlign: function(align) {
+			return align;
+		},
+		xPlus: function(x, value) {
+			return x + value;
+		},
+		leftForLtr: function(x, width) {
+			return x;
+		},
+	};
+};
+
+var getAdapter = function (rtl, rectX, width) {
 	if (rtl) {
-		return {
-			x: function (x) {
-				return rectX + rectX + width - x;
-			},
-			setWidth: function (w) {
-				width = w;
-			},
-			textAlign: function(align) {
-				if (align === 'center') return align;
-				return align === 'right' ? 'left' : 'right';
-			},
-			xPlus: function(x, value) {
-				return x - value;
-			},
-			leftForLtr: function(x, width) {
-				return x - width;
-			},
-		};
+		return getRtlAdapter(rectX, width);
 	} else {
-		return {
-			x: function (x) {
-				return x;
-			},
-			setWidth: function (w) {
-				width = w;
-			},
-			textAlign: function(align) {
-				return align;
-			},
-			xPlus: function(x, value) {
-				return x + value;
-			},
-			leftForLtr: function(x, width) {
-				return x;
-			},
-		};
+		return getLtrAdapter();
 	}
 }
 
@@ -66,7 +74,7 @@ var restoreTextDirection = function(ctx) {
 };
 
 module.exports = {
-	getRtlAdapter: getRtlAdapter,
+	getRtlAdapter: getAdapter,
 	overrideTextDirection: overrideTextDirection,
 	restoreTextDirection: restoreTextDirection,
 };
