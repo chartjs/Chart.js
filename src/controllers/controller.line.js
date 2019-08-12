@@ -67,6 +67,17 @@ module.exports = DatasetController.extend({
 		rotation: 'pointRotation'
 	},
 
+	initialize: function() {
+		var me = this;
+		var meta;
+
+		DatasetController.prototype.initialize.apply(me, arguments);
+
+		meta = me.getMeta();
+		meta.stack = me.getDataset().stack;
+		meta.line = true;
+	},
+
 	update: function(reset) {
 		var me = this;
 		var meta = me.getMeta();
@@ -184,11 +195,15 @@ module.exports = DatasetController.extend({
 		var sumPos = 0;
 		var sumNeg = 0;
 		var i, ds, dsMeta;
+		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 
 		if (yScale.options.stacked) {
 			for (i = 0; i < datasetIndex; i++) {
 				ds = chart.data.datasets[i];
 				dsMeta = chart.getDatasetMeta(i);
+				if (stackIndex != me.getStackIndex(i, dsMeta.stack)){
+					continue;
+				}
 				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
 					var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
 					if (stackedRightValue < 0) {
@@ -314,5 +329,59 @@ module.exports = DatasetController.extend({
 		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
 		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 		model.radius = valueOrDefault(options.hoverRadius, options.radius);
+	},
+
+	/**
+	 * Returns the stacks based on groups and line visibility.
+	 * @param {number} [last] - The dataset index
+	 * @returns {string[]} The list of stack IDs
+	 * @private
+	 */
+	_getStacks: function(last) {
+		var me = this;
+		var chart = me.chart;
+		var scale = me._getValueScale();
+		var stacked = scale.options.stacked;
+		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
+		var stacks = [];
+		var i, meta;
+
+		for (i = 0; i < ilen; ++i) {
+			meta = chart.getDatasetMeta(i);
+			if (meta.line && chart.isDatasetVisible(i) &&
+				(stacked === false ||
+				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
+				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+				stacks.push(meta.stack);
+			}
+		}
+
+		return stacks;
+	},
+
+	/**
+	 * Returns the effective number of stacks based on groups and line visibility.
+	 * @private
+	 */
+	getStackCount: function() {
+		return this._getStacks().length;
+	},
+
+	/**
+	 * Returns the stack index for the given dataset based on groups and line visibility.
+	 * @param {number} [datasetIndex] - The dataset index
+	 * @param {string} [name] - The stack name to find
+	 * @returns {number} The stack index
+	 * @private
+	 */
+	getStackIndex: function(datasetIndex, name) {
+		var stacks = this._getStacks(datasetIndex);
+		var index = (name !== undefined)
+			? stacks.indexOf(name)
+			: -1; // indexOf returns -1 if element is not present
+
+		return (index === -1)
+			? stacks.length - 1
+			: index;
 	},
 });
