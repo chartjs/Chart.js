@@ -5,6 +5,7 @@ var Element = require('../core/core.element');
 var helpers = require('../helpers/index');
 var layouts = require('../core/core.layouts');
 
+var getRtlHelper = helpers.rtl.getRtlAdapter;
 var noop = helpers.noop;
 var valueOrDefault = helpers.valueOrDefault;
 
@@ -355,6 +356,7 @@ var Legend = Element.extend({
 			return;
 		}
 
+		var rtlHelper = getRtlHelper(opts.rtl, me.left, me.minSize.width);
 		var ctx = me.ctx;
 		var fontColor = valueOrDefault(labelOpts.fontColor, globalDefaults.defaultFontColor);
 		var labelFont = helpers.options._parseFont(labelOpts);
@@ -362,7 +364,7 @@ var Legend = Element.extend({
 		var cursor;
 
 		// Canvas setup
-		ctx.textAlign = 'left';
+		ctx.textAlign = rtlHelper.textAlign('left');
 		ctx.textBaseline = 'middle';
 		ctx.lineWidth = 0.5;
 		ctx.strokeStyle = fontColor; // for strikethrough effect
@@ -398,24 +400,25 @@ var Legend = Element.extend({
 				// Recalculate x and y for drawPoint() because its expecting
 				// x and y to be center of figure (instead of top left)
 				var radius = boxWidth * Math.SQRT2 / 2;
-				var centerX = x + boxWidth / 2;
+				var centerX = rtlHelper.xPlus(x, boxWidth / 2);
 				var centerY = y + fontSize / 2;
 
 				// Draw pointStyle as legend symbol
 				helpers.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY, legendItem.rotation);
 			} else {
 				// Draw box as legend symbol
-				ctx.fillRect(x, y, boxWidth, fontSize);
+				ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
 				if (lineWidth !== 0) {
-					ctx.strokeRect(x, y, boxWidth, fontSize);
+					ctx.strokeRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
 				}
 			}
 
 			ctx.restore();
 		};
+
 		var fillText = function(x, y, legendItem, textWidth) {
 			var halfFontSize = fontSize / 2;
-			var xLeft = boxWidth + halfFontSize + x;
+			var xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
 			var yMiddle = y + halfFontSize;
 
 			ctx.fillText(legendItem.text, xLeft, yMiddle);
@@ -425,7 +428,7 @@ var Legend = Element.extend({
 				ctx.beginPath();
 				ctx.lineWidth = 2;
 				ctx.moveTo(xLeft, yMiddle);
-				ctx.lineTo(xLeft + textWidth, yMiddle);
+				ctx.lineTo(rtlHelper.xPlus(xLeft, textWidth), yMiddle);
 				ctx.stroke();
 			}
 		};
@@ -457,12 +460,16 @@ var Legend = Element.extend({
 			};
 		}
 
+		helpers.rtl.overrideTextDirection(me.ctx, opts.textDirection);
+
 		var itemHeight = fontSize + labelOpts.padding;
 		helpers.each(me.legendItems, function(legendItem, i) {
 			var textWidth = ctx.measureText(legendItem.text).width;
 			var width = boxWidth + (fontSize / 2) + textWidth;
 			var x = cursor.x;
 			var y = cursor.y;
+
+			rtlHelper.setWidth(me.minSize.width);
 
 			// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
 			// instead of me.right and me.bottom because me.width and me.height
@@ -479,13 +486,15 @@ var Legend = Element.extend({
 				y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
 			}
 
-			drawLegendBox(x, y, legendItem);
+			var realX = rtlHelper.x(x);
 
-			hitboxes[i].left = x;
+			drawLegendBox(realX, y, legendItem);
+
+			hitboxes[i].left = rtlHelper.leftForLtr(realX, hitboxes[i].width);
 			hitboxes[i].top = y;
 
 			// Fill the actual label
-			fillText(x, y, legendItem, textWidth);
+			fillText(realX, y, legendItem, textWidth);
 
 			if (isHorizontal) {
 				cursor.x += width + labelOpts.padding;
@@ -493,6 +502,8 @@ var Legend = Element.extend({
 				cursor.y += itemHeight;
 			}
 		});
+
+		helpers.rtl.restoreTextDirection(me.ctx, opts.textDirection);
 	},
 
 	/**
