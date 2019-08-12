@@ -330,8 +330,9 @@ var Scale = Element.extend({
 
 		me.afterTickToLabelConversion();
 
-		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
 		me.ticks = labels;   // BACKWARD COMPATIBILITY
+
+		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
 
 		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
 		for (i = 0, ilen = labels.length; i < ilen; ++i) {
@@ -437,8 +438,7 @@ var Scale = Element.extend({
 	},
 	buildTicks: helpers.noop,
 	afterBuildTicks: function(ticks) {
-		var me = this;
-		return helpers.callback(me.options.afterBuildTicks, [me, ticks]) || ticks;
+		return helpers.callback(this.options.afterBuildTicks, [this, ticks]) || ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
