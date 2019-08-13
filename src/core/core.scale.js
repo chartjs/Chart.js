@@ -360,7 +360,7 @@ var Scale = Element.extend({
 
 		me.afterUpdate();
 
-		// TODO: remove minSize as a public property and return value from all layout boxes. It is unused
+		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
 		return me.minSize;
 
 	},
