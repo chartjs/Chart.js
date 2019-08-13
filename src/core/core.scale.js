@@ -456,13 +456,13 @@ var Scale = Element.extend({
 		var me = this;
 		var options = me.options;
 		var tickOpts = options.ticks;
-		var ticks = me.getTicks();
+		var numTicks = me.getTicks().length;
 		var minRotation = tickOpts.minRotation || 0;
 		var maxRotation = tickOpts.maxRotation;
 		var labelRotation = minRotation;
 		var labelSizes, maxLabelWidth, maxLabelHeight, maxWidth, tickWidth, maxHeight, maxLabelDiagonal;
 
-		if (!me._isVisible() || !tickOpts.display || minRotation >= maxRotation || ticks.length <= 1 || !me.isHorizontal()) {
+		if (!me._isVisible() || !tickOpts.display || minRotation >= maxRotation || numTicks <= 1 || !me.isHorizontal()) {
 			me.labelRotation = minRotation;
 			return;
 		}
@@ -474,11 +474,11 @@ var Scale = Element.extend({
 		// Estimate the width of each grid based on the canvas width, the maximum
 		// label width and the number of tick intervals
 		maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
-		tickWidth = options.offset ? me.maxWidth / ticks.length : maxWidth / (ticks.length - 1);
+		tickWidth = options.offset ? me.maxWidth / numTicks : maxWidth / (numTicks - 1);
 
 		// Allow 3 pixels x2 padding either side for label readability
 		if (maxLabelWidth + 6 > tickWidth) {
-			tickWidth = maxWidth / (ticks.length - (options.offset ? 0.5 : 1));
+			tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
 			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
 				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
 			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
@@ -508,13 +508,12 @@ var Scale = Element.extend({
 			height: 0
 		};
 
-		var ticks = me.getTicks();
 		var opts = me.options;
 		var tickOpts = opts.ticks;
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var position = opts.position;
+		var isBottom = opts.position === 'bottom';
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -556,16 +555,16 @@ var Scale = Element.extend({
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
 				var offsetLeft = me.getPixelForTick(0) - me.left;
-				var offsetRight = me.right - me.getPixelForTick(ticks.length - 1);
+				var offsetRight = me.right - me.getPixelForTick(me.getTicks().length - 1);
 				var paddingLeft, paddingRight;
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
 				if (isRotated) {
-					paddingLeft = position === 'bottom' ?
+					paddingLeft = isBottom ?
 						cosRotation * firstLabelSize.width + sinRotation * firstLabelSize.offset :
 						sinRotation * (firstLabelSize.height - firstLabelSize.offset);
-					paddingRight = position === 'bottom' ?
+					paddingRight = isBottom ?
 						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
 						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
 				} else {
