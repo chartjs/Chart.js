@@ -16,6 +16,8 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
+| `rtl` | `boolean` | | `true` for rendering the legends from right to left.
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
 
 ## Position
 Position of the legend. Options are:
