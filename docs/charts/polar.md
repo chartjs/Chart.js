@@ -96,6 +96,7 @@ These are the customisation options specific to Polar Area charts. These options
 | `startAngle` | `number` | `-0.5 * Math.PI` | Starting angle to draw arcs for the first item in a dataset.
 | `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
 | `animation.animateScale` | `boolean` | `true` | If true, will animate scaling the chart from the center outwards.
+| `angles` | `array` | `(2*Math.PI)/serieCount` | Computed angles to draw each item arc.
 
 ## Default Options
 

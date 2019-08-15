@@ -131,15 +131,17 @@ module.exports = DatasetController.extend({
 		var starts = me._starts = [];
 		var angles = me._angles = [];
 		var arcs = meta.data;
-		var i, ilen, angle;
+		var i, ilen, angle, convertedAngles;
+		var optionsAngles = me.chart.options.angles || [];
 
 		me._updateRadius();
 
 		meta.count = me.countVisibleElements();
+		convertedAngles = me._convertAngles(optionsAngles, meta.count);
 
 		for (i = 0, ilen = dataset.data.length; i < ilen; i++) {
 			starts[i] = start;
-			angle = me._computeAngle(i);
+			angle = me._computeAngle(i, convertedAngles[i]);
 			angles[i] = angle;
 			start += angle;
 		}
@@ -251,9 +253,8 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_computeAngle: function(index) {
+	_computeAngle: function(index, angle) {
 		var me = this;
-		var count = this.getMeta().count;
 		var dataset = me.getDataset();
 		var meta = me.getMeta();
 
@@ -271,7 +272,45 @@ module.exports = DatasetController.extend({
 
 		return resolve([
 			me.chart.options.elements.arc.angle,
-			(2 * Math.PI) / count
+			angle
 		], context, index);
+	},
+
+	/**
+	 * if no angles options, circumference = 2*PI and each arc will be (2*PI)/arcCount
+	 * if angles options, circumference = sum(angles)
+	 *    if angles.length < arcCount => undefined angles will be set to (2*PI)/arcCount, 
+	 *                                   defined angles will be recompute to fill circumference-sum(undefinedAngles) stay proportional to original values
+	 *    if angles.length > arcCount => circumference remains the same and existing angles will be recompute to stay proportional to original values
+	 * @private
+	 */
+	_convertAngles: function(angles, visibleElementsCount) {
+		var angle, diff, i;
+		var convertedAngles = [];
+		var circumference = angles.length ? angles.reduce(function(a, b) {
+			return a + b;
+		}) : Math.PI * 2;
+		var defaultAngle = circumference / visibleElementsCount;
+		var undefinedAnglesCount = visibleElementsCount - angles.length;
+
+		if (undefinedAnglesCount >= 0) {
+			diff = undefinedAnglesCount * defaultAngle;
+		} else {
+			diff = angles.slice(undefinedAnglesCount).reduce(function(a, b) {
+				return a + b;
+			});
+		}
+
+		for (i = 0; i < visibleElementsCount; i++) {
+			if (i >= angles.length) {
+				angle = defaultAngle;
+			} else {
+				angle = undefinedAnglesCount >= 0 ? angles[i] * (circumference - diff) / circumference : angles[i] * circumference / (circumference - diff);
+			}
+			convertedAngles.push(angle);
+		}
+
+		return convertedAngles;
 	}
+
 });
