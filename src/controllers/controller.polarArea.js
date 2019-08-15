@@ -279,8 +279,8 @@ module.exports = DatasetController.extend({
 	/**
 	 * if no angles options, circumference = 2*PI and each arc will be (2*PI)/arcCount
 	 * if angles options, circumference = sum(angles)
-	 *    if angles.length < arcCount => undefined angles will be set to (2*PI)/arcCount, 
-	 *                                   defined angles will be recompute to fill circumference-sum(undefinedAngles) stay proportional to original values
+	 *    if angles.length < arcCount => undefined angles will be set to (2*PI)/arcCount,
+	 *                                  defined angles will be recompute to fill circumference-sum(undefinedAngles) stay proportional to original values
 	 *    if angles.length > arcCount => circumference remains the same and existing angles will be recompute to stay proportional to original values
 	 * @private
 	 */
