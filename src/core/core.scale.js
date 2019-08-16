@@ -308,10 +308,10 @@ var Scale = Element.extend({
 
 		// Allow modification of ticks in callback.
 		if (ticks) {
-			ticks = me.afterBuildTicks(ticks);
+			ticks = me.afterBuildTicks(ticks || []);
 		} else {
 			// Support old implementations (that modified `this.ticks` directly in buildTicks)
-			me.ticks = me.afterBuildTicks(me.ticks);
+			me.ticks = me.afterBuildTicks(me.ticks || []);
 			ticks = [];
 			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
 				ticks.push({
@@ -335,7 +335,7 @@ var Scale = Element.extend({
 		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
 
 		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			ticks[i].label = labels[i];
 		}
 
@@ -356,11 +356,12 @@ var Scale = Element.extend({
 		me.fit();
 		me.afterFit();
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me.getTicks()) : ticks;
+		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me._ticks) : me._ticks;
 
 		me.afterUpdate();
 
 		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
+		// make maxWidth and maxHeight private
 		return me.minSize;
 
 	},
