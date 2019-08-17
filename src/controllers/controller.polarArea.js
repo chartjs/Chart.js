@@ -137,7 +137,7 @@ module.exports = DatasetController.extend({
 		me._updateRadius();
 
 		meta.count = me.countVisibleElements();
-		convertedAngles = me._convertAngles(optionsAngles, meta.count);
+		convertedAngles = me._convertAngles(optionsAngles);
 
 		for (i = 0, ilen = dataset.data.length; i < ilen; i++) {
 			starts[i] = start;
@@ -275,7 +275,7 @@ module.exports = DatasetController.extend({
 	 * if no angles options, circumference = 2*PI and each arc will be (2*PI)/arcCount
 	 * if angles options, circumference = sum(angles)
 	 *    if angles.length < arcCount => undefined angles will be set to (2*PI)/arcCount,
-	 *                                  defined angles will be recompute to fill circumference-sum(undefinedAngles) stay proportional to original values
+	 *                                   defined angles will be recompute to fill circumference-sum(undefinedAngles) stay proportional to original values
 	 *    if angles.length > arcCount => circumference remains the same and existing angles will be recompute to stay proportional to original values
 	 * @private
 	 */
@@ -283,32 +283,30 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var dataset = me.getDataset();
 		var meta = me.getMeta();
-		var angle, i, ratio;
+		var angle, ratio;
+		var initialCircumference = 0;
 		var convertedAngles = [];
 		var circumference = angles.length ? angles.reduce(function(a, b) {
 			return a + b;
 		}) : Math.PI * 2;
 		var defaultAngle = circumference / dataset.data.length;
-		var initialCircumference = 0;
 
-		for (i = 0; i < dataset.data.length; i++) {
-			if (meta.data[i].hidden) {
+		meta.data.forEach(function(element, index) {
+			if (isNaN(dataset.data[index]) || element.hidden) {
 				angle = 0;
-			} else if (i >= angles.length) {
+			} else if (index >= angles.length) {
 				angle = defaultAngle;
 			} else {
-				angle = angles[i];
+				angle = angles[index];
 			}
-			convertedAngles.push(angle);
 			initialCircumference += angle;
-		}
+			convertedAngles.push(angle);
+		});
 		ratio = circumference / initialCircumference;
 
-		convertedAngles = convertedAngles.map(function(item) {
+		return convertedAngles.map(function(item) {
 			return item * ratio;
 		});
-
-		return convertedAngles;
 	}
 
 });
