@@ -256,11 +256,6 @@ module.exports = DatasetController.extend({
 	_computeAngle: function(index, angle) {
 		var me = this;
 		var dataset = me.getDataset();
-		var meta = me.getMeta();
-
-		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
-			return 0;
-		}
 
 		// Scriptable options
 		var context = {
@@ -284,28 +279,36 @@ module.exports = DatasetController.extend({
 	 *    if angles.length > arcCount => circumference remains the same and existing angles will be recompute to stay proportional to original values
 	 * @private
 	 */
-	_convertAngles: function(angles, visibleElementsCount) {
-		var angle, diff, i;
+	_convertAngles: function(angles) {
+		var me = this;
+		var dataset = me.getDataset();
+		var meta = me.getMeta();
+		var angle, i, ratio;
 		var convertedAngles = [];
 		var circumference = angles.length ? angles.reduce(function(a, b) {
 			return a + b;
 		}) : Math.PI * 2;
-		var defaultAngle = circumference / visibleElementsCount;
-		var undefinedAnglesCount = visibleElementsCount - angles.length;
+		var defaultAngle = circumference / dataset.data.length;
+		var initialCircumference = 0;
 
-		if (undefinedAnglesCount >= 0) {
-			diff = undefinedAnglesCount * defaultAngle;
-		} else {
-			diff = angles.slice(undefinedAnglesCount).reduce(function(a, b) {
-				return a + b;
-			});
+		for (i = 0; i < dataset.data.length; i++) {
+			if (!meta.data[i].hidden) {
+				if (i >= angles.length) {
+					initialCircumference += defaultAngle;
+				} else {
+					initialCircumference += angles[i];
+				}
+			}
 		}
+		ratio = circumference / initialCircumference;
 
-		for (i = 0; i < visibleElementsCount; i++) {
-			if (i >= angles.length) {
-				angle = defaultAngle;
+		for (i = 0; i < dataset.data.length; i++) {
+			if (meta.data[i].hidden) {
+				angle = 0;
+			} else if (i >= angles.length) {
+				angle = defaultAngle * ratio;
 			} else {
-				angle = undefinedAnglesCount >= 0 ? angles[i] * (circumference - diff) / circumference : angles[i] * circumference / (circumference - diff);
+				angle = angles[i] * ratio;
 			}
 			convertedAngles.push(angle);
 		}
