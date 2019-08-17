@@ -292,26 +292,21 @@ module.exports = DatasetController.extend({
 		var initialCircumference = 0;
 
 		for (i = 0; i < dataset.data.length; i++) {
-			if (!meta.data[i].hidden) {
-				if (i >= angles.length) {
-					initialCircumference += defaultAngle;
-				} else {
-					initialCircumference += angles[i];
-				}
-			}
-		}
-		ratio = circumference / initialCircumference;
-
-		for (i = 0; i < dataset.data.length; i++) {
 			if (meta.data[i].hidden) {
 				angle = 0;
 			} else if (i >= angles.length) {
-				angle = defaultAngle * ratio;
+				angle = defaultAngle;
 			} else {
-				angle = angles[i] * ratio;
+				angle = angles[i];
 			}
 			convertedAngles.push(angle);
+			initialCircumference += angle;
 		}
+		ratio = circumference / initialCircumference;
+
+		convertedAngles = convertedAngles.map(function(item) {
+			return item * ratio;
+		});
 
 		return convertedAngles;
 	}
