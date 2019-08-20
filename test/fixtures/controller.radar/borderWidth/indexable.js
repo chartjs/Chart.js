@@ -7,13 +7,14 @@ module.exports = {
 				{
 					// option in dataset
 					data: [0, 5, 10, null, -10, -5],
-					borderDash: function(ctx) {
-						return ctx.datasetIndex === 0 ? [5] : [10];
-					}
+					pointBorderColor: '#00ff00',
+					pointBorderWidth: [
+						1, 2, 3, 4, 5, 6
+					]
 				},
 				{
 					// option in element (fallback)
-					data: [4, -5, -10, null, 10, 5]
+					data: [4, -5, -10, null, 10, 5],
 				}
 			]
 		},
@@ -22,12 +23,13 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
-					borderColor: '#00ff00',
-					borderDash: function(ctx) {
-						return ctx.datasetIndex === 0 ? [5] : [10];
-					}
+					fill: false,
 				},
 				point: {
+					borderColor: '#ff0000',
+					borderWidth: [
+						6, 5, 4, 3, 2, 1
+					],
 					radius: 10
 				}
 			},

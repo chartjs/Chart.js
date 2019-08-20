@@ -26,21 +26,14 @@
 
 		utils.srand(110);
 
-		function getLineColor(ctx) {
-			return utils.color(ctx.datasetIndex);
-		}
-
 		function alternatePointStyles(ctx) {
 			var index = ctx.dataIndex;
 			return index % 2 === 0 ? 'circle' : 'rect';
 		}
 
 		function makeHalfAsOpaque(ctx) {
-			return utils.transparentize(getLineColor(ctx));
-		}
-
-		function make20PercentOpaque(ctx) {
-			return utils.transparentize(getLineColor(ctx), 0.8);
+			var c = ctx.dataset.backgroundColor;
+			return utils.transparentize(c);
 		}
 
 		function adjustRadiusBasedOnData(ctx) {
@@ -63,7 +56,9 @@
 		var data = {
 			labels: [['Eating', 'Dinner'], ['Drinking', 'Water'], 'Sleeping', ['Designing', 'Graphics'], 'Coding', 'Cycling', 'Running'],
 			datasets: [{
-				data: generateData()
+				data: generateData(),
+				backgroundColor: Chart.helpers.color('#4dc9f6').alpha(0.2).rgbString(),
+				borderColor: '#4dc9f6',
 			}]
 		};
 
@@ -71,12 +66,7 @@
 			legend: false,
 			tooltips: true,
 			elements: {
-				line: {
-					backgroundColor: make20PercentOpaque,
-					borderColor: getLineColor,
-				},
 				point: {
-					backgroundColor: getLineColor,
 					hoverBackgroundColor: makeHalfAsOpaque,
 					radius: adjustRadiusBasedOnData,
 					pointStyle: alternatePointStyles,
@@ -94,8 +84,12 @@
 
 		// eslint-disable-next-line no-unused-vars
 		function addDataset() {
+			var newColor = utils.color(chart.data.datasets.length);
+
 			chart.data.datasets.push({
-				data: generateData()
+				data: generateData(),
+				backgroundColor: Chart.helpers.color(newColor).alpha(0.2).rgbString(),
+				borderColor: newColor
 			});
 			chart.update();
 		}
