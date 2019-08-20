@@ -60,7 +60,7 @@ module.exports = Scale.extend({
 			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
 
-		return me._getLabels()[index];
+		return me.ticks[index - me.minIndex];
 	},
 
 	_configure: function() {
