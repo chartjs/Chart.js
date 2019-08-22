@@ -261,7 +261,7 @@ var Scale = Element.extend({
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
 		var tickOpts = me.options.ticks;
-		var i, ilen, labels, ticks;
+		var i, ilen, labels, label, ticks, tick;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -304,22 +304,10 @@ var Scale = Element.extend({
 
 		// New implementations should return an array of objects but for BACKWARD COMPAT,
 		// we still support no return (`this.ticks` internally set by calling this method).
-		ticks = me.buildTicks();
+		ticks = me.buildTicks() || [];
 
 		// Allow modification of ticks in callback.
-		if (ticks) {
-			ticks = me.afterBuildTicks(ticks || []);
-		} else {
-			// Support old implementations (that modified `this.ticks` directly in buildTicks)
-			me.ticks = me.afterBuildTicks(me.ticks || []);
-			ticks = [];
-			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
-				ticks.push({
-					value: me.ticks[i],
-					major: false
-				});
-			}
-		}
+		ticks = me.afterBuildTicks(ticks) || ticks;
 
 		me.beforeTickToLabelConversion();
 
@@ -335,8 +323,17 @@ var Scale = Element.extend({
 		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
 
 		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			ticks[i].label = labels[i];
+		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+			label = labels[i];
+			tick = ticks[i];
+			if (!tick) {
+				ticks.push(tick = {
+					label: label,
+					major: false
+				});
+			} else {
+				tick.label = label;
+			}
 		}
 
 		me._ticks = ticks;
@@ -439,7 +436,14 @@ var Scale = Element.extend({
 	},
 	buildTicks: helpers.noop,
 	afterBuildTicks: function(ticks) {
-		return helpers.callback(this.options.afterBuildTicks, [this, ticks]) || ticks;
+		var me = this;
+		// ticks is empty for old axis implementations here
+		if (helpers.isArray(ticks) && ticks.length) {
+			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
+		}
+		// Support old implementations (that modified `this.ticks` directly in buildTicks)
+		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
+		return ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
@@ -617,10 +621,12 @@ var Scale = Element.extend({
 	 */
 	handleMargins: function() {
 		var me = this;
-		me.margins.left = Math.max(me.paddingLeft, me.margins.left);
-		me.margins.top = Math.max(me.paddingTop, me.margins.top);
-		me.margins.right = Math.max(me.paddingRight, me.margins.right);
-		me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
+		if (me.margins) {
+			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
+			me.margins.top = Math.max(me.paddingTop, me.margins.top);
+			me.margins.right = Math.max(me.paddingRight, me.margins.right);
+			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
+		}
 	},
 
 	afterFit: function() {
