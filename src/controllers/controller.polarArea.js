@@ -38,8 +38,8 @@ defaults._set('polarArea', {
 		var labels = data.labels;
 		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			list.setAttribute('class', chart.id + '-legend');
 			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
 				listItem = list.appendChild(document.createElement('li'));
 				listItemSpan = listItem.appendChild(document.createElement('span'));
