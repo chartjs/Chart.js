@@ -43,36 +43,29 @@ var getLtrAdapter = function() {
 };
 
 var getAdapter = function(rtl, rectX, width) {
-	if (rtl) {
-		return getRtlAdapter(rectX, width);
-	}
-
-	return getLtrAdapter();
+	return rtl ? getRtlAdapter(rectX, width) : getLtrAdapter();
 };
 
 var overrideTextDirection = function(ctx, direction) {
-	delete ctx.prevTextDirection;
-
+	var style, original;
 	if (direction === 'ltr' || direction === 'rtl') {
-		var original = [
-			ctx.canvas.style.getPropertyValue('direction'),
-			ctx.canvas.style.getPropertyPriority('direction'),
+		style = ctx.canvas.style;
+		original = [
+			style.getPropertyValue('direction'),
+			style.getPropertyPriority('direction'),
 		];
 
-		ctx.canvas.style.setProperty('direction', direction, 'important');
+		style.setProperty('direction', direction, 'important');
 		ctx.prevTextDirection = original;
 	}
 };
 
 var restoreTextDirection = function(ctx) {
-	if (ctx.prevTextDirection === undefined) {
-		return;
-	}
-
 	var original = ctx.prevTextDirection;
-	delete ctx.prevTextDirection;
-
-	ctx.canvas.style.setProperty('direction', original[0], original[1]);
+	if (original !== undefined) {
+		delete ctx.prevTextDirection;
+		ctx.canvas.style.setProperty('direction', original[0], original[1]);
+	}
 };
 
 module.exports = {
