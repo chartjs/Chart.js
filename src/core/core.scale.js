@@ -65,6 +65,25 @@ defaults._set('scale', {
 	}
 });
 
+function sample(arr, size) {
+	var shuffled = arr.slice(0);
+	var i = arr.length;
+	var min = i - size;
+	var tmp, index;
+
+	if (size >= min) {
+		return arr;
+	}
+
+	while (i-- > min) {
+		index = Math.floor((i + 1) * Math.random());
+		tmp = shuffled[index];
+		shuffled[index] = shuffled[i];
+		shuffled[i] = tmp;
+	}
+	return shuffled.slice(min);
+}
+
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	var length = scale.getTicks().length;
 	var validIndex = Math.min(index, length - 1);
@@ -261,7 +280,7 @@ var Scale = Element.extend({
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
 		var tickOpts = me.options.ticks;
-		var i, ilen, labels, label, ticks, tick;
+		var i, ilen, labels, ticks;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -304,39 +323,28 @@ var Scale = Element.extend({
 
 		// New implementations should return an array of objects but for BACKWARD COMPAT,
 		// we still support no return (`this.ticks` internally set by calling this method).
-		ticks = me.buildTicks() || [];
+		ticks = me.buildTicks();
 
 		// Allow modification of ticks in callback.
-		ticks = me.afterBuildTicks(ticks) || ticks;
-
-		me.beforeTickToLabelConversion();
-
-		// New implementations should return the formatted tick labels but for BACKWARD
-		// COMPAT, we still support no return (`this.ticks` internally changed by calling
-		// this method and supposed to contain only string values).
-		labels = me.convertTicksToLabels(ticks) || me.ticks;
-
-		me.afterTickToLabelConversion();
-
-		me.ticks = labels;   // BACKWARD COMPATIBILITY
-
-		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
-
-		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			label = labels[i];
-			tick = ticks[i];
-			if (!tick) {
-				ticks.push(tick = {
-					label: label,
+		if (ticks) {
+			ticks = me.afterBuildTicks(ticks);
+		} else {
+			// Support old implementations (that modified `this.ticks` directly in buildTicks)
+			me.ticks = me.afterBuildTicks(me.ticks) || [];
+			ticks = [];
+			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
+				ticks.push({
+					value: me.ticks[i],
 					major: false
 				});
-			} else {
-				tick.label = label;
 			}
 		}
 
-		me._ticks = ticks;
+		// Compute tick rotation and fit using a sampled sub-set of labels
+		// We generally don't need to compute the size of every single label for determining scale size
+		me._ticks = sample(ticks, tickOpts.sampleSize || ticks.length);
+
+		labels = me._convertTicksToLabels(me._ticks);
 
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
@@ -348,19 +356,29 @@ var Scale = Element.extend({
 		me.beforeCalculateTickRotation();
 		me.calculateTickRotation();
 		me.afterCalculateTickRotation();
-		// Fit
+
 		me.beforeFit();
 		me.fit();
 		me.afterFit();
+
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me._ticks) : me._ticks;
+		me._ticks = ticks;
+		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(ticks) : ticks;
+
+		if (tickOpts.sampleSize) {
+			// Generate labels using all non-skipped ticks
+			labels = me._convertTicksToLabels(me._ticksToDraw);
+		}
+
+		me.ticks = labels;   // BACKWARD COMPATIBILITY
+
+		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
 		me.afterUpdate();
 
 		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
 		// make maxWidth and maxHeight private
 		return me.minSize;
-
 	},
 
 	/**
@@ -437,13 +455,7 @@ var Scale = Element.extend({
 	buildTicks: helpers.noop,
 	afterBuildTicks: function(ticks) {
 		var me = this;
-		// ticks is empty for old axis implementations here
-		if (helpers.isArray(ticks) && ticks.length) {
-			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
-		}
-		// Support old implementations (that modified `this.ticks` directly in buildTicks)
-		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
-		return ticks;
+		return helpers.callback(me.options.afterBuildTicks, [me, ticks]) || ticks;
 	},
 
 	beforeTickToLabelConversion: function() {
@@ -621,12 +633,10 @@ var Scale = Element.extend({
 	 */
 	handleMargins: function() {
 		var me = this;
-		if (me.margins) {
-			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
-			me.margins.top = Math.max(me.paddingTop, me.margins.top);
-			me.margins.right = Math.max(me.paddingRight, me.margins.right);
-			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
-		}
+		me.margins.left = Math.max(me.paddingLeft, me.margins.left);
+		me.margins.top = Math.max(me.paddingTop, me.margins.top);
+		me.margins.right = Math.max(me.paddingRight, me.margins.right);
+		me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
 	},
 
 	afterFit: function() {
@@ -666,6 +676,31 @@ var Scale = Element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	_convertTicksToLabels: function(ticks) {
+		var me = this;
+		var labels, i, ilen;
+
+		me.ticks = ticks.map(function(tick) {
+			return tick.value;
+		});
+
+		me.beforeTickToLabelConversion();
+
+		// New implementations should return the formatted tick labels but for BACKWARD
+		// COMPAT, we still support no return (`this.ticks` internally changed by calling
+		// this method and supposed to contain only string values).
+		labels = me.convertTicksToLabels(ticks) || me.ticks;
+
+		me.afterTickToLabelConversion();
+
+		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			ticks[i].label = labels[i];
+		}
+
+		return labels;
 	},
 
 	/**
@@ -830,11 +865,11 @@ var Scale = Element.extend({
 		for (i = 0; i < tickCount; i++) {
 			tick = ticks[i];
 
-			if (skipRatio > 1 && i % skipRatio > 0) {
-				// leave tick in place but make sure it's not displayed (#4635)
+			if (skipRatio <= 1 || i % skipRatio === 0) {
+				result.push(tick);
+			} else {
 				delete tick.label;
 			}
-			result.push(tick);
 		}
 		return result;
 	},
