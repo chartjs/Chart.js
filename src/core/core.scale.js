@@ -5,6 +5,8 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 var Ticks = require('./core.ticks');
 
+var isArray = helpers.isArray;
+var isNullOrUndef = helpers.isNullOrUndef;
 var valueOrDefault = helpers.valueOrDefault;
 var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
@@ -125,15 +127,15 @@ function computeLabelSizes(ctx, tickFonts, ticks, caches) {
 		lineHeight = tickFont.lineHeight;
 		width = height = 0;
 		// Undefined labels and arrays should not be measured
-		if (!helpers.isNullOrUndef(label) && !helpers.isArray(label)) {
+		if (!isNullOrUndef(label) && !isArray(label)) {
 			width = helpers.measureText(ctx, cache.data, cache.gc, width, label);
 			height = lineHeight;
-		} else if (helpers.isArray(label)) {
+		} else if (isArray(label)) {
 			// if it is an array let's measure each element
 			for (j = 0, jlen = label.length; j < jlen; ++j) {
 				nestedLabel = label[j];
 				// Undefined labels and arrays should not be measured
-				if (!helpers.isNullOrUndef(nestedLabel) && !helpers.isArray(nestedLabel)) {
+				if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
 					width = helpers.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
 					height += lineHeight;
 				}
@@ -438,7 +440,7 @@ var Scale = Element.extend({
 	afterBuildTicks: function(ticks) {
 		var me = this;
 		// ticks is empty for old axis implementations here
-		if (helpers.isArray(ticks) && ticks.length) {
+		if (isArray(ticks) && ticks.length) {
 			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
 		}
 		// Support old implementations (that modified `this.ticks` directly in buildTicks)
@@ -645,7 +647,7 @@ var Scale = Element.extend({
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
 		// Null and undefined values first
-		if (helpers.isNullOrUndef(rawValue)) {
+		if (isNullOrUndef(rawValue)) {
 			return NaN;
 		}
 		// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
@@ -689,7 +691,7 @@ var Scale = Element.extend({
 	_parseValue: function(value) {
 		var start, end, min, max;
 
-		if (helpers.isArray(value)) {
+		if (isArray(value)) {
 			start = +this.getRightValue(value[0]);
 			end = +this.getRightValue(value[1]);
 			min = Math.min(start, end);
@@ -944,7 +946,7 @@ var Scale = Element.extend({
 			label = tick.label;
 
 			// autoskipper skipped this tick (#4635)
-			if (helpers.isNullOrUndef(label) && i < ticks.length) {
+			if (isNullOrUndef(label) && i < ticks.length) {
 				continue;
 			}
 
@@ -1035,14 +1037,14 @@ var Scale = Element.extend({
 			label = tick.label;
 
 			// autoskipper skipped this tick (#4635)
-			if (helpers.isNullOrUndef(label)) {
+			if (isNullOrUndef(label)) {
 				continue;
 			}
 
 			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
 			font = tick.major ? fonts.major : fonts.minor;
 			lineHeight = font.lineHeight;
-			lineCount = helpers.isArray(label) ? label.length : 1;
+			lineCount = isArray(label) ? label.length : 1;
 
 			if (isHorizontal) {
 				x = pixel;
@@ -1173,7 +1175,7 @@ var Scale = Element.extend({
 
 			label = item.label;
 			y = item.textOffset;
-			if (helpers.isArray(label)) {
+			if (isArray(label)) {
 				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
 					ctx.fillText('' + label[j], 0, y);
