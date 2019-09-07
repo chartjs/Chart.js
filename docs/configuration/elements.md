@@ -82,6 +82,7 @@ Global arc options: `Chart.defaults.global.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
 | `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Arc fill color.
 | `borderAlign` | `string` | `'center'` | Arc stroke alignment.
 | `borderColor` | `Color` | `'#fff'` | Arc stroke color.
