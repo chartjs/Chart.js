@@ -27,7 +27,7 @@ describe('Title block tests', function() {
 		var minSize = title.update(400, 200);
 
 		expect(minSize).toEqual({
-			width: 400,
+			width: 0,
 			height: 0
 		});
 
@@ -58,7 +58,7 @@ describe('Title block tests', function() {
 
 		expect(minSize).toEqual({
 			width: 0,
-			height: 400
+			height: 0
 		});
 
 		// Now we have a height since we display
