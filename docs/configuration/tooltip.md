@@ -44,6 +44,8 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
+| `rtl` | `boolean` | | `true` for rendering the legends from right to left.
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
 
 ### Position Modes
 

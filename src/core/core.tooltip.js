@@ -5,6 +5,7 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
 var valueOrDefault = helpers.valueOrDefault;
+var getRtlHelper = helpers.rtl.getRtlAdapter;
 
 defaults._set('global', {
 	tooltips: {
@@ -241,6 +242,10 @@ function getBaseModel(tooltipOpts) {
 		yPadding: tooltipOpts.yPadding,
 		xAlign: tooltipOpts.xAlign,
 		yAlign: tooltipOpts.yAlign,
+
+		// Drawing direction and text direction
+		rtl: tooltipOpts.rtl,
+		textDirection: tooltipOpts.textDirection,
 
 		// Body
 		bodyFontColor: tooltipOpts.bodyFontColor,
@@ -752,9 +757,11 @@ var exports = Element.extend({
 		var titleFontSize, titleSpacing, i;
 
 		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._titleAlign);
 
-			ctx.textAlign = vm._titleAlign;
+			ctx.textAlign = rtlHelper.textAlign(vm._titleAlign);
 			ctx.textBaseline = 'middle';
 
 			titleFontSize = vm.titleFontSize;
@@ -764,7 +771,7 @@ var exports = Element.extend({
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			for (i = 0; i < length; ++i) {
-				ctx.fillText(title[i], pt.x, pt.y + titleFontSize / 2);
+				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFontSize / 2);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
 				if (i + 1 === length) {
@@ -783,24 +790,27 @@ var exports = Element.extend({
 		var xLinePadding = 0;
 		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
 
+		var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 		var fillLineOfText = function(line) {
-			ctx.fillText(line, pt.x + xLinePadding, pt.y + bodyFontSize / 2);
+			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
 			pt.y += bodyFontSize + bodySpacing;
 		};
 
 		var bodyItem, textColor, labelColors, lines, i, j, ilen, jlen;
+		var bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'middle';
 		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
-		pt.x = getAlignedX(vm, bodyAlign);
+		pt.x = getAlignedX(vm, bodyAlignForCalculation);
 
 		// Before body lines
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+		xLinePadding = drawColorBoxes && bodyAlignForCalculation !== 'right'
 			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
 			: 0;
 
@@ -817,18 +827,20 @@ var exports = Element.extend({
 			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
+					var rtlColorX = rtlHelper.x(colorX);
+
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
 					ctx.strokeStyle = labelColors.borderColor;
-					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
 					ctx.fillStyle = labelColors.backgroundColor;
-					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
@@ -852,10 +864,12 @@ var exports = Element.extend({
 		var footerFontSize, i;
 
 		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
-			ctx.textAlign = vm._footerAlign;
+			ctx.textAlign = rtlHelper.textAlign(vm._footerAlign);
 			ctx.textBaseline = 'middle';
 
 			footerFontSize = vm.footerFontSize;
@@ -864,7 +878,7 @@ var exports = Element.extend({
 			ctx.font = helpers.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 			for (i = 0; i < length; ++i) {
-				ctx.fillText(footer[i], pt.x, pt.y + footerFontSize / 2);
+				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFontSize / 2);
 				pt.y += footerFontSize + vm.footerSpacing;
 			}
 		}
@@ -946,6 +960,8 @@ var exports = Element.extend({
 			// Draw Title, Body, and Footer
 			pt.y += vm.yPadding;
 
+			helpers.rtl.overrideTextDirection(ctx, vm.textDirection);
+
 			// Titles
 			this.drawTitle(pt, vm, ctx);
 
@@ -954,6 +970,8 @@ var exports = Element.extend({
 
 			// Footer
 			this.drawFooter(pt, vm, ctx);
+
+			helpers.rtl.restoreTextDirection(ctx, vm.textDirection);
 
 			ctx.restore();
 		}
