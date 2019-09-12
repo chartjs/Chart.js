@@ -1017,7 +1017,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			me._lastEvent = null;
 		} else {
 			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
-			if (me._lastEvent !== 'click') {
+			if (e.type !== 'click') {
 				me._lastEvent = e;
 			}
 		}
