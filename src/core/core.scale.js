@@ -1205,28 +1205,56 @@ var Scale = Element.extend({
 		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var halfLineHeight = scaleLabelFont.lineHeight / 2;
+		var scaleLabelAlign = scaleLabel.labelAlign;
 		var position = options.position;
 		var rotation = 0;
-		var scaleLabelX, scaleLabelY;
+		var scaleLabelX, scaleLabelY, textAlign;
 
 		if (me.isHorizontal()) {
-			scaleLabelX = me.left + me.width / 2; // midpoint of the width
-			scaleLabelY = position === 'bottom'
-				? me.bottom - halfLineHeight - scaleLabelPadding.bottom
-				: me.top + halfLineHeight + scaleLabelPadding.top;
+			switch (scaleLabelAlign)
+			{
+			case 'start':
+				scaleLabelX = me.left;
+				textAlign = 'left';
+				break;
+			case 'end':
+				scaleLabelX = me.left + me.width;
+				textAlign = 'right';
+				break;
+			default:
+				scaleLabelX = me.left + me.width / 2;
+				textAlign = 'center';
+			}
+			scaleLabelY = position === 'top'
+				? me.top + halfLineHeight + scaleLabelPadding.top
+				: me.bottom - halfLineHeight - scaleLabelPadding.bottom;
 		} else {
 			var isLeft = position === 'left';
 			scaleLabelX = isLeft
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
-			scaleLabelY = me.top + me.height / 2;
+			var height = me.height;
+			switch (scaleLabelAlign)
+			{
+			case 'start':
+				scaleLabelY = me.top + ( isLeft ? height : 0 );
+				textAlign = isLeft ? 'left' : 'right';
+				break;
+			case 'end':
+				scaleLabelY = me.top + ( isLeft ? 0 : height );
+				textAlign = isLeft ? 'left' : 'right';
+				break;
+			default:
+				scaleLabelY = me.top + height / 2;
+				textAlign = 'center';
+			}
 			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
 		}
 
 		ctx.save();
 		ctx.translate(scaleLabelX, scaleLabelY);
 		ctx.rotate(rotation);
-		ctx.textAlign = 'center';
+		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
 		ctx.font = scaleLabelFont.string;
