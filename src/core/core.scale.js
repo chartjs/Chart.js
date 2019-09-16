@@ -1028,7 +1028,7 @@ var Scale = Element.extend({
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
 			textAlign = isMirrored ? 'left' : 'right';
 		} else {
-			x = me.right + (isMirrored ? 0 : tl) + tickPadding;
+			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
 			textAlign = isMirrored ? 'right' : 'left';
 		}
 
