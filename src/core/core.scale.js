@@ -1211,8 +1211,7 @@ var Scale = Element.extend({
 		var scaleLabelX, scaleLabelY, textAlign;
 
 		if (me.isHorizontal()) {
-			switch (scaleLabelAlign)
-			{
+			switch (scaleLabelAlign) {
 			case 'start':
 				scaleLabelX = me.left;
 				textAlign = 'left';
@@ -1234,14 +1233,13 @@ var Scale = Element.extend({
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
 			var height = me.height;
-			switch (scaleLabelAlign)
-			{
+			switch (scaleLabelAlign) {
 			case 'start':
-				scaleLabelY = me.top + ( isLeft ? height : 0 );
+				scaleLabelY = me.top + (isLeft ? height : 0);
 				textAlign = isLeft ? 'left' : 'right';
 				break;
 			case 'end':
-				scaleLabelY = me.top + ( isLeft ? 0 : height );
+				scaleLabelY = me.top + (isLeft ? 0 : height);
 				textAlign = isLeft ? 'left' : 'right';
 				break;
 			default:
