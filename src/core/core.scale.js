@@ -1232,18 +1232,17 @@ var Scale = Element.extend({
 			scaleLabelX = isLeft
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
-			var height = me.height;
 			switch (scaleLabelAlign) {
 			case 'start':
-				scaleLabelY = me.top + (isLeft ? height : 0);
-				textAlign = isLeft ? 'left' : 'right';
+				scaleLabelY = me.top + (isLeft ? me.height : 0);
+				textAlign = 'left';
 				break;
 			case 'end':
-				scaleLabelY = me.top + (isLeft ? 0 : height);
-				textAlign = isLeft ? 'left' : 'right';
+				scaleLabelY = me.top + (isLeft ? 0 : me.height);
+				textAlign = 'right';
 				break;
 			default:
-				scaleLabelY = me.top + height / 2;
+				scaleLabelY = me.top + me.height / 2;
 				textAlign = 'center';
 			}
 			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
