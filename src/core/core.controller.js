@@ -1017,9 +1017,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			me._lastEvent = null;
 		} else {
 			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
-			if (e.type !== 'click') {
-				me._lastEvent = e;
-			}
+			me._lastEvent = e.type === 'click' ? null : e;
 		}
 
 		// Invoke onHover hook
