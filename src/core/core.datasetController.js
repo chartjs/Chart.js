@@ -468,6 +468,12 @@ helpers.extend(DatasetController.prototype, {
 		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
 	},
 
+	removeDatasetHoverStyle: function() {
+		this.removeHoverStyle(this.getMeta().dataset);
+	},
+
+	setDatasetHoverStyle: helpers.noop,
+
 	/**
 	 * @private
 	 */
