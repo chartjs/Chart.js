@@ -316,6 +316,9 @@ module.exports = DatasetController.extend({
 		model.radius = valueOrDefault(options.hoverRadius, options.radius);
 	},
 
+	/**
+	 * @protected
+	 */
 	setDatasetHoverStyle: function() {
 		var line = this.getMeta().dataset;
 		var model = line._model;
@@ -324,10 +327,12 @@ module.exports = DatasetController.extend({
 
 		line.$previousStyle = {
 			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor
+			borderColor: model.borderColor,
+			borderWidth: model.borderWidth
 		};
 
 		model.backgroundColor = valueOrDefault(config.hoverBackgroundColor, getHoverColor(config.backgroundColor));
 		model.borderColor = valueOrDefault(config.hoverBorderColor, getHoverColor(config.borderColor));
+		model.borderWidth = valueOrDefault(config.hoverBorderWidth, config.borderWidth);
 	},
 });

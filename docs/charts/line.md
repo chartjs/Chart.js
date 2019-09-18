@@ -52,6 +52,9 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
+| [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
