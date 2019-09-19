@@ -1214,11 +1214,11 @@ var Scale = Element.extend({
 			switch (scaleLabelAlign) {
 			case 'start':
 				scaleLabelX = me.left;
-				textAlign = 'left';
+				textAlign = me.reverse ? 'right' : 'left';
 				break;
 			case 'end':
 				scaleLabelX = me.left + me.width;
-				textAlign = 'right';
+				textAlign = me.reverse ? 'left' : 'right';
 				break;
 			default:
 				scaleLabelX = me.left + me.width / 2;
@@ -1229,17 +1229,18 @@ var Scale = Element.extend({
 				: me.bottom - halfLineHeight - scaleLabelPadding.bottom;
 		} else {
 			var isLeft = position === 'left';
+			var startsAtBottom = !me.options.ticks.reverse;
 			scaleLabelX = isLeft
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
 			switch (scaleLabelAlign) {
 			case 'start':
-				scaleLabelY = me.top + (isLeft ? me.height : 0);
-				textAlign = 'left';
+				scaleLabelY = me.top + (startsAtBottom ? me.height : 0);
+				textAlign = (startsAtBottom ^ !isLeft) ? 'left' : 'right';
 				break;
 			case 'end':
-				scaleLabelY = me.top + (isLeft ? 0 : me.height);
-				textAlign = 'right';
+				scaleLabelY = me.top + (startsAtBottom ? 0 : me.height);
+				textAlign = (startsAtBottom ^ !isLeft) ? 'right' : 'left';
 				break;
 			default:
 				scaleLabelY = me.top + me.height / 2;
