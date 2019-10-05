@@ -152,12 +152,18 @@ The radar chart defines the following configuration options. These options are m
 ## Scale Options
 
 The radar chart supports only a single scale. The options for this scale are defined in the `scale` property.
+The options for this scale are defined in the `scale` property, which can be referenced from the [Linear Radial Axis page](../axes/radial/linear).
 
 ```javascript
 options = {
     scale: {
-        // Hides the scale
-        display: false
+        angleLines: {
+            display: false
+        },
+        ticks: {
+            suggestedMin: 50,
+            suggestedMax: 100
+        }
     }
 };
 ```
