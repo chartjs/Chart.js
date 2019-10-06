@@ -2,6 +2,7 @@
 
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
+const babel = require('rollup-plugin-babel');
 const terser = require('rollup-plugin-terser').terser;
 const optional = require('./rollup.plugins').optional;
 const stylesheet = require('./rollup.plugins').stylesheet;
@@ -24,6 +25,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
+			babel({
+				exclude: 'node_modules/**'
+			}),
 			stylesheet({
 				extract: true
 			}),
@@ -50,6 +54,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
+			babel({
+				exclude: 'node_modules/**'
+			}),
 			optional({
 				include: ['moment']
 			}),
@@ -85,6 +92,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
+			babel({
+				exclude: 'node_modules/**'
+			}),
 			stylesheet()
 		],
 		output: {
@@ -100,6 +110,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
+			babel({
+				exclude: 'node_modules/**'
+			}),
 			stylesheet({
 				minify: true
 			}),
