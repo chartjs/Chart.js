@@ -1208,8 +1208,8 @@ var Scale = Element.extend({
 		var scaleLabelAlign = scaleLabel.align;
 		var position = options.position;
 		var rotation = 0;
-		var scaleLabelX, scaleLabelY, textAlign;
 		var isReverse = me.options.ticks.reverse;
+		var scaleLabelX, scaleLabelY, textAlign;
 
 		if (me.isHorizontal()) {
 			switch (scaleLabelAlign) {
@@ -1237,11 +1237,11 @@ var Scale = Element.extend({
 			switch (scaleLabelAlign) {
 			case 'start':
 				scaleLabelY = me.top + (startsAtBottom ? me.height : 0);
-				textAlign = (startsAtBottom ^ !isLeft) ? 'left' : 'right';
+				textAlign = startsAtBottom ^ !isLeft ? 'left' : 'right';
 				break;
 			case 'end':
 				scaleLabelY = me.top + (startsAtBottom ? 0 : me.height);
-				textAlign = (startsAtBottom ^ !isLeft) ? 'right' : 'left';
+				textAlign = startsAtBottom ^ !isLeft ? 'right' : 'left';
 				break;
 			default:
 				scaleLabelY = me.top + me.height / 2;
