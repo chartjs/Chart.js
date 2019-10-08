@@ -772,6 +772,10 @@ var Scale = Element.extend({
 	getPixelForDecimal: function(decimal) {
 		var me = this;
 
+		if (decimal < 0 || decimal > 1) {
+			return NaN;
+		}
+
 		if (me._reversePixels) {
 			decimal = 1 - decimal;
 		}
