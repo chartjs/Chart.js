@@ -67,6 +67,19 @@ defaults._set('scale', {
 	}
 });
 
+/** Returns a new array containing numItems from arr */
+function sample(arr, numItems) {
+	var result = [];
+	var increment = arr.length / numItems;
+	var i = 0;
+	var len = arr.length;
+
+	for (; i < len; i += increment) {
+		result.push(arr[Math.floor(i)]);
+	}
+	return result;
+}
+
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	var length = scale.getTicks().length;
 	var validIndex = Math.min(index, length - 1);
@@ -266,7 +279,8 @@ var Scale = Element.extend({
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
 		var tickOpts = me.options.ticks;
-		var i, ilen, labels, label, ticks, tick;
+		var sampleSize = tickOpts.sampleSize;
+		var i, ilen, labels, ticks;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -281,6 +295,8 @@ var Scale = Element.extend({
 			bottom: 0
 		}, margins);
 
+		me._ticks = null;
+		me.ticks = null;
 		me._labelSizes = null;
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
@@ -314,34 +330,22 @@ var Scale = Element.extend({
 		// Allow modification of ticks in callback.
 		ticks = me.afterBuildTicks(ticks) || ticks;
 
-		me.beforeTickToLabelConversion();
-
-		// New implementations should return the formatted tick labels but for BACKWARD
-		// COMPAT, we still support no return (`this.ticks` internally changed by calling
-		// this method and supposed to contain only string values).
-		labels = me.convertTicksToLabels(ticks) || me.ticks;
-
-		me.afterTickToLabelConversion();
-
-		me.ticks = labels;   // BACKWARD COMPATIBILITY
-
-		// IMPORTANT: below this point, we consider that `this.ticks` will NEVER change!
-
-		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			label = labels[i];
-			tick = ticks[i];
-			if (!tick) {
-				ticks.push(tick = {
-					label: label,
+		// Ensure ticks contains ticks in new tick format
+		if ((!ticks || !ticks.length) && me.ticks) {
+			ticks = [];
+			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
+				ticks.push({
+					value: me.ticks[i],
 					major: false
 				});
-			} else {
-				tick.label = label;
 			}
 		}
 
 		me._ticks = ticks;
+
+		// Compute tick rotation and fit using a sampled subset of labels
+		// We generally don't need to compute the size of every single label for determining scale size
+		labels = me._convertTicksToLabels(sampleSize ? sample(ticks, sampleSize) : ticks);
 
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
@@ -353,19 +357,28 @@ var Scale = Element.extend({
 		me.beforeCalculateTickRotation();
 		me.calculateTickRotation();
 		me.afterCalculateTickRotation();
-		// Fit
+
 		me.beforeFit();
 		me.fit();
 		me.afterFit();
+
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me._ticks) : me._ticks;
+		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(ticks) : ticks;
+
+		if (sampleSize) {
+			// Generate labels using all non-skipped ticks
+			labels = me._convertTicksToLabels(me._ticksToDraw);
+		}
+
+		me.ticks = labels;   // BACKWARD COMPATIBILITY
+
+		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
 		me.afterUpdate();
 
 		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
 		// make maxWidth and maxHeight private
 		return me.minSize;
-
 	},
 
 	/**
@@ -673,6 +686,31 @@ var Scale = Element.extend({
 		return rawValue;
 	},
 
+	_convertTicksToLabels: function(ticks) {
+		var me = this;
+		var labels, i, ilen;
+
+		me.ticks = ticks.map(function(tick) {
+			return tick.value;
+		});
+
+		me.beforeTickToLabelConversion();
+
+		// New implementations should return the formatted tick labels but for BACKWARD
+		// COMPAT, we still support no return (`this.ticks` internally changed by calling
+		// this method and supposed to contain only string values).
+		labels = me.convertTicksToLabels(ticks) || me.ticks;
+
+		me.afterTickToLabelConversion();
+
+		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			ticks[i].label = labels[i];
+		}
+
+		return labels;
+	},
+
 	/**
 	 * @private
 	 */
@@ -835,11 +873,12 @@ var Scale = Element.extend({
 		for (i = 0; i < tickCount; i++) {
 			tick = ticks[i];
 
-			if (skipRatio > 1 && i % skipRatio > 0) {
-				// leave tick in place but make sure it's not displayed (#4635)
+			if (skipRatio <= 1 || i % skipRatio === 0) {
+				tick._index = i;
+				result.push(tick);
+			} else {
 				delete tick.label;
 			}
-			result.push(tick);
 		}
 		return result;
 	},
@@ -966,7 +1005,7 @@ var Scale = Element.extend({
 				borderDashOffset = gridLines.borderDashOffset || 0.0;
 			}
 
-			lineValue = getPixelForGridLine(me, i, offsetGridLines);
+			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
 
 			// Skip if the pixel is out of the range
 			if (lineValue === undefined) {
@@ -1044,7 +1083,7 @@ var Scale = Element.extend({
 				continue;
 			}
 
-			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
+			pixel = me.getPixelForTick(tick._index || i) + optionTicks.labelOffset;
 			font = tick.major ? fonts.major : fonts.minor;
 			lineHeight = font.lineHeight;
 			lineCount = isArray(label) ? label.length : 1;
