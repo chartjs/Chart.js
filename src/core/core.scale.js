@@ -214,6 +214,18 @@ function parseTickFontOptions(options) {
 	return {minor: minor, major: major};
 }
 
+function nonSkipped(ticksToFilter) {
+	var filtered = [];
+	var item, index, len;
+	for (index = 0, len = ticksToFilter.length; index < len; ++index) {
+		item = ticksToFilter[index];
+		if (typeof item._index !== 'undefined') {
+			filtered.push(item);
+		}
+	}
+	return filtered;
+}
+
 function getEvenSpacing(arr) {
 	var len = arr.length;
 	var i, diff;
@@ -237,13 +249,15 @@ function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 
 	// If the major ticks are evenly spaced apart, place the minor ticks
 	// so that they divide the major ticks into even chunks
-	if (evenMajorSpacing) {
-		factors = helpers.math._factorize(evenMajorSpacing);
-		for (i = 0, ilen = factors.length - 1; i < ilen; i++) {
-			factor = factors[i];
-			if (factor > spacing) {
-				return factor;
-			}
+	if (!evenMajorSpacing) {
+		return Math.max(spacing, 1);
+	}
+
+	factors = helpers.math._factorize(evenMajorSpacing);
+	for (i = 0, ilen = factors.length - 1; i < ilen; i++) {
+		factor = factors[i];
+		if (factor > spacing) {
+			return factor;
 		}
 	}
 	return Math.max(spacing, 1);
@@ -944,18 +958,6 @@ var Scale = Element.extend({
 		var first = majorIndices[0];
 		var last = majorIndices[numMajorIndices - 1];
 		var i, ilen, spacing, avgMajorSpacing;
-
-		function nonSkipped(ticksToFilter) {
-			var filtered = [];
-			var item, index, len;
-			for (index = 0, len = ticksToFilter.length; index < len; ++index) {
-				item = ticksToFilter[index];
-				if (typeof item._index !== 'undefined') {
-					filtered.push(item);
-				}
-			}
-			return filtered;
-		}
 
 		// If there are too many major ticks to display them all
 		if (numMajorIndices > ticksLimit) {
