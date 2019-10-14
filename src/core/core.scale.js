@@ -214,11 +214,24 @@ function parseTickFontOptions(options) {
 	return {minor: minor, major: major};
 }
 
+function getEvenSpacing(arr) {
+	var len = arr.length;
+	var i, diff;
+
+	if (len < 2) {
+		return false;
+	}
+
+	for (diff = arr[0], i = 1; i < len; ++i) {
+		if (arr[i] - arr[i - 1] !== diff) {
+			return false;
+		}
+	}
+	return diff;
+}
+
 function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
-	var evenMajorSpacing = majorIndices.length > 1 ? majorIndices.reduce(function(acc, val, idx, arr) {
-		var diff = idx === 0 ? acc : arr[idx] - arr[idx - 1];
-		return acc && acc === diff ? diff : false;
-	}, majorIndices[1] - majorIndices[0]) : false;
+	var evenMajorSpacing = getEvenSpacing(majorIndices);
 	var spacing = (ticks.length - 1) / ticksLimit;
 	var factors, factor, i, ilen;
 
@@ -248,17 +261,17 @@ function getMajorIndices(ticks) {
 }
 
 function skipMajors(ticks, majorIndices, spacing) {
-	var ticksToKeep = {};
+	var count = 0;
+	var next = majorIndices[0];
 	var i, tick;
 
 	spacing = Math.ceil(spacing);
-	for (i = 0; i < majorIndices.length; i += spacing) {
-		ticksToKeep[majorIndices[i]] = 1;
-	}
 	for (i = 0; i < ticks.length; i++) {
 		tick = ticks[i];
-		if (ticksToKeep[i]) {
+		if (i === next) {
 			tick._index = i;
+			count++;
+			next = majorIndices[count * spacing];
 		} else {
 			delete tick.label;
 		}
@@ -266,24 +279,24 @@ function skipMajors(ticks, majorIndices, spacing) {
 }
 
 function skip(ticks, spacing, majorStart, majorEnd) {
-	var ticksToKeep = {};
 	var start = valueOrDefault(majorStart, 0);
 	var end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
-	var length, i, tick;
+	var count = 0;
+	var length, i, tick, next;
 
 	spacing = Math.ceil(spacing);
 	if (majorEnd) {
 		length = majorEnd - majorStart;
 		spacing = length / Math.floor(length / spacing);
 	}
-	for (i = 0, tick = start; tick < end; i++) {
-		tick = Math.round(start + i * spacing);
-		ticksToKeep[tick] = 1;
-	}
+
+	next = start;
 	for (i = Math.max(start, 0); i < end; i++) {
 		tick = ticks[i];
-		if (ticksToKeep[i]) {
+		if (i === next) {
 			tick._index = i;
+			count++;
+			next = Math.round(start + count * spacing);
 		} else {
 			delete tick.label;
 		}
@@ -933,9 +946,15 @@ var Scale = Element.extend({
 		var i, ilen, spacing, avgMajorSpacing;
 
 		function nonSkipped(ticksToFilter) {
-			return ticksToFilter.filter(function(item) {
-				return typeof item._index !== 'undefined';
-			});
+			var filtered = [];
+			var item, index, len;
+			for (index = 0, len = ticksToFilter.length; index < len; ++index) {
+				item = ticksToFilter[index];
+				if (typeof item._index !== 'undefined') {
+					filtered.push(item);
+				}
+			}
+			return filtered;
 		}
 
 		// If there are too many major ticks to display them all
