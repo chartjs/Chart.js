@@ -1775,6 +1775,52 @@ describe('Time scale tests', function() {
 		});
 	});
 
+	it('should handle autoskip with major and minor ticks', function() {
+		var date = moment('Jan 01 1990', 'MMM DD YYYY');
+		var data = [];
+		for (var i = 0; i < 60; i++) {
+			data.push({x: date.valueOf(), y: Math.random()});
+			date = date.clone().add(1, 'month');
+		}
+
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: data
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						ticks: {
+							major: {
+								enabled: true
+							},
+							source: 'data',
+							autoSkip: true
+						}
+					}],
+				}
+			}
+		});
+
+		var scale = chart.scales.xScale0;
+
+		var labels = scale._ticksToDraw.map(function(t) {
+			return t.label;
+		});
+		expect(labels).toEqual([
+			'1990', 'Apr 1990', 'Jul 1990', 'Oct 1990',
+			'1991', 'Apr 1991', 'Jul 1991', 'Oct 1991',
+			'1992', 'Apr 1992', 'Jul 1992', 'Oct 1992',
+			'1993', 'Apr 1993', 'Jul 1993', 'Oct 1993',
+			'1994', 'Apr 1994', 'Jul 1994', 'Oct 1994']);
+	});
+
 	describe('Deprecations', function() {
 		describe('options.time.displayFormats', function() {
 			it('should generate defaults from adapter presets', function() {
