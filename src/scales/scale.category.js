@@ -1,15 +1,27 @@
 'use strict';
 
-var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
-
-var isNullOrUndef = helpers.isNullOrUndef;
 
 var defaultConfig = {
 	position: 'bottom'
 };
 
 module.exports = Scale.extend({
+
+	_parse: function(raw, index) {
+		var labels = this._getLabels();
+		var first = labels.indexOf(raw);
+		var last = labels.lastIndexOf(raw);
+		return first === -1 || first !== last ? index : first;
+	},
+
+	_parseObject: function(obj, axis, index) {
+		if (obj[axis] !== undefined) {
+			return this._parse(obj[axis], index);
+		}
+		return null;
+	},
+
 	determineDataLimits: function() {
 		var me = this;
 		var labels = me._getLabels();
@@ -55,15 +67,14 @@ module.exports = Scale.extend({
 		});
 	},
 
-	getLabelForIndex: function(index, datasetIndex) {
+	getLabelForValue: function(value) {
 		var me = this;
-		var chart = me.chart;
+		var labels = me._getLabels();
 
-		if (chart.getDatasetMeta(datasetIndex).controller._getValueScaleId() === me.id) {
-			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
+		if (value >= 0 && value < labels.length) {
+			return labels[value];
 		}
-
-		return me._getLabels()[index];
+		return value;
 	},
 
 	_configure: function() {
@@ -87,36 +98,21 @@ module.exports = Scale.extend({
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value
-	getPixelForValue: function(value, index, datasetIndex) {
+	getPixelForValue: function(value) {
 		var me = this;
-		var valueCategory, labels, idx;
 
-		if (!isNullOrUndef(index) && !isNullOrUndef(datasetIndex)) {
-			value = me.chart.data.datasets[datasetIndex].data[index];
+		if (typeof value !== 'number') {
+			value = me._parse(value);
 		}
 
-		// If value is a data object, then index is the index in the data array,
-		// not the index of the scale. We need to change that.
-		if (!isNullOrUndef(value)) {
-			valueCategory = me.isHorizontal() ? value.x : value.y;
-		}
-		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
-			labels = me._getLabels();
-			value = helpers.valueOrDefault(valueCategory, value);
-			idx = labels.indexOf(value);
-			index = idx !== -1 ? idx : index;
-			if (isNaN(index)) {
-				index = value;
-			}
-		}
-		return me.getPixelForDecimal((index - me._startValue) / me._valueRange);
+		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
 	},
 
 	getPixelForTick: function(index) {
 		var ticks = this.ticks;
 		return index < 0 || index > ticks.length - 1
 			? null
-			: this.getPixelForValue(ticks[index], index + this.minIndex);
+			: this.getPixelForValue(index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {

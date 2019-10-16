@@ -24,8 +24,6 @@ module.exports = DatasetController.extend({
 
 	dataElementType: elements.Point,
 
-	linkScales: helpers.noop,
-
 	/**
 	 * @private
 	 */

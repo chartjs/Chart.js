@@ -125,6 +125,57 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	};
 }
 
+function parseFloatBar(arr, item, vScale, i) {
+	var startValue = vScale._parse(arr[0], i);
+	var endValue = vScale._parse(arr[1], i);
+	var min = Math.min(startValue, endValue);
+	var max = Math.max(startValue, endValue);
+	var barStart = min;
+	var barEnd = max;
+
+	if (Math.abs(min) > Math.abs(max)) {
+		barStart = max;
+		barEnd = min;
+	}
+
+	// Store `barEnd` (furthest away from origin) as parsed value,
+	// to make stacking straight forward
+	item[vScale.id] = barEnd;
+
+	item._custom = {
+		barStart: barStart,
+		barEnd: barEnd,
+		start: startValue,
+		end: endValue,
+		min: min,
+		max: max
+	};
+}
+
+function parseArrayOrPrimitive(meta, data, start, count) {
+	var iScale = this._getIndexScale();
+	var vScale = this._getValueScale();
+	var labels = iScale._getLabels();
+	var singleScale = iScale === vScale;
+	var parsed = [];
+	var i, ilen, item, entry;
+
+	for (i = start, ilen = start + count; i < ilen; ++i) {
+		entry = data[i];
+		item = {_index: i};
+		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
+
+		if (helpers.isArray(entry)) {
+			parseFloatBar(entry, item, vScale, i);
+		} else {
+			item[vScale.id] = vScale._parse(entry, i);
+		}
+
+		parsed.push(item);
+	}
+	return parsed;
+}
+
 module.exports = DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
@@ -143,6 +194,24 @@ module.exports = DatasetController.extend({
 		'maxBarThickness',
 		'minBarLength'
 	],
+
+	/**
+	 * Overriding primitive data parsing since we support mixed primitive/array
+	 * data for float bars
+	 * @private
+	 */
+	_parsePrimitiveData: function() {
+		return parseArrayOrPrimitive.apply(this, arguments);
+	},
+
+	/**
+	 * Overriding array data parsing since we support mixed primitive/array
+	 * data for float bars
+	 * @private
+	 */
+	_parseArrayData: function() {
+		return parseArrayOrPrimitive.apply(this, arguments);
+	},
 
 	initialize: function() {
 		var me = this;
@@ -183,7 +252,8 @@ module.exports = DatasetController.extend({
 			label: me.chart.data.labels[index]
 		};
 
-		if (helpers.isArray(dataset.data[index])) {
+		// all borders are drawn for floating bar
+		if (me._getParsed(index)._custom) {
 			rectangle._model.borderSkipped = null;
 		}
 
@@ -283,7 +353,7 @@ module.exports = DatasetController.extend({
 		var i, ilen;
 
 		for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
-			pixels.push(scale.getPixelForValue(null, i, me.index));
+			pixels.push(scale.getPixelForValue(me._getParsed(i)[scale.id]));
 		}
 
 		return {
@@ -301,50 +371,39 @@ module.exports = DatasetController.extend({
 	 */
 	calculateBarValuePixels: function(datasetIndex, index, options) {
 		var me = this;
-		var chart = me.chart;
-		var scale = me._getValueScale();
-		var isHorizontal = scale.isHorizontal();
-		var datasets = chart.data.datasets;
-		var metasets = scale._getMatchingVisibleMetas(me._type);
-		var value = scale._parseValue(datasets[datasetIndex].data[index]);
+		var valueScale = me._getValueScale();
 		var minBarLength = options.minBarLength;
-		var stacked = scale.options.stacked;
-		var stack = me.getMeta().stack;
-		var start = value.start === undefined ? 0 : value.max >= 0 && value.min >= 0 ? value.min : value.max;
-		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
-		var ilen = metasets.length;
-		var i, imeta, ivalue, base, head, size, stackLength;
+		var start = 0;
+		var parsed = me._getParsed(index);
+		var value = parsed[valueScale.id];
+		var custom = parsed._custom;
+		var optStacked = valueScale.options.stacked;
+		var stacked = (optStacked || (optStacked === undefined && me._cachedMeta.stack !== undefined));
+		var length = stacked ? me._applyStack(valueScale, parsed) : parsed[valueScale.id];
+		var base, head, size;
 
-		if (stacked || (stacked === undefined && stack !== undefined)) {
-			for (i = 0; i < ilen; ++i) {
-				imeta = metasets[i];
-
-				if (imeta.index === datasetIndex) {
-					break;
-				}
-
-				if (imeta.stack === stack) {
-					stackLength = scale._parseValue(datasets[imeta.index].data[index]);
-					ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
-
-					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
-						start += ivalue;
-					}
-				}
-			}
+		if (length !== value) {
+			start = length - value;
+			length = value;
 		}
 
-		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + length);
+		if (custom && custom.barStart !== undefined && custom.barEnd !== undefined) {
+			value = custom.barStart;
+			length = custom.barEnd - custom.barStart;
+			// bars crossing origin are not stacked
+			if (value !== 0 && Math.sign(value) !== Math.sign(custom.barEnd)) {
+				start = 0;
+			}
+			start += value;
+		}
+
+		base = valueScale.getPixelForValue(start);
+		head = valueScale.getPixelForValue(start + length);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
-			size = minBarLength;
-			if (length >= 0 && !isHorizontal || length < 0 && isHorizontal) {
-				head = base - minBarLength;
-			} else {
-				head = base + minBarLength;
-			}
+			size = size < 0 ? -minBarLength : minBarLength;
+			head = base + size;
 		}
 
 		return {
@@ -383,15 +442,13 @@ module.exports = DatasetController.extend({
 		var chart = me.chart;
 		var scale = me._getValueScale();
 		var rects = me.getMeta().data;
-		var dataset = me.getDataset();
 		var ilen = rects.length;
 		var i = 0;
 
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			var val = scale._parseValue(dataset.data[i]);
-			if (!isNaN(val.min) && !isNaN(val.max)) {
+			if (!isNaN(me._getParsed(i)[scale.id])) {
 				rects[i].draw();
 			}
 		}

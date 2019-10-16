@@ -3,6 +3,7 @@
 var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
+var LinearScaleBase = require('./scale.linearbase');
 var Ticks = require('../core/core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
@@ -69,100 +70,20 @@ function nonNegativeOrDefault(value, defaultValue) {
 }
 
 module.exports = Scale.extend({
+	_parse: LinearScaleBase.prototype._parse,
+
 	determineDataLimits: function() {
 		var me = this;
-		var opts = me.options;
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var isHorizontal = me.isHorizontal();
-		function IDMatches(meta) {
-			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
-		}
-		var datasetIndex, meta, value, data, i, ilen;
+		var minmax = me._getMinMax(true);
+		var min = minmax.min;
+		var max = minmax.max;
+		var minPositive = minmax.minPositive;
 
-		// Calculate Range
-		me.min = Number.POSITIVE_INFINITY;
-		me.max = Number.NEGATIVE_INFINITY;
-		me.minNotZero = Number.POSITIVE_INFINITY;
+		me.min = helpers.isFinite(min) ? Math.max(0, min) : null;
+		me.max = helpers.isFinite(max) ? Math.max(0, max) : null;
+		me.minNotZero = helpers.isFinite(minPositive) ? minPositive : null;
 
-		var hasStacks = opts.stacked;
-		if (hasStacks === undefined) {
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
-					meta.stack !== undefined) {
-					hasStacks = true;
-					break;
-				}
-			}
-		}
-
-		if (opts.stacked || hasStacks) {
-			var valuesPerStack = {};
-
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				var key = [
-					meta.type,
-					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
-					((opts.stacked === undefined && meta.stack === undefined) ? datasetIndex : ''),
-					meta.stack
-				].join('.');
-
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					if (valuesPerStack[key] === undefined) {
-						valuesPerStack[key] = [];
-					}
-
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						var values = valuesPerStack[key];
-						value = me._parseValue(data[i]);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
-							continue;
-						}
-						values[i] = values[i] || 0;
-						values[i] += value.max;
-					}
-				}
-			}
-
-			helpers.each(valuesPerStack, function(valuesForType) {
-				if (valuesForType.length > 0) {
-					helpers._setMinAndMax(valuesForType, me);
-				}
-			});
-
-		} else {
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						value = me._parseValue(data[i]);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
-							continue;
-						}
-
-						me.min = Math.min(value.min, me.min);
-						me.max = Math.max(value.max, me.max);
-
-						if (value.min !== 0) {
-							me.minNotZero = Math.min(value.min, me.minNotZero);
-						}
-					}
-				}
-			}
-		}
-
-		me.min = helpers.isFinite(me.min) ? me.min : null;
-		me.max = helpers.isFinite(me.max) ? me.max : null;
-		me.minNotZero = helpers.isFinite(me.minNotZero) ? me.minNotZero : null;
-
-		// Common base implementation to handle ticks.min, ticks.max
-		this.handleTickRangeOptions();
+		me.handleTickRangeOptions();
 	},
 
 	handleTickRangeOptions: function() {
@@ -237,11 +158,6 @@ module.exports = Scale.extend({
 		return Scale.prototype.generateTickLabels.call(this, ticks);
 	},
 
-	// Get the correct tooltip label
-	getLabelForIndex: function(index, datasetIndex) {
-		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
-	},
-
 	getPixelForTick: function(index) {
 		var ticks = this._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
@@ -283,8 +199,6 @@ module.exports = Scale.extend({
 	getPixelForValue: function(value) {
 		var me = this;
 		var decimal = 0;
-
-		value = +me.getRightValue(value);
 
 		if (value > me.min && value > 0) {
 			decimal = (log10(value) - me._startValue) / me._valueRange + me._valueOffset;

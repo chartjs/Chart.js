@@ -157,25 +157,21 @@ describe('Test the radial linear scale', function() {
 	});
 
 	it('Should ensure that the scale has a max and min that are not equal', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [],
-			labels: []
-		};
-
-		var mockContext = window.createMockContext();
-		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: Chart.scaleService.getScaleDefaults('radialLinear'), // use default config for scale
-			chart: {
-				data: mockData
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [],
+				labels: []
 			},
-			id: scaleID,
+			options: {
+				scale: {
+					id: 'myScale'
+				}
+			}
 		});
 
-		scale.update(200, 300);
+		var scale = chart.scales.myScale;
+
 		expect(scale.min).toBe(-1);
 		expect(scale.max).toBe(1);
 	});
@@ -428,7 +424,7 @@ describe('Test the radial linear scale', function() {
 				}
 			}
 		});
-		expect(chart.scale.getLabelForIndex(1, 0)).toBe(5);
+		expect(chart.scale.getLabelForValue(5)).toBe(5);
 	});
 
 	it('should get the correct distance from the center point', function() {

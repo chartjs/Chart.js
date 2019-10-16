@@ -108,8 +108,6 @@ module.exports = DatasetController.extend({
 
 	dataElementType: elements.Arc,
 
-	linkScales: helpers.noop,
-
 	/**
 	 * @private
 	 */

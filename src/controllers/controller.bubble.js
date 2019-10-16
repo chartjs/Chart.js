@@ -30,7 +30,7 @@ defaults._set('bubble', {
 			},
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-				var dataPoint = data.datasets[item.datasetIndex].data[item.index];
+				var dataPoint = data.datasets[item.datasetIndex].data[item.index] || {r: '?'};
 				return datasetLabel + ': (' + item.label + ', ' + item.value + ', ' + dataPoint.r + ')';
 			}
 		}
@@ -60,6 +60,26 @@ module.exports = DatasetController.extend({
 	],
 
 	/**
+	 * Parse array of objects
+	 * @private
+	 */
+	_parseObjectData: function(meta, data, start, count) {
+		var xScale = this.getScaleForId(meta.xAxisID);
+		var yScale = this.getScaleForId(meta.yAxisID);
+		var parsed = [];
+		var i, ilen, item, obj;
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			obj = data[i];
+			item = {_index: i};
+			item[xScale.id] = xScale._parseObject(obj, 'x', i);
+			item[yScale.id] = yScale._parseObject(obj, 'y', i);
+			item._custom = obj && obj.r && +obj.r;
+			parsed.push(item);
+		}
+		return parsed;
+	},
+
+	/**
 	 * @protected
 	 */
 	update: function(reset) {
@@ -82,11 +102,17 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var options = me._resolveDataElementOptions(index);
-		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
+		var parsed, x, y;
 
-		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
-		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
+		if (reset) {
+			x = xScale.getPixelForDecimal(0.5);
+			y = yScale.getBasePixel();
+		} else {
+			parsed = me._getParsed(index);
+			x = xScale.getPixelForValue(parsed[xScale.id]);
+			y = yScale.getPixelForValue(parsed[yScale.id]);
+		}
 
 		point._options = options;
 		point._datasetIndex = dsIndex;
@@ -135,7 +161,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
-		var data = dataset.data[index] || {};
+		var parsed = me._getParsed(index);
 		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
 
 		// Scriptable options
@@ -153,7 +179,7 @@ module.exports = DatasetController.extend({
 
 		// Custom radius resolution
 		values.radius = resolve([
-			data.r,
+			parsed && parsed._custom,
 			me._config.radius,
 			chart.options.elements.point.radius
 		], context, index);

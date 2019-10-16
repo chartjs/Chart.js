@@ -747,7 +747,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.yScale0.getLabelForIndex(0, 2)).toBe(150);
+		expect(chart.scales.yScale0.getLabelForValue(150)).toBe(150);
 	});
 
 	describe('when', function() {
@@ -884,8 +884,8 @@ describe('Logarithmic Scale tests', function() {
 					var start = chart.chartArea[chartStart];
 					var end = chart.chartArea[chartEnd];
 
-					expect(scale.getPixelForValue(firstTick, 0, 0)).toBeCloseToPixel(start);
-					expect(scale.getPixelForValue(lastTick, 0, 0)).toBeCloseToPixel(end);
+					expect(scale.getPixelForValue(firstTick)).toBeCloseToPixel(start);
+					expect(scale.getPixelForValue(lastTick)).toBeCloseToPixel(end);
 
 					expect(scale.getValueForPixel(start)).toBeCloseTo(firstTick, 4);
 					expect(scale.getValueForPixel(end)).toBeCloseTo(lastTick, 4);
@@ -897,8 +897,8 @@ describe('Logarithmic Scale tests', function() {
 					start = chart.chartArea[chartEnd];
 					end = chart.chartArea[chartStart];
 
-					expect(scale.getPixelForValue(firstTick, 0, 0)).toBeCloseToPixel(start);
-					expect(scale.getPixelForValue(lastTick, 0, 0)).toBeCloseToPixel(end);
+					expect(scale.getPixelForValue(firstTick)).toBeCloseToPixel(start);
+					expect(scale.getPixelForValue(lastTick)).toBeCloseToPixel(end);
 
 					expect(scale.getValueForPixel(start)).toBeCloseTo(firstTick, 4);
 					expect(scale.getValueForPixel(end)).toBeCloseTo(lastTick, 4);

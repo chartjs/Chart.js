@@ -323,7 +323,7 @@ describe('Linear Scale', function() {
 		});
 		chart.update();
 
-		expect(chart.scales.yScale0.getLabelForIndex(3, 0)).toBe(7);
+		expect(chart.scales.yScale0.getLabelForValue(7)).toBe(7);
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
@@ -857,18 +857,18 @@ describe('Linear Scale', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(501); // right - paddingRight
-		expect(xScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(31 + 6); // left + paddingLeft + lineSpace
-		expect(xScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(266 + 6 / 2); // halfway*/
+		expect(xScale.getPixelForValue(1)).toBeCloseToPixel(501); // right - paddingRight
+		expect(xScale.getPixelForValue(-1)).toBeCloseToPixel(31 + 6); // left + paddingLeft + lineSpace
+		expect(xScale.getPixelForValue(0)).toBeCloseToPixel(266 + 6 / 2); // halfway*/
 
 		expect(xScale.getValueForPixel(501)).toBeCloseTo(1, 1e-2);
 		expect(xScale.getValueForPixel(31)).toBeCloseTo(-1, 1e-2);
 		expect(xScale.getValueForPixel(266)).toBeCloseTo(0, 1e-2);
 
 		var yScale = chart.scales.yScale0;
-		expect(yScale.getPixelForValue(1, 0, 0)).toBeCloseToPixel(32); // right - paddingRight
-		expect(yScale.getPixelForValue(-1, 0, 0)).toBeCloseToPixel(484); // left + paddingLeft
-		expect(yScale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(258); // halfway*/
+		expect(yScale.getPixelForValue(1)).toBeCloseToPixel(32); // right - paddingRight
+		expect(yScale.getPixelForValue(-1)).toBeCloseToPixel(484); // left + paddingLeft
+		expect(yScale.getPixelForValue(0)).toBeCloseToPixel(258); // halfway*/
 
 		expect(yScale.getValueForPixel(32)).toBeCloseTo(1, 1e-2);
 		expect(yScale.getValueForPixel(484)).toBeCloseTo(-1, 1e-2);

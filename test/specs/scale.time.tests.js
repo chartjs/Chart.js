@@ -1,24 +1,25 @@
 // Time scale tests
 describe('Time scale tests', function() {
 	function createScale(data, options, dimensions) {
-		var scaleID = 'myScale';
-		var mockContext = window.createMockContext();
-		var Constructor = Chart.scaleService.getScaleConstructor('time');
 		var width = (dimensions && dimensions.width) || 400;
 		var height = (dimensions && dimensions.height) || 50;
-		var scale = new Constructor({
-			ctx: mockContext,
-			options: options,
-			chart: {
-				data: data,
-				width: width,
-				height: height
-			},
-			id: scaleID
-		});
 
-		scale.update(width, height);
-		return scale;
+		options = options || {};
+		options.type = 'time';
+		options.id = 'xScale0';
+
+		var chart = window.acquireChart({
+			type: 'line',
+			data: data,
+			options: {
+				scales: {
+					xAxes: [options]
+				}
+			}
+		}, {canvas: {width: width, height: height}});
+
+
+		return chart.scales.xScale0;
 	}
 
 	function getLabels(scale) {
@@ -538,7 +539,7 @@ describe('Time scale tests', function() {
 						xAxes: [{
 							id: 'xScale0',
 							type: 'time',
-							position: 'bottom'
+							position: 'bottom',
 						}],
 					}
 				}
@@ -564,14 +565,14 @@ describe('Time scale tests', function() {
 			var lastPointOffsetMs = moment(chart.config.data.labels[chart.config.data.labels.length - 1]).valueOf() - scale.min;
 			var lastPointPixel = scale.left + lastPointOffsetMs / msPerPix;
 
-			expect(scale.getPixelForValue('', 0, 0)).toBeCloseToPixel(firstPointPixel);
+			expect(scale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(firstPointPixel);
 			expect(scale.getPixelForValue(chart.data.labels[0])).toBeCloseToPixel(firstPointPixel);
 			expect(scale.getValueForPixel(firstPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[0]),
 				unit: 'hour',
 			});
 
-			expect(scale.getPixelForValue('', 6, 0)).toBeCloseToPixel(lastPointPixel);
+			expect(scale.getPixelForValue('2015-01-10T12:00')).toBeCloseToPixel(lastPointPixel);
 			expect(scale.getValueForPixel(lastPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[6]),
 				unit: 'hour'
@@ -654,16 +655,21 @@ describe('Time scale tests', function() {
 					xAxes: [{
 						id: 'xScale0',
 						type: 'time',
-						position: 'bottom'
+						position: 'bottom',
+						ticks: {
+							source: 'labels',
+							autoSkip: false
+						}
 					}],
 				}
 			}
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getLabelForIndex(0, 0)).toBeTruthy();
-		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
-		expect(xScale.getLabelForIndex(6, 0)).toBe('2015-01-10T12:00');
+		var controller = chart.getDatasetMeta(0).controller;
+		expect(xScale.getLabelForValue(controller._getParsed(0)[xScale.id])).toBeTruthy();
+		expect(xScale.getLabelForValue(controller._getParsed(0)[xScale.id])).toBe('Jan 1, 2015, 8:00:00 pm');
+		expect(xScale.getLabelForValue(xScale.getValueForPixel(xScale.getPixelForTick(6)))).toBe('Jan 10, 2015, 12:00:00 pm');
 	});
 
 	describe('when ticks.callback is specified', function() {
@@ -825,8 +831,10 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		expect(xScale.getLabelForIndex(0, 0)).toBeTruthy();
-		expect(xScale.getLabelForIndex(0, 0)).toBe('2015-01-01T20:00:00');
+		var controller = chart.getDatasetMeta(0).controller;
+		var value = controller._getParsed(0)[xScale.id];
+		expect(xScale.getLabelForValue(value)).toBeTruthy();
+		expect(xScale.getLabelForValue(value)).toBe('Jan 1, 2015, 8:00:00 pm');
 	});
 
 	it('should get the correct label for a timestamp', function() {
@@ -853,7 +861,8 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		var label = xScale.getLabelForIndex(0, 0);
+		var controller = chart.getDatasetMeta(0).controller;
+		var label = xScale.getLabelForValue(controller._getParsed(0)[xScale.id]);
 		expect(label).toEqual('Jan 8, 2018, 5:14:23 am');
 	});
 
@@ -879,9 +888,9 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		var pixel = xScale.getPixelForValue('', 0, 0);
+		var pixel = xScale.getPixelForValue('2016-05-27');
 
-		expect(xScale.getValueForPixel(pixel).valueOf()).toEqual(moment(chart.data.labels[0]).valueOf());
+		expect(xScale.getValueForPixel(pixel)).toEqual(moment(chart.data.labels[0]).valueOf());
 	});
 
 	it('does not create a negative width chart when hidden', function() {
