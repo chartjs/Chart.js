@@ -121,7 +121,8 @@
 						distribution: 'series',
 						ticks: {
 							major: {
-								enabled: true
+								enabled: true,
+								fontStyle: 'bold'
 							},
 							source: 'data',
 							autoSkip: true,
@@ -130,29 +131,28 @@
 							sampleSize: 100
 						},
 						afterBuildTicks: function(scale, ticks) {
-							var unit = scale._unit;
 							var majorUnit = scale._majorUnit;
-							var i, ilen, tick, ts, val, lastMajorVal;
-							for (i = 0, ilen = ticks.length; i < ilen; i++) {
+							var firstTick = ticks[0];
+							var i, ilen, val, tick, currMajor, lastMajor;
+
+							val = moment(ticks[0].value);
+							if ((majorUnit === 'minute' && val.second() === 0)
+									|| (majorUnit === 'hour' && val.minute() === 0)
+									|| (majorUnit === 'day' && val.hour() === 9)
+									|| (majorUnit === 'month' && val.date() <= 3 && val.isoWeekday() === 1)
+									|| (majorUnit === 'year' && val.month() === 0)) {
+								firstTick.major = true;
+							} else {
+								firstTick.major = false;
+							}
+							lastMajor = val.get(majorUnit);
+
+							for (i = 1, ilen = ticks.length; i < ilen; i++) {
 								tick = ticks[i];
-								ts = tick.value;
-								val = moment(ts);
-								if (val.get(majorUnit) === lastMajorVal) {
-									tick.major = false;
-									continue;
-								}
-								lastMajorVal = val.get(majorUnit);
-								if (unit === 'hour' && val.hour() === 9) {
-									tick.major = true;
-									continue;
-								} else if (unit === 'day' && val.date() <= 3 && val.isoWeekday() === 1) {
-									tick.major = true;
-									continue;
-								} else if (unit === 'month' && val.month() === 0) {
-									tick.major = true;
-									continue;
-								}
-								tick.major = majorUnit ? ts === +scale._adapter.startOf(ts, majorUnit) : false;
+								val = moment(tick.value);
+								currMajor = val.get(majorUnit);
+								tick.major = currMajor !== lastMajor;
+								lastMajor = currMajor;
 							}
 							return ticks;
 						}

@@ -283,6 +283,14 @@ function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
 	return UNITS[minUnit ? UNITS.indexOf(minUnit) : 0];
 }
 
+function determineMajorUnit(unit) {
+	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+		if (INTERVALS[UNITS[i]].common) {
+			return UNITS[i];
+		}
+	}
+}
+
 /**
  * Generates a maximum of `capacity` timestamps between min and max, rounded to the
  * `minor` unit using the given scale time `options`.
@@ -592,10 +600,8 @@ module.exports = Scale.extend({
 
 		// PRIVATE
 		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
-		// Make sure the major unit fits. Usually it will just be the next largest unit
-		// But if you have a lot of ticks it could be larger. E.g. if you have 8000 day ticks the majorUnit may be year
 		me._majorUnit = !options.ticks.major.enabled || me._unit === 'year' ? undefined
-			: determineUnitForAutoTicks(UNITS[UNITS.indexOf(me._unit) + 1], me.min, me.max, capacity);
+			: determineMajorUnit(me._unit);
 		me._table = buildLookupTable(me._timestamps.data, min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
