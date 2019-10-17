@@ -77,7 +77,6 @@ module.exports = Element.extend({
 
 		// Stroke Line
 		ctx.beginPath();
-		lastDrawnIndex = -1;
 
 		// First point moves to it's starting position no matter what
 		currentVM = points[0]._view;
