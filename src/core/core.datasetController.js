@@ -400,7 +400,6 @@ helpers.extend(DatasetController.prototype, {
 		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
 		var elementOptions = me._dataElementOptions;
 		var values = {};
-		var keys, i, ilen, key;
 
 		// Scriptable options
 		var context = {
@@ -410,10 +409,10 @@ helpers.extend(DatasetController.prototype, {
 			datasetIndex: me.index
 		};
 
-		// information about resolution
-		var info = {
-			cacheable: !custom
-		};
+		// `resolve` sets cacheable to `false` if any option is indexed or scripted
+		var info = {cacheable: !custom};
+
+		var keys, i, ilen, key;
 
 		custom = custom || {};
 

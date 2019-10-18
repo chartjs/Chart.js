@@ -114,8 +114,9 @@ module.exports = {
 	 * @param {object} [context] - If defined and the current value is a function, the value
 	 * is called with `context` as first argument and the result becomes the new input.
 	 * @param {number} [index] - If defined and the current value is an array, the value
-	 * @param {object} [info] - object to return information about resolution in
 	 * at `index` become the new input.
+	 * @param {object} [info] - object to return information about resolution in
+	 * @param {boolean} [info.cacheable] - Will be set to `false` if option is not cacheable.
 	 * @since 2.7.0
 	 */
 	resolve: function(inputs, context, index, info) {
