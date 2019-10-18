@@ -290,6 +290,7 @@ helpers.extend(DatasetController.prototype, {
 	_update: function(reset) {
 		var me = this;
 		me._configure();
+		me._cachedDataOpts = null;
 		me.update(reset);
 	},
 
@@ -389,9 +390,13 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_resolveDataElementOptions: function(element, index) {
 		var me = this;
+		var custom = element && element.custom;
+		var cached = me._cachedDataOpts;
+		if (cached && !custom) {
+			return helpers.extend({}, cached);
+		}
 		var chart = me.chart;
 		var datasetOpts = me._config;
-		var custom = element.custom || {};
 		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
 		var elementOptions = me._dataElementOptions;
 		var values = {};
@@ -405,6 +410,13 @@ helpers.extend(DatasetController.prototype, {
 			datasetIndex: me.index
 		};
 
+		// information about resolution
+		var info = {
+			cacheable: !custom
+		};
+
+		custom = custom || {};
+
 		if (helpers.isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
@@ -412,7 +424,7 @@ helpers.extend(DatasetController.prototype, {
 					custom[key],
 					datasetOpts[key],
 					options[key]
-				], context, index);
+				], context, index, info);
 			}
 		} else {
 			keys = Object.keys(elementOptions);
@@ -423,8 +435,12 @@ helpers.extend(DatasetController.prototype, {
 					datasetOpts[elementOptions[key]],
 					datasetOpts[key],
 					options[key]
-				], context, index);
+				], context, index, info);
 			}
+		}
+
+		if (info.cacheable) {
+			me._cachedDataOpts = values;
 		}
 
 		return values;
