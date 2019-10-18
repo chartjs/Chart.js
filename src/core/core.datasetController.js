@@ -393,7 +393,7 @@ helpers.extend(DatasetController.prototype, {
 		var custom = element && element.custom;
 		var cached = me._cachedDataOpts;
 		if (cached && !custom) {
-			return helpers.extend({}, cached);
+			return cached;
 		}
 		var chart = me.chart;
 		var datasetOpts = me._config;
@@ -440,7 +440,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		if (info.cacheable) {
-			me._cachedDataOpts = values;
+			me._cachedDataOpts = Object.freeze(values);
 		}
 
 		return values;

@@ -122,7 +122,6 @@ module.exports = {
 		var cacheable = true;
 		var i, ilen, value;
 
-
 		for (i = 0, ilen = inputs.length; i < ilen; ++i) {
 			value = inputs[i];
 			if (value === undefined) {

@@ -154,6 +154,11 @@ module.exports = DatasetController.extend({
 			datasetIndex: me.index
 		};
 
+		// In case values were cached (and thus frozen), we need to clone the values
+		if (me._cachedDataOpts === values) {
+			values = helpers.extend({}, values);
+		}
+
 		// Custom radius resolution
 		values.radius = resolve([
 			custom.radius,
