@@ -1214,11 +1214,11 @@ var Scale = Element.extend({
 		if (me.isHorizontal()) {
 			switch (scaleLabelAlign) {
 			case 'start':
-				scaleLabelX = me.left;
+				scaleLabelX = me.left + (isReverse ? me.width : 0);
 				textAlign = isReverse ? 'right' : 'left';
 				break;
 			case 'end':
-				scaleLabelX = me.left + me.width;
+				scaleLabelX = me.left + (isReverse ? 0 : me.width);
 				textAlign = isReverse ? 'left' : 'right';
 				break;
 			default:
