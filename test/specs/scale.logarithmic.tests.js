@@ -749,7 +749,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.yScale1.getLabelForIndex(0, 2)).toBe(150);
+		expect(chart.scales.yScale0.getLabelForIndex(0, 2)).toBe(150);
 	});
 
 	describe('when', function() {
