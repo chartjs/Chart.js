@@ -20,13 +20,6 @@ defaults._set('radar', {
 });
 
 module.exports = DatasetController.extend({
-	/**
-	 * @private
-	 */
-	_getValueScaleId: function() {
-		return this.chart.scale.id;
-	},
-
 	datasetElementType: elements.Line,
 
 	dataElementType: elements.Point,
@@ -62,6 +55,20 @@ module.exports = DatasetController.extend({
 		pointStyle: 'pointStyle',
 		radius: 'pointRadius',
 		rotation: 'pointRotation'
+	},
+
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.chart.scale.id;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.chart.scale.id;
 	},
 
 	update: function(reset) {

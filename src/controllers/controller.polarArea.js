@@ -123,6 +123,20 @@ module.exports = DatasetController.extend({
 		'hoverBorderWidth',
 	],
 
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.chart.scale.id;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.chart.scale.id;
+	},
+
 	update: function(reset) {
 		var me = this;
 		var dataset = me.getDataset();
