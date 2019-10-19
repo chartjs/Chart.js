@@ -76,7 +76,7 @@
 			var now = moment();
 			var data = [];
 			var lessThanDay = unitLessThanDay();
-			for (; data.length < 60 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+			for (; data.length < 600 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
 				if (outsideMarketHours(date)) {
 					if (!lessThanDay || !beforeNineThirty(date)) {
 						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
@@ -112,13 +112,49 @@
 				}]
 			},
 			options: {
+				animation: {
+					duration: 0
+				},
 				scales: {
 					xAxes: [{
 						type: 'time',
 						distribution: 'series',
 						ticks: {
+							major: {
+								enabled: true,
+								fontStyle: 'bold'
+							},
 							source: 'data',
-							autoSkip: true
+							autoSkip: true,
+							autoSkipPadding: 75,
+							maxRotation: 0,
+							sampleSize: 100
+						},
+						afterBuildTicks: function(scale, ticks) {
+							var majorUnit = scale._majorUnit;
+							var firstTick = ticks[0];
+							var i, ilen, val, tick, currMajor, lastMajor;
+
+							val = moment(ticks[0].value);
+							if ((majorUnit === 'minute' && val.second() === 0)
+									|| (majorUnit === 'hour' && val.minute() === 0)
+									|| (majorUnit === 'day' && val.hour() === 9)
+									|| (majorUnit === 'month' && val.date() <= 3 && val.isoWeekday() === 1)
+									|| (majorUnit === 'year' && val.month() === 0)) {
+								firstTick.major = true;
+							} else {
+								firstTick.major = false;
+							}
+							lastMajor = val.get(majorUnit);
+
+							for (i = 1, ilen = ticks.length; i < ilen; i++) {
+								tick = ticks[i];
+								val = moment(tick.value);
+								currMajor = val.get(majorUnit);
+								tick.major = currMajor !== lastMajor;
+								lastMajor = currMajor;
+							}
+							return ticks;
 						}
 					}],
 					yAxes: [{

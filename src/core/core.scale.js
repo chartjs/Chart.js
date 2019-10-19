@@ -214,6 +214,109 @@ function parseTickFontOptions(options) {
 	return {minor: minor, major: major};
 }
 
+function nonSkipped(ticksToFilter) {
+	var filtered = [];
+	var item, index, len;
+	for (index = 0, len = ticksToFilter.length; index < len; ++index) {
+		item = ticksToFilter[index];
+		if (typeof item._index !== 'undefined') {
+			filtered.push(item);
+		}
+	}
+	return filtered;
+}
+
+function getEvenSpacing(arr) {
+	var len = arr.length;
+	var i, diff;
+
+	if (len < 2) {
+		return false;
+	}
+
+	for (diff = arr[0], i = 1; i < len; ++i) {
+		if (arr[i] - arr[i - 1] !== diff) {
+			return false;
+		}
+	}
+	return diff;
+}
+
+function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+	var evenMajorSpacing = getEvenSpacing(majorIndices);
+	var spacing = (ticks.length - 1) / ticksLimit;
+	var factors, factor, i, ilen;
+
+	// If the major ticks are evenly spaced apart, place the minor ticks
+	// so that they divide the major ticks into even chunks
+	if (!evenMajorSpacing) {
+		return Math.max(spacing, 1);
+	}
+
+	factors = helpers.math._factorize(evenMajorSpacing);
+	for (i = 0, ilen = factors.length - 1; i < ilen; i++) {
+		factor = factors[i];
+		if (factor > spacing) {
+			return factor;
+		}
+	}
+	return Math.max(spacing, 1);
+}
+
+function getMajorIndices(ticks) {
+	var result = [];
+	var i, ilen;
+	for (i = 0, ilen = ticks.length; i < ilen; i++) {
+		if (ticks[i].major) {
+			result.push(i);
+		}
+	}
+	return result;
+}
+
+function skipMajors(ticks, majorIndices, spacing) {
+	var count = 0;
+	var next = majorIndices[0];
+	var i, tick;
+
+	spacing = Math.ceil(spacing);
+	for (i = 0; i < ticks.length; i++) {
+		tick = ticks[i];
+		if (i === next) {
+			tick._index = i;
+			count++;
+			next = majorIndices[count * spacing];
+		} else {
+			delete tick.label;
+		}
+	}
+}
+
+function skip(ticks, spacing, majorStart, majorEnd) {
+	var start = valueOrDefault(majorStart, 0);
+	var end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
+	var count = 0;
+	var length, i, tick, next;
+
+	spacing = Math.ceil(spacing);
+	if (majorEnd) {
+		length = majorEnd - majorStart;
+		spacing = length / Math.floor(length / spacing);
+	}
+
+	next = start;
+	for (i = Math.max(start, 0); i < end; i++) {
+		tick = ticks[i];
+		if (i === next) {
+			tick._index = i;
+			count++;
+			next = Math.round(start + count * spacing);
+		} else {
+			delete tick.label;
+		}
+	}
+}
+
 var Scale = Element.extend({
 
 	zeroLineIndex: 0,
@@ -364,7 +467,7 @@ var Scale = Element.extend({
 		me.afterFit();
 
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(ticks) : ticks;
+		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(ticks) : ticks;
 
 		if (samplingEnabled) {
 			// Generate labels using all non-skipped ticks
@@ -848,40 +951,34 @@ var Scale = Element.extend({
 	 */
 	_autoSkip: function(ticks) {
 		var me = this;
-		var optionTicks = me.options.ticks;
-		var tickCount = ticks.length;
-		var skipRatio = false;
-		var maxTicks = optionTicks.maxTicksLimit;
-
-		// Total space needed to display all ticks. First and last ticks are
-		// drawn as their center at end of axis, so tickCount-1
-		var ticksLength = me._tickSize() * (tickCount - 1);
-
+		var tickOpts = me.options.ticks;
 		var axisLength = me._length;
-		var result = [];
-		var i, tick;
+		var ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
+		var majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
+		var numMajorIndices = majorIndices.length;
+		var first = majorIndices[0];
+		var last = majorIndices[numMajorIndices - 1];
+		var i, ilen, spacing, avgMajorSpacing;
 
-		if (ticksLength > axisLength) {
-			skipRatio = 1 + Math.floor(ticksLength / axisLength);
+		// If there are too many major ticks to display them all
+		if (numMajorIndices > ticksLimit) {
+			skipMajors(ticks, majorIndices, numMajorIndices / ticksLimit);
+			return nonSkipped(ticks);
 		}
 
-		// if they defined a max number of optionTicks,
-		// increase skipRatio until that number is met
-		if (tickCount > maxTicks) {
-			skipRatio = Math.max(skipRatio, 1 + Math.floor(tickCount / maxTicks));
-		}
+		spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
 
-		for (i = 0; i < tickCount; i++) {
-			tick = ticks[i];
-
-			if (skipRatio <= 1 || i % skipRatio === 0) {
-				tick._index = i;
-				result.push(tick);
-			} else {
-				delete tick.label;
+		if (numMajorIndices > 0) {
+			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
+				skip(ticks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
+			avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			skip(ticks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			return nonSkipped(ticks);
 		}
-		return result;
+		skip(ticks, spacing);
+		return nonSkipped(ticks);
 	},
 
 	/**
@@ -955,7 +1052,7 @@ var Scale = Element.extend({
 		var alignBorderValue = function(pixel) {
 			return alignPixel(chart, pixel, axisWidth);
 		};
-		var borderValue, i, tick, label, lineValue, alignedLineValue;
+		var borderValue, i, tick, lineValue, alignedLineValue;
 		var tx1, ty1, tx2, ty2, x1, y1, x2, y2, lineWidth, lineColor, borderDash, borderDashOffset;
 
 		if (position === 'top') {
@@ -986,10 +1083,9 @@ var Scale = Element.extend({
 
 		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
-			label = tick.label;
 
 			// autoskipper skipped this tick (#4635)
-			if (isNullOrUndef(label) && i < ticks.length) {
+			if (isNullOrUndef(tick.label) && i < ticks.length) {
 				continue;
 			}
 

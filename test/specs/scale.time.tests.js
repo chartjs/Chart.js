@@ -617,21 +617,22 @@ describe('Time scale tests', function() {
 		});
 
 		it('should build the correct ticks', function() {
-			// Where 'correct' is a two year spacing.
-			expect(getTicksLabels(this.scale)).toEqual(['2005', '2007', '2009', '2011', '2013', '2015', '2017', '2019']);
+			expect(getTicksLabels(this.scale)).toEqual(['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018']);
 		});
 
 		it('should have ticks with accurate labels', function() {
 			var scale = this.scale;
 			var ticks = scale.getTicks();
-			var pixelsPerYear = scale.width / 14;
+			// pixelsPerTick is an aproximation which assumes same number of milliseconds per year (not true)
+			// we use a threshold of 1 day so that we still match these values
+			var pixelsPerTick = scale.width / (ticks.length - 1);
 
 			for (var i = 0; i < ticks.length - 1; i++) {
-				var offset = 2 * pixelsPerYear * i;
+				var offset = pixelsPerTick * i;
 				expect(scale.getValueForPixel(scale.left + offset)).toBeCloseToTime({
 					value: moment(ticks[i].label + '-01-01'),
 					unit: 'day',
-					threshold: 0.5,
+					threshold: 1,
 				});
 			}
 		});
@@ -700,10 +701,9 @@ describe('Time scale tests', function() {
 		it('should get the correct labels for ticks', function() {
 			var scale = this.scale;
 
-			expect(scale._ticks.map(function(tick) {
-				return tick.major;
-			})).toEqual([true, false, false, false, false, false, true]);
-			expect(scale.ticks).toEqual(['<8:00:00>', '<8:00:10>', '<8:00:20>', '<8:00:30>', '<8:00:40>', '<8:00:50>', '<8:01:00>']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('<8:00:00>');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('<8:01:00>');
 		});
 
 		it('should update ticks.callback correctly', function() {
@@ -714,7 +714,9 @@ describe('Time scale tests', function() {
 				return '{' + value + '}';
 			};
 			chart.update();
-			expect(scale.ticks).toEqual(['{8:00:00}', '{8:00:10}', '{8:00:20}', '{8:00:30}', '{8:00:40}', '{8:00:50}', '{8:01:00}']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('{8:00:00}');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('{8:01:00}');
 		});
 	});
 
@@ -760,10 +762,10 @@ describe('Time scale tests', function() {
 		it('should get the correct labels for major and minor ticks', function() {
 			var scale = this.scale;
 
-			expect(scale._ticks.map(function(tick) {
-				return tick.major;
-			})).toEqual([true, false, false, false, false, false, true]);
-			expect(scale.ticks).toEqual(['[[8:00 pm]]', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '[[8:01 pm]]']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('[[8:00 pm]]');
+			expect(scale.ticks[Math.floor(scale.ticks.length / 2)]).toEqual('(8:00:30 pm)');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('[[8:01 pm]]');
 		});
 
 		it('should only use ticks.minor callback if ticks.major.enabled is false', function() {
@@ -772,7 +774,9 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.major.enabled = false;
 			chart.update();
-			expect(scale.ticks).toEqual(['(8:00:00 pm)', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '(8:01:00 pm)']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('(8:00:00 pm)');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('(8:01:00 pm)');
 		});
 
 		it('should use ticks.callback if ticks.major.callback is omitted', function() {
@@ -781,7 +785,9 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.major.callback = undefined;
 			chart.update();
-			expect(scale.ticks).toEqual(['<8:00 pm>', '(8:00:10 pm)', '(8:00:20 pm)', '(8:00:30 pm)', '(8:00:40 pm)', '(8:00:50 pm)', '<8:01 pm>']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('<8:00 pm>');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('<8:01 pm>');
 		});
 
 		it('should use ticks.callback if ticks.minor.callback is omitted', function() {
@@ -790,7 +796,10 @@ describe('Time scale tests', function() {
 
 			chart.options.scales.xAxes[0].ticks.minor.callback = undefined;
 			chart.update();
-			expect(scale.ticks).toEqual(['[[8:00 pm]]', '<8:00:10 pm>', '<8:00:20 pm>', '<8:00:30 pm>', '<8:00:40 pm>', '<8:00:50 pm>', '[[8:01 pm]]']);
+			expect(scale.ticks.length).toEqual(61);
+			expect(scale.ticks[0]).toEqual('[[8:00 pm]]');
+			expect(scale.ticks[Math.floor(scale.ticks.length / 2)]).toEqual('<8:00:30 pm>');
+			expect(scale.ticks[scale.ticks.length - 1]).toEqual('[[8:01 pm]]');
 		});
 	});
 
@@ -1764,6 +1773,52 @@ describe('Time scale tests', function() {
 			expect(getTicksLabels(chart.scales.y)).toEqual(['1995', '1996', '1997']);
 			expect(getTicksLabels(chart.scales.y2)).toEqual(['2005', '2006', '2007']);
 		});
+	});
+
+	it('should handle autoskip with major and minor ticks', function() {
+		var date = moment('Jan 01 1990', 'MMM DD YYYY');
+		var data = [];
+		for (var i = 0; i < 60; i++) {
+			data.push({x: date.valueOf(), y: Math.random()});
+			date = date.clone().add(1, 'month');
+		}
+
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					xAxisID: 'xScale0',
+					data: data
+				}],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'xScale0',
+						type: 'time',
+						ticks: {
+							major: {
+								enabled: true
+							},
+							source: 'data',
+							autoSkip: true
+						}
+					}],
+				}
+			}
+		});
+
+		var scale = chart.scales.xScale0;
+
+		var labels = scale._ticksToDraw.map(function(t) {
+			return t.label;
+		});
+		expect(labels).toEqual([
+			'1990', 'Apr 1990', 'Jul 1990', 'Oct 1990',
+			'1991', 'Apr 1991', 'Jul 1991', 'Oct 1991',
+			'1992', 'Apr 1992', 'Jul 1992', 'Oct 1992',
+			'1993', 'Apr 1993', 'Jul 1993', 'Oct 1993',
+			'1994', 'Apr 1994', 'Jul 1994', 'Oct 1994']);
 	});
 
 	describe('Deprecations', function() {
