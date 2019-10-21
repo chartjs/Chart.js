@@ -257,7 +257,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps / 2 : MAX_INTEGER;
+		factor = interval.steps ? interval.steps : MAX_INTEGER;
 
 		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
@@ -270,12 +270,12 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 /**
  * Figures out what unit to format a set of ticks with
  */
-function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
+function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
 	var i, unit;
 
 	for (i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
-		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= ticks.length - 1) {
+		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= numTicks - 1) {
 			return unit;
 		}
 	}
@@ -562,11 +562,12 @@ module.exports = Scale.extend({
 		var min = me.min;
 		var max = me.max;
 		var options = me.options;
+		var tickOpts = options.ticks;
 		var timeOpts = options.time;
 		var timestamps = me._timestamps;
 		var ticks = [];
 		var capacity = me.getLabelCapacity(min);
-		var source = options.ticks.source;
+		var source = tickOpts.source;
 		var distribution = options.distribution;
 		var i, ilen, timestamp;
 
@@ -599,13 +600,17 @@ module.exports = Scale.extend({
 		me.max = max;
 
 		// PRIVATE
-		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
-		me._majorUnit = !options.ticks.major.enabled || me._unit === 'year' ? undefined
+		// determineUnitForFormatting relies on the number of ticks so we don't use it when
+		// autoSkip is enabled because we don't yet know what the final number of ticks will be
+		me._unit = timeOpts.unit || (tickOpts.autoSkip
+			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, capacity)
+			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
+		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._table = buildLookupTable(me._timestamps.data, min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-		if (options.ticks.reverse) {
+		if (tickOpts.reverse) {
 			ticks.reverse();
 		}
 
