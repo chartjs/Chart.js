@@ -315,24 +315,4 @@ module.exports = DatasetController.extend({
 		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 		model.radius = valueOrDefault(options.hoverRadius, options.radius);
 	},
-
-	/**
-	 * @protected
-	 */
-	setDatasetHoverStyle: function() {
-		var line = this.getMeta().dataset;
-		var model = line._model;
-		var config = this._config;
-		var getHoverColor = helpers.getHoverColor;
-
-		line.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth
-		};
-
-		model.backgroundColor = valueOrDefault(config.hoverBackgroundColor, getHoverColor(config.backgroundColor));
-		model.borderColor = valueOrDefault(config.hoverBorderColor, getHoverColor(config.borderColor));
-		model.borderWidth = valueOrDefault(config.hoverBorderWidth, config.borderWidth);
-	},
 });
