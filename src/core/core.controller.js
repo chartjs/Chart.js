@@ -955,19 +955,18 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	updateHoverStyle: function(elements, mode, enabled) {
-		var method = enabled ? 'setHoverStyle' : 'removeHoverStyle';
+		var prefix = enabled ? 'set' : 'remove';
 		var element, i, ilen;
 
 		for (i = 0, ilen = elements.length; i < ilen; ++i) {
 			element = elements[i];
 			if (element) {
-				this.getDatasetMeta(element._datasetIndex).controller[method](element);
+				this.getDatasetMeta(element._datasetIndex).controller[prefix + 'HoverStyle'](element);
 			}
 		}
 
 		if (mode === 'dataset') {
-			method = enabled ? 'setDatasetHoverStyle' : 'removeDatasetHoverStyle';
-			this.getDatasetMeta(elements[0]._datasetIndex).controller[method]();
+			this.getDatasetMeta(elements[0]._datasetIndex).controller[prefix + 'DatasetHoverStyle']();
 		}
 	},
 
