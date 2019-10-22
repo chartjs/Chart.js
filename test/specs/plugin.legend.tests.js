@@ -163,6 +163,81 @@ describe('Legend block tests', function() {
 		}]);
 	});
 
+	it('should reverse correctly', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'round',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'round',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					pointStyle: 'crossRot',
+					fill: false,
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					reverse: true
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset3',
+			fillStyle: 'rgba(0,0,0,0)',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'miter',
+			lineWidth: 10,
+			strokeStyle: 'green',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 2
+		}, {
+			text: 'dataset2',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: true,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'round',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 1
+		}, {
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'round',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: 'miter',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
+		}]);
+	});
+
 	it('should filter items', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

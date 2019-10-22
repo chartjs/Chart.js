@@ -77,6 +77,7 @@ the color of the bars is generally set this way.
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | - | Yes | `1`
 | [`label`](#general) | `string` | - | - | `''`
+| [`order`](#general) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 
@@ -85,6 +86,7 @@ the color of the bars is generally set this way.
 | Name | Description
 | ---- | ----
 | `label` | The label for the dataset which appears in the legend and tooltips.
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
 | `xAxisID` | The ID of the x axis to plot this dataset on.
 | `yAxisID` | The ID of the y axis to plot this dataset on.
 

@@ -11,116 +11,113 @@ var defaultConfig = {
 	}
 };
 
+var DEFAULT_MIN = 0;
+var DEFAULT_MAX = 1;
+
+function getOrCreateStack(stacks, stacked, meta) {
+	var key = [
+		meta.type,
+		// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
+		stacked === undefined && meta.stack === undefined ? meta.index : '',
+		meta.stack
+	].join('.');
+
+	if (stacks[key] === undefined) {
+		stacks[key] = {
+			pos: [],
+			neg: []
+		};
+	}
+
+	return stacks[key];
+}
+
+function stackData(scale, stacks, meta, data) {
+	var opts = scale.options;
+	var stacked = opts.stacked;
+	var stack = getOrCreateStack(stacks, stacked, meta);
+	var pos = stack.pos;
+	var neg = stack.neg;
+	var ilen = data.length;
+	var i, value;
+
+	for (i = 0; i < ilen; ++i) {
+		value = scale._parseValue(data[i]);
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+			continue;
+		}
+
+		pos[i] = pos[i] || 0;
+		neg[i] = neg[i] || 0;
+
+		if (opts.relativePoints) {
+			pos[i] = 100;
+		} else if (value.min < 0 || value.max < 0) {
+			neg[i] += value.min;
+		} else {
+			pos[i] += value.max;
+		}
+	}
+}
+
+function updateMinMax(scale, meta, data) {
+	var ilen = data.length;
+	var i, value;
+
+	for (i = 0; i < ilen; ++i) {
+		value = scale._parseValue(data[i]);
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+			continue;
+		}
+
+		scale.min = Math.min(scale.min, value.min);
+		scale.max = Math.max(scale.max, value.max);
+	}
+}
+
 module.exports = LinearScaleBase.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
 		var datasets = chart.data.datasets;
-		var isHorizontal = me.isHorizontal();
-		var DEFAULT_MIN = 0;
-		var DEFAULT_MAX = 1;
-		var datasetIndex, meta, value, data, i, ilen;
+		var metasets = me._getMatchingVisibleMetas();
+		var hasStacks = opts.stacked;
+		var stacks = {};
+		var ilen = metasets.length;
+		var i, meta, data, values;
 
-		function IDMatches(datasetMeta) {
-			return isHorizontal ? datasetMeta.xAxisID === me.id : datasetMeta.yAxisID === me.id;
-		}
-
-		// First Calculate the range
 		me.min = Number.POSITIVE_INFINITY;
 		me.max = Number.NEGATIVE_INFINITY;
 
-		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) && meta.stack !== undefined) {
-					hasStacks = true;
-					break;
-				}
+			for (i = 0; !hasStacks && i < ilen; ++i) {
+				meta = metasets[i];
+				hasStacks = meta.stack !== undefined;
 			}
 		}
 
-		if (opts.stacked || hasStacks) {
-			var valuesPerStack = {};
-
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				var key = [
-					meta.type,
-					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
-					((opts.stacked === undefined && meta.stack === undefined) ? datasetIndex : ''),
-					meta.stack
-				].join('.');
-
-				if (valuesPerStack[key] === undefined) {
-					valuesPerStack[key] = {
-						positiveValues: [],
-						negativeValues: []
-					};
-				}
-
-				// Store these per type
-				var positiveValues = valuesPerStack[key].positiveValues;
-				var negativeValues = valuesPerStack[key].negativeValues;
-
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						value = me._parseValue(data[i]);
-
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
-							continue;
-						}
-
-						positiveValues[i] = positiveValues[i] || 0;
-						negativeValues[i] = negativeValues[i] || 0;
-
-						if (value.min === 0 && !opts.ticks.beginAtZero) {
-							value.min = value.max;
-						}
-
-						if (opts.relativePoints) {
-							positiveValues[i] = 100;
-						} else if (value.min < 0 || value.max < 0) {
-							negativeValues[i] += value.min;
-						} else {
-							positiveValues[i] += value.max;
-						}
-					}
-				}
-			}
-
-			helpers.each(valuesPerStack, function(valuesForType) {
-				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-				me.min = Math.min(me.min, helpers.min(values));
-				me.max = Math.max(me.max, helpers.max(values));
-			});
-
-		} else {
-			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-				meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						value = me._parseValue(data[i]);
-
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
-							continue;
-						}
-
-						me.min = Math.min(value.min, me.min);
-						me.max = Math.max(value.max, me.max);
-					}
-				}
+		for (i = 0; i < ilen; ++i) {
+			meta = metasets[i];
+			data = datasets[meta.index].data;
+			if (hasStacks) {
+				stackData(me, stacks, meta, data);
+			} else {
+				updateMinMax(me, meta, data);
 			}
 		}
+
+		helpers.each(stacks, function(stackValues) {
+			values = stackValues.pos.concat(stackValues.neg);
+			me.min = Math.min(me.min, helpers.min(values));
+			me.max = Math.max(me.max, helpers.max(values));
+		});
 
 		me.min = helpers.isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
 		me.max = helpers.isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
 
 		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
-		this.handleTickRangeOptions();
+		me.handleTickRangeOptions();
 	},
 
 	// Returns the maximum number of ticks based on the scale dimension

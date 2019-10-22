@@ -49,16 +49,15 @@ defaults._set('global', {
 			// lineJoin :
 			// lineWidth :
 			generateLabels: function(chart) {
-				var data = chart.data;
+				var datasets = chart.data.datasets;
 				var options = chart.options.legend || {};
 				var usePointStyle = options.labels && options.labels.usePointStyle;
 
-				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
-					var meta = chart.getDatasetMeta(i);
+				return chart._getSortedDatasetMetas().map(function(meta, i) {
 					var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
 
 					return {
-						text: dataset.label,
+						text: datasets[meta.index].label,
 						fillStyle: style.backgroundColor,
 						hidden: !chart.isDatasetVisible(i),
 						lineCap: style.borderCapStyle,
@@ -73,7 +72,7 @@ defaults._set('global', {
 						// Below is extra data used for toggling the datasets
 						datasetIndex: i
 					};
-				}, this) : [];
+				}, this);
 			}
 		}
 	},

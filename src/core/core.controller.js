@@ -154,6 +154,14 @@ function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
 }
 
+function compare2Level(l1, l2) {
+	return function(a, b) {
+		return a[l1] === b[l1]
+			? a[l2] - b[l2]
+			: a[l1] - b[l1];
+	};
+}
+
 var Chart = function(item, config) {
 	this.construct(item, config);
 	return this;
@@ -422,6 +430,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				meta = me.getDatasetMeta(datasetIndex);
 			}
 			meta.type = type;
+			meta.order = dataset.order || 0;
+			meta.index = datasetIndex;
 
 			if (meta.controller) {
 				meta.controller.updateIndex(datasetIndex);
@@ -513,11 +523,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
 
-		me._layers.sort(function(a, b) {
-			return a.z === b.z
-				? a._idx - b._idx
-				: a.z - b.z;
-		});
+		me._layers.sort(compare2Level('z', '_idx'));
 
 		if (me._bufferedRender) {
 			me._bufferedRequest = {
@@ -718,22 +724,48 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
+	 * @private
+	 */
+	_getSortedDatasetMetas: function(filterVisible) {
+		var me = this;
+		var datasets = me.data.datasets || [];
+		var result = [];
+		var i, ilen;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			if (!filterVisible || me.isDatasetVisible(i)) {
+				result.push(me.getDatasetMeta(i));
+			}
+		}
+
+		result.sort(compare2Level('order', 'index'));
+
+		return result;
+	},
+
+	/**
+	 * @private
+	 */
+	_getSortedVisibleDatasetMetas: function() {
+		return this._getSortedDatasetMetas(true);
+	},
+
+	/**
 	 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
 	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
 	drawDatasets: function(easingValue) {
 		var me = this;
+		var metasets, i;
 
 		if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
 			return;
 		}
 
-		// Draw datasets reversed to support proper line stacking
-		for (var i = (me.data.datasets || []).length - 1; i >= 0; --i) {
-			if (me.isDatasetVisible(i)) {
-				me.drawDataset(i, easingValue);
-			}
+		metasets = me._getSortedVisibleDatasetMetas();
+		for (i = metasets.length - 1; i >= 0; --i) {
+			me.drawDataset(metasets[i], easingValue);
 		}
 
 		plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
@@ -744,12 +776,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
 	 * @private
 	 */
-	drawDataset: function(index, easingValue) {
+	drawDataset: function(meta, easingValue) {
 		var me = this;
-		var meta = me.getDatasetMeta(index);
 		var args = {
 			meta: meta,
-			index: index,
+			index: meta.index,
 			easingValue: easingValue
 		};
 
@@ -829,7 +860,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				controller: null,
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
-				yAxisID: null
+				yAxisID: null,
+				order: dataset.order || 0,
+				index: datasetIndex
 			};
 		}
 

@@ -52,6 +52,7 @@ They are often useful for comparing the points of two or more different data set
 {% endchartjs %}
 
 ## Example Usage
+
 ```javascript
 var myRadarChart = new Chart(ctx, {
     type: 'radar',
@@ -75,6 +76,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
+| [`order`](#general) | `number` | - | - | `0`
 | [`lineTension`](#line-styling) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
@@ -94,6 +96,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | Name | Description
 | ---- | ----
 | `label` | The label for the dataset which appears in the legend and tooltips.
+| `order` | The drawing order of dataset.
 
 ### Point Styling
 

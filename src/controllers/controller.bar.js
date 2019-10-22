@@ -207,20 +207,26 @@ module.exports = DatasetController.extend({
 	 */
 	_getStacks: function(last) {
 		var me = this;
-		var chart = me.chart;
 		var scale = me._getIndexScale();
+		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var stacked = scale.options.stacked;
-		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
+		var ilen = metasets.length;
 		var stacks = [];
 		var i, meta;
 
 		for (i = 0; i < ilen; ++i) {
-			meta = chart.getDatasetMeta(i);
-			if (meta.bar && chart.isDatasetVisible(i) &&
-				(stacked === false ||
-				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
-				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+			meta = metasets[i];
+			// stacked   | meta.stack
+			//           | found | not found | undefined
+			// false     |   x   |     x     |     x
+			// true      |       |     x     |
+			// undefined |       |     x     |     x
+			if (stacked === false || stacks.indexOf(meta.stack) === -1 ||
+				(stacked === undefined && meta.stack === undefined)) {
 				stacks.push(meta.stack);
+			}
+			if (meta.index === last) {
+				break;
 			}
 		}
 
@@ -290,24 +296,26 @@ module.exports = DatasetController.extend({
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
+		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var value = scale._parseValue(datasets[datasetIndex].data[index]);
 		var minBarLength = scale.options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = me.getMeta().stack;
 		var start = value.start === undefined ? 0 : value.max >= 0 && value.min >= 0 ? value.min : value.max;
 		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+		var ilen = metasets.length;
 		var i, imeta, ivalue, base, head, size, stackLength;
 
 		if (stacked || (stacked === undefined && stack !== undefined)) {
-			for (i = 0; i < datasetIndex; ++i) {
-				imeta = chart.getDatasetMeta(i);
+			for (i = 0; i < ilen; ++i) {
+				imeta = metasets[i];
 
-				if (imeta.bar &&
-					imeta.stack === stack &&
-					imeta.controller._getValueScaleId() === scale.id &&
-					chart.isDatasetVisible(i)) {
+				if (imeta.index === datasetIndex) {
+					break;
+				}
 
-					stackLength = scale._parseValue(datasets[i].data[index]);
+				if (imeta.stack === stack) {
+					stackLength = scale._parseValue(datasets[imeta.index].data[index]);
 					ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
 
 					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {

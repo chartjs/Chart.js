@@ -25,17 +25,13 @@ function getRelativePosition(e, chart) {
  * @param {function} handler - the callback to execute for each visible item
  */
 function parseVisibleItems(chart, handler) {
-	var datasets = chart.data.datasets;
-	var meta, i, j, ilen, jlen;
+	var metasets = chart._getSortedVisibleDatasetMetas();
+	var metadata, i, j, ilen, jlen, element;
 
-	for (i = 0, ilen = datasets.length; i < ilen; ++i) {
-		if (!chart.isDatasetVisible(i)) {
-			continue;
-		}
-
-		meta = chart.getDatasetMeta(i);
-		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
-			var element = meta.data[j];
+	for (i = 0, ilen = metasets.length; i < ilen; ++i) {
+		metadata = metasets[i].data;
+		for (j = 0, jlen = metadata.length; j < jlen; ++j) {
+			element = metadata[j];
 			if (!element._view.skip) {
 				handler(element);
 			}
@@ -120,15 +116,12 @@ function indexMode(chart, e, options) {
 		return [];
 	}
 
-	chart.data.datasets.forEach(function(dataset, datasetIndex) {
-		if (chart.isDatasetVisible(datasetIndex)) {
-			var meta = chart.getDatasetMeta(datasetIndex);
-			var element = meta.data[items[0]._index];
+	chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
+		var element = meta.data[items[0]._index];
 
-			// don't count items that are skipped (null data)
-			if (element && !element._view.skip) {
-				elements.push(element);
-			}
+		// don't count items that are skipped (null data)
+		if (element && !element._view.skip) {
+			elements.push(element);
 		}
 	});
 

@@ -1416,6 +1416,19 @@ var Scale = Element.extend({
 				me._drawLabels.apply(me, arguments);
 			}
 		}];
+	},
+
+	/**
+	 * @private
+	 */
+	_getMatchingVisibleMetas: function(type) {
+		var me = this;
+		var isHorizontal = me.isHorizontal();
+		return me.chart._getSortedVisibleDatasetMetas()
+			.filter(function(meta) {
+				return (!type || meta.type === type)
+					&& (isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id);
+			});
 	}
 });
 
