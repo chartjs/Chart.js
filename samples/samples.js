@@ -43,6 +43,9 @@
 		}, {
 			title: 'Point sizes',
 			path: 'charts/line/point-sizes.html'
+		},{
+			title: 'Axes Label',
+			path: 'charts/line/axes-label.html'
 		}]
 	}, {
 		title: 'Area charts',
