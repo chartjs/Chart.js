@@ -68,7 +68,7 @@ function computeFitCategoryTraits(index, ruler, options) {
 	var thickness = options.barThickness;
 	var count = ruler.stackCount;
 	var curr = ruler.pixels[index];
-	var min = helpers.isNullOrUndef(options.barThickness)
+	var min = helpers.isNullOrUndef(thickness)
 		? computeMinSampleSize(ruler.scale, ruler.pixels)
 		: -1;
 	var size, ratio;
