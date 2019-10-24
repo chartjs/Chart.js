@@ -305,6 +305,12 @@ function skip(ticks, spacing, majorStart, majorEnd) {
 	}
 
 	next = start;
+
+	while (next < 0) {
+		count++;
+		next = Math.round(start + count * spacing);
+	}
+
 	for (i = Math.max(start, 0); i < end; i++) {
 		tick = ticks[i];
 		if (i === next) {
