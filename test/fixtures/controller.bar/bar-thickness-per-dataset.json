@@ -7,6 +7,11 @@
                 "barThickness": 16,
                 "backgroundColor": "#FF6384",
                 "data": [1, null, 3, 4, 5]
+            }, {
+                "type": "bar",
+                "barThickness": 8,
+                "backgroundColor": "#36A2EB",
+                "data": [5, 4, 3, null, 1]
             }]
         },
         "options": {
