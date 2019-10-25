@@ -294,17 +294,22 @@ function removeResizeListener(node) {
 	}
 }
 
-function injectCSS(platform, css) {
+/**
+ * Injects CSS styles inline if the styles are not already present.
+ * @param {HTMLDocument|ShadowRoot} rootNode - the node to contain the <style>.
+ * @param {string} css - the CSS to be injected.
+ */
+function injectCSS(rootNode, css) {
 	// https://stackoverflow.com/q/3922139
-	var style = platform._style || document.createElement('style');
-	if (!platform._style) {
-		platform._style = style;
+	var expando = rootNode[EXPANDO_KEY] || (rootNode[EXPANDO_KEY] = {});
+	if (!expando.containsStyles) {
+		expando.containsStyles = true;
 		css = '/* Chart.js */\n' + css;
+		var style = document.createElement('style');
 		style.setAttribute('type', 'text/css');
-		document.getElementsByTagName('head')[0].appendChild(style);
+		style.appendChild(document.createTextNode(css));
+		rootNode.appendChild(style);
 	}
-
-	style.appendChild(document.createTextNode(css));
 }
 
 module.exports = {
@@ -325,18 +330,18 @@ module.exports = {
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
 
 	/**
+	 * Initializes resources that depend on platform options.
+	 * @param {HTMLCanvasElement} canvas - The Canvas element.
 	 * @private
 	 */
-	_ensureLoaded: function() {
-		if (this._loaded) {
-			return;
-		}
-
-		this._loaded = true;
-
-		// https://github.com/chartjs/Chart.js/issues/5208
+	_ensureLoaded: function(canvas) {
 		if (!this.disableCSSInjection) {
-			injectCSS(this, stylesheet);
+			// If the canvas is in a shadow DOM, then the styles must also be inserted
+			// into the same shadow DOM.
+			// https://github.com/chartjs/Chart.js/issues/5763
+			var root = canvas.getRootNode();
+			var targetNode = root.host ? root : document.head;
+			injectCSS(targetNode, stylesheet);
 		}
 	},
 
@@ -358,10 +363,6 @@ module.exports = {
 		// https://github.com/chartjs/Chart.js/issues/2807
 		var context = item && item.getContext && item.getContext('2d');
 
-		// Load platform resources on first chart creation, to make possible to change
-		// platform options after importing the library (e.g. `disableCSSInjection`).
-		this._ensureLoaded();
-
 		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
 		// inside an iframe or when running in a protected environment. We could guess the
 		// types from their toString() value but let's keep things flexible and assume it's
@@ -370,6 +371,9 @@ module.exports = {
 		// https://github.com/chartjs/Chart.js/issues/4102
 		// https://github.com/chartjs/Chart.js/issues/4152
 		if (context && context.canvas === item) {
+			// Load platform resources on first chart creation, to make it possible to
+			// import the library before setting platform options.
+			this._ensureLoaded(item);
 			initCanvas(item, config);
 			return context;
 		}
