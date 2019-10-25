@@ -470,7 +470,10 @@ helpers.extend(DatasetController.prototype, {
 		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
 	},
 
-	removeDatasetHoverStyle: function() {
+	/**
+	 * @private
+	 */
+	_removeDatasetHoverStyle: function() {
 		var element = this.getMeta().dataset;
 
 		if (element) {
@@ -478,7 +481,10 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
-	setDatasetHoverStyle: function() {
+	/**
+	 * @private
+	 */
+	_setDatasetHoverStyle: function() {
 		var element = this.getMeta().dataset;
 		var prev = {};
 		var i, ilen, key, keys, hoverOptions, model;

@@ -966,7 +966,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		if (mode === 'dataset') {
-			this.getDatasetMeta(elements[0]._datasetIndex).controller[prefix + 'DatasetHoverStyle']();
+			this.getDatasetMeta(elements[0]._datasetIndex).controller['_' + prefix + 'DatasetHoverStyle']();
 		}
 	},
 
