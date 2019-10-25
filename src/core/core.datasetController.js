@@ -356,7 +356,7 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions: function(element) {
+	_resolveDatasetElementOptions: function(element, hover) {
 		var me = this;
 		var chart = me.chart;
 		var datasetOpts = me._config;
@@ -364,21 +364,23 @@ helpers.extend(DatasetController.prototype, {
 		var options = chart.options.elements[me.datasetElementType.prototype._type] || {};
 		var elementOptions = me._datasetElementOptions;
 		var values = {};
-		var i, ilen, key;
+		var i, ilen, key, readKey;
 
 		// Scriptable options
 		var context = {
 			chart: chart,
 			dataset: me.getDataset(),
-			datasetIndex: me.index
+			datasetIndex: me.index,
+			hover: hover
 		};
 
 		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 			key = elementOptions[i];
+			readKey = hover ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
 			values[key] = resolve([
-				custom[key],
-				datasetOpts[key],
-				options[key]
+				custom[readKey],
+				datasetOpts[readKey],
+				options[readKey]
 			], context);
 		}
 
@@ -466,6 +468,42 @@ helpers.extend(DatasetController.prototype, {
 		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
 		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
 		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
+	},
+
+	/**
+	 * @private
+	 */
+	_removeDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+
+		if (element) {
+			this.removeHoverStyle(element);
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_setDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+		var prev = {};
+		var i, ilen, key, keys, hoverOptions, model;
+
+		if (!element) {
+			return;
+		}
+
+		model = element._model;
+		hoverOptions = this._resolveDatasetElementOptions(element, true);
+
+		keys = Object.keys(hoverOptions);
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			prev[key] = model[key];
+			model[key] = hoverOptions[key];
+		}
+
+		element.$previousStyle = prev;
 	},
 
 	/**

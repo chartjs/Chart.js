@@ -52,6 +52,13 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
+| [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderDash`](#line-styling) | `number[]` | Yes | - | `undefined`
+| [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
+| [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
 | [`order`](#general) | `number` | - | - | `0`

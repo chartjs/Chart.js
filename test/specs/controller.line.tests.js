@@ -895,6 +895,34 @@ describe('Chart.controllers.line', function() {
 			expect(point._model.borderWidth).toBe(2);
 			expect(point._model.radius).toBe(3);
 		});
+
+		it ('should handle dataset hover styles defined via dataset properties', function() {
+			var chart = this.chart;
+			var point = chart.getDatasetMeta(0).data[0];
+			var dataset = chart.getDatasetMeta(0).dataset;
+
+			Chart.helpers.merge(chart.data.datasets[0], {
+				backgroundColor: '#AAA',
+				borderColor: '#BBB',
+				borderWidth: 6,
+				hoverBackgroundColor: '#000',
+				hoverBorderColor: '#111',
+				hoverBorderWidth: 12
+			});
+
+			chart.options.hover = {mode: 'dataset'};
+			chart.update();
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
+			expect(dataset._model.backgroundColor).toBe('#000');
+			expect(dataset._model.borderColor).toBe('#111');
+			expect(dataset._model.borderWidth).toBe(12);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
+			expect(dataset._model.backgroundColor).toBe('#AAA');
+			expect(dataset._model.borderColor).toBe('#BBB');
+			expect(dataset._model.borderWidth).toBe(6);
+		});
 	});
 
 	it('should allow 0 as a point border width', function() {
