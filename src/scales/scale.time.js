@@ -5,6 +5,7 @@ var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
+var deprecated = helpers._deprecated;
 var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
@@ -60,14 +61,6 @@ var INTERVALS = {
 };
 
 var UNITS = Object.keys(INTERVALS);
-
-function deprecated(value, previous, current) {
-	if (value !== undefined) {
-		console.warn(
-			'time scale: "' + previous + '" is deprecated. ' +
-			'Please use "' + current + '" instead');
-	}
-}
 
 function sorter(a, b) {
 	return a - b;
@@ -460,9 +453,9 @@ module.exports = Scale.extend({
 		var adapter = me._adapter = new adapters._date(options.adapters.date);
 
 		// DEPRECATIONS: output a message only one time per update
-		deprecated(time.format, 'time.format', 'time.parser');
-		deprecated(time.min, 'time.min', 'ticks.min');
-		deprecated(time.max, 'time.max', 'ticks.max');
+		deprecated('time scale', time.format, 'time.format', 'time.parser');
+		deprecated('time scale', time.min, 'time.min', 'ticks.min');
+		deprecated('time scale', time.max, 'time.max', 'ticks.max');
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
