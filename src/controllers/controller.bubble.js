@@ -85,7 +85,7 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveDataElementOptions(point, index);
+		var options = me._resolveDataElementOptions(index);
 		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
@@ -137,7 +137,7 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(point, index) {
+	_resolveDataElementOptions: function(index) {
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();

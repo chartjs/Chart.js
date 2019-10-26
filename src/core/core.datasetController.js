@@ -343,7 +343,7 @@ helpers.extend(DatasetController.prototype, {
 			style = me._resolveDatasetElementOptions(dataset || {});
 		} else {
 			index = index || 0;
-			style = me._resolveDataElementOptions(meta.data[index] || {}, index);
+			style = me._resolveDataElementOptions(index);
 		}
 
 		if (style.fill === false || style.fill === null) {
@@ -388,7 +388,7 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(element, index) {
+	_resolveDataElementOptions: function(index) {
 		var me = this;
 		var cached = me._cachedDataOpts;
 		if (cached) {

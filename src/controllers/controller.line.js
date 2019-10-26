@@ -124,7 +124,7 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var x, y;
 
-		var options = me._resolveDataElementOptions(point, index);
+		var options = me._resolveDataElementOptions(index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
