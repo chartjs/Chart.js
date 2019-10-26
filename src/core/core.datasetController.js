@@ -360,7 +360,6 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var chart = me.chart;
 		var datasetOpts = me._config;
-		var custom = element.custom || {};
 		var options = chart.options.elements[me.datasetElementType.prototype._type] || {};
 		var elementOptions = me._datasetElementOptions;
 		var values = {};
@@ -378,7 +377,6 @@ helpers.extend(DatasetController.prototype, {
 			key = elementOptions[i];
 			readKey = hover ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
 			values[key] = resolve([
-				custom[readKey],
 				datasetOpts[readKey],
 				options[readKey]
 			], context);
@@ -392,9 +390,8 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_resolveDataElementOptions: function(element, index) {
 		var me = this;
-		var custom = element && element.custom;
 		var cached = me._cachedDataOpts;
-		if (cached && !custom) {
+		if (cached) {
 			return cached;
 		}
 		var chart = me.chart;
@@ -412,17 +409,14 @@ helpers.extend(DatasetController.prototype, {
 		};
 
 		// `resolve` sets cacheable to `false` if any option is indexed or scripted
-		var info = {cacheable: !custom};
+		var info = {cacheable: true};
 
 		var keys, i, ilen, key;
-
-		custom = custom || {};
 
 		if (helpers.isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
 				values[key] = resolve([
-					custom[key],
 					datasetOpts[key],
 					options[key]
 				], context, index, info);
@@ -432,7 +426,6 @@ helpers.extend(DatasetController.prototype, {
 			for (i = 0, ilen = keys.length; i < ilen; ++i) {
 				key = keys[i];
 				values[key] = resolve([
-					custom[key],
 					datasetOpts[elementOptions[key]],
 					datasetOpts[key],
 					options[key]
@@ -455,7 +448,6 @@ helpers.extend(DatasetController.prototype, {
 	setHoverStyle: function(element) {
 		var dataset = this.chart.data.datasets[element._datasetIndex];
 		var index = element._index;
-		var custom = element.custom || {};
 		var model = element._model;
 		var getHoverColor = helpers.getHoverColor;
 
@@ -465,9 +457,9 @@ helpers.extend(DatasetController.prototype, {
 			borderWidth: model.borderWidth
 		};
 
-		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
-		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
-		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
+		model.backgroundColor = resolve([dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
+		model.borderColor = resolve([dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
+		model.borderWidth = resolve([dataset.hoverBorderWidth, model.borderWidth], undefined, index);
 	},
 
 	/**

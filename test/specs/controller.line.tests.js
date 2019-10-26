@@ -870,32 +870,6 @@ describe('Chart.controllers.line', function() {
 			expect(point._model.radius).toBe(3);
 		});
 
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var point = chart.getDatasetMeta(0).data[0];
-
-			point.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-				hoverRadius: 4.2
-			};
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(point._model.borderWidth).toBe(8.4);
-			expect(point._model.radius).toBe(4.2);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(point._model.borderWidth).toBe(2);
-			expect(point._model.radius).toBe(3);
-		});
-
 		it ('should handle dataset hover styles defined via dataset properties', function() {
 			var chart = this.chart;
 			var point = chart.getDatasetMeta(0).data[0];

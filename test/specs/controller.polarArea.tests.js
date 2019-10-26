@@ -135,27 +135,12 @@ describe('Chart.controllers.polarArea', function() {
 			expect(meta.data[i]._model.borderWidth).toBe(1.123);
 		}
 
-		// arc styles
-		meta.data[0].custom = {
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderColor: 'rgb(4, 6, 8)',
-			borderWidth: 0.787
-		};
-
 		chart.update();
 
 		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
 		expect(meta.data[0]._model.y).toBeCloseToPixel(259);
 		expect(meta.data[0]._model.innerRadius).toBeCloseToPixel(0);
 		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(177);
-		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
-			startAngle: -0.5 * Math.PI,
-			endAngle: 0,
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderWidth: 0.787,
-			borderColor: 'rgb(4, 6, 8)',
-			label: 'label1'
-		}));
 	});
 
 	it('should update elements with start angle from options', function() {
@@ -324,29 +309,6 @@ describe('Chart.controllers.polarArea', function() {
 				hoverBorderColor: 'rgb(150, 50, 100)',
 				hoverBorderWidth: 8.4,
 			});
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
-		});
-
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var arc = chart.getDatasetMeta(0).data[0];
-
-			arc.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-			};
 
 			chart.update();
 

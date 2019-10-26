@@ -408,28 +408,5 @@ describe('Chart.controllers.doughnut', function() {
 			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(arc._model.borderWidth).toBe(2);
 		});
-
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var arc = chart.getDatasetMeta(0).data[0];
-
-			arc.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-			};
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
-		});
 	});
 });
