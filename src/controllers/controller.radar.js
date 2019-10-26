@@ -92,7 +92,7 @@ module.exports = DatasetController.extend({
 		line._children = points;
 		line._loop = true;
 		// Model
-		line._model = me._resolveDatasetElementOptions(line);
+		line._model = me._resolveDatasetElementOptions();
 
 		line.pivot();
 

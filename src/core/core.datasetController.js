@@ -340,7 +340,7 @@ helpers.extend(DatasetController.prototype, {
 
 		me._configure();
 		if (dataset && index === undefined) {
-			style = me._resolveDatasetElementOptions(dataset || {});
+			style = me._resolveDatasetElementOptions();
 		} else {
 			index = index || 0;
 			style = me._resolveDataElementOptions(index);
@@ -356,7 +356,7 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions: function(element, hover) {
+	_resolveDatasetElementOptions: function(hover) {
 		var me = this;
 		var chart = me.chart;
 		var datasetOpts = me._config;
@@ -486,7 +486,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		model = element._model;
-		hoverOptions = this._resolveDatasetElementOptions(element, true);
+		hoverOptions = this._resolveDatasetElementOptions(true);
 
 		keys = Object.keys(hoverOptions);
 		for (i = 0, ilen = keys.length; i < ilen; ++i) {
