@@ -1,10 +1,8 @@
 'use strict';
 
-var helpers = require('./helpers.core');
-
 /**
  * Easing functions adapted from Robert Penner's easing equations.
- * @namespace Chart.helpers.easingEffects
+ * @namespace Chart.helpers.effects
  * @see http://www.robertpenner.com/easing/
  */
 var effects = {
@@ -237,14 +235,3 @@ var effects = {
 module.exports = {
 	effects: effects
 };
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.helpers.easing.effects instead.
- * @function Chart.helpers.easingEffects
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.easingEffects = effects;

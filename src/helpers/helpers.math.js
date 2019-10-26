@@ -1,7 +1,5 @@
 'use strict';
 
-var helpers = require('./helpers.core');
-
 /**
  * @alias Chart.helpers.math
  * @namespace
@@ -44,14 +42,3 @@ var exports = {
 };
 
 module.exports = exports;
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.helpers.math.log10 instead.
- * @namespace Chart.helpers.log10
- * @deprecated since version 2.9.0
- * @todo remove at version 3
- * @private
- */
-helpers.log10 = exports.log10;

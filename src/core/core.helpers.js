@@ -149,16 +149,6 @@ module.exports = function() {
 	};
 
 	/**
-	 * Provided for backward compatibility, not available anymore
-	 * @function Chart.helpers.aliasPixel
-	 * @deprecated since version 2.8.0
-	 * @todo remove at version 3
-	 */
-	helpers.aliasPixel = function(pixelWidth) {
-		return (pixelWidth % 2 === 0) ? 0 : 0.5;
-	};
-
-	/**
 	 * Returns the aligned pixel value to avoid anti-aliasing blur
 	 * @param {Chart} chart - The chart instance.
 	 * @param {number} pixel - A pixel value.
@@ -312,7 +302,7 @@ module.exports = function() {
 	};
 	// Implementation of the nice number algorithm used in determining where axis labels will go
 	helpers.niceNum = function(range, round) {
-		var exponent = Math.floor(helpers.log10(range));
+		var exponent = Math.floor(helpers.math.log10(range));
 		var fraction = range / Math.pow(10, exponent);
 		var niceFraction;
 
@@ -580,21 +570,6 @@ module.exports = function() {
 			longest = textWidth;
 		}
 		return longest;
-	};
-
-	/**
-	 * @deprecated
-	 */
-	helpers.numberOfLabelLines = function(arrayOfThings) {
-		var numberOfLines = 1;
-		helpers.each(arrayOfThings, function(thing) {
-			if (helpers.isArray(thing)) {
-				if (thing.length > numberOfLines) {
-					numberOfLines = thing.length;
-				}
-			}
-		});
-		return numberOfLines;
 	};
 
 	helpers.color = !color ?
