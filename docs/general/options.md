@@ -43,5 +43,6 @@ The context object contains the following properties:
 - `dataIndex`: index of the current data
 - `dataset`: dataset at index `datasetIndex`
 - `datasetIndex`: index of the current dataset
+- `hover`: true if hovered
 
 **Important**: since the context can represent different types of entities (dataset, data, etc.), some properties may be `undefined` so be sure to test any context property before using it.

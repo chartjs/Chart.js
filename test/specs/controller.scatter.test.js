@@ -47,5 +47,28 @@ describe('Chart.controllers.scatter', function() {
 			expect(meta.dataset.draw.calls.count()).toBe(0);
 			expect(meta.data[0].draw.calls.count()).toBe(1);
 		});
+
+		it('should draw a line if true', function() {
+			var chart = window.acquireChart({
+				type: 'scatter',
+				data: {
+					datasets: [{
+						data: [{x: 10, y: 15}],
+						showLine: true,
+						label: 'dataset1'
+					}],
+				},
+				options: {}
+			});
+
+			var meta = chart.getDatasetMeta(0);
+			spyOn(meta.dataset, 'draw');
+			spyOn(meta.data[0], 'draw');
+
+			chart.update();
+
+			expect(meta.dataset.draw.calls.count()).toBe(1);
+			expect(meta.data[0].draw.calls.count()).toBe(1);
+		});
 	});
 });

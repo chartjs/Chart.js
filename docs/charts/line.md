@@ -43,17 +43,25 @@ The line chart allows a number of properties to be specified for each dataset. T
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
-| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
-| [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
-| [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
-| [`borderWidth`](#line-styling) | `number` | - | - | `3`
-| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | - | - | `''`
-| [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderCapStyle`](#line-styling) | `string` | Yes | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderDash`](#line-styling) | `number[]` | Yes | - | `[]`
+| [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
+| [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
+| [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
+| [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
+| [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
+| [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderDash`](#line-styling) | `number[]` | Yes | - | `undefined`
+| [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
+| [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`label`](#general) | `string` | - | - | `''`
 | [`lineTension`](#line-styling) | `number` | - | - | `0.4`
+| [`order`](#general) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
@@ -76,6 +84,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | Name | Description
 | ---- | ----
 | `label` | The label for the dataset which appears in the legend and tooltips.
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
 | `xAxisID` | The ID of the x axis to plot this dataset on.
 | `yAxisID` | The ID of the y axis to plot this dataset on.
 

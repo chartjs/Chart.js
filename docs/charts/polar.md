@@ -70,6 +70,7 @@ All these values, if `undefined`, fallback to the associated [`elements.arc.*`](
 ### Border Alignment
 
 The following values are supported for `borderAlign`.
+
 * `'center'` (default)
 * `'inner'`
 

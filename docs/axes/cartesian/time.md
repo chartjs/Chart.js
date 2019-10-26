@@ -2,6 +2,10 @@
 
 The time scale is used to display times and dates. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
+## Date Adapters
+
+The time scale requires both a date library and corresponding adapter to be present. By default, Chart.js includes an adapter for Moment.js. You may wish to [exclude moment](../../getting-started/integration.md) and choose from [other available adapters](https://github.com/chartjs/awesome#adapters) instead.
+
 ## Data Sets
 
 ### Input Data
@@ -34,8 +38,6 @@ The following options are provided by the time scale. You may also set options p
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
-| `time.max` | [Time](#date-formats) | | If defined, this will override the data maximum.
-| `time.min` | [Time](#date-formats) | | If defined, this will override the data minimum.
 | `time.parser` | <code>string&#124;function</code> | | Custom parser for dates. [more...](#parser)
 | `time.round` | `string` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `time.tooltipFormat` | `string` | | The Moment.js format string to use for the tooltip.
@@ -147,7 +149,7 @@ The `ticks.source` property controls the ticks generation.
 
 * `'auto'`: generates "optimal" ticks based on scale size and time options
 * `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
-* `'labels'`: generates ticks from user given `data.labels` values ONLY
+* `'labels'`: generates ticks from user given `labels` ONLY
 
 ### Parser
 If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to parse the date.

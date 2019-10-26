@@ -10,7 +10,7 @@ describe('Logarithmic Scale tests', function() {
 		expect(defaultConfig).toEqual({
 			display: true,
 			gridLines: {
-				color: 'rgba(0, 0, 0, 0.1)',
+				color: 'rgba(0,0,0,0.1)',
 				drawBorder: true,
 				drawOnChartArea: true,
 				drawTicks: true,
@@ -749,7 +749,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.yScale1.getLabelForIndex(0, 2)).toBe(150);
+		expect(chart.scales.yScale0.getLabelForIndex(0, 2)).toBe(150);
 	});
 
 	describe('when', function() {
@@ -862,6 +862,8 @@ describe('Logarithmic Scale tests', function() {
 				type: 'logarithmic'
 			}];
 			Chart.helpers.extend(scaleConfig, setup.scale);
+			scaleConfig[setup.axis + 'Axes'][0].type = 'logarithmic';
+
 			var description = 'dataset has stack option and ' + setup.describe
 				+ ' and axis is "' + setup.axis + '";';
 			describe(description, function() {

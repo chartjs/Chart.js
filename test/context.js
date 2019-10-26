@@ -9,6 +9,7 @@ var Context = function() {
 	this._lineJoin = null;
 	this._lineWidth = null;
 	this._strokeStyle = null;
+	this._textAlign = null;
 
 	// Define properties here so that we can record each time they are set
 	Object.defineProperties(this, {
@@ -66,6 +67,15 @@ var Context = function() {
 				this.record('setStrokeStyle', [style]);
 			}
 		},
+		textAlign: {
+			get: function() {
+				return this._textAlign;
+			},
+			set: function(align) {
+				this._textAlign = align;
+				this.record('setTextAlign', [align]);
+			}
+		}
 	});
 };
 

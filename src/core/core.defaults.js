@@ -11,6 +11,8 @@ var defaults = {
 	}
 };
 
+// TODO(v3): remove 'global' from namespace.  all default are global and
+// there's inconsistency around which options are under 'global'
 defaults._set('global', {
 	defaultColor: 'rgba(0,0,0,0.1)',
 	defaultFontColor: '#666',

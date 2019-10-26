@@ -89,12 +89,12 @@ describe('Core.scale', function() {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: false,
-		expected: [-63.5, 64.5, 192.5, 320.5, 448.5]
+		expected: [64.5, 192.5, 320.5, 448.5]
 	}, {
 		labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [-0.5, 102.5, 204.5, 307.5, 409.5]
+		expected: [0.5, 102.5, 204.5, 307.5, 409.5, 512.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: false,
@@ -109,16 +109,16 @@ describe('Core.scale', function() {
 		labels: ['tick1'],
 		offsetGridLines: true,
 		offset: false,
-		expected: [-511.5]
+		expected: [512.5]
 	}, {
 		labels: ['tick1'],
 		offsetGridLines: true,
 		offset: true,
-		expected: [0.5]
+		expected: [0.5, 512.5]
 	}];
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for ' + test.labels.length + ' gridLine(s) for the horizontal scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it('should get the correct pixels for gridLine(s) for the horizontal scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -163,7 +163,7 @@ describe('Core.scale', function() {
 	});
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for ' + test.labels.length + ' gridLine(s) for the vertical scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it('should get the correct pixels for gridLine(s) for the vertical scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -206,6 +206,43 @@ describe('Core.scale', function() {
 				return x.args[1];
 			})).toEqual(test.expected);
 		});
+	});
+
+	it('should add the correct padding for long tick labels', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: [
+					'This is a very long label',
+					'This is a very long label'
+				],
+				datasets: [{
+					data: [0, 1]
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						id: 'foo'
+					}],
+					yAxes: [{
+						display: false
+					}]
+				},
+				legend: {
+					display: false
+				}
+			}
+		}, {
+			canvas: {
+				height: 100,
+				width: 200
+			}
+		});
+
+		var scale = chart.scales.foo;
+		expect(scale.left).toBeGreaterThan(100);
+		expect(scale.right).toBeGreaterThan(190);
 	});
 
 	describe('given the axes display option is set to auto', function() {
@@ -435,5 +472,138 @@ describe('Core.scale', function() {
 			var scale = chart.scales.x;
 			expect(scale.ticks.length).toBe(0);
 		});
+	});
+
+	describe('_layers', function() {
+		it('should default to one layer', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+		});
+
+		it('should default to one layer for custom scales', function() {
+			var customScale = Chart.Scale.extend({
+				draw: function() {},
+				convertTicksToLabels: function() {
+					return ['tick'];
+				}
+			});
+			Chart.scaleService.registerScaleType('customScale', customScale, {});
+
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'customScale',
+							gridLines: {
+								z: 10
+							},
+							ticks: {
+								z: 20
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+			expect(scale._layers()[0].z).toEqual(20);
+		});
+
+		it('should default to one layer when z is equal between ticks and grid', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							},
+							gridLines: {
+								z: 10
+							}
+						}]
+					}
+				}
+			});
+
+			var scale = chart.scales.x;
+			expect(scale._layers().length).toEqual(1);
+		});
+
+
+		it('should return 2 layers when z is not equal between ticks and grid', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+			chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							gridLines: {
+								z: 11
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+			chart = window.acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								z: 10
+							},
+							gridLines: {
+								z: 11
+							}
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x._layers().length).toEqual(2);
+
+		});
+
 	});
 });

@@ -24,6 +24,9 @@
                     "display": false,
                     "barPercentage": 1,
                     "categoryPercentage": 1,
+                    "time": {
+                        "parser": "YYYY-MM"
+                    },
                     "ticks": {
                         "source": "labels"
                     }

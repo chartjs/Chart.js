@@ -15,7 +15,7 @@ All of the included cartesian axes support a number of common options.
 | ---- | ---- | ------- | -----------
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `position` | `string` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
-| `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a category scale in a bar chart by default.
+| `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `id` | `string` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
@@ -26,6 +26,9 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `min` | `number` | | User defined minimum value for the scale, overrides minimum value from data.
+| `max` | `number` | | User defined maximum value for the scale, overrides maximum value from data.
+| `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
 | `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*

@@ -6,6 +6,7 @@ var Scale = require('../core/core.scale');
 var Ticks = require('../core/core.ticks');
 
 var valueOrDefault = helpers.valueOrDefault;
+var log10 = helpers.math.log10;
 
 /**
  * Generate a set of logarithmic ticks
@@ -16,20 +17,20 @@ var valueOrDefault = helpers.valueOrDefault;
 function generateTicks(generationOptions, dataRange) {
 	var ticks = [];
 
-	var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+	var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(log10(dataRange.min))));
 
-	var endExp = Math.floor(helpers.log10(dataRange.max));
+	var endExp = Math.floor(log10(dataRange.max));
 	var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
 	var exp, significand;
 
 	if (tickVal === 0) {
-		exp = Math.floor(helpers.log10(dataRange.minNotZero));
+		exp = Math.floor(log10(dataRange.minNotZero));
 		significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
 
 		ticks.push(tickVal);
 		tickVal = significand * Math.pow(10, exp);
 	} else {
-		exp = Math.floor(helpers.log10(tickVal));
+		exp = Math.floor(log10(tickVal));
 		significand = Math.floor(tickVal / Math.pow(10, exp));
 	}
 	var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
@@ -72,38 +73,35 @@ module.exports = Scale.extend({
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
-		var data = chart.data;
-		var datasets = data.datasets;
+		var datasets = chart.data.datasets;
 		var isHorizontal = me.isHorizontal();
 		function IDMatches(meta) {
 			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
 		}
+		var datasetIndex, meta, value, data, i, ilen;
 
 		// Calculate Range
-		me.min = null;
-		me.max = null;
-		me.minNotZero = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
+		me.minNotZero = Number.POSITIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				if (hasStacks) {
-					return;
-				}
-
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
 					meta.stack !== undefined) {
 					hasStacks = true;
+					break;
 				}
-			});
+			}
 		}
 
 		if (opts.stacked || hasStacks) {
 			var valuesPerStack = {};
 
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				var key = [
 					meta.type,
 					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
@@ -116,58 +114,55 @@ module.exports = Scale.extend({
 						valuesPerStack[key] = [];
 					}
 
-					helpers.each(dataset.data, function(rawValue, index) {
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
 						var values = valuesPerStack[key];
-						var value = +me.getRightValue(rawValue);
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
-						values[index] = values[index] || 0;
-						values[index] += value;
-					});
+						values[i] = values[i] || 0;
+						values[i] += value.max;
+					}
 				}
-			});
+			}
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				if (valuesForType.length > 0) {
 					var minVal = helpers.min(valuesForType);
 					var maxVal = helpers.max(valuesForType);
-					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+					me.min = Math.min(me.min, minVal);
+					me.max = Math.max(me.max, maxVal);
 				}
 			});
 
 		} else {
-			helpers.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
 
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
-						}
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
 
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
+						if (value.min !== 0) {
+							me.minNotZero = Math.min(value.min, me.minNotZero);
 						}
-
-						if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
-							me.minNotZero = value;
-						}
-					});
+					}
 				}
-			});
+			}
 		}
+
+		me.min = helpers.isFinite(me.min) ? me.min : null;
+		me.max = helpers.isFinite(me.max) ? me.max : null;
+		me.minNotZero = helpers.isFinite(me.minNotZero) ? me.minNotZero : null;
 
 		// Common base implementation to handle ticks.min, ticks.max
 		this.handleTickRangeOptions();
@@ -184,26 +179,26 @@ module.exports = Scale.extend({
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
-				me.min = Math.pow(10, Math.floor(helpers.log10(me.min)) - 1);
-				me.max = Math.pow(10, Math.floor(helpers.log10(me.max)) + 1);
+				me.min = Math.pow(10, Math.floor(log10(me.min)) - 1);
+				me.max = Math.pow(10, Math.floor(log10(me.max)) + 1);
 			} else {
 				me.min = DEFAULT_MIN;
 				me.max = DEFAULT_MAX;
 			}
 		}
 		if (me.min === null) {
-			me.min = Math.pow(10, Math.floor(helpers.log10(me.max)) - 1);
+			me.min = Math.pow(10, Math.floor(log10(me.max)) - 1);
 		}
 		if (me.max === null) {
 			me.max = me.min !== 0
-				? Math.pow(10, Math.floor(helpers.log10(me.min)) + 1)
+				? Math.pow(10, Math.floor(log10(me.min)) + 1)
 				: DEFAULT_MAX;
 		}
 		if (me.minNotZero === null) {
 			if (me.min > 0) {
 				me.minNotZero = me.min;
 			} else if (me.max < 1) {
-				me.minNotZero = Math.pow(10, Math.floor(helpers.log10(me.max)));
+				me.minNotZero = Math.pow(10, Math.floor(log10(me.max)));
 			} else {
 				me.minNotZero = DEFAULT_MIN;
 			}
@@ -247,11 +242,15 @@ module.exports = Scale.extend({
 
 	// Get the correct tooltip label
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.tickValues[index]);
+		var ticks = this.tickValues;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index]);
 	},
 
 	/**
@@ -261,87 +260,47 @@ module.exports = Scale.extend({
 	 * @private
 	 */
 	_getFirstTickValue: function(value) {
-		var exp = Math.floor(helpers.log10(value));
+		var exp = Math.floor(log10(value));
 		var significand = Math.floor(value / Math.pow(10, exp));
 
 		return significand * Math.pow(10, exp);
 	},
 
+	_configure: function() {
+		var me = this;
+		var start = me.min;
+		var offset = 0;
+
+		Scale.prototype._configure.call(me);
+
+		if (start === 0) {
+			start = me._getFirstTickValue(me.minNotZero);
+			offset = valueOrDefault(me.options.ticks.fontSize, defaults.global.defaultFontSize) / me._length;
+		}
+
+		me._startValue = log10(start);
+		me._valueOffset = offset;
+		me._valueRange = (log10(me.max) - log10(start)) / (1 - offset);
+	},
+
 	getPixelForValue: function(value) {
 		var me = this;
-		var tickOpts = me.options.ticks;
-		var reverse = tickOpts.reverse;
-		var log10 = helpers.log10;
-		var firstTickValue = me._getFirstTickValue(me.minNotZero);
-		var offset = 0;
-		var innerDimension, pixel, start, end, sign;
+		var decimal = 0;
 
 		value = +me.getRightValue(value);
-		if (reverse) {
-			start = me.end;
-			end = me.start;
-			sign = -1;
-		} else {
-			start = me.start;
-			end = me.end;
-			sign = 1;
+
+		if (value > me.min && value > 0) {
+			decimal = (log10(value) - me._startValue) / me._valueRange + me._valueOffset;
 		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			pixel = reverse ? me.right : me.left;
-		} else {
-			innerDimension = me.height;
-			sign *= -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
-			pixel = reverse ? me.top : me.bottom;
-		}
-		if (value !== start) {
-			if (start === 0) { // include zero tick
-				offset = valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
-				innerDimension -= offset;
-				start = firstTickValue;
-			}
-			if (value !== 0) {
-				offset += innerDimension / (log10(end) - log10(start)) * (log10(value) - log10(start));
-			}
-			pixel += sign * offset;
-		}
-		return pixel;
+		return me.getPixelForDecimal(decimal);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var tickOpts = me.options.ticks;
-		var reverse = tickOpts.reverse;
-		var log10 = helpers.log10;
-		var firstTickValue = me._getFirstTickValue(me.minNotZero);
-		var innerDimension, start, end, value;
-
-		if (reverse) {
-			start = me.end;
-			end = me.start;
-		} else {
-			start = me.start;
-			end = me.end;
-		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			value = reverse ? me.right - pixel : pixel - me.left;
-		} else {
-			innerDimension = me.height;
-			value = reverse ? pixel - me.top : me.bottom - pixel;
-		}
-		if (value !== start) {
-			if (start === 0) { // include zero tick
-				var offset = valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize);
-				value -= offset;
-				innerDimension -= offset;
-				start = firstTickValue;
-			}
-			value *= log10(end) - log10(start);
-			value /= innerDimension;
-			value = Math.pow(10, log10(start) + value);
-		}
-		return value;
+		var decimal = me.getDecimalForPixel(pixel);
+		return decimal === 0 && me.min === 0
+			? 0
+			: Math.pow(10, me._startValue + (decimal - me._valueOffset) * me._valueRange);
 	}
 });
 

@@ -1,0 +1,25 @@
+{
+	"config": {
+		"type": "doughnut",
+		"data": {
+			"labels": [""],
+			"datasets": [{
+				"data": [10],
+				"backgroundColor": "#00ff00",
+				"borderWidth": 0
+			}]
+		},
+		"options": {
+			"legend": {
+				"position": "top",
+				"align": "center"
+			}
+		}
+	},
+	"options": {
+		"canvas": {
+			"height": 256,
+			"width": 512
+		}
+	}
+}

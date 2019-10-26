@@ -48,6 +48,22 @@ module.exports = DatasetController.extend({
 	dataElementType: elements.Point,
 
 	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+		'hoverRadius',
+		'hitRadius',
+		'pointStyle',
+		'rotation'
+	],
+
+	/**
 	 * @protected
 	 */
 	update: function(reset) {
@@ -70,7 +86,7 @@ module.exports = DatasetController.extend({
 		var custom = point.custom || {};
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveElementOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
@@ -122,16 +138,13 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(point, index) {
+	_resolveDataElementOptions: function(point, index) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
+		var dataset = me.getDataset();
 		var custom = point.custom || {};
-		var options = chart.options.elements.point;
-		var data = dataset.data[index];
-		var values = {};
-		var i, ilen, key;
+		var data = dataset.data[index] || {};
+		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
 
 		// Scriptable options
 		var context = {
@@ -141,34 +154,17 @@ module.exports = DatasetController.extend({
 			datasetIndex: me.index
 		};
 
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-			'hoverRadius',
-			'hitRadius',
-			'pointStyle',
-			'rotation'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
+		// In case values were cached (and thus frozen), we need to clone the values
+		if (me._cachedDataOpts === values) {
+			values = helpers.extend({}, values);
 		}
 
 		// Custom radius resolution
 		values.radius = resolve([
 			custom.radius,
-			data ? data.r : undefined,
-			dataset.radius,
-			options.radius
+			data.r,
+			me._config.radius,
+			chart.options.elements.point.radius
 		], context, index);
 
 		return values;

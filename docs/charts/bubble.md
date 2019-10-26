@@ -49,14 +49,18 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
 | [`hoverRadius`](#interactions) | `number` | Yes | Yes | `4`
 | [`hitRadius`](#interactions) | `number` | Yes | Yes | `1`
-| [`label`](#labeling) | `string` | - | - | `undefined`
+| [`label`](#general) | `string` | - | - | `undefined`
+| [`order`](#general) | `number` | - | - | `0`
 | [`pointStyle`](#styling) | `string` | Yes | Yes | `'circle'`
 | [`rotation`](#styling) | `number` | Yes | Yes | `0`
 | [`radius`](#styling) | `number` | Yes | Yes | `3`
 
-### Labeling
+### General
 
-`label` defines the text associated to the dataset and which appears in the legend and tooltips.
+| Name | Description
+| ---- | ----
+| `label` | The label for the dataset which appears in the legend and tooltips.
+| `order` | The drawing order of dataset.
 
 ### Styling
 

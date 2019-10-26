@@ -1,9 +1,12 @@
 // Test the rectangle element
 describe('Legend block tests', function() {
+	describe('auto', jasmine.fixture.specs('plugin.legend'));
+
 	it('should have the correct default config', function() {
 		expect(Chart.defaults.global.legend).toEqual({
 			display: true,
 			position: 'top',
+			align: 'center',
 			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
 			reverse: false,
 			weight: 1000,
@@ -21,7 +24,7 @@ describe('Legend block tests', function() {
 		});
 	});
 
-	it('should update correctly', function() {
+	it('should update bar chart correctly', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
 			data: {
@@ -52,29 +55,31 @@ describe('Legend block tests', function() {
 			text: 'dataset1',
 			fillStyle: '#f31',
 			hidden: false,
-			lineCap: 'butt',
-			lineDash: [2, 2],
-			lineDashOffset: 5.5,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
 			lineJoin: undefined,
-			lineWidth: undefined,
-			strokeStyle: undefined,
+			lineWidth: 0,
+			strokeStyle: 'rgba(0,0,0,0.1)',
 			pointStyle: undefined,
+			rotation: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset2',
-			fillStyle: undefined,
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: true,
 			lineCap: undefined,
 			lineDash: undefined,
 			lineDashOffset: undefined,
-			lineJoin: 'miter',
-			lineWidth: undefined,
-			strokeStyle: undefined,
+			lineJoin: undefined,
+			lineWidth: 0,
+			strokeStyle: 'rgba(0,0,0,0.1)',
 			pointStyle: undefined,
+			rotation: undefined,
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
-			fillStyle: undefined,
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: false,
 			lineCap: undefined,
 			lineDash: undefined,
@@ -82,8 +87,154 @@ describe('Legend block tests', function() {
 			lineJoin: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
-			pointStyle: 'crossRot',
+			pointStyle: undefined,
+			rotation: undefined,
 			datasetIndex: 2
+		}]);
+	});
+
+	it('should update line chart correctly', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'round',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'round',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					pointStyle: 'crossRot',
+					fill: false,
+					data: []
+				}],
+				labels: []
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'round',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: 'miter',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
+		}, {
+			text: 'dataset2',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: true,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'round',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 1
+		}, {
+			text: 'dataset3',
+			fillStyle: 'rgba(0,0,0,0)',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'miter',
+			lineWidth: 10,
+			strokeStyle: 'green',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 2
+		}]);
+	});
+
+	it('should reverse correctly', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'round',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'round',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					pointStyle: 'crossRot',
+					fill: false,
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					reverse: true
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset3',
+			fillStyle: 'rgba(0,0,0,0)',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'miter',
+			lineWidth: 10,
+			strokeStyle: 'green',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 2
+		}, {
+			text: 'dataset2',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: true,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'round',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 1
+		}, {
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'round',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: 'miter',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
 		}]);
 	});
 
@@ -129,17 +280,18 @@ describe('Legend block tests', function() {
 			text: 'dataset1',
 			fillStyle: '#f31',
 			hidden: false,
-			lineCap: 'butt',
-			lineDash: [2, 2],
-			lineDashOffset: 5.5,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
 			lineJoin: undefined,
-			lineWidth: undefined,
-			strokeStyle: undefined,
+			lineWidth: 0,
+			strokeStyle: 'rgba(0,0,0,0.1)',
 			pointStyle: undefined,
+			rotation: undefined,
 			datasetIndex: 0
 		}, {
 			text: 'dataset3',
-			fillStyle: undefined,
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: false,
 			lineCap: undefined,
 			lineDash: undefined,
@@ -147,7 +299,8 @@ describe('Legend block tests', function() {
 			lineJoin: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
-			pointStyle: 'crossRot',
+			pointStyle: undefined,
+			rotation: undefined,
 			datasetIndex: 2
 		}]);
 	});
@@ -175,358 +328,6 @@ describe('Legend block tests', function() {
 			});
 		};
 		expect(makeChart).not.toThrow();
-	});
-
-	it('should draw correctly when the legend is positioned on the top', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: [{
-					label: 'dataset1',
-					backgroundColor: '#f31',
-					borderCapStyle: 'butt',
-					borderDash: [2, 2],
-					borderDashOffset: 5.5,
-					data: []
-				}, {
-					label: 'dataset2',
-					hidden: true,
-					borderJoinStyle: 'miter',
-					data: []
-				}, {
-					label: 'dataset3',
-					borderWidth: 10,
-					borderColor: 'green',
-					data: []
-				}],
-				labels: []
-			}
-		});
-
-		expect(chart.legend.legendHitBoxes.length).toBe(3);
-
-		[
-			{h: 12, l: 106, t: 10, w: 93},
-			{h: 12, l: 209, t: 10, w: 93},
-			{h: 12, l: 312, t: 10, w: 93}
-		].forEach(function(expected, i) {
-			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
-			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
-			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
-			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
-		});
-
-		// NOTE(SB) We should get ride of the following tests and use image diff instead.
-		// For now, as discussed with Evert Timberg, simply comment out.
-		// See https://humblesoftware.github.io/js-imagediff/test.html
-		/* chart.legend.ctx = window.createMockContext();
-		chart.update();
-
-		expect(chart.legend.ctx .getCalls()).toEqual([{
-			"name": "measureText",
-			"args": ["dataset1"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset2"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset3"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset1"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset2"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset3"]
-		}, {
-			"name": "setLineWidth",
-			"args": [0.5]
-		}, {
-			"name": "setStrokeStyle",
-			"args": ["#666"]
-		}, {
-			"name": "setFillStyle",
-			"args": ["#666"]
-		}, {
-			"name": "measureText",
-			"args": ["dataset1"]
-		}, {
-			"name": "save",
-			"args": []
-		}, {
-			"name": "setFillStyle",
-			"args": ["#f31"]
-		}, {
-			"name": "setLineCap",
-			"args": ["butt"]
-		}, {
-			"name": "setLineDashOffset",
-			"args": [5.5]
-		}, {
-			"name": "setLineJoin",
-			"args": ["miter"]
-		}, {
-			"name": "setLineWidth",
-			"args": [3]
-		}, {
-			"name": "setStrokeStyle",
-			"args": ["rgba(0,0,0,0.1)"]
-		}, {
-			"name": "setLineDash",
-			"args": [
-				[2, 2]
-			]
-		}, {
-			"name": "strokeRect",
-			"args": [114, 110, 40, 12]
-		}, {
-			"name": "fillRect",
-			"args": [114, 110, 40, 12]
-		}, {
-			"name": "restore",
-			"args": []
-		}, {
-			"name": "fillText",
-			"args": ["dataset1", 160, 110]
-		}, {
-			"name": "measureText",
-			"args": ["dataset2"]
-		}, {
-			"name": "save",
-			"args": []
-		}, {
-			"name": "setFillStyle",
-			"args": ["rgba(0,0,0,0.1)"]
-		}, {
-			"name": "setLineCap",
-			"args": ["butt"]
-		}, {
-			"name": "setLineDashOffset",
-			"args": [0]
-		}, {
-			"name": "setLineJoin",
-			"args": ["miter"]
-		}, {
-			"name": "setLineWidth",
-			"args": [3]
-		}, {
-			"name": "setStrokeStyle",
-			"args": ["rgba(0,0,0,0.1)"]
-		}, {
-			"name": "setLineDash",
-			"args": [
-				[]
-			]
-		}, {
-			"name": "strokeRect",
-			"args": [250, 110, 40, 12]
-		}, {
-			"name": "fillRect",
-			"args": [250, 110, 40, 12]
-		}, {
-			"name": "restore",
-			"args": []
-		}, {
-			"name": "fillText",
-			"args": ["dataset2", 296, 110]
-		}, {
-			"name": "beginPath",
-			"args": []
-		}, {
-			"name": "setLineWidth",
-			"args": [2]
-		}, {
-			"name": "moveTo",
-			"args": [296, 116]
-		}, {
-			"name": "lineTo",
-			"args": [376, 116]
-		}, {
-			"name": "stroke",
-			"args": []
-		}, {
-			"name": "measureText",
-			"args": ["dataset3"]
-		}, {
-			"name": "save",
-			"args": []
-		}, {
-			"name": "setFillStyle",
-			"args": ["rgba(0,0,0,0.1)"]
-		}, {
-			"name": "setLineCap",
-			"args": ["butt"]
-		}, {
-			"name": "setLineDashOffset",
-			"args": [0]
-		}, {
-			"name": "setLineJoin",
-			"args": ["miter"]
-		}, {
-			"name": "setLineWidth",
-			"args": [10]
-		}, {
-			"name": "setStrokeStyle",
-			"args": ["green"]
-		}, {
-			"name": "setLineDash",
-			"args": [
-				[]
-			]
-		}, {
-			"name": "strokeRect",
-			"args": [182, 132, 40, 12]
-		}, {
-			"name": "fillRect",
-			"args": [182, 132, 40, 12]
-		}, {
-			"name": "restore",
-			"args": []
-		}, {
-			"name": "fillText",
-			"args": ["dataset3", 228, 132]
-		}]);*/
-	});
-
-	it('should draw correctly when the legend is positioned on the left', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: [{
-					label: 'dataset1',
-					backgroundColor: '#f31',
-					borderCapStyle: 'butt',
-					borderDash: [2, 2],
-					borderDashOffset: 5.5,
-					data: []
-				}, {
-					label: 'dataset2',
-					hidden: true,
-					borderJoinStyle: 'miter',
-					data: []
-				}, {
-					label: 'dataset3',
-					borderWidth: 10,
-					borderColor: 'green',
-					data: []
-				}],
-				labels: []
-			},
-			options: {
-				legend: {
-					position: 'left'
-				}
-			}
-		});
-
-		expect(chart.legend.legendHitBoxes.length).toBe(3);
-
-		[
-			{h: 12, l: 10, t: 16, w: 93},
-			{h: 12, l: 10, t: 38, w: 93},
-			{h: 12, l: 10, t: 60, w: 93}
-		].forEach(function(expected, i) {
-			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
-			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
-			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
-			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
-		});
-	});
-
-	it('should draw correctly when the legend is positioned on the top and has multiple rows', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: Array.apply(null, Array(9)).map(function() {
-					return {
-						label: ' ',
-						data: []
-					};
-				}),
-				labels: []
-			}
-		});
-
-		expect(chart.legend.left).toBeCloseToPixel(0);
-		expect(chart.legend.top).toBeCloseToPixel(0);
-		expect(chart.legend.width).toBeCloseToPixel(512);
-		expect(chart.legend.height).toBeCloseToPixel(54);
-		expect(chart.legend.legendHitBoxes.length).toBe(9);
-
-		[
-			{h: 12, l: 24, t: 10, w: 49},
-			{h: 12, l: 83, t: 10, w: 49},
-			{h: 12, l: 142, t: 10, w: 49},
-			{h: 12, l: 202, t: 10, w: 49},
-			{h: 12, l: 261, t: 10, w: 49},
-			{h: 12, l: 320, t: 10, w: 49},
-			{h: 12, l: 380, t: 10, w: 49},
-			{h: 12, l: 439, t: 10, w: 49},
-			{h: 12, l: 231, t: 32, w: 49}
-		].forEach(function(expected, i) {
-			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
-			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
-			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
-			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
-		});
-	});
-
-	it('should draw correctly when the legend is positioned on the left and has multiple columns', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: Array.apply(null, Array(22)).map(function() {
-					return {
-						label: ' ',
-						data: []
-					};
-				}),
-				labels: []
-			},
-			options: {
-				legend: {
-					position: 'left'
-				}
-			}
-		});
-
-		expect(chart.legend.left).toBeCloseToPixel(0);
-		expect(chart.legend.top).toBeCloseToPixel(6);
-		expect(chart.legend.width).toBeCloseToPixel(128);
-		expect(chart.legend.height).toBeCloseToPixel(476);
-		expect(chart.legend.legendHitBoxes.length).toBe(22);
-
-		[
-			{h: 12, l: 10, t: 16, w: 49},
-			{h: 12, l: 10, t: 38, w: 49},
-			{h: 12, l: 10, t: 60, w: 49},
-			{h: 12, l: 10, t: 82, w: 49},
-			{h: 12, l: 10, t: 104, w: 49},
-			{h: 12, l: 10, t: 126, w: 49},
-			{h: 12, l: 10, t: 148, w: 49},
-			{h: 12, l: 10, t: 170, w: 49},
-			{h: 12, l: 10, t: 192, w: 49},
-			{h: 12, l: 10, t: 214, w: 49},
-			{h: 12, l: 10, t: 236, w: 49},
-			{h: 12, l: 10, t: 258, w: 49},
-			{h: 12, l: 10, t: 280, w: 49},
-			{h: 12, l: 10, t: 302, w: 49},
-			{h: 12, l: 10, t: 324, w: 49},
-			{h: 12, l: 10, t: 346, w: 49},
-			{h: 12, l: 10, t: 368, w: 49},
-			{h: 12, l: 10, t: 390, w: 49},
-			{h: 12, l: 10, t: 412, w: 49},
-			{h: 12, l: 10, t: 434, w: 49},
-			{h: 12, l: 10, t: 456, w: 49},
-			{h: 12, l: 69, t: 16, w: 49}
-		].forEach(function(expected, i) {
-			expect(chart.legend.legendHitBoxes[i].height).toBeCloseToPixel(expected.h);
-			expect(chart.legend.legendHitBoxes[i].left).toBeCloseToPixel(expected.l);
-			expect(chart.legend.legendHitBoxes[i].top).toBeCloseToPixel(expected.t);
-			expect(chart.legend.legendHitBoxes[i].width).toBeCloseToPixel(expected.w);
-		});
 	});
 
 	it('should not draw legend items outside of the chart bounds', function() {
@@ -564,6 +365,145 @@ describe('Legend block tests', function() {
 		chart.legend.legendHitBoxes.forEach(function(item) {
 			expect(item.left + item.width).toBeLessThanOrEqual(chart.width);
 		});
+	});
+
+	it('should pick up the first item when the property is an array', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: ['#f31', '#666', '#14e'],
+					borderWidth: [5, 10, 15],
+					borderColor: ['red', 'green', 'blue'],
+					data: []
+				}],
+				labels: []
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 5,
+			strokeStyle: 'red',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
+		}]);
+	});
+
+	it('should use the value for the first item when the property is a function', function() {
+		var helpers = window.Chart.helpers;
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						return helpers.color({r: value * 10, g: 0, b: 0}).rgbString();
+					},
+					borderWidth: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						return value;
+					},
+					borderColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						return helpers.color({r: 255 - value * 10, g: 0, b: 0}).rgbString();
+					},
+					data: [5, 10, 15, 20]
+				}],
+				labels: ['A', 'B', 'C', 'D']
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: 'rgb(50, 0, 0)',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 5,
+			strokeStyle: 'rgb(205, 0, 0)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
+		}]);
+	});
+
+	it('should draw correctly when usePointStyle is true', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					borderWidth: 0,
+					borderColor: '#f31',
+					pointStyle: 'crossRot',
+					pointBackgroundColor: 'rgba(0,0,0,0.1)',
+					pointBorderWidth: 5,
+					pointBorderColor: 'green',
+					data: []
+				}, {
+					label: 'dataset2',
+					backgroundColor: '#f31',
+					borderJoinStyle: 'miter',
+					borderWidth: 2,
+					borderColor: '#f31',
+					pointStyle: 'crossRot',
+					pointRotation: 15,
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					labels: {
+						usePointStyle: true
+					}
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 5,
+			strokeStyle: 'green',
+			pointStyle: 'crossRot',
+			rotation: undefined,
+			datasetIndex: 0
+		}, {
+			text: 'dataset2',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 2,
+			strokeStyle: '#f31',
+			pointStyle: 'crossRot',
+			rotation: 15,
+			datasetIndex: 1
+		}]);
 	});
 
 	describe('config update', function() {
@@ -704,3 +644,4 @@ describe('Legend block tests', function() {
 		});
 	});
 });
+

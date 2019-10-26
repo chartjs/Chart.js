@@ -59,7 +59,8 @@ Global line options: `Chart.defaults.global.elements.line`.
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `fill` | <code>boolean&#124;string</code> | `true` | Fill location: `'zero'`, `'top'`, `'bottom'`, `true` (eq. `'zero'`) or `false` (no fill).
+| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode) 
+| `fill` | <code>boolean&#124;string</code> | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
@@ -81,6 +82,7 @@ Global arc options: `Chart.defaults.global.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
 | `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Arc fill color.
 | `borderAlign` | `string` | `'center'` | Arc stroke alignment.
 | `borderColor` | `Color` | `'#fff'` | Arc stroke color.

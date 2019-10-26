@@ -573,6 +573,181 @@ describe('Chart.controllers.line', function() {
 		expect(meta.dataset._model.borderWidth).toBe(0.55);
 	});
 
+	describe('dataset global defaults', function() {
+		beforeEach(function() {
+			this._defaults = Chart.helpers.clone(Chart.defaults.global.datasets.line);
+		});
+
+		afterEach(function() {
+			Chart.defaults.global.datasets.line = this._defaults;
+			delete this._defaults;
+		});
+
+		it('should utilize the dataset global default options', function() {
+			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+
+			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+				spanGaps: true,
+				lineTension: 0.231,
+				backgroundColor: '#add',
+				borderWidth: '#daa',
+				borderColor: '#dad',
+				borderCapStyle: 'round',
+				borderDash: [0],
+				borderDashOffset: 0.871,
+				borderJoinStyle: 'miter',
+				fill: 'start',
+				cubicInterpolationMode: 'monotone'
+			});
+
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 0],
+						label: 'dataset1'
+					}],
+					labels: ['label1', 'label2']
+				}
+			});
+
+			var model = chart.getDatasetMeta(0).dataset._model;
+
+			expect(model.spanGaps).toBe(true);
+			expect(model.tension).toBe(0.231);
+			expect(model.backgroundColor).toBe('#add');
+			expect(model.borderWidth).toBe('#daa');
+			expect(model.borderColor).toBe('#dad');
+			expect(model.borderCapStyle).toBe('round');
+			expect(model.borderDash).toEqual([0]);
+			expect(model.borderDashOffset).toBe(0.871);
+			expect(model.borderJoinStyle).toBe('miter');
+			expect(model.fill).toBe('start');
+			expect(model.cubicInterpolationMode).toBe('monotone');
+		});
+
+		it('should be overriden by user-supplied values', function() {
+			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+
+			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+				spanGaps: true,
+				lineTension: 0.231
+			});
+
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 0],
+						label: 'dataset1',
+						spanGaps: true,
+						backgroundColor: '#dad'
+					}],
+					labels: ['label1', 'label2']
+				},
+				options: {
+					datasets: {
+						line: {
+							lineTension: 0.345,
+							backgroundColor: '#add'
+						}
+					}
+				}
+			});
+
+			var model = chart.getDatasetMeta(0).dataset._model;
+
+			// dataset-level option overrides global default
+			expect(model.spanGaps).toBe(true);
+			// chart-level default overrides global default
+			expect(model.tension).toBe(0.345);
+			// dataset-level option overrides chart-level default
+			expect(model.backgroundColor).toBe('#dad');
+		});
+	});
+
+	it('should obey the chart-level dataset options', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [0, 0],
+					label: 'dataset1'
+				}],
+				labels: ['label1', 'label2']
+			},
+			options: {
+				datasets: {
+					line: {
+						spanGaps: true,
+						lineTension: 0.231,
+						backgroundColor: '#add',
+						borderWidth: '#daa',
+						borderColor: '#dad',
+						borderCapStyle: 'round',
+						borderDash: [0],
+						borderDashOffset: 0.871,
+						borderJoinStyle: 'miter',
+						fill: 'start',
+						cubicInterpolationMode: 'monotone'
+					}
+				}
+			}
+		});
+
+		var model = chart.getDatasetMeta(0).dataset._model;
+
+		expect(model.spanGaps).toBe(true);
+		expect(model.tension).toBe(0.231);
+		expect(model.backgroundColor).toBe('#add');
+		expect(model.borderWidth).toBe('#daa');
+		expect(model.borderColor).toBe('#dad');
+		expect(model.borderCapStyle).toBe('round');
+		expect(model.borderDash).toEqual([0]);
+		expect(model.borderDashOffset).toBe(0.871);
+		expect(model.borderJoinStyle).toBe('miter');
+		expect(model.fill).toBe('start');
+		expect(model.cubicInterpolationMode).toBe('monotone');
+	});
+
+	it('should obey the dataset options', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [0, 0],
+					label: 'dataset1',
+					spanGaps: true,
+					lineTension: 0.231,
+					backgroundColor: '#add',
+					borderWidth: '#daa',
+					borderColor: '#dad',
+					borderCapStyle: 'round',
+					borderDash: [0],
+					borderDashOffset: 0.871,
+					borderJoinStyle: 'miter',
+					fill: 'start',
+					cubicInterpolationMode: 'monotone'
+				}],
+				labels: ['label1', 'label2']
+			}
+		});
+
+		var model = chart.getDatasetMeta(0).dataset._model;
+
+		expect(model.spanGaps).toBe(true);
+		expect(model.tension).toBe(0.231);
+		expect(model.backgroundColor).toBe('#add');
+		expect(model.borderWidth).toBe('#daa');
+		expect(model.borderColor).toBe('#dad');
+		expect(model.borderCapStyle).toBe('round');
+		expect(model.borderDash).toEqual([0]);
+		expect(model.borderDashOffset).toBe(0.871);
+		expect(model.borderJoinStyle).toBe('miter');
+		expect(model.fill).toBe('start');
+		expect(model.cubicInterpolationMode).toBe('monotone');
+	});
+
 	it('should handle number of data point changes in update', function() {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -719,6 +894,34 @@ describe('Chart.controllers.line', function() {
 			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
 			expect(point._model.borderWidth).toBe(2);
 			expect(point._model.radius).toBe(3);
+		});
+
+		it ('should handle dataset hover styles defined via dataset properties', function() {
+			var chart = this.chart;
+			var point = chart.getDatasetMeta(0).data[0];
+			var dataset = chart.getDatasetMeta(0).dataset;
+
+			Chart.helpers.merge(chart.data.datasets[0], {
+				backgroundColor: '#AAA',
+				borderColor: '#BBB',
+				borderWidth: 6,
+				hoverBackgroundColor: '#000',
+				hoverBorderColor: '#111',
+				hoverBorderWidth: 12
+			});
+
+			chart.options.hover = {mode: 'dataset'};
+			chart.update();
+
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
+			expect(dataset._model.backgroundColor).toBe('#000');
+			expect(dataset._model.borderColor).toBe('#111');
+			expect(dataset._model.borderWidth).toBe(12);
+
+			jasmine.triggerMouseEvent(chart, 'mouseout', point);
+			expect(dataset._model.backgroundColor).toBe('#AAA');
+			expect(dataset._model.borderColor).toBe('#BBB');
+			expect(dataset._model.borderWidth).toBe(6);
 		});
 	});
 

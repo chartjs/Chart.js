@@ -19,6 +19,9 @@
                     "barPercentage": 1,
                     "categoryPercentage": 1,
                     "maxBarThickness": 8,
+                    "time": {
+                        "parser": "YYYY"
+                    },
                     "ticks": {
                         "source": "labels"
                     }

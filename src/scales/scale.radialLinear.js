@@ -18,7 +18,7 @@ var defaultConfig = {
 
 	angleLines: {
 		display: true,
-		color: 'rgba(0, 0, 0, 0.1)',
+		color: 'rgba(0,0,0,0.1)',
 		lineWidth: 1,
 		borderDash: [],
 		borderDashOffset: 0.0
@@ -58,11 +58,6 @@ var defaultConfig = {
 		}
 	}
 };
-
-function getValueCount(scale) {
-	var opts = scale.options;
-	return opts.angleLines.display || opts.pointLabels.display ? scale.chart.data.labels.length : 0;
-}
 
 function getTickBackdropHeight(opts) {
 	var tickOpts = opts.ticks;
@@ -153,10 +148,10 @@ function fitWithPointLabels(scale) {
 	scale.ctx.font = plFont.string;
 	scale._pointLabelSizes = [];
 
-	var valueCount = getValueCount(scale);
+	var valueCount = scale.chart.data.labels.length;
 	for (i = 0; i < valueCount; i++) {
 		pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
-		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i] || '');
+		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
 		scale._pointLabelSizes[i] = textSize;
 
 		// Add quarter circle to make degree 0 mean top of circle
@@ -224,53 +219,30 @@ function adjustPointPositionForLabelHeight(angle, textSize, position) {
 function drawPointLabels(scale) {
 	var ctx = scale.ctx;
 	var opts = scale.options;
-	var angleLineOpts = opts.angleLines;
-	var gridLineOpts = opts.gridLines;
 	var pointLabelOpts = opts.pointLabels;
-	var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
-	var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
 	var tickBackdropHeight = getTickBackdropHeight(opts);
+	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+	var plFont = helpers.options._parseFont(pointLabelOpts);
 
 	ctx.save();
-	ctx.lineWidth = lineWidth;
-	ctx.strokeStyle = lineColor;
-	if (ctx.setLineDash) {
-		ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
-		ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
-	}
-
-	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-
-	// Point Label Font
-	var plFont = helpers.options._parseFont(pointLabelOpts);
 
 	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
-	for (var i = getValueCount(scale) - 1; i >= 0; i--) {
-		if (angleLineOpts.display && lineWidth && lineColor) {
-			var outerPosition = scale.getPointPosition(i, outerDistance);
-			ctx.beginPath();
-			ctx.moveTo(scale.xCenter, scale.yCenter);
-			ctx.lineTo(outerPosition.x, outerPosition.y);
-			ctx.stroke();
-		}
+	for (var i = scale.chart.data.labels.length - 1; i >= 0; i--) {
+		// Extra pixels out for some label spacing
+		var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+		var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
-		if (pointLabelOpts.display) {
-			// Extra pixels out for some label spacing
-			var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-			var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
+		// Keep this in loop since we may support array properties here
+		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
+		ctx.fillStyle = pointLabelFontColor;
 
-			// Keep this in loop since we may support array properties here
-			var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
-			ctx.fillStyle = pointLabelFontColor;
-
-			var angleRadians = scale.getIndexAngle(i);
-			var angle = helpers.toDegrees(angleRadians);
-			ctx.textAlign = getTextAlignForAngle(angle);
-			adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-			fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.lineHeight);
-		}
+		var angleRadians = scale.getIndexAngle(i);
+		var angle = helpers.toDegrees(angleRadians);
+		ctx.textAlign = getTextAlignForAngle(angle);
+		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
 	}
 	ctx.restore();
 }
@@ -278,7 +250,7 @@ function drawPointLabels(scale) {
 function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	var ctx = scale.ctx;
 	var circular = gridLineOpts.circular;
-	var valueCount = getValueCount(scale);
+	var valueCount = scale.chart.data.labels.length;
 	var lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1);
 	var lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
 	var pointPosition;
@@ -371,7 +343,10 @@ module.exports = LinearScaleBase.extend({
 		LinearScaleBase.prototype.convertTicksToLabels.call(me);
 
 		// Point labels
-		me.pointLabels = me.chart.data.labels.map(me.options.pointLabels.callback, me);
+		me.pointLabels = me.chart.data.labels.map(function() {
+			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
+			return label || label === 0 ? label : '';
+		});
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -423,22 +398,22 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getIndexAngle: function(index) {
-		var angleMultiplier = (Math.PI * 2) / getValueCount(this);
-		var startAngle = this.chart.options && this.chart.options.startAngle ?
-			this.chart.options.startAngle :
-			0;
-
-		var startAngleRadians = startAngle * Math.PI * 2 / 360;
+		var chart = this.chart;
+		var angleMultiplier = 360 / chart.data.labels.length;
+		var options = chart.options || {};
+		var startAngle = options.startAngle || 0;
 
 		// Start from the top instead of right, so remove a quarter of the circle
-		return index * angleMultiplier + startAngleRadians;
+		var angle = (index * angleMultiplier + startAngle) % 360;
+
+		return (angle < 0 ? angle + 360 : angle) * Math.PI * 2 / 360;
 	},
 
 	getDistanceFromCenterForValue: function(value) {
 		var me = this;
 
-		if (value === null) {
-			return 0; // null always in center
+		if (helpers.isNullOrUndef(value)) {
+			return NaN;
 		}
 
 		// Take into account half font size + the yPadding of the top value
@@ -462,72 +437,121 @@ module.exports = LinearScaleBase.extend({
 		return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
 	},
 
-	getBasePosition: function() {
+	getBasePosition: function(index) {
 		var me = this;
 		var min = me.min;
 		var max = me.max;
 
-		return me.getPointPositionForValue(0,
+		return me.getPointPositionForValue(index || 0,
 			me.beginAtZero ? 0 :
 			min < 0 && max < 0 ? max :
 			min > 0 && max > 0 ? min :
 			0);
 	},
 
-	draw: function() {
+	/**
+	 * @private
+	 */
+	_drawGrid: function() {
 		var me = this;
+		var ctx = me.ctx;
 		var opts = me.options;
 		var gridLineOpts = opts.gridLines;
-		var tickOpts = opts.ticks;
+		var angleLineOpts = opts.angleLines;
+		var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
+		var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
+		var i, offset, position;
 
-		if (opts.display) {
-			var ctx = me.ctx;
-			var startAngle = this.getIndexAngle(0);
-			var tickFont = helpers.options._parseFont(tickOpts);
+		if (opts.pointLabels.display) {
+			drawPointLabels(me);
+		}
 
-			if (opts.angleLines.display || opts.pointLabels.display) {
-				drawPointLabels(me);
-			}
-
+		if (gridLineOpts.display) {
 			helpers.each(me.ticks, function(label, index) {
-				// Don't draw a centre value (if it is minimum)
-				if (index > 0 || tickOpts.reverse) {
-					var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
-
-					// Draw circular lines around the scale
-					if (gridLineOpts.display && index !== 0) {
-						drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
-					}
-
-					if (tickOpts.display) {
-						var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
-						ctx.font = tickFont.string;
-
-						ctx.save();
-						ctx.translate(me.xCenter, me.yCenter);
-						ctx.rotate(startAngle);
-
-						if (tickOpts.showLabelBackdrop) {
-							var labelWidth = ctx.measureText(label).width;
-							ctx.fillStyle = tickOpts.backdropColor;
-							ctx.fillRect(
-								-labelWidth / 2 - tickOpts.backdropPaddingX,
-								-yCenterOffset - tickFont.size / 2 - tickOpts.backdropPaddingY,
-								labelWidth + tickOpts.backdropPaddingX * 2,
-								tickFont.size + tickOpts.backdropPaddingY * 2
-							);
-						}
-
-						ctx.textAlign = 'center';
-						ctx.textBaseline = 'middle';
-						ctx.fillStyle = tickFontColor;
-						ctx.fillText(label, 0, -yCenterOffset);
-						ctx.restore();
-					}
+				if (index !== 0) {
+					offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
 		}
-	}
+
+		if (angleLineOpts.display && lineWidth && lineColor) {
+			ctx.save();
+			ctx.lineWidth = lineWidth;
+			ctx.strokeStyle = lineColor;
+			if (ctx.setLineDash) {
+				ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
+				ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
+			}
+
+			for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
+				offset = me.getDistanceFromCenterForValue(opts.ticks.reverse ? me.min : me.max);
+				position = me.getPointPosition(i, offset);
+				ctx.beginPath();
+				ctx.moveTo(me.xCenter, me.yCenter);
+				ctx.lineTo(position.x, position.y);
+				ctx.stroke();
+			}
+
+			ctx.restore();
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_drawLabels: function() {
+		var me = this;
+		var ctx = me.ctx;
+		var opts = me.options;
+		var tickOpts = opts.ticks;
+
+		if (!tickOpts.display) {
+			return;
+		}
+
+		var startAngle = me.getIndexAngle(0);
+		var tickFont = helpers.options._parseFont(tickOpts);
+		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+		var offset, width;
+
+		ctx.save();
+		ctx.font = tickFont.string;
+		ctx.translate(me.xCenter, me.yCenter);
+		ctx.rotate(startAngle);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		helpers.each(me.ticks, function(label, index) {
+			if (index === 0 && !tickOpts.reverse) {
+				return;
+			}
+
+			offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+
+			if (tickOpts.showLabelBackdrop) {
+				width = ctx.measureText(label).width;
+				ctx.fillStyle = tickOpts.backdropColor;
+
+				ctx.fillRect(
+					-width / 2 - tickOpts.backdropPaddingX,
+					-offset - tickFont.size / 2 - tickOpts.backdropPaddingY,
+					width + tickOpts.backdropPaddingX * 2,
+					tickFont.size + tickOpts.backdropPaddingY * 2
+				);
+			}
+
+			ctx.fillStyle = tickFontColor;
+			ctx.fillText(label, 0, -offset);
+		});
+
+		ctx.restore();
+	},
+
+	/**
+	 * @private
+	 */
+	_drawTitle: helpers.noop
 });
 
 // INTERNAL: static default options, registered in src/index.js

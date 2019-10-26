@@ -9,12 +9,15 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | Is the legend shown?
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
+| `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
 | `fullWidth` | `boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a click event is registered on a label item.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
 | `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
+| `rtl` | `boolean` | | `true` for rendering the legends from right to left.
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
 
 ## Position
 Position of the legend. Options are:
@@ -22,6 +25,14 @@ Position of the legend. Options are:
 * `'left'`
 * `'bottom'`
 * `'right'`
+
+## Align
+Alignment of the legend. Options are:
+* `'start'`
+* `'center'`
+* `'end'`
+
+Defaults to `'center'` for unrecognized values.
 
 ## Legend Label Configuration
 
@@ -73,7 +84,10 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     strokeStyle: Color,
 
     // Point style of the legend box (only used if usePointStyle is true)
-    pointStyle: string
+    pointStyle: string | Image,
+
+    // Rotation of the point in degrees (only used if usePointStyle is true)
+    rotation: number
 }
 ```
 

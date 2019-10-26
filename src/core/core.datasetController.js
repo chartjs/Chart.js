@@ -94,12 +94,42 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	dataElementType: null,
 
+	/**
+	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_datasetElementOptions: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth'
+	],
+
+	/**
+	 * Data element option keys to be resolved in _resolveDataElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'pointStyle'
+	],
+
 	initialize: function(chart, datasetIndex) {
 		var me = this;
 		me.chart = chart;
 		me.index = datasetIndex;
 		me.linkScales();
 		me.addElements();
+		me._type = me.getMeta().type;
 	},
 
 	updateIndex: function(datasetIndex) {
@@ -109,13 +139,16 @@ helpers.extend(DatasetController.prototype, {
 	linkScales: function() {
 		var me = this;
 		var meta = me.getMeta();
+		var chart = me.chart;
+		var scales = chart.scales;
 		var dataset = me.getDataset();
+		var scalesOpts = chart.options.scales;
 
-		if (meta.xAxisID === null || !(meta.xAxisID in me.chart.scales)) {
-			meta.xAxisID = dataset.xAxisID || me.chart.options.scales.xAxes[0].id;
+		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
+			meta.xAxisID = dataset.xAxisID || scalesOpts.xAxes[0].id;
 		}
-		if (meta.yAxisID === null || !(meta.yAxisID in me.chart.scales)) {
-			meta.yAxisID = dataset.yAxisID || me.chart.options.scales.yAxes[0].id;
+		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
+			meta.yAxisID = dataset.yAxisID || scalesOpts.yAxes[0].id;
 		}
 	},
 
@@ -160,7 +193,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	reset: function() {
-		this.update(true);
+		this._update(true);
 	},
 
 	/**
@@ -236,6 +269,31 @@ helpers.extend(DatasetController.prototype, {
 		me.resyncElements();
 	},
 
+	/**
+	 * Returns the merged user-supplied and default dataset-level options
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		me._config = helpers.merge({}, [
+			me.chart.options.datasets[me._type],
+			me.getDataset(),
+		], {
+			merger: function(key, target, source) {
+				if (key !== '_meta' && key !== 'data') {
+					helpers._merger(key, target, source);
+				}
+			}
+		});
+	},
+
+	_update: function(reset) {
+		var me = this;
+		me._configure();
+		me._cachedDataOpts = null;
+		me.update(reset);
+	},
+
 	update: helpers.noop,
 
 	transition: function(easingValue) {
@@ -268,6 +326,127 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	/**
+	 * Returns a set of predefined style properties that should be used to represent the dataset
+	 * or the data if the index is specified
+	 * @param {number} index - data index
+	 * @return {IStyleInterface} style object
+	 */
+	getStyle: function(index) {
+		var me = this;
+		var meta = me.getMeta();
+		var dataset = meta.dataset;
+		var style;
+
+		me._configure();
+		if (dataset && index === undefined) {
+			style = me._resolveDatasetElementOptions(dataset || {});
+		} else {
+			index = index || 0;
+			style = me._resolveDataElementOptions(meta.data[index] || {}, index);
+		}
+
+		if (style.fill === false || style.fill === null) {
+			style.backgroundColor = 'rgba(0,0,0,0)';
+		}
+
+		return style;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveDatasetElementOptions: function(element, hover) {
+		var me = this;
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var custom = element.custom || {};
+		var options = chart.options.elements[me.datasetElementType.prototype._type] || {};
+		var elementOptions = me._datasetElementOptions;
+		var values = {};
+		var i, ilen, key, readKey;
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataset: me.getDataset(),
+			datasetIndex: me.index,
+			hover: hover
+		};
+
+		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+			key = elementOptions[i];
+			readKey = hover ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+			values[key] = resolve([
+				custom[readKey],
+				datasetOpts[readKey],
+				options[readKey]
+			], context);
+		}
+
+		return values;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveDataElementOptions: function(element, index) {
+		var me = this;
+		var custom = element && element.custom;
+		var cached = me._cachedDataOpts;
+		if (cached && !custom) {
+			return cached;
+		}
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
+		var elementOptions = me._dataElementOptions;
+		var values = {};
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataIndex: index,
+			dataset: me.getDataset(),
+			datasetIndex: me.index
+		};
+
+		// `resolve` sets cacheable to `false` if any option is indexed or scripted
+		var info = {cacheable: !custom};
+
+		var keys, i, ilen, key;
+
+		custom = custom || {};
+
+		if (helpers.isArray(elementOptions)) {
+			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+				key = elementOptions[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[key],
+					options[key]
+				], context, index, info);
+			}
+		} else {
+			keys = Object.keys(elementOptions);
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[elementOptions[key]],
+					datasetOpts[key],
+					options[key]
+				], context, index, info);
+			}
+		}
+
+		if (info.cacheable) {
+			me._cachedDataOpts = Object.freeze(values);
+		}
+
+		return values;
+	},
+
 	removeHoverStyle: function(element) {
 		helpers.merge(element._model, element.$previousStyle || {});
 		delete element.$previousStyle;
@@ -289,6 +468,42 @@ helpers.extend(DatasetController.prototype, {
 		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
 		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
 		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
+	},
+
+	/**
+	 * @private
+	 */
+	_removeDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+
+		if (element) {
+			this.removeHoverStyle(element);
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_setDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+		var prev = {};
+		var i, ilen, key, keys, hoverOptions, model;
+
+		if (!element) {
+			return;
+		}
+
+		model = element._model;
+		hoverOptions = this._resolveDatasetElementOptions(element, true);
+
+		keys = Object.keys(hoverOptions);
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			prev[key] = model[key];
+			model[key] = hoverOptions[key];
+		}
+
+		element.$previousStyle = prev;
 	},
 
 	/**

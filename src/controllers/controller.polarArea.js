@@ -32,25 +32,25 @@ defaults._set('polarArea', {
 
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-
+		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
 		var labels = data.labels;
+		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
+				listItem = list.appendChild(document.createElement('li'));
+				listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -59,20 +59,14 @@ defaults._set('polarArea', {
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
-						var ds = data.datasets[0];
-						var arc = meta.data[i];
-						var custom = arc.custom || {};
-						var arcOpts = chart.options.elements.arc;
-						var fill = resolve([custom.backgroundColor, ds.backgroundColor, arcOpts.backgroundColor], undefined, i);
-						var stroke = resolve([custom.borderColor, ds.borderColor, arcOpts.borderColor], undefined, i);
-						var bw = resolve([custom.borderWidth, ds.borderWidth, arcOpts.borderWidth], undefined, i);
+						var style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -116,6 +110,33 @@ module.exports = DatasetController.extend({
 
 	linkScales: helpers.noop,
 
+	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+	],
+
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.chart.scale.id;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.chart.scale.id;
+	},
+
 	update: function(reset) {
 		var me = this;
 		var dataset = me.getDataset();
@@ -138,7 +159,7 @@ module.exports = DatasetController.extend({
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveElementOptions(arcs[i], i);
+			arcs[i]._options = me._resolveDataElementOptions(arcs[i], i);
 			me.updateElement(arcs[i], i, reset);
 		}
 	},
@@ -239,48 +260,6 @@ module.exports = DatasetController.extend({
 		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
 		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
 		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveElementOptions: function(arc, index) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = me.getDataset();
-		var custom = arc.custom || {};
-		var options = chart.options.elements.arc;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'borderAlign',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
 	},
 
 	/**

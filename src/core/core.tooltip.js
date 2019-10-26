@@ -5,6 +5,7 @@ var Element = require('./core.element');
 var helpers = require('../helpers/index');
 
 var valueOrDefault = helpers.valueOrDefault;
+var getRtlHelper = helpers.rtl.getRtlAdapter;
 
 defaults._set('global', {
 	tooltips: {
@@ -241,6 +242,10 @@ function getBaseModel(tooltipOpts) {
 		yPadding: tooltipOpts.yPadding,
 		xAlign: tooltipOpts.xAlign,
 		yAlign: tooltipOpts.yAlign,
+
+		// Drawing direction and text direction
+		rtl: tooltipOpts.rtl,
+		textDirection: tooltipOpts.textDirection,
 
 		// Body
 		bodyFontColor: tooltipOpts.bodyFontColor,
@@ -748,25 +753,28 @@ var exports = Element.extend({
 
 	drawTitle: function(pt, vm, ctx) {
 		var title = vm.title;
+		var length = title.length;
+		var titleFontSize, titleSpacing, i;
 
-		if (title.length) {
+		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._titleAlign);
 
-			ctx.textAlign = vm._titleAlign;
-			ctx.textBaseline = 'top';
+			ctx.textAlign = rtlHelper.textAlign(vm._titleAlign);
+			ctx.textBaseline = 'middle';
 
-			var titleFontSize = vm.titleFontSize;
-			var titleSpacing = vm.titleSpacing;
+			titleFontSize = vm.titleFontSize;
+			titleSpacing = vm.titleSpacing;
 
 			ctx.fillStyle = vm.titleFontColor;
 			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
-			var i, len;
-			for (i = 0, len = title.length; i < len; ++i) {
-				ctx.fillText(title[i], pt.x, pt.y);
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFontSize / 2);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
-				if (i + 1 === title.length) {
+				if (i + 1 === length) {
 					pt.y += vm.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
 				}
 			}
@@ -779,60 +787,68 @@ var exports = Element.extend({
 		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
 		var drawColorBoxes = vm.displayColors;
-		var labelColors = vm.labelColors;
 		var xLinePadding = 0;
 		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
-		var textColor;
 
-		ctx.textAlign = bodyAlign;
-		ctx.textBaseline = 'top';
-		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+		var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
 
-		pt.x = getAlignedX(vm, bodyAlign);
-
-		// Before Body
 		var fillLineOfText = function(line) {
-			ctx.fillText(line, pt.x + xLinePadding, pt.y);
+			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
 			pt.y += bodyFontSize + bodySpacing;
 		};
+
+		var bodyItem, textColor, labelColors, lines, i, j, ilen, jlen;
+		var bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
+
+		ctx.textAlign = bodyAlign;
+		ctx.textBaseline = 'middle';
+		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+		pt.x = getAlignedX(vm, bodyAlignForCalculation);
 
 		// Before body lines
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers.each(vm.beforeBody, fillLineOfText);
 
-		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+		xLinePadding = drawColorBoxes && bodyAlignForCalculation !== 'right'
 			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
 			: 0;
 
 		// Draw body lines now
-		helpers.each(body, function(bodyItem, i) {
+		for (i = 0, ilen = body.length; i < ilen; ++i) {
+			bodyItem = body[i];
 			textColor = vm.labelTextColors[i];
+			labelColors = vm.labelColors[i];
+
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
 
-			helpers.each(bodyItem.lines, function(line) {
+			lines = bodyItem.lines;
+			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
+					var rtlColorX = rtlHelper.x(colorX);
+
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = labelColors[i].borderColor;
-					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeStyle = labelColors.borderColor;
+					ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = labelColors[i].backgroundColor;
-					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillStyle = labelColors.backgroundColor;
+					ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
-				fillLineOfText(line);
-			});
+				fillLineOfText(lines[j]);
+			}
 
 			helpers.each(bodyItem.after, fillLineOfText);
-		});
+		}
 
 		// Reset back to 0 for after body
 		xLinePadding = 0;
@@ -844,21 +860,27 @@ var exports = Element.extend({
 
 	drawFooter: function(pt, vm, ctx) {
 		var footer = vm.footer;
+		var length = footer.length;
+		var footerFontSize, i;
 
-		if (footer.length) {
+		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
-			ctx.textAlign = vm._footerAlign;
-			ctx.textBaseline = 'top';
+			ctx.textAlign = rtlHelper.textAlign(vm._footerAlign);
+			ctx.textBaseline = 'middle';
+
+			footerFontSize = vm.footerFontSize;
 
 			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.font = helpers.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
-			helpers.each(footer, function(line) {
-				ctx.fillText(line, pt.x, pt.y);
-				pt.y += vm.footerFontSize + vm.footerSpacing;
-			});
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFontSize / 2);
+				pt.y += footerFontSize + vm.footerSpacing;
+			}
 		}
 	},
 
@@ -938,6 +960,8 @@ var exports = Element.extend({
 			// Draw Title, Body, and Footer
 			pt.y += vm.yPadding;
 
+			helpers.rtl.overrideTextDirection(ctx, vm.textDirection);
+
 			// Titles
 			this.drawTitle(pt, vm, ctx);
 
@@ -946,6 +970,8 @@ var exports = Element.extend({
 
 			// Footer
 			this.drawFooter(pt, vm, ctx);
+
+			helpers.rtl.restoreTextDirection(ctx, vm.textDirection);
 
 			ctx.restore();
 		}
@@ -969,6 +995,9 @@ var exports = Element.extend({
 			me._active = [];
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+			if (options.reverse) {
+				me._active.reverse();
+			}
 		}
 
 		// Remember Last Actives

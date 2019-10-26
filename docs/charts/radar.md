@@ -52,6 +52,7 @@ They are often useful for comparing the points of two or more different data set
 {% endchartjs %}
 
 ## Example Usage
+
 ```javascript
 var myRadarChart = new Chart(ctx, {
     type: 'radar',
@@ -66,16 +67,24 @@ The radar chart allows a number of properties to be specified for each dataset. 
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderCapStyle`](#line-styling) | `string` | - | - | `'butt'`
-| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | - | - | `'rgba(0, 0, 0, 0.1)'`
-| [`borderDash`](#line-styling) | `number[]` | - | - | `[]`
-| [`borderDashOffset`](#line-styling) | `number` | - | - | `0.0`
-| [`borderJoinStyle`](#line-styling) | `string` | - | - | `'miter'`
-| [`borderWidth`](#line-styling) | `number` | - | - | `3`
-| [`fill`](#line-styling) | <code>boolean&#124;string</code> | - | - | `true`
+| [`backgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderCapStyle`](#line-styling) | `string` | Yes | - | `'butt'`
+| [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
+| [`borderDash`](#line-styling) | `number[]` | Yes | - | `[]`
+| [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
+| [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
+| [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
+| [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
+| [`hoverBorderDash`](#line-styling) | `number[]` | Yes | - | `undefined`
+| [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
+| [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
+| [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
-| [`lineTension`](#line-styling) | `number` | - | - | `0.4`
+| [`order`](#general) | `number` | - | - | `0`
+| [`lineTension`](#line-styling) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderWidth`](#point-styling) | `number` | Yes | Yes | `1`
@@ -87,12 +96,14 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
+| [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
 
 ### General
 
 | Name | Description
 | ---- | ----
 | `label` | The label for the dataset which appears in the legend and tooltips.
+| `order` | The drawing order of dataset.
 
 ### Point Styling
 
@@ -125,8 +136,9 @@ The style of the line can be controlled with the following properties:
 | `borderWidth` | The line width (in pixels).
 | `fill` | How to fill the area under the line. See [area charts](area.md).
 | `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines.
+| `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line.
 
-All these values, if `undefined`, fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 
@@ -141,17 +153,27 @@ The interaction with each point can be controlled with the following properties:
 
 ## Configuration Options
 
-Unlike other charts, the radar chart has no chart specific options.
+The radar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `spanGaps` | `boolean` | `false` | If false, NaN data causes a break in the line.
 
 ## Scale Options
 
 The radar chart supports only a single scale. The options for this scale are defined in the `scale` property.
+The options for this scale are defined in the `scale` property, which can be referenced from the [Linear Radial Axis page](../axes/radial/linear).
 
 ```javascript
 options = {
     scale: {
-        // Hides the scale
-        display: false
+        angleLines: {
+            display: false
+        },
+        ticks: {
+            suggestedMin: 50,
+            suggestedMax: 100
+        }
     }
 };
 ```
