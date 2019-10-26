@@ -209,7 +209,7 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var type = me.datasetElementType;
 		return type && new type({
-			_chart: me.chart,
+			_ctx: me.chart.ctx,
 			_datasetIndex: me.index
 		});
 	},
@@ -218,7 +218,7 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var type = me.dataElementType;
 		return type && new type({
-			_chart: me.chart,
+			_ctx: me.chart.ctx,
 			_datasetIndex: me.index,
 			_index: index
 		});

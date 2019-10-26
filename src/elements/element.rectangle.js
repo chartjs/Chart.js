@@ -134,7 +134,7 @@ module.exports = Element.extend({
 	_type: 'rectangle',
 
 	draw: function() {
-		var ctx = this._chart.ctx;
+		var ctx = this._ctx;
 		var vm = this._view;
 		var rects = boundingRects(vm);
 		var outer = rects.outer;

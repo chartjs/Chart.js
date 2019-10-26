@@ -939,7 +939,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var me = this;
 		me.tooltip = new Tooltip({
 			_chart: me,
-			_chartInstance: me, // deprecated, backward compatibility
 			_data: me.data,
 			_options: me.options.tooltips
 		}, me);

@@ -99,9 +99,7 @@ describe('Chart.elements.Point', function() {
 		var point = new Chart.elements.Point({
 			_datasetIndex: 2,
 			_index: 1,
-			_chart: {
-				ctx: mockContext,
-			}
+			_ctx: mockContext
 		});
 
 		// Attach a view object as if we were the controller
@@ -147,9 +145,7 @@ describe('Chart.elements.Point', function() {
 		var point = new Chart.elements.Point({
 			_datasetIndex: 2,
 			_index: 1,
-			_chart: {
-				ctx: mockContext,
-			}
+			_ctx: mockContext
 		});
 
 		// Attach a view object as if we were the controller

@@ -69,7 +69,7 @@ module.exports = Element.extend({
 
 	draw: function(chartArea) {
 		var vm = this._view;
-		var ctx = this._chart.ctx;
+		var ctx = this._ctx;
 		var pointStyle = vm.pointStyle;
 		var rotation = vm.rotation;
 		var radius = vm.radius;

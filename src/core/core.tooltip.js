@@ -208,12 +208,12 @@ function splitNewlines(str) {
  * @param element - the chart element (point, arc, bar) to create the tooltip item for
  * @return new tooltip item
  */
-function createTooltipItem(element) {
+function createTooltipItem(chart, element) {
 	var xScale = element._xScale;
 	var yScale = element._yScale || element._scale; // handle radar || polarArea charts
 	var index = element._index;
 	var datasetIndex = element._datasetIndex;
-	var controller = element._chart.getDatasetMeta(datasetIndex).controller;
+	var controller = chart.getDatasetMeta(datasetIndex).controller;
 	var indexScale = controller._getIndexScale();
 	var valueScale = controller._getValueScale();
 
@@ -359,7 +359,7 @@ function getTooltipSize(tooltip, model) {
 function determineAlignment(tooltip, size) {
 	var model = tooltip._model;
 	var chart = tooltip._chart;
-	var chartArea = tooltip._chart.chartArea;
+	var chartArea = chart.chartArea;
 	var xAlign = 'center';
 	var yAlign = 'center';
 
@@ -612,7 +612,7 @@ var exports = Element.extend({
 
 			var tooltipItems = [];
 			for (i = 0, len = active.length; i < len; ++i) {
-				tooltipItems.push(createTooltipItem(active[i]));
+				tooltipItems.push(createTooltipItem(me._chart, active[i]));
 			}
 
 			// If the user provided a filter function, use it to modify the tooltip items
