@@ -29,6 +29,9 @@
     "dist/*.js"
   ],
   "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "clean-css": "^4.2.1",
     "coveralls": "^3.0.0",
     "eslint": "^5.9.0",
@@ -56,6 +59,7 @@
     "merge-stream": "^1.0.1",
     "pixelmatch": "^4.0.2",
     "rollup": "^1.0.0",
+    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-resolve": "^5.0.0",
