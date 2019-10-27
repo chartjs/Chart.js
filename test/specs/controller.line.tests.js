@@ -35,21 +35,11 @@ describe('Chart.controllers.line', function() {
 				}],
 				labels: []
 			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
 		});
 
 		var meta = chart.getDatasetMeta(0);
-		expect(meta.xAxisID).toBe('firstXScaleID');
-		expect(meta.yAxisID).toBe('firstYScaleID');
+		expect(meta.xAxisID).toBe('x');
+		expect(meta.yAxisID).toBe('y');
 	});
 
 	it('Should create line elements and point elements for each data item during initialization', function() {
@@ -189,14 +179,12 @@ describe('Chart.controllers.line', function() {
 					}
 				},
 				scales: {
-					xAxes: [{
-						id: 'firstXScaleID',
+					x: {
 						display: false
-					}],
-					yAxes: [{
-						id: 'firstYScaleID',
+					},
+					y: {
 						display: false
-					}]
+					}
 				}
 			},
 		});
@@ -247,15 +235,15 @@ describe('Chart.controllers.line', function() {
 					mode: 'single'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						display: false,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: false,
 						ticks: {
 							beginAtZero: true
 						}
-					}]
+					}
 				}
 			}
 		});
@@ -316,13 +304,13 @@ describe('Chart.controllers.line', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						display: false,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -366,7 +354,7 @@ describe('Chart.controllers.line', function() {
 				}, {
 					data: [10, 10, -10, -10],
 					label: 'dataset3',
-					yAxisID: 'secondAxis'
+					yAxisID: 'y2'
 				}],
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
@@ -374,17 +362,18 @@ describe('Chart.controllers.line', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						display: false,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: false,
 						stacked: true
-					}, {
-						id: 'secondAxis',
+					}, 
+					y2: {
 						type: 'linear',
+						position: 'right',
 						display: false
-					}]
+					}
 				}
 			}
 		});
@@ -456,13 +445,13 @@ describe('Chart.controllers.line', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						display: false,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -510,13 +499,13 @@ describe('Chart.controllers.line', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						display: false,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});

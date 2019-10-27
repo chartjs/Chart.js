@@ -21,7 +21,7 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'linear',
 						position: 'bottom',
 						ticks: {
@@ -29,21 +29,21 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						ticks: {
 							callback: function(value) {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xAxis = chart.scales['x-axis-0'];
-		var yAxis = chart.scales['y-axis-0'];
+		var xAxis = chart.scales.x;
+		var yAxis = chart.scales.y;
 
 		expect(xAxis.ticks).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
 		expect(yAxis.ticks).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
@@ -62,7 +62,7 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'logarithmic',
 						position: 'bottom',
 						ticks: {
@@ -72,8 +72,8 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'logarithmic',
 						ticks: {
 							min: 0.1,
@@ -82,13 +82,13 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xAxis = chart.scales['x-axis-0'];
-		var yAxis = chart.scales['y-axis-0'];
+		var xAxis = chart.scales.x;
+		var yAxis = chart.scales.y;
 
 		expect(xAxis.ticks).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
 		expect(yAxis.ticks).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1']);

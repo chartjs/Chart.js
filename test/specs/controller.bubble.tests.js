@@ -33,22 +33,12 @@ describe('Chart.controllers.bubble', function() {
 					data: []
 				}]
 			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
 		});
 
 		var meta = chart.getDatasetMeta(0);
 
-		expect(meta.xAxisID).toBe('firstXScaleID');
-		expect(meta.yAxisID).toBe('firstYScaleID');
+		expect(meta.xAxisID).toBe('x');
+		expect(meta.yAxisID).toBe('y');
 	});
 
 	it('should create point elements for each data item during initialization', function() {
@@ -128,14 +118,14 @@ describe('Chart.controllers.bubble', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false
-					}]
+					}
 				}
 			}
 		});

@@ -24,18 +24,18 @@ describe('Core.scale', function() {
 				data: data,
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							ticks: {
 								autoSkip: true
 							}
-						}]
+						}
 					}
 				}
 			});
 		}
 
 		function lastTick(chart) {
-			var xAxis = chart.scales['x-axis-0'];
+			var xAxis = chart.scales.x;
 			var ticks = xAxis.getTicks();
 			return ticks[ticks.length - 1];
 		}
@@ -129,8 +129,7 @@ describe('Core.scale', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'xScale0',
+						x: {
 							gridLines: {
 								offsetGridLines: test.offsetGridLines,
 								drawTicks: false
@@ -139,10 +138,10 @@ describe('Core.scale', function() {
 								display: false
 							},
 							offset: test.offset
-						}],
-						yAxes: [{
+						},
+						y: {
 							display: false
-						}]
+						}
 					},
 					legend: {
 						display: false
@@ -150,7 +149,7 @@ describe('Core.scale', function() {
 				}
 			});
 
-			var xScale = chart.scales.xScale0;
+			var xScale = chart.scales.x;
 			xScale.ctx = window.createMockContext();
 			chart.draw();
 
@@ -174,12 +173,11 @@ describe('Core.scale', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							display: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							type: 'category',
-							id: 'yScale0',
 							gridLines: {
 								offsetGridLines: test.offsetGridLines,
 								drawTicks: false
@@ -188,7 +186,7 @@ describe('Core.scale', function() {
 								display: false
 							},
 							offset: test.offset
-						}]
+						}
 					},
 					legend: {
 						display: false
@@ -196,7 +194,7 @@ describe('Core.scale', function() {
 				}
 			});
 
-			var yScale = chart.scales.yScale0;
+			var yScale = chart.scales.y;
 			yScale.ctx = window.createMockContext();
 			chart.draw();
 
@@ -222,12 +220,9 @@ describe('Core.scale', function() {
 			},
 			options: {
 				scales: {
-					xAxes: [{
-						id: 'foo'
-					}],
-					yAxes: [{
+					y: {
 						display: false
-					}]
+					}
 				},
 				legend: {
 					display: false
@@ -240,7 +235,7 @@ describe('Core.scale', function() {
 			}
 		});
 
-		var scale = chart.scales.foo;
+		var scale = chart.scales.x;
 		expect(scale.left).toBeGreaterThan(100);
 		expect(scale.right).toBeGreaterThan(190);
 	});
@@ -264,19 +259,17 @@ describe('Core.scale', function() {
 					},
 					options: {
 						scales: {
-							xAxes: [{
-								id: 'foo',
+							x: {
 								display: 'auto'
-							}],
-							yAxes: [{
+							},
+							y: {
 								type: 'category',
-								id: 'yScale0'
-							}]
+							}
 						}
 					}
 				});
 
-				var scale = chart.scales.foo;
+				var scale = chart.scales.x;
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
@@ -297,15 +290,14 @@ describe('Core.scale', function() {
 					},
 					options: {
 						scales: {
-							xAxes: [{
-								id: 'foo',
+							x: {
 								display: 'auto'
-							}]
+							}
 						}
 					}
 				});
 
-				var scale = chart.scales.foo;
+				var scale = chart.scales.x;
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
@@ -332,15 +324,14 @@ describe('Core.scale', function() {
 					},
 					options: {
 						scales: {
-							yAxes: [{
-								id: 'foo',
+							y: {
 								display: 'auto'
-							}]
+							}
 						}
 					}
 				});
 
-				var scale = chart.scales.foo;
+				var scale = chart.scales.y;
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
@@ -361,15 +352,14 @@ describe('Core.scale', function() {
 					},
 					options: {
 						scales: {
-							yAxes: [{
-								id: 'foo',
+							y: {
 								display: 'auto'
-							}]
+							}
 						}
 					}
 				});
 
-				var scale = chart.scales.foo;
+				var scale = chart.scales.y;
 				scale.ctx = window.createMockContext();
 				chart.draw();
 
@@ -386,14 +376,13 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'category',
 							labels: labels,
 							afterBuildTicks: function(axis, ticks) {
 								return ticks.slice(1);
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -410,8 +399,7 @@ describe('Core.scale', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'time',
 							time: {
 								parser: 'YYYY'
@@ -422,7 +410,7 @@ describe('Core.scale', function() {
 							afterBuildTicks: function(axis, ticks) {
 								return ticks.slice(1);
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -437,12 +425,11 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'category',
 							labels: labels,
 							afterBuildTicks: function() { }
-						}]
+						}
 					}
 				}
 			});
@@ -457,14 +444,13 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'category',
 							labels: labels,
 							afterBuildTicks: function() {
 								return [];
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -480,10 +466,9 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'linear',
-						}]
+						}
 					}
 				}
 			});
@@ -505,8 +490,7 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'customScale',
 							gridLines: {
 								z: 10
@@ -514,7 +498,7 @@ describe('Core.scale', function() {
 							ticks: {
 								z: 20
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -529,8 +513,7 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'linear',
 							ticks: {
 								z: 10
@@ -538,7 +521,7 @@ describe('Core.scale', function() {
 							gridLines: {
 								z: 10
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -553,13 +536,12 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'linear',
 							ticks: {
 								z: 10
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -570,13 +552,12 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'linear',
 							gridLines: {
 								z: 11
 							}
-						}]
+						}
 					}
 				}
 			});
@@ -587,8 +568,7 @@ describe('Core.scale', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'x',
+						x: {
 							type: 'linear',
 							ticks: {
 								z: 10
@@ -596,7 +576,7 @@ describe('Core.scale', function() {
 							gridLines: {
 								z: 11
 							}
-						}]
+						}
 					}
 				}
 			});

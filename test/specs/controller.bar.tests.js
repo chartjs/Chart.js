@@ -41,21 +41,11 @@ describe('Chart.controllers.bar', function() {
 				],
 				labels: []
 			},
-			options: {
-				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}]
-				}
-			}
 		});
 
 		var meta = chart.getDatasetMeta(1);
-		expect(meta.xAxisID).toBe('firstXScaleID');
-		expect(meta.yAxisID).toBe('firstYScaleID');
+		expect(meta.xAxisID).toBe('x');
+		expect(meta.yAxisID).toBe('y');
 	});
 
 	it('should correctly count the number of stacks ignoring datasets of other types and hidden datasets', function() {
@@ -122,12 +112,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -155,12 +145,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -211,12 +201,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -244,12 +234,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -300,12 +290,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -333,12 +323,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -416,12 +406,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -452,12 +442,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -514,12 +504,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -550,12 +540,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -612,12 +602,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});
@@ -648,12 +638,12 @@ describe('Chart.controllers.bar', function() {
 				},
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: false
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: false
-						}]
+						}
 					}
 				}
 			});
@@ -712,16 +702,14 @@ describe('Chart.controllers.bar', function() {
 					}
 				},
 				scales: {
-					xAxes: [{
-						id: 'firstXScaleID',
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
-						id: 'firstYScaleID',
+					},
+					y: {
 						type: 'linear',
 						display: false
-					}]
+					}
 				}
 			}
 		});
@@ -782,14 +770,14 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false
-					}]
+					}
 				}
 			}
 		});
@@ -823,15 +811,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -882,11 +870,11 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true,
@@ -894,7 +882,7 @@ describe('Chart.controllers.bar', function() {
 							min: 50,
 							max: 100
 						}
-					}]
+					}
 				}
 			}
 		});
@@ -945,15 +933,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false,
 						stacked: true
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false
-					}]
+					}
 				}
 			}
 		});
@@ -1004,15 +992,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -1065,15 +1053,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -1124,15 +1112,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true,
-					}]
+					}
 				}
 			}
 		});
@@ -1170,15 +1158,15 @@ describe('Chart.controllers.bar', function() {
 				legend: false,
 				title: false,
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -1218,16 +1206,16 @@ describe('Chart.controllers.bar', function() {
 					}
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false,
 						stacked: true,
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'logarithmic',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -1283,16 +1271,16 @@ describe('Chart.controllers.bar', function() {
 					}
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'category',
 						display: false,
 						stacked: true,
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'logarithmic',
 						display: false,
 						stacked: true
-					}]
+					}
 				}
 			}
 		});
@@ -1517,12 +1505,12 @@ describe('Chart.controllers.bar', function() {
 				data: this.data,
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							ticks: {
 								min: 'March',
 								max: 'May',
 							},
-						}]
+						}
 					}
 				}
 			};
@@ -1534,15 +1522,15 @@ describe('Chart.controllers.bar', function() {
 				data: this.data,
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							ticks: {
 								min: 'March',
 								max: 'May',
 							}
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			};
@@ -1595,12 +1583,12 @@ describe('Chart.controllers.bar', function() {
 				data: this.data,
 				options: {
 					scales: {
-						yAxes: [{
+						y: {
 							ticks: {
 								min: 'March',
 								max: 'May',
 							},
-						}]
+						}
 					}
 				}
 			};
@@ -1612,15 +1600,15 @@ describe('Chart.controllers.bar', function() {
 				data: this.data,
 				options: {
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true
-						}],
-						yAxes: [{
+						},
+						y: {
 							ticks: {
 								min: 'March',
 								max: 'May',
 							}
-						}]
+						}
 					}
 				}
 			};
@@ -1650,13 +1638,13 @@ describe('Chart.controllers.bar', function() {
 								}
 							},
 							scales: {
-								xAxes: [{
+								x: {
 									id: 'x',
 									type: 'category',
-								}],
-								yAxes: [{
+								},
+								y: {
 									type: 'linear',
-								}]
+								}
 							}
 						}
 					});
@@ -1738,5 +1726,4 @@ describe('Chart.controllers.bar', function() {
 		expect(data[0]._model.base + minBarLength).toEqual(data[0]._model.x);
 		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
 	});
-
 });
