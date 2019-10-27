@@ -1,6 +1,7 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var math = helpers.math;
 
 /**
  * Namespace to hold static tick generation functions
@@ -42,13 +43,13 @@ module.exports = {
 				}
 			}
 
-			var logDelta = helpers.log10(Math.abs(delta));
+			var logDelta = math.log10(Math.abs(delta));
 			var tickString = '';
 
 			if (tickValue !== 0) {
 				var maxTick = Math.max(Math.abs(ticks[0]), Math.abs(ticks[ticks.length - 1]));
 				if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
-					var logTick = helpers.log10(Math.abs(tickValue));
+					var logTick = math.log10(Math.abs(tickValue));
 					var numExponential = Math.floor(logTick) - Math.floor(logDelta);
 					numExponential = Math.max(Math.min(numExponential, 20), 0);
 					tickString = tickValue.toExponential(numExponential);
@@ -65,7 +66,7 @@ module.exports = {
 		},
 
 		logarithmic: function(tickValue, index, ticks) {
-			var remain = tickValue / (Math.pow(10, Math.floor(helpers.log10(tickValue))));
+			var remain = tickValue / (Math.pow(10, Math.floor(math.log10(tickValue))));
 
 			if (tickValue === 0) {
 				return '0';

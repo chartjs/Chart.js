@@ -378,17 +378,6 @@ describe('Core helper tests', function() {
 		}]);
 	});
 
-	it('count look at all the labels and return maximum number of lines', function() {
-		window.createMockContext();
-		var arrayOfThings1 = ['Foo', 'Bar'];
-		var arrayOfThings2 = [['Foo', 'Bar'], 'Foo'];
-		var arrayOfThings3 = [['Foo', 'Bar', 'Boo'], ['Foo', 'Bar'], 'Foo'];
-
-		expect(helpers.numberOfLabelLines(arrayOfThings1)).toEqual(1);
-		expect(helpers.numberOfLabelLines(arrayOfThings2)).toEqual(2);
-		expect(helpers.numberOfLabelLines(arrayOfThings3)).toEqual(3);
-	});
-
 	it ('should get the maximum width and height for a node', function() {
 		// Create div with fixed size as a test bed
 		var div = document.createElement('div');

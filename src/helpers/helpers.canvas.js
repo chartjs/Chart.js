@@ -1,7 +1,5 @@
 'use strict';
 
-var helpers = require('./helpers.core');
-
 var PI = Math.PI;
 var RAD_PER_DEG = PI / 180;
 var DOUBLE_PI = PI * 2;
@@ -233,26 +231,3 @@ var exports = {
 };
 
 module.exports = exports;
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.helpers.canvas.clear instead.
- * @namespace Chart.helpers.clear
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.clear = exports.clear;
-
-/**
- * Provided for backward compatibility, use Chart.helpers.canvas.roundedRect instead.
- * @namespace Chart.helpers.drawRoundedRectangle
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.drawRoundedRectangle = function(ctx) {
-	ctx.beginPath();
-	exports.roundedRect.apply(exports, arguments);
-};
