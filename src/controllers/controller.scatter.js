@@ -5,7 +5,8 @@ var defaults = require('../core/core.defaults');
 
 defaults._set('scatter', {
 	hover: {
-		mode: 'single'
+		mode: 'nearest',
+		intersect: true
 	},
 
 	scales: {

@@ -34,12 +34,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
-## single (deprecated)
-Finds the first item that intersects the point and returns it. Behaves like `'nearest'` mode with `intersect = true`.
-
-## label (deprecated)
-See `'index'` mode.
-
 ## index
 Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index.
 
@@ -69,9 +63,6 @@ var chart = new Chart(ctx, {
     }
 });
 ```
-
-## x-axis (deprecated)
-Behaves like `'index'` mode with `intersect = false`.
 
 ## dataset
 Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.

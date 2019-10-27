@@ -19,7 +19,8 @@ defaults._set('doughnut', {
 		animateScale: false
 	},
 	hover: {
-		mode: 'single'
+		mode: 'nearest',
+		intersect: true
 	},
 	legendCallback: function(chart) {
 		var list = document.createElement('ul');

@@ -87,7 +87,7 @@ describe('Chart', function() {
 			defaults.global.responsiveAnimationDuration = 0;
 			defaults.global.hover.onHover = null;
 			defaults.line.spanGaps = false;
-			defaults.line.hover.mode = 'label';
+			defaults.line.hover.mode = 'index';
 		});
 
 		it('should override default options', function() {
@@ -122,7 +122,7 @@ describe('Chart', function() {
 
 			defaults.global.responsiveAnimationDuration = 0;
 			defaults.global.hover.onHover = null;
-			defaults.line.hover.mode = 'label';
+			defaults.line.hover.mode = 'index';
 			defaults.line.spanGaps = false;
 		});
 

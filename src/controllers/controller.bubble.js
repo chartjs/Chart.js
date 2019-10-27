@@ -10,7 +10,8 @@ var resolve = helpers.options.resolve;
 
 defaults._set('bubble', {
 	hover: {
-		mode: 'single'
+		mode: 'nearest',
+		intersect: true
 	},
 
 	scales: {
