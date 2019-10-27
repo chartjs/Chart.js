@@ -949,7 +949,7 @@ describe('Core.Tooltip', function() {
 		var meta = chart.getDatasetMeta(0);
 		var firstPoint = meta.data[1];
 
-		var node = chart.chart.canvas;
+		var node = chart.canvas;
 		var rect = node.getBoundingClientRect();
 
 		var firstEvent = new MouseEvent('mousemove', {

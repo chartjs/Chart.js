@@ -192,17 +192,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me._bufferedRender = false;
 		me._layers = [];
 
-		/**
-		 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
-		 * the "instance" still need to be defined since it might be called from plugins.
-		 * @prop Chart#chart
-		 * @deprecated since version 2.6.0
-		 * @todo remove at version 3
-		 * @private
-		 */
-		me.chart = me;
-		me.controller = me; // chart.chart.controller #inception
-
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
 
@@ -563,14 +552,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			item._idx = index;
 		});
 
-		/**
-		 * Provided for backward compatibility, use `afterLayout` instead.
-		 * @method IPlugin#afterScaleUpdate
-		 * @deprecated since version 2.5.0
-		 * @todo remove at version 3
-		 * @private
-		 */
-		plugins.notify(me, 'afterScaleUpdate');
 		plugins.notify(me, 'afterLayout');
 	},
 
@@ -1110,41 +1091,3 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 Chart.instances = {};
 
 module.exports = Chart;
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart instead.
- * @class Chart.Controller
- * @deprecated since version 2.6
- * @todo remove at version 3
- * @private
- */
-Chart.Controller = Chart;
-
-/**
- * Provided for backward compatibility, not available anymore.
- * @namespace Chart
- * @deprecated since version 2.8
- * @todo remove at version 3
- * @private
- */
-Chart.types = {};
-
-/**
- * Provided for backward compatibility, not available anymore.
- * @namespace Chart.helpers.configMerge
- * @deprecated since version 2.8.0
- * @todo remove at version 3
- * @private
- */
-helpers.configMerge = mergeConfig;
-
-/**
- * Provided for backward compatibility, not available anymore.
- * @namespace Chart.helpers.scaleMerge
- * @deprecated since version 2.8.0
- * @todo remove at version 3
- * @private
- */
-helpers.scaleMerge = mergeScaleConfig;
