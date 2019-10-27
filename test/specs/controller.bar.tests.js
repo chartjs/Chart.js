@@ -1214,12 +1214,16 @@ describe('Chart.controllers.bar', function() {
 			options: {
 				legend: false,
 				title: false,
+				datasets: {
+					bar: {
+						barPercentage: 1,
+					}
+				},
 				scales: {
 					xAxes: [{
 						type: 'category',
 						display: false,
 						stacked: true,
-						barPercentage: 1,
 					}],
 					yAxes: [{
 						type: 'logarithmic',
@@ -1275,12 +1279,16 @@ describe('Chart.controllers.bar', function() {
 			options: {
 				legend: false,
 				title: false,
+				datasets: {
+					bar: {
+						barPercentage: 1,
+					}
+				},
 				scales: {
 					xAxes: [{
 						type: 'category',
 						display: false,
 						stacked: true,
-						barPercentage: 1,
 					}],
 					yAxes: [{
 						type: 'logarithmic',
@@ -1593,8 +1601,9 @@ describe('Chart.controllers.bar', function() {
 			var meta = chart.getDatasetMeta(0);
 			var yScale = chart.scales[meta.yAxisID];
 
-			var categoryPercentage = yScale.options.categoryPercentage;
-			var barPercentage = yScale.options.barPercentage;
+			var config = meta.controller._config;
+			var categoryPercentage = config.categoryPercentage;
+			var barPercentage = config.barPercentage;
 			var stacked = yScale.options.stacked;
 
 			var totalBarHeight = 0;
@@ -1669,11 +1678,15 @@ describe('Chart.controllers.bar', function() {
 						options: {
 							legend: false,
 							title: false,
+							datasets: {
+								bar: {
+									barThickness: barThickness
+								}
+							},
 							scales: {
 								xAxes: [{
 									id: 'x',
 									type: 'category',
-									barThickness: barThickness
 								}],
 								yAxes: [{
 									type: 'linear',

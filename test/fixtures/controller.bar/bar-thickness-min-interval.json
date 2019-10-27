@@ -5,6 +5,8 @@
             "labels": ["2016", "2018", "2020", "2024", "2030"],
             "datasets": [{
                 "backgroundColor": "#FF6384",
+                "barPercentage": 1,
+                "categoryPercentage": 1,
                 "data": [1, null, 3, 4, 5]
             }]
         },
@@ -16,8 +18,6 @@
                 "xAxes": [{
                     "type": "time",
                     "display": false,
-                    "barPercentage": 1,
-                    "categoryPercentage": 1,
                     "time": {
                         "parser": "YYYY"
                     },
