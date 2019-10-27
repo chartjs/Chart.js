@@ -14,32 +14,3 @@ var exports = Element.extend({
 });
 
 module.exports = exports;
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.Animation instead
- * @prop Chart.Animation#animationObject
- * @deprecated since version 2.6.0
- * @todo remove at version 3
- */
-Object.defineProperty(exports.prototype, 'animationObject', {
-	get: function() {
-		return this;
-	}
-});
-
-/**
- * Provided for backward compatibility, use Chart.Animation#chart instead
- * @prop Chart.Animation#chartInstance
- * @deprecated since version 2.6.0
- * @todo remove at version 3
- */
-Object.defineProperty(exports.prototype, 'chartInstance', {
-	get: function() {
-		return this.chart;
-	},
-	set: function(value) {
-		this.chart = value;
-	}
-});

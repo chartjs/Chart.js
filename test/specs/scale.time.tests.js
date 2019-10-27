@@ -1521,7 +1521,7 @@ describe('Time scale tests', function() {
 			});
 
 			it ('should reverse the values for pixels', function() {
-				var scale = this.chart.chart.scales.x;
+				var scale = this.chart.scales.x;
 				expect(scale.getValueForPixel(scale.left)).toBeCloseToTime({
 					value: moment('2042-01-01T00:00:00'),
 					unit: 'hour',
