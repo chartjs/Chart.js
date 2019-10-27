@@ -145,10 +145,10 @@ helpers.extend(DatasetController.prototype, {
 		var scalesOpts = chart.options.scales;
 
 		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
-			meta.xAxisID = dataset.xAxisID || scalesOpts.xAxes[0].id;
+			meta.xAxisID = dataset.xAxisID || scalesOpts.x.id;
 		}
 		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
-			meta.yAxisID = dataset.yAxisID || scalesOpts.yAxes[0].id;
+			meta.yAxisID = dataset.yAxisID || scalesOpts.y.id;
 		}
 	},
 

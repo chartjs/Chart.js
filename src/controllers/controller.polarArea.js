@@ -10,6 +10,7 @@ var resolve = helpers.options.resolve;
 defaults._set('polarArea', {
 	scale: {
 		type: 'radialLinear',
+		position: 'chartArea',
 		angleLines: {
 			display: false
 		},

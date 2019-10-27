@@ -37,39 +37,33 @@ defaults._set('global', {
 
 /**
  * Recursively merge the given config objects representing the `scales` option
- * by incorporating scale defaults in `xAxes` and `yAxes` array items, then
+ * by incorporating scale defaults then
  * returns a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeScaleConfig(/* config objects ... */) {
 	return helpers.merge({}, [].slice.call(arguments), {
-		merger: function(key, target, source, options) {
-			if (key === 'xAxes' || key === 'yAxes') {
-				var slen = source[key].length;
-				var i, type, scale;
+		merger: function(key, target, source) {
+			// Starting in V3, the scale config is axis_id: axis_config
+			var type, scale;
 
-				if (!target[key]) {
-					target[key] = [];
-				}
+			if (!target[key]) {
+				target[key] = {};
+			}
 
-				for (i = 0; i < slen; ++i) {
-					scale = source[key][i];
-					type = valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
+			scale = source[key];
+			type = scale.type;
 
-					if (i >= target[key].length) {
-						target[key].push({});
-					}
+			if (helpers.isNullOrUndef(type) && helpers.isNullOrUndef(target[key].type)) {
+				throw new Error('Axis config ' + key + ' has no "type" specified');
+			}
 
-					if (!target[key][i].type || (scale.type && scale.type !== target[key][i].type)) {
-						// new/untyped scale or type changed: let's apply the new defaults
-						// then merge source scale to correctly overwrite the defaults.
-						helpers.merge(target[key][i], [scaleService.getScaleDefaults(type), scale]);
-					} else {
-						// scales type are the same
-						helpers.merge(target[key][i], scale);
-					}
-				}
+			if (!target[key].type || (scale.type && scale.type !== target[key].type)) {
+				// new/untyped scale or type changed: let's apply the new defaults
+				// then merge source scale to correctly overwrite the defaults.
+				helpers.merge(target[key], [scaleService.getScaleDefaults(type), scale]);
 			} else {
-				helpers._merger(key, target, source, options);
+				// scales type are the same
+				helpers.merge(target[key], scale);
 			}
 		}
 	});
@@ -135,23 +129,6 @@ function updateConfig(chart) {
 	// Tooltip
 	chart.tooltip._options = newOptions.tooltips;
 	chart.tooltip.initialize();
-}
-
-function nextAvailableScaleId(axesOpts, prefix, index) {
-	var id;
-	var hasId = function(obj) {
-		return obj.id === id;
-	};
-
-	do {
-		id = prefix + index++;
-	} while (helpers.findIndex(axesOpts, hasId) >= 0);
-
-	return id;
-}
-
-function positionIsHorizontal(position) {
-	return position === 'top' || position === 'bottom';
 }
 
 function compare2Level(l1, l2) {
@@ -301,16 +278,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var scalesOptions = options.scales || {};
 		var scaleOptions = options.scale;
 
-		helpers.each(scalesOptions.xAxes, function(xAxisOptions, index) {
-			if (!xAxisOptions.id) {
-				xAxisOptions.id = nextAvailableScaleId(scalesOptions.xAxes, 'x-axis-', index);
-			}
-		});
-
-		helpers.each(scalesOptions.yAxes, function(yAxisOptions, index) {
-			if (!yAxisOptions.id) {
-				yAxisOptions.id = nextAvailableScaleId(scalesOptions.yAxes, 'y-axis-', index);
-			}
+		helpers.each(scalesOptions, function(axisOptions, axisID) {
+			axisOptions.id = axisID;
 		});
 
 		if (scaleOptions) {
@@ -333,11 +302,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 		if (options.scales) {
 			items = items.concat(
-				(options.scales.xAxes || []).map(function(xAxisOptions) {
-					return {options: xAxisOptions, dtype: 'category', dposition: 'bottom'};
-				}),
-				(options.scales.yAxes || []).map(function(yAxisOptions) {
-					return {options: yAxisOptions, dtype: 'linear', dposition: 'left'};
+				Object.values(options.scales).map(function(axisOptions) {
+					return {options: axisOptions};
 				})
 			);
 		}
@@ -354,10 +320,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		helpers.each(items, function(item) {
 			var scaleOptions = item.options;
 			var id = scaleOptions.id;
-			var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
+			var scaleType = scaleOptions.type;
 
-			if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
-				scaleOptions.position = item.dposition;
+			if (!scaleOptions.position) {
+				throw new Error('Axis ' + id + ' has an invalid position of ' + scaleOptions.position);
 			}
 
 			updated[id] = true;

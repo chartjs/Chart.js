@@ -14,16 +14,14 @@ defaults._set('bubble', {
 	},
 
 	scales: {
-		xAxes: [{
-			type: 'linear', // bubble should probably use a linear scale by default
-			position: 'bottom',
-			id: 'x-axis-0' // need an ID so datasets can reference the scale
-		}],
-		yAxes: [{
+		x: {
 			type: 'linear',
-			position: 'left',
-			id: 'y-axis-0'
-		}]
+			position: 'bottom'
+		},
+		y: {
+			type: 'linear',
+			position: 'left'
+		}
 	},
 
 	tooltips: {

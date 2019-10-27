@@ -9,16 +9,14 @@ defaults._set('scatter', {
 	},
 
 	scales: {
-		xAxes: [{
-			id: 'x-axis-1',    // need an ID so datasets can reference the scale
-			type: 'linear',    // scatter should not use a category axis
-			position: 'bottom'
-		}],
-		yAxes: [{
-			id: 'y-axis-1',
+		x: {
 			type: 'linear',
-			position: 'left'
-		}]
+			position: 'bottom'
+		},
+		y: {
+			type: 'linear',
+			position: 'left',
+		}
 	},
 
 	tooltips: {
