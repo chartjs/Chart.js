@@ -64,7 +64,7 @@
 					text: 'Chart.js Line Chart - X-Axis Filter'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						display: true,
 						ticks: {
 							callback: function(dataLabel, index) {
@@ -72,11 +72,11 @@
 								return index % 2 === 0 ? dataLabel : '';
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: true,
 						beginAtZero: false
-					}]
+					}
 				}
 			}
 		};

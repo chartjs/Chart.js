@@ -3,7 +3,7 @@
 
 <head>
 	<title>Stacked Bar Chart</title>
-	<script src="../../../dist/Chart.min.js"></script>
+	<script src="../../../dist/Chart.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 	canvas {
@@ -77,12 +77,12 @@
 					},
 					responsive: true,
 					scales: {
-						xAxes: [{
+						x: {
 							stacked: true,
-						}],
-						yAxes: [{
+						},
+						y: {
 							stacked: true
-						}]
+						}
 					}
 				}
 			});

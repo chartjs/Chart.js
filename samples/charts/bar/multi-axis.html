@@ -33,7 +33,7 @@
 					window.chartColors.purple,
 					window.chartColors.red
 				],
-				yAxisID: 'y-axis-1',
+				yAxisID: 'y',
 				data: [
 					randomScalingFactor(),
 					randomScalingFactor(),
@@ -46,7 +46,7 @@
 			}, {
 				label: 'Dataset 2',
 				backgroundColor: window.chartColors.grey,
-				yAxisID: 'y-axis-2',
+				yAxisID: 'y1',
 				data: [
 					randomScalingFactor(),
 					randomScalingFactor(),
@@ -75,20 +75,19 @@
 						intersect: true
 					},
 					scales: {
-						yAxes: [{
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+						y: {
+							type: 'linear',
 							display: true,
 							position: 'left',
-							id: 'y-axis-1',
-						}, {
-							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+						},
+						y1: {
+							type: 'linear',
 							display: true,
 							position: 'right',
-							id: 'y-axis-2',
 							gridLines: {
 								drawOnChartArea: false
 							}
-						}],
+						},
 					}
 				}
 			});

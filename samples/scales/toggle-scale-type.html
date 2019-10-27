@@ -67,13 +67,13 @@
 					text: 'Chart.js Line Chart - ' + type
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						display: true,
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: true,
 						type: type
-					}]
+					}
 				}
 			}
 		};
@@ -86,7 +86,7 @@
 		document.getElementById('toggleScale').addEventListener('click', function() {
 			type = type === 'linear' ? 'logarithmic' : 'linear';
 			window.myLine.options.title.text = 'Chart.js Line Chart - ' + type;
-			window.myLine.options.scales.yAxes[0] = {
+			window.myLine.options.scales.y = {
 				display: true,
 				type: type
 			};

@@ -103,7 +103,7 @@
 					text: 'Chart.js Time Scale'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'time',
 						time: {
 							parser: timeFormat,
@@ -114,13 +114,13 @@
 							display: true,
 							labelString: 'Date'
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						scaleLabel: {
 							display: true,
 							labelString: 'value'
 						}
-					}]
+					}
 				},
 			}
 		};
