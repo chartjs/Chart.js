@@ -207,7 +207,6 @@ module.exports = DatasetController.extend({
 			// Utility
 			_datasetIndex: me.index,
 			_index: index,
-			_scale: scale,
 
 			// Desired view properties
 			_model: {

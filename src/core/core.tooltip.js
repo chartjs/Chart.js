@@ -209,17 +209,18 @@ function splitNewlines(str) {
  * @return new tooltip item
  */
 function createTooltipItem(chart, element) {
-	var xScale = element._xScale;
-	var yScale = element._yScale || element._scale; // handle radar || polarArea charts
-	var index = element._index;
 	var datasetIndex = element._datasetIndex;
-	var controller = chart.getDatasetMeta(datasetIndex).controller;
+	var index = element._index;
+	var meta = chart.getDatasetMeta(datasetIndex);
+	var controller = meta.controller;
+	var xScale = controller.getScaleForId(meta.xAxisID);
+	var yScale = controller.getScaleForId(meta.yAxisID) || chart.scale; // handle radar || polarArea charts
 	var indexScale = controller._getIndexScale();
 	var valueScale = controller._getValueScale();
 
 	return {
-		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
-		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
+		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '', // Deprecated. Use label / value instead
+		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '', // Deprecated. Use label / value instead
 		label: indexScale ? '' + indexScale.getLabelForIndex(index, datasetIndex) : '',
 		value: valueScale ? '' + valueScale.getLabelForIndex(index, datasetIndex) : '',
 		index: index,

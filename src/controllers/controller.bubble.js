@@ -93,8 +93,6 @@ module.exports = DatasetController.extend({
 		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
 		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
 
-		point._xScale = xScale;
-		point._yScale = yScale;
 		point._options = options;
 		point._datasetIndex = dsIndex;
 		point._index = index;
