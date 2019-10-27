@@ -5,7 +5,6 @@ var defaults = require('../core/core.defaults');
 var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
-var deprecated = helpers._deprecated;
 var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('bar', {
@@ -147,20 +146,13 @@ module.exports = DatasetController.extend({
 
 	initialize: function() {
 		var me = this;
-		var meta, scaleOpts;
+		var meta;
 
 		DatasetController.prototype.initialize.apply(me, arguments);
 
 		meta = me.getMeta();
 		meta.stack = me.getDataset().stack;
 		meta.bar = true;
-
-		scaleOpts = me._getIndexScale().options;
-		deprecated('bar chart', scaleOpts.barPercentage, 'scales.[x/y]Axes.barPercentage', 'dataset.barPercentage');
-		deprecated('bar chart', scaleOpts.barThickness, 'scales.[x/y]Axes.barThickness', 'dataset.barThickness');
-		deprecated('bar chart', scaleOpts.categoryPercentage, 'scales.[x/y]Axes.categoryPercentage', 'dataset.categoryPercentage');
-		deprecated('bar chart', me._getValueScale().options.minBarLength, 'scales.[x/y]Axes.minBarLength', 'dataset.minBarLength');
-		deprecated('bar chart', scaleOpts.maxBarThickness, 'scales.[x/y]Axes.maxBarThickness', 'dataset.maxBarThickness');
 	},
 
 	update: function(reset) {
@@ -405,24 +397,6 @@ module.exports = DatasetController.extend({
 		}
 
 		helpers.canvas.unclipArea(chart.ctx);
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveDataElementOptions: function() {
-		var me = this;
-		var values = helpers.extend({}, DatasetController.prototype._resolveDataElementOptions.apply(me, arguments));
-		var indexOpts = me._getIndexScale().options;
-		var valueOpts = me._getValueScale().options;
-
-		values.barPercentage = valueOrDefault(indexOpts.barPercentage, values.barPercentage);
-		values.barThickness = valueOrDefault(indexOpts.barThickness, values.barThickness);
-		values.categoryPercentage = valueOrDefault(indexOpts.categoryPercentage, values.categoryPercentage);
-		values.maxBarThickness = valueOrDefault(indexOpts.maxBarThickness, values.maxBarThickness);
-		values.minBarLength = valueOrDefault(valueOpts.minBarLength, values.minBarLength);
-
-		return values;
 	}
 
 });
