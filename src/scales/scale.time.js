@@ -5,7 +5,6 @@ var defaults = require('../core/core.defaults');
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
-var deprecated = helpers._deprecated;
 var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
@@ -80,14 +79,6 @@ function arrayUnique(items) {
 	}
 
 	return out;
-}
-
-function getMin(options) {
-	return helpers.valueOrDefault(options.time.min, options.ticks.min);
-}
-
-function getMax(options) {
-	return helpers.valueOrDefault(options.time.max, options.ticks.max);
 }
 
 /**
@@ -191,7 +182,6 @@ function toTimestamp(scale, input) {
 	var adapter = scale._adapter;
 	var options = scale.options.time;
 	var parser = options.parser;
-	var format = parser || options.format;
 	var value = input;
 
 	if (typeof parser === 'function') {
@@ -200,27 +190,12 @@ function toTimestamp(scale, input) {
 
 	// Only parse if its not a timestamp already
 	if (!helpers.isFinite(value)) {
-		value = typeof format === 'string'
-			? adapter.parse(value, format)
+		value = typeof parser === 'string'
+			? adapter.parse(value, parser)
 			: adapter.parse(value);
 	}
 
-	if (value !== null) {
-		return +value;
-	}
-
-	// Labels are in an incompatible format and no `parser` has been provided.
-	// The user might still use the deprecated `format` option for parsing.
-	if (!parser && typeof format === 'function') {
-		value = format(input);
-
-		// `format` could return something else than a timestamp, if so, parse it
-		if (!helpers.isFinite(value)) {
-			value = adapter.parse(value);
-		}
-	}
-
-	return value;
+	return value !== null ? +value : value;
 }
 
 function parse(scale, input) {
@@ -416,7 +391,6 @@ var defaultConfig = {
 		parser: false, // false == a pattern string from https://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
 		unit: false, // false == automatic or override with week, month, year, etc.
 		round: false, // none, or override with week, month, year, etc.
-		displayFormat: false, // DEPRECATED
 		isoWeekday: false, // override week start day - see https://momentjs.com/docs/#/get-set/iso-weekday/
 		minUnit: 'millisecond',
 		displayFormats: {}
@@ -448,11 +422,6 @@ module.exports = Scale.extend({
 		var time = options.time || (options.time = {});
 		var adapter = me._adapter = new adapters._date(options.adapters.date);
 
-		// DEPRECATIONS: output a message only one time per update
-		deprecated('time scale', time.format, 'time.format', 'time.parser');
-		deprecated('time scale', time.min, 'time.min', 'ticks.min');
-		deprecated('time scale', time.max, 'time.max', 'ticks.max');
-
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
@@ -477,6 +446,7 @@ module.exports = Scale.extend({
 		var chart = me.chart;
 		var adapter = me._adapter;
 		var options = me.options;
+		var tickOpts = options.ticks;
 		var unit = options.time.unit || 'day';
 		var min = MAX_INTEGER;
 		var max = MIN_INTEGER;
@@ -526,8 +496,8 @@ module.exports = Scale.extend({
 			max = Math.max(max, timestamps[timestamps.length - 1]);
 		}
 
-		min = parse(me, getMin(options)) || min;
-		max = parse(me, getMax(options)) || max;
+		min = parse(me, tickOpts.min) || min;
+		max = parse(me, tickOpts.max) || max;
 
 		// In case there is no valid min/max, set limits based on unit time option
 		min = min === MAX_INTEGER ? +adapter.startOf(Date.now(), unit) : min;
@@ -574,8 +544,8 @@ module.exports = Scale.extend({
 		}
 
 		// Enforce limits with user min/max options
-		min = parse(me, getMin(options)) || min;
-		max = parse(me, getMax(options)) || max;
+		min = parse(me, tickOpts.min) || min;
+		max = parse(me, tickOpts.max) || max;
 
 		// Remove ticks outside the min/max range
 		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
