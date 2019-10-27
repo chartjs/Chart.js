@@ -180,27 +180,6 @@ describe('Chart.controllers.bubble', function() {
 				skip: false
 			}));
 		}
-
-		// point styles
-		meta.data[0].custom = {
-			radius: 2.2,
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderColor: 'rgb(4, 6, 8)',
-			borderWidth: 0.787,
-			tension: 0.15,
-			hitRadius: 5,
-			skip: true
-		};
-
-		chart.update();
-
-		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderColor: 'rgb(4, 6, 8)',
-			borderWidth: 0.787,
-			hitRadius: 5,
-			skip: true
-		}));
 	});
 
 	it('should handle number of data point changes in update', function() {
@@ -374,32 +353,6 @@ describe('Chart.controllers.bubble', function() {
 				hoverBorderWidth: 8.4,
 				hoverRadius: 4.2
 			});
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(point._model.borderWidth).toBe(8.4);
-			expect(point._model.radius).toBe(20 + 4.2);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(point._model.borderWidth).toBe(2);
-			expect(point._model.radius).toBe(20);
-		});
-
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var point = chart.getDatasetMeta(0).data[0];
-
-			point.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-				hoverRadius: 4.2
-			};
 
 			chart.update();
 

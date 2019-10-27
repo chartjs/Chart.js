@@ -1407,18 +1407,6 @@ describe('Chart.controllers.bar', function() {
 		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
 		expect(bar._model.borderWidth).toBe(2.5);
-
-		// Should allow a custom style
-		bar.custom = {
-			hoverBackgroundColor: 'rgb(255, 0, 0)',
-			hoverBorderColor: 'rgb(0, 255, 0)',
-			hoverBorderWidth: 1.5
-		};
-
-		meta.controller.setHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
-		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
-		expect(bar._model.borderWidth).toBe(1.5);
 	});
 
 	it('should remove a hover style from a bar', function() {
@@ -1483,26 +1471,6 @@ describe('Chart.controllers.bar', function() {
 		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
 		expect(bar._model.borderWidth).toBe(2.5);
-
-		// Should allow a custom style
-		bar.custom = {
-			backgroundColor: 'rgb(255, 0, 0)',
-			borderColor: 'rgb(0, 255, 0)',
-			borderWidth: 1.5
-		};
-
-		chart.update();
-		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
-		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
-		expect(bar._model.borderWidth).toBe(1.5);
-		meta.controller.setHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 0, 0)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(0, 255, 0)'));
-		expect(bar._model.borderWidth).toBe(1.5);
-		meta.controller.removeHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe('rgb(255, 0, 0)');
-		expect(bar._model.borderColor).toBe('rgb(0, 255, 0)');
-		expect(bar._model.borderWidth).toBe(1.5);
 	});
 
 	describe('Bar width', function() {

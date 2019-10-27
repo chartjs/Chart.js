@@ -83,10 +83,9 @@ module.exports = DatasetController.extend({
 	updateElement: function(point, index, reset) {
 		var me = this;
 		var meta = me.getMeta();
-		var custom = point.custom || {};
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveDataElementOptions(point, index);
+		var options = me._resolveDataElementOptions(index);
 		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
@@ -106,7 +105,7 @@ module.exports = DatasetController.extend({
 			pointStyle: options.pointStyle,
 			rotation: options.rotation,
 			radius: reset ? 0 : options.radius,
-			skip: custom.skip || isNaN(x) || isNaN(y),
+			skip: isNaN(x) || isNaN(y),
 			x: x,
 			y: y,
 		};
@@ -138,11 +137,10 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(point, index) {
+	_resolveDataElementOptions: function(index) {
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
-		var custom = point.custom || {};
 		var data = dataset.data[index] || {};
 		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
 
@@ -161,7 +159,6 @@ module.exports = DatasetController.extend({
 
 		// Custom radius resolution
 		values.radius = resolve([
-			custom.radius,
 			data.r,
 			me._config.radius,
 			chart.options.elements.point.radius

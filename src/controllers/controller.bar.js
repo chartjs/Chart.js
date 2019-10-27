@@ -179,7 +179,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
-		var options = me._resolveDataElementOptions(rectangle, index);
+		var options = me._resolveDataElementOptions(index);
 
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
