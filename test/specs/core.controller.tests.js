@@ -140,9 +140,11 @@ describe('Chart', function() {
 					options: {
 						scales: {
 							x: {
+								type: 'linear',
 								position: 'left',
 							},
 							y: {
+								type: 'category',
 								position: 'bottom'
 							}
 						}
@@ -150,27 +152,6 @@ describe('Chart', function() {
 				});
 			}
 			expect(createChart).toThrow(new Error('"area" is not a chart type.'));
-		});
-
-		it('should throw an error if an axis has no type', function() {
-			function createChart() {
-				acquireChart({
-					type: 'line',
-					data: {
-						datasets: [{
-							label: 'first',
-							data: [10, 20]
-						}],
-						labels: ['0', '1'],
-					},
-					options: {
-						scales: {
-							x1: {},
-						}
-					}
-				});
-			}
-			expect(createChart).toThrow(new Error('Axis "x1" has no type specified.'));
 		});
 	});
 
@@ -1150,6 +1131,7 @@ describe('Chart', function() {
 							type: 'category'
 						},
 						y: {
+							type: 'linear',
 							scaleLabel: {
 								display: true,
 								labelString: 'Value'

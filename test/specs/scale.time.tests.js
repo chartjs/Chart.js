@@ -193,7 +193,7 @@ describe('Time scale tests', function() {
 				type: 'line',
 				data: {
 					datasets: [{
-						xAxisID: 'tScale0',
+						xAxisID: 'x',
 						data: [{
 							t: newDateFromRef(0),
 							y: 1
