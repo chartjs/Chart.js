@@ -160,7 +160,7 @@ module.exports = Element.extend({
 	},
 
 	draw: function() {
-		var ctx = this._chart.ctx;
+		var ctx = this._ctx;
 		var vm = this._view;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
 		var arc = {

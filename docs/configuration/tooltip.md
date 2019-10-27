@@ -183,14 +183,6 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     // Value for the tooltip
     value: string,
 
-    // X Value of the tooltip
-    // (deprecated) use `value` or `label` instead
-    xLabel: number | string,
-
-    // Y value of the tooltip
-    // (deprecated) use `value` or `label` instead
-    yLabel: number | string,
-
     // Index of the dataset the item comes from
     datasetIndex: number,
 

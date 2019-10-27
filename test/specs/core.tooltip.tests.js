@@ -15,8 +15,8 @@ describe('Core.Tooltip', function() {
 			var tooltipItem = {
 				index: 1,
 				datasetIndex: 0,
-				xLabel: 'Point 2',
-				yLabel: '20'
+				label: 'Point 2',
+				value: '20'
 			};
 
 			var label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
@@ -907,12 +907,6 @@ describe('Core.Tooltip', function() {
 
 			expect(tooltipItem.index).toBe(pointIndex);
 			expect(tooltipItem.datasetIndex).toBe(datasetIndex);
-			var indexLabel = type !== 'horizontalBar' ? 'xLabel' : 'yLabel';
-			expect(typeof tooltipItem[indexLabel]).toBe('string');
-			expect(tooltipItem[indexLabel]).toBe(chart.data.labels[pointIndex]);
-			var valueLabel = type !== 'horizontalBar' ? 'yLabel' : 'xLabel';
-			expect(typeof tooltipItem[valueLabel]).toBe('number');
-			expect(tooltipItem[valueLabel]).toBe(chart.data.datasets[datasetIndex].data[pointIndex]);
 			expect(typeof tooltipItem.label).toBe('string');
 			expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
 			expect(typeof tooltipItem.value).toBe('string');

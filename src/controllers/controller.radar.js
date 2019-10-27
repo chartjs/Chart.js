@@ -76,7 +76,6 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var scale = me.chart.scale;
 		var config = me._config;
 		var i, ilen;
 
@@ -86,7 +85,6 @@ module.exports = DatasetController.extend({
 		}
 
 		// Utility
-		line._scale = scale;
 		line._datasetIndex = me.index;
 		// Data
 		line._children = points;
@@ -121,7 +119,6 @@ module.exports = DatasetController.extend({
 		var y = reset ? scale.yCenter : pointPosition.y;
 
 		// Utility
-		point._scale = scale;
 		point._options = options;
 		point._datasetIndex = me.index;
 		point._index = index;

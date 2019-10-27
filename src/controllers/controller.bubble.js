@@ -35,7 +35,7 @@ defaults._set('bubble', {
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
 				var dataPoint = data.datasets[item.datasetIndex].data[item.index];
-				return datasetLabel + ': (' + item.xLabel + ', ' + item.yLabel + ', ' + dataPoint.r + ')';
+				return datasetLabel + ': (' + item.label + ', ' + item.value + ', ' + dataPoint.r + ')';
 			}
 		}
 	}
@@ -92,8 +92,6 @@ module.exports = DatasetController.extend({
 		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex);
 		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex);
 
-		point._xScale = xScale;
-		point._yScale = yScale;
 		point._options = options;
 		point._datasetIndex = dsIndex;
 		point._index = index;

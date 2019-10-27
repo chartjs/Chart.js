@@ -104,7 +104,7 @@ function decodeFill(el, index, count) {
 
 function computeLinearBoundary(source) {
 	var model = source.el._model || {};
-	var scale = source.el._scale || {};
+	var scale = source.scale || {};
 	var fill = source.fill;
 	var target = null;
 	var horizontal;
@@ -145,7 +145,7 @@ function computeLinearBoundary(source) {
 }
 
 function computeCircularBoundary(source) {
-	var scale = source.el._scale;
+	var scale = source.scale;
 	var options = scale.options;
 	var length = scale.chart.data.labels.length;
 	var fill = source.fill;
@@ -174,7 +174,7 @@ function computeCircularBoundary(source) {
 }
 
 function computeBoundary(source) {
-	var scale = source.el._scale || {};
+	var scale = source.scale || {};
 
 	if (scale.getPointPositionForValue) {
 		return computeCircularBoundary(source);
@@ -333,6 +333,7 @@ module.exports = {
 					visible: chart.isDatasetVisible(i),
 					fill: decodeFill(el, i, count),
 					chart: chart,
+					scale: meta.controller.getScaleForId(meta.yAxisID) || chart.scale,
 					el: el
 				};
 			}

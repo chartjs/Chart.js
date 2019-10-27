@@ -177,12 +177,9 @@ module.exports = DatasetController.extend({
 
 	updateElement: function(rectangle, index, reset) {
 		var me = this;
-		var meta = me.getMeta();
 		var dataset = me.getDataset();
 		var options = me._resolveDataElementOptions(index);
 
-		rectangle._xScale = me.getScaleForId(meta.xAxisID);
-		rectangle._yScale = me.getScaleForId(meta.yAxisID);
 		rectangle._datasetIndex = me.index;
 		rectangle._index = index;
 		rectangle._model = {

@@ -65,9 +65,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -183,9 +181,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -306,9 +302,7 @@ describe('Chart.elements.Line', function() {
 
 			var line = new Chart.elements.Line({
 				_datasetindex: 2,
-				_chart: {
-					ctx: mockContext,
-				},
+				_ctx: mockContext,
 				_children: points,
 				// Need to provide some settings
 				_view: {
@@ -435,9 +429,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -572,9 +564,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -695,9 +685,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -819,9 +807,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -932,9 +918,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -1049,9 +1033,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -1154,9 +1136,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -1267,9 +1247,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -1381,9 +1359,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {
@@ -1494,9 +1470,7 @@ describe('Chart.elements.Line', function() {
 
 		var line = new Chart.elements.Line({
 			_datasetindex: 2,
-			_chart: {
-				ctx: mockContext,
-			},
+			_ctx: mockContext,
 			_children: points,
 			// Need to provide some settings
 			_view: {

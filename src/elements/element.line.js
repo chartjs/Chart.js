@@ -31,7 +31,7 @@ module.exports = Element.extend({
 	draw: function() {
 		var me = this;
 		var vm = me._view;
-		var ctx = me._chart.ctx;
+		var ctx = me._ctx;
 		var spanGaps = vm.spanGaps;
 		var points = me._children.slice(); // clone array
 		var globalDefaults = defaults.global;
