@@ -629,7 +629,7 @@ describe('Linear Scale', function() {
 				},
 				options: {
 					scales: {
-						y: {	
+						y: {
 							type: 'linear',
 							ticks: {
 								precision: 2
@@ -721,7 +721,7 @@ describe('Linear Scale', function() {
 			},
 			options: {
 				scales: {
-					y: {	
+					y: {
 						type: 'linear',
 					}
 				}
@@ -820,7 +820,7 @@ describe('Linear Scale', function() {
 						type: 'linear',
 						position: 'bottom'
 					},
-					y: {						
+					y: {
 						type: 'linear'
 					}
 				}
@@ -1008,7 +1008,7 @@ describe('Linear Scale', function() {
 		});
 
 		expect(chart.scales.x.min).toEqual(0);
-		expect(chart.scales.y.max).toEqual(1);
+		expect(chart.scales.x.max).toEqual(1);
 	});
 
 	it('max and min value should be valid when min is set and all datasets are hidden', function() {

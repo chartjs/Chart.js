@@ -163,8 +163,8 @@ describe('Chart.controllers.line', function() {
 				datasets: [{
 					data: [10, 15, 0, -4],
 					label: 'dataset',
-					xAxisID: 'firstXScaleID',
-					yAxisID: 'firstYScaleID'
+					xAxisID: 'x',
+					yAxisID: 'y'
 				}],
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
@@ -368,7 +368,7 @@ describe('Chart.controllers.line', function() {
 					y: {
 						display: false,
 						stacked: true
-					}, 
+					},
 					y2: {
 						type: 'linear',
 						position: 'right',

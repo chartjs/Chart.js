@@ -282,7 +282,7 @@ describe('Category scale tests', function() {
 			}
 		});
 
-		var xScale = chart.scales.xScale0;
+		var xScale = chart.scales.x;
 		expect(xScale.getPixelForValue(0, 1, 0)).toBeCloseToPixel(23 + 6); // plus lineHeight
 		expect(xScale.getPixelForValue(0, 3, 0)).toBeCloseToPixel(496);
 
@@ -511,7 +511,6 @@ describe('Category scale tests', function() {
 						position: 'bottom'
 					},
 					y: {
-						id: 'yScale0',
 						type: 'category'
 					}
 				}

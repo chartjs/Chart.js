@@ -850,9 +850,9 @@ describe('Logarithmic Scale tests', function() {
 				chartStart = 'bottom';
 				chartEnd = 'top';
 			}
-			scaleConfig[setup.axis] = [{
+			scaleConfig[setup.axis] = {
 				type: 'logarithmic'
-			}];
+			};
 			Chart.helpers.extend(scaleConfig, setup.scale);
 			scaleConfig[setup.axis].type = 'logarithmic';
 

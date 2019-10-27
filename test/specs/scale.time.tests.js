@@ -1733,7 +1733,6 @@ describe('Time scale tests', function() {
 							time: timeOpts
 						},
 						y2: {
-							id: 'y2',
 							position: 'left',
 							type: 'time',
 							labels: ['2005', '2006', '2007'],
