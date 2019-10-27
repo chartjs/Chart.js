@@ -1699,21 +1699,6 @@ describe('Chart.controllers.bar', function() {
 						expect(meta.data[1]._model.width).toBeCloseToPixel(10);
 					}
 				});
-
-				it('should correctly set bar width if maxBarThickness is specified via deprecated option', function() {
-					var chart = this.chart;
-					var options = chart.options.scales.xAxes[0];
-					var i, ilen, meta;
-
-					options.maxBarThickness = 10;
-					chart.update();
-
-					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-						meta = chart.getDatasetMeta(i);
-						expect(meta.data[0]._model.width).toBeCloseToPixel(10);
-						expect(meta.data[1]._model.width).toBeCloseToPixel(10);
-					}
-				});
 			});
 		});
 	});
@@ -1745,54 +1730,6 @@ describe('Chart.controllers.bar', function() {
 					minBarLength: minBarLength,
 					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
 				}]
-			}
-		});
-
-		var data = chart.getDatasetMeta(0).data;
-
-		expect(data[0]._model.base + minBarLength).toEqual(data[0]._model.x);
-		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
-	});
-
-	it('deprecated minBarLength settings should be used on Y axis on bar chart', function() {
-		var minBarLength = 4;
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: [{
-					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
-				}]
-			},
-			options: {
-				scales: {
-					yAxes: [{
-						minBarLength: minBarLength
-					}]
-				}
-			}
-		});
-
-		var data = chart.getDatasetMeta(0).data;
-
-		expect(data[0]._model.base - minBarLength).toEqual(data[0]._model.y);
-		expect(data[1]._model.base + minBarLength).toEqual(data[1]._model.y);
-	});
-
-	it('deprecated minBarLength settings should be used on X axis on horizontalBar chart', function() {
-		var minBarLength = 4;
-		var chart = window.acquireChart({
-			type: 'horizontalBar',
-			data: {
-				datasets: [{
-					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
-				}]
-			},
-			options: {
-				scales: {
-					xAxes: [{
-						minBarLength: minBarLength
-					}]
-				}
 			}
 		});
 
