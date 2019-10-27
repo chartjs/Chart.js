@@ -50,9 +50,7 @@ function stackData(scale, stacks, meta, data) {
 		pos[i] = pos[i] || 0;
 		neg[i] = neg[i] || 0;
 
-		if (opts.relativePoints) {
-			pos[i] = 100;
-		} else if (value.min < 0 || value.max < 0) {
+		if (value.min < 0 || value.max < 0) {
 			neg[i] += value.min;
 		} else {
 			pos[i] += value.max;
