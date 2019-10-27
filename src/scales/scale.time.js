@@ -441,10 +441,6 @@ var defaultConfig = {
 };
 
 module.exports = Scale.extend({
-	initialize: function() {
-		this.mergeTicksOptions();
-		Scale.prototype.initialize.call(this);
-	},
 
 	update: function() {
 		var me = this;

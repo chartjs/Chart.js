@@ -363,16 +363,6 @@ var Scale = Element.extend({
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
 
-	/**
-	 * Provided for backward compatibility, not available anymore
-	 * @function Chart.Scale.mergeTicksOptions
-	 * @deprecated since version 2.8.0
-	 * @todo remove at version 3
-	 */
-	mergeTicksOptions: function() {
-		// noop
-	},
-
 	beforeUpdate: function() {
 		helpers.callback(this.options.beforeUpdate, [this]);
 	},
