@@ -56,17 +56,5 @@ adapters._date.override(typeof moment === 'function' ? {
 
 	endOf: function(time, unit) {
 		return moment(time).endOf(unit).valueOf();
-	},
-
-	// DEPRECATIONS
-
-	/**
-	 * Provided for backward compatibility with scale.getValueForPixel().
-	 * @deprecated since version 2.8.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	_create: function(time) {
-		return moment(time);
-	},
+	}
 } : {});

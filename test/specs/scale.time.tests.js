@@ -28,9 +28,9 @@ describe('Time scale tests', function() {
 		jasmine.addMatchers({
 			toBeCloseToTime: function() {
 				return {
-					compare: function(actual, expected) {
+					compare: function(time, expected) {
 						var result = false;
-
+						var actual = moment(time);
 						var diff = actual.diff(expected.value, expected.unit, true);
 						result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.01);
 

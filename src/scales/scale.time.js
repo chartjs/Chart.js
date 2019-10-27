@@ -706,10 +706,7 @@ module.exports = Scale.extend({
 		var me = this;
 		var offsets = me._offsets;
 		var pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		var time = interpolate(me._table, 'pos', pos, 'time');
-
-		// DEPRECATION, we should return time directly
-		return me._adapter._create(time);
+		return interpolate(me._table, 'pos', pos, 'time');
 	},
 
 	/**

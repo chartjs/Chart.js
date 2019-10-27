@@ -98,20 +98,7 @@ helpers.extend(DateAdapter.prototype, /** @lends DateAdapter */ {
 	 * @param {Unit} unit - the unit as string
 	 * @function
 	 */
-	endOf: abstract,
-
-	// DEPRECATIONS
-
-	/**
-	 * Provided for backward compatibility for scale.getValueForPixel(),
-	 * this method should be overridden only by the moment adapter.
-	 * @deprecated since version 2.8.0
-	 * @todo remove at version 3
-	 * @private
-	 */
-	_create: function(value) {
-		return value;
-	}
+	endOf: abstract
 });
 
 DateAdapter.override = function(members) {
