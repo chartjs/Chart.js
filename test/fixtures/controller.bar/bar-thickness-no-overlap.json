@@ -18,12 +18,16 @@
             "responsive": false,
             "legend": false,
             "title": false,
+            "datasets": {
+                "bar": {
+                    "barPercentage": 1,
+                    "categoryPercentage": 1
+                }
+            },
             "scales": {
                 "xAxes": [{
                     "type": "time",
                     "display": false,
-                    "barPercentage": 1,
-                    "categoryPercentage": 1,
                     "time": {
                         "parser": "YYYY-MM"
                     },
