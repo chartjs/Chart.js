@@ -131,6 +131,10 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
+function positionIsHorizontal(position) {
+	return position === 'top' || position === 'bottom';
+}
+
 function compare2Level(l1, l2) {
 	return function(a, b) {
 		return a[l1] === b[l1]
@@ -302,8 +306,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 		if (options.scales) {
 			items = items.concat(
-				Object.values(options.scales).map(function(axisOptions) {
-					return {options: axisOptions};
+				Object.entries(options.scales).map(function(entry) {
+					var axisID = entry[0];
+					var axisOptions = entry[1];
+					var isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
+					return {
+						options: axisOptions,
+						dposition: isHorizontal ? 'bottom' : 'left',
+						dtype: isHorizontal ? 'category' : 'linear'
+					};
 				})
 			);
 		}
@@ -320,10 +331,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		helpers.each(items, function(item) {
 			var scaleOptions = item.options;
 			var id = scaleOptions.id;
-			var scaleType = scaleOptions.type;
+			var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
-			if (!scaleOptions.position) {
-				throw new Error('Axis ' + id + ' has an invalid position of ' + scaleOptions.position);
+			if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
+				scaleOptions.position = item.dposition;
 			}
 
 			updated[id] = true;
