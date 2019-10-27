@@ -27,7 +27,7 @@ defaults._set('scatter', {
 				return '';     // doesn't make sense for scatter since data are formatted as a point
 			},
 			label: function(item) {
-				return '(' + item.xLabel + ', ' + item.yLabel + ')';
+				return '(' + item.label + ', ' + item.value + ')';
 			}
 		}
 	}

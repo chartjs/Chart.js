@@ -49,8 +49,6 @@ defaults._set('global', {
 					var item = tooltipItems[0];
 					if (item.label) {
 						title = item.label;
-					} else if (item.xLabel) {
-						title = item.xLabel;
 					} else if (labelCount > 0 && item.index < labelCount) {
 						title = labels[item.index];
 					}
@@ -73,8 +71,6 @@ defaults._set('global', {
 				}
 				if (!helpers.isNullOrUndef(tooltipItem.value)) {
 					label += tooltipItem.value;
-				} else {
-					label += tooltipItem.yLabel;
 				}
 				return label;
 			},
@@ -211,16 +207,11 @@ function splitNewlines(str) {
 function createTooltipItem(chart, element) {
 	var datasetIndex = element._datasetIndex;
 	var index = element._index;
-	var meta = chart.getDatasetMeta(datasetIndex);
-	var controller = meta.controller;
-	var xScale = controller.getScaleForId(meta.xAxisID);
-	var yScale = controller.getScaleForId(meta.yAxisID) || chart.scale; // handle radar || polarArea charts
+	var controller = chart.getDatasetMeta(datasetIndex).controller;
 	var indexScale = controller._getIndexScale();
 	var valueScale = controller._getValueScale();
 
 	return {
-		xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '', // Deprecated. Use label / value instead
-		yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '', // Deprecated. Use label / value instead
 		label: indexScale ? '' + indexScale.getLabelForIndex(index, datasetIndex) : '',
 		value: valueScale ? '' + valueScale.getLabelForIndex(index, datasetIndex) : '',
 		index: index,

@@ -35,7 +35,7 @@ defaults._set('bubble', {
 			label: function(item, data) {
 				var datasetLabel = data.datasets[item.datasetIndex].label || '';
 				var dataPoint = data.datasets[item.datasetIndex].data[item.index];
-				return datasetLabel + ': (' + item.xLabel + ', ' + item.yLabel + ', ' + dataPoint.r + ')';
+				return datasetLabel + ': (' + item.label + ', ' + item.value + ', ' + dataPoint.r + ')';
 			}
 		}
 	}

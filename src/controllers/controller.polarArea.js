@@ -98,7 +98,7 @@ defaults._set('polarArea', {
 				return '';
 			},
 			label: function(item, data) {
-				return data.labels[item.index] + ': ' + item.yLabel;
+				return data.labels[item.index] + ': ' + item.value;
 			}
 		}
 	}
