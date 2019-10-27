@@ -54,7 +54,7 @@ function mergeScaleConfig(/* config objects ... */) {
 			type = scale.type;
 
 			if (helpers.isNullOrUndef(type) && helpers.isNullOrUndef(target[key].type)) {
-				throw new Error('Axis config ' + key + ' has no "type" specified');
+				throw new Error('Axis config "' + key + '" has no type specified.');
 			}
 
 			if (!target[key].type || (scale.type && scale.type !== target[key].type)) {
