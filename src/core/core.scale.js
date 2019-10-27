@@ -929,7 +929,7 @@ var Scale = Element.extend({
 
 	getDecimalForPixel: function(pixel) {
 		var decimal = (pixel - this._startPixel) / this._length;
-		return Math.min(1, Math.max(0, this._reversePixels ? 1 - decimal : decimal));
+		return this._reversePixels ? 1 - decimal : decimal;
 	},
 
 	/**
