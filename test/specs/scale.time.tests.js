@@ -102,7 +102,6 @@ describe('Time scale tests', function() {
 				unit: false,
 				round: false,
 				isoWeekday: false,
-				displayFormat: false,
 				minUnit: 'millisecond',
 				displayFormats: {}
 			}
