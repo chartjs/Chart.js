@@ -8,3 +8,4 @@ These sections describe general configuration options that can apply elsewhere i
 * [Options](./options.md) scriptable and indexable options syntax.
 * [Colors](./colors.md) defines acceptable color values.
 * [Font](./fonts.md) defines various font options.
+* [Performance](./performance.md) gives tips for performance-sensitive applications.
