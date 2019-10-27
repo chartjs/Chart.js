@@ -1350,28 +1350,54 @@ var Scale = Element.extend({
 		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var halfLineHeight = scaleLabelFont.lineHeight / 2;
+		var scaleLabelAlign = scaleLabel.align;
 		var position = options.position;
 		var rotation = 0;
-		var scaleLabelX, scaleLabelY;
+		var isReverse = me.options.ticks.reverse;
+		var scaleLabelX, scaleLabelY, textAlign;
 
 		if (me.isHorizontal()) {
-			scaleLabelX = me.left + me.width / 2; // midpoint of the width
-			scaleLabelY = position === 'bottom'
-				? me.bottom - halfLineHeight - scaleLabelPadding.bottom
-				: me.top + halfLineHeight + scaleLabelPadding.top;
+			switch (scaleLabelAlign) {
+			case 'start':
+				scaleLabelX = me.left + (isReverse ? me.width : 0);
+				textAlign = isReverse ? 'right' : 'left';
+				break;
+			case 'end':
+				scaleLabelX = me.left + (isReverse ? 0 : me.width);
+				textAlign = isReverse ? 'left' : 'right';
+				break;
+			default:
+				scaleLabelX = me.left + me.width / 2;
+				textAlign = 'center';
+			}
+			scaleLabelY = position === 'top'
+				? me.top + halfLineHeight + scaleLabelPadding.top
+				: me.bottom - halfLineHeight - scaleLabelPadding.bottom;
 		} else {
 			var isLeft = position === 'left';
 			scaleLabelX = isLeft
 				? me.left + halfLineHeight + scaleLabelPadding.top
 				: me.right - halfLineHeight - scaleLabelPadding.top;
-			scaleLabelY = me.top + me.height / 2;
+			switch (scaleLabelAlign) {
+			case 'start':
+				scaleLabelY = me.top + (isReverse ? 0 : me.height);
+				textAlign = isReverse === isLeft ? 'right' : 'left';
+				break;
+			case 'end':
+				scaleLabelY = me.top + (isReverse ? me.height : 0);
+				textAlign = isReverse === isLeft ? 'left' : 'right';
+				break;
+			default:
+				scaleLabelY = me.top + me.height / 2;
+				textAlign = 'center';
+			}
 			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
 		}
 
 		ctx.save();
 		ctx.translate(scaleLabelX, scaleLabelY);
 		ctx.rotate(rotation);
-		ctx.textAlign = 'center';
+		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
 		ctx.font = scaleLabelFont.string;
