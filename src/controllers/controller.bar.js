@@ -13,17 +13,16 @@ defaults._set('bar', {
 	},
 
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'category',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
-		}],
-
-		yAxes: [{
-			type: 'linear'
-		}]
+		},
+		y: {
+			type: 'linear',
+		}
 	}
 });
 

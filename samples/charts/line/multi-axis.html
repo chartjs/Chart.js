@@ -36,7 +36,7 @@
 					randomScalingFactor(),
 					randomScalingFactor()
 				],
-				yAxisID: 'y-axis-1',
+				yAxisID: 'y',
 			}, {
 				label: 'My Second dataset',
 				borderColor: window.chartColors.blue,
@@ -51,7 +51,7 @@
 					randomScalingFactor(),
 					randomScalingFactor()
 				],
-				yAxisID: 'y-axis-2'
+				yAxisID: 'y1'
 			}]
 		};
 
@@ -69,22 +69,21 @@
 						text: 'Chart.js Line Chart - Multi Axis'
 					},
 					scales: {
-						yAxes: [{
+						y: {
 							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 							display: true,
 							position: 'left',
-							id: 'y-axis-1',
-						}, {
+						},
+						y1: {
 							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 							display: true,
 							position: 'right',
-							id: 'y-axis-2',
 
 							// grid line settings
 							gridLines: {
 								drawOnChartArea: false, // only want the grid lines for one axis to show up
 							},
-						}],
+						},
 					}
 				}
 			});

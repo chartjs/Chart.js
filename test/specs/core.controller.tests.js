@@ -125,26 +125,6 @@ describe('Chart', function() {
 			defaults.line.spanGaps = false;
 		});
 
-		it('should override axis positions that are incorrect', function() {
-			var chart = acquireChart({
-				type: 'line',
-				options: {
-					scales: {
-						xAxes: [{
-							position: 'left',
-						}],
-						yAxes: [{
-							position: 'bottom'
-						}]
-					}
-				}
-			});
-
-			var scaleOptions = chart.options.scales;
-			expect(scaleOptions.xAxes[0].position).toBe('bottom');
-			expect(scaleOptions.yAxes[0].position).toBe('left');
-		});
-
 		it('should throw an error if the chart type is incorrect', function() {
 			function createChart() {
 				acquireChart({
@@ -158,12 +138,14 @@ describe('Chart', function() {
 					},
 					options: {
 						scales: {
-							xAxes: [{
+							x: {
+								type: 'linear',
 								position: 'left',
-							}],
-							yAxes: [{
+							},
+							y: {
+								type: 'category',
 								position: 'bottom'
-							}]
+							}
 						}
 					}
 				});
@@ -199,22 +181,18 @@ describe('Chart', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [
-							{id: 'foo0'},
-							{id: 'foo1'}
-						],
-						yAxes: [
-							{id: 'bar0'},
-							{id: 'bar1'}
-						]
+						xFoo0: {},
+						xFoo1: {},
+						yBar0: {},
+						yBar1: {},
 					}
 				}
 			});
 
-			expect(chart.scales.foo0.type).toBe('category');
-			expect(chart.scales.foo1.type).toBe('category');
-			expect(chart.scales.bar0.type).toBe('linear');
-			expect(chart.scales.bar1.type).toBe('linear');
+			expect(chart.scales.xFoo0.type).toBe('category');
+			expect(chart.scales.xFoo1.type).toBe('category');
+			expect(chart.scales.yBar0.type).toBe('linear');
+			expect(chart.scales.yBar1.type).toBe('linear');
 		});
 
 		it('should correctly apply defaults on central scale', function() {
@@ -248,25 +226,23 @@ describe('Chart', function() {
 				type: 'line',
 				options: {
 					scales: {
-						xAxes: [{
-							id: 'foo',
+						x: {
 							type: 'logarithmic',
 							_jasmineCheckC: 'c2',
 							_jasmineCheckD: 'd2'
-						}],
-						yAxes: [{
-							id: 'bar',
+						},
+						y: {
 							type: 'time',
 							_jasmineCheckC: 'c2',
 							_jasmineCheckE: 'e2'
-						}]
+						}
 					}
 				}
 			});
 
-			expect(chart.scales.foo.type).toBe('logarithmic');
-			expect(chart.scales.foo.options).toBe(chart.options.scales.xAxes[0]);
-			expect(chart.scales.foo.options).toEqual(
+			expect(chart.scales.x.type).toBe('logarithmic');
+			expect(chart.scales.x.options).toBe(chart.options.scales.x);
+			expect(chart.scales.x.options).toEqual(
 				jasmine.objectContaining({
 					_jasmineCheckA: 'a0',
 					_jasmineCheckB: 'b1',
@@ -274,9 +250,9 @@ describe('Chart', function() {
 					_jasmineCheckD: 'd2'
 				}));
 
-			expect(chart.scales.bar.type).toBe('time');
-			expect(chart.scales.bar.options).toBe(chart.options.scales.yAxes[0]);
-			expect(chart.scales.bar.options).toEqual(
+			expect(chart.scales.y.type).toBe('time');
+			expect(chart.scales.y.options).toBe(chart.options.scales.y);
+			expect(chart.scales.y.options).toEqual(
 				jasmine.objectContaining({
 					_jasmineCheckA: 'a0',
 					_jasmineCheckB: 'b0',
@@ -291,23 +267,21 @@ describe('Chart', function() {
 				options: {
 					_jasmineCheck: 42,
 					scales: {
-						xAxes: [{
-							id: 'foo',
+						x: {
 							type: 'linear',
 							_jasmineCheck: 42,
-						}],
-						yAxes: [{
-							id: 'bar',
+						},
+						y: {
 							type: 'category',
 							_jasmineCheck: 42,
-						}]
+						}
 					}
 				}
 			});
 
 			expect(chart.options._jasmineCheck).toBeDefined();
-			expect(chart.scales.foo.options._jasmineCheck).toBeDefined();
-			expect(chart.scales.bar.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.x.options._jasmineCheck).toBeDefined();
+			expect(chart.scales.y.options._jasmineCheck).toBeDefined();
 
 			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
 			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
@@ -989,15 +963,15 @@ describe('Chart', function() {
 			chart.options = {
 				responsive: false,
 				scales: {
-					yAxes: [{
+					y: {
 						min: 0,
 						max: 10
-					}]
+					}
 				}
 			};
 			chart.update();
 
-			var yScale = chart.scales['y-axis-0'];
+			var yScale = chart.scales.y;
 			expect(yScale.options.min).toBe(0);
 			expect(yScale.options.max).toBe(10);
 		});
@@ -1016,11 +990,11 @@ describe('Chart', function() {
 				}
 			});
 
-			chart.options.scales.yAxes[0].min = 0;
-			chart.options.scales.yAxes[0].max = 10;
+			chart.options.scales.y.min = 0;
+			chart.options.scales.y.max = 10;
 			chart.update();
 
-			var yScale = chart.scales['y-axis-0'];
+			var yScale = chart.scales.y;
 			expect(yScale.options.min).toBe(0);
 			expect(yScale.options.max).toBe(10);
 		});
@@ -1040,35 +1014,18 @@ describe('Chart', function() {
 			});
 
 			var newScalesConfig = {
-				yAxes: [{
+				y: {
 					min: 0,
 					max: 10
-				}]
+				}
 			};
 			chart.options.scales = newScalesConfig;
 
 			chart.update();
 
-			var yScale = chart.scales['y-axis-0'];
+			var yScale = chart.scales.y;
 			expect(yScale.options.min).toBe(0);
 			expect(yScale.options.max).toBe(10);
-		});
-
-		it ('should assign unique scale IDs', function() {
-			var chart = acquireChart({
-				type: 'line',
-				options: {
-					scales: {
-						xAxes: [{id: 'x-axis-0'}, {}, {}],
-						yAxes: [{id: 'y-axis-1'}, {}, {}]
-					}
-				}
-			});
-
-			expect(Object.keys(chart.scales).sort()).toEqual([
-				'x-axis-0', 'x-axis-1', 'x-axis-2',
-				'y-axis-1', 'y-axis-2', 'y-axis-3'
-			]);
 		});
 
 		it ('should remove discarded scale', function() {
@@ -1083,20 +1040,19 @@ describe('Chart', function() {
 				options: {
 					responsive: true,
 					scales: {
-						yAxes: [{
-							id: 'yAxis0',
+						y: {
 							min: 0,
 							max: 10
-						}]
+						}
 					}
 				}
 			});
 
 			var newScalesConfig = {
-				yAxes: [{
+				y: {
 					min: 0,
 					max: 10
-				}]
+				}
 			};
 			chart.options.scales = newScalesConfig;
 
@@ -1104,7 +1060,7 @@ describe('Chart', function() {
 
 			var yScale = chart.scales.yAxis0;
 			expect(yScale).toBeUndefined();
-			var newyScale = chart.scales['y-axis-0'];
+			var newyScale = chart.scales.y;
 			expect(newyScale.options.min).toBe(0);
 			expect(newyScale.options.max).toBe(10);
 		});
@@ -1181,15 +1137,16 @@ describe('Chart', function() {
 				options: {
 					responsive: true,
 					scales: {
-						xAxes: [{
+						x: {
 							type: 'category'
-						}],
-						yAxes: [{
+						},
+						y: {
+							type: 'linear',
 							scaleLabel: {
 								display: true,
 								labelString: 'Value'
 							}
-						}]
+						}
 					}
 				}
 			};

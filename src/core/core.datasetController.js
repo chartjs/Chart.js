@@ -175,15 +175,6 @@ function getStackKey(indexScale, valueScale, meta) {
 	return indexScale.id + '.' + valueScale.id + '.' + meta.stack + '.' + meta.type;
 }
 
-function getFirstScaleId(chart, axis) {
-	var scalesOpts = chart.options.scales;
-	var scale = chart.options.scale;
-	var scaleId = scale && scale.id;
-	var prop = axis + 'Axes';
-
-	return (scalesOpts && scalesOpts[prop] && scalesOpts[prop].length && scalesOpts[prop][0].id) || scaleId;
-}
-
 function getUserBounds(scale) {
 	var {min, max, minDefined, maxDefined} = scale._getUserBounds();
 	return {
@@ -298,11 +289,20 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
+		const scales = chart.scales;
 		const dataset = me.getDataset();
-		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
-		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
-		meta.xScale = me.getScaleForId(xid);
-		meta.yScale = me.getScaleForId(yid);
+
+		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
+			const firstX = Object.keys(scales).filter(key => scales[key].position === 'top' || scales[key].position === 'bottom').shift();
+			meta.xAxisID = dataset.xAxisID || firstX;
+			meta.xScale = me.getScaleForId(meta.xAxisID);
+		}
+		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
+			const firstY = Object.keys(scales).filter(key => scales[key].position === 'left' || scales[key].position === 'right').shift();
+			meta.yAxisID = dataset.yAxisID || firstY;
+			meta.yScale = me.getScaleForId(meta.yAxisID);
+		}
+
 		meta.iScale = me._getIndexScale();
 		meta.vScale = me._getValueScale();
 	},

@@ -115,7 +115,7 @@
 					duration: 0
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'time',
 						distribution: 'series',
 						offset: true,
@@ -156,8 +156,9 @@
 								lastMajor = currMajor;
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
+						type: 'linear',
 						gridLines: {
 							drawBorder: false
 						},
@@ -165,7 +166,7 @@
 							display: true,
 							labelString: 'Closing price ($)'
 						}
-					}]
+					}
 				},
 				tooltips: {
 					intersect: false,

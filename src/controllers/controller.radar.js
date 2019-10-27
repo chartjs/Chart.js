@@ -10,7 +10,7 @@ var valueOrDefault = helpers.valueOrDefault;
 defaults._set('radar', {
 	spanGaps: false,
 	scale: {
-		type: 'radialLinear'
+		type: 'radialLinear',
 	},
 	elements: {
 		line: {
