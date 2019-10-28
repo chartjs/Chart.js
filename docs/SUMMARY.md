@@ -16,6 +16,7 @@
   * [Options](general/options.md)
   * [Colors](general/colors.md)
   * [Fonts](general/fonts.md)
+  * [Performance](general/performance.md)  
 * [Configuration](configuration/README.md)
   * [Animations](configuration/animations.md)
   * [Layout](configuration/layout.md)
