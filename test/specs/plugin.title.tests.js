@@ -1,6 +1,6 @@
 // Test the rectangle element
 
-var Title = Chart.plugins.title._element;
+var Title = Chart.plugins.getAll().find(p => p.id === 'title')._element;
 
 describe('Title block tests', function() {
 	it('Should have the correct default config', function() {
