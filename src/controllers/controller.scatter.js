@@ -4,11 +4,6 @@ var LineController = require('./controller.line');
 var defaults = require('../core/core.defaults');
 
 defaults._set('scatter', {
-	hover: {
-		mode: 'nearest',
-		intersect: true
-	},
-
 	scales: {
 		xAxes: [{
 			id: 'x-axis-1',    // need an ID so datasets can reference the scale
