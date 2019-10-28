@@ -1,5 +1,7 @@
 // Test the rectangle element
 
+var Title = Chart.plugins.getAll().find(p => p.id === 'title')._element;
+
 describe('Title block tests', function() {
 	it('Should have the correct default config', function() {
 		expect(Chart.defaults.global.title).toEqual({
@@ -19,7 +21,7 @@ describe('Title block tests', function() {
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
 		options.text = 'My title';
 
-		var title = new Chart.Title({
+		var title = new Title({
 			chart: chart,
 			options: options
 		});
@@ -49,7 +51,7 @@ describe('Title block tests', function() {
 		options.text = 'My title';
 		options.position = 'left';
 
-		var title = new Chart.Title({
+		var title = new Title({
 			chart: chart,
 			options: options
 		});
@@ -81,7 +83,7 @@ describe('Title block tests', function() {
 		options.display = true;
 		options.lineHeight = 1.5;
 
-		var title = new Chart.Title({
+		var title = new Title({
 			chart: chart,
 			options: options
 		});
@@ -101,7 +103,7 @@ describe('Title block tests', function() {
 		var options = Chart.helpers.clone(Chart.defaults.global.title);
 		options.text = 'My title';
 
-		var title = new Chart.Title({
+		var title = new Title({
 			chart: chart,
 			options: options,
 			ctx: context
@@ -154,7 +156,7 @@ describe('Title block tests', function() {
 		options.text = 'My title';
 		options.position = 'left';
 
-		var title = new Chart.Title({
+		var title = new Title({
 			chart: chart,
 			options: options,
 			ctx: context
