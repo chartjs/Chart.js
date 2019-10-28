@@ -119,8 +119,7 @@ module.exports = DatasetController.extend({
 		var xScale = me._xScale;
 		var yScale = me._yScale;
 		var lineModel = meta.dataset._model;
-		var optStacked = yScale.options.stacked;
-		var stacked = (optStacked || (optStacked === undefined && me._cachedMeta.stack !== undefined));
+		var stacked = meta._stacked;
 		var parsed = me._getParsed(index);
 		var x, y;
 

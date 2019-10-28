@@ -70,7 +70,7 @@ module.exports = DatasetController.extend({
 		var i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
-			item = {_index: i};
+			item = {};
 			item[xScale.id] = xScale._parseObject(obj, 'x', i);
 			item[yScale.id] = yScale._parseObject(obj, 'y', i);
 			item._custom = obj && obj.r && +obj.r;

@@ -120,10 +120,13 @@ function convertObjectDataToArray(data) {
 	return adata;
 }
 
+function isStacked(scale, meta) {
+	var stacked = scale && scale.options.stacked;
+	return stacked || (stacked === undefined && meta.stack !== undefined);
+}
+
 function getStackKey(xScale, yScale, meta) {
-	var stacked = yScale.options.stacked;
-	return (stacked || (stacked === undefined && meta.stack !== undefined))
-		&& xScale.id + '.' + yScale.id + '.' + meta.stack + '.' + meta.type;
+	return isStacked(yScale, meta) && xScale.id + '.' + yScale.id + '.' + meta.stack + '.' + meta.type;
 }
 
 function arraysEqual(array1, array2) {
@@ -198,6 +201,7 @@ helpers.extend(DatasetController.prototype, {
 		me._cachedMeta = meta = me.getMeta();
 		me._type = meta.type;
 		me.linkScales();
+		meta._stacked = isStacked(me._getValueScale(), meta);
 		me.addElements();
 	},
 
@@ -384,6 +388,10 @@ helpers.extend(DatasetController.prototype, {
 		var dataChanged = me._dataCheck();
 		var labelsChanged = me._labelCheck();
 		var scaleChanged = me._scaleCheck();
+		var meta = me._cachedMeta;
+
+		// make sure cached _stacked status is current
+		meta._stacked = isStacked(me._getValueScale(), meta);
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
@@ -575,11 +583,10 @@ helpers.extend(DatasetController.prototype, {
 		var ilen = metaData.length;
 		var crossRef = chart._xref || (chart._xref = {});
 		var max = Number.NEGATIVE_INFINITY;
-		var stacked = scale.options.stacked;
+		var stacked = canStack && meta._stacked;
 		var indices = getSortedDatasetIndices(chart, true);
 		var i, item, value, parsed, stack, min, minPositive;
 
-		stacked = canStack && (stacked || (stacked === undefined && meta.stack !== undefined));
 		min = minPositive = Number.POSITIVE_INFINITY;
 
 		for (i = 0; i < ilen; ++i) {

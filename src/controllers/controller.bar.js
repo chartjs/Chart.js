@@ -162,7 +162,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
-		item = {_index: i};
+		item = {};
 		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
 
 		if (helpers.isArray(entry)) {
@@ -272,8 +272,8 @@ module.exports = DatasetController.extend({
 		var base = vscale.getBasePixel();
 		var horizontal = vscale.isHorizontal();
 		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(me.index, index, options);
-		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
+		var vpixels = me.calculateBarValuePixels(index, options);
+		var ipixels = me.calculateBarIndexPixels(index, ruler, options);
 
 		model.horizontal = horizontal;
 		model.base = reset ? base : vpixels.base;
@@ -369,7 +369,7 @@ module.exports = DatasetController.extend({
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
-	calculateBarValuePixels: function(datasetIndex, index, options) {
+	calculateBarValuePixels: function(index, options) {
 		var me = this;
 		var valueScale = me._getValueScale();
 		var minBarLength = options.minBarLength;
@@ -377,9 +377,7 @@ module.exports = DatasetController.extend({
 		var parsed = me._getParsed(index);
 		var value = parsed[valueScale.id];
 		var custom = parsed._custom;
-		var optStacked = valueScale.options.stacked;
-		var stacked = (optStacked || (optStacked === undefined && me._cachedMeta.stack !== undefined));
-		var length = stacked ? me._applyStack(valueScale, parsed) : parsed[valueScale.id];
+		var length = me._cachedMeta._stacked ? me._applyStack(valueScale, parsed) : parsed[valueScale.id];
 		var base, head, size;
 
 		if (length !== value) {
@@ -417,13 +415,13 @@ module.exports = DatasetController.extend({
 	/**
 	 * @private
 	 */
-	calculateBarIndexPixels: function(datasetIndex, index, ruler, options) {
+	calculateBarIndexPixels: function(index, ruler, options) {
 		var me = this;
 		var range = options.barThickness === 'flex'
 			? computeFlexCategoryTraits(index, ruler, options)
 			: computeFitCategoryTraits(index, ruler, options);
 
-		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
+		var stackIndex = me.getStackIndex(me.index, me.getMeta().stack);
 		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 		var size = Math.min(
 			valueOrDefault(options.maxBarThickness, Infinity),
