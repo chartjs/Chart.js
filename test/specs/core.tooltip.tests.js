@@ -257,7 +257,8 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'single'
+					mode: 'nearest',
+					intersect: true
 				}
 			}
 		});
@@ -366,7 +367,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label',
+					mode: 'index',
 					callbacks: {
 						beforeTitle: function() {
 							return 'beforeTitle';
@@ -519,7 +520,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label',
+					mode: 'index',
 					itemSort: function(a, b) {
 						return a.datasetIndex > b.datasetIndex ? -1 : 1;
 					}
@@ -600,7 +601,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label',
+					mode: 'index',
 					reverse: true
 				}
 			}
@@ -681,7 +682,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label'
+					mode: 'index'
 				}
 			}
 		});
@@ -760,7 +761,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label',
+					mode: 'index',
 					filter: function(tooltipItem, data) {
 						// For testing purposes remove the first dataset that has a tooltipHidden property
 						return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
@@ -885,7 +886,8 @@ describe('Core.Tooltip', function() {
 				},
 				options: {
 					tooltips: {
-						mode: 'single'
+						mode: 'nearest',
+						intersect: true
 					}
 				}
 			});
@@ -935,7 +937,8 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'single',
+					mode: 'nearest',
+					intersect: true,
 					callbacks: {
 						title: function() {
 							return 'registering callback...';
@@ -1123,7 +1126,7 @@ describe('Core.Tooltip', function() {
 			},
 			options: {
 				tooltips: {
-					mode: 'label',
+					mode: 'index',
 					callbacks: {
 						beforeTitle: function() {
 							return 'beforeTitle\nnewline';

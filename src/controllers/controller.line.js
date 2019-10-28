@@ -14,7 +14,7 @@ defaults._set('line', {
 	spanGaps: false,
 
 	hover: {
-		mode: 'label'
+		mode: 'index'
 	},
 
 	scales: {

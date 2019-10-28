@@ -244,7 +244,8 @@ describe('Chart.controllers.line', function() {
 				legend: false,
 				title: false,
 				hover: {
-					mode: 'single'
+					mode: 'nearest',
+					intersect: true
 				},
 				scales: {
 					xAxes: [{

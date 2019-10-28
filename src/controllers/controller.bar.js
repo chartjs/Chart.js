@@ -9,7 +9,7 @@ var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('bar', {
 	hover: {
-		mode: 'label'
+		mode: 'index'
 	},
 
 	scales: {

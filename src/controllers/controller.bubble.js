@@ -9,10 +9,6 @@ var valueOrDefault = helpers.valueOrDefault;
 var resolve = helpers.options.resolve;
 
 defaults._set('bubble', {
-	hover: {
-		mode: 'single'
-	},
-
 	scales: {
 		xAxes: [{
 			type: 'linear', // bubble should probably use a linear scale by default

@@ -18,9 +18,6 @@ defaults._set('doughnut', {
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
 	},
-	hover: {
-		mode: 'single'
-	},
 	legendCallback: function(chart) {
 		var list = document.createElement('ul');
 		var data = chart.data;

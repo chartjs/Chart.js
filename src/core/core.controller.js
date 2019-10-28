@@ -800,15 +800,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * @return An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
 	 */
 	getElementAtEvent: function(e) {
-		return Interaction.modes.single(this, e);
+		return Interaction.modes.nearest(this, e, {intersect: true});
 	},
 
 	getElementsAtEvent: function(e) {
-		return Interaction.modes.label(this, e, {intersect: true});
+		return Interaction.modes.index(this, e, {intersect: true});
 	},
 
 	getElementsAtXAxis: function(e) {
-		return Interaction.modes['x-axis'](this, e, {intersect: true});
+		return Interaction.modes.index(this, e, {intersect: false});
 	},
 
 	getElementsAtEventForMode: function(e, mode, options) {
