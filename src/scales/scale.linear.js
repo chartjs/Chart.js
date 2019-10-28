@@ -42,18 +42,18 @@ function stackData(scale, stacks, meta, data) {
 	var i, value;
 
 	for (i = 0; i < ilen; ++i) {
-		value = scale._parseValue(data[i]);
-		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+		value = scale._parseValue(data[i]).max;
+		if (isNaN(value) || meta.data[i].hidden) {
 			continue;
 		}
 
 		pos[i] = pos[i] || 0;
 		neg[i] = neg[i] || 0;
 
-		if (value.min < 0 || value.max < 0) {
-			neg[i] += value.min;
+		if (value < 0) {
+			neg[i] += value;
 		} else {
-			pos[i] += value.max;
+			pos[i] += value;
 		}
 	}
 }
@@ -63,13 +63,13 @@ function updateMinMax(scale, meta, data) {
 	var i, value;
 
 	for (i = 0; i < ilen; ++i) {
-		value = scale._parseValue(data[i]);
-		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+		value = scale._parseValue(data[i]).max;
+		if (isNaN(value) || meta.data[i].hidden) {
 			continue;
 		}
 
-		scale.min = Math.min(scale.min, value.min);
-		scale.max = Math.max(scale.max, value.max);
+		scale.min = Math.min(scale.min, value);
+		scale.max = Math.max(scale.max, value);
 	}
 }
 

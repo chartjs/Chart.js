@@ -830,26 +830,28 @@ var Scale = Element.extend({
 	 * @private
 	 */
 	_parseValue: function(value) {
-		var start, end, min, max;
+		var start, end, min, max, cross;
 
 		if (isArray(value)) {
 			start = +this.getRightValue(value[0]);
 			end = +this.getRightValue(value[1]);
 			min = Math.min(start, end);
 			max = Math.max(start, end);
+			if (Math.abs(min) > Math.abs(max)) {
+				min = max;
+				max = Math.min(start, end);
+			}
+			cross = min !== 0 && Math.sign(min) !== Math.sign(max);
 		} else {
-			value = +this.getRightValue(value);
-			start = undefined;
-			end = value;
-			min = value;
-			max = value;
+			max = end = +this.getRightValue(value);
 		}
 
 		return {
 			min: min,
 			max: max,
 			start: start,
-			end: end
+			end: end,
+			cross: cross
 		};
 	},
 

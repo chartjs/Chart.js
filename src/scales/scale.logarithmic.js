@@ -117,13 +117,13 @@ module.exports = Scale.extend({
 					data = datasets[datasetIndex].data;
 					for (i = 0, ilen = data.length; i < ilen; i++) {
 						var values = valuesPerStack[key];
-						value = me._parseValue(data[i]);
+						value = me._parseValue(data[i]).max;
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+						if (isNaN(value) || value < 0 || meta.data[i].hidden) {
 							continue;
 						}
 						values[i] = values[i] || 0;
-						values[i] += value.max;
+						values[i] += value;
 					}
 				}
 			}
@@ -143,17 +143,17 @@ module.exports = Scale.extend({
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					data = datasets[datasetIndex].data;
 					for (i = 0, ilen = data.length; i < ilen; i++) {
-						value = me._parseValue(data[i]);
+						value = me._parseValue(data[i]).max;
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+						if (isNaN(value) || value < 0 || meta.data[i].hidden) {
 							continue;
 						}
 
-						me.min = Math.min(value.min, me.min);
-						me.max = Math.max(value.max, me.max);
+						me.min = Math.min(me.min, value);
+						me.max = Math.max(me.max, value);
 
-						if (value.min !== 0) {
-							me.minNotZero = Math.min(value.min, me.minNotZero);
+						if (value !== 0) {
+							me.minNotZero = Math.min(value, me.minNotZero);
 						}
 					}
 				}

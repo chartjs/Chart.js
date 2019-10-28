@@ -303,19 +303,18 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var chart = me.chart;
 		var scale = me._getValueScale();
-		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
 		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var value = scale._parseValue(datasets[datasetIndex].data[index]);
 		var minBarLength = options.minBarLength;
 		var stacked = scale.options.stacked;
 		var stack = me.getMeta().stack;
-		var start = value.start === undefined ? 0 : value.max >= 0 && value.min >= 0 ? value.min : value.max;
-		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+		var start = value.min || 0;
+		var length = value.max - start;
 		var ilen = metasets.length;
-		var i, imeta, ivalue, base, head, size, stackLength;
+		var i, imeta, ivalue, base, head, size;
 
-		if (stacked || (stacked === undefined && stack !== undefined)) {
+		if (!value.cross && (stacked || (stacked === undefined && stack !== undefined))) {
 			for (i = 0; i < ilen; ++i) {
 				imeta = metasets[i];
 
@@ -324,11 +323,9 @@ module.exports = DatasetController.extend({
 				}
 
 				if (imeta.stack === stack) {
-					stackLength = scale._parseValue(datasets[imeta.index].data[index]);
-					ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
-
-					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
-						start += ivalue;
+					ivalue = scale._parseValue(datasets[imeta.index].data[index]);
+					if ((!ivalue.cross && (value.max === 0 || Math.sign(ivalue.max) === Math.sign(value.max)))) {
+						start += ivalue.max;
 					}
 				}
 			}
@@ -339,12 +336,8 @@ module.exports = DatasetController.extend({
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
-			size = minBarLength;
-			if (length >= 0 && !isHorizontal || length < 0 && isHorizontal) {
-				head = base - minBarLength;
-			} else {
-				head = base + minBarLength;
-			}
+			size = size < 0 ? -minBarLength : minBarLength;
+			head = base + size;
 		}
 
 		return {
@@ -390,8 +383,8 @@ module.exports = DatasetController.extend({
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			var val = scale._parseValue(dataset.data[i]);
-			if (!isNaN(val.min) && !isNaN(val.max)) {
+			var val = scale._parseValue(dataset.data[i]).max;
+			if (!isNaN(val)) {
 				rects[i].draw();
 			}
 		}
