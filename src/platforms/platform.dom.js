@@ -339,7 +339,7 @@ module.exports = {
 			// If the canvas is in a shadow DOM, then the styles must also be inserted
 			// into the same shadow DOM.
 			// https://github.com/chartjs/Chart.js/issues/5763
-			var root = canvas.getRootNode();
+			var root = canvas.getRootNode ? canvas.getRootNode() : document;
 			var targetNode = root.host ? root : document.head;
 			injectCSS(targetNode, stylesheet);
 		}
