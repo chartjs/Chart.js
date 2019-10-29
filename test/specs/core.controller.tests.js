@@ -1142,7 +1142,7 @@ describe('Chart', function() {
 			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
 		});
 
-		it ('should reset the tooltip on update', function() {
+		it ('should update the tooltip on update', function() {
 			var chart = acquireChart({
 				type: 'line',
 				data: {
@@ -1172,10 +1172,10 @@ describe('Chart', function() {
 			expect(chart.lastActive).toEqual([point]);
 			expect(tooltip._lastActive).toEqual([point]);
 
-			// Update and confirm tooltip is reset
+			// Update and confirm tooltip is updated
 			chart.update();
-			expect(chart.lastActive).toEqual([]);
-			expect(tooltip._lastActive).toEqual([]);
+			expect(chart.lastActive).toEqual([point]);
+			expect(tooltip._lastActive).toEqual([point]);
 		});
 
 		it ('should update the metadata', function() {
