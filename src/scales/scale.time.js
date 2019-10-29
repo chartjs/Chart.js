@@ -615,9 +615,7 @@ module.exports = Scale.extend({
 		var nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
 		var formatter = resolve([
 			nestedTickOpts.callback,
-			nestedTickOpts.userCallback,
-			tickOpts.callback,
-			tickOpts.userCallback
+			tickOpts.callback
 		]);
 
 		return formatter ? formatter(label, index, ticks) : label;
