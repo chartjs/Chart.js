@@ -1,0 +1,77 @@
+{
+    "config": {
+        "type": "scatter",
+        "data": {
+            "datasets": [
+                {
+                    "showLine": true,
+                    "borderColor": "red",
+                    "data": [{"x":-4,"y":-4},{"x":4,"y":4}],
+                    "clip": false
+                },
+                {
+                    "showLine": true,
+                    "borderColor": "green",
+                    "data": [{"x":-4,"y":-5},{"x":4,"y":3}],
+                    "clip": 5
+                },
+                {
+                    "showLine": true,
+                    "borderColor": "blue",
+                    "data": [{"x":-4,"y":-3},{"x":4,"y":5}],
+                    "clip": -5
+                },
+                {
+                    "showLine": true,
+                    "borderColor": "brown",
+                    "data": [{"x":-3,"y":-3},{"x":-1,"y":3},{"x":1,"y":-2},{"x":2,"y":3}],
+                    "clip": {
+                        "top": 8,
+                        "left": false,
+                        "right": -20,
+                        "bottom": -20
+                    }
+                }
+            ]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "xAxes": [{
+                    "ticks": {
+                        "min": -2,
+                        "max": 2,
+                        "display": false
+                    }
+                }],
+                "yAxes": [{
+                    "ticks": {
+                        "min": -2,
+                        "max": 2,
+                        "display": false
+                    }
+                }]
+            },
+            "layout": {
+                "padding": 24
+            },
+            "elements": {
+                "line": {
+                    "fill": false,
+                    "borderWidth": 20
+                },
+                "point": {
+                    "radius": 0
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
