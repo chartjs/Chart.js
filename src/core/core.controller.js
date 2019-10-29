@@ -504,8 +504,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// after update.
 		me.tooltip.initialize();
 
-		// Last active contains items that were previously in the tooltip.
-		// When we reset the tooltip, we need to clear it
+		// Last active contains items that were previously hovered.
 		me.lastActive = [];
 
 		// Do this before render so that any plugins that need final scale updates can use it
@@ -521,6 +520,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			};
 		} else {
 			me.render(config);
+		}
+
+		// Replay last event from before update
+		if (me._lastEvent) {
+			me.eventHandler(me._lastEvent);
 		}
 	},
 
@@ -693,14 +697,20 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 */
 	transition: function(easingValue) {
 		var me = this;
+		var i, ilen;
 
-		for (var i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
+		for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
 			if (me.isDatasetVisible(i)) {
 				me.getDatasetMeta(i).controller.transition(easingValue);
 			}
 		}
 
 		me.tooltip.transition(easingValue);
+
+		if (me._lastEvent && me.animating) {
+			// If, during animation, element under mouse changes, let's react to that.
+			me.handleEvent(me._lastEvent);
+		}
 	},
 
 	/**
@@ -985,6 +995,25 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	/**
 	 * @private
 	 */
+	_updateHoverStyles: function() {
+		var me = this;
+		var options = me.options || {};
+		var hoverOptions = options.hover;
+
+		// Remove styling for last active (even if it may still be active)
+		if (me.lastActive.length) {
+			me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
+		}
+
+		// Built-in hover styling
+		if (me.active.length && hoverOptions.mode) {
+			me.updateHoverStyle(me.active, hoverOptions.mode, true);
+		}
+	},
+
+	/**
+	 * @private
+	 */
 	eventHandler: function(e) {
 		var me = this;
 		var tooltip = me.tooltip;
@@ -1049,8 +1078,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
 			me.active = [];
+			me._lastEvent = null;
 		} else {
 			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+			me._lastEvent = e.type === 'click' ? null : e;
 		}
 
 		// Invoke onHover hook
@@ -1064,16 +1095,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 		}
 
-		// Remove styling for last active (even if it may still be active)
-		if (me.lastActive.length) {
-			me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
-		}
-
-		// Built in hover styling
-		if (me.active.length && hoverOptions.mode) {
-			me.updateHoverStyle(me.active, hoverOptions.mode, true);
-		}
-
+		me._updateHoverStyles();
 		changed = !helpers.arrayEquals(me.active, me.lastActive);
 
 		// Remember Last Actives
