@@ -177,6 +177,25 @@ describe('Chart', function() {
 			delete Chart.scaleService.defaults.logarithmic._jasmineCheckC;
 		});
 
+		it('should default to "category" for x scales and "linear" for y scales', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						xFoo0: {},
+						xFoo1: {},
+						yBar0: {},
+						yBar1: {},
+					}
+				}
+			});
+
+			expect(chart.scales.xFoo0.type).toBe('category');
+			expect(chart.scales.xFoo1.type).toBe('category');
+			expect(chart.scales.yBar0.type).toBe('linear');
+			expect(chart.scales.yBar1.type).toBe('linear');
+		});
+
 		it('should correctly apply defaults on central scale', function() {
 			var chart = acquireChart({
 				type: 'line',

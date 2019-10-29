@@ -53,10 +53,6 @@ function mergeScaleConfig(/* config objects ... */) {
 			scale = source[key];
 			type = scale.type;
 
-			if (helpers.isNullOrUndef(type) && helpers.isNullOrUndef(target[key].type)) {
-				throw new Error('Axis config "' + key + '" has no type specified.');
-			}
-
 			if (!target[key].type || (scale.type && scale.type !== target[key].type)) {
 				// new/untyped scale or type changed: let's apply the new defaults
 				// then merge source scale to correctly overwrite the defaults.
