@@ -6,6 +6,7 @@
   * [Installation](getting-started/installation.md)
   * [Integration](getting-started/integration.md)
   * [Usage](getting-started/usage.md)
+  * [Migration Guide](getting-started/v3-migration.md)
 * [General](general/README.md)
   * [Accessibility](general/accessibility.md)
   * [Responsive](general/responsive.md)

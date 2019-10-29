@@ -2,7 +2,7 @@
 
 /**
  * Easing functions adapted from Robert Penner's easing equations.
- * @namespace Chart.helpers.effects
+ * @namespace Chart.helpers.easing.effects
  * @see http://www.robertpenner.com/easing/
  */
 var effects = {
