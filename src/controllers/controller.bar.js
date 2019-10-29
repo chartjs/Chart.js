@@ -15,7 +15,6 @@ defaults._set('bar', {
 	scales: {
 		x: {
 			type: 'category',
-			position: 'bottom',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
@@ -23,7 +22,6 @@ defaults._set('bar', {
 		},
 		y: {
 			type: 'linear',
-			position: 'left'
 		}
 	}
 });

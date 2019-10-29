@@ -20,11 +20,9 @@ defaults._set('line', {
 	scales: {
 		x: {
 			type: 'category',
-			position: 'bottom',
 		},
 		y: {
 			type: 'linear',
-			position: 'left',
 		},
 	}
 });

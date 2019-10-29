@@ -11,7 +11,6 @@ defaults._set('radar', {
 	spanGaps: false,
 	scale: {
 		type: 'radialLinear',
-		position: 'chartArea'
 	},
 	elements: {
 		line: {

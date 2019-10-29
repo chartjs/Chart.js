@@ -15,7 +15,7 @@ defaults._set('scatter', {
 		},
 		y: {
 			type: 'linear',
-			position: 'left',
+			position: 'left'
 		}
 	},
 

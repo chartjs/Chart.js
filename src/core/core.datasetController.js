@@ -144,11 +144,14 @@ helpers.extend(DatasetController.prototype, {
 		var dataset = me.getDataset();
 		var scalesOpts = chart.options.scales;
 
+		var firstX = Object.keys(scales).filter(key => scales[key].position === 'top' || scales[key].position === 'bottom').shift();
+		var firstY = Object.keys(scales).filter(key => scales[key].position === 'left' || scales[key].position === 'right').shift();
+
 		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
-			meta.xAxisID = dataset.xAxisID || scalesOpts.x.id;
+			meta.xAxisID = dataset.xAxisID || firstX;
 		}
 		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
-			meta.yAxisID = dataset.yAxisID || scalesOpts.y.id;
+			meta.yAxisID = dataset.yAxisID || firstY;
 		}
 	},
 
