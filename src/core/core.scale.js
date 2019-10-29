@@ -571,7 +571,7 @@ var Scale = Element.extend({
 		var me = this;
 		// Convert ticks to strings
 		var tickOpts = me.options.ticks;
-		me.ticks = me.ticks.map(tickOpts.userCallback || tickOpts.callback, this);
+		me.ticks = me.ticks.map(tickOpts.callback, this);
 	},
 	afterTickToLabelConversion: function() {
 		helpers.callback(this.options.afterTickToLabelConversion, [this]);
