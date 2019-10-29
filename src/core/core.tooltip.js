@@ -1006,7 +1006,7 @@ var exports = Element.extend({
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			if (e.type !== 'click') {
-				me._lastEvent = e;
+				me._lastEvent = e.type === 'click' ? null : e;
 			}
 			if (options.reverse) {
 				me._active.reverse();
