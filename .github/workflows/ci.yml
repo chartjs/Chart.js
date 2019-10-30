@@ -1,0 +1,35 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - name: Setup xvfb
+      run: |
+        Xvfb :99 -screen 0 1024x768x24 &
+        echo "::set-env name=DISPLAY:::99.0"
+      if: runner.os == 'Linux'
+    - name: Build and Test
+      run: |
+        npm install
+        gulp build
+        gulp test --coverage
+    - name: Package
+      run: |
+        gulp docs
+        gulp package
+        gulp bower
+    - name: Publish Test Results
+      run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+      continue-on-error: true
