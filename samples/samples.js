@@ -139,7 +139,7 @@
 		}, {
 			title: 'Toggle Scale Type',
 			path: 'scales/toggle-scale-type.html'
-		},{
+		}, {
 			title: 'Axes Label',
 			path: 'scales/axes-label.html'
 		}]
