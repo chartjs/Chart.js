@@ -49,7 +49,10 @@ module.exports = Scale.extend({
 		var maxIndex = me.maxIndex;
 
 		// If we are viewing some subset of labels, slice the original array
-		me.ticks = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
+		labels = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
+		return labels.map(function(l) {
+			return {value: l};
+		});
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {

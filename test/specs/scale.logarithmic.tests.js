@@ -1,3 +1,7 @@
+function getLabels(scale) {
+	return scale.ticks.map(t => t.label);
+}
+
 describe('Logarithmic Scale tests', function() {
 	it('should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
@@ -473,8 +477,8 @@ describe('Logarithmic Scale tests', function() {
 		var tickCount = yScale.ticks.length;
 		expect(yScale.min).toBe(10);
 		expect(yScale.max).toBe(1010);
-		expect(yScale.ticks[0]).toBe(1010);
-		expect(yScale.ticks[tickCount - 1]).toBe(10);
+		expect(yScale.ticks[0].value).toBe(1010);
+		expect(yScale.ticks[tickCount - 1].value).toBe(10);
 	});
 
 	it('should ignore negative min and max options', function() {
@@ -564,11 +568,10 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		// Counts down because the lines are drawn top to bottom
-		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-			start: 1,
-			end: 80
-		}));
+		var scale = chart.scales.yScale;
+		expect(getLabels(scale)).toEqual([80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+		expect(scale.start).toEqual(1);
+		expect(scale.end).toEqual(80);
 	});
 
 	it('should generate tick marks when 0 values are present', function() {
@@ -595,12 +598,11 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
+		var scale = chart.scales.yScale;
 		// Counts down because the lines are drawn top to bottom
-		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.9, 0.8, 0],
-			start: 0,
-			end: 30
-		}));
+		expect(getLabels(scale)).toEqual([30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.9, 0.8, 0]);
+		expect(scale.start).toEqual(0);
+		expect(scale.end).toEqual(30);
 	});
 
 
@@ -629,12 +631,10 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		// Counts down because the lines are drawn top to bottom
-		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80],
-			start: 80,
-			end: 1
-		}));
+		var scale = chart.scales.yScale;
+		expect(getLabels(scale)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80]);
+		expect(scale.start).toEqual(80);
+		expect(scale.end).toEqual(1);
 	});
 
 	it('should generate tick marks in the correct order in reversed mode when 0 values are present', function() {
@@ -662,12 +662,10 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		// Counts down because the lines are drawn top to bottom
-		expect(chart.scales.yScale).toEqual(jasmine.objectContaining({
-			ticks: [0, 9, 10, 20, 30],
-			start: 30,
-			end: 0
-		}));
+		var scale = chart.scales.yScale;
+		expect(getLabels(scale)).toEqual([0, 9, 10, 20, 30]);
+		expect(scale.start).toEqual(30);
+		expect(scale.end).toEqual(0);
 	});
 
 	it('should build labels using the default template', function() {
@@ -689,7 +687,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.yScale.ticks).toEqual(['8e+1', '', '', '5e+1', '', '', '2e+1', '1e+1', '', '', '', '', '5e+0', '', '', '2e+0', '1e+0', '0']);
+		expect(getLabels(chart.scales.yScale)).toEqual(['8e+1', '', '', '5e+1', '', '', '2e+1', '1e+1', '', '', '', '', '5e+0', '', '', '2e+0', '1e+0', '0']);
 	});
 
 	it('should build labels using the user supplied callback', function() {
@@ -717,7 +715,7 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		// Just the index
-		expect(chart.scales.yScale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']);
+		expect(getLabels(chart.scales.yScale)).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']);
 	});
 
 	it('should correctly get the correct label for a data item', function() {

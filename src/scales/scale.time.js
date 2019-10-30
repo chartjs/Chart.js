@@ -621,15 +621,13 @@ module.exports = Scale.extend({
 		return formatter ? formatter(label, index, ticks) : label;
 	},
 
-	convertTicksToLabels: function(ticks) {
-		var labels = [];
-		var i, ilen;
+	generateTickLabels: function(ticks) {
+		var i, ilen, tick;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			labels.push(this.tickFormatFunction(ticks[i].value, i, ticks));
+			tick = ticks[i];
+			tick.label = this.tickFormatFunction(tick.value, i, ticks);
 		}
-
-		return labels;
 	},
 
 	/**

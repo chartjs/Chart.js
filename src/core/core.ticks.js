@@ -33,7 +33,7 @@ module.exports = {
 		 */
 		linear: function(tickValue, index, ticks) {
 			// If we have lots of ticks, don't use the ones
-			var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
+			var delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
 			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
 			if (Math.abs(delta) > 1) {
@@ -47,7 +47,7 @@ module.exports = {
 			var tickString = '';
 
 			if (tickValue !== 0) {
-				var maxTick = Math.max(Math.abs(ticks[0]), Math.abs(ticks[ticks.length - 1]));
+				var maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
 				if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
 					var logTick = math.log10(Math.abs(tickValue));
 					var numExponential = Math.floor(logTick) - Math.floor(logDelta);

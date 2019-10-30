@@ -73,21 +73,27 @@ module.exports = function() {
 		var rounded = Math.round(x);
 		return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 	};
-	helpers.max = function(array) {
-		return array.reduce(function(max, value) {
-			if (!isNaN(value)) {
-				return Math.max(max, value);
+	helpers._setMinAndMax = function(array, target, property) {
+		var i, ilen, value;
+
+		if (typeof property !== 'undefined') {
+			for (i = 0, ilen = array.length; i < ilen; i++) {
+				value = array[i][property];
+				if (!isNaN(value)) {
+					target.min = Math.min(target.min, value);
+					target.max = Math.max(target.max, value);
+				}
 			}
-			return max;
-		}, Number.NEGATIVE_INFINITY);
-	};
-	helpers.min = function(array) {
-		return array.reduce(function(min, value) {
+			return;
+		}
+
+		for (i = 0, ilen = array.length; i < ilen; i++) {
+			value = array[i];
 			if (!isNaN(value)) {
-				return Math.min(min, value);
+				target.min = Math.min(target.min, value);
+				target.max = Math.max(target.max, value);
 			}
-			return min;
-		}, Number.POSITIVE_INFINITY);
+		}
 	};
 	helpers.sign = Math.sign ?
 		function(x) {

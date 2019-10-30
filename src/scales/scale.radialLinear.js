@@ -337,10 +337,10 @@ module.exports = LinearScaleBase.extend({
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
 	},
 
-	convertTicksToLabels: function() {
+	generateTickLabels: function(ticks) {
 		var me = this;
 
-		LinearScaleBase.prototype.convertTicksToLabels.call(me);
+		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map(function() {
@@ -467,9 +467,9 @@ module.exports = LinearScaleBase.extend({
 		}
 
 		if (gridLineOpts.display) {
-			helpers.each(me.ticks, function(label, index) {
+			helpers.each(me.ticks, function(tick, index) {
 				if (index !== 0) {
-					offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+					offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
 					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
@@ -522,15 +522,15 @@ module.exports = LinearScaleBase.extend({
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		helpers.each(me.ticks, function(label, index) {
+		helpers.each(me.ticks, function(tick, index) {
 			if (index === 0 && !tickOpts.reverse) {
 				return;
 			}
 
-			offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+			offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
 
 			if (tickOpts.showLabelBackdrop) {
-				width = ctx.measureText(label).width;
+				width = ctx.measureText(tick.label).width;
 				ctx.fillStyle = tickOpts.backdropColor;
 
 				ctx.fillRect(
@@ -542,7 +542,7 @@ module.exports = LinearScaleBase.extend({
 			}
 
 			ctx.fillStyle = tickFontColor;
-			ctx.fillText(label, 0, -offset);
+			ctx.fillText(tick.label, 0, -offset);
 		});
 
 		ctx.restore();

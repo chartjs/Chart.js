@@ -1,3 +1,7 @@
+function getLabels(scale) {
+	return scale.ticks.map(t => t.label);
+}
+
 // Tests for the radial linear scale used by the polar area and radar charts
 describe('Test the radial linear scale', function() {
 	describe('auto', jasmine.fixture.specs('scale.radialLinear'));
@@ -220,7 +224,7 @@ describe('Test the radial linear scale', function() {
 
 		expect(chart.scale.min).toBe(-1010);
 		expect(chart.scale.max).toBe(1010);
-		expect(chart.scale.ticks).toEqual(['-1010', '-1000', '-500', '0', '500', '1000', '1010']);
+		expect(getLabels(chart.scale)).toEqual(['-1010', '-1000', '-500', '0', '500', '1000', '1010']);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {
@@ -241,22 +245,22 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.ticks).toEqual(['20', '25', '30', '35', '40', '45', '50']);
+		expect(getLabels(chart.scale)).toEqual(['20', '25', '30', '35', '40', '45', '50']);
 
 		chart.scale.options.ticks.beginAtZero = true;
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']);
+		expect(getLabels(chart.scale)).toEqual(['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']);
 
 		chart.data.datasets[0].data = [-20, -30, -40, -50];
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20', '-15', '-10', '-5', '0']);
+		expect(getLabels(chart.scale)).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20', '-15', '-10', '-5', '0']);
 
 		chart.scale.options.ticks.beginAtZero = false;
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20']);
+		expect(getLabels(chart.scale)).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20']);
 	});
 
 	it('Should generate tick marks in the correct order in reversed mode', function() {
@@ -277,7 +281,7 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.ticks).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
+		expect(getLabels(chart.scale)).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '0']);
 		expect(chart.scale.start).toBe(80);
 		expect(chart.scale.end).toBe(0);
 	});
@@ -300,23 +304,23 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+		expect(getLabels(chart.scale)).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
 
 		chart.options.scale.ticks.maxTicksLimit = 11;
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+		expect(getLabels(chart.scale)).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
 
 		chart.options.scale.ticks.stepSize = 0.01;
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
+		expect(getLabels(chart.scale)).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
 
 		chart.options.scale.ticks.min = 0.3;
 		chart.options.scale.ticks.max = 2.8;
 		chart.update();
 
-		expect(chart.scale.ticks).toEqual(['0.3', '0.5', '1.0', '1.5', '2.0', '2.5', '2.8']);
+		expect(getLabels(chart.scale)).toEqual(['0.3', '0.5', '1.0', '1.5', '2.0', '2.5', '2.8']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {
@@ -339,7 +343,7 @@ describe('Test the radial linear scale', function() {
 			}
 		});
 
-		expect(chart.scale.ticks).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
+		expect(getLabels(chart.scale)).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
 		expect(chart.scale.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
 	});
 
