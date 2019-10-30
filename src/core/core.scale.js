@@ -332,7 +332,7 @@ var Scale = Element.extend({
 	 * @param {*} raw
 	 * @param {number} index
 	 * @private
-	 * @since 2.9
+	 * @since 3.0
 	 */
 	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
 		return raw;
@@ -344,7 +344,7 @@ var Scale = Element.extend({
 	 * @param {string} axis
 	 * @param {number} index
 	 * @private
-	 * @since 2.9
+	 * @since 3.0
 	 */
 	_parseObject: function(obj, axis, index) {
 		if (obj[axis] !== undefined) {

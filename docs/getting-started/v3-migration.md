@@ -81,6 +81,10 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `afterBuildTicks` now has no parameters like the other callbacks
 * `convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
 
+#### Scales
+
+* `scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
+
 #### Time Scale
 
 * `getValueForPixel` now returns milliseconds since the epoch
