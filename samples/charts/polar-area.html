@@ -30,6 +30,7 @@
 		var color = Chart.helpers.color;
 		var config = {
 			data: {
+				type: 'polarArea',
 				datasets: [{
 					data: [
 						randomScalingFactor(),
@@ -79,7 +80,7 @@
 
 		window.onload = function() {
 			var ctx = document.getElementById('chart-area');
-			window.myPolarArea = Chart.PolarArea(ctx, config);
+			window.myPolarArea = new Chart(ctx, config);
 		};
 
 		document.getElementById('randomizeData').addEventListener('click', function() {
