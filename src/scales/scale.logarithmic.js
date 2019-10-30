@@ -102,6 +102,9 @@ module.exports = Scale.extend({
 
 			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
 				meta = chart.getDatasetMeta(datasetIndex);
+				if (!chart.isDatasetVisible(datasetIndex) || !IDMatches(meta)) {
+					continue;
+				}
 				var key = [
 					meta.type,
 					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
@@ -109,22 +112,20 @@ module.exports = Scale.extend({
 					meta.stack
 				].join('.');
 
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					if (valuesPerStack[key] === undefined) {
-						valuesPerStack[key] = [];
-					}
+				if (valuesPerStack[key] === undefined) {
+					valuesPerStack[key] = [];
+				}
 
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						var values = valuesPerStack[key];
-						value = me._parseValue(data[i]).max;
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || value < 0 || meta.data[i].hidden) {
-							continue;
-						}
-						values[i] = values[i] || 0;
-						values[i] += value;
+				data = datasets[datasetIndex].data;
+				for (i = 0, ilen = data.length; i < ilen; i++) {
+					var values = valuesPerStack[key];
+					value = me._parseValue(data[i]).max;
+					// invalid, hidden and negative values are ignored
+					if (isNaN(value) || value < 0 || meta.data[i].hidden) {
+						continue;
 					}
+					values[i] = values[i] || 0;
+					values[i] += value;
 				}
 			}
 
@@ -140,21 +141,22 @@ module.exports = Scale.extend({
 		} else {
 			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
 				meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					data = datasets[datasetIndex].data;
-					for (i = 0, ilen = data.length; i < ilen; i++) {
-						value = me._parseValue(data[i]).max;
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || value < 0 || meta.data[i].hidden) {
-							continue;
-						}
+				if (!chart.isDatasetVisible(datasetIndex) || !IDMatches(meta)) {
+					continue;
+				}
+				data = datasets[datasetIndex].data;
+				for (i = 0, ilen = data.length; i < ilen; i++) {
+					value = me._parseValue(data[i]).max;
+					// invalid, hidden and negative values are ignored
+					if (isNaN(value) || value < 0 || meta.data[i].hidden) {
+						continue;
+					}
 
-						me.min = Math.min(me.min, value);
-						me.max = Math.max(me.max, value);
+					me.min = Math.min(me.min, value);
+					me.max = Math.max(me.max, value);
 
-						if (value !== 0) {
-							me.minNotZero = Math.min(value, me.minNotZero);
-						}
+					if (value !== 0) {
+						me.minNotZero = Math.min(value, me.minNotZero);
 					}
 				}
 			}
