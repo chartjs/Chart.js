@@ -36,7 +36,7 @@
     "clean-css": "^4.2.1",
     "coveralls": "^3.0.0",
     "eslint": "^5.9.0",
-    "eslint-config-chartjs": "^0.1.0",
+    "eslint-config-chartjs": "^0.2.0",
     "eslint-plugin-html": "^5.0.0",
     "gitbook-cli": "^2.3.2",
     "gulp": "^4.0.0",
