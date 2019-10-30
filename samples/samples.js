@@ -43,9 +43,6 @@
 		}, {
 			title: 'Point sizes',
 			path: 'charts/line/point-sizes.html'
-		}, {
-			title: 'Axes Label',
-			path: 'charts/line/axes-label.html'
 		}]
 	}, {
 		title: 'Area charts',
@@ -142,6 +139,9 @@
 		}, {
 			title: 'Toggle Scale Type',
 			path: 'scales/toggle-scale-type.html'
+		},{
+			title: 'Axes Label',
+			path: 'scales/axes-label.html'
 		}]
 	}, {
 		title: 'Legend',
