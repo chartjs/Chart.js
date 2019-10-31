@@ -40,13 +40,13 @@ function acquireChart(config, options) {
 	options.wrapper = options.wrapper || {class: 'chartjs-wrapper'};
 
 	for (key in options.canvas) {
-		if (options.canvas.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(options.canvas, key)) {
 			canvas.setAttribute(key, options.canvas[key]);
 		}
 	}
 
 	for (key in options.wrapper) {
-		if (options.wrapper.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(options.wrapper, key)) {
 			wrapper.setAttribute(key, options.wrapper[key]);
 		}
 	}

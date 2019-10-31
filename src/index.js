@@ -37,7 +37,7 @@ require('./adapters');
 // Loading built-in plugins
 var plugins = require('./plugins');
 for (var k in plugins) {
-	if (plugins.hasOwnProperty(k)) {
+	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
 		Chart.plugins.register(plugins[k]);
 	}
 }

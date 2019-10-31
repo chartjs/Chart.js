@@ -1,5 +1,3 @@
-/* global window: false */
-/* global document: false */
 'use strict';
 
 var color = require('chartjs-color');
@@ -578,7 +576,6 @@ module.exports = function() {
 			return value;
 		} :
 		function(value) {
-			/* global CanvasGradient */
 			if (value instanceof CanvasGradient) {
 				value = defaults.global.defaultColor;
 			}
@@ -587,7 +584,6 @@ module.exports = function() {
 		};
 
 	helpers.getHoverColor = function(colorValue) {
-		/* global CanvasPattern */
 		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
 			colorValue :
 			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();

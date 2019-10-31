@@ -1034,8 +1034,8 @@ describe('Core.Tooltip', function() {
 			var fn = Chart.Tooltip.positioners.test;
 			expect(fn.calls.count()).toBe(1);
 			expect(fn.calls.first().args[0] instanceof Array).toBe(true);
-			expect(fn.calls.first().args[1].hasOwnProperty('x')).toBe(true);
-			expect(fn.calls.first().args[1].hasOwnProperty('y')).toBe(true);
+			expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
+			expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
 			expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
 		});
 	});

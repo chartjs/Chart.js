@@ -8,7 +8,6 @@ describe('Chart', function() {
 		expect(Chart instanceof Object).toBeTruthy();
 		expect(chart.constructor).toBe(Chart);
 		expect(chart instanceof Chart).toBeTruthy();
-		expect(Chart.prototype.isPrototypeOf(chart)).toBeTruthy();
 	});
 
 	describe('config initialization', function() {
