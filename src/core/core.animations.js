@@ -1,4 +1,3 @@
-/* global window: false */
 'use strict';
 
 var defaults = require('./core.defaults');

@@ -216,7 +216,7 @@ var helpers = {
 
 		if (helpers.isObject(tval) && helpers.isObject(sval)) {
 			helpers.mergeIf(tval, sval);
-		} else if (!target.hasOwnProperty(key)) {
+		} else if (!Object.prototype.hasOwnProperty.call(target, key)) {
 			target[key] = helpers.clone(sval);
 		}
 	},
@@ -288,7 +288,7 @@ var helpers = {
 	 */
 	inherits: function(extensions) {
 		var me = this;
-		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
+		var ChartElement = (extensions && Object.prototype.hasOwnProperty.call(extensions, 'constructor')) ? extensions.constructor : function() {
 			return me.apply(this, arguments);
 		};
 

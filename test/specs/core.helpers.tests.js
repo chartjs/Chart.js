@@ -631,7 +631,7 @@ describe('Core helper tests', function() {
 
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
-			return typeof obj === 'object' && obj.hasOwnProperty('values') && obj.values.hasOwnProperty('rgb');
+			return typeof obj === 'object' && Object.prototype.hasOwnProperty.call(obj, 'values') && Object.prototype.hasOwnProperty.call(obj.values, 'rgb');
 		}
 
 		it('should return a color when called with a color', function() {

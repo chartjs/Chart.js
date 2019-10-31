@@ -14,7 +14,7 @@ function interpolate(start, view, model, ease) {
 
 		// if a value is added to the model after pivot() has been called, the view
 		// doesn't contain it, so let's initialize the view to the target value.
-		if (!view.hasOwnProperty(key)) {
+		if (!Object.prototype.hasOwnProperty.call(view, key)) {
 			view[key] = target;
 		}
 
@@ -24,7 +24,7 @@ function interpolate(start, view, model, ease) {
 			continue;
 		}
 
-		if (!start.hasOwnProperty(key)) {
+		if (!Object.prototype.hasOwnProperty.call(start, key)) {
 			start[key] = actual;
 		}
 

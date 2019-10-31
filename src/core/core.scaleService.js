@@ -18,15 +18,15 @@ module.exports = {
 		this.defaults[type] = helpers.clone(scaleDefaults);
 	},
 	getScaleConstructor: function(type) {
-		return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
+		return Object.prototype.hasOwnProperty.call(this.constructors, type) ? this.constructors[type] : undefined;
 	},
 	getScaleDefaults: function(type) {
 		// Return the scale defaults merged with the global settings so that we always use the latest ones
-		return this.defaults.hasOwnProperty(type) ? helpers.merge({}, [defaults.scale, this.defaults[type]]) : {};
+		return Object.prototype.hasOwnProperty.call(this.defaults, type) ? helpers.merge({}, [defaults.scale, this.defaults[type]]) : {};
 	},
 	updateScaleDefaults: function(type, additions) {
 		var me = this;
-		if (me.defaults.hasOwnProperty(type)) {
+		if (Object.prototype.hasOwnProperty.call(me.defaults, type)) {
 			me.defaults[type] = helpers.extend(me.defaults[type], additions);
 		}
 	},
