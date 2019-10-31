@@ -140,8 +140,8 @@
 			title: 'Toggle Scale Type',
 			path: 'scales/toggle-scale-type.html'
 		}, {
-			title: 'Axes Label',
-			path: 'scales/axes-label.html'
+			title: 'Axes Labels',
+			path: 'scales/axes-labels.html'
 		}]
 	}, {
 		title: 'Legend',
