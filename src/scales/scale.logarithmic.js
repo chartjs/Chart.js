@@ -215,7 +215,7 @@ module.exports = Scale.extend({
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		helpers._setMinAndMax(ticks, me, 'value');
+		helpers._setMinAndMaxByKey(ticks, me, 'value');
 
 		if (tickOpts.reverse) {
 			reverse = !reverse;

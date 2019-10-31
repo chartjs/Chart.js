@@ -73,22 +73,22 @@ module.exports = function() {
 		var rounded = Math.round(x);
 		return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 	};
-	helpers._setMinAndMax = function(array, target, property) {
+	helpers._setMinAndMax = function(array, target) {
 		var i, ilen, value;
-
-		if (typeof property !== 'undefined') {
-			for (i = 0, ilen = array.length; i < ilen; i++) {
-				value = array[i][property];
-				if (!isNaN(value)) {
-					target.min = Math.min(target.min, value);
-					target.max = Math.max(target.max, value);
-				}
-			}
-			return;
-		}
 
 		for (i = 0, ilen = array.length; i < ilen; i++) {
 			value = array[i];
+			if (!isNaN(value)) {
+				target.min = Math.min(target.min, value);
+				target.max = Math.max(target.max, value);
+			}
+		}
+	};
+	helpers._setMinAndMaxByKey = function(array, target, property) {
+		var i, ilen, value;
+
+		for (i = 0, ilen = array.length; i < ilen; i++) {
+			value = array[i][property];
 			if (!isNaN(value)) {
 				target.min = Math.min(target.min, value);
 				target.max = Math.max(target.max, value);
