@@ -20,6 +20,7 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
+					fill: true,
 					backgroundColor: '#00ff00'
 				},
 				point: {

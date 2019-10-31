@@ -25,6 +25,7 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
+					fill: true,
 					backgroundColor: function(ctx) {
 						var index = (ctx.dataIndex === undefined ? ctx.datasetIndex : ctx.dataIndex);
 						return index === 0 ? '#ff0000'
