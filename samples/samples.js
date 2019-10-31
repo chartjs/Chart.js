@@ -139,6 +139,9 @@
 		}, {
 			title: 'Toggle Scale Type',
 			path: 'scales/toggle-scale-type.html'
+		}, {
+			title: 'Axes Labels',
+			path: 'scales/axes-labels.html'
 		}]
 	}, {
 		title: 'Legend',
