@@ -14,6 +14,7 @@ defaults._set('radar', {
 	},
 	elements: {
 		line: {
+			fill: 'start',
 			tension: 0 // no bezier in radar
 		}
 	}
