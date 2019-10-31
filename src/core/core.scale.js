@@ -81,7 +81,7 @@ function sample(arr, numItems) {
 }
 
 function getPixelForGridLine(scale, index, offsetGridLines) {
-	var length = scale.getTicks().length;
+	var length = scale.ticks.length;
 	var validIndex = Math.min(index, length - 1);
 	var lineValue = scale.getPixelForTick(validIndex);
 	var start = scale._startPixel;
@@ -348,7 +348,7 @@ var Scale = Element.extend({
 	 * @since 2.7
 	 */
 	getTicks: function() {
-		return this._ticks;
+		return this.ticks;
 	},
 
 	/**
@@ -379,7 +379,7 @@ var Scale = Element.extend({
 		var me = this;
 		var tickOpts = me.options.ticks;
 		var sampleSize = tickOpts.sampleSize;
-		var i, ilen, labels, ticks, samplingEnabled;
+		var samplingEnabled;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -394,7 +394,6 @@ var Scale = Element.extend({
 			bottom: 0
 		}, margins);
 
-		me._ticks = null;
 		me.ticks = null;
 		me._labelSizes = null;
 		me._maxLabelLines = 0;
@@ -413,39 +412,17 @@ var Scale = Element.extend({
 		me.determineDataLimits();
 		me.afterDataLimits();
 
-		// Ticks - `this.ticks` is now DEPRECATED!
-		// Internal ticks are now stored as objects in the PRIVATE `this._ticks` member
-		// and must not be accessed directly from outside this class. `this.ticks` being
-		// around for long time and not marked as private, we can't change its structure
-		// without unexpected breaking changes. If you need to access the scale ticks,
-		// use scale.getTicks() instead.
-
 		me.beforeBuildTicks();
 
-		// New implementations should return an array of objects but for BACKWARD COMPAT,
-		// we still support no return (`this.ticks` internally set by calling this method).
-		ticks = me.buildTicks() || [];
+		me.ticks = me.buildTicks() || [];
 
 		// Allow modification of ticks in callback.
-		ticks = me.afterBuildTicks(ticks) || ticks;
-
-		// Ensure ticks contains ticks in new tick format
-		if ((!ticks || !ticks.length) && me.ticks) {
-			ticks = [];
-			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
-				ticks.push({
-					value: me.ticks[i],
-					major: false
-				});
-			}
-		}
-
-		me._ticks = ticks;
+		me.afterBuildTicks();
 
 		// Compute tick rotation and fit using a sampled subset of labels
 		// We generally don't need to compute the size of every single label for determining scale size
-		samplingEnabled = sampleSize < ticks.length;
-		labels = me._convertTicksToLabels(samplingEnabled ? sample(ticks, sampleSize) : ticks);
+		samplingEnabled = sampleSize < me.ticks.length;
+		me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
 
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
@@ -463,14 +440,12 @@ var Scale = Element.extend({
 		me.afterFit();
 
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(ticks) : ticks;
+		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
 
 		if (samplingEnabled) {
 			// Generate labels using all non-skipped ticks
-			labels = me._convertTicksToLabels(me._ticksToDraw);
+			me._convertTicksToLabels(me._ticksToDraw);
 		}
-
-		me.ticks = labels;   // BACKWARD COMPATIBILITY
 
 		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
@@ -553,25 +528,24 @@ var Scale = Element.extend({
 		helpers.callback(this.options.beforeBuildTicks, [this]);
 	},
 	buildTicks: helpers.noop,
-	afterBuildTicks: function(ticks) {
-		var me = this;
-		// ticks is empty for old axis implementations here
-		if (isArray(ticks) && ticks.length) {
-			return helpers.callback(me.options.afterBuildTicks, [me, ticks]);
-		}
-		// Support old implementations (that modified `this.ticks` directly in buildTicks)
-		me.ticks = helpers.callback(me.options.afterBuildTicks, [me, me.ticks]) || me.ticks;
-		return ticks;
+	afterBuildTicks: function() {
+		helpers.callback(this.options.afterBuildTicks, [this]);
 	},
 
 	beforeTickToLabelConversion: function() {
 		helpers.callback(this.options.beforeTickToLabelConversion, [this]);
 	},
-	convertTicksToLabels: function() {
+	/**
+	 * Convert ticks to label strings
+	 */
+	generateTickLabels: function(ticks) {
 		var me = this;
-		// Convert ticks to strings
 		var tickOpts = me.options.ticks;
-		me.ticks = me.ticks.map(tickOpts.callback, this);
+		var i, ilen, tick;
+		for (i = 0, ilen = ticks.length; i < ilen; i++) {
+			tick = ticks[i];
+			tick.label = helpers.callback(tickOpts.callback, [tick.value, i, ticks], me);
+		}
 	},
 	afterTickToLabelConversion: function() {
 		helpers.callback(this.options.afterTickToLabelConversion, [this]);
@@ -586,7 +560,7 @@ var Scale = Element.extend({
 		var me = this;
 		var options = me.options;
 		var tickOpts = options.ticks;
-		var numTicks = me.getTicks().length;
+		var numTicks = me.ticks.length;
 		var minRotation = tickOpts.minRotation || 0;
 		var maxRotation = tickOpts.maxRotation;
 		var labelRotation = minRotation;
@@ -686,7 +660,7 @@ var Scale = Element.extend({
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
 				var offsetLeft = me.getPixelForTick(0) - me.left;
-				var offsetRight = me.right - me.getPixelForTick(me.getTicks().length - 1);
+				var offsetRight = me.right - me.getPixelForTick(me.ticks.length - 1);
 				var paddingLeft, paddingRight;
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
@@ -788,27 +762,12 @@ var Scale = Element.extend({
 
 	_convertTicksToLabels: function(ticks) {
 		var me = this;
-		var labels, i, ilen;
-
-		me.ticks = ticks.map(function(tick) {
-			return tick.value;
-		});
 
 		me.beforeTickToLabelConversion();
 
-		// New implementations should return the formatted tick labels but for BACKWARD
-		// COMPAT, we still support no return (`this.ticks` internally changed by calling
-		// this method and supposed to contain only string values).
-		labels = me.convertTicksToLabels(ticks) || me.ticks;
+		me.generateTickLabels(ticks);
 
 		me.afterTickToLabelConversion();
-
-		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			ticks[i].label = labels[i];
-		}
-
-		return labels;
 	},
 
 	/**
@@ -819,7 +778,7 @@ var Scale = Element.extend({
 		var labelSizes = me._labelSizes;
 
 		if (!labelSizes) {
-			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.getTicks(), me.longestTextCache);
+			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.ticks, me.longestTextCache);
 			me.longestLabelWidth = labelSizes.widest.width;
 		}
 
@@ -895,7 +854,7 @@ var Scale = Element.extend({
 	getPixelForTick: function(index) {
 		var me = this;
 		var offset = me.options.offset;
-		var numTicks = me._ticks.length;
+		var numTicks = me.ticks.length;
 		var tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
 
 		return index < 0 || index > numTicks - 1

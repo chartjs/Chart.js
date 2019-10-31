@@ -1,3 +1,7 @@
+function getLabels(scale) {
+	return scale.ticks.map(t => t.label);
+}
+
 describe('Core.scale', function() {
 	describe('auto', jasmine.fixture.specs('core.scale'));
 
@@ -390,8 +394,8 @@ describe('Core.scale', function() {
 							id: 'x',
 							type: 'category',
 							labels: labels,
-							afterBuildTicks: function(axis, ticks) {
-								return ticks.slice(1);
+							afterBuildTicks: function(scale) {
+								scale.ticks = scale.ticks.slice(1);
 							}
 						}]
 					}
@@ -399,36 +403,7 @@ describe('Core.scale', function() {
 			});
 
 			var scale = chart.scales.x;
-			expect(scale.ticks).toEqual(labels.slice(1));
-		});
-
-		it('should allow filtering of ticks (for new implementation of buildTicks)', function() {
-			var chart = window.acquireChart({
-				type: 'line',
-				data: {
-					labels: ['2016', '2017', '2018']
-				},
-				options: {
-					scales: {
-						xAxes: [{
-							id: 'x',
-							type: 'time',
-							time: {
-								parser: 'YYYY'
-							},
-							ticks: {
-								source: 'labels'
-							},
-							afterBuildTicks: function(axis, ticks) {
-								return ticks.slice(1);
-							}
-						}]
-					}
-				}
-			});
-
-			var scale = chart.scales.x;
-			expect(scale.ticks.length).toEqual(2);
+			expect(getLabels(scale)).toEqual(labels.slice(1));
 		});
 
 		it('should allow no return value from callback', function() {
@@ -448,7 +423,7 @@ describe('Core.scale', function() {
 			});
 
 			var scale = chart.scales.x;
-			expect(scale.ticks).toEqual(labels);
+			expect(getLabels(scale)).toEqual(labels);
 		});
 
 		it('should allow empty ticks', function() {
@@ -461,8 +436,8 @@ describe('Core.scale', function() {
 							id: 'x',
 							type: 'category',
 							labels: labels,
-							afterBuildTicks: function() {
-								return [];
+							afterBuildTicks: function(scale) {
+								scale.ticks = [];
 							}
 						}]
 					}

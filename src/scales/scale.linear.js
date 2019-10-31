@@ -107,8 +107,7 @@ module.exports = LinearScaleBase.extend({
 
 		helpers.each(stacks, function(stackValues) {
 			values = stackValues.pos.concat(stackValues.neg);
-			me.min = Math.min(me.min, helpers.min(values));
-			me.max = Math.max(me.max, helpers.max(values));
+			helpers._setMinAndMax(values, me);
 		});
 
 		me.min = helpers.isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
@@ -130,12 +129,13 @@ module.exports = LinearScaleBase.extend({
 		return Math.ceil(me.height / tickFont.lineHeight);
 	},
 
-	// Called after the ticks are built. We need
-	handleDirectionalChanges: function() {
-		if (!this.isHorizontal()) {
-			// We are in a vertical orientation. The top value is the highest. So reverse the array
-			this.ticks.reverse();
-		}
+	/**
+	 * Called after the ticks are built
+	 * @private
+	 */
+	_handleDirectionalChanges: function(ticks) {
+		// If we are in a vertical orientation the top value is the highest so reverse the array
+		return this.isHorizontal() ? ticks : ticks.reverse();
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -153,7 +153,7 @@ module.exports = LinearScaleBase.extend({
 	},
 
 	getPixelForTick: function(index) {
-		var ticks = this.ticksAsNumbers;
+		var ticks = this._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}

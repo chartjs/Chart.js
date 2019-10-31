@@ -1,5 +1,13 @@
 // Test the category scale
 
+function getLabels(scale) {
+	return scale.ticks.map(t => t.label);
+}
+
+function getValues(scale) {
+	return scale.ticks.map(t => t.value);
+}
+
 describe('Category scale tests', function() {
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
@@ -75,8 +83,8 @@ describe('Category scale tests', function() {
 		});
 
 		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.labels);
+		scale.ticks = scale.buildTicks();
+		expect(getValues(scale)).toEqual(mockData.labels);
 	});
 
 	it('Should generate ticks from the data xLabels', function() {
@@ -102,8 +110,8 @@ describe('Category scale tests', function() {
 		});
 
 		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.xLabels);
+		scale.ticks = scale.buildTicks();
+		expect(getValues(scale)).toEqual(mockData.xLabels);
 	});
 
 	it('Should generate ticks from the data yLabels', function() {
@@ -130,8 +138,8 @@ describe('Category scale tests', function() {
 		});
 
 		scale.determineDataLimits();
-		scale.buildTicks();
-		expect(scale.ticks).toEqual(mockData.yLabels);
+		scale.ticks = scale.buildTicks();
+		expect(getValues(scale)).toEqual(mockData.yLabels);
 	});
 
 	it('Should generate ticks from the axis labels', function() {
@@ -153,7 +161,7 @@ describe('Category scale tests', function() {
 		});
 
 		var scale = chart.scales.x;
-		expect(scale.ticks).toEqual(labels);
+		expect(getLabels(scale)).toEqual(labels);
 	});
 
 	it('should get the correct label for the index', function() {

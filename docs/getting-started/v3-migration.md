@@ -43,13 +43,18 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.aliasPixel`
 * `helpers.configMerge`
 * `helpers.indexOf`
+* `helpers.min`
+* `helpers.max`
 * `helpers.numberOfLabelLines`
 * `helpers.removeEvent`
 * `helpers.scaleMerge`
 * `scale.mergeTicksOptions`
+* `scale.ticksAsNumbers`
 * `Chart.Controller`
 * `Chart.chart.chart`
 * `Chart.types`
+* Made `scale.handleDirectionalChanges` private
+* Made `scale.tickValues` private
 
 ### Renamed
 
@@ -64,6 +69,13 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 
 ### Changed
+
+#### Ticks
+
+* `scale.ticks` now contains objects instead of strings
+* `buildTicks` is now expected to return tick objects
+* `afterBuildTicks` now has no parameters like the other callbacks
+* `convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
 
 #### Time Scale
 

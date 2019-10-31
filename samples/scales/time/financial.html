@@ -130,8 +130,9 @@
 							maxRotation: 0,
 							sampleSize: 100
 						},
-						afterBuildTicks: function(scale, ticks) {
+						afterBuildTicks: function(scale) {
 							var majorUnit = scale._majorUnit;
+							var ticks = scale.ticks;
 							var firstTick = ticks[0];
 							var i, ilen, val, tick, currMajor, lastMajor;
 
@@ -154,7 +155,6 @@
 								tick.major = currMajor !== lastMajor;
 								lastMajor = currMajor;
 							}
-							return ticks;
 						}
 					}],
 					yAxes: [{

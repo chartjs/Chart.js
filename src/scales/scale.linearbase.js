@@ -3,7 +3,6 @@
 var helpers = require('../helpers/index');
 var Scale = require('../core/core.scale');
 
-var noop = helpers.noop;
 var isNullOrUndef = helpers.isNullOrUndef;
 
 /**
@@ -33,7 +32,7 @@ function generateTicks(generationOptions, dataRange) {
 	// Beyond MIN_SPACING floating point numbers being to lose precision
 	// such that we can't do the math necessary to generate ticks
 	if (spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
-		return [rmin, rmax];
+		return [{value: rmin}, {value: rmax}];
 	}
 
 	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
@@ -75,11 +74,11 @@ function generateTicks(generationOptions, dataRange) {
 
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
-	ticks.push(isNullOrUndef(min) ? niceMin : min);
+	ticks.push({value: isNullOrUndef(min) ? niceMin : min});
 	for (var j = 1; j < numSpaces; ++j) {
-		ticks.push(Math.round((niceMin + j * spacing) * factor) / factor);
+		ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
 	}
-	ticks.push(isNullOrUndef(max) ? niceMax : max);
+	ticks.push({value: isNullOrUndef(max) ? niceMax : max});
 
 	return ticks;
 }
@@ -184,7 +183,9 @@ module.exports = Scale.extend({
 		return Number.POSITIVE_INFINITY;
 	},
 
-	handleDirectionalChanges: noop,
+	_handleDirectionalChanges: function(ticks) {
+		return ticks;
+	},
 
 	buildTicks: function() {
 		var me = this;
@@ -205,14 +206,13 @@ module.exports = Scale.extend({
 			precision: tickOpts.precision,
 			stepSize: helpers.valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
 		};
-		var ticks = me.ticks = generateTicks(numericGeneratorOptions, me);
+		var ticks = generateTicks(numericGeneratorOptions, me);
 
-		me.handleDirectionalChanges();
+		ticks = me._handleDirectionalChanges(ticks);
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		me.max = helpers.max(ticks);
-		me.min = helpers.min(ticks);
+		helpers._setMinAndMaxByKey(ticks, me, 'value');
 
 		if (tickOpts.reverse) {
 			ticks.reverse();
@@ -223,14 +223,16 @@ module.exports = Scale.extend({
 			me.start = me.min;
 			me.end = me.max;
 		}
+
+		return ticks;
 	},
 
-	convertTicksToLabels: function() {
+	generateTickLabels: function(ticks) {
 		var me = this;
-		me.ticksAsNumbers = me.ticks.slice();
-		me.zeroLineIndex = me.ticks.indexOf(0);
+		me._tickValues = ticks.map(t => t.value);
+		me.zeroLineIndex = me._tickValues.indexOf(0);
 
-		Scale.prototype.convertTicksToLabels.call(me);
+		Scale.prototype.generateTickLabels.call(me, ticks);
 	},
 
 	_configure: function() {

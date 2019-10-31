@@ -27,7 +27,7 @@ function generateTicks(generationOptions, dataRange) {
 		exp = Math.floor(log10(dataRange.minNotZero));
 		significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
 
-		ticks.push(tickVal);
+		ticks.push({value: tickVal});
 		tickVal = significand * Math.pow(10, exp);
 	} else {
 		exp = Math.floor(log10(tickVal));
@@ -36,7 +36,7 @@ function generateTicks(generationOptions, dataRange) {
 	var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
 
 	do {
-		ticks.push(tickVal);
+		ticks.push({value: tickVal});
 
 		++significand;
 		if (significand === 10) {
@@ -49,7 +49,7 @@ function generateTicks(generationOptions, dataRange) {
 	} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
 	var lastTick = valueOrDefault(generationOptions.max, tickVal);
-	ticks.push(lastTick);
+	ticks.push({value: lastTick});
 
 	return ticks;
 }
@@ -130,10 +130,7 @@ module.exports = Scale.extend({
 
 			helpers.each(valuesPerStack, function(valuesForType) {
 				if (valuesForType.length > 0) {
-					var minVal = helpers.min(valuesForType);
-					var maxVal = helpers.max(valuesForType);
-					me.min = Math.min(me.min, minVal);
-					me.max = Math.max(me.max, maxVal);
+					helpers._setMinAndMax(valuesForType, me);
 				}
 			});
 
@@ -214,12 +211,11 @@ module.exports = Scale.extend({
 			min: nonNegativeOrDefault(tickOpts.min),
 			max: nonNegativeOrDefault(tickOpts.max)
 		};
-		var ticks = me.ticks = generateTicks(generationOptions, me);
+		var ticks = generateTicks(generationOptions, me);
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		me.max = helpers.max(ticks);
-		me.min = helpers.min(ticks);
+		helpers._setMinAndMaxByKey(ticks, me, 'value');
 
 		if (tickOpts.reverse) {
 			reverse = !reverse;
@@ -232,12 +228,13 @@ module.exports = Scale.extend({
 		if (reverse) {
 			ticks.reverse();
 		}
+		return ticks;
 	},
 
-	convertTicksToLabels: function() {
-		this.tickValues = this.ticks.slice();
+	generateTickLabels: function(ticks) {
+		this._tickValues = ticks.map(t => t.value);
 
-		Scale.prototype.convertTicksToLabels.call(this);
+		return Scale.prototype.generateTickLabels.call(this, ticks);
 	},
 
 	// Get the correct tooltip label
@@ -246,7 +243,7 @@ module.exports = Scale.extend({
 	},
 
 	getPixelForTick: function(index) {
-		var ticks = this.tickValues;
+		var ticks = this._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
