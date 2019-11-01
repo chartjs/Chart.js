@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<title>Radial Gradient</title>
+	<script src="../../dist/Chart.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width: 75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<br>
+	<br>
+	<button id="randomizeData">Randomize Data</button>
+	<script>
+		var chartColors = window.chartColors;
+		var gradient = null;
+		var width = null;
+		var height = null;
+		var config = {
+			type: 'polarArea',
+			data: {
+				datasets: [{
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+					],
+					backgroundColor: function(context) {
+						var chartArea = context.chart.chartArea;
+
+						if (!chartArea) {
+							// This case happens on initial chart load
+							return null;
+						}
+
+						var chartWidth = chartArea.right - chartArea.left;
+						var chartHeight = chartArea.bottom - chartArea.top;
+						if (gradient === null || width !== chartWidth || height !== chartHeight) {
+							// Create the gradient because this is either the first render
+							// or the size of the chart has changed
+							width = chartWidth;
+							height = chartHeight;
+							var centerX = (chartArea.left + chartArea.right) / 2;
+							var centerY = (chartArea.top + chartArea.bottom) / 2;
+							var r = Math.min(
+								(chartArea.right - chartArea.left) / 2,
+								(chartArea.bottom - chartArea.top) / 2
+							);
+							var ctx = context.chart.ctx;
+							gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
+							gradient.addColorStop(0, chartColors.red);
+							gradient.addColorStop(0.5, chartColors.green);
+							gradient.addColorStop(1, chartColors.purple);
+						}
+
+						return gradient;
+					},
+					label: 'My dataset' // for legend
+				}],
+				labels: [
+					'Red',
+					'Orange',
+					'Yellow',
+					'Green',
+					'Blue'
+				]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'right',
+				},
+				title: {
+					display: true,
+					text: 'Chart.js Polar Area Chart'
+				},
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas');
+			window.myPolarArea = new Chart(ctx, config);
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			config.data.datasets.forEach(function(piece, i) {
+				piece.data.forEach(function(value, j) {
+					config.data.datasets[i].data[j] = randomScalingFactor();
+				});
+			});
+			window.myPolarArea.update();
+		});
+	</script>
+</body>
+
+</html>

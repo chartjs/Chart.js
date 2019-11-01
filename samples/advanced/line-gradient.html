@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<title>Linear Gradient</title>
+	<script src="../../dist/Chart.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width: 75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<br>
+	<br>
+	<button id="randomizeData">Randomize Data</button>
+	<script>
+		var chartColors = window.chartColors;
+		var gradient = null;
+		var width = null;
+		var height = null;
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				datasets: [{
+					label: 'My First dataset',
+					borderColor: function(context) {
+						var chartArea = context.chart.chartArea;
+
+						if (!chartArea) {
+							// This case happens on initial chart load
+							return null;
+						}
+
+						var chartWidth = chartArea.right - chartArea.left;
+						var chartHeight = chartArea.bottom - chartArea.top;
+						if (gradient === null || width !== chartWidth || height !== chartHeight) {
+							// Create the gradient because this is either the first render
+							// or the size of the chart has changed
+							width = chartWidth;
+							height = chartHeight;
+							var ctx = context.chart.ctx;
+							gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+							gradient.addColorStop(0, chartColors.blue);
+							gradient.addColorStop(0.5, chartColors.yellow);
+							gradient.addColorStop(1, chartColors.red);
+						}
+
+						return gradient;
+					},
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas');
+			window.myPolarArea = new Chart(ctx, config);
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			config.data.datasets.forEach(function(piece, i) {
+				piece.data.forEach(function(value, j) {
+					config.data.datasets[i].data[j] = randomScalingFactor();
+				});
+			});
+			window.myPolarArea.update();
+		});
+	</script>
+</body>
+
+</html>
