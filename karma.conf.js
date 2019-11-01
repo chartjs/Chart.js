@@ -41,6 +41,9 @@ module.exports = function(karma) {
 					'layers.acceleration.disabled': true
 				}
 			},
+			safari: {
+				base: 'SafariPrivate'
+			},
 			edge: {
 				base: 'Edge'
 			}
