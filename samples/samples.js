@@ -211,6 +211,9 @@
 		}, {
 			title: 'Polar Area Radial Gradient',
 			path: 'advanced/radial-gradient.html'
+		}, {
+			title: 'Line Gradient',
+			path: 'advanced/line-gradient.html'
 		}]
 	}];
 
