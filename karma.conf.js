@@ -40,6 +40,9 @@ module.exports = function(karma) {
 				prefs: {
 					'layers.acceleration.disabled': true
 				}
+			},
+			edge: {
+				base: 'Edge'
 			}
 		},
 
