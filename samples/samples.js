@@ -208,6 +208,9 @@
 		}, {
 			title: 'Content Security Policy',
 			path: 'advanced/content-security-policy.html'
+		}, {
+			title: 'Polar Area Radial Gradient',
+			path: 'advanced/radial-gradient.html'
 		}]
 	}];
 
