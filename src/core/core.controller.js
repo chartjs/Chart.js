@@ -460,14 +460,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var me = this;
 		var i, ilen;
 
-		if (!config || typeof config !== 'object') {
-			// backwards compatibility
-			config = {
-				duration: config,
-				lazy: arguments[1]
-			};
-		}
-
 		updateConfig(me);
 
 		// plugins options references might have change, let's invalidate the cache
