@@ -118,8 +118,8 @@ module.exports = Scale.extend({
 					for (i = 0, ilen = data.length; i < ilen; i++) {
 						var values = valuesPerStack[key];
 						value = me._parseValue(data[i]);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+						// invalid and negative values are ignored
+						if (isNaN(value.min) || isNaN(value.max) || value.min < 0 || value.max < 0) {
 							continue;
 						}
 						values[i] = values[i] || 0;
@@ -141,8 +141,8 @@ module.exports = Scale.extend({
 					data = datasets[datasetIndex].data;
 					for (i = 0, ilen = data.length; i < ilen; i++) {
 						value = me._parseValue(data[i]);
-						// invalid, hidden and negative values are ignored
-						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+						// invalid and negative values are ignored
+						if (isNaN(value.min) || isNaN(value.max) || value.min < 0 || value.max < 0) {
 							continue;
 						}
 

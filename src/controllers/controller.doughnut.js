@@ -53,7 +53,6 @@ defaults._set('doughnut', {
 							fillStyle: style.backgroundColor,
 							strokeStyle: style.borderColor,
 							lineWidth: style.borderWidth,
-							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -62,22 +61,6 @@ defaults._set('doughnut', {
 				}
 				return [];
 			}
-		},
-
-		onClick: function(e, legendItem) {
-			var index = legendItem.index;
-			var chart = this.chart;
-			var i, ilen, meta;
-
-			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
-				meta = chart.getDatasetMeta(i);
-				// toggle visibility of index if exists
-				if (meta.data[index]) {
-					meta.data[index].hidden = !meta.data[index].hidden;
-				}
-			}
-
-			chart.update();
 		}
 	},
 
@@ -220,7 +203,7 @@ module.exports = DatasetController.extend({
 		var startAngle = opts.rotation; // non reset case handled later
 		var endAngle = opts.rotation; // non reset case handled later
 		var dataset = me.getDataset();
-		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / DOUBLE_PI);
+		var circumference = reset && animationOpts.animateRotate ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / DOUBLE_PI);
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
 		var options = arc._options || {};
@@ -271,7 +254,7 @@ module.exports = DatasetController.extend({
 
 		helpers.each(meta.data, function(element, index) {
 			value = dataset.data[index];
-			if (!isNaN(value) && !element.hidden) {
+			if (!isNaN(value)) {
 				total += Math.abs(value);
 			}
 		});

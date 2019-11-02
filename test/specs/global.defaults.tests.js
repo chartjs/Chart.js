@@ -125,55 +125,23 @@ describe('Default Configs', function() {
 			var expected = [{
 				text: 'label1',
 				fillStyle: 'red',
-				hidden: false,
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
-				hidden: false,
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
-		});
-
-		it('should hide the correct arc when a legend item is clicked', function() {
-			var config = Chart.defaults.doughnut;
-			var chart = window.acquireChart({
-				type: 'doughnut',
-				data: {
-					labels: ['label1', 'label2', 'label3'],
-					datasets: [{
-						data: [10, 20, NaN],
-						backgroundColor: ['red', 'green', 'blue'],
-						borderWidth: 2,
-						borderColor: '#000'
-					}]
-				},
-				options: config
-			});
-			var meta = chart.getDatasetMeta(0);
-
-			spyOn(chart, 'update').and.callThrough();
-
-			var legendItem = chart.legend.legendItems[0];
-			config.legend.onClick.call(chart.legend, null, legendItem);
-
-			expect(meta.data[0].hidden).toBe(true);
-			expect(chart.update).toHaveBeenCalled();
-
-			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
 		});
 	});
 
@@ -241,55 +209,23 @@ describe('Default Configs', function() {
 			var expected = [{
 				text: 'label1',
 				fillStyle: 'red',
-				hidden: false,
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
-				hidden: false,
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}];
 			expect(chart.legend.legendItems).toEqual(expected);
-		});
-
-		it('should hide the correct arc when a legend item is clicked', function() {
-			var config = Chart.defaults.polarArea;
-			var chart = window.acquireChart({
-				type: 'polarArea',
-				data: {
-					labels: ['label1', 'label2', 'label3'],
-					datasets: [{
-						data: [10, 20, NaN],
-						backgroundColor: ['red', 'green', 'blue'],
-						borderWidth: 2,
-						borderColor: '#000'
-					}]
-				},
-				options: config
-			});
-			var meta = chart.getDatasetMeta(0);
-
-			spyOn(chart, 'update').and.callThrough();
-
-			var legendItem = chart.legend.legendItems[0];
-			config.legend.onClick.call(chart.legend, null, legendItem);
-
-			expect(meta.data[0].hidden).toBe(true);
-			expect(chart.update).toHaveBeenCalled();
-
-			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
 		});
 	});
 });

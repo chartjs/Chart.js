@@ -66,7 +66,6 @@ defaults._set('polarArea', {
 							fillStyle: style.backgroundColor,
 							strokeStyle: style.borderColor,
 							lineWidth: style.borderWidth,
-							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -75,19 +74,6 @@ defaults._set('polarArea', {
 				}
 				return [];
 			}
-		},
-
-		onClick: function(e, legendItem) {
-			var index = legendItem.index;
-			var chart = this.chart;
-			var i, ilen, meta;
-
-			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
-				meta = chart.getDatasetMeta(i);
-				meta.data[index].hidden = !meta.data[index].hidden;
-			}
-
-			chart.update();
 		}
 	},
 
@@ -196,9 +182,9 @@ module.exports = DatasetController.extend({
 
 		// var negHalfPI = -0.5 * Math.PI;
 		var datasetStartAngle = opts.startAngle;
-		var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+		var distance = scale.getDistanceFromCenterForValue(dataset.data[index]);
 		var startAngle = me._starts[index];
-		var endAngle = startAngle + (arc.hidden ? 0 : me._angles[index]);
+		var endAngle = startAngle + me._angles[index];
 
 		var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 		var options = arc._options || {};
@@ -233,7 +219,7 @@ module.exports = DatasetController.extend({
 		var count = 0;
 
 		helpers.each(meta.data, function(element, index) {
-			if (!isNaN(dataset.data[index]) && !element.hidden) {
+			if (!isNaN(dataset.data[index])) {
 				count++;
 			}
 		});
@@ -268,9 +254,8 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var count = this.getMeta().count;
 		var dataset = me.getDataset();
-		var meta = me.getMeta();
 
-		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
+		if (isNaN(dataset.data[index])) {
 			return 0;
 		}
 

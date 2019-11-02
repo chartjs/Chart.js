@@ -311,11 +311,9 @@ module.exports = LinearScaleBase.extend({
 
 		helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
 			if (chart.isDatasetVisible(datasetIndex)) {
-				var meta = chart.getDatasetMeta(datasetIndex);
-
-				helpers.each(dataset.data, function(rawValue, index) {
+				helpers.each(dataset.data, function(rawValue) {
 					var value = +me.getRightValue(rawValue);
-					if (isNaN(value) || meta.data[index].hidden) {
+					if (isNaN(value)) {
 						return;
 					}
 
