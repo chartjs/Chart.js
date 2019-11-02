@@ -17,7 +17,7 @@ const banner = `/*!
  */`;
 
 module.exports = [
-	// ES6 builds (excluding moment)
+	// ES6 builds
 	// dist/Chart.esm.min.js
 	// dist/Chart.esm.js
 	{
@@ -77,7 +77,7 @@ module.exports = [
 			'moment'
 		]
 	},
-	// UMD builds (excluding moment)
+	// UMD builds
 	// dist/Chart.min.js
 	// dist/Chart.js
 	{
@@ -142,96 +142,5 @@ module.exports = [
 		external: [
 			'moment'
 		]
-	},
-
-	// ES6 builds (including moment)
-	// dist/Chart.bundle.esm.min.js
-	// dist/Chart.bundle.esm.js
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet()
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.bundle.esm.js',
-			banner: banner,
-			format: 'esm',
-			indent: false
-		}
-	},
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet({
-				minify: true
-			}),
-			terser({
-				output: {
-					preamble: banner
-				}
-			})
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.bundle.esm.min.js',
-			format: 'esm',
-			indent: false
-		}
-	},
-	// UMD builds (including moment)
-	// dist/Chart.bundle.min.js
-	// dist/Chart.bundle.js
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet()
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.bundle.js',
-			banner: banner,
-			format: 'umd',
-			indent: false
-		}
-	},
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet({
-				minify: true
-			}),
-			terser({
-				output: {
-					preamble: banner
-				}
-			})
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.bundle.min.js',
-			format: 'umd',
-			indent: false
-		}
 	}
 ];
