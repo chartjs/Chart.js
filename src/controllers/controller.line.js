@@ -29,6 +29,51 @@ defaults._set('line', {
 	}
 });
 
+function scaleClip(scale, halfBorderWidth) {
+	var tickOpts = scale && scale.options.ticks || {};
+	var reverse = tickOpts.reverse;
+	var min = tickOpts.min === undefined ? halfBorderWidth : 0;
+	var max = tickOpts.max === undefined ? halfBorderWidth : 0;
+	return {
+		start: reverse ? max : min,
+		end: reverse ? min : max
+	};
+}
+
+function defaultClip(xScale, yScale, borderWidth) {
+	var halfBorderWidth = borderWidth / 2;
+	var x = scaleClip(xScale, halfBorderWidth);
+	var y = scaleClip(yScale, halfBorderWidth);
+
+	return {
+		top: y.end,
+		right: x.end,
+		bottom: y.start,
+		left: x.start
+	};
+}
+
+function toClip(value) {
+	var t, r, b, l;
+
+	if (helpers.isObject(value)) {
+		t = value.top;
+		r = value.right;
+		b = value.bottom;
+		l = value.left;
+	} else {
+		t = r = b = l = value;
+	}
+
+	return {
+		top: t,
+		right: r,
+		bottom: b,
+		left: l
+	};
+}
+
+
 module.exports = DatasetController.extend({
 
 	datasetElementType: elements.Line,
@@ -173,6 +218,7 @@ module.exports = DatasetController.extend({
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
 		values.steppedLine = resolve([custom.steppedLine, config.steppedLine, lineOptions.stepped]);
+		values.clip = toClip(valueOrDefault(config.clip, defaultClip(me._xScale, me._yScale, values.borderWidth)));
 
 		return values;
 	},
@@ -183,12 +229,13 @@ module.exports = DatasetController.extend({
 		var yScale = me._yScale;
 		var sumPos = 0;
 		var sumNeg = 0;
-		var rightValue = +yScale.getRightValue(value);
-		var metasets = chart._getSortedVisibleDatasetMetas();
-		var ilen = metasets.length;
-		var i, ds, dsMeta, stackedRightValue;
+		var i, ds, dsMeta, stackedRightValue, rightValue, metasets, ilen;
 
 		if (yScale.options.stacked) {
+			rightValue = +yScale.getRightValue(value);
+			metasets = chart._getSortedVisibleDatasetMetas();
+			ilen = metasets.length;
+
 			for (i = 0; i < ilen; ++i) {
 				dsMeta = metasets[i];
 				if (dsMeta.index === datasetIndex) {
@@ -275,18 +322,19 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var points = meta.data || [];
 		var area = chart.chartArea;
+		var canvas = chart.canvas;
 		var i = 0;
 		var ilen = points.length;
-		var halfBorderWidth;
+		var clip;
 
 		if (me._showLine) {
-			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
+			clip = meta.dataset._model.clip;
 
 			helpers.canvas.clipArea(chart.ctx, {
-				left: area.left - halfBorderWidth,
-				right: area.right + halfBorderWidth,
-				top: area.top - halfBorderWidth,
-				bottom: area.bottom + halfBorderWidth
+				left: clip.left === false ? 0 : area.left - clip.left,
+				right: clip.right === false ? canvas.width : area.right + clip.right,
+				top: clip.top === false ? 0 : area.top - clip.top,
+				bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
 			});
 
 			meta.dataset.draw();

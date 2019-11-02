@@ -22,6 +22,7 @@ module.exports = {
 			title: false,
 			elements: {
 				line: {
+					fill: true,
 					borderColor: '#00ff00',
 					borderDash: function(ctx) {
 						return ctx.datasetIndex === 0 ? [5] : [10];
