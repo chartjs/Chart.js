@@ -229,12 +229,13 @@ module.exports = DatasetController.extend({
 		var yScale = me._yScale;
 		var sumPos = 0;
 		var sumNeg = 0;
-		var rightValue = +yScale.getRightValue(value);
-		var metasets = chart._getSortedVisibleDatasetMetas();
-		var ilen = metasets.length;
-		var i, ds, dsMeta, stackedRightValue;
+		var i, ds, dsMeta, stackedRightValue, rightValue, metasets, ilen;
 
 		if (yScale.options.stacked) {
+			rightValue = +yScale.getRightValue(value);
+			metasets = chart._getSortedVisibleDatasetMetas();
+			ilen = metasets.length;
+
 			for (i = 0; i < ilen; ++i) {
 				dsMeta = metasets[i];
 				if (dsMeta.index === datasetIndex) {
