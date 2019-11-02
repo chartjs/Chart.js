@@ -81,7 +81,7 @@ helpers.extend(Element.prototype, {
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {
-			me._view = helpers.extend({}, model);
+			me._view = model;
 			me._start = null;
 			return me;
 		}

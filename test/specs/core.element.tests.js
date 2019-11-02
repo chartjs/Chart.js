@@ -46,6 +46,5 @@ describe('Core element tests', function() {
 		element.transition(1);
 
 		expect(element._view).toEqual(element._model);
-		expect(element._view).not.toBe(element._model);
 	});
 });
