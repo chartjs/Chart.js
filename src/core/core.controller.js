@@ -622,11 +622,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				easing: config.easing || animationOptions.easing,
 
 				render: function(chart, animationObject) {
-					var easingFunction = helpers.easing.effects[animationObject.easing];
-					var currentStep = animationObject.currentStep;
-					var stepDecimal = currentStep / animationObject.numSteps;
+					const easingFunction = helpers.easing.effects[animationObject.easing];
+					const stepDecimal = animationObject.currentStep / animationObject.numSteps;
 
-					chart.draw(easingFunction(stepDecimal), stepDecimal, currentStep);
+					chart.draw(easingFunction(stepDecimal));
 				},
 
 				onAnimationProgress: animationOptions.onProgress,
