@@ -102,20 +102,12 @@ module.exports = DatasetController.extend({
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
 		var options = me._resolveDataElementOptions(index);
-		var dsIndex = me.index;
-		var parsed, x, y;
-
-		if (reset) {
-			x = xScale.getPixelForDecimal(0.5);
-			y = yScale.getBasePixel();
-		} else {
-			parsed = me._getParsed(index);
-			x = xScale.getPixelForValue(parsed[xScale.id]);
-			y = yScale.getPixelForValue(parsed[yScale.id]);
-		}
+		var parsed = !reset && me._getParsed(index);
+		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed[xScale.id]);
+		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed[yScale.id]);
 
 		point._options = options;
-		point._datasetIndex = dsIndex;
+		point._datasetIndex = me.index;
 		point._index = index;
 		point._model = {
 			backgroundColor: options.backgroundColor,

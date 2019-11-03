@@ -121,12 +121,9 @@ module.exports = DatasetController.extend({
 		var lineModel = meta.dataset._model;
 		var stacked = meta._stacked;
 		var parsed = me._getParsed(index);
-		var x, y;
-
 		var options = me._resolveDataElementOptions(index);
-
-		x = xScale.getPixelForValue(parsed[xScale.id]);
-		y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+		var x = xScale.getPixelForValue(parsed[xScale.id]);
+		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 
 		// Utility
 		point._options = options;

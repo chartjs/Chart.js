@@ -145,6 +145,15 @@ function arraysEqual(array1, array2) {
 	return true;
 }
 
+function getFirstScaleId(chart, axis) {
+	var scalesOpts = chart.options.scales;
+	var scale = chart.options.scale;
+	var scaleId = scale && scale.id;
+	var prop = axis + 'Axes';
+
+	return (scalesOpts && scalesOpts[prop] && scalesOpts[prop].length && scalesOpts[prop][0].id) || scaleId;
+}
+
 // Base class for all dataset controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
@@ -210,23 +219,12 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	linkScales: function() {
-		var me = this;
-		var meta = me._cachedMeta;
-		var chart = me.chart;
-		var scales = chart.scales;
-		var dataset = me.getDataset();
-		var scalesOpts = chart.options.scales;
-		var xId = scalesOpts && scalesOpts.xAxes && scalesOpts.xAxes.length && scalesOpts.xAxes[0].id;
-		var yId = scalesOpts && scalesOpts.yAxes && scalesOpts.yAxes.length && scalesOpts.yAxes[0].id;
-		var scale = chart.options.scale;
-		var scaleId = scale && scale.id;
+		var chart = this.chart;
+		var meta = this._cachedMeta;
+		var dataset = this.getDataset();
 
-		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
-			meta.xAxisID = dataset.xAxisID || xId || scaleId;
-		}
-		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
-			meta.yAxisID = dataset.yAxisID || yId || scaleId;
-		}
+		meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
+		meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
 	},
 
 	getDataset: function() {
@@ -333,7 +331,6 @@ helpers.extend(DatasetController.prototype, {
 
 			// Store a copy to detect direct modifications.
 			// Note: This is suboptimal, but better than always parsing the data
-			// TODO: Utilize Proxy instead, after IE support is dropped
 			me._dataCopy = data.slice(0);
 
 			if (data && Object.isExtensible(data)) {
