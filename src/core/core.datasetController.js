@@ -374,7 +374,6 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		meta.dataset = meta.dataset || me.createMetaDataset();
-		me._parse(0, ilen);
 	},
 
 	addElementAndReset: function(index) {
