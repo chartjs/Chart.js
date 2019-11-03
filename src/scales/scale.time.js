@@ -423,18 +423,28 @@ function getTimestampsForTicks(scale) {
 	return timestamps;
 }
 
+/**
+ * Return subset of `timestamps` between `min` and `max`.
+ * Timestamps are assumend to be in sorted order.
+ * @param {int[]} timestamps - array of timestamps
+ * @param {int} min - min value (timestamp)
+ * @param {int} max - max value (timestamp)
+ */
 function filterBetween(timestamps, min, max) {
-	var ticks = [];
-	var i, ilen, timestamp;
+	var start = 0;
+	var end = timestamps.length - 1;
 
-	// Remove ticks outside the min/max range
-	for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
-		timestamp = timestamps[i];
-		if (timestamp >= min && timestamp <= max) {
-			ticks.push(timestamp);
-		}
+	while (start < end && timestamps[start] < min) {
+		start++;
 	}
-	return ticks;
+	while (end > start && timestamps[end] > max) {
+		end--;
+	}
+	end++; // slice does not include last element
+
+	return start > 0 || end < timestamps.length
+		? timestamps.slice(start, end)
+		: timestamps;
 }
 
 var defaultConfig = {
