@@ -53,6 +53,13 @@ class Point extends Element {
 		};
 	}
 
+	size() {
+		var vm = this._view;
+		var radius = vm.radius || 0;
+		var borderWidth = vm.borderWidth || 0;
+		return (radius + borderWidth) * 2;
+	}
+
 	tooltipPosition() {
 		var vm = this._view;
 		return {

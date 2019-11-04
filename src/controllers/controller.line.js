@@ -29,50 +29,6 @@ defaults._set('line', {
 	}
 });
 
-function scaleClip(scale, halfBorderWidth) {
-	var tickOpts = scale && scale.options.ticks || {};
-	var reverse = tickOpts.reverse;
-	var min = tickOpts.min === undefined ? halfBorderWidth : 0;
-	var max = tickOpts.max === undefined ? halfBorderWidth : 0;
-	return {
-		start: reverse ? max : min,
-		end: reverse ? min : max
-	};
-}
-
-function defaultClip(xScale, yScale, borderWidth) {
-	var halfBorderWidth = borderWidth / 2;
-	var x = scaleClip(xScale, halfBorderWidth);
-	var y = scaleClip(yScale, halfBorderWidth);
-
-	return {
-		top: y.end,
-		right: x.end,
-		bottom: y.start,
-		left: x.start
-	};
-}
-
-function toClip(value) {
-	var t, r, b, l;
-
-	if (helpers.isObject(value)) {
-		t = value.top;
-		r = value.right;
-		b = value.bottom;
-		l = value.left;
-	} else {
-		t = r = b = l = value;
-	}
-
-	return {
-		top: t,
-		right: r,
-		bottom: b,
-		left: l
-	};
-}
-
 module.exports = DatasetController.extend({
 
 	datasetElementType: elements.Line,
@@ -205,9 +161,20 @@ module.exports = DatasetController.extend({
 		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
 		values.steppedLine = resolve([config.steppedLine, lineOptions.stepped]);
 
-		values.clip = toClip(valueOrDefault(config.clip, defaultClip(me._xScale, me._yScale, values.borderWidth)));
-
 		return values;
+	},
+
+	getMaxOverflow: function() {
+		var me = this;
+		var meta = me._cachedMeta;
+		var data = meta.data || [];
+		if (!data.length) {
+			return false;
+		}
+		var border = me._showLine ? meta.dataset._model.borderWidth : 0;
+		var firstPoint = data[0].size();
+		var lastPoint = data[data.length - 1].size();
+		return Math.max(border, firstPoint, lastPoint) / 2;
 	},
 
 	updateBezierControlPoints: function() {
@@ -271,24 +238,12 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var points = meta.data || [];
 		var area = chart.chartArea;
-		var canvas = chart.canvas;
 		var i = 0;
 		var ilen = points.length;
-		var clip;
 
 		if (me._showLine) {
-			clip = meta.dataset._model.clip;
-
-			helpers.canvas.clipArea(chart.ctx, {
-				left: clip.left === false ? 0 : area.left - clip.left,
-				right: clip.right === false ? canvas.width : area.right + clip.right,
-				top: clip.top === false ? 0 : area.top - clip.top,
-				bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
-			});
 
 			meta.dataset.draw();
-
-			helpers.canvas.unclipArea(chart.ctx);
 		}
 
 		// Draw the points

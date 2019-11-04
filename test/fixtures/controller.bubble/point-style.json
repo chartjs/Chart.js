@@ -44,7 +44,7 @@
                     {"x": 9, "y": 2}
                 ],
                 "backgroundColor": "transparent",
-                "borderColor": "0000ff",
+                "borderColor": "#0000ff",
                 "borderWidth": 0,
                 "pointStyle": [
                     "circle",
