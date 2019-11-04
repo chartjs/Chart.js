@@ -87,8 +87,6 @@ module.exports = DatasetController.extend({
 				config.lineTension = config.tension;
 			}
 
-			// Utility
-			line._datasetIndex = me.index;
 			// Data
 			line._children = points;
 			// Model
@@ -115,7 +113,6 @@ module.exports = DatasetController.extend({
 	updateElement: function(point, index, reset) {
 		var me = this;
 		var meta = me.getMeta();
-		var datasetIndex = me.index;
 		var xScale = me._xScale;
 		var yScale = me._yScale;
 		var lineModel = meta.dataset._model;
@@ -127,8 +124,6 @@ module.exports = DatasetController.extend({
 
 		// Utility
 		point._options = options;
-		point._datasetIndex = datasetIndex;
-		point._index = index;
 
 		// Desired view properties
 		point._model = {

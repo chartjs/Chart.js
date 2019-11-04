@@ -18,7 +18,7 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[0]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[0], datasetIndex: 0, index: 0}];
 			chart.tooltip.update();
 
 			// Title is always blank
@@ -46,7 +46,7 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
@@ -72,7 +72,7 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
@@ -192,7 +192,7 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
