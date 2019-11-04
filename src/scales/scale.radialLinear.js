@@ -305,28 +305,12 @@ module.exports = LinearScaleBase.extend({
 
 	determineDataLimits: function() {
 		var me = this;
-		var chart = me.chart;
-		var min = Number.POSITIVE_INFINITY;
-		var max = Number.NEGATIVE_INFINITY;
+		var minmax = me._getMinMax(false);
+		var min = minmax.min;
+		var max = minmax.max;
 
-		helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
-			if (chart.isDatasetVisible(datasetIndex)) {
-				var meta = chart.getDatasetMeta(datasetIndex);
-
-				helpers.each(dataset.data, function(rawValue, index) {
-					var value = +me.getRightValue(rawValue);
-					if (isNaN(value) || meta.data[index].hidden) {
-						return;
-					}
-
-					min = Math.min(value, min);
-					max = Math.max(value, max);
-				});
-			}
-		});
-
-		me.min = (min === Number.POSITIVE_INFINITY ? 0 : min);
-		me.max = (max === Number.NEGATIVE_INFINITY ? 0 : max);
+		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
+		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
 
 		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 		me.handleTickRangeOptions();
@@ -347,10 +331,6 @@ module.exports = LinearScaleBase.extend({
 			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
 			return label || label === 0 ? label : '';
 		});
-	},
-
-	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	fit: function() {

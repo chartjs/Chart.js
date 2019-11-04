@@ -52,11 +52,13 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `helpers.numberOfLabelLines`
 * `helpers.removeEvent`
 * `helpers.scaleMerge`
+* `scale.getRightValue`
 * `scale.mergeTicksOptions`
 * `scale.ticksAsNumbers`
 * `Chart.Controller`
 * `Chart.chart.chart`
 * `Chart.types`
+* `Line.calculatePointY`
 * Made `scale.handleDirectionalChanges` private
 * Made `scale.tickValues` private
 
@@ -74,13 +76,18 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 
 ### Changed
 
-#### Ticks
+#### Scales
+
+* `scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
+* `scale.getPixelForValue` now has only one parameter
+
+##### Ticks
 
 * `scale.ticks` now contains objects instead of strings
 * `buildTicks` is now expected to return tick objects
 * `afterBuildTicks` now has no parameters like the other callbacks
 * `convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
 
-#### Time Scale
+##### Time Scale
 
 * `getValueForPixel` now returns milliseconds since the epoch

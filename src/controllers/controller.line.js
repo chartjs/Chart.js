@@ -115,16 +115,15 @@ module.exports = DatasetController.extend({
 	updateElement: function(point, index, reset) {
 		var me = this;
 		var meta = me.getMeta();
-		var dataset = me.getDataset();
 		var datasetIndex = me.index;
-		var value = dataset.data[index];
+		var xScale = me._xScale;
+		var yScale = me._yScale;
 		var lineModel = meta.dataset._model;
-		var x, y;
-
+		var stacked = meta._stacked;
+		var parsed = me._getParsed(index);
 		var options = me._resolveDataElementOptions(index);
-
-		x = me._xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
-		y = reset ? me._yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
+		var x = xScale.getPixelForValue(parsed[xScale.id]);
+		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 
 		// Utility
 		point._options = options;
@@ -168,43 +167,6 @@ module.exports = DatasetController.extend({
 		values.steppedLine = resolve([config.steppedLine, lineOptions.stepped]);
 
 		return values;
-	},
-
-	calculatePointY: function(value, index, datasetIndex) {
-		var me = this;
-		var chart = me.chart;
-		var yScale = me._yScale;
-		var sumPos = 0;
-		var sumNeg = 0;
-		var rightValue = +yScale.getRightValue(value);
-		var metasets = chart._getSortedVisibleDatasetMetas();
-		var ilen = metasets.length;
-		var i, ds, dsMeta, stackedRightValue;
-
-		if (yScale.options.stacked) {
-			for (i = 0; i < ilen; ++i) {
-				dsMeta = metasets[i];
-				if (dsMeta.index === datasetIndex) {
-					break;
-				}
-
-				ds = chart.data.datasets[dsMeta.index];
-				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id) {
-					stackedRightValue = +yScale.getRightValue(ds.data[index]);
-					if (stackedRightValue < 0) {
-						sumNeg += stackedRightValue || 0;
-					} else {
-						sumPos += stackedRightValue || 0;
-					}
-				}
-			}
-
-			if (rightValue < 0) {
-				return yScale.getPixelForValue(sumNeg + rightValue);
-			}
-			return yScale.getPixelForValue(sumPos + rightValue);
-		}
-		return yScale.getPixelForValue(value);
 	},
 
 	updateBezierControlPoints: function() {

@@ -84,11 +84,15 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 module.exports = Scale.extend({
-	getRightValue: function(value) {
-		if (typeof value === 'string') {
-			return +value;
+	_parse: function(raw) {
+		if (helpers.isNullOrUndef(raw)) {
+			return NaN;
 		}
-		return Scale.prototype.getRightValue.call(this, value);
+		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(raw)) {
+			return NaN;
+		}
+
+		return +raw;
 	},
 
 	handleTickRangeOptions: function() {

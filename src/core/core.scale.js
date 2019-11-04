@@ -328,6 +328,56 @@ var Scale = Element.extend({
 	zeroLineIndex: 0,
 
 	/**
+	 * Parse a supported input value to internal representation.
+	 * @param {*} raw
+	 * @param {number} index
+	 * @private
+	 * @since 3.0
+	 */
+	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+		return raw;
+	},
+
+	/**
+	 * Parse an object for axis to internal representation.
+	 * @param {object} obj
+	 * @param {string} axis
+	 * @param {number} index
+	 * @private
+	 * @since 3.0
+	 */
+	_parseObject: function(obj, axis, index) {
+		if (obj[axis] !== undefined) {
+			return this._parse(obj[axis], index);
+		}
+		return null;
+	},
+
+	_getMinMax: function(canStack) {
+		var me = this;
+		var metas = me._getMatchingVisibleMetas();
+		var min = Number.POSITIVE_INFINITY;
+		var max = Number.NEGATIVE_INFINITY;
+		var minPositive = Number.POSITIVE_INFINITY;
+		var i, ilen, minmax;
+
+		for (i = 0, ilen = metas.length; i < ilen; ++i) {
+			minmax = metas[i].controller._getMinMax(me, canStack);
+			min = Math.min(min, minmax.min);
+			max = Math.max(max, minmax.max);
+			minPositive = Math.min(minPositive, minmax.minPositive);
+		}
+
+		return {
+			min: min,
+			max: max,
+			minPositive: minPositive
+		};
+	},
+
+	_invalidateCaches: helpers.noop,
+
+	/**
 	 * Get the padding needed for the scale
 	 * @method getPadding
 	 * @private
@@ -734,32 +784,6 @@ var Scale = Element.extend({
 		return this.options.fullWidth;
 	},
 
-	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
-	getRightValue: function(rawValue) {
-		// Null and undefined values first
-		if (isNullOrUndef(rawValue)) {
-			return NaN;
-		}
-		// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
-		if ((typeof rawValue === 'number' || rawValue instanceof Number) && !isFinite(rawValue)) {
-			return NaN;
-		}
-
-		// If it is in fact an object, dive in one more level
-		if (rawValue) {
-			if (this.isHorizontal()) {
-				if (rawValue.x !== undefined) {
-					return this.getRightValue(rawValue.x);
-				}
-			} else if (rawValue.y !== undefined) {
-				return this.getRightValue(rawValue.y);
-			}
-		}
-
-		// Value is good, return it
-		return rawValue;
-	},
-
 	_convertTicksToLabels: function(ticks) {
 		var me = this;
 
@@ -786,50 +810,12 @@ var Scale = Element.extend({
 	},
 
 	/**
-	 * @private
+	 * Used to get the label to display in the tooltip for the given value
+	 * @param value
 	 */
-	_parseValue: function(value) {
-		var start, end, min, max;
-
-		if (isArray(value)) {
-			start = +this.getRightValue(value[0]);
-			end = +this.getRightValue(value[1]);
-			min = Math.min(start, end);
-			max = Math.max(start, end);
-		} else {
-			value = +this.getRightValue(value);
-			start = undefined;
-			end = value;
-			min = value;
-			max = value;
-		}
-
-		return {
-			min: min,
-			max: max,
-			start: start,
-			end: end
-		};
+	getLabelForValue: function(value) {
+		return value;
 	},
-
-	/**
-	* @private
-	*/
-	_getScaleLabel: function(rawValue) {
-		var v = this._parseValue(rawValue);
-		if (v.start !== undefined) {
-			return '[' + v.start + ', ' + v.end + ']';
-		}
-
-		return +this.getRightValue(rawValue);
-	},
-
-	/**
-	 * Used to get the value to display in the tooltip for the data at the given index
-	 * @param index
-	 * @param datasetIndex
-	 */
-	getLabelForIndex: helpers.noop,
 
 	/**
 	 * Returns the location of the given data point. Value can either be an index or a numerical value
@@ -963,26 +949,13 @@ var Scale = Element.extend({
 	 * @private
 	 */
 	_isVisible: function() {
-		var me = this;
-		var chart = me.chart;
-		var display = me.options.display;
-		var i, ilen, meta;
+		var display = this.options.display;
 
 		if (display !== 'auto') {
 			return !!display;
 		}
 
-		// When 'auto', the scale is visible if at least one associated dataset is visible.
-		for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-			if (chart.isDatasetVisible(i)) {
-				meta = chart.getDatasetMeta(i);
-				if (meta.xAxisID === me.id || meta.yAxisID === me.id) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return this._getMatchingVisibleMetas().length > 0;
 	},
 
 	/**
@@ -1402,14 +1375,29 @@ var Scale = Element.extend({
 	/**
 	 * @private
 	 */
+	_getAxisID: function() {
+		return this.isHorizontal() ? 'xAxisID' : 'yAxisID';
+	},
+
+	/**
+	 * Returns visible dataset metas that are attached to this scale
+	 * @param {string} [type] - if specified, also filter by dataset type
+	 * @private
+	 */
 	_getMatchingVisibleMetas: function(type) {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
-		return me.chart._getSortedVisibleDatasetMetas()
-			.filter(function(meta) {
-				return (!type || meta.type === type)
-					&& (isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id);
-			});
+		var metas = me.chart._getSortedVisibleDatasetMetas();
+		var axisID = me._getAxisID();
+		var result = [];
+		var i, ilen, meta;
+
+		for (i = 0, ilen = metas.length; i < ilen; ++i) {
+			meta = metas[i];
+			if (meta[axisID] === me.id && (!type || meta.type === type)) {
+				result.push(meta);
+			}
+		}
+		return result;
 	}
 });
 

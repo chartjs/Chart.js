@@ -9,7 +9,6 @@ var resolve = helpers.options.resolve;
 var valueOrDefault = helpers.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
-var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
 var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 var INTERVALS = {
@@ -204,7 +203,7 @@ function parse(scale, input) {
 	}
 
 	var options = scale.options.time;
-	var value = toTimestamp(scale, scale.getRightValue(input));
+	var value = toTimestamp(scale, input);
 	if (value === null) {
 		return value;
 	}
@@ -365,6 +364,89 @@ function ticksFromTimestamps(scale, values, majorUnit) {
 	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
 }
 
+
+function getDataTimestamps(scale) {
+	var timestamps = scale._cache.data || [];
+	var i, ilen, metas;
+
+	if (!timestamps.length) {
+		metas = scale._getMatchingVisibleMetas();
+		for (i = 0, ilen = metas.length; i < ilen; ++i) {
+			timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
+		}
+		timestamps = scale._cache.data = arrayUnique(timestamps).sort(sorter);
+	}
+	return timestamps;
+}
+
+function getLabelTimestamps(scale) {
+	var timestamps = scale._cache.labels || [];
+	var i, ilen, labels;
+
+	if (!timestamps.length) {
+		labels = scale._getLabels();
+		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+			timestamps.push(parse(scale, labels[i]));
+		}
+		timestamps = scale._cache.labels = arrayUnique(timestamps).sort(sorter);
+	}
+	return timestamps;
+}
+
+function getAllTimestamps(scale) {
+	var timestamps = scale._cache.all || [];
+
+	if (!timestamps.length) {
+		timestamps = getDataTimestamps(scale).concat(getLabelTimestamps(scale));
+		timestamps = scale._cache.all = arrayUnique(timestamps).sort(sorter);
+	}
+	return timestamps;
+}
+
+
+function getTimestampsForTicks(scale) {
+	var min = scale.min;
+	var max = scale.max;
+	var options = scale.options;
+	var capacity = scale.getLabelCapacity(min);
+	var source = options.ticks.source;
+	var timestamps;
+
+	if (source === 'data' || (source === 'auto' && options.distribution === 'series')) {
+		timestamps = getAllTimestamps(scale);
+	} else if (source === 'labels') {
+		timestamps = getLabelTimestamps(scale);
+	} else {
+		timestamps = generate(scale, min, max, capacity, options);
+	}
+
+	return timestamps;
+}
+
+/**
+ * Return subset of `timestamps` between `min` and `max`.
+ * Timestamps are assumend to be in sorted order.
+ * @param {int[]} timestamps - array of timestamps
+ * @param {int} min - min value (timestamp)
+ * @param {int} max - max value (timestamp)
+ */
+function filterBetween(timestamps, min, max) {
+	var start = 0;
+	var end = timestamps.length - 1;
+
+	while (start < end && timestamps[start] < min) {
+		start++;
+	}
+	while (end > start && timestamps[end] > max) {
+		end--;
+	}
+	end++; // slice does not include last element
+
+	return start > 0 || end < timestamps.length
+		? timestamps.slice(start, end)
+		: timestamps;
+}
+
 var defaultConfig = {
 	position: 'bottom',
 
@@ -415,158 +497,107 @@ var defaultConfig = {
 };
 
 module.exports = Scale.extend({
+	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+		if (raw === undefined) {
+			return NaN;
+		}
+		return toTimestamp(this, raw);
+	},
 
-	update: function() {
+	_parseObject: function(obj, axis, index) {
+		if (obj && obj.t) {
+			return this._parse(obj.t, index);
+		}
+		if (obj[axis] !== undefined) {
+			return this._parse(obj[axis], index);
+		}
+		return null;
+	},
+
+	_invalidateCaches: function() {
+		this._cache = {};
+	},
+
+	initialize: function() {
 		var me = this;
 		var options = me.options;
 		var time = options.time || (options.time = {});
 		var adapter = me._adapter = new adapters._date(options.adapters.date);
 
+
+		me._cache = {};
+
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
+
 		helpers.mergeIf(time.displayFormats, adapter.formats());
 
-		return Scale.prototype.update.apply(me, arguments);
-	},
-
-	/**
-	 * Allows data to be referenced via 't' attribute
-	 */
-	getRightValue: function(rawValue) {
-		if (rawValue && rawValue.t !== undefined) {
-			rawValue = rawValue.t;
-		}
-		return Scale.prototype.getRightValue.call(this, rawValue);
+		Scale.prototype.initialize.call(me);
 	},
 
 	determineDataLimits: function() {
 		var me = this;
-		var chart = me.chart;
 		var adapter = me._adapter;
 		var options = me.options;
 		var tickOpts = options.ticks;
 		var unit = options.time.unit || 'day';
-		var min = MAX_INTEGER;
-		var max = MIN_INTEGER;
-		var timestamps = [];
-		var datasets = [];
-		var labels = [];
-		var i, j, ilen, jlen, data, timestamp, labelsAdded;
-		var dataLabels = me._getLabels();
+		var min = Number.POSITIVE_INFINITY;
+		var max = Number.NEGATIVE_INFINITY;
+		var minmax = me._getMinMax(false);
+		var i, ilen, labels;
 
-		for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {
-			labels.push(parse(me, dataLabels[i]));
+		min = Math.min(min, minmax.min);
+		max = Math.max(max, minmax.max);
+
+		labels = getLabelTimestamps(me);
+		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+			min = Math.min(min, labels[i]);
+			max = Math.max(max, labels[i]);
 		}
 
-		for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
-			if (chart.isDatasetVisible(i)) {
-				data = chart.data.datasets[i].data;
-
-				// Let's consider that all data have the same format.
-				if (helpers.isObject(data[0])) {
-					datasets[i] = [];
-
-					for (j = 0, jlen = data.length; j < jlen; ++j) {
-						timestamp = parse(me, data[j]);
-						timestamps.push(timestamp);
-						datasets[i][j] = timestamp;
-					}
-				} else {
-					datasets[i] = labels.slice(0);
-					if (!labelsAdded) {
-						timestamps = timestamps.concat(labels);
-						labelsAdded = true;
-					}
-				}
-			} else {
-				datasets[i] = [];
-			}
-		}
-
-		if (labels.length) {
-			min = Math.min(min, labels[0]);
-			max = Math.max(max, labels[labels.length - 1]);
-		}
-
-		if (timestamps.length) {
-			timestamps = ilen > 1 ? arrayUnique(timestamps).sort(sorter) : timestamps.sort(sorter);
-			min = Math.min(min, timestamps[0]);
-			max = Math.max(max, timestamps[timestamps.length - 1]);
-		}
+		min = helpers.isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
+		max = helpers.isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
 
 		min = parse(me, tickOpts.min) || min;
 		max = parse(me, tickOpts.max) || max;
-
-		// In case there is no valid min/max, set limits based on unit time option
-		min = min === MAX_INTEGER ? +adapter.startOf(Date.now(), unit) : min;
-		max = max === MIN_INTEGER ? +adapter.endOf(Date.now(), unit) + 1 : max;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
 		me.max = Math.max(min + 1, max);
-
-		// PRIVATE
-		me._table = [];
-		me._timestamps = {
-			data: timestamps,
-			datasets: datasets,
-			labels: labels
-		};
 	},
 
 	buildTicks: function() {
 		var me = this;
-		var min = me.min;
-		var max = me.max;
 		var options = me.options;
-		var tickOpts = options.ticks;
 		var timeOpts = options.time;
-		var timestamps = me._timestamps;
-		var ticks = [];
-		var capacity = me.getLabelCapacity(min);
-		var source = tickOpts.source;
+		var tickOpts = options.ticks;
 		var distribution = options.distribution;
-		var i, ilen, timestamp;
+		var ticks = [];
+		var min, max, timestamps;
 
-		if (source === 'data' || (source === 'auto' && distribution === 'series')) {
-			timestamps = timestamps.data;
-		} else if (source === 'labels') {
-			timestamps = timestamps.labels;
-		} else {
-			timestamps = generate(me, min, max, capacity, options);
-		}
+		timestamps = getTimestampsForTicks(me);
 
 		if (options.bounds === 'ticks' && timestamps.length) {
-			min = timestamps[0];
-			max = timestamps[timestamps.length - 1];
+			me.min = parse(me, tickOpts.min) || timestamps[0];
+			me.max = parse(me, tickOpts.max) || timestamps[timestamps.length - 1];
 		}
 
-		// Enforce limits with user min/max options
-		min = parse(me, tickOpts.min) || min;
-		max = parse(me, tickOpts.max) || max;
+		min = me.min;
+		max = me.max;
 
-		// Remove ticks outside the min/max range
-		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
-			timestamp = timestamps[i];
-			if (timestamp >= min && timestamp <= max) {
-				ticks.push(timestamp);
-			}
-		}
-
-		me.min = min;
-		me.max = max;
+		ticks = filterBetween(timestamps, min, max);
 
 		// PRIVATE
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
 		// autoSkip is enabled because we don't yet know what the final number of ticks will be
 		me._unit = timeOpts.unit || (tickOpts.autoSkip
-			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, capacity)
+			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me.getLabelCapacity(min))
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
-		me._table = buildLookupTable(me._timestamps.data, min, max, distribution);
+		me._table = buildLookupTable(getAllTimestamps(me), min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
 		if (tickOpts.reverse) {
@@ -576,24 +607,15 @@ module.exports = Scale.extend({
 		return ticksFromTimestamps(me, ticks, me._majorUnit);
 	},
 
-	getLabelForIndex: function(index, datasetIndex) {
+	getLabelForValue: function(value) {
 		var me = this;
 		var adapter = me._adapter;
-		var data = me.chart.data;
 		var timeOpts = me.options.time;
-		var label = data.labels && index < data.labels.length ? data.labels[index] : '';
-		var value = data.datasets[datasetIndex].data[index];
 
-		if (helpers.isObject(value)) {
-			label = me.getRightValue(value);
-		}
 		if (timeOpts.tooltipFormat) {
-			return adapter.format(toTimestamp(me, label), timeOpts.tooltipFormat);
+			return adapter.format(value, timeOpts.tooltipFormat);
 		}
-		if (typeof label === 'string') {
-			return label;
-		}
-		return adapter.format(toTimestamp(me, label), timeOpts.displayFormats.datetime);
+		return adapter.format(value, timeOpts.displayFormats.datetime);
 	},
 
 	/**
@@ -640,20 +662,15 @@ module.exports = Scale.extend({
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	},
 
-	getPixelForValue: function(value, index, datasetIndex) {
+	getPixelForValue: function(value) {
 		var me = this;
-		var time = null;
 
-		if (index !== undefined && datasetIndex !== undefined) {
-			time = me._timestamps.datasets[datasetIndex][index];
+		if (typeof value !== 'number') {
+			value = parse(me, value);
 		}
 
-		if (time === null) {
-			time = parse(me, value);
-		}
-
-		if (time !== null) {
-			return me.getPixelForOffset(time);
+		if (value !== null) {
+			return me.getPixelForOffset(value);
 		}
 	},
 

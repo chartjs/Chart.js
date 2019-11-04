@@ -210,10 +210,11 @@ function createTooltipItem(chart, element) {
 	var controller = chart.getDatasetMeta(datasetIndex).controller;
 	var indexScale = controller._getIndexScale();
 	var valueScale = controller._getValueScale();
+	var parsed = controller._getParsed(index);
 
 	return {
-		label: indexScale ? '' + indexScale.getLabelForIndex(index, datasetIndex) : '',
-		value: valueScale ? '' + valueScale.getLabelForIndex(index, datasetIndex) : '',
+		label: indexScale ? '' + indexScale.getLabelForValue(parsed[indexScale.id]) : '',
+		value: valueScale ? '' + valueScale.getLabelForValue(parsed[valueScale.id]) : '',
 		index: index,
 		datasetIndex: datasetIndex,
 		x: element._model.x,

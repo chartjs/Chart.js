@@ -73,8 +73,8 @@ To work with Chart.js, custom scale types must implement the following interface
     // buildTicks() should create a ticks array on the axis instance, if you intend to use any of the implementations from the base class
     buildTicks: function() {},
 
-    // Get the value to show for the data at the given index of the the given dataset, ie this.chart.data.datasets[datasetIndex].data[index]
-    getLabelForIndex: function(index, datasetIndex) {},
+    // Get the label to show for the given value
+    getLabelForValue: function(value) {},
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param index: index into the ticks array
