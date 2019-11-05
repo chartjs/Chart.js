@@ -94,15 +94,6 @@ function drawBorder(ctx, vm, arc) {
 module.exports = Element.extend({
 	_type: 'arc',
 
-	inLabelRange: function(mouseX) {
-		var vm = this._view;
-
-		if (vm) {
-			return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
-		}
-		return false;
-	},
-
 	inRange: function(chartX, chartY) {
 		var vm = this._view;
 
@@ -141,11 +132,6 @@ module.exports = Element.extend({
 			x: vm.x + Math.cos(halfAngle) * halfRadius,
 			y: vm.y + Math.sin(halfAngle) * halfRadius
 		};
-	},
-
-	getArea: function() {
-		var vm = this._view;
-		return Math.PI * ((vm.endAngle - vm.startAngle) / (2 * Math.PI)) * (Math.pow(vm.outerRadius, 2) - Math.pow(vm.innerRadius, 2));
 	},
 
 	tooltipPosition: function() {

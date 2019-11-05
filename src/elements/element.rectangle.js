@@ -157,20 +157,8 @@ module.exports = Element.extend({
 		ctx.restore();
 	},
 
-	height: function() {
-		var vm = this._view;
-		return vm.base - vm.y;
-	},
-
 	inRange: function(mouseX, mouseY) {
 		return inRange(this._view, mouseX, mouseY);
-	},
-
-	inLabelRange: function(mouseX, mouseY) {
-		var vm = this._view;
-		return isVertical(vm)
-			? inRange(vm, mouseX, null)
-			: inRange(vm, null, mouseY);
 	},
 
 	inXRange: function(mouseX) {
@@ -193,14 +181,6 @@ module.exports = Element.extend({
 		}
 
 		return {x: x, y: y};
-	},
-
-	getArea: function() {
-		var vm = this._view;
-
-		return isVertical(vm)
-			? vm.width * Math.abs(vm.y - vm.base)
-			: vm.height * Math.abs(vm.x - vm.base);
 	},
 
 	tooltipPosition: function() {

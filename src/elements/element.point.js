@@ -42,7 +42,6 @@ module.exports = Element.extend({
 		return vm ? ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(vm.hitRadius + vm.radius, 2)) : false;
 	},
 
-	inLabelRange: xRange,
 	inXRange: xRange,
 	inYRange: yRange,
 
@@ -52,10 +51,6 @@ module.exports = Element.extend({
 			x: vm.x,
 			y: vm.y
 		};
-	},
-
-	getArea: function() {
-		return Math.PI * Math.pow(this._view.radius, 2);
 	},
 
 	tooltipPosition: function() {
