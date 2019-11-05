@@ -91,8 +91,8 @@ module.exports = Scale.extend({
 		var me = this;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
-		var min = positiveOrDefault(me._parsedMin, me.min);
-		var max = positiveOrDefault(me._parsedMax, me.max);
+		var min = positiveOrDefault(me._userMin, me.min);
+		var max = positiveOrDefault(me._userMax, me.max);
 
 		if (min === max) {
 			if (min !== 0 && min !== null) {

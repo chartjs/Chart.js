@@ -3,6 +3,7 @@
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
+var isNullOrUndef = helpers.isNullOrUndef;
 
 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -183,6 +184,18 @@ function getFirstScaleId(chart, axis) {
 	var prop = axis + 'Axes';
 
 	return (scalesOpts && scalesOpts[prop] && scalesOpts[prop].length && scalesOpts[prop][0].id) || scaleId;
+}
+
+function getUserBounds(scale) {
+	var min = scale._userMin;
+	var max = scale._userMax;
+	if (isNullOrUndef(min) || isNaN(min)) {
+		min = Number.NEGATIVE_INFINITY;
+	}
+	if (isNullOrUndef(max) || isNaN(max)) {
+		max = Number.POSITIVE_INFINITY;
+	}
+	return {min, max};
 }
 
 // Base class for all dataset controllers (line, bar, etc)
@@ -625,6 +638,7 @@ helpers.extend(DatasetController.prototype, {
 		var stacked = canStack && meta._stacked;
 		var indices = getSortedDatasetIndices(chart, true);
 		var otherScale = this._getOtherScale(scale);
+		var otherScaleBounds = getUserBounds(otherScale);
 		var i, item, value, parsed, stack, min, minPositive, otherValue;
 
 		min = minPositive = Number.POSITIVE_INFINITY;
@@ -635,7 +649,7 @@ helpers.extend(DatasetController.prototype, {
 			value = parsed[scale.id];
 			otherValue = parsed[otherScale.id];
 			if (item.hidden || isNaN(value) ||
-				otherScale._parsedMin > otherValue || otherScale._parsedMax < otherValue) {
+				otherScaleBounds.min > otherValue || otherScaleBounds.max < otherValue) {
 				continue;
 			}
 			if (stacked) {

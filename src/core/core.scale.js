@@ -355,10 +355,10 @@ class Scale extends Element {
 		var minPositive = Number.POSITIVE_INFINITY;
 		var i, ilen, metas, minmax;
 
-		if (isFinite(me._parsedMin) && isFinite(me._parsedMax)) {
+		if (isFinite(me._userMin) && isFinite(me._userMax)) {
 			return {
-				min: me._parsedMin,
-				max: me._parsedMax
+				min: me._userMin,
+				max: me._userMax
 			};
 		}
 

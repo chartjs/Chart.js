@@ -26,8 +26,8 @@ module.exports = Scale.extend({
 		var me = this;
 		var max = me._getLabels().length - 1;
 
-		me.min = Math.max(0, me._parsedMin || 0);
-		me.max = Math.min(me._parsedMax || max, max);
+		me.min = Math.max(me._userMin || 0, 0);
+		me.max = Math.min(me._userMax || max, max);
 	},
 
 	buildTicks: function() {
