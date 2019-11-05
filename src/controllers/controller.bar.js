@@ -238,7 +238,6 @@ module.exports = DatasetController.extend({
 
 	updateElement: function(rectangle, index, reset) {
 		var me = this;
-		var dataset = me.getDataset();
 		var options = me._resolveDataElementOptions(index);
 
 		rectangle._datasetIndex = me.index;
@@ -247,9 +246,7 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderSkipped: options.borderSkipped,
-			borderWidth: options.borderWidth,
-			datasetLabel: dataset.label,
-			label: me.chart.data.labels[index]
+			borderWidth: options.borderWidth
 		};
 
 		// all borders are drawn for floating bar

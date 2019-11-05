@@ -66,6 +66,11 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * Made `scale.handleDirectionalChanges` private
 * Made `scale.tickValues` private
 
+#### Removal of private APIs
+
+* `_model.datasetLabel`
+* `_model.label`
+
 ### Renamed
 
 * `helpers.clear` was renamed to `helpers.canvas.clear`

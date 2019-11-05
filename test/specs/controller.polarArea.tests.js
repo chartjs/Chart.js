@@ -117,8 +117,7 @@ describe('Chart.controllers.polarArea', function() {
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 255, 0)',
-				borderWidth: 1.2,
-				label: chart.data.labels[i]
+				borderWidth: 1.2
 			}));
 		});
 
@@ -186,8 +185,7 @@ describe('Chart.controllers.polarArea', function() {
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 255, 0)',
-				borderWidth: 1.2,
-				label: chart.data.labels[i]
+				borderWidth: 1.2
 			}));
 		});
 	});

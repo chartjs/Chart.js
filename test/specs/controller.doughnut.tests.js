@@ -114,7 +114,6 @@ describe('Chart.controllers.doughnut', function() {
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
 				startAngle: Math.PI * -0.5,
 				endAngle: Math.PI * -0.5,
-				label: chart.data.labels[i],
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 0, 255)',
 				borderWidth: 2
@@ -137,7 +136,6 @@ describe('Chart.controllers.doughnut', function() {
 			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
 			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				label: chart.data.labels[i],
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 0, 255)',
 				borderWidth: 2
