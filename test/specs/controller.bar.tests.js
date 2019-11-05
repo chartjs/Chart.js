@@ -746,8 +746,6 @@ describe('Chart.controllers.bar', function() {
 			expect(meta.data[i]._model.base).toBeCloseToPixel(1024);
 			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				datasetLabel: chart.data.datasets[1].label,
-				label: chart.data.labels[i],
 				backgroundColor: 'red',
 				borderSkipped: 'top',
 				borderColor: 'blue',

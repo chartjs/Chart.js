@@ -232,7 +232,6 @@ module.exports = DatasetController.extend({
 		var centerY = (chartArea.top + chartArea.bottom) / 2;
 		var startAngle = opts.rotation; // non reset case handled later
 		var endAngle = opts.rotation; // non reset case handled later
-		var dataset = me.getDataset();
 		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._val * opts.circumference / DOUBLE_PI);
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
@@ -255,8 +254,7 @@ module.exports = DatasetController.extend({
 				endAngle: endAngle,
 				circumference: circumference,
 				outerRadius: outerRadius,
-				innerRadius: innerRadius,
-				label: helpers.valueAtIndexOrDefault(dataset.label, index, chart.data.labels[index])
+				innerRadius: innerRadius
 			}
 		});
 

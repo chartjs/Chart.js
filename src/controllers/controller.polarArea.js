@@ -187,7 +187,6 @@ module.exports = DatasetController.extend({
 		var opts = chart.options;
 		var animationOpts = opts.animation;
 		var scale = chart.scale;
-		var labels = chart.data.labels;
 
 		var centerX = scale.xCenter;
 		var centerY = scale.yCenter;
@@ -217,8 +216,7 @@ module.exports = DatasetController.extend({
 				innerRadius: 0,
 				outerRadius: reset ? resetRadius : distance,
 				startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
-				endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
-				label: helpers.valueAtIndexOrDefault(labels, index, labels[index])
+				endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle
 			}
 		});
 
