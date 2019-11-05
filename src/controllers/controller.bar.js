@@ -240,8 +240,6 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var options = me._resolveDataElementOptions(index);
 
-		rectangle._datasetIndex = me.index;
-		rectangle._index = index;
 		rectangle._model = {
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,

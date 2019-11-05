@@ -33,7 +33,7 @@ function parseVisibleItems(chart, handler) {
 		for (j = 0, jlen = metadata.length; j < jlen; ++j) {
 			element = metadata[j];
 			if (!element._view.skip) {
-				handler(element);
+				handler(element, i, j);
 			}
 		}
 	}
@@ -48,9 +48,9 @@ function parseVisibleItems(chart, handler) {
 function getIntersectItems(chart, position) {
 	var elements = [];
 
-	parseVisibleItems(chart, function(element) {
+	parseVisibleItems(chart, function(element, datasetIndex, index) {
 		if (element.inRange(position.x, position.y)) {
-			elements.push(element);
+			elements.push({element, datasetIndex, index});
 		}
 	});
 
@@ -69,7 +69,7 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 	var minDistance = Number.POSITIVE_INFINITY;
 	var nearestItems = [];
 
-	parseVisibleItems(chart, function(element) {
+	parseVisibleItems(chart, function(element, datasetIndex, index) {
 		if (intersect && !element.inRange(position.x, position.y)) {
 			return;
 		}
@@ -77,11 +77,11 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 		var center = element.getCenterPoint();
 		var distance = distanceMetric(position, center);
 		if (distance < minDistance) {
-			nearestItems = [element];
+			nearestItems = [{element, datasetIndex, index}];
 			minDistance = distance;
 		} else if (distance === minDistance) {
 			// Can have multiple items at the same distance in which case we sort by size
-			nearestItems.push(element);
+			nearestItems.push({element, datasetIndex, index});
 		}
 	});
 
@@ -117,11 +117,12 @@ function indexMode(chart, e, options) {
 	}
 
 	chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
-		var element = meta.data[items[0]._index];
+		var index = items[0].index;
+		var element = meta.data[index];
 
 		// don't count items that are skipped (null data)
 		if (element && !element._view.skip) {
-			elements.push(element);
+			elements.push({element, datasetIndex: meta.index, index});
 		}
 	});
 
@@ -152,7 +153,7 @@ module.exports = {
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use during interaction
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		index: indexMode,
 
@@ -163,7 +164,7 @@ module.exports = {
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use during interaction
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		dataset: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
@@ -172,7 +173,7 @@ module.exports = {
 			var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
 
 			if (items.length > 0) {
-				items = chart.getDatasetMeta(items[0]._datasetIndex).data;
+				items = [{datasetIndex: items[0].datasetIndex}]; // when mode: 'dataset' we only need to return datasetIndex
 			}
 
 			return items;
@@ -184,7 +185,7 @@ module.exports = {
 		 * @function Chart.Interaction.modes.intersect
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		point: function(chart, e) {
 			var position = getRelativePosition(e, chart);
@@ -197,7 +198,7 @@ module.exports = {
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		nearest: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
@@ -212,16 +213,16 @@ module.exports = {
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		x: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
 			var items = [];
 			var intersectsItem = false;
 
-			parseVisibleItems(chart, function(element) {
+			parseVisibleItems(chart, function(element, datasetIndex, index) {
 				if (element.inXRange(position.x)) {
-					items.push(element);
+					items.push({element, datasetIndex, index});
 				}
 
 				if (element.inRange(position.x, position.y)) {
@@ -243,16 +244,16 @@ module.exports = {
 		 * @param {Chart} chart - the chart we are returning items from
 		 * @param {Event} e - the event we are find things at
 		 * @param {IInteractionOptions} options - options to use
-		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		y: function(chart, e, options) {
 			var position = getRelativePosition(e, chart);
 			var items = [];
 			var intersectsItem = false;
 
-			parseVisibleItems(chart, function(element) {
+			parseVisibleItems(chart, function(element, datasetIndex, index) {
 				if (element.inYRange(position.y)) {
-					items.push(element);
+					items.push({element, datasetIndex, index});
 				}
 
 				if (element.inRange(position.x, position.y)) {

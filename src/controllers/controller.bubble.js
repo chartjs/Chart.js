@@ -107,8 +107,6 @@ module.exports = DatasetController.extend({
 		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed[yScale.id]);
 
 		point._options = options;
-		point._datasetIndex = me.index;
-		point._index = index;
 		point._model = {
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,

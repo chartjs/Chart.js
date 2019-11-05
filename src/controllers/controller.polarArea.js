@@ -201,10 +201,6 @@ module.exports = DatasetController.extend({
 		var options = arc._options || {};
 
 		helpers.extend(arc, {
-			// Utility
-			_datasetIndex: me.index,
-			_index: index,
-
 			// Desired view properties
 			_model: {
 				backgroundColor: options.backgroundColor,

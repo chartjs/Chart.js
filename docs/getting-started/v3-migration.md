@@ -47,6 +47,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `afterScaleUpdate`
 * `helpers.addEvent`
 * `helpers.aliasPixel`
+* `helpers.arrayEquals`
 * `helpers.configMerge`
 * `helpers.indexOf`
 * `helpers.min`
@@ -101,3 +102,17 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 ##### Time Scale
 
 * `getValueForPixel` now returns milliseconds since the epoch
+
+#### Controllers
+
+##### Core Controller
+
+* The first parameter to `updateHoverStyle` is now an array of objects containing the `element`, `datasetIndex`, and `index`
+
+##### Dataset Controllers
+
+* `setHoverStyle` now additionally takes the `datasetIndex` and `index`
+
+#### Interactions
+
+* Interaction mode methods now return an array of objects containing the `element`, `datasetIndex`, and `index`

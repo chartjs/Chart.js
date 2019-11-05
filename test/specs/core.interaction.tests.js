@@ -37,7 +37,7 @@ describe('Core.Interaction', function() {
 				y: point._model.y,
 			};
 
-			var elements = Chart.Interaction.modes.point(chart, evt);
+			var elements = Chart.Interaction.modes.point(chart, evt).map(item => item.element);
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
@@ -51,7 +51,7 @@ describe('Core.Interaction', function() {
 				y: 0
 			};
 
-			var elements = Chart.Interaction.modes.point(chart, evt);
+			var elements = Chart.Interaction.modes.point(chart, evt).map(item => item.element);
 			expect(elements).toEqual([]);
 		});
 	});
@@ -92,7 +92,7 @@ describe('Core.Interaction', function() {
 					y: point._model.y,
 				};
 
-				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true});
+				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true}).map(item => item.element);
 				expect(elements).toEqual([point, meta1.data[1]]);
 			});
 
@@ -106,7 +106,7 @@ describe('Core.Interaction', function() {
 					y: 0,
 				};
 
-				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true});
+				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true}).map(item => item.element);
 				expect(elements).toEqual([]);
 			});
 		});
@@ -147,7 +147,7 @@ describe('Core.Interaction', function() {
 					y: 0
 				};
 
-				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false});
+				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false}).map(item => item.element);
 				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 			});
 
@@ -169,7 +169,7 @@ describe('Core.Interaction', function() {
 					y: center.y + 30,
 				};
 
-				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'y', intersect: false});
+				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'y', intersect: false}).map(item => item.element);
 				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 			});
 
@@ -186,7 +186,7 @@ describe('Core.Interaction', function() {
 					y: 0
 				};
 
-				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'xy', intersect: false});
+				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'xy', intersect: false}).map(item => item.element);
 				expect(elements).toEqual([meta0.data[0], meta1.data[0]]);
 			});
 		});
@@ -228,7 +228,7 @@ describe('Core.Interaction', function() {
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true});
-				expect(elements).toEqual(meta.data);
+				expect(elements).toEqual([{datasetIndex: 0}]);
 			});
 
 			it ('should return an empty array if nothing found', function() {
@@ -284,9 +284,7 @@ describe('Core.Interaction', function() {
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'x', intersect: false});
-
-				var meta = chart.getDatasetMeta(0);
-				expect(elements).toEqual(meta.data);
+				expect(elements).toEqual([{datasetIndex: 0}]);
 			});
 
 			it ('axis: y gets correct items', function() {
@@ -300,9 +298,7 @@ describe('Core.Interaction', function() {
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'y', intersect: false});
-
-				var meta = chart.getDatasetMeta(1);
-				expect(elements).toEqual(meta.data);
+				expect(elements).toEqual([{datasetIndex: 1}]);
 			});
 
 			it ('axis: xy gets correct items', function() {
@@ -316,9 +312,7 @@ describe('Core.Interaction', function() {
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: false});
-
-				var meta = chart.getDatasetMeta(1);
-				expect(elements).toEqual(meta.data);
+				expect(elements).toEqual([{datasetIndex: 1}]);
 			});
 		});
 	});
@@ -359,7 +353,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Nearest to 0,0 (top left) will be first point of dataset 2
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false}).map(item => item.element);
 					var meta = chart.getDatasetMeta(1);
 					expect(elements).toEqual([meta.data[0]]);
 				});
@@ -384,7 +378,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Both points are nearest
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 				});
 			});
@@ -410,7 +404,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Middle point from both series are nearest
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 				});
 
@@ -434,7 +428,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Should return all (4) points from 'Point 1' and 'Point 2'
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[0], meta0.data[1], meta1.data[0], meta1.data[1]]);
 				});
 			});
@@ -459,7 +453,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Middle point from both series are nearest
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'y', intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'y', intersect: false}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[2]]);
 				});
 
@@ -483,7 +477,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Should return points with value 40
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'y', intersect: false});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'y', intersect: false}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
 				});
 			});
@@ -525,7 +519,7 @@ describe('Core.Interaction', function() {
 					};
 
 					// Nothing intersects so find nothing
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
 					expect(elements).toEqual([]);
 
 					evt = {
@@ -535,7 +529,7 @@ describe('Core.Interaction', function() {
 						x: point._view.x,
 						y: point._view.y
 					};
-					elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
+					elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
 					expect(elements).toEqual([point]);
 				});
 
@@ -565,7 +559,7 @@ describe('Core.Interaction', function() {
 						y: pt.y
 					};
 
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[1]]);
 				});
 
@@ -595,7 +589,7 @@ describe('Core.Interaction', function() {
 						y: pt.y
 					};
 
-					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true});
+					var elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
 					expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 				});
 			});
@@ -644,7 +638,7 @@ describe('Core.Interaction', function() {
 				y: 0
 			};
 
-			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: false}).map(item => item.element);
 			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 
 			evt = {
@@ -655,7 +649,7 @@ describe('Core.Interaction', function() {
 				y: 0
 			};
 
-			elements = Chart.Interaction.modes.x(chart, evt, {intersect: false});
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: false}).map(item => item.element);
 			expect(elements).toEqual([]);
 		});
 
@@ -678,7 +672,7 @@ describe('Core.Interaction', function() {
 				y: 0
 			};
 
-			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.x(chart, evt, {intersect: true}).map(item => item.element);
 			expect(elements).toEqual([]); // we don't intersect anything
 
 			evt = {
@@ -689,7 +683,7 @@ describe('Core.Interaction', function() {
 				y: pt.y
 			};
 
-			elements = Chart.Interaction.modes.x(chart, evt, {intersect: true});
+			elements = Chart.Interaction.modes.x(chart, evt, {intersect: true}).map(item => item.element);
 			expect(elements).toEqual([meta0.data[1], meta1.data[1]]);
 		});
 	});
@@ -736,7 +730,7 @@ describe('Core.Interaction', function() {
 				y: pt.y,
 			};
 
-			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: false});
+			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: false}).map(item => item.element);
 			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
 
 			evt = {
@@ -747,7 +741,7 @@ describe('Core.Interaction', function() {
 				y: pt.y + 20, // out of range
 			};
 
-			elements = Chart.Interaction.modes.y(chart, evt, {intersect: false});
+			elements = Chart.Interaction.modes.y(chart, evt, {intersect: false}).map(item => item.element);
 			expect(elements).toEqual([]);
 		});
 
@@ -770,7 +764,7 @@ describe('Core.Interaction', function() {
 				y: pt.y
 			};
 
-			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
+			var elements = Chart.Interaction.modes.y(chart, evt, {intersect: true}).map(item => item.element);
 			expect(elements).toEqual([]); // we don't intersect anything
 
 			evt = {
@@ -781,7 +775,7 @@ describe('Core.Interaction', function() {
 				y: pt.y,
 			};
 
-			elements = Chart.Interaction.modes.y(chart, evt, {intersect: true});
+			elements = Chart.Interaction.modes.y(chart, evt, {intersect: true}).map(item => item.element);
 			expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
 		});
 	});
