@@ -82,11 +82,6 @@ module.exports = DatasetController.extend({
 
 		// Update Line
 		if (showLine) {
-			// Compatibility: If the properties are defined with only the old name, use those values
-			if (config.tension !== undefined && config.lineTension === undefined) {
-				config.lineTension = config.tension;
-			}
-
 			// Utility
 			line._datasetIndex = me.index;
 			// Data
