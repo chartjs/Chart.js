@@ -146,7 +146,7 @@ function applyStack(stack, value, dsIndex, allOther) {
 			break;
 		}
 		otherValue = stack.values[datasetIndex];
-		if (!isNaN(otherValue) && (value === 0 || Math.sign(value) === Math.sign(otherValue))) {
+		if (!isNaN(otherValue) && (value === 0 || helpers.sign(value) === helpers.sign(otherValue))) {
 			value += otherValue;
 		}
 	}
@@ -296,6 +296,15 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_getIndexScale: function() {
 		return this.getScaleForId(this._getIndexScaleId());
+	},
+
+	/**
+	 * @private
+	 */
+	_getOtherScale: function(scale) {
+		return scale.id === this._getIndexScaleId()
+			? this._getValueScale()
+			: this._getIndexScale();
 	},
 
 	reset: function() {
@@ -615,7 +624,8 @@ helpers.extend(DatasetController.prototype, {
 		var max = Number.NEGATIVE_INFINITY;
 		var stacked = canStack && meta._stacked;
 		var indices = getSortedDatasetIndices(chart, true);
-		var i, item, value, parsed, stack, min, minPositive;
+		var otherScale = this._getOtherScale(scale);
+		var i, item, value, parsed, stack, min, minPositive, otherValue;
 
 		min = minPositive = Number.POSITIVE_INFINITY;
 
@@ -623,7 +633,9 @@ helpers.extend(DatasetController.prototype, {
 			item = metaData[i];
 			parsed = item._parsed;
 			value = parsed[scale.id];
-			if (item.hidden || isNaN(value)) {
+			otherValue = parsed[otherScale.id];
+			if (item.hidden || isNaN(value) ||
+				otherScale._parsedMin > otherValue || otherScale._parsedMax < otherValue) {
 				continue;
 			}
 			if (stacked) {

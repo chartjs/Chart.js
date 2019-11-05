@@ -6,6 +6,7 @@ const helpers = require('../helpers/index');
 const Ticks = require('./core.ticks');
 
 const isArray = helpers.isArray;
+const isFinite = helpers.isFinite;
 const isNullOrUndef = helpers.isNullOrUndef;
 const valueOrDefault = helpers.valueOrDefault;
 const resolve = helpers.options.resolve;
@@ -349,12 +350,19 @@ class Scale extends Element {
 
 	_getMinMax(canStack) {
 		var me = this;
-		var metas = me._getMatchingVisibleMetas();
 		var min = Number.POSITIVE_INFINITY;
 		var max = Number.NEGATIVE_INFINITY;
 		var minPositive = Number.POSITIVE_INFINITY;
-		var i, ilen, minmax;
+		var i, ilen, metas, minmax;
 
+		if (isFinite(me._parsedMin) && isFinite(me._parsedMax)) {
+			return {
+				min: me._parsedMin,
+				max: me._parsedMax
+			};
+		}
+
+		metas = me._getMatchingVisibleMetas();
 		for (i = 0, ilen = metas.length; i < ilen; ++i) {
 			minmax = metas[i].controller._getMinMax(me, canStack);
 			min = Math.min(min, minmax.min);

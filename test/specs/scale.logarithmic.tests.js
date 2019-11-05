@@ -515,7 +515,7 @@ describe('Logarithmic Scale tests', function() {
 				datasets: [{
 					data: [1, 1, 1, 2, 1, 0]
 				}],
-				labels: []
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
 			},
 			options: {
 				scales: {
@@ -523,8 +523,8 @@ describe('Logarithmic Scale tests', function() {
 						id: 'yScale',
 						type: 'logarithmic',
 						ticks: {
-							min: '',
-							max: false,
+							min: 'zero',
+							max: null,
 							callback: function(value) {
 								return value;
 							}
