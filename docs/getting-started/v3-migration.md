@@ -53,13 +53,16 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `helpers.numberOfLabelLines`
 * `helpers.removeEvent`
 * `helpers.scaleMerge`
-* `scale.getRightValue`
-* `scale.mergeTicksOptions`
-* `scale.ticksAsNumbers`
+* `Scale.getRightValue`
+* `Scale.mergeTicksOptions`
+* `Scale.ticksAsNumbers`
 * `Chart.Controller`
 * `Chart.chart.chart`
 * `Chart.types`
 * `Line.calculatePointY`
+* `Element.getArea`
+* `Element.height`
+* `Element.inLabelRange`
 * Made `scale.handleDirectionalChanges` private
 * Made `scale.tickValues` private
 

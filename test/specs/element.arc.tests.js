@@ -18,10 +18,6 @@ describe('Arc element tests', function() {
 			_index: 1
 		});
 
-		// Make sure we can run these before the view is added
-		expect(arc.inRange(2, 2)).toBe(false);
-		expect(arc.inLabelRange(2)).toBe(false);
-
 		// Mock out the view as if the controller put it there
 		arc._view = {
 			startAngle: 0,
@@ -58,25 +54,6 @@ describe('Arc element tests', function() {
 		var pos = arc.tooltipPosition();
 		expect(pos.x).toBeCloseTo(0.5);
 		expect(pos.y).toBeCloseTo(0.5);
-	});
-
-	it ('should get the area', function() {
-		var arc = new Chart.elements.Arc({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		// Mock out the view as if the controller put it there
-		arc._view = {
-			startAngle: 0,
-			endAngle: Math.PI / 2,
-			x: 0,
-			y: 0,
-			innerRadius: 0,
-			outerRadius: Math.sqrt(2),
-		};
-
-		expect(arc.getArea()).toBeCloseTo(0.5 * Math.PI, 6);
 	});
 
 	it ('should get the center', function() {
