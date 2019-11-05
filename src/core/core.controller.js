@@ -449,7 +449,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
-	* Resets the chart back to it's state before the initial animation
+	* Resets the chart back to its state before the initial animation
 	*/
 	reset: function() {
 		this.resetElements();
@@ -459,6 +459,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	update: function(config) {
 		var me = this;
 		var i, ilen;
+
+		config = config || {};
 
 		updateConfig(me);
 
