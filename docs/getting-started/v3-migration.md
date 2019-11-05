@@ -29,6 +29,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 
 ### Options
 
+* The dataset option `tension` was renamed to `lineTension`
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
 * `scales.[x/y]Axes.categoryPercentage` was moved to dataset option `categoryPercentage`
