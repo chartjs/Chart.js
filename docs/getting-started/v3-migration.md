@@ -26,6 +26,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 ### Customizability
 
 * `custom` attribute of elements was removed. Please use scriptable options
+* The `zeroLine*` features of axes were removed.
 
 ### Options
 
