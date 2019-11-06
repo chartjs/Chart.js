@@ -151,7 +151,7 @@
 		}, {
 			title: 'Callbacks',
 			path: 'legend/callbacks.html'
-		},{
+		}, {
 			title: 'Legend-Placement',
 			path: 'legend/legend-placement.html'
 		}]
