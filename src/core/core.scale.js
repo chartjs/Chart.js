@@ -974,7 +974,7 @@ var Scale = Element.extend({
 			return alignPixel(chart, pixel, axisWidth);
 		};
 		var borderValue, i, tick, lineValue, alignedLineValue;
-		var tx1, ty1, tx2, ty2, x1, y1, x2, y2, lineWidth, lineColor, borderDash, borderDashOffset;
+		var tx1, ty1, tx2, ty2, x1, y1, x2, y2;
 
 		if (position === 'top') {
 			borderValue = alignBorderValue(me.bottom);
@@ -1005,10 +1005,10 @@ var Scale = Element.extend({
 		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
 
-			lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, i, 1);
-			lineColor = valueAtIndexOrDefault(gridLines.color, i, 'rgba(0,0,0,0.1)');
-			borderDash = gridLines.borderDash || [];
-			borderDashOffset = gridLines.borderDashOffset || 0.0;
+			const lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, i, 1);
+			const lineColor = valueAtIndexOrDefault(gridLines.color, i, 'rgba(0,0,0,0.1)');
+			const borderDash = gridLines.borderDash || [];
+			const borderDashOffset = gridLines.borderDashOffset || 0.0;
 
 			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
 
