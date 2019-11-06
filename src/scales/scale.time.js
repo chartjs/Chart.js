@@ -395,10 +395,17 @@ function getLabelTimestamps(scale) {
 
 function getAllTimestamps(scale) {
 	var timestamps = scale._cache.all || [];
+	var label, data;
 
 	if (!timestamps.length) {
-		timestamps = getDataTimestamps(scale).concat(getLabelTimestamps(scale));
-		timestamps = scale._cache.all = arrayUnique(timestamps).sort(sorter);
+		data = getDataTimestamps(scale);
+		label = getLabelTimestamps(scale);
+		if (data.length && label.length) {
+			timestamps = arrayUnique(data.concat(label)).sort(sorter);
+		} else {
+			timestamps = data.length ? data : label;
+		}
+		timestamps = scale._cache.all = timestamps;
 	}
 	return timestamps;
 }
@@ -501,7 +508,7 @@ module.exports = Scale.extend({
 		if (raw === undefined) {
 			return NaN;
 		}
-		return toTimestamp(this, raw);
+		return parse(this, raw);
 	},
 
 	_parseObject: function(obj, axis, index) {
@@ -540,28 +547,25 @@ module.exports = Scale.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var adapter = me._adapter;
-		var options = me.options;
-		var tickOpts = options.ticks;
-		var unit = options.time.unit || 'day';
+		var unit = me.options.time.unit || 'day';
 		var min = Number.POSITIVE_INFINITY;
 		var max = Number.NEGATIVE_INFINITY;
 		var minmax = me._getMinMax(false);
-		var i, ilen, labels;
+		var labels = getLabelTimestamps(me);
 
 		min = Math.min(min, minmax.min);
 		max = Math.max(max, minmax.max);
 
-		labels = getLabelTimestamps(me);
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			min = Math.min(min, labels[i]);
-			max = Math.max(max, labels[i]);
+		if (labels.length) {
+			min = Math.min(min, labels[0]);
+			max = Math.max(max, labels[labels.length - 1]);
 		}
 
 		min = helpers.isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
 		max = helpers.isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
 
-		min = parse(me, tickOpts.min) || min;
-		max = parse(me, tickOpts.max) || max;
+		min = me._userMin || min;
+		max = me._userMax || max;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
@@ -580,8 +584,8 @@ module.exports = Scale.extend({
 		timestamps = getTimestampsForTicks(me);
 
 		if (options.bounds === 'ticks' && timestamps.length) {
-			me.min = parse(me, tickOpts.min) || timestamps[0];
-			me.max = parse(me, tickOpts.max) || timestamps[timestamps.length - 1];
+			me.min = me._userMin || timestamps[0];
+			me.max = me._userMax || timestamps[timestamps.length - 1];
 		}
 
 		min = me.min;
