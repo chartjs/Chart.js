@@ -704,7 +704,7 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions: function(hover) {
+	_resolveDatasetElementOptions: function(active) {
 		var me = this;
 		var chart = me.chart;
 		var datasetOpts = me._config;
@@ -715,15 +715,15 @@ helpers.extend(DatasetController.prototype, {
 
 		// Scriptable options
 		var context = {
-			chart: chart,
+			chart,
 			dataset: me.getDataset(),
 			datasetIndex: me.index,
-			hover: hover
+			active
 		};
 
 		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 			key = elementOptions[i];
-			readKey = hover ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+			readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
 			values[key] = resolve([
 				datasetOpts[readKey],
 				options[readKey]
