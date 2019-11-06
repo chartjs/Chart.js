@@ -1012,11 +1012,6 @@ var Scale = Element.extend({
 		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
 
-			// autoskipper skipped this tick (#4635)
-			if (isNullOrUndef(tick.label) && i < ticks.length) {
-				continue;
-			}
-
 			if (i === me.zeroLineIndex && options.offset === offsetGridLines) {
 				// Draw the first index specially
 				lineWidth = gridLines.zeroLineWidth;
@@ -1102,11 +1097,6 @@ var Scale = Element.extend({
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			tick = ticks[i];
 			label = tick.label;
-
-			// autoskipper skipped this tick (#4635)
-			if (isNullOrUndef(label)) {
-				continue;
-			}
 
 			pixel = me.getPixelForTick(tick._index || i) + optionTicks.labelOffset;
 			font = tick.major ? fonts.major : fonts.minor;
