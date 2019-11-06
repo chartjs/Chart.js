@@ -48,14 +48,14 @@
 						gridLines: {
 							drawBorder: false,
 							color: function(context) {
-                                if (context.tick.value > 0) {
-                                    return window.chartColors.green;
-                                } else if (context.tick.value < 0) {
-                                    return window.chartColors.red;
-                                }
+								if (context.tick.value > 0) {
+									return window.chartColors.green;
+								} else if (context.tick.value < 0) {
+									return window.chartColors.red;
+								}
 
-                                return '#000000';
-                            },
+								return '#000000';
+							},
 						},
 					}]
 				}
