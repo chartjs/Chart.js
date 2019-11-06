@@ -22,7 +22,7 @@ module.exports = function(karma) {
 	karma.set({
 		frameworks: ['jasmine'],
 		reporters: ['progress', 'kjhtml'],
-		browsers: ['chrome', 'firefox'],
+		browsers: args.browsers,
 		logLevel: karma.LOG_WARN,
 
 		// Explicitly disable hardware acceleration to make image
@@ -40,6 +40,12 @@ module.exports = function(karma) {
 				prefs: {
 					'layers.acceleration.disabled': true
 				}
+			},
+			safari: {
+				base: 'SafariPrivate'
+			},
+			edge: {
+				base: 'Edge'
 			}
 		},
 

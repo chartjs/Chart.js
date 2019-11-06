@@ -145,6 +145,7 @@ function unittestTask(done) {
     args: {
       coverage: !!argv.coverage,
       inputs: (argv.inputs || 'test/specs/**/*.js').split(';'),
+      browsers: (argv.browsers || 'chrome,firefox').split(','),
       watch: argv.watch
     }
   },

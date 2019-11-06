@@ -36,6 +36,7 @@ The following commands are now available from the repository root:
 > gulp unittest --coverage  // run tests and generate coverage reports in ./coverage
 > gulp lint                 // perform code linting (ESLint)
 > gulp test                 // perform code linting and run unit tests
+> gulp test --browsers ...  // test with specified browsers (comma-separated)
 > gulp docs                 // build the documentation in ./dist/docs
 > gulp docs --watch         // starts the gitbook live reloaded server
 ```
