@@ -52,4 +52,5 @@ jobs:
         gulp bower
     - name: Publish Test Results
       run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+      shell: bash
       continue-on-error: true
