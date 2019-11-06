@@ -79,7 +79,10 @@ module.exports = DatasetController.extend({
 		return parsed;
 	},
 
-	getMaxOverflow: function() {
+	/**
+	 * @private
+	 */
+	_getMaxOverflow: function() {
 		var me = this;
 		var meta = me._cachedMeta;
 		var data = meta.data || [];

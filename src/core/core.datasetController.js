@@ -603,6 +603,9 @@ helpers.extend(DatasetController.prototype, {
 		return applyStack(stack, value, meta.index);
 	},
 
+	/**
+	 * @private
+	 */
 	_getMinMax: function(scale, canStack) {
 		var chart = this.chart;
 		var meta = this._cachedMeta;
@@ -643,6 +646,9 @@ helpers.extend(DatasetController.prototype, {
 		};
 	},
 
+	/**
+	 * @private
+	 */
 	_getAllParsedValues: function(scale) {
 		var meta = this._cachedMeta;
 		var metaData = meta.data;
@@ -658,6 +664,9 @@ helpers.extend(DatasetController.prototype, {
 		return values;
 	},
 
+	/**
+	 * @private
+	 */
 	_cacheScaleStackStatus: function() {
 		var me = this;
 		var indexScale = me._getIndexScale();
@@ -669,6 +678,9 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	/**
+	 * @private
+	 */
 	_scaleCheck: function() {
 		var me = this;
 		var indexScale = me._getIndexScale();
@@ -681,7 +693,10 @@ helpers.extend(DatasetController.prototype, {
 			cache[valueScale.id] !== valueScale.options.stacked;
 	},
 
-	getMaxOverflow: function() {
+	/**
+	 * @private
+	 */
+	_getMaxOverflow: function() {
 		return false;
 	},
 
@@ -690,7 +705,7 @@ helpers.extend(DatasetController.prototype, {
 		me._configure();
 		me._cachedDataOpts = null;
 		me.update(reset);
-		me._cachedMeta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(me._xScale, me._yScale, me.getMaxOverflow())));
+		me._cachedMeta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(me._xScale, me._yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	},
 
