@@ -1,9 +1,9 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
-var TAU = Math.PI * 2;
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
+const TAU = Math.PI * 2;
 
 defaults._set('global', {
 	elements: {
@@ -91,10 +91,13 @@ function drawBorder(ctx, vm, arc) {
 	ctx.stroke();
 }
 
-module.exports = Element.extend({
-	_type: 'arc',
+class Arc extends Element {
 
-	inRange: function(chartX, chartY) {
+	constructor(props) {
+		super(props);
+	}
+
+	inRange(chartX, chartY) {
 		var vm = this._view;
 
 		if (vm) {
@@ -122,9 +125,9 @@ module.exports = Element.extend({
 			return (betweenAngles && withinRadius);
 		}
 		return false;
-	},
+	}
 
-	getCenterPoint: function() {
+	getCenterPoint() {
 		var vm = this._view;
 		var halfAngle = (vm.startAngle + vm.endAngle) / 2;
 		var halfRadius = (vm.innerRadius + vm.outerRadius) / 2;
@@ -132,9 +135,9 @@ module.exports = Element.extend({
 			x: vm.x + Math.cos(halfAngle) * halfRadius,
 			y: vm.y + Math.sin(halfAngle) * halfRadius
 		};
-	},
+	}
 
-	tooltipPosition: function() {
+	tooltipPosition() {
 		var vm = this._view;
 		var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2);
 		var rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
@@ -143,9 +146,9 @@ module.exports = Element.extend({
 			x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
 			y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
 		};
-	},
+	}
 
-	draw: function() {
+	draw() {
 		var ctx = this._ctx;
 		var vm = this._view;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
@@ -190,4 +193,8 @@ module.exports = Element.extend({
 
 		ctx.restore();
 	}
-});
+}
+
+Arc.prototype._type = 'arc';
+
+module.exports = Arc;
