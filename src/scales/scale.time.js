@@ -371,13 +371,9 @@ function getDataTimestamps(scale) {
 		timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
 	}
 
-	if (ilen > 1 && scale.options.distribution === 'series') {
-		timestamps = arrayUnique(timestamps).sort(sorter);
-	}
-
-	scale._cache.data = timestamps;
-
-	return timestamps;
+	// We can not assume data is in order or unique - not even for single dataset
+	// It seems to be somewhat faster to do sorting first
+	return (scale._cache.data = arrayUnique(timestamps.sort(sorter)));
 }
 
 function getLabelTimestamps(scale) {
@@ -393,9 +389,8 @@ function getLabelTimestamps(scale) {
 		timestamps.push(parse(scale, labels[i]));
 	}
 
-	scale._cache.labels = timestamps;
-
-	return timestamps;
+	// We could assume labels are in order and unique - but lets not
+	return (scale._cache.labels = arrayUnique(timestamps.sort(sorter)));
 }
 
 function getAllTimestamps(scale) {
@@ -409,7 +404,9 @@ function getAllTimestamps(scale) {
 	data = getDataTimestamps(scale);
 	label = getLabelTimestamps(scale);
 	if (data.length && label.length) {
-		timestamps = arrayUnique(data.concat(label)).sort(sorter);
+		// If combining labels and data (data might not contain all labels),
+		// we need to recheck uniqueness and sort
+		timestamps = arrayUnique(data.concat(label).sort(sorter));
 	} else {
 		timestamps = data.length ? data : label;
 	}
