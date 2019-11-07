@@ -234,8 +234,6 @@ module.exports = Scale.extend({
 	generateTickLabels: function(ticks) {
 		var me = this;
 		me._tickValues = ticks.map(t => t.value);
-		me.zeroLineIndex = me._tickValues.indexOf(0);
-
 		Scale.prototype.generateTickLabels.call(me, ticks);
 	},
 

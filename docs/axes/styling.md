@@ -18,10 +18,6 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `drawOnChartArea` | `boolean` | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.
 | `drawTicks` | `boolean` | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
 | `tickMarkLength` | `number` | `10` | Length in pixels that the grid lines will draw into the axis area.
-| `zeroLineWidth` | `number` | `1` | Stroke width of the grid line for the first index (index 0).
-| `zeroLineColor` | `Color` | `'rgba(0, 0, 0, 0.25)'` | Stroke color of the grid line for the first index (index 0).
-| `zeroLineBorderDash` | `number[]` | `[]` | Length and spacing of dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `zeroLineBorderDashOffset` | `number` | `0.0` | Offset for line dashes of the grid line for the first index (index 0). See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `offsetGridLines` | `boolean` | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default.
 | `z` | `number` | `0` | z-index of gridline layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
