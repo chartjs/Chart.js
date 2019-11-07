@@ -177,7 +177,11 @@ function interpolate(table, skey, sval, tkey) {
 	return prev[tkey] + offset;
 }
 
-function toTimestamp(scale, input) {
+function parse(scale, input) {
+	if (helpers.isNullOrUndef(input)) {
+		return null;
+	}
+
 	var adapter = scale._adapter;
 	var options = scale.options.time;
 	var parser = options.parser;
@@ -194,25 +198,15 @@ function toTimestamp(scale, input) {
 			: adapter.parse(value);
 	}
 
-	return value !== null ? +value : value;
-}
-
-function parse(scale, input) {
-	if (helpers.isNullOrUndef(input)) {
-		return null;
-	}
-
-	var options = scale.options.time;
-	var value = toTimestamp(scale, input);
 	if (value === null) {
 		return value;
 	}
 
 	if (options.round) {
-		value = +scale._adapter.startOf(value, options.round);
+		value = scale._adapter.startOf(value, options.round);
 	}
 
-	return value;
+	return +value;
 }
 
 /**
