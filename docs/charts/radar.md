@@ -81,6 +81,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
 | [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
+| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`label`](#general) | `string` | - | - | `''`
 | [`order`](#general) | `number` | - | - | `0`
@@ -102,6 +103,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 
 | Name | Description
 | ---- | ----
+| `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset.
 

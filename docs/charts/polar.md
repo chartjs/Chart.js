@@ -50,10 +50,17 @@ The following options can be included in a polar area chart dataset to configure
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
+| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+
+### General
+
+| Name | Description
+| ---- | ----
+| `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 
 ### Styling
 

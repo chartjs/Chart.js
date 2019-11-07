@@ -50,6 +50,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
+| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
@@ -83,6 +84,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 
 | Name | Description
 | ---- | ----
+| `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
 | `xAxisID` | The ID of the x axis to plot this dataset on.
