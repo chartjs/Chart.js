@@ -362,7 +362,7 @@ class Scale extends Element {
 			max = Number.NEGATIVE_INFINITY;
 		}
 		return {min, max, minDefined: isFinite(min), maxDefined: isFinite(max)};
-	},
+	}
 
 	/**
 	 * @private

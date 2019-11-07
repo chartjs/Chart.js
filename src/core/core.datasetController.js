@@ -632,7 +632,7 @@ helpers.extend(DatasetController.prototype, {
 		var stacked = canStack && meta._stacked;
 		var indices = getSortedDatasetIndices(chart, true);
 		var otherScale = this._getOtherScale(scale);
-		var {otherMin, otherMax} = getUserBounds(otherScale);
+		var {min: otherMin, max: otherMax} = getUserBounds(otherScale);
 		var i, item, value, parsed, stack, min, minPositive, otherValue;
 
 		min = minPositive = Number.POSITIVE_INFINITY;
