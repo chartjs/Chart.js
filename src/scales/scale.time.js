@@ -364,18 +364,25 @@ function ticksFromTimestamps(scale, values, majorUnit) {
 	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
 }
 
-
 function getDataTimestamps(scale) {
 	var timestamps = scale._cache.data || [];
 	var i, ilen, metas;
 
-	if (!timestamps.length) {
-		metas = scale._getMatchingVisibleMetas();
-		for (i = 0, ilen = metas.length; i < ilen; ++i) {
-			timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
-		}
-		timestamps = scale._cache.data = arrayUnique(timestamps).sort(sorter);
+	if (timestamps.length) {
+		return timestamps;
 	}
+
+	metas = scale._getMatchingVisibleMetas();
+	for (i = 0, ilen = metas.length; i < ilen; ++i) {
+		timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
+	}
+
+	if (ilen > 1 && scale.options.distribution === 'series') {
+		timestamps = arrayUnique(timestamps).sort(sorter);
+	}
+
+	scale._cache.data = timestamps;
+
 	return timestamps;
 }
 
@@ -383,13 +390,17 @@ function getLabelTimestamps(scale) {
 	var timestamps = scale._cache.labels || [];
 	var i, ilen, labels;
 
-	if (!timestamps.length) {
-		labels = scale._getLabels();
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			timestamps.push(parse(scale, labels[i]));
-		}
-		timestamps = scale._cache.labels = arrayUnique(timestamps).sort(sorter);
+	if (timestamps.length) {
+		return timestamps;
 	}
+
+	labels = scale._getLabels();
+	for (i = 0, ilen = labels.length; i < ilen; ++i) {
+		timestamps.push(parse(scale, labels[i]));
+	}
+
+	scale._cache.labels = timestamps;
+
 	return timestamps;
 }
 
@@ -397,16 +408,19 @@ function getAllTimestamps(scale) {
 	var timestamps = scale._cache.all || [];
 	var label, data;
 
-	if (!timestamps.length) {
-		data = getDataTimestamps(scale);
-		label = getLabelTimestamps(scale);
-		if (data.length && label.length) {
-			timestamps = arrayUnique(data.concat(label)).sort(sorter);
-		} else {
-			timestamps = data.length ? data : label;
-		}
-		timestamps = scale._cache.all = timestamps;
+	if (timestamps.length) {
+		return timestamps;
 	}
+
+	data = getDataTimestamps(scale);
+	label = getLabelTimestamps(scale);
+	if (data.length && label.length) {
+		timestamps = arrayUnique(data.concat(label)).sort(sorter);
+	} else {
+		timestamps = data.length ? data : label;
+	}
+	timestamps = scale._cache.all = timestamps;
+
 	return timestamps;
 }
 
@@ -428,6 +442,24 @@ function getTimestampsForTicks(scale) {
 	}
 
 	return timestamps;
+}
+
+function getTimestampsForTable(scale) {
+	return scale.options.distribution === 'series'
+		? getAllTimestamps(scale)
+		: [scale.min, scale.max];
+}
+
+function getLabelBounds(scale) {
+	var min = Number.POSITIVE_INFINITY;
+	var max = Number.NEGATIVE_INFINITY;
+	var arr = getLabelTimestamps(scale);
+
+	if (arr.length) {
+		min = arr[0];
+		max = arr[arr.length - 1];
+	}
+	return {min, max};
 }
 
 /**
@@ -546,26 +578,34 @@ module.exports = Scale.extend({
 
 	determineDataLimits: function() {
 		var me = this;
+		var options = me.options;
 		var adapter = me._adapter;
-		var unit = me.options.time.unit || 'day';
-		var min = Number.POSITIVE_INFINITY;
-		var max = Number.NEGATIVE_INFINITY;
-		var minmax = me._getMinMax(false);
-		var labels = getLabelTimestamps(me);
+		var unit = options.time.unit || 'day';
+		var {min, max, minDefined, maxDefined} = me._getUserBounds();
 
-		min = Math.min(min, minmax.min);
-		max = Math.max(max, minmax.max);
+		function _apply(bounds) {
+			if (!minDefined && !isNaN(bounds.min)) {
+				min = Math.min(min, bounds.min);
+			}
+			if (!maxDefined && !isNaN(bounds.max)) {
+				max = Math.max(max, bounds.max);
+			}
+		}
 
-		if (labels.length) {
-			min = Math.min(min, labels[0]);
-			max = Math.max(max, labels[labels.length - 1]);
+		// If we have user provided `min` and `max` labels / data bounds can be ignored
+		if (!minDefined || !maxDefined) {
+			// Labels are always considered, when user did not force bounds
+			_apply(getLabelBounds(me));
+
+			// If `bounds` is `'ticks'` and `ticks.source` is `'labels'`,
+			// data bounds are ignored (and don't need to be determined)
+			if (options.bounds !== 'ticks' || options.ticks.source !== 'labels') {
+				_apply(me._getMinMax(false));
+			}
 		}
 
 		min = helpers.isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
 		max = helpers.isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
-
-		min = me._userMin || min;
-		max = me._userMax || max;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
@@ -601,7 +641,7 @@ module.exports = Scale.extend({
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
-		me._table = buildLookupTable(getAllTimestamps(me), min, max, distribution);
+		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
 		if (tickOpts.reverse) {
