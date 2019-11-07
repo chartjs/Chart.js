@@ -1,13 +1,12 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
-var layouts = require('../core/core.layouts');
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
+const layouts = require('../core/core.layouts');
 
-var getRtlHelper = helpers.rtl.getRtlAdapter;
-var noop = helpers.noop;
-var valueOrDefault = helpers.valueOrDefault;
+const getRtlHelper = helpers.rtl.getRtlAdapter;
+const valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	legend: {
@@ -112,9 +111,9 @@ function getBoxWidth(labelOpts, fontSize) {
 /**
  * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
  */
-var Legend = Element.extend({
+class Legend extends Element {
 
-	initialize: function(config) {
+	initialize(config) {
 		var me = this;
 		helpers.extend(me, config);
 
@@ -128,14 +127,15 @@ var Legend = Element.extend({
 
 		// Are we in doughnut mode which has a different data type
 		me.doughnutMode = false;
-	},
+	}
 
 	// These methods are ordered by lifecycle. Utilities then follow.
 	// Any function defined here is inherited by all legend types.
 	// Any function can be extended by the legend type
 
-	beforeUpdate: noop,
-	update: function(maxWidth, maxHeight, margins) {
+	beforeUpdate() {}
+
+	update(maxWidth, maxHeight, margins) {
 		var me = this;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -163,13 +163,15 @@ var Legend = Element.extend({
 		me.afterUpdate();
 
 		return me.minSize;
-	},
-	afterUpdate: noop,
+	}
+
+	afterUpdate() {}
 
 	//
 
-	beforeSetDimensions: noop,
-	setDimensions: function() {
+	beforeSetDimensions() {}
+
+	setDimensions() {
 		var me = this;
 		// Set the unconstrained dimension before label rotation
 		if (me.isHorizontal()) {
@@ -196,13 +198,15 @@ var Legend = Element.extend({
 			width: 0,
 			height: 0
 		};
-	},
-	afterSetDimensions: noop,
+	}
+
+	afterSetDimensions() {}
 
 	//
 
-	beforeBuildLabels: noop,
-	buildLabels: function() {
+	beforeBuildLabels() {}
+
+	buildLabels() {
 		var me = this;
 		var labelOpts = me.options.labels || {};
 		var legendItems = helpers.callback(labelOpts.generateLabels, [me.chart], me) || [];
@@ -218,13 +222,15 @@ var Legend = Element.extend({
 		}
 
 		me.legendItems = legendItems;
-	},
-	afterBuildLabels: noop,
+	}
+
+	afterBuildLabels() {}
 
 	//
 
-	beforeFit: noop,
-	fit: function() {
+	beforeFit() {}
+
+	fit() {
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
@@ -330,16 +336,17 @@ var Legend = Element.extend({
 
 		me.width = minSize.width;
 		me.height = minSize.height;
-	},
-	afterFit: noop,
+	}
+
+	afterFit() {}
 
 	// Shared Methods
-	isHorizontal: function() {
+	isHorizontal() {
 		return this.options.position === 'top' || this.options.position === 'bottom';
-	},
+	}
 
 	// Actually draw the legend on the canvas
-	draw: function() {
+	draw() {
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
@@ -503,12 +510,12 @@ var Legend = Element.extend({
 		});
 
 		helpers.rtl.restoreTextDirection(me.ctx, opts.textDirection);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLegendItemAt: function(x, y) {
+	_getLegendItemAt(x, y) {
 		var me = this;
 		var i, hitBox, lh;
 
@@ -526,14 +533,14 @@ var Legend = Element.extend({
 		}
 
 		return null;
-	},
+	}
 
 	/**
 	 * Handle an event
 	 * @private
 	 * @param {IEvent} event - The event to handle
 	 */
-	handleEvent: function(e) {
+	handleEvent(e) {
 		var me = this;
 		var opts = me.options;
 		var type = e.type === 'mouseup' ? 'click' : e.type;
@@ -573,7 +580,7 @@ var Legend = Element.extend({
 			}
 		}
 	}
-});
+}
 
 function createNewLegendAndAttach(chart, legendOpts) {
 	var legend = new Legend({

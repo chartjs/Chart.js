@@ -1,11 +1,9 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
-var layouts = require('../core/core.layouts');
-
-var noop = helpers.noop;
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
+const layouts = require('../core/core.layouts');
 
 defaults._set('global', {
 	title: {
@@ -22,19 +20,19 @@ defaults._set('global', {
 /**
  * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
  */
-var Title = Element.extend({
-	initialize: function(config) {
+class Title extends Element {
+	initialize(config) {
 		var me = this;
 		helpers.extend(me, config);
 
 		// Contains hit boxes for each dataset (in dataset order)
 		me.legendHitBoxes = [];
-	},
+	}
 
 	// These methods are ordered by lifecycle. Utilities then follow.
 
-	beforeUpdate: noop,
-	update: function(maxWidth, maxHeight, margins) {
+	beforeUpdate() {}
+	update(maxWidth, maxHeight, margins) {
 		var me = this;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -63,13 +61,13 @@ var Title = Element.extend({
 
 		return me.minSize;
 
-	},
-	afterUpdate: noop,
+	}
+	afterUpdate() {}
 
 	//
 
-	beforeSetDimensions: noop,
-	setDimensions: function() {
+	beforeSetDimensions() {}
+	setDimensions() {
 		var me = this;
 		// Set the unconstrained dimension before label rotation
 		if (me.isHorizontal()) {
@@ -96,19 +94,19 @@ var Title = Element.extend({
 			width: 0,
 			height: 0
 		};
-	},
-	afterSetDimensions: noop,
+	}
+	afterSetDimensions() {}
 
 	//
 
-	beforeBuildLabels: noop,
-	buildLabels: noop,
-	afterBuildLabels: noop,
+	beforeBuildLabels() {}
+	buildLabels() {}
+	afterBuildLabels() {}
 
 	//
 
-	beforeFit: noop,
-	fit: function() {
+	beforeFit() {}
+	fit() {
 		var me = this;
 		var opts = me.options;
 		var minSize = me.minSize = {};
@@ -125,17 +123,17 @@ var Title = Element.extend({
 
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
-	},
-	afterFit: noop,
+	}
+	afterFit() {}
 
 	// Shared Methods
-	isHorizontal: function() {
+	isHorizontal() {
 		var pos = this.options.position;
 		return pos === 'top' || pos === 'bottom';
-	},
+	}
 
 	// Actually draw the title block on the canvas
-	draw: function() {
+	draw() {
 		var me = this;
 		var ctx = me.ctx;
 		var opts = me.options;
@@ -188,7 +186,7 @@ var Title = Element.extend({
 
 		ctx.restore();
 	}
-});
+}
 
 function createNewTitleBlockAndAttach(chart, titleOpts) {
 	var title = new Title({
