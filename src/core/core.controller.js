@@ -129,6 +129,7 @@ function updateConfig(chart) {
 		newOptions);
 
 	chart.options = chart.config.options = newOptions;
+	chart._animation = newOptions.animation && newOptions.animation.duration;
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
 

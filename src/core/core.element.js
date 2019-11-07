@@ -65,6 +65,11 @@ class Element {
 
 	pivot() {
 		var me = this;
+		if (me._animation === false) {
+			me._view = me._model;
+			return;
+		}
+
 		if (!me._view) {
 			me._view = helpers.extend({}, me._model);
 		}
@@ -77,6 +82,10 @@ class Element {
 		var model = me._model;
 		var start = me._start;
 		var view = me._view;
+
+		if (me._animation === false) {
+			return;
+		}
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {
