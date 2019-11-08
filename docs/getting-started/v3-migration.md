@@ -47,7 +47,6 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `afterScaleUpdate`
 * `helpers.addEvent`
 * `helpers.aliasPixel`
-* `helpers.arrayEquals`
 * `helpers.configMerge`
 * `helpers.indexOf`
 * `helpers.min`
