@@ -63,11 +63,11 @@ class Element {
 		this.hidden = false;
 	}
 
-	pivot() {
+	pivot(animationsDisabled) {
 		var me = this;
-		if (me._animation === false) {
+		if (animationsDisabled) {
 			me._view = me._model;
-			return;
+			return me;
 		}
 
 		if (!me._view) {
@@ -82,10 +82,6 @@ class Element {
 		var model = me._model;
 		var start = me._start;
 		var view = me._view;
-
-		if (me._animation === false) {
-			return;
-		}
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {

@@ -256,7 +256,7 @@ module.exports = DatasetController.extend({
 
 		me._updateElementGeometry(rectangle, index, reset, options);
 
-		rectangle.pivot();
+		rectangle.pivot(me.chart._animationsDisabled);
 	},
 
 	/**

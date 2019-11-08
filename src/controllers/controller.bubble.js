@@ -122,7 +122,7 @@ module.exports = DatasetController.extend({
 			y: y,
 		};
 
-		point.pivot();
+		point.pivot(me.chart._animationsDisabled);
 	},
 
 	/**

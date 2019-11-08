@@ -277,7 +277,6 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var type = me.dataElementType;
 		return type && new type({
-			_animation: me.chart._animation ? true : false,
 			_ctx: me.chart.ctx,
 			_datasetIndex: me.index,
 			_index: index,

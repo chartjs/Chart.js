@@ -271,7 +271,7 @@ module.exports = DatasetController.extend({
 			model.endAngle = model.startAngle + model.circumference;
 		}
 
-		arc.pivot();
+		arc.pivot(chart._animationsDisabled);
 	},
 
 	calculateTotal: function() {
