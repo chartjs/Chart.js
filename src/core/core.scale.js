@@ -1017,10 +1017,10 @@ class Scale extends Element {
 				tick,
 			};
 
-			lineWidth = resolve([gridLines.lineWidth], context, i);
-			lineColor = resolve([gridLines.color], context, i);
-			borderDash = gridLines.borderDash || [];
-			borderDashOffset = resolve([gridLines.borderDashOffset], context, i);
+			const lineWidth = resolve([gridLines.lineWidth], context, i);
+			const lineColor = resolve([gridLines.color], context, i);
+			const borderDash = gridLines.borderDash || [];
+			const borderDashOffset = resolve([gridLines.borderDashOffset], context, i);
 
 			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
 
