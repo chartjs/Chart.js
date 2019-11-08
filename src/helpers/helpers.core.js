@@ -171,7 +171,7 @@ var helpers = {
 	 * @returns {boolean}
 	 */
 	_elementsEqual: function(a0, a1) {
-		var i, ilen, v0, v1;
+		let i, ilen, v0, v1;
 
 		if (!a0 || !a1 || a0.length !== a1.length) {
 			return false;
