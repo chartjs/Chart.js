@@ -27,7 +27,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 
 * `custom` attribute of elements was removed. Please use scriptable options
 * The `zeroLine*` options of axes were removed.
-* THe `hover` property of scriptable options `context` object was renamed to `active` for aligning it with dataLabels plugin.
+* The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
 
 ### Options
 
