@@ -125,14 +125,14 @@ describe('Default Configs', function() {
 			var expected = [{
 				text: 'label1',
 				fillStyle: 'red',
-				hidden: false,
+				hidden: undefined,
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
-				hidden: false,
+				hidden: undefined,
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2
@@ -241,14 +241,14 @@ describe('Default Configs', function() {
 			var expected = [{
 				text: 'label1',
 				fillStyle: 'red',
-				hidden: false,
+				hidden: undefined,
 				index: 0,
 				strokeStyle: '#000',
 				lineWidth: 2
 			}, {
 				text: 'label2',
 				fillStyle: 'green',
-				hidden: false,
+				hidden: undefined,
 				index: 1,
 				strokeStyle: '#000',
 				lineWidth: 2
