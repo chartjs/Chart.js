@@ -3,8 +3,8 @@
 
 <head>
 	<title>Line Chart</title>
-	<script src="../../../dist/Chart.min.js"></script>
-	<script src="../../utils.js"></script>
+	<script src="../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
 	<style>
 	canvas{
 		-moz-user-select: none;
@@ -80,14 +80,26 @@
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: 'Month'
+							labelString: 'Month',
+							lineHeight: 1.2,
+							fontColor: '#911',
+							fontFamily: 'Comic Sans MS',
+							fontSize: 20,
+							fontStyle: 'bold',
+							padding: {top: 20, left: 0, right: 0, bottom: 0}
 						}
 					}],
 					yAxes: [{
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: 'Value'
+							labelString: 'Value',
+							lineHeight: 1.2,
+							fontColor: '#191',
+							fontFamily: 'Times',
+							fontSize: 20,
+							fontStyle: 'normal',
+							padding: {top: 30, left: 0, right: 0, bottom: 0}
 						}
 					}]
 				}
