@@ -205,13 +205,11 @@ function splitNewlines(str) {
  * @return new tooltip item
  */
 function createTooltipItem(chart, item) {
-	var datasetIndex = item.datasetIndex;
-	var index = item.index;
-	var element = item.element;
-	var controller = chart.getDatasetMeta(datasetIndex).controller;
-	var indexScale = controller._getIndexScale();
-	var valueScale = controller._getValueScale();
-	var parsed = controller._getParsed(index);
+	const {datasetIndex, element, index} = item;
+	const controller = chart.getDatasetMeta(datasetIndex).controller;
+	const indexScale = controller._getIndexScale();
+	const valueScale = controller._getValueScale();
+	const parsed = controller._getParsed(index);
 
 	return {
 		label: indexScale ? '' + indexScale.getLabelForValue(parsed[indexScale.id]) : '',

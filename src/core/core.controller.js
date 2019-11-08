@@ -985,7 +985,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			item = items[i];
 			if (item) {
-				this.getDatasetMeta(item.datasetIndex).controller[prefix + 'HoverStyle'](item.element, item.datasetIndex, i);
+				this.getDatasetMeta(item.datasetIndex).controller[prefix + 'HoverStyle'](item.element, item.datasetIndex, item.index);
 			}
 		}
 	},
