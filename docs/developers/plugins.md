@@ -104,29 +104,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
-## Plugin Core API
+ ## Plugin Core API
 
-Available hooks (as of version 2.7):
-
-* `beforeInit`
-* `afterInit`
-* `beforeUpdate` *(cancellable)*
-* `afterUpdate`
-* `beforeLayout` *(cancellable)*
-* `afterLayout`
-* `beforeDatasetsUpdate` *(cancellable)*
-* `afterDatasetsUpdate`
-* `beforeDatasetUpdate` *(cancellable)*
-* `afterDatasetUpdate`
-* `beforeRender` *(cancellable)*
-* `afterRender`
-* `beforeDraw` *(cancellable)*
-* `afterDraw`
-* `beforeDatasetsDraw` *(cancellable)*
-* `afterDatasetsDraw`
-* `beforeDatasetDraw` *(cancellable)*
-* `afterDatasetDraw`
-* `beforeEvent` *(cancellable)*
-* `afterEvent`
-* `resize`
-* `destroy`
+Read more about the [existing plugin extension hooks](../jsdoc/IPlugin.html).

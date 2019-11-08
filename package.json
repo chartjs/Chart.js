@@ -43,6 +43,7 @@
     "gulp-eslint": "^6.0.0",
     "gulp-file": "^0.4.0",
     "gulp-htmllint": "^0.0.16",
+    "gulp-jsdoc3": "^2.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-size": "^3.0.0",
     "gulp-streamify": "^1.0.2",

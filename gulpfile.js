@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var file = require('gulp-file');
+var jsdoc = require('gulp-jsdoc3');
 var replace = require('gulp-replace');
 var size = require('gulp-size');
 var streamify = require('gulp-streamify');
@@ -130,12 +131,24 @@ function lintHtmlTask() {
     }));
 }
 
-function docsTask() {
-  var bin = 'gitbook-cli/bin/gitbook.js';
+function docsTask(done) {
+  var bin = require.resolve('gitbook-cli/bin/gitbook.js');
   var cmd = argv.watch ? 'serve' : 'build';
 
   return run(bin, ['install', './'])
-    .then(() => run(bin, [cmd, './', './dist/docs']));
+    .then(() => run(bin, [cmd, './', './dist/docs']))
+    .then(() => {
+      var config = {
+        opts: {
+          destination: './dist/docs/jsdoc'
+        },
+        recurse: true
+      };
+      gulp.src(['./src/**/*.js'], {read: false})
+        .pipe(jsdoc(config, done));
+    }).catch((err) => {
+      done(new Error(err.stdout || err));
+    });
 }
 
 function unittestTask(done) {
