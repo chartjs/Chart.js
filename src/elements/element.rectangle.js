@@ -1,10 +1,10 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
 
-var defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
 	elements: {
@@ -130,10 +130,13 @@ function inRange(vm, x, y) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-module.exports = Element.extend({
-	_type: 'rectangle',
+class Rectangle extends Element {
 
-	draw: function() {
+	constructor(props) {
+		super(props);
+	}
+
+	draw() {
 		var ctx = this._ctx;
 		var vm = this._view;
 		var rects = boundingRects(vm);
@@ -155,21 +158,21 @@ module.exports = Element.extend({
 		ctx.rect(inner.x, inner.y, inner.w, inner.h);
 		ctx.fill('evenodd');
 		ctx.restore();
-	},
+	}
 
-	inRange: function(mouseX, mouseY) {
+	inRange(mouseX, mouseY) {
 		return inRange(this._view, mouseX, mouseY);
-	},
+	}
 
-	inXRange: function(mouseX) {
+	inXRange(mouseX) {
 		return inRange(this._view, mouseX, null);
-	},
+	}
 
-	inYRange: function(mouseY) {
+	inYRange(mouseY) {
 		return inRange(this._view, null, mouseY);
-	},
+	}
 
-	getCenterPoint: function() {
+	getCenterPoint() {
 		var vm = this._view;
 		var x, y;
 		if (isVertical(vm)) {
@@ -181,13 +184,17 @@ module.exports = Element.extend({
 		}
 
 		return {x: x, y: y};
-	},
+	}
 
-	tooltipPosition: function() {
+	tooltipPosition() {
 		var vm = this._view;
 		return {
 			x: vm.x,
 			y: vm.y
 		};
 	}
-});
+}
+
+Rectangle.prototype._type = 'rectangle';
+
+module.exports = Rectangle;

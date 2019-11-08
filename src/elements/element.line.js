@@ -1,12 +1,12 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
-var defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
 	elements: {
@@ -25,10 +25,13 @@ defaults._set('global', {
 	}
 });
 
-module.exports = Element.extend({
-	_type: 'line',
+class Line extends Element {
 
-	draw: function() {
+	constructor(props) {
+		super(props);
+	}
+
+	draw() {
 		var me = this;
 		var vm = me._view;
 		var ctx = me._ctx;
@@ -108,4 +111,8 @@ module.exports = Element.extend({
 		ctx.stroke();
 		ctx.restore();
 	}
-});
+}
+
+Line.prototype._type = 'line';
+
+module.exports = Line;

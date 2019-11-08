@@ -1,7 +1,7 @@
 'use strict';
 
-var color = require('chartjs-color');
-var helpers = require('../helpers/index');
+const color = require('chartjs-color');
+const helpers = require('../helpers/index');
 
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
@@ -52,28 +52,27 @@ function interpolate(start, view, model, ease) {
 	}
 }
 
-var Element = function(configuration) {
-	helpers.extend(this, configuration);
-	this.initialize.apply(this, arguments);
-};
+class Element {
 
-helpers.extend(Element.prototype, {
-	_type: undefined,
+	constructor(configuration) {
+		helpers.extend(this, configuration);
+		this.initialize.apply(this, arguments);
+	}
 
-	initialize: function() {
+	initialize() {
 		this.hidden = false;
-	},
+	}
 
-	pivot: function() {
+	pivot() {
 		var me = this;
 		if (!me._view) {
 			me._view = helpers.extend({}, me._model);
 		}
 		me._start = {};
 		return me;
-	},
+	}
 
-	transition: function(ease) {
+	transition(ease) {
 		var me = this;
 		var model = me._model;
 		var start = me._start;
@@ -99,19 +98,19 @@ helpers.extend(Element.prototype, {
 		interpolate(start, view, model, ease);
 
 		return me;
-	},
+	}
 
-	tooltipPosition: function() {
+	tooltipPosition() {
 		return {
 			x: this._model.x,
 			y: this._model.y
 		};
-	},
+	}
 
-	hasValue: function() {
+	hasValue() {
 		return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
 	}
-});
+}
 
 Element.extend = helpers.inherits;
 

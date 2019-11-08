@@ -1,12 +1,12 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var Element = require('../core/core.element');
-var helpers = require('../helpers/index');
+const defaults = require('../core/core.defaults');
+const Element = require('../core/core.element');
+const helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
-var defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
 	elements: {
@@ -24,45 +24,45 @@ defaults._set('global', {
 	}
 });
 
-function xRange(mouseX) {
-	var vm = this._view;
-	return vm ? (Math.abs(mouseX - vm.x) < vm.radius + vm.hitRadius) : false;
-}
+class Point extends Element {
 
-function yRange(mouseY) {
-	var vm = this._view;
-	return vm ? (Math.abs(mouseY - vm.y) < vm.radius + vm.hitRadius) : false;
-}
+	constructor(props) {
+		super(props);
+	}
 
-module.exports = Element.extend({
-	_type: 'point',
-
-	inRange: function(mouseX, mouseY) {
+	inRange(mouseX, mouseY) {
 		var vm = this._view;
 		return vm ? ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(vm.hitRadius + vm.radius, 2)) : false;
-	},
+	}
 
-	inXRange: xRange,
-	inYRange: yRange,
+	inXRange(mouseX) {
+		var vm = this._view;
+		return vm ? (Math.abs(mouseX - vm.x) < vm.radius + vm.hitRadius) : false;
+	}
 
-	getCenterPoint: function() {
+	inYRange(mouseY) {
+		var vm = this._view;
+		return vm ? (Math.abs(mouseY - vm.y) < vm.radius + vm.hitRadius) : false;
+	}
+
+	getCenterPoint() {
 		var vm = this._view;
 		return {
 			x: vm.x,
 			y: vm.y
 		};
-	},
+	}
 
-	tooltipPosition: function() {
+	tooltipPosition() {
 		var vm = this._view;
 		return {
 			x: vm.x,
 			y: vm.y,
 			padding: vm.radius + vm.borderWidth
 		};
-	},
+	}
 
-	draw: function(chartArea) {
+	draw(chartArea) {
 		var vm = this._view;
 		var ctx = this._ctx;
 		var pointStyle = vm.pointStyle;
@@ -85,4 +85,8 @@ module.exports = Element.extend({
 			helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y, rotation);
 		}
 	}
-});
+}
+
+Point.prototype._type = 'point';
+
+module.exports = Point;
