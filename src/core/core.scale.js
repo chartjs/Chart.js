@@ -400,7 +400,7 @@ class Scale extends Element {
 	*/
 	_getLabels() {
 		var data = this.chart.data;
-		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
 	}
 
 	// These methods are ordered by lifecyle. Utilities then follow.
