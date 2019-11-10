@@ -103,7 +103,7 @@ module.exports = DatasetController.extend({
 
 		// Now pivot the point for animation
 		for (i = 0, ilen = points.length; i < ilen; ++i) {
-			points[i].pivot();
+			points[i].pivot(me.chart._animationsDisabled);
 		}
 	},
 

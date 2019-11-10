@@ -63,8 +63,13 @@ class Element {
 		this.hidden = false;
 	}
 
-	pivot() {
+	pivot(animationsDisabled) {
 		var me = this;
+		if (animationsDisabled) {
+			me._view = me._model;
+			return me;
+		}
+
 		if (!me._view) {
 			me._view = helpers.extend({}, me._model);
 		}

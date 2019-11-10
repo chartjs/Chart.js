@@ -220,7 +220,7 @@ module.exports = DatasetController.extend({
 			}
 		});
 
-		arc.pivot();
+		arc.pivot(chart._animationsDisabled);
 	},
 
 	countVisibleElements: function() {

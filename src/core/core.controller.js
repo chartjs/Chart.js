@@ -116,6 +116,14 @@ function initConfig(config) {
 	return config;
 }
 
+function isAnimationDisabled(config) {
+	return !config.animation || !(
+		config.animation.duration ||
+		(config.hover && config.hover.animationDuration) ||
+		config.responsiveAnimationDuration
+	);
+}
+
 function updateConfig(chart) {
 	var newOptions = chart.options;
 
@@ -129,6 +137,7 @@ function updateConfig(chart) {
 		newOptions);
 
 	chart.options = chart.config.options = newOptions;
+	chart._animationsDisabled = isAnimationDisabled(newOptions);
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
 
@@ -692,9 +701,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var me = this;
 		var i, ilen;
 
-		for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
-			if (me.isDatasetVisible(i)) {
-				me.getDatasetMeta(i).controller.transition(easingValue);
+		if (!me._animationsDisabled) {
+			for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
+				if (me.isDatasetVisible(i)) {
+					me.getDatasetMeta(i).controller.transition(easingValue);
+				}
 			}
 		}
 
