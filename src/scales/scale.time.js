@@ -389,7 +389,7 @@ function getLabelTimestamps(scale) {
 		timestamps.push(parse(scale, labels[i]));
 	}
 
-	// We could assume labels are in order and unique - but lets not
+	// We could assume labels are in order and unique - but let's not
 	return (scale._cache.labels = arrayUnique(timestamps.sort(sorter)));
 }
 

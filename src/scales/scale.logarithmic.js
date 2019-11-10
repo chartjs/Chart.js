@@ -64,13 +64,10 @@ var defaultConfig = {
 	}
 };
 
-function positiveOrDefault(value, defaultValue) {
-	return helpers.isFinite(value) && value >= 0 ? value : defaultValue;
-}
-
 module.exports = Scale.extend({
 	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
-		return positiveOrDefault(LinearScaleBase.prototype._parse.apply(this, arguments), NaN);
+		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
+		return helpers.isFinite(value) && value >= 0 ? value : undefined;
 	},
 
 	determineDataLimits: function() {
@@ -91,8 +88,8 @@ module.exports = Scale.extend({
 		var me = this;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
-		var min = positiveOrDefault(me._userMin, me.min);
-		var max = positiveOrDefault(me._userMax, me.max);
+		var min = me.min;
+		var max = me.max;
 
 		if (min === max) {
 			if (min !== 0 && min !== null) {
@@ -130,8 +127,8 @@ module.exports = Scale.extend({
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
-			min: positiveOrDefault(tickOpts.min),
-			max: positiveOrDefault(tickOpts.max)
+			min: me._userMin,
+			max: me._userMax
 		};
 		var ticks = generateTicks(generationOptions, me);
 
