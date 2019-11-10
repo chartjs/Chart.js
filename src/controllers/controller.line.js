@@ -92,18 +92,15 @@ module.exports = DatasetController.extend({
 			line.pivot();
 		}
 
+		me._bezierEnabled = showLine && line._model.tension !== 0;
+
 		// Update Points
 		for (i = 0, ilen = points.length; i < ilen; ++i) {
 			me.updateElement(points[i], i, reset);
 		}
 
-		if (showLine && line._model.tension !== 0) {
+		if (me._bezierEnabled) {
 			me.updateBezierControlPoints();
-		}
-
-		// Now pivot the point for animation
-		for (i = 0, ilen = points.length; i < ilen; ++i) {
-			points[i].pivot(me.chart._animationsDisabled);
 		}
 	},
 
@@ -142,6 +139,10 @@ module.exports = DatasetController.extend({
 			// Tooltip
 			hitRadius: options.hitRadius
 		};
+
+		if (!me._bezierEnabled) {
+			point.pivot(me.chart._animationsDisabled);
+		}
 	},
 
 	/**
@@ -216,6 +217,10 @@ module.exports = DatasetController.extend({
 					}
 				}
 			}
+		}
+
+		for (i = 0, ilen = points.length; i < ilen; ++i) {
+			points[i].pivot(me.chart._animationsDisabled);
 		}
 	},
 
