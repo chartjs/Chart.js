@@ -653,31 +653,19 @@ module.exports = Scale.extend({
 	},
 
 	/**
-	 * @private
+	 * @param {number} value - milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 */
-	getPixelForOffset: function(time) {
-		var me = this;
-		var offsets = me._offsets;
-		var pos = interpolate(me._table, 'time', time, 'pos');
-		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-	},
-
 	getPixelForValue: function(value) {
 		var me = this;
-
-		if (typeof value !== 'number') {
-			value = parse(me, value);
-		}
-
-		if (value !== null) {
-			return me.getPixelForOffset(value);
-		}
+		var offsets = me._offsets;
+		var pos = interpolate(me._table, 'time', value, 'pos');
+		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	},
 
 	getPixelForTick: function(index) {
 		var ticks = this.getTicks();
 		return index >= 0 && index < ticks.length ?
-			this.getPixelForOffset(ticks[index].value) :
+			this.getPixelForValue(ticks[index].value) :
 			null;
 	},
 

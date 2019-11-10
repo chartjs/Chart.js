@@ -71,6 +71,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 
 * `_model.datasetLabel`
 * `_model.label`
+* `TimeScale.getPixelForOffset`
 
 ### Renamed
 
