@@ -75,7 +75,7 @@ describe('Core.scale', function() {
 				}]
 			});
 
-			expect(lastTick(chart).label).toBeUndefined();
+			expect(lastTick(chart).label).toEqual('January 2020');
 		});
 	});
 

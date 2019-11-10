@@ -126,7 +126,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(217);
+			expect(ticks.length).toEqual(44);
 		});
 
 		it('should accept labels as date objects', function() {
@@ -137,7 +137,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(217);
+			expect(ticks.length).toEqual(44);
 		});
 
 		it('should accept data as xy points', function() {
@@ -185,7 +185,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(xScale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(217);
+			expect(ticks.length).toEqual(37);
 		});
 
 		it('should accept data as ty points', function() {
@@ -233,7 +233,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(tScale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(217);
+			expect(ticks.length).toEqual(37);
 		});
 	});
 
@@ -704,7 +704,7 @@ describe('Time scale tests', function() {
 		it('should get the correct labels for ticks', function() {
 			var labels = getLabels(this.scale);
 
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('<8:00:00>');
 			expect(labels[labels.length - 1]).toEqual('<8:01:00>');
 		});
@@ -717,7 +717,7 @@ describe('Time scale tests', function() {
 			chart.update();
 
 			var labels = getLabels(this.scale);
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('{8:00:00}');
 			expect(labels[labels.length - 1]).toEqual('{8:01:00}');
 		});
@@ -765,7 +765,7 @@ describe('Time scale tests', function() {
 		it('should get the correct labels for major and minor ticks', function() {
 			var labels = getLabels(this.scale);
 
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('[[8:00 pm]]');
 			expect(labels[Math.floor(labels.length / 2)]).toEqual('(8:00:30 pm)');
 			expect(labels[labels.length - 1]).toEqual('[[8:01 pm]]');
@@ -777,7 +777,7 @@ describe('Time scale tests', function() {
 			chart.update();
 
 			var labels = getLabels(this.scale);
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('(8:00:00 pm)');
 			expect(labels[labels.length - 1]).toEqual('(8:01:00 pm)');
 		});
@@ -788,7 +788,7 @@ describe('Time scale tests', function() {
 			chart.update();
 
 			var labels = getLabels(this.scale);
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('<8:00 pm>');
 			expect(labels[labels.length - 1]).toEqual('<8:01 pm>');
 		});
@@ -799,7 +799,7 @@ describe('Time scale tests', function() {
 			chart.update();
 
 			var labels = getLabels(this.scale);
-			expect(labels.length).toEqual(61);
+			expect(labels.length).toEqual(21);
 			expect(labels[0]).toEqual('[[8:00 pm]]');
 			expect(labels[Math.floor(labels.length / 2)]).toEqual('<8:00:30 pm>');
 			expect(labels[labels.length - 1]).toEqual('[[8:01 pm]]');
@@ -1469,6 +1469,37 @@ describe('Time scale tests', function() {
 					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
 					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
 				});
+			});
+		});
+	});
+
+	['data', 'labels'].forEach(function(source) {
+		['series', 'linear'].forEach(function(distribution) {
+			describe('when ticks.source is "' + source + '" and distribution is "' + distribution + '"', function() {
+				beforeEach(function() {
+					this.chart = window.acquireChart({
+						type: 'line',
+						data: {
+							labels: ['2017', '2019', '2020', '2025', '2042'],
+							datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						},
+						options: {
+							scales: {
+								xAxes: [{
+									id: 'x',
+									type: 'time',
+									time: {
+										parser: 'YYYY'
+									},
+									ticks: {
+										source: source
+									},
+									distribution: distribution
+								}]
+							}
+						}
+					});
+				});
 
 				it ('should add offset if min and max extend the labels range and offset is true', function() {
 					var chart = this.chart;
@@ -1816,7 +1847,7 @@ describe('Time scale tests', function() {
 
 		var scale = chart.scales.xScale0;
 
-		var labels = scale._ticksToDraw.map(function(t) {
+		var labels = scale.ticks.map(function(t) {
 			return t.label;
 		});
 		expect(labels).toEqual([
