@@ -72,6 +72,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 
 * `_model.datasetLabel`
 * `_model.label`
+* `TimeScale.getLabelWidth`
 
 ### Renamed
 
@@ -84,6 +85,9 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `helpers.log10` was renamed to `helpers.math.log10`
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
+* `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
+* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
+* `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
 
 ### Changed
 
