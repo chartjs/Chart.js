@@ -1168,13 +1168,13 @@ describe('Chart', function() {
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 
-			expect(chart.lastActive).toEqual([point]);
-			expect(tooltip._lastActive).toEqual([point]);
+			expect(chart.lastActive[0].element).toEqual(point);
+			expect(tooltip._lastActive[0].element).toEqual(point);
 
 			// Update and confirm tooltip is updated
 			chart.update();
-			expect(chart.lastActive).toEqual([point]);
-			expect(tooltip._lastActive).toEqual([point]);
+			expect(chart.lastActive[0].element).toEqual(point);
+			expect(tooltip._lastActive[0].element).toEqual(point);
 		});
 
 		it ('should update the metadata', function() {

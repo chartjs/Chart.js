@@ -117,7 +117,7 @@ var positioners = {
 		var count = 0;
 
 		for (i = 0, len = elements.length; i < len; ++i) {
-			var el = elements[i];
+			var el = elements[i].element;
 			if (el && el.hasValue()) {
 				var pos = el.tooltipPosition();
 				x += pos.x;
@@ -146,7 +146,7 @@ var positioners = {
 		var i, len, nearestElement;
 
 		for (i = 0, len = elements.length; i < len; ++i) {
-			var el = elements[i];
+			var el = elements[i].element;
 			if (el && el.hasValue()) {
 				var center = el.getCenterPoint();
 				var d = helpers.distanceBetweenPoints(eventPosition, center);
@@ -201,16 +201,15 @@ function splitNewlines(str) {
 
 /**
  * Private helper to create a tooltip item model
- * @param element - the chart element (point, arc, bar) to create the tooltip item for
+ * @param item - the chart element (point, arc, bar) to create the tooltip item for
  * @return new tooltip item
  */
-function createTooltipItem(chart, element) {
-	var datasetIndex = element._datasetIndex;
-	var index = element._index;
-	var controller = chart.getDatasetMeta(datasetIndex).controller;
-	var indexScale = controller._getIndexScale();
-	var valueScale = controller._getValueScale();
-	var parsed = controller._getParsed(index);
+function createTooltipItem(chart, item) {
+	const {datasetIndex, element, index} = item;
+	const controller = chart.getDatasetMeta(datasetIndex).controller;
+	const indexScale = controller._getIndexScale();
+	const valueScale = controller._getValueScale();
+	const parsed = controller._getParsed(index);
 
 	return {
 		label: indexScale ? '' + indexScale.getLabelForValue(parsed[indexScale.id]) : '',
@@ -1016,7 +1015,7 @@ class Tooltip extends Element {
 		}
 
 		// Remember Last Actives
-		changed = !helpers.arrayEquals(me._active, me._lastActive);
+		changed = !helpers._elementsEqual(me._active, me._lastActive);
 
 		// Only handle target event on tooltip change
 		if (changed) {

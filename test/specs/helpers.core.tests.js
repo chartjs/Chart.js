@@ -264,6 +264,18 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
+	describe('_elementsEqual', function() {
+		it('should return true if arrays are the same', function() {
+			expect(helpers._elementsEqual(
+				[{datasetIndex: 0, index: 1}, {datasetIndex: 0, index: 2}],
+				[{datasetIndex: 0, index: 1}, {datasetIndex: 0, index: 2}])).toBeTruthy();
+		});
+		it('should return false if arrays are not the same', function() {
+			expect(helpers._elementsEqual([], [{datasetIndex: 0, index: 1}])).toBeFalsy();
+			expect(helpers._elementsEqual([{datasetIndex: 0, index: 2}], [{datasetIndex: 0, index: 1}])).toBeFalsy();
+		});
+	});
+
 	describe('clone', function() {
 		it('should clone primitive values', function() {
 			expect(helpers.clone()).toBe(undefined);

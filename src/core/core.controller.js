@@ -980,19 +980,24 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		});
 	},
 
-	updateHoverStyle: function(elements, mode, enabled) {
+	updateHoverStyle: function(items, mode, enabled) {
 		var prefix = enabled ? 'set' : 'remove';
-		var element, i, ilen;
-
-		for (i = 0, ilen = elements.length; i < ilen; ++i) {
-			element = elements[i];
-			if (element) {
-				this.getDatasetMeta(element._datasetIndex).controller[prefix + 'HoverStyle'](element);
-			}
-		}
+		var meta, item, i, ilen;
 
 		if (mode === 'dataset') {
-			this.getDatasetMeta(elements[0]._datasetIndex).controller['_' + prefix + 'DatasetHoverStyle']();
+			meta = this.getDatasetMeta(items[0].datasetIndex);
+			meta.controller['_' + prefix + 'DatasetHoverStyle']();
+			for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
+				meta.controller[prefix + 'HoverStyle'](meta.data[i], items[0].datasetIndex, i);
+			}
+			return;
+		}
+
+		for (i = 0, ilen = items.length; i < ilen; ++i) {
+			item = items[i];
+			if (item) {
+				this.getDatasetMeta(item.datasetIndex).controller[prefix + 'HoverStyle'](item.element, item.datasetIndex, item.index);
+			}
 		}
 	},
 
@@ -1100,7 +1105,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		me._updateHoverStyles();
-		changed = !helpers.arrayEquals(me.active, me.lastActive);
+		changed = !helpers._elementsEqual(me.active, me.lastActive);
 
 		// Remember Last Actives
 		me.lastActive = me.active;

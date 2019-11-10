@@ -793,9 +793,8 @@ helpers.extend(DatasetController.prototype, {
 		delete element.$previousStyle;
 	},
 
-	setHoverStyle: function(element) {
-		var dataset = this.chart.data.datasets[element._datasetIndex];
-		var index = element._index;
+	setHoverStyle: function(element, datasetIndex, index) {
+		var dataset = this.chart.data.datasets[datasetIndex];
 		var model = element._model;
 		var getHoverColor = helpers.getHoverColor;
 

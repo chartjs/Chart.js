@@ -165,6 +165,31 @@ var helpers = {
 	},
 
 	/**
+	 * Returns true if the `a0` and `a1` arrays have the same content, else returns false.
+	 * @param {Array} a0 - The array to compare
+	 * @param {Array} a1 - The array to compare
+	 * @returns {boolean}
+	 */
+	_elementsEqual: function(a0, a1) {
+		let i, ilen, v0, v1;
+
+		if (!a0 || !a1 || a0.length !== a1.length) {
+			return false;
+		}
+
+		for (i = 0, ilen = a0.length; i < ilen; ++i) {
+			v0 = a0[i];
+			v1 = a1[i];
+
+			if (v0.datasetIndex !== v1.datasetIndex || v0.index !== v1.index) {
+				return false;
+			}
+		}
+
+		return true;
+	},
+
+	/**
 	 * Returns a deep copy of `source` without keeping references on objects and arrays.
 	 * @param {*} source - The value to clone.
 	 * @returns {*}
