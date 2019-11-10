@@ -80,6 +80,21 @@ module.exports = DatasetController.extend({
 	},
 
 	/**
+	 * @private
+	 */
+	_getMaxOverflow: function() {
+		var me = this;
+		var meta = me._cachedMeta;
+		var data = meta.data || [];
+		if (!data.length) {
+			return false;
+		}
+		var firstPoint = data[0].size();
+		var lastPoint = data[data.length - 1].size();
+		return Math.max(firstPoint, lastPoint) / 2;
+	},
+
+	/**
 	 * @protected
 	 */
 	update: function(reset) {

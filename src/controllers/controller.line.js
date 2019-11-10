@@ -159,6 +159,22 @@ module.exports = DatasetController.extend({
 		return values;
 	},
 
+	/**
+	 * @private
+	 */
+	_getMaxOverflow: function() {
+		var me = this;
+		var meta = me._cachedMeta;
+		var data = meta.data || [];
+		if (!data.length) {
+			return false;
+		}
+		var border = me._showLine ? meta.dataset._model.borderWidth : 0;
+		var firstPoint = data[0].size();
+		var lastPoint = data[data.length - 1].size();
+		return Math.max(border, firstPoint, lastPoint) / 2;
+	},
+
 	updateBezierControlPoints: function() {
 		var me = this;
 		var chart = me.chart;
@@ -222,21 +238,10 @@ module.exports = DatasetController.extend({
 		var area = chart.chartArea;
 		var i = 0;
 		var ilen = points.length;
-		var halfBorderWidth;
 
 		if (me._showLine) {
-			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
-
-			helpers.canvas.clipArea(chart.ctx, {
-				left: area.left - halfBorderWidth,
-				right: area.right + halfBorderWidth,
-				top: area.top - halfBorderWidth,
-				bottom: area.bottom + halfBorderWidth
-			});
 
 			meta.dataset.draw();
-
-			helpers.canvas.unclipArea(chart.ctx);
 		}
 
 		// Draw the points

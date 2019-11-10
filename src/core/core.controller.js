@@ -772,6 +772,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 */
 	drawDataset: function(meta, easingValue) {
 		var me = this;
+		var ctx = me.ctx;
+		var clip = meta._clip;
+		var canvas = me.canvas;
+		var area = me.chartArea;
 		var args = {
 			meta: meta,
 			index: meta.index,
@@ -782,7 +786,16 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
+		helpers.canvas.clipArea(ctx, {
+			left: clip.left === false ? 0 : area.left - clip.left,
+			right: clip.right === false ? canvas.width : area.right + clip.right,
+			top: clip.top === false ? 0 : area.top - clip.top,
+			bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
+		});
+
 		meta.controller.draw(easingValue);
+
+		helpers.canvas.unclipArea(ctx);
 
 		plugins.notify(me, 'afterDatasetDraw', [args]);
 	},

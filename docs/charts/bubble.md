@@ -43,6 +43,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
+| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
@@ -59,6 +60,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 
 | Name | Description
 | ---- | ----
+| `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset.
 

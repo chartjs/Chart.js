@@ -48,6 +48,53 @@ function listenArrayEvents(array, listener) {
 	});
 }
 
+
+function scaleClip(scale, allowedOverflow) {
+	var tickOpts = scale && scale.options.ticks || {};
+	var reverse = tickOpts.reverse;
+	var min = tickOpts.min === undefined ? allowedOverflow : 0;
+	var max = tickOpts.max === undefined ? allowedOverflow : 0;
+	return {
+		start: reverse ? max : min,
+		end: reverse ? min : max
+	};
+}
+
+function defaultClip(xScale, yScale, allowedOverflow) {
+	if (allowedOverflow === false) {
+		return false;
+	}
+	var x = scaleClip(xScale, allowedOverflow);
+	var y = scaleClip(yScale, allowedOverflow);
+
+	return {
+		top: y.end,
+		right: x.end,
+		bottom: y.start,
+		left: x.start
+	};
+}
+
+function toClip(value) {
+	var t, r, b, l;
+
+	if (helpers.isObject(value)) {
+		t = value.top;
+		r = value.right;
+		b = value.bottom;
+		l = value.left;
+	} else {
+		t = r = b = l = value;
+	}
+
+	return {
+		top: t,
+		right: r,
+		bottom: b,
+		left: l
+	};
+}
+
 /**
  * Removes the given array event listener and cleanup extra attached properties (such as
  * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
@@ -556,6 +603,9 @@ helpers.extend(DatasetController.prototype, {
 		return applyStack(stack, value, meta.index);
 	},
 
+	/**
+	 * @private
+	 */
 	_getMinMax: function(scale, canStack) {
 		var chart = this.chart;
 		var meta = this._cachedMeta;
@@ -596,6 +646,9 @@ helpers.extend(DatasetController.prototype, {
 		};
 	},
 
+	/**
+	 * @private
+	 */
 	_getAllParsedValues: function(scale) {
 		var meta = this._cachedMeta;
 		var metaData = meta.data;
@@ -611,6 +664,9 @@ helpers.extend(DatasetController.prototype, {
 		return values;
 	},
 
+	/**
+	 * @private
+	 */
 	_cacheScaleStackStatus: function() {
 		var me = this;
 		var indexScale = me._getIndexScale();
@@ -622,6 +678,9 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	/**
+	 * @private
+	 */
 	_scaleCheck: function() {
 		var me = this;
 		var indexScale = me._getIndexScale();
@@ -634,11 +693,19 @@ helpers.extend(DatasetController.prototype, {
 			cache[valueScale.id] !== valueScale.options.stacked;
 	},
 
+	/**
+	 * @private
+	 */
+	_getMaxOverflow: function() {
+		return false;
+	},
+
 	_update: function(reset) {
 		var me = this;
 		me._configure();
 		me._cachedDataOpts = null;
 		me.update(reset);
+		me._cachedMeta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(me._xScale, me._yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	},
 
