@@ -66,39 +66,25 @@ function getIntersectItems(chart, position) {
  * @return {ChartElement[]} the nearest items
  */
 function getNearestItems(chart, position, intersect, distanceMetric) {
-	const metasets = chart._getSortedVisibleDatasetMetas();
-	let nearestItems = [];
-	let minDistance = Number.POSITIVE_INFINITY;
-	let decimal, scale, meta, metadata, i, j, ilen, jlen, start, distance;
+	var minDistance = Number.POSITIVE_INFINITY;
+	var nearestItems = [];
 
-	function update(element) {
+	parseVisibleItems(chart, function(element, datasetIndex, index) {
 		if (intersect && !element.inRange(position.x, position.y)) {
 			return;
 		}
 
+		var center = element.getCenterPoint();
+		var distance = distanceMetric(position, center);
 		if (distance < minDistance) {
-			nearestItems = [{element, datasetIndex: meta.index, index: j}];
+			nearestItems = [{element, datasetIndex, index}];
 			minDistance = distance;
 		} else if (distance === minDistance) {
 			// Can have multiple items at the same distance in which case we sort by size
-			nearestItems.push({element, datasetIndex: meta.index, index: j});
+			nearestItems.push({element, datasetIndex, index});
 		}
-	}
+	});
 
-	for (i = 0, ilen = metasets.length; i < ilen; ++i) {
-		meta = metasets[i];
-		scale = meta.controller._getIndexScale();
-		decimal = scale ? scale.getDecimalForPixel(position[scale.isHorizontal() ? 'x' : 'y']) : 0;
-		metadata = meta.data;
-		jlen = metadata.length;
-		start = Math.min(jlen - 1, Math.max(0, jlen * decimal | 0));
-		for (j = start; j >= 0 && (distance = distanceMetric(position, metadata[j].getCenterPoint())) <= minDistance; --j) {
-			update(metadata[j]);
-		}
-		for (j = start + 1; j < jlen && (distance = distanceMetric(position, metadata[j].getCenterPoint())) <= minDistance; ++j) {
-			update(metadata[j]);
-		}
-	}
 	return nearestItems;
 }
 
