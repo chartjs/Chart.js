@@ -762,7 +762,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		if (style.fill === false || style.fill === null) {
-			style.backgroundColor = 'rgba(0,0,0,0)';
+			style.backgroundColor = style.borderColor;
 		}
 
 		return style;

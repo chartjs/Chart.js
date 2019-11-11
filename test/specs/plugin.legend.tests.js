@@ -149,7 +149,7 @@ describe('Legend block tests', function() {
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
-			fillStyle: 'rgba(0,0,0,0)',
+			fillStyle: 'green',
 			hidden: false,
 			lineCap: 'butt',
 			lineDash: [],
@@ -198,7 +198,7 @@ describe('Legend block tests', function() {
 
 		expect(chart.legend.legendItems).toEqual([{
 			text: 'dataset3',
-			fillStyle: 'rgba(0,0,0,0)',
+			fillStyle: 'green',
 			hidden: false,
 			lineCap: 'butt',
 			lineDash: [],
