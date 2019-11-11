@@ -72,52 +72,6 @@ describe('Chart.elements.Point', function() {
 		expect(point.getCenterPoint()).toEqual({x: 10, y: 10});
 	});
 
-	it ('should draw correctly with default settings if necessary', function() {
-		var mockContext = window.createMockContext();
-		var point = new Chart.elements.Point({
-			_datasetIndex: 2,
-			_index: 1,
-			_ctx: mockContext
-		});
-
-		// Attach a view object as if we were the controller
-		point._view = {
-			radius: 2,
-			hitRadius: 3,
-			x: 10,
-			y: 15,
-			ctx: mockContext
-		};
-
-		point.draw();
-
-		expect(mockContext.getCalls()).toEqual([{
-			name: 'setStrokeStyle',
-			args: ['rgba(0,0,0,0.1)']
-		}, {
-			name: 'setLineWidth',
-			args: [1]
-		}, {
-			name: 'setFillStyle',
-			args: ['rgba(0,0,0,0.1)']
-		}, {
-			name: 'beginPath',
-			args: []
-		}, {
-			name: 'arc',
-			args: [10, 15, 2, 0, 2 * Math.PI]
-		}, {
-			name: 'closePath',
-			args: [],
-		}, {
-			name: 'fill',
-			args: [],
-		}, {
-			name: 'stroke',
-			args: []
-		}]);
-	});
-
 	it ('should not draw if skipped', function() {
 		var mockContext = window.createMockContext();
 		var point = new Chart.elements.Point({
