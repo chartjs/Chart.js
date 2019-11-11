@@ -81,7 +81,7 @@ class Line extends Element {
 		// Stroke Line
 		ctx.beginPath();
 
-		// First point moves to it's starting position no matter what
+		// First point moves to its starting position no matter what
 		currentVM = points[0]._view;
 		if (!currentVM.skip) {
 			ctx.moveTo(currentVM.x, currentVM.y);
@@ -90,7 +90,7 @@ class Line extends Element {
 
 		for (index = 1; index < points.length; ++index) {
 			currentVM = points[index]._view;
-			previous = lastDrawnIndex === -1 ? points[Math.max(0, index - 1)] : points[lastDrawnIndex];
+			previous = lastDrawnIndex === -1 ? points[index - 1] : points[lastDrawnIndex];
 
 			if (!currentVM.skip) {
 				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
