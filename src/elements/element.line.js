@@ -36,7 +36,7 @@ class Line extends Element {
 		var vm = me._view;
 		var ctx = me._ctx;
 		var spanGaps = vm.spanGaps;
-		var points = me._children.slice(); // clone array
+		var points = me._children;
 		var globalDefaults = defaults.global;
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
@@ -48,6 +48,7 @@ class Line extends Element {
 		}
 
 		if (me._loop) {
+			points = points.slice(); // clone array
 			for (index = 0; index < points.length; ++index) {
 				previous = helpers.previousItem(points, index);
 				// If the line has an open path, shift the point array
