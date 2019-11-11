@@ -19,6 +19,14 @@ defaults._set('radar', {
 	}
 });
 
+function nextItem(collection, index) {
+	return index >= collection.length - 1 ? collection[0] : collection[index + 1];
+}
+
+function previousItem(collection, index) {
+	return index <= 0 ? collection[collection.length - 1] : collection[index - 1];
+}
+
 module.exports = DatasetController.extend({
 	datasetElementType: elements.Line,
 
@@ -173,9 +181,9 @@ module.exports = DatasetController.extend({
 		for (i = 0, ilen = points.length; i < ilen; ++i) {
 			model = points[i]._model;
 			controlPoints = helpers.splineCurve(
-				helpers.previousItem(points, i, true)._model,
+				previousItem(points, i)._model,
 				model,
-				helpers.nextItem(points, i, true)._model,
+				nextItem(points, i)._model,
 				model.tension
 			);
 
