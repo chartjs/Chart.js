@@ -46,8 +46,7 @@
                     "gridLines":{
                         "drawOnChartArea": false,
                         "drawBorder": false,
-                        "color": "rgba(0, 0, 0, 1)",
-                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                        "color": "rgba(0, 0, 0, 1)"
                     }
                 }, {
                     "type": "linear",
@@ -61,8 +60,7 @@
                     "gridLines":{
                         "drawOnChartArea": false,
                         "drawBorder": false,
-                        "color": "rgba(0, 0, 0, 1)",
-                        "zeroLineColor": "rgba(0, 0, 0, 1)"
+                        "color": "rgba(0, 0, 0, 1)"
                     }
                 }]
             }
