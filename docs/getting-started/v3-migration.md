@@ -52,7 +52,9 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `helpers.indexOf`
 * `helpers.min`
 * `helpers.max`
+* `helpers.nextItem`
 * `helpers.numberOfLabelLines`
+* `helpers.previousItem`
 * `helpers.removeEvent`
 * `helpers.scaleMerge`
 * `Scale.getRightValue`
@@ -120,7 +122,3 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 #### Interactions
 
 * Interaction mode methods now return an array of objects containing the `element`, `datasetIndex`, and `index`
-
-#### helpers
-
-* Removed the last parameter of `helpers.previousItem` and `helpers.nextItem`. `loop` is always assumed to be false now

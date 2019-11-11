@@ -201,9 +201,9 @@ module.exports = DatasetController.extend({
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				model = points[i]._model;
 				controlPoints = helpers.splineCurve(
-					helpers.previousItem(points, i)._model,
+					points[Math.max(0, i - 1)]._model,
 					model,
-					helpers.nextItem(points, i)._model,
+					points[Math.min(i + 1, ilen - 1)]._model,
 					lineModel.tension
 				);
 				model.controlPointPreviousX = controlPoints.previous.x;

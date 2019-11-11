@@ -49,7 +49,7 @@ class Line extends Element {
 
 		if (me._loop) {
 			for (index = 0; index < points.length; ++index) {
-				previous = helpers.previousItem(points, index);
+				previous = points[Math.max(0, index - 1)];
 				// If the line has an open path, shift the point array
 				if (!points[index]._view.skip && previous._view.skip) {
 					points = points.slice(index).concat(points.slice(0, index));
@@ -90,7 +90,7 @@ class Line extends Element {
 
 		for (index = 1; index < points.length; ++index) {
 			currentVM = points[index]._view;
-			previous = lastDrawnIndex === -1 ? helpers.previousItem(points, index) : points[lastDrawnIndex];
+			previous = lastDrawnIndex === -1 ? points[Math.max(0, index - 1)] : points[lastDrawnIndex];
 
 			if (!currentVM.skip) {
 				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {

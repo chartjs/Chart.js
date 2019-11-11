@@ -292,12 +292,6 @@ module.exports = function() {
 			}
 		}
 	};
-	helpers.nextItem = function(collection, index) {
-		return index >= collection.length - 1 ? collection[collection.length - 1] : collection[index + 1];
-	};
-	helpers.previousItem = function(collection, index) {
-		return index <= 0 ? collection[0] : collection[index - 1];
-	};
 	// Implementation of the nice number algorithm used in determining where axis labels will go
 	helpers.niceNum = function(range, round) {
 		var exponent = Math.floor(helpers.math.log10(range));
