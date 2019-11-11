@@ -315,8 +315,7 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var type = me.datasetElementType;
 		return type && new type({
-			_ctx: me.chart.ctx,
-			_datasetIndex: me.index
+			_ctx: me.chart.ctx
 		});
 	},
 
