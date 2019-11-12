@@ -72,7 +72,6 @@ function normalPath(ctx, points, spanGaps) {
 			move = move || !spanGaps;
 			continue;
 		}
-
 		if (move) {
 			ctx.moveTo(currentVM.x, currentVM.y);
 			move = false;
@@ -85,7 +84,9 @@ function normalPath(ctx, points, spanGaps) {
 
 function fastPath(ctx, points, spanGaps) {
 	let move = true;
-	let index, vm, truncX, y, prevX, minY, maxY, lastY;
+	let count = 0;
+	let avgX = 0;
+	let index, vm, truncX, x, y, prevX, minY, maxY, lastY;
 
 	for (index = 0; index < points.length; ++index) {
 		vm = points[index]._view;
@@ -94,28 +95,34 @@ function fastPath(ctx, points, spanGaps) {
 			move = move || !spanGaps;
 			continue;
 		}
-		truncX = vm.x | 0;
+		x = vm.x;
+		truncX = x | 0;
 		y = vm.y;
 
 		if (move) {
-			ctx.moveTo(vm.x, y);
-			minY = maxY = y;
+			ctx.moveTo(x, y);
 			move = false;
 		} else if (truncX === prevX) {
 			minY = Math.min(y, minY);
 			maxY = Math.max(y, maxY);
+			avgX = (count * avgX + x) / ++count;
 		} else {
 			if (minY !== maxY) {
-				ctx.lineTo(prevX, maxY);
-				ctx.lineTo(prevX, minY);
-				ctx.moveTo(prevX, lastY);
+				ctx.lineTo(avgX, maxY);
+				ctx.lineTo(avgX, minY);
+				ctx.moveTo(avgX, lastY);
 			}
-			ctx.lineTo(vm.x, y);
+			ctx.lineTo(x, y);
 			prevX = truncX;
+			count = 0;
 			minY = maxY = y;
 		}
 		lastY = y;
 	}
+}
+
+function useFastPath(vm) {
+	return vm.tension === 0 && !vm.steppedLine && !vm.fill && !vm.borderDash.length;
 }
 
 class Line extends Element {
@@ -129,7 +136,6 @@ class Line extends Element {
 		const vm = me._view;
 		const ctx = me._ctx;
 		const spanGaps = vm.spanGaps;
-		const tension = vm.tension;
 		let closePath = me._loop;
 		let points = me._children;
 
@@ -148,7 +154,7 @@ class Line extends Element {
 
 		ctx.beginPath();
 
-		if (tension === 0 && !vm.steppedLine && !vm.fill && !vm.borderDash.length && points.length > ctx.canvas.width) {
+		if (useFastPath(vm)) {
 			fastPath(ctx, points, spanGaps);
 		} else {
 			normalPath(ctx, points, spanGaps);
