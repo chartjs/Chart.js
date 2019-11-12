@@ -26,35 +26,26 @@ defaults._set('global', {
 function startAtGap(points, spanGaps) {
 	let closePath = true;
 	let previous = points.length && points[0]._view;
-	let index, view, cloned;
+	let index, view;
+
 	for (index = 1; index < points.length; ++index) {
-		// If the line has an open path, shift the point array
+		// If there is a gap in the (looping) line, start drawing from that gap
 		view = points[index]._view;
 		if (!view.skip && previous.skip) {
 			points = points.slice(index).concat(points.slice(0, index));
 			closePath = spanGaps;
-			cloned = true;
 			break;
 		}
 		previous = view;
 	}
-	// If the line has a close path, add the first point again
-	if (closePath) {
-		if (!cloned) {
-			points = points.slice();
-		}
-		points.push(points[0]);
-	}
+
 	points.closePath = closePath;
 	return points;
 }
 
 function setStyle(ctx, vm) {
 	ctx.lineCap = vm.borderCapStyle;
-	// IE 9 and 10 do not support line dash
-	if (ctx.setLineDash) {
-		ctx.setLineDash(vm.borderDash);
-	}
+	ctx.setLineDash(vm.borderDash);
 	ctx.lineDashOffset = vm.borderDashOffset;
 	ctx.lineJoin = vm.borderJoinStyle;
 	ctx.lineWidth = vm.borderWidth;
@@ -82,6 +73,13 @@ function normalPath(ctx, points, spanGaps) {
 	}
 }
 
+/**
+ * Create path from points, grouping by truncated x-coordinate
+ * Points need to be in order by x-coordinate for this to work efficiently
+ * @param {CanvasRenderingContext2D} ctx - Context
+ * @param {Point[]} points - Points defining the line
+ * @param {boolean} spanGaps - Are gaps spanned over
+ */
 function fastPath(ctx, points, spanGaps) {
 	let move = true;
 	let count = 0;
@@ -91,32 +89,44 @@ function fastPath(ctx, points, spanGaps) {
 	for (index = 0; index < points.length; ++index) {
 		vm = points[index]._view;
 
+		// If point is skipped, we either move to next (not skipped) point
+		// or line to it if spanGaps is true. `move` can already be true.
 		if (vm.skip) {
 			move = move || !spanGaps;
 			continue;
 		}
+
 		x = vm.x;
-		truncX = x | 0;
 		y = vm.y;
+		truncX = x | 0; // truncated x-coordinate
 
 		if (move) {
 			ctx.moveTo(x, y);
 			move = false;
 		} else if (truncX === prevX) {
+			// Determine `minY` / `maxY` and `avgX` while we stay within same x-position
 			minY = Math.min(y, minY);
 			maxY = Math.max(y, maxY);
+			// For first point in group, count is `0`, so average will be `x` / 1.
 			avgX = (count * avgX + x) / ++count;
 		} else {
 			if (minY !== maxY) {
+				// Draw line to maxY and minY, using the average x-coordinate
 				ctx.lineTo(avgX, maxY);
 				ctx.lineTo(avgX, minY);
+				// Move to y-value of last point in group. So the line continues
+				// from correct position.
 				ctx.moveTo(avgX, lastY);
 			}
+			// Draw line to next x-position, using the first (or only)
+			// y-value in that group
 			ctx.lineTo(x, y);
+
 			prevX = truncX;
 			count = 0;
 			minY = maxY = y;
 		}
+		// Keep track of the last y-value in group
 		lastY = y;
 	}
 }
@@ -143,7 +153,7 @@ class Line extends Element {
 			return;
 		}
 
-		if (me._loop) {
+		if (closePath) {
 			points = startAtGap(points, spanGaps);
 			closePath = points.closePath;
 		}
