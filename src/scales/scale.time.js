@@ -574,7 +574,7 @@ module.exports = Scale.extend({
 		var unit = options.time.unit || 'day';
 		var {min, max, minDefined, maxDefined} = me._getUserBounds();
 
-		function _apply(bounds) {
+		function _applyBounds(bounds) {
 			if (!minDefined && !isNaN(bounds.min)) {
 				min = Math.min(min, bounds.min);
 			}
@@ -586,12 +586,12 @@ module.exports = Scale.extend({
 		// If we have user provided `min` and `max` labels / data bounds can be ignored
 		if (!minDefined || !maxDefined) {
 			// Labels are always considered, when user did not force bounds
-			_apply(getLabelBounds(me));
+			_applyBounds(getLabelBounds(me));
 
 			// If `bounds` is `'ticks'` and `ticks.source` is `'labels'`,
 			// data bounds are ignored (and don't need to be determined)
 			if (options.bounds !== 'ticks' || options.ticks.source !== 'labels') {
-				_apply(me._getMinMax(false));
+				_applyBounds(me._getMinMax(false));
 			}
 		}
 
