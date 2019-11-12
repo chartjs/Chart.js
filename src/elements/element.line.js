@@ -4,8 +4,6 @@ const defaults = require('../core/core.defaults');
 const Element = require('../core/core.element');
 const helpers = require('../helpers/index');
 
-const valueOrDefault = helpers.valueOrDefault;
-
 const defaultColor = defaults.global.defaultColor;
 
 defaults._set('global', {
@@ -25,6 +23,101 @@ defaults._set('global', {
 	}
 });
 
+function startAtGap(points, spanGaps) {
+	let closePath = true;
+	let previous = points.length && points[0]._view;
+	let index, view, cloned;
+	for (index = 1; index < points.length; ++index) {
+		// If the line has an open path, shift the point array
+		view = points[index]._view;
+		if (!view.skip && previous.skip) {
+			points = points.slice(index).concat(points.slice(0, index));
+			closePath = spanGaps;
+			cloned = true;
+			break;
+		}
+		previous = view;
+	}
+	// If the line has a close path, add the first point again
+	if (closePath) {
+		if (!cloned) {
+			points = points.slice();
+		}
+		points.push(points[0]);
+	}
+	points.closePath = closePath;
+	return points;
+}
+
+function setStyle(ctx, vm) {
+	ctx.lineCap = vm.borderCapStyle;
+	// IE 9 and 10 do not support line dash
+	if (ctx.setLineDash) {
+		ctx.setLineDash(vm.borderDash);
+	}
+	ctx.lineDashOffset = vm.borderDashOffset;
+	ctx.lineJoin = vm.borderJoinStyle;
+	ctx.lineWidth = vm.borderWidth;
+	ctx.strokeStyle = vm.borderColor;
+}
+
+function normalPath(ctx, points, spanGaps) {
+	let move = true;
+	let index, currentVM, previousVM;
+
+	for (index = 0; index < points.length; ++index) {
+		currentVM = points[index]._view;
+
+		if (currentVM.skip) {
+			move = move || !spanGaps;
+			continue;
+		}
+
+		if (move) {
+			ctx.moveTo(currentVM.x, currentVM.y);
+			move = false;
+		} else {
+			helpers.canvas.lineTo(ctx, previousVM, currentVM);
+		}
+		previousVM = currentVM;
+	}
+}
+
+function fastPath(ctx, points, spanGaps) {
+	let move = true;
+	let index, vm, truncX, y, prevX, minY, maxY, lastY;
+
+	for (index = 0; index < points.length; ++index) {
+		vm = points[index]._view;
+
+		if (vm.skip) {
+			move = move || !spanGaps;
+			continue;
+		}
+		truncX = vm.x | 0;
+		y = vm.y;
+
+		if (move) {
+			ctx.moveTo(vm.x, y);
+			minY = maxY = y;
+			move = false;
+		} else if (truncX === prevX) {
+			minY = Math.min(y, minY);
+			maxY = Math.max(y, maxY);
+		} else {
+			if (minY !== maxY) {
+				ctx.lineTo(prevX, maxY);
+				ctx.lineTo(prevX, minY);
+				ctx.moveTo(prevX, lastY);
+			}
+			ctx.lineTo(vm.x, y);
+			prevX = truncX;
+			minY = maxY = y;
+		}
+		lastY = y;
+	}
+}
+
 class Line extends Element {
 
 	constructor(props) {
@@ -32,77 +125,33 @@ class Line extends Element {
 	}
 
 	draw() {
-		var me = this;
-		var vm = me._view;
-		var ctx = me._ctx;
-		var spanGaps = vm.spanGaps;
-		var points = me._children;
-		var globalDefaults = defaults.global;
-		var globalOptionLineElements = globalDefaults.elements.line;
-		var lastDrawnIndex = -1;
-		var closePath = me._loop;
-		var index, previous, currentVM;
+		const me = this;
+		const vm = me._view;
+		const ctx = me._ctx;
+		const spanGaps = vm.spanGaps;
+		const tension = vm.tension;
+		let closePath = me._loop;
+		let points = me._children;
 
 		if (!points.length) {
 			return;
 		}
 
 		if (me._loop) {
-			points = points.slice(); // clone array
-			for (index = 0; index < points.length; ++index) {
-				previous = points[Math.max(0, index - 1)];
-				// If the line has an open path, shift the point array
-				if (!points[index]._view.skip && previous._view.skip) {
-					points = points.slice(index).concat(points.slice(0, index));
-					closePath = spanGaps;
-					break;
-				}
-			}
-			// If the line has a close path, add the first point again
-			if (closePath) {
-				points.push(points[0]);
-			}
+			points = startAtGap(points, spanGaps);
+			closePath = points.closePath;
 		}
 
 		ctx.save();
 
-		// Stroke Line Options
-		ctx.lineCap = vm.borderCapStyle || globalOptionLineElements.borderCapStyle;
+		setStyle(ctx, vm);
 
-		// IE 9 and 10 do not support line dash
-		if (ctx.setLineDash) {
-			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
-		}
-
-		ctx.lineDashOffset = valueOrDefault(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
-		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
-		ctx.lineWidth = valueOrDefault(vm.borderWidth, globalOptionLineElements.borderWidth);
-		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
-
-		// Stroke Line
 		ctx.beginPath();
 
-		// First point moves to its starting position no matter what
-		currentVM = points[0]._view;
-		if (!currentVM.skip) {
-			ctx.moveTo(currentVM.x, currentVM.y);
-			lastDrawnIndex = 0;
-		}
-
-		for (index = 1; index < points.length; ++index) {
-			currentVM = points[index]._view;
-			previous = lastDrawnIndex === -1 ? points[index - 1] : points[lastDrawnIndex];
-
-			if (!currentVM.skip) {
-				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
-					// There was a gap and this is the first point after the gap
-					ctx.moveTo(currentVM.x, currentVM.y);
-				} else {
-					// Line to next point
-					helpers.canvas.lineTo(ctx, previous._view, currentVM);
-				}
-				lastDrawnIndex = index;
-			}
+		if (tension === 0 && !vm.steppedLine && !vm.fill && !vm.borderDash.length && points.length > ctx.canvas.width) {
+			fastPath(ctx, points, spanGaps);
+		} else {
+			normalPath(ctx, points, spanGaps);
 		}
 
 		if (closePath) {
