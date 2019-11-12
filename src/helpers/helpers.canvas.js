@@ -1,16 +1,30 @@
 'use strict';
 
-var PI = Math.PI;
-var RAD_PER_DEG = PI / 180;
-var DOUBLE_PI = PI * 2;
-var HALF_PI = PI / 2;
-var QUARTER_PI = PI / 4;
-var TWO_THIRDS_PI = PI * 2 / 3;
+const PI = Math.PI;
+const RAD_PER_DEG = PI / 180;
+const DOUBLE_PI = PI * 2;
+const HALF_PI = PI / 2;
+const QUARTER_PI = PI / 4;
+const TWO_THIRDS_PI = PI * 2 / 3;
 
 /**
  * @namespace Chart.helpers.canvas
  */
-var exports = {
+module.exports = {
+	/**
+	 * Returns the aligned pixel value to avoid anti-aliasing blur
+	 * @param {Chart} chart - The chart instance.
+	 * @param {number} pixel - A pixel value.
+	 * @param {number} width - The width of the element.
+	 * @returns {number} The aligned pixel value.
+	 * @private
+	 */
+	_alignPixel: function(chart, pixel, width) {
+		const devicePixelRatio = chart.currentDevicePixelRatio;
+		const halfWidth = width / 2;
+		return Math.round((pixel - halfWidth) * devicePixelRatio) / devicePixelRatio + halfWidth;
+	},
+
 	/**
 	 * Clears the entire canvas associated to the given `chart`.
 	 * @param {Chart} chart - The chart for which to clear the canvas.
@@ -229,5 +243,3 @@ var exports = {
 			target.y);
 	}
 };
-
-module.exports = exports;
