@@ -8,7 +8,7 @@ const Ticks = require('./core.ticks');
 const isArray = helpers.isArray;
 const isNullOrUndef = helpers.isNullOrUndef;
 const valueOrDefault = helpers.valueOrDefault;
-const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+const resolve = helpers.options.resolve;
 
 defaults._set('scale', {
 	display: true,
@@ -199,7 +199,7 @@ function parseFontOptions(options, nestedOpts) {
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
 		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
 	}), {
-		color: helpers.options.resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
+		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
 	});
 }
 
@@ -965,10 +965,16 @@ class Scale extends Element {
 		var isHorizontal = me.isHorizontal();
 		var ticks = me._ticksToDraw;
 		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
+		var context;
 
 		var tl = getTickMarkLength(gridLines);
 		var items = [];
-		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+
+		context = {
+			scale: me,
+			tick: ticks[0],
+		};
+		var axisWidth = gridLines.drawBorder ? resolve([gridLines.lineWidth, 0], context, 0) : 0;
 		var axisHalfWidth = axisWidth / 2;
 		var alignPixel = helpers._alignPixel;
 		var alignBorderValue = function(pixel) {
@@ -1006,10 +1012,15 @@ class Scale extends Element {
 		for (i = 0; i < ticksLength; ++i) {
 			tick = ticks[i] || {};
 
-			const lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, i, 1);
-			const lineColor = valueAtIndexOrDefault(gridLines.color, i, 'rgba(0,0,0,0.1)');
+			context = {
+				scale: me,
+				tick,
+			};
+
+			const lineWidth = resolve([gridLines.lineWidth], context, i);
+			const lineColor = resolve([gridLines.color], context, i);
 			const borderDash = gridLines.borderDash || [];
-			const borderDashOffset = gridLines.borderDashOffset || 0.0;
+			const borderDashOffset = resolve([gridLines.borderDashOffset], context, i);
 
 			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
 
@@ -1127,7 +1138,11 @@ class Scale extends Element {
 		var ctx = me.ctx;
 		var chart = me.chart;
 		var alignPixel = helpers._alignPixel;
-		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var context = {
+			scale: me,
+			tick: me._ticksToDraw[0],
+		};
+		var axisWidth = gridLines.drawBorder ? resolve([gridLines.lineWidth, 0], context, 0) : 0;
 		var items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
 		var width, color, i, ilen, item;
 
@@ -1165,7 +1180,11 @@ class Scale extends Element {
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			var firstLineWidth = axisWidth;
-			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, items.ticksLength - 1, 1);
+			context = {
+				scale: me,
+				tick: me._ticksToDraw[items.ticksLength - 1],
+			};
+			var lastLineWidth = resolve([gridLines.lineWidth, 1], context, items.ticksLength - 1);
 			var borderValue = items.borderValue;
 			var x1, x2, y1, y2;
 
@@ -1180,7 +1199,7 @@ class Scale extends Element {
 			}
 
 			ctx.lineWidth = axisWidth;
-			ctx.strokeStyle = valueAtIndexOrDefault(gridLines.color, 0);
+			ctx.strokeStyle = resolve([gridLines.color], context, 0);
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);

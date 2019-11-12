@@ -128,6 +128,9 @@
 			title: 'Grid lines style',
 			path: 'scales/gridlines-style.html'
 		}, {
+			title: 'Scriptable Grid lines',
+			path: 'scales/gridlines-scriptable.html'
+		}, {
 			title: 'Multiline labels',
 			path: 'scales/multiline-labels.html'
 		}, {
