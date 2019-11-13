@@ -215,8 +215,6 @@ describe('Chart.controllers.line', function() {
 			{x: 0, y: 512},
 			{x: 171, y: 0}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._datasetIndex).toBe(0);
-			expect(meta.data[i]._index).toBe(i);
 			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
 			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({

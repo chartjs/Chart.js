@@ -315,18 +315,15 @@ helpers.extend(DatasetController.prototype, {
 		var me = this;
 		var type = me.datasetElementType;
 		return type && new type({
-			_ctx: me.chart.ctx,
-			_datasetIndex: me.index
+			_ctx: me.chart.ctx
 		});
 	},
 
-	createMetaData: function(index) {
+	createMetaData: function() {
 		var me = this;
 		var type = me.dataElementType;
 		return type && new type({
 			_ctx: me.chart.ctx,
-			_datasetIndex: me.index,
-			_index: index,
 			_parsed: {}
 		});
 	},
@@ -398,14 +395,14 @@ helpers.extend(DatasetController.prototype, {
 		data = me._data;
 
 		for (i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = metaData[i] || me.createMetaData(i);
+			metaData[i] = metaData[i] || me.createMetaData();
 		}
 
 		meta.dataset = meta.dataset || me.createMetaDataset();
 	},
 
 	addElementAndReset: function(index) {
-		var element = this.createMetaData(index);
+		var element = this.createMetaData();
 		this._cachedMeta.data.splice(index, 0, element);
 		this.updateElement(element, index, true);
 	},
