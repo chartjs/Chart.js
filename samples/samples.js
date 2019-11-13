@@ -19,6 +19,9 @@
 		}, {
 			title: 'Stacked groups',
 			path: 'charts/bar/stacked-group.html'
+		}, {
+			title: 'Floating',
+			path: 'charts/bar/float.html'
 		}]
 	}, {
 		title: 'Line charts',
