@@ -57,7 +57,7 @@
 
 			if (tooltip.dataPoints.length > 0) {
 				tooltip.dataPoints.forEach(function(dataPoint) {
-					var content = [dataPoint.xLabel, dataPoint.yLabel].join(': ');
+					var content = [dataPoint.label, dataPoint.value].join(': ');
 					var $tooltip = $('#tooltip-' + dataPoint.datasetIndex);
 
 					$tooltip.html(content);

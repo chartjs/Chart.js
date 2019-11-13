@@ -136,7 +136,7 @@ var chart = new Chart(ctx, {
                     if (label) {
                         label += ': ';
                     }
-                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    label += Math.round(tooltipItem.value * 100) / 100;
                     return label;
                 }
             }
