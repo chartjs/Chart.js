@@ -312,21 +312,6 @@ describe('Core helper tests', function() {
 		}]);
 	});
 
-	it('should get the next or previous item in an array', function() {
-		var testData = [0, 1, 2];
-
-		expect(helpers.nextItem(testData, 0, false)).toEqual(1);
-		expect(helpers.nextItem(testData, 2, false)).toEqual(2);
-		expect(helpers.nextItem(testData, 2, true)).toEqual(0);
-		expect(helpers.nextItem(testData, 1, true)).toEqual(2);
-		expect(helpers.nextItem(testData, -1, false)).toEqual(0);
-
-		expect(helpers.previousItem(testData, 0, false)).toEqual(0);
-		expect(helpers.previousItem(testData, 0, true)).toEqual(2);
-		expect(helpers.previousItem(testData, 2, false)).toEqual(1);
-		expect(helpers.previousItem(testData, 1, true)).toEqual(0);
-	});
-
 	it('should return the width of the longest text in an Array and 2D Array', function() {
 		var context = window.createMockContext();
 		var font = "normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";

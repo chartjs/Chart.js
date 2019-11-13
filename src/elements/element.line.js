@@ -50,7 +50,7 @@ class Line extends Element {
 		if (me._loop) {
 			points = points.slice(); // clone array
 			for (index = 0; index < points.length; ++index) {
-				previous = helpers.previousItem(points, index);
+				previous = points[Math.max(0, index - 1)];
 				// If the line has an open path, shift the point array
 				if (!points[index]._view.skip && previous._view.skip) {
 					points = points.slice(index).concat(points.slice(0, index));
@@ -82,7 +82,7 @@ class Line extends Element {
 		// Stroke Line
 		ctx.beginPath();
 
-		// First point moves to it's starting position no matter what
+		// First point moves to its starting position no matter what
 		currentVM = points[0]._view;
 		if (!currentVM.skip) {
 			ctx.moveTo(currentVM.x, currentVM.y);
@@ -91,7 +91,7 @@ class Line extends Element {
 
 		for (index = 1; index < points.length; ++index) {
 			currentVM = points[index]._view;
-			previous = lastDrawnIndex === -1 ? helpers.previousItem(points, index) : points[lastDrawnIndex];
+			previous = lastDrawnIndex === -1 ? points[index - 1] : points[lastDrawnIndex];
 
 			if (!currentVM.skip) {
 				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
