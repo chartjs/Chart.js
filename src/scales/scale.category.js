@@ -24,44 +24,20 @@ module.exports = Scale.extend({
 
 	determineDataLimits: function() {
 		var me = this;
-		var labels = me._getLabels();
-		var ticksOpts = me.options.ticks;
-		var min = ticksOpts.min;
-		var max = ticksOpts.max;
-		var minIndex = 0;
-		var maxIndex = labels.length - 1;
-		var findIndex;
+		var max = me._getLabels().length - 1;
 
-		if (min !== undefined) {
-			// user specified min value
-			findIndex = labels.indexOf(min);
-			if (findIndex >= 0) {
-				minIndex = findIndex;
-			}
-		}
-
-		if (max !== undefined) {
-			// user specified max value
-			findIndex = labels.indexOf(max);
-			if (findIndex >= 0) {
-				maxIndex = findIndex;
-			}
-		}
-
-		me.minIndex = minIndex;
-		me.maxIndex = maxIndex;
-		me.min = labels[minIndex];
-		me.max = labels[maxIndex];
+		me.min = Math.max(me._userMin || 0, 0);
+		me.max = Math.min(me._userMax || max, max);
 	},
 
 	buildTicks: function() {
 		var me = this;
 		var labels = me._getLabels();
-		var minIndex = me.minIndex;
-		var maxIndex = me.maxIndex;
+		var min = me.min;
+		var max = me.max;
 
 		// If we are viewing some subset of labels, slice the original array
-		labels = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
+		labels = (min === 0 && max === labels.length - 1) ? labels : labels.slice(min, max + 1);
 		return labels.map(function(l) {
 			return {value: l};
 		});
@@ -93,7 +69,7 @@ module.exports = Scale.extend({
 			return;
 		}
 
-		me._startValue = me.minIndex - (offset ? 0.5 : 0);
+		me._startValue = me.min - (offset ? 0.5 : 0);
 		me._valueRange = Math.max(ticks.length - (offset ? 0 : 1), 1);
 	},
 
@@ -112,7 +88,7 @@ module.exports = Scale.extend({
 		var ticks = this.ticks;
 		return index < 0 || index > ticks.length - 1
 			? null
-			: this.getPixelForValue(index + this.minIndex);
+			: this.getPixelForValue(index + this.min);
 	},
 
 	getValueForPixel: function(pixel) {

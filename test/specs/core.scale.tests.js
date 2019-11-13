@@ -581,4 +581,40 @@ describe('Core.scale', function() {
 		});
 
 	});
+
+	describe('min and max', function() {
+		it('should be limited to visible data', function() {
+			var chart = window.acquireChart({
+				type: 'scatter',
+				data: {
+					datasets: [{
+						data: [{x: 100, y: 100}, {x: -100, y: -100}]
+					}, {
+						data: [{x: 10, y: 10}, {x: -10, y: -10}]
+					}]
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							id: 'x',
+							type: 'linear',
+							ticks: {
+								min: -20,
+								max: 20
+							}
+						}],
+						yAxes: [{
+							id: 'y',
+							type: 'linear'
+						}]
+					}
+				}
+			});
+
+			expect(chart.scales.x.min).toEqual(-20);
+			expect(chart.scales.x.max).toEqual(20);
+			expect(chart.scales.y.min).toEqual(-10);
+			expect(chart.scales.y.max).toEqual(10);
+		});
+	});
 });

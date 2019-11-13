@@ -84,7 +84,7 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 module.exports = Scale.extend({
-	_parse: function(raw) {
+	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
 		if (helpers.isNullOrUndef(raw)) {
 			return NaN;
 		}

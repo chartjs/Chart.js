@@ -1493,7 +1493,7 @@ describe('Chart.controllers.bar', function() {
 			var totalBarWidth = 0;
 			for (var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
-				for (var j = xScale.minIndex; j <= xScale.maxIndex; j++) {
+				for (var j = xScale.min; j <= xScale.max; j++) {
 					totalBarWidth += bars[j]._model.width;
 				}
 				if (stacked) {
@@ -1571,7 +1571,7 @@ describe('Chart.controllers.bar', function() {
 			var totalBarHeight = 0;
 			for (var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
-				for (var j = yScale.minIndex; j <= yScale.maxIndex; j++) {
+				for (var j = yScale.min; j <= yScale.max; j++) {
 					totalBarHeight += bars[j]._model.height;
 				}
 				if (stacked) {

@@ -6,6 +6,7 @@ const helpers = require('../helpers/index');
 const Ticks = require('./core.ticks');
 
 const isArray = helpers.isArray;
+const isFinite = helpers.isFinite;
 const isNullOrUndef = helpers.isNullOrUndef;
 const valueOrDefault = helpers.valueOrDefault;
 const resolve = helpers.options.resolve;
@@ -347,26 +348,49 @@ class Scale extends Element {
 		return null;
 	}
 
+	/**
+	 * @private
+	 * @since 3.0
+	 */
+	_getUserBounds() {
+		var min = this._userMin;
+		var max = this._userMax;
+		if (isNullOrUndef(min) || isNaN(min)) {
+			min = Number.POSITIVE_INFINITY;
+		}
+		if (isNullOrUndef(max) || isNaN(max)) {
+			max = Number.NEGATIVE_INFINITY;
+		}
+		return {min, max, minDefined: isFinite(min), maxDefined: isFinite(max)};
+	}
+
+	/**
+	 * @private
+	 * @since 3.0
+	 */
 	_getMinMax(canStack) {
 		var me = this;
-		var metas = me._getMatchingVisibleMetas();
-		var min = Number.POSITIVE_INFINITY;
-		var max = Number.NEGATIVE_INFINITY;
+		var {min, max, minDefined, maxDefined} = me._getUserBounds();
 		var minPositive = Number.POSITIVE_INFINITY;
-		var i, ilen, minmax;
+		var i, ilen, metas, minmax;
 
+		if (minDefined && maxDefined) {
+			return {min, max};
+		}
+
+		metas = me._getMatchingVisibleMetas();
 		for (i = 0, ilen = metas.length; i < ilen; ++i) {
 			minmax = metas[i].controller._getMinMax(me, canStack);
-			min = Math.min(min, minmax.min);
-			max = Math.max(max, minmax.max);
+			if (!minDefined) {
+				min = Math.min(min, minmax.min);
+			}
+			if (!maxDefined) {
+				max = Math.max(max, minmax.max);
+			}
 			minPositive = Math.min(minPositive, minmax.minPositive);
 		}
 
-		return {
-			min: min,
-			max: max,
-			minPositive: minPositive
-		};
+		return {min, max, minPositive};
 	}
 
 	_invalidateCaches() {}

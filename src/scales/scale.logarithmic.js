@@ -64,13 +64,11 @@ var defaultConfig = {
 	}
 };
 
-// TODO(v3): change this to positiveOrDefault
-function nonNegativeOrDefault(value, defaultValue) {
-	return helpers.isFinite(value) && value >= 0 ? value : defaultValue;
-}
-
 module.exports = Scale.extend({
-	_parse: LinearScaleBase.prototype._parse,
+	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
+		return helpers.isFinite(value) && value >= 0 ? value : undefined;
+	},
 
 	determineDataLimits: function() {
 		var me = this;
@@ -88,39 +86,39 @@ module.exports = Scale.extend({
 
 	handleTickRangeOptions: function() {
 		var me = this;
-		var tickOpts = me.options.ticks;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
+		var min = me.min;
+		var max = me.max;
 
-		me.min = nonNegativeOrDefault(tickOpts.min, me.min);
-		me.max = nonNegativeOrDefault(tickOpts.max, me.max);
-
-		if (me.min === me.max) {
-			if (me.min !== 0 && me.min !== null) {
-				me.min = Math.pow(10, Math.floor(log10(me.min)) - 1);
-				me.max = Math.pow(10, Math.floor(log10(me.max)) + 1);
+		if (min === max) {
+			if (min !== 0 && min !== null) {
+				min = Math.pow(10, Math.floor(log10(min)) - 1);
+				max = Math.pow(10, Math.floor(log10(max)) + 1);
 			} else {
-				me.min = DEFAULT_MIN;
-				me.max = DEFAULT_MAX;
+				min = DEFAULT_MIN;
+				max = DEFAULT_MAX;
 			}
 		}
-		if (me.min === null) {
-			me.min = Math.pow(10, Math.floor(log10(me.max)) - 1);
+		if (min === null) {
+			min = Math.pow(10, Math.floor(log10(max)) - 1);
 		}
-		if (me.max === null) {
-			me.max = me.min !== 0
-				? Math.pow(10, Math.floor(log10(me.min)) + 1)
+		if (max === null) {
+			max = min !== 0
+				? Math.pow(10, Math.floor(log10(min)) + 1)
 				: DEFAULT_MAX;
 		}
 		if (me.minNotZero === null) {
-			if (me.min > 0) {
-				me.minNotZero = me.min;
-			} else if (me.max < 1) {
-				me.minNotZero = Math.pow(10, Math.floor(log10(me.max)));
+			if (min > 0) {
+				me.minNotZero = min;
+			} else if (max < 1) {
+				me.minNotZero = Math.pow(10, Math.floor(log10(max)));
 			} else {
 				me.minNotZero = DEFAULT_MIN;
 			}
 		}
+		me.min = min;
+		me.max = max;
 	},
 
 	buildTicks: function() {
@@ -129,8 +127,8 @@ module.exports = Scale.extend({
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
-			min: nonNegativeOrDefault(tickOpts.min),
-			max: nonNegativeOrDefault(tickOpts.max)
+			min: me._userMin,
+			max: me._userMax
 		};
 		var ticks = generateTicks(generationOptions, me);
 
