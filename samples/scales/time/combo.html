@@ -27,68 +27,45 @@
 	<button id="addData">Add Data</button>
 	<button id="removeData">Remove Data</button>
 	<script>
-		var timeFormat = 'MM/DD/YYYY HH:mm';
+		function newDate(days) {
+			return moment().startOf('day').add(days, 'd').valueOf();
+		}
 
-		function newDateString(days) {
-			return moment().add(days, 'd').format(timeFormat);
+		var labels = [];
+		var data1 = [];
+		var data2 = [];
+		var data3 = [];
+		for (var i = 0; i < 7; i++) {
+			labels.push(newDate(i));
+			data1.push(randomScalingFactor());
+			data2.push(randomScalingFactor());
+			data3.push(randomScalingFactor());
 		}
 
 		var color = Chart.helpers.color;
 		var config = {
 			type: 'bar',
 			data: {
-				labels: [
-					newDateString(0),
-					newDateString(1),
-					newDateString(2),
-					newDateString(3),
-					newDateString(4),
-					newDateString(5),
-					newDateString(6)
-				],
+				labels: labels,
 				datasets: [{
 					type: 'bar',
 					label: 'Dataset 1',
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.red,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
+					data: data1,
 				}, {
 					type: 'bar',
 					label: 'Dataset 2',
 					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.blue,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
+					data: data2,
 				}, {
 					type: 'line',
 					label: 'Dataset 3',
 					backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.green,
 					fill: false,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
+					data: data3,
 				}]
 			},
 			options: {
@@ -99,9 +76,9 @@
 					xAxes: [{
 						type: 'time',
 						display: true,
+						offset: true,
 						time: {
-							format: timeFormat,
-							// round: 'day'
+							unit: 'day'
 						}
 					}],
 				},
@@ -145,7 +122,7 @@
 
 		document.getElementById('addData').addEventListener('click', function() {
 			if (config.data.datasets.length > 0) {
-				config.data.labels.push(newDateString(config.data.labels.length));
+				config.data.labels.push(newDate(config.data.labels.length));
 
 				for (var index = 0; index < config.data.datasets.length; ++index) {
 					config.data.datasets[index].data.push(randomScalingFactor());
