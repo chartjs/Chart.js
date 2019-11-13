@@ -15,13 +15,6 @@ module.exports = Scale.extend({
 		return first === -1 || first !== last ? index : first;
 	},
 
-	_parseObject: function(obj, axis, index) {
-		if (obj[axis] !== undefined) {
-			return this._parse(obj[axis], index);
-		}
-		return null;
-	},
-
 	determineDataLimits: function() {
 		var me = this;
 		var max = me._getLabels().length - 1;
