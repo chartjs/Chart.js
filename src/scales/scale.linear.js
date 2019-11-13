@@ -28,7 +28,7 @@ module.exports = LinearScaleBase.extend({
 			me.min = 0;
 		}
 
-		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
+		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
 	},
 

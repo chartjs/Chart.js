@@ -26,9 +26,7 @@
                 "yAxes": [{
                     "display": false,
                     "stacked": true,
-                    "ticks": {
-                        "beginAtZero": true
-                    }
+                    "beginAtZero": true
                 }]
             }
         }

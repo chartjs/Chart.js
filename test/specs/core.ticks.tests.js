@@ -69,9 +69,9 @@ describe('Test tick generators', function() {
 					xAxes: [{
 						type: 'logarithmic',
 						position: 'bottom',
+						min: 0.1,
+						max: 1,
 						ticks: {
-							min: 0.1,
-							max: 1,
 							callback: function(value) {
 								return value.toString();
 							}
@@ -79,9 +79,9 @@ describe('Test tick generators', function() {
 					}],
 					yAxes: [{
 						type: 'logarithmic',
+						min: 0.1,
+						max: 1,
 						ticks: {
-							min: 0.1,
-							max: 1,
 							callback: function(value) {
 								return value.toString();
 							}

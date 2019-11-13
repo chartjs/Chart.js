@@ -886,10 +886,8 @@ describe('Chart.controllers.bar', function() {
 						type: 'linear',
 						display: false,
 						stacked: true,
-						ticks: {
-							min: 50,
-							max: 100
-						}
+						min: 50,
+						max: 100
 					}]
 				}
 			}
@@ -1514,10 +1512,8 @@ describe('Chart.controllers.bar', function() {
 				options: {
 					scales: {
 						xAxes: [{
-							ticks: {
-								min: 'March',
-								max: 'May',
-							},
+							min: 'March',
+							max: 'May',
 						}]
 					}
 				}
@@ -1531,10 +1527,8 @@ describe('Chart.controllers.bar', function() {
 				options: {
 					scales: {
 						xAxes: [{
-							ticks: {
-								min: 'March',
-								max: 'May',
-							}
+							min: 'March',
+							max: 'May',
 						}],
 						yAxes: [{
 							stacked: true
@@ -1592,10 +1586,8 @@ describe('Chart.controllers.bar', function() {
 				options: {
 					scales: {
 						yAxes: [{
-							ticks: {
-								min: 'March',
-								max: 'May',
-							},
+							min: 'March',
+							max: 'May',
 						}]
 					}
 				}
@@ -1612,10 +1604,8 @@ describe('Chart.controllers.bar', function() {
 							stacked: true
 						}],
 						yAxes: [{
-							ticks: {
-								min: 'March',
-								max: 'May',
-							}
+							min: 'March',
+							max: 'May',
 						}]
 					}
 				}

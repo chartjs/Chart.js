@@ -13,14 +13,12 @@ defaults._set('polarArea', {
 		angleLines: {
 			display: false
 		},
+		beginAtZero: true,
 		gridLines: {
 			circular: true
 		},
 		pointLabels: {
 			display: false
-		},
-		ticks: {
-			beginAtZero: true
 		}
 	},
 

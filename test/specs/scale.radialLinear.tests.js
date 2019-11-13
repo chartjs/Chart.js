@@ -44,17 +44,17 @@ describe('Test the radial linear scale', function() {
 			},
 			position: 'chartArea',
 			offset: false,
+			reverse: false,
+			beginAtZero: false,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,
 				backdropPaddingX: 2,
-				beginAtZero: false,
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 0,
-				reverse: false,
 				showLabelBackdrop: true,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
@@ -183,10 +183,8 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scale: {
-					ticks: {
-						suggestedMin: -10,
-						suggestedMax: 10
-					}
+					suggestedMin: -10,
+					suggestedMax: 10
 				}
 			}
 		});
@@ -206,10 +204,8 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scale: {
-					ticks: {
-						min: -1010,
-						max: 1010
-					}
+					min: -1010,
+					max: 1010
 				}
 			}
 		});
@@ -230,16 +226,14 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scale: {
-					ticks: {
-						beginAtZero: false
-					}
+					beginAtZero: false
 				}
 			}
 		});
 
 		expect(getLabels(chart.scale)).toEqual(['20', '25', '30', '35', '40', '45', '50']);
 
-		chart.scale.options.ticks.beginAtZero = true;
+		chart.scale.options.beginAtZero = true;
 		chart.update();
 
 		expect(getLabels(chart.scale)).toEqual(['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']);
@@ -249,7 +243,7 @@ describe('Test the radial linear scale', function() {
 
 		expect(getLabels(chart.scale)).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20', '-15', '-10', '-5', '0']);
 
-		chart.scale.options.ticks.beginAtZero = false;
+		chart.scale.options.beginAtZero = false;
 		chart.update();
 
 		expect(getLabels(chart.scale)).toEqual(['-50', '-45', '-40', '-35', '-30', '-25', '-20']);
@@ -266,9 +260,7 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scale: {
-					ticks: {
-						reverse: true
-					}
+					reverse: true
 				}
 			}
 		});
@@ -308,8 +300,8 @@ describe('Test the radial linear scale', function() {
 
 		expect(getLabels(chart.scale)).toEqual(['0.5', '1.0', '1.5', '2.0', '2.5']);
 
-		chart.options.scale.ticks.min = 0.3;
-		chart.options.scale.ticks.max = 2.8;
+		chart.options.scale.min = 0.3;
+		chart.options.scale.max = 2.8;
 		chart.update();
 
 		expect(getLabels(chart.scale)).toEqual(['0.3', '0.5', '1.0', '1.5', '2.0', '2.5', '2.8']);
@@ -450,7 +442,7 @@ describe('Test the radial linear scale', function() {
 		expect(position.x).toBeCloseToPixel(270);
 		expect(position.y).toBeCloseToPixel(278);
 
-		chart.scale.options.ticks.reverse = true;
+		chart.scale.options.reverse = true;
 		chart.update();
 
 		expect(chart.scale.getDistanceFromCenterForValue(chart.scale.min)).toBe(227);

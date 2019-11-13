@@ -25,10 +25,8 @@
                 "yAxes": [{
                     "display": false,
                     "stacked": true,
-                    "ticks": {
-                        "min": -8,
-                        "max": 12
-                    }
+                    "min": -8,
+                    "max": 12
                 }]
             }
         }

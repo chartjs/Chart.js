@@ -123,7 +123,7 @@ module.exports = Scale.extend({
 
 	buildTicks: function() {
 		var me = this;
-		var tickOpts = me.options.ticks;
+		var opts = me.options;
 		var reverse = !me.isHorizontal();
 
 		var generationOptions = {
@@ -136,7 +136,7 @@ module.exports = Scale.extend({
 		// range of the scale
 		helpers._setMinAndMaxByKey(ticks, me, 'value');
 
-		if (tickOpts.reverse) {
+		if (opts.reverse) {
 			reverse = !reverse;
 			me.start = me.max;
 			me.end = me.min;

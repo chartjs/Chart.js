@@ -42,9 +42,7 @@ A bar chart provides a way of showing data values represented as vertical bars. 
     "options": {
         "scales": {
             "yAxes": [{
-                "ticks": {
-                    "beginAtZero": true
-                }
+                "beginAtZero": true
             }]
         }
     }
@@ -52,6 +50,7 @@ A bar chart provides a way of showing data values represented as vertical bars. 
 {% endchartjs %}
 
 ## Example Usage
+
 ```javascript
 var myBarChart = new Chart(ctx, {
     type: 'bar',
@@ -302,9 +301,7 @@ A horizontal bar chart is a variation on a vertical bar chart. It is sometimes u
     "options": {
         "scales": {
             "xAxes": [{
-                "ticks": {
-                    "beginAtZero": true
-                }
+                "beginAtZero": true
             }]
         }
     }
@@ -312,6 +309,7 @@ A horizontal bar chart is a variation on a vertical bar chart. It is sometimes u
 {% endchartjs %}
 
 ## Example
+
 ```javascript
 var myBarChart = new Chart(ctx, {
     type: 'horizontalBar',
@@ -321,6 +319,7 @@ var myBarChart = new Chart(ctx, {
 ```
 
 ### Config Options
+
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.

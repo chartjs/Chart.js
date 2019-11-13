@@ -29,7 +29,7 @@ module.exports = {
 			},
 			scales: {
 				xAxes: [{display: false}],
-				yAxes: [{display: false, ticks: {min: -10, max: 10}}]
+				yAxes: [{display: false, min: -10, max: 10}]
 			}
 		}
 	},

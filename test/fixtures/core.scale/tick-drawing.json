@@ -38,10 +38,10 @@
                     "position": "left",
                     "id": "y-axis-1",
                     "type": "linear",
+                    "min": -100,
+                    "max": 100,
                     "ticks": {
-                        "display": false,
-                        "min": -100,
-                        "max": 100
+                        "display": false
                     },
                     "gridLines":{
                         "drawOnChartArea": false,
@@ -52,10 +52,10 @@
                     "type": "linear",
                     "id": "y-axis-2",
                     "position": "right",
+                    "min": 0,
+                    "max": 50,
                     "ticks": {
-                        "display": false,
-                        "min": 0,
-                        "max": 50
+                        "display": false
                     },
                     "gridLines":{
                         "drawOnChartArea": false,

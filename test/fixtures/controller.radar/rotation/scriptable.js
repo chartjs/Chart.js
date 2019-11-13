@@ -42,9 +42,7 @@ module.exports = {
 			},
 			scale: {
 				display: false,
-				ticks: {
-					min: -15
-				}
+				min: -15
 			}
 		}
 	},

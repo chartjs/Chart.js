@@ -31,16 +31,14 @@
                     "time": {
                         "parser": "YYYY"
                     },
+                    "reverse": true,
                     "ticks": {
-                        "source": "labels",
-                        "reverse": true
+                        "source": "labels"
                     }
                 }],
                 "yAxes": [{
                     "display": false,
-                    "ticks": {
-                        "beginAtZero": true
-                    }
+                    "beginAtZero": true
                 }]
             }
         }

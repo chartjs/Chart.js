@@ -19,6 +19,8 @@ describe('Category scale tests', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('category');
 		expect(defaultConfig).toEqual({
 			display: true,
+			reverse: false,
+			beginAtZero: false,
 
 			gridLines: {
 				color: 'rgba(0,0,0,0.1)',
@@ -36,12 +38,10 @@ describe('Category scale tests', function() {
 			offset: false,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
-				beginAtZero: false,
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 0,
-				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
 				autoSkip: true,
@@ -281,10 +281,8 @@ describe('Category scale tests', function() {
 						id: 'xScale0',
 						type: 'category',
 						position: 'bottom',
-						ticks: {
-							min: 'tick2',
-							max: 'tick4'
-						}
+						min: 'tick2',
+						max: 'tick4'
 					}],
 					yAxes: [{
 						id: 'yScale0',
@@ -373,10 +371,8 @@ describe('Category scale tests', function() {
 						id: 'yScale0',
 						type: 'category',
 						position: 'left',
-						ticks: {
-							min: '2',
-							max: '4'
-						}
+						min: '2',
+						max: '4'
 					}]
 				}
 			}

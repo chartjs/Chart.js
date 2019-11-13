@@ -20,10 +20,8 @@
             "scales": {
                 "xAxes": [{
                     "display": false,
-                    "ticks": {
-                        "min": -8,
-                        "max": 12
-                    }
+                    "min": -8,
+                    "max": 12
                 }],
                 "yAxes": [{
                     "display": false

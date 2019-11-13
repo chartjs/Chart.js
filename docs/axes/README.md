@@ -5,6 +5,7 @@ Axes are an integral part of a chart. They are used to determine how data maps t
 In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/README.md#radial-axes).
 
 Scales in Chart.js >v2.0 are significantly more powerful, but also different than those of v1.0.
+
 * Multiple X & Y axes are supported.
 * A built-in label auto-skip feature detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
 * Scale titles are supported.
@@ -21,6 +22,7 @@ The following properties are common to all axes provided by Chart.js.
 | `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
 ### Callbacks
+
 There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process.
 
 | Name | Arguments | Description
@@ -48,11 +50,10 @@ For example, to set the minimum value of 0 for all linear scales, you would do t
 
 ```javascript
 Chart.scaleService.updateScaleDefaults('linear', {
-    ticks: {
-        min: 0
-    }
+    min: 0
 });
 ```
 
 ## Creating New Axes
+
 To create a new axis, see the [developer docs](../developers/axes.md).

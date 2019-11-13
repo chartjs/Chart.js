@@ -17,8 +17,8 @@
             "title": false,
             "scales": {
                 "xAxes": [{
+                    "max": 3,
                     "ticks": {
-                        "max": 3,
                         "display": false
                     }
                 }],

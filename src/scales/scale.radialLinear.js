@@ -312,7 +312,7 @@ module.exports = LinearScaleBase.extend({
 		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
 		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
 
-		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
+		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
 	},
 
@@ -398,7 +398,7 @@ module.exports = LinearScaleBase.extend({
 
 		// Take into account half font size + the yPadding of the top value
 		var scalingFactor = me.drawingArea / (me.max - me.min);
-		if (me.options.ticks.reverse) {
+		if (me.options.reverse) {
 			return (me.max - value) * scalingFactor;
 		}
 		return (value - me.min) * scalingFactor;
@@ -503,7 +503,7 @@ module.exports = LinearScaleBase.extend({
 		ctx.textBaseline = 'middle';
 
 		helpers.each(me.ticks, function(tick, index) {
-			if (index === 0 && !tickOpts.reverse) {
+			if (index === 0 && !opts.reverse) {
 				return;
 			}
 

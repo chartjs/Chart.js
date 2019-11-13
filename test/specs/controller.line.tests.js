@@ -251,9 +251,7 @@ describe('Chart.controllers.line', function() {
 					}],
 					yAxes: [{
 						display: false,
-						ticks: {
-							beginAtZero: true
-						}
+						beginAtZero: true
 					}]
 				}
 			}

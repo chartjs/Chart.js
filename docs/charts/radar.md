@@ -172,10 +172,8 @@ options = {
         angleLines: {
             display: false
         },
-        ticks: {
-            suggestedMin: 50,
-            suggestedMax: 100
-        }
+        suggestedMin: 50,
+        suggestedMax: 100
     }
 };
 ```

@@ -990,18 +990,16 @@ describe('Chart', function() {
 				responsive: false,
 				scales: {
 					yAxes: [{
-						ticks: {
-							min: 0,
-							max: 10
-						}
+						min: 0,
+						max: 10
 					}]
 				}
 			};
 			chart.update();
 
 			var yScale = chart.scales['y-axis-0'];
-			expect(yScale.options.ticks.min).toBe(0);
-			expect(yScale.options.ticks.max).toBe(10);
+			expect(yScale.options.min).toBe(0);
+			expect(yScale.options.max).toBe(10);
 		});
 
 		it ('should update scales options', function() {
@@ -1018,13 +1016,13 @@ describe('Chart', function() {
 				}
 			});
 
-			chart.options.scales.yAxes[0].ticks.min = 0;
-			chart.options.scales.yAxes[0].ticks.max = 10;
+			chart.options.scales.yAxes[0].min = 0;
+			chart.options.scales.yAxes[0].max = 10;
 			chart.update();
 
 			var yScale = chart.scales['y-axis-0'];
-			expect(yScale.options.ticks.min).toBe(0);
-			expect(yScale.options.ticks.max).toBe(10);
+			expect(yScale.options.min).toBe(0);
+			expect(yScale.options.max).toBe(10);
 		});
 
 		it ('should update scales options from new object', function() {
@@ -1043,10 +1041,8 @@ describe('Chart', function() {
 
 			var newScalesConfig = {
 				yAxes: [{
-					ticks: {
-						min: 0,
-						max: 10
-					}
+					min: 0,
+					max: 10
 				}]
 			};
 			chart.options.scales = newScalesConfig;
@@ -1054,8 +1050,8 @@ describe('Chart', function() {
 			chart.update();
 
 			var yScale = chart.scales['y-axis-0'];
-			expect(yScale.options.ticks.min).toBe(0);
-			expect(yScale.options.ticks.max).toBe(10);
+			expect(yScale.options.min).toBe(0);
+			expect(yScale.options.max).toBe(10);
 		});
 
 		it ('should assign unique scale IDs', function() {
@@ -1089,10 +1085,8 @@ describe('Chart', function() {
 					scales: {
 						yAxes: [{
 							id: 'yAxis0',
-							ticks: {
-								min: 0,
-								max: 10
-							}
+							min: 0,
+							max: 10
 						}]
 					}
 				}
@@ -1100,10 +1094,8 @@ describe('Chart', function() {
 
 			var newScalesConfig = {
 				yAxes: [{
-					ticks: {
-						min: 0,
-						max: 10
-					}
+					min: 0,
+					max: 10
 				}]
 			};
 			chart.options.scales = newScalesConfig;
@@ -1113,8 +1105,8 @@ describe('Chart', function() {
 			var yScale = chart.scales.yAxis0;
 			expect(yScale).toBeUndefined();
 			var newyScale = chart.scales['y-axis-0'];
-			expect(newyScale.options.ticks.min).toBe(0);
-			expect(newyScale.options.ticks.max).toBe(10);
+			expect(newyScale.options.min).toBe(0);
+			expect(newyScale.options.max).toBe(10);
 		});
 
 		it ('should update tooltip options', function() {

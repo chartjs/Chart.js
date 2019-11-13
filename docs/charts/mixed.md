@@ -62,9 +62,7 @@ At this point we have a chart rendering how we'd like. It's important to note th
     "options": {
         "scales": {
             "yAxes": [{
-                "ticks": {
-                    "beginAtZero": true
-                }
+                "beginAtZero": true
             }]
         }
     }

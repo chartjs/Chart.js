@@ -48,9 +48,7 @@ module.exports = {
 			},
 			scale: {
 				display: false,
-				ticks: {
-					beginAtZero: true
-				}
+				beginAtZero: true
 			}
 		}
 	},
