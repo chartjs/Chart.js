@@ -40,6 +40,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `scales.[x/y]Axes.ticks.beginAtZero` was renamed to `scales.[x/y]Axes.beginAtZero`
 * `scales.[x/y]Axes.ticks.max` was renamed to `scales.[x/y]Axes.max`
 * `scales.[x/y]Axes.ticks.min` was renamed to `scales.[x/y]Axes.min`
+* `scales.[x/y]Axes.ticks.reverse` was renamed to `scales.[x/y]Axes.reverse`
 * `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales.[x/y]Axes.suggestedMax`
 * `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales.[x/y]Axes.suggestedMin`
 * `scales.[x/y]Axes.time.format` was renamed to `scales.[x/y]Axes.time.parser`
