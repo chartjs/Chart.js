@@ -152,20 +152,6 @@ module.exports = function() {
 		return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 	};
 
-	/**
-	 * Returns the aligned pixel value to avoid anti-aliasing blur
-	 * @param {Chart} chart - The chart instance.
-	 * @param {number} pixel - A pixel value.
-	 * @param {number} width - The width of the element.
-	 * @returns {number} The aligned pixel value.
-	 * @private
-	 */
-	helpers._alignPixel = function(chart, pixel, width) {
-		var devicePixelRatio = chart.currentDevicePixelRatio;
-		var halfWidth = width / 2;
-		return Math.round((pixel - halfWidth) * devicePixelRatio) / devicePixelRatio + halfWidth;
-	};
-
 	helpers.splineCurve = function(firstPoint, middlePoint, afterPoint, t) {
 		// Props to Rob Spencer at scaled innovation for his post on splining between points
 		// http://scaledinnovation.com/analytics/splines/aboutSplines.html

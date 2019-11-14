@@ -5,6 +5,7 @@ const Element = require('./core.element');
 const helpers = require('../helpers/index');
 const Ticks = require('./core.ticks');
 
+const alignPixel = helpers.canvas._alignPixel;
 const isArray = helpers.isArray;
 const isFinite = helpers.isFinite;
 const isNullOrUndef = helpers.isNullOrUndef;
@@ -998,7 +999,6 @@ class Scale extends Element {
 		};
 		var axisWidth = gridLines.drawBorder ? resolve([gridLines.lineWidth, 0], context, 0) : 0;
 		var axisHalfWidth = axisWidth / 2;
-		var alignPixel = helpers._alignPixel;
 		var alignBorderValue = function(pixel) {
 			return alignPixel(chart, pixel, axisWidth);
 		};
@@ -1159,7 +1159,6 @@ class Scale extends Element {
 
 		var ctx = me.ctx;
 		var chart = me.chart;
-		var alignPixel = helpers._alignPixel;
 		var context = {
 			scale: me,
 			tick: me.ticks[0],

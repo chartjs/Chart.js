@@ -91,6 +91,10 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
 
+#### Renamed private APIs
+
+* `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
+
 ### Changed
 
 #### Scales
