@@ -271,58 +271,49 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(reset) {
-		var me = this;
-		var rects = me._cachedMeta.data;
-		var i, ilen;
-
-		me._ruler = me.getRuler();
-
-		for (i = 0, ilen = rects.length; i < ilen; ++i) {
-			me.updateElement(rects[i], i, reset);
-		}
-	},
-
-	updateElement: function(rectangle, index, reset) {
-		var me = this;
-		var options = me._resolveDataElementOptions(index);
-
-		rectangle._model = {
-			backgroundColor: options.backgroundColor,
-			borderColor: options.borderColor,
-			borderSkipped: options.borderSkipped,
-			borderWidth: options.borderWidth
-		};
-
-		// all borders are drawn for floating bar
-		if (me._getParsed(index)._custom) {
-			rectangle._model.borderSkipped = null;
-		}
-
-		me._updateElementGeometry(rectangle, index, reset, options);
-
-		rectangle.pivot(me.chart._animationsDisabled);
-	},
-
-	/**
-	 * @private
-	 */
-	_updateElementGeometry: function(rectangle, index, reset, options) {
 		const me = this;
-		const meta = me._cachedMeta;
-		const model = rectangle._model;
-		const vScale = meta.vScale;
-		const base = vScale.getBasePixel();
-		const horizontal = vScale.isHorizontal();
-		const ruler = me._ruler || me.getRuler();
-		const vpixels = me.calculateBarValuePixels(index, options);
-		const ipixels = me.calculateBarIndexPixels(index, ruler, options);
+		const rects = me._cachedMeta.data;
 
-		model.horizontal = horizontal;
-		model.base = reset ? base : vpixels.base;
-		model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-		model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-		model.height = horizontal ? ipixels.size : undefined;
-		model.width = horizontal ? undefined : ipixels.size;
+		me.updateElements(rects, 0, rects.length, reset);
+	},
+
+	updateElements: function(rectangles, start, count, reset) {
+		const me = this;
+		const vscale = me._cachedMeta.vScale;
+		const base = vscale.getBasePixel();
+		const horizontal = vscale.isHorizontal();
+		const ruler = me.getRuler();
+		let i;
+
+		for (i = 0; i < start + count; i++) {
+			const rectangle = rectangles[i];
+			const options = me._resolveDataElementOptions(i);
+			const vpixels = me.calculateBarValuePixels(i, options);
+			const ipixels = me.calculateBarIndexPixels(i, ruler, options);
+
+			rectangle._model = {
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderSkipped: options.borderSkipped,
+				borderWidth: options.borderWidth
+			};
+
+			const model = rectangle._model;
+
+			// all borders are drawn for floating bar
+			if (me._getParsed(i)._custom) {
+				model.borderSkipped = null;
+			}
+
+			model.horizontal = horizontal;
+			model.base = reset ? base : vpixels.base;
+			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
+			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
+			model.height = horizontal ? ipixels.size : undefined;
+			model.width = horizontal ? undefined : ipixels.size;
+
+			rectangle.pivot(me.chart._animationsDisabled);
+		}
 	},
 
 	/**
