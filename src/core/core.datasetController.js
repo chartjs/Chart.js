@@ -717,6 +717,23 @@ helpers.extend(DatasetController.prototype, {
 		return false;
 	},
 
+	/**
+	 * @private
+	 */
+	_getLabelAndValue: function(index) {
+		const me = this;
+		const indexScale = me._getIndexScale();
+		const valueScale = me._getValueScale();
+		const parsed = me._getParsed(index);
+		return {
+			label: indexScale ? '' + indexScale.getLabelForValue(parsed[indexScale.id]) : '',
+			value: valueScale ? '' + valueScale.getLabelForValue(parsed[valueScale.id]) : ''
+		};
+	},
+
+	/**
+	 * @private
+	 */
 	_update: function(reset) {
 		var me = this;
 		me._configure();

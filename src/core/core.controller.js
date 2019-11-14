@@ -432,6 +432,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			meta.type = type;
 			meta.order = dataset.order || 0;
 			meta.index = i;
+			meta.label = '' + dataset.label;
 
 			if (meta.controller) {
 				meta.controller.updateIndex(i);

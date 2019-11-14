@@ -239,6 +239,25 @@ module.exports = DatasetController.extend({
 		return parsed;
 	},
 
+	/**
+	 * @private
+	 */
+	_getLabelAndValue: function(index) {
+		const me = this;
+		const indexScale = me._getIndexScale();
+		const valueScale = me._getValueScale();
+		const parsed = me._getParsed(index);
+		const custom = parsed._custom;
+		const value = custom
+			? '[' + custom.start + ', ' + custom.end + ']'
+			: '' + valueScale.getLabelForValue(parsed[valueScale.id]);
+
+		return {
+			label: '' + indexScale.getLabelForValue(parsed[indexScale.id]),
+			value: value
+		};
+	},
+
 	initialize: function() {
 		var me = this;
 		var meta;

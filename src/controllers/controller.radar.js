@@ -77,6 +77,20 @@ module.exports = DatasetController.extend({
 		return this.chart.scale.id;
 	},
 
+	/**
+	 * @private
+	 */
+	_getLabelAndValue: function(index) {
+		const me = this;
+		const scale = me._getValueScale();
+		const parsed = me._getParsed(index);
+
+		return {
+			label: scale._getLabels()[index],
+			value: '' + scale.getLabelForValue(parsed[scale.id])
+		};
+	},
+
 	update: function(reset) {
 		var me = this;
 		var meta = me.getMeta();
