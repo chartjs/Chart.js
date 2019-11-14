@@ -1394,8 +1394,8 @@ class Scale extends Element {
 	/**
 	 * @private
 	 */
-	_getAxisID() {
-		return this.isHorizontal() ? 'xAxisID' : 'yAxisID';
+	_getAxis() {
+		return this.isHorizontal() ? 'x' : 'y';
 	}
 
 	/**
@@ -1406,7 +1406,7 @@ class Scale extends Element {
 	_getMatchingVisibleMetas(type) {
 		var me = this;
 		var metas = me.chart._getSortedVisibleDatasetMetas();
-		var axisID = me._getAxisID();
+		var axisID = me._getAxis() + 'AxisID';
 		var result = [];
 		var i, ilen, meta;
 

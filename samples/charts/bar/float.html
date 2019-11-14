@@ -73,20 +73,6 @@
 					title: {
 						display: true,
 						text: 'Chart.js Bar Chart'
-					},
-					tooltips: {
-						callbacks: {
-							label: function(tooltipItem) {
-								var label = tooltipItem.label || '';
-								var custom = tooltipItem.custom || {};
-
-								if (label) {
-									label += ': ';
-								}
-								label += ' [' + custom.start + ', ' + custom.end + ']';
-								return label;
-							}
-						}
 					}
 				}
 			});

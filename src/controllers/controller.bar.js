@@ -221,14 +221,13 @@ module.exports = DatasetController.extend({
 	_parseObjectData: function(meta, data, start, count) {
 		var iScale = this._getIndexScale();
 		var vScale = this._getValueScale();
-		var iProp = iScale.isHorizontal() ? 'x' : 'y';
-		var vProp = iProp === 'x' ? 'y' : 'x';
+		var vProp = vScale._getAxis();
 		var parsed = [];
 		var i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.id] = iScale._parseObject(obj, iProp, i);
+			item[iScale.id] = iScale._parseObject(obj, iScale._getAxis(), i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
 				parseFloatBar(value, item, vScale, i);

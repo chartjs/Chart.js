@@ -214,7 +214,6 @@ function createTooltipItem(chart, item) {
 	return {
 		label: indexScale ? '' + indexScale.getLabelForValue(parsed[indexScale.id]) : '',
 		value: valueScale ? '' + valueScale.getLabelForValue(parsed[valueScale.id]) : '',
-		custom: parsed._custom,
 		index: index,
 		datasetIndex: datasetIndex,
 		x: element._model.x,
