@@ -508,11 +508,11 @@ class Scale extends Element {
 		me.afterFit();
 
 		// Auto-skip
-		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
+		me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
 
 		if (samplingEnabled) {
 			// Generate labels using all non-skipped ticks
-			me._convertTicksToLabels(me._ticksToDraw);
+			me._convertTicksToLabels(me.ticks);
 		}
 
 		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
@@ -987,14 +987,12 @@ class Scale extends Element {
 		var position = options.position;
 		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
-		var ticks = me._ticksToDraw;
+		var ticks = me.ticks;
 		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
-		var context;
-
 		var tl = getTickMarkLength(gridLines);
 		var items = [];
 
-		context = {
+		var context = {
 			scale: me,
 			tick: ticks[0],
 		};
@@ -1046,7 +1044,7 @@ class Scale extends Element {
 			const borderDash = gridLines.borderDash || [];
 			const borderDashOffset = resolve([gridLines.borderDashOffset], context, i);
 
-			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
+			lineValue = getPixelForGridLine(me, i, offsetGridLines);
 
 			// Skip if the pixel is out of the range
 			if (lineValue === undefined) {
@@ -1093,7 +1091,7 @@ class Scale extends Element {
 		var position = options.position;
 		var isMirrored = optionTicks.mirror;
 		var isHorizontal = me.isHorizontal();
-		var ticks = me._ticksToDraw;
+		var ticks = me.ticks;
 		var fonts = parseTickFontOptions(optionTicks);
 		var tickPadding = optionTicks.padding;
 		var tl = getTickMarkLength(options.gridLines);
@@ -1119,7 +1117,7 @@ class Scale extends Element {
 			tick = ticks[i];
 			label = tick.label;
 
-			pixel = me.getPixelForTick(tick._index || i) + optionTicks.labelOffset;
+			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
 			font = tick.major ? fonts.major : fonts.minor;
 			lineHeight = font.lineHeight;
 			lineCount = isArray(label) ? label.length : 1;
@@ -1164,7 +1162,7 @@ class Scale extends Element {
 		var alignPixel = helpers._alignPixel;
 		var context = {
 			scale: me,
-			tick: me._ticksToDraw[0],
+			tick: me.ticks[0],
 		};
 		var axisWidth = gridLines.drawBorder ? resolve([gridLines.lineWidth, 0], context, 0) : 0;
 		var items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
@@ -1206,7 +1204,7 @@ class Scale extends Element {
 			var firstLineWidth = axisWidth;
 			context = {
 				scale: me,
-				tick: me._ticksToDraw[items.ticksLength - 1],
+				tick: me.ticks[items.ticksLength - 1],
 			};
 			var lastLineWidth = resolve([gridLines.lineWidth, 1], context, items.ticksLength - 1);
 			var borderValue = items.borderValue;
