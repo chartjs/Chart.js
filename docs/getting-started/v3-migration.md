@@ -56,6 +56,7 @@ Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`.
 * `helpers.numberOfLabelLines`
 * `helpers.previousItem`
 * `helpers.removeEvent`
+* `helpers.roundedRect`
 * `helpers.scaleMerge`
 * `Scale.getRightValue`
 * `Scale.mergeTicksOptions`
