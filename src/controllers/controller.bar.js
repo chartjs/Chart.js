@@ -213,6 +213,32 @@ module.exports = DatasetController.extend({
 		return parseArrayOrPrimitive.apply(this, arguments);
 	},
 
+	/**
+	 * Overriding object data parsing since we support mixed primitive/array
+	 * value-scale data for float bars
+	 * @private
+	 */
+	_parseObjectData: function(meta, data, start, count) {
+		var iScale = this._getIndexScale();
+		var vScale = this._getValueScale();
+		var vProp = vScale._getAxis();
+		var parsed = [];
+		var i, ilen, item, obj, value;
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			obj = data[i];
+			item = {};
+			item[iScale.id] = iScale._parseObject(obj, iScale._getAxis(), i);
+			value = obj[vProp];
+			if (helpers.isArray(value)) {
+				parseFloatBar(value, item, vScale, i);
+			} else {
+				item[vScale.id] = vScale._parseObject(obj, vProp, i);
+			}
+			parsed.push(item);
+		}
+		return parsed;
+	},
+
 	initialize: function() {
 		var me = this;
 		var meta;

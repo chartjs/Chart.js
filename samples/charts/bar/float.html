@@ -34,13 +34,13 @@
 				borderColor: window.chartColors.red,
 				borderWidth: 1,
 				data: [
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor()
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()]
 				]
 			}, {
 				label: 'Dataset 2',
@@ -48,13 +48,13 @@
 				borderColor: window.chartColors.blue,
 				borderWidth: 1,
 				data: [
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor(),
-					randomScalingFactor()
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()],
+					[randomScalingFactor(), randomScalingFactor()]
 				]
 			}]
 
@@ -83,7 +83,7 @@
 			var zero = Math.random() < 0.2 ? true : false;
 			barChartData.datasets.forEach(function(dataset) {
 				dataset.data = dataset.data.map(function() {
-					return zero ? 0.0 : randomScalingFactor();
+					return zero ? 0.0 : [randomScalingFactor(), randomScalingFactor()];
 				});
 
 			});
@@ -103,7 +103,7 @@
 			};
 
 			for (var index = 0; index < barChartData.labels.length; ++index) {
-				newDataset.data.push(randomScalingFactor());
+				newDataset.data.push([randomScalingFactor(), randomScalingFactor()]);
 			}
 
 			barChartData.datasets.push(newDataset);
@@ -116,7 +116,7 @@
 				barChartData.labels.push(month);
 
 				for (var index = 0; index < barChartData.datasets.length; ++index) {
-					barChartData.datasets[index].data.push(randomScalingFactor());
+					barChartData.datasets[index].data.push([randomScalingFactor(), randomScalingFactor()]);
 				}
 
 				window.myBar.update();
