@@ -35,7 +35,7 @@ require(['path/to/chartjs/dist/Chart.min.js'], function(Chart){
 });
 ```
 
-**Note:** starting v2.8, in order to use the time scale, you need to make sure [one of the available date adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library are fully loaded **before** requiring Chart.js. The date adapter for Moment.js is included with Chart.js, but you still need to include Moment.js itself if this is the date adapter you choose to use. You can either use a shim:
+**Note:** in order to use the time scale, you need to make sure [one of the available date adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library are fully loaded **before** requiring Chart.js. The date adapter for Moment.js is included with Chart.js, but you still need to include Moment.js itself if this is the date adapter you choose to use. You can either use a shim:
 
 ```javascript
 require.config({
