@@ -27,11 +27,6 @@ defaults._set('bubble', {
 			title: function() {
 				// Title doesn't make sense for scatter since we format the data as a point
 				return '';
-			},
-			label: function(item, data) {
-				var datasetLabel = data.datasets[item.datasetIndex].label || '';
-				var dataPoint = data.datasets[item.datasetIndex].data[item.index] || {r: '?'};
-				return datasetLabel + ': (' + item.label + ', ' + item.value + ', ' + dataPoint.r + ')';
 			}
 		}
 	}
@@ -92,6 +87,25 @@ module.exports = DatasetController.extend({
 		var firstPoint = data[0].size();
 		var lastPoint = data[data.length - 1].size();
 		return Math.max(firstPoint, lastPoint) / 2;
+	},
+
+	/**
+	 * @private
+	 */
+	_getLabelAndValue: function(index) {
+		const me = this;
+		const meta = me._cachedMeta;
+		const xScale = me.getScaleForId(meta.xAxisID);
+		const yScale = me.getScaleForId(meta.yAxisID);
+		const parsed = me._getParsed(index);
+		const x = xScale.getLabelForValue(parsed[xScale.id]);
+		const y = yScale.getLabelForValue(parsed[yScale.id]);
+		const r = parsed._custom;
+
+		return {
+			label: meta.label,
+			value: '(' + x + ', ' + y + (r ? ', ' + r : '') + ')'
+		};
 	},
 
 	/**
