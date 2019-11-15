@@ -59,9 +59,7 @@ let chart = new Chart(ctx, {
     options: {
         scales: {
             xAxes: [{
-                ticks: {
-                    min: 'March'
-                }
+                min: 'March'
             }]
         }
     }

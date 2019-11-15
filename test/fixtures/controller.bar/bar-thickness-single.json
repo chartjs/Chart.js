@@ -21,16 +21,14 @@
                     "time": {
                         "parser": "YYYY"
                     },
+                    "min": "2013",
                     "ticks": {
-                        "source": "labels",
-                        "min": "2013"
+                        "source": "labels"
                     }
                 }],
                 "yAxes": [{
                     "display": false,
-                    "ticks": {
-                        "beginAtZero": true
-                    }
+                    "beginAtZero": true
                 }]
             }
         }

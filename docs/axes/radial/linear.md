@@ -8,14 +8,20 @@ The following additional configuration options are provided by the radial linear
 
 The axis has configuration properties for ticks, angle lines (line that appear in a radar chart outward from the center), pointLabels (labels around the edge in a radar chart). The following sections define each of the properties in those sections.
 
-| Name | Type | Description
-| ---- | ---- | -----------
-| `angleLines` | `object` | Angle line configuration. [more...](#angle-line-options)
-| `gridLines` | `object` | Grid line configuration. [more...](../styling.md#grid-line-configuration)
-| `pointLabels` | `object` | Point label configuration. [more...](#point-label-options)
-| `ticks` | `object` | Tick configuration. [more...](#tick-options)
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
+| `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
+| `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
+| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
+| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
+| `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
+| `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
+| `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
+| `ticks` | `object` | | Tick configuration. [more...](#tick-options)
 
 ## Tick Options
+
 The following options are provided by the linear scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
 | Name | Type | Default | Description
@@ -23,14 +29,9 @@ The following options are provided by the linear scale. They are all located in 
 | `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
 | `backdropPaddingX` | `number` | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `number` | `2` | Vertical padding of label backdrop.
-| `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
-| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
-| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
 | `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
 | `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)
-| `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
-| `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
 | `showLabelBackdrop` | `boolean` | `true` | If true, draw a background behind the tick labels.
 
 ## Axis Range Settings
@@ -58,10 +59,8 @@ let chart = new Chart(ctx, {
     },
     options: {
         scale: {
-            ticks: {
-                suggestedMin: 50,
-                suggestedMax: 100
-            }
+            suggestedMin: 50,
+            suggestedMax: 100
         }
     }
 });
@@ -77,9 +76,9 @@ This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5
 ```javascript
 let options = {
     scale: {
+        max: 5,
+        min: 0,
         ticks: {
-            max: 5,
-            min: 0,
             stepSize: 0.5
         }
     }

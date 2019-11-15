@@ -18,8 +18,8 @@
             "scales": {
                 "xAxes": [{"ticks": {"display": false}}],
                 "yAxes": [{
+                    "max": 6,
                     "ticks": {
-                        "max": 6,
                         "display": false
                     }
                 }]

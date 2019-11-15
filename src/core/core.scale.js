@@ -16,6 +16,8 @@ defaults._set('scale', {
 	display: true,
 	position: 'left',
 	offset: false,
+	reverse: false,
+	beginAtZero: false,
 
 	// grid line settings
 	gridLines: {
@@ -48,12 +50,10 @@ defaults._set('scale', {
 
 	// label settings
 	ticks: {
-		beginAtZero: false,
 		minRotation: 0,
 		maxRotation: 50,
 		mirror: false,
 		padding: 0,
-		reverse: false,
 		display: true,
 		autoSkip: true,
 		autoSkipPadding: 0,
@@ -530,7 +530,7 @@ class Scale extends Element {
 	 */
 	_configure() {
 		var me = this;
-		var reversePixels = me.options.ticks.reverse;
+		var reversePixels = me.options.reverse;
 		var startPixel, endPixel;
 
 		if (me.isHorizontal()) {
@@ -1291,7 +1291,7 @@ class Scale extends Element {
 		var scaleLabelAlign = scaleLabel.align;
 		var position = options.position;
 		var rotation = 0;
-		var isReverse = me.options.ticks.reverse;
+		var isReverse = me.options.reverse;
 		var scaleLabelX, scaleLabelY, textAlign;
 
 		if (me.isHorizontal()) {

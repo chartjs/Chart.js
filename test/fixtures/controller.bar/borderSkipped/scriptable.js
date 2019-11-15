@@ -43,9 +43,7 @@ module.exports = {
 				yAxes: [
 					{
 						display: false,
-						ticks: {
-							beginAtZero: true
-						}
+						beginAtZero: true
 					}
 				]
 			}

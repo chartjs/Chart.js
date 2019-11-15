@@ -156,8 +156,8 @@ function computeCircularBoundary(source) {
 		return null;
 	}
 
-	start = options.ticks.reverse ? scale.max : scale.min;
-	end = options.ticks.reverse ? scale.min : scale.max;
+	start = options.reverse ? scale.max : scale.min;
+	end = options.reverse ? scale.min : scale.max;
 	center = scale.getPointPositionForValue(0, start);
 	for (i = 0; i < length; ++i) {
 		point = fill === 'start' || fill === 'end'

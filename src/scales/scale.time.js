@@ -635,7 +635,7 @@ module.exports = Scale.extend({
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-		if (tickOpts.reverse) {
+		if (options.reverse) {
 			ticks.reverse();
 		}
 

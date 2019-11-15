@@ -392,8 +392,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 
 			// parse min/max value, so we can properly determine min/max for other scales
-			scale._userMin = scale._parse(scale.options.ticks.min);
-			scale._userMax = scale._parse(scale.options.ticks.max);
+			scale._userMin = scale._parse(scale.options.min);
+			scale._userMax = scale._parse(scale.options.max);
 
 			// TODO(SB): I think we should be able to remove this custom case (options.scale)
 			// and consider it as a regular scale part of the "scales"" map only! This would

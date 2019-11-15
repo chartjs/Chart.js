@@ -598,10 +598,8 @@ describe('Core.scale', function() {
 						xAxes: [{
 							id: 'x',
 							type: 'linear',
-							ticks: {
-								min: -20,
-								max: 20
-							}
+							min: -20,
+							max: 20
 						}],
 						yAxes: [{
 							id: 'y',

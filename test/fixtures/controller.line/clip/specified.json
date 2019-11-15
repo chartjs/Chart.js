@@ -40,16 +40,16 @@
             "title": false,
             "scales": {
                 "xAxes": [{
+                    "min": -2,
+                    "max": 2,
                     "ticks": {
-                        "min": -2,
-                        "max": 2,
                         "display": false
                     }
                 }],
                 "yAxes": [{
+                    "min": -2,
+                    "max": 2,
                     "ticks": {
-                        "min": -2,
-                        "max": 2,
                         "display": false
                     }
                 }]

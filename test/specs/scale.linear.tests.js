@@ -13,7 +13,6 @@ describe('Linear Scale', function() {
 		var defaultConfig = Chart.scaleService.getScaleDefaults('linear');
 		expect(defaultConfig).toEqual({
 			display: true,
-
 			gridLines: {
 				color: 'rgba(0,0,0,0.1)',
 				drawBorder: true,
@@ -28,14 +27,14 @@ describe('Linear Scale', function() {
 			},
 			position: 'left',
 			offset: false,
+			reverse: false,
+			beginAtZero: false,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
-				beginAtZero: false,
 				minRotation: 0,
 				maxRotation: 50,
 				mirror: false,
 				padding: 0,
-				reverse: false,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
 				autoSkip: true,
@@ -132,10 +131,8 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
-						ticks: {
-							suggestedMin: -10,
-							suggestedMax: 15
-						}
+						suggestedMin: -10,
+						suggestedMax: 15
 					}]
 				}
 			}
@@ -469,9 +466,7 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
-						ticks: {
-							beginAtZero: true
-						}
+						beginAtZero: true
 					}]
 				}
 			}
@@ -497,10 +492,8 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
-						ticks: {
-							suggestedMax: 10,
-							suggestedMin: -10
-						}
+						suggestedMax: 10,
+						suggestedMin: -10
 					}]
 				}
 			}
@@ -526,10 +519,8 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
-						ticks: {
-							max: 1010,
-							min: -1010
-						}
+						max: 1010,
+						min: -1010
 					}]
 				}
 			}
@@ -558,9 +549,9 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
+						min: 1,
+						max: 11,
 						ticks: {
-							min: 1,
-							max: 11,
 							stepSize: 2
 						}
 					}]
@@ -687,7 +678,7 @@ describe('Linear Scale', function() {
 		expect(chart.scales.yScale0).not.toEqual(undefined); // must construct
 		expect(getLabels(chart.scales.yScale0)).toEqual(['50', '45', '40', '35', '30', '25', '20']);
 
-		chart.scales.yScale0.options.ticks.beginAtZero = true;
+		chart.scales.yScale0.options.beginAtZero = true;
 		chart.update();
 		expect(getLabels(chart.scales.yScale0)).toEqual(['50', '45', '40', '35', '30', '25', '20', '15', '10', '5', '0']);
 
@@ -695,7 +686,7 @@ describe('Linear Scale', function() {
 		chart.update();
 		expect(getLabels(chart.scales.yScale0)).toEqual(['0', '-5', '-10', '-15', '-20', '-25', '-30', '-35', '-40', '-45', '-50']);
 
-		chart.scales.yScale0.options.ticks.beginAtZero = false;
+		chart.scales.yScale0.options.beginAtZero = false;
 		chart.update();
 		expect(getLabels(chart.scales.yScale0)).toEqual(['-20', '-25', '-30', '-35', '-40', '-45', '-50']);
 	});
@@ -715,9 +706,7 @@ describe('Linear Scale', function() {
 					yAxes: [{
 						id: 'yScale0',
 						type: 'linear',
-						ticks: {
-							reverse: true
-						}
+						reverse: true
 					}]
 				}
 			}
@@ -790,8 +779,8 @@ describe('Linear Scale', function() {
 
 		expect(getLabels(chart.scales.yScale)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
 
-		chart.options.scales.yAxes[0].ticks.min = 0.3;
-		chart.options.scales.yAxes[0].ticks.max = 2.8;
+		chart.options.scales.yAxes[0].min = 0.3;
+		chart.options.scales.yAxes[0].max = 2.8;
 		chart.update();
 
 		expect(getLabels(chart.scales.yScale)).toEqual(['2.8', '2.5', '2.0', '1.5', '1.0', '0.5', '0.3']);
@@ -1057,9 +1046,7 @@ describe('Linear Scale', function() {
 			options: {
 				scales: {
 					xAxes: [{
-						ticks: {
-							min: 20
-						}
+						min: 20
 					}]
 				}
 			}
@@ -1085,10 +1072,8 @@ describe('Linear Scale', function() {
 			options: {
 				scales: {
 					xAxes: [{
-						ticks: {
-							min: 0,
-							max: 3000
-						}
+						min: 0,
+						max: 3000
 					}]
 				}
 			}
@@ -1113,10 +1098,8 @@ describe('Linear Scale', function() {
 			options: {
 				scales: {
 					xAxes: [{
-						ticks: {
-							min: -3000,
-							max: 0
-						}
+						min: -3000,
+						max: 0
 					}]
 				}
 			}
@@ -1179,7 +1162,7 @@ describe('Linear Scale', function() {
 		expect(scale.getValueForPixel(end)).toBeCloseTo(max, 4);
 		expect(scale.getValueForPixel(start)).toBeCloseTo(min, 4);
 
-		scale.options.ticks.reverse = true;
+		scale.options.reverse = true;
 		chart.update();
 
 		start = chart.chartArea.left;
@@ -1220,7 +1203,7 @@ describe('Linear Scale', function() {
 		expect(scale.getValueForPixel(end)).toBeCloseTo(max, 4);
 		expect(scale.getValueForPixel(start)).toBeCloseTo(min, 4);
 
-		scale.options.ticks.reverse = true;
+		scale.options.reverse = true;
 		chart.update();
 
 		start = chart.chartArea.bottom;

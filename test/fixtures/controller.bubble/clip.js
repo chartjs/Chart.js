@@ -16,11 +16,11 @@ module.exports = {
 			scales: {
 				xAxes: [{ticks: {display: false}}],
 				yAxes: [{
+					min: 8,
+					max: 25,
+					beginAtZero: true,
 					ticks: {
-						display: false,
-						min: 8,
-						max: 25,
-						beginAtZero: true
+						display: false
 					}
 				}]
 			}

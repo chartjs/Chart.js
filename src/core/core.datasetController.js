@@ -50,10 +50,10 @@ function listenArrayEvents(array, listener) {
 
 
 function scaleClip(scale, allowedOverflow) {
-	var tickOpts = scale && scale.options.ticks || {};
-	var reverse = tickOpts.reverse;
-	var min = tickOpts.min === undefined ? allowedOverflow : 0;
-	var max = tickOpts.max === undefined ? allowedOverflow : 0;
+	var opts = scale && scale.options || {};
+	var reverse = opts.reverse;
+	var min = opts.min === undefined ? allowedOverflow : 0;
+	var max = opts.max === undefined ? allowedOverflow : 0;
 	return {
 		start: reverse ? max : min,
 		end: reverse ? min : max
