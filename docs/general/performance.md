@@ -40,6 +40,7 @@ Decimating your data will achieve the best results. When there is a lot of data 
 
 There are many approaches to data decimation and selection of an algorithm will depend on your data and the results you want to achieve. For instance, [min/max](https://digital.ni.com/public.nsf/allkb/F694FFEEA0ACF282862576020075F784) decimation will preserve peaks in your data but could require up to 4 points for each pixel. This type of decimation would work well for a very noisy signal where you need to see data peaks.
 
+Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
 
 ## Line Charts
 
@@ -63,6 +64,28 @@ new Chart(ctx, {
 });
 ```
 
+### Automatic data decimation during draw
+
+Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default), `fill` is `false` and `borderDash` is `[]` (default).`
+This improves rendering speed by skipping drawing of invisible line segments.
+
+```javascript
+new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        elements: {
+            line: {
+                tension: 0, // disables bezier curves
+                fill: false,
+                steppedLine: false,
+                borderDash: []
+            }
+        }
+    }
+});
+```
+
 ### Disable Line Drawing
 
 If you have a lot of data points, it can be more performant to disable rendering of the line for a dataset and only draw points. Doing this means that there is less to draw on the canvas which will improve render performance.
@@ -79,6 +102,35 @@ new Chart(ctx, {
     },
     options: {
         showLines: false // disable for all datasets
+    }
+});
+```
+
+### Disable Point Drawing
+
+If you have a lot of data points, it can be more performant to disable rendering of the points for a dataset and only draw line. Doing this means that there is less to draw on the canvas which will improve render performance.
+
+To disable point drawing:
+
+```javascript
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            pointRadius: 0 // disable for a single dataset
+        }]
+    },
+    options: {
+        datasets: {
+            line: {
+                pointRadius: 0 // disable for all `'line'` datasets
+            }
+        },
+        elements: {
+            point: {
+                radius: 0 // default to disabled in all datasets
+            }
+        }
     }
 });
 ```
