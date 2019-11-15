@@ -18,7 +18,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			scales: {
-				xAxes: [{display: false, ticks: {min: 0}}],
+				xAxes: [{display: false, min: 0}],
 				yAxes: [{display: false, stacked: true}]
 			}
 		}
