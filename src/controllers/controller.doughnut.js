@@ -139,11 +139,11 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parse: function(start, count) {
-		var data = this.getDataset().data;
-		var metaData = this.getMeta().data;
+		const data = this.getDataset().data;
+		const meta = this.getMeta();
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			metaData[i]._val = +data[i];
+			meta._parsed[i] = +data[i];
 		}
 	},
 
@@ -232,7 +232,8 @@ module.exports = DatasetController.extend({
 		var centerY = (chartArea.top + chartArea.bottom) / 2;
 		var startAngle = opts.rotation; // non reset case handled later
 		var endAngle = opts.rotation; // non reset case handled later
-		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._val * opts.circumference / DOUBLE_PI);
+		var meta = me.getMeta();
+		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(meta._parsed[index] * opts.circumference / DOUBLE_PI);
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
 		var options = arc._options || {};
@@ -271,16 +272,18 @@ module.exports = DatasetController.extend({
 	},
 
 	calculateTotal: function() {
-		var metaData = this.getMeta().data;
+		var meta = this.getMeta();
+		var metaData = meta.data;
 		var total = 0;
-		var value;
+		var i, ilen, arc, value;
 
-		helpers.each(metaData, function(arc) {
-			value = arc ? arc._val : NaN;
+		for (i = 0, ilen = metaData.length; i < ilen; i++) {
+			arc = metaData[i];
+			value = arc ? meta._parsed[i] : NaN;
 			if (!isNaN(value) && !arc.hidden) {
 				total += Math.abs(value);
 			}
-		});
+		}
 
 		/* if (total === 0) {
 			total = NaN;
