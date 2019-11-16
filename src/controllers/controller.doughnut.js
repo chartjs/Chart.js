@@ -140,10 +140,10 @@ module.exports = DatasetController.extend({
 	 */
 	_parse: function(start, count) {
 		var data = this.getDataset().data;
-		var metaData = this._cachedMeta.data;
+		var meta = this._cachedMeta;
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			metaData[i]._parsed = +data[i];
+			meta._parsed[i] = +data[i];
 		}
 	},
 
@@ -220,7 +220,6 @@ module.exports = DatasetController.extend({
 		me.updateElements(arcs, 0, arcs.length, reset);
 	},
 
-
 	updateElements: function(arcs, start, count, reset) {
 		const me = this;
 		const chart = me.chart;
@@ -231,13 +230,14 @@ module.exports = DatasetController.extend({
 		const centerY = (chartArea.top + chartArea.bottom) / 2;
 		const startAngle = opts.rotation; // non reset case handled later
 		const endAngle = opts.rotation; // non reset case handled later
+		const meta = me.getMeta();
 		const innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		const outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
-		var i;
+		let i;
 
 		for (i = 0; i < start + count; ++i) {
 			const arc = arcs[i];
-			const circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._parsed * opts.circumference / DOUBLE_PI);
+			const circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI);
 			const options = arc._options || {};
 			const model = {
 				// Desired view properties
@@ -272,16 +272,17 @@ module.exports = DatasetController.extend({
 	},
 
 	calculateTotal: function() {
-		var metaData = this._cachedMeta.data;
-		var total = 0;
-		var value;
+		const meta = this._cachedMeta;
+		const metaData = meta.data;
+		let total = 0;
+		let i;
 
-		helpers.each(metaData, function(arc) {
-			value = arc ? arc._parsed : NaN;
-			if (!isNaN(value) && !arc.hidden) {
+		for (i = 0; i < metaData.length; i++) {
+			const value = meta._parsed[i];
+			if (!isNaN(value) && !metaData[i].hidden) {
 				total += Math.abs(value);
 			}
-		});
+		}
 
 		/* if (total === 0) {
 			total = NaN;
