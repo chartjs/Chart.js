@@ -133,7 +133,6 @@ module.exports = DatasetController.extend({
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
 			tension: lineModel ? lineModel.tension : 0,
-			steppedLine: lineModel ? lineModel.steppedLine : false,
 			// Tooltip
 			hitRadius: options.hitRadius
 		};

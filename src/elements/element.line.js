@@ -52,7 +52,8 @@ function setStyle(ctx, vm) {
 	ctx.strokeStyle = vm.borderColor;
 }
 
-function normalPath(ctx, points, spanGaps) {
+function normalPath(ctx, points, spanGaps, steppedLine) {
+	const lineTo = steppedLine ? helpers.canvas.steppedLineTo : helpers.canvas.lineTo;
 	let move = true;
 	let index, currentVM, previousVM;
 
@@ -67,7 +68,7 @@ function normalPath(ctx, points, spanGaps) {
 			ctx.moveTo(currentVM.x, currentVM.y);
 			move = false;
 		} else {
-			helpers.canvas.lineTo(ctx, previousVM, currentVM);
+			lineTo(ctx, previousVM, currentVM, false, steppedLine);
 		}
 		previousVM = currentVM;
 	}
@@ -167,7 +168,7 @@ class Line extends Element {
 		if (useFastPath(vm)) {
 			fastPath(ctx, points, spanGaps);
 		} else {
-			normalPath(ctx, points, spanGaps);
+			normalPath(ctx, points, spanGaps, vm.steppedLine);
 		}
 
 		if (closePath) {
