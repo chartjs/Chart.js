@@ -172,8 +172,8 @@ function isStacked(scale, meta) {
 	return stacked || (stacked === undefined && meta.stack !== undefined);
 }
 
-function getStackKey(xScale, yScale, meta) {
-	return isStacked(yScale, meta) && xScale.id + '.' + yScale.id + '.' + meta.stack + '.' + meta.type;
+function getStackKey(indexScale, valueScale, meta) {
+	return indexScale.id + '.' + valueScale.id + '.' + meta.stack + '.' + meta.type;
 }
 
 function getFirstScaleId(chart, axis) {
@@ -460,18 +460,20 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parse: function(start, count) {
-		var me = this;
-		var chart = me.chart;
-		var meta = me._cachedMeta;
-		var data = me._data;
-		var crossRef = chart._xref || (chart._xref = {});
-		var xScale = me._getIndexScale();
-		var yScale = me._getValueScale();
-		var xId = xScale.id;
-		var yId = yScale.id;
-		var xKey = getStackKey(xScale, yScale, meta);
-		var yKey = getStackKey(yScale, xScale, meta);
-		var stacks = xKey || yKey;
+		const me = this;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const data = me._data;
+		const crossRef = chart._xref || (chart._xref = {});
+		const xScale = me._getIndexScale();
+		const yScale = me._getValueScale();
+		const xId = xScale.id;
+		const yId = yScale.id;
+		const xStacked = isStacked(xScale, meta);
+		const yStacked = isStacked(yScale, meta);
+		const xKey = yStacked && getStackKey(xScale, yScale, meta);
+		const yKey = xStacked && getStackKey(yScale, xScale, meta);
+		const stacked = xStacked || yStacked;
 		var i, ilen, parsed, stack, item, x, y;
 
 		if (helpers.isArray(data[start])) {
@@ -483,25 +485,27 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		function storeStack(stackKey, indexValue, scaleId, value) {
-			if (stackKey) {
-				stackKey += '.' + indexValue;
-				item._stackKeys[scaleId] = stackKey;
-				stack = crossRef[stackKey] || (crossRef[stackKey] = {});
-				stack[meta.index] = value;
-			}
+			stackKey += '.' + indexValue;
+			item._stackKeys[scaleId] = stackKey;
+			stack = crossRef[stackKey] || (crossRef[stackKey] = {});
+			stack[meta.index] = value;
 		}
 
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
 			item = parsed[i];
 			meta.data[start + i]._parsed = item;
 
-			if (stacks) {
+			if (stacked) {
 				item._stackKeys = {};
 				x = item[xId];
 				y = item[yId];
 
-				storeStack(xKey, x, yId, y);
-				storeStack(yKey, y, xId, x);
+				if (yStacked) {
+					storeStack(xKey, x, yId, y);
+				}
+				if (xStacked) {
+					storeStack(yKey, y, xId, x);
+				}
 			}
 		}
 
