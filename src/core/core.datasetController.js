@@ -504,7 +504,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
-			meta.data[start + i]._parsed = parsed[i];
+			meta._parsed[start + i] = parsed[i];
 		}
 		if (stacked) {
 			updateStacks(me, parsed);
@@ -600,11 +600,11 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getParsed: function(index) {
-		const data = this._cachedMeta.data;
+		const data = this._cachedMeta._parsed;
 		if (index < 0 || index >= data.length) {
 			return;
 		}
-		return data[index]._parsed;
+		return data[index];
 	},
 
 	/**
@@ -640,7 +640,7 @@ helpers.extend(DatasetController.prototype, {
 
 		for (i = 0; i < ilen; ++i) {
 			item = metaData[i];
-			parsed = item._parsed;
+			parsed = meta._parsed[i];
 			value = parsed[scale.id];
 			otherValue = parsed[otherScale.id];
 			if (item.hidden || isNaN(value) ||
@@ -671,13 +671,12 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getAllParsedValues: function(scale) {
-		const meta = this._cachedMeta;
-		const metaData = meta.data;
+		const parsed = this._cachedMeta._parsed;
 		const values = [];
 		let i, ilen, value;
 
-		for (i = 0, ilen = metaData.length; i < ilen; ++i) {
-			value = metaData[i]._parsed[scale.id];
+		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
+			value = parsed[i][scale.id];
 			if (!isNaN(value)) {
 				values.push(value);
 			}
