@@ -33,7 +33,7 @@ function evaluateAllVisibleItems(chart, handler) {
 		({index, data} = metasets[i]);
 		for (let j = 0, jlen = data.length; j < jlen; ++j) {
 			element = data[j];
-			if (!element._view.skip) {
+			if (!element.skip) {
 				handler(element, index, j);
 			}
 		}
@@ -66,7 +66,7 @@ function evaluateItemsAtIndex(chart, axis, position, handler) {
 		const metaset = metasets[i];
 		const index = indices[i];
 		const element = metaset.data[index];
-		if (!element._view.skip) {
+		if (!element.skip) {
 			handler(element, metaset.index, index);
 		}
 	}
@@ -193,7 +193,7 @@ export default {
 				const element = meta.data[index];
 
 				// don't count items that are skipped (null data)
-				if (element && !element._view.skip) {
+				if (element && !element.skip) {
 					elements.push({element, datasetIndex: meta.index, index});
 				}
 			});

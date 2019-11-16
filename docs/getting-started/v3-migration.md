@@ -89,10 +89,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 * `Chart.data.datasets[datasetIndex]._meta`
 * `Element._ctx`
-* `Element._model.datasetLabel`
-* `Element._model.label`
-* `Point._model.tension`
-* `Point._model.steppedLine`
+* `Element._model`
+* `Element._view`
 * `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
 

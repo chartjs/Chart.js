@@ -113,8 +113,6 @@ function _resolveElementPoint(el) {
 			point = el.getCenterPoint();
 		} else if (el.x !== undefined && el.y !== undefined) {
 			point = el;
-		} else if (el._model && el._model.x !== undefined && el._model.y !== undefined) {
-			point = el._model;
 		}
 	}
 	return point;

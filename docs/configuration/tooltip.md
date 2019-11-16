@@ -356,7 +356,7 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // 0 opacity is a hidden tooltip
     opacity: number,
-    legendColorBackground: Color,
+    multiKeyBackground: Color,
     displayColors: boolean,
     borderColor: Color,
     borderWidth: number

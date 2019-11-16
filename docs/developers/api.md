@@ -175,5 +175,5 @@ Extensive examples of usage are available in the [Chart.js tests](https://github
 
 ```javascript
 var meta = myChart.getDatasetMeta(0);
-var x = meta.data[0]._model.x;
+var x = meta.data[0].x;
 ```

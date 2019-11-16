@@ -94,13 +94,13 @@ var custom = Chart.controllers.bubble.extend({
         // Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
         var meta = this.getMeta();
         var pt0 = meta.data[0];
-        var radius = pt0._view.radius;
+        var radius = pt0.radius;
 
         var ctx = this.chart.chart.ctx;
         ctx.save();
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 1;
-        ctx.strokeRect(pt0._view.x - radius, pt0._view.y - radius, 2 * radius, 2 * radius);
+        ctx.strokeRect(pt0.x - radius, pt0.y - radius, 2 * radius, 2 * radius);
         ctx.restore();
     }
 });

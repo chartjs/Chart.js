@@ -13,20 +13,15 @@ describe('Arc element tests', function() {
 	});
 
 	it ('should determine if in range', function() {
+		// Mock out the arc as if the controller put it there
 		var arc = new Chart.elements.Arc({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		// Mock out the view as if the controller put it there
-		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,
 			y: 0,
 			innerRadius: 5,
 			outerRadius: 10,
-		};
+		});
 
 		expect(arc.inRange(2, 2)).toBe(false);
 		expect(arc.inRange(7, 0)).toBe(true);
@@ -36,20 +31,15 @@ describe('Arc element tests', function() {
 	});
 
 	it ('should get the tooltip position', function() {
+		// Mock out the arc as if the controller put it there
 		var arc = new Chart.elements.Arc({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		// Mock out the view as if the controller put it there
-		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,
 			y: 0,
 			innerRadius: 0,
 			outerRadius: Math.sqrt(2),
-		};
+		});
 
 		var pos = arc.tooltipPosition();
 		expect(pos.x).toBeCloseTo(0.5);
@@ -57,20 +47,15 @@ describe('Arc element tests', function() {
 	});
 
 	it ('should get the center', function() {
+		// Mock out the arc as if the controller put it there
 		var arc = new Chart.elements.Arc({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		// Mock out the view as if the controller put it there
-		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,
 			y: 0,
 			innerRadius: 0,
 			outerRadius: Math.sqrt(2),
-		};
+		});
 
 		var center = arc.getCenterPoint();
 		expect(center.x).toBeCloseTo(0.5, 6);

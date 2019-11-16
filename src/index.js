@@ -6,6 +6,7 @@ var Chart = require('./core/core.controller');
 Chart.helpers = require('./helpers/index');
 Chart._adapters = require('./core/core.adapters');
 Chart.Animation = require('./core/core.animation');
+Chart.Animator = require('./core/core.animator');
 Chart.animationService = require('./core/core.animations');
 Chart.controllers = require('./controllers/index');
 Chart.DatasetController = require('./core/core.datasetController');

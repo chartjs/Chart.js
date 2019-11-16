@@ -272,20 +272,17 @@ module.exports = {
  */
 /**
  * @method IPlugin#beforeDraw
- * @desc Called before drawing `chart` at every animation frame specified by the given
- * easing value. If any plugin returns `false`, the frame drawing is cancelled until
- * another `render` is triggered.
+ * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
+ * the frame drawing is cancelled untilanother `render` is triggered.
  * @param {Chart.Controller} chart - The chart instance.
- * @param {number} easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart drawing.
  */
 /**
  * @method IPlugin#afterDraw
- * @desc Called after the `chart` has been drawn for the specific easing value. Note
- * that this hook will not be called if the drawing has been previously cancelled.
+ * @desc Called after the `chart` has been drawn. Note that this hook will not be called
+ * if the drawing has been previously cancelled.
  * @param {Chart.Controller} chart - The chart instance.
- * @param {number} easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  */
 /**
@@ -293,7 +290,6 @@ module.exports = {
  * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
  * the datasets drawing is cancelled until another `render` is triggered.
  * @param {Chart.Controller} chart - The chart instance.
- * @param {number} easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart datasets drawing.
  */
@@ -302,7 +298,6 @@ module.exports = {
  * @desc Called after the `chart` datasets have been drawn. Note that this hook
  * will not be called if the datasets drawing has been previously cancelled.
  * @param {Chart.Controller} chart - The chart instance.
- * @param {number} easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  */
 /**
@@ -314,7 +309,6 @@ module.exports = {
  * @param {object} args - The call arguments.
  * @param {number} args.index - The dataset index.
  * @param {object} args.meta - The dataset metadata.
- * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart datasets drawing.
  */
@@ -327,7 +321,6 @@ module.exports = {
  * @param {object} args - The call arguments.
  * @param {number} args.index - The dataset index.
  * @param {object} args.meta - The dataset metadata.
- * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  */
 /**
@@ -337,7 +330,6 @@ module.exports = {
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {Tooltip} args.tooltip - The tooltip.
- * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart tooltip drawing.
  */
@@ -348,7 +340,6 @@ module.exports = {
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {Tooltip} args.tooltip - The tooltip.
- * @param {number} args.easingValue - The current animation value, between 0.0 and 1.0.
  * @param {object} options - The plugin options.
  */
 /**

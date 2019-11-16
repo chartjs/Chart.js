@@ -28,7 +28,7 @@ var mappers = {
 		var length = points.length || 0;
 
 		return !length ? null : function(point, i) {
-			return (i < length && points[i]._view) || null;
+			return (i < length && points[i]) || null;
 		};
 	},
 
@@ -55,7 +55,7 @@ var mappers = {
 
 // @todo if (fill[0] === '#')
 function decodeFill(el, index, count) {
-	var model = el._model || {};
+	var model = el.options || {};
 	var fillOption = model.fill;
 	var fill = fillOption && typeof fillOption.target !== 'undefined' ? fillOption.target : fillOption;
 	var target;
@@ -105,7 +105,7 @@ function decodeFill(el, index, count) {
 }
 
 function computeLinearBoundary(source) {
-	var model = source.el._model || {};
+	var model = source.el || {};
 	var scale = source.scale || {};
 	var fill = source.fill;
 	var target = null;
@@ -352,11 +352,11 @@ function clipAndFill(ctx, clippingPointsSets, fillingPointsSets, color, stepped,
 
 function doFill(ctx, points, mapper, colors, el, area) {
 	const count = points.length;
-	const view = el._view;
+	const options = el.options;
 	const loop = el._loop;
-	const span = view.spanGaps;
-	const stepped = view.steppedLine;
-	const tension = view.tension;
+	const span = options.spanGaps;
+	const stepped = options.steppedLine;
+	const tension = options.tension;
 	let curve0 = [];
 	let curve1 = [];
 	let len0 = 0;
@@ -369,8 +369,8 @@ function doFill(ctx, points, mapper, colors, el, area) {
 
 	for (i = 0, ilen = count; i < ilen; ++i) {
 		index = i % count;
-		p0 = points[index]._view;
-		p1 = mapper(p0, index, view);
+		p0 = points[index];
+		p1 = mapper(p0, index);
 		d0 = isDrawable(p0);
 		d1 = isDrawable(p1);
 
@@ -423,7 +423,7 @@ module.exports = {
 			el = meta.dataset;
 			source = null;
 
-			if (el && el._model && el instanceof elements.Line) {
+			if (el && el.options && el instanceof elements.Line) {
 				source = {
 					visible: chart.isDatasetVisible(i),
 					fill: decodeFill(el, i, count),
@@ -450,9 +450,19 @@ module.exports = {
 	},
 
 	beforeDatasetsDraw: function(chart) {
-		var metasets = chart._getSortedVisibleDatasetMetas();
-		var ctx = chart.ctx;
-		var meta, i, el, view, points, mapper, color, colors, fillOption;
+		const metasets = chart._getSortedVisibleDatasetMetas();
+		const area = chart.chartArea;
+		const ctx = chart.ctx;
+		var meta, i, el, options, points, mapper, color, colors, fillOption;
+
+		for (i = metasets.length - 1; i >= 0; --i) {
+			meta = metasets[i].$filler;
+
+			if (!meta || !meta.visible) {
+				continue;
+			}
+			meta.el.updateControlPoints(area);
+		}
 
 		for (i = metasets.length - 1; i >= 0; --i) {
 			meta = metasets[i].$filler;
@@ -462,11 +472,11 @@ module.exports = {
 			}
 
 			el = meta.el;
-			view = el._view;
+			options = el.options;
 			points = el._children || [];
 			mapper = meta.mapper;
-			fillOption = meta.el._model.fill;
-			color = view.backgroundColor || defaults.global.defaultColor;
+			fillOption = options.fill;
+			color = options.backgroundColor || defaults.global.defaultColor;
 
 			colors = {above: color, below: color};
 			if (fillOption && typeof fillOption === 'object') {
@@ -474,8 +484,8 @@ module.exports = {
 				colors.below = fillOption.below || color;
 			}
 			if (mapper && points.length) {
-				helpers.canvas.clipArea(ctx, chart.chartArea);
-				doFill(ctx, points, mapper, colors, el, chart.chartArea);
+				helpers.canvas.clipArea(ctx, area);
+				doFill(ctx, points, mapper, colors, el, area);
 				helpers.canvas.unclipArea(ctx);
 			}
 		}
