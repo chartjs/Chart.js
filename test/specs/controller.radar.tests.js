@@ -127,6 +127,7 @@ describe('Chart.controllers.radar', function() {
 			borderJoinStyle: 'bevel',
 			borderWidth: 1.2,
 			fill: true,
+			tension: 0.1,
 		}));
 
 		[
@@ -149,7 +150,6 @@ describe('Chart.controllers.radar', function() {
 				radius: 3,
 				pointStyle: 'circle',
 				skip: false,
-				tension: 0.1,
 			}));
 		});
 
@@ -176,7 +176,6 @@ describe('Chart.controllers.radar', function() {
 				radius: 3,
 				pointStyle: 'circle',
 				skip: false,
-				tension: 0.1,
 			}));
 		});
 
@@ -209,6 +208,7 @@ describe('Chart.controllers.radar', function() {
 			borderJoinStyle: 'miter',
 			borderWidth: 0.55,
 			fill: false,
+			tension: 0,
 		}));
 
 		// Since tension is now 0, we don't care about the control points
@@ -228,7 +228,6 @@ describe('Chart.controllers.radar', function() {
 				radius: 22,
 				pointStyle: 'circle',
 				skip: false,
-				tension: 0,
 			}));
 		});
 	});

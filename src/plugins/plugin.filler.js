@@ -47,6 +47,7 @@ var mappers = {
 			return {
 				x: x === null ? point.x : x,
 				y: y === null ? point.y : y,
+				boundary: true
 			};
 		};
 	}
@@ -136,7 +137,8 @@ function computeLinearBoundary(source) {
 			horizontal = scale.isHorizontal();
 			return {
 				x: horizontal ? target : null,
-				y: horizontal ? null : target
+				y: horizontal ? null : target,
+				boundary: true
 			};
 		}
 	}
@@ -168,6 +170,7 @@ function computeCircularBoundary(source) {
 			point.cy = center.y;
 			point.angle = scale.getIndexAngle(i) - Math.PI / 2;
 		}
+		point.boundary = true;
 		target.push(point);
 	}
 	return target;
@@ -232,9 +235,9 @@ function isDrawable(point) {
 	return point && !point.skip;
 }
 
-function drawArea(ctx, curve0, curve1, len0, len1, stepped) {
-	const lineTo = stepped ? helpers.canvas.steppedLineTo : helpers.canvas.lineTo;
-	let i, cx, cy, r;
+function drawArea(ctx, curve0, curve1, len0, len1, stepped, tension) {
+	const lineTo = stepped ? helpers.canvas.steppedLineTo : helpers.canvas.bezierCurveTo;
+	let i, cx, cy, r, target;
 
 	if (!len0 || !len1) {
 		return;
@@ -243,7 +246,12 @@ function drawArea(ctx, curve0, curve1, len0, len1, stepped) {
 	// building first area curve (normal)
 	ctx.moveTo(curve0[0].x, curve0[0].y);
 	for (i = 1; i < len0; ++i) {
-		lineTo(ctx, curve0[i - 1], curve0[i], false, stepped);
+		target = curve0[i];
+		if (!target.boundary && (tension || stepped)) {
+			lineTo(ctx, curve0[i - 1], target, false, stepped);
+		} else {
+			ctx.lineTo(target.x, target.y);
+		}
 	}
 
 	if (curve1[0].angle !== undefined) {
@@ -261,7 +269,12 @@ function drawArea(ctx, curve0, curve1, len0, len1, stepped) {
 
 	// building opposite area curve (reverse)
 	for (i = len1 - 1; i > 0; --i) {
-		lineTo(ctx, curve1[i], curve1[i - 1], true, stepped);
+		target = curve1[i - 1];
+		if (!target.boundary && (tension || stepped)) {
+			lineTo(ctx, curve1[i], target, true, stepped);
+		} else {
+			ctx.lineTo(target.x, target.y);
+		}
 	}
 }
 
@@ -271,6 +284,7 @@ function doFill(ctx, points, mapper, el) {
 	const loop = el._loop;
 	const span = view.spanGaps;
 	const stepped = view.steppedLine;
+	const tension = view.tension;
 	let curve0 = [];
 	let curve1 = [];
 	let len0 = 0;
@@ -296,7 +310,7 @@ function doFill(ctx, points, mapper, el) {
 			len1 = curve1.push(p1);
 		} else if (len0 && len1) {
 			if (!span) {
-				drawArea(ctx, curve0, curve1, len0, len1, stepped);
+				drawArea(ctx, curve0, curve1, len0, len1, stepped, tension);
 				len0 = len1 = 0;
 				curve0 = [];
 				curve1 = [];
@@ -311,7 +325,7 @@ function doFill(ctx, points, mapper, el) {
 		}
 	}
 
-	drawArea(ctx, curve0, curve1, len0, len1, stepped);
+	drawArea(ctx, curve0, curve1, len0, len1, stepped, tension);
 
 	ctx.closePath();
 	ctx.fillStyle = view.backgroundColor;

@@ -184,12 +184,7 @@ module.exports = {
 		ctx.lineTo(target.x, target.y);
 	},
 
-	lineTo: function(ctx, previous, target, flip) {
-		if (!target.tension) {
-			ctx.lineTo(target.x, target.y);
-			return;
-		}
-
+	bezierCurveTo: function(ctx, previous, target, flip) {
 		ctx.bezierCurveTo(
 			flip ? previous.controlPointPreviousX : previous.controlPointNextX,
 			flip ? previous.controlPointPreviousY : previous.controlPointNextY,
