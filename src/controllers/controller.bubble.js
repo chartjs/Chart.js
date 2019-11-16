@@ -59,19 +59,16 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
-		var i, ilen, item, obj;
+		const xScale = meta._xScale;
+		const yScale = meta._yScale;
+		let i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
-			item = {};
+			item = meta.data[i]._parsed;
 			item[xScale.id] = xScale._parseObject(obj, 'x', i);
 			item[yScale.id] = yScale._parseObject(obj, 'y', i);
 			item._custom = obj && obj.r && +obj.r;
-			parsed.push(item);
 		}
-		return parsed;
 	},
 
 	/**

@@ -176,6 +176,41 @@ function getStackKey(indexScale, valueScale, meta) {
 	return indexScale.id + '.' + valueScale.id + '.' + meta.stack + '.' + meta.type;
 }
 
+function updateStacks(chart, meta, start, count) {
+	const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
+	const xScale = meta._indexScale;
+	const yScale = meta._valueScale;
+	const xId = xScale.id;
+	const yId = yScale.id;
+	const xStacked = isStacked(xScale, meta);
+	const yStacked = isStacked(yScale, meta);
+	const xKey = yStacked && getStackKey(xScale, yScale, meta);
+	const yKey = xStacked && getStackKey(yScale, xScale, meta);
+	var i, ilen, stack, item, x, y;
+
+	function storeStack(stackKey, indexValue, scaleId, value) {
+		stackKey += '.' + indexValue;
+		item._stackKeys[scaleId] = stackKey;
+		stack = stacks[stackKey] || (stacks[stackKey] = {});
+		stack[meta.index] = value;
+	}
+
+	for (i = start, ilen = start + count; i < ilen; ++i) {
+		item = meta.data[i]._parsed;
+
+		item._stackKeys = {};
+		x = item[xId];
+		y = item[yId];
+
+		if (yStacked) {
+			storeStack(xKey, x, yId, y);
+		}
+		if (xStacked) {
+			storeStack(yKey, y, xId, x);
+		}
+	}
+}
+
 function getFirstScaleId(chart, axis) {
 	var scalesOpts = chart.options.scales;
 	var scale = chart.options.scale;
@@ -248,7 +283,7 @@ helpers.extend(DatasetController.prototype, {
 		me._cachedMeta = meta = me.getMeta();
 		me._type = meta.type;
 		me.linkScales();
-		meta._stacked = isStacked(me._getValueScale(), meta);
+		meta._stacked = isStacked(meta._valueScale, meta);
 		me.addElements();
 	},
 
@@ -257,12 +292,17 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	linkScales: function() {
-		var chart = this.chart;
-		var meta = this._cachedMeta;
-		var dataset = this.getDataset();
+		const me = this;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const dataset = me.getDataset();
 
 		meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
 		meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
+		meta._indexScale = me._getIndexScale();
+		meta._valueScale = me._getValueScale();
+		meta._xScale = me.getScaleForId(meta.xAxisID);
+		meta._yScale = me.getScaleForId(meta.yAxisID);
 	},
 
 	getDataset: function() {
@@ -464,49 +504,20 @@ helpers.extend(DatasetController.prototype, {
 		const chart = me.chart;
 		const meta = me._cachedMeta;
 		const data = me._data;
-		const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
-		const xScale = me._getIndexScale();
-		const yScale = me._getValueScale();
-		const xId = xScale.id;
-		const yId = yScale.id;
-		const xStacked = isStacked(xScale, meta);
-		const yStacked = isStacked(yScale, meta);
-		const xKey = yStacked && getStackKey(xScale, yScale, meta);
-		const yKey = xStacked && getStackKey(yScale, xScale, meta);
-		const stacked = xStacked || yStacked;
-		var i, ilen, parsed, stack, item, x, y;
+		const xScale = meta._indexScale;
+		const yScale = meta._valueScale;
+		const stacked = isStacked(xScale, meta) || isStacked(yScale, meta);
 
 		if (helpers.isArray(data[start])) {
-			parsed = me._parseArrayData(meta, data, start, count);
+			me._parseArrayData(meta, data, start, count);
 		} else if (helpers.isObject(data[start])) {
-			parsed = me._parseObjectData(meta, data, start, count);
+			me._parseObjectData(meta, data, start, count);
 		} else {
-			parsed = me._parsePrimitiveData(meta, data, start, count);
+			me._parsePrimitiveData(meta, data, start, count);
 		}
 
-		function storeStack(stackKey, indexValue, scaleId, value) {
-			stackKey += '.' + indexValue;
-			item._stackKeys[scaleId] = stackKey;
-			stack = stacks[stackKey] || (stacks[stackKey] = {});
-			stack[meta.index] = value;
-		}
-
-		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
-			item = parsed[i];
-			meta.data[start + i]._parsed = item;
-
-			if (stacked) {
-				item._stackKeys = {};
-				x = item[xId];
-				y = item[yId];
-
-				if (yStacked) {
-					storeStack(xKey, x, yId, y);
-				}
-				if (xStacked) {
-					storeStack(yKey, y, xId, x);
-				}
-			}
+		if (stacked) {
+			updateStacks(chart, meta, start, count);
 		}
 
 		xScale._invalidateCaches();
@@ -527,20 +538,17 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parsePrimitiveData: function(meta, data, start, count) {
-		var iScale = this._getIndexScale();
-		var vScale = this._getValueScale();
-		var labels = iScale._getLabels();
-		var singleScale = iScale === vScale;
-		var parsed = [];
-		var i, ilen, item;
+		const iScale = meta._indexScale;
+		const vScale = meta._valueScale;
+		const labels = iScale._getLabels();
+		const singleScale = iScale === vScale;
+		let i, ilen, item;
 
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			item = {};
+			item = meta.data[i]._parsed;
 			item[iScale.id] = singleScale || iScale._parse(labels[i], i);
 			item[vScale.id] = vScale._parse(data[i], i);
-			parsed.push(item);
 		}
-		return parsed;
 	},
 
 	/**
@@ -555,18 +563,15 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseArrayData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
-		var i, ilen, item, arr;
+		const xScale = meta._xScale;
+		const yScale = meta._yScale;
+		let i, ilen, item, arr;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			arr = data[i];
-			item = {};
+			item = meta.data[i]._parsed;
 			item[xScale.id] = xScale._parse(arr[0], i);
 			item[yScale.id] = yScale._parse(arr[1], i);
-			parsed.push(item);
 		}
-		return parsed;
 	},
 
 	/**
@@ -581,18 +586,15 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
-		var i, ilen, item, obj;
+		const xScale = meta._xScale;
+		const yScale = meta._yScale;
+		let i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
-			item = {};
+			item = meta.data[i]._parsed;
 			item[xScale.id] = xScale._parseObject(obj, 'x', i);
 			item[yScale.id] = yScale._parseObject(obj, 'y', i);
-			parsed.push(item);
 		}
-		return parsed;
 	},
 
 	/**

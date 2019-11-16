@@ -153,16 +153,15 @@ function parseFloatBar(arr, item, vScale, i) {
 }
 
 function parseArrayOrPrimitive(meta, data, start, count) {
-	var iScale = this._getIndexScale();
-	var vScale = this._getValueScale();
-	var labels = iScale._getLabels();
-	var singleScale = iScale === vScale;
-	var parsed = [];
-	var i, ilen, item, entry;
+	const iScale = meta._indexScale;
+	const vScale = meta._valueScale;
+	const labels = iScale._getLabels();
+	const singleScale = iScale === vScale;
+	let i, ilen, item, entry;
 
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
-		item = {};
+		item = meta.data[i]._parsed;
 		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
 
 		if (helpers.isArray(entry)) {
@@ -170,10 +169,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 		} else {
 			item[vScale.id] = vScale._parse(entry, i);
 		}
-
-		parsed.push(item);
 	}
-	return parsed;
 }
 
 module.exports = DatasetController.extend({
@@ -219,14 +215,13 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var iScale = this._getIndexScale();
-		var vScale = this._getValueScale();
-		var vProp = vScale._getAxis();
-		var parsed = [];
-		var i, ilen, item, obj, value;
+		const iScale = meta._indexScale;
+		const vScale = meta._valueScale;
+		const vProp = vScale._getAxis();
+		let i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
-			item = {};
+			item = meta.data[i]._parsed;
 			item[iScale.id] = iScale._parseObject(obj, iScale._getAxis(), i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
@@ -234,9 +229,7 @@ module.exports = DatasetController.extend({
 			} else {
 				item[vScale.id] = vScale._parseObject(obj, vProp, i);
 			}
-			parsed.push(item);
 		}
-		return parsed;
 	},
 
 	/**
