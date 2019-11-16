@@ -1,15 +1,15 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var helpers = require('../helpers/index');
-var LinearScaleBase = require('./scale.linearbase');
-var Ticks = require('../core/core.ticks');
+const defaults = require('../core/core.defaults');
+const helpers = require('../helpers/index');
+const LinearScaleBase = require('./scale.linearbase');
+const Ticks = require('../core/core.ticks');
 
-var valueOrDefault = helpers.valueOrDefault;
-var valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-var resolve = helpers.options.resolve;
+const valueOrDefault = helpers.valueOrDefault;
+const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
+const resolve = helpers.options.resolve;
 
-var defaultConfig = {
+const defaultConfig = {
 	display: true,
 
 	// Boolean - Whether to animate scaling the chart from the centre
@@ -290,8 +290,8 @@ function numberOrZero(param) {
 	return helpers.isNumber(param) ? param : 0;
 }
 
-module.exports = LinearScaleBase.extend({
-	setDimensions: function() {
+class RadialLinearScale extends LinearScaleBase {
+	setDimensions() {
 		var me = this;
 
 		// Set the unconstrained dimension before label rotation
@@ -301,9 +301,9 @@ module.exports = LinearScaleBase.extend({
 		me.xCenter = Math.floor(me.width / 2);
 		me.yCenter = Math.floor((me.height - me.paddingTop) / 2);
 		me.drawingArea = Math.min(me.height - me.paddingTop, me.width) / 2;
-	},
+	}
 
-	determineDataLimits: function() {
+	determineDataLimits() {
 		var me = this;
 		var minmax = me._getMinMax(false);
 		var min = minmax.min;
@@ -314,14 +314,14 @@ module.exports = LinearScaleBase.extend({
 
 		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
-	},
+	}
 
 	// Returns the maximum number of ticks based on the scale dimension
-	_computeTickLimit: function() {
+	_computeTickLimit() {
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
-	},
+	}
 
-	generateTickLabels: function(ticks) {
+	generateTickLabels(ticks) {
 		var me = this;
 
 		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
@@ -331,9 +331,9 @@ module.exports = LinearScaleBase.extend({
 			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
 			return label || label === 0 ? label : '';
 		});
-	},
+	}
 
-	fit: function() {
+	fit() {
 		var me = this;
 		var opts = me.options;
 
@@ -342,13 +342,13 @@ module.exports = LinearScaleBase.extend({
 		} else {
 			me.setCenterPoint(0, 0, 0, 0);
 		}
-	},
+	}
 
 	/**
 	 * Set radius reductions and determine new radius and center point
 	 * @private
 	 */
-	setReductions: function(largestPossibleRadius, furthestLimits, furthestAngles) {
+	setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
 		var me = this;
 		var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
 		var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
@@ -364,9 +364,9 @@ module.exports = LinearScaleBase.extend({
 			Math.floor(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
 			Math.floor(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2));
 		me.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
-	},
+	}
 
-	setCenterPoint: function(leftMovement, rightMovement, topMovement, bottomMovement) {
+	setCenterPoint(leftMovement, rightMovement, topMovement, bottomMovement) {
 		var me = this;
 		var maxRight = me.width - rightMovement - me.drawingArea;
 		var maxLeft = leftMovement + me.drawingArea;
@@ -375,9 +375,9 @@ module.exports = LinearScaleBase.extend({
 
 		me.xCenter = Math.floor(((maxLeft + maxRight) / 2) + me.left);
 		me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
-	},
+	}
 
-	getIndexAngle: function(index) {
+	getIndexAngle(index) {
 		var chart = this.chart;
 		var angleMultiplier = 360 / chart.data.labels.length;
 		var options = chart.options || {};
@@ -387,9 +387,9 @@ module.exports = LinearScaleBase.extend({
 		var angle = (index * angleMultiplier + startAngle) % 360;
 
 		return (angle < 0 ? angle + 360 : angle) * Math.PI * 2 / 360;
-	},
+	}
 
-	getDistanceFromCenterForValue: function(value) {
+	getDistanceFromCenterForValue(value) {
 		var me = this;
 
 		if (helpers.isNullOrUndef(value)) {
@@ -402,22 +402,22 @@ module.exports = LinearScaleBase.extend({
 			return (me.max - value) * scalingFactor;
 		}
 		return (value - me.min) * scalingFactor;
-	},
+	}
 
-	getPointPosition: function(index, distanceFromCenter) {
+	getPointPosition(index, distanceFromCenter) {
 		var me = this;
 		var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
 		return {
 			x: Math.cos(thisAngle) * distanceFromCenter + me.xCenter,
 			y: Math.sin(thisAngle) * distanceFromCenter + me.yCenter
 		};
-	},
+	}
 
-	getPointPositionForValue: function(index, value) {
+	getPointPositionForValue(index, value) {
 		return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
-	},
+	}
 
-	getBasePosition: function(index) {
+	getBasePosition(index) {
 		var me = this;
 		var min = me.min;
 		var max = me.max;
@@ -427,12 +427,12 @@ module.exports = LinearScaleBase.extend({
 			min < 0 && max < 0 ? max :
 			min > 0 && max > 0 ? min :
 			0);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_drawGrid: function() {
+	_drawGrid() {
 		var me = this;
 		var ctx = me.ctx;
 		var opts = me.options;
@@ -475,12 +475,12 @@ module.exports = LinearScaleBase.extend({
 
 			ctx.restore();
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_drawLabels: function() {
+	_drawLabels() {
 		var me = this;
 		var ctx = me.ctx;
 		var opts = me.options;
@@ -526,13 +526,14 @@ module.exports = LinearScaleBase.extend({
 		});
 
 		ctx.restore();
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_drawTitle: helpers.noop
-});
+	_drawTitle() {}
+}
 
+module.exports = RadialLinearScale;
 // INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;

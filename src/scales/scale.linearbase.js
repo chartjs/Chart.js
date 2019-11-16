@@ -1,9 +1,9 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var Scale = require('../core/core.scale');
+const helpers = require('../helpers/index');
+const Scale = require('../core/core.scale');
 
-var isNullOrUndef = helpers.isNullOrUndef;
+const isNullOrUndef = helpers.isNullOrUndef;
 
 /**
  * Generate a set of linear ticks
@@ -83,8 +83,8 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-module.exports = Scale.extend({
-	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+class LinearScaleBase extends Scale {
+	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (helpers.isNullOrUndef(raw)) {
 			return NaN;
 		}
@@ -93,9 +93,9 @@ module.exports = Scale.extend({
 		}
 
 		return +raw;
-	},
+	}
 
-	handleTickRangeOptions: function() {
+	handleTickRangeOptions() {
 		var me = this;
 		var opts = me.options;
 
@@ -159,9 +159,9 @@ module.exports = Scale.extend({
 				me.min--;
 			}
 		}
-	},
+	}
 
-	getTickLimit: function() {
+	getTickLimit() {
 		var me = this;
 		var tickOpts = me.options.ticks;
 		var stepSize = tickOpts.stepSize;
@@ -180,17 +180,17 @@ module.exports = Scale.extend({
 		}
 
 		return maxTicks;
-	},
+	}
 
-	_computeTickLimit: function() {
+	_computeTickLimit() {
 		return Number.POSITIVE_INFINITY;
-	},
+	}
 
-	_handleDirectionalChanges: function(ticks) {
+	_handleDirectionalChanges(ticks) {
 		return ticks;
-	},
+	}
 
-	buildTicks: function() {
+	buildTicks() {
 		var me = this;
 		var opts = me.options;
 		var tickOpts = opts.ticks;
@@ -228,15 +228,15 @@ module.exports = Scale.extend({
 		}
 
 		return ticks;
-	},
+	}
 
-	generateTickLabels: function(ticks) {
+	generateTickLabels(ticks) {
 		var me = this;
 		me._tickValues = ticks.map(t => t.value);
 		Scale.prototype.generateTickLabels.call(me, ticks);
-	},
+	}
 
-	_configure: function() {
+	_configure() {
 		var me = this;
 		var ticks = me.getTicks();
 		var start = me.min;
@@ -254,4 +254,6 @@ module.exports = Scale.extend({
 		me._endValue = end;
 		me._valueRange = end - start;
 	}
-});
+}
+
+module.exports = LinearScaleBase;

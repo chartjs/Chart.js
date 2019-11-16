@@ -1,17 +1,17 @@
 'use strict';
 
-var adapters = require('../core/core.adapters');
-var defaults = require('../core/core.defaults');
-var helpers = require('../helpers/index');
-var Scale = require('../core/core.scale');
+const adapters = require('../core/core.adapters');
+const defaults = require('../core/core.defaults');
+const helpers = require('../helpers/index');
+const Scale = require('../core/core.scale');
 
-var resolve = helpers.options.resolve;
-var valueOrDefault = helpers.valueOrDefault;
+const resolve = helpers.options.resolve;
+const valueOrDefault = helpers.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
-var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+const MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
-var INTERVALS = {
+const INTERVALS = {
 	millisecond: {
 		common: true,
 		size: 1,
@@ -58,7 +58,7 @@ var INTERVALS = {
 	}
 };
 
-var UNITS = Object.keys(INTERVALS);
+const UNITS = Object.keys(INTERVALS);
 
 function sorter(a, b) {
 	return a - b;
@@ -477,7 +477,7 @@ function filterBetween(timestamps, min, max) {
 		: timestamps;
 }
 
-var defaultConfig = {
+const defaultConfig = {
 	position: 'bottom',
 
 	/**
@@ -526,15 +526,15 @@ var defaultConfig = {
 	}
 };
 
-module.exports = Scale.extend({
-	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+class TimeScale extends Scale {
+	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (raw === undefined) {
 			return NaN;
 		}
 		return parse(this, raw);
-	},
+	}
 
-	_parseObject: function(obj, axis, index) {
+	_parseObject(obj, axis, index) {
 		if (obj && obj.t) {
 			return this._parse(obj.t, index);
 		}
@@ -542,13 +542,15 @@ module.exports = Scale.extend({
 			return this._parse(obj[axis], index);
 		}
 		return null;
-	},
+	}
 
-	_invalidateCaches: function() {
+	_invalidateCaches() {
 		this._cache = {};
-	},
+	}
 
-	initialize: function() {
+	constructor(props) {
+		super(props);
+
 		var me = this;
 		var options = me.options;
 		var time = options.time || (options.time = {});
@@ -563,11 +565,9 @@ module.exports = Scale.extend({
 		// missing formats on update
 
 		helpers.mergeIf(time.displayFormats, adapter.formats());
+	}
 
-		Scale.prototype.initialize.call(me);
-	},
-
-	determineDataLimits: function() {
+	determineDataLimits() {
 		var me = this;
 		var options = me.options;
 		var adapter = me._adapter;
@@ -601,9 +601,9 @@ module.exports = Scale.extend({
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
 		me.max = Math.max(min + 1, max);
-	},
+	}
 
-	buildTicks: function() {
+	buildTicks() {
 		var me = this;
 		var options = me.options;
 		var timeOpts = options.time;
@@ -640,9 +640,9 @@ module.exports = Scale.extend({
 		}
 
 		return ticksFromTimestamps(me, ticks, me._majorUnit);
-	},
+	}
 
-	getLabelForValue: function(value) {
+	getLabelForValue(value) {
 		var me = this;
 		var adapter = me._adapter;
 		var timeOpts = me.options.time;
@@ -651,13 +651,13 @@ module.exports = Scale.extend({
 			return adapter.format(value, timeOpts.tooltipFormat);
 		}
 		return adapter.format(value, timeOpts.displayFormats.datetime);
-	},
+	}
 
 	/**
 	 * Function to format an individual tick mark
 	 * @private
 	 */
-	_tickFormatFunction: function(time, index, ticks, format) {
+	_tickFormatFunction(time, index, ticks, format) {
 		var me = this;
 		var adapter = me._adapter;
 		var options = me.options;
@@ -676,28 +676,28 @@ module.exports = Scale.extend({
 		]);
 
 		return formatter ? formatter(label, index, ticks) : label;
-	},
+	}
 
-	generateTickLabels: function(ticks) {
+	generateTickLabels(ticks) {
 		var i, ilen, tick;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			tick = ticks[i];
 			tick.label = this._tickFormatFunction(tick.value, i, ticks);
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getPixelForOffset: function(time) {
+	_getPixelForOffset(time) {
 		var me = this;
 		var offsets = me._offsets;
 		var pos = interpolate(me._table, 'time', time, 'pos');
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-	},
+	}
 
-	getPixelForValue: function(value) {
+	getPixelForValue(value) {
 		var me = this;
 
 		if (typeof value !== 'number') {
@@ -707,26 +707,26 @@ module.exports = Scale.extend({
 		if (value !== null) {
 			return me._getPixelForOffset(value);
 		}
-	},
+	}
 
-	getPixelForTick: function(index) {
+	getPixelForTick(index) {
 		var ticks = this.getTicks();
 		return index >= 0 && index < ticks.length ?
 			this._getPixelForOffset(ticks[index].value) :
 			null;
-	},
+	}
 
-	getValueForPixel: function(pixel) {
+	getValueForPixel(pixel) {
 		var me = this;
 		var offsets = me._offsets;
 		var pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		return interpolate(me._table, 'pos', pos, 'time');
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLabelSize: function(label) {
+	_getLabelSize(label) {
 		var me = this;
 		var ticksOpts = me.options.ticks;
 		var tickLabelWidth = me.ctx.measureText(label).width;
@@ -739,12 +739,12 @@ module.exports = Scale.extend({
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
 			h: (tickLabelWidth * sinRotation) + (tickFontSize * cosRotation)
 		};
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLabelCapacity: function(exampleTime) {
+	_getLabelCapacity(exampleTime) {
 		var me = this;
 		var timeOpts = me.options.time;
 		var displayFormats = timeOpts.displayFormats;
@@ -761,7 +761,8 @@ module.exports = Scale.extend({
 
 		return capacity > 0 ? capacity : 1;
 	}
-});
+}
 
+module.exports = TimeScale;
 // INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;

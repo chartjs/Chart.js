@@ -1,13 +1,13 @@
 'use strict';
 
-var defaults = require('../core/core.defaults');
-var helpers = require('../helpers/index');
-var Scale = require('../core/core.scale');
-var LinearScaleBase = require('./scale.linearbase');
-var Ticks = require('../core/core.ticks');
+const defaults = require('../core/core.defaults');
+const helpers = require('../helpers/index');
+const Scale = require('../core/core.scale');
+const LinearScaleBase = require('./scale.linearbase');
+const Ticks = require('../core/core.ticks');
 
-var valueOrDefault = helpers.valueOrDefault;
-var log10 = helpers.math.log10;
+const valueOrDefault = helpers.valueOrDefault;
+const log10 = helpers.math.log10;
 
 /**
  * Generate a set of logarithmic ticks
@@ -55,7 +55,7 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-var defaultConfig = {
+const defaultConfig = {
 	position: 'left',
 
 	// label settings
@@ -64,13 +64,13 @@ var defaultConfig = {
 	}
 };
 
-module.exports = Scale.extend({
-	_parse: function(raw, index) { // eslint-disable-line no-unused-vars
+class LogarithmicScale extends Scale {
+	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
 		return helpers.isFinite(value) && value >= 0 ? value : undefined;
-	},
+	}
 
-	determineDataLimits: function() {
+	determineDataLimits() {
 		var me = this;
 		var minmax = me._getMinMax(true);
 		var min = minmax.min;
@@ -82,9 +82,9 @@ module.exports = Scale.extend({
 		me.minNotZero = helpers.isFinite(minPositive) ? minPositive : null;
 
 		me.handleTickRangeOptions();
-	},
+	}
 
-	handleTickRangeOptions: function() {
+	handleTickRangeOptions() {
 		var me = this;
 		var DEFAULT_MIN = 1;
 		var DEFAULT_MAX = 10;
@@ -119,9 +119,9 @@ module.exports = Scale.extend({
 		}
 		me.min = min;
 		me.max = max;
-	},
+	}
 
-	buildTicks: function() {
+	buildTicks() {
 		var me = this;
 		var opts = me.options;
 		var reverse = !me.isHorizontal();
@@ -148,21 +148,21 @@ module.exports = Scale.extend({
 			ticks.reverse();
 		}
 		return ticks;
-	},
+	}
 
-	generateTickLabels: function(ticks) {
+	generateTickLabels(ticks) {
 		this._tickValues = ticks.map(t => t.value);
 
 		return Scale.prototype.generateTickLabels.call(this, ticks);
-	},
+	}
 
-	getPixelForTick: function(index) {
+	getPixelForTick(index) {
 		var ticks = this._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
 		return this.getPixelForValue(ticks[index]);
-	},
+	}
 
 	/**
 	 * Returns the value of the first tick.
@@ -170,14 +170,14 @@ module.exports = Scale.extend({
 	 * @return {number} The first tick value.
 	 * @private
 	 */
-	_getFirstTickValue: function(value) {
+	_getFirstTickValue(value) {
 		var exp = Math.floor(log10(value));
 		var significand = Math.floor(value / Math.pow(10, exp));
 
 		return significand * Math.pow(10, exp);
-	},
+	}
 
-	_configure: function() {
+	_configure() {
 		var me = this;
 		var start = me.min;
 		var offset = 0;
@@ -192,9 +192,9 @@ module.exports = Scale.extend({
 		me._startValue = log10(start);
 		me._valueOffset = offset;
 		me._valueRange = (log10(me.max) - log10(start)) / (1 - offset);
-	},
+	}
 
-	getPixelForValue: function(value) {
+	getPixelForValue(value) {
 		var me = this;
 		var decimal = 0;
 
@@ -202,16 +202,17 @@ module.exports = Scale.extend({
 			decimal = (log10(value) - me._startValue) / me._valueRange + me._valueOffset;
 		}
 		return me.getPixelForDecimal(decimal);
-	},
+	}
 
-	getValueForPixel: function(pixel) {
+	getValueForPixel(pixel) {
 		var me = this;
 		var decimal = me.getDecimalForPixel(pixel);
 		return decimal === 0 && me.min === 0
 			? 0
 			: Math.pow(10, me._startValue + (decimal - me._valueOffset) * me._valueRange);
 	}
-});
+}
 
+module.exports = LogarithmicScale;
 // INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;

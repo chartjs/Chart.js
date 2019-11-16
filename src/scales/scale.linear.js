@@ -1,18 +1,18 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var LinearScaleBase = require('./scale.linearbase');
-var Ticks = require('../core/core.ticks');
+const helpers = require('../helpers/index');
+const LinearScaleBase = require('./scale.linearbase');
+const Ticks = require('../core/core.ticks');
 
-var defaultConfig = {
+const defaultConfig = {
 	position: 'left',
 	ticks: {
 		callback: Ticks.formatters.linear
 	}
 };
 
-module.exports = LinearScaleBase.extend({
-	determineDataLimits: function() {
+class LinearScale extends LinearScaleBase {
+	determineDataLimits() {
 		var me = this;
 		var DEFAULT_MIN = 0;
 		var DEFAULT_MAX = 1;
@@ -30,10 +30,10 @@ module.exports = LinearScaleBase.extend({
 
 		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
-	},
+	}
 
 	// Returns the maximum number of ticks based on the scale dimension
-	_computeTickLimit: function() {
+	_computeTickLimit() {
 		var me = this;
 		var tickFont;
 
@@ -42,35 +42,36 @@ module.exports = LinearScaleBase.extend({
 		}
 		tickFont = helpers.options._parseFont(me.options.ticks);
 		return Math.ceil(me.height / tickFont.lineHeight);
-	},
+	}
 
 	/**
 	 * Called after the ticks are built
 	 * @private
 	 */
-	_handleDirectionalChanges: function(ticks) {
+	_handleDirectionalChanges(ticks) {
 		// If we are in a vertical orientation the top value is the highest so reverse the array
 		return this.isHorizontal() ? ticks : ticks.reverse();
-	},
+	}
 
 	// Utils
-	getPixelForValue: function(value) {
+	getPixelForValue(value) {
 		var me = this;
 		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
-	},
+	}
 
-	getValueForPixel: function(pixel) {
+	getValueForPixel(pixel) {
 		return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
-	},
+	}
 
-	getPixelForTick: function(index) {
+	getPixelForTick(index) {
 		var ticks = this._tickValues;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
 		return this.getPixelForValue(ticks[index]);
 	}
-});
+}
 
+module.exports = LinearScale;
 // INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;
