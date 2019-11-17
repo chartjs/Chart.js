@@ -54,7 +54,7 @@ function setStyle(ctx, vm) {
 
 function normalPath(ctx, points, spanGaps, vm) {
 	const steppedLine = vm.steppedLine;
-	const lineMethod = steppedLine ? helpers.canvas.steppedLineTo : helpers.canvas.bezierCurveTo;
+	const lineMethod = steppedLine ? helpers.canvas._steppedLineTo : helpers.canvas._bezierCurveTo;
 	let move = true;
 	let index, currentVM, previousVM;
 

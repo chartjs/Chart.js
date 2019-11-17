@@ -236,7 +236,7 @@ function isDrawable(point) {
 }
 
 function drawArea(ctx, curve0, curve1, len0, len1, stepped, tension) {
-	const lineTo = stepped ? helpers.canvas.steppedLineTo : helpers.canvas.bezierCurveTo;
+	const lineTo = stepped ? helpers.canvas._steppedLineTo : helpers.canvas._bezierCurveTo;
 	let i, cx, cy, r, target;
 
 	if (!len0 || !len1) {

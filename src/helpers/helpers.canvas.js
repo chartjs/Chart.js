@@ -171,7 +171,10 @@ module.exports = {
 		ctx.restore();
 	},
 
-	steppedLineTo: function(ctx, previous, target, flip, mode) {
+	/**
+	 * @private
+	 */
+	_steppedLineTo: function(ctx, previous, target, flip, mode) {
 		if (mode === 'middle') {
 			const midpoint = (previous.x + target.x) / 2.0;
 			ctx.lineTo(midpoint, flip ? target.y : previous.y);
@@ -184,7 +187,10 @@ module.exports = {
 		ctx.lineTo(target.x, target.y);
 	},
 
-	bezierCurveTo: function(ctx, previous, target, flip) {
+	/**
+	 * @private
+	 */
+	_bezierCurveTo: function(ctx, previous, target, flip) {
 		ctx.bezierCurveTo(
 			flip ? previous.controlPointPreviousX : previous.controlPointNextX,
 			flip ? previous.controlPointPreviousY : previous.controlPointNextY,
