@@ -327,7 +327,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
-	createMeta: function(type) {
+	createElement: function(type) {
 		return type && new type({
 			_ctx: this.chart.ctx
 		});
@@ -400,10 +400,10 @@ helpers.extend(DatasetController.prototype, {
 		data = me._data;
 
 		for (i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = metaData[i] || me.createMeta(me.dataElementType);
+			metaData[i] = metaData[i] || me.createElement(me.dataElementType);
 		}
 
-		meta.dataset = meta.dataset || me.createMeta(me.datasetElementType);
+		meta.dataset = meta.dataset || me.createElement(me.datasetElementType);
 	},
 
 	buildOrUpdateElements: function() {
@@ -959,7 +959,7 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		var i;
 		for (i = start; i < start + count; ++i) {
-			const element = me.createMeta(me.dataElementType);
+			const element = me.createElement(me.dataElementType);
 			me._cachedMeta.data.splice(i, 0, element);
 			me._parse(i, 1);
 			me.updateElement(element, i, true);
