@@ -434,6 +434,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			meta.order = dataset.order || 0;
 			meta.index = i;
 			meta.label = '' + dataset.label;
+			meta.visible = me.isDatasetVisible(i);
 
 			if (meta.controller) {
 				meta.controller.updateIndex(i);
@@ -707,13 +708,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * @private
 	 */
 	transition: function(easingValue) {
-		var me = this;
+		const me = this;
 		var i, ilen;
 
 		if (!me._animationsDisabled) {
-			for (i = 0, ilen = (me.data.datasets || []).length; i < ilen; ++i) {
-				if (me.isDatasetVisible(i)) {
-					me.getDatasetMeta(i).controller.transition(easingValue);
+			const metas = me._getSortedDatasetMetas();
+			for (i = 0, ilen = metas.length; i < ilen; ++i) {
+				let meta = metas[i];
+				if (meta.visible) {
+					meta.controller.transition(easingValue);
 				}
 			}
 		}
@@ -736,8 +739,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var i, ilen;
 
 		for (i = 0, ilen = metasets.length; i < ilen; ++i) {
-			if (!filterVisible || me.isDatasetVisible(i)) {
-				result.push(metasets[i]);
+			const meta = metasets[i];
+			if (!filterVisible || meta.visible) {
+				result.push(meta);
 			}
 		}
 
@@ -884,13 +888,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	getVisibleDatasetCount: function() {
-		var count = 0;
-		for (var i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
-			if (this.isDatasetVisible(i)) {
-				count++;
-			}
-		}
-		return count;
+		return this._getSortedVisibleDatasetMetas().length;
 	},
 
 	isDatasetVisible: function(datasetIndex) {
