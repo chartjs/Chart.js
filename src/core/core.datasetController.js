@@ -957,12 +957,15 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	insertElements: function(start, count) {
 		const me = this;
+		const elements = [];
 		var i;
 		for (i = start; i < start + count; ++i) {
-			const element = me.createElement(me.dataElementType);
-			me._cachedMeta.data.splice(i, 0, element);
-			me._parse(i, 1);
-			me.updateElement(element, i, true);
+			elements.push(me.createElement(me.dataElementType));
+		}
+		me._cachedMeta.data.splice(start, 0, ...elements);
+		me._parse(start, count);
+		for (i = 0; i < count; ++i) {
+			me.updateElement(elements[i], start + i, true);
 		}
 	},
 
