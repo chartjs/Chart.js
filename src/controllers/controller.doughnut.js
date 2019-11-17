@@ -143,7 +143,7 @@ module.exports = DatasetController.extend({
 		var metaData = this.getMeta().data;
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			metaData[i]._val = +data[i];
+			metaData[i]._parsed = +data[i];
 		}
 	},
 
@@ -232,7 +232,7 @@ module.exports = DatasetController.extend({
 		var centerY = (chartArea.top + chartArea.bottom) / 2;
 		var startAngle = opts.rotation; // non reset case handled later
 		var endAngle = opts.rotation; // non reset case handled later
-		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._val * opts.circumference / DOUBLE_PI);
+		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._parsed * opts.circumference / DOUBLE_PI);
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
 		var options = arc._options || {};
@@ -276,7 +276,7 @@ module.exports = DatasetController.extend({
 		var value;
 
 		helpers.each(metaData, function(arc) {
-			value = arc ? arc._val : NaN;
+			value = arc ? arc._parsed : NaN;
 			if (!isNaN(value) && !arc.hidden) {
 				total += Math.abs(value);
 			}

@@ -327,20 +327,9 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
-	createMetaDataset: function() {
-		var me = this;
-		var type = me.datasetElementType;
+	createMeta: function(type) {
 		return type && new type({
-			_ctx: me.chart.ctx
-		});
-	},
-
-	createMetaData: function() {
-		var me = this;
-		var type = me.dataElementType;
-		return type && new type({
-			_ctx: me.chart.ctx,
-			_parsed: {}
+			_ctx: this.chart.ctx
 		});
 	},
 
@@ -411,16 +400,10 @@ helpers.extend(DatasetController.prototype, {
 		data = me._data;
 
 		for (i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = metaData[i] || me.createMetaData();
+			metaData[i] = metaData[i] || me.createMeta(me.dataElementType);
 		}
 
-		meta.dataset = meta.dataset || me.createMetaDataset();
-	},
-
-	addElementAndReset: function(index) {
-		var element = this.createMetaData();
-		this._cachedMeta.data.splice(index, 0, element);
-		this.updateElement(element, index, true);
+		meta.dataset = meta.dataset || me.createMeta(me.datasetElementType);
 	},
 
 	buildOrUpdateElements: function() {
@@ -973,10 +956,14 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	insertElements: function(start, count) {
-		for (var i = 0; i < count; ++i) {
-			this.addElementAndReset(start + i);
+		const me = this;
+		var i;
+		for (i = start; i < start + count; ++i) {
+			const element = me.createMeta(me.dataElementType);
+			me._cachedMeta.data.splice(i, 0, element);
+			me._parse(i, 1);
+			me.updateElement(element, i, true);
 		}
-		this._parse(start, count);
 	},
 
 	/**
