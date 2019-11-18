@@ -59,9 +59,9 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
+		const parsed = [];
 		var i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
@@ -95,8 +95,8 @@ module.exports = DatasetController.extend({
 	_getLabelAndValue: function(index) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const xScale = me.getScaleForId(meta.xAxisID);
-		const yScale = me.getScaleForId(meta.yAxisID);
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
 		const parsed = me._getParsed(index);
 		const x = xScale.getLabelForValue(parsed[xScale.id]);
 		const y = yScale.getLabelForValue(parsed[yScale.id]);
@@ -112,9 +112,8 @@ module.exports = DatasetController.extend({
 	 * @protected
 	 */
 	update: function(reset) {
-		var me = this;
-		var meta = me.getMeta();
-		var points = meta.data;
+		const me = this;
+		const points = me._cachedMeta.data;
 
 		// Update Points
 		helpers.each(points, function(point, index) {
@@ -126,14 +125,14 @@ module.exports = DatasetController.extend({
 	 * @protected
 	 */
 	updateElement: function(point, index, reset) {
-		var me = this;
-		var meta = me.getMeta();
-		var xScale = me.getScaleForId(meta.xAxisID);
-		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveDataElementOptions(index);
-		var parsed = !reset && me._getParsed(index);
-		var x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed[xScale.id]);
-		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed[yScale.id]);
+		const me = this;
+		const meta = me._cachedMeta;
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
+		const options = me._resolveDataElementOptions(index);
+		const parsed = !reset && me._getParsed(index);
+		const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed[xScale.id]);
+		const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed[yScale.id]);
 
 		point._options = options;
 		point._model = {

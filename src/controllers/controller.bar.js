@@ -153,12 +153,12 @@ function parseFloatBar(arr, item, vScale, i) {
 }
 
 function parseArrayOrPrimitive(meta, data, start, count) {
-	var iScale = this._getIndexScale();
-	var vScale = this._getValueScale();
-	var labels = iScale._getLabels();
-	var singleScale = iScale === vScale;
-	var parsed = [];
-	var i, ilen, item, entry;
+	const iScale = meta.iScale;
+	const vScale = meta.vScale;
+	const labels = iScale._getLabels();
+	const singleScale = iScale === vScale;
+	const parsed = [];
+	let i, ilen, item, entry;
 
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
@@ -219,11 +219,11 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var iScale = this._getIndexScale();
-		var vScale = this._getValueScale();
-		var vProp = vScale._getAxis();
-		var parsed = [];
-		var i, ilen, item, obj, value;
+		const iScale = meta.iScale;
+		const vScale = meta.vScale;
+		const vProp = vScale._getAxis();
+		const parsed = [];
+		let i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
@@ -244,8 +244,9 @@ module.exports = DatasetController.extend({
 	 */
 	_getLabelAndValue: function(index) {
 		const me = this;
-		const indexScale = me._getIndexScale();
-		const valueScale = me._getValueScale();
+		const meta = me._cachedMeta;
+		const indexScale = meta.iScale;
+		const valueScale = meta.vScale;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
 		const value = custom
@@ -264,14 +265,14 @@ module.exports = DatasetController.extend({
 
 		DatasetController.prototype.initialize.apply(me, arguments);
 
-		meta = me.getMeta();
+		meta = me._cachedMeta;
 		meta.stack = me.getDataset().stack;
 		meta.bar = true;
 	},
 
 	update: function(reset) {
 		var me = this;
-		var rects = me.getMeta().data;
+		var rects = me._cachedMeta.data;
 		var i, ilen;
 
 		me._ruler = me.getRuler();
@@ -306,14 +307,15 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_updateElementGeometry: function(rectangle, index, reset, options) {
-		var me = this;
-		var model = rectangle._model;
-		var vscale = me._getValueScale();
-		var base = vscale.getBasePixel();
-		var horizontal = vscale.isHorizontal();
-		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(index, options);
-		var ipixels = me.calculateBarIndexPixels(index, ruler, options);
+		const me = this;
+		const meta = me._cachedMeta;
+		const model = rectangle._model;
+		const vScale = meta.vScale;
+		const base = vScale.getBasePixel();
+		const horizontal = vScale.isHorizontal();
+		const ruler = me._ruler || me.getRuler();
+		const vpixels = me.calculateBarValuePixels(index, options);
+		const ipixels = me.calculateBarIndexPixels(index, ruler, options);
 
 		model.horizontal = horizontal;
 		model.base = reset ? base : vpixels.base;
@@ -330,26 +332,27 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getStacks: function(last) {
-		var me = this;
-		var scale = me._getIndexScale();
-		var metasets = scale._getMatchingVisibleMetas(me._type);
-		var stacked = scale.options.stacked;
-		var ilen = metasets.length;
-		var stacks = [];
-		var i, meta;
+		const me = this;
+		const meta = me._cachedMeta;
+		const iScale = meta.iScale;
+		const metasets = iScale._getMatchingVisibleMetas(me._type);
+		const stacked = iScale.options.stacked;
+		const ilen = metasets.length;
+		const stacks = [];
+		let i, item;
 
 		for (i = 0; i < ilen; ++i) {
-			meta = metasets[i];
+			item = metasets[i];
 			// stacked   | meta.stack
 			//           | found | not found | undefined
 			// false     |   x   |     x     |     x
 			// true      |       |     x     |
 			// undefined |       |     x     |     x
-			if (stacked === false || stacks.indexOf(meta.stack) === -1 ||
-				(stacked === undefined && meta.stack === undefined)) {
-				stacks.push(meta.stack);
+			if (stacked === false || stacks.indexOf(item.stack) === -1 ||
+				(stacked === undefined && item.stack === undefined)) {
+				stacks.push(item.stack);
 			}
-			if (meta.index === last) {
+			if (item.index === last) {
 				break;
 			}
 		}
@@ -387,21 +390,22 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	getRuler: function() {
-		var me = this;
-		var scale = me._getIndexScale();
-		var pixels = [];
-		var i, ilen;
+		const me = this;
+		const meta = me._cachedMeta;
+		const iScale = meta.iScale;
+		const pixels = [];
+		let i, ilen;
 
-		for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
-			pixels.push(scale.getPixelForValue(me._getParsed(i)[scale.id]));
+		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
+			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.id]));
 		}
 
 		return {
-			pixels: pixels,
-			start: scale._startPixel,
-			end: scale._endPixel,
+			pixels,
+			start: iScale._startPixel,
+			end: iScale._endPixel,
 			stackCount: me.getStackCount(),
-			scale: scale
+			scale: iScale
 		};
 	},
 
@@ -410,15 +414,16 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	calculateBarValuePixels: function(index, options) {
-		var me = this;
-		var valueScale = me._getValueScale();
-		var minBarLength = options.minBarLength;
-		var start = 0;
-		var parsed = me._getParsed(index);
-		var value = parsed[valueScale.id];
-		var custom = parsed._custom;
-		var length = me._cachedMeta._stacked ? me._applyStack(valueScale, parsed) : parsed[valueScale.id];
-		var base, head, size;
+		const me = this;
+		const meta = me._cachedMeta;
+		const vScale = meta.vScale;
+		const minBarLength = options.minBarLength;
+		const parsed = me._getParsed(index);
+		const custom = parsed._custom;
+		let value = parsed[vScale.id];
+		let start = 0;
+		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.id];
+		let base, head, size;
 
 		if (length !== value) {
 			start = length - value;
@@ -435,8 +440,8 @@ module.exports = DatasetController.extend({
 			start += value;
 		}
 
-		base = valueScale.getPixelForValue(start);
-		head = valueScale.getPixelForValue(start + length);
+		base = vScale.getPixelForValue(start);
+		head = vScale.getPixelForValue(start + length);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
@@ -461,7 +466,7 @@ module.exports = DatasetController.extend({
 			? computeFlexCategoryTraits(index, ruler, options)
 			: computeFitCategoryTraits(index, ruler, options);
 
-		var stackIndex = me.getStackIndex(me.index, me.getMeta().stack);
+		var stackIndex = me.getStackIndex(me.index, me._cachedMeta.stack);
 		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 		var size = Math.min(
 			valueOrDefault(options.maxBarThickness, Infinity),
@@ -476,17 +481,18 @@ module.exports = DatasetController.extend({
 	},
 
 	draw: function() {
-		var me = this;
-		var chart = me.chart;
-		var scale = me._getValueScale();
-		var rects = me.getMeta().data;
-		var ilen = rects.length;
-		var i = 0;
+		const me = this;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const vScale = meta.vScale;
+		const rects = meta.data;
+		const ilen = rects.length;
+		let i = 0;
 
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[scale.id])) {
+			if (!isNaN(me._getParsed(i)[vScale.id])) {
 				rects[i].draw();
 			}
 		}

@@ -136,7 +136,7 @@ module.exports = DatasetController.extend({
 	update: function(reset) {
 		var me = this;
 		var dataset = me.getDataset();
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var start = me.chart.options.startAngle || 0;
 		var starts = me._starts = [];
 		var angles = me._angles = [];
@@ -219,7 +219,7 @@ module.exports = DatasetController.extend({
 
 	countVisibleElements: function() {
 		var dataset = this.getDataset();
-		var meta = this.getMeta();
+		var meta = this._cachedMeta;
 		var count = 0;
 
 		helpers.each(meta.data, function(element, index) {
@@ -256,9 +256,9 @@ module.exports = DatasetController.extend({
 	 */
 	_computeAngle: function(index) {
 		var me = this;
-		var count = this.getMeta().count;
+		var meta = me._cachedMeta;
+		var count = meta.count;
 		var dataset = me.getDataset();
-		var meta = me.getMeta();
 
 		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
 			return 0;

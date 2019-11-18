@@ -82,18 +82,18 @@ module.exports = DatasetController.extend({
 	 */
 	_getLabelAndValue: function(index) {
 		const me = this;
-		const scale = me._getValueScale();
+		const vScale = me._cachedMeta.vScale;
 		const parsed = me._getParsed(index);
 
 		return {
-			label: scale._getLabels()[index],
-			value: '' + scale.getLabelForValue(parsed[scale.id])
+			label: vScale._getLabels()[index],
+			value: '' + vScale.getLabelForValue(parsed[vScale.id])
 		};
 	},
 
 	update: function(reset) {
 		var me = this;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var line = meta.dataset;
 		var points = meta.data || [];
 		var animationsDisabled = me.chart._animationsDisabled;
@@ -168,7 +168,7 @@ module.exports = DatasetController.extend({
 
 	updateBezierControlPoints: function() {
 		var me = this;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var lineModel = meta.dataset._model;
 		var area = me.chart.chartArea;
 		var points = meta.data || [];
