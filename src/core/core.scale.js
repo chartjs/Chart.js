@@ -242,7 +242,7 @@ function getEvenSpacing(arr) {
 
 function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 	var evenMajorSpacing = getEvenSpacing(majorIndices);
-	var spacing = (ticks.length - 1) / ticksLimit;
+	var spacing = ticks.length / ticksLimit;
 	var factors, factor, i, ilen;
 
 	// If the major ticks are evenly spaced apart, place the minor ticks
