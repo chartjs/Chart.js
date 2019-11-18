@@ -69,7 +69,7 @@ module.exports = DatasetController.extend({
 
 	update: function(reset) {
 		var me = this;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var line = meta.dataset;
 		var points = meta.data || [];
 		var options = me.chart.options;
@@ -172,7 +172,7 @@ module.exports = DatasetController.extend({
 	updateBezierControlPoints: function() {
 		var me = this;
 		var chart = me.chart;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var lineModel = meta.dataset._model;
 		var area = chart.chartArea;
 		var points = meta.data || [];
@@ -227,7 +227,7 @@ module.exports = DatasetController.extend({
 	draw: function() {
 		var me = this;
 		var chart = me.chart;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var points = meta.data || [];
 		var area = chart.chartArea;
 		var i = 0;

@@ -112,9 +112,8 @@ module.exports = DatasetController.extend({
 	 * @protected
 	 */
 	update: function(reset) {
-		var me = this;
-		var meta = me.getMeta();
-		var points = meta.data;
+		const me = this;
+		const points = me._cachedMeta.data;
 
 		// Update Points
 		helpers.each(points, function(point, index) {

@@ -140,7 +140,7 @@ module.exports = DatasetController.extend({
 	 */
 	_parse: function(start, count) {
 		var data = this.getDataset().data;
-		var metaData = this.getMeta().data;
+		var metaData = this._cachedMeta.data;
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			metaData[i]._parsed = +data[i];
@@ -169,7 +169,7 @@ module.exports = DatasetController.extend({
 		var ratioY = 1;
 		var offsetX = 0;
 		var offsetY = 0;
-		var meta = me.getMeta();
+		var meta = me._cachedMeta;
 		var arcs = meta.data;
 		var cutout = opts.cutoutPercentage / 100 || 0;
 		var circumference = opts.circumference;
@@ -261,7 +261,7 @@ module.exports = DatasetController.extend({
 			if (index === 0) {
 				model.startAngle = opts.rotation;
 			} else {
-				model.startAngle = me.getMeta().data[index - 1]._model.endAngle;
+				model.startAngle = me._cachedMeta.data[index - 1]._model.endAngle;
 			}
 
 			model.endAngle = model.startAngle + model.circumference;
@@ -271,7 +271,7 @@ module.exports = DatasetController.extend({
 	},
 
 	calculateTotal: function() {
-		var metaData = this.getMeta().data;
+		var metaData = this._cachedMeta.data;
 		var total = 0;
 		var value;
 
@@ -290,7 +290,7 @@ module.exports = DatasetController.extend({
 	},
 
 	calculateCircumference: function(value) {
-		var total = this.getMeta().total;
+		var total = this._cachedMeta.total;
 		if (total > 0 && !isNaN(value)) {
 			return DOUBLE_PI * (Math.abs(value) / total);
 		}

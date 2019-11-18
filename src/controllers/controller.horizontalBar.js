@@ -51,13 +51,13 @@ module.exports = BarController.extend({
 	 * @private
 	 */
 	_getValueScaleId: function() {
-		return this.getMeta().xAxisID;
+		return this._cachedMeta.xAxisID;
 	},
 
 	/**
 	 * @private
 	 */
 	_getIndexScaleId: function() {
-		return this.getMeta().yAxisID;
+		return this._cachedMeta.yAxisID;
 	}
 });
