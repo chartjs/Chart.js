@@ -688,31 +688,19 @@ class TimeScale extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 */
-	_getPixelForOffset(time) {
-		var me = this;
-		var offsets = me._offsets;
-		var pos = interpolate(me._table, 'time', time, 'pos');
-		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-	}
-
 	getPixelForValue(value) {
 		var me = this;
-
-		if (typeof value !== 'number') {
-			value = parse(me, value);
-		}
-
-		if (value !== null) {
-			return me._getPixelForOffset(value);
-		}
+		var offsets = me._offsets;
+		var pos = interpolate(me._table, 'time', value, 'pos');
+		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
 	getPixelForTick(index) {
 		var ticks = this.getTicks();
 		return index >= 0 && index < ticks.length ?
-			this._getPixelForOffset(ticks[index].value) :
+			this.getPixelForValue(ticks[index].value) :
 			null;
 	}
 
