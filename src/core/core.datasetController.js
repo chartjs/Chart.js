@@ -192,6 +192,45 @@ function getUserBounds(scale) {
 		max: maxDefined ? max : Number.POSITIVE_INFINITY
 	};
 }
+
+function getOrCreateStack(stacks, stackKey, indexValue) {
+	const subStack = stacks[stackKey] || (stacks[stackKey] = {});
+	return subStack[indexValue] || (subStack[indexValue] = {});
+}
+
+function updateStacks(controller, parsed) {
+	const chart = controller.chart;
+	const meta = controller._cachedMeta;
+	const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
+	const xScale = meta.xScale;
+	const yScale = meta.yScale;
+	const xId = xScale.id;
+	const yId = yScale.id;
+	const xStacked = isStacked(xScale, meta);
+	const yStacked = isStacked(yScale, meta);
+	const xKey = yStacked && getStackKey(xScale, yScale, meta);
+	const yKey = xStacked && getStackKey(yScale, xScale, meta);
+	const ilen = parsed.length;
+	const datasetIndex = meta.index;
+	let stack;
+
+	for (let i = 0; i < ilen; ++i) {
+		const item = parsed[i];
+		const x = item[xId];
+		const y = item[yId];
+		const itemStacks = item._stacks || (item._stacks = {});
+
+		if (yStacked) {
+			stack = itemStacks[yId] = getOrCreateStack(stacks, xKey, x);
+			stack[datasetIndex] = y;
+		}
+		if (xStacked) {
+			stack = itemStacks[xId] = getOrCreateStack(stacks, yKey, y);
+			stack[datasetIndex] = x;
+		}
+	}
+}
+
 // Base class for all dataset controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
@@ -257,12 +296,14 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	linkScales: function() {
-		var chart = this.chart;
-		var meta = this._cachedMeta;
-		var dataset = this.getDataset();
-
-		meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
-		meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
+		const me = this;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const dataset = me.getDataset();
+		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
+		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
+		meta.xScale = me.getScaleForId(xid);
+		meta.yScale = me.getScaleForId(yid);
 	},
 
 	getDataset: function() {
@@ -444,20 +485,12 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parse: function(start, count) {
 		const me = this;
-		const chart = me.chart;
 		const meta = me._cachedMeta;
 		const data = me._data;
-		const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
 		const xScale = me._getIndexScale();
 		const yScale = me._getValueScale();
-		const xId = xScale.id;
-		const yId = yScale.id;
-		const xStacked = isStacked(xScale, meta);
-		const yStacked = isStacked(yScale, meta);
-		const xKey = yStacked && getStackKey(xScale, yScale, meta);
-		const yKey = xStacked && getStackKey(yScale, xScale, meta);
-		const stacked = xStacked || yStacked;
-		var i, ilen, parsed, stack, item, x, y;
+		const stacked = isStacked(xScale, meta) || isStacked(yScale, meta);
+		var i, ilen, parsed;
 
 		if (helpers.isArray(data[start])) {
 			parsed = me._parseArrayData(meta, data, start, count);
@@ -467,29 +500,11 @@ helpers.extend(DatasetController.prototype, {
 			parsed = me._parsePrimitiveData(meta, data, start, count);
 		}
 
-		function storeStack(stackKey, indexValue, scaleId, value) {
-			stackKey += '.' + indexValue;
-			item._stackKeys[scaleId] = stackKey;
-			stack = stacks[stackKey] || (stacks[stackKey] = {});
-			stack[meta.index] = value;
-		}
-
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
-			item = parsed[i];
-			meta.data[start + i]._parsed = item;
-
-			if (stacked) {
-				item._stackKeys = {};
-				x = item[xId];
-				y = item[yId];
-
-				if (yStacked) {
-					storeStack(xKey, x, yId, y);
-				}
-				if (xStacked) {
-					storeStack(yKey, y, xId, x);
-				}
-			}
+			meta.data[start + i]._parsed = parsed[i];
+		}
+		if (stacked) {
+			updateStacks(me, parsed);
 		}
 
 		xScale._invalidateCaches();
@@ -598,7 +613,7 @@ helpers.extend(DatasetController.prototype, {
 		var value = parsed[scale.id];
 		var stack = {
 			keys: getSortedDatasetIndices(chart, true),
-			values: chart._stacks[parsed._stackKeys[scale.id]]
+			values: parsed._stacks[scale.id]
 		};
 		return applyStack(stack, value, meta.index);
 	},
@@ -611,7 +626,6 @@ helpers.extend(DatasetController.prototype, {
 		var meta = this._cachedMeta;
 		var metaData = meta.data;
 		var ilen = metaData.length;
-		var stacks = chart._stacks || (chart._stacks = {});
 		var max = Number.NEGATIVE_INFINITY;
 		var stacked = canStack && meta._stacked;
 		var indices = getSortedDatasetIndices(chart, true);
@@ -633,7 +647,7 @@ helpers.extend(DatasetController.prototype, {
 			if (stacked) {
 				stack = {
 					keys: indices,
-					values: stacks[parsed._stackKeys[scale.id]]
+					values: parsed._stacks[scale.id]
 				};
 				value = applyStack(stack, value, meta.index, true);
 			}
