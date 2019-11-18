@@ -148,8 +148,7 @@ class Arc extends Element {
 		};
 	}
 
-	draw() {
-		var ctx = this._ctx;
+	draw(ctx) {
 		var vm = this._view;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
 		var arc = {

@@ -67,9 +67,8 @@ class Point extends Element {
 		};
 	}
 
-	draw(chartArea) {
+	draw(ctx, chartArea) {
 		const vm = this._view;
-		const ctx = this._ctx;
 		const pointStyle = vm.pointStyle;
 		const rotation = vm.rotation;
 		const radius = vm.radius;
