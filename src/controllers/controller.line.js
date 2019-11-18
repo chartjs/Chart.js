@@ -77,9 +77,6 @@ module.exports = DatasetController.extend({
 		var showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
 		var i, ilen;
 
-		me._xScale = me.getScaleForId(meta.xAxisID);
-		me._yScale = me.getScaleForId(meta.yAxisID);
-
 		// Update Line
 		if (showLine) {
 			// Data
@@ -106,15 +103,15 @@ module.exports = DatasetController.extend({
 	},
 
 	updateElement: function(point, index, reset) {
-		var me = this;
-		var meta = me.getMeta();
-		var xScale = me._xScale;
-		var yScale = me._yScale;
-		var stacked = meta._stacked;
-		var parsed = me._getParsed(index);
-		var options = me._resolveDataElementOptions(index);
-		var x = xScale.getPixelForValue(parsed[xScale.id]);
-		var y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+		const me = this;
+		const meta = me._cachedMeta;
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
+		const stacked = meta._stacked;
+		const parsed = me._getParsed(index);
+		const options = me._resolveDataElementOptions(index);
+		const x = xScale.getPixelForValue(parsed[xScale.id]);
+		const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 
 		// Utility
 		point._options = options;

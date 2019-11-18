@@ -487,9 +487,9 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const meta = me._cachedMeta;
 		const data = me._data;
-		const xScale = me._getIndexScale();
-		const yScale = me._getValueScale();
-		const stacked = isStacked(xScale, meta) || isStacked(yScale, meta);
+		const iScale = me._getIndexScale();
+		const vScale = me._getValueScale();
+		const stacked = isStacked(iScale, meta) || isStacked(vScale, meta);
 		var i, ilen, parsed;
 
 		if (helpers.isArray(data[start])) {
@@ -507,9 +507,9 @@ helpers.extend(DatasetController.prototype, {
 			updateStacks(me, parsed);
 		}
 
-		xScale._invalidateCaches();
-		if (yScale !== xScale) {
-			yScale._invalidateCaches();
+		iScale._invalidateCaches();
+		if (vScale !== iScale) {
+			vScale._invalidateCaches();
 		}
 	},
 
@@ -553,9 +553,9 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseArrayData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
+		const parsed = [];
 		var i, ilen, item, arr;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			arr = data[i];
@@ -579,9 +579,9 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		var xScale = this.getScaleForId(meta.xAxisID);
-		var yScale = this.getScaleForId(meta.yAxisID);
-		var parsed = [];
+		const xScale = meta.xScale;
+		const yScale = meta.yScale;
+		const parsed = [];
 		var i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
@@ -736,11 +736,12 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_update: function(reset) {
-		var me = this;
+		const me = this;
+		const meta = me._cachedMeta;
 		me._configure();
 		me._cachedDataOpts = null;
 		me.update(reset);
-		me._cachedMeta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(me._xScale, me._yScale, me._getMaxOverflow())));
+		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	},
 
