@@ -96,14 +96,8 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var config = me._config;
 		var animationsDisabled = me.chart._animationsDisabled;
 		var i, ilen;
-
-		// Compatibility: If the properties are defined with only the old name, use those values
-		if (config.tension !== undefined && config.lineTension === undefined) {
-			config.lineTension = config.tension;
-		}
 
 		// Data
 		line._children = points;
@@ -133,7 +127,6 @@ module.exports = DatasetController.extend({
 		var scale = me.chart.scale;
 		var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 		var options = me._resolveDataElementOptions(index);
-		var lineModel = me.getMeta().dataset._model;
 		var x = reset ? scale.xCenter : pointPosition.x;
 		var y = reset ? scale.yCenter : pointPosition.y;
 
@@ -152,7 +145,6 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: lineModel ? lineModel.tension : 0,
 
 			// Tooltip
 			hitRadius: options.hitRadius
@@ -177,6 +169,7 @@ module.exports = DatasetController.extend({
 	updateBezierControlPoints: function() {
 		var me = this;
 		var meta = me.getMeta();
+		var lineModel = meta.dataset._model;
 		var area = me.chart.chartArea;
 		var points = meta.data || [];
 		var i, ilen, model, controlPoints;
@@ -198,7 +191,7 @@ module.exports = DatasetController.extend({
 				previousItem(points, i)._model,
 				model,
 				nextItem(points, i)._model,
-				model.tension
+				lineModel.tension
 			);
 
 			// Prevent the bezier going outside of the bounds of the graph

@@ -47,6 +47,7 @@ var mappers = {
 			return {
 				x: x === null ? point.x : x,
 				y: y === null ? point.y : y,
+				boundary: true
 			};
 		};
 	}
@@ -136,7 +137,8 @@ function computeLinearBoundary(source) {
 			horizontal = scale.isHorizontal();
 			return {
 				x: horizontal ? target : null,
-				y: horizontal ? null : target
+				y: horizontal ? null : target,
+				boundary: true
 			};
 		}
 	}
@@ -168,6 +170,7 @@ function computeCircularBoundary(source) {
 			point.cy = center.y;
 			point.angle = scale.getIndexAngle(i) - Math.PI / 2;
 		}
+		point.boundary = true;
 		target.push(point);
 	}
 	return target;
@@ -232,8 +235,9 @@ function isDrawable(point) {
 	return point && !point.skip;
 }
 
-function drawArea(ctx, curve0, curve1, len0, len1) {
-	var i, cx, cy, r;
+function drawArea(ctx, curve0, curve1, len0, len1, stepped, tension) {
+	const lineTo = stepped ? helpers.canvas._steppedLineTo : helpers.canvas._bezierCurveTo;
+	let i, cx, cy, r, target;
 
 	if (!len0 || !len1) {
 		return;
@@ -242,7 +246,12 @@ function drawArea(ctx, curve0, curve1, len0, len1) {
 	// building first area curve (normal)
 	ctx.moveTo(curve0[0].x, curve0[0].y);
 	for (i = 1; i < len0; ++i) {
-		helpers.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
+		target = curve0[i];
+		if (!target.boundary && (tension || stepped)) {
+			lineTo(ctx, curve0[i - 1], target, false, stepped);
+		} else {
+			ctx.lineTo(target.x, target.y);
+		}
 	}
 
 	if (curve1[0].angle !== undefined) {
@@ -260,18 +269,27 @@ function drawArea(ctx, curve0, curve1, len0, len1) {
 
 	// building opposite area curve (reverse)
 	for (i = len1 - 1; i > 0; --i) {
-		helpers.canvas.lineTo(ctx, curve1[i], curve1[i - 1], true);
+		target = curve1[i - 1];
+		if (!target.boundary && (tension || stepped)) {
+			lineTo(ctx, curve1[i], target, true, stepped);
+		} else {
+			ctx.lineTo(target.x, target.y);
+		}
 	}
 }
 
-function doFill(ctx, points, mapper, view, color, loop) {
-	var count = points.length;
-	var span = view.spanGaps;
-	var curve0 = [];
-	var curve1 = [];
-	var len0 = 0;
-	var len1 = 0;
-	var i, ilen, index, p0, p1, d0, d1, loopOffset;
+function doFill(ctx, points, mapper, el) {
+	const count = points.length;
+	const view = el._view;
+	const loop = el._loop;
+	const span = view.spanGaps;
+	const stepped = view.steppedLine;
+	const tension = view.tension;
+	let curve0 = [];
+	let curve1 = [];
+	let len0 = 0;
+	let len1 = 0;
+	let i, ilen, index, p0, p1, d0, d1, loopOffset;
 
 	ctx.beginPath();
 
@@ -292,7 +310,7 @@ function doFill(ctx, points, mapper, view, color, loop) {
 			len1 = curve1.push(p1);
 		} else if (len0 && len1) {
 			if (!span) {
-				drawArea(ctx, curve0, curve1, len0, len1);
+				drawArea(ctx, curve0, curve1, len0, len1, stepped, tension);
 				len0 = len1 = 0;
 				curve0 = [];
 				curve1 = [];
@@ -307,10 +325,10 @@ function doFill(ctx, points, mapper, view, color, loop) {
 		}
 	}
 
-	drawArea(ctx, curve0, curve1, len0, len1);
+	drawArea(ctx, curve0, curve1, len0, len1, stepped, tension);
 
 	ctx.closePath();
-	ctx.fillStyle = color;
+	ctx.fillStyle = view.backgroundColor;
 	ctx.fill();
 }
 
@@ -357,7 +375,7 @@ module.exports = {
 	beforeDatasetsDraw: function(chart) {
 		var metasets = chart._getSortedVisibleDatasetMetas();
 		var ctx = chart.ctx;
-		var meta, i, el, view, points, mapper, color;
+		var meta, i, el, points, mapper;
 
 		for (i = metasets.length - 1; i >= 0; --i) {
 			meta = metasets[i].$filler;
@@ -367,14 +385,12 @@ module.exports = {
 			}
 
 			el = meta.el;
-			view = el._view;
 			points = el._children || [];
 			mapper = meta.mapper;
-			color = view.backgroundColor || defaults.global.defaultColor;
 
-			if (mapper && color && points.length) {
+			if (mapper && points.length) {
 				helpers.canvas.clipArea(ctx, chart.chartArea);
-				doFill(ctx, points, mapper, view, color, el._loop);
+				doFill(ctx, points, mapper, el);
 				helpers.canvas.unclipArea(ctx);
 			}
 		}

@@ -110,7 +110,6 @@ module.exports = DatasetController.extend({
 		var meta = me.getMeta();
 		var xScale = me._xScale;
 		var yScale = me._yScale;
-		var lineModel = meta.dataset._model;
 		var stacked = meta._stacked;
 		var parsed = me._getParsed(index);
 		var options = me._resolveDataElementOptions(index);
@@ -132,8 +131,6 @@ module.exports = DatasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: lineModel ? lineModel.tension : 0,
-			steppedLine: lineModel ? lineModel.steppedLine : false,
 			// Tooltip
 			hitRadius: options.hitRadius
 		};

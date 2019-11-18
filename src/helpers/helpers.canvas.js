@@ -171,27 +171,26 @@ module.exports = {
 		ctx.restore();
 	},
 
-	lineTo: function(ctx, previous, target, flip) {
-		var stepped = target.steppedLine;
-		if (stepped) {
-			if (stepped === 'middle') {
-				var midpoint = (previous.x + target.x) / 2.0;
-				ctx.lineTo(midpoint, flip ? target.y : previous.y);
-				ctx.lineTo(midpoint, flip ? previous.y : target.y);
-			} else if ((stepped === 'after' && !flip) || (stepped !== 'after' && flip)) {
-				ctx.lineTo(previous.x, target.y);
-			} else {
-				ctx.lineTo(target.x, previous.y);
-			}
-			ctx.lineTo(target.x, target.y);
-			return;
+	/**
+	 * @private
+	 */
+	_steppedLineTo: function(ctx, previous, target, flip, mode) {
+		if (mode === 'middle') {
+			const midpoint = (previous.x + target.x) / 2.0;
+			ctx.lineTo(midpoint, flip ? target.y : previous.y);
+			ctx.lineTo(midpoint, flip ? previous.y : target.y);
+		} else if ((mode === 'after' && !flip) || (mode !== 'after' && flip)) {
+			ctx.lineTo(previous.x, target.y);
+		} else {
+			ctx.lineTo(target.x, previous.y);
 		}
+		ctx.lineTo(target.x, target.y);
+	},
 
-		if (!target.tension) {
-			ctx.lineTo(target.x, target.y);
-			return;
-		}
-
+	/**
+	 * @private
+	 */
+	_bezierCurveTo: function(ctx, previous, target, flip) {
 		ctx.bezierCurveTo(
 			flip ? previous.controlPointPreviousX : previous.controlPointNextX,
 			flip ? previous.controlPointPreviousY : previous.controlPointNextY,

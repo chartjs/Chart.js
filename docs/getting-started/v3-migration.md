@@ -57,6 +57,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.aliasPixel`
 * `helpers.configMerge`
 * `helpers.indexOf`
+* `helpers.lineTo`
 * `helpers.min`
 * `helpers.max`
 * `helpers.nextItem`
@@ -83,6 +84,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 * `_model.datasetLabel`
 * `_model.label`
+* `Point._model.tension`
+* `Point._model.steppedLine`
 * `TimeScale.getLabelWidth`
 
 ### Renamed
