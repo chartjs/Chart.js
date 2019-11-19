@@ -477,7 +477,9 @@ helpers.extend(DatasetController.prototype, {
 		const {iScale, vScale, _stacked} = meta;
 		let i, ilen, parsed;
 
-		if (helpers.isArray(data[start])) {
+		if (me.getDataset().parsed) {
+			parsed = data;
+		} else if (helpers.isArray(data[start])) {
 			parsed = me._parseArrayData(meta, data, start, count);
 		} else if (helpers.isObject(data[start])) {
 			parsed = me._parseObjectData(meta, data, start, count);
