@@ -52,7 +52,6 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Removed
 
-* `afterScaleUpdate`
 * `helpers.addEvent`
 * `helpers.aliasPixel`
 * `helpers.configMerge`
@@ -73,6 +72,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Element.getArea`
 * `Element.height`
 * `Element.inLabelRange`
+* `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Line.calculatePointY`
 * `Scale.getRightValue`
 * `Scale.mergeTicksOptions`
@@ -82,10 +82,11 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 #### Removal of private APIs
 
-* `_model.datasetLabel`
-* `_model.label`
+* `Element._model.datasetLabel`
+* `Element._model.label`
 * `Point._model.tension`
 * `Point._model.steppedLine`
+* `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
 
 ### Renamed
@@ -112,16 +113,16 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 #### Scales
 
-* `scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
-* `scale.getPixelForValue` now has only one parameter
+* `Scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
+* `Scale.getPixelForValue` now has only one parameter. For the `TimeScale` that parameter must be millis since the epoch
 
 ##### Ticks
 
-* When `autoSkip` is enabled, `scale.ticks` now contains only the non-skipped ticks instead of all ticks.
-* `scale.ticks` now contains objects instead of strings
-* `buildTicks` is now expected to return tick objects
-* `afterBuildTicks` now has no parameters like the other callbacks
-* `convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
+* When the `autoSkip` option is enabled, `Scale.ticks` now contains only the non-skipped ticks instead of all ticks.
+* `Scale.ticks` now contains objects instead of strings
+* `Scale.buildTicks` is now expected to return tick objects
+* `Scale.afterBuildTicks` now has no parameters like the other callbacks
+* `Scale.convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
 
 ##### Time Scale
 

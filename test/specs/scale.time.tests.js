@@ -561,14 +561,14 @@ describe('Time scale tests', function() {
 			var lastPointOffsetMs = moment(chart.config.data.labels[chart.config.data.labels.length - 1]).valueOf() - scale.min;
 			var lastPointPixel = scale.left + lastPointOffsetMs / msPerPix;
 
-			expect(scale.getPixelForValue('2015-01-01T20:00:00')).toBeCloseToPixel(firstPointPixel);
-			expect(scale.getPixelForValue(chart.data.labels[0])).toBeCloseToPixel(firstPointPixel);
+			expect(scale.getPixelForValue(moment('2015-01-01T20:00:00').valueOf())).toBeCloseToPixel(firstPointPixel);
+			expect(scale.getPixelForValue(moment(chart.data.labels[0]).valueOf())).toBeCloseToPixel(firstPointPixel);
 			expect(scale.getValueForPixel(firstPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[0]),
 				unit: 'hour',
 			});
 
-			expect(scale.getPixelForValue('2015-01-10T12:00')).toBeCloseToPixel(lastPointPixel);
+			expect(scale.getPixelForValue(moment('2015-01-10T12:00').valueOf())).toBeCloseToPixel(lastPointPixel);
 			expect(scale.getValueForPixel(lastPointPixel)).toBeCloseToTime({
 				value: moment(chart.data.labels[6]),
 				unit: 'hour'
@@ -884,7 +884,7 @@ describe('Time scale tests', function() {
 		});
 
 		var xScale = chart.scales.xScale0;
-		var pixel = xScale.getPixelForValue('2016-05-27');
+		var pixel = xScale.getPixelForValue(moment('2016-05-27').valueOf());
 
 		expect(xScale.getValueForPixel(pixel)).toEqual(moment(chart.data.labels[0]).valueOf());
 	});
@@ -1140,11 +1140,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 4;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * 2);
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * 3);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * 2);
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * 3);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 4);
 			});
 			it ('should add a step before if scale.min is before the first data', function() {
 				var chart = this.chart;
@@ -1157,8 +1157,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 5;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 5);
 			});
 			it ('should add a step after if scale.max is after the last data', function() {
 				var chart = this.chart;
@@ -1171,8 +1171,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 5;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 4);
 			});
 			it ('should add steps before and after if scale.min/max are outside the data range', function() {
 				var chart = this.chart;
@@ -1186,8 +1186,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 6;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 5);
 			});
 		});
 		describe('is "linear"', function() {
@@ -1224,11 +1224,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / (2042 - 2017);
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2019 - 2017));
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2020 - 2017));
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2025 - 2017));
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * (2042 - 2017));
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2019 - 2017));
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2020 - 2017));
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2025 - 2017));
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2017));
 			});
 			it ('should take in account scale min and max if outside the ticks range', function() {
 				var chart = this.chart;
@@ -1242,11 +1242,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / (2050 - 2012);
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * (2017 - 2012));
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2019 - 2012));
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2020 - 2012));
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2025 - 2012));
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * (2042 - 2012));
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * (2017 - 2012));
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2019 - 2012));
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2020 - 2012));
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2025 - 2012));
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2012));
 			});
 		});
 	});
@@ -1282,8 +1282,8 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment('02/20 08:00', 'MM/DD HH:mm'));
 				expect(scale.max).toEqual(+moment('02/23 11:00', 'MM/DD HH:mm'));
-				expect(scale.getPixelForValue('02/20 08:00')).toBeCloseToPixel(scale.left);
-				expect(scale.getPixelForValue('02/23 11:00')).toBeCloseToPixel(scale.left + scale.width);
+				expect(scale.getPixelForValue(moment('02/20 08:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(scale.left);
+				expect(scale.getPixelForValue(moment('02/23 11:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(scale.left + scale.width);
 				expect(getLabels(scale)).toEqual([
 					'Feb 21', 'Feb 22', 'Feb 23']);
 			});
@@ -1320,8 +1320,8 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(ticks[0].value);
 				expect(scale.max).toEqual(ticks[ticks.length - 1].value);
-				expect(scale.getPixelForValue('02/20 08:00')).toBeCloseToPixel(60);
-				expect(scale.getPixelForValue('02/23 11:00')).toBeCloseToPixel(426);
+				expect(scale.getPixelForValue(moment('02/20 08:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(60);
+				expect(scale.getPixelForValue(moment('02/23 11:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(426);
 				expect(getLabels(scale)).toEqual([
 					'Feb 20', 'Feb 21', 'Feb 22', 'Feb 23', 'Feb 24']);
 			});
@@ -1367,18 +1367,20 @@ describe('Time scale tests', function() {
 						var options = chart.options.scales.xAxes[0];
 						var min = '02/19 07:00';
 						var max = '02/24 08:00';
+						var minMillis = +moment(min, 'MM/DD HH:mm');
+						var maxMillis = +moment(max, 'MM/DD HH:mm');
 
 						options.min = min;
 						options.max = max;
 						chart.update();
 
-						expect(scale.min).toEqual(+moment(min, 'MM/DD HH:mm'));
-						expect(scale.max).toEqual(+moment(max, 'MM/DD HH:mm'));
-						expect(scale.getPixelForValue(min)).toBeCloseToPixel(scale.left);
-						expect(scale.getPixelForValue(max)).toBeCloseToPixel(scale.left + scale.width);
+						expect(scale.min).toEqual(minMillis);
+						expect(scale.max).toEqual(maxMillis);
+						expect(scale.getPixelForValue(minMillis)).toBeCloseToPixel(scale.left);
+						expect(scale.getPixelForValue(maxMillis)).toBeCloseToPixel(scale.left + scale.width);
 						scale.getTicks().forEach(function(tick) {
-							expect(tick.value >= +moment(min, 'MM/DD HH:mm')).toBeTruthy();
-							expect(tick.value <= +moment(max, 'MM/DD HH:mm')).toBeTruthy();
+							expect(tick.value >= minMillis).toBeTruthy();
+							expect(tick.value <= maxMillis).toBeTruthy();
 						});
 					});
 					it ('should shrink scale to the min/max range', function() {
@@ -1387,18 +1389,20 @@ describe('Time scale tests', function() {
 						var options = chart.options.scales.xAxes[0];
 						var min = '02/21 07:00';
 						var max = '02/22 20:00';
+						var minMillis = +moment(min, 'MM/DD HH:mm');
+						var maxMillis = +moment(max, 'MM/DD HH:mm');
 
 						options.min = min;
 						options.max = max;
 						chart.update();
 
-						expect(scale.min).toEqual(+moment(min, 'MM/DD HH:mm'));
-						expect(scale.max).toEqual(+moment(max, 'MM/DD HH:mm'));
-						expect(scale.getPixelForValue(min)).toBeCloseToPixel(scale.left);
-						expect(scale.getPixelForValue(max)).toBeCloseToPixel(scale.left + scale.width);
+						expect(scale.min).toEqual(minMillis);
+						expect(scale.max).toEqual(maxMillis);
+						expect(scale.getPixelForValue(minMillis)).toBeCloseToPixel(scale.left);
+						expect(scale.getPixelForValue(maxMillis)).toBeCloseToPixel(scale.left + scale.width);
 						scale.getTicks().forEach(function(tick) {
-							expect(tick.value >= +moment(min, 'MM/DD HH:mm')).toBeTruthy();
-							expect(tick.value <= +moment(max, 'MM/DD HH:mm')).toBeTruthy();
+							expect(tick.value >= minMillis).toBeTruthy();
+							expect(tick.value <= maxMillis).toBeTruthy();
 						});
 					});
 				});
@@ -1437,8 +1441,8 @@ describe('Time scale tests', function() {
 				it ('should not add offset from the edges', function() {
 					var scale = this.chart.scales.x;
 
-					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left);
-					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width);
+					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left);
+					expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + scale.width);
 				});
 
 				it ('should add offset from the edges if offset is true', function() {
@@ -1453,8 +1457,8 @@ describe('Time scale tests', function() {
 					var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
 					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
 
-					expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
-					expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				});
 
 				it ('should not add offset if min and max extend the labels range', function() {
@@ -1466,8 +1470,8 @@ describe('Time scale tests', function() {
 					options.max = '2051';
 					chart.update();
 
-					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left);
-					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width);
+					expect(scale.getPixelForValue(moment('2012').valueOf())).toBeCloseToPixel(scale.left);
+					expect(scale.getPixelForValue(moment('2051').valueOf())).toBeCloseToPixel(scale.left + scale.width);
 				});
 			});
 		});
@@ -1514,8 +1518,8 @@ describe('Time scale tests', function() {
 					var numTicks = scale.ticks.length;
 					var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
 					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
-					expect(scale.getPixelForValue('2012')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
-					expect(scale.getPixelForValue('2051')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2012').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2051').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				});
 			});
 		});
@@ -1553,8 +1557,8 @@ describe('Time scale tests', function() {
 
 			it ('should reverse the labels', function() {
 				var scale = this.chart.scales.x;
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + scale.width);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left);
 			});
 
 			it ('should reverse the values for pixels', function() {
@@ -1581,8 +1585,8 @@ describe('Time scale tests', function() {
 				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
 				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
 			});
 
 			it ('should reverse the values for pixels if offset is true', function() {
@@ -1645,11 +1649,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 4;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 4);
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * 3);
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * 2);
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * 3);
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * 2);
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start);
 			});
 
 			it ('should reverse the labels and should add a step before if scale.min is before the first data', function() {
@@ -1663,8 +1667,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 5;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 4);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * 4);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start);
 			});
 
 			it ('should reverse the labels and should add a step after if scale.max is after the last data', function() {
@@ -1678,8 +1682,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 5;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 5);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice);
 			});
 
 			it ('should reverse the labels and should add steps before and after if scale.min/max are outside the data range', function() {
@@ -1694,8 +1698,8 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / 6;
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * 5);
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * 5);
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice);
 			});
 		});
 		describe('is "linear"', function() {
@@ -1733,11 +1737,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / (2042 - 2017);
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * (2042 - 2017));
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2042 - 2019));
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2042 - 2020));
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2042 - 2025));
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start);
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2017));
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2019));
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2020));
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2025));
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start);
 			});
 
 			it ('should reverse the labels and should take in account scale min and max if outside the ticks range', function() {
@@ -1752,11 +1756,11 @@ describe('Time scale tests', function() {
 				var start = scale.left;
 				var slice = scale.width / (2050 - 2012);
 
-				expect(scale.getPixelForValue('2017')).toBeCloseToPixel(start + slice * (2050 - 2017));
-				expect(scale.getPixelForValue('2019')).toBeCloseToPixel(start + slice * (2050 - 2019));
-				expect(scale.getPixelForValue('2020')).toBeCloseToPixel(start + slice * (2050 - 2020));
-				expect(scale.getPixelForValue('2025')).toBeCloseToPixel(start + slice * (2050 - 2025));
-				expect(scale.getPixelForValue('2042')).toBeCloseToPixel(start + slice * (2050 - 2042));
+				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * (2050 - 2017));
+				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2050 - 2019));
+				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2050 - 2020));
+				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2050 - 2025));
+				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * (2050 - 2042));
 			});
 		});
 	});
