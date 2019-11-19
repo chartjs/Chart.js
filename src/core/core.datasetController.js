@@ -189,35 +189,21 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
 }
 
 function updateStacks(controller, parsed) {
-	const chart = controller.chart;
-	const meta = controller._cachedMeta;
+	const {chart, _cachedMeta: meta} = controller;
 	const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
-	const xScale = meta.xScale;
-	const yScale = meta.yScale;
-	const xId = xScale.id;
-	const yId = yScale.id;
-	const xStacked = isStacked(xScale, meta);
-	const yStacked = isStacked(yScale, meta);
-	const xKey = yStacked && getStackKey(xScale, yScale, meta);
-	const yKey = xStacked && getStackKey(yScale, xScale, meta);
+	const {iScale, vScale, index: datasetIndex} = meta;
+	const iId = iScale.id;
+	const vId = vScale.id;
+	const key = getStackKey(iScale, vScale, meta);
 	const ilen = parsed.length;
-	const datasetIndex = meta.index;
 	let stack;
 
 	for (let i = 0; i < ilen; ++i) {
 		const item = parsed[i];
-		const x = item[xId];
-		const y = item[yId];
+		const {[iId]: index, [vId]: value} = item;
 		const itemStacks = item._stacks || (item._stacks = {});
-
-		if (yStacked) {
-			stack = itemStacks[yId] = getOrCreateStack(stacks, xKey, x);
-			stack[datasetIndex] = y;
-		}
-		if (xStacked) {
-			stack = itemStacks[xId] = getOrCreateStack(stacks, yKey, y);
-			stack[datasetIndex] = x;
-		}
+		stack = itemStacks[vId] = getOrCreateStack(stacks, key, index);
+		stack[datasetIndex] = value;
 	}
 }
 
