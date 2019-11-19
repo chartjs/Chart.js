@@ -137,6 +137,7 @@ The interaction with each bar can be controlled with the following properties:
 All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
 
 ## Dataset Configuration
+
 The bar chart accepts the following configuration from the associated dataset options:
 
 | Name | Type | Default | Description
@@ -226,22 +227,7 @@ Sample:     |==============|
 
 ## Data Structure
 
-The `data` property of a dataset for a bar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
-
-```javascript
-data: [20, 10]
-```
-
-You can also specify the dataset as x/y coordinates when using the [time scale](../axes/cartesian/time.md#time-cartesian-axis).
-
-```javascript
-data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
-```
-
-You can also specify the dataset for a bar chart as arrays of two numbers. This will force rendering of bars with gaps between them (floating-bars). First and second numbers in array will correspond the start and the end point of a bar respectively.
-```javascript
-data: [[5,6], [-3,-6]]
-```
+All of the supported [data structures](../general/data-structures) can be used with bar charts.
 
 ## Stacked Bar Chart
 
