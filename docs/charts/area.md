@@ -32,6 +32,31 @@ new Chart(ctx, {
 });
 ```
 
+If you need to support multiple colors when filling from one dataset to another, you may specify an object with the following option :
+
+| Param | Type | Description |
+| :--- | :--- | :--- |
+| `target` | `number`, `string`, `boolean` | The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries. |
+| `above` | `Color` | If no color is set, the default color will be the background color of the chart. |
+| `below` | `Color` | Same as the above. |
+
+**Example**
+```javascript
+new Chart(ctx, {
+    data: {
+        datasets: [
+            {
+              fill: {
+                target: 'origin',
+                above: 'rgb(255, 0, 0)',   // Area will be red above the origin
+                below: 'rgb(0, 0, 255)'    // And blue below the origin
+              }
+            }
+        ]
+    }
+});
+```
+
 ## Configuration
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
