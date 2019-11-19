@@ -359,6 +359,7 @@ function ticksFromTimestamps(scale, values, majorUnit) {
 }
 
 function getDataTimestamps(scale) {
+	var options = scale.options;
 	var timestamps = scale._cache.data || [];
 	var i, ilen, metas;
 
@@ -367,6 +368,10 @@ function getDataTimestamps(scale) {
 	}
 
 	metas = scale._getMatchingVisibleMetas();
+	if (options.normalizedData && metas.length) {
+		return (scale._cache.data = metas[0].controller._getAllParsedValues(scale));
+	}
+
 	for (i = 0, ilen = metas.length; i < ilen; ++i) {
 		timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
 	}
@@ -377,6 +382,7 @@ function getDataTimestamps(scale) {
 }
 
 function getLabelTimestamps(scale) {
+	var options = scale.options;
 	var timestamps = scale._cache.labels || [];
 	var i, ilen, labels;
 
@@ -390,10 +396,11 @@ function getLabelTimestamps(scale) {
 	}
 
 	// We could assume labels are in order and unique - but let's not
-	return (scale._cache.labels = arrayUnique(timestamps.sort(sorter)));
+	return (scale._cache.labels = options.normalizedData ? timestamps : arrayUnique(timestamps.sort(sorter)));
 }
 
 function getAllTimestamps(scale) {
+	var options = scale.options;
 	var timestamps = scale._cache.all || [];
 	var label, data;
 
@@ -403,12 +410,14 @@ function getAllTimestamps(scale) {
 
 	data = getDataTimestamps(scale);
 	label = getLabelTimestamps(scale);
-	if (data.length && label.length) {
+	if (label.length && (!data.length || options.normalizedData)) {
+		timestamps = label;
+	} else if (data.length && label.length) {
 		// If combining labels and data (data might not contain all labels),
 		// we need to recheck uniqueness and sort
 		timestamps = arrayUnique(data.concat(label).sort(sorter));
 	} else {
-		timestamps = data.length ? data : label;
+		timestamps = data;
 	}
 	timestamps = scale._cache.all = timestamps;
 
@@ -497,6 +506,11 @@ const defaultConfig = {
 	 * @since 2.7.0
 	 */
 	bounds: 'data',
+
+	/**
+	 * If true, the data is assumed to be unique, sorted, and consistent (i.e. each dataset / labels contain same index values)
+	 */
+	normalizedData: false,
 
 	adapters: {},
 	time: {

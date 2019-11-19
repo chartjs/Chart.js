@@ -35,6 +35,7 @@ The following options are provided by the time scale. You may also set options p
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
 | `distribution` | `string` | `'linear'` | How data is plotted. [more...](#scale-distribution)
 | `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](#scale-bounds)
+| `normalizedData` | `boolean` | `false` | If true, the data is assumed to be unique, sorted, and consistent (i.e. each dataset / labels contain same index values).
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.

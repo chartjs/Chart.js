@@ -42,6 +42,10 @@ There are many approaches to data decimation and selection of an algorithm will 
 
 Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
 
+## Time Scale
+
+Provide data that is unique, sorted, and consistent (i.e. each dataset / labels contain same index values) and set `normalizedData: true`
+
 ## Line Charts
 
 ### Disable Bezier Curves
