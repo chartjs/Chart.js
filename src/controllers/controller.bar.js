@@ -218,8 +218,7 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
+		const {iScale, vScale} = meta;
 		const vProp = vScale.axis;
 		const parsed = [];
 		let i, ilen, item, obj, value;
@@ -244,16 +243,15 @@ module.exports = DatasetController.extend({
 	_getLabelAndValue: function(index) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const indexScale = meta.iScale;
-		const valueScale = meta.vScale;
+		const {iScale, vScale} = meta;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
 		const value = custom
 			? '[' + custom.start + ', ' + custom.end + ']'
-			: '' + valueScale.getLabelForValue(parsed[valueScale.id]);
+			: '' + vScale.getLabelForValue(parsed[vScale.id]);
 
 		return {
-			label: '' + indexScale.getLabelForValue(parsed[indexScale.id]),
+			label: '' + iScale.getLabelForValue(parsed[iScale.id]),
 			value: value
 		};
 	},

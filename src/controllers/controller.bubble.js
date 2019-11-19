@@ -57,17 +57,18 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
+		const {xScale, yScale} = meta;
+		const xId = xScale.id;
+		const yId = yScale.id;
 		const parsed = [];
-		var i, ilen, item, obj;
+		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			obj = data[i];
-			item = {};
-			item[xScale.id] = xScale._parseObject(obj, 'x', i);
-			item[yScale.id] = yScale._parseObject(obj, 'y', i);
-			item._custom = obj && obj.r && +obj.r;
-			parsed.push(item);
+			item = data[i];
+			parsed.push({
+				[xId]: xScale._parseObject(item, 'x', i),
+				[yId]: yScale._parseObject(item, 'y', i),
+				_custom: item && item.r && +item.r
+			});
 		}
 		return parsed;
 	},
@@ -93,8 +94,7 @@ module.exports = DatasetController.extend({
 	_getLabelAndValue: function(index) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
+		const {xScale, yScale} = meta;
 		const parsed = me._getParsed(index);
 		const x = xScale.getLabelForValue(parsed[xScale.id]);
 		const y = yScale.getLabelForValue(parsed[yScale.id]);
@@ -122,9 +122,7 @@ module.exports = DatasetController.extend({
 	 */
 	updateElements: function(points, start, count, reset) {
 		const me = this;
-		const meta = me._cachedMeta;
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
+		const {xScale, yScale} = me._cachedMeta;
 		let i;
 
 		for (i = start; i < start + count; i++) {
