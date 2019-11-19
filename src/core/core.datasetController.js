@@ -475,10 +475,12 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
-		let i, ilen, parsed;
+		let offset = 0;
+		let i, parsed;
 
 		if (me.getDataset().parsed) {
 			parsed = data;
+			offset = start;
 		} else if (helpers.isArray(data[start])) {
 			parsed = me._parseArrayData(meta, data, start, count);
 		} else if (helpers.isObject(data[start])) {
@@ -487,8 +489,8 @@ helpers.extend(DatasetController.prototype, {
 			parsed = me._parsePrimitiveData(meta, data, start, count);
 		}
 
-		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
-			meta.data[start + i]._parsed = parsed[i];
+		for (i = 0; i < count; ++i) {
+			meta.data[i + start]._parsed = parsed[i + offset];
 		}
 
 		if (_stacked) {
