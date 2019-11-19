@@ -68,14 +68,14 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(reset) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var line = meta.dataset;
-		var points = meta.data || [];
-		var options = me.chart.options;
-		var config = me._config;
-		var showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
-		var i, ilen;
+		const me = this;
+		const meta = me._cachedMeta;
+		const line = meta.dataset;
+		const points = meta.data || [];
+		const options = me.chart.options;
+		const config = me._config;
+		const showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
+		let i, ilen;
 
 		// Update Line
 		if (showLine) {
@@ -88,9 +88,7 @@ module.exports = DatasetController.extend({
 		}
 
 		// Update Points
-		for (i = 0, ilen = points.length; i < ilen; ++i) {
-			me.updateElement(points[i], i, reset);
-		}
+		me.updateElements(points, 0, points.length, reset);
 
 		if (showLine && line._model.tension !== 0) {
 			me.updateBezierControlPoints();
@@ -102,35 +100,40 @@ module.exports = DatasetController.extend({
 		}
 	},
 
-	updateElement: function(point, index, reset) {
+	updateElements: function(points, start, count, reset) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const xScale = meta.xScale;
 		const yScale = meta.yScale;
 		const stacked = meta._stacked;
-		const parsed = me._getParsed(index);
-		const options = me._resolveDataElementOptions(index);
-		const x = xScale.getPixelForValue(parsed[xScale.id]);
-		const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+		var i;
 
-		// Utility
-		point._options = options;
+		for (i = start; i < start + count; ++i) {
+			const point = points[i];
+			const parsed = me._getParsed(i);
+			const options = me._resolveDataElementOptions(i);
+			const x = xScale.getPixelForValue(parsed[xScale.id]);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 
-		// Desired view properties
-		point._model = {
-			x: x,
-			y: y,
-			skip: isNaN(x) || isNaN(y),
-			// Appearance
-			radius: options.radius,
-			pointStyle: options.pointStyle,
-			rotation: options.rotation,
-			backgroundColor: options.backgroundColor,
-			borderColor: options.borderColor,
-			borderWidth: options.borderWidth,
-			// Tooltip
-			hitRadius: options.hitRadius
-		};
+			// Utility
+			point._options = options;
+
+			// Desired view properties
+			point._model = {
+				x: x,
+				y: y,
+				skip: isNaN(x) || isNaN(y),
+				// Appearance
+				radius: options.radius,
+				pointStyle: options.pointStyle,
+				rotation: options.rotation,
+				backgroundColor: options.backgroundColor,
+				borderColor: options.borderColor,
+				borderWidth: options.borderWidth,
+				// Tooltip
+				hitRadius: options.hitRadius
+			};
+		}
 	},
 
 	/**
@@ -234,7 +237,6 @@ module.exports = DatasetController.extend({
 		var ilen = points.length;
 
 		if (me._showLine) {
-
 			meta.dataset.draw();
 		}
 

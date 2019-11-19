@@ -48,7 +48,6 @@ function listenArrayEvents(array, listener) {
 	});
 }
 
-
 function scaleClip(scale, allowedOverflow) {
 	var opts = scale && scale.options || {};
 	var reverse = opts.reverse;
@@ -972,15 +971,15 @@ helpers.extend(DatasetController.prototype, {
 	insertElements: function(start, count) {
 		const me = this;
 		const elements = [];
+		const data = me._cachedMeta.data;
 		let i;
+
 		for (i = start; i < start + count; ++i) {
 			elements.push(me.createElement(me.dataElementType));
 		}
-		me._cachedMeta.data.splice(start, 0, ...elements);
+		data.splice(start, 0, ...elements);
 		me._parse(start, count);
-		for (i = 0; i < count; ++i) {
-			me.updateElement(elements[i], start + i, true);
-		}
+		me.updateElements(data, start, count);
 	},
 
 	/**

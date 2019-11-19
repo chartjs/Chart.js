@@ -154,10 +154,7 @@ module.exports = DatasetController.extend({
 			start += angle;
 		}
 
-		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveDataElementOptions(i);
-			me.updateElement(arcs[i], i, reset);
-		}
+		me.updateElements(arcs, 0, arcs.length, reset);
 	},
 
 	/**
@@ -178,29 +175,29 @@ module.exports = DatasetController.extend({
 		me.innerRadius = me.outerRadius - chart.radiusLength;
 	},
 
-	updateElement: function(arc, index, reset) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = me.getDataset();
-		var opts = chart.options;
-		var animationOpts = opts.animation;
-		var scale = chart.scale;
+	updateElements: function(arcs, start, count, reset) {
+		const me = this;
+		const chart = me.chart;
+		const dataset = me.getDataset();
+		const opts = chart.options;
+		const animationOpts = opts.animation;
+		const scale = chart.scale;
+		const centerX = scale.xCenter;
+		const centerY = scale.yCenter;
+		var i;
 
-		var centerX = scale.xCenter;
-		var centerY = scale.yCenter;
+		for (i = 0; i < start + count; i++) {
+			const arc = arcs[i];
+			// var negHalfPI = -0.5 * Math.PI;
+			const datasetStartAngle = opts.startAngle;
+			const distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[i]);
+			const startAngle = me._starts[i];
+			const endAngle = startAngle + (arc.hidden ? 0 : me._angles[i]);
 
-		// var negHalfPI = -0.5 * Math.PI;
-		var datasetStartAngle = opts.startAngle;
-		var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-		var startAngle = me._starts[index];
-		var endAngle = startAngle + (arc.hidden ? 0 : me._angles[index]);
+			const resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[i]);
+			const options = arc._options = me._resolveDataElementOptions(i);
 
-		var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
-		var options = arc._options || {};
-
-		helpers.extend(arc, {
-			// Desired view properties
-			_model: {
+			arc._model = {
 				backgroundColor: options.backgroundColor,
 				borderColor: options.borderColor,
 				borderWidth: options.borderWidth,
@@ -211,10 +208,10 @@ module.exports = DatasetController.extend({
 				outerRadius: reset ? resetRadius : distance,
 				startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
 				endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle
-			}
-		});
+			};
 
-		arc.pivot(chart._animationsDisabled);
+			arc.pivot(chart._animationsDisabled);
+		}
 	},
 
 	countVisibleElements: function() {
