@@ -53,6 +53,7 @@ function mergeScaleConfig(config, options) {
 	// Backward compatibility
 	if (options.scale) {
 		scales[options.scale.id || 'r'] = helpers.mergeIf({}, [options.scale, chartDefaults.scales.r]);
+		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
 	// Then merge dataset defaults to scale configs
