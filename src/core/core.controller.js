@@ -44,14 +44,12 @@ function mergeScaleConfig(/* config objects ... */) {
 	return helpers.merge({}, [].slice.call(arguments), {
 		merger: function(key, target, source) {
 			// Starting in V3, the scale config is axis_id: axis_config
-			var type, scale;
+			var scale = source[key];
+			var type = valueOrDefault(scale.type, key.startsWith('x') ? 'category' : 'linear');
 
 			if (!target[key]) {
 				target[key] = {};
 			}
-
-			scale = source[key];
-			type = scale.type;
 
 			if (!target[key].type || (scale.type && scale.type !== target[key].type)) {
 				// new/untyped scale or type changed: let's apply the new defaults
