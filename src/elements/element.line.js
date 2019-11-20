@@ -145,10 +145,9 @@ class Line extends Element {
 		super(props);
 	}
 
-	draw() {
+	draw(ctx) {
 		const me = this;
 		const vm = me._view;
-		const ctx = me._ctx;
 		const spanGaps = vm.spanGaps;
 		let closePath = me._loop;
 		let points = me._children;

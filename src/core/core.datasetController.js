@@ -282,6 +282,7 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		let meta;
 		me.chart = chart;
+		me._ctx = chart.ctx;
 		me.index = datasetIndex;
 		me._cachedMeta = meta = me.getMeta();
 		me._type = meta.type;
@@ -371,9 +372,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	createElement: function(type) {
-		return type && new type({
-			_ctx: this.chart.ctx
-		});
+		return type && new type();
 	},
 
 	/**
@@ -768,17 +767,18 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	draw: function() {
+		const ctx = this._ctx;
 		const meta = this._cachedMeta;
 		const elements = meta.data || [];
 		const ilen = elements.length;
 		let i = 0;
 
 		if (meta.dataset) {
-			meta.dataset.draw();
+			meta.dataset.draw(ctx);
 		}
 
 		for (; i < ilen; ++i) {
-			elements[i].draw();
+			elements[i].draw(ctx);
 		}
 	},
 

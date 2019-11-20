@@ -484,7 +484,7 @@ module.exports = DatasetController.extend({
 
 		for (; i < ilen; ++i) {
 			if (!isNaN(me._getParsed(i)[vScale.id])) {
-				rects[i].draw();
+				rects[i].draw(me._ctx);
 			}
 		}
 

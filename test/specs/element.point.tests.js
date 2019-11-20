@@ -74,11 +74,7 @@ describe('Chart.elements.Point', function() {
 
 	it ('should not draw if skipped', function() {
 		var mockContext = window.createMockContext();
-		var point = new Chart.elements.Point({
-			_datasetIndex: 2,
-			_index: 1,
-			_ctx: mockContext
-		});
+		var point = new Chart.elements.Point();
 
 		// Attach a view object as if we were the controller
 		point._view = {
@@ -90,7 +86,7 @@ describe('Chart.elements.Point', function() {
 			skip: true
 		};
 
-		point.draw();
+		point.draw(mockContext);
 
 		expect(mockContext.getCalls()).toEqual([]);
 	});

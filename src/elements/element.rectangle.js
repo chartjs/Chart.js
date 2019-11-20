@@ -136,8 +136,7 @@ class Rectangle extends Element {
 		super(props);
 	}
 
-	draw() {
-		var ctx = this._ctx;
+	draw(ctx) {
 		var vm = this._view;
 		var rects = boundingRects(vm);
 		var outer = rects.outer;

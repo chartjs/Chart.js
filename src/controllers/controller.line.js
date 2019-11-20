@@ -229,6 +229,7 @@ module.exports = DatasetController.extend({
 
 	draw: function() {
 		var me = this;
+		var ctx = me._ctx;
 		var chart = me.chart;
 		var meta = me._cachedMeta;
 		var points = meta.data || [];
@@ -237,12 +238,12 @@ module.exports = DatasetController.extend({
 		var ilen = points.length;
 
 		if (me._showLine) {
-			meta.dataset.draw();
+			meta.dataset.draw(ctx);
 		}
 
 		// Draw the points
 		for (; i < ilen; ++i) {
-			points[i].draw(area);
+			points[i].draw(ctx, area);
 		}
 	},
 
