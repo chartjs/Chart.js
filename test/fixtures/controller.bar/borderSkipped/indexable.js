@@ -41,8 +41,8 @@ module.exports = {
 				}
 			},
 			scales: {
-				xAxes: [{display: false}],
-				yAxes: [{display: false}]
+				x: {display: false},
+				y: {display: false}
 			}
 		}
 	},

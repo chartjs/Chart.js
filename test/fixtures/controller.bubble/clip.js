@@ -14,15 +14,15 @@ module.exports = {
 		options: {
 			legend: false,
 			scales: {
-				xAxes: [{ticks: {display: false}}],
-				yAxes: [{
+				x: {ticks: {display: false}},
+				y: {
 					min: 8,
 					max: 25,
 					beginAtZero: true,
 					ticks: {
 						display: false
 					}
-				}]
+				}
 			}
 		}
 	},

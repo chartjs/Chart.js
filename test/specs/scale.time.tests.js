@@ -13,7 +13,7 @@ describe('Time scale tests', function() {
 			data: data,
 			options: {
 				scales: {
-					xAxes: [options]
+					x: options
 				}
 			}
 		}, {canvas: {width: width, height: height}});
@@ -1469,7 +1469,7 @@ describe('Time scale tests', function() {
 						},
 						options: {
 							scales: {
-								xAxes: [{
+								x: {
 									id: 'x',
 									type: 'time',
 									time: {
@@ -1479,7 +1479,7 @@ describe('Time scale tests', function() {
 										source: source
 									},
 									distribution: distribution
-								}]
+								}
 							}
 						}
 					});

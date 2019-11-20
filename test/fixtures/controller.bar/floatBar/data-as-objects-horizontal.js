@@ -18,8 +18,8 @@ module.exports = {
 			legend: false,
 			title: false,
 			scales: {
-				xAxes: [{display: false, min: 0}],
-				yAxes: [{display: false, stacked: true}]
+				x: {display: false, min: 0},
+				y: {display: false, stacked: true}
 			}
 		}
 	},
