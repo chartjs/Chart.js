@@ -25,10 +25,10 @@ let chart = new Chart(ctx, {
     data: ...
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 type: 'category',
                 labels: ['January', 'February', 'March', 'April', 'May', 'June']
-            }]
+            }
         }
     }
 });
@@ -58,9 +58,9 @@ let chart = new Chart(ctx, {
     },
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 min: 'March'
-            }]
+            }
         }
     }
 });

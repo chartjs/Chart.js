@@ -43,9 +43,9 @@ var myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            yAxes: [{
+            y: {
                 beginAtZero: true
-            }]
+            }
         }
     }
 });

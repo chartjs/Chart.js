@@ -45,12 +45,12 @@ function updateConfigAsNewObject(chart) {
             text: 'Chart.js'
         },
         scales: {
-            xAxes: [{
+            x: {
                 display: true
-            }],
-            yAxes: [{
+            },
+            y: {
                 display: true
-            }]
+            }
         }
     };
     chart.update();
@@ -82,11 +82,11 @@ function updateScales(chart) {
 }
 ```
 
-You can also update a specific scale either by specifying its index or id.
+You can also update a specific scale either by its id.
 
 ```javascript
 function updateScale(chart) {
-    chart.options.scales.yAxes[0] = {
+    chart.options.scales.y = {
         type: 'logarithmic'
     };
     chart.update();

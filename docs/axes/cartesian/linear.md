@@ -45,10 +45,10 @@ let chart = new Chart(ctx, {
     },
     options: {
         scales: {
-            yAxes: [{
+            y: {
                 suggestedMin: 50,
                 suggestedMax: 100
-            }]
+            }
         }
     }
 });
@@ -65,13 +65,13 @@ This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5
 ```javascript
 let options = {
     scales: {
-        yAxes: [{
+        y: {
             max: 5,
             min: 0,
             ticks: {
                 stepSize: 0.5
             }
-        }]
+        }
     }
 };
 ```

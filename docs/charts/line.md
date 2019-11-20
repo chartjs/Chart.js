@@ -211,9 +211,9 @@ var stackedLine = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            yAxes: [{
+            y: {
                 stacked: true
-            }]
+            }
         }
     }
 });

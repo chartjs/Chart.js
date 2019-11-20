@@ -41,9 +41,9 @@ A bar chart provides a way of showing data values represented as vertical bars. 
     },
     "options": {
         "scales": {
-            "yAxes": [{
+            "y": {
                 "beginAtZero": true
-            }]
+            }
         }
     }
 }
@@ -160,7 +160,9 @@ data: {
     }]
 };
 ```
+
 ### barThickness
+
 If this value is a number, it is applied to the width of each bar, in pixels. When this is enforced, `barPercentage` and `categoryPercentage` are ignored.
 
 If set to `'flex'`, the base sample widths are calculated automatically based on the previous and following samples so that they take the full available widths without overlap. Then, bars are sized using `barPercentage` and `categoryPercentage`. There is no gap when the percentage options are 1. This mode generates bars with different widths when data are not evenly spaced.
@@ -168,6 +170,7 @@ If set to `'flex'`, the base sample widths are calculated automatically based on
 If not set (default), the base sample widths are calculated using the smallest interval that prevents bar overlapping, and bars are sized using `barPercentage` and `categoryPercentage`. This mode always generates bars equally sized.
 
 ## Scale Configuration
+
 The bar chart sets unique default values for the following configuration from the associated `scale` options:
 
 | Name | Type | Default | Description
@@ -180,16 +183,17 @@ The bar chart sets unique default values for the following configuration from th
 ```javascript
 options = {
     scales: {
-        xAxes: [{
+        x: {
             gridLines: {
                 offsetGridLines: true
             }
-        }]
+        }
     }
 };
 ```
 
 ### offsetGridLines
+
 If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a category scale in a bar chart while false for other scales or chart types by default.
 
 ## Default Options
@@ -249,12 +253,12 @@ var stackedBar = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 stacked: true
-            }],
-            yAxes: [{
+            },
+            y: {
                 stacked: true
-            }]
+            }
         }
     }
 });
@@ -267,6 +271,7 @@ The following dataset properties are specific to stacked bar charts.
 | `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 
 ## Horizontal Bar Chart
+
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 {% chartjs %}
 {
@@ -300,9 +305,9 @@ A horizontal bar chart is a variation on a vertical bar chart. It is sometimes u
     },
     "options": {
         "scales": {
-            "xAxes": [{
+            "x": {
                 "beginAtZero": true
-            }]
+            }
         }
     }
 }
