@@ -33,7 +33,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 ### Options
 
 * The dataset option `tension` was renamed to `lineTension`
-* `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object.
+* `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
 * `scales.[x/y]Axes.categoryPercentage` was moved to dataset option `categoryPercentage`
