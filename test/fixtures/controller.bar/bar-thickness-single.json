@@ -18,6 +18,7 @@
                 "x": {
                     "type": "time",
                     "display": false,
+                    "offset": false,
                     "time": {
                         "parser": "YYYY"
                     },

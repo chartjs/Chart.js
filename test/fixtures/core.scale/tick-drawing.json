@@ -38,12 +38,14 @@
                     "position": "left",
                     "id": "y-axis-1",
                     "type": "linear",
+                    "offset": false,
                     "min": -100,
                     "max": 100,
                     "ticks": {
                         "display": false
                     },
                     "gridLines":{
+                        "offsetGridLines": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"
@@ -52,12 +54,14 @@
                 "y2": {
                     "type": "linear",
                     "position": "right",
+                    "offset": false,
                     "min": 0,
                     "max": 50,
                     "ticks": {
                         "display": false
                     },
                     "gridLines":{
+                        "offsetGridLines": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"

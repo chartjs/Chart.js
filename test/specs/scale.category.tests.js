@@ -283,7 +283,7 @@ describe('Category scale tests', function() {
 			}
 		});
 
-		var xScale = chart.scales.s;
+		var xScale = chart.scales.x;
 		expect(xScale.getPixelForValue(1)).toBeCloseToPixel(23 + 6); // plus lineHeight
 		expect(xScale.getPixelForValue(3)).toBeCloseToPixel(496);
 

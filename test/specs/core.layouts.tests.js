@@ -181,12 +181,13 @@ describe('Chart.layouts', function() {
 		expect(chart.chartArea.right).toBeCloseToPixel(512);
 		expect(chart.chartArea.top).toBeCloseToPixel(32);
 
-		expect(chart.scale.bottom).toBeCloseToPixel(512);
-		expect(chart.scale.left).toBeCloseToPixel(0);
-		expect(chart.scale.right).toBeCloseToPixel(512);
-		expect(chart.scale.top).toBeCloseToPixel(32);
-		expect(chart.scale.width).toBeCloseToPixel(512);
-		expect(chart.scale.height).toBeCloseToPixel(480);
+		var scale = chart.scales.r;
+		expect(scale.bottom).toBeCloseToPixel(512);
+		expect(scale.left).toBeCloseToPixel(0);
+		expect(scale.right).toBeCloseToPixel(512);
+		expect(scale.top).toBeCloseToPixel(32);
+		expect(scale.width).toBeCloseToPixel(512);
+		expect(scale.height).toBeCloseToPixel(480);
 	});
 
 	it('should fit multiple axes in the same position', function() {
@@ -264,12 +265,14 @@ describe('Chart.layouts', function() {
 			options: {
 				scales: {
 					x: {
-						type: 'category'
+						type: 'category',
+						offset: false
 					},
 					x2: {
 						type: 'category',
 						position: 'top',
-						fullWidth: true
+						fullWidth: true,
+						offset: false
 					},
 					y: {
 						type: 'linear'

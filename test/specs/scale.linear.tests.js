@@ -736,17 +736,17 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		expect(getLabels(chart.scales.yScale)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+		expect(getLabels(chart.scales.y)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
 
 		chart.options.scales.y.ticks.maxTicksLimit = 11;
 		chart.update();
 
-		expect(getLabels(chart.scales.yScale)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+		expect(getLabels(chart.scales.y)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
 
 		chart.options.scales.y.ticks.maxTicksLimit = 21;
 		chart.update();
 
-		expect(getLabels(chart.scales.yScale)).toEqual([
+		expect(getLabels(chart.scales.y)).toEqual([
 			'2.5', '2.4', '2.3', '2.2', '2.1', '2.0', '1.9', '1.8', '1.7', '1.6',
 			'1.5', '1.4', '1.3', '1.2', '1.1', '1.0', '0.9', '0.8', '0.7', '0.6',
 			'0.5'
@@ -756,13 +756,13 @@ describe('Linear Scale', function() {
 		chart.options.scales.y.ticks.stepSize = 0.01;
 		chart.update();
 
-		expect(getLabels(chart.scales.yScale)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
+		expect(getLabels(chart.scales.y)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5']);
 
 		chart.options.scales.y.min = 0.3;
 		chart.options.scales.y.max = 2.8;
 		chart.update();
 
-		expect(getLabels(chart.scales.yScale)).toEqual(['2.8', '2.5', '2.0', '1.5', '1.0', '0.5', '0.3']);
+		expect(getLabels(chart.scales.y)).toEqual(['2.8', '2.5', '2.0', '1.5', '1.0', '0.5', '0.3']);
 	});
 
 	it('Should build labels using the user supplied callback', function() {
@@ -817,7 +817,7 @@ describe('Linear Scale', function() {
 			}
 		});
 
-		var xScale = chart.scales.xScale0;
+		var xScale = chart.scales.x;
 		expect(xScale.getPixelForValue(1)).toBeCloseToPixel(501); // right - paddingRight
 		expect(xScale.getPixelForValue(-1)).toBeCloseToPixel(31 + 6); // left + paddingLeft + lineSpace
 		expect(xScale.getPixelForValue(0)).toBeCloseToPixel(266 + 6 / 2); // halfway*/

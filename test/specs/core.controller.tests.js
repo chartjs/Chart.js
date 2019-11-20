@@ -211,7 +211,7 @@ describe('Chart', function() {
 			// let's check a few values from the user options and defaults
 
 			expect(chart.scales.foo.type).toBe('logarithmic');
-			expect(chart.scales.foo.options).toBe(chart.options.scale);
+			expect(chart.scales.foo.options).toEqual(chart.options.scales.foo);
 			expect(chart.scales.foo.options).toEqual(
 				jasmine.objectContaining({
 					_jasmineCheckA: 'a0',

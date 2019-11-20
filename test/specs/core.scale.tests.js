@@ -392,7 +392,7 @@ describe('Core.scale', function() {
 			});
 
 			var scale = chart.scales.x;
-			expect(scale.ticks).toEqual(labels.slice(1));
+			expect(getLabels(scale)).toEqual(labels.slice(1));
 		});
 
 		it('should allow no return value from callback', function() {

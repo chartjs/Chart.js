@@ -29,6 +29,7 @@
                     "type": "time",
                     "stacked": true,
                     "display": false,
+                    "offset": false,
                     "time": {
                         "parser": "YYYY"
                     },

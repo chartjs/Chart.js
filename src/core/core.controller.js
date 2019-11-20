@@ -35,32 +35,45 @@ defaults._set('global', {
 	responsiveAnimationDuration: 0
 });
 
-/**
- * Recursively merge the given config objects representing the `scales` option
- * by incorporating scale defaults then
- * returns a deep copy of the result, thus doesn't alter inputs.
- */
-function mergeScaleConfig(/* config objects ... */) {
-	return helpers.merge({}, [].slice.call(arguments), {
-		merger: function(key, target, source) {
-			// Starting in V3, the scale config is axis_id: axis_config
-			var scale = source[key];
-			var type = valueOrDefault(scale.type, key.startsWith('x') ? 'category' : 'linear');
+function mergeScaleConfig(config, options) {
+	options = options || {};
+	const chartDefaults = defaults[config.type] || {scales: {}};
+	const configScales = options.scales || {};
+	const firstIDs = {};
+	const scales = {};
 
-			if (!target[key]) {
-				target[key] = {};
-			}
-
-			if (!target[key].type || (scale.type && scale.type !== target[key].type)) {
-				// new/untyped scale or type changed: let's apply the new defaults
-				// then merge source scale to correctly overwrite the defaults.
-				helpers.merge(target[key], [scaleService.getScaleDefaults(type), scale]);
-			} else {
-				// scales type are the same
-				helpers.merge(target[key], scale);
-			}
-		}
+	// First figure out first scale id's per axis.
+	// Note: for now, axis is determined from first letter of scale id!
+	Object.entries(configScales).forEach(([id, scale]) => {
+		const axis = id[0];
+		firstIDs[axis] = firstIDs[axis] || id;
+		scales[id] = helpers.mergeIf({}, [scale, chartDefaults.scales[axis]]);
 	});
+
+	// Backward compatibility
+	if (options.scale) {
+		scales[options.scale.id || 'r'] = helpers.mergeIf({}, [options.scale, chartDefaults.scales.r]);
+	}
+
+	// Then merge dataset defaults to scale configs
+	config.data.datasets.forEach(dataset => {
+		const datasetDefaults = defaults[dataset.type || config.type] || {scales: {}};
+		Object.entries(datasetDefaults.scales || {}).forEach(([defaultID, defaultScaleOptions]) => {
+			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
+			scales[id] = scales[id] || {};
+			helpers.mergeIf(scales[id], [
+				configScales[id],
+				defaultScaleOptions
+			]);
+		});
+	});
+
+	// apply scale defaults, if not overridden by dataset defaults
+	Object.values(scales).forEach(scale => {
+		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
+	});
+
+	return scales;
 }
 
 /**
@@ -71,16 +84,7 @@ function mergeScaleConfig(/* config objects ... */) {
 function mergeConfig(/* config objects ... */) {
 	return helpers.merge({}, [].slice.call(arguments), {
 		merger: function(key, target, source, options) {
-			var tval = target[key] || {};
-			var sval = source[key];
-
-			if (key === 'scales') {
-				// scale config merging is complex. Add our own function here for that
-				target[key] = mergeScaleConfig(tval, sval);
-			} else if (key === 'scale') {
-				// used in polar area & radar charts since there is only one scale
-				target[key] = helpers.merge(tval, [scaleService.getScaleDefaults(sval.type), sval]);
-			} else {
+			if (key !== 'scales' && key !== 'scale') {
 				helpers._merger(key, target, source, options);
 			}
 		}
@@ -92,14 +96,18 @@ function initConfig(config) {
 
 	// Do NOT use mergeConfig for the data object because this method merges arrays
 	// and so would change references to labels and datasets, preventing data updates.
-	var data = config.data = config.data || {};
+	const data = config.data = config.data || {};
 	data.datasets = data.datasets || [];
 	data.labels = data.labels || [];
+
+	const scaleConfig = mergeScaleConfig(config, config.options);
 
 	config.options = mergeConfig(
 		defaults.global,
 		defaults[config.type],
 		config.options || {});
+
+	config.options.scales = scaleConfig;
 
 	return config;
 }
@@ -119,12 +127,16 @@ function updateConfig(chart) {
 		layouts.removeBox(chart, scale);
 	});
 
+	const scaleConfig = mergeScaleConfig(chart.config, newOptions);
+
 	newOptions = mergeConfig(
 		defaults.global,
 		defaults[chart.config.type],
 		newOptions);
 
 	chart.options = chart.config.options = newOptions;
+	chart.options.scales = scaleConfig;
+
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
@@ -361,6 +373,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				});
 				scales[scale.id] = scale;
 			}
+
+			scale.axis = scale.options.position === 'chartArea' ? 'r' : scale.isHorizontal() ? 'x' : 'y';
 
 			// parse min/max value, so we can properly determine min/max for other scales
 			scale._userMin = scale._parse(scale.options.min);

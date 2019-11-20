@@ -64,22 +64,21 @@ Variables referencing any one from `chart.scales` would be lost after updating s
 
 ```javascript
 function updateScales(chart) {
-    var xScale = chart.scales['x-axis-0'];
-    var yScale = chart.scales['y-axis-0'];
+    var xScale = chart.scales.x;
+    var yScale = chart.scales.y;
     chart.options.scales = {
-        xAxes: [{
-            id: 'newId',
+        newId: {
             display: true
-        }],
-        yAxes: [{
+        },
+        y: {
             display: true,
             type: 'logarithmic'
-        }]
+        }
     };
     chart.update();
     // need to update the reference
-    xScale = chart.scales['newId'];
-    yScale = chart.scales['y-axis-0'];
+    xScale = chart.scales.newId;
+    yScale = chart.scales.y;
 }
 ```
 

@@ -221,6 +221,13 @@ function updateStacks(controller, parsed) {
 	}
 }
 
+function getFirstScaleId(chart, axis) {
+	const scales = chart.scales;
+	return Object.keys(scales).filter(key => {
+		return scales[key].axis === axis;
+	}).shift();
+}
+
 // Base class for all dataset controllers (line, bar, etc)
 var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
@@ -289,20 +296,14 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
-		const scales = chart.scales;
 		const dataset = me.getDataset();
 
-		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
-			const firstX = Object.keys(scales).filter(key => scales[key].position === 'top' || scales[key].position === 'bottom').shift();
-			meta.xAxisID = dataset.xAxisID || firstX;
-			meta.xScale = me.getScaleForId(meta.xAxisID);
-		}
-		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
-			const firstY = Object.keys(scales).filter(key => scales[key].position === 'left' || scales[key].position === 'right').shift();
-			meta.yAxisID = dataset.yAxisID || firstY;
-			meta.yScale = me.getScaleForId(meta.yAxisID);
-		}
-
+		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
+		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
+		const rid = meta.rAxisID = dataset.rAxisID || getFirstScaleId(chart, 'r');
+		meta.xScale = me.getScaleForId(xid);
+		meta.yScale = me.getScaleForId(yid);
+		meta.rScale = me.getScaleForId(rid);
 		meta.iScale = me._getIndexScale();
 		meta.vScale = me._getValueScale();
 	},
