@@ -325,23 +325,15 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				Object.entries(options.scales).map(function(entry) {
 					var axisID = entry[0];
 					var axisOptions = entry[1];
+					var isRadial = axisID.charAt(0).toLowerCase === 'r';
 					var isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
 					return {
 						options: axisOptions,
-						dposition: isHorizontal ? 'bottom' : 'left',
-						dtype: isHorizontal ? 'category' : 'linear'
+						dposition: isRadial ? 'chartArea' : isHorizontal ? 'bottom' : 'left',
+						dtype: isRadial ? 'radialLinear' : isHorizontal ? 'category' : 'linear'
 					};
 				})
 			);
-		}
-
-		if (options.scale) {
-			items.push({
-				options: options.scale,
-				dtype: 'radialLinear',
-				isDefault: true,
-				dposition: 'chartArea'
-			});
 		}
 
 		helpers.each(items, function(item) {
