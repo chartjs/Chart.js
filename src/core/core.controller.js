@@ -857,15 +857,13 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	getDatasetMeta: function(datasetIndex) {
-		var me = this;
-		var dataset = me.data.datasets[datasetIndex];
-		if (!dataset._meta) {
-			dataset._meta = {};
-		}
+		const me = this;
+		const dataset = me.data.datasets[datasetIndex];
+		const metasets = me._metasets = me._metasets || [];
+		let meta = metasets[datasetIndex];
 
-		var meta = dataset._meta[me.id];
 		if (!meta) {
-			meta = dataset._meta[me.id] = {
+			meta = metasets[datasetIndex] = {
 				type: null,
 				data: [],
 				dataset: null,
@@ -907,13 +905,12 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * @private
 	 */
 	destroyDatasetMeta: function(datasetIndex) {
-		var id = this.id;
-		var dataset = this.data.datasets[datasetIndex];
-		var meta = dataset._meta && dataset._meta[id];
+		const me = this;
+		const meta = me._metasets && me._metasets[datasetIndex];
 
 		if (meta) {
 			meta.controller.destroy();
-			delete dataset._meta[id];
+			delete me._metasets[datasetIndex];
 		}
 	},
 
