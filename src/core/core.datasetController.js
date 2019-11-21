@@ -474,7 +474,7 @@ helpers.extend(DatasetController.prototype, {
 			me.getDataset(),
 		], {
 			merger: function(key, target, source) {
-				if (key !== '_meta' && key !== 'data') {
+				if (key !== 'data') {
 					helpers._merger(key, target, source);
 				}
 			}
