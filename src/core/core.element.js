@@ -58,11 +58,7 @@ class Element {
 		helpers.extend(this, configuration);
 
 		// this.hidden = false; we assume Element has an attribute called hidden, but do not initialize to save memory
-
-		this.initialize.apply(this, arguments);
 	}
-
-	initialize() {}
 
 	pivot(animationsDisabled) {
 		var me = this;
