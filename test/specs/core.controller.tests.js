@@ -125,6 +125,26 @@ describe('Chart', function() {
 			defaults.line.spanGaps = false;
 		});
 
+		it('should override axis positions that are incorrect', function() {
+			var chart = acquireChart({
+				type: 'line',
+				options: {
+					scales: {
+						x: {
+							position: 'left',
+						},
+						y: {
+							position: 'bottom'
+						}
+					}
+				}
+			});
+
+			var scaleOptions = chart.options.scales;
+			expect(scaleOptions.x.position).toBe('bottom');
+			expect(scaleOptions.y.position).toBe('left');
+		});
+
 		it('should throw an error if the chart type is incorrect', function() {
 			function createChart() {
 				acquireChart({
