@@ -1,6 +1,6 @@
 # Data structures
 
-The `data` property of a dataset can be passed in various formats. By default all data is parsed using configured scales.
+The `data` property of a dataset can be passed in various formats. By default, that `data` is parsed using the associated chart type and scales.
 
 ## Primitive[]
 
@@ -9,7 +9,7 @@ data: [20, 10],
 labels: ['a', 'b']
 ```
 
-When the `data` is an array of numbers, values from `labels` array at the same index are used for the index axis (x for vertical, y for horizontal charts).
+When the `data` is an array of numbers, values from `labels` array at the same index are used for the index axis (`x` for vertical, `y` for horizontal charts).
 
 ## Object[]
 
