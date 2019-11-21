@@ -25,7 +25,7 @@
                 }
             },
             "scales": {
-                "xAxes": [{
+                "x": {
                     "type": "time",
                     "offset": true,
                     "display": false,
@@ -35,11 +35,11 @@
                     "ticks": {
                         "source": "labels"
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
                     "beginAtZero": true
-                }]
+                }
             }
         }
     },

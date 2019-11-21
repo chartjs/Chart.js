@@ -33,20 +33,21 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 ### Options
 
 * The dataset option `tension` was renamed to `lineTension`
+* `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
 * `scales.[x/y]Axes.categoryPercentage` was moved to dataset option `categoryPercentage`
 * `scales.[x/y]Axes.minBarLength` was moved to dataset option `minBarLength`
 * `scales.[x/y]Axes.maxBarThickness` was moved to dataset option `maxBarThickness`
-* `scales.[x/y]Axes.ticks.beginAtZero` was renamed to `scales.[x/y]Axes.beginAtZero`
-* `scales.[x/y]Axes.ticks.max` was renamed to `scales.[x/y]Axes.max`
-* `scales.[x/y]Axes.ticks.min` was renamed to `scales.[x/y]Axes.min`
-* `scales.[x/y]Axes.ticks.reverse` was renamed to `scales.[x/y]Axes.reverse`
-* `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales.[x/y]Axes.suggestedMax`
-* `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales.[x/y]Axes.suggestedMin`
-* `scales.[x/y]Axes.time.format` was renamed to `scales.[x/y]Axes.time.parser`
-* `scales.[x/y]Axes.time.max` was renamed to `scales.[x/y]Axes.max`
-* `scales.[x/y]Axes.time.min` was renamed to `scales.[x/y]Axes.min`
+* `scales.[x/y]Axes.ticks.beginAtZero` was renamed to `scales[id].beginAtZero`
+* `scales.[x/y]Axes.ticks.max` was renamed to `scales[id].max`
+* `scales.[x/y]Axes.ticks.min` was renamed to `scales[id].min`
+* `scales.[x/y]Axes.ticks.reverse` was renamed to `scales[id].reverse`
+* `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales[id].suggestedMax`
+* `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales[id].suggestedMin`
+* `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
+* `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
+* `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 
 ## Developer migration
 

@@ -16,8 +16,8 @@ module.exports = {
 			legend: false,
 			title: false,
 			scales: {
-				xAxes: [{type: 'linear', display: false, min: 0, max: 20}],
-				yAxes: [{display: false, min: -15, max: 15}]
+				x: {type: 'linear', display: false, min: 0, max: 20},
+				y: {display: false, min: -15, max: 15}
 			}
 		}
 	},

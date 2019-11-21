@@ -17,11 +17,11 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{"display": false}],
-                "yAxes": [{
+                "x": {"display": false},
+                "y": {
                     "type": "category",
                     "display": false
-                }]
+                }
             }
         }
     },

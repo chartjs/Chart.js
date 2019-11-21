@@ -16,14 +16,14 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "min": -2,
                     "max": 3,
                     "ticks": {
                         "display": false
                     }
-                }],
-                "yAxes": [{"ticks": {"display": false}}]
+                },
+                "y": {"ticks": {"display": false}}
             },
             "layout": {
                 "padding": 24

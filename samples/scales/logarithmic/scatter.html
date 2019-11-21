@@ -133,7 +133,7 @@
 					text: 'Chart.js Scatter Chart - Logarithmic X-Axis'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'logarithmic',
 						position: 'bottom',
 						ticks: {
@@ -149,8 +149,8 @@
 							labelString: 'Frequency',
 							display: true,
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						ticks: {
 							userCallback: function(tick) {
@@ -161,7 +161,7 @@
 							labelString: 'Voltage',
 							display: true
 						}
-					}]
+					}
 				}
 			}
 		});

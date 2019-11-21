@@ -16,13 +16,13 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{"ticks": {"display": false}}],
-                "yAxes": [{
+                "x": {"ticks": {"display": false}},
+                "y": {
                     "min": 2,
                     "ticks": {
                         "display": false
                     }
-                }]
+                }
             },
             "layout": {
                 "padding": 24

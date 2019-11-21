@@ -175,15 +175,6 @@ function getStackKey(indexScale, valueScale, meta) {
 	return indexScale.id + '.' + valueScale.id + '.' + meta.stack + '.' + meta.type;
 }
 
-function getFirstScaleId(chart, axis) {
-	var scalesOpts = chart.options.scales;
-	var scale = chart.options.scale;
-	var scaleId = scale && scale.id;
-	var prop = axis + 'Axes';
-
-	return (scalesOpts && scalesOpts[prop] && scalesOpts[prop].length && scalesOpts[prop][0].id) || scaleId;
-}
-
 function getUserBounds(scale) {
 	var {min, max, minDefined, maxDefined} = scale._getUserBounds();
 	return {
@@ -228,6 +219,13 @@ function updateStacks(controller, parsed) {
 			stack[datasetIndex] = x;
 		}
 	}
+}
+
+function getFirstScaleId(chart, axis) {
+	const scales = chart.scales;
+	return Object.keys(scales).filter(key => {
+		return scales[key].axis === axis;
+	}).shift();
 }
 
 // Base class for all dataset controllers (line, bar, etc)
@@ -300,10 +298,13 @@ helpers.extend(DatasetController.prototype, {
 		const chart = me.chart;
 		const meta = me._cachedMeta;
 		const dataset = me.getDataset();
+
 		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
 		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
+		const rid = meta.rAxisID = dataset.rAxisID || getFirstScaleId(chart, 'r');
 		meta.xScale = me.getScaleForId(xid);
 		meta.yScale = me.getScaleForId(yid);
+		meta.rScale = me.getScaleForId(rid);
 		meta.iScale = me._getIndexScale();
 		meta.vScale = me._getValueScale();
 	},

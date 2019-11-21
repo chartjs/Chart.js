@@ -24,9 +24,9 @@ var lineChart = new Chart(ctx, {
     type: 'line',
     options: {
         scales: {
-            yAxes: [{
+            y: {
                 type: 'myScale' // this is the same key that was passed to the registerScaleType function
-            }]
+            }
         }
     }
 });

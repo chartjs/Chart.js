@@ -25,7 +25,7 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'linear',
 						position: 'bottom',
 						ticks: {
@@ -33,21 +33,21 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						ticks: {
 							callback: function(value) {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xLabels = getLabels(chart.scales['x-axis-0']);
-		var yLabels = getLabels(chart.scales['y-axis-0']);
+		var xLabels = getLabels(chart.scales.x);
+		var yLabels = getLabels(chart.scales.y);
 
 		expect(xLabels).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
 		expect(yLabels).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
@@ -66,7 +66,7 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'logarithmic',
 						position: 'bottom',
 						min: 0.1,
@@ -76,8 +76,8 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'logarithmic',
 						min: 0.1,
 						max: 1,
@@ -86,13 +86,13 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xLabels = getLabels(chart.scales['x-axis-0']);
-		var yLabels = getLabels(chart.scales['y-axis-0']);
+		var xLabels = getLabels(chart.scales.x);
+		var yLabels = getLabels(chart.scales.y);
 
 		expect(xLabels).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
 		expect(yLabels).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1']);

@@ -38,7 +38,8 @@ The following options are common to all cartesian axes but do not apply to other
 | `padding` | `number` | `0` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
 
 ### Axis ID
-The properties `dataset.xAxisID` or `dataset.yAxisID` have to match the scale properties `scales.xAxes.id` or `scales.yAxes.id`. This is especially needed if multi-axes charts are used.
+
+The properties `dataset.xAxisID` or `dataset.yAxisID` have to match to `scales` property. This is especially needed if multi-axes charts are used.
 
 ```javascript
 var myChart = new Chart(ctx, {
@@ -54,11 +55,10 @@ var myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            yAxes: [{
-                id: 'first-y-axis',
+            'first-y-axis': {
                 type: 'linear'
-            }, {
-                id: 'second-y-axis',
+            },
+            'second-y-axis': {
                 type: 'linear'
             }]
         }
@@ -93,12 +93,11 @@ var myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            yAxes: [{
-                id: 'left-y-axis',
+            'left-y-axis': {
                 type: 'linear',
                 position: 'left'
-            }, {
-                id: 'right-y-axis',
+            },
+            'right-y-axis': {
                 type: 'linear',
                 position: 'right'
             }]

@@ -18,14 +18,14 @@
             "title": false,
             "legend": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "display": false,
                     "min": -8,
                     "max": 12
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false
-                }]
+                }
             }
         }
     },

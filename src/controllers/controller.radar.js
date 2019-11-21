@@ -9,8 +9,10 @@ var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('radar', {
 	spanGaps: false,
-	scale: {
-		type: 'radialLinear'
+	scales: {
+		r: {
+			type: 'radialLinear',
+		}
 	},
 	elements: {
 		line: {
@@ -67,14 +69,14 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getIndexScaleId: function() {
-		return this.chart.scale.id;
+		return this._cachedMeta.rAxisID;
 	},
 
 	/**
 	 * @private
 	 */
 	_getValueScaleId: function() {
-		return this.chart.scale.id;
+		return this._cachedMeta.rAxisID;
 	},
 
 	/**
@@ -122,7 +124,7 @@ module.exports = DatasetController.extend({
 	updateElements: function(points, start, count, reset) {
 		const me = this;
 		const dataset = me.getDataset();
-		const scale = me.chart.scale;
+		const scale = me.chart.scales.r;
 		var i;
 
 		for (i = start; i < start + count; i++) {

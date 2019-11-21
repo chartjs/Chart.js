@@ -233,16 +233,22 @@ describe('Chart.DatasetController', function() {
 			},
 			options: {
 				scales: {
-					xAxes: [{
-						id: 'firstXScaleID'
-					}, {
-						id: 'secondXScaleID'
-					}],
-					yAxes: [{
-						id: 'firstYScaleID'
-					}, {
-						id: 'secondYScaleID'
-					}]
+					firstXScaleID: {
+						type: 'category',
+						position: 'bottom'
+					},
+					secondXScaleID: {
+						type: 'category',
+						position: 'bottom'
+					},
+					firstYScaleID: {
+						type: 'linear',
+						position: 'left'
+					},
+					secondYScaleID: {
+						type: 'linear',
+						position: 'left'
+					},
 				}
 			}
 		});

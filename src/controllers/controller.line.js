@@ -18,14 +18,12 @@ defaults._set('line', {
 	},
 
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'category',
-			id: 'x-axis-0'
-		}],
-		yAxes: [{
+		},
+		y: {
 			type: 'linear',
-			id: 'y-axis-0'
-		}]
+		},
 	}
 });
 

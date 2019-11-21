@@ -67,18 +67,19 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     unit: 'month'
                 }
-            }]
+            }
         }
     }
 });
 ```
 
 ### Display Formats
+
 The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [Moment.js](https://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
 
 Name | Default | Example
@@ -101,14 +102,14 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     displayFormats: {
                         quarter: 'MMM YYYY'
                     }
                 }
-            }]
+            }
         }
     }
 });
@@ -127,10 +128,10 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 distribution: 'series'
-            }]
+            }
         }
     }
 });

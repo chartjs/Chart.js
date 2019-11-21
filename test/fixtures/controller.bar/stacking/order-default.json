@@ -19,15 +19,15 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "display": false,
                     "stacked": true
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
                     "stacked": true,
                     "beginAtZero": true
-                }]
+                }
             }
         }
     },

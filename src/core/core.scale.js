@@ -1389,13 +1389,6 @@ class Scale extends Element {
 	}
 
 	/**
-	 * @private
-	 */
-	_getAxis() {
-		return this.isHorizontal() ? 'x' : 'y';
-	}
-
-	/**
 	 * Returns visible dataset metas that are attached to this scale
 	 * @param {string} [type] - if specified, also filter by dataset type
 	 * @private
@@ -1403,7 +1396,7 @@ class Scale extends Element {
 	_getMatchingVisibleMetas(type) {
 		var me = this;
 		var metas = me.chart._getSortedVisibleDatasetMetas();
-		var axisID = me._getAxis() + 'AxisID';
+		var axisID = me.axis + 'AxisID';
 		var result = [];
 		var i, ilen, meta;
 

@@ -33,8 +33,8 @@ module.exports = {
 				padding: 32
 			},
 			scales: {
-				xAxes: [{stacked: true, display: false}],
-				yAxes: [{stacked: true, display: false}]
+				x: {stacked: true, display: false},
+				y: {stacked: true, display: false}
 			}
 		}
 	},

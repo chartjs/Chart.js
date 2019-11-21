@@ -45,12 +45,12 @@ function updateConfigAsNewObject(chart) {
             text: 'Chart.js'
         },
         scales: {
-            xAxes: [{
+            x: {
                 display: true
-            }],
-            yAxes: [{
+            },
+            y: {
                 display: true
-            }]
+            }
         }
     };
     chart.update();
@@ -64,30 +64,29 @@ Variables referencing any one from `chart.scales` would be lost after updating s
 
 ```javascript
 function updateScales(chart) {
-    var xScale = chart.scales['x-axis-0'];
-    var yScale = chart.scales['y-axis-0'];
+    var xScale = chart.scales.x;
+    var yScale = chart.scales.y;
     chart.options.scales = {
-        xAxes: [{
-            id: 'newId',
+        newId: {
             display: true
-        }],
-        yAxes: [{
+        },
+        y: {
             display: true,
             type: 'logarithmic'
-        }]
+        }
     };
     chart.update();
     // need to update the reference
-    xScale = chart.scales['newId'];
-    yScale = chart.scales['y-axis-0'];
+    xScale = chart.scales.newId;
+    yScale = chart.scales.y;
 }
 ```
 
-You can also update a specific scale either by specifying its index or id.
+You can also update a specific scale either by its id.
 
 ```javascript
 function updateScale(chart) {
-    chart.options.scales.yAxes[0] = {
+    chart.options.scales.y = {
         type: 'logarithmic'
     };
     chart.update();

@@ -22,10 +22,10 @@ var scatterChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            xAxes: [{
+            x: {
                 type: 'linear',
                 position: 'bottom'
-            }]
+            }
         }
     }
 });

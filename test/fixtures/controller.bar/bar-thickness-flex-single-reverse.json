@@ -16,9 +16,10 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "type": "time",
                     "display": false,
+                    "offset": false,
                     "time": {
                         "parser": "YYYY"
                     },
@@ -26,11 +27,11 @@
                     "ticks": {
                         "source": "labels"
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
                     "beginAtZero": true
-                }]
+                }
             }
         }
     },

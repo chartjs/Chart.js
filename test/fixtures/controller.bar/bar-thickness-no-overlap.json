@@ -25,20 +25,21 @@
                 }
             },
             "scales": {
-                "xAxes": [{
+                "x": {
                     "type": "time",
                     "display": false,
+                    "offset": false,
                     "time": {
                         "parser": "YYYY-MM"
                     },
                     "ticks": {
                         "source": "labels"
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
                     "beginAtZero": true
-                }]
+                }
             }
         }
     },

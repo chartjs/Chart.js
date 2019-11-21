@@ -428,7 +428,7 @@ module.exports = {
 					visible: chart.isDatasetVisible(i),
 					fill: decodeFill(el, i, count),
 					chart: chart,
-					scale: meta.controller.getScaleForId(meta.yAxisID) || chart.scale,
+					scale: meta.yScale || meta.rScale,
 					el: el
 				};
 			}

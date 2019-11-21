@@ -9,7 +9,7 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "type": "category",
                     "position": "top",
                     "id": "x-axis-1",
@@ -21,10 +21,10 @@
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"
                     }
-                }, {
+                },
+                "x2": {
                     "type": "category",
                     "position": "bottom",
-                    "id": "x-axis-2",
                     "ticks": {
                         "display": false
                     },
@@ -33,36 +33,40 @@
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "position": "left",
                     "id": "y-axis-1",
                     "type": "linear",
+                    "offset": false,
                     "min": -100,
                     "max": 100,
                     "ticks": {
                         "display": false
                     },
                     "gridLines":{
+                        "offsetGridLines": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"
                     }
-                }, {
+                },
+                "y2": {
                     "type": "linear",
-                    "id": "y-axis-2",
                     "position": "right",
+                    "offset": false,
                     "min": 0,
                     "max": 50,
                     "ticks": {
                         "display": false
                     },
                     "gridLines":{
+                        "offsetGridLines": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)"
                     }
-                }]
+                }
             }
         }
     },

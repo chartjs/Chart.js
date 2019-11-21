@@ -24,8 +24,8 @@
 	var scatterChartData = {
 		datasets: [{
 			label: 'My First dataset',
-			xAxisID: 'x-axis-1',
-			yAxisID: 'y-axis-1',
+			xAxisID: 'x',
+			yAxisID: 'y',
 			borderColor: window.chartColors.red,
 			backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
 			data: [{
@@ -52,8 +52,8 @@
 			}]
 		}, {
 			label: 'My Second dataset',
-			xAxisID: 'x-axis-1',
-			yAxisID: 'y-axis-2',
+			xAxisID: 'x',
+			yAxisID: 'y2',
 			borderColor: window.chartColors.blue,
 			backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
 			data: [{
@@ -95,26 +95,25 @@
 					text: 'Chart.js Scatter Chart - Multi Axis'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						position: 'bottom',
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 						display: true,
-						position: 'left',
-						id: 'y-axis-1',
-					}, {
+						position: 'left'
+					},
+					y2: {
 						type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 						display: true,
 						position: 'right',
 						reverse: true,
-						id: 'y-axis-2',
 
 						// grid line settings
 						gridLines: {
 							drawOnChartArea: false, // only want the grid lines for one axis to show up
-						},
-					}],
+						}
+					}
 				}
 			}
 		});

@@ -10,19 +10,18 @@ defaults._set('horizontalBar', {
 	},
 
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'linear',
 			position: 'bottom'
-		}],
-
-		yAxes: [{
+		},
+		y: {
 			type: 'category',
 			position: 'left',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
-		}]
+		}
 	},
 
 	elements: {

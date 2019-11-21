@@ -13,17 +13,16 @@ defaults._set('bar', {
 	},
 
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'category',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
-		}],
-
-		yAxes: [{
-			type: 'linear'
-		}]
+		},
+		y: {
+			type: 'linear',
+		}
 	}
 });
 
@@ -221,13 +220,13 @@ module.exports = DatasetController.extend({
 	_parseObjectData: function(meta, data, start, count) {
 		const iScale = meta.iScale;
 		const vScale = meta.vScale;
-		const vProp = vScale._getAxis();
+		const vProp = vScale.axis;
 		const parsed = [];
 		let i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.id] = iScale._parseObject(obj, iScale._getAxis(), i);
+			item[iScale.id] = iScale._parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
 				parseFloatBar(value, item, vScale, i);

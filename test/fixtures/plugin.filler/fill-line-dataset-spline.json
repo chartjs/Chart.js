@@ -31,12 +31,12 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "display": false
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false
-                }]
+                }
             },
             "elements": {
                 "point": {

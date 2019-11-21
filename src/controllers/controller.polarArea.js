@@ -8,17 +8,19 @@ var helpers = require('../helpers/index');
 var resolve = helpers.options.resolve;
 
 defaults._set('polarArea', {
-	scale: {
-		type: 'radialLinear',
-		angleLines: {
-			display: false
-		},
-		beginAtZero: true,
-		gridLines: {
-			circular: true
-		},
-		pointLabels: {
-			display: false
+	scales: {
+		r: {
+			type: 'radialLinear',
+			angleLines: {
+				display: false
+			},
+			beginAtZero: true,
+			gridLines: {
+				circular: true
+			},
+			pointLabels: {
+				display: false
+			}
 		}
 	},
 
@@ -123,14 +125,14 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getIndexScaleId: function() {
-		return this.chart.scale.id;
+		return this._cachedMeta.rAxisID;
 	},
 
 	/**
 	 * @private
 	 */
 	_getValueScaleId: function() {
-		return this.chart.scale.id;
+		return this._cachedMeta.rAxisID;
 	},
 
 	update: function(reset) {
@@ -181,7 +183,7 @@ module.exports = DatasetController.extend({
 		const dataset = me.getDataset();
 		const opts = chart.options;
 		const animationOpts = opts.animation;
-		const scale = chart.scale;
+		const scale = chart.scales.r;
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
 		var i;
