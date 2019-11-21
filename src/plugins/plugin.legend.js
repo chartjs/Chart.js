@@ -113,8 +113,10 @@ function getBoxWidth(labelOpts, fontSize) {
  */
 class Legend extends Element {
 
-	initialize(config) {
-		var me = this;
+	constructor(config) {
+		super();
+
+		const me = this;
 		helpers.extend(me, config);
 
 		// Contains hit boxes for each dataset (in dataset order)

@@ -21,7 +21,9 @@ defaults._set('global', {
  * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
  */
 class Title extends Element {
-	initialize(config) {
+	constructor(config) {
+		super();
+
 		var me = this;
 		helpers.extend(me, config);
 

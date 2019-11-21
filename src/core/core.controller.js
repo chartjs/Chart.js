@@ -952,7 +952,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			_chart: me,
 			_data: me.data,
 			_options: me.options.tooltips
-		}, me);
+		});
 	},
 
 	/**

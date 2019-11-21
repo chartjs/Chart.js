@@ -485,6 +485,12 @@ function getBeforeAfterBodyLines(callback) {
 }
 
 class Tooltip extends Element {
+	constructor(config) {
+		super(config);
+
+		this.initialize();
+	}
+
 	initialize() {
 		var me = this;
 		me._model = getBaseModel(me._options);
