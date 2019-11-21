@@ -1,8 +1,8 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const Element = require('../core/core.element');
-const helpers = require('../helpers/index');
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import helpers from '../helpers';
 const TAU = Math.PI * 2;
 
 defaults._set('global', {
@@ -196,4 +196,4 @@ class Arc extends Element {
 
 Arc.prototype._type = 'arc';
 
-module.exports = Arc;
+export default Arc;

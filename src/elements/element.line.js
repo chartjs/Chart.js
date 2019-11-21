@@ -1,8 +1,8 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const Element = require('../core/core.element');
-const helpers = require('../helpers/index');
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import helpers from '../helpers';
 
 const defaultColor = defaults.global.defaultColor;
 
@@ -184,4 +184,4 @@ class Line extends Element {
 
 Line.prototype._type = 'line';
 
-module.exports = Line;
+export default Line;
