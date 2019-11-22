@@ -190,6 +190,9 @@ export function _steppedLineTo(ctx, previous, target, flip, mode) {
  * @private
  */
 export function _bezierCurveTo(ctx, previous, target, flip) {
+	if (!previous) {
+		return ctx.lineTo(target.x, target.y);
+	}
 	ctx.bezierCurveTo(
 		flip ? previous.controlPointPreviousX : previous.controlPointNextX,
 		flip ? previous.controlPointPreviousY : previous.controlPointNextY,
