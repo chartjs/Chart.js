@@ -227,7 +227,7 @@ Sample:     |==============|
 
 ## Data Structure
 
-All of the supported [data structures](../general/data-structures) can be used with bar charts.
+All of the supported [data structures](../general/data-structures.md) can be used with bar charts.
 
 ## Stacked Bar Chart
 

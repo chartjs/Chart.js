@@ -185,7 +185,7 @@ Chart.defaults.line.spanGaps = true;
 
 ## Data Structure
 
-See [`Data structures`](../general/data-structures)
+See [`Data structures`](../general/data-structures.md)
 
 ## Stacked Area Chart
 

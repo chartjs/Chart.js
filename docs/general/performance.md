@@ -61,7 +61,7 @@ new Chart(ctx, {
 
 ## Data structure and format
 
-Provide prepared data in the internal format accepted by the dataset and scales. See [Data structures](data-structures) for more information.
+Provide prepared data in the internal format accepted by the dataset and scales. See [Data structures](data-structures.md) for more information.
 
 ## Data Decimation
 
