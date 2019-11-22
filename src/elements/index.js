@@ -5,7 +5,7 @@ import Line from './element.line';
 import Point from './element.point';
 import Rectangle from './element.rectangle';
 
-export {
+export default {
 	Arc,
 	Line,
 	Point,
