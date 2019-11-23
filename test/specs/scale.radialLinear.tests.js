@@ -1,5 +1,5 @@
 function getLabels(scale) {
-	return scale.ticks.map(t => t.label);
+	return scale.labels;
 }
 
 // Tests for the radial linear scale used by the polar area and radar charts

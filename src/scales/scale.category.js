@@ -35,9 +35,7 @@ class CategoryScale extends Scale {
 		me._valueRange = Math.max(labels.length - (offset ? 0 : 1), 1);
 		me._startValue = me.min - (offset ? 0.5 : 0);
 
-		return labels.map(function(l) {
-			return {value: l};
-		});
+		return labels;
 	}
 
 	getLabelForValue(value) {

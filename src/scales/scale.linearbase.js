@@ -1,7 +1,7 @@
 'use strict';
 
 import helpers from '../helpers/index';
-import {almostEquals, almostWhole, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
+import {almostEquals, almostWhole, _decimalPlaces, _setMinAndMax, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 
 const isNullOrUndef = helpers.isNullOrUndef;
@@ -33,7 +33,7 @@ function generateTicks(generationOptions, dataRange) {
 	// Beyond MIN_SPACING floating point numbers being to lose precision
 	// such that we can't do the math necessary to generate ticks
 	if (spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
-		return [{value: rmin}, {value: rmax}];
+		return [rmin, rmax];
 	}
 
 	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
@@ -75,11 +75,11 @@ function generateTicks(generationOptions, dataRange) {
 
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
-	ticks.push({value: isNullOrUndef(min) ? niceMin : min});
+	ticks.push(isNullOrUndef(min) ? niceMin : min);
 	for (var j = 1; j < numSpaces; ++j) {
-		ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
+		ticks.push(Math.round((niceMin + j * spacing) * factor) / factor);
 	}
-	ticks.push({value: isNullOrUndef(max) ? niceMax : max});
+	ticks.push(isNullOrUndef(max) ? niceMax : max);
 
 	return ticks;
 }
@@ -216,7 +216,7 @@ class LinearScaleBase extends Scale {
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		_setMinAndMaxByKey(ticks, me, 'value');
+		_setMinAndMax(ticks, me);
 
 		if (opts.reverse) {
 			ticks.reverse();

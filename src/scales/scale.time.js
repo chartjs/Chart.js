@@ -322,40 +322,24 @@ function computeOffsets(table, ticks, min, max, options) {
 	return {start: start, end: end, factor: 1 / (start + 1 + end)};
 }
 
-function setMajorTicks(scale, ticks, map, majorUnit) {
+function createTickMeta(scale, ticks, majorUnit) {
+	if (!majorUnit) {
+		return [];
+	}
+
 	const adapter = scale._adapter;
-	const first = +adapter.startOf(ticks[0].value, majorUnit);
-	const last = ticks[ticks.length - 1].value;
+	const tickMeta = new Array(ticks.length);
+	const first = +adapter.startOf(ticks[0], majorUnit);
+	const last = ticks[ticks.length - 1];
 	let major, index;
 
 	for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
-		index = map[major];
+		index = ticks.indexOf(major);
 		if (index >= 0) {
-			ticks[index].major = true;
+			tickMeta[index] = {major: true};
 		}
 	}
-	return ticks;
-}
-
-function ticksFromTimestamps(scale, values, majorUnit) {
-	const ticks = [];
-	const map = {};
-	const ilen = values.length;
-	let i, value;
-
-	for (i = 0; i < ilen; ++i) {
-		value = values[i];
-		map[value] = i;
-
-		ticks.push({
-			value: value,
-			major: false
-		});
-	}
-
-	// We set the major ticks separately from the above loop because calling startOf for every tick
-	// is expensive when there is a large number of ticks
-	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
+	return tickMeta;
 }
 
 function getDataTimestamps(scale) {
@@ -636,6 +620,7 @@ class TimeScale extends Scale {
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._numIndices = ticks.length;
+		me._tickMeta = createTickMeta(me, ticks, me._majorUnit);
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
@@ -643,7 +628,7 @@ class TimeScale extends Scale {
 			ticks.reverse();
 		}
 
-		return ticksFromTimestamps(me, ticks, me._majorUnit);
+		return ticks;
 	}
 
 	getLabelForValue(value) {
@@ -661,7 +646,7 @@ class TimeScale extends Scale {
 	 * Function to format an individual tick mark
 	 * @private
 	 */
-	_tickFormatFunction(time, index, ticks, format) {
+	_tickFormatFunction(time, index, ticks, meta, format) {
 		const me = this;
 		const adapter = me._adapter;
 		const options = me.options;
@@ -671,7 +656,7 @@ class TimeScale extends Scale {
 		const majorFormat = formats[majorUnit];
 		const tick = ticks[index];
 		const tickOpts = options.ticks;
-		const major = majorUnit && majorFormat && tick && tick.major;
+		const major = majorUnit && majorFormat && tick && meta && meta.major;
 		const label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
 		const nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
 		const formatter = resolve([
@@ -682,13 +667,15 @@ class TimeScale extends Scale {
 		return formatter ? formatter(label, index, ticks) : label;
 	}
 
-	generateTickLabels(ticks) {
-		let i, ilen, tick;
+	convertTicksToLabels(ticks) {
+		const labels = [];
+		let i, ilen;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			tick = ticks[i];
-			tick.label = this._tickFormatFunction(tick.value, i, ticks);
+			labels[i] = this._tickFormatFunction(ticks[i], i, ticks, this._tickMeta[i]);
 		}
+
+		return labels;
 	}
 
 	/**
@@ -703,10 +690,9 @@ class TimeScale extends Scale {
 
 	getPixelForTick(index) {
 		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
+		return index >= 0 && index < ticks.length ?
+			this.getPixelForValue(ticks[index]) :
+			null;
 	}
 
 	getValueForPixel(pixel) {
@@ -753,7 +739,8 @@ class TimeScale extends Scale {
 
 		// pick the longest format (milliseconds) for guestimation
 		const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-		const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
+		const ticks = [exampleTime];
+		const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticks, createTickMeta(me, ticks, me._majorUnit), format);
 		const size = me._getLabelSize(exampleLabel);
 		// subtract 1 - if offset then there's one less label than tick
 		// if not offset then one half label padding is added to each end leaving room for one less label

@@ -1,5 +1,5 @@
 function getLabels(scale) {
-	return scale.ticks.map(t => t.label);
+	return scale.labels;
 }
 
 describe('Logarithmic Scale tests', function() {
@@ -476,8 +476,8 @@ describe('Logarithmic Scale tests', function() {
 		var tickCount = yScale.ticks.length;
 		expect(yScale.min).toBe(10);
 		expect(yScale.max).toBe(1010);
-		expect(yScale.ticks[0].value).toBe(1010);
-		expect(yScale.ticks[tickCount - 1].value).toBe(10);
+		expect(yScale.ticks[0]).toBe(1010);
+		expect(yScale.ticks[tickCount - 1]).toBe(10);
 	});
 
 	it('should ignore negative min and max options', function() {

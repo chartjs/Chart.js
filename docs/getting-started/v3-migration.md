@@ -172,9 +172,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 ##### Ticks
 
 * `Scale.afterBuildTicks` now has no parameters like the other callbacks
-* `Scale.buildTicks` is now expected to return tick objects
-* `Scale.convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
-* `Scale.ticks` now contains objects instead of strings
+* `Scale.ticks` now contains the tick values instead of labels, which are now available in `Scale.labels`
+* `TimeScale.buildTicks` is now expected to return `number`s like the other scales
 * When the `autoSkip` option is enabled, `Scale.ticks` now contains only the non-skipped ticks instead of all ticks.
 
 ##### Time Scale

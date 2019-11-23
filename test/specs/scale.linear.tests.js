@@ -1,5 +1,5 @@
 function getLabels(scale) {
-	return scale.ticks.map(t => t.label);
+	return scale.labels;
 }
 
 describe('Linear Scale', function() {

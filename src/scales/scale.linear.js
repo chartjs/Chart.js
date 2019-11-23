@@ -67,7 +67,7 @@ class LinearScale extends LinearScaleBase {
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
-		return this.getPixelForValue(ticks[index].value);
+		return this.getPixelForValue(ticks[index]);
 	}
 }
 

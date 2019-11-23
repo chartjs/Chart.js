@@ -1,7 +1,3 @@
-function getLabels(scale) {
-	return scale.ticks.map(t => t.label);
-}
-
 describe('Core.scale', function() {
 	describe('auto', jasmine.fixture.specs('core.scale'));
 
@@ -38,10 +34,10 @@ describe('Core.scale', function() {
 			});
 		}
 
-		function lastTick(chart) {
+		function lastLabel(chart) {
 			var xAxis = chart.scales.x;
-			var ticks = xAxis.getTicks();
-			return ticks[ticks.length - 1];
+			var labels = xAxis.labels;
+			return labels[labels.length - 1];
 		}
 
 		it('should display the last tick if it fits evenly with other ticks', function() {
@@ -56,7 +52,7 @@ describe('Core.scale', function() {
 				}]
 			});
 
-			expect(lastTick(chart).label).toEqual('September 2018');
+			expect(lastLabel(chart)).toEqual('September 2018');
 		});
 
 		it('should not display the last tick if it does not fit evenly', function() {
@@ -75,7 +71,7 @@ describe('Core.scale', function() {
 				}]
 			});
 
-			expect(lastTick(chart).label).toEqual('January 2020');
+			expect(lastLabel(chart)).toEqual('January 2020');
 		});
 	});
 
@@ -392,7 +388,7 @@ describe('Core.scale', function() {
 			});
 
 			var scale = chart.scales.x;
-			expect(getLabels(scale)).toEqual(labels.slice(1));
+			expect(scale.labels).toEqual(labels.slice(1));
 		});
 
 		it('should allow no return value from callback', function() {
@@ -411,7 +407,7 @@ describe('Core.scale', function() {
 			});
 
 			var scale = chart.scales.x;
-			expect(getLabels(scale)).toEqual(labels);
+			expect(scale.labels).toEqual(labels);
 		});
 
 		it('should allow empty ticks', function() {

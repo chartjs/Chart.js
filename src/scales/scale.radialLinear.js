@@ -322,16 +322,17 @@ class RadialLinearScale extends LinearScaleBase {
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
 	}
 
-	generateTickLabels(ticks) {
+	convertTicksToLabels(ticks) {
 		var me = this;
-
-		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
+		var labels = LinearScaleBase.prototype.convertTicksToLabels.call(me, ticks);
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map(function() {
 			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
 			return label || label === 0 ? label : '';
 		});
+
+		return labels;
 	}
 
 	fit() {
@@ -440,7 +441,7 @@ class RadialLinearScale extends LinearScaleBase {
 		if (gridLineOpts.display) {
 			me.ticks.forEach(function(tick, index) {
 				if (index !== 0) {
-					offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
+					offset = me.getDistanceFromCenterForValue(me.ticks[index]);
 					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
@@ -498,7 +499,7 @@ class RadialLinearScale extends LinearScaleBase {
 				return;
 			}
 
-			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
+			offset = me.getDistanceFromCenterForValue(me.ticks[index]);
 
 			if (tickOpts.showLabelBackdrop) {
 				width = ctx.measureText(tick.label).width;

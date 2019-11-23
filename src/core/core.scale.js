@@ -172,18 +172,18 @@ function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 	return Math.max(spacing, 1);
 }
 
-function getMajorIndices(ticks) {
+function getMajorIndices(meta) {
 	const result = [];
 	let i, ilen;
-	for (i = 0, ilen = ticks.length; i < ilen; i++) {
-		if (ticks[i].major) {
+	for (i = 0, ilen = meta.length; i < ilen; i++) {
+		if (meta[i] && meta[i].major) {
 			result.push(i);
 		}
 	}
 	return result;
 }
 
-function skipMajors(ticks, newTicks, majorIndices, spacing) {
+function skipMajors(ticks, meta, newTicks, newMeta, majorIndices, spacing) {
 	let count = 0;
 	let next = majorIndices[0];
 	let i;
@@ -192,13 +192,14 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 	for (i = 0; i < ticks.length; i++) {
 		if (i === next) {
 			newTicks.push(ticks[i]);
+			newMeta.push(meta[i]);
 			count++;
 			next = majorIndices[count * spacing];
 		}
 	}
 }
 
-function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
+function skip(ticks, meta, newTicks, newMeta, spacing, majorStart, majorEnd) {
 	const start = valueOrDefault(majorStart, 0);
 	const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
 	let count = 0;
@@ -220,6 +221,7 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 	for (i = Math.max(start, 0); i < end; i++) {
 		if (i === next) {
 			newTicks.push(ticks[i]);
+			newMeta.push(meta[i]);
 			count++;
 			next = Math.round(start + count * spacing);
 		}
@@ -351,7 +353,7 @@ class Scale extends Element {
 		const me = this;
 		const tickOpts = me.options.ticks;
 		const sampleSize = tickOpts.sampleSize;
-		let samplingEnabled;
+		const autoSkipEnabled = tickOpts.autoSkip || tickOpts.source === 'auto';
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -368,6 +370,7 @@ class Scale extends Element {
 		}, margins);
 
 		me.ticks = null;
+		me._tickMeta = [];
 		me._labelSizes = null;
 		me._maxLabelLines = 0;
 		me._longestTextCache = me._longestTextCache || {};
@@ -393,8 +396,8 @@ class Scale extends Element {
 
 		// Compute tick rotation and fit using a sampled subset of labels
 		// We generally don't need to compute the size of every single label for determining scale size
-		samplingEnabled = sampleSize < me.ticks.length;
-		me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
+		const samplingEnabled = sampleSize < me.ticks.length;
+		me.labels = me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
 
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
@@ -412,11 +415,13 @@ class Scale extends Element {
 		me.afterFit();
 
 		// Auto-skip
-		me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
+		if (tickOpts.display && autoSkipEnabled) {
+			me._autoSkip();
+		}
 
-		if (samplingEnabled) {
+		if (tickOpts.display && (samplingEnabled || autoSkipEnabled)) {
 			// Generate labels using all non-skipped ticks
-			me._convertTicksToLabels(me.ticks);
+			me.labels = me._convertTicksToLabels(me.ticks);
 		}
 
 		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
@@ -506,14 +511,15 @@ class Scale extends Element {
 	/**
 	 * Convert ticks to label strings
 	 */
-	generateTickLabels(ticks) {
+	convertTicksToLabels(ticks) {
 		const me = this;
 		const tickOpts = me.options.ticks;
-		let i, ilen, tick;
+		const labels = [];
+		let i, ilen;
 		for (i = 0, ilen = ticks.length; i < ilen; i++) {
-			tick = ticks[i];
-			tick.label = helpers.callback(tickOpts.callback, [tick.value, i, ticks], me);
+			labels[i] = helpers.callback(tickOpts.callback, [ticks[i], i, ticks], me);
 		}
+		return labels;
 	}
 	afterTickToLabelConversion() {
 		helpers.callback(this.options.afterTickToLabelConversion, [this]);
@@ -706,9 +712,11 @@ class Scale extends Element {
 
 		me.beforeTickToLabelConversion();
 
-		me.generateTickLabels(ticks);
+		const labels = me.convertTicksToLabels(ticks);
 
 		me.afterTickToLabelConversion();
+
+		return labels;
 	}
 
 	/**
@@ -738,15 +746,15 @@ class Scale extends Element {
 		const widths = [];
 		const heights = [];
 		const offsets = [];
-		let ticks = me.ticks;
-		if (sampleSize < ticks.length) {
-			ticks = sample(ticks, sampleSize);
+		let labels = me.labels;
+		if (sampleSize < labels.length) {
+			labels = sample(labels, sampleSize);
 		}
-		const length = ticks.length;
+		const length = labels.length;
 		let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel, widest, highest;
 
 		for (i = 0; i < length; ++i) {
-			label = ticks[i].label;
+			label = labels[i];
 			tickFont = me._resolveTickFontOptions(i);
 			ctx.font = fontString = tickFont.string;
 			cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
@@ -870,21 +878,26 @@ class Scale extends Element {
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
 	 * @private
 	 */
-	_autoSkip(ticks) {
+	_autoSkip() {
 		const me = this;
 		const tickOpts = me.options.ticks;
+		const ticks = me.ticks;
+		const meta = me._tickMeta;
 		const axisLength = me._length;
 		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize();
-		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
+		const majorIndices = tickOpts.major.enabled ? getMajorIndices(meta) : [];
 		const numMajorIndices = majorIndices.length;
 		const first = majorIndices[0];
 		const last = majorIndices[numMajorIndices - 1];
 		const newTicks = [];
+		const newMeta = [];
 
 		// If there are too many major ticks to display them all
 		if (numMajorIndices > ticksLimit) {
-			skipMajors(ticks, newTicks, majorIndices, numMajorIndices / ticksLimit);
-			return newTicks;
+			skipMajors(ticks, meta, newTicks, newMeta, majorIndices, numMajorIndices / ticksLimit);
+			me._tickMeta = newMeta;
+			me.ticks = newTicks;
+			return;
 		}
 
 		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
@@ -892,15 +905,19 @@ class Scale extends Element {
 		if (numMajorIndices > 0) {
 			let i, ilen;
 			const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-			skip(ticks, newTicks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, meta, newTicks, newMeta, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
-				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
+				skip(ticks, meta, newTicks, newMeta, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			skip(ticks, newTicks, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
-			return newTicks;
+			skip(ticks, meta, newTicks, newMeta, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			me._tickMeta = newMeta;
+			me.ticks = newTicks;
+			return;
 		}
-		skip(ticks, newTicks, spacing);
-		return newTicks;
+		skip(ticks, meta, newTicks, newMeta, spacing);
+		me._tickMeta = newMeta;
+		me.ticks = newTicks;
+		return;
 	}
 
 	/**
@@ -922,8 +939,8 @@ class Scale extends Element {
 
 		// Calculate space needed for 1 tick in axis direction.
 		return me.isHorizontal()
-			? h * cos > w * sin ? w / cos : h / sin
-			: h * sin < w * cos ? h / cos : w / sin;
+			? (h * cos > w * sin ? w / cos : h / sin)
+			: (h * sin < w * cos ? h / cos : w / sin);
 	}
 
 	/**
@@ -1084,7 +1101,7 @@ class Scale extends Element {
 		const tl = getTickMarkLength(options.gridLines);
 		const rotation = -helpers.math.toRadians(me.labelRotation);
 		const items = [];
-		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+		let i, ilen, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 
 		if (position === 'top') {
 			y = me.bottom - tl - tickPadding;
@@ -1119,9 +1136,7 @@ class Scale extends Element {
 		}
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-			tick = ticks[i];
-			label = tick.label;
-
+			label = me.labels[i];
 			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
 			font = me._resolveTickFontOptions(i);
 			lineHeight = font.lineHeight;

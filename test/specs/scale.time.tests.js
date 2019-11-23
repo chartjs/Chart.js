@@ -23,7 +23,7 @@ describe('Time scale tests', function() {
 	}
 
 	function getLabels(scale) {
-		return scale.ticks.map(t => t.label);
+		return scale.labels;
 	}
 
 	beforeEach(function() {
@@ -596,7 +596,7 @@ describe('Time scale tests', function() {
 		it('should be bounded by nearest step\'s year start and end', function() {
 			var scale = this.scale;
 			var ticks = scale.getTicks();
-			var step = ticks[1].value - ticks[0].value;
+			var step = ticks[1] - ticks[0];
 			var stepsAmount = Math.floor((scale.max - scale.min) / step);
 
 			expect(scale.getValueForPixel(scale.left)).toBeCloseToTime({
@@ -623,7 +623,7 @@ describe('Time scale tests', function() {
 			for (var i = 0; i < ticks.length - 1; i++) {
 				var offset = pixelsPerTick * i;
 				expect(scale.getValueForPixel(scale.left + offset)).toBeCloseToTime({
-					value: moment(ticks[i].label + '-01-01'),
+					value: moment(scale.labels[i] + '-01-01'),
 					unit: 'day',
 					threshold: 1,
 				});
@@ -1301,8 +1301,8 @@ describe('Time scale tests', function() {
 				var scale = chart.scales.x;
 				var ticks = scale.getTicks();
 
-				expect(scale.min).toEqual(ticks[0].value);
-				expect(scale.max).toEqual(ticks[ticks.length - 1].value);
+				expect(scale.min).toEqual(ticks[0]);
+				expect(scale.max).toEqual(ticks[ticks.length - 1]);
 				expect(scale.getPixelForValue(moment('02/20 08:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(60);
 				expect(scale.getPixelForValue(moment('02/23 11:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(426);
 				expect(getLabels(scale)).toEqual([
@@ -1361,8 +1361,8 @@ describe('Time scale tests', function() {
 						expect(scale.getPixelForValue(minMillis)).toBeCloseToPixel(scale.left);
 						expect(scale.getPixelForValue(maxMillis)).toBeCloseToPixel(scale.left + scale.width);
 						scale.getTicks().forEach(function(tick) {
-							expect(tick.value >= minMillis).toBeTruthy();
-							expect(tick.value <= maxMillis).toBeTruthy();
+							expect(tick >= minMillis).toBeTruthy();
+							expect(tick <= maxMillis).toBeTruthy();
 						});
 					});
 					it ('should shrink scale to the min/max range', function() {
@@ -1383,8 +1383,8 @@ describe('Time scale tests', function() {
 						expect(scale.getPixelForValue(minMillis)).toBeCloseToPixel(scale.left);
 						expect(scale.getPixelForValue(maxMillis)).toBeCloseToPixel(scale.left + scale.width);
 						scale.getTicks().forEach(function(tick) {
-							expect(tick.value >= minMillis).toBeTruthy();
-							expect(tick.value <= maxMillis).toBeTruthy();
+							expect(tick >= minMillis).toBeTruthy();
+							expect(tick <= maxMillis).toBeTruthy();
 						});
 					});
 				});
@@ -1826,10 +1826,7 @@ describe('Time scale tests', function() {
 
 		var scale = chart.scales.x;
 
-		var labels = scale.ticks.map(function(t) {
-			return t.label;
-		});
-		expect(labels).toEqual([
+		expect(scale.labels).toEqual([
 			'1990', 'Apr 1990', 'Jul 1990', 'Oct 1990',
 			'1991', 'Apr 1991', 'Jul 1991', 'Oct 1991',
 			'1992', 'Apr 1992', 'Jul 1992', 'Oct 1992',

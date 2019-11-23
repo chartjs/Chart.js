@@ -1,11 +1,11 @@
 // Test the category scale
 
 function getLabels(scale) {
-	return scale.ticks.map(t => t.label);
+	return scale.labels;
 }
 
 function getValues(scale) {
-	return scale.ticks.map(t => t.value);
+	return scale.ticks;
 }
 
 describe('Category scale tests', function() {
