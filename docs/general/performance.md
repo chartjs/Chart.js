@@ -36,7 +36,7 @@ new Chart(ctx, {
 
 ## Specify `min` and `max` to scales
 
-If you specifying `min` and `max`, scale does not have to look up the range from data.
+If you specify the `min` and `max`, the scale does not have to compute the range from the data.
 
 ```javascript
 new Chart(ctx, {
