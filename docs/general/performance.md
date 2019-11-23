@@ -34,7 +34,7 @@ new Chart(ctx, {
 });
 ```
 
-## Specify `min` and `max` to scales
+## Specify `min` and `max` for scales
 
 If you specify the `min` and `max`, the scale does not have to compute the range from the data.
 
