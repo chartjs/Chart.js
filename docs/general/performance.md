@@ -34,6 +34,31 @@ new Chart(ctx, {
 });
 ```
 
+## Specify `min` and `max` for scales
+
+If you specify the `min` and `max`, the scale does not have to compute the range from the data.
+
+```javascript
+new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            x: {
+                type: 'time',
+                min: new Date('2019-01-01').valueOf(),
+                max: new Date('2019-12-31').valueOf()
+            },
+            y: {
+                type: 'linear',
+                min: 0,
+                max: 100
+            }
+        }
+    }
+});
+```
+
 ## Data Decimation
 
 Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.
