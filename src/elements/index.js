@@ -9,5 +9,5 @@ export default {
 	Arc,
 	Line,
 	Point,
-	Rectangle,
+	Rectangle
 };
