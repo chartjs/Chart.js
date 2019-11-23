@@ -137,6 +137,8 @@ var chart = new Chart(ctx, {
 });
 ```
 
+When the scale is in `series` mode, the data indices are expected to be unique, sorted, and consistent across datasets.
+
 ### Scale Bounds
 
 The `bounds` property controls the scale boundary strategy (bypassed by `min`/`max` time options).
