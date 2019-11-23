@@ -26,12 +26,13 @@ function getRelativePosition(e, chart) {
  */
 function parseVisibleItems(chart, handler) {
 	const metasets = chart._getSortedVisibleDatasetMetas();
+	let index, data, element;
 
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
-		const {index, data} = metasets[i];
+		({index, data} = metasets[i]);
 		for (let j = 0, jlen = data.length; j < jlen; ++j) {
-			const element = data[j];
-			if (!element.skip) {
+			element = data[j];
+			if (!element._view.skip) {
 				handler(element, index, j);
 			}
 		}
