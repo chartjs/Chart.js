@@ -6,5 +6,6 @@ env:
 
 parserOptions:
   ecmaVersion: 6
+  sourceType: 'module'
 
 plugins: ['html']
