@@ -25,15 +25,15 @@ function getRelativePosition(e, chart) {
  * @param {function} handler - the callback to execute for each visible item
  */
 function parseVisibleItems(chart, handler) {
-	var metasets = chart._getSortedVisibleDatasetMetas();
-	var metadata, i, j, ilen, jlen, element;
+	const metasets = chart._getSortedVisibleDatasetMetas();
+	let index, data, element;
 
-	for (i = 0, ilen = metasets.length; i < ilen; ++i) {
-		metadata = metasets[i].data;
-		for (j = 0, jlen = metadata.length; j < jlen; ++j) {
-			element = metadata[j];
+	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
+		({index, data} = metasets[i]);
+		for (let j = 0, jlen = data.length; j < jlen; ++j) {
+			element = data[j];
 			if (!element._view.skip) {
-				handler(element, i, j);
+				handler(element, index, j);
 			}
 		}
 	}
