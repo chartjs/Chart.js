@@ -189,35 +189,21 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
 }
 
 function updateStacks(controller, parsed) {
-	const chart = controller.chart;
-	const meta = controller._cachedMeta;
+	const {chart, _cachedMeta: meta} = controller;
 	const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
-	const xScale = meta.xScale;
-	const yScale = meta.yScale;
-	const xId = xScale.id;
-	const yId = yScale.id;
-	const xStacked = isStacked(xScale, meta);
-	const yStacked = isStacked(yScale, meta);
-	const xKey = yStacked && getStackKey(xScale, yScale, meta);
-	const yKey = xStacked && getStackKey(yScale, xScale, meta);
+	const {iScale, vScale, index: datasetIndex} = meta;
+	const iId = iScale.id;
+	const vId = vScale.id;
+	const key = getStackKey(iScale, vScale, meta);
 	const ilen = parsed.length;
-	const datasetIndex = meta.index;
 	let stack;
 
 	for (let i = 0; i < ilen; ++i) {
 		const item = parsed[i];
-		const x = item[xId];
-		const y = item[yId];
+		const {[iId]: index, [vId]: value} = item;
 		const itemStacks = item._stacks || (item._stacks = {});
-
-		if (yStacked) {
-			stack = itemStacks[yId] = getOrCreateStack(stacks, xKey, x);
-			stack[datasetIndex] = y;
-		}
-		if (xStacked) {
-			stack = itemStacks[xId] = getOrCreateStack(stacks, yKey, y);
-			stack[datasetIndex] = x;
-		}
+		stack = itemStacks[vId] = getOrCreateStack(stacks, key, index);
+		stack[datasetIndex] = value;
 	}
 }
 
@@ -487,11 +473,8 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parse: function(start, count) {
 		const me = this;
-		const meta = me._cachedMeta;
-		const data = me._data;
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
-		const stacked = isStacked(iScale, meta) || isStacked(vScale, meta);
+		const {_cachedMeta: meta, _data: data} = me;
+		const {iScale, vScale, _stacked} = meta;
 		let i, ilen, parsed;
 
 		if (helpers.isArray(data[start])) {
@@ -505,7 +488,8 @@ helpers.extend(DatasetController.prototype, {
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
 			meta.data[start + i]._parsed = parsed[i];
 		}
-		if (stacked) {
+
+		if (_stacked) {
 			updateStacks(me, parsed);
 		}
 
@@ -527,8 +511,9 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parsePrimitiveData: function(meta, data, start, count) {
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
+		const {iScale, vScale} = meta;
+		const iId = iScale.id;
+		const vId = vScale.id;
 		const labels = iScale._getLabels();
 		const singleScale = iScale === vScale;
 		const parsed = [];
@@ -536,8 +521,8 @@ helpers.extend(DatasetController.prototype, {
 
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = {};
-			item[iScale.id] = singleScale || iScale._parse(labels[i], i);
-			item[vScale.id] = vScale._parse(data[i], i);
+			item[iId] = singleScale || iScale._parse(labels[i], i);
+			item[vId] = vScale._parse(data[i], i);
 			parsed.push(item);
 		}
 		return parsed;
@@ -555,16 +540,17 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseArrayData: function(meta, data, start, count) {
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
+		const {xScale, yScale} = meta;
+		const xId = xScale.id;
+		const yId = yScale.id;
 		const parsed = [];
-		let i, ilen, item, arr;
+		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			arr = data[i];
-			item = {};
-			item[xScale.id] = xScale._parse(arr[0], i);
-			item[yScale.id] = yScale._parse(arr[1], i);
-			parsed.push(item);
+			item = data[i];
+			parsed.push({
+				[xId]: xScale._parse(item[0], i),
+				[yId]: yScale._parse(item[1], i)
+			});
 		}
 		return parsed;
 	},
@@ -581,16 +567,17 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
+		const {xScale, yScale} = meta;
+		const xId = xScale.id;
+		const yId = yScale.id;
 		const parsed = [];
-		let i, ilen, item, obj;
+		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			obj = data[i];
-			item = {};
-			item[xScale.id] = xScale._parseObject(obj, 'x', i);
-			item[yScale.id] = yScale._parseObject(obj, 'y', i);
-			parsed.push(item);
+			item = data[i];
+			parsed.push({
+				[xId]: xScale._parseObject(item, 'x', i),
+				[yId]: yScale._parseObject(item, 'y', i)
+			});
 		}
 		return parsed;
 	},

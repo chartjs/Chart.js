@@ -100,10 +100,7 @@ module.exports = DatasetController.extend({
 
 	updateElements: function(points, start, count, reset) {
 		const me = this;
-		const meta = me._cachedMeta;
-		const xScale = meta.xScale;
-		const yScale = meta.yScale;
-		const stacked = meta._stacked;
+		const {xScale, yScale, _stacked} = me._cachedMeta;
 		var i;
 
 		for (i = start; i < start + count; ++i) {
@@ -111,7 +108,7 @@ module.exports = DatasetController.extend({
 			const parsed = me._getParsed(i);
 			const options = me._resolveDataElementOptions(i);
 			const x = xScale.getPixelForValue(parsed[xScale.id]);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 
 			// Utility
 			point._options = options;
