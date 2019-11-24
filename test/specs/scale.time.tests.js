@@ -95,6 +95,8 @@ describe('Time scale tests', function() {
 				major: {
 					enabled: false
 				},
+				lineWidth: 0,
+				strokeStyle: '',
 			},
 			time: {
 				parser: false,

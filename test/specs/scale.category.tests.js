@@ -49,6 +49,8 @@ describe('Category scale tests', function() {
 				labelOffset: 0,
 				minor: {},
 				major: {},
+				lineWidth: 0,
+				strokeStyle: '',
 			}
 		});
 

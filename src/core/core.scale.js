@@ -53,6 +53,8 @@ defaults._set('scale', {
 		minRotation: 0,
 		maxRotation: 50,
 		mirror: false,
+		lineWidth: 0,
+		strokeStyle: '',
 		padding: 0,
 		display: true,
 		autoSkip: true,
@@ -199,7 +201,9 @@ function parseFontOptions(options, nestedOpts) {
 		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
 		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
-		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
+		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight),
+		lineWidth: valueOrDefault(nestedOpts.lineWidth, options.lineWidth),
+		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle),
 	}), {
 		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
 	});
@@ -1255,16 +1259,20 @@ class Scale extends Element {
 			ctx.fillStyle = tickFont.color;
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
+			ctx.strokeStyle = tickFont.strokeStyle;
+			ctx.lineWidth = tickFont.lineWidth;
 
 			label = item.label;
 			y = item.textOffset;
 			if (isArray(label)) {
 				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
+					ctx.strokeText('' + label[j], 0, y);
 					ctx.fillText('' + label[j], 0, y);
 					y += tickFont.lineHeight;
 				}
 			} else {
+				ctx.strokeText(label, 0, y);
 				ctx.fillText(label, 0, y);
 			}
 			ctx.restore();

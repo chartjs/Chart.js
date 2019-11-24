@@ -20,7 +20,9 @@ defaults._set('global', {
 	defaultFontSize: 12,
 	defaultFontStyle: 'normal',
 	defaultLineHeight: 1.2,
-	showLines: true
+	showLines: true,
+	defaultStrokeStyle: '',
+	defaultLineWidth: 0
 });
 
 module.exports = defaults;

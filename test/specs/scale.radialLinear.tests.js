@@ -63,6 +63,8 @@ describe('Test the radial linear scale', function() {
 				labelOffset: 0,
 				minor: {},
 				major: {},
+				lineWidth: 0,
+				strokeStyle: '',
 			},
 		});
 

@@ -42,6 +42,8 @@ describe('Logarithmic Scale tests', function() {
 				labelOffset: 0,
 				minor: {},
 				major: {},
+				lineWidth: 0,
+				strokeStyle: '',
 			},
 		});
 
