@@ -70,6 +70,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Chart.chart.chart`
 * `Chart.types`
 * `DatasetController.addElementAndReset`
+* `DatasetController.createMetaData`
+* `DatasetController.createMetaDataset`
 * `Element.getArea`
 * `Element.height`
 * `Element.initialize`
@@ -104,7 +106,6 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.log10` was renamed to `helpers.math.log10`
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
-* `DatasetController.createMetaData` and `DatasetController.createMetaDataset` were replaced with `DatasetController.createElement`
 * `DatasetController.updateElement` was renamed to `DatasetController.updateElements`
 * `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
 * `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
