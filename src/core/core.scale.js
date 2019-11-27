@@ -212,18 +212,6 @@ function parseTickFontOptions(options) {
 	return {minor: minor, major: major};
 }
 
-function nonSkipped(ticksToFilter) {
-	var filtered = [];
-	var item, index, len;
-	for (index = 0, len = ticksToFilter.length; index < len; ++index) {
-		item = ticksToFilter[index];
-		if (typeof item._index !== 'undefined') {
-			filtered.push(item);
-		}
-	}
-	return filtered;
-}
-
 function getEvenSpacing(arr) {
 	var len = arr.length;
 	var i, diff;
@@ -272,29 +260,26 @@ function getMajorIndices(ticks) {
 	return result;
 }
 
-function skipMajors(ticks, majorIndices, spacing) {
-	var count = 0;
-	var next = majorIndices[0];
-	var i, tick;
+function skipMajors(ticks, newTicks, majorIndices, spacing) {
+	let count = 0;
+	let next = majorIndices[0];
+	let i;
 
 	spacing = Math.ceil(spacing);
 	for (i = 0; i < ticks.length; i++) {
-		tick = ticks[i];
 		if (i === next) {
-			tick._index = i;
+			newTicks.push(ticks[i]);
 			count++;
 			next = majorIndices[count * spacing];
-		} else {
-			delete tick.label;
 		}
 	}
 }
 
-function skip(ticks, spacing, majorStart, majorEnd) {
-	var start = valueOrDefault(majorStart, 0);
-	var end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
-	var count = 0;
-	var length, i, tick, next;
+function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
+	const start = valueOrDefault(majorStart, 0);
+	const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
+	let count = 0;
+	let length, i, next;
 
 	spacing = Math.ceil(spacing);
 	if (majorEnd) {
@@ -310,13 +295,10 @@ function skip(ticks, spacing, majorStart, majorEnd) {
 	}
 
 	for (i = Math.max(start, 0); i < end; i++) {
-		tick = ticks[i];
 		if (i === next) {
-			tick._index = i;
+			newTicks.push(ticks[i]);
 			count++;
 			next = Math.round(start + count * spacing);
-		} else {
-			delete tick.label;
 		}
 	}
 }
@@ -910,35 +892,36 @@ class Scale extends Element {
 	 * @private
 	 */
 	_autoSkip(ticks) {
-		var me = this;
-		var tickOpts = me.options.ticks;
-		var axisLength = me._length;
-		var ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
-		var majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
-		var numMajorIndices = majorIndices.length;
-		var first = majorIndices[0];
-		var last = majorIndices[numMajorIndices - 1];
-		var i, ilen, spacing, avgMajorSpacing;
+		const me = this;
+		const tickOpts = me.options.ticks;
+		const axisLength = me._length;
+		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
+		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
+		const numMajorIndices = majorIndices.length;
+		const first = majorIndices[0];
+		const last = majorIndices[numMajorIndices - 1];
+		const newTicks = [];
 
 		// If there are too many major ticks to display them all
 		if (numMajorIndices > ticksLimit) {
-			skipMajors(ticks, majorIndices, numMajorIndices / ticksLimit);
-			return nonSkipped(ticks);
+			skipMajors(ticks, newTicks, majorIndices, numMajorIndices / ticksLimit);
+			return newTicks;
 		}
 
-		spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
+		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
 
 		if (numMajorIndices > 0) {
+			let i, ilen;
+			const avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			skip(ticks, newTicks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
-				skip(ticks, spacing, majorIndices[i], majorIndices[i + 1]);
+				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
-			skip(ticks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
-			skip(ticks, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
-			return nonSkipped(ticks);
+			skip(ticks, newTicks, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			return newTicks;
 		}
-		skip(ticks, spacing);
-		return nonSkipped(ticks);
+		skip(ticks, newTicks, spacing);
+		return newTicks;
 	}
 
 	/**
