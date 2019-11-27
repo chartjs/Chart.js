@@ -901,7 +901,6 @@ class Scale extends Element {
 		const first = majorIndices[0];
 		const last = majorIndices[numMajorIndices - 1];
 		const newTicks = [];
-		let i, ilen, spacing, avgMajorSpacing;
 
 		// If there are too many major ticks to display them all
 		if (numMajorIndices > ticksLimit) {
@@ -909,14 +908,15 @@ class Scale extends Element {
 			return newTicks;
 		}
 
-		spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
+		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
 
 		if (numMajorIndices > 0) {
+			let i, ilen;
+			const avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			skip(ticks, newTicks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
 				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
-			skip(ticks, newTicks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
 			skip(ticks, newTicks, spacing, last, helpers.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
 			return newTicks;
 		}
