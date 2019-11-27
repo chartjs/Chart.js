@@ -515,15 +515,14 @@ helpers.extend(DatasetController.prototype, {
 		const labels = iScale._getLabels();
 		const singleScale = iScale === vScale;
 		const parsed = new Array(count);
-		let i, ilen, index, item;
+		let i, ilen, index;
 
 		for (i = 0, ilen = count; i < ilen; ++i) {
 			index = i + start;
-			item = {
+			parsed[i] = {
 				[iId]: singleScale || iScale._parse(labels[index], index),
 				[vId]: vScale._parse(data[index], index)
 			};
-			parsed[i] = item;
 		}
 		return parsed;
 	},
