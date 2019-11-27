@@ -101,9 +101,7 @@ module.exports = {
 			size: size,
 			style: valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle),
 			weight: null,
-			string: '',
-			strokeStyle: valueOrDefault(options.strokeStyle, globalDefaults.defaultStrokeStyle),
-			lineWidth: valueOrDefault(options.lineWidth, globalDefaults.defaultLineWidth)
+			string: ''
 		};
 
 		font.string = toFontString(font);

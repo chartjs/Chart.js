@@ -213,7 +213,12 @@ function parseTickFontOptions(options) {
 	var minor = parseFontOptions(options, options.minor);
 	var major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
 
-	return {minor: minor, major: major};
+	return {
+		minor: minor,
+		major: major,
+		strokeStyle: valueOrDefault(options.strokeStyle, defaults.scale.ticks.strokeStyle),
+		lineWidth: valueOrDefault(options.lineWidth, defaults.scale.ticks.lineWidth)
+	};
 }
 
 function nonSkipped(ticksToFilter) {
@@ -1259,8 +1264,8 @@ class Scale extends Element {
 			ctx.fillStyle = tickFont.color;
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
-			ctx.strokeStyle = tickFont.strokeStyle;
-			ctx.lineWidth = tickFont.lineWidth;
+			ctx.strokeStyle = optionTicks.strokeStyle;
+			ctx.lineWidth = optionTicks.lineWidth;
 
 			label = item.label;
 			y = item.textOffset;

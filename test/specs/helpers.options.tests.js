@@ -76,9 +76,7 @@ describe('Chart.helpers.options', function() {
 				defaultFontFamily: 'foobar',
 				defaultFontSize: 42,
 				defaultFontStyle: 'xxxyyy',
-				defaultLineHeight: 1.5,
-				defaultLineWidth: 14,
-				defaultStrokeStyle: 'default'
+				defaultLineHeight: 1.5
 			};
 
 			expect(parseFont({})).toEqual({
@@ -87,9 +85,7 @@ describe('Chart.helpers.options', function() {
 				size: 42,
 				string: 'xxxyyy 42px foobar',
 				style: 'xxxyyy',
-				weight: null,
-				lineWidth: 14,
-				strokeStyle: 'default'
+				weight: null
 			});
 
 			Chart.defaults.global = global;
@@ -99,18 +95,14 @@ describe('Chart.helpers.options', function() {
 				fontFamily: 'bla',
 				lineHeight: 8,
 				fontSize: 21,
-				fontStyle: 'zzz',
-				lineWidth: 20,
-				strokeStyle: 'blue'
+				fontStyle: 'zzz'
 			})).toEqual({
 				family: 'bla',
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
 				style: 'zzz',
-				weight: null,
-				lineWidth: 20,
-				strokeStyle: 'blue'
+				weight: null
 			});
 		});
 		it('should return null as a font string if fontSize or fontFamily are missing', function() {
