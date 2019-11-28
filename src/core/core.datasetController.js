@@ -153,15 +153,15 @@ function applyStack(stack, value, dsIndex, allOther) {
 }
 
 function convertObjectDataToArray(data) {
-	var keys = Object.keys(data);
-	var adata = [];
-	var i, ilen, key;
+	const keys = Object.keys(data);
+	const adata = new Array(keys.length);
+	let i, ilen, key;
 	for (i = 0, ilen = keys.length; i < ilen; ++i) {
 		key = keys[i];
-		adata.push({
+		adata[i] = {
 			x: key,
 			y: data[key]
-		});
+		};
 	}
 	return adata;
 }
@@ -358,17 +358,13 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
-	createElement: function(type) {
-		return type && new type();
-	},
-
 	/**
 	 * @private
 	 */
 	_dataCheck: function() {
-		var me = this;
-		var dataset = me.getDataset();
-		var data = dataset.data || (dataset.data = []);
+		const me = this;
+		const dataset = me.getDataset();
+		const data = dataset.data || (dataset.data = []);
 
 		// In order to correctly handle data addition/deletion animation (an thus simulate
 		// real-time charts), we need to monitor these data modifications and synchronize
@@ -420,19 +416,21 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	addElements: function() {
-		var me = this;
-		var meta = me._cachedMeta;
-		var metaData = meta.data;
-		var i, ilen, data;
+		const me = this;
+		const meta = me._cachedMeta;
+		let i, ilen, data;
 
 		me._dataCheck();
 		data = me._data;
+		const metaData = meta.data = new Array(data.length);
 
 		for (i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = metaData[i] || me.createElement(me.dataElementType);
+			metaData[i] = new me.dataElementType();
 		}
 
-		meta.dataset = meta.dataset || me.createElement(me.datasetElementType);
+		if (me.datasetElementType) {
+			meta.dataset = new me.datasetElementType();
+		}
 	},
 
 	buildOrUpdateElements: function() {
@@ -516,14 +514,15 @@ helpers.extend(DatasetController.prototype, {
 		const vId = vScale.id;
 		const labels = iScale._getLabels();
 		const singleScale = iScale === vScale;
-		const parsed = [];
-		let i, ilen, item;
+		const parsed = new Array(count);
+		let i, ilen, index;
 
-		for (i = start, ilen = start + count; i < ilen; ++i) {
-			item = {};
-			item[iId] = singleScale || iScale._parse(labels[i], i);
-			item[vId] = vScale._parse(data[i], i);
-			parsed.push(item);
+		for (i = 0, ilen = count; i < ilen; ++i) {
+			index = i + start;
+			parsed[i] = {
+				[iId]: singleScale || iScale._parse(labels[index], index),
+				[vId]: vScale._parse(data[index], index)
+			};
 		}
 		return parsed;
 	},
@@ -543,14 +542,16 @@ helpers.extend(DatasetController.prototype, {
 		const {xScale, yScale} = meta;
 		const xId = xScale.id;
 		const yId = yScale.id;
-		const parsed = [];
-		let i, ilen, item;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
-			item = data[i];
-			parsed.push({
-				[xId]: xScale._parse(item[0], i),
-				[yId]: yScale._parse(item[1], i)
-			});
+		const parsed = new Array(count);
+		let i, ilen, index, item;
+
+		for (i = 0, ilen = count; i < ilen; ++i) {
+			index = i + start;
+			item = data[index];
+			parsed[i] = {
+				[xId]: xScale._parse(item[0], index),
+				[yId]: yScale._parse(item[1], index)
+			};
 		}
 		return parsed;
 	},
@@ -570,14 +571,16 @@ helpers.extend(DatasetController.prototype, {
 		const {xScale, yScale} = meta;
 		const xId = xScale.id;
 		const yId = yScale.id;
-		const parsed = [];
-		let i, ilen, item;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
-			item = data[i];
-			parsed.push({
-				[xId]: xScale._parseObject(item, 'x', i),
-				[yId]: yScale._parseObject(item, 'y', i)
-			});
+		const parsed = new Array(count);
+		let i, ilen, index, item;
+
+		for (i = 0, ilen = count; i < ilen; ++i) {
+			index = i + start;
+			item = data[index];
+			parsed[i] = {
+				[xId]: xScale._parseObject(item, 'x', index),
+				[yId]: yScale._parseObject(item, 'y', index)
+			};
 		}
 		return parsed;
 	},
@@ -958,14 +961,15 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	insertElements: function(start, count) {
 		const me = this;
-		const elements = [];
+		const elements = new Array(count);
 		const data = me._cachedMeta.data;
 		let i;
 
-		for (i = start; i < start + count; ++i) {
-			elements.push(me.createElement(me.dataElementType));
+		for (i = 0; i < count; ++i) {
+			elements[i] = new me.dataElementType();
 		}
 		data.splice(start, 0, ...elements);
+
 		me._parse(start, count);
 		me.updateElements(data, start, count);
 	},
