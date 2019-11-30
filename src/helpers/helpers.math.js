@@ -37,4 +37,4 @@ export const log10 = Math.log10 || function(x) {
 	var isPowerOf10 = x === Math.pow(10, powerOf10);
 
 	return isPowerOf10 ? powerOf10 : exponent;
-}
+};
