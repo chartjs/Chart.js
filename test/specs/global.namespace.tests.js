@@ -37,8 +37,5 @@ describe('Chart namespace', function() {
 		it('should be an object', function() {
 			expect(Chart.helpers instanceof Object).toBeTruthy();
 		});
-		it('should contains "helpers" namespaces', function() {
-			expect(Chart.helpers.options instanceof Object).toBeTruthy();
-		});
 	});
 });
