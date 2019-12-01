@@ -213,12 +213,7 @@ function parseTickFontOptions(options) {
 	var minor = parseFontOptions(options, options.minor);
 	var major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
 
-	return {
-		minor: minor,
-		major: major,
-		strokeStyle: valueOrDefault(options.strokeStyle, defaults.scale.ticks.strokeStyle),
-		lineWidth: valueOrDefault(options.lineWidth, defaults.scale.ticks.lineWidth)
-	};
+	return {minor: minor, major: major};
 }
 
 function nonSkipped(ticksToFilter) {
