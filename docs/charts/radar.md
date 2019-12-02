@@ -200,3 +200,7 @@ data: {
     }]
 }
 ```
+
+## Internal data format
+
+`{x, y}`

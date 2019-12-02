@@ -475,10 +475,11 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
+		const parsing = resolve([me.getDataset().parsing, me.chart.options.parsing, true]);
 		let offset = 0;
 		let i, parsed;
 
-		if (me.getDataset().parsed) {
+		if (parsing === false) {
 			parsed = data;
 			offset = start;
 		} else if (helpers.isArray(data[start])) {

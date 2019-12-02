@@ -1,4 +1,5 @@
 # Bar
+
 A bar chart provides a way of showing data values represented as vertical bars. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 
 {% chartjs %}
@@ -114,6 +115,7 @@ that derive from a bar chart.
 **Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
 
 Options are:
+
 * `'bottom'`
 * `'left'`
 * `'top'`
@@ -314,3 +316,7 @@ var myBarChart = new Chart(ctx, {
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.
+
+## Internal data format
+
+`{x, y, _custom}` where `_custom` is optional object defining stacked bar properties: `{start, end, barStart, barEnd, min, max}`. `start` and `end` are the input values. Those two are repeated in `barStart` (closer to origin), `barEnd` (further from origin), `min` and `max`.

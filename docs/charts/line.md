@@ -204,3 +204,7 @@ var stackedLine = new Chart(ctx, {
     }
 });
 ```
+
+## Internal data format
+
+`{x, y}`
