@@ -65,9 +65,9 @@ function sorter(a, b) {
 }
 
 function arrayUnique(items) {
-	var hash = {};
-	var out = [];
-	var i, ilen, item;
+	const hash = {};
+	const out = [];
+	let i, ilen, item;
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		item = items[i];
@@ -103,9 +103,9 @@ function buildLookupTable(timestamps, min, max, distribution) {
 		];
 	}
 
-	var table = [];
-	var items = [min];
-	var i, ilen, prev, curr, next;
+	const table = [];
+	const items = [min];
+	let i, ilen, prev, curr, next;
 
 	for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
 		curr = timestamps[i];
@@ -132,9 +132,9 @@ function buildLookupTable(timestamps, min, max, distribution) {
 
 // @see adapted from https://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
 function lookup(table, key, value) {
-	var lo = 0;
-	var hi = table.length - 1;
-	var mid, i0, i1;
+	let lo = 0;
+	let hi = table.length - 1;
+	let mid, i0, i1;
 
 	while (lo >= 0 && lo <= hi) {
 		mid = (lo + hi) >> 1;
@@ -164,15 +164,15 @@ function lookup(table, key, value) {
  * index [0, 1] or [n - 1, n] are used for the interpolation.
  */
 function interpolate(table, skey, sval, tkey) {
-	var range = lookup(table, skey, sval);
+	const range = lookup(table, skey, sval);
 
 	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	var prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
-	var next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
+	const prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
+	const next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
 
-	var span = next[skey] - prev[skey];
-	var ratio = span ? (sval - prev[skey]) / span : 0;
-	var offset = (next[tkey] - prev[tkey]) * ratio;
+	const span = next[skey] - prev[skey];
+	const ratio = span ? (sval - prev[skey]) / span : 0;
+	const offset = (next[tkey] - prev[tkey]) * ratio;
 
 	return prev[tkey] + offset;
 }
@@ -182,10 +182,10 @@ function parse(scale, input) {
 		return null;
 	}
 
-	var adapter = scale._adapter;
-	var options = scale.options.time;
-	var parser = options.parser;
-	var value = input;
+	const adapter = scale._adapter;
+	const options = scale.options.time;
+	const parser = options.parser;
+	let value = input;
 
 	if (typeof parser === 'function') {
 		value = parser(value);
@@ -213,8 +213,8 @@ function parse(scale, input) {
  * Figures out what unit results in an appropriate number of auto-generated ticks
  */
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
-	var ilen = UNITS.length;
-	var i, interval, factor;
+	const ilen = UNITS.length;
+	let i, interval, factor;
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
@@ -232,7 +232,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
  * Figures out what unit to format a set of ticks with
  */
 function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
-	var i, unit;
+	let i, unit;
 
 	for (i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
@@ -259,15 +259,15 @@ function determineMajorUnit(unit) {
  * responsibility of the calling code to clamp values if needed.
  */
 function generate(scale, min, max, capacity) {
-	var adapter = scale._adapter;
-	var options = scale.options;
-	var timeOpts = options.time;
-	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
-	var stepSize = resolve([timeOpts.stepSize, timeOpts.unitStepSize, 1]);
-	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	var first = min;
-	var ticks = [];
-	var time;
+	const adapter = scale._adapter;
+	const options = scale.options;
+	const timeOpts = options.time;
+	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
+	const stepSize = resolve([timeOpts.stepSize, timeOpts.unitStepSize, 1]);
+	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
+	const ticks = [];
+	let first = min;
+	let time;
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
@@ -300,9 +300,9 @@ function generate(scale, min, max, capacity) {
  * Offsets are added when the `offset` option is true.
  */
 function computeOffsets(table, ticks, min, max, options) {
-	var start = 0;
-	var end = 0;
-	var first, last;
+	let start = 0;
+	let end = 0;
+	let first, last;
 
 	if (options.offset && ticks.length) {
 		first = interpolate(table, 'time', ticks[0], 'pos');
@@ -323,10 +323,10 @@ function computeOffsets(table, ticks, min, max, options) {
 }
 
 function setMajorTicks(scale, ticks, map, majorUnit) {
-	var adapter = scale._adapter;
-	var first = +adapter.startOf(ticks[0].value, majorUnit);
-	var last = ticks[ticks.length - 1].value;
-	var major, index;
+	const adapter = scale._adapter;
+	const first = +adapter.startOf(ticks[0].value, majorUnit);
+	const last = ticks[ticks.length - 1].value;
+	let major, index;
 
 	for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
 		index = map[major];
@@ -338,10 +338,10 @@ function setMajorTicks(scale, ticks, map, majorUnit) {
 }
 
 function ticksFromTimestamps(scale, values, majorUnit) {
-	var ticks = [];
-	var map = {};
-	var ilen = values.length;
-	var i, value;
+	const ticks = [];
+	const map = {};
+	const ilen = values.length;
+	let i, value;
 
 	for (i = 0; i < ilen; ++i) {
 		value = values[i];
@@ -424,12 +424,12 @@ function getAllTimestamps(scale) {
 
 
 function getTimestampsForTicks(scale) {
-	var min = scale.min;
-	var max = scale.max;
-	var options = scale.options;
-	var capacity = scale._getLabelCapacity(min);
-	var source = options.ticks.source;
-	var timestamps;
+	const min = scale.min;
+	const max = scale.max;
+	const options = scale.options;
+	const capacity = scale._getLabelCapacity(min);
+	const source = options.ticks.source;
+	let timestamps;
 
 	if (source === 'data' || (source === 'auto' && options.distribution === 'series')) {
 		timestamps = getAllTimestamps(scale);
@@ -449,9 +449,9 @@ function getTimestampsForTable(scale) {
 }
 
 function getLabelBounds(scale) {
-	var min = Number.POSITIVE_INFINITY;
-	var max = Number.NEGATIVE_INFINITY;
-	var arr = getLabelTimestamps(scale);
+	const arr = getLabelTimestamps(scale);
+	let min = Number.POSITIVE_INFINITY;
+	let max = Number.NEGATIVE_INFINITY;
 
 	if (arr.length) {
 		min = arr[0];
@@ -468,8 +468,8 @@ function getLabelBounds(scale) {
  * @param {int} max - max value (timestamp)
  */
 function filterBetween(timestamps, min, max) {
-	var start = 0;
-	var end = timestamps.length - 1;
+	let start = 0;
+	let end = timestamps.length - 1;
 
 	while (start < end && timestamps[start] < min) {
 		start++;
@@ -558,10 +558,10 @@ class TimeScale extends Scale {
 	constructor(props) {
 		super(props);
 
-		var me = this;
-		var options = me.options;
-		var time = options.time || (options.time = {});
-		var adapter = me._adapter = new adapters._date(options.adapters.date);
+		const me = this;
+		const options = me.options;
+		const time = options.time || (options.time = {});
+		const adapter = me._adapter = new adapters._date(options.adapters.date);
 
 
 		me._cache = {};
@@ -575,11 +575,11 @@ class TimeScale extends Scale {
 	}
 
 	determineDataLimits() {
-		var me = this;
-		var options = me.options;
-		var adapter = me._adapter;
-		var unit = options.time.unit || 'day';
-		var {min, max, minDefined, maxDefined} = me._getUserBounds();
+		const me = this;
+		const options = me.options;
+		const adapter = me._adapter;
+		const unit = options.time.unit || 'day';
+		let {min, max, minDefined, maxDefined} = me._getUserBounds();
 
 		function _applyBounds(bounds) {
 			if (!minDefined && !isNaN(bounds.min)) {
@@ -611,25 +611,23 @@ class TimeScale extends Scale {
 	}
 
 	buildTicks() {
-		var me = this;
-		var options = me.options;
-		var timeOpts = options.time;
-		var tickOpts = options.ticks;
-		var distribution = options.distribution;
-		var ticks = [];
-		var min, max, timestamps;
+		const me = this;
+		const options = me.options;
+		const timeOpts = options.time;
+		const tickOpts = options.ticks;
+		const distribution = options.distribution;
 
-		timestamps = getTimestampsForTicks(me);
+		const timestamps = getTimestampsForTicks(me);
 
 		if (options.bounds === 'ticks' && timestamps.length) {
 			me.min = me._userMin || timestamps[0];
 			me.max = me._userMax || timestamps[timestamps.length - 1];
 		}
 
-		min = me.min;
-		max = me.max;
+		const min = me.min;
+		const max = me.max;
 
-		ticks = filterBetween(timestamps, min, max);
+		const ticks = filterBetween(timestamps, min, max);
 
 		// PRIVATE
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
@@ -650,9 +648,9 @@ class TimeScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		var me = this;
-		var adapter = me._adapter;
-		var timeOpts = me.options.time;
+		const me = this;
+		const adapter = me._adapter;
+		const timeOpts = me.options.time;
 
 		if (timeOpts.tooltipFormat) {
 			return adapter.format(value, timeOpts.tooltipFormat);
@@ -665,19 +663,19 @@ class TimeScale extends Scale {
 	 * @private
 	 */
 	_tickFormatFunction(time, index, ticks, format) {
-		var me = this;
-		var adapter = me._adapter;
-		var options = me.options;
-		var formats = options.time.displayFormats;
-		var minorFormat = formats[me._unit];
-		var majorUnit = me._majorUnit;
-		var majorFormat = formats[majorUnit];
-		var tick = ticks[index];
-		var tickOpts = options.ticks;
-		var major = majorUnit && majorFormat && tick && tick.major;
-		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		var nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
-		var formatter = resolve([
+		const me = this;
+		const adapter = me._adapter;
+		const options = me.options;
+		const formats = options.time.displayFormats;
+		const minorFormat = formats[me._unit];
+		const majorUnit = me._majorUnit;
+		const majorFormat = formats[majorUnit];
+		const tick = ticks[index];
+		const tickOpts = options.ticks;
+		const major = majorUnit && majorFormat && tick && tick.major;
+		const label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
+		const nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
+		const formatter = resolve([
 			nestedTickOpts.callback,
 			tickOpts.callback
 		]);
@@ -686,7 +684,7 @@ class TimeScale extends Scale {
 	}
 
 	generateTickLabels(ticks) {
-		var i, ilen, tick;
+		let i, ilen, tick;
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			tick = ticks[i];
@@ -698,23 +696,23 @@ class TimeScale extends Scale {
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 */
 	getPixelForValue(value) {
-		var me = this;
-		var offsets = me._offsets;
-		var pos = interpolate(me._table, 'time', value, 'pos');
+		const me = this;
+		const offsets = me._offsets;
+		const pos = interpolate(me._table, 'time', value, 'pos');
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
 	getPixelForTick(index) {
-		var ticks = this.getTicks();
+		const ticks = this.getTicks();
 		return index >= 0 && index < ticks.length ?
 			this.getPixelForValue(ticks[index].value) :
 			null;
 	}
 
 	getValueForPixel(pixel) {
-		var me = this;
-		var offsets = me._offsets;
-		var pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+		const me = this;
+		const offsets = me._offsets;
+		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		return interpolate(me._table, 'pos', pos, 'time');
 	}
 
@@ -722,13 +720,13 @@ class TimeScale extends Scale {
 	 * @private
 	 */
 	_getLabelSize(label) {
-		var me = this;
-		var ticksOpts = me.options.ticks;
-		var tickLabelWidth = me.ctx.measureText(label).width;
-		var angle = helpers.toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
-		var cosRotation = Math.cos(angle);
-		var sinRotation = Math.sin(angle);
-		var tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
+		const me = this;
+		const ticksOpts = me.options.ticks;
+		const tickLabelWidth = me.ctx.measureText(label).width;
+		const angle = helpers.toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
+		const cosRotation = Math.cos(angle);
+		const sinRotation = Math.sin(angle);
+		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
@@ -740,15 +738,15 @@ class TimeScale extends Scale {
 	 * @private
 	 */
 	_getLabelCapacity(exampleTime) {
-		var me = this;
-		var timeOpts = me.options.time;
-		var displayFormats = timeOpts.displayFormats;
+		const me = this;
+		const timeOpts = me.options.time;
+		const displayFormats = timeOpts.displayFormats;
 
 		// pick the longest format (milliseconds) for guestimation
-		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-		var exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
-		var size = me._getLabelSize(exampleLabel);
-		var capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
+		const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
+		const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
+		const size = me._getLabelSize(exampleLabel);
+		let capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
 
 		if (me.options.offset) {
 			capacity--;
