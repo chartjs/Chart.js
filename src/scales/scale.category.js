@@ -6,7 +6,7 @@ const defaultConfig = {
 	position: 'bottom'
 };
 
-class CategroyScale extends Scale {
+class CategoryScale extends Scale {
 	_parse(raw, index) {
 		var labels = this._getLabels();
 		var first = labels.indexOf(raw);
@@ -94,6 +94,6 @@ class CategroyScale extends Scale {
 	}
 }
 
-module.exports = CategroyScale;
+module.exports = CategoryScale;
 // INTERNAL: static default options, registered in src/index.js
 module.exports._defaults = defaultConfig;
