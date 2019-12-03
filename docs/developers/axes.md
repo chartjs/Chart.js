@@ -96,11 +96,11 @@ Optionally, the following methods may also be overwritten, but an implementation
 
 ```javascript
 {
-    // Transform the ticks array of the scale instance into strings. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
-    convertTicksToLabels: function() {},
+    // Adds labels to objects in the ticks array. The default implementation simply calls this.options.ticks.callback(numericalTick, index, ticks);
+    generateTickLabels: function() {},
 
     // Determine how much the labels will rotate by. The default implementation will only rotate labels if the scale is horizontal.
-    calculateTickRotation: function() {},
+    calculateLabelRotation: function() {},
 
     // Fits the scale into the canvas.
     // this.maxWidth and this.maxHeight will tell you the maximum dimensions the scale instance can be. Scales should endeavour to be as efficient as possible with canvas space.
