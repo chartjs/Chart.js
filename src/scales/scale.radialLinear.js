@@ -1,9 +1,9 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const helpers = require('../helpers/index');
-const LinearScaleBase = require('./scale.linearbase');
-const Ticks = require('../core/core.ticks');
+import defaults from '../core/core.defaults';
+import helpers from '../helpers/index';
+import LinearScaleBase from './scale.linearbase';
+import Ticks from '../core/core.ticks';
 
 const valueOrDefault = helpers.valueOrDefault;
 const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
@@ -534,6 +534,6 @@ class RadialLinearScale extends LinearScaleBase {
 	_drawTitle() {}
 }
 
-module.exports = RadialLinearScale;
 // INTERNAL: static default options, registered in src/index.js
-module.exports._defaults = defaultConfig;
+RadialLinearScale._defaults = defaultConfig;
+export default RadialLinearScale;
