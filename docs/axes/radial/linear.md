@@ -114,4 +114,4 @@ The following options are used to configure the point labels that are shown on t
 
 ## Internal data format
 
-Internnally linear radial scale uses numeric data
+Internally linear radial scale uses numeric data
