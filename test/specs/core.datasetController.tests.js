@@ -189,44 +189,44 @@ describe('Chart.DatasetController', function() {
 		});
 
 		var meta = chart.getDatasetMeta(0);
-		var first, second, last;
+		var controller = meta.controller;
+		var first, last;
 
-		first = meta.data[0];
-		last = meta.data[5];
+		first = controller._getParsed(0);
+		last = controller._getParsed(5);
 		data.push({x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8});
 		data.push({x: 9, y: 9});
 		expect(meta.data.length).toBe(10);
-		expect(meta.data[0]).toBe(first);
-		expect(meta.data[5]).toBe(last);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(5)).toBe(last);
 
-		last = meta.data[9];
+		last = controller._getParsed(9);
 		data.pop();
 		expect(meta.data.length).toBe(9);
-		expect(meta.data[0]).toBe(first);
-		expect(meta.data.indexOf(last)).toBe(-1);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(9)).toBe(undefined);
+		expect(controller._getParsed(8)).toEqual({x: 8, y: 8});
 
-		last = meta.data[8];
+		last = controller._getParsed(8);
 		data.shift();
 		data.shift();
 		data.shift();
 		expect(meta.data.length).toBe(6);
-		expect(meta.data.indexOf(first)).toBe(-1);
-		expect(meta.data[5]).toBe(last);
+		expect(controller._getParsed(5)).toBe(last);
 
-		first = meta.data[0];
-		second = meta.data[1];
-		last = meta.data[5];
+		first = controller._getParsed(0);
+		last = controller._getParsed(5);
 		data.splice(1, 4, {x: 10, y: 10}, {x: 11, y: 11});
 		expect(meta.data.length).toBe(4);
-		expect(meta.data[0]).toBe(first);
-		expect(meta.data[3]).toBe(last);
-		expect(meta.data.indexOf(second)).toBe(-1);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(3)).toBe(last);
+		expect(controller._getParsed(1)).toEqual({x: 10, y: 10});
 
 		data.unshift({x: 12, y: 12}, {x: 13, y: 13}, {x: 14, y: 14}, {x: 15, y: 15});
 		data.unshift({x: 16, y: 16}, {x: 17, y: 17});
 		expect(meta.data.length).toBe(10);
-		expect(meta.data[6]).toBe(first);
-		expect(meta.data[9]).toBe(last);
+		expect(controller._getParsed(6)).toBe(first);
+		expect(controller._getParsed(9)).toBe(last);
 	});
 
 	it('should re-synchronize metadata when the data object reference changes', function() {
