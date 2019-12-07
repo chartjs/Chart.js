@@ -55,6 +55,8 @@ function interpolate(start, view, model, ease) {
 class Element {
 
 	constructor(configuration) {
+		this._parsed = null; // pre-allocate space for pointer to parsed data
+
 		helpers.extend(this, configuration);
 
 		// this.hidden = false; we assume Element has an attribute called hidden, but do not initialize to save memory
