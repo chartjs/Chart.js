@@ -473,23 +473,22 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
-		const parsing = resolve([me.getDataset().parsing, me.chart.options.parsing, true]);
+		const parsing = me._parsing = resolve([me.getDataset().parsing, me.chart.options.parsing, true]);
 		let offset = 0;
 		let i, parsed;
 
-		if (parsing === false) {
-			parsed = data;
-			offset = start;
-		} else if (helpers.isArray(data[start])) {
-			parsed = me._parseArrayData(meta, data, start, count);
-		} else if (helpers.isObject(data[start])) {
-			parsed = me._parseObjectData(meta, data, start, count);
-		} else {
-			parsed = me._parsePrimitiveData(meta, data, start, count);
-		}
+		if (parsing !== false) {
+			if (helpers.isArray(data[start])) {
+				parsed = me._parseArrayData(meta, data, start, count);
+			} else if (helpers.isObject(data[start])) {
+				parsed = me._parseObjectData(meta, data, start, count);
+			} else {
+				parsed = me._parsePrimitiveData(meta, data, start, count);
+			}
 
-		for (i = 0; i < count; ++i) {
-			meta.data[i + start]._parsed = parsed[i + offset];
+			for (i = 0; i < count; ++i) {
+				meta.data[i + start]._parsed = parsed[i + offset];
+			}
 		}
 
 		if (_stacked) {
@@ -594,6 +593,10 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getParsed: function(index) {
+		if (this._parsing === false) {
+			return this._data[index];
+		}
+
 		const data = this._cachedMeta.data;
 		if (index < 0 || index >= data.length) {
 			return;
