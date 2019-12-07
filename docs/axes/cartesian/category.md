@@ -17,6 +17,7 @@ let chart = new Chart(ctx, {
     }
 });
 ```
+
 As part of axis definition:
 
 ```javascript
@@ -41,11 +42,12 @@ The category scale provides the following options for configuring tick marks. Th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `labels` | `string[]` | - | An array of labels to display.
-| `min` | `string` | | The minimum item to display. [more...](#min-max-configuration)
-| `max` | `string` | | The maximum item to display. [more...](#min-max-configuration)
+| `min` | <code>string&#124;number</code> | | The minimum item to display. [more...](#min-max-configuration)
+| `max` | <code>string&#124;number</code> | | The maximum item to display. [more...](#min-max-configuration)
 
 ## Min Max Configuration
-For both the `min` and `max` properties, the value must be in the `labels` array. In the example below, the x axis would only display "March" through "June".
+
+For both the `min` and `max` properties, the value must be `string` in the `labels` array or `numeric` value as an index of a label in that array. In the example below, the x axis would only display "March" through "June".
 
 ```javascript
 let chart = new Chart(ctx, {
@@ -65,3 +67,7 @@ let chart = new Chart(ctx, {
     }
 });
 ```
+
+## Internal data format
+
+Internally category scale uses label indices

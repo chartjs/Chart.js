@@ -59,6 +59,10 @@ new Chart(ctx, {
 });
 ```
 
+## Data structure and format
+
+Provide prepared data in the internal format accepted by the dataset and scales and set `parsing: false`. See [Data structures](data-structures.md) for more information.
+
 ## Data Decimation
 
 Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.

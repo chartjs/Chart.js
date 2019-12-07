@@ -1,4 +1,5 @@
 # Bar
+
 A bar chart provides a way of showing data values represented as vertical bars. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 
 {% chartjs %}
@@ -114,6 +115,7 @@ that derive from a bar chart.
 **Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
 
 Options are:
+
 * `'bottom'`
 * `'left'`
 * `'top'`
@@ -137,6 +139,7 @@ The interaction with each bar can be controlled with the following properties:
 All these values, if `undefined`, fallback to the associated [`elements.rectangle.*`](../configuration/elements.md#rectangle-configuration) options.
 
 ## Dataset Configuration
+
 The bar chart accepts the following configuration from the associated dataset options:
 
 | Name | Type | Default | Description
@@ -226,22 +229,7 @@ Sample:     |==============|
 
 ## Data Structure
 
-The `data` property of a dataset for a bar chart is specified as an array of numbers. Each point in the data array corresponds to the label at the same index on the x axis.
-
-```javascript
-data: [20, 10]
-```
-
-You can also specify the dataset as x/y coordinates when using the [time scale](../axes/cartesian/time.md#time-cartesian-axis).
-
-```javascript
-data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
-```
-
-You can also specify the dataset for a bar chart as arrays of two numbers. This will force rendering of bars with gaps between them (floating-bars). First and second numbers in array will correspond the start and the end point of a bar respectively.
-```javascript
-data: [[5,6], [-3,-6]]
-```
+All of the supported [data structures](../general/data-structures.md) can be used with bar charts.
 
 ## Stacked Bar Chart
 
@@ -328,3 +316,7 @@ var myBarChart = new Chart(ctx, {
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
 
 The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.
+
+## Internal data format
+
+`{x, y, _custom}` where `_custom` is optional object defining stacked bar properties: `{start, end, barStart, barEnd, min, max}`. `start` and `end` are the input values. Those two are repeated in `barStart` (closer to origin), `barEnd` (further from origin), `min` and `max`.

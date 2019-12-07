@@ -75,3 +75,7 @@ let options = {
     }
 };
 ```
+
+## Internal data format
+
+Internally, linear scale uses numeric data

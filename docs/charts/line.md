@@ -1,4 +1,5 @@
 # Line
+
 A line chart is a way of plotting data points on a line. Often, it is used to show trend data, or the comparison of two data sets.
 
 {% chartjs %}
@@ -29,6 +30,7 @@ A line chart is a way of plotting data points on a line. Often, it is used to sh
 {% endchartjs %}
 
 ## Example Usage
+
 ```javascript
 var myLineChart = new Chart(ctx, {
     type: 'line',
@@ -138,7 +140,9 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverRadius` | The radius of the point when hovered.
 
 ### cubicInterpolationMode
+
 The following interpolation modes are supported.
+
 * `'default'`
 * `'monotone'`
 
@@ -149,7 +153,9 @@ The `'monotone'` algorithm is more suited to `y = f(x)` datasets : it preserves 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
 ### Stepped Line
+
 The following values are supported for `steppedLine`.
+
 * `false`: No Step Interpolation (default)
 * `true`: Step-before Interpolation (eq. `'before'`)
 * `'before'`: Step-before Interpolation
@@ -172,34 +178,14 @@ The line chart defines the following configuration options. These options are me
 It is common to want to apply a configuration setting to all created line charts. The global line chart settings are stored in `Chart.defaults.line`. Changing the global options only affects charts created after the change. Existing charts are not changed.
 
 For example, to configure all line charts with `spanGaps = true` you would do:
+
 ```javascript
 Chart.defaults.line.spanGaps = true;
 ```
 
 ## Data Structure
 
-The `data` property of a dataset for a line chart can be passed in two formats.
-
-### number[]
-```javascript
-data: [20, 10]
-```
-
-When the `data` array is an array of numbers, the x axis is generally a [category](../axes/cartesian/category.md#category-cartesian-axis). The points are placed onto the axis using their position in the array. When a line chart is created with a category axis, the `labels` property of the data object must be specified.
-
-### Point[]
-
-```javascript
-data: [{
-    x: 10,
-    y: 20
-}, {
-    x: 15,
-    y: 10
-}]
-```
-
-This alternate is used for sparse datasets, such as those in [scatter charts](./scatter.md#scatter-chart). Each data point is specified using an object containing `x` and `y` properties.
+See [`Data structures`](../general/data-structures.md)
 
 ## Stacked Area Chart
 
@@ -218,3 +204,7 @@ var stackedLine = new Chart(ctx, {
     }
 });
 ```
+
+## Internal data format
+
+`{x, y}`

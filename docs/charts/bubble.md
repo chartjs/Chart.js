@@ -115,3 +115,7 @@ Bubble chart datasets need to contain a `data` array of points, each points repr
 ```
 
 **Important:** the radius property, `r` is **not** scaled by the chart, it is the raw radius in pixels of the bubble that is drawn on the canvas.
+
+## Internal data format
+
+`{x, y, _custom}` where `_custom` is the radius.

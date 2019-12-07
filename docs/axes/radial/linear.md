@@ -69,6 +69,7 @@ let chart = new Chart(ctx, {
 In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
 ## Step Size
+
 If set, the scale ticks will be enumerated by multiple of `stepSize`, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
 This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
@@ -110,3 +111,7 @@ The following options are used to configure the point labels that are shown on t
 | `fontSize` | `number` | `10` | font size in pixels.
 | `fontStyle` | `string` | `'normal'` | Font style to use when rendering point labels.
 | `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
+
+## Internal data format
+
+Internally linear radial scale uses numeric data
