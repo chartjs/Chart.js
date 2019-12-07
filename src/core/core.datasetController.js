@@ -669,14 +669,14 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getAllParsedValues: function(scale) {
-		const meta = this._cachedMeta;
-		const parsing = this._parsing;
-		const data = parsing ? meta.data : this.getDataset().data;
+		const {_cachedMeta: meta, _parsing} = this;
+		const metaData = meta.data;
+		const data = this.getDataset().data;
 		const values = [];
 		let i, ilen, value;
 
-		for (i = 0, ilen = data.length; i < ilen; ++i) {
-			value = parsing ? data[i]._parsed[scale.id] : data[i][scale.id];
+		for (i = 0, ilen = metaData.length; i < ilen; ++i) {
+			value = _parsing ? metaData[i]._parsed[scale.id] : data[i][scale.id];
 			if (!isNaN(value)) {
 				values.push(value);
 			}
