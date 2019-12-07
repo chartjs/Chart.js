@@ -477,7 +477,9 @@ helpers.extend(DatasetController.prototype, {
 		let offset = 0;
 		let i, parsed;
 
-		if (parsing !== false) {
+		if (parsing === false) {
+			parsed = data;
+		} else {
 			if (helpers.isArray(data[start])) {
 				parsed = me._parseArrayData(meta, data, start, count);
 			} else if (helpers.isObject(data[start])) {
@@ -622,10 +624,10 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getMinMax: function(scale, canStack) {
-		const chart = this.chart;
-		const meta = this._cachedMeta;
+		const {_cachedMeta: meta, chart, _parsing} = this;
 		const metaData = meta.data;
 		const ilen = metaData.length;
+		const data = this.getDataset().data;
 		const stacked = canStack && meta._stacked;
 		const indices = getSortedDatasetIndices(chart, true);
 		const otherScale = this._getOtherScale(scale);
@@ -637,7 +639,7 @@ helpers.extend(DatasetController.prototype, {
 
 		for (i = 0; i < ilen; ++i) {
 			item = metaData[i];
-			parsed = item._parsed;
+			parsed = _parsing ? item._parsed : data[i];
 			value = parsed[scale.id];
 			otherValue = parsed[otherScale.id];
 			if (item.hidden || isNaN(value) ||
@@ -669,12 +671,13 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_getAllParsedValues: function(scale) {
 		const meta = this._cachedMeta;
-		const metaData = meta.data;
+		const parsing = this._parsing;
+		const data = parsing ? meta.data : this.getDataset().data;
 		const values = [];
 		let i, ilen, value;
 
-		for (i = 0, ilen = metaData.length; i < ilen; ++i) {
-			value = metaData[i]._parsed[scale.id];
+		for (i = 0, ilen = data.length; i < ilen; ++i) {
+			value = parsing ? data[i]._parsed[scale.id] : data[i][scale.id];
 			if (!isNaN(value)) {
 				values.push(value);
 			}
