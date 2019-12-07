@@ -474,7 +474,6 @@ helpers.extend(DatasetController.prototype, {
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
 		const parsing = me._parsing = resolve([me.getDataset().parsing, me.chart.options.parsing, true]);
-		let offset = 0;
 		let i, parsed;
 
 		if (parsing === false) {
@@ -489,7 +488,7 @@ helpers.extend(DatasetController.prototype, {
 			}
 
 			for (i = 0; i < count; ++i) {
-				meta.data[i + start]._parsed = parsed[i + offset];
+				meta.data[i + start]._parsed = parsed[i];
 			}
 		}
 
