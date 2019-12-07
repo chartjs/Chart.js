@@ -1,7 +1,7 @@
 'use strict';
 
-const helpers = require('../helpers/index');
-const Scale = require('../core/core.scale');
+import helpers from '../helpers/index';
+import Scale from '../core/core.scale';
 
 const isNullOrUndef = helpers.isNullOrUndef;
 
@@ -256,4 +256,4 @@ class LinearScaleBase extends Scale {
 	}
 }
 
-module.exports = LinearScaleBase;
+export default LinearScaleBase;

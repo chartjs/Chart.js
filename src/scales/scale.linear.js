@@ -1,8 +1,8 @@
 'use strict';
 
-const helpers = require('../helpers/index');
-const LinearScaleBase = require('./scale.linearbase');
-const Ticks = require('../core/core.ticks');
+import helpers from '../helpers/index';
+import LinearScaleBase from './scale.linearbase';
+import Ticks from '../core/core.ticks';
 
 const defaultConfig = {
 	position: 'left',
@@ -72,6 +72,6 @@ class LinearScale extends LinearScaleBase {
 	}
 }
 
-module.exports = LinearScale;
 // INTERNAL: static default options, registered in src/index.js
-module.exports._defaults = defaultConfig;
+LinearScale._defaults = defaultConfig;
+export default LinearScale;

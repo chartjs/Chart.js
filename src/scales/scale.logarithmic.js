@@ -1,10 +1,10 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const helpers = require('../helpers/index');
-const Scale = require('../core/core.scale');
-const LinearScaleBase = require('./scale.linearbase');
-const Ticks = require('../core/core.ticks');
+import defaults from '../core/core.defaults';
+import helpers from '../helpers/index';
+import Scale from '../core/core.scale';
+import LinearScaleBase from './scale.linearbase';
+import Ticks from '../core/core.ticks';
 
 const valueOrDefault = helpers.valueOrDefault;
 const log10 = helpers.math.log10;
@@ -213,6 +213,6 @@ class LogarithmicScale extends Scale {
 	}
 }
 
-module.exports = LogarithmicScale;
 // INTERNAL: static default options, registered in src/index.js
-module.exports._defaults = defaultConfig;
+LogarithmicScale._defaults = defaultConfig;
+export default LogarithmicScale;

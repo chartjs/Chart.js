@@ -1,9 +1,9 @@
 'use strict';
 
-const adapters = require('../core/core.adapters');
-const defaults = require('../core/core.defaults');
-const helpers = require('../helpers/index');
-const Scale = require('../core/core.scale');
+import adapters from '../core/core.adapters';
+import defaults from '../core/core.defaults';
+import helpers from '../helpers/index';
+import Scale from '../core/core.scale';
 
 const resolve = helpers.options.resolve;
 const valueOrDefault = helpers.valueOrDefault;
@@ -756,6 +756,6 @@ class TimeScale extends Scale {
 	}
 }
 
-module.exports = TimeScale;
 // INTERNAL: static default options, registered in src/index.js
-module.exports._defaults = defaultConfig;
+TimeScale._defaults = defaultConfig;
+export default TimeScale;
