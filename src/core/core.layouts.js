@@ -60,12 +60,13 @@ function buildLayoutBoxes(boxes) {
 	const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
 	const bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
 	const centerHorizontal = filterByPositionAndAxis(layoutBoxes, 'center', 'x');
+	const centerVertical = filterByPositionAndAxis(layoutBoxes, 'center', 'y');
 
 	return {
 		leftAndTop: left.concat(top),
-		rightAndBottom: right.concat(bottom).concat(centerHorizontal),
+		rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
 		chartArea: filterByPosition(layoutBoxes, 'chartArea'),
-		vertical: left.concat(right),
+		vertical: left.concat(right).concat(centerVertical),
 		horizontal: top.concat(bottom).concat(centerHorizontal)
 	};
 }

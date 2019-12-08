@@ -1000,11 +1000,17 @@ class Scale extends Element {
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = me.top + tl;
 		} else if (position === 'center' && axis === 'x') {
-			borderValue = alignBorderValue((me.top + me.bottom) / 2);
+			borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
 			y1 = chartArea.top;
 			y2 = chartArea.bottom;
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = ty1 + tl;
+		} else if (position === 'center' && axis === 'y') {
+			borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
+			tx1 = borderValue - axisHalfWidth;
+			tx2 = tx1 - tl;
+			x1 = chartArea.left;
+			x2 = chartArea.right;
 		} else if (position === 'left') {
 			borderValue = alignBorderValue(me.right);
 			tx1 = me.right - tl;
@@ -1072,7 +1078,7 @@ class Scale extends Element {
 	/**
 	 * @private
 	 */
-	_computeLabelItems() {
+	_computeLabelItems(chartArea) {
 		const me = this;
 		const options = me.options;
 		const {axis, position, ticks: optionTicks} = options;
@@ -1093,8 +1099,11 @@ class Scale extends Element {
 			y = me.top + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
 		} else if (position === 'center' && axis === 'x') {
-			y = ((me.top = me.bottom) / 2) + tl + tickPadding;
+			y = ((chartArea.top = chartArea.bottom) / 2) + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
+		} else if (position === 'center' && axis === 'y') {
+			x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
+			textAlign = 'right';
 		} else if (position === 'left') {
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
 			textAlign = isMirrored ? 'left' : 'right';
@@ -1221,7 +1230,7 @@ class Scale extends Element {
 	/**
 	 * @private
 	 */
-	_drawLabels() {
+	_drawLabels(chartArea) {
 		var me = this;
 		var optionTicks = me.options.ticks;
 
@@ -1230,7 +1239,7 @@ class Scale extends Element {
 		}
 
 		var ctx = me.ctx;
-		var items = me._labelItems || (me._labelItems = me._computeLabelItems());
+		var items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
 		var i, j, ilen, jlen, item, tickFont, label, y;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
@@ -1342,7 +1351,7 @@ class Scale extends Element {
 
 		me._drawGrid(chartArea);
 		me._drawTitle();
-		me._drawLabels();
+		me._drawLabels(chartArea);
 	}
 
 	/**
