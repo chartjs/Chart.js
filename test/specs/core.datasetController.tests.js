@@ -170,6 +170,65 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data[9]).toBe(last);
 	});
 
+	it('should synchronize metadata when data are inserted or removed and parsing is off', function() {
+		var data = [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}];
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: data
+				}]
+			},
+			options: {
+				parsing: false,
+				scales: {
+					x: {type: 'linear'},
+					y: {type: 'linear'}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		var controller = meta.controller;
+		var first, last;
+
+		first = controller._getParsed(0);
+		last = controller._getParsed(5);
+		data.push({x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8});
+		data.push({x: 9, y: 9});
+		expect(meta.data.length).toBe(10);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(5)).toBe(last);
+
+		last = controller._getParsed(9);
+		data.pop();
+		expect(meta.data.length).toBe(9);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(9)).toBe(undefined);
+		expect(controller._getParsed(8)).toEqual({x: 8, y: 8});
+
+		last = controller._getParsed(8);
+		data.shift();
+		data.shift();
+		data.shift();
+		expect(meta.data.length).toBe(6);
+		expect(controller._getParsed(5)).toBe(last);
+
+		first = controller._getParsed(0);
+		last = controller._getParsed(5);
+		data.splice(1, 4, {x: 10, y: 10}, {x: 11, y: 11});
+		expect(meta.data.length).toBe(4);
+		expect(controller._getParsed(0)).toBe(first);
+		expect(controller._getParsed(3)).toBe(last);
+		expect(controller._getParsed(1)).toEqual({x: 10, y: 10});
+
+		data.unshift({x: 12, y: 12}, {x: 13, y: 13}, {x: 14, y: 14}, {x: 15, y: 15});
+		data.unshift({x: 16, y: 16}, {x: 17, y: 17});
+		expect(meta.data.length).toBe(10);
+		expect(controller._getParsed(6)).toBe(first);
+		expect(controller._getParsed(9)).toBe(last);
+	});
+
 	it('should re-synchronize metadata when the data object reference changes', function() {
 		var data0 = [0, 1, 2, 3, 4, 5];
 		var data1 = [6, 7, 8];

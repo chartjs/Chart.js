@@ -478,18 +478,19 @@ helpers.extend(DatasetController.prototype, {
 		let i, parsed;
 
 		if (parsing === false) {
-			parsed = data;
-			offset = start;
-		} else if (helpers.isArray(data[start])) {
-			parsed = me._parseArrayData(meta, data, start, count);
-		} else if (helpers.isObject(data[start])) {
-			parsed = me._parseObjectData(meta, data, start, count);
+			meta._parsed = data;
 		} else {
-			parsed = me._parsePrimitiveData(meta, data, start, count);
-		}
+			if (helpers.isArray(data[start])) {
+				parsed = me._parseArrayData(meta, data, start, count);
+			} else if (helpers.isObject(data[start])) {
+				parsed = me._parseObjectData(meta, data, start, count);
+			} else {
+				parsed = me._parsePrimitiveData(meta, data, start, count);
+			}
 
-		for (i = 0; i < count; ++i) {
-			meta.data[i + start]._parsed = parsed[i + offset];
+			for (i = 0; i < count; ++i) {
+				meta._parsed[i + start] = parsed[i + offset];
+			}
 		}
 
 		if (_stacked) {
@@ -594,11 +595,11 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getParsed: function(index) {
-		const data = this._cachedMeta.data;
+		const data = this._cachedMeta._parsed;
 		if (index < 0 || index >= data.length) {
 			return;
 		}
-		return data[index]._parsed;
+		return data[index];
 	},
 
 	/**
@@ -634,7 +635,7 @@ helpers.extend(DatasetController.prototype, {
 
 		for (i = 0; i < ilen; ++i) {
 			item = metaData[i];
-			parsed = item._parsed;
+			parsed = meta._parsed[i];
 			value = parsed[scale.id];
 			otherValue = parsed[otherScale.id];
 			if (item.hidden || isNaN(value) ||
@@ -665,13 +666,12 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getAllParsedValues: function(scale) {
-		const meta = this._cachedMeta;
-		const metaData = meta.data;
+		const parsed = this._cachedMeta._parsed;
 		const values = [];
 		let i, ilen, value;
 
-		for (i = 0, ilen = metaData.length; i < ilen; ++i) {
-			value = metaData[i]._parsed[scale.id];
+		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
+			value = parsed[i][scale.id];
 			if (!isNaN(value)) {
 				values.push(value);
 			}

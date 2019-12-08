@@ -850,7 +850,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				xAxisID: null,
 				yAxisID: null,
 				order: dataset.order || 0,
-				index: datasetIndex
+				index: datasetIndex,
+				_parsed: []
 			};
 		}
 
