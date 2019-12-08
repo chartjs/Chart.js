@@ -669,7 +669,7 @@ class Scale extends Element {
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var isBottom = opts.position === 'bottom' || opts.position === 'centerHorizontal';
+		var isBottom = opts.position === 'bottom' || (opts.position === 'center' && opts.axis === 'x');
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -778,8 +778,8 @@ class Scale extends Element {
 
 	// Shared Methods
 	isHorizontal() {
-		var pos = this.options.position;
-		return pos === 'top' || pos === 'bottom' || pos === 'centerHorizontal';
+		const {axis, position} = this.options;
+		return position === 'top' || position === 'bottom' || (position === 'center' && axis === 'x');
 	}
 	isFullWidth() {
 		return this.options.fullWidth;
@@ -967,8 +967,7 @@ class Scale extends Element {
 		var me = this;
 		var chart = me.chart;
 		var options = me.options;
-		var gridLines = options.gridLines;
-		var position = options.position;
+		const {axis, gridLines, position} = options;
 		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
 		var ticks = me.ticks;
@@ -1000,7 +999,7 @@ class Scale extends Element {
 			y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = me.top + tl;
-		} else if (position === 'centerHorizontal') {
+		} else if (position === 'center' && axis === 'x') {
 			borderValue = alignBorderValue((me.top + me.bottom) / 2);
 			y1 = chartArea.top;
 			y2 = chartArea.bottom;
@@ -1074,19 +1073,18 @@ class Scale extends Element {
 	 * @private
 	 */
 	_computeLabelItems() {
-		var me = this;
-		var options = me.options;
-		var optionTicks = options.ticks;
-		var position = options.position;
-		var isMirrored = optionTicks.mirror;
-		var isHorizontal = me.isHorizontal();
-		var ticks = me.ticks;
-		var fonts = parseTickFontOptions(optionTicks);
-		var tickPadding = optionTicks.padding;
-		var tl = getTickMarkLength(options.gridLines);
-		var rotation = -helpers.toRadians(me.labelRotation);
-		var items = [];
-		var i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+		const me = this;
+		const options = me.options;
+		const {axis, position, ticks: optionTicks} = options;
+		const isMirrored = optionTicks.mirror;
+		const isHorizontal = me.isHorizontal();
+		const ticks = me.ticks;
+		const fonts = parseTickFontOptions(optionTicks);
+		const tickPadding = optionTicks.padding;
+		const tl = getTickMarkLength(options.gridLines);
+		const rotation = -helpers.toRadians(me.labelRotation);
+		const items = [];
+		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 
 		if (position === 'top') {
 			y = me.bottom - tl - tickPadding;
@@ -1094,7 +1092,7 @@ class Scale extends Element {
 		} else if (position === 'bottom') {
 			y = me.top + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
-		} else if (position === 'centerHorizontal') {
+		} else if (position === 'center' && axis === 'x') {
 			y = ((me.top = me.bottom) / 2) + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
 		} else if (position === 'left') {

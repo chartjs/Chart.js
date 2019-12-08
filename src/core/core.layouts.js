@@ -6,9 +6,11 @@ var helpers = require('../helpers/index');
 var extend = helpers.extend;
 
 function filterByPosition(array, position) {
-	return helpers.where(array, function(v) {
-		return v.pos === position;
-	});
+	return helpers.where(array, v => v.pos === position);
+}
+
+function filterByPositionAndAxis(array, position, axis) {
+	return helpers.where(array, v => v.pos === position && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {
@@ -52,12 +54,12 @@ function setLayoutDims(layouts, params) {
 }
 
 function buildLayoutBoxes(boxes) {
-	var layoutBoxes = wrapBoxes(boxes);
-	var left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
-	var right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
-	var top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
-	var bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
-	const centerHorizontal = filterByPosition(layoutBoxes, 'centerHorizontal');
+	const layoutBoxes = wrapBoxes(boxes);
+	const left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
+	const right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
+	const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
+	const bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const centerHorizontal = filterByPositionAndAxis(layoutBoxes, 'center', 'x');
 
 	return {
 		leftAndTop: left.concat(top),
