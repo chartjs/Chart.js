@@ -669,7 +669,7 @@ class Scale extends Element {
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var isBottom = opts.position === 'bottom' || (opts.position === 'center' && opts.axis === 'x');
+		var labelsBelowTicks = opts.position === 'bottom' || (opts.position === 'center' && opts.axis === 'x');
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -717,10 +717,10 @@ class Scale extends Element {
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
 				if (isRotated) {
-					paddingLeft = isBottom ?
+					paddingLeft = labelsBelowTicks ?
 						cosRotation * firstLabelSize.width + sinRotation * firstLabelSize.offset :
 						sinRotation * (firstLabelSize.height - firstLabelSize.offset);
-					paddingRight = isBottom ?
+					paddingRight = labelsBelowTicks ?
 						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
 						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
 				} else {

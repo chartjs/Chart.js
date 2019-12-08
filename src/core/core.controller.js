@@ -148,7 +148,7 @@ function updateConfig(chart) {
 }
 
 function positionIsHorizontal(position, axis = undefined) {
-	return position === 'top' || position === 'bottom' || (position === 'center' && axis === 'x');
+	return position === 'top' || position === 'bottom' || axis === 'x';
 }
 
 function compare2Level(l1, l2) {
