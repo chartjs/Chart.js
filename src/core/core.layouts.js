@@ -377,7 +377,7 @@ module.exports = {
 			top: chartArea.top,
 			right: chartArea.left + chartArea.w,
 			bottom: chartArea.top + chartArea.h,
-			height: CharacterData.h,
+			height: chartArea.h,
 			width: chartArea.w,
 		};
 
