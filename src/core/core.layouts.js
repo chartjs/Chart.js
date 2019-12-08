@@ -57,13 +57,14 @@ function buildLayoutBoxes(boxes) {
 	var right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
 	var top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
 	var bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const centerHorizontal = filterByPosition(layoutBoxes, 'centerHorizontal');
 
 	return {
 		leftAndTop: left.concat(top),
-		rightAndBottom: right.concat(bottom),
+		rightAndBottom: right.concat(bottom).concat(centerHorizontal),
 		chartArea: filterByPosition(layoutBoxes, 'chartArea'),
 		vertical: left.concat(right),
-		horizontal: top.concat(bottom)
+		horizontal: top.concat(bottom).concat(centerHorizontal)
 	};
 }
 
@@ -375,7 +376,9 @@ module.exports = {
 			left: chartArea.left,
 			top: chartArea.top,
 			right: chartArea.left + chartArea.w,
-			bottom: chartArea.top + chartArea.h
+			bottom: chartArea.top + chartArea.h,
+			height: CharacterData.h,
+			width: chartArea.w,
 		};
 
 		// Finally update boxes in chartArea (radial scale for example)

@@ -669,7 +669,7 @@ class Scale extends Element {
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var isBottom = opts.position === 'bottom';
+		var isBottom = opts.position === 'bottom' || opts.position === 'centerHorizontal';
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -779,7 +779,7 @@ class Scale extends Element {
 	// Shared Methods
 	isHorizontal() {
 		var pos = this.options.position;
-		return pos === 'top' || pos === 'bottom';
+		return pos === 'top' || pos === 'bottom' || pos === 'centerHorizontal';
 	}
 	isFullWidth() {
 		return this.options.fullWidth;
@@ -1000,6 +1000,12 @@ class Scale extends Element {
 			y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = me.top + tl;
+		} else if (position === 'centerHorizontal') {
+			borderValue = alignBorderValue((me.top + me.bottom) / 2);
+			y1 = chartArea.top;
+			y2 = chartArea.bottom;
+			ty1 = borderValue + axisHalfWidth;
+			ty2 = ty1 + tl;
 		} else if (position === 'left') {
 			borderValue = alignBorderValue(me.right);
 			tx1 = me.right - tl;
@@ -1087,6 +1093,9 @@ class Scale extends Element {
 			textAlign = !rotation ? 'center' : 'left';
 		} else if (position === 'bottom') {
 			y = me.top + tl + tickPadding;
+			textAlign = !rotation ? 'center' : 'right';
+		} else if (position === 'centerHorizontal') {
+			y = ((me.top = me.bottom) / 2) + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
 		} else if (position === 'left') {
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
