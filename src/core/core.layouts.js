@@ -5,12 +5,14 @@ var helpers = require('../helpers/index');
 
 var extend = helpers.extend;
 
+const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
+
 function filterByPosition(array, position) {
 	return helpers.where(array, v => v.pos === position);
 }
 
-function filterByPositionAndAxis(array, position, axis) {
-	return helpers.where(array, v => v.pos === position && v.box.axis === axis);
+function filterDynamicPositionByAxis(array, axis) {
+	return helpers.where(array, v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {
@@ -59,8 +61,8 @@ function buildLayoutBoxes(boxes) {
 	const right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
 	const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
 	const bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
-	const centerHorizontal = filterByPositionAndAxis(layoutBoxes, 'center', 'x');
-	const centerVertical = filterByPositionAndAxis(layoutBoxes, 'center', 'y');
+	const centerHorizontal = filterDynamicPositionByAxis(layoutBoxes, 'x');
+	const centerVertical = filterDynamicPositionByAxis(layoutBoxes, 'y');
 
 	return {
 		leftAndTop: left.concat(top),

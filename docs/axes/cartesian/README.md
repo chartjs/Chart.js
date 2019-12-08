@@ -14,13 +14,22 @@ All of the included cartesian axes support a number of common options.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
-| `position` | `string` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`, and `'center'`.  If this is set to `'center'`, the `axis` option must be specified
+| `position` | `string` | | Position of the axis. [more...](#axis-position)
 | `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`.
+| `positionAxisID` | `string` | | ID of the axis used to dynamically position this axis. [more...](#axis-position)
 | `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `id` | `string` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
 | `ticks` | `object` | | Tick configuration. [more...](#tick-configuration)
+
+### Axis Position
+
+An axis can either be positioned at the edge of the chart, at the center of the chart area, or dynamically with respect to a data value.
+
+To position the axis at the edge of the chart, set the `position` option to one of: `'top'`, `'left'`, `'bottom'`, `'right'`.
+To position the axis at the center of the chart area, set the `position` option to `'center'`. In this mode, the `axis` option must be specified.
+To position the axis with respect to a data value, set the `position` option to a string in one of the following formats: `'y=<NUMBER>`, `'x=<NUMBER>'`. The numerical value will be used to position the axis at the correct location. Use `y=` to move a horizontal axis up or down and `x=` to move a vertical axis left or right. In this mode the `axis` and `positionAxisID` options must be specified.
 
 ### Tick Configuration
 The following options are common to all cartesian axes but do not apply to other axes.

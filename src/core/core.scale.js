@@ -669,7 +669,7 @@ class Scale extends Element {
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var labelsBelowTicks = opts.position === 'bottom' || (opts.position === 'center' && opts.axis === 'x');
+		var labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -779,7 +779,7 @@ class Scale extends Element {
 	// Shared Methods
 	isHorizontal() {
 		const {axis, position} = this.options;
-		return position === 'top' || position === 'bottom' || (position === 'center' && axis === 'x');
+		return position === 'top' || position === 'bottom' || axis === 'x';
 	}
 	isFullWidth() {
 		return this.options.fullWidth;
@@ -965,9 +965,10 @@ class Scale extends Element {
 	 */
 	_computeGridLineItems(chartArea) {
 		var me = this;
+		const axis = me.axis;
 		var chart = me.chart;
 		var options = me.options;
-		const {axis, gridLines, position} = options;
+		const {gridLines, position} = options;
 		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
 		var ticks = me.ticks;
@@ -999,30 +1000,44 @@ class Scale extends Element {
 			y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = me.top + tl;
-		} else if (position === 'center' && axis === 'x') {
-			borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
-			y1 = chartArea.top;
-			y2 = chartArea.bottom;
-			ty1 = borderValue + axisHalfWidth;
-			ty2 = ty1 + tl;
-		} else if (position === 'center' && axis === 'y') {
-			borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
-			tx1 = borderValue - axisHalfWidth;
-			tx2 = tx1 - tl;
-			x1 = chartArea.left;
-			x2 = chartArea.right;
 		} else if (position === 'left') {
 			borderValue = alignBorderValue(me.right);
 			tx1 = me.right - tl;
 			tx2 = borderValue - axisHalfWidth;
 			x1 = alignBorderValue(chartArea.left) + axisHalfWidth;
 			x2 = chartArea.right;
-		} else {
+		} else if (position === 'right') {
 			borderValue = alignBorderValue(me.left);
 			x1 = chartArea.left;
 			x2 = alignBorderValue(chartArea.right) - axisHalfWidth;
 			tx1 = borderValue + axisHalfWidth;
 			tx2 = me.left + tl;
+		} else if (axis === 'x') {
+			if (position === 'center') {
+				borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
+			} else if (position.startsWith('y=')) {
+				const positionAxisID = me.options.positionAxisID;
+				const value = parseFloat(position.substr(2));
+				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			}
+
+			y1 = chartArea.top;
+			y2 = chartArea.bottom;
+			ty1 = borderValue + axisHalfWidth;
+			ty2 = ty1 + tl;
+		} else if (axis === 'y') {
+			if (position === 'center') {
+				borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
+			} else if (position.startsWith('x=')) {
+				const positionAxisID = me.options.positionAxisID;
+				const value = parseFloat(position.substr(2));
+				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			}
+
+			tx1 = borderValue - axisHalfWidth;
+			tx2 = tx1 - tl;
+			x1 = chartArea.left;
+			x2 = chartArea.right;
 		}
 
 		for (i = 0; i < ticksLength; ++i) {
@@ -1080,8 +1095,9 @@ class Scale extends Element {
 	 */
 	_computeLabelItems(chartArea) {
 		const me = this;
+		const axis = me.axis;
 		const options = me.options;
-		const {axis, position, ticks: optionTicks} = options;
+		const {position, ticks: optionTicks} = options;
 		const isMirrored = optionTicks.mirror;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
@@ -1098,18 +1114,30 @@ class Scale extends Element {
 		} else if (position === 'bottom') {
 			y = me.top + tl + tickPadding;
 			textAlign = !rotation ? 'center' : 'right';
-		} else if (position === 'center' && axis === 'x') {
-			y = ((chartArea.top = chartArea.bottom) / 2) + tl + tickPadding;
-			textAlign = !rotation ? 'center' : 'right';
-		} else if (position === 'center' && axis === 'y') {
-			x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
-			textAlign = 'right';
 		} else if (position === 'left') {
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
 			textAlign = isMirrored ? 'left' : 'right';
-		} else {
+		} else if (position === 'right') {
 			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
 			textAlign = isMirrored ? 'right' : 'left';
+		} else if (axis === 'x') {
+			if (position === 'center') {
+				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
+			} else if (position.startsWith('y=')) {
+				const positionAxisID = options.positionAxisID;
+				const value = parseFloat(position.substr(2));
+				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tl + tickPadding;
+			}
+			textAlign = !rotation ? 'center' : 'right';
+		} else if (axis === 'y') {
+			if (position === 'center') {
+				x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
+			} else if (position.startsWith('x=')) {
+				const positionAxisID = me.options.positionAxisID;
+				const value = parseFloat(position.substr(2));
+				x = me.chart.scales[positionAxisID].getPixelForValue(value);
+			}
+			textAlign = 'right';
 		}
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
