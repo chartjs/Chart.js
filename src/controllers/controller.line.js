@@ -1,13 +1,13 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+const DatasetController = require('../core/core.datasetController');
+const defaults = require('../core/core.defaults');
+const elements = require('../elements/index');
+const helpers = require('../helpers/index');
 
-var valueOrDefault = helpers.valueOrDefault;
-var resolve = helpers.options.resolve;
-var isPointInArea = helpers.canvas._isPointInArea;
+const valueOrDefault = helpers.valueOrDefault;
+const resolve = helpers.options.resolve;
+const isPointInArea = helpers.canvas._isPointInArea;
 
 defaults._set('line', {
 	showLines: true,
@@ -101,7 +101,7 @@ module.exports = DatasetController.extend({
 	updateElements: function(points, start, count, reset) {
 		const me = this;
 		const {xScale, yScale, _stacked} = me._cachedMeta;
-		var i;
+		let i;
 
 		for (i = start; i < start + count; ++i) {
 			const point = points[i];
@@ -135,11 +135,11 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_resolveDatasetElementOptions: function() {
-		var me = this;
-		var config = me._config;
-		var options = me.chart.options;
-		var lineOptions = options.elements.line;
-		var values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
+		const me = this;
+		const config = me._config;
+		const options = me.chart.options;
+		const lineOptions = options.elements.line;
+		const values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
@@ -155,26 +155,26 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_getMaxOverflow: function() {
-		var me = this;
-		var meta = me._cachedMeta;
-		var data = meta.data || [];
+		const me = this;
+		const meta = me._cachedMeta;
+		const data = meta.data || [];
 		if (!data.length) {
 			return false;
 		}
-		var border = me._showLine ? meta.dataset._model.borderWidth : 0;
-		var firstPoint = data[0].size();
-		var lastPoint = data[data.length - 1].size();
+		const border = me._showLine ? meta.dataset._model.borderWidth : 0;
+		const firstPoint = data[0].size();
+		const lastPoint = data[data.length - 1].size();
 		return Math.max(border, firstPoint, lastPoint) / 2;
 	},
 
 	updateBezierControlPoints: function() {
-		var me = this;
-		var chart = me.chart;
-		var meta = me._cachedMeta;
-		var lineModel = meta.dataset._model;
-		var area = chart.chartArea;
-		var points = meta.data || [];
-		var i, ilen, model, controlPoints;
+		const me = this;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const lineModel = meta.dataset._model;
+		const area = chart.chartArea;
+		let points = meta.data || [];
+		let i, ilen;
 
 		// Only consider points that are drawn in case the spanGaps option is used
 		if (lineModel.spanGaps) {
@@ -191,8 +191,8 @@ module.exports = DatasetController.extend({
 			helpers.splineCurveMonotone(points);
 		} else {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				model = points[i]._model;
-				controlPoints = helpers.splineCurve(
+				const model = points[i]._model;
+				const controlPoints = helpers.splineCurve(
 					points[Math.max(0, i - 1)]._model,
 					model,
 					points[Math.min(i + 1, ilen - 1)]._model,
@@ -207,7 +207,7 @@ module.exports = DatasetController.extend({
 
 		if (chart.options.elements.line.capBezierPoints) {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				model = points[i]._model;
+				const model = points[i]._model;
 				if (isPointInArea(model, area)) {
 					if (i > 0 && isPointInArea(points[i - 1]._model, area)) {
 						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
@@ -223,14 +223,14 @@ module.exports = DatasetController.extend({
 	},
 
 	draw: function() {
-		var me = this;
-		var ctx = me._ctx;
-		var chart = me.chart;
-		var meta = me._cachedMeta;
-		var points = meta.data || [];
-		var area = chart.chartArea;
-		var i = 0;
-		var ilen = points.length;
+		const me = this;
+		const ctx = me._ctx;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
+		const points = meta.data || [];
+		const area = chart.chartArea;
+		const ilen = points.length;
+		let i = 0;
 
 		if (me._showLine) {
 			meta.dataset.draw(ctx);
@@ -246,9 +246,9 @@ module.exports = DatasetController.extend({
 	 * @protected
 	 */
 	setHoverStyle: function(point) {
-		var model = point._model;
-		var options = point._options;
-		var getHoverColor = helpers.getHoverColor;
+		const model = point._model;
+		const options = point._options;
+		const getHoverColor = helpers.getHoverColor;
 
 		point.$previousStyle = {
 			backgroundColor: model.backgroundColor,
