@@ -5,6 +5,7 @@ var bubble = require('./controller.bubble');
 var doughnut = require('./controller.doughnut');
 var horizontalBar = require('./controller.horizontalBar');
 var line = require('./controller.line');
+var fastline = require('./controller.fastline');
 var polarArea = require('./controller.polarArea');
 var pie = require('./controller.pie');
 var radar = require('./controller.radar');
@@ -19,6 +20,7 @@ module.exports = {
 	bubble: bubble,
 	doughnut: doughnut,
 	horizontalBar: horizontalBar,
+	fastline: fastline,
 	line: line,
 	polarArea: polarArea,
 	pie: pie,
