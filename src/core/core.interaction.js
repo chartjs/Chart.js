@@ -9,6 +9,16 @@ import {getRelativePosition as helpersGetRelativePosition} from '../helpers/help
  * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
  */
 
+function getOrCreateElement(metaset, index) {
+	let element = metaset.data[index];
+	if (!element) {
+		const controller = metaset.controller;
+		element = new controller.dataElementType();
+		controller.updateElements([element], index);
+	}
+	return element;
+}
+
 /**
  * Helper function to get relative position for an event
  * @param {Event|IEvent} e - The event to get the position for
@@ -93,7 +103,7 @@ function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 		const {index, data} = metasets[i];
 		const {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
 		for (let j = lo; j <= hi; ++j) {
-			const element = data[j];
+			const element = getOrCreateElement(metasets[i], j);
 			if (!element.skip) {
 				handler(element, index, j);
 			}
@@ -213,7 +223,7 @@ export default {
 
 			chart.getSortedVisibleDatasetMetas().forEach((meta) => {
 				const index = items[0].index;
-				const element = meta.data[index];
+				const element = getOrCreateElement(meta, index);
 
 				// don't count items that are skipped (null data)
 				if (element && !element.skip) {

@@ -23,15 +23,6 @@ defaults.set(scope, {
 
 defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');
 
-function setStyle(ctx, vm) {
-	ctx.lineCap = vm.borderCapStyle;
-	ctx.setLineDash(vm.borderDash);
-	ctx.lineDashOffset = vm.borderDashOffset;
-	ctx.lineJoin = vm.borderJoinStyle;
-	ctx.lineWidth = vm.borderWidth;
-	ctx.strokeStyle = vm.borderColor;
-}
-
 function lineTo(ctx, previous, target) {
 	ctx.lineTo(target.x, target.y);
 }
@@ -346,7 +337,7 @@ class Line extends Element {
 
 		ctx.save();
 
-		setStyle(ctx, me.options);
+		Line._setStyle(ctx, me.options);
 
 		ctx.beginPath();
 
@@ -358,6 +349,15 @@ class Line extends Element {
 		ctx.restore();
 	}
 }
+
+Line._setStyle = function(ctx, vm) {
+	ctx.lineCap = vm.borderCapStyle;
+	ctx.setLineDash(vm.borderDash);
+	ctx.lineDashOffset = vm.borderDashOffset;
+	ctx.lineJoin = vm.borderJoinStyle;
+	ctx.lineWidth = vm.borderWidth;
+	ctx.strokeStyle = vm.borderColor;
+};
 
 Line._type = 'line';
 
