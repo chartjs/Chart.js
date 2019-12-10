@@ -34,10 +34,10 @@ Dataset controllers must implement the following interface.
     draw: function(ease) {},
 
     // Remove hover styling from the given element
-    removeHoverStyle: function(element) {},
+    removeHoverStyle: function(element, datasetIndex, index) {},
 
     // Add hover styling to the given element
-    setHoverStyle: function(element) {},
+    setHoverStyle: function(element, datasetIndex, index) {},
 
     // Update the elements in response to new data
     // @param reset : if true, put the elements into a reset state so they can animate to their final values

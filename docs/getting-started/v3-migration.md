@@ -142,7 +142,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ##### Dataset Controllers
 
-* `setHoverStyle` now additionally takes the `datasetIndex` and `index`
+* `setHoverStyle` and `removeHoverStyle` now additionally take the `datasetIndex` and `index`
 
 #### Interactions
 
