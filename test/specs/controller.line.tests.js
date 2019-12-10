@@ -197,7 +197,7 @@ describe('Chart.controllers.line', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
-
+		expect(meta._parsed.length).toBe(2);
 
 		[
 			{x: 0, y: 512},

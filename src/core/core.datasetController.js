@@ -955,6 +955,7 @@ helpers.extend(DatasetController.prototype, {
 			me.insertElements(numMeta, numData - numMeta);
 		} else if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
+			meta._parsed.splice(numData, numMeta - numData);
 			me._parse(0, numData);
 		} else if (changed) {
 			me._parse(0, numData);
