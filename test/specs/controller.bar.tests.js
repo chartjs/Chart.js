@@ -722,6 +722,7 @@ describe('Chart.controllers.bar', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
+		expect(meta._parsed.length).toBe(2);
 
 		[
 			{x: 89, y: 512},
