@@ -83,6 +83,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Scale.ticksAsNumbers`
 * `Scale.handleDirectionalChanges` is now private
 * `Scale.tickValues` is now private
+* The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
 #### Removal of private APIs
 
