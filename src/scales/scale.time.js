@@ -719,6 +719,9 @@ class TimeScale extends Scale {
 
 	getIndexForPixel(pixel) {
 		const me = this;
+		if (me.options.distribution !== 'series') {
+			return null; // not implemented
+		}
 		const index = Math.round(me._numIndices * me.getDecimalForPixel(pixel));
 		return index < 0 || index >= me.numIndices ? null : index;
 	}

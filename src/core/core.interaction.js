@@ -56,8 +56,7 @@ function evaluateItemsAtIndex(chart, axis, position, handler) {
 		if (!iScale || axis !== iScale.axis || iScale.options.distribution !== 'series') {
 			return false;
 		}
-		const iPixel = iScale.isHorizontal() ? position.x : position.y;
-		const index = iScale.getIndexForPixel(iPixel);
+		const index = iScale.getIndexForPixel(position[axis]);
 		const element = metaset.data[index];
 		if (!element._view.skip) {
 			handler(element, metaset.index, index);
