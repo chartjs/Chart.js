@@ -118,9 +118,9 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
-	it('should synchronize metadata when data are inserted or removed', function() {
-		var data = [0, 1, 2, 3, 4, 5];
-		var chart = acquireChart({
+	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
+		const data = [0, 1, 2, 3, 4, 5];
+		const chart = acquireChart({
 			type: 'line',
 			data: {
 				datasets: [{
@@ -129,8 +129,9 @@ describe('Chart.DatasetController', function() {
 			}
 		});
 
-		var meta = chart.getDatasetMeta(0);
-		var first, second, last;
+		const meta = chart.getDatasetMeta(0);
+		const parsedYValues = () => meta._parsed.map(p => p.y);
+		let first, second, last;
 
 		first = meta.data[0];
 		last = meta.data[5];
@@ -139,12 +140,14 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data.length).toBe(10);
 		expect(meta.data[0]).toBe(first);
 		expect(meta.data[5]).toBe(last);
+		expect(parsedYValues()).toEqual(data);
 
 		last = meta.data[9];
 		data.pop();
 		expect(meta.data.length).toBe(9);
 		expect(meta.data[0]).toBe(first);
 		expect(meta.data.indexOf(last)).toBe(-1);
+		expect(parsedYValues()).toEqual(data);
 
 		last = meta.data[8];
 		data.shift();
@@ -153,6 +156,7 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data.length).toBe(6);
 		expect(meta.data.indexOf(first)).toBe(-1);
 		expect(meta.data[5]).toBe(last);
+		expect(parsedYValues()).toEqual(data);
 
 		first = meta.data[0];
 		second = meta.data[1];
@@ -162,12 +166,14 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data[0]).toBe(first);
 		expect(meta.data[3]).toBe(last);
 		expect(meta.data.indexOf(second)).toBe(-1);
+		expect(parsedYValues()).toEqual(data);
 
 		data.unshift(12, 13, 14, 15);
 		data.unshift(16, 17);
 		expect(meta.data.length).toBe(10);
 		expect(meta.data[6]).toBe(first);
 		expect(meta.data[9]).toBe(last);
+		expect(parsedYValues()).toEqual(data);
 	});
 
 	it('should synchronize metadata when data are inserted or removed and parsing is off', function() {
