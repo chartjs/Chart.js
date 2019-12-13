@@ -791,7 +791,6 @@ helpers.extend(DatasetController.prototype, {
 		const dataset = meta.dataset;
 		let style;
 
-		me._configure();
 		if (dataset && index === undefined) {
 			style = me._resolveDatasetElementOptions();
 		} else {
