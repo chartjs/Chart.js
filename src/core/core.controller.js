@@ -341,7 +341,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			var id = scaleOptions.id;
 			var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
-			if (positionIsHorizontal(scaleOptions.position, scaleOptions.axis) !== positionIsHorizontal(item.dposition)) {
+			if (positionIsHorizontal(scaleOptions.position, scaleOptions.axis || id[0]) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
 			}
 

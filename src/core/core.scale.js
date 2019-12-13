@@ -1015,9 +1015,9 @@ class Scale extends Element {
 		} else if (axis === 'x') {
 			if (position === 'center') {
 				borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
-			} else if (position.startsWith('y=')) {
-				const positionAxisID = me.options.positionAxisID;
-				const value = parseFloat(position.substr(2));
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
 			}
 
@@ -1028,9 +1028,9 @@ class Scale extends Element {
 		} else if (axis === 'y') {
 			if (position === 'center') {
 				borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
-			} else if (position.startsWith('x=')) {
-				const positionAxisID = me.options.positionAxisID;
-				const value = parseFloat(position.substr(2));
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
 			}
 
@@ -1123,18 +1123,18 @@ class Scale extends Element {
 		} else if (axis === 'x') {
 			if (position === 'center') {
 				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
-			} else if (position.startsWith('y=')) {
-				const positionAxisID = options.positionAxisID;
-				const value = parseFloat(position.substr(2));
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
 				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tl + tickPadding;
 			}
 			textAlign = !rotation ? 'center' : 'right';
 		} else if (axis === 'y') {
 			if (position === 'center') {
 				x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
-			} else if (position.startsWith('x=')) {
-				const positionAxisID = me.options.positionAxisID;
-				const value = parseFloat(position.substr(2));
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
 				x = me.chart.scales[positionAxisID].getPixelForValue(value);
 			}
 			textAlign = 'right';
