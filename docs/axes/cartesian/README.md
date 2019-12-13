@@ -16,7 +16,6 @@ All of the included cartesian axes support a number of common options.
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `position` | `string` | | Position of the axis. [more...](#axis-position)
 | `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`.
-| `positionAxisID` | `string` | | ID of the axis used to dynamically position this axis. [more...](#axis-position)
 | `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `id` | `string` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
@@ -29,7 +28,15 @@ An axis can either be positioned at the edge of the chart, at the center of the 
 
 To position the axis at the edge of the chart, set the `position` option to one of: `'top'`, `'left'`, `'bottom'`, `'right'`.
 To position the axis at the center of the chart area, set the `position` option to `'center'`. In this mode, the `axis` option must be specified.
-To position the axis with respect to a data value, set the `position` option to a string in one of the following formats: `'y=<NUMBER>`, `'x=<NUMBER>'`. The numerical value will be used to position the axis at the correct location. Use `y=` to move a horizontal axis up or down and `x=` to move a vertical axis left or right. In this mode the `axis` and `positionAxisID` options must be specified.
+To position the axis with respect to a data value, set the `position` option to an object such as: 
+
+```javascript
+{
+    x: -20
+}
+```
+
+This will position the axis at a value of -20 on the axis with ID "x". For cartesian axes, only 1 axis may be specified.
 
 ### Tick Configuration
 The following options are common to all cartesian axes but do not apply to other axes.
