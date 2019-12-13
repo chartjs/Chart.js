@@ -147,7 +147,7 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
-function positionIsHorizontal(position, axis = undefined) {
+function positionIsHorizontal(position, axis) {
 	return position === 'top' || position === 'bottom' || axis === 'x';
 }
 
