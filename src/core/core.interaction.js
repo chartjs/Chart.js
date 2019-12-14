@@ -47,16 +47,23 @@ function evaluateAllVisibleItems(chart, handler) {
  */
 function evaluateItemsAtIndex(chart, axis, position, handler) {
 	const metasets = chart._getSortedVisibleDatasetMetas();
+	const indices = [];
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
 		const metaset = metasets[i];
 		const iScale = metaset.controller._cachedMeta.iScale;
-		// TODO: make this more generic. if time and timeseries scale are split then we could check
-		// for existence of getIndexForPixel instead of distribution option. then add getIndexForPixel
-		// to other scales
-		if (!iScale || axis !== iScale.axis || iScale.options.distribution !== 'series') {
+		if (!iScale || axis !== iScale.axis || !iScale.getIndexForPixel) {
 			return false;
 		}
 		const index = iScale.getIndexForPixel(position[axis]);
+		if (!helpers.isNumber(index)) {
+			return false;
+		}
+		indices.push(index);
+	}
+	// do this only after checking whether all scales are of a suitable type
+	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
+		const metaset = metasets[i];
+		const index = indices[i];
 		const element = metaset.data[index];
 		if (!element._view.skip) {
 			handler(element, metaset.index, index);
@@ -88,7 +95,7 @@ function getDistanceMetricForAxis(axis) {
  * @return {ChartElement[]} the nearest items
  */
 function getIntersectItems(chart, position, axis) {
-	let items = [];
+	const items = [];
 
 	const evaluationFunc = function(element, datasetIndex, index) {
 		if (element.inRange(position.x, position.y)) {
@@ -101,7 +108,6 @@ function getIntersectItems(chart, position, axis) {
 		return items;
 	}
 
-	items = [];
 	evaluateAllVisibleItems(chart, evaluationFunc);
 	return items;
 }
@@ -140,7 +146,6 @@ function getNearestItems(chart, position, axis, intersect) {
 		return items;
 	}
 
-	items = [];
 	evaluateAllVisibleItems(chart, evaluationFunc);
 	return items;
 }
