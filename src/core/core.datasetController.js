@@ -624,7 +624,7 @@ helpers.extend(DatasetController.prototype, {
 		const chart = this.chart;
 		const meta = this._cachedMeta;
 		const metaData = meta.data;
-		const ilen = metaData.length;
+		const ilen = meta._parsed.length;
 		const stacked = canStack && meta._stacked;
 		const indices = getSortedDatasetIndices(chart, true);
 		const otherScale = this._getOtherScale(scale);
@@ -639,7 +639,7 @@ helpers.extend(DatasetController.prototype, {
 			parsed = meta._parsed[i];
 			value = parsed[scale.id];
 			otherValue = parsed[otherScale.id];
-			if (item.hidden || isNaN(value) ||
+			if ((item && item.hidden) || isNaN(value) ||
 				otherMin > otherValue || otherMax < otherValue) {
 				continue;
 			}
