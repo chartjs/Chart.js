@@ -270,6 +270,7 @@ helpers.extend(DatasetController.prototype, {
 		me.index = datasetIndex;
 		me._cachedMeta = meta = me.getMeta();
 		me._type = meta.type;
+		me._configure();
 		me.linkScales();
 		meta._stacked = isStacked(meta.vScale, meta);
 		me.addElements();
@@ -464,6 +465,7 @@ helpers.extend(DatasetController.prototype, {
 				}
 			}
 		});
+		me._parsing = resolve([me._config.parsing, me.chart.options.parsing, true]);
 	},
 
 	/**
@@ -473,11 +475,10 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
-		const parsing = resolve([me.getDataset().parsing, me.chart.options.parsing, true]);
 		let offset = 0;
 		let i, parsed;
 
-		if (parsing === false) {
+		if (me._parsing === false) {
 			meta._parsed = data;
 		} else {
 			if (helpers.isArray(data[start])) {
@@ -790,7 +791,6 @@ helpers.extend(DatasetController.prototype, {
 		const dataset = meta.dataset;
 		let style;
 
-		me._configure();
 		if (dataset && index === undefined) {
 			style = me._resolveDatasetElementOptions();
 		} else {
@@ -968,7 +968,8 @@ helpers.extend(DatasetController.prototype, {
 	insertElements: function(start, count) {
 		const me = this;
 		const elements = new Array(count);
-		const data = me._cachedMeta.data;
+		const meta = me._cachedMeta;
+		const data = meta.data;
 		let i;
 
 		for (i = 0; i < count; ++i) {
@@ -976,9 +977,25 @@ helpers.extend(DatasetController.prototype, {
 		}
 		data.splice(start, 0, ...elements);
 
+		if (me._parsing) {
+			meta._parsed.splice(start, 0, ...new Array(count));
+		}
 		me._parse(start, count);
+
 		me.updateElements(data, start, count);
 	},
+
+	/**
+	 * @private
+	 */
+	removeElements: function(start, count) {
+		const me = this;
+		if (me._parsing) {
+			me._cachedMeta._parsed.splice(start, count);
+		}
+		me._cachedMeta.data.splice(start, count);
+	},
+
 
 	/**
 	 * @private
@@ -992,21 +1009,21 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	onDataPop: function() {
-		this._cachedMeta.data.pop();
+		this.removeElements(this._cachedMeta.data.length - 1, 1);
 	},
 
 	/**
 	 * @private
 	 */
 	onDataShift: function() {
-		this._cachedMeta.data.shift();
+		this.removeElements(0, 1);
 	},
 
 	/**
 	 * @private
 	 */
 	onDataSplice: function(start, count) {
-		this._cachedMeta.data.splice(start, count);
+		this.removeElements(start, count);
 		this.insertElements(start, arguments.length - 2);
 	},
 
