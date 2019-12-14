@@ -187,13 +187,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     datasetIndex: number,
 
     // Index of this data item in the dataset
-    index: number,
-
-    // X position of matching point
-    x: number,
-
-    // Y position of matching point
-    y: number
+    index: number
 }
 ```
 

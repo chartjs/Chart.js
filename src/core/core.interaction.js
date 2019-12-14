@@ -58,7 +58,7 @@ function getIntersectItems(chart, position) {
 }
 
 /**
- * Helper function to get the items nearest to the event position considering all visible items in teh chart
+ * Helper function to get the items nearest to the event position considering all visible items in the chart
  * @param {Chart} chart - the chart to look at elements from
  * @param {object} position - the point to be nearest to
  * @param {boolean} intersect - if true, only consider items that intersect the position
@@ -104,31 +104,6 @@ function getDistanceMetricForAxis(axis) {
 	};
 }
 
-function indexMode(chart, e, options) {
-	var position = getRelativePosition(e, chart);
-	// Default axis for index mode is 'x' to match old behaviour
-	options.axis = options.axis || 'x';
-	var distanceMetric = getDistanceMetricForAxis(options.axis);
-	var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
-	var elements = [];
-
-	if (!items.length) {
-		return [];
-	}
-
-	chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
-		var index = items[0].index;
-		var element = meta.data[index];
-
-		// don't count items that are skipped (null data)
-		if (element && !element._view.skip) {
-			elements.push({element, datasetIndex: meta.index, index});
-		}
-	});
-
-	return elements;
-}
-
 /**
  * @interface IInteractionOptions
  */
@@ -155,7 +130,29 @@ module.exports = {
 		 * @param {IInteractionOptions} options - options to use during interaction
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		index: indexMode,
+		index: function(chart, e, options) {
+			const position = getRelativePosition(e, chart);
+			// Default axis for index mode is 'x' to match old behaviour
+			const distanceMetric = getDistanceMetricForAxis(options.axis || 'x');
+			const items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+			const elements = [];
+
+			if (!items.length) {
+				return [];
+			}
+
+			chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
+				const index = items[0].index;
+				const element = meta.data[index];
+
+				// don't count items that are skipped (null data)
+				if (element && !element._view.skip) {
+					elements.push({element, datasetIndex: meta.index, index});
+				}
+			});
+
+			return elements;
+		},
 
 		/**
 		 * Returns items in the same dataset. If the options.intersect parameter is true, we only return items if we intersect something
@@ -167,10 +164,9 @@ module.exports = {
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		dataset: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			options.axis = options.axis || 'xy';
-			var distanceMetric = getDistanceMetricForAxis(options.axis);
-			var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+			const position = getRelativePosition(e, chart);
+			const distanceMetric = getDistanceMetricForAxis(options.axis || 'xy');
+			let items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
 
 			if (items.length > 0) {
 				items = [{datasetIndex: items[0].datasetIndex}]; // when mode: 'dataset' we only need to return datasetIndex
@@ -188,7 +184,7 @@ module.exports = {
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		point: function(chart, e) {
-			var position = getRelativePosition(e, chart);
+			const position = getRelativePosition(e, chart);
 			return getIntersectItems(chart, position);
 		},
 
@@ -201,9 +197,8 @@ module.exports = {
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		nearest: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			options.axis = options.axis || 'xy';
-			var distanceMetric = getDistanceMetricForAxis(options.axis);
+			const position = getRelativePosition(e, chart);
+			const distanceMetric = getDistanceMetricForAxis(options.axis || 'xy');
 			return getNearestItems(chart, position, options.intersect, distanceMetric);
 		},
 
@@ -216,9 +211,9 @@ module.exports = {
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		x: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
+			const position = getRelativePosition(e, chart);
+			const items = [];
+			let intersectsItem = false;
 
 			parseVisibleItems(chart, function(element, datasetIndex, index) {
 				if (element.inXRange(position.x)) {
@@ -233,7 +228,7 @@ module.exports = {
 			// If we want to trigger on an intersect and we don't have any items
 			// that intersect the position, return nothing
 			if (options.intersect && !intersectsItem) {
-				items = [];
+				return [];
 			}
 			return items;
 		},
@@ -247,9 +242,9 @@ module.exports = {
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
 		y: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
+			const position = getRelativePosition(e, chart);
+			const items = [];
+			let intersectsItem = false;
 
 			parseVisibleItems(chart, function(element, datasetIndex, index) {
 				if (element.inYRange(position.y)) {
@@ -264,7 +259,7 @@ module.exports = {
 			// If we want to trigger on an intersect and we don't have any items
 			// that intersect the position, return nothing
 			if (options.intersect && !intersectsItem) {
-				items = [];
+				return [];
 			}
 			return items;
 		}

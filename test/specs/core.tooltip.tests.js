@@ -913,8 +913,6 @@ describe('Core.Tooltip', function() {
 			expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
 			expect(typeof tooltipItem.value).toBe('string');
 			expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
-			expect(tooltipItem.x).toBeCloseToPixel(point._model.x);
-			expect(tooltipItem.y).toBeCloseToPixel(point._model.y);
 		});
 	});
 
