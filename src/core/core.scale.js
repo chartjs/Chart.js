@@ -477,17 +477,17 @@ class Scale extends Element {
 
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
-		// Variables set in _configure are needed for calculateTickRotation, and
+		// Variables set in _configure are needed for calculateLabelRotation, and
 		// it's ok that coordinates are not correct there, only dimensions matter.
 		me._configure();
 
 		// Tick Rotation
-		me.beforeCalculateTickRotation();
-		me.calculateTickRotation();
-		me.afterCalculateTickRotation();
+		me.beforeCalculateLabelRotation();
+		me.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
+		me.afterCalculateLabelRotation();
 
 		me.beforeFit();
-		me.fit();
+		me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
 		me.afterFit();
 
 		// Auto-skip
@@ -604,10 +604,10 @@ class Scale extends Element {
 
 	//
 
-	beforeCalculateTickRotation() {
-		helpers.callback(this.options.beforeCalculateTickRotation, [this]);
+	beforeCalculateLabelRotation() {
+		helpers.callback(this.options.beforeCalculateLabelRotation, [this]);
 	}
-	calculateTickRotation() {
+	calculateLabelRotation() {
 		var me = this;
 		var options = me.options;
 		var tickOpts = options.ticks;
@@ -646,8 +646,8 @@ class Scale extends Element {
 
 		me.labelRotation = labelRotation;
 	}
-	afterCalculateTickRotation() {
-		helpers.callback(this.options.afterCalculateTickRotation, [this]);
+	afterCalculateLabelRotation() {
+		helpers.callback(this.options.afterCalculateLabelRotation, [this]);
 	}
 
 	//

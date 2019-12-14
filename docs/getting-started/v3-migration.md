@@ -108,6 +108,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 * `DatasetController.updateElement` was renamed to `DatasetController.updateElements`
+* `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
 * `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
