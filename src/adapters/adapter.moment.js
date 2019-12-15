@@ -2,7 +2,7 @@
 
 'use strict';
 
-var moment = require('moment');
+//var moment = require('../../node_modules/moment/src/moment.js');
 var adapters = require('../core/core.adapters');
 
 var FORMATS = {
