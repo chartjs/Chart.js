@@ -637,6 +637,7 @@ class TimeScale extends Scale {
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
+		me._numIndices = ticks.length;
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
@@ -714,6 +715,15 @@ class TimeScale extends Scale {
 		const offsets = me._offsets;
 		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		return interpolate(me._table, 'pos', pos, 'time');
+	}
+
+	getIndexForPixel(pixel) {
+		const me = this;
+		if (me.options.distribution !== 'series') {
+			return null; // not implemented
+		}
+		const index = Math.round(me._numIndices * me.getDecimalForPixel(pixel));
+		return index < 0 || index >= me.numIndices ? null : index;
 	}
 
 	/**

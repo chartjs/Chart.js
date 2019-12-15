@@ -37,7 +37,7 @@ describe('Core.Interaction', function() {
 				y: point._model.y,
 			};
 
-			var elements = Chart.Interaction.modes.point(chart, evt).map(item => item.element);
+			var elements = Chart.Interaction.modes.point(chart, evt, {}).map(item => item.element);
 			expect(elements).toEqual([point, meta1.data[1]]);
 		});
 
@@ -51,7 +51,7 @@ describe('Core.Interaction', function() {
 				y: 0
 			};
 
-			var elements = Chart.Interaction.modes.point(chart, evt).map(item => item.element);
+			var elements = Chart.Interaction.modes.point(chart, evt, {}).map(item => item.element);
 			expect(elements).toEqual([]);
 		});
 	});
