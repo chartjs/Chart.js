@@ -1,0 +1,59 @@
+{
+    "config": {
+        "type": "scatter",
+        "data": {
+            "datasets": [{
+                "data": [{
+                    "x": -20,
+                    "y": -30
+                }, {
+                    "x": 0,
+                    "y": 0
+                }, {
+                    "x": 20,
+                    "y": 15
+                }]
+            }]
+        },
+        "options": {
+            "legend": false,
+            "title": false,
+            "scales": {
+                "x": {
+                    "position": {
+                        "y": 30
+                    },
+                    "axis": "x",
+                    "min": -100,
+                    "max": 100,
+                    "gridLines": {
+                        "color": "red",
+                        "drawOnChartArea": false
+                    },
+                    "ticks": {
+                        "display": false
+                    }
+                },
+                "y": {
+                    "position": "left",
+                    "axis": "y",
+                    "min": -100,
+                    "max": 100,
+                    "gridLines": {
+                        "color": "red",
+                        "drawOnChartArea": false
+                    },
+                    "ticks": {
+                        "display": false
+                    }
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}
