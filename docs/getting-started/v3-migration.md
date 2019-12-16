@@ -107,8 +107,6 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.log10` was renamed to `helpers.math.log10`
 * `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
-* `helpers._setMinAndMax` was renamed to `helpers.math._setMinAndMax`
-* `helpers._setMinAndMaxByKey` was renamed to `helpers.math._setMinAndMaxByKey`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 * `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
 * `helpers.isNumber` was renamed to `helpers.math.isNumber`
