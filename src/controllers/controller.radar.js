@@ -192,7 +192,7 @@ module.exports = DatasetController.extend({
 
 		for (i = 0, ilen = points.length; i < ilen; ++i) {
 			model = points[i]._model;
-			controlPoints = helpers.splineCurve(
+			controlPoints = helpers.curve.splineCurve(
 				previousItem(points, i)._model,
 				model,
 				nextItem(points, i)._model,
