@@ -147,9 +147,9 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
-const WELL_KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
+const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
-	return position === 'top' || position === 'bottom' || (!WELL_KNOWN_POSITIONS.includes(position) && axis === 'x');
+	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.includes(position) && axis === 'x');
 }
 
 function compare2Level(l1, l2) {

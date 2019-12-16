@@ -27,7 +27,7 @@ All of the included cartesian axes support a number of common options.
 An axis can either be positioned at the edge of the chart, at the center of the chart area, or dynamically with respect to a data value.
 
 To position the axis at the edge of the chart, set the `position` option to one of: `'top'`, `'left'`, `'bottom'`, `'right'`.
-To position the axis at the center of the chart area, set the `position` option to `'center'`. In this mode, the `axis` option must be specified.
+To position the axis at the center of the chart area, set the `position` option to `'center'`. In this mode, either the `axis` option is specified or the axis ID starts with the letter 'x' or 'y'.
 To position the axis with respect to a data value, set the `position` option to an object such as: 
 
 ```javascript
