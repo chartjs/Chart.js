@@ -225,7 +225,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// Before init plugin notification
 		plugins.notify(me, 'beforeInit');
 
-		helpers.retinaScale(me, me.options.devicePixelRatio);
+		helpers.dom.retinaScale(me, me.options.devicePixelRatio);
 
 		me.bindEvents();
 
@@ -263,8 +263,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		// the canvas display style uses the same integer values to avoid blurring effect.
 
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		var newWidth = Math.max(0, Math.floor(helpers.getMaximumWidth(canvas)));
-		var newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.getMaximumHeight(canvas)));
+		var newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
+		var newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
 
 		if (me.width === newWidth && me.height === newHeight) {
 			return;
@@ -275,7 +275,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		canvas.style.width = newWidth + 'px';
 		canvas.style.height = newHeight + 'px';
 
-		helpers.retinaScale(me, options.devicePixelRatio);
+		helpers.dom.retinaScale(me, options.devicePixelRatio);
 
 		if (!silent) {
 			// Notify any plugins about the resize
