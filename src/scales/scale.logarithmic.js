@@ -56,8 +56,6 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 const defaultConfig = {
-	position: 'left',
-
 	// label settings
 	ticks: {
 		callback: Ticks.formatters.logarithmic

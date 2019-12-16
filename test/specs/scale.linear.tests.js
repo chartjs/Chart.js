@@ -25,7 +25,6 @@ describe('Linear Scale', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: 'left',
 			offset: false,
 			reverse: false,
 			beginAtZero: false,

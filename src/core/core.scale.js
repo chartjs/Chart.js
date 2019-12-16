@@ -14,7 +14,6 @@ const resolve = helpers.options.resolve;
 
 defaults._set('scale', {
 	display: true,
-	position: 'left',
 	offset: false,
 	reverse: false,
 	beginAtZero: false,
