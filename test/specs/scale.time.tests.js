@@ -72,7 +72,6 @@ describe('Time scale tests', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: 'bottom',
 			offset: false,
 			reverse: false,
 			beginAtZero: false,

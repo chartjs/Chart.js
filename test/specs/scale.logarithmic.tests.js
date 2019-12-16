@@ -25,7 +25,6 @@ describe('Logarithmic Scale tests', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: 'left',
 			offset: false,
 			reverse: false,
 			beginAtZero: false,

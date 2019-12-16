@@ -147,8 +147,9 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
-function positionIsHorizontal(position) {
-	return position === 'top' || position === 'bottom';
+const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
+function positionIsHorizontal(position, axis) {
+	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.includes(position) && axis === 'x');
 }
 
 function compare2Level(l1, l2) {
@@ -341,7 +342,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			var id = scaleOptions.id;
 			var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
-			if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
+			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, scaleOptions.axis || id[0]) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
 			}
 

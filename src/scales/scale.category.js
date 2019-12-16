@@ -3,7 +3,6 @@
 import Scale from '../core/core.scale';
 
 const defaultConfig = {
-	position: 'bottom'
 };
 
 class CategoryScale extends Scale {

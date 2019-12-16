@@ -5,7 +5,6 @@ import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
 const defaultConfig = {
-	position: 'left',
 	ticks: {
 		callback: Ticks.formatters.linear
 	}

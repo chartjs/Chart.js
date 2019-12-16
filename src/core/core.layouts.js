@@ -5,10 +5,14 @@ var helpers = require('../helpers/index');
 
 var extend = helpers.extend;
 
+const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
+
 function filterByPosition(array, position) {
-	return helpers.where(array, function(v) {
-		return v.pos === position;
-	});
+	return helpers.where(array, v => v.pos === position);
+}
+
+function filterDynamicPositionByAxis(array, axis) {
+	return helpers.where(array, v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {
@@ -52,18 +56,20 @@ function setLayoutDims(layouts, params) {
 }
 
 function buildLayoutBoxes(boxes) {
-	var layoutBoxes = wrapBoxes(boxes);
-	var left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
-	var right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
-	var top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
-	var bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const layoutBoxes = wrapBoxes(boxes);
+	const left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
+	const right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
+	const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
+	const bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const centerHorizontal = filterDynamicPositionByAxis(layoutBoxes, 'x');
+	const centerVertical = filterDynamicPositionByAxis(layoutBoxes, 'y');
 
 	return {
 		leftAndTop: left.concat(top),
-		rightAndBottom: right.concat(bottom),
+		rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
 		chartArea: filterByPosition(layoutBoxes, 'chartArea'),
-		vertical: left.concat(right),
-		horizontal: top.concat(bottom)
+		vertical: left.concat(right).concat(centerVertical),
+		horizontal: top.concat(bottom).concat(centerHorizontal)
 	};
 }
 
@@ -375,7 +381,9 @@ module.exports = {
 			left: chartArea.left,
 			top: chartArea.top,
 			right: chartArea.left + chartArea.w,
-			bottom: chartArea.top + chartArea.h
+			bottom: chartArea.top + chartArea.h,
+			height: chartArea.h,
+			width: chartArea.w,
 		};
 
 		// Finally update boxes in chartArea (radial scale for example)

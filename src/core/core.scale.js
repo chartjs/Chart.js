@@ -14,7 +14,6 @@ const resolve = helpers.options.resolve;
 
 defaults._set('scale', {
 	display: true,
-	position: 'left',
 	offset: false,
 	reverse: false,
 	beginAtZero: false,
@@ -669,7 +668,7 @@ class Scale extends Element {
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var isBottom = opts.position === 'bottom';
+		var labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
 		var isHorizontal = me.isHorizontal();
 
 		// Width
@@ -717,10 +716,10 @@ class Scale extends Element {
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
 				if (isRotated) {
-					paddingLeft = isBottom ?
+					paddingLeft = labelsBelowTicks ?
 						cosRotation * firstLabelSize.width + sinRotation * firstLabelSize.offset :
 						sinRotation * (firstLabelSize.height - firstLabelSize.offset);
-					paddingRight = isBottom ?
+					paddingRight = labelsBelowTicks ?
 						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
 						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
 				} else {
@@ -778,8 +777,8 @@ class Scale extends Element {
 
 	// Shared Methods
 	isHorizontal() {
-		var pos = this.options.position;
-		return pos === 'top' || pos === 'bottom';
+		const {axis, position} = this.options;
+		return position === 'top' || position === 'bottom' || axis === 'x';
 	}
 	isFullWidth() {
 		return this.options.fullWidth;
@@ -965,10 +964,10 @@ class Scale extends Element {
 	 */
 	_computeGridLineItems(chartArea) {
 		var me = this;
+		const axis = me.axis;
 		var chart = me.chart;
 		var options = me.options;
-		var gridLines = options.gridLines;
-		var position = options.position;
+		const {gridLines, position} = options;
 		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
 		var ticks = me.ticks;
@@ -1006,12 +1005,38 @@ class Scale extends Element {
 			tx2 = borderValue - axisHalfWidth;
 			x1 = alignBorderValue(chartArea.left) + axisHalfWidth;
 			x2 = chartArea.right;
-		} else {
+		} else if (position === 'right') {
 			borderValue = alignBorderValue(me.left);
 			x1 = chartArea.left;
 			x2 = alignBorderValue(chartArea.right) - axisHalfWidth;
 			tx1 = borderValue + axisHalfWidth;
 			tx2 = me.left + tl;
+		} else if (axis === 'x') {
+			if (position === 'center') {
+				borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
+				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			}
+
+			y1 = chartArea.top;
+			y2 = chartArea.bottom;
+			ty1 = borderValue + axisHalfWidth;
+			ty2 = ty1 + tl;
+		} else if (axis === 'y') {
+			if (position === 'center') {
+				borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
+				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			}
+
+			tx1 = borderValue - axisHalfWidth;
+			tx2 = tx1 - tl;
+			x1 = chartArea.left;
+			x2 = chartArea.right;
 		}
 
 		for (i = 0; i < ticksLength; ++i) {
@@ -1067,20 +1092,20 @@ class Scale extends Element {
 	/**
 	 * @private
 	 */
-	_computeLabelItems() {
-		var me = this;
-		var options = me.options;
-		var optionTicks = options.ticks;
-		var position = options.position;
-		var isMirrored = optionTicks.mirror;
-		var isHorizontal = me.isHorizontal();
-		var ticks = me.ticks;
-		var fonts = parseTickFontOptions(optionTicks);
-		var tickPadding = optionTicks.padding;
-		var tl = getTickMarkLength(options.gridLines);
-		var rotation = -helpers.toRadians(me.labelRotation);
-		var items = [];
-		var i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+	_computeLabelItems(chartArea) {
+		const me = this;
+		const axis = me.axis;
+		const options = me.options;
+		const {position, ticks: optionTicks} = options;
+		const isMirrored = optionTicks.mirror;
+		const isHorizontal = me.isHorizontal();
+		const ticks = me.ticks;
+		const fonts = parseTickFontOptions(optionTicks);
+		const tickPadding = optionTicks.padding;
+		const tl = getTickMarkLength(options.gridLines);
+		const rotation = -helpers.toRadians(me.labelRotation);
+		const items = [];
+		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 
 		if (position === 'top') {
 			y = me.bottom - tl - tickPadding;
@@ -1091,9 +1116,27 @@ class Scale extends Element {
 		} else if (position === 'left') {
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
 			textAlign = isMirrored ? 'left' : 'right';
-		} else {
+		} else if (position === 'right') {
 			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
 			textAlign = isMirrored ? 'right' : 'left';
+		} else if (axis === 'x') {
+			if (position === 'center') {
+				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
+				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tl + tickPadding;
+			}
+			textAlign = !rotation ? 'center' : 'right';
+		} else if (axis === 'y') {
+			if (position === 'center') {
+				x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
+			} else if (helpers.isObject(position)) {
+				const positionAxisID = Object.keys(position)[0];
+				const value = position[positionAxisID];
+				x = me.chart.scales[positionAxisID].getPixelForValue(value);
+			}
+			textAlign = 'right';
 		}
 
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
@@ -1214,7 +1257,7 @@ class Scale extends Element {
 	/**
 	 * @private
 	 */
-	_drawLabels() {
+	_drawLabels(chartArea) {
 		var me = this;
 		var optionTicks = me.options.ticks;
 
@@ -1223,7 +1266,7 @@ class Scale extends Element {
 		}
 
 		var ctx = me.ctx;
-		var items = me._labelItems || (me._labelItems = me._computeLabelItems());
+		var items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
 		var i, j, ilen, jlen, item, tickFont, label, y;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
@@ -1335,7 +1378,7 @@ class Scale extends Element {
 
 		me._drawGrid(chartArea);
 		me._drawTitle();
-		me._drawLabels();
+		me._drawLabels(chartArea);
 	}
 
 	/**

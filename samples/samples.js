@@ -148,6 +148,9 @@
 		}, {
 			title: 'Axes Labels',
 			path: 'scales/axes-labels.html'
+		}, {
+			title: 'Center Positioning',
+			path: 'scales/axis-center-position.html'
 		}]
 	}, {
 		title: 'Legend',

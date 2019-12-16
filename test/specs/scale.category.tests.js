@@ -34,7 +34,6 @@ describe('Category scale tests', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			position: 'bottom',
 			offset: false,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
@@ -68,6 +67,7 @@ describe('Category scale tests', function() {
 		};
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		config.position = 'bottom';
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
 			ctx: {},
@@ -95,6 +95,7 @@ describe('Category scale tests', function() {
 		};
 
 		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		config.position = 'bottom';
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
 			ctx: {},

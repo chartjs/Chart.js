@@ -485,8 +485,6 @@ function filterBetween(timestamps, min, max) {
 }
 
 const defaultConfig = {
-	position: 'bottom',
-
 	/**
 	 * Data distribution along the scale:
 	 * - 'linear': data are spread according to their time (distances can vary),
