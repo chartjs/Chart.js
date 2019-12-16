@@ -2,6 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
+import {_setMinAndMaxByKey} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
@@ -132,7 +133,7 @@ class LogarithmicScale extends Scale {
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
-		helpers._setMinAndMaxByKey(ticks, me, 'value');
+		_setMinAndMaxByKey(ticks, me, 'value');
 
 		if (opts.reverse) {
 			reverse = !reverse;

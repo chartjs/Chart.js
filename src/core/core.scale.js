@@ -636,7 +636,7 @@ class Scale extends Element {
 			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
 				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
 			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
-			labelRotation = helpers.toDegrees(Math.min(
+			labelRotation = helpers.math.toDegrees(Math.min(
 				Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
 				Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
 			));
@@ -699,7 +699,7 @@ class Scale extends Element {
 			if (isHorizontal) {
 				// A horizontal axis is more constrained by the height.
 				var isRotated = me.labelRotation !== 0;
-				var angleRadians = helpers.toRadians(me.labelRotation);
+				var angleRadians = helpers.math.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
 				var sinRotation = Math.sin(angleRadians);
 
@@ -931,7 +931,7 @@ class Scale extends Element {
 		var optionTicks = me.options.ticks;
 
 		// Calculate space needed by label in axis direction.
-		var rot = helpers.toRadians(me.labelRotation);
+		var rot = helpers.math.toRadians(me.labelRotation);
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
@@ -1103,7 +1103,7 @@ class Scale extends Element {
 		const fonts = parseTickFontOptions(optionTicks);
 		const tickPadding = optionTicks.padding;
 		const tl = getTickMarkLength(options.gridLines);
-		const rotation = -helpers.toRadians(me.labelRotation);
+		const rotation = -helpers.math.toRadians(me.labelRotation);
 		const items = [];
 		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 

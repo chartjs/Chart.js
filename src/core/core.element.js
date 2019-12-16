@@ -1,7 +1,8 @@
 'use strict';
 
-const color = require('chartjs-color');
-const helpers = require('../helpers/index');
+import color from 'chartjs-color';
+import helpers from '../helpers/index';
+import {isNumber} from '../helpers/helpers.math';
 
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
@@ -110,10 +111,9 @@ class Element {
 	}
 
 	hasValue() {
-		return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
+		return isNumber(this._model.x) && isNumber(this._model.y);
 	}
 }
 
 Element.extend = helpers.inherits;
-
-module.exports = Element;
+export default Element;

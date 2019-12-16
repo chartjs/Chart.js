@@ -3,6 +3,7 @@
 import adapters from '../core/core.adapters';
 import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
+import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 
 const resolve = helpers.options.resolve;
@@ -731,7 +732,7 @@ class TimeScale extends Scale {
 		const me = this;
 		const ticksOpts = me.options.ticks;
 		const tickLabelWidth = me.ctx.measureText(label).width;
-		const angle = helpers.toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
+		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
 		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);

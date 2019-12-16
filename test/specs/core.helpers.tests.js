@@ -20,92 +20,12 @@ describe('Core helper tests', function() {
 		expect(helpers.findPreviousWhere(data, callback, 0)).toBe(undefined);
 	});
 
-	it('should get the correct sign', function() {
-		expect(helpers.sign(0)).toBe(0);
-		expect(helpers.sign(10)).toBe(1);
-		expect(helpers.sign(-5)).toBe(-1);
-	});
-
-	it('should correctly determine if two numbers are essentially equal', function() {
-		expect(helpers.almostEquals(0, Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
-		expect(helpers.almostEquals(1, 1.1, 0.0001)).toBe(false);
-		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 0)).toBe(false);
-		expect(helpers.almostEquals(1e30, 1e30 + Number.EPSILON, 2 * Number.EPSILON)).toBe(true);
-	});
-
-	it('should correctly determine if a numbers are essentially whole', function() {
-		expect(helpers.almostWhole(0.99999, 0.0001)).toBe(true);
-		expect(helpers.almostWhole(0.9, 0.0001)).toBe(false);
-		expect(helpers.almostWhole(1234567890123, 0.0001)).toBe(true);
-		expect(helpers.almostWhole(1234567890123.001, 0.0001)).toBe(false);
-	});
-
 	it('should generate integer ids', function() {
 		var uid = helpers.uid();
 		expect(uid).toEqual(jasmine.any(Number));
 		expect(helpers.uid()).toBe(uid + 1);
 		expect(helpers.uid()).toBe(uid + 2);
 		expect(helpers.uid()).toBe(uid + 3);
-	});
-
-	it('should detect a number', function() {
-		expect(helpers.isNumber(123)).toBe(true);
-		expect(helpers.isNumber('123')).toBe(true);
-		expect(helpers.isNumber(null)).toBe(false);
-		expect(helpers.isNumber(NaN)).toBe(false);
-		expect(helpers.isNumber(undefined)).toBe(false);
-		expect(helpers.isNumber('cbc')).toBe(false);
-	});
-
-	it('should convert between radians and degrees', function() {
-		expect(helpers.toRadians(180)).toBe(Math.PI);
-		expect(helpers.toRadians(90)).toBe(0.5 * Math.PI);
-		expect(helpers.toDegrees(Math.PI)).toBe(180);
-		expect(helpers.toDegrees(Math.PI * 3 / 2)).toBe(270);
-	});
-
-	it('should get the correct number of decimal places', function() {
-		expect(helpers._decimalPlaces(100)).toBe(0);
-		expect(helpers._decimalPlaces(1)).toBe(0);
-		expect(helpers._decimalPlaces(0)).toBe(0);
-		expect(helpers._decimalPlaces(0.01)).toBe(2);
-		expect(helpers._decimalPlaces(-0.01)).toBe(2);
-		expect(helpers._decimalPlaces('1')).toBe(undefined);
-		expect(helpers._decimalPlaces('')).toBe(undefined);
-		expect(helpers._decimalPlaces(undefined)).toBe(undefined);
-		expect(helpers._decimalPlaces(12345678.1234)).toBe(4);
-		expect(helpers._decimalPlaces(1234567890.1234567)).toBe(7);
-	});
-
-	it('should get an angle from a point', function() {
-		var center = {
-			x: 0,
-			y: 0
-		};
-
-		expect(helpers.getAngleFromPoint(center, {
-			x: 0,
-			y: 10
-		})).toEqual({
-			angle: Math.PI / 2,
-			distance: 10,
-		});
-
-		expect(helpers.getAngleFromPoint(center, {
-			x: Math.sqrt(2),
-			y: Math.sqrt(2)
-		})).toEqual({
-			angle: Math.PI / 4,
-			distance: 2
-		});
-
-		expect(helpers.getAngleFromPoint(center, {
-			x: -1.0 * Math.sqrt(2),
-			y: -1.0 * Math.sqrt(2)
-		})).toEqual({
-			angle: Math.PI * 1.25,
-			distance: 2
-		});
 	});
 
 	it('should spline curves', function() {
@@ -621,13 +541,6 @@ describe('Core helper tests', function() {
 
 		it('should return a color when called with a color', function() {
 			expect(isColorInstance(helpers.color('rgb(1, 2, 3)'))).toBe(true);
-		});
-
-		it('should return a color when called with a CanvasGradient instance', function() {
-			var context = document.createElement('canvas').getContext('2d');
-			var gradient = context.createLinearGradient(0, 1, 2, 3);
-
-			expect(isColorInstance(helpers.color(gradient))).toBe(true);
 		});
 	});
 
