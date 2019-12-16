@@ -2,7 +2,7 @@
 
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
-const babel = require('rollup-plugin-babel');
+const buble = require('@rollup/plugin-buble');
 const terser = require('rollup-plugin-terser').terser;
 const optional = require('./rollup.plugins').optional;
 const stylesheet = require('./rollup.plugins').stylesheet;
@@ -25,8 +25,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
+			buble({
+				objectAssign: 'Object.assign',
+				exclude: '**/*.css'
 			}),
 			stylesheet({
 				extract: true
@@ -51,8 +52,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
+			buble({
+				objectAssign: 'Object.assign',
+				exclude: '**/*.css'
 			}),
 			stylesheet({
 				extract: true,
@@ -85,8 +87,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
+			buble({
+				objectAssign: 'Object.assign',
+				exclude: '**/*.css'
 			}),
 			stylesheet({
 				extract: true
@@ -114,8 +117,9 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
+			buble({
+				objectAssign: 'Object.assign',
+				exclude: '**/*.css'
 			}),
 			optional({
 				include: ['moment']
