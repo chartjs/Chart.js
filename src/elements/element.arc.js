@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers';
+import {getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
 defaults._set('global', {
@@ -101,7 +101,7 @@ class Arc extends Element {
 		var vm = this._view;
 
 		if (vm) {
-			var pointRelativePosition = helpers.getAngleFromPoint(vm, {x: chartX, y: chartY});
+			var pointRelativePosition = getAngleFromPoint(vm, {x: chartX, y: chartY});
 			var angle = pointRelativePosition.angle;
 			var distance = pointRelativePosition.distance;
 

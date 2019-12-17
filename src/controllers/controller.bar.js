@@ -422,7 +422,7 @@ module.exports = DatasetController.extend({
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
-			if (value !== 0 && helpers.sign(value) !== helpers.sign(custom.barEnd)) {
+			if (value !== 0 && helpers.math.sign(value) !== helpers.math.sign(custom.barEnd)) {
 				start = 0;
 			}
 			start += value;

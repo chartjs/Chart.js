@@ -4,10 +4,6 @@
 var Chart = require('./core/core.controller');
 
 Chart.helpers = require('./helpers/index');
-
-// @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-require('./core/core.helpers')(Chart);
-
 Chart._adapters = require('./core/core.adapters');
 Chart.Animation = require('./core/core.animation');
 Chart.animationService = require('./core/core.animations');

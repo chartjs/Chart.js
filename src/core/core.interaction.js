@@ -1,6 +1,7 @@
 'use strict';
 
-var helpers = require('../helpers/index');
+import helpers from '../helpers/index';
+import {isNumber} from '../helpers/helpers.math';
 
 /**
  * Helper function to get relative position for an event
@@ -16,7 +17,7 @@ function getRelativePosition(e, chart) {
 		};
 	}
 
-	return helpers.getRelativePosition(e, chart);
+	return helpers.dom.getRelativePosition(e, chart);
 }
 
 /**
@@ -55,7 +56,7 @@ function evaluateItemsAtIndex(chart, axis, position, handler) {
 			return false;
 		}
 		const index = iScale.getIndexForPixel(position[axis]);
-		if (!helpers.isNumber(index)) {
+		if (!isNumber(index)) {
 			return false;
 		}
 		indices.push(index);
@@ -163,7 +164,7 @@ function getNearestItems(chart, position, axis, intersect) {
  * Contains interaction related functions
  * @namespace Chart.Interaction
  */
-module.exports = {
+export default {
 	// Helper function for different modes
 	modes: {
 		/**

@@ -188,11 +188,11 @@ module.exports = DatasetController.extend({
 		}
 
 		if (lineModel.cubicInterpolationMode === 'monotone') {
-			helpers.splineCurveMonotone(points);
+			helpers.curve.splineCurveMonotone(points);
 		} else {
 			for (i = 0, ilen = points.length; i < ilen; ++i) {
 				const model = points[i]._model;
-				const controlPoints = helpers.splineCurve(
+				const controlPoints = helpers.curve.splineCurve(
 					points[Math.max(0, i - 1)]._model,
 					model,
 					points[Math.min(i + 1, ilen - 1)]._model,

@@ -41,7 +41,7 @@ var EVENT_TYPES = {
  * @returns {number} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
-	var value = helpers.getStyle(element, property);
+	var value = helpers.dom.getStyle(element, property);
 	var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 	return matches ? Number(matches[1]) : undefined;
 }
@@ -146,7 +146,7 @@ function createEvent(type, chart, x, y, nativeEvent) {
 
 function fromNativeEvent(event, chart) {
 	var type = EVENT_TYPES[event.type] || event.type;
-	var pos = helpers.getRelativePosition(event, chart);
+	var pos = helpers.dom.getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
