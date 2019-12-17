@@ -22,7 +22,7 @@ module.exports = function(karma) {
 	karma.set({
 		frameworks: ['jasmine'],
 		reporters: ['progress', 'kjhtml'],
-		browsers: args.browsers,
+		browsers: (args.browsers || 'chrome,firefox').split(','),
 		logLevel: karma.LOG_WARN,
 
 		// Explicitly disable hardware acceleration to make image
@@ -56,7 +56,7 @@ module.exports = function(karma) {
 			'node_modules/moment/min/moment.min.js',
 			'test/index.js',
 			'src/index.js'
-		].concat(args.inputs),
+		].concat((args.inputs || 'test/specs/**/*.js').split(';')),
 
 		preprocessors: {
 			'test/index.js': ['rollup'],

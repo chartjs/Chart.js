@@ -157,8 +157,8 @@ function unittestTask(done) {
     singleRun: !argv.watch,
     args: {
       coverage: !!argv.coverage,
-      inputs: (argv.inputs || 'test/specs/**/*.js').split(';'),
-      browsers: (argv.browsers || 'chrome,firefox').split(','),
+      inputs: argv.inputs,
+      browsers: argv.browsers,
       watch: argv.watch
     }
   },
