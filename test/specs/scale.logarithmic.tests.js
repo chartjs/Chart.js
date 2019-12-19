@@ -40,7 +40,9 @@ describe('Logarithmic Scale tests', function() {
 				autoSkipPadding: 0,
 				labelOffset: 0,
 				minor: {},
-				major: {},
+				major: {
+					enabled: true
+				},
 			},
 		});
 
@@ -591,7 +593,7 @@ describe('Logarithmic Scale tests', function() {
 
 		var scale = chart.scales.y;
 		// Counts down because the lines are drawn top to bottom
-		expect(getLabels(scale)).toEqual([30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.9, 0.8, 0]);
+		expect(getLabels(scale)).toEqual([30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
 		expect(scale.start).toEqual(0);
 		expect(scale.end).toEqual(30);
 	});
@@ -652,7 +654,7 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var scale = chart.scales.y;
-		expect(getLabels(scale)).toEqual([0, 9, 10, 20, 30]);
+		expect(getLabels(scale)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30]);
 		expect(scale.start).toEqual(30);
 		expect(scale.end).toEqual(0);
 	});
@@ -675,7 +677,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(getLabels(chart.scales.y)).toEqual(['8e+1', '', '', '5e+1', '', '', '2e+1', '1e+1', '', '', '', '', '5e+0', '', '', '2e+0', '1e+0', '0']);
+		expect(getLabels(chart.scales.y)).toEqual(['8e+1', '7e+1', '6e+1', '5e+1', '4e+1', '3e+1', '2e+1', '1e+1', '9e+0', '8e+0', '7e+0', '6e+0', '5e+0', '4e+0', '3e+0', '2e+0', '1e+0', '0']);
 	});
 
 	it('should build labels using the user supplied callback', function() {
