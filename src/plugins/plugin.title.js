@@ -122,7 +122,7 @@ class Title extends Element {
 		if (me._isPaddingObj()) {
 			padding = opts.padding.bottom + opts.padding.top;
 		} else {
-			padding = opts.padding;
+			padding = opts.padding * 2;
 		}
 		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + padding;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
