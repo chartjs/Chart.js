@@ -174,11 +174,14 @@ export function unclipArea(ctx) {
  * @private
  */
 export function _steppedLineTo(ctx, previous, target, flip, mode) {
+	if (!previous) {
+		return ctx.lineTo(target.x, target.y);
+	}
 	if (mode === 'middle') {
 		const midpoint = (previous.x + target.x) / 2.0;
-		ctx.lineTo(midpoint, flip ? target.y : previous.y);
-		ctx.lineTo(midpoint, flip ? previous.y : target.y);
-	} else if ((mode === 'after' && !flip) || (mode !== 'after' && flip)) {
+		ctx.lineTo(midpoint, previous.y);
+		ctx.lineTo(midpoint, target.y);
+	} else if (mode === 'after' ^ flip) {
 		ctx.lineTo(previous.x, target.y);
 	} else {
 		ctx.lineTo(target.x, previous.y);
