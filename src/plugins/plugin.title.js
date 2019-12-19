@@ -10,10 +10,7 @@ defaults._set('global', {
 		display: false,
 		fontStyle: 'bold',
 		fullWidth: true,
-		padding: 10 || {
-			top: 10,
-			bottom: 10
-		},
+		padding: 10,
 		position: 'top',
 		text: '',
 		weight: 2000         // by default greater than legend (1000) to be above
@@ -36,7 +33,7 @@ class Title extends Element {
 
 	// These methods are ordered by lifecycle. Utilities then follow.
 
-	beforeUpdate() { }
+	beforeUpdate() {}
 	update(maxWidth, maxHeight, margins) {
 		var me = this;
 
@@ -67,11 +64,11 @@ class Title extends Element {
 		return me.minSize;
 
 	}
-	afterUpdate() { }
+	afterUpdate() {}
 
 	//
 
-	beforeSetDimensions() { }
+	beforeSetDimensions() {}
 	setDimensions() {
 		var me = this;
 		// Set the unconstrained dimension before label rotation
@@ -94,17 +91,17 @@ class Title extends Element {
 			height: 0
 		};
 	}
-	afterSetDimensions() { }
+	afterSetDimensions() {}
 
 	//
 
-	beforeBuildLabels() { }
-	buildLabels() { }
-	afterBuildLabels() { }
+	beforeBuildLabels() {}
+	buildLabels() {}
+	afterBuildLabels() {}
 
 	//
 
-	beforeFit() { }
+	beforeFit() {}
 	fit() {
 		var me = this;
 		var opts = me.options;
@@ -118,12 +115,12 @@ class Title extends Element {
 		}
 
 		lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		opts.padding = helpers.options.toPadding(opts.padding);
-		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + (opts.padding.top + opts.padding.bottom);
+		me._padding = helpers.options.toPadding(opts.padding);
+		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + me._padding.height;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
-	afterFit() { }
+	afterFit() {}
 
 	// Shared Methods
 	isHorizontal() {
@@ -143,7 +140,7 @@ class Title extends Element {
 
 		var fontOpts = helpers.options._parseFont(opts);
 		var lineHeight = fontOpts.lineHeight;
-		var offset = lineHeight / 2 + opts.padding.top;
+		var offset = lineHeight / 2 + me._padding.top;
 		var rotation = 0;
 		var top = me.top;
 		var left = me.left;
