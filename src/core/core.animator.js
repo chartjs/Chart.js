@@ -26,9 +26,15 @@ class Animator {
 	/**
 	 * @private
 	 */
-	_notify(anims, type, args) {
-		const callbacks = anims._listeners[type] || [];
-		callbacks.forEach(fn => fn(args || []));
+	_notify(chart, anims, date, type) {
+		const callbacks = anims.listeners[type] || [];
+		const numSteps = anims.duration;
+
+		callbacks.forEach(fn => fn({
+			chart: chart,
+			numSteps,
+			currentStep: date - anims.start
+		}));
 	}
 
 	/**
@@ -56,8 +62,9 @@ class Animator {
 	 * @private
 	 */
 	_update() {
+		const me = this;
 		const date = Date.now();
-		const charts = this._charts;
+		const charts = me._charts;
 		let remaining = 0;
 
 		for (let [chart, anims] of charts) {
@@ -86,13 +93,15 @@ class Animator {
 			if (draw) {
 				chart.draw();
 				if (chart.options.animation.fps) {
-					drawFPS(chart, items.length, date, this._lastDate);
+					drawFPS(chart, items.length, date, me._lastDate);
 				}
 			}
 
+			me._notify(chart, anims, date, 'progress');
+
 			if (!items.length) {
 				anims.running = false;
-				this._notify(chart, 'complete');
+				me._notify(chart, anims, date, 'complete');
 			}
 
 			remaining += items.length;
@@ -112,7 +121,10 @@ class Animator {
 			anims = {
 				running: false,
 				items: [],
-				listeners: {complete: []}
+				listeners: {
+					complete: [],
+					progress: []
+				}
 			};
 			charts.set(chart, anims);
 		}
@@ -158,6 +170,8 @@ class Animator {
 			return;
 		}
 		anims.running = true;
+		anims.start = Date.now();
+		anims.duration = anims.items.reduce((acc, cur) => Math.max(acc, cur._duration), 0);
 		this._refresh();
 	}
 
@@ -188,7 +202,7 @@ class Animator {
 			items[i].cancel();
 		}
 		anims.items = [];
-		this._notify(chart, 'complete');
+		this._notify(chart, anims, Date.now(), 'complete');
 	}
 }
 

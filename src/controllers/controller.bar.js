@@ -34,7 +34,7 @@ defaults._set('global', {
 			animation: {
 				numbers: {
 					type: 'number',
-					properties: ['x', 'y', 'width', 'height']
+					properties: ['x', 'y', 'base', 'width', 'height']
 				}
 			}
 		}

@@ -943,16 +943,18 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	/**
+	 * Utility for checking if the options are shared and should be animated separately.
 	 * @private
 	 */
 	_getSharedOptions: function(mode, element, options) {
 		if (mode !== 'reset' && options && options.$shared &&
-		element && element.options && element.options.$shared) {
+			element && element.options && element.options.$shared) {
 			return {target: element.options, options};
 		}
 	},
 
 	/**
+	 * Utility for determining if `options` should be included in the updated properties
 	 * @private
 	 */
 	_includeOptions: function(mode, sharedOptions) {
@@ -960,6 +962,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	/**
+	 * Utility for updating a element with new properties, using animations when appropriate.
 	 * @private
 	 */
 	_updateElement: function(element, index, properties, mode) {
@@ -971,6 +974,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	/**
+	 * Utility to animate the shared options, that are potentially affecting multiple elements.
 	 * @private
 	 */
 	_updateSharedOptions: function(sharedOptions, mode) {
@@ -982,16 +986,16 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_setStyle(element, index, active) {
-		this._resolveAnimations(index, active && 'active').update(element, {options: this.getStyle(index, active)});
+	_setStyle(element, index, mode, active) {
+		this._resolveAnimations(index, mode).update(element, {options: this.getStyle(index, active)});
 	},
 
 	removeHoverStyle: function(element, datasetIndex, index) {
-		this._setStyle(element, index, false);
+		this._setStyle(element, index, 'active', false);
 	},
 
 	setHoverStyle: function(element, datasetIndex, index) {
-		this._setStyle(element, index, true);
+		this._setStyle(element, index, 'active', true);
 	},
 
 	/**
@@ -1000,25 +1004,20 @@ helpers.extend(DatasetController.prototype, {
 	_removeDatasetHoverStyle: function() {
 		const element = this._cachedMeta.dataset;
 
-		if (!element) {
-			return;
+		if (element) {
+			this._setStyle(element, undefined, 'active', false);
 		}
-
-		this._setStyle(element, undefined, false);
 	},
 
 	/**
 	 * @private
 	 */
 	_setDatasetHoverStyle: function() {
-		const me = this;
-		const element = me._cachedMeta.dataset;
+		const element = this._cachedMeta.dataset;
 
-		if (!element) {
-			return;
+		if (element) {
+			this._setStyle(element, undefined, 'active', true);
 		}
-
-		this._setStyle(element, undefined, true);
 	},
 
 	/**

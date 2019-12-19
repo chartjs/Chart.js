@@ -17,7 +17,11 @@ defaults._set('global', {
 		},
 		numbers: {
 			type: 'number',
-			properties: ['x', 'y', 'borderWidth', 'radius']
+			properties: ['x', 'y', 'borderWidth', 'radius', 'tension']
+		},
+		colors: {
+			type: 'color',
+			properties: ['borderColor', 'backgroundColor']
 		},
 		onProgress: helpers.noop,
 		onComplete: helpers.noop
@@ -66,8 +70,11 @@ class Animations {
 	}
 
 	/**
+	 * Utility to handle animation of `options`.
+	 * This should not be called, when animating $shared options to $shared new options.
 	 * @private
-	 * @todo if new options are $shared, target.options should be replaced with those new share options after all animations have completed
+	 * @todo if new options are $shared, target.options should be replaced with those new shared
+	 *  options after all animations have completed
 	 */
 	_animateOptions(target, values) {
 		const newOptions = values.options;
@@ -79,6 +86,8 @@ class Animations {
 		let options = target.options;
 		if (options) {
 			if (options.$shared) {
+				// If the current / old options are $shared, meaning other elements are
+				// using the same options, we need to clone to become unique.
 				target.options = options = helpers.extend({}, options, {$shared: false, $animations: {}});
 			}
 			animations = this._createAnimations(options, newOptions);
@@ -132,12 +141,15 @@ class Animations {
 	 * Update `target` properties to new values, using configured animations
 	 * @param {object} target - object to update
 	 * @param {object} values - new target properties
+	 * @returns {boolean|undefined} - `true` if animations were started
 	 **/
 	update(target, values) {
 		if (this._properties.size === 0) {
 			// Nothing is animated, just apply the new values.
 			// Options can be shared, need to account for that.
 			copyOptions(target, values);
+			// copyOptions removes the `options` from `values`,
+			// unless it can be directly assigned.
 			helpers.extend(target, values);
 			return;
 		}

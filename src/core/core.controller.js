@@ -151,6 +151,20 @@ function compare2Level(l1, l2) {
 	};
 }
 
+function onAnimationsComplete(ctx) {
+	const chart = ctx.chart;
+	const animationOptions = chart.options.animation;
+
+	plugins.notify(chart, 'afterRender');
+	helpers.callback(animationOptions && animationOptions.onComplete, arguments, chart);
+}
+
+function onAnimationProgress(ctx) {
+	const chart = ctx.chart;
+	const animationOptions = chart.options.animation;
+	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
+}
+
 var Chart = function(item, config) {
 	this.construct(item, config);
 	return this;
@@ -203,18 +217,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		Animator.listen(me, 'complete', me._onAnimationsComplete);
+		Animator.listen(me, 'complete', onAnimationsComplete);
+		Animator.listen(me, 'progress', onAnimationProgress);
 
 		me.initialize();
 		me.update();
-	},
-
-	_onAnimationsComplete: function() {
-		const me = this;
-		const animationOptions = me.options.animation;
-
-		plugins.notify(me, 'afterRender');
-		helpers.callback(animationOptions && animationOptions.onComplete, [], me);
 	},
 
 	/**
@@ -468,9 +475,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		// In case the entire data object changed
-		// me.tooltip._data = me.data;
-
 		// Make sure dataset controllers are updated and new controllers are reset
 		var newControllers = me.buildOrUpdateControllers();
 
@@ -489,13 +493,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		me.updateDatasets(mode);
-
-		// Need to reset tooltip in case it is displayed with elements that are removed
-		// after update.
-		// me.tooltip.initialize();
-
-		// Last active contains items that were previously hovered.
-		// me.lastActive = [];
 
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');

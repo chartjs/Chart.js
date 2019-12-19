@@ -49,6 +49,10 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 
+### Animations
+
+Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
+
 ## Developer migration
 
 ### Removed
@@ -105,7 +109,6 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.log10` was renamed to `helpers.math.log10`
 * `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
-* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 * `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
 * `helpers.isNumber` was renamed to `helpers.math.isNumber`
 * `helpers.sign` was renamed to `helpers.math.sign`
@@ -126,10 +129,12 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
 * `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
+* `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
 #### Renamed private APIs
 
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
+* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 
 ### Changed
 
