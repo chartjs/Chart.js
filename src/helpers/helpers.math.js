@@ -55,18 +55,6 @@ export function almostWhole(x, epsilon) {
 	return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 }
 
-export function _setMinAndMax(array, target) {
-	var i, ilen, value;
-
-	for (i = 0, ilen = array.length; i < ilen; i++) {
-		value = array[i];
-		if (!isNaN(value)) {
-			target.min = Math.min(target.min, value);
-			target.max = Math.max(target.max, value);
-		}
-	}
-}
-
 export function _setMinAndMaxByKey(array, target, property) {
 	var i, ilen, value;
 
