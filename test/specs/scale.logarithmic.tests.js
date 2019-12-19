@@ -259,7 +259,7 @@ describe('Logarithmic Scale tests', function() {
 		chart.options.scales.y.stacked = true;
 		chart.update();
 
-		expect(chart.scales.y.min).toBe(10);
+		expect(chart.scales.y.min).toBe(1);
 		expect(chart.scales.y.max).toBe(6000);
 
 		expect(chart.scales.y1).not.toEqual(undefined); // must construct
@@ -369,7 +369,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.y.min).toBe(10);
+		expect(chart.scales.y.min).toBe(1);
 		expect(chart.scales.y.max).toBe(200);
 	});
 
@@ -411,7 +411,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.y.min).toBe(10);
+		expect(chart.scales.y.min).toBe(1);
 		expect(chart.scales.y.max).toBe(200);
 	});
 
