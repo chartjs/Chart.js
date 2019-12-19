@@ -10,7 +10,10 @@ defaults._set('global', {
 		display: false,
 		fontStyle: 'bold',
 		fullWidth: true,
-		padding: 10,
+		padding: 10 || {
+			top: 10,
+			bottom: 10
+		},
 		position: 'top',
 		text: '',
 		weight: 2000         // by default greater than legend (1000) to be above
@@ -18,7 +21,7 @@ defaults._set('global', {
 });
 
 /**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
+ * IMPORTANT: this class is exposed publicly as Chart.Title, backward compatibility required!
  */
 class Title extends Element {
 	constructor(config) {
@@ -33,7 +36,7 @@ class Title extends Element {
 
 	// These methods are ordered by lifecycle. Utilities then follow.
 
-	beforeUpdate() {}
+	beforeUpdate() { }
 	update(maxWidth, maxHeight, margins) {
 		var me = this;
 
@@ -64,11 +67,11 @@ class Title extends Element {
 		return me.minSize;
 
 	}
-	afterUpdate() {}
+	afterUpdate() { }
 
 	//
 
-	beforeSetDimensions() {}
+	beforeSetDimensions() { }
 	setDimensions() {
 		var me = this;
 		// Set the unconstrained dimension before label rotation
@@ -85,32 +88,27 @@ class Title extends Element {
 			me.bottom = me.height;
 		}
 
-		// Reset padding
-		me.paddingLeft = 0;
-		me.paddingTop = 0;
-		me.paddingRight = 0;
-		me.paddingBottom = 0;
-
 		// Reset minSize
 		me.minSize = {
 			width: 0,
 			height: 0
 		};
 	}
-	afterSetDimensions() {}
+	afterSetDimensions() { }
 
 	//
 
-	beforeBuildLabels() {}
-	buildLabels() {}
-	afterBuildLabels() {}
+	beforeBuildLabels() { }
+	buildLabels() { }
+	afterBuildLabels() { }
 
 	//
 
-	beforeFit() {}
+	beforeFit() { }
 	fit() {
 		var me = this;
 		var opts = me.options;
+		var padding = 0;
 		var minSize = me.minSize = {};
 		var isHorizontal = me.isHorizontal();
 		var lineCount, textSize;
@@ -121,17 +119,29 @@ class Title extends Element {
 		}
 
 		lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + opts.padding * 2;
-
+		if (me._isPaddingObj()) {
+			padding = opts.padding.bottom + opts.padding.top;
+		} else {
+			padding = opts.padding;
+		}
+		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + padding;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
-	afterFit() {}
+	afterFit() { }
 
 	// Shared Methods
 	isHorizontal() {
 		var pos = this.options.position;
 		return pos === 'top' || pos === 'bottom';
+	}
+
+	/**
+	 * @private
+	 * @returns A boolean, true if the options.padding is an object, or false when it's a number.
+	 */
+	_isPaddingObj() {
+		return (typeof this.options.padding.top !== 'undefined' && typeof this.options.padding.bottom !== 'undefined');
 	}
 
 	// Actually draw the title block on the canvas
@@ -146,7 +156,13 @@ class Title extends Element {
 
 		var fontOpts = helpers.options._parseFont(opts);
 		var lineHeight = fontOpts.lineHeight;
-		var offset = lineHeight / 2 + opts.padding;
+		var padding = 0;
+		if (me._isPaddingObj()) {
+			padding = opts.padding.top;
+		} else {
+			padding = opts.padding;
+		}
+		var offset = lineHeight / 2 + padding;
 		var rotation = 0;
 		var top = me.top;
 		var left = me.left;

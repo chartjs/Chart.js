@@ -13,7 +13,7 @@ The title configuration is passed into the `options.title` namespace. The global
 | `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.
 | `fontColor` | `Color` | `'#666'` | Font color.
 | `fontStyle` | `string` | `'bold'` | Font style.
-| `padding` | `number` | `10` | Number of pixels to add above and below the title text.
+| `padding` | <code>number&#124;{top: number, bottom: number}</code> | `10` | Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
 | `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
 | `text` | <code>string&#124;string[]</code> | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
 
@@ -36,6 +36,25 @@ var chart = new Chart(ctx, {
         title: {
             display: true,
             text: 'Custom Chart Title'
+        }
+    }
+});
+```
+
+This example shows how to specify separate top and bottom title text padding:
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        title: {
+            display: true,
+            text: 'Custom Chart Title',
+            padding: {
+                top: 10,
+                bottom: 30
+            }
         }
     }
 });
