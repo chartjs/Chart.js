@@ -105,7 +105,7 @@ module.exports = function(karma) {
 			karma.rollupPreprocessor,
 			karma.customPreprocessors.sources.options
 		].forEach(v => {
-			(v.plugins || (v.plugins = [])).unshift(
+			(v.plugins || (v.plugins = [])).push(
 				istanbul({
 					include: 'src/**/*.js'
 				}));
