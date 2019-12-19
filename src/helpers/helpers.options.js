@@ -56,7 +56,7 @@ export function toLineHeight(value, size) {
 /**
  * Converts the given value into a padding object with pre-computed width/height.
  * @param {number|object} value - If a number, set the value to all TRBL component,
- *  else, if and object, use defined properties and sets undefined ones to 0.
+ *  else, if an object, use defined properties and sets undefined ones to 0.
  * @returns {object} The padding values (top, right, bottom, left, width, height)
  * @since 2.7.0
  */

@@ -108,7 +108,6 @@ class Title extends Element {
 	fit() {
 		var me = this;
 		var opts = me.options;
-		var padding = 0;
 		var minSize = me.minSize = {};
 		var isHorizontal = me.isHorizontal();
 		var lineCount, textSize;
@@ -119,12 +118,8 @@ class Title extends Element {
 		}
 
 		lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		if (me._isPaddingObj()) {
-			padding = opts.padding.bottom + opts.padding.top;
-		} else {
-			padding = opts.padding * 2;
-		}
-		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + padding;
+		opts.padding = helpers.options.toPadding(opts.padding);
+		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + (opts.padding.top + opts.padding.bottom);
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
@@ -134,14 +129,6 @@ class Title extends Element {
 	isHorizontal() {
 		var pos = this.options.position;
 		return pos === 'top' || pos === 'bottom';
-	}
-
-	/**
-	 * @private
-	 * @returns A boolean, true if the options.padding is an object, or false when it's a number.
-	 */
-	_isPaddingObj() {
-		return (typeof this.options.padding.top !== 'undefined' && typeof this.options.padding.bottom !== 'undefined');
 	}
 
 	// Actually draw the title block on the canvas
@@ -156,13 +143,7 @@ class Title extends Element {
 
 		var fontOpts = helpers.options._parseFont(opts);
 		var lineHeight = fontOpts.lineHeight;
-		var padding = 0;
-		if (me._isPaddingObj()) {
-			padding = opts.padding.top;
-		} else {
-			padding = opts.padding;
-		}
-		var offset = lineHeight / 2 + padding;
+		var offset = lineHeight / 2 + opts.padding.top;
 		var rotation = 0;
 		var top = me.top;
 		var left = me.left;
