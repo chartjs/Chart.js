@@ -18,7 +18,7 @@ defaults._set('global', {
 });
 
 /**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
+ * IMPORTANT: this class is exposed publicly as Chart.Title, backward compatibility required!
  */
 class Title extends Element {
 	constructor(config) {
@@ -85,12 +85,6 @@ class Title extends Element {
 			me.bottom = me.height;
 		}
 
-		// Reset padding
-		me.paddingLeft = 0;
-		me.paddingTop = 0;
-		me.paddingRight = 0;
-		me.paddingBottom = 0;
-
 		// Reset minSize
 		me.minSize = {
 			width: 0,
@@ -121,8 +115,8 @@ class Title extends Element {
 		}
 
 		lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + opts.padding * 2;
-
+		me._padding = helpers.options.toPadding(opts.padding);
+		textSize = lineCount * helpers.options._parseFont(opts).lineHeight + me._padding.height;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
@@ -146,7 +140,7 @@ class Title extends Element {
 
 		var fontOpts = helpers.options._parseFont(opts);
 		var lineHeight = fontOpts.lineHeight;
-		var offset = lineHeight / 2 + opts.padding;
+		var offset = lineHeight / 2 + me._padding.top;
 		var rotation = 0;
 		var top = me.top;
 		var left = me.left;
