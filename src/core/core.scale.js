@@ -911,7 +911,7 @@ class Scale extends Element {
 
 		if (numMajorIndices > 0) {
 			let i, ilen;
-			const avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
 			skip(ticks, newTicks, spacing, helpers.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
 				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);

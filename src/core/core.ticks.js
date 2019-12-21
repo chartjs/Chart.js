@@ -65,15 +65,8 @@ module.exports = {
 			return tickString;
 		},
 
-		logarithmic: function(tickValue, index, ticks) {
-			var remain = tickValue / (Math.pow(10, Math.floor(math.log10(tickValue))));
-
-			if (tickValue === 0) {
-				return '0';
-			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
-				return tickValue.toExponential();
-			}
-			return '';
+		logarithmic: function(tickValue) {
+			return tickValue === 0 ? '0' : tickValue.toExponential();
 		}
 	}
 };
