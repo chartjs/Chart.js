@@ -66,7 +66,6 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.responsiveAnimationDuration = 42;
 			defaults.global.hover.onHover = callback;
 			defaults.line.spanGaps = true;
 			defaults.line.hover.mode = 'x-axis';
@@ -79,11 +78,9 @@ describe('Chart', function() {
 			expect(options.defaultFontSize).toBe(defaults.global.defaultFontSize);
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
-			expect(options.responsiveAnimationDuration).toBe(42);
 			expect(options.hover.onHover).toBe(callback);
 			expect(options.hover.mode).toBe('x-axis');
 
-			defaults.global.responsiveAnimationDuration = 0;
 			defaults.global.hover.onHover = null;
 			defaults.line.spanGaps = false;
 			defaults.line.hover.mode = 'index';
@@ -93,7 +90,6 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.responsiveAnimationDuration = 42;
 			defaults.global.hover.onHover = callback;
 			defaults.line.hover.mode = 'x-axis';
 			defaults.line.spanGaps = true;
@@ -101,7 +97,6 @@ describe('Chart', function() {
 			var chart = acquireChart({
 				type: 'line',
 				options: {
-					responsiveAnimationDuration: 4242,
 					spanGaps: false,
 					hover: {
 						mode: 'dataset',
@@ -113,13 +108,11 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.responsiveAnimationDuration).toBe(4242);
 			expect(options.showLines).toBe(defaults.global.showLines);
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
 
-			defaults.global.responsiveAnimationDuration = 0;
 			defaults.global.hover.onHover = null;
 			defaults.line.hover.mode = 'index';
 			defaults.line.spanGaps = false;

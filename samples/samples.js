@@ -220,6 +220,9 @@
 		}, {
 			title: 'Drop',
 			path: 'animations/drop.html'
+		}, {
+			title: 'Loop',
+			path: 'animations/loop.html'
 		}]
 	}, {
 		title: 'Advanced',

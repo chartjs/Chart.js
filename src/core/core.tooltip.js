@@ -462,7 +462,6 @@ class Tooltip extends Element {
 	initialize() {
 		const me = this;
 		me.options = resolveOptions(me._chart.options.tooltips);
-		// me.update();
 	}
 
 	/**

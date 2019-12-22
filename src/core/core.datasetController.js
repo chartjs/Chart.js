@@ -908,12 +908,10 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveAnimations: function(index, mode) {
+	_resolveAnimations: function(index, mode, active) {
 		const me = this;
 		const chart = me.chart;
 		const cached = me._cachedAnimations;
-		const active = mode === 'active';
-
 		mode = mode || 'default';
 
 		if (cached[mode]) {
@@ -966,7 +964,7 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_updateElement: function(element, index, properties, mode) {
-		if (mode === 'reset') {
+		if (mode === 'reset' || mode === 'none') {
 			helpers.extend(element, properties);
 		} else {
 			this._resolveAnimations(index, mode).update(element, properties);
@@ -987,7 +985,7 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_setStyle(element, index, mode, active) {
-		this._resolveAnimations(index, mode).update(element, {options: this.getStyle(index, active)});
+		this._resolveAnimations(index, mode, active).update(element, {options: this.getStyle(index, active)});
 	},
 
 	removeHoverStyle: function(element, datasetIndex, index) {

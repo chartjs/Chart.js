@@ -97,4 +97,4 @@ Code sample for updating options can be found in [toggle-scale-type.html](../../
 
 ## Preventing Animations
 
-Sometimes when a chart updates, you may not want an animation. To achieve this you can call `update` with a duration of `0`. This will render the chart synchronously and without an animation.
+Sometimes when a chart updates, you may not want an animation. To achieve this you can call `update` with `'none'` as mode.
