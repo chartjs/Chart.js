@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
-import {isNumber, toDegrees} from '../helpers/helpers.math';
+import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
@@ -157,7 +157,7 @@ function fitWithPointLabels(scale) {
 
 		// Add quarter circle to make degree 0 mean top of circle
 		var angleRadians = scale.getIndexAngle(i);
-		var angle = toDegrees(angleRadians) % 360;
+		var angle = toDegrees(angleRadians);
 		var hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
 		var vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
 
@@ -380,11 +380,11 @@ class RadialLinearScale extends LinearScaleBase {
 
 	getIndexAngle(index) {
 		var chart = this.chart;
-		var angleMultiplier = (Math.PI * 2) / chart.data.labels.length;
+		var angleMultiplier = Math.PI * 2 / chart.data.labels.length;
 		var options = chart.options || {};
 		var startAngle = options.startAngle || 0;
 
-		return index * angleMultiplier + helpers.toRadians(startAngle);
+		return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
 	}
 
 	getDistanceFromCenterForValue(value) {

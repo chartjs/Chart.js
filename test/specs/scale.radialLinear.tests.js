@@ -535,7 +535,7 @@ describe('Test the radial linear scale', function() {
 			scale.ctx.getCalls().filter(function(x) {
 				return x.name === 'setTextAlign';
 			}).forEach(function(x, i) {
-				expect(x.args[0]).toBe(expected.textAlign[i]);
+				expect(x.args[0]).withContext('startAngle: ' + expected.startAngle + ', tick: ' + i).toBe(expected.textAlign[i]);
 			});
 
 			scale.ctx.getCalls().filter(function(x) {
