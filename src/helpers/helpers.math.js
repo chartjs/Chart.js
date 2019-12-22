@@ -83,11 +83,11 @@ export const sign = Math.sign ?
 	};
 
 export function toRadians(degrees) {
-	return degrees * (Math.PI / 180);
+	return degrees * (PI / 180);
 }
 
 export function toDegrees(radians) {
-	return radians * (180 / Math.PI);
+	return radians * (180 / PI);
 }
 
 /**
@@ -118,8 +118,8 @@ export function getAngleFromPoint(centrePoint, anglePoint) {
 
 	var angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
-	if (angle < (-0.5 * Math.PI)) {
-		angle += 2.0 * Math.PI; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
+	if (angle < (-0.5 * PI)) {
+		angle += TAU; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
 	}
 
 	return {

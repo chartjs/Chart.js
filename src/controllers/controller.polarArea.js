@@ -107,9 +107,9 @@ defaults._set('polarArea', {
 });
 
 function getStartAngleRadians(deg) {
-	// radianLinear scale draws angleLines using startAngle. 0 is excepted to be at top.
+	// radialLinear scale draws angleLines using startAngle. 0 is excepted to be at top.
 	// Here we adjust to standard unit circle used in drawing, where 0 is at right.
-	return helpers.toRadians(deg) - 0.5 * Math.PI;
+	return helpers.math.toRadians(deg) - 0.5 * Math.PI;
 }
 
 module.exports = DatasetController.extend({
