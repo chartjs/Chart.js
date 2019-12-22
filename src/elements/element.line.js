@@ -4,7 +4,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_isPointInArea, _steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {splineCurve, splineCurveMonotone} from '../helpers/helpers.curve';
-import {_angleDiff, _angleDiffCW, _normalizeAngle, _pointInLine, _steppedInterpolation, _bezierInterpolation} from '../helpers/helpers.math';
+import {_angleDiff, _angleDiffPD, _normalizeAngle, _pointInLine, _steppedInterpolation, _bezierInterpolation} from '../helpers/helpers.math';
 
 const defaultColor = defaults.global.defaultColor;
 
@@ -227,7 +227,7 @@ function useFastPath(options, params) {
 
 function angleBetween(a, s, e) {
 	return a === s || a === e ||
-		(_angleDiffCW(a, s) > _angleDiffCW(a, e) && _angleDiffCW(s, a) < _angleDiffCW(e, a));
+		(_angleDiffPD(a, s) > _angleDiffPD(a, e) && _angleDiffPD(s, a) < _angleDiffPD(e, a));
 }
 
 function propertyFn(property) {

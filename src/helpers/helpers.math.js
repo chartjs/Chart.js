@@ -169,6 +169,7 @@ export function _bezierInterpolation(p1, p2, t) {
 }
 
 /**
+ * Shortest distance between agnles, in either direction.
  * @private
  */
 export function _angleDiff(a, b) {
@@ -176,15 +177,17 @@ export function _angleDiff(a, b) {
 }
 
 /**
+ * Normalize angle to be between 0 and 2*PI
  * @private
  */
 export function _normalizeAngle(a) {
-	return (a + TAU) % TAU;
+	return (a % TAU + TAU) % TAU;
 }
 
 /**
+ * Angle difference in positive direction.
  * @private
  */
-export function _angleDiffCW(a, b) {
-	return (_normalizeAngle(b) - _normalizeAngle(a) + TAU) % TAU;
+export function _angleDiffPD(a, b) {
+	return _normalizeAngle(_normalizeAngle(b) - _normalizeAngle(a));
 }
