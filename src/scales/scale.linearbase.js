@@ -1,7 +1,7 @@
 'use strict';
 
 import helpers from '../helpers/index';
-import {almostEquals, almostWhole, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
+import {almostEquals, almostWhole, _decimalPlaces, niceNum, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 
 const isNullOrUndef = helpers.isNullOrUndef;
@@ -27,7 +27,7 @@ function generateTicks(generationOptions, dataRange) {
 	var precision = generationOptions.precision;
 	var rmin = dataRange.min;
 	var rmax = dataRange.max;
-	var spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
+	var spacing = niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
 	var factor, niceMin, niceMax, numSpaces;
 
 	// Beyond MIN_SPACING floating point numbers being to lose precision
@@ -39,7 +39,7 @@ function generateTicks(generationOptions, dataRange) {
 	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
 	if (numSpaces > maxNumSpaces) {
 		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
-		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
+		spacing = niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
 	if (stepSize || isNullOrUndef(precision)) {

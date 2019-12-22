@@ -128,3 +128,32 @@ export function getAngleFromPoint(centrePoint, anglePoint) {
 export function distanceBetweenPoints(pt1, pt2) {
 	return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 }
+
+// Implementation of the nice number algorithm used in determining where axis labels will go
+export function niceNum(range, round) {
+	var exponent = Math.floor(log10(range));
+	var fraction = range / Math.pow(10, exponent);
+	var niceFraction;
+
+	if (round) {
+		if (fraction < 1.5) {
+			niceFraction = 1;
+		} else if (fraction < 3) {
+			niceFraction = 2;
+		} else if (fraction < 7) {
+			niceFraction = 5;
+		} else {
+			niceFraction = 10;
+		}
+	} else if (fraction <= 1.0) {
+		niceFraction = 1;
+	} else if (fraction <= 2) {
+		niceFraction = 2;
+	} else if (fraction <= 5) {
+		niceFraction = 5;
+	} else {
+		niceFraction = 10;
+	}
+
+	return niceFraction * Math.pow(10, exponent);
+}

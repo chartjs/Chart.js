@@ -98,36 +98,41 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Renamed
 
-* `helpers.clear` was renamed to `helpers.canvas.clear`
-* `helpers.drawRoundedRectangle` was renamed to `helpers.canvas.roundedRect`
-* `helpers.callCallback` was renamed to `helpers.callback`
-* `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
-* `helpers.getValueAtIndexOrDefault` was renamed to `helpers.valueAtIndexOrDefault`
-* `helpers.easingEffects` was renamed to `helpers.easing.effects`
-* `helpers.log10` was renamed to `helpers.math.log10`
-* `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
-* `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
-* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
-* `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
-* `helpers.isNumber` was renamed to `helpers.math.isNumber`
-* `helpers.sign` was renamed to `helpers.math.sign`
-* `helpers.toDegrees` was renamed to `helpers.math.toDegrees`
-* `helpers.toRadians` was renamed to `helpers.math.toRadians`
-* `helpers.getAngleFromPoint` was renamed to `helpers.math.getAngleFromPoint`
-* `helpers.splineCurveMonotone` was renamed to `helpers.curve.splineCurveMonotone`
-* `helpers.splineCurve` was renamed to `helpers.curve.splineCurve`
-* `helpers.retinaScale` was renamed to `helpers.dom.retinaScale`
-* `helpers.getMaximumWidth` was renamed to `helpers.dom.getMaximumWidth`
-* `helpers.getMaximumHeight` was renamed to `helpers.dom.getMaximumHeight`
-* `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`
-* `helpers.getStyle` was renamed to `helpers.dom.getStyle`
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 * `DatasetController.updateElement` was renamed to `DatasetController.updateElements`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
-* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
+* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
+* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
+* `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
+* `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
+* `helpers.callCallback` was renamed to `helpers.callback`
+* `helpers.clear` was renamed to `helpers.canvas.clear`
+* `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
+* `helpers.drawRoundedRectangle` was renamed to `helpers.canvas.roundedRect`
+* `helpers.easingEffects` was renamed to `helpers.easing.effects`
+* `helpers.fontString` was renamed to `helpers.canvas.fontString`
+* `helpers.getAngleFromPoint` was renamed to `helpers.math.getAngleFromPoint`
+* `helpers.getMaximumHeight` was renamed to `helpers.dom.getMaximumHeight`
+* `helpers.getMaximumWidth` was renamed to `helpers.dom.getMaximumWidth`
+* `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`
+* `helpers.getStyle` was renamed to `helpers.dom.getStyle`
+* `helpers.getValueAtIndexOrDefault` was renamed to `helpers.valueAtIndexOrDefault`
+* `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
+* `helpers.isNumber` was renamed to `helpers.math.isNumber`
+* `helpers.log10` was renamed to `helpers.math.log10`
+* `helpers.longestText` was renamed to `helpers.canvas.longestText`
+* `helpers.measureText` was renamed to `helpers.canvas.measureText`
+* `helpers.niceNum` was renamed to `helpers.math.niceNum`
+* `helpers.retinaScale` was renamed to `helpers.dom.retinaScale`
+* `helpers.sign` was renamed to `helpers.math.sign`
+* `helpers.splineCurveMonotone` was renamed to `helpers.curve.splineCurveMonotone`
+* `helpers.splineCurve` was renamed to `helpers.curve.splineCurve`
+* `helpers.toDegrees` was renamed to `helpers.math.toDegrees`
+* `helpers.toRadians` was renamed to `helpers.math.toRadians`
+* `helpers.where` was renamed to `helpers.collection.where`
 
 #### Renamed private APIs
 

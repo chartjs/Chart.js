@@ -1,52 +1,10 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-
-var resolve = helpers.options.resolve;
-
-var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
-
-/**
- * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
- * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
- * called on the 'onData*' callbacks (e.g. onDataPush, etc.) with same arguments.
- */
-function listenArrayEvents(array, listener) {
-	if (array._chartjs) {
-		array._chartjs.listeners.push(listener);
-		return;
-	}
-
-	Object.defineProperty(array, '_chartjs', {
-		configurable: true,
-		enumerable: false,
-		value: {
-			listeners: [listener]
-		}
-	});
-
-	arrayEvents.forEach(function(key) {
-		var method = 'onData' + key.charAt(0).toUpperCase() + key.slice(1);
-		var base = array[key];
-
-		Object.defineProperty(array, key, {
-			configurable: true,
-			enumerable: false,
-			value: function() {
-				var args = Array.prototype.slice.call(arguments);
-				var res = base.apply(this, args);
-
-				helpers.each(array._chartjs.listeners, function(object) {
-					if (typeof object[method] === 'function') {
-						object[method].apply(object, args);
-					}
-				});
-
-				return res;
-			}
-		});
-	});
-}
+import {arrayEquals, extend, inherits, isArray, isObject, merge, _merger, noop, valueOrDefault} from '../helpers/helpers.core';
+import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
+import {resolve} from '../helpers/helpers.options';
+import {getHoverColor} from '../helpers/helpers.color';
+import {sign} from '../helpers/helpers.math';
 
 function scaleClip(scale, allowedOverflow) {
 	var opts = scale && scale.options || {};
@@ -77,7 +35,7 @@ function defaultClip(xScale, yScale, allowedOverflow) {
 function toClip(value) {
 	var t, r, b, l;
 
-	if (helpers.isObject(value)) {
+	if (isObject(value)) {
 		t = value.top;
 		r = value.right;
 		b = value.bottom;
@@ -92,33 +50,6 @@ function toClip(value) {
 		bottom: b,
 		left: l
 	};
-}
-
-/**
- * Removes the given array event listener and cleanup extra attached properties (such as
- * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
- */
-function unlistenArrayEvents(array, listener) {
-	var stub = array._chartjs;
-	if (!stub) {
-		return;
-	}
-
-	var listeners = stub.listeners;
-	var index = listeners.indexOf(listener);
-	if (index !== -1) {
-		listeners.splice(index, 1);
-	}
-
-	if (listeners.length > 0) {
-		return;
-	}
-
-	arrayEvents.forEach(function(key) {
-		delete array[key];
-	});
-
-	delete array._chartjs;
 }
 
 function getSortedDatasetIndices(chart, filterVisible) {
@@ -145,7 +76,7 @@ function applyStack(stack, value, dsIndex, allOther) {
 			break;
 		}
 		otherValue = stack.values[datasetIndex];
-		if (!isNaN(otherValue) && (value === 0 || helpers.math.sign(value) === helpers.math.sign(otherValue))) {
+		if (!isNaN(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
 			value += otherValue;
 		}
 	}
@@ -219,7 +150,7 @@ var DatasetController = function(chart, datasetIndex) {
 	this.initialize(chart, datasetIndex);
 };
 
-helpers.extend(DatasetController.prototype, {
+extend(DatasetController.prototype, {
 
 	/**
 	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
@@ -371,7 +302,7 @@ helpers.extend(DatasetController.prototype, {
 		// real-time charts), we need to monitor these data modifications and synchronize
 		// the internal meta data accordingly.
 
-		if (helpers.isObject(data)) {
+		if (isObject(data)) {
 			// Object data is currently monitored for replacement only
 			if (me._objectData === data) {
 				return false;
@@ -379,7 +310,7 @@ helpers.extend(DatasetController.prototype, {
 			me._data = convertObjectDataToArray(data);
 			me._objectData = data;
 		} else {
-			if (me._data === data && helpers.arrayEquals(data, me._dataCopy)) {
+			if (me._data === data && arrayEquals(data, me._dataCopy)) {
 				return false;
 			}
 
@@ -455,13 +386,13 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_configure: function() {
 		const me = this;
-		me._config = helpers.merge({}, [
+		me._config = merge({}, [
 			me.chart.options.datasets[me._type],
 			me.getDataset(),
 		], {
 			merger: function(key, target, source) {
 				if (key !== 'data') {
-					helpers._merger(key, target, source);
+					_merger(key, target, source);
 				}
 			}
 		});
@@ -481,9 +412,9 @@ helpers.extend(DatasetController.prototype, {
 		if (me._parsing === false) {
 			meta._parsed = data;
 		} else {
-			if (helpers.isArray(data[start])) {
+			if (isArray(data[start])) {
 				parsed = me._parseArrayData(meta, data, start, count);
-			} else if (helpers.isObject(data[start])) {
+			} else if (isObject(data[start])) {
 				parsed = me._parseObjectData(meta, data, start, count);
 			} else {
 				parsed = me._parsePrimitiveData(meta, data, start, count);
@@ -746,11 +677,11 @@ helpers.extend(DatasetController.prototype, {
 		me._configure();
 		me._cachedDataOpts = null;
 		me.update(reset);
-		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
+		meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	},
 
-	update: helpers.noop,
+	update: noop,
 
 	transition: function(easingValue) {
 		const meta = this._cachedMeta;
@@ -862,7 +793,7 @@ helpers.extend(DatasetController.prototype, {
 		const info = {cacheable: true};
 		let keys, i, ilen, key;
 
-		if (helpers.isArray(elementOptions)) {
+		if (isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
 				values[key] = resolve([
@@ -890,14 +821,13 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	removeHoverStyle: function(element) {
-		helpers.merge(element._model, element.$previousStyle || {});
+		merge(element._model, element.$previousStyle || {});
 		delete element.$previousStyle;
 	},
 
 	setHoverStyle: function(element, datasetIndex, index) {
 		const dataset = this.chart.data.datasets[datasetIndex];
 		const model = element._model;
-		const getHoverColor = helpers.getHoverColor;
 
 		element.$previousStyle = {
 			backgroundColor: model.backgroundColor,
@@ -1039,6 +969,6 @@ helpers.extend(DatasetController.prototype, {
 	}
 });
 
-DatasetController.extend = helpers.inherits;
+DatasetController.extend = inherits;
 
-module.exports = DatasetController;
+export default DatasetController;

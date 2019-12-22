@@ -1,18 +1,19 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+import defaults from './core.defaults';
+import {extend, each} from '../helpers/helpers.core';
+import {toPadding} from '../helpers/helpers.options';
+import {where} from '../helpers/helpers.collection';
 
-var extend = helpers.extend;
 
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
 function filterByPosition(array, position) {
-	return helpers.where(array, v => v.pos === position);
+	return where(array, v => v.pos === position);
 }
 
 function filterDynamicPositionByAxis(array, axis) {
-	return helpers.where(array, v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
+	return where(array, v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {
@@ -229,7 +230,7 @@ defaults._set('global', {
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 // It is this service's responsibility of carrying out that layout.
-module.exports = {
+export default {
 	defaults: {},
 
 	/**
@@ -304,7 +305,7 @@ module.exports = {
 		}
 
 		var layoutOptions = chart.options.layout || {};
-		var padding = helpers.options.toPadding(layoutOptions.padding);
+		var padding = toPadding(layoutOptions.padding);
 
 		var availableWidth = width - padding.width;
 		var availableHeight = height - padding.height;
@@ -387,7 +388,7 @@ module.exports = {
 		};
 
 		// Finally update boxes in chartArea (radial scale for example)
-		helpers.each(boxes.chartArea, function(layout) {
+		each(boxes.chartArea, function(layout) {
 			var box = layout.box;
 			extend(box, chart.chartArea);
 			box.update(chartArea.w, chartArea.h);

@@ -6,6 +6,7 @@ const helpers = require('../helpers/index');
 
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
+const fontString = helpers.canvas.fontString;
 
 defaults._set('global', {
 	tooltips: {
@@ -309,11 +310,11 @@ function getTooltipSize(tooltip, model) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
-	ctx.font = helpers.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
+	ctx.font = fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
 	helpers.each(model.title, maxLineWidth);
 
 	// Body width
-	ctx.font = helpers.fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
+	ctx.font = fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
 	helpers.each(model.beforeBody.concat(model.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
@@ -328,7 +329,7 @@ function getTooltipSize(tooltip, model) {
 	widthPadding = 0;
 
 	// Footer width
-	ctx.font = helpers.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
+	ctx.font = fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
 	helpers.each(model.footer, maxLineWidth);
 
 	// Add padding
@@ -779,7 +780,7 @@ class Tooltip extends Element {
 			titleSpacing = vm.titleSpacing;
 
 			ctx.fillStyle = vm.titleFontColor;
-			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+			ctx.font = fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFontSize / 2);
@@ -813,7 +814,7 @@ class Tooltip extends Element {
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'middle';
-		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+		ctx.font = fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
 
 		pt.x = getAlignedX(vm, bodyAlignForCalculation);
 
@@ -886,7 +887,7 @@ class Tooltip extends Element {
 			footerFontSize = vm.footerFontSize;
 
 			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.font = fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFontSize / 2);

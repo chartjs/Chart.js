@@ -138,7 +138,7 @@ function computeLabelSizes(ctx, tickFonts, ticks, caches) {
 		width = height = 0;
 		// Undefined labels and arrays should not be measured
 		if (!isNullOrUndef(label) && !isArray(label)) {
-			width = helpers.measureText(ctx, cache.data, cache.gc, width, label);
+			width = helpers.canvas.measureText(ctx, cache.data, cache.gc, width, label);
 			height = lineHeight;
 		} else if (isArray(label)) {
 			// if it is an array let's measure each element
@@ -146,7 +146,7 @@ function computeLabelSizes(ctx, tickFonts, ticks, caches) {
 				nestedLabel = label[j];
 				// Undefined labels and arrays should not be measured
 				if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
-					width = helpers.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
+					width = helpers.canvas.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
 					height += lineHeight;
 				}
 			}
