@@ -169,7 +169,7 @@ export function _bezierInterpolation(p1, p2, t) {
 }
 
 /**
- * Shortest distance between agnles, in either direction.
+ * Shortest distance between angles, in either direction.
  * @private
  */
 export function _angleDiff(a, b) {
@@ -185,9 +185,15 @@ export function _normalizeAngle(a) {
 }
 
 /**
- * Angle difference in positive direction.
  * @private
  */
-export function _angleDiffPD(a, b) {
-	return _normalizeAngle(_normalizeAngle(b) - _normalizeAngle(a));
+export function _angleBetween(angle, start, end) {
+	const a = _normalizeAngle(angle);
+	const s = _normalizeAngle(start);
+	const e = _normalizeAngle(end);
+	const angleToStart = _normalizeAngle(s - a);
+	const angleToEnd = _normalizeAngle(e - a);
+	const startToAngle = _normalizeAngle(a - s);
+	const endToAngle = _normalizeAngle(a - e);
+	return a === s || a === e || (angleToStart > angleToEnd && startToAngle < endToAngle);
 }
