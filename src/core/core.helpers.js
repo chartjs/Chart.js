@@ -454,7 +454,7 @@ module.exports = function() {
 	 * @private
  	 */
 	helpers._calculatePadding = function(container, padding, parentDimension) {
-		padding = helpers.getStyle(container, padding);
+		padding = helpers.getStyle(container, padding) || '0';
 
 		return padding.indexOf('%') > -1 ? parentDimension * parseInt(padding, 10) / 100 : parseInt(padding, 10);
 	};

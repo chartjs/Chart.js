@@ -15,3 +15,5 @@ bower.json
 *.log
 *.swp
 *.stackdump
+
+chart.js-*.tgz
