@@ -33,12 +33,11 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 ### Options
 
 * The dataset option `tension` was renamed to `lineTension`
-* `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
 * `scales.[x/y]Axes.categoryPercentage` was moved to dataset option `categoryPercentage`
-* `scales.[x/y]Axes.minBarLength` was moved to dataset option `minBarLength`
 * `scales.[x/y]Axes.maxBarThickness` was moved to dataset option `maxBarThickness`
+* `scales.[x/y]Axes.minBarLength` was moved to dataset option `minBarLength`
 * `scales.[x/y]Axes.ticks.beginAtZero` was renamed to `scales[id].beginAtZero`
 * `scales.[x/y]Axes.ticks.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.ticks.min` was renamed to `scales[id].min`
@@ -48,26 +47,14 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
+* `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 
 ## Developer migration
 
 ### Removed
 
-* `helpers.addEvent`
-* `helpers.aliasPixel`
-* `helpers.configMerge`
-* `helpers.indexOf`
-* `helpers.lineTo`
-* `helpers.min`
-* `helpers.max`
-* `helpers.nextItem`
-* `helpers.numberOfLabelLines`
-* `helpers.previousItem`
-* `helpers.removeEvent`
-* `helpers.roundedRect`
-* `helpers.scaleMerge`
-* `Chart.Controller`
 * `Chart.chart.chart`
+* `Chart.Controller`
 * `Chart.types`
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
@@ -76,12 +63,25 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Element.height`
 * `Element.initialize`
 * `Element.inLabelRange`
+* `helpers.addEvent`
+* `helpers.aliasPixel`
+* `helpers.configMerge`
+* `helpers.indexOf`
+* `helpers.lineTo`
+* `helpers.max`
+* `helpers.min`
+* `helpers.nextItem`
+* `helpers.numberOfLabelLines`
+* `helpers.previousItem`
+* `helpers.removeEvent`
+* `helpers.roundedRect`
+* `helpers.scaleMerge`
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Line.calculatePointY`
 * `Scale.getRightValue`
+* `Scale.handleDirectionalChanges` is now private
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
-* `Scale.handleDirectionalChanges` is now private
 * `Scale.tickValues` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
@@ -91,8 +91,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Element._ctx`
 * `Element._model.datasetLabel`
 * `Element._model.label`
-* `Point._model.tension`
 * `Point._model.steppedLine`
+* `Point._model.tension`
 * `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
 
@@ -101,10 +101,6 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 * `DatasetController.updateElement` was renamed to `DatasetController.updateElements`
-* `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
-* `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
-* `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
-* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 * `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
@@ -128,11 +124,15 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.niceNum` was renamed to `helpers.math.niceNum`
 * `helpers.retinaScale` was renamed to `helpers.dom.retinaScale`
 * `helpers.sign` was renamed to `helpers.math.sign`
-* `helpers.splineCurveMonotone` was renamed to `helpers.curve.splineCurveMonotone`
 * `helpers.splineCurve` was renamed to `helpers.curve.splineCurve`
+* `helpers.splineCurveMonotone` was renamed to `helpers.curve.splineCurveMonotone`
 * `helpers.toDegrees` was renamed to `helpers.math.toDegrees`
 * `helpers.toRadians` was renamed to `helpers.math.toRadians`
 * `helpers.where` was renamed to `helpers.collection.where`
+* `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
+* `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
+* `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
+* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 
 #### Renamed private APIs
 
@@ -148,10 +148,10 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 ##### Ticks
 
 * When the `autoSkip` option is enabled, `Scale.ticks` now contains only the non-skipped ticks instead of all ticks.
-* `Scale.ticks` now contains objects instead of strings
-* `Scale.buildTicks` is now expected to return tick objects
 * `Scale.afterBuildTicks` now has no parameters like the other callbacks
+* `Scale.buildTicks` is now expected to return tick objects
 * `Scale.convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
+* `Scale.ticks` now contains objects instead of strings
 
 ##### Time Scale
 
