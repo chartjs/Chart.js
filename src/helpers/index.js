@@ -54,7 +54,7 @@ export default {
 		}
 		var filtered = [];
 
-		coreHelpers.each(collection, function(item) {
+		collection.forEach(function(item) {
 			if (filterCallback(item)) {
 				filtered.push(item);
 			}

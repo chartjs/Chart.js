@@ -36,7 +36,7 @@ function listenArrayEvents(array, listener) {
 				var args = Array.prototype.slice.call(arguments);
 				var res = base.apply(this, args);
 
-				helpers.each(array._chartjs.listeners, function(object) {
+				array._chartjs.listeners.forEach(function(object) {
 					if (typeof object[method] === 'function') {
 						object[method].apply(object, args);
 					}
