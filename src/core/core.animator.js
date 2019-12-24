@@ -92,7 +92,7 @@ class Animator {
 
 			if (draw) {
 				chart.draw();
-				if (chart.options.animation.fps) {
+				if (chart.options.animation.debug) {
 					drawFPS(chart, items.length, date, me._lastDate);
 				}
 			}

@@ -898,7 +898,13 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		if (info.cacheable) {
+			// `$shared` indicades this set of options can be shared between multiple elements.
+			// Sharing is used to reduce number of properties to change during animation.
 			values.$shared = true;
+
+			// We cache options by `mode`, which can be 'active' for example. This enables us
+			// to have the 'active' element options and 'default' options to switch between
+			// when interacting.
 			cached[mode] = values;
 		}
 
@@ -944,10 +950,9 @@ helpers.extend(DatasetController.prototype, {
 	 * Utility for checking if the options are shared and should be animated separately.
 	 * @private
 	 */
-	_getSharedOptions: function(mode, element, options) {
-		if (mode !== 'reset' && options && options.$shared &&
-			element && element.options && element.options.$shared) {
-			return {target: element.options, options};
+	_getSharedOptions: function(mode, el, options) {
+		if (mode !== 'reset' && options && options.$shared && el && el.options && el.options.$shared) {
+			return {target: el.options, options};
 		}
 	},
 

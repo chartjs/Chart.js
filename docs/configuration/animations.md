@@ -10,6 +10,7 @@ The following animation options are available. The global options for are define
 | ---- | ---- | ------- | -----------
 | `duration` | `number` | `1000` | The number of milliseconds an animation takes.
 | `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
 | `onProgress` | `function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
 | `onComplete` | `function` | `null` | Callback called when all animations are completed. [more...](#animation-callbacks)
 | `delay` | `number` | `undefined` | Delay before starting the animations.

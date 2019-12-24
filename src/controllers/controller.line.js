@@ -70,7 +70,7 @@ module.exports = DatasetController.extend({
 		const me = this;
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
-		const points = meta.data || (meta.data = []);
+		const points = meta.data || [];
 		const options = me.chart.options;
 		const config = me._config;
 		const showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
