@@ -448,7 +448,7 @@ class RadialLinearScale extends LinearScaleBase {
 		}
 
 		if (gridLineOpts.display) {
-			helpers.each(me.ticks, function(tick, index) {
+			me.ticks.forEach(function(tick, index) {
 				if (index !== 0) {
 					offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
 					drawRadiusLine(me, gridLineOpts, offset, index);
@@ -503,7 +503,7 @@ class RadialLinearScale extends LinearScaleBase {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		helpers.each(me.ticks, function(tick, index) {
+		me.ticks.forEach(function(tick, index) {
 			if (index === 0 && !opts.reverse) {
 				return;
 			}

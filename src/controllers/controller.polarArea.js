@@ -221,7 +221,7 @@ module.exports = DatasetController.extend({
 		var meta = this._cachedMeta;
 		var count = 0;
 
-		helpers.each(meta.data, function(element, index) {
+		meta.data.forEach(function(element, index) {
 			if (!isNaN(dataset.data[index]) && !element.hidden) {
 				count++;
 			}

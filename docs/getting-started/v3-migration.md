@@ -66,6 +66,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `helpers.removeEvent`
 * `helpers.roundedRect`
 * `helpers.scaleMerge`
+* `helpers.where`
 * `Chart.Controller`
 * `Chart.chart.chart`
 * `Chart.types`

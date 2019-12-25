@@ -22,8 +22,9 @@ Chart.Ticks = require('./core/core.ticks');
 Chart.Tooltip = require('./core/core.tooltip');
 
 // Register built-in scales
-var scales = require('./scales');
-Chart.helpers.each(scales, function(scale, type) {
+const scales = require('./scales');
+Object.keys(scales).forEach(function(type) {
+	const scale = scales[type];
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
 

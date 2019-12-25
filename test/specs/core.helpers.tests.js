@@ -11,7 +11,6 @@ describe('Core helper tests', function() {
 		var callback = function(item) {
 			return item > 2;
 		};
-		expect(helpers.where(data, callback)).toEqual([6, 7]);
 		expect(helpers.findNextWhere(data, callback)).toEqual(6);
 		expect(helpers.findNextWhere(data, callback, 2)).toBe(7);
 		expect(helpers.findNextWhere(data, callback, 4)).toBe(undefined);

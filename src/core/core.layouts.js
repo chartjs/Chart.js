@@ -8,11 +8,11 @@ var extend = helpers.extend;
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
 function filterByPosition(array, position) {
-	return helpers.where(array, v => v.pos === position);
+	return array.filter(v => v.pos === position);
 }
 
 function filterDynamicPositionByAxis(array, axis) {
-	return helpers.where(array, v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
+	return array.filter(v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {

@@ -48,20 +48,6 @@ export default {
 	math,
 	rtl,
 
-	where: function(collection, filterCallback) {
-		if (coreHelpers.isArray(collection) && Array.prototype.filter) {
-			return collection.filter(filterCallback);
-		}
-		var filtered = [];
-
-		coreHelpers.each(collection, function(item) {
-			if (filterCallback(item)) {
-				filtered.push(item);
-			}
-		});
-
-		return filtered;
-	},
 	findIndex: Array.prototype.findIndex ?
 		function(array, callback, scope) {
 			return array.findIndex(callback, scope);
