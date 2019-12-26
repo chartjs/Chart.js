@@ -44,10 +44,10 @@ function mergeScaleConfig(config, options) {
 
 	// First figure out first scale id's per axis.
 	// Note: for now, axis is determined from first letter of scale id!
-	Object.entries(configScales).forEach(([id, scale]) => {
+	Object.keys(configScales).forEach(id => {
 		const axis = id[0];
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = helpers.mergeIf({}, [scale, chartDefaults.scales[axis]]);
+		scales[id] = helpers.mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
 	});
 
 	// Backward compatibility
@@ -59,12 +59,13 @@ function mergeScaleConfig(config, options) {
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
 		const datasetDefaults = defaults[dataset.type || config.type] || {scales: {}};
-		Object.entries(datasetDefaults.scales || {}).forEach(([defaultID, defaultScaleOptions]) => {
+		const defaultScaleOptions = datasetDefaults.scales || {};
+		Object.keys(defaultScaleOptions).forEach(defaultID => {
 			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
 			scales[id] = scales[id] || {};
 			helpers.mergeIf(scales[id], [
 				configScales[id],
-				defaultScaleOptions
+				defaultScaleOptions[defaultID]
 			]);
 		});
 	});
@@ -312,22 +313,22 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * Builds a map of scale ID to scale object for future lookup.
 	 */
 	buildOrUpdateScales: function() {
-		var me = this;
-		var options = me.options;
-		var scales = me.scales || {};
-		var items = [];
-		var updated = Object.keys(scales).reduce(function(obj, id) {
+		const me = this;
+		const options = me.options;
+		const scaleOpts = options.scales;
+		const scales = me.scales || {};
+		const updated = Object.keys(scales).reduce(function(obj, id) {
 			obj[id] = false;
 			return obj;
 		}, {});
+		let items = [];
 
-		if (options.scales) {
+		if (scaleOpts) {
 			items = items.concat(
-				Object.entries(options.scales).map(function(entry) {
-					var axisID = entry[0];
-					var axisOptions = entry[1];
-					var isRadial = axisID.charAt(0).toLowerCase === 'r';
-					var isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
+				Object.keys(scaleOpts).map(function(axisID) {
+					const axisOptions = scaleOpts[axisID];
+					const isRadial = axisID.charAt(0).toLowerCase === 'r';
+					const isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
 					return {
 						options: axisOptions,
 						dposition: isRadial ? 'chartArea' : isHorizontal ? 'bottom' : 'left',
@@ -338,23 +339,23 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		helpers.each(items, function(item) {
-			var scaleOptions = item.options;
-			var id = scaleOptions.id;
-			var scaleType = valueOrDefault(scaleOptions.type, item.dtype);
+			const scaleOptions = item.options;
+			const id = scaleOptions.id;
+			const scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
 			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, scaleOptions.axis || id[0]) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
 			}
 
 			updated[id] = true;
-			var scale = null;
+			let scale = null;
 			if (id in scales && scales[id].type === scaleType) {
 				scale = scales[id];
 				scale.options = scaleOptions;
 				scale.ctx = me.ctx;
 				scale.chart = me;
 			} else {
-				var scaleClass = scaleService.getScaleConstructor(scaleType);
+				const scaleClass = scaleService.getScaleConstructor(scaleType);
 				if (!scaleClass) {
 					return;
 				}
