@@ -33,8 +33,8 @@ describe('Core.Interaction', function() {
 				type: 'click',
 				chart: chart,
 				native: true, // needed otherwise things its a DOM event
-				x: point._model.x,
-				y: point._model.y,
+				x: point.x,
+				y: point.y,
 			};
 
 			var elements = Chart.Interaction.modes.point(chart, evt, {}).map(item => item.element);
@@ -88,8 +88,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: point._model.x,
-					y: point._model.y,
+					x: point.x,
+					y: point.y,
 				};
 
 				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true}).map(item => item.element);
@@ -223,8 +223,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: point._model.x,
-					y: point._model.y
+					x: point.x,
+					y: point.y
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true});
@@ -365,8 +365,8 @@ describe('Core.Interaction', function() {
 
 					// Halfway between 2 mid points
 					var pt = {
-						x: meta0.data[1]._view.x,
-						y: (meta0.data[1]._view.y + meta1.data[1]._view.y) / 2
+						x: meta0.data[1].x,
+						y: (meta0.data[1].y + meta1.data[1].y) / 2
 					};
 
 					var evt = {
@@ -391,8 +391,8 @@ describe('Core.Interaction', function() {
 
 					// At 'Point 2', 10
 					var pt = {
-						x: meta0.data[1]._view.x,
-						y: meta0.data[0]._view.y
+						x: meta0.data[1].x,
+						y: meta0.data[0].y
 					};
 
 					var evt = {
@@ -415,8 +415,8 @@ describe('Core.Interaction', function() {
 
 					// Haflway between 'Point 1' and 'Point 2', y=10
 					var pt = {
-						x: (meta0.data[0]._view.x + meta0.data[1]._view.x) / 2,
-						y: meta0.data[0]._view.y
+						x: (meta0.data[0].x + meta0.data[1].x) / 2,
+						y: meta0.data[0].y
 					};
 
 					var evt = {
@@ -440,8 +440,8 @@ describe('Core.Interaction', function() {
 
 					// 'Point 1', y = 30
 					var pt = {
-						x: meta0.data[0]._view.x,
-						y: meta0.data[2]._view.y
+						x: meta0.data[0].x,
+						y: meta0.data[2].y
 					};
 
 					var evt = {
@@ -464,8 +464,8 @@ describe('Core.Interaction', function() {
 
 					// 'Point 1', y = 40
 					var pt = {
-						x: meta0.data[0]._view.x,
-						y: meta0.data[1]._view.y
+						x: meta0.data[0].x,
+						y: meta0.data[1].y
 					};
 
 					var evt = {
@@ -514,8 +514,8 @@ describe('Core.Interaction', function() {
 						type: 'click',
 						chart: chart,
 						native: true, // needed otherwise things its a DOM event
-						x: point._view.x + 15,
-						y: point._view.y
+						x: point.x + 15,
+						y: point.y
 					};
 
 					// Nothing intersects so find nothing
@@ -526,8 +526,8 @@ describe('Core.Interaction', function() {
 						type: 'click',
 						chart: chart,
 						native: true,
-						x: point._view.x,
-						y: point._view.y
+						x: point.x,
+						y: point.y
 					};
 					elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
 					expect(elements).toEqual([point]);
@@ -547,8 +547,8 @@ describe('Core.Interaction', function() {
 
 					// Halfway between 2 mid points
 					var pt = {
-						x: meta0.data[1]._view.x,
-						y: meta0.data[1]._view.y
+						x: meta0.data[1].x,
+						y: meta0.data[1].y
 					};
 
 					var evt = {
@@ -577,8 +577,8 @@ describe('Core.Interaction', function() {
 
 					// Halfway between 2 mid points
 					var pt = {
-						x: meta0.data[1]._view.x,
-						y: meta0.data[1]._view.y
+						x: meta0.data[1].x,
+						y: meta0.data[1].y
 					};
 
 					var evt = {
@@ -626,8 +626,8 @@ describe('Core.Interaction', function() {
 
 			// Halfway between 2 mid points
 			var pt = {
-				x: meta0.data[1]._view.x,
-				y: meta0.data[1]._view.y
+				x: meta0.data[1].x,
+				y: meta0.data[1].y
 			};
 
 			var evt = {
@@ -660,8 +660,8 @@ describe('Core.Interaction', function() {
 
 			// Halfway between 2 mid points
 			var pt = {
-				x: meta0.data[1]._view.x,
-				y: meta0.data[1]._view.y
+				x: meta0.data[1].x,
+				y: meta0.data[1].y
 			};
 
 			var evt = {
@@ -718,8 +718,8 @@ describe('Core.Interaction', function() {
 
 			// Halfway between 2 mid points
 			var pt = {
-				x: meta0.data[1]._view.x,
-				y: meta0.data[1]._view.y
+				x: meta0.data[1].x,
+				y: meta0.data[1].y
 			};
 
 			var evt = {
@@ -752,8 +752,8 @@ describe('Core.Interaction', function() {
 
 			// Halfway between 2 mid points
 			var pt = {
-				x: meta0.data[1]._view.x,
-				y: meta0.data[1]._view.y
+				x: meta0.data[1].x,
+				y: meta0.data[1].y
 			};
 
 			var evt = {

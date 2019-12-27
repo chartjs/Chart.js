@@ -58,7 +58,7 @@ defaults._set('global', {
 					return {
 						text: datasets[meta.index].label,
 						fillStyle: style.backgroundColor,
-						hidden: !chart.isDatasetVisible(meta.index),
+						hidden: !meta.visible,
 						lineCap: style.borderCapStyle,
 						lineDash: style.borderDash,
 						lineDashOffset: style.borderDashOffset,

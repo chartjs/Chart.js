@@ -65,6 +65,9 @@
 	}, {
 		title: 'Other charts',
 		items: [{
+			title: 'Bubble',
+			path: 'charts/bubble.html'
+		}, {
 			title: 'Scatter',
 			path: 'charts/scatter/basic.html'
 		}, {
@@ -208,6 +211,18 @@
 		}, {
 			title: 'Radar Chart',
 			path: 'scriptable/radar.html'
+		}]
+	}, {
+		title: 'Animations',
+		items: [{
+			title: 'Delay',
+			path: 'animations/delay.html'
+		}, {
+			title: 'Drop',
+			path: 'animations/drop.html'
+		}, {
+			title: 'Loop',
+			path: 'animations/loop.html'
 		}]
 	}, {
 		title: 'Advanced',

@@ -45,7 +45,7 @@ export function splineCurveMonotone(points) {
 
 	var pointsWithTangents = (points || []).map(function(point) {
 		return {
-			model: point._model,
+			model: point,
 			deltaK: 0,
 			mK: 0
 		};

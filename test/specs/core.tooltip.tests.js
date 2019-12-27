@@ -69,7 +69,7 @@ describe('Core.Tooltip', function() {
 				view: window,
 				bubbles: true,
 				cancelable: true,
-				clientX: rect.left + point._model.x,
+				clientX: rect.left + point.x,
 				clientY: 0
 			});
 
@@ -80,46 +80,55 @@ describe('Core.Tooltip', function() {
 			var tooltip = chart.tooltip;
 			var globalDefaults = Chart.defaults.global;
 
-			expect(tooltip._view).toEqual(jasmine.objectContaining({
-				// Positioning
-				xPadding: 6,
-				yPadding: 6,
-				xAlign: 'left',
-				yAlign: 'center',
+			expect(tooltip.options.xPadding).toEqual(6);
+			expect(tooltip.options.yPadding).toEqual(6);
+			expect(tooltip.xAlign).toEqual('left');
+			expect(tooltip.yAlign).toEqual('center');
 
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Body
 				bodyFontColor: '#fff',
-				_bodyFontFamily: globalDefaults.defaultFontFamily,
-				_bodyFontStyle: globalDefaults.defaultFontStyle,
-				_bodyAlign: 'left',
+				bodyFontFamily: globalDefaults.defaultFontFamily,
+				bodyFontStyle: globalDefaults.defaultFontStyle,
+				bodyAlign: 'left',
 				bodyFontSize: globalDefaults.defaultFontSize,
 				bodySpacing: 2,
+			}));
 
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Title
 				titleFontColor: '#fff',
-				_titleFontFamily: globalDefaults.defaultFontFamily,
-				_titleFontStyle: 'bold',
+				titleFontFamily: globalDefaults.defaultFontFamily,
+				titleFontStyle: 'bold',
 				titleFontSize: globalDefaults.defaultFontSize,
-				_titleAlign: 'left',
+				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
+			}));
 
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Footer
 				footerFontColor: '#fff',
-				_footerFontFamily: globalDefaults.defaultFontFamily,
-				_footerFontStyle: 'bold',
+				footerFontFamily: globalDefaults.defaultFontFamily,
+				footerFontStyle: 'bold',
 				footerFontSize: globalDefaults.defaultFontSize,
-				_footerAlign: 'left',
+				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
+			}));
 
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Appearance
 				caretSize: 5,
+				caretPadding: 2,
 				cornerRadius: 6,
 				backgroundColor: 'rgba(0,0,0,0.8)',
+				multiKeyBackground: '#fff',
+				displayColors: true
+			}));
+
+			expect(tooltip).toEqual(jasmine.objectContaining({
 				opacity: 1,
-				legendColorBackground: '#fff',
-				displayColors: true,
 
 				// Text
 				title: ['Point 2'],
@@ -135,7 +144,6 @@ describe('Core.Tooltip', function() {
 				}],
 				afterBody: [],
 				footer: [],
-				caretPadding: 2,
 				labelColors: [{
 					borderColor: globalDefaults.defaultColor,
 					backgroundColor: globalDefaults.defaultColor
@@ -145,8 +153,8 @@ describe('Core.Tooltip', function() {
 				}]
 			}));
 
-			expect(tooltip._view.x).toBeCloseToPixel(267);
-			expect(tooltip._view.y).toBeCloseToPixel(155);
+			expect(tooltip.x).toBeCloseToPixel(267);
+			expect(tooltip.y).toBeCloseToPixel(155);
 		});
 
 		it('Should only display if intersecting if intersect is set', function() {
@@ -185,7 +193,7 @@ describe('Core.Tooltip', function() {
 				view: window,
 				bubbles: true,
 				cancelable: true,
-				clientX: rect.left + point._model.x,
+				clientX: rect.left + point.x,
 				clientY: 0
 			});
 
@@ -194,46 +202,9 @@ describe('Core.Tooltip', function() {
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
-			var globalDefaults = Chart.defaults.global;
 
-			expect(tooltip._view).toEqual(jasmine.objectContaining({
-				// Positioning
-				xPadding: 6,
-				yPadding: 6,
-
-				// Body
-				bodyFontColor: '#fff',
-				_bodyFontFamily: globalDefaults.defaultFontFamily,
-				_bodyFontStyle: globalDefaults.defaultFontStyle,
-				_bodyAlign: 'left',
-				bodyFontSize: globalDefaults.defaultFontSize,
-				bodySpacing: 2,
-
-				// Title
-				titleFontColor: '#fff',
-				_titleFontFamily: globalDefaults.defaultFontFamily,
-				_titleFontStyle: 'bold',
-				titleFontSize: globalDefaults.defaultFontSize,
-				_titleAlign: 'left',
-				titleSpacing: 2,
-				titleMarginBottom: 6,
-
-				// Footer
-				footerFontColor: '#fff',
-				_footerFontFamily: globalDefaults.defaultFontFamily,
-				_footerFontStyle: 'bold',
-				footerFontSize: globalDefaults.defaultFontSize,
-				_footerAlign: 'left',
-				footerSpacing: 2,
-				footerMarginTop: 6,
-
-				// Appearance
-				caretSize: 5,
-				cornerRadius: 6,
-				backgroundColor: 'rgba(0,0,0,0.8)',
+			expect(tooltip).toEqual(jasmine.objectContaining({
 				opacity: 0,
-				legendColorBackground: '#fff',
-				displayColors: true,
 			}));
 		});
 	});
@@ -274,8 +245,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point._model.x,
-			clientY: rect.top + point._model.y
+			clientX: rect.left + point.x,
+			clientY: rect.top + point.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -285,46 +256,55 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
-			// Positioning
-			xPadding: 6,
-			yPadding: 6,
-			xAlign: 'left',
-			yAlign: 'center',
+		expect(tooltip.options.xPadding).toEqual(6);
+		expect(tooltip.options.yPadding).toEqual(6);
+		expect(tooltip.xAlign).toEqual('left');
+		expect(tooltip.yAlign).toEqual('center');
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			_bodyFontFamily: globalDefaults.defaultFontFamily,
-			_bodyFontStyle: globalDefaults.defaultFontStyle,
-			_bodyAlign: 'left',
+			bodyFontFamily: globalDefaults.defaultFontFamily,
+			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyAlign: 'left',
 			bodyFontSize: globalDefaults.defaultFontSize,
 			bodySpacing: 2,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			_titleFontFamily: globalDefaults.defaultFontFamily,
-			_titleFontStyle: 'bold',
+			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontStyle: 'bold',
 			titleFontSize: globalDefaults.defaultFontSize,
-			_titleAlign: 'left',
+			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			_footerFontFamily: globalDefaults.defaultFontFamily,
-			_footerFontStyle: 'bold',
+			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
-			_footerAlign: 'left',
+			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Appearance
 			caretSize: 5,
+			caretPadding: 2,
 			cornerRadius: 6,
 			backgroundColor: 'rgba(0,0,0,0.8)',
+			multiKeyBackground: '#fff',
+			displayColors: true
+		}));
+
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			opacity: 1,
-			legendColorBackground: '#fff',
-			displayColors: true,
 
 			// Text
 			title: ['Point 2'],
@@ -336,7 +316,6 @@ describe('Core.Tooltip', function() {
 			}],
 			afterBody: [],
 			footer: [],
-			caretPadding: 2,
 			labelTextColors: ['#fff'],
 			labelColors: [{
 				borderColor: globalDefaults.defaultColor,
@@ -344,8 +323,8 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(267);
-		expect(tooltip._view.y).toBeCloseToPixel(312);
+		expect(tooltip.x).toBeCloseToPixel(267);
+		expect(tooltip.y).toBeCloseToPixel(312);
 	});
 
 	it('Should display information from user callbacks', function() {
@@ -421,8 +400,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point._model.x,
-			clientY: rect.top + point._model.y
+			clientX: rect.left + point.x,
+			clientY: rect.top + point.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -432,45 +411,54 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
-			// Positioning
-			xPadding: 6,
-			yPadding: 6,
-			xAlign: 'center',
-			yAlign: 'top',
+		expect(tooltip.options.xPadding).toEqual(6);
+		expect(tooltip.options.yPadding).toEqual(6);
+		expect(tooltip.xAlign).toEqual('center');
+		expect(tooltip.yAlign).toEqual('top');
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			_bodyFontFamily: globalDefaults.defaultFontFamily,
-			_bodyFontStyle: globalDefaults.defaultFontStyle,
-			_bodyAlign: 'left',
+			bodyFontFamily: globalDefaults.defaultFontFamily,
+			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyAlign: 'left',
 			bodyFontSize: globalDefaults.defaultFontSize,
 			bodySpacing: 2,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			_titleFontFamily: globalDefaults.defaultFontFamily,
-			_titleFontStyle: 'bold',
+			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontStyle: 'bold',
 			titleFontSize: globalDefaults.defaultFontSize,
-			_titleAlign: 'left',
+			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			_footerFontFamily: globalDefaults.defaultFontFamily,
-			_footerFontStyle: 'bold',
+			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
-			_footerAlign: 'left',
+			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Appearance
 			caretSize: 5,
+			caretPadding: 2,
 			cornerRadius: 6,
 			backgroundColor: 'rgba(0,0,0,0.8)',
+			multiKeyBackground: '#fff',
+		}));
+
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			opacity: 1,
-			legendColorBackground: '#fff',
 
 			// Text
 			title: ['beforeTitle', 'title', 'afterTitle'],
@@ -486,7 +474,6 @@ describe('Core.Tooltip', function() {
 			}],
 			afterBody: ['afterBody'],
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
-			caretPadding: 2,
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
 				borderColor: globalDefaults.defaultColor,
@@ -497,8 +484,8 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(214);
-		expect(tooltip._view.y).toBeCloseToPixel(190);
+		expect(tooltip.x).toBeCloseToPixel(214);
+		expect(tooltip.y).toBeCloseToPixel(190);
 	});
 
 	it('Should allow sorting items', function() {
@@ -539,8 +526,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point0.x,
+			clientY: rect.top + point0.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -550,7 +537,7 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
 			xAlign: 'left',
 			yAlign: 'center',
@@ -578,8 +565,8 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(267);
-		expect(tooltip._view.y).toBeCloseToPixel(155);
+		expect(tooltip.x).toBeCloseToPixel(267);
+		expect(tooltip.y).toBeCloseToPixel(155);
 	});
 
 	it('Should allow reversing items', function() {
@@ -618,8 +605,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point0.x,
+			clientY: rect.top + point0.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -629,7 +616,7 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
 			xAlign: 'left',
 			yAlign: 'center',
@@ -657,8 +644,8 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(267);
-		expect(tooltip._view.y).toBeCloseToPixel(155);
+		expect(tooltip.x).toBeCloseToPixel(267);
+		expect(tooltip.y).toBeCloseToPixel(155);
 	});
 
 	it('Should follow dataset order', function() {
@@ -698,8 +685,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point0.x,
+			clientY: rect.top + point0.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -709,7 +696,7 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
 			xAlign: 'left',
 			yAlign: 'center',
@@ -737,8 +724,8 @@ describe('Core.Tooltip', function() {
 			}]
 		}));
 
-		expect(tooltip._view.x).toBeCloseToPixel(267);
-		expect(tooltip._view.y).toBeCloseToPixel(155);
+		expect(tooltip.x).toBeCloseToPixel(267);
+		expect(tooltip.y).toBeCloseToPixel(155);
 	});
 
 	it('should filter items from the tooltip using the callback', function() {
@@ -781,8 +768,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point0.x,
+			clientY: rect.top + point0.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -792,7 +779,7 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
 			xAlign: 'left',
 			yAlign: 'center',
@@ -850,8 +837,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point0._model.x,
-			clientY: rect.top + point0._model.y
+			clientX: rect.left + point0.x,
+			clientY: rect.top + point0.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -860,7 +847,7 @@ describe('Core.Tooltip', function() {
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
 
-		expect(tooltip._model).toEqual(jasmine.objectContaining({
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Positioning
 			caretPadding: 10,
 		}));
@@ -901,11 +888,11 @@ describe('Core.Tooltip', function() {
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 
-			expect(tooltip._view instanceof Object).toBe(true);
-			expect(tooltip._view.dataPoints instanceof Array).toBe(true);
-			expect(tooltip._view.dataPoints.length).toBe(1);
+			expect(tooltip instanceof Object).toBe(true);
+			expect(tooltip.dataPoints instanceof Array).toBe(true);
+			expect(tooltip.dataPoints.length).toBe(1);
 
-			var tooltipItem = tooltip._view.dataPoints[0];
+			var tooltipItem = tooltip.dataPoints[0];
 
 			expect(tooltipItem.index).toBe(pointIndex);
 			expect(tooltipItem.datasetIndex).toBe(datasetIndex);
@@ -957,8 +944,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: false,
 			cancelable: true,
-			clientX: rect.left + firstPoint._model.x,
-			clientY: rect.top + firstPoint._model.y
+			clientX: rect.left + firstPoint.x,
+			clientY: rect.top + firstPoint.y
 		});
 
 		var tooltip = chart.tooltip;
@@ -1022,8 +1009,8 @@ describe('Core.Tooltip', function() {
 				view: window,
 				bubbles: true,
 				cancelable: true,
-				clientX: rect.left + point._model.x,
-				clientY: rect.top + point._model.y
+				clientX: rect.left + point.x,
+				clientY: rect.top + point.y
 			});
 
 			// Manually trigger rather than having an async test
@@ -1063,6 +1050,9 @@ describe('Core.Tooltip', function() {
 				animation: {
 					// without this slice center point is calculated wrong
 					animateRotate: false
+				},
+				tooltips: {
+					animation: false
 				}
 			}
 		});
@@ -1091,14 +1081,15 @@ describe('Core.Tooltip', function() {
 				chart.update();
 				node.dispatchEvent(mouseOutEvent);
 				node.dispatchEvent(mouseMoveEvent);
-				var model = chart.tooltip._model;
-				expect(model.x).toBeGreaterThanOrEqual(0);
-				if (model.width <= chart.width) {
-					expect(model.x + model.width).toBeLessThanOrEqual(chart.width);
+				var tooltip = chart.tooltip;
+				expect(tooltip.dataPoints.length).toBe(1);
+				expect(tooltip.x).toBeGreaterThanOrEqual(0);
+				if (tooltip.width <= chart.width) {
+					expect(tooltip.x + tooltip.width).toBeLessThanOrEqual(chart.width);
 				}
-				expect(model.caretX).toBeCloseToPixel(tooltipPosition.x);
+				expect(tooltip.caretX).toBeCloseToPixel(tooltipPosition.x);
 				// if tooltip is longer than chart area then all tests done
-				if (model.width > chart.width) {
+				if (tooltip.width > chart.width) {
 					break;
 				}
 			}
@@ -1176,8 +1167,8 @@ describe('Core.Tooltip', function() {
 			view: window,
 			bubbles: true,
 			cancelable: true,
-			clientX: rect.left + point._model.x,
-			clientY: rect.top + point._model.y
+			clientX: rect.left + point.x,
+			clientY: rect.top + point.y
 		});
 
 		// Manually trigger rather than having an async test
@@ -1187,45 +1178,54 @@ describe('Core.Tooltip', function() {
 		var tooltip = chart.tooltip;
 		var globalDefaults = Chart.defaults.global;
 
-		expect(tooltip._view).toEqual(jasmine.objectContaining({
-			// Positioning
-			xPadding: 6,
-			yPadding: 6,
-			xAlign: 'center',
-			yAlign: 'top',
+		expect(tooltip.options.xPadding).toEqual(6);
+		expect(tooltip.options.yPadding).toEqual(6);
+		expect(tooltip.xAlign).toEqual('center');
+		expect(tooltip.yAlign).toEqual('top');
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			_bodyFontFamily: globalDefaults.defaultFontFamily,
-			_bodyFontStyle: globalDefaults.defaultFontStyle,
-			_bodyAlign: 'left',
+			bodyFontFamily: globalDefaults.defaultFontFamily,
+			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyAlign: 'left',
 			bodyFontSize: globalDefaults.defaultFontSize,
 			bodySpacing: 2,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			_titleFontFamily: globalDefaults.defaultFontFamily,
-			_titleFontStyle: 'bold',
+			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontStyle: 'bold',
 			titleFontSize: globalDefaults.defaultFontSize,
-			_titleAlign: 'left',
+			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			_footerFontFamily: globalDefaults.defaultFontFamily,
-			_footerFontStyle: 'bold',
+			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontStyle: 'bold',
 			footerFontSize: globalDefaults.defaultFontSize,
-			_footerAlign: 'left',
+			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
+		}));
 
+		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Appearance
 			caretSize: 5,
+			caretPadding: 2,
 			cornerRadius: 6,
 			backgroundColor: 'rgba(0,0,0,0.8)',
+			multiKeyBackground: '#fff',
+		}));
+
+		expect(tooltip).toEqual(jasmine.objectContaining({
 			opacity: 1,
-			legendColorBackground: '#fff',
 
 			// Text
 			title: ['beforeTitle', 'newline', 'title', 'newline', 'afterTitle', 'newline'],
@@ -1241,7 +1241,6 @@ describe('Core.Tooltip', function() {
 			}],
 			afterBody: ['afterBody', 'newline'],
 			footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
-			caretPadding: 2,
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
 				borderColor: globalDefaults.defaultColor,
@@ -1262,45 +1261,51 @@ describe('Core.Tooltip', function() {
 				y: 100,
 				width: 100,
 				height: 100,
-				xPadding: 5,
-				yPadding: 5,
 				xAlign: 'left',
 				yAlign: 'top',
 
-				// Body
-				bodyFontColor: '#fff',
-				_bodyFontFamily: globalDefaults.defaultFontFamily,
-				_bodyFontStyle: globalDefaults.defaultFontStyle,
-				_bodyAlign: body,
-				bodyFontSize: globalDefaults.defaultFontSize,
-				bodySpacing: 2,
+				options: {
+					xPadding: 5,
+					yPadding: 5,
 
-				// Title
-				titleFontColor: '#fff',
-				_titleFontFamily: globalDefaults.defaultFontFamily,
-				_titleFontStyle: 'bold',
-				titleFontSize: globalDefaults.defaultFontSize,
-				_titleAlign: title,
-				titleSpacing: 2,
-				titleMarginBottom: 6,
+					// Body
+					bodyFontColor: '#fff',
+					bodyFontFamily: globalDefaults.defaultFontFamily,
+					bodyFontStyle: globalDefaults.defaultFontStyle,
+					bodyAlign: body,
+					bodyFontSize: globalDefaults.defaultFontSize,
+					bodySpacing: 2,
 
-				// Footer
-				footerFontColor: '#fff',
-				_footerFontFamily: globalDefaults.defaultFontFamily,
-				_footerFontStyle: 'bold',
-				footerFontSize: globalDefaults.defaultFontSize,
-				_footerAlign: footer,
-				footerSpacing: 2,
-				footerMarginTop: 6,
+					// Title
+					titleFontColor: '#fff',
+					titleFontFamily: globalDefaults.defaultFontFamily,
+					titleFontStyle: 'bold',
+					titleFontSize: globalDefaults.defaultFontSize,
+					titleAlign: title,
+					titleSpacing: 2,
+					titleMarginBottom: 6,
 
-				// Appearance
-				caretSize: 5,
-				cornerRadius: 6,
-				borderColor: '#aaa',
-				borderWidth: 1,
-				backgroundColor: 'rgba(0,0,0,0.8)',
+					// Footer
+					footerFontColor: '#fff',
+					footerFontFamily: globalDefaults.defaultFontFamily,
+					footerFontStyle: 'bold',
+					footerFontSize: globalDefaults.defaultFontSize,
+					footerAlign: footer,
+					footerSpacing: 2,
+					footerMarginTop: 6,
+
+					// Appearance
+					caretSize: 5,
+					cornerRadius: 6,
+					caretPadding: 2,
+					borderColor: '#aaa',
+					borderWidth: 1,
+					backgroundColor: 'rgba(0,0,0,0.8)',
+					multiKeyBackground: '#fff',
+					displayColors: false
+
+				},
 				opacity: 1,
-				legendColorBackground: '#fff',
 
 				// Text
 				title: ['title'],
@@ -1312,7 +1317,6 @@ describe('Core.Tooltip', function() {
 				}],
 				afterBody: [],
 				footer: ['footer'],
-				caretPadding: 2,
 				labelTextColors: ['#fff'],
 				labelColors: [{
 					borderColor: 'rgb(255, 0, 0)',
@@ -1348,16 +1352,19 @@ describe('Core.Tooltip', function() {
 
 		var mockContext = window.createMockContext();
 		var tooltip = new Chart.Tooltip({
-			_options: globalDefaults.tooltips,
 			_chart: {
-				ctx: mockContext,
+				options: {
+					tooltips: {
+						animation: false,
+					}
+				}
 			}
 		});
 
 		it('Should go left', function() {
 			mockContext.resetCalls();
-			tooltip._view = makeView('left', 'left', 'left');
-			tooltip.draw();
+			Chart.helpers.merge(tooltip, makeView('left', 'left', 'left'));
+			tooltip.draw(mockContext);
 
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['left']},
@@ -1376,8 +1383,8 @@ describe('Core.Tooltip', function() {
 
 		it('Should go right', function() {
 			mockContext.resetCalls();
-			tooltip._view = makeView('right', 'right', 'right');
-			tooltip.draw();
+			Chart.helpers.merge(tooltip, makeView('right', 'right', 'right'));
+			tooltip.draw(mockContext);
 
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['right']},
@@ -1396,8 +1403,8 @@ describe('Core.Tooltip', function() {
 
 		it('Should center', function() {
 			mockContext.resetCalls();
-			tooltip._view = makeView('center', 'center', 'center');
-			tooltip.draw();
+			Chart.helpers.merge(tooltip, makeView('center', 'center', 'center'));
+			tooltip.draw(mockContext);
 
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['center']},
@@ -1416,8 +1423,8 @@ describe('Core.Tooltip', function() {
 
 		it('Should allow mixed', function() {
 			mockContext.resetCalls();
-			tooltip._view = makeView('right', 'center', 'left');
-			tooltip.draw();
+			Chart.helpers.merge(tooltip, makeView('right', 'center', 'left'));
+			tooltip.draw(mockContext);
 
 			expect(mockContext.getCalls()).toEqual(Array.prototype.concat(drawBody, [
 				{name: 'setTextAlign', args: ['right']},

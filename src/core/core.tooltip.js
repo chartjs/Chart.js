@@ -3,6 +3,7 @@
 const defaults = require('./core.defaults');
 const Element = require('./core.element');
 const helpers = require('../helpers/index');
+const Animations = require('./core.animations');
 
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
@@ -37,6 +38,18 @@ defaults._set('global', {
 		displayColors: true,
 		borderColor: 'rgba(0,0,0,0)',
 		borderWidth: 0,
+		animation: {
+			duration: 400,
+			easing: 'easeOutQuart',
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'width', 'height'],
+			},
+			opacity: {
+				easing: 'linear',
+				duration: 200
+			}
+		},
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: helpers.noop,
@@ -76,15 +89,14 @@ defaults._set('global', {
 			},
 			labelColor: function(tooltipItem, chart) {
 				var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
-				var activeElement = meta.data[tooltipItem.index];
-				var view = activeElement.$previousStyle || activeElement._view;
+				var options = meta.controller.getStyle(tooltipItem.index);
 				return {
-					borderColor: view.borderColor,
-					backgroundColor: view.backgroundColor
+					borderColor: options.borderColor,
+					backgroundColor: options.backgroundColor
 				};
 			},
 			labelTextColor: function() {
-				return this._options.bodyFontColor;
+				return this.options.bodyFontColor;
 			},
 			afterLabel: helpers.noop,
 
@@ -218,90 +230,61 @@ function createTooltipItem(chart, item) {
 
 /**
  * Helper to get the reset model for the tooltip
- * @param tooltipOpts {object} the tooltip options
+ * @param options {object} the tooltip options
  */
-function getBaseModel(tooltipOpts) {
+function resolveOptions(options) {
 	var globalDefaults = defaults.global;
 
-	return {
-		// Positioning
-		xPadding: tooltipOpts.xPadding,
-		yPadding: tooltipOpts.yPadding,
-		xAlign: tooltipOpts.xAlign,
-		yAlign: tooltipOpts.yAlign,
+	options = helpers.extend({}, globalDefaults.tooltips, options);
 
-		// Drawing direction and text direction
-		rtl: tooltipOpts.rtl,
-		textDirection: tooltipOpts.textDirection,
+	options.bodyFontFamily = valueOrDefault(options.bodyFontFamily, globalDefaults.defaultFontFamily);
+	options.bodyFontStyle = valueOrDefault(options.bodyFontStyle, globalDefaults.defaultFontStyle);
+	options.bodyFontSize = valueOrDefault(options.bodyFontSize, globalDefaults.defaultFontSize);
 
-		// Body
-		bodyFontColor: tooltipOpts.bodyFontColor,
-		_bodyFontFamily: valueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
-		_bodyFontStyle: valueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
-		_bodyAlign: tooltipOpts.bodyAlign,
-		bodyFontSize: valueOrDefault(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
-		bodySpacing: tooltipOpts.bodySpacing,
+	options.titleFontFamily = valueOrDefault(options.titleFontFamily, globalDefaults.defaultFontFamily);
+	options.titleFontStyle = valueOrDefault(options.titleFontStyle, globalDefaults.defaultFontStyle);
+	options.titleFontSize = valueOrDefault(options.titleFontSize, globalDefaults.defaultFontSize);
 
-		// Title
-		titleFontColor: tooltipOpts.titleFontColor,
-		_titleFontFamily: valueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
-		_titleFontStyle: valueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
-		titleFontSize: valueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
-		_titleAlign: tooltipOpts.titleAlign,
-		titleSpacing: tooltipOpts.titleSpacing,
-		titleMarginBottom: tooltipOpts.titleMarginBottom,
+	options.footerFontFamily = valueOrDefault(options.footerFontFamily, globalDefaults.defaultFontFamily);
+	options.footerFontStyle = valueOrDefault(options.footerFontStyle, globalDefaults.defaultFontStyle);
+	options.footerFontSize = valueOrDefault(options.footerFontSize, globalDefaults.defaultFontSize);
 
-		// Footer
-		footerFontColor: tooltipOpts.footerFontColor,
-		_footerFontFamily: valueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
-		_footerFontStyle: valueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
-		footerFontSize: valueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
-		_footerAlign: tooltipOpts.footerAlign,
-		footerSpacing: tooltipOpts.footerSpacing,
-		footerMarginTop: tooltipOpts.footerMarginTop,
-
-		// Appearance
-		caretSize: tooltipOpts.caretSize,
-		cornerRadius: tooltipOpts.cornerRadius,
-		backgroundColor: tooltipOpts.backgroundColor,
-		opacity: 0,
-		legendColorBackground: tooltipOpts.multiKeyBackground,
-		displayColors: tooltipOpts.displayColors,
-		borderColor: tooltipOpts.borderColor,
-		borderWidth: tooltipOpts.borderWidth
-	};
+	return options;
 }
 
 /**
  * Get the size of the tooltip
  */
-function getTooltipSize(tooltip, model) {
-	var ctx = tooltip._chart.ctx;
+function getTooltipSize(tooltip) {
+	const ctx = tooltip._chart.ctx;
+	const {body, footer, options, title} = tooltip;
+	const {bodyFontSize, footerFontSize, titleFontSize} = options;
+	const titleLineCount = title.length;
+	const footerLineCount = footer.length;
 
-	var height = model.yPadding * 2; // Tooltip Padding
-	var width = 0;
+	let height = options.yPadding * 2; // Tooltip Padding
+	let width = 0;
 
 	// Count of all lines in the body
-	var body = model.body;
 	var combinedBodyLength = body.reduce(function(count, bodyItem) {
 		return count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length;
 	}, 0);
-	combinedBodyLength += model.beforeBody.length + model.afterBody.length;
+	combinedBodyLength += tooltip.beforeBody.length + tooltip.afterBody.length;
 
-	var titleLineCount = model.title.length;
-	var footerLineCount = model.footer.length;
-	var titleFontSize = model.titleFontSize;
-	var bodyFontSize = model.bodyFontSize;
-	var footerFontSize = model.footerFontSize;
-
-	height += titleLineCount * titleFontSize; // Title Lines
-	height += titleLineCount ? (titleLineCount - 1) * model.titleSpacing : 0; // Title Line Spacing
-	height += titleLineCount ? model.titleMarginBottom : 0; // Title's bottom Margin
-	height += combinedBodyLength * bodyFontSize; // Body Lines
-	height += combinedBodyLength ? (combinedBodyLength - 1) * model.bodySpacing : 0; // Body Line Spacing
-	height += footerLineCount ? model.footerMarginTop : 0; // Footer Margin
-	height += footerLineCount * (footerFontSize); // Footer Lines
-	height += footerLineCount ? (footerLineCount - 1) * model.footerSpacing : 0; // Footer Line Spacing
+	if (titleLineCount) {
+		height += titleLineCount * titleFontSize
+			+ (titleLineCount - 1) * options.titleSpacing
+			+ options.titleMarginBottom;
+	}
+	if (combinedBodyLength) {
+		height += combinedBodyLength * bodyFontSize
+			+ (combinedBodyLength - 1) * options.bodySpacing;
+	}
+	if (footerLineCount) {
+		height += options.footerMarginTop
+			+ footerLineCount * footerFontSize
+			+ (footerLineCount - 1) * options.footerSpacing;
+	}
 
 	// Title width
 	var widthPadding = 0;
@@ -309,15 +292,15 @@ function getTooltipSize(tooltip, model) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
-	ctx.font = helpers.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
-	helpers.each(model.title, maxLineWidth);
+	ctx.font = helpers.fontString(titleFontSize, options.titleFontStyle, options.titleFontFamily);
+	helpers.each(tooltip.title, maxLineWidth);
 
 	// Body width
-	ctx.font = helpers.fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
-	helpers.each(model.beforeBody.concat(model.afterBody), maxLineWidth);
+	ctx.font = helpers.fontString(bodyFontSize, options.bodyFontStyle, options.bodyFontFamily);
+	helpers.each(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
-	widthPadding = model.displayColors ? (bodyFontSize + 2) : 0;
+	widthPadding = options.displayColors ? (bodyFontSize + 2) : 0;
 	helpers.each(body, function(bodyItem) {
 		helpers.each(bodyItem.before, maxLineWidth);
 		helpers.each(bodyItem.lines, maxLineWidth);
@@ -328,31 +311,27 @@ function getTooltipSize(tooltip, model) {
 	widthPadding = 0;
 
 	// Footer width
-	ctx.font = helpers.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
-	helpers.each(model.footer, maxLineWidth);
+	ctx.font = helpers.fontString(footerFontSize, options.footerFontStyle, options.footerFontFamily);
+	helpers.each(tooltip.footer, maxLineWidth);
 
 	// Add padding
-	width += 2 * model.xPadding;
+	width += 2 * options.xPadding;
 
-	return {
-		width: width,
-		height: height
-	};
+	return {width, height};
 }
 
 /**
  * Helper to get the alignment of a tooltip given the size
  */
-function determineAlignment(tooltip, size) {
-	var model = tooltip._model;
-	var chart = tooltip._chart;
+function determineAlignment(chart, options, size) {
+	const {x, y, width, height} = size;
 	var chartArea = chart.chartArea;
 	var xAlign = 'center';
 	var yAlign = 'center';
 
-	if (model.y < size.height) {
+	if (y < height) {
 		yAlign = 'top';
-	} else if (model.y > (chart.height - size.height)) {
+	} else if (y > (chart.height - height)) {
 		yAlign = 'bottom';
 	}
 
@@ -363,91 +342,80 @@ function determineAlignment(tooltip, size) {
 	var midY = (chartArea.top + chartArea.bottom) / 2;
 
 	if (yAlign === 'center') {
-		lf = function(x) {
-			return x <= midX;
-		};
-		rf = function(x) {
-			return x > midX;
-		};
+		lf = (value) => value <= midX;
+		rf = (value) => value > midX;
 	} else {
-		lf = function(x) {
-			return x <= (size.width / 2);
-		};
-		rf = function(x) {
-			return x >= (chart.width - (size.width / 2));
-		};
+		lf = (value) => value <= (width / 2);
+		rf = (value) => value >= (chart.width - (width / 2));
 	}
 
-	olf = function(x) {
-		return x + size.width + model.caretSize + model.caretPadding > chart.width;
-	};
-	orf = function(x) {
-		return x - size.width - model.caretSize - model.caretPadding < 0;
-	};
-	yf = function(y) {
-		return y <= midY ? 'top' : 'bottom';
-	};
+	olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
+	orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
+	yf = (value) => value <= midY ? 'top' : 'bottom';
 
-	if (lf(model.x)) {
+	if (lf(x)) {
 		xAlign = 'left';
 
 		// Is tooltip too wide and goes over the right side of the chart.?
-		if (olf(model.x)) {
+		if (olf(x)) {
 			xAlign = 'center';
-			yAlign = yf(model.y);
+			yAlign = yf(y);
 		}
-	} else if (rf(model.x)) {
+	} else if (rf(x)) {
 		xAlign = 'right';
 
 		// Is tooltip too wide and goes outside left edge of canvas?
-		if (orf(model.x)) {
+		if (orf(x)) {
 			xAlign = 'center';
-			yAlign = yf(model.y);
+			yAlign = yf(y);
 		}
 	}
 
-	var opts = tooltip._options;
 	return {
-		xAlign: opts.xAlign ? opts.xAlign : xAlign,
-		yAlign: opts.yAlign ? opts.yAlign : yAlign
+		xAlign: options.xAlign ? options.xAlign : xAlign,
+		yAlign: options.yAlign ? options.yAlign : yAlign
 	};
 }
 
-/**
- * Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
- */
-function getBackgroundPoint(vm, size, alignment, chart) {
-	// Background Position
-	var x = vm.x;
-	var y = vm.y;
-
-	var caretSize = vm.caretSize;
-	var caretPadding = vm.caretPadding;
-	var cornerRadius = vm.cornerRadius;
-	var xAlign = alignment.xAlign;
-	var yAlign = alignment.yAlign;
-	var paddingAndSize = caretSize + caretPadding;
-	var radiusAndPadding = cornerRadius + caretPadding;
-
+function alignX(size, xAlign, chartWidth) {
+	let {x, width} = size;
 	if (xAlign === 'right') {
-		x -= size.width;
+		x -= width;
 	} else if (xAlign === 'center') {
-		x -= (size.width / 2);
-		if (x + size.width > chart.width) {
-			x = chart.width - size.width;
+		x -= (width / 2);
+		if (x + width > chartWidth) {
+			x = chartWidth - width;
 		}
 		if (x < 0) {
 			x = 0;
 		}
 	}
+	return x;
+}
 
+function alignY(size, yAlign, paddingAndSize) {
+	let {y, height} = size;
 	if (yAlign === 'top') {
 		y += paddingAndSize;
 	} else if (yAlign === 'bottom') {
-		y -= size.height + paddingAndSize;
+		y -= height + paddingAndSize;
 	} else {
-		y -= (size.height / 2);
+		y -= (height / 2);
 	}
+	return y;
+}
+
+/**
+ * Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
+ */
+function getBackgroundPoint(options, size, alignment, chart) {
+	const {caretSize, caretPadding, cornerRadius} = options;
+	const {xAlign, yAlign} = alignment;
+	const paddingAndSize = caretSize + caretPadding;
+	const radiusAndPadding = cornerRadius + caretPadding;
+
+	let x = alignX(size, xAlign, chart.width);
+	let y = alignY(size, yAlign, paddingAndSize);
 
 	if (yAlign === 'center') {
 		if (xAlign === 'left') {
@@ -461,18 +429,16 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 		x += radiusAndPadding;
 	}
 
-	return {
-		x: x,
-		y: y
-	};
+	return {x, y};
 }
 
-function getAlignedX(vm, align) {
+function getAlignedX(tooltip, align) {
+	const options = tooltip.options;
 	return align === 'center'
-		? vm.x + vm.width / 2
+		? tooltip.x + tooltip.width / 2
 		: align === 'right'
-			? vm.x + vm.width - vm.xPadding
-			: vm.x + vm.xPadding;
+			? tooltip.x + tooltip.width - options.xPadding
+			: tooltip.x + options.xPadding;
 }
 
 /**
@@ -486,36 +452,42 @@ class Tooltip extends Element {
 	constructor(config) {
 		super(config);
 
-		this.initialize();
+		const me = this;
+		me.opacity = 0;
+		me._active = [];
+		me._lastActive = [];
+		me.initialize();
 	}
 
 	initialize() {
-		var me = this;
-		me._model = getBaseModel(me._options);
-		me._view = {};
-		me._lastActive = [];
+		const me = this;
+		me.options = resolveOptions(me._chart.options.tooltips);
 	}
 
-	transition(easingValue) {
-		var me = this;
-		var options = me._options;
+	/**
+	 * @private
+	 */
+	_resolveAnimations() {
+		const me = this;
+		const cached = me._cachedAnimations;
 
-		if (me._lastEvent && me._chart.animating) {
-			// Let's react to changes during animation
-			me._active = me._chart.getElementsAtEventForMode(me._lastEvent, options.mode, options);
-			me.update(true);
-			me.pivot();
-			me._lastActive = me.active;
+		if (cached) {
+			return cached;
 		}
 
-		Element.prototype.transition.call(me, easingValue);
+		const chart = me._chart;
+		const opts = chart.options.animation && me.options.animation;
+		const animations = new Animations(me._chart, opts);
+		me._cachedAnimations = Object.freeze(animations);
+
+		return animations;
 	}
 
 	// Get the title
 	// Args are: (tooltipItem, data)
 	getTitle() {
 		var me = this;
-		var opts = me._options;
+		var opts = me.options;
 		var callbacks = opts.callbacks;
 
 		var beforeTitle = callbacks.beforeTitle.apply(me, arguments);
@@ -532,13 +504,13 @@ class Tooltip extends Element {
 
 	// Args are: (tooltipItem, data)
 	getBeforeBody() {
-		return getBeforeAfterBodyLines(this._options.callbacks.beforeBody.apply(this, arguments));
+		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, arguments));
 	}
 
 	// Args are: (tooltipItem, data)
 	getBody(tooltipItems, data) {
 		var me = this;
-		var callbacks = me._options.callbacks;
+		var callbacks = me.options.callbacks;
 		var bodyItems = [];
 
 		helpers.each(tooltipItems, function(tooltipItem) {
@@ -559,14 +531,14 @@ class Tooltip extends Element {
 
 	// Args are: (tooltipItem, data)
 	getAfterBody() {
-		return getBeforeAfterBodyLines(this._options.callbacks.afterBody.apply(this, arguments));
+		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, arguments));
 	}
 
 	// Get the footer and beforeFooter and afterFooter lines
 	// Args are: (tooltipItem, data)
 	getFooter() {
 		var me = this;
-		var callbacks = me._options.callbacks;
+		var callbacks = me.options.callbacks;
 
 		var beforeFooter = callbacks.beforeFooter.apply(me, arguments);
 		var footer = callbacks.footer.apply(me, arguments);
@@ -580,138 +552,114 @@ class Tooltip extends Element {
 		return lines;
 	}
 
-	update(changed) {
-		var me = this;
-		var opts = me._options;
+	/**
+	 * @private
+	 */
+	_createItems() {
+		const me = this;
+		const active = me._active;
+		const options = me.options;
+		const data = me._chart.data;
+		const labelColors = [];
+		const labelTextColors = [];
+		let tooltipItems = [];
+		let i, len;
 
-		// Need to regenerate the model because its faster than using extend and it is necessary due to the optimization in Chart.Element.transition
-		// that does _view = _model if ease === 1. This causes the 2nd tooltip update to set properties in both the view and model at the same time
-		// which breaks any animations.
-		var existingModel = me._model;
-		var model = me._model = getBaseModel(opts);
-		var active = me._active;
+		for (i = 0, len = active.length; i < len; ++i) {
+			tooltipItems.push(createTooltipItem(me._chart, active[i]));
+		}
 
-		var data = me._data;
-
-		// In the case where active.length === 0 we need to keep these at existing values for good animations
-		var alignment = {
-			xAlign: existingModel.xAlign,
-			yAlign: existingModel.yAlign
-		};
-		var backgroundPoint = {
-			x: existingModel.x,
-			y: existingModel.y
-		};
-		var tooltipSize = {
-			width: existingModel.width,
-			height: existingModel.height
-		};
-		var tooltipPosition = {
-			x: existingModel.caretX,
-			y: existingModel.caretY
-		};
-
-		var i, len;
-
-		if (active.length) {
-			model.opacity = 1;
-
-			var labelColors = [];
-			var labelTextColors = [];
-			tooltipPosition = positioners[opts.position].call(me, active, me._eventPosition);
-
-			var tooltipItems = [];
-			for (i = 0, len = active.length; i < len; ++i) {
-				tooltipItems.push(createTooltipItem(me._chart, active[i]));
-			}
-
-			// If the user provided a filter function, use it to modify the tooltip items
-			if (opts.filter) {
-				tooltipItems = tooltipItems.filter(function(a) {
-					return opts.filter(a, data);
-				});
-			}
-
-			// If the user provided a sorting function, use it to modify the tooltip items
-			if (opts.itemSort) {
-				tooltipItems = tooltipItems.sort(function(a, b) {
-					return opts.itemSort(a, b, data);
-				});
-			}
-
-			// Determine colors for boxes
-			helpers.each(tooltipItems, function(tooltipItem) {
-				labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
-				labelTextColors.push(opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
+		// If the user provided a filter function, use it to modify the tooltip items
+		if (options.filter) {
+			tooltipItems = tooltipItems.filter(function(a) {
+				return options.filter(a, data);
 			});
-
-
-			// Build the Text Lines
-			model.title = me.getTitle(tooltipItems, data);
-			model.beforeBody = me.getBeforeBody(tooltipItems, data);
-			model.body = me.getBody(tooltipItems, data);
-			model.afterBody = me.getAfterBody(tooltipItems, data);
-			model.footer = me.getFooter(tooltipItems, data);
-
-			// Initial positioning and colors
-			model.x = tooltipPosition.x;
-			model.y = tooltipPosition.y;
-			model.caretPadding = opts.caretPadding;
-			model.labelColors = labelColors;
-			model.labelTextColors = labelTextColors;
-
-			// data points
-			model.dataPoints = tooltipItems;
-
-			// We need to determine alignment of the tooltip
-			tooltipSize = getTooltipSize(this, model);
-			alignment = determineAlignment(this, tooltipSize);
-			// Final Size and Position
-			backgroundPoint = getBackgroundPoint(model, tooltipSize, alignment, me._chart);
-		} else {
-			model.opacity = 0;
 		}
 
-		model.xAlign = alignment.xAlign;
-		model.yAlign = alignment.yAlign;
-		model.x = backgroundPoint.x;
-		model.y = backgroundPoint.y;
-		model.width = tooltipSize.width;
-		model.height = tooltipSize.height;
-
-		// Point where the caret on the tooltip points to
-		model.caretX = tooltipPosition.x;
-		model.caretY = tooltipPosition.y;
-
-		me._model = model;
-
-		if (changed && opts.custom) {
-			opts.custom.call(me, model);
+		// If the user provided a sorting function, use it to modify the tooltip items
+		if (options.itemSort) {
+			tooltipItems = tooltipItems.sort(function(a, b) {
+				return options.itemSort(a, b, data);
+			});
 		}
 
-		return me;
+		// Determine colors for boxes
+		helpers.each(tooltipItems, function(tooltipItem) {
+			labelColors.push(options.callbacks.labelColor.call(me, tooltipItem, me._chart));
+			labelTextColors.push(options.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
+		});
+
+		me.labelColors = labelColors;
+		me.labelTextColors = labelTextColors;
+		me.dataPoints = tooltipItems;
+		return tooltipItems;
 	}
 
-	drawCaret(tooltipPoint, size) {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
-		var caretPosition = this.getCaretPosition(tooltipPoint, size, vm);
+	update(changed) {
+		const me = this;
+		const options = me.options;
+		const active = me._active;
+		let properties;
+
+		if (!active.length) {
+			if (me.opacity !== 0) {
+				properties = {
+					opacity: 0
+				};
+			}
+		} else {
+			const data = me._chart.data;
+			const position = positioners[options.position].call(me, active, me._eventPosition);
+			const tooltipItems = me._createItems();
+
+			me.title = me.getTitle(tooltipItems, data);
+			me.beforeBody = me.getBeforeBody(tooltipItems, data);
+			me.body = me.getBody(tooltipItems, data);
+			me.afterBody = me.getAfterBody(tooltipItems, data);
+			me.footer = me.getFooter(tooltipItems, data);
+
+			const size = me._size = getTooltipSize(me);
+			const positionAndSize = helpers.extend({}, position, size);
+			const alignment = determineAlignment(me._chart, options, positionAndSize);
+			const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, me._chart);
+
+			me.xAlign = alignment.xAlign;
+			me.yAlign = alignment.yAlign;
+
+			properties = {
+				opacity: 1,
+				x: backgroundPoint.x,
+				y: backgroundPoint.y,
+				width: size.width,
+				height: size.height,
+				caretX: position.x,
+				caretY: position.y
+			};
+		}
+
+		if (properties) {
+			me._resolveAnimations().update(me, properties);
+		}
+
+		if (changed && options.custom) {
+			options.custom.call(me);
+		}
+	}
+
+	drawCaret(tooltipPoint, ctx, size) {
+		var caretPosition = this.getCaretPosition(tooltipPoint, size);
 
 		ctx.lineTo(caretPosition.x1, caretPosition.y1);
 		ctx.lineTo(caretPosition.x2, caretPosition.y2);
 		ctx.lineTo(caretPosition.x3, caretPosition.y3);
 	}
 
-	getCaretPosition(tooltipPoint, size, vm) {
-		var x1, x2, x3, y1, y2, y3;
-		var caretSize = vm.caretSize;
-		var cornerRadius = vm.cornerRadius;
-		var xAlign = vm.xAlign;
-		var yAlign = vm.yAlign;
-		var ptX = tooltipPoint.x;
-		var ptY = tooltipPoint.y;
-		var width = size.width;
-		var height = size.height;
+	getCaretPosition(tooltipPoint, size) {
+		const {xAlign, yAlign, options} = this;
+		const {cornerRadius, caretSize} = options;
+		const {x: ptX, y: ptY} = tooltipPoint;
+		const {width, height} = size;
+		let x1, x2, x3, y1, y2, y3;
 
 		if (yAlign === 'center') {
 			y2 = ptY + (height / 2);
@@ -719,117 +667,126 @@ class Tooltip extends Element {
 			if (xAlign === 'left') {
 				x1 = ptX;
 				x2 = x1 - caretSize;
-				x3 = x1;
-
-				y1 = y2 + caretSize;
-				y3 = y2 - caretSize;
 			} else {
 				x1 = ptX + width;
 				x2 = x1 + caretSize;
-				x3 = x1;
-
-				y1 = y2 - caretSize;
-				y3 = y2 + caretSize;
 			}
+			x3 = x1;
+			y1 = y2 + caretSize;
+			y3 = y2 - caretSize;
 		} else {
 			if (xAlign === 'left') {
 				x2 = ptX + cornerRadius + (caretSize);
-				x1 = x2 - caretSize;
-				x3 = x2 + caretSize;
 			} else if (xAlign === 'right') {
 				x2 = ptX + width - cornerRadius - caretSize;
-				x1 = x2 - caretSize;
-				x3 = x2 + caretSize;
 			} else {
-				x2 = vm.caretX;
-				x1 = x2 - caretSize;
-				x3 = x2 + caretSize;
+				x2 = this.caretX;
 			}
+			x1 = x2 - caretSize;
+			x3 = x2 + caretSize;
 			if (yAlign === 'top') {
 				y1 = ptY;
 				y2 = y1 - caretSize;
-				y3 = y1;
 			} else {
 				y1 = ptY + height;
 				y2 = y1 + caretSize;
-				y3 = y1;
-				// invert drawing order
-				var tmp = x3;
-				x3 = x1;
-				x1 = tmp;
 			}
+			y3 = y1;
 		}
-		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
+		return {x1, x2, x3, y1, y2, y3};
 	}
 
-	drawTitle(pt, vm, ctx) {
-		var title = vm.title;
+	drawTitle(pt, ctx) {
+		const me = this;
+		const options = me.options;
+		var title = me.title;
 		var length = title.length;
 		var titleFontSize, titleSpacing, i;
 
 		if (length) {
-			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+			var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
-			pt.x = getAlignedX(vm, vm._titleAlign);
+			pt.x = getAlignedX(me, options.titleAlign);
 
-			ctx.textAlign = rtlHelper.textAlign(vm._titleAlign);
+			ctx.textAlign = rtlHelper.textAlign(options.titleAlign);
 			ctx.textBaseline = 'middle';
 
-			titleFontSize = vm.titleFontSize;
-			titleSpacing = vm.titleSpacing;
+			titleFontSize = options.titleFontSize;
+			titleSpacing = options.titleSpacing;
 
-			ctx.fillStyle = vm.titleFontColor;
-			ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+			ctx.fillStyle = options.titleFontColor;
+			ctx.font = helpers.fontString(titleFontSize, options.titleFontStyle, options.titleFontFamily);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFontSize / 2);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
 				if (i + 1 === length) {
-					pt.y += vm.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
+					pt.y += options.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
 				}
 			}
 		}
 	}
 
-	drawBody(pt, vm, ctx) {
-		var bodyFontSize = vm.bodyFontSize;
-		var bodySpacing = vm.bodySpacing;
-		var bodyAlign = vm._bodyAlign;
-		var body = vm.body;
-		var drawColorBoxes = vm.displayColors;
-		var xLinePadding = 0;
-		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
+	_drawColorBox(ctx, pt, i, rtlHelper) {
+		const me = this;
+		const options = me.options;
+		const labelColors = me.labelColors[i];
+		const bodyFontSize = options.bodyFontSize;
+		const colorX = getAlignedX(me, 'left');
+		const rtlColorX = rtlHelper.x(colorX);
 
-		var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+		// Fill a white rect so that colours merge nicely if the opacity is < 1
+		ctx.fillStyle = options.multiKeyBackground;
+		ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
+
+		// Border
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = labelColors.borderColor;
+		ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
+
+		// Inner square
+		ctx.fillStyle = labelColors.backgroundColor;
+		ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+
+		// restore fillStyle
+		ctx.fillStyle = me.labelTextColors[i];
+	}
+
+	drawBody(pt, ctx) {
+		const me = this;
+		const {body, options} = me;
+		const {bodyFontSize, bodySpacing, bodyAlign, displayColors} = options;
+		var xLinePadding = 0;
+
+		var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
 		var fillLineOfText = function(line) {
 			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
 			pt.y += bodyFontSize + bodySpacing;
 		};
 
-		var bodyItem, textColor, labelColors, lines, i, j, ilen, jlen;
 		var bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
+		var bodyItem, textColor, lines, i, j, ilen, jlen;
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'middle';
-		ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+		ctx.font = helpers.fontString(bodyFontSize, options.bodyFontStyle, options.bodyFontFamily);
 
-		pt.x = getAlignedX(vm, bodyAlignForCalculation);
+		pt.x = getAlignedX(me, bodyAlignForCalculation);
 
 		// Before body lines
-		ctx.fillStyle = vm.bodyFontColor;
-		helpers.each(vm.beforeBody, fillLineOfText);
+		ctx.fillStyle = options.bodyFontColor;
+		helpers.each(me.beforeBody, fillLineOfText);
 
-		xLinePadding = drawColorBoxes && bodyAlignForCalculation !== 'right'
+		xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
 			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
 			: 0;
 
 		// Draw body lines now
 		for (i = 0, ilen = body.length; i < ilen; ++i) {
 			bodyItem = body[i];
-			textColor = vm.labelTextColors[i];
-			labelColors = vm.labelColors[i];
+			textColor = me.labelTextColors[i];
 
 			ctx.fillStyle = textColor;
 			helpers.each(bodyItem.before, fillLineOfText);
@@ -837,22 +794,8 @@ class Tooltip extends Element {
 			lines = bodyItem.lines;
 			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
-				if (drawColorBoxes) {
-					var rtlColorX = rtlHelper.x(colorX);
-
-					// Fill a white rect so that colours merge nicely if the opacity is < 1
-					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
-
-					// Border
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = labelColors.borderColor;
-					ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
-
-					// Inner square
-					ctx.fillStyle = labelColors.backgroundColor;
-					ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-					ctx.fillStyle = textColor;
+				if (displayColors) {
+					me._drawColorBox(ctx, pt, i, rtlHelper);
 				}
 
 				fillLineOfText(lines[j]);
@@ -865,67 +808,67 @@ class Tooltip extends Element {
 		xLinePadding = 0;
 
 		// After body lines
-		helpers.each(vm.afterBody, fillLineOfText);
+		helpers.each(me.afterBody, fillLineOfText);
 		pt.y -= bodySpacing; // Remove last body spacing
 	}
 
-	drawFooter(pt, vm, ctx) {
-		var footer = vm.footer;
+	drawFooter(pt, ctx) {
+		const me = this;
+		const options = me.options;
+		var footer = me.footer;
 		var length = footer.length;
 		var footerFontSize, i;
 
 		if (length) {
-			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+			var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
-			pt.x = getAlignedX(vm, vm._footerAlign);
-			pt.y += vm.footerMarginTop;
+			pt.x = getAlignedX(me, options.footerAlign);
+			pt.y += options.footerMarginTop;
 
-			ctx.textAlign = rtlHelper.textAlign(vm._footerAlign);
+			ctx.textAlign = rtlHelper.textAlign(options.footerAlign);
 			ctx.textBaseline = 'middle';
 
-			footerFontSize = vm.footerFontSize;
+			footerFontSize = options.footerFontSize;
 
-			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.fillStyle = options.footerFontColor;
+			ctx.font = helpers.fontString(footerFontSize, options.footerFontStyle, options.footerFontFamily);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFontSize / 2);
-				pt.y += footerFontSize + vm.footerSpacing;
+				pt.y += footerFontSize + options.footerSpacing;
 			}
 		}
 	}
 
-	drawBackground(pt, vm, ctx, tooltipSize) {
-		ctx.fillStyle = vm.backgroundColor;
-		ctx.strokeStyle = vm.borderColor;
-		ctx.lineWidth = vm.borderWidth;
-		var xAlign = vm.xAlign;
-		var yAlign = vm.yAlign;
-		var x = pt.x;
-		var y = pt.y;
-		var width = tooltipSize.width;
-		var height = tooltipSize.height;
-		var radius = vm.cornerRadius;
+	drawBackground(pt, ctx, tooltipSize) {
+		const {xAlign, yAlign, options} = this;
+		const {x, y} = pt;
+		const {width, height} = tooltipSize;
+		const radius = options.cornerRadius;
+
+		ctx.fillStyle = options.backgroundColor;
+		ctx.strokeStyle = options.borderColor;
+		ctx.lineWidth = options.borderWidth;
 
 		ctx.beginPath();
 		ctx.moveTo(x + radius, y);
 		if (yAlign === 'top') {
-			this.drawCaret(pt, tooltipSize);
+			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + width - radius, y);
 		ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
 		if (yAlign === 'center' && xAlign === 'right') {
-			this.drawCaret(pt, tooltipSize);
+			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + width, y + height - radius);
 		ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
 		if (yAlign === 'bottom') {
-			this.drawCaret(pt, tooltipSize);
+			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + radius, y + height);
 		ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
 		if (yAlign === 'center' && xAlign === 'left') {
-			this.drawCaret(pt, tooltipSize);
+			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x, y + radius);
 		ctx.quadraticCurveTo(x, y, x + radius, y);
@@ -933,56 +876,83 @@ class Tooltip extends Element {
 
 		ctx.fill();
 
-		if (vm.borderWidth > 0) {
+		if (options.borderWidth > 0) {
 			ctx.stroke();
 		}
 	}
 
-	draw() {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
+	/**
+	 * Update x/y animation targets when _active elements are animating too
+	 * @private
+	 */
+	_updateAnimationTarget() {
+		const me = this;
+		const chart = me._chart;
+		const options = me.options;
+		const anims = me.$animations;
+		const animX = anims && anims.x;
+		const animY = anims && anims.y;
+		if (animX && animX.active() || animY && animY.active()) {
+			const position = positioners[options.position].call(me, me._active, me._eventPosition);
+			if (!position) {
+				return;
+			}
+			const positionAndSize = helpers.extend({}, position, me._size);
+			const alignment = determineAlignment(chart, options, positionAndSize);
+			const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
+			if (animX._to !== point.x || animY._to !== point.y) {
+				me._resolveAnimations().update(me, point);
+			}
+		}
+	}
 
-		if (vm.opacity === 0) {
+	draw(ctx) {
+		const me = this;
+		const options = me.options;
+		let opacity = me.opacity;
+
+		if (!opacity) {
 			return;
 		}
 
+		me._updateAnimationTarget();
+
 		var tooltipSize = {
-			width: vm.width,
-			height: vm.height
+			width: me.width,
+			height: me.height
 		};
 		var pt = {
-			x: vm.x,
-			y: vm.y
+			x: me.x,
+			y: me.y
 		};
 
 		// IE11/Edge does not like very small opacities, so snap to 0
-		var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
+		opacity = Math.abs(opacity < 1e-3) ? 0 : opacity;
 
 		// Truthy/falsey value for empty tooltip
-		var hasTooltipContent = vm.title.length || vm.beforeBody.length || vm.body.length || vm.afterBody.length || vm.footer.length;
+		var hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
 
-		if (this._options.enabled && hasTooltipContent) {
+		if (options.enabled && hasTooltipContent) {
 			ctx.save();
 			ctx.globalAlpha = opacity;
 
 			// Draw Background
-			this.drawBackground(pt, vm, ctx, tooltipSize);
+			me.drawBackground(pt, ctx, tooltipSize);
 
-			// Draw Title, Body, and Footer
-			pt.y += vm.yPadding;
+			helpers.rtl.overrideTextDirection(ctx, options.textDirection);
 
-			helpers.rtl.overrideTextDirection(ctx, vm.textDirection);
+			pt.y += options.yPadding;
 
 			// Titles
-			this.drawTitle(pt, vm, ctx);
+			me.drawTitle(pt, ctx);
 
 			// Body
-			this.drawBody(pt, vm, ctx);
+			me.drawBody(pt, ctx);
 
 			// Footer
-			this.drawFooter(pt, vm, ctx);
+			me.drawFooter(pt, ctx);
 
-			helpers.rtl.restoreTextDirection(ctx, vm.textDirection);
+			helpers.rtl.restoreTextDirection(ctx, options.textDirection);
 
 			ctx.restore();
 		}
@@ -996,7 +966,7 @@ class Tooltip extends Element {
 	 */
 	handleEvent(e) {
 		var me = this;
-		var options = me._options;
+		var options = me.options;
 		var changed = false;
 
 		me._lastActive = me._lastActive || [];
@@ -1004,12 +974,8 @@ class Tooltip extends Element {
 		// Find Active Elements for tooltips
 		if (e.type === 'mouseout') {
 			me._active = [];
-			me._lastEvent = null;
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
-			if (e.type !== 'click') {
-				me._lastEvent = e.type === 'click' ? null : e;
-			}
 			if (options.reverse) {
 				me._active.reverse();
 			}
@@ -1029,7 +995,7 @@ class Tooltip extends Element {
 				};
 
 				me.update(true);
-				me.pivot();
+				// me.pivot();
 			}
 		}
 

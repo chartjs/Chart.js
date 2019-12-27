@@ -22,8 +22,8 @@ describe('Default Configs', function() {
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['My dataset: (10, 12, 5)'],
 				after: []
@@ -50,8 +50,8 @@ describe('Default Configs', function() {
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['label2: 20'],
 				after: []
@@ -76,8 +76,8 @@ describe('Default Configs', function() {
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: [
 					'row1: 20',
@@ -196,8 +196,8 @@ describe('Default Configs', function() {
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['label2: 20'],
 				after: []

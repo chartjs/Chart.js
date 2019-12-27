@@ -10,12 +10,33 @@ The following animation options are available. The global options for are define
 | ---- | ---- | ------- | -----------
 | `duration` | `number` | `1000` | The number of milliseconds an animation takes.
 | `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
 | `onProgress` | `function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
-| `onComplete` | `function` | `null` | Callback called at the end of an animation. [more...](#animation-callbacks)
+| `onComplete` | `function` | `null` | Callback called when all animations are completed. [more...](#animation-callbacks)
+| `delay` | `number` | `undefined` | Delay before starting the animations.
+| `loop` | `boolean` | `undefined` | If set to `true`, loop the animations loop endlessly.
+| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, '`color`'.
+| `from`  | <code>number&#124;Color</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
+| `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
+| [property] | `object` | `undefined` | Option overrides for [property].
+| [collection] | `object` | `undefined` | Option overrides for multiple properties, identified by `properties` array.
+
+Default collections:
+| Name | option | value
+| `numbers` | `type` | `'number'`
+| | `properties` | `['x', 'y', 'borderWidth', 'radius', 'tension']`
+| `colors` | `type` | `'color'`
+| | `properties` | `['borderColor', 'backgroundColor']`
+
+Direct property configuration overrides configuration of same property in a collection.
+
+These defaults can be overridden in `options.animation` and `dataset.animation`.
 
 ## Easing
 
 Available options are:
+
 * `'linear'`
 * `'easeInQuad'`
 * `'easeOutQuad'`
@@ -52,34 +73,23 @@ See [Robert Penner's easing equations](http://robertpenner.com/easing/).
 
 ## Animation Callbacks
 
-The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed a `Chart.Animation` instance:
+The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed following object:
 
 ```javascript
 {
     // Chart object
     chart: Chart,
 
-    // Current Animation frame number
+    // Number of animations still in progress
     currentStep: number,
 
-    // Number of animation frames
+    // Total number of animations at the start of current animation
     numSteps: number,
-
-    // Animation easing to use
-    easing: string,
-
-    // Function that renders the chart
-    render: function,
-
-    // User callback
-    onAnimationProgress: function,
-
-    // User callback
-    onAnimationComplete: function
 }
 ```
 
 The following example fills a progress bar during the chart animation.
+
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',

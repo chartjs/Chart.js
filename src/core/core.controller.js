@@ -1,7 +1,6 @@
 'use strict';
 
-var Animation = require('./core.animation');
-var animations = require('./core.animations');
+var Animator = require('./core.animator');
 var controllers = require('../controllers/index');
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
@@ -26,13 +25,11 @@ defaults._set('global', {
 	hover: {
 		onHover: null,
 		mode: 'nearest',
-		intersect: true,
-		animationDuration: 400
+		intersect: true
 	},
 	onClick: null,
 	maintainAspectRatio: true,
-	responsive: true,
-	responsiveAnimationDuration: 0
+	responsive: true
 });
 
 function mergeScaleConfig(config, options) {
@@ -115,11 +112,7 @@ function initConfig(config) {
 }
 
 function isAnimationDisabled(config) {
-	return !config.animation || !(
-		config.animation.duration ||
-		(config.hover && config.hover.animationDuration) ||
-		config.responsiveAnimationDuration
-	);
+	return !config.animation;
 }
 
 function updateConfig(chart) {
@@ -143,8 +136,6 @@ function updateConfig(chart) {
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
 
-	// Tooltip
-	chart.tooltip._options = newOptions.tooltips;
 	chart.tooltip.initialize();
 }
 
@@ -159,6 +150,20 @@ function compare2Level(l1, l2) {
 			? a[l2] - b[l2]
 			: a[l1] - b[l1];
 	};
+}
+
+function onAnimationsComplete(ctx) {
+	const chart = ctx.chart;
+	const animationOptions = chart.options.animation;
+
+	plugins.notify(chart, 'afterRender');
+	helpers.callback(animationOptions && animationOptions.onComplete, arguments, chart);
+}
+
+function onAnimationProgress(ctx) {
+	const chart = ctx.chart;
+	const animationOptions = chart.options.animation;
+	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
 }
 
 var Chart = function(item, config) {
@@ -213,6 +218,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
+		Animator.listen(me, 'complete', onAnimationsComplete);
+		Animator.listen(me, 'progress', onAnimationProgress);
+
 		me.initialize();
 		me.update();
 	},
@@ -249,8 +257,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	stop: function() {
-		// Stops any current animation loop occurring
-		animations.cancelAnimation(this);
+		Animator.stop(this);
 		return this;
 	},
 
@@ -289,9 +296,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 
 			me.stop();
-			me.update({
-				duration: options.responsiveAnimationDuration
-			});
+			me.update('resize');
 		}
 	},
 
@@ -455,11 +460,11 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		this.tooltip.initialize();
 	},
 
-	update: function(config) {
+	update: function(mode) {
 		var me = this;
 		var i, ilen;
 
-		config = config || {};
+		me._updating = true;
 
 		updateConfig(me);
 
@@ -470,9 +475,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		if (plugins.notify(me, 'beforeUpdate') === false) {
 			return;
 		}
-
-		// In case the entire data object changed
-		me.tooltip._data = me.data;
 
 		// Make sure dataset controllers are updated and new controllers are reset
 		var newControllers = me.buildOrUpdateControllers();
@@ -485,40 +487,27 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.updateLayout();
 
 		// Can only reset the new controllers after the scales have been updated
-		if (me.options.animation && me.options.animation.duration) {
+		if (me.options.animation) {
 			helpers.each(newControllers, function(controller) {
 				controller.reset();
 			});
 		}
 
-		me.updateDatasets();
-
-		// Need to reset tooltip in case it is displayed with elements that are removed
-		// after update.
-		me.tooltip.initialize();
-
-		// Last active contains items that were previously hovered.
-		me.lastActive = [];
+		me.updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
-		if (me._bufferedRender) {
-			me._bufferedRequest = {
-				duration: config.duration,
-				easing: config.easing,
-				lazy: config.lazy
-			};
-		} else {
-			me.render(config);
-		}
-
 		// Replay last event from before update
 		if (me._lastEvent) {
 			me.eventHandler(me._lastEvent);
 		}
+
+		me.render();
+
+		me._updating = false;
 	},
 
 	/**
@@ -557,7 +546,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetsUpdate`.
 	 * @private
 	 */
-	updateDatasets: function() {
+	updateDatasets: function(mode) {
 		var me = this;
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
@@ -565,7 +554,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i);
+			me.updateDataset(i, mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
@@ -576,91 +565,52 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
 	 * @private
 	 */
-	updateDataset: function(index) {
-		var me = this;
-		var meta = me.getDatasetMeta(index);
-		var args = {
-			meta: meta,
-			index: index
-		};
+	updateDataset: function(index, mode) {
+		const me = this;
+		const meta = me.getDatasetMeta(index);
+		const args = {meta, index, mode};
 
 		if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
 			return;
 		}
 
-		meta.controller._update();
+		meta.controller._update(mode);
 
 		plugins.notify(me, 'afterDatasetUpdate', [args]);
 	},
 
-	render: function(config) {
-		var me = this;
-
-		if (!config || typeof config !== 'object') {
-			// backwards compatibility
-			config = {
-				duration: config,
-				lazy: arguments[1]
-			};
-		}
-
-		var animationOptions = me.options.animation;
-		var duration = valueOrDefault(config.duration, animationOptions && animationOptions.duration);
-		var lazy = config.lazy;
-
+	render: function() {
+		const me = this;
+		const animationOptions = me.options.animation;
 		if (plugins.notify(me, 'beforeRender') === false) {
 			return;
 		}
-
-		var onComplete = function(animation) {
+		var onComplete = function() {
 			plugins.notify(me, 'afterRender');
-			helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
+			helpers.callback(animationOptions && animationOptions.onComplete, [], me);
 		};
 
-		if (animationOptions && duration) {
-			var animation = new Animation({
-				numSteps: duration / 16.66, // 60 fps
-				easing: config.easing || animationOptions.easing,
-
-				render: function(chart, animationObject) {
-					const easingFunction = helpers.easing.effects[animationObject.easing];
-					const stepDecimal = animationObject.currentStep / animationObject.numSteps;
-
-					chart.draw(easingFunction(stepDecimal));
-				},
-
-				onAnimationProgress: animationOptions.onProgress,
-				onAnimationComplete: onComplete
-			});
-
-			animations.addAnimation(me, animation, duration, lazy);
+		if (Animator.has(me)) {
+			if (!Animator.running(me)) {
+				Animator.start(me);
+			}
 		} else {
 			me.draw();
-
-			// See https://github.com/chartjs/Chart.js/issues/3781
-			onComplete(new Animation({numSteps: 0, chart: me}));
+			onComplete();
 		}
-
-		return me;
 	},
 
-	draw: function(easingValue) {
+	draw: function() {
 		var me = this;
 		var i, layers;
 
 		me.clear();
 
-		if (helpers.isNullOrUndef(easingValue)) {
-			easingValue = 1;
-		}
-
-		me.transition(easingValue);
-
 		if (me.width <= 0 || me.height <= 0) {
 			return;
 		}
 
-		if (plugins.notify(me, 'beforeDraw', [easingValue]) === false) {
+		if (plugins.notify(me, 'beforeDraw') === false) {
 			return;
 		}
 
@@ -672,41 +622,16 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			layers[i].draw(me.chartArea);
 		}
 
-		me.drawDatasets(easingValue);
+		me.drawDatasets();
 
 		// Rest of layers
 		for (; i < layers.length; ++i) {
 			layers[i].draw(me.chartArea);
 		}
 
-		me._drawTooltip(easingValue);
+		me._drawTooltip();
 
-		plugins.notify(me, 'afterDraw', [easingValue]);
-	},
-
-	/**
-	 * @private
-	 */
-	transition: function(easingValue) {
-		const me = this;
-		var i, ilen;
-
-		if (!me._animationsDisabled) {
-			const metas = me._getSortedDatasetMetas();
-			for (i = 0, ilen = metas.length; i < ilen; ++i) {
-				let meta = metas[i];
-				if (meta.visible) {
-					meta.controller.transition(easingValue);
-				}
-			}
-		}
-
-		me.tooltip.transition(easingValue);
-
-		if (me._lastEvent && me.animating) {
-			// If, during animation, element under mouse changes, let's react to that.
-			me.handleEvent(me._lastEvent);
-		}
+		plugins.notify(me, 'afterDraw');
 	},
 
 	/**
@@ -740,20 +665,20 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
-	drawDatasets: function(easingValue) {
+	drawDatasets: function() {
 		var me = this;
 		var metasets, i;
 
-		if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
+		if (plugins.notify(me, 'beforeDatasetsDraw') === false) {
 			return;
 		}
 
 		metasets = me._getSortedVisibleDatasetMetas();
 		for (i = metasets.length - 1; i >= 0; --i) {
-			me.drawDataset(metasets[i], easingValue);
+			me.drawDataset(metasets[i]);
 		}
 
-		plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
+		plugins.notify(me, 'afterDatasetsDraw');
 	},
 
 	/**
@@ -761,7 +686,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
 	 * @private
 	 */
-	drawDataset: function(meta, easingValue) {
+	drawDataset: function(meta) {
 		var me = this;
 		var ctx = me.ctx;
 		var clip = meta._clip;
@@ -770,7 +695,6 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		var args = {
 			meta: meta,
 			index: meta.index,
-			easingValue: easingValue
 		};
 
 		if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
@@ -784,7 +708,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
 		});
 
-		meta.controller.draw(easingValue);
+		meta.controller.draw();
 
 		helpers.canvas.unclipArea(ctx);
 
@@ -796,19 +720,18 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterTooltipDraw`.
 	 * @private
 	 */
-	_drawTooltip: function(easingValue) {
+	_drawTooltip: function() {
 		var me = this;
 		var tooltip = me.tooltip;
 		var args = {
-			tooltip: tooltip,
-			easingValue: easingValue
+			tooltip: tooltip
 		};
 
 		if (plugins.notify(me, 'beforeTooltipDraw', [args]) === false) {
 			return;
 		}
 
-		tooltip.draw();
+		tooltip.draw(me.ctx);
 
 		plugins.notify(me, 'afterTooltipDraw', [args]);
 	},
@@ -925,12 +848,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	initToolTip: function() {
-		var me = this;
-		me.tooltip = new Tooltip({
-			_chart: me,
-			_data: me.data,
-			_options: me.options.tooltips
-		});
+		this.tooltip = new Tooltip({_chart: this});
 	},
 
 	/**
@@ -1020,48 +938,22 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	 * @private
 	 */
 	eventHandler: function(e) {
-		var me = this;
-		var tooltip = me.tooltip;
+		const me = this;
+		const tooltip = me.tooltip;
 
 		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
 			return;
 		}
 
-		// Buffer any update calls so that renders do not occur
-		me._bufferedRender = true;
-		me._bufferedRequest = null;
+		me.handleEvent(e);
 
-		var changed = me.handleEvent(e);
-		// for smooth tooltip animations issue #4989
-		// the tooltip should be the source of change
-		// Animation check workaround:
-		// tooltip._start will be null when tooltip isn't animating
 		if (tooltip) {
-			changed = tooltip._start
-				? tooltip.handleEvent(e)
-				: changed | tooltip.handleEvent(e);
+			tooltip.handleEvent(e);
 		}
 
 		plugins.notify(me, 'afterEvent', [e]);
 
-		var bufferedRequest = me._bufferedRequest;
-		if (bufferedRequest) {
-			// If we have an update that was triggered, we need to do a normal render
-			me.render(bufferedRequest);
-		} else if (changed && !me.animating) {
-			// If entering, leaving, or changing elements, animate the change via pivot
-			me.stop();
-
-			// We only need to render at this point. Updating will cause scales to be
-			// recomputed generating flicker & using more memory than necessary.
-			me.render({
-				duration: me.options.hover.animationDuration,
-				lazy: true
-			});
-		}
-
-		me._bufferedRender = false;
-		me._bufferedRequest = null;
+		me.render();
 
 		return me;
 	},
@@ -1086,7 +978,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			me._lastEvent = null;
 		} else {
 			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
-			me._lastEvent = e.type === 'click' ? null : e;
+			me._lastEvent = e.type === 'click' ? me._lastEvent : e;
 		}
 
 		// Invoke onHover hook
@@ -1100,8 +992,10 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 		}
 
-		me._updateHoverStyles();
 		changed = !helpers._elementsEqual(me.active, me.lastActive);
+		if (changed) {
+			me._updateHoverStyles();
+		}
 
 		// Remember Last Actives
 		me.lastActive = me.active;

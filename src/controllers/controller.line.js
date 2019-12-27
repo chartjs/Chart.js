@@ -7,7 +7,6 @@ const helpers = require('../helpers/index');
 
 const valueOrDefault = helpers.valueOrDefault;
 const resolve = helpers.options.resolve;
-const isPointInArea = helpers.canvas._isPointInArea;
 
 defaults._set('line', {
 	showLines: true,
@@ -44,6 +43,7 @@ module.exports = DatasetController.extend({
 		'borderDashOffset',
 		'borderJoinStyle',
 		'borderWidth',
+		'capBezierPoints',
 		'cubicInterpolationMode',
 		'fill'
 	],
@@ -56,6 +56,7 @@ module.exports = DatasetController.extend({
 		borderColor: 'pointBorderColor',
 		borderWidth: 'pointBorderWidth',
 		hitRadius: 'pointHitRadius',
+		hoverHitRadius: 'pointHitRadius',
 		hoverBackgroundColor: 'pointHoverBackgroundColor',
 		hoverBorderColor: 'pointHoverBorderColor',
 		hoverBorderWidth: 'pointHoverBorderWidth',
@@ -65,7 +66,7 @@ module.exports = DatasetController.extend({
 		rotation: 'pointRotation'
 	},
 
-	update: function(reset) {
+	update: function(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
@@ -73,62 +74,53 @@ module.exports = DatasetController.extend({
 		const options = me.chart.options;
 		const config = me._config;
 		const showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
-		let i, ilen;
 
 		// Update Line
-		if (showLine) {
-			// Data
-			line._children = points;
-			// Model
-			line._model = me._resolveDatasetElementOptions();
+		if (showLine && mode !== 'resize') {
 
-			line.pivot();
+			const properties = {
+				_children: points,
+				options: me._resolveDatasetElementOptions()
+			};
+
+			me._updateElement(line, undefined, properties, mode);
 		}
 
 		// Update Points
-		me.updateElements(points, 0, points.length, reset);
-
-		if (showLine && line._model.tension !== 0) {
-			me.updateBezierControlPoints();
-		}
-
-		// Now pivot the point for animation
-		for (i = 0, ilen = points.length; i < ilen; ++i) {
-			points[i].pivot(me.chart._animationsDisabled);
+		if (meta.visible) {
+			me.updateElements(points, 0, points.length, mode);
 		}
 	},
 
-	updateElements: function(points, start, count, reset) {
+	updateElements: function(points, start, count, mode) {
 		const me = this;
+		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
+		const firstOpts = me._resolveDataElementOptions(start, mode);
+		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
+		const includeOptions = me._includeOptions(mode, sharedOptions);
 		let i;
 
 		for (i = start; i < start + count; ++i) {
 			const point = points[i];
 			const parsed = me._getParsed(i);
-			const options = me._resolveDataElementOptions(i);
 			const x = xScale.getPixelForValue(parsed[xScale.id]);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
-
-			// Utility
-			point._options = options;
-
-			// Desired view properties
-			point._model = {
-				x: x,
-				y: y,
-				skip: isNaN(x) || isNaN(y),
-				// Appearance
-				radius: options.radius,
-				pointStyle: options.pointStyle,
-				rotation: options.rotation,
-				backgroundColor: options.backgroundColor,
-				borderColor: options.borderColor,
-				borderWidth: options.borderWidth,
-				// Tooltip
-				hitRadius: options.hitRadius
+			const properties = {
+				x,
+				y,
+				skip: isNaN(x) || isNaN(y)
 			};
+
+			if (includeOptions) {
+				properties.options = i === start ? firstOpts
+					: me._resolveDataElementOptions(i, mode);
+			}
+
+			me._updateElement(point, i, properties, mode);
 		}
+
+		me._updateSharedOptions(sharedOptions, mode);
 	},
 
 	/**
@@ -161,65 +153,10 @@ module.exports = DatasetController.extend({
 		if (!data.length) {
 			return false;
 		}
-		const border = me._showLine ? meta.dataset._model.borderWidth : 0;
+		const border = me._showLine && meta.dataset.options.borderWidth || 0;
 		const firstPoint = data[0].size();
 		const lastPoint = data[data.length - 1].size();
 		return Math.max(border, firstPoint, lastPoint) / 2;
-	},
-
-	updateBezierControlPoints: function() {
-		const me = this;
-		const chart = me.chart;
-		const meta = me._cachedMeta;
-		const lineModel = meta.dataset._model;
-		const area = chart.chartArea;
-		let points = meta.data || [];
-		let i, ilen;
-
-		// Only consider points that are drawn in case the spanGaps option is used
-		if (lineModel.spanGaps) {
-			points = points.filter(function(pt) {
-				return !pt._model.skip;
-			});
-		}
-
-		function capControlPoint(pt, min, max) {
-			return Math.max(Math.min(pt, max), min);
-		}
-
-		if (lineModel.cubicInterpolationMode === 'monotone') {
-			helpers.curve.splineCurveMonotone(points);
-		} else {
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				const model = points[i]._model;
-				const controlPoints = helpers.curve.splineCurve(
-					points[Math.max(0, i - 1)]._model,
-					model,
-					points[Math.min(i + 1, ilen - 1)]._model,
-					lineModel.tension
-				);
-				model.controlPointPreviousX = controlPoints.previous.x;
-				model.controlPointPreviousY = controlPoints.previous.y;
-				model.controlPointNextX = controlPoints.next.x;
-				model.controlPointNextY = controlPoints.next.y;
-			}
-		}
-
-		if (chart.options.elements.line.capBezierPoints) {
-			for (i = 0, ilen = points.length; i < ilen; ++i) {
-				const model = points[i]._model;
-				if (isPointInArea(model, area)) {
-					if (i > 0 && isPointInArea(points[i - 1]._model, area)) {
-						model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
-						model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
-					}
-					if (i < points.length - 1 && isPointInArea(points[i + 1]._model, area)) {
-						model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
-						model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
-					}
-				}
-			}
-		}
 	},
 
 	draw: function() {
@@ -233,33 +170,12 @@ module.exports = DatasetController.extend({
 		let i = 0;
 
 		if (me._showLine) {
-			meta.dataset.draw(ctx);
+			meta.dataset.draw(ctx, area);
 		}
 
 		// Draw the points
 		for (; i < ilen; ++i) {
 			points[i].draw(ctx, area);
 		}
-	},
-
-	/**
-	 * @protected
-	 */
-	setHoverStyle: function(point) {
-		const model = point._model;
-		const options = point._options;
-		const getHoverColor = helpers.getHoverColor;
-
-		point.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
-			radius: model.radius
-		};
-
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
-		model.radius = valueOrDefault(options.hoverRadius, options.radius);
 	},
 });

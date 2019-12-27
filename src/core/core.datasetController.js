@@ -1,6 +1,7 @@
 'use strict';
 
 var helpers = require('../helpers/index');
+var Animations = require('./core.animations');
 
 var resolve = helpers.options.resolve;
 
@@ -268,6 +269,8 @@ helpers.extend(DatasetController.prototype, {
 		me.chart = chart;
 		me._ctx = chart.ctx;
 		me.index = datasetIndex;
+		me._cachedAnimations = {};
+		me._cachedDataOpts = {};
 		me._cachedMeta = meta = me.getMeta();
 		me._type = meta.type;
 		me._configure();
@@ -347,7 +350,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	reset: function() {
-		this._update(true);
+		this._update('reset');
 	},
 
 	/**
@@ -450,7 +453,7 @@ helpers.extend(DatasetController.prototype, {
 	},
 
 	/**
-	 * Returns the merged user-supplied and default dataset-level options
+	 * Merges user-supplied and default dataset-level options
 	 * @private
 	 */
 	_configure: function() {
@@ -740,32 +743,18 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_update: function(reset) {
+	_update: function(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
 		me._configure();
-		me._cachedDataOpts = null;
-		me.update(reset);
+		me._cachedAnimations = {};
+		me._cachedDataOpts = {};
+		me.update(mode);
 		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	},
 
 	update: helpers.noop,
-
-	transition: function(easingValue) {
-		const meta = this._cachedMeta;
-		const elements = meta.data || [];
-		const ilen = elements.length;
-		let i = 0;
-
-		for (; i < ilen; ++i) {
-			elements[i].transition(easingValue);
-		}
-
-		if (meta.dataset) {
-			meta.dataset.transition(easingValue);
-		}
-	},
 
 	draw: function() {
 		const ctx = this._ctx;
@@ -783,30 +772,54 @@ helpers.extend(DatasetController.prototype, {
 		}
 	},
 
+	_addAutomaticHoverColors: function(index, options) {
+		const me = this;
+		const getHoverColor = helpers.getHoverColor;
+		const normalOptions = me.getStyle(index);
+		const missingColors = Object.keys(normalOptions).filter(key => {
+			return key.indexOf('Color') !== -1 && !(key in options);
+		});
+		let i = missingColors.length - 1;
+		let color;
+		for (; i >= 0; i--) {
+			color = missingColors[i];
+			options[color] = getHoverColor(normalOptions[color]);
+		}
+	},
+
 	/**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index
 	 * @return {IStyleInterface} style object
 	 */
-	getStyle: function(index) {
+	getStyle: function(index, active) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const dataset = meta.dataset;
-		let style;
 
-		if (dataset && index === undefined) {
-			style = me._resolveDatasetElementOptions();
-		} else {
-			index = index || 0;
-			style = me._resolveDataElementOptions(index);
+		if (!me._config) {
+			me._configure();
 		}
 
-		if (style.fill === false || style.fill === null) {
-			style.backgroundColor = style.borderColor;
+		const options = dataset && index === undefined
+			? me._resolveDatasetElementOptions(active)
+			: me._resolveDataElementOptions(index || 0, active && 'active');
+		if (active) {
+			me._addAutomaticHoverColors(index, options);
 		}
+		return options;
+	},
 
-		return style;
+	_getContext(index, active) {
+		return {
+			chart: this.chart,
+			dataIndex: index,
+			dataset: this.getDataset(),
+			datasetIndex: this.index,
+			active
+		};
+
 	},
 
 	/**
@@ -819,21 +832,19 @@ helpers.extend(DatasetController.prototype, {
 		const options = chart.options.elements[me.datasetElementType.prototype._type] || {};
 		const elementOptions = me._datasetElementOptions;
 		const values = {};
-		const context = {
-			chart,
-			dataset: me.getDataset(),
-			datasetIndex: me.index,
-			active
-		};
-		let i, ilen, key, readKey;
+		const context = me._getContext(undefined, active);
+		let i, ilen, key, readKey, value;
 
 		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 			key = elementOptions[i];
 			readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-			values[key] = resolve([
+			value = resolve([
 				datasetOpts[readKey],
 				options[readKey]
 			], context);
+			if (value !== undefined) {
+				values[key] = value;
+			}
 		}
 
 		return values;
@@ -842,72 +853,152 @@ helpers.extend(DatasetController.prototype, {
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(index) {
+	_resolveDataElementOptions: function(index, mode) {
 		const me = this;
+		const active = mode === 'active';
 		const cached = me._cachedDataOpts;
-		if (cached) {
-			return cached;
+		if (cached[mode]) {
+			return cached[mode];
 		}
 		const chart = me.chart;
 		const datasetOpts = me._config;
 		const options = chart.options.elements[me.dataElementType.prototype._type] || {};
 		const elementOptions = me._dataElementOptions;
 		const values = {};
-		const context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: me.getDataset(),
-			datasetIndex: me.index
-		};
-		const info = {cacheable: true};
-		let keys, i, ilen, key;
+		const context = me._getContext(index, active);
+		const info = {cacheable: !active};
+		let keys, i, ilen, key, value, readKey;
 
 		if (helpers.isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
-				values[key] = resolve([
-					datasetOpts[key],
-					options[key]
+				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+				value = resolve([
+					datasetOpts[readKey],
+					options[readKey]
 				], context, index, info);
+				if (value !== undefined) {
+					values[key] = value;
+				}
 			}
 		} else {
 			keys = Object.keys(elementOptions);
 			for (i = 0, ilen = keys.length; i < ilen; ++i) {
 				key = keys[i];
-				values[key] = resolve([
-					datasetOpts[elementOptions[key]],
-					datasetOpts[key],
-					options[key]
+				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+				value = resolve([
+					datasetOpts[elementOptions[readKey]],
+					datasetOpts[readKey],
+					options[readKey]
 				], context, index, info);
+				if (value !== undefined) {
+					values[key] = value;
+				}
 			}
 		}
 
 		if (info.cacheable) {
-			me._cachedDataOpts = Object.freeze(values);
+			// `$shared` indicades this set of options can be shared between multiple elements.
+			// Sharing is used to reduce number of properties to change during animation.
+			values.$shared = true;
+
+			// We cache options by `mode`, which can be 'active' for example. This enables us
+			// to have the 'active' element options and 'default' options to switch between
+			// when interacting.
+			cached[mode] = values;
 		}
 
 		return values;
 	},
 
-	removeHoverStyle: function(element) {
-		helpers.merge(element._model, element.$previousStyle || {});
-		delete element.$previousStyle;
+	/**
+	 * @private
+	 */
+	_resolveAnimations: function(index, mode, active) {
+		const me = this;
+		const chart = me.chart;
+		const cached = me._cachedAnimations;
+		mode = mode || 'default';
+
+		if (cached[mode]) {
+			return cached[mode];
+		}
+
+		const info = {cacheable: true};
+		const context = me._getContext(index, active);
+		const datasetAnim = resolve([me._config.animation], context, index, info);
+		const chartAnim = resolve([chart.options.animation], context, index, info);
+		let config = helpers.mergeIf({}, [datasetAnim, chartAnim]);
+
+		if (active && config.active) {
+			config = helpers.extend({}, config, config.active);
+		}
+		if (mode === 'resize' && config.resize) {
+			config = helpers.extend({}, config, config.resize);
+		}
+
+		const animations = new Animations(chart, config);
+
+		if (info.cacheable) {
+			cached[mode] = animations && Object.freeze(animations);
+		}
+
+		return animations;
+	},
+
+	/**
+	 * Utility for checking if the options are shared and should be animated separately.
+	 * @private
+	 */
+	_getSharedOptions: function(mode, el, options) {
+		if (mode !== 'reset' && options && options.$shared && el && el.options && el.options.$shared) {
+			return {target: el.options, options};
+		}
+	},
+
+	/**
+	 * Utility for determining if `options` should be included in the updated properties
+	 * @private
+	 */
+	_includeOptions: function(mode, sharedOptions) {
+		return mode !== 'resize' && !sharedOptions;
+	},
+
+	/**
+	 * Utility for updating a element with new properties, using animations when appropriate.
+	 * @private
+	 */
+	_updateElement: function(element, index, properties, mode) {
+		if (mode === 'reset' || mode === 'none') {
+			helpers.extend(element, properties);
+		} else {
+			this._resolveAnimations(index, mode).update(element, properties);
+		}
+	},
+
+	/**
+	 * Utility to animate the shared options, that are potentially affecting multiple elements.
+	 * @private
+	 */
+	_updateSharedOptions: function(sharedOptions, mode) {
+		if (sharedOptions) {
+			this._resolveAnimations(undefined, mode).update(sharedOptions.target, sharedOptions.options);
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_setStyle(element, index, mode, active) {
+		this._resolveAnimations(index, mode, active).update(element, {options: this.getStyle(index, active)});
+	},
+
+	removeHoverStyle: function(element, datasetIndex, index) {
+		this._setStyle(element, index, 'active', false);
 	},
 
 	setHoverStyle: function(element, datasetIndex, index) {
-		const dataset = this.chart.data.datasets[datasetIndex];
-		const model = element._model;
-		const getHoverColor = helpers.getHoverColor;
-
-		element.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth
-		};
-
-		model.backgroundColor = resolve([dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
-		model.borderColor = resolve([dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
-		model.borderWidth = resolve([dataset.hoverBorderWidth, model.borderWidth], undefined, index);
+		this._setStyle(element, index, 'active', true);
 	},
 
 	/**
@@ -917,7 +1008,7 @@ helpers.extend(DatasetController.prototype, {
 		const element = this._cachedMeta.dataset;
 
 		if (element) {
-			this.removeHoverStyle(element);
+			this._setStyle(element, undefined, 'active', false);
 		}
 	},
 
@@ -926,24 +1017,10 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_setDatasetHoverStyle: function() {
 		const element = this._cachedMeta.dataset;
-		const prev = {};
-		let i, ilen, key, keys, hoverOptions, model;
 
-		if (!element) {
-			return;
+		if (element) {
+			this._setStyle(element, undefined, 'active', true);
 		}
-
-		model = element._model;
-		hoverOptions = this._resolveDatasetElementOptions(true);
-
-		keys = Object.keys(hoverOptions);
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			prev[key] = model[key];
-			model[key] = hoverOptions[key];
-		}
-
-		element.$previousStyle = prev;
 	},
 
 	/**
@@ -986,7 +1063,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 		me._parse(start, count);
 
-		me.updateElements(data, start, count);
+		me.updateElements(data, start, count, 'reset');
 	},
 
 	/**

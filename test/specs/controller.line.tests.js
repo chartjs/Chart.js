@@ -203,9 +203,9 @@ describe('Chart.controllers.line', function() {
 			{x: 0, y: 512},
 			{x: 171, y: 0}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
+			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'red',
 				borderColor: 'blue',
 			}));
@@ -248,7 +248,7 @@ describe('Chart.controllers.line', function() {
 		var meta = chart.getDatasetMeta(0);
 		// 1 point
 		var point = meta.data[0];
-		expect(point._model.x).toBeCloseToPixel(0);
+		expect(point.x).toBeCloseToPixel(0);
 
 		// 2 points
 		chart.data.labels = ['One', 'Two'];
@@ -257,8 +257,8 @@ describe('Chart.controllers.line', function() {
 
 		var points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(0);
-		expect(points[1]._model.x).toBeCloseToPixel(512);
+		expect(points[0].x).toBeCloseToPixel(0);
+		expect(points[1].x).toBeCloseToPixel(512);
 
 		// 3 points
 		chart.data.labels = ['One', 'Two', 'Three'];
@@ -267,9 +267,9 @@ describe('Chart.controllers.line', function() {
 
 		points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(0);
-		expect(points[1]._model.x).toBeCloseToPixel(256);
-		expect(points[2]._model.x).toBeCloseToPixel(512);
+		expect(points[0].x).toBeCloseToPixel(0);
+		expect(points[1].x).toBeCloseToPixel(256);
+		expect(points[2].x).toBeCloseToPixel(512);
 
 		// 4 points
 		chart.data.labels = ['One', 'Two', 'Three', 'Four'];
@@ -278,10 +278,10 @@ describe('Chart.controllers.line', function() {
 
 		points = meta.data;
 
-		expect(points[0]._model.x).toBeCloseToPixel(0);
-		expect(points[1]._model.x).toBeCloseToPixel(171);
-		expect(points[2]._model.x).toBeCloseToPixel(340);
-		expect(points[3]._model.x).toBeCloseToPixel(512);
+		expect(points[0].x).toBeCloseToPixel(0);
+		expect(points[1].x).toBeCloseToPixel(171);
+		expect(points[2].x).toBeCloseToPixel(340);
+		expect(points[3].x).toBeCloseToPixel(512);
 	});
 
 	it('should update elements when the y scale is stacked', function() {
@@ -320,8 +320,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -332,8 +332,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 	});
@@ -383,8 +383,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -395,8 +395,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 	});
@@ -461,8 +461,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -473,8 +473,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 	});
@@ -515,8 +515,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -527,8 +527,8 @@ describe('Chart.controllers.line', function() {
 			{x: 341, y: 146},
 			{x: 512, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 	});
@@ -552,9 +552,9 @@ describe('Chart.controllers.line', function() {
 
 		var meta = chart.getDatasetMeta(0);
 
-		expect(meta.dataset._model.backgroundColor).toBe('rgb(98, 98, 98)');
-		expect(meta.dataset._model.borderColor).toBe('rgb(8, 8, 8)');
-		expect(meta.dataset._model.borderWidth).toBe(0.55);
+		expect(meta.dataset.options.backgroundColor).toBe('rgb(98, 98, 98)');
+		expect(meta.dataset.options.borderColor).toBe('rgb(8, 8, 8)');
+		expect(meta.dataset.options.borderWidth).toBe(0.55);
 	});
 
 	describe('dataset global defaults', function() {
@@ -595,19 +595,19 @@ describe('Chart.controllers.line', function() {
 				}
 			});
 
-			var model = chart.getDatasetMeta(0).dataset._model;
+			var options = chart.getDatasetMeta(0).dataset.options;
 
-			expect(model.spanGaps).toBe(true);
-			expect(model.tension).toBe(0.231);
-			expect(model.backgroundColor).toBe('#add');
-			expect(model.borderWidth).toBe('#daa');
-			expect(model.borderColor).toBe('#dad');
-			expect(model.borderCapStyle).toBe('round');
-			expect(model.borderDash).toEqual([0]);
-			expect(model.borderDashOffset).toBe(0.871);
-			expect(model.borderJoinStyle).toBe('miter');
-			expect(model.fill).toBe('start');
-			expect(model.cubicInterpolationMode).toBe('monotone');
+			expect(options.spanGaps).toBe(true);
+			expect(options.tension).toBe(0.231);
+			expect(options.backgroundColor).toBe('#add');
+			expect(options.borderWidth).toBe('#daa');
+			expect(options.borderColor).toBe('#dad');
+			expect(options.borderCapStyle).toBe('round');
+			expect(options.borderDash).toEqual([0]);
+			expect(options.borderDashOffset).toBe(0.871);
+			expect(options.borderJoinStyle).toBe('miter');
+			expect(options.fill).toBe('start');
+			expect(options.cubicInterpolationMode).toBe('monotone');
 		});
 
 		it('should be overriden by user-supplied values', function() {
@@ -639,14 +639,14 @@ describe('Chart.controllers.line', function() {
 				}
 			});
 
-			var model = chart.getDatasetMeta(0).dataset._model;
+			var options = chart.getDatasetMeta(0).dataset.options;
 
 			// dataset-level option overrides global default
-			expect(model.spanGaps).toBe(true);
+			expect(options.spanGaps).toBe(true);
 			// chart-level default overrides global default
-			expect(model.tension).toBe(0.345);
+			expect(options.tension).toBe(0.345);
 			// dataset-level option overrides chart-level default
-			expect(model.backgroundColor).toBe('#dad');
+			expect(options.backgroundColor).toBe('#dad');
 		});
 	});
 
@@ -679,19 +679,19 @@ describe('Chart.controllers.line', function() {
 			}
 		});
 
-		var model = chart.getDatasetMeta(0).dataset._model;
+		var options = chart.getDatasetMeta(0).dataset.options;
 
-		expect(model.spanGaps).toBe(true);
-		expect(model.tension).toBe(0.231);
-		expect(model.backgroundColor).toBe('#add');
-		expect(model.borderWidth).toBe('#daa');
-		expect(model.borderColor).toBe('#dad');
-		expect(model.borderCapStyle).toBe('round');
-		expect(model.borderDash).toEqual([0]);
-		expect(model.borderDashOffset).toBe(0.871);
-		expect(model.borderJoinStyle).toBe('miter');
-		expect(model.fill).toBe('start');
-		expect(model.cubicInterpolationMode).toBe('monotone');
+		expect(options.spanGaps).toBe(true);
+		expect(options.tension).toBe(0.231);
+		expect(options.backgroundColor).toBe('#add');
+		expect(options.borderWidth).toBe('#daa');
+		expect(options.borderColor).toBe('#dad');
+		expect(options.borderCapStyle).toBe('round');
+		expect(options.borderDash).toEqual([0]);
+		expect(options.borderDashOffset).toBe(0.871);
+		expect(options.borderJoinStyle).toBe('miter');
+		expect(options.fill).toBe('start');
+		expect(options.cubicInterpolationMode).toBe('monotone');
 	});
 
 	it('should obey the dataset options', function() {
@@ -717,19 +717,19 @@ describe('Chart.controllers.line', function() {
 			}
 		});
 
-		var model = chart.getDatasetMeta(0).dataset._model;
+		var options = chart.getDatasetMeta(0).dataset.options;
 
-		expect(model.spanGaps).toBe(true);
-		expect(model.tension).toBe(0.231);
-		expect(model.backgroundColor).toBe('#add');
-		expect(model.borderWidth).toBe('#daa');
-		expect(model.borderColor).toBe('#dad');
-		expect(model.borderCapStyle).toBe('round');
-		expect(model.borderDash).toEqual([0]);
-		expect(model.borderDashOffset).toBe(0.871);
-		expect(model.borderJoinStyle).toBe('miter');
-		expect(model.fill).toBe('start');
-		expect(model.cubicInterpolationMode).toBe('monotone');
+		expect(options.spanGaps).toBe(true);
+		expect(options.tension).toBe(0.231);
+		expect(options.backgroundColor).toBe('#add');
+		expect(options.borderWidth).toBe('#daa');
+		expect(options.borderColor).toBe('#dad');
+		expect(options.borderCapStyle).toBe('round');
+		expect(options.borderDash).toEqual([0]);
+		expect(options.borderDashOffset).toBe(0.871);
+		expect(options.borderJoinStyle).toBe('miter');
+		expect(options.fill).toBe('start');
+		expect(options.cubicInterpolationMode).toBe('monotone');
 	});
 
 	it('should handle number of data point changes in update', function() {
@@ -790,16 +790,16 @@ describe('Chart.controllers.line', function() {
 			var point = chart.getDatasetMeta(0).data[0];
 
 			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(point._model.backgroundColor).toBe('rgb(49, 135, 221)');
-			expect(point._model.borderColor).toBe('rgb(22, 89, 156)');
-			expect(point._model.borderWidth).toBe(1);
-			expect(point._model.radius).toBe(4);
+			expect(point.options.backgroundColor).toBe('rgb(49, 135, 221)');
+			expect(point.options.borderColor).toBe('rgb(22, 89, 156)');
+			expect(point.options.borderWidth).toBe(1);
+			expect(point.options.radius).toBe(4);
 
 			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(point._model.borderWidth).toBe(2);
-			expect(point._model.radius).toBe(3);
+			expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
+			expect(point.options.borderWidth).toBe(2);
+			expect(point.options.radius).toBe(3);
 		});
 
 		it ('should handle hover styles defined via dataset properties', function() {
@@ -816,16 +816,16 @@ describe('Chart.controllers.line', function() {
 			chart.update();
 
 			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(point._model.borderWidth).toBe(8.4);
-			expect(point._model.radius).toBe(4.2);
+			expect(point.options.backgroundColor).toBe('rgb(200, 100, 150)');
+			expect(point.options.borderColor).toBe('rgb(150, 50, 100)');
+			expect(point.options.borderWidth).toBe(8.4);
+			expect(point.options.radius).toBe(4.2);
 
 			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(point._model.borderWidth).toBe(2);
-			expect(point._model.radius).toBe(3);
+			expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
+			expect(point.options.borderWidth).toBe(2);
+			expect(point.options.radius).toBe(3);
 		});
 
 		it ('should handle hover styles defined via element options', function() {
@@ -842,16 +842,16 @@ describe('Chart.controllers.line', function() {
 			chart.update();
 
 			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(point._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(point._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(point._model.borderWidth).toBe(8.4);
-			expect(point._model.radius).toBe(4.2);
+			expect(point.options.backgroundColor).toBe('rgb(200, 100, 150)');
+			expect(point.options.borderColor).toBe('rgb(150, 50, 100)');
+			expect(point.options.borderWidth).toBe(8.4);
+			expect(point.options.radius).toBe(4.2);
 
 			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(point._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(point._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(point._model.borderWidth).toBe(2);
-			expect(point._model.radius).toBe(3);
+			expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
+			expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
+			expect(point.options.borderWidth).toBe(2);
+			expect(point.options.radius).toBe(3);
 		});
 
 		it ('should handle dataset hover styles defined via dataset properties', function() {
@@ -872,14 +872,14 @@ describe('Chart.controllers.line', function() {
 			chart.update();
 
 			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-			expect(dataset._model.backgroundColor).toBe('#000');
-			expect(dataset._model.borderColor).toBe('#111');
-			expect(dataset._model.borderWidth).toBe(12);
+			expect(dataset.options.backgroundColor).toBe('#000');
+			expect(dataset.options.borderColor).toBe('#111');
+			expect(dataset.options.borderWidth).toBe(12);
 
 			jasmine.triggerMouseEvent(chart, 'mouseout', point);
-			expect(dataset._model.backgroundColor).toBe('#AAA');
-			expect(dataset._model.borderColor).toBe('#BBB');
-			expect(dataset._model.borderWidth).toBe(6);
+			expect(dataset.options.backgroundColor).toBe('#AAA');
+			expect(dataset.options.borderColor).toBe('#BBB');
+			expect(dataset.options.borderWidth).toBe(6);
 		});
 	});
 
@@ -899,7 +899,7 @@ describe('Chart.controllers.line', function() {
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[0];
 
-		expect(point._model.borderWidth).toBe(0);
+		expect(point.options.borderWidth).toBe(0);
 	});
 
 	it('should allow an array as the point border width setting', function() {
@@ -916,9 +916,9 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(0);
-		expect(meta.data[0]._model.borderWidth).toBe(1);
-		expect(meta.data[1]._model.borderWidth).toBe(2);
-		expect(meta.data[2]._model.borderWidth).toBe(3);
-		expect(meta.data[3]._model.borderWidth).toBe(4);
+		expect(meta.data[0].options.borderWidth).toBe(1);
+		expect(meta.data[1].options.borderWidth).toBe(2);
+		expect(meta.data[2].options.borderWidth).toBe(3);
+		expect(meta.data[3].options.borderWidth).toBe(4);
 	});
 });

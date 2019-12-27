@@ -30,7 +30,13 @@ defaults._set('global', {
 	datasets: {
 		bar: {
 			categoryPercentage: 0.8,
-			barPercentage: 0.9
+			barPercentage: 0.9,
+			animation: {
+				numbers: {
+					type: 'number',
+					properties: ['x', 'y', 'base', 'width', 'height']
+				}
+			}
 		}
 	}
 });
@@ -267,50 +273,53 @@ module.exports = DatasetController.extend({
 		meta.bar = true;
 	},
 
-	update: function(reset) {
+	update: function(mode) {
 		const me = this;
 		const rects = me._cachedMeta.data;
 
-		me.updateElements(rects, 0, rects.length, reset);
+		me.updateElements(rects, 0, rects.length, mode);
 	},
 
-	updateElements: function(rectangles, start, count, reset) {
+	updateElements: function(rectangles, start, count, mode) {
 		const me = this;
+		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
 		const ruler = me.getRuler();
+		const firstOpts = me._resolveDataElementOptions(start, mode);
+		const sharedOptions = me._getSharedOptions(mode, rectangles[start], firstOpts);
+		const includeOptions = me._includeOptions(mode, sharedOptions);
+
 		let i;
 
 		for (i = 0; i < start + count; i++) {
-			const rectangle = rectangles[i];
-			const options = me._resolveDataElementOptions(i);
+			const options = me._resolveDataElementOptions(i, mode);
 			const vpixels = me.calculateBarValuePixels(i, options);
 			const ipixels = me.calculateBarIndexPixels(i, ruler, options);
 
-			rectangle._model = {
-				backgroundColor: options.backgroundColor,
-				borderColor: options.borderColor,
-				borderSkipped: options.borderSkipped,
-				borderWidth: options.borderWidth
+			const properties = {
+				horizontal,
+				base: reset ? base : vpixels.base,
+				x: horizontal ? reset ? base : vpixels.head : ipixels.center,
+				y: horizontal ? ipixels.center : reset ? base : vpixels.head,
+				height: horizontal ? ipixels.size : undefined,
+				width: horizontal ? undefined : ipixels.size
 			};
 
-			const model = rectangle._model;
-
 			// all borders are drawn for floating bar
+			/* TODO: float bars border skipping magic
 			if (me._getParsed(i)._custom) {
 				model.borderSkipped = null;
 			}
-
-			model.horizontal = horizontal;
-			model.base = reset ? base : vpixels.base;
-			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-			model.height = horizontal ? ipixels.size : undefined;
-			model.width = horizontal ? undefined : ipixels.size;
-
-			rectangle.pivot(me.chart._animationsDisabled);
+			*/
+			if (includeOptions) {
+				properties.options = options;
+			}
+			me._updateElement(rectangles[i], i, properties, mode);
 		}
+
+		me._updateSharedOptions(sharedOptions, mode);
 	},
 
 	/**
