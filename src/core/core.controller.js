@@ -401,13 +401,17 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
+	 * Updates the given metaset with the given dataset index. Ensures it's stored at that index
+	 * in the _metasets array by swapping with the metaset at that index if necessary.
+	 * @param {Object} meta - the dataset metadata
+	 * @param {number} index - the dataset index
 	 * @private
 	 */
 	_updateMetasetIndex: function(meta, index) {
 		const metasets = this._metasets;
-		const old = meta.index;
-		if (old !== index) {
-			metasets[old] = metasets[index];
+		const oldIndex = meta.index;
+		if (oldIndex !== index) {
+			metasets[oldIndex] = metasets[index];
 			metasets[index] = meta;
 			meta.index = index;
 		}
