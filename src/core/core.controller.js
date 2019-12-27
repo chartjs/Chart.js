@@ -195,6 +195,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.options = config.options;
 		me._bufferedRender = false;
 		me._layers = [];
+		me._metasets = [];
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -796,7 +797,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	getDatasetMeta: function(datasetIndex) {
 		const me = this;
 		const dataset = me.data.datasets[datasetIndex];
-		const metasets = me._metasets = me._metasets || [];
+		const metasets = me._metasets;
 		let meta = metasets.filter(x => x._dataset === dataset).pop();
 
 		if (!meta) {
