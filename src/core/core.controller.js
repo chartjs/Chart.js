@@ -195,6 +195,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		me.options = config.options;
 		me._bufferedRender = false;
 		me._layers = [];
+		me._metasets = [];
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -399,11 +400,45 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 		scaleService.addScalesToLayout(this);
 	},
 
+	/**
+	 * Updates the given metaset with the given dataset index. Ensures it's stored at that index
+	 * in the _metasets array by swapping with the metaset at that index if necessary.
+	 * @param {Object} meta - the dataset metadata
+	 * @param {number} index - the dataset index
+	 * @private
+	 */
+	_updateMetasetIndex: function(meta, index) {
+		const metasets = this._metasets;
+		const oldIndex = meta.index;
+		if (oldIndex !== index) {
+			metasets[oldIndex] = metasets[index];
+			metasets[index] = meta;
+			meta.index = index;
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_updateMetasets: function() {
+		const me = this;
+		const metasets = me._metasets;
+		const numData = me.data.datasets.length;
+		const numMeta = metasets.length;
+
+		if (numMeta > numData) {
+			for (let i = numData; i < numMeta; ++i) {
+				me.destroyDatasetMeta(i);
+			}
+			metasets.splice(numData, numMeta - numData);
+		}
+		me._sortedMetasets = metasets.slice(0).sort(compare2Level('order', 'index'));
+	},
+
 	buildOrUpdateControllers: function() {
 		var me = this;
 		var newControllers = [];
 		var datasets = me.data.datasets;
-		var sorted = me._sortedMetasets = [];
 		var i, ilen;
 
 		for (i = 0, ilen = datasets.length; i < ilen; i++) {
@@ -417,7 +452,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 			}
 			meta.type = type;
 			meta.order = dataset.order || 0;
-			meta.index = i;
+			me._updateMetasetIndex(meta, i);
 			meta.label = '' + dataset.label;
 			meta.visible = me.isDatasetVisible(i);
 
@@ -433,11 +468,9 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);
 			}
-			sorted.push(meta);
 		}
 
-		sorted.sort(compare2Level('order', 'index'));
-
+		me._updateMetasets();
 		return newControllers;
 	},
 
@@ -768,8 +801,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 	getDatasetMeta: function(datasetIndex) {
 		const me = this;
 		const dataset = me.data.datasets[datasetIndex];
-		const metasets = me._metasets = me._metasets || [];
-		let meta = metasets[datasetIndex];
+		const metasets = me._metasets;
+		let meta = metasets.filter(x => x._dataset === dataset).pop();
 
 		if (!meta) {
 			meta = metasets[datasetIndex] = {
@@ -782,6 +815,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				yAxisID: null,
 				order: dataset.order || 0,
 				index: datasetIndex,
+				_dataset: dataset,
 				_parsed: []
 			};
 		}

@@ -1276,4 +1276,75 @@ describe('Chart', function() {
 			]);
 		});
 	});
+
+	describe('metasets', function() {
+		beforeEach(function() {
+			this.chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [
+						{label: '1', order: 2},
+						{label: '2', order: 1},
+						{label: '3', order: 4},
+						{label: '4', order: 3},
+					]
+				}
+			});
+		});
+		afterEach(function() {
+			const metasets = this.chart._metasets;
+			expect(metasets.length).toEqual(this.chart.data.datasets.length);
+			for (let i = 0; i < metasets.length; i++) {
+				expect(metasets[i].index).toEqual(i);
+				expect(metasets[i]._dataset).toEqual(this.chart.data.datasets[i]);
+			}
+		});
+		it('should build metasets array in order', function() {
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(1);
+			expect(metasets[2].order).toEqual(4);
+			expect(metasets[3].order).toEqual(3);
+		});
+		it('should build sorted metasets array in correct order', function() {
+			const metasets = this.chart._sortedMetasets;
+			expect(metasets[0].order).toEqual(1);
+			expect(metasets[1].order).toEqual(2);
+			expect(metasets[2].order).toEqual(3);
+			expect(metasets[3].order).toEqual(4);
+		});
+		it('should be moved when datasets are removed from begining', function() {
+			this.chart.data.datasets.splice(0, 2);
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(4);
+			expect(metasets[1].order).toEqual(3);
+		});
+		it('should be moved when datasets are removed from middle', function() {
+			this.chart.data.datasets.splice(1, 2);
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(3);
+		});
+		it('should be moved when datasets are inserted', function() {
+			this.chart.data.datasets.splice(1, 0, {label: '1.5', order: 5});
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(5);
+			expect(metasets[2].order).toEqual(1);
+			expect(metasets[3].order).toEqual(4);
+			expect(metasets[4].order).toEqual(3);
+		});
+		it('should be replaced when dataset is replaced', function() {
+			this.chart.data.datasets.splice(1, 1, {label: '1.5', order: 5});
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(5);
+			expect(metasets[2].order).toEqual(4);
+			expect(metasets[3].order).toEqual(3);
+		});
+	});
 });
