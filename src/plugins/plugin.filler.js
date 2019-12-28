@@ -26,13 +26,13 @@ function getLineByIndex(chart, index) {
 	return visible ? meta.dataset : null;
 }
 
-function parseFillOption(el) {
-	const {_model: model = {}} = el;
-	const fillOption = model.fill;
+function parseFillOption(line) {
+	const options = line.options;
+	const fillOption = options.fill;
 	let fill = valueOrDefault(fillOption && fillOption.target, fillOption);
 
 	if (fill === undefined) {
-		fill = !!model.backgroundColor;
+		fill = !!options.backgroundColor;
 	}
 
 	if (fill === false || fill === null) {
@@ -46,8 +46,8 @@ function parseFillOption(el) {
 }
 
 // @todo if (fill[0] === '#')
-function decodeFill(el, index, count) {
-	const fill = parseFillOption(el);
+function decodeFill(line, index, count) {
+	const fill = parseFillOption(line);
 	let target = parseFloat(fill, 10);
 
 	if (isFinite(target) && Math.floor(target) === target) {
@@ -176,7 +176,7 @@ function pointsFromSegments(boundary, line) {
 }
 
 function getTarget(source) {
-	const {chart, fill, el: line} = source;
+	const {chart, fill, line} = source;
 
 	if (isFinite(fill)) {
 		return getLineByIndex(chart, fill);
@@ -361,20 +361,20 @@ export default {
 		var count = (chart.data.datasets || []).length;
 		var propagate = options.propagate;
 		var sources = [];
-		var meta, i, el, source;
+		var meta, i, line, source;
 
 		for (i = 0; i < count; ++i) {
 			meta = chart.getDatasetMeta(i);
-			el = meta.dataset;
+			line = meta.dataset;
 			source = null;
 
-			if (el && el.options && el instanceof Line) {
+			if (line && line.options && line instanceof Line) {
 				source = {
 					visible: chart.isDatasetVisible(i),
-					fill: decodeFill(el, i, count),
+					fill: decodeFill(line, i, count),
 					chart: chart,
 					scale: meta.vScale,
-					el: el
+					line
 				};
 			}
 
@@ -405,7 +405,7 @@ export default {
 			if (!meta || !meta.visible) {
 				continue;
 			}
-			meta.el.updateControlPoints(area);
+			meta.line.updateControlPoints(area);
 		}
 
 		for (i = metasets.length - 1; i >= 0; --i) {
@@ -414,14 +414,14 @@ export default {
 			if (!meta || meta.fill === false) {
 				continue;
 			}
-			const {el, target, scale} = meta;
-			const lineOpts = el.options;
+			const {line, target, scale} = meta;
+			const lineOpts = line.options;
 			const fillOption = lineOpts.fill;
 			const color = lineOpts.backgroundColor || defaults.global.defaultColor;
 			const {above = color, below = color} = fillOption || {};
-			if (target && el.points.length) {
+			if (target && line.points.length) {
 				clipArea(ctx, area);
-				doFill(ctx, {line: el, target, above, below, area, scale});
+				doFill(ctx, {line, target, above, below, area, scale});
 				unclipArea(ctx);
 			}
 		}

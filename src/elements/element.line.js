@@ -423,7 +423,8 @@ class Line extends Element {
 		}
 		const options = me.options;
 		if (options.tension && !options.steppedLine) {
-			updateBezierControlPoints(me._children, options, chartArea, me._loop);
+			const loop = options.spanGaps ? me._loop : me._fullLoop;
+			updateBezierControlPoints(me._points, options, chartArea, loop);
 		}
 	}
 
