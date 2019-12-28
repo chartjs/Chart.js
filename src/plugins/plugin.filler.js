@@ -10,6 +10,7 @@ import defaults from '../core/core.defaults';
 import Line, {_boundSegment, _boundSegments} from '../elements/element.line';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {valueOrDefault, isFinite, isArray, extend} from '../helpers/helpers.core';
+import {_normalizeAngle} from '../helpers/helpers.math';
 
 
 defaults._set('global', {
@@ -239,7 +240,6 @@ function _clip(ctx, target, clipY) {
 	ctx.clip();
 }
 
-const TAU = Math.PI * 2;
 function getBounds(property, first, last, loop) {
 	if (loop) {
 		return;
@@ -248,10 +248,17 @@ function getBounds(property, first, last, loop) {
 	let end = last[property];
 
 	if (property === 'angle') {
-		start = (start + TAU) % TAU;
-		end = (end + TAU) % TAU;
+		start = _normalizeAngle(start);
+		end = _normalizeAngle(end);
 	}
 	return {property, start, end};
+}
+
+function _getEdge(a, b, prop, fn) {
+	if (a && b) {
+		return fn(a[prop], b[prop]);
+	}
+	return a ? a[prop] : b ? b[prop] : 0;
 }
 
 function _segments(line, target, property) {
@@ -265,7 +272,12 @@ function _segments(line, target, property) {
 		if (!target.segments) {
 			// Special case for boundary not supporting `segments` (simpleArc)
 			// Bounds are provided as `target` for partial circle, or undefined for full circle
-			parts.push({source: segment, target: bounds});
+			parts.push({
+				source: segment,
+				target: bounds,
+				start: points[segment.start],
+				end: points[segment.end]
+			});
 			continue;
 		}
 
@@ -273,10 +285,21 @@ function _segments(line, target, property) {
 		const subs = _boundSegments(target, bounds);
 
 		for (let sub of subs) {
-			const fillSources = _boundSegment(segment, points, getBounds(property, tpoints[sub.start], tpoints[sub.end], sub.loop));
+			const subBounds = getBounds(property, tpoints[sub.start], tpoints[sub.end], sub.loop);
+			const fillSources = _boundSegment(segment, points, subBounds);
 
 			for (let source of fillSources) {
-				parts.push({source, target: sub});
+				parts.push({
+					source,
+					target: sub,
+					start: {
+						[property]: _getEdge(bounds, subBounds, 'start', Math.max)
+					},
+					end: {
+						[property]: _getEdge(bounds, subBounds, 'end', Math.min)
+					}
+
+				});
 			}
 		}
 	}
@@ -303,17 +326,14 @@ function interpolatedLineTo(ctx, target, point, property) {
 function _fill(ctx, cfg) {
 	const {line, target, property, color, scale} = cfg;
 	const segments = _segments(cfg.line, cfg.target, property);
-	const points = line.points;
 
 	ctx.fillStyle = color;
 	for (let i = 0, ilen = segments.length; i < ilen; ++i) {
-		const {source: src, target: tgt} = segments[i];
-		const first = points[src.start];
-		const last = points[src.end];
+		const {source: src, target: tgt, start, end} = segments[i];
 
 		ctx.save();
 
-		clipBounds(ctx, scale, getBounds(property, first, last));
+		clipBounds(ctx, scale, getBounds(property, start, end));
 
 		ctx.beginPath();
 
@@ -321,12 +341,12 @@ function _fill(ctx, cfg) {
 		if (loop) {
 			ctx.closePath();
 		} else {
-			interpolatedLineTo(ctx, target, last, property);
+			interpolatedLineTo(ctx, target, end, property);
 		}
 
 		loop &= target.pathSegment(ctx, tgt, {move: loop, reverse: true});
 		if (!loop) {
-			interpolatedLineTo(ctx, target, first, property);
+			interpolatedLineTo(ctx, target, start, property);
 		}
 
 		ctx.closePath();
