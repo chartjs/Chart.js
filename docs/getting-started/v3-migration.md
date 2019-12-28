@@ -19,20 +19,19 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Interactions
 
-* `options.onClick` is now limited to the chart area
-* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
+* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
+* `options.onClick` is now limited to the chart area
 
 ### Customizability
 
 * `custom` attribute of elements was removed. Please use scriptable options
-* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
+* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
 
 ### Options
 
-* The dataset option `tension` was renamed to `lineTension`
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
@@ -48,6 +47,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
+* The dataset option `tension` was renamed to `lineTension`
 
 ### Animations
 
@@ -150,11 +150,11 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ##### Ticks
 
-* When the `autoSkip` option is enabled, `Scale.ticks` now contains only the non-skipped ticks instead of all ticks.
 * `Scale.afterBuildTicks` now has no parameters like the other callbacks
 * `Scale.buildTicks` is now expected to return tick objects
 * `Scale.convertTicksToLabels` was renamed to `generateTickLabels`. It is now expected to set the label property on the ticks given as input
 * `Scale.ticks` now contains objects instead of strings
+* When the `autoSkip` option is enabled, `Scale.ticks` now contains only the non-skipped ticks instead of all ticks.
 
 ##### Time Scale
 
