@@ -1,9 +1,9 @@
 'use strict';
 
-const Animator = require('./core.animator');
-const Animation = require('./core.animation');
-const helpers = require('../helpers/index');
-const defaults = require('./core.defaults');
+import Animator from './core.animator';
+import Animation from './core.animation';
+import defaults from '../core/core.defaults';
+import {noop, extend, isObject} from '../helpers/helpers.core';
 
 defaults._set('global', {
 	animation: {
@@ -23,8 +23,8 @@ defaults._set('global', {
 			type: 'color',
 			properties: ['borderColor', 'backgroundColor']
 		},
-		onProgress: helpers.noop,
-		onComplete: helpers.noop
+		onProgress: noop,
+		onComplete: noop
 	}
 });
 
@@ -35,14 +35,14 @@ function copyOptions(target, values) {
 		return;
 	}
 	if (oldOpts.$shared) {
-		target.options = helpers.extend({}, oldOpts, newOpts, {$shared: false});
+		target.options = extend({}, oldOpts, newOpts, {$shared: false});
 	} else {
-		helpers.extend(oldOpts, newOpts);
+		extend(oldOpts, newOpts);
 	}
 	delete values.options;
 }
 
-class Animations {
+export default class Animations {
 	constructor(chart, animations) {
 		this._chart = chart;
 		this._properties = new Map();
@@ -51,19 +51,19 @@ class Animations {
 
 	configure(animations) {
 		const animatedProps = this._properties;
-		const animDefaults = Object.fromEntries(Object.entries(animations).filter(({1: value}) => !helpers.isObject(value)));
+		const animDefaults = Object.fromEntries(Object.entries(animations).filter(({1: value}) => !isObject(value)));
 
 		for (let [key, cfg] of Object.entries(animations)) {
-			if (!helpers.isObject(cfg)) {
+			if (!isObject(cfg)) {
 				continue;
 			}
 			for (let prop of cfg.properties || [key]) {
 				// Can have only one config per animation.
 				if (!animatedProps.has(prop)) {
-					animatedProps.set(prop, helpers.extend({}, animDefaults, cfg));
+					animatedProps.set(prop, extend({}, animDefaults, cfg));
 				} else if (prop === key) {
 					// Single property targetting config wins over multi-targetting.
-					animatedProps.set(prop, helpers.extend({}, animatedProps.get(prop), cfg));
+					animatedProps.set(prop, extend({}, animatedProps.get(prop), cfg));
 				}
 			}
 		}
@@ -88,7 +88,7 @@ class Animations {
 			if (options.$shared) {
 				// If the current / old options are $shared, meaning other elements are
 				// using the same options, we need to clone to become unique.
-				target.options = options = helpers.extend({}, options, {$shared: false, $animations: {}});
+				target.options = options = extend({}, options, {$shared: false, $animations: {}});
 			}
 			animations = this._createAnimations(options, newOptions);
 		} else {
@@ -150,7 +150,7 @@ class Animations {
 			copyOptions(target, values);
 			// copyOptions removes the `options` from `values`,
 			// unless it can be directly assigned.
-			helpers.extend(target, values);
+			extend(target, values);
 			return;
 		}
 
@@ -163,4 +163,3 @@ class Animations {
 	}
 }
 
-module.exports = Animations;
