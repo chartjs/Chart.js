@@ -328,7 +328,6 @@ describe('Platform.dom', function() {
 
 			var canvas = chart.canvas;
 			var wrapper = canvas.parentNode;
-			wrapper.style.width = '475px';
 			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 475, dh: 450,
@@ -345,6 +344,7 @@ describe('Platform.dom', function() {
 
 				done();
 			});
+			wrapper.style.width = '475px';
 		});
 	});
 
