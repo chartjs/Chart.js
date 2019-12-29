@@ -66,19 +66,20 @@ function sorter(a, b) {
 }
 
 function arrayUnique(items) {
-	const hash = {};
-	const out = [];
+	const map = new Map();
 	let i, ilen, item;
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		item = items[i];
-		if (!hash[item]) {
-			hash[item] = true;
-			out.push(item);
+		if (!map.has(item)) {
+			map.set(item, true);
 		}
 	}
+	if (map.size === ilen) {
+		return items;
+	}
 
-	return out;
+	return Array.from(map.keys());
 }
 
 /**
