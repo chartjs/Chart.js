@@ -7,11 +7,11 @@
 'use strict';
 
 import defaults from '../core/core.defaults';
-import Line, {_boundSegment, _boundSegments} from '../elements/element.line';
+import Line from '../elements/element.line';
+import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {valueOrDefault, isFinite, isArray, extend} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
-
 
 defaults._set('global', {
 	plugins: {
@@ -422,10 +422,9 @@ export default {
 		for (i = metasets.length - 1; i >= 0; --i) {
 			meta = metasets[i].$filler;
 
-			if (!meta || !meta.visible) {
-				continue;
+			if (meta) {
+				meta.line.updateControlPoints(area);
 			}
-			meta.line.updateControlPoints(area);
 		}
 
 		for (i = metasets.length - 1; i >= 0; --i) {
