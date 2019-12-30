@@ -149,11 +149,11 @@ module.exports = DatasetController.extend({
 	_getMaxOverflow: function() {
 		const me = this;
 		const meta = me._cachedMeta;
+		const border = me._showLine && meta.dataset.options.borderWidth || 0;
 		const data = meta.data || [];
 		if (!data.length) {
-			return false;
+			return border;
 		}
-		const border = me._showLine && meta.dataset.options.borderWidth || 0;
 		const firstPoint = data[0].size();
 		const lastPoint = data[data.length - 1].size();
 		return Math.max(border, firstPoint, lastPoint) / 2;
