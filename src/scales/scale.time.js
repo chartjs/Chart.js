@@ -66,20 +66,18 @@ function sorter(a, b) {
 }
 
 function arrayUnique(items) {
-	const map = new Map();
+	const set = new Set();
 	let i, ilen, item;
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
 		item = items[i];
-		if (!map.has(item)) {
-			map.set(item, true);
-		}
+		set.add(item, true);
 	}
-	if (map.size === ilen) {
+	if (set.size === ilen) {
 		return items;
 	}
 
-	return Array.from(map.keys());
+	return Array.from(set);
 }
 
 /**
