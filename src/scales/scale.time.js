@@ -67,12 +67,12 @@ function sorter(a, b) {
 
 function arrayUnique(items) {
 	const set = new Set();
-	let i, ilen, item;
+	let i, ilen;
 
 	for (i = 0, ilen = items.length; i < ilen; ++i) {
-		item = items[i];
-		set.add(item, true);
+		set.add(items[i]);
 	}
+
 	if (set.size === ilen) {
 		return items;
 	}
