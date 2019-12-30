@@ -703,10 +703,11 @@ class TimeScale extends Scale {
 	}
 
 	getPixelForTick(index) {
-		const ticks = this.getTicks();
-		return index >= 0 && index < ticks.length ?
-			this.getPixelForValue(ticks[index].value) :
-			null;
+		const ticks = this.ticks;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index].value);
 	}
 
 	getValueForPixel(pixel) {

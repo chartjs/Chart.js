@@ -78,7 +78,7 @@ class CategoryScale extends Scale {
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
-		return this.getPixelForValue(index * me._numLabels / ticks.length + this.min);
+		return me.getPixelForValue(index * me._numLabels / ticks.length + me.min);
 	}
 
 	getValueForPixel(pixel) {
