@@ -63,11 +63,11 @@ class LinearScale extends LinearScaleBase {
 	}
 
 	getPixelForTick(index) {
-		var ticks = this._tickValues;
+		const ticks = this.ticks;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
-		return this.getPixelForValue(ticks[index]);
+		return this.getPixelForValue(ticks[index].value);
 	}
 }
 

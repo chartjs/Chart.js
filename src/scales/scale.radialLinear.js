@@ -450,7 +450,7 @@ class RadialLinearScale extends LinearScaleBase {
 		if (gridLineOpts.display) {
 			me.ticks.forEach(function(tick, index) {
 				if (index !== 0) {
-					offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
+					offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
@@ -508,7 +508,7 @@ class RadialLinearScale extends LinearScaleBase {
 				return;
 			}
 
-			offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
+			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
 			if (tickOpts.showLabelBackdrop) {
 				width = ctx.measureText(tick.label).width;

@@ -231,15 +231,9 @@ class LinearScaleBase extends Scale {
 		return ticks;
 	}
 
-	generateTickLabels(ticks) {
-		var me = this;
-		me._tickValues = ticks.map(t => t.value);
-		Scale.prototype.generateTickLabels.call(me, ticks);
-	}
-
 	_configure() {
 		var me = this;
-		var ticks = me.getTicks();
+		var ticks = me.ticks;
 		var start = me.min;
 		var end = me.max;
 		var offset;
