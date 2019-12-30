@@ -221,10 +221,10 @@ module.exports = DatasetController.extend({
 		me.outerRadius = chart.outerRadius - chart.radiusLength * me._getRingWeightOffset(me.index);
 		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength * chartWeight, 0);
 
-		me.updateElements(arcs, 0, arcs.length, mode);
+		me.updateElements(arcs, 0, mode);
 	},
 
-	updateElements: function(arcs, start, count, mode) {
+	updateElements: function(arcs, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const chart = me.chart;
@@ -239,8 +239,8 @@ module.exports = DatasetController.extend({
 		let startAngle = opts.rotation;
 		let i;
 
-		for (i = 0; i < start + count; ++i) {
-			const arc = arcs[i];
+		for (i = 0; i < start + arcs.length; ++i) {
+			const arc = this._cachedMeta.data[i];
 			const circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI);
 			const options = arc._options || {};
 			if (i < start) {

@@ -88,11 +88,11 @@ module.exports = DatasetController.extend({
 
 		// Update Points
 		if (meta.visible) {
-			me.updateElements(points, 0, points.length, mode);
+			me.updateElements(points, 0, mode);
 		}
 	},
 
-	updateElements: function(points, start, count, mode) {
+	updateElements: function(points, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
@@ -101,9 +101,10 @@ module.exports = DatasetController.extend({
 		const includeOptions = me._includeOptions(mode, sharedOptions);
 		let i;
 
-		for (i = start; i < start + count; ++i) {
+		for (i = 0; i < points.length; ++i) {
+			const index = start + i;
 			const point = points[i];
-			const parsed = me._getParsed(i);
+			const parsed = me._getParsed(index);
 			const x = xScale.getPixelForValue(parsed[xScale.id]);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
 			const properties = {
@@ -113,11 +114,11 @@ module.exports = DatasetController.extend({
 			};
 
 			if (includeOptions) {
-				properties.options = i === start ? firstOpts
-					: me._resolveDataElementOptions(i, mode);
+				properties.options = i === 0 ? firstOpts
+					: me._resolveDataElementOptions(index, mode);
 			}
 
-			me._updateElement(point, i, properties, mode);
+			me._updateElement(point, index, properties, mode);
 		}
 
 		me._updateSharedOptions(sharedOptions, mode);

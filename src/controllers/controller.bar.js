@@ -277,10 +277,10 @@ module.exports = DatasetController.extend({
 		const me = this;
 		const rects = me._cachedMeta.data;
 
-		me.updateElements(rects, 0, rects.length, mode);
+		me.updateElements(rects, 0, mode);
 	},
 
-	updateElements: function(rectangles, start, count, mode) {
+	updateElements: function(rectangles, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
@@ -293,10 +293,11 @@ module.exports = DatasetController.extend({
 
 		let i;
 
-		for (i = 0; i < start + count; i++) {
-			const options = me._resolveDataElementOptions(i, mode);
-			const vpixels = me.calculateBarValuePixels(i, options);
-			const ipixels = me.calculateBarIndexPixels(i, ruler, options);
+		for (i = 0; i < rectangles.length; i++) {
+			const index = start + i;
+			const options = me._resolveDataElementOptions(index, mode);
+			const vpixels = me.calculateBarValuePixels(index, options);
+			const ipixels = me.calculateBarIndexPixels(index, ruler, options);
 
 			const properties = {
 				horizontal,
@@ -316,7 +317,7 @@ module.exports = DatasetController.extend({
 			if (includeOptions) {
 				properties.options = options;
 			}
-			me._updateElement(rectangles[i], i, properties, mode);
+			me._updateElement(rectangles[i], index, properties, mode);
 		}
 
 		me._updateSharedOptions(sharedOptions, mode);
