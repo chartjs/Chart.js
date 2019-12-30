@@ -23,7 +23,9 @@ The following animation options are available. The global options for are define
 | [collection] | `object` | `undefined` | Option overrides for multiple properties, identified by `properties` array.
 
 Default collections:
-| Name | option | value
+
+| Name | Option | Value
+| ---- | ------ | -----
 | `numbers` | `type` | `'number'`
 | | `properties` | `['x', 'y', 'borderWidth', 'radius', 'tension']`
 | `colors` | `type` | `'color'`
