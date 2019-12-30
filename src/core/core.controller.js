@@ -68,7 +68,8 @@ function mergeScaleConfig(config, options) {
 	});
 
 	// apply scale defaults, if not overridden by dataset defaults
-	Object.values(scales).forEach(scale => {
+	Object.keys(scales).forEach(key => {
+		const scale = scales[key];
 		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
 	});
 
@@ -139,9 +140,9 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
-const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
+const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
 function positionIsHorizontal(position, axis) {
-	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.includes(position) && axis === 'x');
+	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.has(position) && axis === 'x');
 }
 
 function compare2Level(l1, l2) {

@@ -42,6 +42,17 @@ function copyOptions(target, values) {
 	delete values.options;
 }
 
+function extensibleConfig(animations) {
+	const result = {};
+	Object.keys(animations).forEach(key => {
+		const value = animations[key];
+		if (!isObject(value)) {
+			result[key] = value;
+		}
+	});
+	return result;
+}
+
 export default class Animations {
 	constructor(chart, animations) {
 		this._chart = chart;
@@ -50,12 +61,17 @@ export default class Animations {
 	}
 
 	configure(animations) {
-		const animatedProps = this._properties;
-		const animDefaults = Object.fromEntries(Object.entries(animations).filter(({1: value}) => !isObject(value)));
+		if (!isObject(animations)) {
+			return;
+		}
 
-		for (let [key, cfg] of Object.entries(animations)) {
+		const animatedProps = this._properties;
+		const animDefaults = extensibleConfig(animations);
+
+		Object.keys(animations).forEach(key => {
+			const cfg = animations[key];
 			if (!isObject(cfg)) {
-				continue;
+				return;
 			}
 			for (let prop of cfg.properties || [key]) {
 				// Can have only one config per animation.
@@ -66,7 +82,7 @@ export default class Animations {
 					animatedProps.set(prop, extend({}, animatedProps.get(prop), cfg));
 				}
 			}
-		}
+		});
 	}
 
 	/**
