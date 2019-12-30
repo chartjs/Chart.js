@@ -111,9 +111,9 @@ new Chart(ctx, {
 
 ### Enable spanGaps
 
-If you have a lot of data points, it can be more performant to enable spanGaps. This disables segmentation of line, which can be an unneeded step.
+If you have a lot of data points, it can be more performant to enable `spanGaps`. This disables segmentation of the line, which can be an unneeded step.
 
-To enable spanGaps:
+To enable `spanGaps`:
 
 ```javascript
 new Chart(ctx, {

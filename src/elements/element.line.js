@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.math';
+import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.interpolation';
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
