@@ -77,7 +77,7 @@ function arrayUnique(items) {
 		return items;
 	}
 
-	return Array.from(set);
+	return [...set];
 }
 
 /**
