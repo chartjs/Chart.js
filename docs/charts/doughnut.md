@@ -113,6 +113,7 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `cutoutPercentage` | `number` | `50` - for doughnut, `0` - for pie | The percentage of the chart that is cut out of the middle.
+| `radiusPercentage` | `number` | `100` | The percentage of the available radius to use. Setting a lower number shrinks the chart on a large canvas.
 | `rotation` | `number` | `-0.5 * Math.PI` | Starting angle to draw arcs from.
 | `circumference` | `number` | `2 * Math.PI` | Sweep to allow arcs to cover.
 | `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.

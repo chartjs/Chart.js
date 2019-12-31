@@ -88,6 +88,9 @@ defaults._set('doughnut', {
 	// The percentage of the chart that we cut out of the middle.
 	cutoutPercentage: 50,
 
+	// The percentage of the available radius that is used.
+	radiusPercentage: 100,
+
 	// The rotation of the chart, where the first data arc begins.
 	rotation: -HALF_PI,
 
@@ -165,38 +168,39 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(mode) {
-		var me = this;
-		var chart = me.chart;
-		var chartArea = chart.chartArea;
-		var opts = chart.options;
-		var ratioX = 1;
-		var ratioY = 1;
-		var offsetX = 0;
-		var offsetY = 0;
-		var meta = me._cachedMeta;
-		var arcs = meta.data;
-		var cutout = opts.cutoutPercentage / 100 || 0;
-		var circumference = opts.circumference;
-		var chartWeight = me._getRingWeight(me.index);
-		var maxWidth, maxHeight, i, ilen;
+		const me = this;
+		const chart = me.chart;
+		const chartArea = chart.chartArea;
+		const opts = chart.options;
+		let ratioX = 1;
+		let ratioY = 1;
+		let offsetX = 0;
+		let offsetY = 0;
+		const meta = me._cachedMeta;
+		const arcs = meta.data;
+		const cutout = opts.cutoutPercentage / 100 || 0;
+		const radius = opts.radiusPercentage / 100 || 0;
+		const circumference = opts.circumference;
+		const chartWeight = me._getRingWeight(me.index);
+		let maxWidth, maxHeight, i, ilen;
 
 		// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
 		if (circumference < DOUBLE_PI) {
-			var startAngle = opts.rotation % DOUBLE_PI;
+			let startAngle = opts.rotation % DOUBLE_PI;
 			startAngle += startAngle >= PI ? -DOUBLE_PI : startAngle < -PI ? DOUBLE_PI : 0;
-			var endAngle = startAngle + circumference;
-			var startX = Math.cos(startAngle);
-			var startY = Math.sin(startAngle);
-			var endX = Math.cos(endAngle);
-			var endY = Math.sin(endAngle);
-			var contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI;
-			var contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= DOUBLE_PI + HALF_PI;
-			var contains180 = startAngle === -PI || endAngle >= PI;
-			var contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
-			var minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
-			var minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
-			var maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
-			var maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
+			const endAngle = startAngle + circumference;
+			const startX = Math.cos(startAngle);
+			const startY = Math.sin(startAngle);
+			const endX = Math.cos(endAngle);
+			const endY = Math.sin(endAngle);
+			const contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI;
+			const contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= DOUBLE_PI + HALF_PI;
+			const contains180 = startAngle === -PI || endAngle >= PI;
+			const contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
+			const minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
+			const minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
+			const maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
+			const maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
 			ratioX = (maxX - minX) / 2;
 			ratioY = (maxY - minY) / 2;
 			offsetX = -(maxX + minX) / 2;
@@ -210,7 +214,7 @@ module.exports = DatasetController.extend({
 		chart.borderWidth = me.getMaxBorderWidth();
 		maxWidth = (chartArea.right - chartArea.left - chart.borderWidth) / ratioX;
 		maxHeight = (chartArea.bottom - chartArea.top - chart.borderWidth) / ratioY;
-		chart.outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
+		chart.outerRadius = Math.max(Math.min(maxWidth, maxHeight) * radius / 2, 0);
 		chart.innerRadius = Math.max(chart.outerRadius * cutout, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
 		chart.offsetX = offsetX * chart.outerRadius;
