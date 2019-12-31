@@ -135,18 +135,19 @@ function capControlPoint(pt, min, max) {
 }
 
 function capBezierPoints(points, area) {
-	var i, ilen, model;
+	var i, ilen, point;
 	for (i = 0, ilen = points.length; i < ilen; ++i) {
-		model = points[i];
-		if (_isPointInArea(model, area)) {
-			if (i > 0 && _isPointInArea(points[i - 1], area)) {
-				model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
-				model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
-			}
-			if (i < points.length - 1 && _isPointInArea(points[i + 1], area)) {
-				model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
-				model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
-			}
+		point = points[i];
+		if (!_isPointInArea(point, area)) {
+			continue;
+		}
+		if (i > 0 && _isPointInArea(points[i - 1], area)) {
+			point.controlPointPreviousX = capControlPoint(point.controlPointPreviousX, area.left, area.right);
+			point.controlPointPreviousY = capControlPoint(point.controlPointPreviousY, area.top, area.bottom);
+		}
+		if (i < points.length - 1 && _isPointInArea(points[i + 1], area)) {
+			point.controlPointNextX = capControlPoint(point.controlPointNextX, area.left, area.right);
+			point.controlPointNextY = capControlPoint(point.controlPointNextY, area.top, area.bottom);
 		}
 	}
 }
