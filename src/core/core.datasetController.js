@@ -1063,7 +1063,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 		me._parse(start, count);
 
-		me.updateElements(data, start, count, 'reset');
+		me.updateElements(elements, start, 'reset');
 	},
 
 	/**

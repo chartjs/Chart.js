@@ -86,10 +86,10 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(mode) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var line = meta.dataset;
-		var points = meta.data || [];
+		const me = this;
+		const meta = me._cachedMeta;
+		const line = meta.dataset;
+		const points = meta.data || [];
 
 		const properties = {
 			_children: points,
@@ -100,22 +100,23 @@ module.exports = DatasetController.extend({
 		me._updateElement(line, undefined, properties, mode);
 
 		// Update Points
-		me.updateElements(points, 0, points.length, mode);
+		me.updateElements(points, 0, mode);
 
 		line.updateControlPoints(me.chart.chartArea);
 	},
 
-	updateElements: function(points, start, count, mode) {
+	updateElements: function(points, start, mode) {
 		const me = this;
 		const dataset = me.getDataset();
 		const scale = me.chart.scales.r;
 		const reset = mode === 'reset';
-		var i;
+		let i;
 
-		for (i = start; i < start + count; i++) {
+		for (i = 0; i < points.length; i++) {
 			const point = points[i];
-			const options = me._resolveDataElementOptions(i);
-			const pointPosition = scale.getPointPositionForValue(i, dataset.data[i]);
+			const index = start + i;
+			const options = me._resolveDataElementOptions(index);
+			const pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 
 			const x = reset ? scale.xCenter : pointPosition.x;
 			const y = reset ? scale.yCenter : pointPosition.y;
@@ -127,7 +128,7 @@ module.exports = DatasetController.extend({
 				options,
 			};
 
-			me._updateElement(point, i, properties, mode);
+			me._updateElement(point, index, properties, mode);
 		}
 	},
 
@@ -135,10 +136,10 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_resolveDatasetElementOptions: function() {
-		var me = this;
-		var config = me._config;
-		var options = me.chart.options;
-		var values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
+		const me = this;
+		const config = me._config;
+		const options = me.chart.options;
+		const values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);

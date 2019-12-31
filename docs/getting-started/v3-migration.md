@@ -106,7 +106,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
-* `DatasetController.updateElement` was renamed to `DatasetController.updateElements`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 * `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
@@ -168,6 +167,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ##### Dataset Controllers
 
+* `updateElement` was replaced with `updateElements` now taking the elements to update, the `start` index, and `mode`
 * `setHoverStyle` and `removeHoverStyle` now additionally take the `datasetIndex` and `index`
 
 #### Interactions
