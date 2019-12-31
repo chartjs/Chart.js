@@ -407,10 +407,11 @@ class RadialLinearScale extends LinearScaleBase {
 
 	getPointPosition(index, distanceFromCenter) {
 		var me = this;
-		var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
+		var angle = me.getIndexAngle(index) - (Math.PI / 2);
 		return {
-			x: Math.cos(thisAngle) * distanceFromCenter + me.xCenter,
-			y: Math.sin(thisAngle) * distanceFromCenter + me.yCenter
+			x: Math.cos(angle) * distanceFromCenter + me.xCenter,
+			y: Math.sin(angle) * distanceFromCenter + me.yCenter,
+			angle
 		};
 	}
 
@@ -419,15 +420,7 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	getBasePosition(index) {
-		var me = this;
-		var min = me.min;
-		var max = me.max;
-
-		return me.getPointPositionForValue(index || 0,
-			me.beginAtZero ? 0 :
-			min < 0 && max < 0 ? max :
-			min > 0 && max > 0 ? min :
-			0);
+		return this.getPointPositionForValue(index || 0, this.getBaseValue());
 	}
 
 	/**

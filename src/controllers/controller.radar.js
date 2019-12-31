@@ -90,10 +90,11 @@ module.exports = DatasetController.extend({
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
 		const points = meta.data || [];
-
+		const labels = meta.iScale._getLabels();
 		const properties = {
-			_children: points,
+			points,
 			_loop: true,
+			_fullLoop: labels.length === points.length,
 			options: me._resolveDatasetElementOptions()
 		};
 
@@ -122,10 +123,11 @@ module.exports = DatasetController.extend({
 			const y = reset ? scale.yCenter : pointPosition.y;
 
 			const properties = {
-				x: x,
-				y: y,
+				x,
+				y,
+				angle: pointPosition.angle,
 				skip: isNaN(x) || isNaN(y),
-				options,
+				options
 			};
 
 			me._updateElement(point, index, properties, mode);

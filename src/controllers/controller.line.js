@@ -77,9 +77,8 @@ module.exports = DatasetController.extend({
 
 		// Update Line
 		if (showLine && mode !== 'resize') {
-
 			const properties = {
-				_children: points,
+				points,
 				options: me._resolveDatasetElementOptions()
 			};
 
