@@ -479,12 +479,17 @@ helpers.extend(DatasetController.prototype, {
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
 		const iScaleId = iScale.id;
-		let sorted = meta._sorted;
-		let offset = 0;
+		let sorted = true;
 		let i, parsed, cur, prev;
+
+		if (start > 0) {
+			sorted = meta._sorted;
+			prev = meta._parsed[start - 1];
+		}
 
 		if (me._parsing === false) {
 			meta._parsed = data;
+			meta._sorted = true;
 		} else {
 			if (helpers.isArray(data[start])) {
 				parsed = me._parseArrayData(meta, data, start, count);
@@ -494,10 +499,11 @@ helpers.extend(DatasetController.prototype, {
 				parsed = me._parsePrimitiveData(meta, data, start, count);
 			}
 
+
 			for (i = 0; i < count; ++i) {
-				meta._parsed[i + start] = cur = parsed[i + offset];
+				meta._parsed[i + start] = cur = parsed[i];
 				if (sorted) {
-					if (i > 0 && cur[iScaleId] < prev[iScaleId]) {
+					if (prev && cur[iScaleId] < prev[iScaleId]) {
 						sorted = false;
 					}
 					prev = cur;
@@ -511,9 +517,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		iScale._invalidateCaches();
-		if (vScale !== iScale) {
-			vScale._invalidateCaches();
-		}
+		vScale._invalidateCaches();
 	},
 
 	/**

@@ -818,7 +818,7 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				index: datasetIndex,
 				_dataset: dataset,
 				_parsed: [],
-				_sorted: true
+				_sorted: false
 			};
 		}
 
