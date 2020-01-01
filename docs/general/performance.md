@@ -89,7 +89,7 @@ new Chart(ctx, {
 
 ### Automatic data decimation during draw
 
-Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default), `fill` is `false` and `borderDash` is `[]` (default).`
+Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default) and `borderDash` is `[]` (default).`
 This improves rendering speed by skipping drawing of invisible line segments.
 
 ```javascript
@@ -105,6 +105,26 @@ new Chart(ctx, {
                 borderDash: []
             }
         }
+    }
+});
+```
+
+### Enable spanGaps
+
+If you have a lot of data points, it can be more performant to enable `spanGaps`. This disables segmentation of the line, which can be an unneeded step.
+
+To enable `spanGaps`:
+
+```javascript
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            spanGaps: true // enable for a single dataset
+        }]
+    },
+    options: {
+        spanGaps: true // enable for all datasets
     }
 });
 ```

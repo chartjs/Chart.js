@@ -144,7 +144,7 @@ module.exports = DatasetController.extend({
 
 		me._updateRadius();
 
-		me.updateElements(arcs, 0, arcs.length, mode);
+		me.updateElements(arcs, 0, mode);
 	},
 
 	/**
@@ -165,7 +165,7 @@ module.exports = DatasetController.extend({
 		me.innerRadius = me.outerRadius - chart.radiusLength;
 	},
 
-	updateElements: function(arcs, start, count, mode) {
+	updateElements: function(arcs, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const chart = me.chart;
@@ -184,11 +184,12 @@ module.exports = DatasetController.extend({
 		for (i = 0; i < start; ++i) {
 			angle += me._computeAngle(i);
 		}
-		for (; i < start + count; i++) {
+		for (i = 0; i < arcs.length; i++) {
 			const arc = arcs[i];
+			const index = start + i;
 			let startAngle = angle;
-			let endAngle = angle + me._computeAngle(i);
-			let outerRadius = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[i]);
+			let endAngle = angle + me._computeAngle(index);
+			let outerRadius = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
 			angle = endAngle;
 
 			if (reset) {
@@ -208,10 +209,10 @@ module.exports = DatasetController.extend({
 				outerRadius,
 				startAngle,
 				endAngle,
-				options: me._resolveDataElementOptions(i)
+				options: me._resolveDataElementOptions(index)
 			};
 
-			me._updateElement(arc, i, properties, mode);
+			me._updateElement(arc, index, properties, mode);
 		}
 	},
 

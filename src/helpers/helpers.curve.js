@@ -1,4 +1,5 @@
 import {almostEquals, sign} from './helpers.math';
+import {_isPointInArea} from './helpers.canvas';
 
 const EPSILON = Number.EPSILON || 1e-14;
 
@@ -126,5 +127,62 @@ export function splineCurveMonotone(points) {
 			pointCurrent.model.controlPointNextX = pointCurrent.model.x + deltaX;
 			pointCurrent.model.controlPointNextY = pointCurrent.model.y + deltaX * pointCurrent.mK;
 		}
+	}
+}
+
+function capControlPoint(pt, min, max) {
+	return Math.max(Math.min(pt, max), min);
+}
+
+function capBezierPoints(points, area) {
+	var i, ilen, point;
+	for (i = 0, ilen = points.length; i < ilen; ++i) {
+		point = points[i];
+		if (!_isPointInArea(point, area)) {
+			continue;
+		}
+		if (i > 0 && _isPointInArea(points[i - 1], area)) {
+			point.controlPointPreviousX = capControlPoint(point.controlPointPreviousX, area.left, area.right);
+			point.controlPointPreviousY = capControlPoint(point.controlPointPreviousY, area.top, area.bottom);
+		}
+		if (i < points.length - 1 && _isPointInArea(points[i + 1], area)) {
+			point.controlPointNextX = capControlPoint(point.controlPointNextX, area.left, area.right);
+			point.controlPointNextY = capControlPoint(point.controlPointNextY, area.top, area.bottom);
+		}
+	}
+}
+
+export function _updateBezierControlPoints(points, options, area, loop) {
+	var i, ilen, point, controlPoints;
+
+	// Only consider points that are drawn in case the spanGaps option is used
+	if (options.spanGaps) {
+		points = points.filter(function(pt) {
+			return !pt.skip;
+		});
+	}
+
+	if (options.cubicInterpolationMode === 'monotone') {
+		splineCurveMonotone(points);
+	} else {
+		let prev = loop ? points[points.length - 1] : points[0];
+		for (i = 0, ilen = points.length; i < ilen; ++i) {
+			point = points[i];
+			controlPoints = splineCurve(
+				prev,
+				point,
+				points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen],
+				options.tension
+			);
+			point.controlPointPreviousX = controlPoints.previous.x;
+			point.controlPointPreviousY = controlPoints.previous.y;
+			point.controlPointNextX = controlPoints.next.x;
+			point.controlPointNextY = controlPoints.next.y;
+			prev = point;
+		}
+	}
+
+	if (options.capBezierPoints) {
+		capBezierPoints(points, area);
 	}
 }

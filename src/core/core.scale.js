@@ -876,12 +876,9 @@ class Scale extends Element {
 	}
 
 	getBaseValue() {
-		var me = this;
-		var min = me.min;
-		var max = me.max;
+		const {min, max} = this;
 
-		return me.beginAtZero ? 0 :
-			min < 0 && max < 0 ? max :
+		return min < 0 && max < 0 ? max :
 			min > 0 && max > 0 ? min :
 			0;
 	}

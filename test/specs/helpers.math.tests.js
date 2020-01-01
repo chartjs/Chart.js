@@ -106,4 +106,36 @@ describe('Chart.helpers.math', function() {
 		expect(math.isNumber(undefined)).toBe(false);
 		expect(math.isNumber('cbc')).toBe(false);
 	});
+
+	it('should compute shortest distance between angles', function() {
+		expect(math._angleDiff(1, 2)).toEqual(-1);
+		expect(math._angleDiff(2, 1)).toEqual(1);
+		expect(math._angleDiff(0, 3.15)).toBeCloseTo(3.13, 2);
+		expect(math._angleDiff(0, 3.13)).toEqual(-3.13);
+		expect(math._angleDiff(6.2, 0)).toBeCloseTo(-0.08, 2);
+		expect(math._angleDiff(6.3, 0)).toBeCloseTo(0.02, 2);
+		expect(math._angleDiff(4 * Math.PI, -4 * Math.PI)).toBeCloseTo(0, 4);
+		expect(math._angleDiff(4 * Math.PI, -3 * Math.PI)).toBeCloseTo(-3.14, 2);
+		expect(math._angleDiff(6.28, 3.1)).toBeCloseTo(-3.1, 2);
+		expect(math._angleDiff(6.28, 3.2)).toBeCloseTo(3.08, 2);
+	});
+
+	it('should normalize angles correctly', function() {
+		expect(math._normalizeAngle(-Math.PI)).toEqual(Math.PI);
+		expect(math._normalizeAngle(Math.PI)).toEqual(Math.PI);
+		expect(math._normalizeAngle(2)).toEqual(2);
+		expect(math._normalizeAngle(5 * Math.PI)).toEqual(Math.PI);
+		expect(math._normalizeAngle(-50 * Math.PI)).toBeCloseTo(6.28, 2);
+	});
+
+	it('should determine if angle is between boundaries', function() {
+		expect(math._angleBetween(2, 1, 3)).toBeTrue();
+		expect(math._angleBetween(2, 3, 1)).toBeFalse();
+		expect(math._angleBetween(-3.14, 2, 4)).toBeTrue();
+		expect(math._angleBetween(-3.14, 4, 2)).toBeFalse();
+		expect(math._angleBetween(0, -1, 1)).toBeTrue();
+		expect(math._angleBetween(-1, 0, 1)).toBeFalse();
+		expect(math._angleBetween(-15 * Math.PI, 3.1, 3.2)).toBeTrue();
+		expect(math._angleBetween(15 * Math.PI, -3.2, -3.1)).toBeTrue();
+	});
 });

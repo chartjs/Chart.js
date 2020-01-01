@@ -2,6 +2,10 @@
 
 import {isFinite as isFiniteNumber} from './helpers.core';
 
+const PI = Math.PI;
+const TAU = 2 * PI;
+const PITAU = TAU + PI;
+
 /**
  * @alias Chart.helpers.math
  * @namespace
@@ -40,7 +44,6 @@ export const log10 = Math.log10 || function(x) {
 
 	return isPowerOf10 ? powerOf10 : exponent;
 };
-
 
 export function isNumber(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
@@ -127,4 +130,34 @@ export function getAngleFromPoint(centrePoint, anglePoint) {
 
 export function distanceBetweenPoints(pt1, pt2) {
 	return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
+}
+
+/**
+ * Shortest distance between angles, in either direction.
+ * @private
+ */
+export function _angleDiff(a, b) {
+	return (a - b + PITAU) % TAU - PI;
+}
+
+/**
+ * Normalize angle to be between 0 and 2*PI
+ * @private
+ */
+export function _normalizeAngle(a) {
+	return (a % TAU + TAU) % TAU;
+}
+
+/**
+ * @private
+ */
+export function _angleBetween(angle, start, end) {
+	const a = _normalizeAngle(angle);
+	const s = _normalizeAngle(start);
+	const e = _normalizeAngle(end);
+	const angleToStart = _normalizeAngle(s - a);
+	const angleToEnd = _normalizeAngle(e - a);
+	const startToAngle = _normalizeAngle(a - s);
+	const endToAngle = _normalizeAngle(a - e);
+	return a === s || a === e || (angleToStart > angleToEnd && startToAngle < endToAngle);
 }
