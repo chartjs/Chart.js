@@ -142,7 +142,9 @@ export function drawPoint(ctx, style, radius, x, y, rotation) {
 	}
 
 	ctx.fill();
-	ctx.stroke();
+	if (isNaN(ctx.lineWidthShadow) || ctx.lineWidthShadow > 0) {
+		ctx.stroke();
+	}
 }
 
 /**

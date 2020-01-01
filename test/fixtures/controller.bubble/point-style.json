@@ -45,7 +45,7 @@
                 ],
                 "backgroundColor": "transparent",
                 "borderColor": "#0000ff",
-                "borderWidth": 0,
+                "borderWidth": 1,
                 "pointStyle": [
                     "circle",
                     "cross",
@@ -73,7 +73,7 @@
                 ],
                 "backgroundColor": "#00ff00",
                 "borderColor": "#0000ff",
-                "borderWidth": 0,
+                "borderWidth": 1,
                 "pointStyle": [
                     "circle",
                     "cross",
@@ -103,7 +103,7 @@
             "elements": {
                 "line": {
                     "borderColor": "transparent",
-                    "borderWidth": 0,
+                    "borderWidth": 1,
                     "fill": false
                 },
                 "point": {
