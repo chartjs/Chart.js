@@ -1,17 +1,17 @@
 'use strict';
 
-var Animator = require('./core.animator');
-var controllers = require('../controllers/index');
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
-var Interaction = require('./core.interaction');
-var layouts = require('./core.layouts');
-var platform = require('../platforms/platform');
-var plugins = require('./core.plugins');
-var scaleService = require('../core/core.scaleService');
-var Tooltip = require('./core.tooltip');
+const Animator = require('./core.animator');
+const controllers = require('../controllers/index');
+const defaults = require('./core.defaults');
+const helpers = require('../helpers/index');
+const Interaction = require('./core.interaction');
+const layouts = require('./core.layouts');
+const platform = require('../platforms/platform');
+const plugins = require('./core.plugins');
+const scaleService = require('../core/core.scaleService');
+const Tooltip = require('./core.tooltip');
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('global', {
 	elements: {},
@@ -169,14 +169,14 @@ function onAnimationProgress(ctx) {
 
 class Chart {
 	constructor(item, config) {
-		var me = this;
+		const me = this;
 
 		config = initConfig(config);
 
-		var context = platform.acquireContext(item, config);
-		var canvas = context && context.canvas;
-		var height = canvas && canvas.height;
-		var width = canvas && canvas.width;
+		const context = platform.acquireContext(item, config);
+		const canvas = context && context.canvas;
+		const height = canvas && canvas.height;
+		const width = canvas && canvas.width;
 
 		me.id = helpers.uid();
 		me.ctx = context;
@@ -223,7 +223,7 @@ class Chart {
 	 * @private
 	 */
 	initialize() {
-		var me = this;
+		const me = this;
 
 		// Before init plugin notification
 		plugins.notify(me, 'beforeInit');
@@ -256,17 +256,17 @@ class Chart {
 	}
 
 	resize(silent) {
-		var me = this;
-		var options = me.options;
-		var canvas = me.canvas;
-		var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
+		const me = this;
+		const options = me.options;
+		const canvas = me.canvas;
+		const aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
 
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
 
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		var newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
-		var newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
+		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
+		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
 
 		if (me.width === newWidth && me.height === newHeight) {
 			return;
@@ -281,7 +281,7 @@ class Chart {
 
 		if (!silent) {
 			// Notify any plugins about the resize
-			var newSize = {width: newWidth, height: newHeight};
+			const newSize = {width: newWidth, height: newHeight};
 			plugins.notify(me, 'resize', [newSize]);
 
 			// Notify of resize
@@ -295,9 +295,9 @@ class Chart {
 	}
 
 	ensureScalesHaveIDs() {
-		var options = this.options;
-		var scalesOptions = options.scales || {};
-		var scaleOptions = options.scale;
+		const options = this.options;
+		const scalesOptions = options.scales || {};
+		const scaleOptions = options.scale;
 
 		helpers.each(scalesOptions, function(axisOptions, axisID) {
 			axisOptions.id = axisID;
@@ -429,15 +429,15 @@ class Chart {
 	}
 
 	buildOrUpdateControllers() {
-		var me = this;
-		var newControllers = [];
-		var datasets = me.data.datasets;
-		var i, ilen;
+		const me = this;
+		const newControllers = [];
+		const datasets = me.data.datasets;
+		let i, ilen;
 
 		for (i = 0, ilen = datasets.length; i < ilen; i++) {
-			var dataset = datasets[i];
-			var meta = me.getDatasetMeta(i);
-			var type = dataset.type || me.config.type;
+			const dataset = datasets[i];
+			let meta = me.getDatasetMeta(i);
+			const type = dataset.type || me.config.type;
 
 			if (meta.type && meta.type !== type) {
 				me.destroyDatasetMeta(i);
@@ -453,7 +453,7 @@ class Chart {
 				meta.controller.updateIndex(i);
 				meta.controller.linkScales();
 			} else {
-				var ControllerClass = controllers[meta.type];
+				const ControllerClass = controllers[meta.type];
 				if (ControllerClass === undefined) {
 					throw new Error('"' + meta.type + '" is not a chart type.');
 				}
@@ -472,7 +472,7 @@ class Chart {
 	 * @private
 	 */
 	resetElements() {
-		var me = this;
+		const me = this;
 		helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 			me.getDatasetMeta(datasetIndex).controller.reset();
 		}, me);
@@ -487,8 +487,8 @@ class Chart {
 	}
 
 	update(mode) {
-		var me = this;
-		var i, ilen;
+		const me = this;
+		let i, ilen;
 
 		me._updating = true;
 
@@ -503,7 +503,7 @@ class Chart {
 		}
 
 		// Make sure dataset controllers are updated and new controllers are reset
-		var newControllers = me.buildOrUpdateControllers();
+		const newControllers = me.buildOrUpdateControllers();
 
 		// Make sure all dataset controllers have correct meta data counts
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
@@ -542,13 +542,13 @@ class Chart {
 	 * @private
 	 */
 	updateLayout() {
-		var me = this;
+		const me = this;
 
 		if (plugins.notify(me, 'beforeLayout') === false) {
 			return;
 		}
 
-		layouts.update(this, this.width, this.height);
+		layouts.update(me, me.width, me.height);
 
 		me._layers = [];
 		helpers.each(me.boxes, function(box) {
@@ -573,13 +573,13 @@ class Chart {
 	 * @private
 	 */
 	updateDatasets(mode) {
-		var me = this;
+		const me = this;
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
-		for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
 			me.updateDataset(i, mode);
 		}
 
@@ -611,7 +611,7 @@ class Chart {
 		if (plugins.notify(me, 'beforeRender') === false) {
 			return;
 		}
-		var onComplete = function() {
+		const onComplete = function() {
 			plugins.notify(me, 'afterRender');
 			helpers.callback(animationOptions && animationOptions.onComplete, [], me);
 		};
@@ -627,8 +627,8 @@ class Chart {
 	}
 
 	draw() {
-		var me = this;
-		var i, layers;
+		const me = this;
+		let i, layers;
 
 		me.clear();
 
@@ -664,10 +664,10 @@ class Chart {
 	 * @private
 	 */
 	_getSortedDatasetMetas(filterVisible) {
-		var me = this;
-		var metasets = me._sortedMetasets;
-		var result = [];
-		var i, ilen;
+		const me = this;
+		const metasets = me._sortedMetasets;
+		const result = [];
+		let i, ilen;
 
 		for (i = 0, ilen = metasets.length; i < ilen; ++i) {
 			const meta = metasets[i];
@@ -692,8 +692,8 @@ class Chart {
 	 * @private
 	 */
 	drawDatasets() {
-		var me = this;
-		var metasets, i;
+		const me = this;
+		let metasets, i;
 
 		if (plugins.notify(me, 'beforeDatasetsDraw') === false) {
 			return;
@@ -713,12 +713,12 @@ class Chart {
 	 * @private
 	 */
 	drawDataset(meta) {
-		var me = this;
-		var ctx = me.ctx;
-		var clip = meta._clip;
-		var canvas = me.canvas;
-		var area = me.chartArea;
-		var args = {
+		const me = this;
+		const ctx = me.ctx;
+		const clip = meta._clip;
+		const canvas = me.canvas;
+		const area = me.chartArea;
+		const args = {
 			meta: meta,
 			index: meta.index,
 		};
@@ -747,9 +747,9 @@ class Chart {
 	 * @private
 	 */
 	_drawTooltip() {
-		var me = this;
-		var tooltip = me.tooltip;
-		var args = {
+		const me = this;
+		const tooltip = me.tooltip;
+		const args = {
 			tooltip: tooltip
 		};
 
@@ -779,7 +779,7 @@ class Chart {
 	}
 
 	getElementsAtEventForMode(e, mode, options) {
-		var method = Interaction.modes[mode];
+		const method = Interaction.modes[mode];
 		if (typeof method === 'function') {
 			return method(this, e, options);
 		}
@@ -821,7 +821,7 @@ class Chart {
 	}
 
 	isDatasetVisible(datasetIndex) {
-		var meta = this.getDatasetMeta(datasetIndex);
+		const meta = this.getDatasetMeta(datasetIndex);
 
 		// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
 		// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
@@ -846,9 +846,9 @@ class Chart {
 	}
 
 	destroy() {
-		var me = this;
-		var canvas = me.canvas;
-		var i, ilen;
+		const me = this;
+		const canvas = me.canvas;
+		let i, ilen;
 
 		me.stop();
 
@@ -882,9 +882,9 @@ class Chart {
 	 * @private
 	 */
 	bindEvents() {
-		var me = this;
-		var listeners = me._listeners = {};
-		var listener = function() {
+		const me = this;
+		const listeners = me._listeners = {};
+		let listener = function() {
 			me.eventHandler.apply(me, arguments);
 		};
 
@@ -909,8 +909,8 @@ class Chart {
 	 * @private
 	 */
 	unbindEvents() {
-		var me = this;
-		var listeners = me._listeners;
+		const me = this;
+		const listeners = me._listeners;
 		if (!listeners) {
 			return;
 		}
@@ -922,8 +922,8 @@ class Chart {
 	}
 
 	updateHoverStyle(items, mode, enabled) {
-		var prefix = enabled ? 'set' : 'remove';
-		var meta, item, i, ilen;
+		const prefix = enabled ? 'set' : 'remove';
+		let meta, item, i, ilen;
 
 		if (mode === 'dataset') {
 			meta = this.getDatasetMeta(items[0].datasetIndex);
@@ -946,9 +946,9 @@ class Chart {
 	 * @private
 	 */
 	_updateHoverStyles() {
-		var me = this;
-		var options = me.options || {};
-		var hoverOptions = options.hover;
+		const me = this;
+		const options = me.options || {};
+		const hoverOptions = options.hover;
 
 		// Remove styling for last active (even if it may still be active)
 		if (me.lastActive.length) {
@@ -992,10 +992,10 @@ class Chart {
 	 * @return {boolean} true if the chart needs to re-render
 	 */
 	handleEvent(e) {
-		var me = this;
-		var options = me.options || {};
-		var hoverOptions = options.hover;
-		var changed = false;
+		const me = this;
+		const options = me.options || {};
+		const hoverOptions = options.hover;
+		let changed = false;
 
 		me.lastActive = me.lastActive || [];
 
