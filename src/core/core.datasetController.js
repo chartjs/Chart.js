@@ -478,8 +478,10 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
+		const iScaleId = iScale.id;
+		let sorted = meta._sorted;
 		let offset = 0;
-		let i, parsed;
+		let i, parsed, cur, prev;
 
 		if (me._parsing === false) {
 			meta._parsed = data;
@@ -493,8 +495,15 @@ helpers.extend(DatasetController.prototype, {
 			}
 
 			for (i = 0; i < count; ++i) {
-				meta._parsed[i + start] = parsed[i + offset];
+				meta._parsed[i + start] = cur = parsed[i + offset];
+				if (sorted) {
+					if (i > 0 && cur[iScaleId] < prev[iScaleId]) {
+						sorted = false;
+					}
+					prev = cur;
+				}
 			}
+			meta._sorted = sorted;
 		}
 
 		if (_stacked) {

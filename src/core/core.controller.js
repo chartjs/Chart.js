@@ -817,7 +817,8 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 				order: dataset.order || 0,
 				index: datasetIndex,
 				_dataset: dataset,
-				_parsed: []
+				_parsed: [],
+				_sorted: true
 			};
 		}
 
