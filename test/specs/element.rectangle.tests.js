@@ -1,17 +1,6 @@
 // Test the rectangle element
 
 describe('Rectangle element tests', function() {
-	it('Should be constructed', function() {
-		var rectangle = new Chart.elements.Rectangle({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		expect(rectangle).not.toBe(undefined);
-		expect(rectangle._datasetIndex).toBe(2);
-		expect(rectangle._index).toBe(1);
-	});
-
 	it('Should correctly identify as in range', function() {
 		var rectangle = new Chart.elements.Rectangle({
 			base: 0,
