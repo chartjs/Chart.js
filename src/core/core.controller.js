@@ -1,15 +1,15 @@
 'use strict';
 
-const Animator = require('./core.animator');
-const controllers = require('../controllers/index');
-const defaults = require('./core.defaults');
-const helpers = require('../helpers/index');
-const Interaction = require('./core.interaction');
-const layouts = require('./core.layouts');
-const platform = require('../platforms/platform');
-const plugins = require('./core.plugins');
-const scaleService = require('../core/core.scaleService');
-const Tooltip = require('./core.tooltip');
+import Animator from './core.animator';
+import controllers from '../controllers/index';
+import defaults from './core.defaults';
+import helpers from '../helpers/index';
+import Interaction from './core.interaction';
+import layouts from './core.layouts';
+import platform from '../platforms/platform';
+import plugins from './core.plugins';
+import scaleService from '../core/core.scaleService';
+import Tooltip from './core.tooltip';
 
 const valueOrDefault = helpers.valueOrDefault;
 
@@ -1038,4 +1038,4 @@ class Chart {
  */
 Chart.instances = {};
 
-module.exports = Chart;
+export default Chart;
