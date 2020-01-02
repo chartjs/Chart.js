@@ -12,18 +12,19 @@ const defaultConfig = {
 
 class LinearScale extends LinearScaleBase {
 	determineDataLimits() {
-		var me = this;
-		var DEFAULT_MIN = 0;
-		var DEFAULT_MAX = 1;
-		var minmax = me._getMinMax(true);
-		var min = minmax.min;
-		var max = minmax.max;
+		const me = this;
+		const options = me.options;
+		const DEFAULT_MIN = options.suggestedMin || 0;
+		const DEFAULT_MAX = options.suggestedMax || 1;
+		const minmax = me._getMinMax(true);
+		let min = minmax.min;
+		let max = minmax.max;
 
 		me.min = helpers.isFinite(min) && !isNaN(min) ? min : DEFAULT_MIN;
 		me.max = helpers.isFinite(max) && !isNaN(max) ? max : DEFAULT_MAX;
 
 		// Backward compatible inconsistent min for stacked
-		if (me.options.stacked && min > 0) {
+		if (options.stacked && min > 0) {
 			me.min = 0;
 		}
 
