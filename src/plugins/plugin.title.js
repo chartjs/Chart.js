@@ -5,16 +5,14 @@ const Element = require('../core/core.element');
 const helpers = require('../helpers/index');
 const layouts = require('../core/core.layouts');
 
-defaults._set('global', {
-	title: {
-		display: false,
-		fontStyle: 'bold',
-		fullWidth: true,
-		padding: 10,
-		position: 'top',
-		text: '',
-		weight: 2000         // by default greater than legend (1000) to be above
-	}
+defaults._set('title', {
+	display: false,
+	fontStyle: 'bold',
+	fullWidth: true,
+	padding: 10,
+	position: 'top',
+	text: '',
+	weight: 2000         // by default greater than legend (1000) to be above
 });
 
 /**
@@ -148,7 +146,7 @@ class Title extends Element {
 		var right = me.right;
 		var maxWidth, titleX, titleY;
 
-		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
+		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
 		ctx.font = fontOpts.string;
 
 		// Horizontal
@@ -221,7 +219,7 @@ module.exports = {
 		var titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			helpers.mergeIf(titleOpts, defaults.global.title);
+			helpers.mergeIf(titleOpts, defaults.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);

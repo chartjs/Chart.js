@@ -30,6 +30,17 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
 * The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
 
+## Defaults
+
+* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
+* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
+  * `defaultColor` was renamed to `color`
+  * `defaultFontColor` was renamed to `fontColor`
+  * `defaultFontFamily` was renamed to `fontFamily`
+  * `defaultFontSize` was renamed to `fontSize`
+  * `defaultFontStyle` was renamed to `fontStyle`
+  * `defaultLineHeight` was renamed to `lineHeight`
+
 ### Options
 
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.

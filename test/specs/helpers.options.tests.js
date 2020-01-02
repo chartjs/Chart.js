@@ -70,14 +70,17 @@ describe('Chart.helpers.options', function() {
 		var parseFont = options._parseFont;
 
 		it ('should return a font with default values', function() {
-			var global = Chart.defaults.global;
+			const fontFamily = Chart.defaults.fontFamily;
+			const fontSize = Chart.defaults.fontSize;
+			const fontStyle = Chart.defaults.fontStyle;
+			const lineHeight = Chart.defaults.lineHeight;
 
-			Chart.defaults.global = {
-				defaultFontFamily: 'foobar',
-				defaultFontSize: 42,
-				defaultFontStyle: 'xxxyyy',
-				defaultLineHeight: 1.5
-			};
+			Chart.helpers.extend(Chart.defaults, {
+				fontFamily: 'foobar',
+				fontSize: 42,
+				fontStyle: 'xxxyyy',
+				lineHeight: 1.5
+			});
 
 			expect(parseFont({})).toEqual({
 				family: 'foobar',
@@ -88,7 +91,12 @@ describe('Chart.helpers.options', function() {
 				weight: null
 			});
 
-			Chart.defaults.global = global;
+			Chart.helpers.extend(Chart.defaults, {
+				fontFamily,
+				fontSize,
+				fontStyle,
+				lineHeight
+			});
 		});
 		it ('should return a font with given values', function() {
 			expect(parseFont({
@@ -106,9 +114,10 @@ describe('Chart.helpers.options', function() {
 			});
 		});
 		it('should return null as a font string if fontSize or fontFamily are missing', function() {
-			var global = Chart.defaults.global;
-
-			Chart.defaults.global = {};
+			const fontFamily = Chart.defaults.fontFamily;
+			const fontSize = Chart.defaults.fontSize;
+			delete Chart.defaults.fontFamily;
+			delete Chart.defaults.fontSize;
 
 			expect(parseFont({
 				fontStyle: 'italic',
@@ -119,19 +128,19 @@ describe('Chart.helpers.options', function() {
 				fontFamily: 'serif'
 			}).string).toBeNull();
 
-			Chart.defaults.global = global;
+			Chart.defaults.fontFamily = fontFamily;
+			Chart.defaults.fontSize = fontSize;
 		});
 		it('fontStyle should be optional for font strings', function() {
-			var global = Chart.defaults.global;
-
-			Chart.defaults.global = {};
+			const fontStyle = Chart.defaults.fontStyle;
+			delete Chart.defaults.fontStyle;
 
 			expect(parseFont({
 				fontSize: 12,
 				fontFamily: 'serif'
 			}).string).toBe('12px serif');
 
-			Chart.defaults.global = global;
+			Chart.defaults.fontStyle = fontStyle;
 		});
 	});
 

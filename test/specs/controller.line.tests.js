@@ -559,18 +559,18 @@ describe('Chart.controllers.line', function() {
 
 	describe('dataset global defaults', function() {
 		beforeEach(function() {
-			this._defaults = Chart.helpers.clone(Chart.defaults.global.datasets.line);
+			this._defaults = Chart.helpers.clone(Chart.defaults.datasets.line);
 		});
 
 		afterEach(function() {
-			Chart.defaults.global.datasets.line = this._defaults;
+			Chart.defaults.datasets.line = this._defaults;
 			delete this._defaults;
 		});
 
 		it('should utilize the dataset global default options', function() {
-			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
 
-			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+			Chart.helpers.merge(Chart.defaults.datasets.line, {
 				spanGaps: true,
 				lineTension: 0.231,
 				backgroundColor: '#add',
@@ -611,9 +611,9 @@ describe('Chart.controllers.line', function() {
 		});
 
 		it('should be overriden by user-supplied values', function() {
-			Chart.defaults.global.datasets.line = Chart.defaults.global.datasets.line || {};
+			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
 
-			Chart.helpers.merge(Chart.defaults.global.datasets.line, {
+			Chart.helpers.merge(Chart.defaults.datasets.line, {
 				spanGaps: true,
 				lineTension: 0.231
 			});

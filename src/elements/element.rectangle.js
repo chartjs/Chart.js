@@ -4,16 +4,14 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import helpers from '../helpers';
 
-const defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.color;
 
-defaults._set('global', {
-	elements: {
-		rectangle: {
-			backgroundColor: defaultColor,
-			borderColor: defaultColor,
-			borderSkipped: 'bottom',
-			borderWidth: 0
-		}
+defaults._set('elements', {
+	rectangle: {
+		backgroundColor: defaultColor,
+		borderColor: defaultColor,
+		borderSkipped: 'bottom',
+		borderWidth: 0
 	}
 });
 

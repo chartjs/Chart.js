@@ -4,21 +4,19 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import helpers from '../helpers';
 
-const defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.color;
 
-defaults._set('global', {
-	elements: {
-		point: {
-			radius: 3,
-			pointStyle: 'circle',
-			backgroundColor: defaultColor,
-			borderColor: defaultColor,
-			borderWidth: 1,
-			// Hover
-			hitRadius: 1,
-			hoverRadius: 4,
-			hoverBorderWidth: 1
-		}
+defaults._set('elements', {
+	point: {
+		radius: 3,
+		pointStyle: 'circle',
+		backgroundColor: defaultColor,
+		borderColor: defaultColor,
+		borderWidth: 1,
+		// Hover
+		hitRadius: 1,
+		hoverRadius: 4,
+		hoverBorderWidth: 1
 	}
 });
 

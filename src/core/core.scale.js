@@ -200,7 +200,7 @@ function parseFontOptions(options, nestedOpts) {
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
 		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
 	}), {
-		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.global.defaultFontColor])
+		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor])
 	});
 }
 
@@ -1307,7 +1307,7 @@ class Scale extends Element {
 			return;
 		}
 
-		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.global.defaultFontColor);
+		var scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.fontColor);
 		var scaleLabelFont = helpers.options._parseFont(scaleLabel);
 		var scaleLabelPadding = helpers.options.toPadding(scaleLabel.padding);
 		var halfLineHeight = scaleLabelFont.lineHeight / 2;

@@ -1,11 +1,11 @@
 # Fonts
 
-There are 4 special global settings that can change all of the fonts on the chart. These options are in `Chart.defaults.global`. The global font settings only apply when more specific options are not included in the config.
+There are 4 special global settings that can change all of the fonts on the chart. These options are in `Chart.defaults`. The global font settings only apply when more specific options are not included in the config.
 
 For example, in this chart the text will all be red except for the labels in the legend.
 
 ```javascript
-Chart.defaults.global.defaultFontColor = 'red';
+Chart.defaults.fontColor = 'red';
 let chart = new Chart(ctx, {
     type: 'line',
     data: data,
@@ -22,10 +22,10 @@ let chart = new Chart(ctx, {
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `defaultFontColor` | `Color` | `'#666'` | Default font color for all text.
-| `defaultFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Default font family for all text.
-| `defaultFontSize` | `number` | `12` | Default font size (in px) for text. Does not apply to radialLinear scale point labels.
-| `defaultFontStyle` | `string` | `'normal'` | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title.
+| `fontColor` | `Color` | `'#666'` | Default font color for all text.
+| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Default font family for all text.
+| `fontSize` | `number` | `12` | Default font size (in px) for text. Does not apply to radialLinear scale point labels.
+| `fontStyle` | `string` | `'normal'` | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title.
 
 ## Missing Fonts
 

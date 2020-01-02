@@ -7,22 +7,20 @@ import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
-const defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.color;
 
-defaults._set('global', {
-	elements: {
-		line: {
-			tension: 0.4,
-			backgroundColor: defaultColor,
-			borderWidth: 3,
-			borderColor: defaultColor,
-			borderCapStyle: 'butt',
-			borderDash: [],
-			borderDashOffset: 0.0,
-			borderJoinStyle: 'miter',
-			capBezierPoints: true,
-			fill: true
-		}
+defaults._set('elements', {
+	line: {
+		tension: 0.4,
+		backgroundColor: defaultColor,
+		borderWidth: 3,
+		borderColor: defaultColor,
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		capBezierPoints: true,
+		fill: true
 	}
 });
 

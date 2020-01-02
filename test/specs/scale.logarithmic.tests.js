@@ -1135,7 +1135,7 @@ describe('Logarithmic Scale tests', function() {
 						var scale = chart.scales[axisID];
 						var firstTick = setup.firstTick;
 						var lastTick = setup.lastTick;
-						var fontSize = chart.options.defaultFontSize;
+						var fontSize = chart.options.fontSize;
 						var start = chart.chartArea[axis.start];
 						var end = chart.chartArea[axis.end];
 						var sign = scale.isHorizontal() ? 1 : -1;

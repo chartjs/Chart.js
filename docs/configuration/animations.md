@@ -4,7 +4,7 @@ Chart.js animates charts out of the box. A number of options are provided to con
 
 ## Animation Configuration
 
-The following animation options are available. The global options for are defined in `Chart.defaults.global.animation`.
+The following animation options are available. The global options for are defined in `Chart.defaults.animation`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

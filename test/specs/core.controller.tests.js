@@ -66,7 +66,7 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.hover.onHover = callback;
+			defaults.hover.onHover = callback;
 			defaults.line.spanGaps = true;
 			defaults.line.hover.mode = 'x-axis';
 
@@ -75,13 +75,13 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.defaultFontSize).toBe(defaults.global.defaultFontSize);
+			expect(options.fontSize).toBe(defaults.fontSize);
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
 			expect(options.hover.onHover).toBe(callback);
 			expect(options.hover.mode).toBe('x-axis');
 
-			defaults.global.hover.onHover = null;
+			defaults.hover.onHover = null;
 			defaults.line.spanGaps = false;
 			defaults.line.hover.mode = 'index';
 		});
@@ -90,7 +90,7 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.hover.onHover = callback;
+			defaults.hover.onHover = callback;
 			defaults.line.hover.mode = 'x-axis';
 			defaults.line.spanGaps = true;
 
@@ -108,12 +108,12 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.showLines).toBe(defaults.global.showLines);
+			expect(options.showLines).toBe(defaults.showLines);
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
 
-			defaults.global.hover.onHover = null;
+			defaults.hover.onHover = null;
 			defaults.line.hover.mode = 'index';
 			defaults.line.spanGaps = false;
 		});
@@ -297,7 +297,7 @@ describe('Chart', function() {
 			expect(chart.scales.y.options._jasmineCheck).toBeDefined();
 
 			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
-			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults._jasmineCheck).not.toBeDefined();
 			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
 			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
 		});

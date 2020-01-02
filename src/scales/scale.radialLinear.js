@@ -64,7 +64,7 @@ function getTickBackdropHeight(opts) {
 	var tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
@@ -236,7 +236,7 @@ function drawPointLabels(scale) {
 		var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 		// Keep this in loop since we may support array properties here
-		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
+		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
 		ctx.fillStyle = pointLabelFontColor;
 
 		var angleRadians = scale.getIndexAngle(i);
@@ -486,7 +486,7 @@ class RadialLinearScale extends LinearScaleBase {
 
 		var startAngle = me.getIndexAngle(0);
 		var tickFont = helpers.options._parseFont(tickOpts);
-		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
 		var offset, width;
 
 		ctx.save();

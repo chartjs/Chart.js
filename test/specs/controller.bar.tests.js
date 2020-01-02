@@ -1343,7 +1343,7 @@ describe('Chart.controllers.bar', function() {
 			var chart = window.acquireChart(this.config);
 			var meta = chart.getDatasetMeta(0);
 			var xScale = chart.scales[meta.xAxisID];
-			var options = Chart.defaults.global.datasets.bar;
+			var options = Chart.defaults.datasets.bar;
 
 			var categoryPercentage = options.categoryPercentage;
 			var barPercentage = options.barPercentage;
@@ -1517,7 +1517,7 @@ describe('Chart.controllers.bar', function() {
 						expected = barThickness;
 					} else {
 						var scale = chart.scales.x;
-						var options = Chart.defaults.global.datasets.bar;
+						var options = Chart.defaults.datasets.bar;
 						var categoryPercentage = options.categoryPercentage;
 						var barPercentage = options.barPercentage;
 						var tickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);

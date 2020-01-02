@@ -13,25 +13,6 @@ import Tooltip from './core.tooltip';
 
 const valueOrDefault = helpers.valueOrDefault;
 
-defaults._set('global', {
-	elements: {},
-	events: [
-		'mousemove',
-		'mouseout',
-		'click',
-		'touchstart',
-		'touchmove'
-	],
-	hover: {
-		onHover: null,
-		mode: 'nearest',
-		intersect: true
-	},
-	onClick: null,
-	maintainAspectRatio: true,
-	responsive: true
-});
-
 function mergeScaleConfig(config, options) {
 	options = options || {};
 	const chartDefaults = defaults[config.type] || {scales: {}};
@@ -103,7 +84,7 @@ function initConfig(config) {
 	const scaleConfig = mergeScaleConfig(config, config.options);
 
 	config.options = mergeConfig(
-		defaults.global,
+		defaults,
 		defaults[config.type],
 		config.options || {});
 
@@ -126,7 +107,7 @@ function updateConfig(chart) {
 	const scaleConfig = mergeScaleConfig(chart.config, newOptions);
 
 	newOptions = mergeConfig(
-		defaults.global,
+		defaults,
 		defaults[chart.config.type],
 		newOptions);
 

@@ -1,6 +1,6 @@
 # Layout Configuration
 
-The layout configuration is passed into the `options.layout` namespace. The global options for the chart layout is defined in `Chart.defaults.global.layout`.
+The layout configuration is passed into the `options.layout` namespace. The global options for the chart layout is defined in `Chart.defaults.layout`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

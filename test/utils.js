@@ -55,7 +55,7 @@ function acquireChart(config, options) {
 	config.options = config.options || {};
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
-	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
+	config.options.fontFamily = config.options.fontFamily || 'Arial';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);

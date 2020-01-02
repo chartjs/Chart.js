@@ -5,14 +5,12 @@ import Element from '../core/core.element';
 import {getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
-defaults._set('global', {
-	elements: {
-		arc: {
-			backgroundColor: defaults.global.defaultColor,
-			borderColor: '#fff',
-			borderWidth: 2,
-			borderAlign: 'center'
-		}
+defaults._set('elements', {
+	arc: {
+		backgroundColor: defaults.color,
+		borderColor: '#fff',
+		borderWidth: 2,
+		borderAlign: 'center'
 	}
 });
 
