@@ -180,6 +180,10 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	return parsed;
 }
 
+function isFloatBar(custom) {
+	return custom && custom.barStart !== undefined && custom.barEnd !== undefined;
+}
+
 module.exports = DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
@@ -251,7 +255,7 @@ module.exports = DatasetController.extend({
 		const {iScale, vScale} = meta;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		const value = custom
+		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
 			: '' + vScale.getLabelForValue(parsed[vScale.axis]);
 
@@ -419,7 +423,7 @@ module.exports = DatasetController.extend({
 		const custom = parsed._custom;
 		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.axis];
+		let length = meta._stacked ? me._applyStack(vScale, parsed) : value;
 		let base, head, size;
 
 		if (length !== value) {
@@ -427,7 +431,7 @@ module.exports = DatasetController.extend({
 			length = value;
 		}
 
-		if (custom && custom.barStart !== undefined && custom.barEnd !== undefined) {
+		if (isFloatBar(custom)) {
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
@@ -437,7 +441,10 @@ module.exports = DatasetController.extend({
 			start += value;
 		}
 
-		base = vScale.getPixelForValue(start);
+		base = helpers.math._limitValue(vScale.getPixelForValue(start),
+			vScale._startPixel - 10,
+			vScale._endPixel + 10);
+
 		head = vScale.getPixelForValue(start + length);
 		size = head - base;
 
