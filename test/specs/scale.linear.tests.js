@@ -141,6 +141,27 @@ describe('Linear Scale', function() {
 		expect(chart.scales.y.max).toBe(15);
 	});
 
+	it('Should correctly determine the max & min when no datasets are associated and suggested minimum and maximum are set', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: []
+			},
+			options: {
+				scales: {
+					y: {
+						type: 'linear',
+						suggestedMin: -10,
+						suggestedMax: 0
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.y.min).toBe(-10);
+		expect(chart.scales.y.max).toBe(0);
+	});
+
 	it('Should correctly determine the max & min data values ignoring hidden datasets', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

@@ -1,6 +1,7 @@
 'use strict';
 
-import helpers from '../helpers/index';
+import {isFinite, valueOrDefault} from '../helpers/helpers.core';
+import {_parseFont} from '../helpers/helpers.options';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
@@ -14,14 +15,12 @@ class LinearScale extends LinearScaleBase {
 	determineDataLimits() {
 		const me = this;
 		const options = me.options;
-		const DEFAULT_MIN = options.suggestedMin || 0;
-		const DEFAULT_MAX = options.suggestedMax || 1;
 		const minmax = me._getMinMax(true);
 		let min = minmax.min;
 		let max = minmax.max;
 
-		me.min = helpers.isFinite(min) && !isNaN(min) ? min : DEFAULT_MIN;
-		me.max = helpers.isFinite(max) && !isNaN(max) ? max : DEFAULT_MAX;
+		me.min = isFinite(min) ? min : valueOrDefault(options.suggestedMin, 0);
+		me.max = isFinite(max) ? max : valueOrDefault(options.suggestedMax, 1);
 
 		// Backward compatible inconsistent min for stacked
 		if (options.stacked && min > 0) {
@@ -40,7 +39,7 @@ class LinearScale extends LinearScaleBase {
 		if (me.isHorizontal()) {
 			return Math.ceil(me.width / 40);
 		}
-		tickFont = helpers.options._parseFont(me.options.ticks);
+		tickFont = _parseFont(me.options.ticks);
 		return Math.ceil(me.height / tickFont.lineHeight);
 	}
 
