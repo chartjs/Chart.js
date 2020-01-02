@@ -358,6 +358,10 @@ module.exports = DatasetController.extend({
 			}
 		}
 
+		if (!stacks.length) {
+			stacks.push(undefined);
+		}
+
 		return stacks;
 	},
 
