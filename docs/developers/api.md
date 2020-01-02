@@ -89,15 +89,6 @@ myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
 ```
 
-## .generateLegend()
-
-Returns an HTML string of a legend for that chart. The legend is generated from the `legendCallback` in the options.
-
-```javascript
-myLineChart.generateLegend();
-// => returns HTML string of a legend for this chart
-```
-
 ## .getElementAtEvent(e)
 
 Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned. The value returned from this method is an array with a single parameter. An array is used to keep a consistent API between the `get*AtEvent` methods.

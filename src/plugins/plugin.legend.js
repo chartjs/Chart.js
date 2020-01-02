@@ -74,25 +74,6 @@ defaults._set('global', {
 				}, this);
 			}
 		}
-	},
-
-	legendCallback: function(chart) {
-		var list = document.createElement('ul');
-		var datasets = chart.data.datasets;
-		var i, ilen, listItem, listItemSpan;
-
-		list.setAttribute('class', chart.id + '-legend');
-
-		for (i = 0, ilen = datasets.length; i < ilen; i++) {
-			listItem = list.appendChild(document.createElement('li'));
-			listItemSpan = listItem.appendChild(document.createElement('span'));
-			listItemSpan.style.backgroundColor = datasets[i].backgroundColor;
-			if (datasets[i].label) {
-				listItem.appendChild(document.createTextNode(datasets[i].label));
-			}
-		}
-
-		return list.outerHTML;
 	}
 });
 
