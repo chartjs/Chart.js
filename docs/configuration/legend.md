@@ -3,6 +3,7 @@
 The chart legend displays data about the datasets that are appearing on the chart.
 
 ## Configuration options
+
 The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
 
 | Name | Type | Default | Description
@@ -20,14 +21,18 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
 
 ## Position
+
 Position of the legend. Options are:
+
 * `'top'`
 * `'left'`
 * `'bottom'`
 * `'right'`
 
 ## Align
+
 Alignment of the legend. Options are:
+
 * `'start'`
 * `'center'`
 * `'end'`
@@ -115,6 +120,7 @@ var chart = new Chart(ctx, {
 It can be common to want to trigger different behaviour when clicking an item in the legend. This can be easily achieved using a callback in the config object.
 
 The default legend click handler is:
+
 ```javascript
 function(e, legendItem) {
     var index = legendItem.datasetIndex;
