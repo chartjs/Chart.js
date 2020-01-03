@@ -6,7 +6,9 @@ import {isNumber} from '../helpers/helpers.math';
 class Element {
 
 	constructor(configuration) {
-		extend(this, configuration);
+		if (configuration) {
+			extend(this, configuration);
+		}
 
 		// this.hidden = false; we assume Element has an attribute called hidden, but do not initialize to save memory
 	}
