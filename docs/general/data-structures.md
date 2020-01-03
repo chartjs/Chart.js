@@ -25,7 +25,7 @@ data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
 data: [{x:'Sales', y:20}, {x:'Revenue', y:10}]
 ```
 
-This is also the internal format used for parsed data. Property names are matched to scale-id. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be in the formats the associated chart type and scales use internally.
+This is also the internal format used for parsed data. Property names are matched to scale-id. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 
 ## Object
 

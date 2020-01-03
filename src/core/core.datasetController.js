@@ -478,11 +478,18 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
-		let offset = 0;
-		let i, parsed;
+		const iScaleId = iScale.id;
+		let sorted = true;
+		let i, parsed, cur, prev;
+
+		if (start > 0) {
+			sorted = meta._sorted;
+			prev = meta._parsed[start - 1];
+		}
 
 		if (me._parsing === false) {
 			meta._parsed = data;
+			meta._sorted = true;
 		} else {
 			if (helpers.isArray(data[start])) {
 				parsed = me._parseArrayData(meta, data, start, count);
@@ -492,9 +499,17 @@ helpers.extend(DatasetController.prototype, {
 				parsed = me._parsePrimitiveData(meta, data, start, count);
 			}
 
+
 			for (i = 0; i < count; ++i) {
-				meta._parsed[i + start] = parsed[i + offset];
+				meta._parsed[i + start] = cur = parsed[i];
+				if (sorted) {
+					if (prev && cur[iScaleId] < prev[iScaleId]) {
+						sorted = false;
+					}
+					prev = cur;
+				}
 			}
+			meta._sorted = sorted;
 		}
 
 		if (_stacked) {
@@ -502,9 +517,7 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		iScale._invalidateCaches();
-		if (vScale !== iScale) {
-			vScale._invalidateCaches();
-		}
+		vScale._invalidateCaches();
 	},
 
 	/**
@@ -624,33 +637,21 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getMinMax: function(scale, canStack) {
-		const chart = this.chart;
 		const meta = this._cachedMeta;
-		const metaData = meta.data;
-		const ilen = meta._parsed.length;
-		const stacked = canStack && meta._stacked;
-		const indices = getSortedDatasetIndices(chart, true);
+		const {data, _parsed} = meta;
+		const sorted = meta._sorted && scale === meta.iScale;
+		const ilen = _parsed.length;
 		const otherScale = this._getOtherScale(scale);
+		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
 		let max = Number.NEGATIVE_INFINITY;
 		let {min: otherMin, max: otherMax} = getUserBounds(otherScale);
-		let i, item, value, parsed, stack, min, minPositive, otherValue;
+		let i, item, value, parsed, min, minPositive, otherValue;
 
 		min = minPositive = Number.POSITIVE_INFINITY;
 
-		for (i = 0; i < ilen; ++i) {
-			item = metaData[i];
-			parsed = meta._parsed[i];
-			value = parsed[scale.id];
-			otherValue = parsed[otherScale.id];
-			if ((item && item.hidden) || isNaN(value) ||
-				otherMin > otherValue || otherMax < otherValue) {
-				continue;
-			}
-			if (stacked) {
-				stack = {
-					keys: indices,
-					values: parsed._stacks[scale.id]
-				};
+		function _compute() {
+			if (stack) {
+				stack.values = parsed._stacks[scale.id];
 				// Need to consider individual stack values for data range,
 				// in addition to the stacked value
 				min = Math.min(min, value);
@@ -663,11 +664,34 @@ helpers.extend(DatasetController.prototype, {
 				minPositive = Math.min(minPositive, value);
 			}
 		}
-		return {
-			min: min,
-			max: max,
-			minPositive: minPositive
-		};
+
+		function _skip() {
+			item = data[i];
+			parsed = _parsed[i];
+			value = parsed[scale.id];
+			otherValue = parsed[otherScale.id];
+			return ((item && item.hidden) || isNaN(value) || otherMin > otherValue || otherMax < otherValue);
+		}
+
+		for (i = 0; i < ilen; ++i) {
+			if (_skip()) {
+				continue;
+			}
+			_compute();
+			if (sorted) {
+				break;
+			}
+		}
+		if (sorted) {
+			for (i = ilen - 1; i >= 0; --i) {
+				if (_skip()) {
+					continue;
+				}
+				_compute();
+				break;
+			}
+		}
+		return {min, max, minPositive};
 	},
 
 	/**
