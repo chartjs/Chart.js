@@ -4,16 +4,16 @@ While chart types provide settings to configure the styling of each dataset, you
 
 ## Global Configuration
 
-The element options can be specified per chart or globally. The global options for elements are defined in `Chart.defaults.global.elements`. For example, to set the border width of all bar charts globally you would do:
+The element options can be specified per chart or globally. The global options for elements are defined in `Chart.defaults.elements`. For example, to set the border width of all bar charts globally you would do:
 
 ```javascript
-Chart.defaults.global.elements.rectangle.borderWidth = 2;
+Chart.defaults.elements.rectangle.borderWidth = 2;
 ```
 
 ## Point Configuration
 Point elements are used to represent the points in a line, radar or bubble chart.
 
-Global point options: `Chart.defaults.global.elements.point`.
+Global point options: `Chart.defaults.elements.point`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -46,7 +46,7 @@ If the value is an image, that image is drawn on the canvas using [drawImage](ht
 ## Line Configuration
 Line elements are used to represent the line in a line chart.
 
-Global line options: `Chart.defaults.global.elements.line`.
+Global line options: `Chart.defaults.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -59,14 +59,14 @@ Global line options: `Chart.defaults.global.elements.line`.
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode) 
+| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode)
 | `fill` | <code>boolean&#124;string</code> | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
 Rectangle elements are used to represent the bars in a bar chart.
 
-Global rectangle options: `Chart.defaults.global.elements.rectangle`.
+Global rectangle options: `Chart.defaults.elements.rectangle`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -78,7 +78,7 @@ Global rectangle options: `Chart.defaults.global.elements.rectangle`.
 ## Arc Configuration
 Arcs are used in the polar area, doughnut and pie charts.
 
-Global arc options: `Chart.defaults.global.elements.arc`.
+Global arc options: `Chart.defaults.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

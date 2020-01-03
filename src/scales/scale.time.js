@@ -735,7 +735,7 @@ class TimeScale extends Scale {
 		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
-		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
+		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.fontSize);
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),

@@ -198,14 +198,12 @@ function placeBoxes(boxes, chartArea, params) {
 	chartArea.y = y;
 }
 
-defaults._set('global', {
-	layout: {
-		padding: {
-			top: 0,
-			right: 0,
-			bottom: 0,
-			left: 0
-		}
+defaults._set('layout', {
+	padding: {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0
 	}
 });
 

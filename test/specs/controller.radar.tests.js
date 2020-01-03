@@ -100,9 +100,9 @@ describe('Chart.controllers.radar', function() {
 						tension: 0.1,
 					},
 					point: {
-						backgroundColor: Chart.defaults.global.defaultColor,
+						backgroundColor: Chart.defaults.color,
 						borderWidth: 1,
-						borderColor: Chart.defaults.global.defaultColor,
+						borderColor: Chart.defaults.color,
 						hitRadius: 1,
 						hoverRadius: 4,
 						hoverBorderWidth: 1,
@@ -143,9 +143,9 @@ describe('Chart.controllers.radar', function() {
 			expect(meta.data[i].controlPointNextX).toBeCloseToPixel(expected.cpnx);
 			expect(meta.data[i].controlPointNextY).toBeCloseToPixel(expected.cpny);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
-				backgroundColor: Chart.defaults.global.defaultColor,
+				backgroundColor: Chart.defaults.color,
 				borderWidth: 1,
-				borderColor: Chart.defaults.global.defaultColor,
+				borderColor: Chart.defaults.color,
 				hitRadius: 1,
 				radius: 3,
 				pointStyle: 'circle',
@@ -168,9 +168,9 @@ describe('Chart.controllers.radar', function() {
 			expect(meta.data[i].controlPointNextX).toBeCloseToPixel(expected.cpnx);
 			expect(meta.data[i].controlPointNextY).toBeCloseToPixel(expected.cpny);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
-				backgroundColor: Chart.defaults.global.defaultColor,
+				backgroundColor: Chart.defaults.color,
 				borderWidth: 1,
-				borderColor: Chart.defaults.global.defaultColor,
+				borderColor: Chart.defaults.color,
 				hitRadius: 1,
 				radius: 3,
 				pointStyle: 'circle',

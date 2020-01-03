@@ -166,7 +166,7 @@ If the `steppedLine` value is set to anything other than false, `lineTension` wi
 
 ## Configuration Options
 
-The line chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+The line chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults`, to form the options passed to the chart.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

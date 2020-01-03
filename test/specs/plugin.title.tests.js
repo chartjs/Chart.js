@@ -4,7 +4,7 @@ var Title = Chart.plugins.getAll().find(p => p.id === 'title')._element;
 
 describe('Title block tests', function() {
 	it('Should have the correct default config', function() {
-		expect(Chart.defaults.global.title).toEqual({
+		expect(Chart.defaults.title).toEqual({
 			display: false,
 			position: 'top',
 			fullWidth: true,
@@ -18,7 +18,7 @@ describe('Title block tests', function() {
 	it('should update correctly', function() {
 		var chart = {};
 
-		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		var options = Chart.helpers.clone(Chart.defaults.title);
 		options.text = 'My title';
 
 		var title = new Title({
@@ -47,7 +47,7 @@ describe('Title block tests', function() {
 	it('should update correctly when vertical', function() {
 		var chart = {};
 
-		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		var options = Chart.helpers.clone(Chart.defaults.title);
 		options.text = 'My title';
 		options.position = 'left';
 
@@ -77,7 +77,7 @@ describe('Title block tests', function() {
 	it('should have the correct size when there are multiple lines of text', function() {
 		var chart = {};
 
-		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		var options = Chart.helpers.clone(Chart.defaults.title);
 		options.text = ['line1', 'line2'];
 		options.position = 'left';
 		options.display = true;
@@ -100,7 +100,7 @@ describe('Title block tests', function() {
 		var chart = {};
 		var context = window.createMockContext();
 
-		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		var options = Chart.helpers.clone(Chart.defaults.title);
 		options.text = 'My title';
 
 		var title = new Title({
@@ -152,7 +152,7 @@ describe('Title block tests', function() {
 		var chart = {};
 		var context = window.createMockContext();
 
-		var options = Chart.helpers.clone(Chart.defaults.global.title);
+		var options = Chart.helpers.clone(Chart.defaults.title);
 		options.text = 'My title';
 		options.position = 'left';
 
@@ -322,7 +322,7 @@ describe('Title block tests', function() {
 			chart.options.title = {};
 			chart.update();
 			expect(chart.titleBlock).not.toBe(undefined);
-			expect(chart.titleBlock.options).toEqual(jasmine.objectContaining(Chart.defaults.global.title));
+			expect(chart.titleBlock.options).toEqual(jasmine.objectContaining(Chart.defaults.title));
 		});
 	});
 });

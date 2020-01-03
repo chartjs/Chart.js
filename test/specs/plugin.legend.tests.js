@@ -3,7 +3,7 @@ describe('Legend block tests', function() {
 	describe('auto', jasmine.fixture.specs('plugin.legend'));
 
 	it('should have the correct default config', function() {
-		expect(Chart.defaults.global.legend).toEqual({
+		expect(Chart.defaults.legend).toEqual({
 			display: true,
 			position: 'top',
 			align: 'center',
@@ -591,7 +591,7 @@ describe('Legend block tests', function() {
 			chart.options.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
-			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.legend));
 		});
 	});
 

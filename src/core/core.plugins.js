@@ -3,9 +3,7 @@
 var defaults = require('./core.defaults');
 var helpers = require('../helpers/index');
 
-defaults._set('global', {
-	plugins: {}
-});
+defaults._set('plugins', {});
 
 /**
  * The plugin service singleton
@@ -144,7 +142,7 @@ module.exports = {
 			}
 
 			if (opts === true) {
-				opts = helpers.clone(defaults.global.plugins[id]);
+				opts = helpers.clone(defaults.plugins[id]);
 			}
 
 			plugins.push(plugin);

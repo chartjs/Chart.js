@@ -182,7 +182,7 @@ class LogarithmicScale extends Scale {
 
 		if (start === 0) {
 			start = me._getFirstTickValue(me.minNotZero);
-			offset = valueOrDefault(me.options.ticks.fontSize, defaults.global.defaultFontSize) / me._length;
+			offset = valueOrDefault(me.options.ticks.fontSize, defaults.fontSize) / me._length;
 		}
 
 		me._startValue = log10(start);

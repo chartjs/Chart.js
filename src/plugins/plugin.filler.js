@@ -13,11 +13,9 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {valueOrDefault, isFinite, isArray, extend} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
-defaults._set('global', {
-	plugins: {
-		filler: {
-			propagate: true
-		}
+defaults._set('plugins', {
+	filler: {
+		propagate: true
 	}
 });
 
@@ -436,7 +434,7 @@ export default {
 			const {line, target, scale} = meta;
 			const lineOpts = line.options;
 			const fillOption = lineOpts.fill;
-			const color = lineOpts.backgroundColor || defaults.global.defaultColor;
+			const color = lineOpts.backgroundColor || defaults.color;
 			const {above = color, below = color} = fillOption || {};
 			if (target && line.points.length) {
 				clipArea(ctx, area);

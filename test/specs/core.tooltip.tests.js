@@ -19,11 +19,11 @@ describe('Core.Tooltip', function() {
 				value: '20'
 			};
 
-			var label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+			var label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
 			expect(label).toBe('20');
 
 			data.datasets[0].label = 'My dataset';
-			label = Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+			label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
 			expect(label).toBe('My dataset: 20');
 		});
 	});
@@ -78,7 +78,7 @@ describe('Core.Tooltip', function() {
 
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
-			var globalDefaults = Chart.defaults.global;
+			var defaults = Chart.defaults;
 
 			expect(tooltip.options.xPadding).toEqual(6);
 			expect(tooltip.options.yPadding).toEqual(6);
@@ -88,19 +88,19 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Body
 				bodyFontColor: '#fff',
-				bodyFontFamily: globalDefaults.defaultFontFamily,
-				bodyFontStyle: globalDefaults.defaultFontStyle,
+				bodyFontFamily: defaults.fontFamily,
+				bodyFontStyle: defaults.fontStyle,
 				bodyAlign: 'left',
-				bodyFontSize: globalDefaults.defaultFontSize,
+				bodyFontSize: defaults.fontSize,
 				bodySpacing: 2,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Title
 				titleFontColor: '#fff',
-				titleFontFamily: globalDefaults.defaultFontFamily,
+				titleFontFamily: defaults.fontFamily,
 				titleFontStyle: 'bold',
-				titleFontSize: globalDefaults.defaultFontSize,
+				titleFontSize: defaults.fontSize,
 				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
@@ -109,9 +109,9 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				// Footer
 				footerFontColor: '#fff',
-				footerFontFamily: globalDefaults.defaultFontFamily,
+				footerFontFamily: defaults.fontFamily,
 				footerFontStyle: 'bold',
-				footerFontSize: globalDefaults.defaultFontSize,
+				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -145,11 +145,11 @@ describe('Core.Tooltip', function() {
 				afterBody: [],
 				footer: [],
 				labelColors: [{
-					borderColor: globalDefaults.defaultColor,
-					backgroundColor: globalDefaults.defaultColor
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
 				}, {
-					borderColor: globalDefaults.defaultColor,
-					backgroundColor: globalDefaults.defaultColor
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
 				}]
 			}));
 
@@ -254,7 +254,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip.options.xPadding).toEqual(6);
 		expect(tooltip.options.yPadding).toEqual(6);
@@ -264,19 +264,19 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			bodyFontFamily: globalDefaults.defaultFontFamily,
-			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyFontFamily: defaults.fontFamily,
+			bodyFontStyle: defaults.fontStyle,
 			bodyAlign: 'left',
-			bodyFontSize: globalDefaults.defaultFontSize,
+			bodyFontSize: defaults.fontSize,
 			bodySpacing: 2,
 		}));
 
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontFamily: defaults.fontFamily,
 			titleFontStyle: 'bold',
-			titleFontSize: globalDefaults.defaultFontSize,
+			titleFontSize: defaults.fontSize,
 			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
@@ -285,9 +285,9 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontFamily: defaults.fontFamily,
 			footerFontStyle: 'bold',
-			footerFontSize: globalDefaults.defaultFontSize,
+			footerFontSize: defaults.fontSize,
 			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
@@ -318,8 +318,8 @@ describe('Core.Tooltip', function() {
 			footer: [],
 			labelTextColors: ['#fff'],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 
@@ -409,7 +409,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip.options.xPadding).toEqual(6);
 		expect(tooltip.options.yPadding).toEqual(6);
@@ -419,19 +419,19 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			bodyFontFamily: globalDefaults.defaultFontFamily,
-			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyFontFamily: defaults.fontFamily,
+			bodyFontStyle: defaults.fontStyle,
 			bodyAlign: 'left',
-			bodyFontSize: globalDefaults.defaultFontSize,
+			bodyFontSize: defaults.fontSize,
 			bodySpacing: 2,
 		}));
 
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontFamily: defaults.fontFamily,
 			titleFontStyle: 'bold',
-			titleFontSize: globalDefaults.defaultFontSize,
+			titleFontSize: defaults.fontSize,
 			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
@@ -440,9 +440,9 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontFamily: defaults.fontFamily,
 			footerFontStyle: 'bold',
-			footerFontSize: globalDefaults.defaultFontSize,
+			footerFontSize: defaults.fontSize,
 			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
@@ -476,11 +476,11 @@ describe('Core.Tooltip', function() {
 			footer: ['beforeFooter', 'footer', 'afterFooter'],
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}, {
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 
@@ -535,7 +535,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -557,11 +557,11 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}, {
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 
@@ -614,7 +614,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -636,11 +636,11 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}, {
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 
@@ -694,7 +694,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -716,11 +716,11 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}, {
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 
@@ -777,7 +777,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip).toEqual(jasmine.objectContaining({
 			// Positioning
@@ -795,8 +795,8 @@ describe('Core.Tooltip', function() {
 			afterBody: [],
 			footer: [],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 	});
@@ -1176,7 +1176,7 @@ describe('Core.Tooltip', function() {
 
 		// Check and see if tooltip was displayed
 		var tooltip = chart.tooltip;
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 
 		expect(tooltip.options.xPadding).toEqual(6);
 		expect(tooltip.options.yPadding).toEqual(6);
@@ -1186,19 +1186,19 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Body
 			bodyFontColor: '#fff',
-			bodyFontFamily: globalDefaults.defaultFontFamily,
-			bodyFontStyle: globalDefaults.defaultFontStyle,
+			bodyFontFamily: defaults.fontFamily,
+			bodyFontStyle: defaults.fontStyle,
 			bodyAlign: 'left',
-			bodyFontSize: globalDefaults.defaultFontSize,
+			bodyFontSize: defaults.fontSize,
 			bodySpacing: 2,
 		}));
 
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Title
 			titleFontColor: '#fff',
-			titleFontFamily: globalDefaults.defaultFontFamily,
+			titleFontFamily: defaults.fontFamily,
 			titleFontStyle: 'bold',
-			titleFontSize: globalDefaults.defaultFontSize,
+			titleFontSize: defaults.fontSize,
 			titleAlign: 'left',
 			titleSpacing: 2,
 			titleMarginBottom: 6,
@@ -1207,9 +1207,9 @@ describe('Core.Tooltip', function() {
 		expect(tooltip.options).toEqual(jasmine.objectContaining({
 			// Footer
 			footerFontColor: '#fff',
-			footerFontFamily: globalDefaults.defaultFontFamily,
+			footerFontFamily: defaults.fontFamily,
 			footerFontStyle: 'bold',
-			footerFontSize: globalDefaults.defaultFontSize,
+			footerFontSize: defaults.fontSize,
 			footerAlign: 'left',
 			footerSpacing: 2,
 			footerMarginTop: 6,
@@ -1243,17 +1243,17 @@ describe('Core.Tooltip', function() {
 			footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
 			labelTextColors: ['labelTextColor', 'labelTextColor'],
 			labelColors: [{
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}, {
-				borderColor: globalDefaults.defaultColor,
-				backgroundColor: globalDefaults.defaultColor
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
 			}]
 		}));
 	});
 
 	describe('text align', function() {
-		var globalDefaults = Chart.defaults.global;
+		var defaults = Chart.defaults;
 		var makeView = function(title, body, footer) {
 			return {
 				// Positioning
@@ -1270,26 +1270,26 @@ describe('Core.Tooltip', function() {
 
 					// Body
 					bodyFontColor: '#fff',
-					bodyFontFamily: globalDefaults.defaultFontFamily,
-					bodyFontStyle: globalDefaults.defaultFontStyle,
+					bodyFontFamily: defaults.fontFamily,
+					bodyFontStyle: defaults.fontStyle,
 					bodyAlign: body,
-					bodyFontSize: globalDefaults.defaultFontSize,
+					bodyFontSize: defaults.fontSize,
 					bodySpacing: 2,
 
 					// Title
 					titleFontColor: '#fff',
-					titleFontFamily: globalDefaults.defaultFontFamily,
+					titleFontFamily: defaults.fontFamily,
 					titleFontStyle: 'bold',
-					titleFontSize: globalDefaults.defaultFontSize,
+					titleFontSize: defaults.fontSize,
 					titleAlign: title,
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 
 					// Footer
 					footerFontColor: '#fff',
-					footerFontFamily: globalDefaults.defaultFontFamily,
+					footerFontFamily: defaults.fontFamily,
 					footerFontStyle: 'bold',
-					footerFontSize: globalDefaults.defaultFontSize,
+					footerFontSize: defaults.fontSize,
 					footerAlign: footer,
 					footerSpacing: 2,
 					footerMarginTop: 6,

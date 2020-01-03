@@ -90,13 +90,12 @@ export function toPadding(value) {
  * @private
  */
 export function _parseFont(options) {
-	var globalDefaults = defaults.global;
-	var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
+	var size = valueOrDefault(options.fontSize, defaults.fontSize);
 	var font = {
-		family: valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily),
-		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, globalDefaults.defaultLineHeight), size),
+		family: valueOrDefault(options.fontFamily, defaults.fontFamily),
+		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaults.lineHeight), size),
 		size: size,
-		style: valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle),
+		style: valueOrDefault(options.fontStyle, defaults.fontStyle),
 		weight: null,
 		string: ''
 	};

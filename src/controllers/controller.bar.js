@@ -26,16 +26,14 @@ defaults._set('bar', {
 	}
 });
 
-defaults._set('global', {
-	datasets: {
-		bar: {
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
-			animation: {
-				numbers: {
-					type: 'number',
-					properties: ['x', 'y', 'base', 'width', 'height']
-				}
+defaults._set('datasets', {
+	bar: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height']
 			}
 		}
 	}

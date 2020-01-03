@@ -4,7 +4,7 @@ The chart legend displays data about the datasets that are appearing on the char
 
 ## Configuration options
 
-The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
+The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.legend`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -138,7 +138,7 @@ function(e, legendItem) {
 Lets say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
 
 ```javascript
-var defaultLegendClickHandler = Chart.defaults.global.legend.onClick;
+var defaultLegendClickHandler = Chart.defaults.legend.onClick;
 var newLegendClickHandler = function (e, legendItem) {
     var index = legendItem.datasetIndex;
 

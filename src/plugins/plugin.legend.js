@@ -8,71 +8,69 @@ const layouts = require('../core/core.layouts');
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 const valueOrDefault = helpers.valueOrDefault;
 
-defaults._set('global', {
-	legend: {
-		display: true,
-		position: 'top',
-		align: 'center',
-		fullWidth: true,
-		reverse: false,
-		weight: 1000,
+defaults._set('legend', {
+	display: true,
+	position: 'top',
+	align: 'center',
+	fullWidth: true,
+	reverse: false,
+	weight: 1000,
 
-		// a callback that will handle
-		onClick: function(e, legendItem) {
-			var index = legendItem.datasetIndex;
-			var ci = this.chart;
-			var meta = ci.getDatasetMeta(index);
+	// a callback that will handle
+	onClick: function(e, legendItem) {
+		var index = legendItem.datasetIndex;
+		var ci = this.chart;
+		var meta = ci.getDatasetMeta(index);
 
-			// See controller.isDatasetVisible comment
-			meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+		// See controller.isDatasetVisible comment
+		meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
 
-			// We hid a dataset ... rerender the chart
-			ci.update();
-		},
+		// We hid a dataset ... rerender the chart
+		ci.update();
+	},
 
-		onHover: null,
-		onLeave: null,
+	onHover: null,
+	onLeave: null,
 
-		labels: {
-			boxWidth: 40,
-			padding: 10,
-			// Generates labels shown in the legend
-			// Valid properties to return:
-			// text : text to display
-			// fillStyle : fill of coloured box
-			// strokeStyle: stroke of coloured box
-			// hidden : if this legend item refers to a hidden item
-			// lineCap : cap style for line
-			// lineDash
-			// lineDashOffset :
-			// lineJoin :
-			// lineWidth :
-			generateLabels: function(chart) {
-				var datasets = chart.data.datasets;
-				var options = chart.options.legend || {};
-				var usePointStyle = options.labels && options.labels.usePointStyle;
+	labels: {
+		boxWidth: 40,
+		padding: 10,
+		// Generates labels shown in the legend
+		// Valid properties to return:
+		// text : text to display
+		// fillStyle : fill of coloured box
+		// strokeStyle: stroke of coloured box
+		// hidden : if this legend item refers to a hidden item
+		// lineCap : cap style for line
+		// lineDash
+		// lineDashOffset :
+		// lineJoin :
+		// lineWidth :
+		generateLabels: function(chart) {
+			var datasets = chart.data.datasets;
+			var options = chart.options.legend || {};
+			var usePointStyle = options.labels && options.labels.usePointStyle;
 
-				return chart._getSortedDatasetMetas().map(function(meta) {
-					var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+			return chart._getSortedDatasetMetas().map(function(meta) {
+				var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
 
-					return {
-						text: datasets[meta.index].label,
-						fillStyle: style.backgroundColor,
-						hidden: !meta.visible,
-						lineCap: style.borderCapStyle,
-						lineDash: style.borderDash,
-						lineDashOffset: style.borderDashOffset,
-						lineJoin: style.borderJoinStyle,
-						lineWidth: style.borderWidth,
-						strokeStyle: style.borderColor,
-						pointStyle: style.pointStyle,
-						rotation: style.rotation,
+				return {
+					text: datasets[meta.index].label,
+					fillStyle: style.backgroundColor,
+					hidden: !meta.visible,
+					lineCap: style.borderCapStyle,
+					lineDash: style.borderDash,
+					lineDashOffset: style.borderDashOffset,
+					lineJoin: style.borderJoinStyle,
+					lineWidth: style.borderWidth,
+					strokeStyle: style.borderColor,
+					pointStyle: style.pointStyle,
+					rotation: style.rotation,
 
-						// Below is extra data used for toggling the datasets
-						datasetIndex: meta.index
-					};
-				}, this);
-			}
+					// Below is extra data used for toggling the datasets
+					datasetIndex: meta.index
+				};
+			}, this);
 		}
 	}
 });
@@ -333,9 +331,8 @@ class Legend extends Element {
 		var me = this;
 		var opts = me.options;
 		var labelOpts = opts.labels;
-		var globalDefaults = defaults.global;
-		var defaultColor = globalDefaults.defaultColor;
-		var lineDefault = globalDefaults.elements.line;
+		var defaultColor = defaults.color;
+		var lineDefault = defaults.elements.line;
 		var legendHeight = me.height;
 		var columnHeights = me.columnHeights;
 		var legendWidth = me.width;
@@ -347,7 +344,7 @@ class Legend extends Element {
 
 		var rtlHelper = getRtlHelper(opts.rtl, me.left, me.minSize.width);
 		var ctx = me.ctx;
-		var fontColor = valueOrDefault(labelOpts.fontColor, globalDefaults.defaultFontColor);
+		var fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
 		var labelFont = helpers.options._parseFont(labelOpts);
 		var fontSize = labelFont.size;
 		var cursor;
@@ -602,7 +599,7 @@ module.exports = {
 		var legend = chart.legend;
 
 		if (legendOpts) {
-			helpers.mergeIf(legendOpts, defaults.global.legend);
+			helpers.mergeIf(legendOpts, defaults.legend);
 
 			if (legend) {
 				layouts.configure(chart, legend, legendOpts);
