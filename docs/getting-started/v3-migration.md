@@ -62,6 +62,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `Chart.chart.chart`
 * `Chart.Controller`
+* `Chart.prototype.generateLegend`
 * `Chart.types`
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`

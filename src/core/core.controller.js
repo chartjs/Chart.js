@@ -828,10 +828,6 @@ class Chart {
 		return typeof meta.hidden === 'boolean' ? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 	}
 
-	generateLegend() {
-		return this.options.legendCallback(this);
-	}
-
 	/**
 	 * @private
 	 */

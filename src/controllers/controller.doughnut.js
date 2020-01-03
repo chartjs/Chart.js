@@ -22,27 +22,6 @@ defaults._set('doughnut', {
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
 	},
-	legendCallback: function(chart) {
-		var list = document.createElement('ul');
-		var data = chart.data;
-		var datasets = data.datasets;
-		var labels = data.labels;
-		var i, ilen, listItem, listItemSpan;
-
-		list.setAttribute('class', chart.id + '-legend');
-		if (datasets.length) {
-			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
-				listItem = list.appendChild(document.createElement('li'));
-				listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
-				if (labels[i]) {
-					listItem.appendChild(document.createTextNode(labels[i]));
-				}
-			}
-		}
-
-		return list.outerHTML;
-	},
 	legend: {
 		labels: {
 			generateLabels: function(chart) {

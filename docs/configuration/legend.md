@@ -169,23 +169,3 @@ var chart = new Chart(ctx, {
 ```
 
 Now when you click the legend in this chart, the visibility of the first two datasets will be linked together.
-
-## HTML Legends
-
-Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML string for the legend.
-
-To configure how this legend is generated, you can change the `legendCallback` config property.
-
-```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        legendCallback: function(chart) {
-            // Return the HTML string here.
-        }
-    }
-});
-```
-
-Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.
