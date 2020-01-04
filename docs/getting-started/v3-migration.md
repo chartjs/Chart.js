@@ -115,6 +115,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Element._ctx`
 * `Element._model`
 * `Element._view`
+* `LogarithmicScale._valueOffset`
 * `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
 

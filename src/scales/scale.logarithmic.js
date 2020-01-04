@@ -151,13 +151,11 @@ class LogarithmicScale extends Scale {
 	_configure() {
 		const me = this;
 		let start = me.min ? log10(me.min) : 0;
-		let offset = 0;
 
 		Scale.prototype._configure.call(me);
 
 		me._startValue = start;
-		me._valueOffset = offset;
-		me._valueRange = (log10(me.max) - start) / (1 - offset);
+		me._valueRange = log10(me.max) - start;
 	}
 
 	getPixelForValue(value) {
@@ -165,7 +163,7 @@ class LogarithmicScale extends Scale {
 		let decimal = 0;
 
 		if (value > me.min && value > 0) {
-			decimal = (log10(value) - me._startValue) / me._valueRange + me._valueOffset;
+			decimal = (log10(value) - me._startValue) / me._valueRange;
 		}
 		return me.getPixelForDecimal(decimal);
 	}
@@ -175,7 +173,7 @@ class LogarithmicScale extends Scale {
 		const decimal = me.getDecimalForPixel(pixel);
 		return decimal === 0 && me.min === 0
 			? 0
-			: Math.pow(10, me._startValue + (decimal - me._valueOffset) * me._valueRange);
+			: Math.pow(10, me._startValue + decimal * me._valueRange);
 	}
 }
 
