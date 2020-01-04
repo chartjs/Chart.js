@@ -637,9 +637,9 @@ helpers.extend(DatasetController.prototype, {
 		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
 		let max = Number.NEGATIVE_INFINITY;
 		let {min: otherMin, max: otherMax} = getUserBounds(otherScale);
-		let i, item, value, parsed, min, minPositive, otherValue;
+		let i, item, value, parsed, min, otherValue;
 
-		min = minPositive = Number.POSITIVE_INFINITY;
+		min = Number.POSITIVE_INFINITY;
 
 		function _compute() {
 			if (stack) {
@@ -652,9 +652,6 @@ helpers.extend(DatasetController.prototype, {
 			}
 			min = Math.min(min, value);
 			max = Math.max(max, value);
-			if (value > 0) {
-				minPositive = Math.min(minPositive, value);
-			}
 		}
 
 		function _skip() {
@@ -683,7 +680,7 @@ helpers.extend(DatasetController.prototype, {
 				break;
 			}
 		}
-		return {min, max, minPositive};
+		return {min, max};
 	},
 
 	/**
