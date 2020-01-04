@@ -81,7 +81,7 @@ module.exports = DatasetController.extend({
 
 		return {
 			label: vScale._getLabels()[index],
-			value: '' + vScale.getLabelForValue(parsed[vScale.id])
+			value: '' + vScale.getLabelForValue(parsed[vScale.axis])
 		};
 	},
 
