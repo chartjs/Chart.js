@@ -810,6 +810,19 @@ class Chart {
 		return typeof meta.hidden === 'boolean' ? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
 	}
 
+	setDatasetVisibility(datasetIndex, visible) {
+		const meta = this.getDatasetMeta(datasetIndex);
+		meta.hidden = !visible;
+	}
+
+	setDataVisibility(datasetIndex, index, visible) {
+		const meta = this.getDatasetMeta(datasetIndex);
+
+		if (meta.data[index]) {
+			meta.data[index].hidden = !visible;
+		}
+	}
+
 	/**
 	 * @private
 	 */
