@@ -71,7 +71,7 @@ export default class Animations {
 			if (!isObject(cfg)) {
 				return;
 			}
-			for (let prop of cfg.properties || [key]) {
+			(cfg.properties || [key]).forEach(function(prop) {
 				// Can have only one config per animation.
 				if (!animatedProps.has(prop)) {
 					animatedProps.set(prop, extend({}, animDefaults, cfg));
@@ -79,7 +79,7 @@ export default class Animations {
 					// Single property targetting config wins over multi-targetting.
 					animatedProps.set(prop, extend({}, animatedProps.get(prop), cfg));
 				}
-			}
+			});
 		});
 	}
 
