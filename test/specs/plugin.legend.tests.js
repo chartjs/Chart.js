@@ -25,7 +25,7 @@ describe('Legend block tests', function() {
 			title: {
 				display: false,
 				position: 'center',
-				value: '',
+				text: '',
 			}
 		});
 	});

@@ -77,7 +77,7 @@ defaults._set('legend', {
 	title: {
 		display: false,
 		position: 'center',
-		value: '',
+		text: '',
 	}
 });
 
@@ -547,7 +547,7 @@ class Legend extends Element {
 		// Draw the title text
 		const halfFontSize = titleFont.size / 2;
 		const y = me.top + titlePadding.top + halfFontSize;
-		ctx.fillText(titleOpts.value, x, y);
+		ctx.fillText(titleOpts.text, x, y);
 	}
 
 	_computeTitleHeight() {

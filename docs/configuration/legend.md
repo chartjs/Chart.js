@@ -69,7 +69,7 @@ The legend title configuration is nested below the legend configuration using th
 | `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
 | `lineHeight` | `number` | | Line height of the text. If unset, is computed from the font size.
 | `padding` | <code>number&#124;object</code> | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
-| `value` | `string` | | The string title.
+| `text` | `string` | | The string title.
 
 ## Legend Item Interface
 
