@@ -98,6 +98,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.where`
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Line.calculatePointY`
+* `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.handleDirectionalChanges` is now private
 * `Scale.mergeTicksOptions`

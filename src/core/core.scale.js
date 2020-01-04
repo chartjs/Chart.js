@@ -353,7 +353,6 @@ class Scale extends Element {
 	_getMinMax(canStack) {
 		var me = this;
 		var {min, max, minDefined, maxDefined} = me._getUserBounds();
-		var minPositive = Number.POSITIVE_INFINITY;
 		var i, ilen, metas, minmax;
 
 		if (minDefined && maxDefined) {
@@ -369,10 +368,9 @@ class Scale extends Element {
 			if (!maxDefined) {
 				max = Math.max(max, minmax.max);
 			}
-			minPositive = Math.min(minPositive, minmax.minPositive);
 		}
 
-		return {min, max, minPositive};
+		return {min, max};
 	}
 
 	_invalidateCaches() {}

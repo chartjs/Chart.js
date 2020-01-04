@@ -1,6 +1,5 @@
 'use strict';
 
-import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
 import {_setMinAndMaxByKey} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -77,11 +76,9 @@ class LogarithmicScale extends Scale {
 		const minmax = me._getMinMax(true);
 		const min = minmax.min;
 		const max = minmax.max;
-		const minPositive = minmax.minPositive;
 
 		me.min = helpers.isFinite(min) ? Math.max(0, min) : null;
 		me.max = helpers.isFinite(max) ? Math.max(0, max) : null;
-		me.minNotZero = helpers.isFinite(minPositive) ? minPositive : null;
 
 		me.handleTickRangeOptions();
 	}
@@ -109,15 +106,6 @@ class LogarithmicScale extends Scale {
 			max = min !== 0
 				? Math.pow(10, Math.floor(log10(min)) + 1)
 				: DEFAULT_MAX;
-		}
-		if (me.minNotZero === null) {
-			if (min > 0) {
-				me.minNotZero = min;
-			} else if (max < 1) {
-				me.minNotZero = Math.pow(10, Math.floor(log10(max)));
-			} else {
-				me.minNotZero = DEFAULT_MIN;
-			}
 		}
 		me.min = min;
 		me.max = max;
@@ -160,34 +148,16 @@ class LogarithmicScale extends Scale {
 		return this.getPixelForValue(ticks[index].value);
 	}
 
-	/**
-	 * Returns the value of the first tick.
-	 * @param {number} value - The minimum not zero value.
-	 * @return {number} The first tick value.
-	 * @private
-	 */
-	_getFirstTickValue(value) {
-		const exp = Math.floor(log10(value));
-		const significand = Math.floor(value / Math.pow(10, exp));
-
-		return significand * Math.pow(10, exp);
-	}
-
 	_configure() {
 		const me = this;
-		let start = me.min;
+		let start = me.min ? log10(me.min) : 0;
 		let offset = 0;
 
 		Scale.prototype._configure.call(me);
 
-		if (start === 0) {
-			start = me._getFirstTickValue(me.minNotZero);
-			offset = valueOrDefault(me.options.ticks.fontSize, defaults.fontSize) / me._length;
-		}
-
-		me._startValue = log10(start);
+		me._startValue = start;
 		me._valueOffset = offset;
-		me._valueRange = (log10(me.max) - log10(start)) / (1 - offset);
+		me._valueRange = (log10(me.max) - start) / (1 - offset);
 	}
 
 	getPixelForValue(value) {
