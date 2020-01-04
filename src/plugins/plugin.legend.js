@@ -72,6 +72,12 @@ defaults._set('legend', {
 				};
 			}, this);
 		}
+	},
+
+	title: {
+		display: false,
+		position: 'center',
+		value: '',
 	}
 });
 
@@ -210,21 +216,22 @@ class Legend extends Element {
 	beforeFit() {}
 
 	fit() {
-		var me = this;
-		var opts = me.options;
-		var labelOpts = opts.labels;
-		var display = opts.display;
+		const me = this;
+		const opts = me.options;
+		const labelOpts = opts.labels;
+		const titleOpts = opts.title;
+		const display = opts.display;
 
-		var ctx = me.ctx;
-
-		var labelFont = helpers.options._parseFont(labelOpts);
-		var fontSize = labelFont.size;
+		const ctx = me.ctx;
+		const labelFont = helpers.options._parseFont(labelOpts);
+		const fontSize = labelFont.size;
 
 		// Reset hit boxes
-		var hitboxes = me.legendHitBoxes = [];
+		const hitboxes = me.legendHitBoxes = [];
 
-		var minSize = me._minSize;
-		var isHorizontal = me.isHorizontal();
+		const minSize = me._minSize;
+		const isHorizontal = me.isHorizontal();
+		const titleHeight = me._computeTitleHeight();
 
 		if (isHorizontal) {
 			minSize.width = me.maxWidth; // fill all the width
@@ -242,18 +249,21 @@ class Legend extends Element {
 		ctx.font = labelFont.string;
 
 		if (isHorizontal) {
-			// Labels
-
 			// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
-			var lineWidths = me.lineWidths = [0];
-			var totalHeight = 0;
+			const lineWidths = me.lineWidths = [0];
+			let totalHeight = 0;
+
+			if (titleOpts.display) {
+				// If a legend title is displayed, increase the height by the amount required
+				totalHeight += titleHeight;
+			}
 
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
 
 			me.legendItems.forEach(function(legendItem, i) {
-				var boxWidth = getBoxWidth(labelOpts, fontSize);
-				var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+				const boxWidth = getBoxWidth(labelOpts, fontSize);
+				const width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 				if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
 					totalHeight += fontSize + labelOpts.padding;
@@ -274,19 +284,26 @@ class Legend extends Element {
 			minSize.height += totalHeight;
 
 		} else {
-			var vPadding = labelOpts.padding;
-			var columnWidths = me.columnWidths = [];
-			var columnHeights = me.columnHeights = [];
-			var totalWidth = labelOpts.padding;
-			var currentColWidth = 0;
-			var currentColHeight = 0;
+			const vPadding = labelOpts.padding;
+			const columnWidths = me.columnWidths = [];
+			const columnHeights = me.columnHeights = [];
+			let totalWidth = labelOpts.padding;
+			let currentColWidth = 0;
+			let currentColHeight = 0;
+
+			let heightLimit = minSize.height;
+			if (titleOpts.display) {
+				// If the title is displayed, need to reduce the possible column height
+				// by the height of the legend title
+				heightLimit -= titleHeight;
+			}
 
 			me.legendItems.forEach(function(legendItem, i) {
-				var boxWidth = getBoxWidth(labelOpts, fontSize);
-				var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+				const boxWidth = getBoxWidth(labelOpts, fontSize);
+				const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 				// If too tall, go to new column
-				if (i > 0 && currentColHeight + fontSize + 2 * vPadding > minSize.height) {
+				if (i > 0 && currentColHeight + fontSize + 2 * vPadding > heightLimit) {
 					totalWidth += currentColWidth + labelOpts.padding;
 					columnWidths.push(currentColWidth); // previous column width
 					columnHeights.push(currentColHeight);
@@ -326,26 +343,27 @@ class Legend extends Element {
 
 	// Actually draw the legend on the canvas
 	draw() {
-		var me = this;
-		var opts = me.options;
-		var labelOpts = opts.labels;
-		var defaultColor = defaults.color;
-		var lineDefault = defaults.elements.line;
-		var legendHeight = me.height;
-		var columnHeights = me.columnHeights;
-		var legendWidth = me.width;
-		var lineWidths = me.lineWidths;
+		const me = this;
+		const opts = me.options;
+		const labelOpts = opts.labels;
+		const defaultColor = defaults.color;
+		const lineDefault = defaults.elements.line;
+		const legendHeight = me.height;
+		const columnHeights = me.columnHeights;
+		const legendWidth = me.width;
+		const lineWidths = me.lineWidths;
 
 		if (!opts.display) {
 			return;
 		}
 
-		var rtlHelper = getRtlHelper(opts.rtl, me.left, me._minSize.width);
-		var ctx = me.ctx;
-		var fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
-		var labelFont = helpers.options._parseFont(labelOpts);
-		var fontSize = labelFont.size;
-		var cursor;
+		me._drawTitle();
+		const rtlHelper = getRtlHelper(opts.rtl, me.left, me._minSize.width);
+		const ctx = me.ctx;
+		const fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
+		const labelFont = helpers.options._parseFont(labelOpts);
+		const fontSize = labelFont.size;
+		let cursor;
 
 		// Canvas setup
 		ctx.textAlign = rtlHelper.textAlign('left');
@@ -429,17 +447,18 @@ class Legend extends Element {
 		};
 
 		// Horizontal
-		var isHorizontal = me.isHorizontal();
+		const isHorizontal = me.isHorizontal();
+		const titleHeight = this._computeTitleHeight();
 		if (isHorizontal) {
 			cursor = {
 				x: me.left + alignmentOffset(legendWidth, lineWidths[0]),
-				y: me.top + labelOpts.padding,
+				y: me.top + labelOpts.padding + titleHeight,
 				line: 0
 			};
 		} else {
 			cursor = {
 				x: me.left + labelOpts.padding,
-				y: me.top + alignmentOffset(legendHeight, columnHeights[0]),
+				y: me.top + alignmentOffset(legendHeight, columnHeights[0]) + titleHeight,
 				line: 0
 			};
 		}
@@ -488,6 +507,54 @@ class Legend extends Element {
 		});
 
 		helpers.rtl.restoreTextDirection(me.ctx, opts.textDirection);
+	}
+
+	_drawTitle() {
+		const me = this;
+		const opts = me.options;
+		const titleOpts = opts.title;
+		const titleFont = helpers.options._parseFont(titleOpts);
+		const titlePadding = helpers.options.toPadding(titleOpts.padding);
+
+		if (!titleOpts.display) {
+			return;
+		}
+
+		const rtlHelper = getRtlHelper(opts.rtl, me.left, me.minSize.width);
+		const ctx = me.ctx;
+		const fontColor = valueOrDefault(titleOpts.fontColor, defaults.fontColor);
+		const position = titleOpts.position;
+		let x, textAlign;
+
+		if (position === 'start') {
+			x = me.left + titlePadding.left;
+			textAlign = 'left';
+		} else if (position === 'center') {
+			x = (me.left + me.right) / 2;
+			textAlign = 'center';
+		} else if (position === 'end') {
+			x = me.right - titlePadding.right;
+			textAlign = 'right';
+		}
+
+		// Canvas setup
+		ctx.textAlign = rtlHelper.textAlign(textAlign);
+		ctx.textBaseline = 'middle';
+		ctx.strokeStyle = fontColor;
+		ctx.fillStyle = fontColor;
+		ctx.font = titleFont.string;
+
+		// Draw the title text
+		const halfFontSize = titleFont.size / 2;
+		const y = me.top + titlePadding.top + halfFontSize;
+		ctx.fillText(titleOpts.value, x, y);
+	}
+
+	_computeTitleHeight() {
+		const titleOpts = this.options.title;
+		const titleFont = helpers.options._parseFont(titleOpts);
+		const titlePadding = helpers.options.toPadding(titleOpts.padding);
+		return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
 	}
 
 	/**
