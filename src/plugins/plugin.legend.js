@@ -539,8 +539,7 @@ class Legend extends Element {
 			maxWidth = Math.max(...me.lineWidths);
 			switch (opts.align) {
 			case 'start':
-				// x is already correct in this case
-				left = me.left;
+				// left is already correct in this case
 				break;
 			case 'end':
 				left = me.right - maxWidth;
