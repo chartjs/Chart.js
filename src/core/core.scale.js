@@ -303,10 +303,10 @@ class Scale extends Element {
 		metas = me._getMatchingVisibleMetas();
 		for (i = 0, ilen = metas.length; i < ilen; ++i) {
 			minmax = metas[i].controller._getMinMax(me, canStack);
-			if (!minDefined) {
+			if (!minDefined && isFinite(minmax.min)) {
 				min = Math.min(min, minmax.min);
 			}
-			if (!maxDefined) {
+			if (!maxDefined && isFinite(minmax.max)) {
 				max = Math.max(max, minmax.max);
 			}
 			minPositive = Math.min(minPositive, minmax.minPositive);

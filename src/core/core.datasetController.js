@@ -631,17 +631,35 @@ helpers.extend(DatasetController.prototype, {
 	_getMinMax: function(scale, canStack) {
 		const meta = this._cachedMeta;
 		const {data, _parsed} = meta;
-		const sorted = meta._sorted && scale === meta.iScale;
-		const ilen = _parsed.length;
 		const otherScale = this._getOtherScale(scale);
-		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
+		const isIndexScale = scale === meta.iScale && scale !== otherScale;
+		const ilen = _parsed.length;
 		let max = Number.NEGATIVE_INFINITY;
-		let {min: otherMin, max: otherMax} = getUserBounds(otherScale);
-		let i, item, value, parsed, min, minPositive, otherValue;
+		let i, min, minPositive;
 
 		min = minPositive = Number.POSITIVE_INFINITY;
 
-		function _compute() {
+		if (isIndexScale && meta._sorted) {
+			if (ilen > 0) {
+				min = _parsed[0][scale.axis];
+				max = _parsed[ilen - 1][scale.axis];
+			}
+			return {min: min, max: max};
+		}
+
+		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
+		let {min: otherMin, max: otherMax} = getUserBounds(otherScale);
+
+		for (i = 0; i < ilen; ++i) {
+			const item = data[i];
+			const parsed = _parsed[i];
+			const otherValue = parsed[otherScale.axis];
+			let value = parsed[scale.axis];
+
+			if ((item && item.hidden) || isNaN(value) || otherMin > otherValue || otherMax < otherValue) {
+				continue;
+			}
+
 			if (stack) {
 				stack.values = parsed._stacks[scale.axis];
 				// Need to consider individual stack values for data range,
@@ -657,32 +675,6 @@ helpers.extend(DatasetController.prototype, {
 			}
 		}
 
-		function _skip() {
-			item = data[i];
-			parsed = _parsed[i];
-			value = parsed[scale.axis];
-			otherValue = parsed[otherScale.axis];
-			return ((item && item.hidden) || isNaN(value) || otherMin > otherValue || otherMax < otherValue);
-		}
-
-		for (i = 0; i < ilen; ++i) {
-			if (_skip()) {
-				continue;
-			}
-			_compute();
-			if (sorted) {
-				break;
-			}
-		}
-		if (sorted) {
-			for (i = ilen - 1; i >= 0; --i) {
-				if (_skip()) {
-					continue;
-				}
-				_compute();
-				break;
-			}
-		}
 		return {min, max, minPositive};
 	},
 

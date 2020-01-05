@@ -913,7 +913,7 @@ describe('Time scale tests', function() {
 					type: 'line',
 					data: {
 						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						datasets: [{data: [0, 1, 2, 3, 4]}]
 					},
 					options: {
 						scales: {
@@ -1000,7 +1000,7 @@ describe('Time scale tests', function() {
 					data: {
 						labels: ['2017', '2019', '2020', '2025', '2042'],
 						datasets: [
-							{data: [0, 1, 2, 3, 4, 5]},
+							{data: [0, 1, 2, 3, 4]},
 							{data: [
 								{t: '2018', y: 6},
 								{t: '2020', y: 7},
@@ -1511,7 +1511,7 @@ describe('Time scale tests', function() {
 					type: 'line',
 					data: {
 						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						datasets: [{data: [0, 1, 2, 3, 4]}]
 					},
 					options: {
 						scales: {
@@ -1598,7 +1598,7 @@ describe('Time scale tests', function() {
 					type: 'line',
 					data: {
 						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						datasets: [{data: [0, 1, 2, 3, 4]}]
 					},
 					options: {
 						scales: {
