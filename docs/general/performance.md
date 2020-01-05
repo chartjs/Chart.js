@@ -35,6 +35,7 @@ If the data is unordered, Chart.js needs to sort it. This can be slow in some ca
 ## Specify `min` and `max` for scales
 
 If you specify the `min` and `max`, the scale does not have to compute the range from the data.
+**Note:** If the data is sorted by an axis, then specifying min/max in that scale is actually worse for perfomance.
 
 ```javascript
 new Chart(ctx, {
@@ -44,8 +45,7 @@ new Chart(ctx, {
         scales: {
             x: {
                 type: 'time',
-                min: new Date('2019-01-01').valueOf(),
-                max: new Date('2019-12-31').valueOf()
+                // min & max is not specified, because it would be actually slower (assuming the data is ordered by time)
             },
             y: {
                 type: 'linear',
