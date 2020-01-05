@@ -101,6 +101,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Line.calculatePointY`
 * `Scale.getRightValue`
 * `Scale.handleDirectionalChanges` is now private
+* `Scale.longestLabelWidth`
+* `Scale.longestTextCache` is now private
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
 * `Scale.tickValues` is now private
