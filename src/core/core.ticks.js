@@ -32,6 +32,10 @@ module.exports = {
 		 * @return {string} string representation of the tickValue parameter
 		 */
 		linear: function(tickValue, index, ticks) {
+			if (ticks.length === 1) {
+				return '' + ticks[0].length;
+			}
+
 			// If we have lots of ticks, don't use the ones
 			var delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
