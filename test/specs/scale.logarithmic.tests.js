@@ -1009,9 +1009,9 @@ describe('Logarithmic Scale tests', function() {
 						var start = chart.chartArea[axis.start];
 						var end = chart.chartArea[axis.end];
 
-						expect(scale.getPixelForValue(firstTick, 0, 0)).toBeCloseToPixel(start);
-						expect(scale.getPixelForValue(lastTick, 0, 0)).toBeCloseToPixel(end);
-						expect(scale.getPixelForValue(0, 0, 0)).toBeCloseToPixel(start); // 0 is invalid, put it at the start.
+						expect(scale.getPixelForValue(firstTick)).toBeCloseToPixel(start);
+						expect(scale.getPixelForValue(lastTick)).toBeCloseToPixel(end);
+						expect(scale.getPixelForValue(0)).toBeCloseToPixel(start); // 0 is invalid, put it at the start.
 
 						expect(scale.getValueForPixel(start)).toBeCloseTo(firstTick, 4);
 						expect(scale.getValueForPixel(end)).toBeCloseTo(lastTick, 4);
@@ -1023,8 +1023,8 @@ describe('Logarithmic Scale tests', function() {
 						start = chart.chartArea[axis.end];
 						end = chart.chartArea[axis.start];
 
-						expect(scale.getPixelForValue(firstTick, 0, 0)).toBeCloseToPixel(start);
-						expect(scale.getPixelForValue(lastTick, 0, 0)).toBeCloseToPixel(end);
+						expect(scale.getPixelForValue(firstTick)).toBeCloseToPixel(start);
+						expect(scale.getPixelForValue(lastTick)).toBeCloseToPixel(end);
 
 						expect(scale.getValueForPixel(start)).toBeCloseTo(firstTick, 4);
 						expect(scale.getValueForPixel(end)).toBeCloseTo(lastTick, 4);
@@ -1057,12 +1057,12 @@ describe('Logarithmic Scale tests', function() {
 			{
 				dataset: [{x: 0, y: 0}, {x: 10, y: 10}, {x: 1.2, y: 1.2}, {x: 25, y: 25}, {x: 78, y: 78}],
 				lastTick: 80,
-				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}, minNotZero {x: 1.2, y: 1.2}'
+				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}'
 			},
 			{
 				dataset: [{x: 0, y: 0}, {x: 10, y: 10}, {x: 6.3, y: 6.3}, {x: 25, y: 25}, {x: 78, y: 78}],
 				lastTick: 80,
-				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}, minNotZero {x: 6.3, y: 6.3}'
+				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}'
 			},
 			{
 				dataset: [{x: 10, y: 10}, {x: 1.2, y: 1.2}, {x: 25, y: 25}, {x: 78, y: 78}],
