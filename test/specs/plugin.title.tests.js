@@ -26,22 +26,18 @@ describe('Title block tests', function() {
 			options: options
 		});
 
-		var minSize = title.update(400, 200);
+		title.update(400, 200);
 
-		expect(minSize).toEqual({
-			width: 0,
-			height: 0
-		});
+		expect(title.width).toEqual(0);
+		expect(title.height).toEqual(0);
 
 		// Now we have a height since we display
 		title.options.display = true;
 
-		minSize = title.update(400, 200);
+		title.update(400, 200);
 
-		expect(minSize).toEqual({
-			width: 400,
-			height: 34.4
-		});
+		expect(title.width).toEqual(400);
+		expect(title.height).toEqual(34.4);
 	});
 
 	it('should update correctly when vertical', function() {
@@ -56,22 +52,18 @@ describe('Title block tests', function() {
 			options: options
 		});
 
-		var minSize = title.update(200, 400);
+		title.update(200, 400);
 
-		expect(minSize).toEqual({
-			width: 0,
-			height: 0
-		});
+		expect(title.width).toEqual(0);
+		expect(title.height).toEqual(0);
 
 		// Now we have a height since we display
 		title.options.display = true;
 
-		minSize = title.update(200, 400);
+		title.update(200, 400);
 
-		expect(minSize).toEqual({
-			width: 34.4,
-			height: 400
-		});
+		expect(title.width).toEqual(34.4);
+		expect(title.height).toEqual(400);
 	});
 
 	it('should have the correct size when there are multiple lines of text', function() {
@@ -88,12 +80,10 @@ describe('Title block tests', function() {
 			options: options
 		});
 
-		var minSize = title.update(200, 400);
+		title.update(200, 400);
 
-		expect(minSize).toEqual({
-			width: 56,
-			height: 400
-		});
+		expect(title.width).toEqual(56);
+		expect(title.height).toEqual(400);
 	});
 
 	it('should draw correctly horizontally', function() {
@@ -117,11 +107,11 @@ describe('Title block tests', function() {
 		// Now we have a height since we display
 		title.options.display = true;
 
-		var minSize = title.update(400, 200);
+		title.update(400, 200);
 		title.top = 50;
 		title.left = 100;
-		title.bottom = title.top + minSize.height;
-		title.right = title.left + minSize.width;
+		title.bottom = title.top + title.height;
+		title.right = title.left + title.width;
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
@@ -170,11 +160,11 @@ describe('Title block tests', function() {
 		// Now we have a height since we display
 		title.options.display = true;
 
-		var minSize = title.update(200, 400);
+		title.update(200, 400);
 		title.top = 50;
 		title.left = 100;
-		title.bottom = title.top + minSize.height;
-		title.right = title.left + minSize.width;
+		title.bottom = title.top + title.height;
+		title.right = title.left + title.width;
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
@@ -206,11 +196,11 @@ describe('Title block tests', function() {
 		// Reset call tracker
 		context.resetCalls();
 
-		minSize = title.update(200, 400);
+		title.update(200, 400);
 		title.top = 50;
 		title.left = 100;
-		title.bottom = title.top + minSize.height;
-		title.right = title.left + minSize.width;
+		title.bottom = title.top + title.height;
+		title.right = title.left + title.width;
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{

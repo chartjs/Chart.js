@@ -435,6 +435,7 @@ class Scale extends Element {
 		me.beforeUpdate();
 
 		// Absorb the master measurements
+		// TODO: make some of these variables private
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
 		me.margins = helpers.extend({
@@ -500,10 +501,6 @@ class Scale extends Element {
 		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
 		me.afterUpdate();
-
-		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
-		// make maxWidth and maxHeight private
-		return me.minSize;
 	}
 
 	/**
@@ -657,7 +654,7 @@ class Scale extends Element {
 	fit() {
 		var me = this;
 		// Reset
-		var minSize = me.minSize = {
+		var minSize = {
 			width: 0,
 			height: 0
 		};

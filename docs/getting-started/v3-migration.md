@@ -96,6 +96,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.roundedRect`
 * `helpers.scaleMerge`
 * `helpers.where`
+* `ILayoutItem.minSize`
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Line.calculatePointY`
 * `Scale.getRightValue`
@@ -185,3 +186,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Interactions
 
 * Interaction mode methods now return an array of objects containing the `element`, `datasetIndex`, and `index`
+
+#### Layout
+
+* `ILayoutItem.update` no longer has a return value
