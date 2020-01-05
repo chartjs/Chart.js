@@ -168,6 +168,12 @@
 			path: 'legend/callbacks.html'
 		}]
 	}, {
+		title: 'Title',
+		items: [{
+			title: 'Alignment',
+			path: 'title/alignment.html'
+		}]
+	}, {
 		title: 'Tooltip',
 		items: [{
 			title: 'Positioning',
