@@ -5,6 +5,7 @@ var Title = Chart.plugins.getAll().find(p => p.id === 'title')._element;
 describe('Title block tests', function() {
 	it('Should have the correct default config', function() {
 		expect(Chart.defaults.title).toEqual({
+			align: 'center',
 			display: false,
 			position: 'top',
 			fullWidth: true,
