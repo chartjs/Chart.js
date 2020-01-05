@@ -118,6 +118,42 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	it('should parse data using correct scales', function() {
+		const data1 = [0, 1, 2, 3, 4, 5];
+		const data2 = ['a', 'b', 'c', 'd', 'a'];
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [
+					{data: data1},
+					{data: data2, yAxisID: 'y2'}
+				]
+			},
+			options: {
+				scales: {
+					y: {
+						type: 'linear'
+					},
+					y2: {
+						type: 'category',
+						labels: ['a', 'b', 'c', 'd', 'e']
+					}
+				}
+			}
+		});
+
+		const meta1 = chart.getDatasetMeta(0);
+		const parsedYValues1 = meta1._parsed.map(p => p.y);
+		const meta2 = chart.getDatasetMeta(1);
+		const parsedYValues2 = meta2._parsed.map(p => p.y);
+
+		expect(meta1.data.length).toBe(6);
+		expect(parsedYValues1).toEqual(data1);
+
+		expect(meta2.data.length).toBe(5);
+		expect(parsedYValues2).toEqual([0, 1, 2, 3, 0]); // label indices
+	});
+
 	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
 		const data = [0, 1, 2, 3, 4, 5];
 		const chart = acquireChart({
