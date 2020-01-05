@@ -121,7 +121,7 @@ All functions are called with the same arguments: a [tooltip item](#tooltip-item
 
 ### Label Callback
 
-The `label` callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+The `label` callback can change the text that displays for a given data point. A common example to show a unit. The example below puts a `'$'` before every row.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -136,7 +136,9 @@ var chart = new Chart(ctx, {
                     if (label) {
                         label += ': ';
                     }
-                    label += Math.round(tooltipItem.value * 100) / 100;
+                    if (!helpers.isNullOrUndef(tooltipItem.value)) {
+                        label += '$' + tooltipItem.value;
+                    }
                     return label;
                 }
             }
