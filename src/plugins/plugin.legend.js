@@ -142,8 +142,6 @@ class Legend extends Element {
 		me.afterFit();
 		//
 		me.afterUpdate();
-
-		return me.minSize;
 	}
 
 	afterUpdate() {}
@@ -175,7 +173,7 @@ class Legend extends Element {
 		me.paddingBottom = 0;
 
 		// Reset minSize
-		me.minSize = {
+		me._minSize = {
 			width: 0,
 			height: 0
 		};
@@ -225,7 +223,7 @@ class Legend extends Element {
 		// Reset hit boxes
 		var hitboxes = me.legendHitBoxes = [];
 
-		var minSize = me.minSize;
+		var minSize = me._minSize;
 		var isHorizontal = me.isHorizontal();
 
 		if (isHorizontal) {
@@ -342,7 +340,7 @@ class Legend extends Element {
 			return;
 		}
 
-		var rtlHelper = getRtlHelper(opts.rtl, me.left, me.minSize.width);
+		var rtlHelper = getRtlHelper(opts.rtl, me.left, me._minSize.width);
 		var ctx = me.ctx;
 		var fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
 		var labelFont = helpers.options._parseFont(labelOpts);
@@ -455,18 +453,18 @@ class Legend extends Element {
 			var x = cursor.x;
 			var y = cursor.y;
 
-			rtlHelper.setWidth(me.minSize.width);
+			rtlHelper.setWidth(me._minSize.width);
 
-			// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
+			// Use (me.left + me._minSize.width) and (me.top + me._minSize.height)
 			// instead of me.right and me.bottom because me.width and me.height
-			// may have been changed since me.minSize was calculated
+			// may have been changed since me._minSize was calculated
 			if (isHorizontal) {
-				if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
+				if (i > 0 && x + width + labelOpts.padding > me.left + me._minSize.width) {
 					y = cursor.y += itemHeight;
 					cursor.line++;
 					x = cursor.x = me.left + alignmentOffset(legendWidth, lineWidths[cursor.line]);
 				}
-			} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
+			} else if (i > 0 && y + itemHeight > me.top + me._minSize.height) {
 				x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
 				cursor.line++;
 				y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);

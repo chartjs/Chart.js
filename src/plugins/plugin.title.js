@@ -59,8 +59,6 @@ class Title extends Element {
 		//
 		me.afterUpdate();
 
-		return me.minSize;
-
 	}
 	afterUpdate() {}
 
@@ -82,12 +80,6 @@ class Title extends Element {
 			me.top = 0;
 			me.bottom = me.height;
 		}
-
-		// Reset minSize
-		me.minSize = {
-			width: 0,
-			height: 0
-		};
 	}
 	afterSetDimensions() {}
 
@@ -103,7 +95,7 @@ class Title extends Element {
 	fit() {
 		var me = this;
 		var opts = me.options;
-		var minSize = me.minSize = {};
+		var minSize = {};
 		var isHorizontal = me.isHorizontal();
 		var lineCount, textSize;
 
