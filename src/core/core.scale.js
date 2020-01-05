@@ -64,19 +64,6 @@ defaults._set('scale', {
 	}
 });
 
-/** Returns a new array containing numItems from arr */
-function sample(arr, numItems) {
-	const result = [];
-	const increment = arr.length / numItems;
-	const len = arr.length;
-	let i = 0;
-
-	for (; i < len; i += increment) {
-		result.push(arr[Math.floor(i)]);
-	}
-	return result;
-}
-
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	const length = scale.ticks.length;
 	const validIndex = Math.min(index, length - 1);
@@ -118,16 +105,41 @@ function garbageCollect(caches, length) {
 	});
 }
 
+function parseFontOptions(options, nestedOpts) {
+	return helpers.extend(helpers.options._parseFont({
+		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
+		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
+		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
+		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
+	}), {
+		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor])
+	});
+}
+
+function parseTickFontOptions(options) {
+	const minor = parseFontOptions(options, options.minor);
+	const major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
+
+	return {minor, major};
+}
+
 /**
  * Returns {width, height, offset} objects for the first, last, widest, highest tick
  * labels where offset indicates the anchor point offset from the top in pixels.
  */
-function computeLabelSizes(ctx, tickFonts, ticks, caches) {
+function computeLabelSizes(context) {
+	const ctx = context.chart.ctx;
+	const scale = context.scale;
+	const ticks = scale.ticks;
+	const tickFonts = parseTickFontOptions(scale.options.ticks);
+	const caches = scale._longestTextCache;
 	const length = ticks.length;
 	const widths = [];
 	const heights = [];
 	const offsets = [];
 	let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel, widest, highest;
+
+	scale._convertTicksToLabels(ticks);
 
 	for (i = 0; i < length; ++i) {
 		label = ticks[i].label;
@@ -189,24 +201,6 @@ function getScaleLabelHeight(options) {
 	const padding = helpers.options.toPadding(options.padding);
 
 	return font.lineHeight + padding.height;
-}
-
-function parseFontOptions(options, nestedOpts) {
-	return helpers.extend(helpers.options._parseFont({
-		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
-		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
-		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
-		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
-	}), {
-		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor])
-	});
-}
-
-function parseTickFontOptions(options) {
-	const minor = parseFontOptions(options, options.minor);
-	const major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
-
-	return {minor, major};
 }
 
 function getEvenSpacing(arr) {
@@ -426,8 +420,6 @@ class Scale extends Element {
 	update(maxWidth, maxHeight, margins) {
 		const me = this;
 		const tickOpts = me.options.ticks;
-		const sampleSize = tickOpts.sampleSize;
-		let samplingEnabled;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -446,6 +438,7 @@ class Scale extends Element {
 		me.ticks = null;
 		me._labelSizes = null;
 		me._maxLabelLines = 0;
+		me._labelsGenerated = false;
 		me._longestTextCache = me._longestTextCache || {};
 		me._gridLineItems = null;
 		me._labelItems = null;
@@ -467,11 +460,6 @@ class Scale extends Element {
 		// Allow modification of ticks in callback.
 		me.afterBuildTicks();
 
-		// Compute tick rotation and fit using a sampled subset of labels
-		// We generally don't need to compute the size of every single label for determining scale size
-		samplingEnabled = sampleSize < me.ticks.length;
-		me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
-
 		// _configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
 		// Variables set in _configure are needed for calculateLabelRotation, and
@@ -490,10 +478,8 @@ class Scale extends Element {
 		// Auto-skip
 		me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
 
-		if (samplingEnabled) {
-			// Generate labels using all non-skipped ticks
-			me._convertTicksToLabels(me.ticks);
-		}
+		// Generate labels using all non-skipped ticks
+		me._convertTicksToLabels(me.ticks);
 
 		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
@@ -781,11 +767,17 @@ class Scale extends Element {
 	_convertTicksToLabels(ticks) {
 		const me = this;
 
+		if (me._labelsGenerated) {
+			return;
+		}
+
 		me.beforeTickToLabelConversion();
 
 		me.generateTickLabels(ticks);
 
 		me.afterTickToLabelConversion();
+
+		me._labelsGenerated = true;
 	}
 
 	/**
@@ -796,7 +788,9 @@ class Scale extends Element {
 		let labelSizes = me._labelSizes;
 
 		if (!labelSizes) {
-			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.ticks, me._longestTextCache);
+			const compute = me.options.ticks.labelSizes || computeLabelSizes;
+			const context = {chart: me.chart, scale: me};
+			me._labelSizes = labelSizes = compute(context);
 		}
 
 		return labelSizes;

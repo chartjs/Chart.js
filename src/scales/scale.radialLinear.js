@@ -322,21 +322,15 @@ class RadialLinearScale extends LinearScaleBase {
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
 	}
 
-	generateTickLabels(ticks) {
+	fit() {
 		var me = this;
-
-		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
+		var opts = me.options;
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map(function() {
 			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
 			return label || label === 0 ? label : '';
 		});
-	}
-
-	fit() {
-		var me = this;
-		var opts = me.options;
 
 		if (opts.display && opts.pointLabels.display) {
 			fitWithPointLabels(me);

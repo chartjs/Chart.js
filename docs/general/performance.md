@@ -8,9 +8,9 @@ Chart.js charts are rendered on `canvas` elements, which makes rendering quite f
 
 [Specify a rotation value](https://www.chartjs.org/docs/latest/axes/cartesian/#tick-configuration) by setting `minRotation` and `maxRotation` to the same value, which avoids the chart from having to automatically determine a value to use.
 
-### Sampling
+### Computing Label Sizes
 
-Set the [`ticks.sampleSize`](../axes/cartesian/README.md#tick-configuration) option. This will determine how large your labels are by looking at only a subset of them in order to render axes more quickly. This works best if there is not a large variance in the size of your labels.
+Use the [`ticks.labelSizes`](../axes/cartesian/README.md#label-sizes) option to specify a faster computation of the label sizes. The default prioritizes accuracy over speed. However, you can provide a faster implementation. E.g. you may provide hardcoded estimated values, compute the label sizes based only on a subset of the ticks, or find the longest text and assume it is also the largest when rendered on canvas.
 
 ## Disable Animations
 

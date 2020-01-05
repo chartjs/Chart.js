@@ -45,7 +45,7 @@ The following options are common to all cartesian axes but do not apply to other
 | ---- | ---- | ------- | -----------
 | `min` | `number` | | User defined minimum value for the scale, overrides minimum value from data.
 | `max` | `number` | | User defined maximum value for the scale, overrides maximum value from data.
-| `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+| `labelSizes` | `function` | | A function that returns the width, height, and offset (i.e. 1/2 line height) of the first, last, widest, and highest labels. [more...](#label-sizes)
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
 | `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
@@ -53,6 +53,35 @@ The following options are common to all cartesian axes but do not apply to other
 | `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
 | `mirror` | `boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 | `padding` | `number` | `0` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+
+#### Label Sizes
+
+The `labelSizes` option allows the user to provide the label sizes. This option is provided primarily for performance reasons since the default implementation prioritizes accuracy over speed. The option takes a `function` with one parameter, which is a context object containing `chart` and `scale`. It is expected to return an object with the following format describing the label sizes in pixels:
+
+```
+{
+    first: {
+        width
+        height
+        offset
+    },
+    last: {
+        width
+        height
+        offset
+    },
+    widest: {
+        width
+        height
+        offset
+    },
+    highest: {
+        width
+        height
+        offset
+    }
+}
+```
 
 ### Axis ID
 
