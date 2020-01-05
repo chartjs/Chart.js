@@ -210,7 +210,8 @@ describe('Linear Scale', function() {
 			options: {
 				scales: {
 					y: {
-						type: 'linear'
+						type: 'linear',
+						beginAtZero: false
 					}
 				}
 			}
@@ -673,6 +674,7 @@ describe('Linear Scale', function() {
 				scales: {
 					y: {
 						type: 'linear',
+						beginAtZero: false
 					}
 				}
 			}
@@ -751,7 +753,9 @@ describe('Linear Scale', function() {
 			},
 			options: {
 				scales: {
-					y: {}
+					y: {
+						beginAtZero: false
+					}
 				}
 			}
 		});

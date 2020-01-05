@@ -708,7 +708,8 @@ describe('Chart.controllers.bar', function() {
 					},
 					y: {
 						type: 'linear',
-						display: false
+						display: false,
+						beginAtZero: false
 					}
 				}
 			}
@@ -773,7 +774,8 @@ describe('Chart.controllers.bar', function() {
 					},
 					y: {
 						type: 'linear',
-						display: false
+						display: false,
+						beginAtZero: false
 					}
 				}
 			}
