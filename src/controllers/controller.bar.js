@@ -22,6 +22,7 @@ defaults._set('bar', {
 		},
 		y: {
 			type: 'linear',
+			beginAtZero: true,
 		}
 	}
 });
