@@ -156,6 +156,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Scales
 
+* Linear/Radial linear `beginAtZero` now defaults to `true` instead of `false`.
 * `Scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
 * `Scale.getPixelForValue` now has only one parameter. For the `TimeScale` that parameter must be millis since the epoch
 

@@ -47,6 +47,11 @@ describe('Core.Tooltip', function() {
 					labels: ['Point 1', 'Point 2', 'Point 3']
 				},
 				options: {
+					scales: {
+						y: {
+							beginAtZero: false,
+						}
+					},
 					tooltips: {
 						mode: 'index',
 						intersect: false,
@@ -227,6 +232,11 @@ describe('Core.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
+				scales: {
+					y: {
+						beginAtZero: false,
+					}
+				},
 				tooltips: {
 					mode: 'nearest',
 					intersect: true
@@ -345,6 +355,11 @@ describe('Core.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
+				scales: {
+					y: {
+						beginAtZero: false,
+					}
+				},
 				tooltips: {
 					mode: 'index',
 					callbacks: {
@@ -506,6 +521,11 @@ describe('Core.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
+				scales: {
+					y: {
+						beginAtZero: false,
+					}
+				},
 				tooltips: {
 					mode: 'index',
 					itemSort: function(a, b) {
@@ -587,6 +607,11 @@ describe('Core.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
+				scales: {
+					y: {
+						beginAtZero: false,
+					}
+				},
 				tooltips: {
 					mode: 'index',
 					reverse: true
@@ -668,6 +693,11 @@ describe('Core.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
+				scales: {
+					y: {
+						beginAtZero: false,
+					}
+				},
 				tooltips: {
 					mode: 'index'
 				}

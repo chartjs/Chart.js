@@ -39,7 +39,7 @@ module.exports = {
 			},
 			scales: {
 				x: {display: false},
-				y: {display: false}
+				y: {beginAtZero: false, display: false}
 			}
 		}
 	},

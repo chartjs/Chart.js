@@ -15,6 +15,7 @@ const defaultConfig = {
 
 	// Boolean - Whether to animate scaling the chart from the centre
 	animate: true,
+	beginAtZero: true,
 	position: 'chartArea',
 
 	angleLines: {

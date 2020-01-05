@@ -18,6 +18,7 @@
             "scales": {
                 "x": {"ticks": {"display": false}},
                 "y": {
+                    "beginAtZero": false,
                     "max": 6,
                     "ticks": {
                         "display": false

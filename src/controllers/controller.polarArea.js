@@ -22,7 +22,6 @@ defaults._set('polarArea', {
 			angleLines: {
 				display: false
 			},
-			beginAtZero: true,
 			gridLines: {
 				circular: true
 			},

@@ -6,6 +6,7 @@ import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
 const defaultConfig = {
+	beginAtZero: true,
 	ticks: {
 		callback: Ticks.formatters.linear
 	}

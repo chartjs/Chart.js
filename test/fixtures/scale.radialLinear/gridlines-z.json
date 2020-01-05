@@ -13,6 +13,7 @@
             "legend": false,
             "title": false,
             "scale": {
+                "beginAtZero": false,
                 "gridLines": {
                     "color": "rgba(0, 0, 0, 1)",
                     "lineWidth": 1,

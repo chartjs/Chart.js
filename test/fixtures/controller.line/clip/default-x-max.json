@@ -22,7 +22,10 @@
                         "display": false
                     }
                 },
-                "y": {"ticks": {"display": false}}
+                "y": {
+                    "beginAtZero": false,
+                    "ticks": {"display": false}
+                }
             },
             "layout": {
                 "padding": 24

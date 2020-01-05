@@ -45,7 +45,7 @@ describe('Test the radial linear scale', function() {
 			position: 'chartArea',
 			offset: false,
 			reverse: false,
-			beginAtZero: false,
+			beginAtZero: true,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
 				backdropColor: 'rgba(255,255,255,0.75)',
@@ -144,7 +144,11 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6', 'label7', 'label8']
 			},
 			options: {
-				scales: {}
+				scales: {
+					r: {
+						beginAtZero: false,
+					}
+				}
 			}
 		});
 
@@ -161,7 +165,9 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scales: {
-					rScale: {}
+					rScale: {
+						beginAtZero: false,
+					}
 				}
 			}
 		});
@@ -281,6 +287,7 @@ describe('Test the radial linear scale', function() {
 			},
 			options: {
 				scale: {
+					beginAtZero: false,
 					pointLabels: {
 						display: false
 					}

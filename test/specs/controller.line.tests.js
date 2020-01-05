@@ -183,6 +183,7 @@ describe('Chart.controllers.line', function() {
 						display: false
 					},
 					y: {
+						beginAtZero: false,
 						display: false
 					}
 				}
