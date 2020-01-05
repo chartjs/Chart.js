@@ -526,15 +526,60 @@ class Legend extends Element {
 		const position = titleOpts.position;
 		let x, textAlign;
 
-		if (position === 'start') {
-			x = me.left + titlePadding.left;
+		const halfFontSize = titleFont.size / 2;
+		let y = me.top + titlePadding.top + halfFontSize;
+
+		// These defaults are used when the legend is vertical.
+		// When horizontal, they are computed below.
+		let left = me.left;
+		let maxWidth = me.width;
+
+		if (this.isHorizontal()) {
+			// Move left / right so that the title is above the legend lines
+			maxWidth = Math.max(...me.lineWidths);
+			switch (opts.align) {
+			case 'start':
+				// x is already correct in this case
+				left = me.left;
+				break;
+			case 'end':
+				left = me.right - maxWidth;
+				break;
+			default:
+				left = ((me.left + me.right) / 2) - (maxWidth / 2);
+				break;
+			}
+		} else {
+			// Move down so that the title is above the legend stack in every alignment
+			const maxHeight = Math.max(...me.columnHeights);
+			switch (opts.align) {
+			case 'start':
+				// y is already correct in this case
+				break;
+			case 'end':
+				y += me.height - maxHeight;
+				break;
+			default: // center
+				y += (me.height - maxHeight) / 2;
+				break;
+			}
+		}
+
+		// Now that we know the left edge of the inner legend box, compute the correct
+		// X coordinate from the title alignment
+		switch (position) {
+		case 'start':
+			x = left;
 			textAlign = 'left';
-		} else if (position === 'center') {
-			x = (me.left + me.right) / 2;
-			textAlign = 'center';
-		} else if (position === 'end') {
-			x = me.right - titlePadding.right;
+			break;
+		case 'end':
+			x = left + maxWidth;
 			textAlign = 'right';
+			break;
+		default:
+			x = left + (maxWidth / 2);
+			textAlign = 'center';
+			break;
 		}
 
 		// Canvas setup
@@ -544,9 +589,6 @@ class Legend extends Element {
 		ctx.fillStyle = fontColor;
 		ctx.font = titleFont.string;
 
-		// Draw the title text
-		const halfFontSize = titleFont.size / 2;
-		const y = me.top + titlePadding.top + halfFontSize;
 		ctx.fillText(titleOpts.text, x, y);
 	}
 
