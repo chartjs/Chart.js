@@ -1347,4 +1347,39 @@ describe('Chart', function() {
 			expect(metasets[3].order).toEqual(3);
 		});
 	});
+
+	describe('data visibility', function() {
+		it('should hide a dataset', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 1, 2]
+					}],
+					labels: ['a', 'b', 'c']
+				}
+			});
+
+			chart.setDatasetVisibility(0, false);
+
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.hidden).toBe(true);
+		});
+
+		it('should hide a single data item', function() {
+			var chart = acquireChart({
+				type: 'polarArea',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+
+			chart.setDataVisibility(0, 1, false);
+
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.data[1].hidden).toBe(true);
+		});
+	});
 });
