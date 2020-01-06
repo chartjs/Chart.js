@@ -1058,6 +1058,10 @@ helpers.extend(DatasetController.prototype, {
 
 		if (numData > numMeta) {
 			me.insertElements(numMeta, numData - numMeta);
+			if (changed && numMeta) {
+				// insertElements parses the new elements. The old ones might need parsing too.
+				me._parse(0, numMeta);
+			}
 		} else if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
 			meta._parsed.splice(numData, numMeta - numData);
