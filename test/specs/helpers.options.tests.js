@@ -113,6 +113,21 @@ describe('Chart.helpers.options', function() {
 				weight: null
 			});
 		});
+		it ('should handle a string font size', function() {
+			expect(parseFont({
+				fontFamily: 'bla',
+				lineHeight: 8,
+				fontSize: '21',
+				fontStyle: 'zzz'
+			})).toEqual({
+				family: 'bla',
+				lineHeight: 8 * 21,
+				size: 21,
+				string: 'zzz 21px bla',
+				style: 'zzz',
+				weight: null
+			});
+		});
 		it('should return null as a font string if fontSize or fontFamily are missing', function() {
 			const fontFamily = Chart.defaults.fontFamily;
 			const fontSize = Chart.defaults.fontSize;
