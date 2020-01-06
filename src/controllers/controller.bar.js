@@ -144,7 +144,7 @@ function parseFloatBar(arr, item, vScale, i) {
 
 	// Store `barEnd` (furthest away from origin) as parsed value,
 	// to make stacking straight forward
-	item[vScale.id] = barEnd;
+	item[vScale.axis] = barEnd;
 
 	item._custom = {
 		barStart: barStart,
@@ -167,12 +167,12 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
 		item = {};
-		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
+		item[iScale.axis] = singleScale || iScale._parse(labels[i], i);
 
 		if (helpers.isArray(entry)) {
 			parseFloatBar(entry, item, vScale, i);
 		} else {
-			item[vScale.id] = vScale._parse(entry, i);
+			item[vScale.axis] = vScale._parse(entry, i);
 		}
 
 		parsed.push(item);
@@ -230,12 +230,12 @@ module.exports = DatasetController.extend({
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.id] = iScale._parseObject(obj, iScale.axis, i);
+			item[iScale.axis] = iScale._parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
-				item[vScale.id] = vScale._parseObject(obj, vProp, i);
+				item[vScale.axis] = vScale._parseObject(obj, vProp, i);
 			}
 			parsed.push(item);
 		}
@@ -253,10 +253,10 @@ module.exports = DatasetController.extend({
 		const custom = parsed._custom;
 		const value = custom
 			? '[' + custom.start + ', ' + custom.end + ']'
-			: '' + vScale.getLabelForValue(parsed[vScale.id]);
+			: '' + vScale.getLabelForValue(parsed[vScale.axis]);
 
 		return {
-			label: '' + iScale.getLabelForValue(parsed[iScale.id]),
+			label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
 			value: value
 		};
 	},
@@ -394,7 +394,7 @@ module.exports = DatasetController.extend({
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.id]));
+			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.axis]));
 		}
 
 		return {
@@ -417,9 +417,9 @@ module.exports = DatasetController.extend({
 		const minBarLength = options.minBarLength;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		let value = parsed[vScale.id];
+		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.id];
+		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.axis];
 		let base, head, size;
 
 		if (length !== value) {
@@ -489,7 +489,7 @@ module.exports = DatasetController.extend({
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[vScale.id])) {
+			if (!isNaN(me._getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

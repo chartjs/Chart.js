@@ -104,8 +104,8 @@ module.exports = DatasetController.extend({
 			const index = start + i;
 			const point = points[i];
 			const parsed = me._getParsed(index);
-			const x = xScale.getPixelForValue(parsed[xScale.id]);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+			const x = xScale.getPixelForValue(parsed.x);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed.y);
 			const properties = {
 				x,
 				y,

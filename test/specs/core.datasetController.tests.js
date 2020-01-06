@@ -118,6 +118,55 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	it('should parse data using correct scales', function() {
+		const data1 = [0, 1, 2, 3, 4, 5];
+		const data2 = ['a', 'b', 'c', 'd', 'a'];
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [
+					{data: data1},
+					{data: data2, xAxisID: 'x2', yAxisID: 'y2'}
+				]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+						labels: ['one', 'two', 'three', 'four', 'five', 'six']
+					},
+					x2: {
+						type: 'logarithmic',
+						labels: ['1', '10', '100', '1000', '2000']
+					},
+					y: {
+						type: 'linear'
+					},
+					y2: {
+						type: 'category',
+						labels: ['a', 'b', 'c', 'd', 'e']
+					}
+				}
+			}
+		});
+
+		const meta1 = chart.getDatasetMeta(0);
+		const parsedXValues1 = meta1._parsed.map(p => p.x);
+		const parsedYValues1 = meta1._parsed.map(p => p.y);
+
+		expect(meta1.data.length).toBe(6);
+		expect(parsedXValues1).toEqual([0, 1, 2, 3, 4, 5]); // label indices
+		expect(parsedYValues1).toEqual(data1);
+
+		const meta2 = chart.getDatasetMeta(1);
+		const parsedXValues2 = meta2._parsed.map(p => p.x);
+		const parsedYValues2 = meta2._parsed.map(p => p.y);
+
+		expect(meta2.data.length).toBe(5);
+		expect(parsedXValues2).toEqual([1, 10, 100, 1000, 2000]); // logarithmic scale labels
+		expect(parsedYValues2).toEqual([0, 1, 2, 3, 0]); // label indices
+	});
+
 	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
 		const data = [0, 1, 2, 3, 4, 5];
 		const chart = acquireChart({

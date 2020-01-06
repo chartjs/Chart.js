@@ -193,17 +193,17 @@ function updateStacks(controller, parsed) {
 	const {chart, _cachedMeta: meta} = controller;
 	const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
 	const {iScale, vScale, index: datasetIndex} = meta;
-	const iId = iScale.id;
-	const vId = vScale.id;
+	const iAxis = iScale.axis;
+	const vAxis = vScale.axis;
 	const key = getStackKey(iScale, vScale, meta);
 	const ilen = parsed.length;
 	let stack;
 
 	for (let i = 0; i < ilen; ++i) {
 		const item = parsed[i];
-		const {[iId]: index, [vId]: value} = item;
+		const {[iAxis]: index, [vAxis]: value} = item;
 		const itemStacks = item._stacks || (item._stacks = {});
-		stack = itemStacks[vId] = getOrCreateStack(stacks, key, index);
+		stack = itemStacks[vAxis] = getOrCreateStack(stacks, key, index);
 		stack[datasetIndex] = value;
 	}
 }
@@ -478,7 +478,7 @@ helpers.extend(DatasetController.prototype, {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
-		const iScaleId = iScale.id;
+		const iAxis = iScale.axis;
 		let sorted = true;
 		let i, parsed, cur, prev;
 
@@ -503,7 +503,7 @@ helpers.extend(DatasetController.prototype, {
 			for (i = 0; i < count; ++i) {
 				meta._parsed[i + start] = cur = parsed[i];
 				if (sorted) {
-					if (prev && cur[iScaleId] < prev[iScaleId]) {
+					if (prev && cur[iAxis] < prev[iAxis]) {
 						sorted = false;
 					}
 					prev = cur;
@@ -533,8 +533,8 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parsePrimitiveData: function(meta, data, start, count) {
 		const {iScale, vScale} = meta;
-		const iId = iScale.id;
-		const vId = vScale.id;
+		const iAxis = iScale.axis;
+		const vAxis = vScale.axis;
 		const labels = iScale._getLabels();
 		const singleScale = iScale === vScale;
 		const parsed = new Array(count);
@@ -543,8 +543,8 @@ helpers.extend(DatasetController.prototype, {
 		for (i = 0, ilen = count; i < ilen; ++i) {
 			index = i + start;
 			parsed[i] = {
-				[iId]: singleScale || iScale._parse(labels[index], index),
-				[vId]: vScale._parse(data[index], index)
+				[iAxis]: singleScale || iScale._parse(labels[index], index),
+				[vAxis]: vScale._parse(data[index], index)
 			};
 		}
 		return parsed;
@@ -558,13 +558,11 @@ helpers.extend(DatasetController.prototype, {
 	 * @param {number} count - number of items to parse
 	 * @returns {object} parsed item - item containing index and a parsed value
 	 * for each scale id.
-	 * Example: {xScale0: 0, yScale0: 1}
+	 * Example: {x: 0, y: 1}
 	 * @private
 	 */
 	_parseArrayData: function(meta, data, start, count) {
 		const {xScale, yScale} = meta;
-		const xId = xScale.id;
-		const yId = yScale.id;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
 
@@ -572,8 +570,8 @@ helpers.extend(DatasetController.prototype, {
 			index = i + start;
 			item = data[index];
 			parsed[i] = {
-				[xId]: xScale._parse(item[0], index),
-				[yId]: yScale._parse(item[1], index)
+				x: xScale._parse(item[0], index),
+				y: yScale._parse(item[1], index)
 			};
 		}
 		return parsed;
@@ -592,8 +590,6 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_parseObjectData: function(meta, data, start, count) {
 		const {xScale, yScale} = meta;
-		const xId = xScale.id;
-		const yId = yScale.id;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
 
@@ -601,8 +597,8 @@ helpers.extend(DatasetController.prototype, {
 			index = i + start;
 			item = data[index];
 			parsed[i] = {
-				[xId]: xScale._parseObject(item, 'x', index),
-				[yId]: yScale._parseObject(item, 'y', index)
+				x: xScale._parseObject(item, 'x', index),
+				y: yScale._parseObject(item, 'y', index)
 			};
 		}
 		return parsed;
@@ -612,11 +608,7 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getParsed: function(index) {
-		const data = this._cachedMeta._parsed;
-		if (index < 0 || index >= data.length) {
-			return;
-		}
-		return data[index];
+		return this._cachedMeta._parsed[index];
 	},
 
 	/**
@@ -625,10 +617,10 @@ helpers.extend(DatasetController.prototype, {
 	_applyStack: function(scale, parsed) {
 		const chart = this.chart;
 		const meta = this._cachedMeta;
-		const value = parsed[scale.id];
+		const value = parsed[scale.axis];
 		const stack = {
 			keys: getSortedDatasetIndices(chart, true),
-			values: parsed._stacks[scale.id]
+			values: parsed._stacks[scale.axis]
 		};
 		return applyStack(stack, value, meta.index);
 	},
@@ -651,7 +643,7 @@ helpers.extend(DatasetController.prototype, {
 
 		function _compute() {
 			if (stack) {
-				stack.values = parsed._stacks[scale.id];
+				stack.values = parsed._stacks[scale.axis];
 				// Need to consider individual stack values for data range,
 				// in addition to the stacked value
 				min = Math.min(min, value);
@@ -668,8 +660,8 @@ helpers.extend(DatasetController.prototype, {
 		function _skip() {
 			item = data[i];
 			parsed = _parsed[i];
-			value = parsed[scale.id];
-			otherValue = parsed[otherScale.id];
+			value = parsed[scale.axis];
+			otherValue = parsed[otherScale.axis];
 			return ((item && item.hidden) || isNaN(value) || otherMin > otherValue || otherMax < otherValue);
 		}
 
@@ -703,7 +695,7 @@ helpers.extend(DatasetController.prototype, {
 		let i, ilen, value;
 
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
-			value = parsed[i][scale.id];
+			value = parsed[i][scale.axis];
 			if (!isNaN(value)) {
 				values.push(value);
 			}
@@ -759,8 +751,8 @@ helpers.extend(DatasetController.prototype, {
 		const vScale = meta.vScale;
 		const parsed = me._getParsed(index);
 		return {
-			label: iScale ? '' + iScale.getLabelForValue(parsed[iScale.id]) : '',
-			value: vScale ? '' + vScale.getLabelForValue(parsed[vScale.id]) : ''
+			label: iScale ? '' + iScale.getLabelForValue(parsed[iScale.axis]) : '',
+			value: vScale ? '' + vScale.getLabelForValue(parsed[vScale.axis]) : ''
 		};
 	},
 
