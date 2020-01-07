@@ -793,6 +793,48 @@ describe('Chart.controllers.bar', function() {
 		expect(bar2.y).toBeCloseToPixel(0);
 	});
 
+	it('should get the bar points for hidden dataset', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [1, 2],
+					label: 'dataset1',
+					hidden: true
+				}],
+				labels: ['label1', 'label2']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					x: {
+						type: 'category',
+						display: false
+					},
+					y: {
+						type: 'linear',
+						min: 0,
+						max: 2,
+						display: false
+					}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(2);
+
+		var bar1 = meta.data[0];
+		var bar2 = meta.data[1];
+
+		expect(bar1.x).toBeCloseToPixel(128);
+		expect(bar1.y).toBeCloseToPixel(256);
+		expect(bar2.x).toBeCloseToPixel(384);
+		expect(bar2.y).toBeCloseToPixel(0);
+	});
+
+
 	it('should update elements when the scales are stacked', function() {
 		var chart = window.acquireChart({
 			type: 'bar',

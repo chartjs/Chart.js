@@ -358,6 +358,9 @@ module.exports = DatasetController.extend({
 			}
 		}
 
+		// No stacks? that means there is no visible data. Lets still initialize a `undefined`
+		// stack where possible invisible bars will be located.
+		// https://github.com/chartjs/Chart.js/issues/6368
 		if (!stacks.length) {
 			stacks.push(undefined);
 		}
