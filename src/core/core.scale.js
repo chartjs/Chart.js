@@ -884,7 +884,7 @@ class Scale extends Element {
 		const me = this;
 		const tickOpts = me.options.ticks;
 		const axisLength = me._length;
-		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
+		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize();
 		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
 		const numMajorIndices = majorIndices.length;
 		const first = majorIndices[0];

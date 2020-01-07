@@ -755,12 +755,9 @@ class TimeScale extends Scale {
 		const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 		const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
 		const size = me._getLabelSize(exampleLabel);
-		let capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
-
-		if (me.options.offset) {
-			capacity--;
-		}
-
+		// subtract 1 - if offset then there's one less label than tick
+		// if not offset then one half label padding is added to each end leaving room for one less label
+		const capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h) - 1;
 		return capacity > 0 ? capacity : 1;
 	}
 }
