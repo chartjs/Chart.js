@@ -17,6 +17,7 @@ script:
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 sudo: required
+dist: bionic
 
 addons:
   chrome: stable
