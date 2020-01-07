@@ -118,64 +118,6 @@ function garbageCollect(caches, length) {
 	});
 }
 
-/**
- * Returns {width, height, offset} objects for the first, last, widest, highest tick
- * labels where offset indicates the anchor point offset from the top in pixels.
- */
-function computeLabelSizes(ctx, tickFonts, ticks, caches) {
-	const length = ticks.length;
-	const widths = [];
-	const heights = [];
-	const offsets = [];
-	let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel, widest, highest;
-
-	for (i = 0; i < length; ++i) {
-		label = ticks[i].label;
-		tickFont = ticks[i].major ? tickFonts.major : tickFonts.minor;
-		ctx.font = fontString = tickFont.string;
-		cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
-		lineHeight = tickFont.lineHeight;
-		width = height = 0;
-		// Undefined labels and arrays should not be measured
-		if (!isNullOrUndef(label) && !isArray(label)) {
-			width = helpers.measureText(ctx, cache.data, cache.gc, width, label);
-			height = lineHeight;
-		} else if (isArray(label)) {
-			// if it is an array let's measure each element
-			for (j = 0, jlen = label.length; j < jlen; ++j) {
-				nestedLabel = label[j];
-				// Undefined labels and arrays should not be measured
-				if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
-					width = helpers.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
-					height += lineHeight;
-				}
-			}
-		}
-		widths.push(width);
-		heights.push(height);
-		offsets.push(lineHeight / 2);
-	}
-	garbageCollect(caches, length);
-
-	widest = widths.indexOf(Math.max.apply(null, widths));
-	highest = heights.indexOf(Math.max.apply(null, heights));
-
-	function valueAt(idx) {
-		return {
-			width: widths[idx] || 0,
-			height: heights[idx] || 0,
-			offset: offsets[idx] || 0
-		};
-	}
-
-	return {
-		first: valueAt(0),
-		last: valueAt(length - 1),
-		widest: valueAt(widest),
-		highest: valueAt(highest)
-	};
-}
-
 function getTickMarkLength(options) {
 	return options.drawTicks ? options.tickMarkLength : 0;
 }
@@ -796,10 +738,78 @@ class Scale extends Element {
 		let labelSizes = me._labelSizes;
 
 		if (!labelSizes) {
-			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.ticks, me._longestTextCache);
+			me._labelSizes = labelSizes = me._computeLabelSizes();
 		}
 
 		return labelSizes;
+	}
+
+	/**
+	 * Returns {width, height, offset} objects for the first, last, widest, highest tick
+	 * labels where offset indicates the anchor point offset from the top in pixels.
+	 * @private
+	 */
+	_computeLabelSizes() {
+		const me = this;
+		const ctx = me.ctx;
+		const tickFonts = parseTickFontOptions(me.options.ticks);
+		const caches = me._longestTextCache;
+		const sampleSize = me.options.ticks.sampleSize;
+		const widths = [];
+		const heights = [];
+		const offsets = [];
+		let ticks = me.ticks;
+		if (sampleSize < ticks.length) {
+			ticks = sample(ticks, sampleSize);
+		}
+		const length = ticks.length;
+		let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel, widest, highest;
+
+		for (i = 0; i < length; ++i) {
+			label = ticks[i].label;
+			tickFont = ticks[i].major ? tickFonts.major : tickFonts.minor;
+			ctx.font = fontString = tickFont.string;
+			cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
+			lineHeight = tickFont.lineHeight;
+			width = height = 0;
+			// Undefined labels and arrays should not be measured
+			if (!isNullOrUndef(label) && !isArray(label)) {
+				width = helpers.measureText(ctx, cache.data, cache.gc, width, label);
+				height = lineHeight;
+			} else if (isArray(label)) {
+				// if it is an array let's measure each element
+				for (j = 0, jlen = label.length; j < jlen; ++j) {
+					nestedLabel = label[j];
+					// Undefined labels and arrays should not be measured
+					if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
+						width = helpers.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
+						height += lineHeight;
+					}
+				}
+			}
+			widths.push(width);
+			heights.push(height);
+			offsets.push(lineHeight / 2);
+		}
+		garbageCollect(caches, length);
+
+		widest = widths.indexOf(Math.max.apply(null, widths));
+		highest = heights.indexOf(Math.max.apply(null, heights));
+
+		function valueAt(idx) {
+			return {
+				width: widths[idx] || 0,
+				height: heights[idx] || 0,
+				offset: offsets[idx] || 0
+			};
+		}
+
+		return {
+			first: valueAt(0),
+			last: valueAt(length - 1),
+			widest: valueAt(widest),
+			highest: valueAt(highest)
+		};
 	}
 
 	/**
