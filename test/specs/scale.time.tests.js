@@ -1397,8 +1397,8 @@ describe('Time scale tests', function() {
 					this.chart = window.acquireChart({
 						type: 'line',
 						data: {
-							labels: ['2017', '2019', '2020', '2025', '2042'],
-							datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+							labels: ['2017', '2019', '2020', '2025'],
+							datasets: [{data: [0, 1, 2, 3, 4]}]
 						},
 						options: {
 							scales: {
@@ -1421,7 +1421,7 @@ describe('Time scale tests', function() {
 					var scale = this.chart.scales.x;
 
 					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left);
-					expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + scale.width);
+					expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(scale.left + scale.width);
 				});
 
 				it ('should add offset from the edges if offset is true', function() {
@@ -1437,7 +1437,7 @@ describe('Time scale tests', function() {
 					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
 
 					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
-					expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				});
 
 				it ('should not add offset if min and max extend the labels range', function() {
