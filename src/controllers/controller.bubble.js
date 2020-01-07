@@ -125,9 +125,8 @@ module.exports = DatasetController.extend({
 		const firstOpts = me._resolveDataElementOptions(start, mode);
 		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
-		let i;
 
-		for (i = 0; i < points.length; i++) {
+		for (let i = 0; i < points.length; i++) {
 			const point = points[i];
 			const index = start + i;
 			const parsed = !reset && me._getParsed(index);
@@ -140,8 +139,7 @@ module.exports = DatasetController.extend({
 			};
 
 			if (includeOptions) {
-				properties.options = i === 0 ? firstOpts
-					: me._resolveDataElementOptions(i, mode);
+				properties.options = me._resolveDataElementOptions(i, mode);
 
 				if (reset) {
 					properties.options.radius = 0;
