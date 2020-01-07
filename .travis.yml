@@ -19,7 +19,7 @@ sudo: required
 dist: trusty
 
 addons:
-  chrome: stable
+  chrome: beta
   firefox: latest
 
 # IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
