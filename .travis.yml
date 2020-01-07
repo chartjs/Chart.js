@@ -4,8 +4,9 @@ node_js:
 
 before_install:
   - "export CHROME_BIN=/usr/bin/google-chrome"
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+
+services:
+  - xvfb
 
 script:
   - gulp build
@@ -16,7 +17,6 @@ script:
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 sudo: required
-dist: trusty
 
 addons:
   chrome: stable
