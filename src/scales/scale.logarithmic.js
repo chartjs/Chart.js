@@ -62,6 +62,9 @@ const defaultConfig = {
 class LogarithmicScale extends Scale {
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
+		if (value === 0) {
+			return undefined;
+		}
 		return isFinite(value) && value > 0 ? value : NaN;
 	}
 
@@ -133,7 +136,7 @@ class LogarithmicScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return value || 0;
+		return value === undefined ? 0 : value;
 	}
 
 	getPixelForTick(index) {
@@ -156,7 +159,12 @@ class LogarithmicScale extends Scale {
 
 	getPixelForValue(value) {
 		const me = this;
-		return me.getPixelForDecimal((log10(value || me.min) - me._startValue) / me._valueRange);
+		if (value === undefined || value === 0) {
+			value = me.min;
+		}
+		return me.getPixelForDecimal(value === me.min
+			? 0
+			: (log10(value) - me._startValue) / me._valueRange);
 	}
 
 	getValueForPixel(pixel) {
