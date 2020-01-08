@@ -731,7 +731,7 @@ describe('Chart.controllers.bar', function() {
 		].forEach(function(expected, i) {
 			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i].base).toBeCloseToPixel(1024);
+			expect(meta.data[i].base).toBeCloseToPixel(522);
 			expect(meta.data[i].width).toBeCloseToPixel(46);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'red',
@@ -792,6 +792,48 @@ describe('Chart.controllers.bar', function() {
 		expect(bar2.x).toBeCloseToPixel(435);
 		expect(bar2.y).toBeCloseToPixel(0);
 	});
+
+	it('should get the bar points for hidden dataset', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [1, 2],
+					label: 'dataset1',
+					hidden: true
+				}],
+				labels: ['label1', 'label2']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					x: {
+						type: 'category',
+						display: false
+					},
+					y: {
+						type: 'linear',
+						min: 0,
+						max: 2,
+						display: false
+					}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(2);
+
+		var bar1 = meta.data[0];
+		var bar2 = meta.data[1];
+
+		expect(bar1.x).toBeCloseToPixel(128);
+		expect(bar1.y).toBeCloseToPixel(256);
+		expect(bar2.x).toBeCloseToPixel(384);
+		expect(bar2.y).toBeCloseToPixel(0);
+	});
+
 
 	it('should update elements when the scales are stacked', function() {
 		var chart = window.acquireChart({
@@ -887,10 +929,10 @@ describe('Chart.controllers.bar', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 1024, w: 92 / 2, x: 38, y: 512},
-			{b: 1024, w: 92 / 2, x: 166, y: 819},
-			{b: 1024, w: 92 / 2, x: 294, y: 922},
-			{b: 1024, w: 92 / 2, x: 422.5, y: 0}
+			{b: 522, w: 92 / 2, x: 38, y: 512},
+			{b: 522, w: 92 / 2, x: 166, y: 819},
+			{b: 522, w: 92 / 2, x: 294, y: 922},
+			{b: 522, w: 92 / 2, x: 422.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
@@ -902,8 +944,8 @@ describe('Chart.controllers.bar', function() {
 
 		[
 			{b: 512, w: 92 / 2, x: 89, y: 0},
-			{b: 819, w: 92 / 2, x: 217, y: 0},
-			{b: 922, w: 92 / 2, x: 345, y: 0},
+			{b: 522, w: 92 / 2, x: 217, y: 0},
+			{b: 522, w: 92 / 2, x: 345, y: 0},
 			{b: 0, w: 92 / 2, x: 473.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta1.data[i].base).toBeCloseToPixel(values.b);

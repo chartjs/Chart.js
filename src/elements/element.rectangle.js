@@ -70,6 +70,10 @@ function parseBorderSkipped(bar) {
 	return res;
 }
 
+function skipOrLimit(skip, value, min, max) {
+	return skip ? 0 : Math.max(Math.min(value, max), min);
+}
+
 function parseBorderWidth(bar, maxW, maxH) {
 	var value = bar.options.borderWidth;
 	var skip = parseBorderSkipped(bar);
@@ -85,10 +89,10 @@ function parseBorderWidth(bar, maxW, maxH) {
 	}
 
 	return {
-		t: skip.top || (t < 0) ? 0 : t > maxH ? maxH : t,
-		r: skip.right || (r < 0) ? 0 : r > maxW ? maxW : r,
-		b: skip.bottom || (b < 0) ? 0 : b > maxH ? maxH : b,
-		l: skip.left || (l < 0) ? 0 : l > maxW ? maxW : l
+		t: skipOrLimit(skip.top, t, 0, maxH),
+		r: skipOrLimit(skip.right, r, 0, maxW),
+		b: skipOrLimit(skip.bottom, b, 0, maxH),
+		l: skipOrLimit(skip.left, l, 0, maxW)
 	};
 }
 

@@ -161,3 +161,14 @@ export function _angleBetween(angle, start, end) {
 	const endToAngle = _normalizeAngle(a - e);
 	return a === s || a === e || (angleToStart > angleToEnd && startToAngle < endToAngle);
 }
+
+/**
+ * Limit `value` between `min` and `max`
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @private
+ */
+export function _limitValue(value, min, max) {
+	return Math.max(min, Math.min(max, value));
+}
