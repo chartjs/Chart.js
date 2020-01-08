@@ -1,7 +1,7 @@
 'use strict';
 
-var BarController = require('./controller.bar');
-var defaults = require('../core/core.defaults');
+import BarController from './controller.bar';
+import defaults from '../core/core.defaults';
 
 defaults._set('horizontalBar', {
 	hover: {
@@ -43,7 +43,7 @@ defaults._set('datasets', {
 	}
 });
 
-module.exports = BarController.extend({
+export default BarController.extend({
 	/**
 	 * @private
 	 */

@@ -1,9 +1,9 @@
 'use strict';
 
-const DatasetController = require('../core/core.datasetController');
-const defaults = require('../core/core.defaults');
-const elements = require('../elements/index');
-const helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
 const resolve = helpers.options.resolve;
 
@@ -34,7 +34,7 @@ defaults._set('bubble', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 	/**
 	 * @protected
 	 */

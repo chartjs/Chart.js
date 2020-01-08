@@ -1,9 +1,9 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+import defaults from './core.defaults';
+import helpers from '../helpers';
 
-var extend = helpers.extend;
+const extend = helpers.extend;
 
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
@@ -227,7 +227,7 @@ defaults._set('layout', {
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 // It is this service's responsibility of carrying out that layout.
-module.exports = {
+export default {
 	defaults: {},
 
 	/**

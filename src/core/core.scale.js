@@ -1,9 +1,9 @@
 'use strict';
 
-const defaults = require('./core.defaults');
-const Element = require('./core.element');
-const helpers = require('../helpers/index');
-const Ticks = require('./core.ticks');
+import defaults from './core.defaults';
+import Element from './core.element';
+import helpers from '../helpers';
+import Ticks from './core.ticks';
 
 const alignPixel = helpers.canvas._alignPixel;
 const isArray = helpers.isArray;
@@ -1438,4 +1438,4 @@ class Scale extends Element {
 
 Scale.prototype._draw = Scale.prototype.draw;
 
-module.exports = Scale;
+export default Scale;

@@ -1,11 +1,11 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var resolve = helpers.options.resolve;
+const resolve = helpers.options.resolve;
 
 defaults._set('polarArea', {
 	animation: {
@@ -85,7 +85,7 @@ defaults._set('polarArea', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
 

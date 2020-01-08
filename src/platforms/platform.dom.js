@@ -4,8 +4,8 @@
 
 'use strict';
 
-var helpers = require('../helpers/index');
-var stylesheet = require('./platform.dom.css');
+import helpers from '../helpers';
+import stylesheet from './platform.dom.css';
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -312,7 +312,7 @@ function injectCSS(rootNode, css) {
 	}
 }
 
-module.exports = {
+export default {
 	/**
 	 * When `true`, prevents the automatic injection of the stylesheet required to
 	 * correctly detect when the chart is added to the DOM and then resized. This

@@ -1,9 +1,9 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const Element = require('../core/core.element');
-const helpers = require('../helpers/index');
-const layouts = require('../core/core.layouts');
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import helpers from '../helpers/index';
+import layouts from '../core/core.layouts';
 
 defaults._set('title', {
 	align: 'center',
@@ -216,7 +216,7 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 	chart.titleBlock = title;
 }
 
-module.exports = {
+export default {
 	id: 'title',
 
 	/**

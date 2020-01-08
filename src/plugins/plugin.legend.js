@@ -1,9 +1,9 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const Element = require('../core/core.element');
-const helpers = require('../helpers/index');
-const layouts = require('../core/core.layouts');
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import helpers from '../helpers';
+import layouts from '../core/core.layouts';
 
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 const valueOrDefault = helpers.valueOrDefault;
@@ -572,7 +572,7 @@ function createNewLegendAndAttach(chart, legendOpts) {
 	chart.legend = legend;
 }
 
-module.exports = {
+export default {
 	id: 'legend',
 
 	/**

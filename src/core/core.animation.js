@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('../helpers/index');
+import helpers from '../helpers';
 
 const transparent = 'transparent';
 const interpolators = {
@@ -89,4 +89,4 @@ class Animation {
 	}
 }
 
-module.exports = Animation;
+export default Animation;
