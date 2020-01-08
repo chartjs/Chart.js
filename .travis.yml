@@ -3,7 +3,7 @@ node_js:
   - lts/*
 
 before_install:
-  - "export CHROME_BIN=/usr/bin/google-chrome"
+  - "export CHROME_BIN=/usr/bin/google-chrome-beta"
 
 services:
   - xvfb
