@@ -219,10 +219,10 @@ function createTooltipItem(chart, item) {
 	const {label, value} = chart.getDatasetMeta(datasetIndex).controller._getLabelAndValue(index);
 
 	return {
-		label: label,
-		value: value,
-		index: index,
-		datasetIndex: datasetIndex
+		label,
+		value,
+		index,
+		datasetIndex
 	};
 }
 
@@ -452,7 +452,6 @@ class Tooltip extends Element {
 		const me = this;
 		me.opacity = 0;
 		me._active = [];
-		me._lastActive = [];
 		me.initialize();
 	}
 
@@ -962,28 +961,26 @@ class Tooltip extends Element {
 	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent(e) {
-		var me = this;
-		var options = me.options;
-		var changed = false;
-
-		me._lastActive = me._lastActive || [];
+		const me = this;
+		const options = me.options;
+		const lastActive = me._active || [];
+		let changed = false;
+		let active = [];
 
 		// Find Active Elements for tooltips
-		if (e.type === 'mouseout') {
-			me._active = [];
-		} else {
-			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+		if (e.type !== 'mouseout') {
+			active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			if (options.reverse) {
-				me._active.reverse();
+				active.reverse();
 			}
 		}
 
 		// Remember Last Actives
-		changed = !helpers._elementsEqual(me._active, me._lastActive);
+		changed = !helpers._elementsEqual(active, lastActive);
 
 		// Only handle target event on tooltip change
 		if (changed) {
-			me._lastActive = me._active;
+			me._active = active;
 
 			if (options.enabled || options.custom) {
 				me._eventPosition = {
@@ -992,7 +989,6 @@ class Tooltip extends Element {
 				};
 
 				me.update(true);
-				// me.pivot();
 			}
 		}
 

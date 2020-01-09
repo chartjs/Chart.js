@@ -143,8 +143,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: 0,
-					y: 0
+					x: chart.chartArea.left,
+					y: chart.chartArea.top
 				};
 
 				var elements = Chart.Interaction.modes.index(chart, evt, {intersect: false}).map(item => item.element);
@@ -182,8 +182,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: 0,
-					y: 0
+					x: chart.chartArea.left,
+					y: chart.chartArea.top
 				};
 
 				var elements = Chart.Interaction.modes.index(chart, evt, {axis: 'xy', intersect: false}).map(item => item.element);
@@ -279,8 +279,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: 0,
-					y: 0
+					x: chart.chartArea.left,
+					y: chart.chartArea.top
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'x', intersect: false});
@@ -293,8 +293,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: 0,
-					y: 0
+					x: chart.chartArea.left,
+					y: chart.chartArea.top
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'y', intersect: false});
@@ -307,8 +307,8 @@ describe('Core.Interaction', function() {
 					type: 'click',
 					chart: chart,
 					native: true, // needed otherwise things its a DOM event
-					x: 0,
-					y: 0
+					x: chart.chartArea.left,
+					y: chart.chartArea.top
 				};
 
 				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: false});
@@ -348,8 +348,8 @@ describe('Core.Interaction', function() {
 						type: 'click',
 						chart: chart,
 						native: true, // needed otherwise things its a DOM event
-						x: 0,
-						y: 0
+						x: chart.chartArea.left,
+						y: chart.chartArea.top
 					};
 
 					// Nearest to 0,0 (top left) will be first point of dataset 2

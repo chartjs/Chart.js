@@ -1130,12 +1130,12 @@ describe('Chart', function() {
 			var tooltip = chart.tooltip;
 
 			expect(chart.lastActive[0].element).toEqual(point);
-			expect(tooltip._lastActive[0].element).toEqual(point);
+			expect(tooltip._active[0].element).toEqual(point);
 
 			// Update and confirm tooltip is updated
 			chart.update();
 			expect(chart.lastActive[0].element).toEqual(point);
-			expect(tooltip._lastActive[0].element).toEqual(point);
+			expect(tooltip._active[0].element).toEqual(point);
 		});
 
 		it ('should update the metadata', function() {

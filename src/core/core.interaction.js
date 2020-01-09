@@ -2,6 +2,7 @@
 
 import helpers from '../helpers/index';
 import {isNumber} from '../helpers/helpers.math';
+import {_isPointInArea} from '../helpers/helpers.canvas';
 
 /**
  * Helper function to get relative position for an event
@@ -43,6 +44,8 @@ function evaluateAllVisibleItems(chart, handler) {
 /**
  * Helper function to check the items at the hovered index on the index scale
  * @param {Chart} chart - the chart
+ * @param {string} axis - the axis mode. x|y|xy
+ * @param {object} position - the point to be nearest to
  * @param {function} handler - the callback to execute for each visible item
  * @return whether all scales were of a suitable type
  */
@@ -91,12 +94,17 @@ function getDistanceMetricForAxis(axis) {
 
 /**
  * Helper function to get the items that intersect the event position
- * @param {ChartElement[]} items - elements to filter
+ * @param {Chart} chart - the chart
  * @param {object} position - the point to be nearest to
+ * @param {string} axis - the axis mode. x|y|xy
  * @return {ChartElement[]} the nearest items
  */
 function getIntersectItems(chart, position, axis) {
 	const items = [];
+
+	if (!_isPointInArea(position, chart.chartArea)) {
+		return items;
+	}
 
 	const evaluationFunc = function(element, datasetIndex, index) {
 		if (element.inRange(position.x, position.y)) {
@@ -125,6 +133,10 @@ function getNearestItems(chart, position, axis, intersect) {
 	const distanceMetric = getDistanceMetricForAxis(axis);
 	let minDistance = Number.POSITIVE_INFINITY;
 	let items = [];
+
+	if (!_isPointInArea(position, chart.chartArea)) {
+		return items;
+	}
 
 	const evaluationFunc = function(element, datasetIndex, index) {
 		if (intersect && !element.inRange(position.x, position.y)) {

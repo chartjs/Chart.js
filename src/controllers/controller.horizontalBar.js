@@ -12,7 +12,8 @@ defaults._set('horizontalBar', {
 	scales: {
 		x: {
 			type: 'linear',
-			position: 'bottom'
+			position: 'bottom',
+			beginAtZero: true
 		},
 		y: {
 			type: 'category',
