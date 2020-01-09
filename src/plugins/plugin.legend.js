@@ -251,12 +251,7 @@ class Legend extends Element {
 		if (isHorizontal) {
 			// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
 			const lineWidths = me.lineWidths = [0];
-			let totalHeight = 0;
-
-			if (titleOpts.display) {
-				// If a legend title is displayed, increase the height by the amount required
-				totalHeight += titleHeight;
-			}
+			let totalHeight = titleHeight;
 
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
@@ -291,13 +286,7 @@ class Legend extends Element {
 			let currentColWidth = 0;
 			let currentColHeight = 0;
 
-			let heightLimit = minSize.height;
-			if (titleOpts.display) {
-				// If the title is displayed, need to reduce the possible column height
-				// by the height of the legend title
-				heightLimit -= titleHeight;
-			}
-
+			let heightLimit = minSize.height - titleHeight;
 			me.legendItems.forEach(function(legendItem, i) {
 				const boxWidth = getBoxWidth(labelOpts, fontSize);
 				const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
