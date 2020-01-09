@@ -1,15 +1,15 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
-var PI = Math.PI;
-var DOUBLE_PI = PI * 2;
-var HALF_PI = PI / 2;
+const PI = Math.PI;
+const DOUBLE_PI = PI * 2;
+const HALF_PI = PI / 2;
 
 defaults._set('doughnut', {
 	animation: {
@@ -98,7 +98,7 @@ defaults._set('doughnut', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
 

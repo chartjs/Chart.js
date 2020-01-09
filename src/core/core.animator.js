@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('../helpers/index');
+import helpers from '../helpers';
 
 function drawFPS(chart, count, date, lastDate) {
 	const fps = (1000 / (date - lastDate)) | 0;
@@ -207,4 +207,4 @@ class Animator {
 
 const instance = new Animator();
 
-module.exports = instance;
+export default instance;

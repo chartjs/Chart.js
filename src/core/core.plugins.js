@@ -1,7 +1,7 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+import defaults from './core.defaults';
+import helpers from '../helpers/';
 
 defaults._set('plugins', {});
 
@@ -10,7 +10,7 @@ defaults._set('plugins', {});
  * @namespace Chart.plugins
  * @since 2.1.0
  */
-module.exports = {
+export default {
 	/**
 	 * Globally registered plugins.
 	 * @private

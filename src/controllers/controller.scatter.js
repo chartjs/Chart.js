@@ -1,7 +1,7 @@
 'use strict';
 
-var LineController = require('./controller.line');
-var defaults = require('../core/core.defaults');
+import LineController from './controller.line';
+import defaults from '../core/core.defaults';
 
 defaults._set('scatter', {
 	scales: {
@@ -34,4 +34,4 @@ defaults._set('datasets', {
 });
 
 // Scatter charts use line controllers
-module.exports = LineController;
+export default LineController;

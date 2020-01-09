@@ -1,11 +1,11 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var Animations = require('./core.animations');
+import helpers from '../helpers';
+import Animations from './core.animations';
 
-var resolve = helpers.options.resolve;
+const resolve = helpers.options.resolve;
 
-var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
+const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
 /**
  * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
@@ -1134,4 +1134,4 @@ helpers.extend(DatasetController.prototype, {
 
 DatasetController.extend = helpers.inherits;
 
-module.exports = DatasetController;
+export default DatasetController;

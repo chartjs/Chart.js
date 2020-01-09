@@ -1,9 +1,9 @@
 'use strict';
 
-const defaults = require('./core.defaults');
-const Element = require('./core.element');
-const helpers = require('../helpers/index');
-const Animations = require('./core.animations');
+import defaults from './core.defaults';
+import Element from './core.element';
+import helpers from '../helpers/index';
+import Animations from './core.animations';
 
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
@@ -1005,4 +1005,4 @@ class Tooltip extends Element {
  */
 Tooltip.positioners = positioners;
 
-module.exports = Tooltip;
+export default Tooltip;

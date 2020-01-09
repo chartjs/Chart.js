@@ -1,13 +1,13 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var math = helpers.math;
+import helpers from '../helpers';
+const math = helpers.math;
 
 /**
  * Namespace to hold static tick generation functions
  * @namespace Chart.Ticks
  */
-module.exports = {
+export default {
 	/**
 	 * Namespace to hold formatters for different types of ticks
 	 * @namespace Chart.Ticks.formatters
