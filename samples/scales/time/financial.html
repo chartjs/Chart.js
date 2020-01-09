@@ -122,7 +122,9 @@
 						ticks: {
 							major: {
 								enabled: true,
-								fontStyle: 'bold'
+							},
+							fontStyle: function(context) {
+								return context.tick.major ? 'bold' : undefined;
 							},
 							source: 'data',
 							autoSkip: true,
