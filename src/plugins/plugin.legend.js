@@ -219,7 +219,6 @@ class Legend extends Element {
 		const me = this;
 		const opts = me.options;
 		const labelOpts = opts.labels;
-		const titleOpts = opts.title;
 		const display = opts.display;
 
 		const ctx = me.ctx;
