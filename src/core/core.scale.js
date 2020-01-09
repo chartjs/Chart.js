@@ -623,13 +623,12 @@ class Scale extends Element {
 
 		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display) {
-			const tickFonts = parseTickFontOptions(tickOpts);
 			const labelSizes = me._getLabelSizes();
 			const firstLabelSize = labelSizes.first;
 			const lastLabelSize = labelSizes.last;
 			const widestLabelSize = labelSizes.widest;
 			const highestLabelSize = labelSizes.highest;
-			const lineSpace = tickFonts.minor.lineHeight * 0.4;
+			const lineSpace = highestLabelSize.offset * 0.8;
 			const tickPadding = tickOpts.padding;
 
 			if (isHorizontal) {
