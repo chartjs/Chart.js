@@ -141,10 +141,10 @@ function parseFontOptions(options, nestedOpts) {
 		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
 		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight),
+	}), {
+		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor]),
 		lineWidth: valueOrDefault(nestedOpts.lineWidth, options.lineWidth),
 		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle),
-	}), {
-		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor])
 	});
 }
 
@@ -1271,12 +1271,12 @@ class Scale extends Element {
 
 		const ctx = me.ctx;
 		const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
-		const useTextWithStroke = optionTicks.lineWidth > 0 && optionTicks.strokeStyle !== '';
 		let i, j, ilen, jlen;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
+			const useTextWithStroke = tickFont.lineWidth > 0 && tickFont.strokeStyle !== '';
 
 			// Make sure we draw text in the correct color and font
 			ctx.save();
@@ -1288,8 +1288,8 @@ class Scale extends Element {
 			ctx.textAlign = item.textAlign;
 
 			if (useTextWithStroke) {
-				ctx.strokeStyle = optionTicks.strokeStyle;
-				ctx.lineWidth = optionTicks.lineWidth;
+				ctx.strokeStyle = tickFont.strokeStyle;
+				ctx.lineWidth = tickFont.lineWidth;
 			}
 
 			const label = item.label;
