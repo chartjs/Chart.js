@@ -443,13 +443,30 @@ helpers.extend(DatasetController.prototype, {
 		const labelsChanged = me._labelCheck();
 		const scaleChanged = me._scaleCheck();
 		const meta = me._cachedMeta;
+		const dataset = me.getDataset();
+		let stackChanged = false;
 
 		// make sure cached _stacked status is current
 		meta._stacked = isStacked(meta.vScale, meta);
 
+		// detect change in stack option
+		if (meta.stack !== dataset.stack) {
+			stackChanged = true;
+			// remove values from old stack
+			meta._parsed.forEach(function(parsed) {
+				delete parsed._stacks[meta.vScale.id][meta.index];
+			});
+			meta.stack = dataset.stack;
+		}
+
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me.resyncElements(dataChanged | labelsChanged | scaleChanged);
+		me.resyncElements(dataChanged | labelsChanged | scaleChanged | stackChanged);
+
+		// if stack changed, update stack values for the whole dataset
+		if (stackChanged) {
+			updateStacks(me, meta._parsed);
+		}
 	},
 
 	/**
