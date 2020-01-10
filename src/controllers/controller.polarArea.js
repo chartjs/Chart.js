@@ -32,7 +32,7 @@ defaults._set('polarArea', {
 		}
 	},
 
-	startAngle: -0.5 * Math.PI,
+	startAngle: 0,
 	legend: {
 		labels: {
 			generateLabels: function(chart) {
@@ -85,6 +85,12 @@ defaults._set('polarArea', {
 	}
 });
 
+function getStartAngleRadians(deg) {
+	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
+	// Here we adjust to standard unit circle used in drawing, where 0 is at right.
+	return helpers.math.toRadians(deg) - 0.5 * Math.PI;
+}
+
 export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
@@ -117,13 +123,10 @@ export default DatasetController.extend({
 	},
 
 	update: function(mode) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var arcs = meta.data;
+		const arcs = this._cachedMeta.data;
 
-		me._updateRadius();
-
-		me.updateElements(arcs, 0, mode);
+		this._updateRadius();
+		this.updateElements(arcs, 0, mode);
 	},
 
 	/**
@@ -154,7 +157,7 @@ export default DatasetController.extend({
 		const scale = chart.scales.r;
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
-		const datasetStartAngle = opts.startAngle || 0;
+		const datasetStartAngle = getStartAngleRadians(opts.startAngle);
 		let angle = datasetStartAngle;
 		let i;
 
