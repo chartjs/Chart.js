@@ -164,6 +164,9 @@
 			title: 'Positioning',
 			path: 'legend/positioning.html'
 		}, {
+			title: 'Legend Title',
+			path: 'legend/title.html'
+		}, {
 			title: 'Point style',
 			path: 'legend/point-style.html'
 		}, {

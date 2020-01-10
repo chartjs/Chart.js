@@ -20,6 +20,12 @@ describe('Legend block tests', function() {
 				boxWidth: 40,
 				padding: 10,
 				generateLabels: jasmine.any(Function)
+			},
+
+			title: {
+				display: false,
+				position: 'center',
+				text: '',
 			}
 		});
 	});
