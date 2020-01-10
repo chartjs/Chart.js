@@ -1,6 +1,11 @@
 'use strict';
 
-module.exports = {};
-module.exports.filler = require('./plugin.filler');
-module.exports.legend = require('./plugin.legend');
-module.exports.title = require('./plugin.title');
+import filler from './plugin.filler';
+import legend from './plugin.legend';
+import title from './plugin.title';
+
+export default {
+	filler,
+	legend,
+	title
+};

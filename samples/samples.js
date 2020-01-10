@@ -65,6 +65,9 @@
 	}, {
 		title: 'Other charts',
 		items: [{
+			title: 'Bubble',
+			path: 'charts/bubble.html'
+		}, {
 			title: 'Scatter',
 			path: 'charts/scatter/basic.html'
 		}, {
@@ -76,6 +79,9 @@
 		}, {
 			title: 'Pie',
 			path: 'charts/pie.html'
+		}, {
+			title: 'Multi Series Pie',
+			path: 'charts/multi-series-pie.html'
 		}, {
 			title: 'Polar area',
 			path: 'charts/polar-area.html'
@@ -148,6 +154,9 @@
 		}, {
 			title: 'Axes Labels',
 			path: 'scales/axes-labels.html'
+		}, {
+			title: 'Center Positioning',
+			path: 'scales/axis-center-position.html'
 		}]
 	}, {
 		title: 'Legend',
@@ -160,6 +169,12 @@
 		}, {
 			title: 'Callbacks',
 			path: 'legend/callbacks.html'
+		}]
+	}, {
+		title: 'Title',
+		items: [{
+			title: 'Alignment',
+			path: 'title/alignment.html'
 		}]
 	}, {
 		title: 'Tooltip',
@@ -205,6 +220,18 @@
 		}, {
 			title: 'Radar Chart',
 			path: 'scriptable/radar.html'
+		}]
+	}, {
+		title: 'Animations',
+		items: [{
+			title: 'Delay',
+			path: 'animations/delay.html'
+		}, {
+			title: 'Drop',
+			path: 'animations/drop.html'
+		}, {
+			title: 'Loop',
+			path: 'animations/loop.html'
 		}]
 	}, {
 		title: 'Advanced',

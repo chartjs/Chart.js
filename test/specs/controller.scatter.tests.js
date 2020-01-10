@@ -21,8 +21,8 @@ describe('Chart.controllers.scatter', function() {
 		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
 		// Title should be empty
-		expect(chart.tooltip._view.title.length).toBe(0);
-		expect(chart.tooltip._view.body[0].lines).toEqual(['(10, 15)']);
+		expect(chart.tooltip.title.length).toBe(0);
+		expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
 	});
 
 	describe('showLines option', function() {

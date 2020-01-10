@@ -3,7 +3,8 @@
 The chart legend displays data about the datasets that are appearing on the chart.
 
 ## Configuration options
-The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
+
+The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.legend`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -20,14 +21,18 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
 
 ## Position
+
 Position of the legend. Options are:
+
 * `'top'`
 * `'left'`
 * `'bottom'`
 * `'right'`
 
 ## Align
+
 Alignment of the legend. Options are:
+
 * `'start'`
 * `'center'`
 * `'end'`
@@ -115,6 +120,7 @@ var chart = new Chart(ctx, {
 It can be common to want to trigger different behaviour when clicking an item in the legend. This can be easily achieved using a callback in the config object.
 
 The default legend click handler is:
+
 ```javascript
 function(e, legendItem) {
     var index = legendItem.datasetIndex;
@@ -132,7 +138,7 @@ function(e, legendItem) {
 Lets say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
 
 ```javascript
-var defaultLegendClickHandler = Chart.defaults.global.legend.onClick;
+var defaultLegendClickHandler = Chart.defaults.legend.onClick;
 var newLegendClickHandler = function (e, legendItem) {
     var index = legendItem.datasetIndex;
 
@@ -163,23 +169,3 @@ var chart = new Chart(ctx, {
 ```
 
 Now when you click the legend in this chart, the visibility of the first two datasets will be linked together.
-
-## HTML Legends
-
-Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML string for the legend.
-
-To configure how this legend is generated, you can change the `legendCallback` config property.
-
-```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        legendCallback: function(chart) {
-            // Return the HTML string here.
-        }
-    }
-});
-```
-
-Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.

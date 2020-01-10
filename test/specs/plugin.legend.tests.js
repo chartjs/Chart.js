@@ -3,7 +3,7 @@ describe('Legend block tests', function() {
 	describe('auto', jasmine.fixture.specs('plugin.legend'));
 
 	it('should have the correct default config', function() {
-		expect(Chart.defaults.global.legend).toEqual({
+		expect(Chart.defaults.legend).toEqual({
 			display: true,
 			position: 'top',
 			align: 'center',
@@ -149,7 +149,7 @@ describe('Legend block tests', function() {
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
-			fillStyle: 'green',
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: false,
 			lineCap: 'butt',
 			lineDash: [],
@@ -198,7 +198,7 @@ describe('Legend block tests', function() {
 
 		expect(chart.legend.legendItems).toEqual([{
 			text: 'dataset3',
-			fillStyle: 'green',
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: false,
 			lineCap: 'butt',
 			lineDash: [],
@@ -591,7 +591,7 @@ describe('Legend block tests', function() {
 			chart.options.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
-			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.legend));
 		});
 	});
 

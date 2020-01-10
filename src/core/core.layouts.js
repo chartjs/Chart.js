@@ -1,14 +1,18 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+import defaults from './core.defaults';
+import helpers from '../helpers';
 
-var extend = helpers.extend;
+const extend = helpers.extend;
+
+const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
 function filterByPosition(array, position) {
-	return helpers.where(array, function(v) {
-		return v.pos === position;
-	});
+	return array.filter(v => v.pos === position);
+}
+
+function filterDynamicPositionByAxis(array, axis) {
+	return array.filter(v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
 function sortByWeight(array, reverse) {
@@ -52,18 +56,20 @@ function setLayoutDims(layouts, params) {
 }
 
 function buildLayoutBoxes(boxes) {
-	var layoutBoxes = wrapBoxes(boxes);
-	var left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
-	var right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
-	var top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
-	var bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const layoutBoxes = wrapBoxes(boxes);
+	const left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
+	const right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
+	const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
+	const bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+	const centerHorizontal = filterDynamicPositionByAxis(layoutBoxes, 'x');
+	const centerVertical = filterDynamicPositionByAxis(layoutBoxes, 'y');
 
 	return {
 		leftAndTop: left.concat(top),
-		rightAndBottom: right.concat(bottom),
+		rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
 		chartArea: filterByPosition(layoutBoxes, 'chartArea'),
-		vertical: left.concat(right),
-		horizontal: top.concat(bottom)
+		vertical: left.concat(right).concat(centerVertical),
+		horizontal: top.concat(bottom).concat(centerHorizontal)
 	};
 }
 
@@ -192,14 +198,12 @@ function placeBoxes(boxes, chartArea, params) {
 	chartArea.y = y;
 }
 
-defaults._set('global', {
-	layout: {
-		padding: {
-			top: 0,
-			right: 0,
-			bottom: 0,
-			left: 0
-		}
+defaults._set('layout', {
+	padding: {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0
 	}
 });
 
@@ -223,7 +227,7 @@ defaults._set('global', {
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 // It is this service's responsibility of carrying out that layout.
-module.exports = {
+export default {
 	defaults: {},
 
 	/**
@@ -375,7 +379,9 @@ module.exports = {
 			left: chartArea.left,
 			top: chartArea.top,
 			right: chartArea.left + chartArea.w,
-			bottom: chartArea.top + chartArea.h
+			bottom: chartArea.top + chartArea.h,
+			height: chartArea.h,
+			width: chartArea.w,
 		};
 
 		// Finally update boxes in chartArea (radial scale for example)

@@ -708,7 +708,8 @@ describe('Chart.controllers.bar', function() {
 					},
 					y: {
 						type: 'linear',
-						display: false
+						display: false,
+						beginAtZero: false
 					}
 				}
 			}
@@ -722,16 +723,17 @@ describe('Chart.controllers.bar', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
+		expect(meta._parsed.length).toBe(2);
 
 		[
 			{x: 89, y: 512},
 			{x: 217, y: 0}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(expected.x);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i]._model.base).toBeCloseToPixel(1024);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
+			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
+			expect(meta.data[i].base).toBeCloseToPixel(522);
+			expect(meta.data[i].width).toBeCloseToPixel(46);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'red',
 				borderSkipped: 'top',
 				borderColor: 'blue',
@@ -772,7 +774,8 @@ describe('Chart.controllers.bar', function() {
 					},
 					y: {
 						type: 'linear',
-						display: false
+						display: false,
+						beginAtZero: false
 					}
 				}
 			}
@@ -784,11 +787,53 @@ describe('Chart.controllers.bar', function() {
 		var bar1 = meta.data[0];
 		var bar2 = meta.data[1];
 
-		expect(bar1._model.x).toBeCloseToPixel(179);
-		expect(bar1._model.y).toBeCloseToPixel(114);
-		expect(bar2._model.x).toBeCloseToPixel(435);
-		expect(bar2._model.y).toBeCloseToPixel(0);
+		expect(bar1.x).toBeCloseToPixel(179);
+		expect(bar1.y).toBeCloseToPixel(114);
+		expect(bar2.x).toBeCloseToPixel(435);
+		expect(bar2.y).toBeCloseToPixel(0);
 	});
+
+	it('should get the bar points for hidden dataset', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [1, 2],
+					label: 'dataset1',
+					hidden: true
+				}],
+				labels: ['label1', 'label2']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					x: {
+						type: 'category',
+						display: false
+					},
+					y: {
+						type: 'linear',
+						min: 0,
+						max: 2,
+						display: false
+					}
+				}
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.data.length).toBe(2);
+
+		var bar1 = meta.data[0];
+		var bar2 = meta.data[1];
+
+		expect(bar1.x).toBeCloseToPixel(128);
+		expect(bar1.y).toBeCloseToPixel(256);
+		expect(bar2.x).toBeCloseToPixel(384);
+		expect(bar2.y).toBeCloseToPixel(0);
+	});
+
 
 	it('should update elements when the scales are stacked', function() {
 		var chart = window.acquireChart({
@@ -828,10 +873,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 293, w: 92 / 2, x: 295, y: 146},
 			{b: 293, w: 92 / 2, x: 422, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -842,10 +887,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 146, w: 92 / 2, x: 345, y: 146},
 			{b: 439, w: 92 / 2, x: 473, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -884,29 +929,29 @@ describe('Chart.controllers.bar', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 1024, w: 92 / 2, x: 38, y: 512},
-			{b: 1024, w: 92 / 2, x: 166, y: 819},
-			{b: 1024, w: 92 / 2, x: 294, y: 922},
-			{b: 1024, w: 92 / 2, x: 422.5, y: 0}
+			{b: 522, w: 92 / 2, x: 38, y: 512},
+			{b: 522, w: 92 / 2, x: 166, y: 819},
+			{b: 522, w: 92 / 2, x: 294, y: 922},
+			{b: 522, w: 92 / 2, x: 422.5, y: 0}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
 
 		[
 			{b: 512, w: 92 / 2, x: 89, y: 0},
-			{b: 819, w: 92 / 2, x: 217, y: 0},
-			{b: 922, w: 92 / 2, x: 345, y: 0},
+			{b: 522, w: 92 / 2, x: 217, y: 0},
+			{b: 522, w: 92 / 2, x: 345, y: 0},
 			{b: 0, w: 92 / 2, x: 473.5, y: 0}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -948,10 +993,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 293, w: 92, x: 320, y: 146},
 			{b: 293, w: 92, x: 448, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -962,10 +1007,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 293, w: 92, x: 320, y: 293},
 			{b: 293, w: 92, x: 448, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -1007,10 +1052,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 293, w: 92 / 2, x: 295, y: 146},
 			{b: 293, w: 92 / 2, x: 422, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta1 = chart.getDatasetMeta(1);
@@ -1021,10 +1066,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 146, w: 92 / 2, x: 345, y: 146},
 			{b: 439, w: 92 / 2, x: 473, y: 497}
 		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta1.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta1.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta1.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta1.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -1068,10 +1113,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 293, w: 92, x: 320, y: 146},
 			{b: 293, w: 92, x: 448, y: 439}
 		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta0.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta0.data[i].y).toBeCloseToPixel(values.y);
 		});
 
 		var meta = chart.getDatasetMeta(1);
@@ -1082,10 +1127,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 146, w: 92, x: 320, y: 146},
 			{b: 439, w: 92, x: 448, y: 497}
 		].forEach(function(values, i) {
-			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta.data[i].width).toBeCloseToPixel(values.w);
+			expect(meta.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -1125,10 +1170,10 @@ describe('Chart.controllers.bar', function() {
 			{x: 89, y: 256},
 			{x: 217, y: 0}
 		].forEach(function(values, i) {
-			expect(meta.data[i]._model.base).toBeCloseToPixel(512);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
-			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta.data[i].base).toBeCloseToPixel(512);
+			expect(meta.data[i].width).toBeCloseToPixel(46);
+			expect(meta.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -1171,140 +1216,10 @@ describe('Chart.controllers.bar', function() {
 			{b: 384, x: 89, y: 256},
 			{b: 256, x: 217, y: 0}
 		].forEach(function(values, i) {
-			expect(meta.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta.data[i]._model.width).toBeCloseToPixel(46);
-			expect(meta.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(values.y);
-		});
-	});
-
-	it('should update elements when the scales are stacked and the y axis is logarithmic', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: [{
-					data: [10, 100, 10, 100],
-					label: 'dataset1'
-				}, {
-					data: [100, 10, 0, 100],
-					label: 'dataset2'
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-			options: {
-				legend: false,
-				title: false,
-				datasets: {
-					bar: {
-						barPercentage: 1,
-					}
-				},
-				scales: {
-					x: {
-						type: 'category',
-						display: false,
-						stacked: true,
-					},
-					y: {
-						type: 'logarithmic',
-						display: false,
-						stacked: true
-					}
-				}
-			}
-		});
-
-		var meta0 = chart.getDatasetMeta(0);
-
-		[
-			{b: 512, w: 102, x: 64, y: 512},
-			{b: 512, w: 102, x: 192, y: 118},
-			{b: 512, w: 102, x: 320, y: 512},
-			{b: 512, w: 102, x: 449, y: 118}
-		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
-		});
-
-		var meta1 = chart.getDatasetMeta(1);
-
-		[
-			{b: 512, w: 102, x: 64, y: 102},
-			{b: 118, w: 102, x: 192, y: 102},
-			{b: 512, w: 102, x: 320, y: 512},
-			{b: 118, w: 102, x: 449, y: 0}
-		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
-		});
-	});
-
-	it('should update elements when the scales are stacked and the y axis is logarithmic and data is strings', function() {
-		var chart = window.acquireChart({
-			type: 'bar',
-			data: {
-				datasets: [{
-					data: ['10', '100', '10', '100'],
-					label: 'dataset1'
-				}, {
-					data: ['100', '10', '0', '100'],
-					label: 'dataset2'
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-			options: {
-				legend: false,
-				title: false,
-				datasets: {
-					bar: {
-						barPercentage: 1,
-					}
-				},
-				scales: {
-					x: {
-						type: 'category',
-						display: false,
-						stacked: true,
-					},
-					y: {
-						type: 'logarithmic',
-						display: false,
-						stacked: true
-					}
-				}
-			}
-		});
-
-		var meta0 = chart.getDatasetMeta(0);
-
-		[
-			{b: 512, w: 102, x: 64, y: 512},
-			{b: 512, w: 102, x: 192, y: 118},
-			{b: 512, w: 102, x: 320, y: 512},
-			{b: 512, w: 102, x: 449, y: 118}
-		].forEach(function(values, i) {
-			expect(meta0.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta0.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta0.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta0.data[i]._model.y).toBeCloseToPixel(values.y);
-		});
-
-		var meta1 = chart.getDatasetMeta(1);
-
-		[
-			{b: 512, w: 102, x: 64, y: 102},
-			{b: 118, w: 102, x: 192, y: 102},
-			{b: 512, w: 102, x: 320, y: 512},
-			{b: 118, w: 102, x: 449, y: 0}
-		].forEach(function(values, i) {
-			expect(meta1.data[i]._model.base).toBeCloseToPixel(values.b);
-			expect(meta1.data[i]._model.width).toBeCloseToPixel(values.w);
-			expect(meta1.data[i]._model.x).toBeCloseToPixel(values.x);
-			expect(meta1.data[i]._model.y).toBeCloseToPixel(values.y);
+			expect(meta.data[i].base).toBeCloseToPixel(values.b);
+			expect(meta.data[i].width).toBeCloseToPixel(46);
+			expect(meta.data[i].x).toBeCloseToPixel(values.x);
+			expect(meta.data[i].y).toBeCloseToPixel(values.y);
 		});
 	});
 
@@ -1364,29 +1279,31 @@ describe('Chart.controllers.bar', function() {
 		var bar = meta.data[0];
 
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar._model.backgroundColor).toBe('rgb(230, 0, 0)');
-		expect(bar._model.borderColor).toBe('rgb(0, 0, 230)');
-		expect(bar._model.borderWidth).toBe(2);
+		expect(bar.options.backgroundColor).toBe('rgb(230, 0, 0)');
+		expect(bar.options.borderColor).toBe('rgb(0, 0, 230)');
+		expect(bar.options.borderWidth).toBe(2);
 
 		// Set a dataset style
 		chart.data.datasets[1].hoverBackgroundColor = 'rgb(128, 128, 128)';
 		chart.data.datasets[1].hoverBorderColor = 'rgb(0, 0, 0)';
 		chart.data.datasets[1].hoverBorderWidth = 5;
+		chart.update();
 
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
-		expect(bar._model.borderColor).toBe('rgb(0, 0, 0)');
-		expect(bar._model.borderWidth).toBe(5);
+		expect(bar.options.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar.options.borderColor).toBe('rgb(0, 0, 0)');
+		expect(bar.options.borderWidth).toBe(5);
 
 		// Should work with array styles so that we can set per bar
 		chart.data.datasets[1].hoverBackgroundColor = ['rgb(255, 255, 255)', 'rgb(128, 128, 128)'];
 		chart.data.datasets[1].hoverBorderColor = ['rgb(9, 9, 9)', 'rgb(0, 0, 0)'];
 		chart.data.datasets[1].hoverBorderWidth = [2.5, 5];
+		chart.update();
 
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
-		expect(bar._model.borderWidth).toBe(2.5);
+		expect(bar.options.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar.options.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar.options.borderWidth).toBe(2.5);
 	});
 
 	it('should remove a hover style from a bar', function() {
@@ -1422,17 +1339,17 @@ describe('Chart.controllers.bar', function() {
 		chart.options.elements.rectangle.borderWidth = 3.14;
 
 		chart.update();
-		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
-		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
-		expect(bar._model.borderWidth).toBe(3.14);
+		expect(bar.options.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar.options.borderColor).toBe('rgb(15, 15, 15)');
+		expect(bar.options.borderWidth).toBe(3.14);
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
-		expect(bar._model.borderWidth).toBe(3.14);
+		expect(bar.options.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
+		expect(bar.options.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
+		expect(bar.options.borderWidth).toBe(3.14);
 		meta.controller.removeHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe('rgb(128, 128, 128)');
-		expect(bar._model.borderColor).toBe('rgb(15, 15, 15)');
-		expect(bar._model.borderWidth).toBe(3.14);
+		expect(bar.options.backgroundColor).toBe('rgb(128, 128, 128)');
+		expect(bar.options.borderColor).toBe('rgb(15, 15, 15)');
+		expect(bar.options.borderWidth).toBe(3.14);
 
 		// Should work with array styles so that we can set per bar
 		chart.data.datasets[1].backgroundColor = ['rgb(255, 255, 255)', 'rgb(128, 128, 128)'];
@@ -1440,17 +1357,17 @@ describe('Chart.controllers.bar', function() {
 		chart.data.datasets[1].borderWidth = [2.5, 5];
 
 		chart.update();
-		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
-		expect(bar._model.borderWidth).toBe(2.5);
+		expect(bar.options.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar.options.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar.options.borderWidth).toBe(2.5);
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar._model.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
-		expect(bar._model.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
-		expect(bar._model.borderWidth).toBe(2.5);
+		expect(bar.options.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
+		expect(bar.options.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
+		expect(bar.options.borderWidth).toBe(2.5);
 		meta.controller.removeHoverStyle(bar);
-		expect(bar._model.backgroundColor).toBe('rgb(255, 255, 255)');
-		expect(bar._model.borderColor).toBe('rgb(9, 9, 9)');
-		expect(bar._model.borderWidth).toBe(2.5);
+		expect(bar.options.backgroundColor).toBe('rgb(255, 255, 255)');
+		expect(bar.options.borderColor).toBe('rgb(9, 9, 9)');
+		expect(bar.options.borderWidth).toBe(2.5);
 	});
 
 	describe('Bar width', function() {
@@ -1470,7 +1387,7 @@ describe('Chart.controllers.bar', function() {
 			var chart = window.acquireChart(this.config);
 			var meta = chart.getDatasetMeta(0);
 			var xScale = chart.scales[meta.xAxisID];
-			var options = Chart.defaults.global.datasets.bar;
+			var options = Chart.defaults.datasets.bar;
 
 			var categoryPercentage = options.categoryPercentage;
 			var barPercentage = options.barPercentage;
@@ -1480,7 +1397,7 @@ describe('Chart.controllers.bar', function() {
 			for (var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
 				for (var j = xScale.min; j <= xScale.max; j++) {
-					totalBarWidth += bars[j]._model.width;
+					totalBarWidth += bars[j].width;
 				}
 				if (stacked) {
 					break;
@@ -1554,7 +1471,7 @@ describe('Chart.controllers.bar', function() {
 			for (var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
 				for (var j = yScale.min; j <= yScale.max; j++) {
-					totalBarHeight += bars[j]._model.height;
+					totalBarHeight += bars[j].height;
 				}
 				if (stacked) {
 					break;
@@ -1644,7 +1561,7 @@ describe('Chart.controllers.bar', function() {
 						expected = barThickness;
 					} else {
 						var scale = chart.scales.x;
-						var options = Chart.defaults.global.datasets.bar;
+						var options = Chart.defaults.datasets.bar;
 						var categoryPercentage = options.categoryPercentage;
 						var barPercentage = options.barPercentage;
 						var tickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
@@ -1654,8 +1571,8 @@ describe('Chart.controllers.bar', function() {
 
 					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 						meta = chart.getDatasetMeta(i);
-						expect(meta.data[0]._model.width).toBeCloseToPixel(expected);
-						expect(meta.data[1]._model.width).toBeCloseToPixel(expected);
+						expect(meta.data[0].width).toBeCloseToPixel(expected);
+						expect(meta.data[1].width).toBeCloseToPixel(expected);
 					}
 				});
 
@@ -1669,8 +1586,8 @@ describe('Chart.controllers.bar', function() {
 
 					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 						meta = chart.getDatasetMeta(i);
-						expect(meta.data[0]._model.width).toBeCloseToPixel(10);
-						expect(meta.data[1]._model.width).toBeCloseToPixel(10);
+						expect(meta.data[0].width).toBeCloseToPixel(10);
+						expect(meta.data[1].width).toBeCloseToPixel(10);
 					}
 				});
 			});
@@ -1691,8 +1608,8 @@ describe('Chart.controllers.bar', function() {
 
 		var data = chart.getDatasetMeta(0).data;
 
-		expect(data[0]._model.base - minBarLength).toEqual(data[0]._model.y);
-		expect(data[1]._model.base + minBarLength).toEqual(data[1]._model.y);
+		expect(data[0].base - minBarLength).toEqual(data[0].y);
+		expect(data[1].base + minBarLength).toEqual(data[1].y);
 	});
 
 	it('minBarLength settings should be used on X axis on horizontalBar chart', function() {
@@ -1709,7 +1626,7 @@ describe('Chart.controllers.bar', function() {
 
 		var data = chart.getDatasetMeta(0).data;
 
-		expect(data[0]._model.base + minBarLength).toEqual(data[0]._model.x);
-		expect(data[1]._model.base - minBarLength).toEqual(data[1]._model.x);
+		expect(data[0].base + minBarLength).toEqual(data[0].x);
+		expect(data[1].base - minBarLength).toEqual(data[1].x);
 	});
 });

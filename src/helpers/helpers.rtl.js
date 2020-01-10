@@ -42,11 +42,11 @@ var getLtrAdapter = function() {
 	};
 };
 
-var getAdapter = function(rtl, rectX, width) {
+const getAdapter = function(rtl, rectX, width) {
 	return rtl ? getRtlAdapter(rectX, width) : getLtrAdapter();
 };
 
-var overrideTextDirection = function(ctx, direction) {
+const overrideTextDirection = function(ctx, direction) {
 	var style, original;
 	if (direction === 'ltr' || direction === 'rtl') {
 		style = ctx.canvas.style;
@@ -60,7 +60,7 @@ var overrideTextDirection = function(ctx, direction) {
 	}
 };
 
-var restoreTextDirection = function(ctx) {
+const restoreTextDirection = function(ctx) {
 	var original = ctx.prevTextDirection;
 	if (original !== undefined) {
 		delete ctx.prevTextDirection;
@@ -68,8 +68,8 @@ var restoreTextDirection = function(ctx) {
 	}
 };
 
-module.exports = {
-	getRtlAdapter: getAdapter,
-	overrideTextDirection: overrideTextDirection,
-	restoreTextDirection: restoreTextDirection,
+export {
+	getAdapter as getRtlAdapter,
+	overrideTextDirection,
+	restoreTextDirection
 };

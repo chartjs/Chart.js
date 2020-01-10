@@ -62,7 +62,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
-| `order` | The drawing order of dataset.
+| `order` | The drawing order of dataset. Also affects order for tooltip and legend.
 
 ### Styling
 
@@ -115,3 +115,7 @@ Bubble chart datasets need to contain a `data` array of points, each points repr
 ```
 
 **Important:** the radius property, `r` is **not** scaled by the chart, it is the raw radius in pixels of the bubble that is drawn on the canvas.
+
+## Internal data format
+
+`{x, y, _custom}` where `_custom` is the radius.

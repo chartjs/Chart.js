@@ -1,11 +1,11 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('bar', {
 	hover: {
@@ -22,15 +22,20 @@ defaults._set('bar', {
 		},
 		y: {
 			type: 'linear',
+			beginAtZero: true,
 		}
 	}
 });
 
-defaults._set('global', {
-	datasets: {
-		bar: {
-			categoryPercentage: 0.8,
-			barPercentage: 0.9
+defaults._set('datasets', {
+	bar: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height']
+			}
 		}
 	}
 });
@@ -47,7 +52,7 @@ function computeMinSampleSize(scale, pixels) {
 		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
-	for (i = 0, ilen = scale.getTicks().length; i < ilen; ++i) {
+	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
 		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
@@ -139,7 +144,7 @@ function parseFloatBar(arr, item, vScale, i) {
 
 	// Store `barEnd` (furthest away from origin) as parsed value,
 	// to make stacking straight forward
-	item[vScale.id] = barEnd;
+	item[vScale.axis] = barEnd;
 
 	item._custom = {
 		barStart: barStart,
@@ -162,12 +167,12 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
 		item = {};
-		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
+		item[iScale.axis] = singleScale || iScale._parse(labels[i], i);
 
 		if (helpers.isArray(entry)) {
 			parseFloatBar(entry, item, vScale, i);
 		} else {
-			item[vScale.id] = vScale._parse(entry, i);
+			item[vScale.axis] = vScale._parse(entry, i);
 		}
 
 		parsed.push(item);
@@ -175,7 +180,11 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	return parsed;
 }
 
-module.exports = DatasetController.extend({
+function isFloatBar(custom) {
+	return custom && custom.barStart !== undefined && custom.barEnd !== undefined;
+}
+
+export default DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
 
@@ -218,20 +227,19 @@ module.exports = DatasetController.extend({
 	 * @private
 	 */
 	_parseObjectData: function(meta, data, start, count) {
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
+		const {iScale, vScale} = meta;
 		const vProp = vScale.axis;
 		const parsed = [];
 		let i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.id] = iScale._parseObject(obj, iScale.axis, i);
+			item[iScale.axis] = iScale._parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
-				item[vScale.id] = vScale._parseObject(obj, vProp, i);
+				item[vScale.axis] = vScale._parseObject(obj, vProp, i);
 			}
 			parsed.push(item);
 		}
@@ -244,16 +252,15 @@ module.exports = DatasetController.extend({
 	_getLabelAndValue: function(index) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const indexScale = meta.iScale;
-		const valueScale = meta.vScale;
+		const {iScale, vScale} = meta;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		const value = custom
+		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
-			: '' + valueScale.getLabelForValue(parsed[valueScale.id]);
+			: '' + vScale.getLabelForValue(parsed[vScale.axis]);
 
 		return {
-			label: '' + indexScale.getLabelForValue(parsed[indexScale.id]),
+			label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
 			value: value
 		};
 	},
@@ -269,50 +276,54 @@ module.exports = DatasetController.extend({
 		meta.bar = true;
 	},
 
-	update: function(reset) {
+	update: function(mode) {
 		const me = this;
 		const rects = me._cachedMeta.data;
 
-		me.updateElements(rects, 0, rects.length, reset);
+		me.updateElements(rects, 0, mode);
 	},
 
-	updateElements: function(rectangles, start, count, reset) {
+	updateElements: function(rectangles, start, mode) {
 		const me = this;
+		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
 		const ruler = me.getRuler();
+		const firstOpts = me._resolveDataElementOptions(start, mode);
+		const sharedOptions = me._getSharedOptions(mode, rectangles[start], firstOpts);
+		const includeOptions = me._includeOptions(mode, sharedOptions);
+
 		let i;
 
-		for (i = 0; i < start + count; i++) {
-			const rectangle = rectangles[i];
-			const options = me._resolveDataElementOptions(i);
-			const vpixels = me.calculateBarValuePixels(i, options);
-			const ipixels = me.calculateBarIndexPixels(i, ruler, options);
+		for (i = 0; i < rectangles.length; i++) {
+			const index = start + i;
+			const options = me._resolveDataElementOptions(index, mode);
+			const vpixels = me.calculateBarValuePixels(index, options);
+			const ipixels = me.calculateBarIndexPixels(index, ruler, options);
 
-			rectangle._model = {
-				backgroundColor: options.backgroundColor,
-				borderColor: options.borderColor,
-				borderSkipped: options.borderSkipped,
-				borderWidth: options.borderWidth
+			const properties = {
+				horizontal,
+				base: reset ? base : vpixels.base,
+				x: horizontal ? reset ? base : vpixels.head : ipixels.center,
+				y: horizontal ? ipixels.center : reset ? base : vpixels.head,
+				height: horizontal ? ipixels.size : undefined,
+				width: horizontal ? undefined : ipixels.size
 			};
 
-			const model = rectangle._model;
-
 			// all borders are drawn for floating bar
+			/* TODO: float bars border skipping magic
 			if (me._getParsed(i)._custom) {
 				model.borderSkipped = null;
 			}
-
-			model.horizontal = horizontal;
-			model.base = reset ? base : vpixels.base;
-			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-			model.height = horizontal ? ipixels.size : undefined;
-			model.width = horizontal ? undefined : ipixels.size;
-
-			rectangle.pivot(me.chart._animationsDisabled);
+			*/
+			if (includeOptions) {
+				properties.options = options;
+			}
+			me._updateElement(rectangles[i], index, properties, mode);
 		}
+
+		me._updateSharedOptions(sharedOptions, mode);
 	},
 
 	/**
@@ -345,6 +356,13 @@ module.exports = DatasetController.extend({
 			if (item.index === last) {
 				break;
 			}
+		}
+
+		// No stacks? that means there is no visible data. Let's still initialize an `undefined`
+		// stack where possible invisible bars will be located.
+		// https://github.com/chartjs/Chart.js/issues/6368
+		if (!stacks.length) {
+			stacks.push(undefined);
 		}
 
 		return stacks;
@@ -387,7 +405,7 @@ module.exports = DatasetController.extend({
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.id]));
+			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.axis]));
 		}
 
 		return {
@@ -410,9 +428,9 @@ module.exports = DatasetController.extend({
 		const minBarLength = options.minBarLength;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		let value = parsed[vScale.id];
+		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.id];
+		let length = meta._stacked ? me._applyStack(vScale, parsed) : value;
 		let base, head, size;
 
 		if (length !== value) {
@@ -420,17 +438,24 @@ module.exports = DatasetController.extend({
 			length = value;
 		}
 
-		if (custom && custom.barStart !== undefined && custom.barEnd !== undefined) {
+		if (isFloatBar(custom)) {
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
-			if (value !== 0 && helpers.sign(value) !== helpers.sign(custom.barEnd)) {
+			if (value !== 0 && helpers.math.sign(value) !== helpers.math.sign(custom.barEnd)) {
 				start = 0;
 			}
 			start += value;
 		}
 
-		base = vScale.getPixelForValue(start);
+		// Limit the bar to only extend up to 10 pixels past scale bounds (chartArea)
+		// So we don't try to draw so huge rectangles.
+		// https://github.com/chartjs/Chart.js/issues/5247
+		// TODO: use borderWidth instead (need to move the parsing from rectangle)
+		base = helpers.math._limitValue(vScale.getPixelForValue(start),
+			vScale._startPixel - 10,
+			vScale._endPixel + 10);
+
 		head = vScale.getPixelForValue(start + length);
 		size = head - base;
 
@@ -482,7 +507,7 @@ module.exports = DatasetController.extend({
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[vScale.id])) {
+			if (!isNaN(me._getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

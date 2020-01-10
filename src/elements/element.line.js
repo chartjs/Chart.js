@@ -2,46 +2,27 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers';
+import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.interpolation';
+import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
+import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
+import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
-const defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.color;
 
-defaults._set('global', {
-	elements: {
-		line: {
-			tension: 0.4,
-			backgroundColor: defaultColor,
-			borderWidth: 3,
-			borderColor: defaultColor,
-			borderCapStyle: 'butt',
-			borderDash: [],
-			borderDashOffset: 0.0,
-			borderJoinStyle: 'miter',
-			capBezierPoints: true,
-			fill: true, // do we fill in the area between the line and its base axis
-		}
+defaults._set('elements', {
+	line: {
+		tension: 0.4,
+		backgroundColor: defaultColor,
+		borderWidth: 3,
+		borderColor: defaultColor,
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		capBezierPoints: true,
+		fill: true
 	}
 });
-
-function startAtGap(points, spanGaps) {
-	let closePath = true;
-	let previous = points.length && points[0]._view;
-	let index, view;
-
-	for (index = 1; index < points.length; ++index) {
-		// If there is a gap in the (looping) line, start drawing from that gap
-		view = points[index]._view;
-		if (!view.skip && previous.skip) {
-			points = points.slice(index).concat(points.slice(0, index));
-			closePath = spanGaps;
-			break;
-		}
-		previous = view;
-	}
-
-	points.closePath = closePath;
-	return points;
-}
 
 function setStyle(ctx, vm) {
 	ctx.lineCap = vm.borderCapStyle;
@@ -52,82 +33,132 @@ function setStyle(ctx, vm) {
 	ctx.strokeStyle = vm.borderColor;
 }
 
-function normalPath(ctx, points, spanGaps, vm) {
-	const steppedLine = vm.steppedLine;
-	const lineMethod = steppedLine ? helpers.canvas._steppedLineTo : helpers.canvas._bezierCurveTo;
-	let move = true;
-	let index, currentVM, previousVM;
+function lineTo(ctx, previous, target) {
+	ctx.lineTo(target.x, target.y);
+}
 
-	for (index = 0; index < points.length; ++index) {
-		currentVM = points[index]._view;
-
-		if (currentVM.skip) {
-			move = move || !spanGaps;
-			continue;
-		}
-		if (move) {
-			ctx.moveTo(currentVM.x, currentVM.y);
-			move = false;
-		} else if (vm.tension || steppedLine) {
-			lineMethod(ctx, previousVM, currentVM, false, steppedLine);
-		} else {
-			ctx.lineTo(currentVM.x, currentVM.y);
-		}
-		previousVM = currentVM;
+function getLineMethod(options) {
+	if (options.steppedLine) {
+		return _steppedLineTo;
 	}
+
+	if (options.tension) {
+		return _bezierCurveTo;
+	}
+
+	return lineTo;
 }
 
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
  * @param {CanvasRenderingContext2D} ctx - Context
- * @param {Point[]} points - Points defining the line
- * @param {boolean} spanGaps - Are gaps spanned over
+ * @param {Line} line
+ * @param {object} segment
+ * @param {number} segment.start - start index of the segment, referring the points array
+ * @param {number} segment.end - end index of the segment, referring the points array
+ * @param {boolean} segment.loop - indicates that the segment is a loop
+ * @param {object} params
+ * @param {object} params.move - move to starting point (vs line to it)
+ * @param {object} params.reverse - path the segment from end to start
  */
-function fastPath(ctx, points, spanGaps) {
-	let move = true;
-	let count = 0;
+function pathSegment(ctx, line, segment, params) {
+	const {start, end, loop} = segment;
+	const {points, options} = line;
+	const lineMethod = getLineMethod(options);
+	const count = points.length;
+	let {move = true, reverse} = params || {};
+	let ilen = end < start ? count + end - start : end - start;
+	let i, point, prev;
+
+	for (i = 0; i <= ilen; ++i) {
+		point = points[(start + (reverse ? ilen - i : i)) % count];
+
+		if (point.skip) {
+			// If there is a skipped point inside a segment, spanGaps must be true
+			continue;
+		} else if (move) {
+			ctx.moveTo(point.x, point.y);
+			move = false;
+		} else {
+			lineMethod(ctx, prev, point, reverse, options.steppedLine);
+		}
+
+		prev = point;
+	}
+
+	if (loop) {
+		point = points[(start + (reverse ? ilen : 0)) % count];
+		lineMethod(ctx, prev, point, reverse, options.steppedLine);
+	}
+
+	return !!loop;
+}
+
+/**
+ * Create path from points, grouping by truncated x-coordinate
+ * Points need to be in order by x-coordinate for this to work efficiently
+ * @param {CanvasRenderingContext2D} ctx - Context
+ * @param {Line} line
+ * @param {object} segment
+ * @param {number} segment.start - start index of the segment, referring the points array
+ * @param {number} segment.end - end index of the segment, referring the points array
+ * @param {boolean} segment.loop - indicates that the segment is a loop
+ * @param {object} params
+ * @param {object} params.move - move to starting point (vs line to it)
+ * @param {object} params.reverse - path the segment from end to start
+ */
+function fastPathSegment(ctx, line, segment, params) {
+	const points = line.points;
+	const count = points.length;
+	const {start, end} = segment;
+	let {move = true, reverse} = params || {};
+	let ilen = end < start ? count + end - start : end - start;
 	let avgX = 0;
-	let index, vm, truncX, x, y, prevX, minY, maxY, lastY;
+	let countX = 0;
+	let i, point, prevX, minY, maxY, lastY;
 
-	for (index = 0; index < points.length; ++index) {
-		vm = points[index]._view;
+	if (move) {
+		point = points[(start + (reverse ? ilen : 0)) % count];
+		ctx.moveTo(point.x, point.y);
+	}
 
-		// If point is skipped, we either move to next (not skipped) point
-		// or line to it if spanGaps is true. `move` can already be true.
-		if (vm.skip) {
-			move = move || !spanGaps;
+	for (i = 0; i <= ilen; ++i) {
+		point = points[(start + (reverse ? ilen - i : i)) % count];
+
+		if (point.skip) {
+			// If there is a skipped point inside a segment, spanGaps must be true
 			continue;
 		}
 
-		x = vm.x;
-		y = vm.y;
-		truncX = x | 0; // truncated x-coordinate
+		const x = point.x;
+		const y = point.y;
+		const truncX = x | 0; // truncated x-coordinate
 
-		if (move) {
-			ctx.moveTo(x, y);
-			move = false;
-		} else if (truncX === prevX) {
+		if (truncX === prevX) {
 			// Determine `minY` / `maxY` and `avgX` while we stay within same x-position
-			minY = Math.min(y, minY);
-			maxY = Math.max(y, maxY);
-			// For first point in group, count is `0`, so average will be `x` / 1.
-			avgX = (count * avgX + x) / ++count;
+			if (y < minY) {
+				minY = y;
+			} else if (y > maxY) {
+				maxY = y;
+			}
+			// For first point in group, countX is `0`, so average will be `x` / 1.
+			avgX = (countX * avgX + x) / ++countX;
 		} else {
 			if (minY !== maxY) {
 				// Draw line to maxY and minY, using the average x-coordinate
 				ctx.lineTo(avgX, maxY);
 				ctx.lineTo(avgX, minY);
-				// Move to y-value of last point in group. So the line continues
-				// from correct position.
-				ctx.moveTo(avgX, lastY);
+				// Line to y-value of last point in group. So the line continues
+				// from correct position. Not using move, to have solid path.
+				ctx.lineTo(avgX, lastY);
 			}
 			// Draw line to next x-position, using the first (or only)
 			// y-value in that group
 			ctx.lineTo(x, y);
 
 			prevX = truncX;
-			count = 0;
+			countX = 0;
 			minY = maxY = y;
 		}
 		// Keep track of the last y-value in group
@@ -135,8 +166,23 @@ function fastPath(ctx, points, spanGaps) {
 	}
 }
 
-function useFastPath(vm) {
-	return vm.tension === 0 && !vm.steppedLine && !vm.fill && !vm.borderDash.length;
+function _getSegmentMethod(line) {
+	const opts = line.options;
+	const borderDash = opts.borderDash && opts.borderDash.length;
+	const useFastPath = !line._loop && !opts.tension && !opts.steppedLine && !borderDash;
+	return useFastPath ? fastPathSegment : pathSegment;
+}
+
+function _getInterpolationMethod(options) {
+	if (options.steppedLine) {
+		return _steppedInterpolation;
+	}
+
+	if (options.tension) {
+		return _bezierInterpolation;
+	}
+
+	return _pointInLine;
 }
 
 class Line extends Element {
@@ -145,35 +191,144 @@ class Line extends Element {
 		super(props);
 	}
 
-	draw(ctx) {
+	updateControlPoints(chartArea) {
 		const me = this;
-		const vm = me._view;
-		const spanGaps = vm.spanGaps;
-		let closePath = me._loop;
-		let points = me._children;
+		if (me._controlPointsUpdated) {
+			return;
+		}
+		const options = me.options;
+		if (options.tension && !options.steppedLine) {
+			const loop = options.spanGaps ? me._loop : me._fullLoop;
+			_updateBezierControlPoints(me._points, options, chartArea, loop);
+		}
+	}
 
-		if (!points.length) {
+	set points(points) {
+		this._points = points;
+		delete this._segments;
+	}
+
+	get points() {
+		return this._points;
+	}
+
+	get segments() {
+		return this._segments || (this._segments = _computeSegments(this));
+	}
+
+	/**
+	 * First non-skipped point on this line
+	 * @returns {Point|undefined}
+	 */
+	first() {
+		const segments = this.segments;
+		const points = this.points;
+		return segments.length && points[segments[0].start];
+	}
+
+	/**
+	 * Last non-skipped point on this line
+	 * @returns {Point|undefined}
+	 */
+	last() {
+		const segments = this.segments;
+		const points = this.points;
+		const count = segments.length;
+		return count && points[segments[count - 1].end];
+	}
+
+	/**
+	 * Interpolate a point in this line at the same value on `property` as
+	 * the reference `point` provided
+	 * @param {Point} point - the reference point
+	 * @param {string} property - the property to match on
+	 * @returns {Point|undefined}
+	 */
+	interpolate(point, property) {
+		const me = this;
+		const options = me.options;
+		const value = point[property];
+		const points = me.points;
+		const segments = _boundSegments(me, {property, start: value, end: value});
+
+		if (!segments.length) {
 			return;
 		}
 
-		if (closePath) {
-			points = startAtGap(points, spanGaps);
-			closePath = points.closePath;
+		const result = [];
+		const _interpolate = _getInterpolationMethod(options);
+		let i, ilen;
+		for (i = 0, ilen = segments.length; i < ilen; ++i) {
+			const {start, end} = segments[i];
+			const p1 = points[start];
+			const p2 = points[end];
+			if (p1 === p2) {
+				result.push(p1);
+				continue;
+			}
+			const t = Math.abs((value - p1[property]) / (p2[property] - p1[property]));
+			let interpolated = _interpolate(p1, p2, t, options.steppedLine);
+			interpolated[property] = point[property];
+			result.push(interpolated);
+		}
+		return result.lenght === 1 ? result[0] : result;
+	}
+
+	/**
+	 * Append a segment of this line to current path.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {object} segment
+	 * @param {number} segment.start - start index of the segment, referring the points array
+ 	 * @param {number} segment.end - end index of the segment, referring the points array
+ 	 * @param {boolean} segment.loop - indicates that the segment is a loop
+	 * @param {object} params
+	 * @param {object} params.move - move to starting point (vs line to it)
+	 * @param {object} params.reverse - path the segment from end to start
+	 * @returns {undefined|boolean} - true if the segment is a full loop (path should be closed)
+	 */
+	pathSegment(ctx, segment, params) {
+		const segmentMethod = _getSegmentMethod(this);
+		return segmentMethod(ctx, this, segment, params);
+	}
+
+	/**
+	 * Append all segments of this line to current path.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {object} params
+	 * @param {object} params.move - move to starting point (vs line to it)
+	 * @param {object} params.reverse - path the segment from end to start
+	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
+	 */
+	path(ctx, params) {
+		const me = this;
+		const segments = me.segments;
+		const ilen = segments.length;
+		const segmentMethod = _getSegmentMethod(me);
+		let loop = me._loop;
+		for (let i = 0; i < ilen; ++i) {
+			loop &= segmentMethod(ctx, me, segments[i], params);
+		}
+		return !!loop;
+	}
+
+	/**
+	 * Draw
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
+	draw(ctx) {
+		const me = this;
+
+		if (!me.points.length) {
+			return;
 		}
 
 		ctx.save();
 
-		setStyle(ctx, vm);
+		setStyle(ctx, me.options);
 
 		ctx.beginPath();
 
-		if (useFastPath(vm)) {
-			fastPath(ctx, points, spanGaps);
-		} else {
-			normalPath(ctx, points, spanGaps, vm);
-		}
-
-		if (closePath) {
+		if (me.path(ctx)) {
 			ctx.closePath();
 		}
 

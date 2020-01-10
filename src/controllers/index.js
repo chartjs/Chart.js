@@ -1,20 +1,20 @@
 'use strict';
 
-var bar = require('./controller.bar');
-var bubble = require('./controller.bubble');
-var doughnut = require('./controller.doughnut');
-var horizontalBar = require('./controller.horizontalBar');
-var line = require('./controller.line');
-var polarArea = require('./controller.polarArea');
-var pie = require('./controller.pie');
-var radar = require('./controller.radar');
-var scatter = require('./controller.scatter');
+import bar from './controller.bar';
+import bubble from './controller.bubble';
+import doughnut from './controller.doughnut';
+import horizontalBar from './controller.horizontalBar';
+import line from './controller.line';
+import polarArea from './controller.polarArea';
+import pie from './controller.pie';
+import radar from './controller.radar';
+import scatter from './controller.scatter';
 
 // NOTE export a map in which the key represents the controller type, not
 // the class, and so must be CamelCase in order to be correctly retrieved
 // by the controller in core.controller.js (`controllers[meta.type]`).
 
-module.exports = {
+export default {
 	bar: bar,
 	bubble: bubble,
 	doughnut: doughnut,

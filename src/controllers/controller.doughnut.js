@@ -1,43 +1,26 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
-var PI = Math.PI;
-var DOUBLE_PI = PI * 2;
-var HALF_PI = PI / 2;
+const PI = Math.PI;
+const DOUBLE_PI = PI * 2;
+const HALF_PI = PI / 2;
 
 defaults._set('doughnut', {
 	animation: {
+		numbers: {
+			type: 'number',
+			properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
+		},
 		// Boolean - Whether we animate the rotation of the Doughnut
 		animateRotate: true,
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
-	},
-	legendCallback: function(chart) {
-		var list = document.createElement('ul');
-		var data = chart.data;
-		var datasets = data.datasets;
-		var labels = data.labels;
-		var i, ilen, listItem, listItemSpan;
-
-		list.setAttribute('class', chart.id + '-legend');
-		if (datasets.length) {
-			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
-				listItem = list.appendChild(document.createElement('li'));
-				listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
-				if (labels[i]) {
-					listItem.appendChild(document.createTextNode(labels[i]));
-				}
-			}
-		}
-
-		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -115,7 +98,7 @@ defaults._set('doughnut', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
 
@@ -140,10 +123,10 @@ module.exports = DatasetController.extend({
 	 */
 	_parse: function(start, count) {
 		var data = this.getDataset().data;
-		var metaData = this._cachedMeta.data;
+		var meta = this._cachedMeta;
 		var i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			metaData[i]._parsed = +data[i];
+			meta._parsed[i] = +data[i];
 		}
 	},
 
@@ -160,7 +143,7 @@ module.exports = DatasetController.extend({
 		return ringIndex;
 	},
 
-	update: function(reset) {
+	update: function(mode) {
 		var me = this;
 		var chart = me.chart;
 		var chartArea = chart.chartArea;
@@ -200,7 +183,7 @@ module.exports = DatasetController.extend({
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveDataElementOptions(i);
+			arcs[i]._options = me._resolveDataElementOptions(i, mode);
 		}
 
 		chart.borderWidth = me.getMaxBorderWidth();
@@ -217,71 +200,70 @@ module.exports = DatasetController.extend({
 		me.outerRadius = chart.outerRadius - chart.radiusLength * me._getRingWeightOffset(me.index);
 		me.innerRadius = Math.max(me.outerRadius - chart.radiusLength * chartWeight, 0);
 
-		me.updateElements(arcs, 0, arcs.length, reset);
+		me.updateElements(arcs, 0, mode);
 	},
 
-
-	updateElements: function(arcs, start, count, reset) {
+	/**
+	 * @private
+	 */
+	_circumference: function(i, reset) {
 		const me = this;
+		const opts = me.chart.options;
+		const meta = me._cachedMeta;
+		return reset && opts.animation.animateRotate ? 0 : meta.data[i].hidden ? 0 : me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI);
+	},
+
+	updateElements: function(arcs, start, mode) {
+		const me = this;
+		const reset = mode === 'reset';
 		const chart = me.chart;
 		const chartArea = chart.chartArea;
 		const opts = chart.options;
 		const animationOpts = opts.animation;
 		const centerX = (chartArea.left + chartArea.right) / 2;
 		const centerY = (chartArea.top + chartArea.bottom) / 2;
-		const startAngle = opts.rotation; // non reset case handled later
-		const endAngle = opts.rotation; // non reset case handled later
 		const innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		const outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
-		var i;
+		let startAngle = opts.rotation;
+		let i;
 
-		for (i = 0; i < start + count; ++i) {
+		for (i = 0; i < start; ++i) {
+			startAngle += me._circumference(i, reset);
+		}
+
+		for (i = 0; i < arcs.length; ++i) {
+			const index = start + i;
+			const circumference = me._circumference(index, reset);
 			const arc = arcs[i];
-			const circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(arc._parsed * opts.circumference / DOUBLE_PI);
 			const options = arc._options || {};
-			const model = {
-				// Desired view properties
-				backgroundColor: options.backgroundColor,
-				borderColor: options.borderColor,
-				borderWidth: options.borderWidth,
-				borderAlign: options.borderAlign,
+			const properties = {
 				x: centerX + chart.offsetX,
 				y: centerY + chart.offsetY,
-				startAngle: startAngle,
-				endAngle: endAngle,
-				circumference: circumference,
-				outerRadius: outerRadius,
-				innerRadius: innerRadius
+				startAngle,
+				endAngle: startAngle + circumference,
+				circumference,
+				outerRadius,
+				innerRadius,
+				options
 			};
+			startAngle += circumference;
 
-			arc._model = model;
-
-			// Set correct angles if not resetting
-			if (!reset || !animationOpts.animateRotate) {
-				if (i === 0) {
-					model.startAngle = opts.rotation;
-				} else {
-					model.startAngle = me._cachedMeta.data[i - 1]._model.endAngle;
-				}
-
-				model.endAngle = model.startAngle + model.circumference;
-			}
-
-			arc.pivot(chart._animationsDisabled);
+			me._updateElement(arc, index, properties, mode);
 		}
 	},
 
 	calculateTotal: function() {
-		var metaData = this._cachedMeta.data;
-		var total = 0;
-		var value;
+		const meta = this._cachedMeta;
+		const metaData = meta.data;
+		let total = 0;
+		let i;
 
-		helpers.each(metaData, function(arc) {
-			value = arc ? arc._parsed : NaN;
-			if (!isNaN(value) && !arc.hidden) {
+		for (i = 0; i < metaData.length; i++) {
+			const value = meta._parsed[i];
+			if (!isNaN(value) && !metaData[i].hidden) {
 				total += Math.abs(value);
 			}
-		});
+		}
 
 		/* if (total === 0) {
 			total = NaN;
@@ -303,7 +285,7 @@ module.exports = DatasetController.extend({
 		var me = this;
 		var max = 0;
 		var chart = me.chart;
-		var i, ilen, meta, arc, controller, options, borderWidth, hoverWidth;
+		var i, ilen, meta, controller, options;
 
 		if (!arcs) {
 			// Find the outmost visible dataset
@@ -311,8 +293,9 @@ module.exports = DatasetController.extend({
 				if (chart.isDatasetVisible(i)) {
 					meta = chart.getDatasetMeta(i);
 					arcs = meta.data;
-					if (i !== me.index) {
-						controller = meta.controller;
+					controller = meta.controller;
+					if (controller !== me) {
+						controller._configure();
 					}
 					break;
 				}
@@ -324,41 +307,12 @@ module.exports = DatasetController.extend({
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arc = arcs[i];
-			if (controller) {
-				controller._configure();
-				options = controller._resolveDataElementOptions(i);
-			} else {
-				options = arc._options;
-			}
+			options = controller._resolveDataElementOptions(i);
 			if (options.borderAlign !== 'inner') {
-				borderWidth = options.borderWidth;
-				hoverWidth = options.hoverBorderWidth;
-
-				max = borderWidth > max ? borderWidth : max;
-				max = hoverWidth > max ? hoverWidth : max;
+				max = Math.max(max, options.borderWidth || 0, options.hoverBorderWidth || 0);
 			}
 		}
 		return max;
-	},
-
-	/**
-	 * @protected
-	 */
-	setHoverStyle: function(arc) {
-		var model = arc._model;
-		var options = arc._options;
-		var getHoverColor = helpers.getHoverColor;
-
-		arc.$previousStyle = {
-			backgroundColor: model.backgroundColor,
-			borderColor: model.borderColor,
-			borderWidth: model.borderWidth,
-		};
-
-		model.backgroundColor = valueOrDefault(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault(options.hoverBorderWidth, options.borderWidth);
 	},
 
 	/**

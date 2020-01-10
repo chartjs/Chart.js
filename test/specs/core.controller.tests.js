@@ -66,8 +66,7 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.responsiveAnimationDuration = 42;
-			defaults.global.hover.onHover = callback;
+			defaults.hover.onHover = callback;
 			defaults.line.spanGaps = true;
 			defaults.line.hover.mode = 'x-axis';
 
@@ -76,15 +75,13 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.defaultFontSize).toBe(defaults.global.defaultFontSize);
+			expect(options.fontSize).toBe(defaults.fontSize);
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
-			expect(options.responsiveAnimationDuration).toBe(42);
 			expect(options.hover.onHover).toBe(callback);
 			expect(options.hover.mode).toBe('x-axis');
 
-			defaults.global.responsiveAnimationDuration = 0;
-			defaults.global.hover.onHover = null;
+			defaults.hover.onHover = null;
 			defaults.line.spanGaps = false;
 			defaults.line.hover.mode = 'index';
 		});
@@ -93,15 +90,13 @@ describe('Chart', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
 
-			defaults.global.responsiveAnimationDuration = 42;
-			defaults.global.hover.onHover = callback;
+			defaults.hover.onHover = callback;
 			defaults.line.hover.mode = 'x-axis';
 			defaults.line.spanGaps = true;
 
 			var chart = acquireChart({
 				type: 'line',
 				options: {
-					responsiveAnimationDuration: 4242,
 					spanGaps: false,
 					hover: {
 						mode: 'dataset',
@@ -113,14 +108,12 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.responsiveAnimationDuration).toBe(4242);
-			expect(options.showLines).toBe(defaults.global.showLines);
+			expect(options.showLines).toBe(defaults.showLines);
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
 
-			defaults.global.responsiveAnimationDuration = 0;
-			defaults.global.hover.onHover = null;
+			defaults.hover.onHover = null;
 			defaults.line.hover.mode = 'index';
 			defaults.line.spanGaps = false;
 		});
@@ -304,7 +297,7 @@ describe('Chart', function() {
 			expect(chart.scales.y.options._jasmineCheck).toBeDefined();
 
 			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
-			expect(Chart.defaults.global._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults._jasmineCheck).not.toBeDefined();
 			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
 			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
 		});
@@ -950,18 +943,18 @@ describe('Chart', function() {
 
 			// Verify that points are at their initial correct location,
 			// then we will reset and see that they moved
-			expect(meta.data[0]._model.y).toBeCloseToPixel(333);
-			expect(meta.data[1]._model.y).toBeCloseToPixel(183);
-			expect(meta.data[2]._model.y).toBeCloseToPixel(32);
-			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[0].y).toBeCloseToPixel(333);
+			expect(meta.data[1].y).toBeCloseToPixel(183);
+			expect(meta.data[2].y).toBeCloseToPixel(32);
+			expect(meta.data[3].y).toBeCloseToPixel(482);
 
 			chart.reset();
 
 			// For a line chart, the animation state is the bottom
-			expect(meta.data[0]._model.y).toBeCloseToPixel(482);
-			expect(meta.data[1]._model.y).toBeCloseToPixel(482);
-			expect(meta.data[2]._model.y).toBeCloseToPixel(482);
-			expect(meta.data[3]._model.y).toBeCloseToPixel(482);
+			expect(meta.data[0].y).toBeCloseToPixel(482);
+			expect(meta.data[1].y).toBeCloseToPixel(482);
+			expect(meta.data[2].y).toBeCloseToPixel(482);
+			expect(meta.data[3].y).toBeCloseToPixel(482);
 		});
 	});
 
@@ -1106,7 +1099,7 @@ describe('Chart', function() {
 			chart.options.tooltips = newTooltipConfig;
 
 			chart.update();
-			expect(chart.tooltip._options).toEqual(jasmine.objectContaining(newTooltipConfig));
+			expect(chart.tooltip.options).toEqual(jasmine.objectContaining(newTooltipConfig));
 		});
 
 		it ('should update the tooltip on update', function() {
@@ -1284,45 +1277,109 @@ describe('Chart', function() {
 		});
 	});
 
-	describe('controller.update', function() {
+	describe('metasets', function() {
 		beforeEach(function() {
 			this.chart = acquireChart({
-				type: 'doughnut',
-				options: {
-					animation: {
-						easing: 'linear',
-						duration: 500
-					}
+				type: 'line',
+				data: {
+					datasets: [
+						{label: '1', order: 2},
+						{label: '2', order: 1},
+						{label: '3', order: 4},
+						{label: '4', order: 3},
+					]
+				}
+			});
+		});
+		afterEach(function() {
+			const metasets = this.chart._metasets;
+			expect(metasets.length).toEqual(this.chart.data.datasets.length);
+			for (let i = 0; i < metasets.length; i++) {
+				expect(metasets[i].index).toEqual(i);
+				expect(metasets[i]._dataset).toEqual(this.chart.data.datasets[i]);
+			}
+		});
+		it('should build metasets array in order', function() {
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(1);
+			expect(metasets[2].order).toEqual(4);
+			expect(metasets[3].order).toEqual(3);
+		});
+		it('should build sorted metasets array in correct order', function() {
+			const metasets = this.chart._sortedMetasets;
+			expect(metasets[0].order).toEqual(1);
+			expect(metasets[1].order).toEqual(2);
+			expect(metasets[2].order).toEqual(3);
+			expect(metasets[3].order).toEqual(4);
+		});
+		it('should be moved when datasets are removed from begining', function() {
+			this.chart.data.datasets.splice(0, 2);
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(4);
+			expect(metasets[1].order).toEqual(3);
+		});
+		it('should be moved when datasets are removed from middle', function() {
+			this.chart.data.datasets.splice(1, 2);
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(3);
+		});
+		it('should be moved when datasets are inserted', function() {
+			this.chart.data.datasets.splice(1, 0, {label: '1.5', order: 5});
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(5);
+			expect(metasets[2].order).toEqual(1);
+			expect(metasets[3].order).toEqual(4);
+			expect(metasets[4].order).toEqual(3);
+		});
+		it('should be replaced when dataset is replaced', function() {
+			this.chart.data.datasets.splice(1, 1, {label: '1.5', order: 5});
+			this.chart.update();
+			const metasets = this.chart._metasets;
+			expect(metasets[0].order).toEqual(2);
+			expect(metasets[1].order).toEqual(5);
+			expect(metasets[2].order).toEqual(4);
+			expect(metasets[3].order).toEqual(3);
+		});
+	});
+
+	describe('data visibility', function() {
+		it('should hide a dataset', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 1, 2]
+					}],
+					labels: ['a', 'b', 'c']
 				}
 			});
 
-			this.addAnimationSpy = spyOn(Chart.animationService, 'addAnimation');
+			chart.setDatasetVisibility(0, false);
+
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.hidden).toBe(true);
 		});
 
-		it('should add an animation with the default options', function() {
-			this.chart.update();
-
-			expect(this.addAnimationSpy).toHaveBeenCalledWith(
-				this.chart,
-				jasmine.objectContaining({easing: 'linear'}),
-				500,
-				undefined
-			);
-		});
-
-		it('should add an animation with the provided options', function() {
-			this.chart.update({
-				duration: 800,
-				easing: 'easeOutBounce',
-				lazy: false,
+		it('should hide a single data item', function() {
+			var chart = acquireChart({
+				type: 'polarArea',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
 			});
 
-			expect(this.addAnimationSpy).toHaveBeenCalledWith(
-				this.chart,
-				jasmine.objectContaining({easing: 'easeOutBounce'}),
-				800,
-				false
-			);
+			chart.setDataVisibility(0, 1, false);
+
+			var meta = chart.getDatasetMeta(0);
+			expect(meta.data[1].hidden).toBe(true);
 		});
 	});
 });

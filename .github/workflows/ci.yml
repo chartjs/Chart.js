@@ -1,6 +1,14 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - "2.9"
+  pull_request:
+    branches:
+      - master
+      - "2.9"
 
 jobs:
   build:
@@ -8,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
       fail-fast: false
 
     steps:
@@ -46,4 +54,5 @@ jobs:
         gulp bower
     - name: Publish Test Results
       run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+      shell: bash
       continue-on-error: true

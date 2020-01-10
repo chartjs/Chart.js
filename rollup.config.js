@@ -12,7 +12,7 @@ const input = 'src/index.js';
 const banner = `/*!
  * Chart.js v${pkg.version}
  * ${pkg.homepage}
- * (c) ${new Date().getFullYear()} Chart.js Contributors
+ * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
  */`;
 

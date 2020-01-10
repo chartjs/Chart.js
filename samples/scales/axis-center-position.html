@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Scatter Chart</title>
+	<script src="../../dist/Chart.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.chart-container {
+		width: 500px;
+		margin-left: 40px;
+		margin-right: 40px;
+		margin-bottom: 40px;
+	}
+	.container {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	</style>
+</head>
+
+<body>
+	<div class="container"></div>
+	<script>
+		var color = Chart.helpers.color;
+		function generateData() {
+			var data = [];
+			for (var i = 0; i < 7; i++) {
+				data.push({
+					x: randomScalingFactor(),
+					y: randomScalingFactor()
+				});
+			}
+			return data;
+		}
+
+		function createConfig(xPosition, yPosition, title) {
+			var scatterChartData = {
+				datasets: [{
+					label: 'My First dataset',
+					borderColor: window.chartColors.red,
+					backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+					data: generateData()
+				}, {
+					label: 'My Second dataset',
+					borderColor: window.chartColors.blue,
+					backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+					data: generateData()
+				}]
+			};
+
+			return {
+				type: 'scatter',
+				data: scatterChartData,
+				options: {
+					responsive: true,
+					title: {
+						display: true,
+						text: title
+					},
+					scales: {
+						x: {
+							position: xPosition,
+							axis: 'x',
+							min: -100,
+							max: 100,
+						},
+						y: {
+							position: yPosition,
+							axis: 'y',
+							min: -100,
+							max: 100,
+						}
+					}
+				}
+			};
+		}
+
+		window.onload = function() {
+			var container = document.querySelector('.container');
+
+			[{
+				title: 'Position: Vertical: left, Horizontal: bottom',
+				xPosition: 'bottom',
+				yPosition: 'left'
+			}, {
+				title: 'Position: Vertical: center, Horizontal: center',
+				xPosition: 'center',
+				yPosition: 'center'
+			}, {
+				title: 'Position: Vertical: x=-60, Horizontal: y=30',
+				xPosition: {y: 30},
+				yPosition: {x: -60}
+			}].forEach(function(details) {
+				var div = document.createElement('div');
+				div.classList.add('chart-container');
+
+				var canvas = document.createElement('canvas');
+				div.appendChild(canvas);
+				container.appendChild(div);
+
+				var ctx = canvas.getContext('2d');
+				var config = createConfig(details.xPosition, details.yPosition, details.title);
+				new Chart(ctx, config);
+			});
+		};
+	</script>
+</body>
+
+</html>

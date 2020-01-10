@@ -155,6 +155,11 @@ The `ticks.source` property controls the ticks generation.
 * `'labels'`: generates ticks from user given `labels` ONLY
 
 ### Parser
+
 If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to parse the date.
 
 If this is a function, it must return a Moment.js object given the appropriate data value.
+
+### Internal data format
+
+Internally time scale uses milliseconds since epoch

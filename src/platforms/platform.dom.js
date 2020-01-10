@@ -4,8 +4,8 @@
 
 'use strict';
 
-var helpers = require('../helpers/index');
-var stylesheet = require('./platform.dom.css');
+import helpers from '../helpers';
+import stylesheet from './platform.dom.css';
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -41,7 +41,7 @@ var EVENT_TYPES = {
  * @returns {number} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
-	var value = helpers.getStyle(element, property);
+	var value = helpers.dom.getStyle(element, property);
 	var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 	return matches ? Number(matches[1]) : undefined;
 }
@@ -146,7 +146,7 @@ function createEvent(type, chart, x, y, nativeEvent) {
 
 function fromNativeEvent(event, chart) {
 	var type = EVENT_TYPES[event.type] || event.type;
-	var pos = helpers.getRelativePosition(event, chart);
+	var pos = helpers.dom.getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
@@ -216,7 +216,7 @@ function watchForRender(node, handler) {
 		}
 	};
 
-	helpers.each(ANIMATION_START_EVENTS, function(type) {
+	ANIMATION_START_EVENTS.forEach(function(type) {
 		addListener(node, type, proxy);
 	});
 
@@ -235,7 +235,7 @@ function unwatchForRender(node) {
 	var proxy = expando.renderProxy;
 
 	if (proxy) {
-		helpers.each(ANIMATION_START_EVENTS, function(type) {
+		ANIMATION_START_EVENTS.forEach(function(type) {
 			removeListener(node, type, proxy);
 		});
 
@@ -312,7 +312,7 @@ function injectCSS(rootNode, css) {
 	}
 }
 
-module.exports = {
+export default {
 	/**
 	 * When `true`, prevents the automatic injection of the stylesheet required to
 	 * correctly detect when the chart is added to the DOM and then resized. This
@@ -382,14 +382,14 @@ module.exports = {
 	},
 
 	releaseContext: function(context) {
-		var canvas = context.canvas;
+		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
 			return;
 		}
 
-		var initial = canvas[EXPANDO_KEY].initial;
+		const initial = canvas[EXPANDO_KEY].initial;
 		['height', 'width'].forEach(function(prop) {
-			var value = initial[prop];
+			const value = initial[prop];
 			if (helpers.isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
 			} else {
@@ -397,8 +397,9 @@ module.exports = {
 			}
 		});
 
-		helpers.each(initial.style || {}, function(value, key) {
-			canvas.style[key] = value;
+		const style = initial.style || {};
+		Object.keys(style).forEach(function(key) {
+			canvas.style[key] = style[key];
 		});
 
 		// The canvas render size might have been changed (and thus the state stack discarded),

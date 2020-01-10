@@ -2,7 +2,7 @@
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.tooltips`.
+The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.tooltips`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -45,7 +45,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
 
 ### Position Modes
 
@@ -121,7 +121,7 @@ All functions are called with the same arguments: a [tooltip item](#tooltip-item
 
 ### Label Callback
 
-The `label` callback can change the text that displays for a given data point. A common example to round data values; the following example rounds the data to two decimal places.
+The `label` callback can change the text that displays for a given data point. A common example to show a unit. The example below puts a `'$'` before every row.
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -136,7 +136,9 @@ var chart = new Chart(ctx, {
                     if (label) {
                         label += ': ';
                     }
-                    label += Math.round(tooltipItem.value * 100) / 100;
+                    if (!helpers.isNullOrUndef(tooltipItem.value)) {
+                        label += '$' + tooltipItem.value;
+                    }
                     return label;
                 }
             }
@@ -187,13 +189,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     datasetIndex: number,
 
     // Index of this data item in the dataset
-    index: number,
-
-    // X position of matching point
-    x: number,
-
-    // Y position of matching point
-    y: number
+    index: number
 }
 ```
 
@@ -362,7 +358,7 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // 0 opacity is a hidden tooltip
     opacity: number,
-    legendColorBackground: Color,
+    multiKeyBackground: Color,
     displayColors: boolean,
     borderColor: Color,
     borderWidth: number

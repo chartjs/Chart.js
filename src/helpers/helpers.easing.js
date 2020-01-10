@@ -5,7 +5,7 @@
  * @namespace Chart.helpers.easing.effects
  * @see http://www.robertpenner.com/easing/
  */
-var effects = {
+export const effects = {
 	linear: function(t) {
 		return t;
 	},
@@ -230,8 +230,4 @@ var effects = {
 		}
 		return effects.easeOutBounce(t * 2 - 1) * 0.5 + 0.5;
 	}
-};
-
-module.exports = {
-	effects: effects
 };

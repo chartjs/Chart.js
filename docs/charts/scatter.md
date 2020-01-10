@@ -48,3 +48,7 @@ data: [{
         y: 10
     }]
 ```
+
+## Internal data format
+
+`{x, y}`

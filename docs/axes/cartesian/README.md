@@ -14,12 +14,29 @@ All of the included cartesian axes support a number of common options.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
-| `position` | `string` | | Position of the axis in the chart. Possible values are: `'top'`, `'left'`, `'bottom'`, `'right'`
+| `position` | `string` | | Position of the axis. [more...](#axis-position)
+| `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`. If not set, this is inferred from the first character of the ID which should be `'x'` or `'y'`.
 | `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `id` | `string` | | The ID is used to link datasets and scale axes together. [more...](#axis-id)
 | `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
 | `ticks` | `object` | | Tick configuration. [more...](#tick-configuration)
+
+### Axis Position
+
+An axis can either be positioned at the edge of the chart, at the center of the chart area, or dynamically with respect to a data value.
+
+To position the axis at the edge of the chart, set the `position` option to one of: `'top'`, `'left'`, `'bottom'`, `'right'`.
+To position the axis at the center of the chart area, set the `position` option to `'center'`. In this mode, either the `axis` option is specified or the axis ID starts with the letter 'x' or 'y'.
+To position the axis with respect to a data value, set the `position` option to an object such as: 
+
+```javascript
+{
+    x: -20
+}
+```
+
+This will position the axis at a value of -20 on the axis with ID "x". For cartesian axes, only 1 axis may be specified.
 
 ### Tick Configuration
 The following options are common to all cartesian axes but do not apply to other axes.

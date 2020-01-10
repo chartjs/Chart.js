@@ -1,9 +1,10 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const helpers = require('../helpers/index');
-const LinearScaleBase = require('./scale.linearbase');
-const Ticks = require('../core/core.ticks');
+import defaults from '../core/core.defaults';
+import helpers from '../helpers/index';
+import {isNumber, toDegrees} from '../helpers/helpers.math';
+import LinearScaleBase from './scale.linearbase';
+import Ticks from '../core/core.ticks';
 
 const valueOrDefault = helpers.valueOrDefault;
 const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
@@ -63,7 +64,7 @@ function getTickBackdropHeight(opts) {
 	var tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault(tickOpts.fontSize, defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
@@ -156,7 +157,7 @@ function fitWithPointLabels(scale) {
 
 		// Add quarter circle to make degree 0 mean top of circle
 		var angleRadians = scale.getIndexAngle(i);
-		var angle = helpers.toDegrees(angleRadians) % 360;
+		var angle = toDegrees(angleRadians) % 360;
 		var hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
 		var vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
 
@@ -235,11 +236,11 @@ function drawPointLabels(scale) {
 		var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 		// Keep this in loop since we may support array properties here
-		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.global.defaultFontColor);
+		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
 		ctx.fillStyle = pointLabelFontColor;
 
 		var angleRadians = scale.getIndexAngle(i);
-		var angle = helpers.toDegrees(angleRadians);
+		var angle = toDegrees(angleRadians);
 		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
 		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
@@ -287,7 +288,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 }
 
 function numberOrZero(param) {
-	return helpers.isNumber(param) ? param : 0;
+	return isNumber(param) ? param : 0;
 }
 
 class RadialLinearScale extends LinearScaleBase {
@@ -406,10 +407,11 @@ class RadialLinearScale extends LinearScaleBase {
 
 	getPointPosition(index, distanceFromCenter) {
 		var me = this;
-		var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
+		var angle = me.getIndexAngle(index) - (Math.PI / 2);
 		return {
-			x: Math.cos(thisAngle) * distanceFromCenter + me.xCenter,
-			y: Math.sin(thisAngle) * distanceFromCenter + me.yCenter
+			x: Math.cos(angle) * distanceFromCenter + me.xCenter,
+			y: Math.sin(angle) * distanceFromCenter + me.yCenter,
+			angle
 		};
 	}
 
@@ -418,15 +420,7 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	getBasePosition(index) {
-		var me = this;
-		var min = me.min;
-		var max = me.max;
-
-		return me.getPointPositionForValue(index || 0,
-			me.beginAtZero ? 0 :
-			min < 0 && max < 0 ? max :
-			min > 0 && max > 0 ? min :
-			0);
+		return this.getPointPositionForValue(index || 0, this.getBaseValue());
 	}
 
 	/**
@@ -447,9 +441,9 @@ class RadialLinearScale extends LinearScaleBase {
 		}
 
 		if (gridLineOpts.display) {
-			helpers.each(me.ticks, function(tick, index) {
+			me.ticks.forEach(function(tick, index) {
 				if (index !== 0) {
-					offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
+					offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
@@ -492,7 +486,7 @@ class RadialLinearScale extends LinearScaleBase {
 
 		var startAngle = me.getIndexAngle(0);
 		var tickFont = helpers.options._parseFont(tickOpts);
-		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.global.defaultFontColor);
+		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
 		var offset, width;
 
 		ctx.save();
@@ -502,12 +496,12 @@ class RadialLinearScale extends LinearScaleBase {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		helpers.each(me.ticks, function(tick, index) {
+		me.ticks.forEach(function(tick, index) {
 			if (index === 0 && !opts.reverse) {
 				return;
 			}
 
-			offset = me.getDistanceFromCenterForValue(me._tickValues[index]);
+			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
 			if (tickOpts.showLabelBackdrop) {
 				width = ctx.measureText(tick.label).width;
@@ -534,6 +528,6 @@ class RadialLinearScale extends LinearScaleBase {
 	_drawTitle() {}
 }
 
-module.exports = RadialLinearScale;
 // INTERNAL: static default options, registered in src/index.js
-module.exports._defaults = defaultConfig;
+RadialLinearScale._defaults = defaultConfig;
+export default RadialLinearScale;

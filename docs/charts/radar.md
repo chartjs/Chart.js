@@ -155,7 +155,7 @@ The interaction with each point can be controlled with the following properties:
 
 ## Configuration Options
 
-The radar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+The radar chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults`, to form the options passed to the chart.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -200,3 +200,7 @@ data: {
     }]
 }
 ```
+
+## Internal data format
+
+`{x, y}`

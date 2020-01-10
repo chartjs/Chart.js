@@ -1,13 +1,13 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var math = helpers.math;
+import helpers from '../helpers';
+const math = helpers.math;
 
 /**
  * Namespace to hold static tick generation functions
  * @namespace Chart.Ticks
  */
-module.exports = {
+export default {
 	/**
 	 * Namespace to hold formatters for different types of ticks
 	 * @namespace Chart.Ticks.formatters
@@ -65,15 +65,8 @@ module.exports = {
 			return tickString;
 		},
 
-		logarithmic: function(tickValue, index, ticks) {
-			var remain = tickValue / (Math.pow(10, Math.floor(math.log10(tickValue))));
-
-			if (tickValue === 0) {
-				return '0';
-			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
-				return tickValue.toExponential();
-			}
-			return '';
+		logarithmic: function(tickValue) {
+			return tickValue === 0 ? '0' : tickValue.toExponential();
 		}
 	}
 };

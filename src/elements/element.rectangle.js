@@ -4,22 +4,16 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import helpers from '../helpers';
 
-const defaultColor = defaults.global.defaultColor;
+const defaultColor = defaults.color;
 
-defaults._set('global', {
-	elements: {
-		rectangle: {
-			backgroundColor: defaultColor,
-			borderColor: defaultColor,
-			borderSkipped: 'bottom',
-			borderWidth: 0
-		}
+defaults._set('elements', {
+	rectangle: {
+		backgroundColor: defaultColor,
+		borderColor: defaultColor,
+		borderSkipped: 'bottom',
+		borderWidth: 0
 	}
 });
-
-function isVertical(vm) {
-	return vm && vm.width !== undefined;
-}
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
@@ -27,21 +21,21 @@ function isVertical(vm) {
  * @return {Bounds} bounds of the bar
  * @private
  */
-function getBarBounds(vm) {
+function getBarBounds(bar) {
 	var x1, x2, y1, y2, half;
 
-	if (isVertical(vm)) {
-		half = vm.width / 2;
-		x1 = vm.x - half;
-		x2 = vm.x + half;
-		y1 = Math.min(vm.y, vm.base);
-		y2 = Math.max(vm.y, vm.base);
+	if (bar.horizontal) {
+		half = bar.height / 2;
+		x1 = Math.min(bar.x, bar.base);
+		x2 = Math.max(bar.x, bar.base);
+		y1 = bar.y - half;
+		y2 = bar.y + half;
 	} else {
-		half = vm.height / 2;
-		x1 = Math.min(vm.x, vm.base);
-		x2 = Math.max(vm.x, vm.base);
-		y1 = vm.y - half;
-		y2 = vm.y + half;
+		half = bar.width / 2;
+		x1 = bar.x - half;
+		x2 = bar.x + half;
+		y1 = Math.min(bar.y, bar.base);
+		y2 = Math.max(bar.y, bar.base);
 	}
 
 	return {
@@ -56,19 +50,19 @@ function swap(orig, v1, v2) {
 	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
 }
 
-function parseBorderSkipped(vm) {
-	var edge = vm.borderSkipped;
+function parseBorderSkipped(bar) {
+	var edge = bar.options.borderSkipped;
 	var res = {};
 
 	if (!edge) {
 		return res;
 	}
 
-	if (vm.horizontal) {
-		if (vm.base > vm.x) {
+	if (bar.horizontal) {
+		if (bar.base > bar.x) {
 			edge = swap(edge, 'left', 'right');
 		}
-	} else if (vm.base < vm.y) {
+	} else if (bar.base < bar.y) {
 		edge = swap(edge, 'bottom', 'top');
 	}
 
@@ -76,9 +70,13 @@ function parseBorderSkipped(vm) {
 	return res;
 }
 
-function parseBorderWidth(vm, maxW, maxH) {
-	var value = vm.borderWidth;
-	var skip = parseBorderSkipped(vm);
+function skipOrLimit(skip, value, min, max) {
+	return skip ? 0 : Math.max(Math.min(value, max), min);
+}
+
+function parseBorderWidth(bar, maxW, maxH) {
+	var value = bar.options.borderWidth;
+	var skip = parseBorderSkipped(bar);
 	var t, r, b, l;
 
 	if (helpers.isObject(value)) {
@@ -91,18 +89,18 @@ function parseBorderWidth(vm, maxW, maxH) {
 	}
 
 	return {
-		t: skip.top || (t < 0) ? 0 : t > maxH ? maxH : t,
-		r: skip.right || (r < 0) ? 0 : r > maxW ? maxW : r,
-		b: skip.bottom || (b < 0) ? 0 : b > maxH ? maxH : b,
-		l: skip.left || (l < 0) ? 0 : l > maxW ? maxW : l
+		t: skipOrLimit(skip.top, t, 0, maxH),
+		r: skipOrLimit(skip.right, r, 0, maxW),
+		b: skipOrLimit(skip.bottom, b, 0, maxH),
+		l: skipOrLimit(skip.left, l, 0, maxW)
 	};
 }
 
-function boundingRects(vm) {
-	var bounds = getBarBounds(vm);
+function boundingRects(bar) {
+	var bounds = getBarBounds(bar);
 	var width = bounds.right - bounds.left;
 	var height = bounds.bottom - bounds.top;
-	var border = parseBorderWidth(vm, width / 2, height / 2);
+	var border = parseBorderWidth(bar, width / 2, height / 2);
 
 	return {
 		outer: {
@@ -120,10 +118,10 @@ function boundingRects(vm) {
 	};
 }
 
-function inRange(vm, x, y) {
+function inRange(bar, x, y) {
 	var skipX = x === null;
 	var skipY = y === null;
-	var bounds = !vm || (skipX && skipY) ? false : getBarBounds(vm);
+	var bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar);
 
 	return bounds
 		&& (skipX || x >= bounds.left && x <= bounds.right)
@@ -137,12 +135,12 @@ class Rectangle extends Element {
 	}
 
 	draw(ctx) {
-		var vm = this._view;
-		var rects = boundingRects(vm);
+		var options = this.options;
+		var rects = boundingRects(this);
 		var outer = rects.outer;
 		var inner = rects.inner;
 
-		ctx.fillStyle = vm.backgroundColor;
+		ctx.fillStyle = options.backgroundColor;
 		ctx.fillRect(outer.x, outer.y, outer.w, outer.h);
 
 		if (outer.w === inner.w && outer.h === inner.h) {
@@ -153,43 +151,36 @@ class Rectangle extends Element {
 		ctx.beginPath();
 		ctx.rect(outer.x, outer.y, outer.w, outer.h);
 		ctx.clip();
-		ctx.fillStyle = vm.borderColor;
+		ctx.fillStyle = options.borderColor;
 		ctx.rect(inner.x, inner.y, inner.w, inner.h);
 		ctx.fill('evenodd');
 		ctx.restore();
 	}
 
 	inRange(mouseX, mouseY) {
-		return inRange(this._view, mouseX, mouseY);
+		return inRange(this, mouseX, mouseY);
 	}
 
 	inXRange(mouseX) {
-		return inRange(this._view, mouseX, null);
+		return inRange(this, mouseX, null);
 	}
 
 	inYRange(mouseY) {
-		return inRange(this._view, null, mouseY);
+		return inRange(this, null, mouseY);
 	}
 
 	getCenterPoint() {
-		var vm = this._view;
-		var x, y;
-		if (isVertical(vm)) {
-			x = vm.x;
-			y = (vm.y + vm.base) / 2;
-		} else {
-			x = (vm.x + vm.base) / 2;
-			y = vm.y;
-		}
-
-		return {x: x, y: y};
+		const {x, y, base, horizontal} = this;
+		return {
+			x: horizontal ? (x + base) / 2 : x,
+			y: horizontal ? y : (y + base) / 2
+		};
 	}
 
 	tooltipPosition() {
-		var vm = this._view;
 		return {
-			x: vm.x,
-			y: vm.y
+			x: this.x,
+			y: this.y
 		};
 	}
 }

@@ -55,7 +55,7 @@ function acquireChart(config, options) {
 	config.options = config.options || {};
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
-	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
+	config.options.fontFamily = config.options.fontFamily || 'Arial';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);
@@ -113,8 +113,6 @@ function _resolveElementPoint(el) {
 			point = el.getCenterPoint();
 		} else if (el.x !== undefined && el.y !== undefined) {
 			point = el;
-		} else if (el._model && el._model.x !== undefined && el._model.y !== undefined) {
-			point = el._model;
 		}
 	}
 	return point;

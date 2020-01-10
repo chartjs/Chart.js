@@ -1,8 +1,8 @@
 'use strict';
 
-var DoughnutController = require('./controller.doughnut');
-var defaults = require('../core/core.defaults');
-var helpers = require('../helpers/index');
+import DoughnutController from './controller.doughnut';
+import defaults from '../core/core.defaults';
+import helpers from '../helpers';
 
 defaults._set('pie', helpers.clone(defaults.doughnut));
 defaults._set('pie', {
@@ -10,4 +10,4 @@ defaults._set('pie', {
 });
 
 // Pie charts are Doughnut chart with different defaults
-module.exports = DoughnutController;
+export default DoughnutController;

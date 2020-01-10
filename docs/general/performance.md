@@ -23,16 +23,14 @@ new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        animation: {
-            duration: 0 // general animation time
-        },
-        hover: {
-            animationDuration: 0 // duration of animations when hovering an item
-        },
-        responsiveAnimationDuration: 0 // animation duration after a resize
+        animation: false
     }
 });
 ```
+
+## Provide ordered data
+
+If the data is unordered, Chart.js needs to sort it. This can be slow in some cases, so its always a good idea to provide ordered data.
 
 ## Specify `min` and `max` for scales
 
@@ -58,6 +56,10 @@ new Chart(ctx, {
     }
 });
 ```
+
+## Data structure and format
+
+Provide prepared data in the internal format accepted by the dataset and scales and set `parsing: false`. See [Data structures](data-structures.md) for more information.
 
 ## Data Decimation
 
@@ -91,7 +93,7 @@ new Chart(ctx, {
 
 ### Automatic data decimation during draw
 
-Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default), `fill` is `false` and `borderDash` is `[]` (default).`
+Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default) and `borderDash` is `[]` (default).`
 This improves rendering speed by skipping drawing of invisible line segments.
 
 ```javascript
@@ -107,6 +109,26 @@ new Chart(ctx, {
                 borderDash: []
             }
         }
+    }
+});
+```
+
+### Enable spanGaps
+
+If you have a lot of data points, it can be more performant to enable `spanGaps`. This disables segmentation of the line, which can be an unneeded step.
+
+To enable `spanGaps`:
+
+```javascript
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            spanGaps: true // enable for a single dataset
+        }]
+    },
+    options: {
+        spanGaps: true // enable for all datasets
     }
 });
 ```

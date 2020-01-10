@@ -17,32 +17,23 @@ This must be called before the canvas is reused for a new chart.
 myLineChart.destroy();
 ```
 
-## .update(config)
+## .update(mode)
 
 Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
 ```javascript
-// duration is the time for the animation of the redraw in milliseconds
-// lazy is a boolean. if true, the animation can be interrupted by other animations
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
 
 > **Note:** replacing the data reference (e.g. `myLineChart.data = {datasets: [...]}` only works starting **version 2.6**. Prior that, replacing the entire data object could be achieved with the following workaround: `myLineChart.config.data = {datasets: [...]}`.
 
-A `config` object can be provided with additional configuration for the update process. This is useful when `update` is manually called inside an event handler and some different animation is desired.
-
-The following properties are supported:
-* **duration** (number): Time for the animation of the redraw in milliseconds
-* **lazy** (boolean): If true, the animation can be interrupted by other animations
-* **easing** (string): The animation easing function. See [Animation Easing](../configuration/animations.md) for possible values.
+A `mode` string can be provided to indicate what should be updated and what animation configuration should be used. Core calls this method using any of `undefined`, `'reset'`, `'resize'` or `'active'`. `'none'` is also a supported mode for skipping animations for single update.
 
 Example:
+
 ```javascript
-myChart.update({
-    duration: 800,
-    easing: 'easeOutBounce'
-});
+myChart.update();
 ```
 
 See [Updating Charts](updates.md) for more details.
@@ -55,25 +46,13 @@ Reset the chart to it's state before the initial animation. A new animation can 
 myLineChart.reset();
 ```
 
-## .render(config)
+## .render()
 
 Triggers a redraw of all chart elements. Note, this does not update elements for new data. Use `.update()` in that case.
 
-See `.update(config)` for more details on the config object.
-
-```javascript
-// duration is the time for the animation of the redraw in milliseconds
-// lazy is a boolean. if true, the animation can be interrupted by other animations
-myLineChart.render({
-    duration: 800,
-    lazy: false,
-    easing: 'easeOutBounce'
-});
-```
-
 ## .stop()
 
-Use this to stop any current animation loop. This will pause the chart during any current animation frame. Call `.render()` to re-animate.
+Use this to stop any current animation. This will pause the chart during any current animation frame. Call `.render()` to re-animate.
 
 ```javascript
 // Stops the charts animation loop at its current frame
@@ -108,15 +87,6 @@ This returns a base 64 encoded string of the chart in it's current state.
 ```javascript
 myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
-```
-
-## .generateLegend()
-
-Returns an HTML string of a legend for that chart. The legend is generated from the `legendCallback` in the options.
-
-```javascript
-myLineChart.generateLegend();
-// => returns HTML string of a legend for this chart
 ```
 
 ## .getElementAtEvent(e)
@@ -175,5 +145,23 @@ Extensive examples of usage are available in the [Chart.js tests](https://github
 
 ```javascript
 var meta = myChart.getDatasetMeta(0);
-var x = meta.data[0]._model.x;
+var x = meta.data[0].x;
+```
+
+## setDatasetVisibility(datasetIndex, visibility)
+
+Sets the visibility for a given dataset. This can be used to build a chart legend in HTML. During click on one of the HTML items, you can call `setDatasetVisibility` to change the appropriate dataset.
+
+```javascript
+chart.setDatasetVisibility(1, false); // hides dataset at index 1
+chart.update(); // chart now renders with dataset hidden
+```
+
+## setDataVisibility(datasetIndex, index, visibility)
+
+Like [setDatasetVisibility](#setdatasetvisibility) except that it hides only a single item in the dataset. **Note** this only applies to polar area and doughnut charts at the moment. It will have no affect on line, bar, radar, or scatter charts.
+
+```javascript
+chart.setDataVisibility(0, 2, false); // hides the item in dataset 0, at index 2
+chart.update(); // chart now renders with item hidden
 ```

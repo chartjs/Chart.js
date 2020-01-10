@@ -1,10 +1,10 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
-var layouts = require('./core.layouts');
+import defaults from './core.defaults';
+import helpers from '../helpers';
+import layouts from './core.layouts';
 
-module.exports = {
+export default {
 	// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
 	// use the new chart options to grab the correct scale
 	constructors: {},
