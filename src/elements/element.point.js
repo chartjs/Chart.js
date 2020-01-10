@@ -47,7 +47,7 @@ class Point extends Element {
 
 	size() {
 		const options = this.options || {};
-		const radius = options.radius || 0;
+		const radius = Math.max(options.radius, options.hoverRadius) || 0;
 		const borderWidth = radius && options.borderWidth || 0;
 		return (radius + borderWidth) * 2;
 	}
