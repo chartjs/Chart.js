@@ -1006,6 +1006,7 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_setStyle(element, index, mode, active) {
+		element.active = active;
 		this._resolveAnimations(index, mode, active).update(element, {options: this.getStyle(index, active)});
 	},
 
