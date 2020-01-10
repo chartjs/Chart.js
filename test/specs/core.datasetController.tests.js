@@ -299,14 +299,22 @@ describe('Chart.DatasetController', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		expect(meta.data.length).toBe(6);
+		expect(meta._parsed.map(p => p.y)).toEqual(data0);
 
 		chart.data.datasets[0].data = data1;
 		chart.update();
 
 		expect(meta.data.length).toBe(3);
+		expect(meta._parsed.map(p => p.y)).toEqual(data1);
 
-		data1.push(9, 10, 11);
+		data1.push(9);
+		expect(meta.data.length).toBe(4);
+
+		chart.data.datasets[0].data = data0;
+		chart.update();
+
 		expect(meta.data.length).toBe(6);
+		expect(meta._parsed.map(p => p.y)).toEqual(data0);
 	});
 
 	it('should re-synchronize metadata when data are unusually altered', function() {
