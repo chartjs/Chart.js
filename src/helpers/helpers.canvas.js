@@ -153,7 +153,7 @@ export function drawPoint(ctx, style, radius, x, y, rotation) {
  * @private
  */
 export function _isPointInArea(point, area) {
-	const epsilon = 0.5;
+	const epsilon = 0.5; // margin - to match rounded decimals
 
 	return point.x > area.left - epsilon && point.x < area.right + epsilon &&
 		point.y > area.top - epsilon && point.y < area.bottom + epsilon;
