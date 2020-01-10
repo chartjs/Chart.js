@@ -164,16 +164,26 @@ export default DatasetController.extend({
 		const meta = me._cachedMeta;
 		const points = meta.data || [];
 		const area = chart.chartArea;
-		const ilen = points.length;
-		let i = 0;
+		const active = [];
+		let ilen = points.length;
+		let i, point;
 
 		if (me._showLine) {
 			meta.dataset.draw(ctx, area);
 		}
 
+
 		// Draw the points
-		for (; i < ilen; ++i) {
-			points[i].draw(ctx, area);
+		for (i = 0; i < ilen; ++i) {
+			point = points[i];
+			if (point.active) {
+				active.push(point);
+			} else {
+				point.draw(ctx, area);
+			}
+		}
+		for (i = 0, ilen = active.length; i < ilen; ++i) {
+			active[i].draw(ctx, area);
 		}
 	},
 });
