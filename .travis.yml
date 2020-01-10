@@ -3,7 +3,7 @@ node_js:
   - lts/*
 
 before_install:
-  - "export CHROME_BIN=/usr/bin/google-chrome"
+  - "export CHROME_BIN=/usr/bin/google-chrome-beta"
 
 services:
   - xvfb
@@ -20,7 +20,7 @@ sudo: required
 dist: bionic
 
 addons:
-  chrome: stable
+  chrome: beta
   firefox: latest
 
 # IMPORTANT: scripts require GITHUB_AUTH_TOKEN and GITHUB_AUTH_EMAIL environment variables
