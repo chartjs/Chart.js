@@ -1271,6 +1271,7 @@ class Scale extends Element {
 
 		const ctx = me.ctx;
 		const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
+		const useTextWithStroke = optionTicks.lineWidth > 0 && optionTicks.strokeStyle !== '';
 		let i, j, ilen, jlen;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
@@ -1285,20 +1286,27 @@ class Scale extends Element {
 			ctx.fillStyle = tickFont.color;
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
-			ctx.strokeStyle = optionTicks.strokeStyle;
-			ctx.lineWidth = optionTicks.lineWidth;
+
+			if (useTextWithStroke) {
+				ctx.strokeStyle = optionTicks.strokeStyle;
+				ctx.lineWidth = optionTicks.lineWidth;
+			}
 
 			const label = item.label;
 			let y = item.textOffset;
 			if (isArray(label)) {
 				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
-					ctx.strokeText('' + label[j], 0, y);
+					if (useTextWithStroke) {
+						ctx.strokeText('' + label[j], 0, y);
+					}
 					ctx.fillText('' + label[j], 0, y);
 					y += tickFont.lineHeight;
 				}
 			} else {
-				ctx.strokeText(label, 0, y);
+				if (useTextWithStroke) {
+					ctx.strokeText(label, 0, y);
+				}
 				ctx.fillText(label, 0, y);
 			}
 			ctx.restore();
