@@ -32,8 +32,8 @@ describe('Chart.helpers.canvas', function() {
 			expect(isPointInArea({x: -1e-12, y: -1e-12}, area)).toBe(true);
 			expect(isPointInArea({x: 512, y: 256}, area)).toBe(true);
 			expect(isPointInArea({x: 512 + 1e-12, y: 256 + 1e-12}, area)).toBe(true);
-			expect(isPointInArea({x: -1e-3, y: 0}, area)).toBe(false);
-			expect(isPointInArea({x: 0, y: 256 + 1e-3}, area)).toBe(false);
+			expect(isPointInArea({x: -0.5, y: 0}, area)).toBe(false);
+			expect(isPointInArea({x: 0, y: 256.5}, area)).toBe(false);
 		});
 	});
 });

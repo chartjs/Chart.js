@@ -19,6 +19,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Interactions
 
+* `interactions` are now limited to the chart area
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
@@ -117,6 +118,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Element._view`
 * `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
+* `Tooltip._lastActive`
 
 ### Renamed
 

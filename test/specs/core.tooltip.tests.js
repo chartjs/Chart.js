@@ -70,7 +70,7 @@ describe('Core.Tooltip', function() {
 				bubbles: true,
 				cancelable: true,
 				clientX: rect.left + point.x,
-				clientY: 0
+				clientY: rect.top + chart.chartArea.top + 5 // +5 to make tests work consistently
 			});
 
 			// Manually trigger rather than having an async test

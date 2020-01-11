@@ -773,6 +773,11 @@ describe('Chart.controllers.line', function() {
 					}]
 				},
 				options: {
+					scales: {
+						x: {
+							offset: true
+						}
+					},
 					elements: {
 						point: {
 							backgroundColor: 'rgb(100, 150, 200)',
