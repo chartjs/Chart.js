@@ -140,11 +140,11 @@ function parseFontOptions(options, nestedOpts) {
 		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
 		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
-		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight),
+		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
 	}), {
 		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor]),
 		lineWidth: valueOrDefault(nestedOpts.lineWidth, options.lineWidth),
-		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle),
+		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle)
 	});
 }
 
