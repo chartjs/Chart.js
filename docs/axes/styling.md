@@ -45,9 +45,11 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 | `fontStyle` | `string` | `'normal'` | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
 | `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
 | `reverse` | `boolean` | `false` | Reverses order of tick labels.
+| `lineWidth` | `number` | `0` | Stroke width around the text.
 | `minor` | `object` | `{}` | Minor ticks configuration. Omitted options are inherited from options above.
 | `major` | `object` | `{}` | Major ticks configuration. Omitted options are inherited from options above.
 | `padding` | `number` | `0` | Sets the offset of the tick labels from the axis
+| `strokeStyle` | `string` | `` | The color of the stroke around the text.
 | `z` | `number` | `0` | z-index of tick layer. Useful when ticks are drawn on chart area. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
 ## Minor Tick Configuration

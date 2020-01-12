@@ -52,6 +52,8 @@ defaults._set('scale', {
 		minRotation: 0,
 		maxRotation: 50,
 		mirror: false,
+		lineWidth: 0,
+		strokeStyle: '',
 		padding: 0,
 		display: true,
 		autoSkip: true,
@@ -140,7 +142,9 @@ function parseFontOptions(options, nestedOpts) {
 		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
 		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
 	}), {
-		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor])
+		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor]),
+		lineWidth: valueOrDefault(nestedOpts.lineWidth, options.lineWidth),
+		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle)
 	});
 }
 
@@ -1272,6 +1276,7 @@ class Scale extends Element {
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
+			const useStroke = tickFont.lineWidth > 0 && tickFont.strokeStyle !== '';
 
 			// Make sure we draw text in the correct color and font
 			ctx.save();
@@ -1282,15 +1287,26 @@ class Scale extends Element {
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
 
+			if (useStroke) {
+				ctx.strokeStyle = tickFont.strokeStyle;
+				ctx.lineWidth = tickFont.lineWidth;
+			}
+
 			const label = item.label;
 			let y = item.textOffset;
 			if (isArray(label)) {
 				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
+					if (useStroke) {
+						ctx.strokeText('' + label[j], 0, y);
+					}
 					ctx.fillText('' + label[j], 0, y);
 					y += tickFont.lineHeight;
 				}
 			} else {
+				if (useStroke) {
+					ctx.strokeText(label, 0, y);
+				}
 				ctx.fillText(label, 0, y);
 			}
 			ctx.restore();

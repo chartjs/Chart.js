@@ -94,6 +94,7 @@ Context.prototype._initMethods = function() {
 		fill: function() {},
 		fillRect: function() {},
 		fillText: function() {},
+		strokeText: function() {},
 		lineTo: function() {},
 		measureText: function(text) {
 			// return the number of characters * fixed size

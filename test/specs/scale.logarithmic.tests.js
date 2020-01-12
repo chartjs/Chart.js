@@ -40,6 +40,8 @@ describe('Logarithmic Scale tests', function() {
 				autoSkipPadding: 0,
 				labelOffset: 0,
 				minor: {},
+				lineWidth: 0,
+				strokeStyle: '',
 				major: {
 					enabled: true
 				},
