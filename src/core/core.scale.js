@@ -1276,7 +1276,7 @@ class Scale extends Element {
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
-			const useTextWithStroke = tickFont.lineWidth > 0 && tickFont.strokeStyle !== '';
+			const useStroke = tickFont.lineWidth > 0 && tickFont.strokeStyle !== '';
 
 			// Make sure we draw text in the correct color and font
 			ctx.save();
@@ -1287,7 +1287,7 @@ class Scale extends Element {
 			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
 
-			if (useTextWithStroke) {
+			if (useStroke) {
 				ctx.strokeStyle = tickFont.strokeStyle;
 				ctx.lineWidth = tickFont.lineWidth;
 			}
@@ -1297,14 +1297,14 @@ class Scale extends Element {
 			if (isArray(label)) {
 				for (j = 0, jlen = label.length; j < jlen; ++j) {
 					// We just make sure the multiline element is a string here..
-					if (useTextWithStroke) {
+					if (useStroke) {
 						ctx.strokeText('' + label[j], 0, y);
 					}
 					ctx.fillText('' + label[j], 0, y);
 					y += tickFont.lineHeight;
 				}
 			} else {
-				if (useTextWithStroke) {
+				if (useStroke) {
 					ctx.strokeText(label, 0, y);
 				}
 				ctx.fillText(label, 0, y);
