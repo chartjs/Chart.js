@@ -81,10 +81,6 @@ For example, to derive a new chart type that extends from a bubble chart, you wo
 // It looks like a bug exists when the defaults don't exist
 Chart.defaults.derivedBubble = Chart.defaults.bubble;
 
-// Sets the default dataset config for 'derivedBubble' to be the same as the bubble dataset defaults.
-// It looks like a bug exists when the dataset defaults don't exist
-Chart.defaults.datasets.derivedBubble = Chart.defaults.datasets.bubble;
-
 // I think the recommend using Chart.controllers.bubble.extend({ extensions here });
 var custom = Chart.controllers.bubble.extend({
     draw: function(ease) {

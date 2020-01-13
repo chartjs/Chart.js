@@ -14,8 +14,8 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
-			datasets: {
-				bar: {
+			bar: {
+				datasets: {
 					barPercentage: 1,
 				}
 			},

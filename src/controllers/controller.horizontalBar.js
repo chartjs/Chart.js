@@ -25,6 +25,11 @@ defaults._set('horizontalBar', {
 		}
 	},
 
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9
+	},
+
 	elements: {
 		rectangle: {
 			borderSkipped: 'left'
@@ -34,13 +39,6 @@ defaults._set('horizontalBar', {
 	tooltips: {
 		mode: 'index',
 		axis: 'y'
-	}
-});
-
-defaults._set('datasets', {
-	horizontalBar: {
-		categoryPercentage: 0.8,
-		barPercentage: 0.9
 	}
 });
 

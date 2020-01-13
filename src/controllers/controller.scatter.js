@@ -15,6 +15,10 @@ defaults._set('scatter', {
 		}
 	},
 
+	datasets: {
+		showLine: false
+	},
+
 	tooltips: {
 		callbacks: {
 			title: function() {
@@ -24,12 +28,6 @@ defaults._set('scatter', {
 				return '(' + item.label + ', ' + item.value + ')';
 			}
 		}
-	}
-});
-
-defaults._set('datasets', {
-	scatter: {
-		showLine: false
 	}
 });
 
