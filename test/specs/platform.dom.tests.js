@@ -285,7 +285,11 @@ describe('Platform.dom', function() {
 
 	describe('controller.destroy', function() {
 		it('should reset context to default values', function() {
-			var chart = acquireChart({});
+			var wrapper = document.createElement('div');
+			var canvas = document.createElement('canvas');
+			wrapper.appendChild(canvas);
+			window.document.body.appendChild(wrapper);
+			var chart = new Chart(canvas, {});
 			var context = chart.ctx;
 
 			chart.destroy();
@@ -308,6 +312,8 @@ describe('Platform.dom', function() {
 			}, function(value, key) {
 				expect(context[key]).toBe(value);
 			});
+
+			wrapper.parentNode.removeChild(wrapper);
 		});
 
 		it('should restore canvas initial values', function(done) {
