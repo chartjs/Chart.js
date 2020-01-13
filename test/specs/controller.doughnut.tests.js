@@ -347,22 +347,28 @@ describe('Chart.controllers.doughnut', function() {
 			});
 		});
 
-		it ('should handle default hover styles', function() {
+		it ('should handle default hover styles', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(49, 135, 221)');
-			expect(arc.options.borderColor).toBe('rgb(22, 89, 156)');
-			expect(arc.options.borderWidth).toBe(2);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(49, 135, 221)');
+				expect(arc.options.borderColor).toBe('rgb(22, 89, 156)');
+				expect(arc.options.borderWidth).toBe(2);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc.options.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via dataset properties', function() {
+		it ('should handle hover styles defined via dataset properties', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -374,18 +380,24 @@ describe('Chart.controllers.doughnut', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc.options.borderWidth).toBe(8.4);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc.options.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via element options', function() {
+		it ('should handle hover styles defined via element options', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -397,15 +409,21 @@ describe('Chart.controllers.doughnut', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc.options.borderWidth).toBe(8.4);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc.options.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 	});
 });

@@ -30,6 +30,7 @@ var utils = require('./utils');
 	window.devicePixelRatio = 1;
 
 	window.acquireChart = acquireChart;
+	window.afterEvent = utils.afterEvent;
 	window.releaseChart = releaseChart;
 	window.waitForResize = utils.waitForResize;
 	window.createMockContext = createMockContext;

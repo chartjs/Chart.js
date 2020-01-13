@@ -29,7 +29,7 @@ describe('Core.Tooltip', function() {
 	});
 
 	describe('index mode', function() {
-		it('Should only use x distance when intersect is false', function() {
+		it('Should only use x distance when intersect is false', function(done) {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -62,20 +62,165 @@ describe('Core.Tooltip', function() {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[1];
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
+			afterEvent(chart, 'mousemove', function() {
+				// Check and see if tooltip was displayed
+				var tooltip = chart.tooltip;
+				var defaults = Chart.defaults;
 
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point.x,
-				clientY: rect.top + chart.chartArea.top + 5 // +5 to make tests work consistently
+				expect(tooltip.options.xPadding).toEqual(6);
+				expect(tooltip.options.yPadding).toEqual(6);
+				expect(tooltip.xAlign).toEqual('left');
+				expect(tooltip.yAlign).toEqual('center');
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
+					// Body
+					bodyFontColor: '#fff',
+					bodyFontFamily: defaults.fontFamily,
+					bodyFontStyle: defaults.fontStyle,
+					bodyAlign: 'left',
+					bodyFontSize: defaults.fontSize,
+					bodySpacing: 2,
+				}));
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
+					// Title
+					titleFontColor: '#fff',
+					titleFontFamily: defaults.fontFamily,
+					titleFontStyle: 'bold',
+					titleFontSize: defaults.fontSize,
+					titleAlign: 'left',
+					titleSpacing: 2,
+					titleMarginBottom: 6,
+				}));
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
+					// Footer
+					footerFontColor: '#fff',
+					footerFontFamily: defaults.fontFamily,
+					footerFontStyle: 'bold',
+					footerFontSize: defaults.fontSize,
+					footerAlign: 'left',
+					footerSpacing: 2,
+					footerMarginTop: 6,
+				}));
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
+					// Appearance
+					caretSize: 5,
+					caretPadding: 2,
+					cornerRadius: 6,
+					backgroundColor: 'rgba(0,0,0,0.8)',
+					multiKeyBackground: '#fff',
+					displayColors: true
+				}));
+
+				expect(tooltip).toEqual(jasmine.objectContaining({
+					opacity: 1,
+
+					// Text
+					title: ['Point 2'],
+					beforeBody: [],
+					body: [{
+						before: [],
+						lines: ['Dataset 1: 20'],
+						after: []
+					}, {
+						before: [],
+						lines: ['Dataset 2: 40'],
+						after: []
+					}],
+					afterBody: [],
+					footer: [],
+					labelColors: [{
+						borderColor: defaults.color,
+						backgroundColor: defaults.color
+					}, {
+						borderColor: defaults.color,
+						backgroundColor: defaults.color
+					}]
+				}));
+
+				expect(tooltip.x).toBeCloseToPixel(267);
+				expect(tooltip.y).toBeCloseToPixel(155);
+
+				done();
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: chart.chartArea.top});
+		});
+
+		it('Should only display if intersecting if intersect is set', function(done) {
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}, {
+						label: 'Dataset 2',
+						data: [40, 40, 40],
+						pointHoverBorderColor: 'rgb(0, 0, 255)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				},
+				options: {
+					tooltips: {
+						mode: 'index',
+						intersect: true
+					}
+				}
 			});
 
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
+			// Trigger an event over top of the
+			var meta = chart.getDatasetMeta(0);
+			var point = meta.data[1];
 
+			afterEvent(chart, 'mousemove', function() {
+				// Check and see if tooltip was displayed
+				var tooltip = chart.tooltip;
+
+				expect(tooltip).toEqual(jasmine.objectContaining({
+					opacity: 0,
+				}));
+
+				done();
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: 0});
+		});
+	});
+
+	it('Should display in single mode', function(done) {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					mode: 'nearest',
+					intersect: true
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[1];
+
+		afterEvent(chart, 'mousemove', function() {
 			// Check and see if tooltip was displayed
 			var tooltip = chart.tooltip;
 			var defaults = Chart.defaults;
@@ -137,197 +282,25 @@ describe('Core.Tooltip', function() {
 					before: [],
 					lines: ['Dataset 1: 20'],
 					after: []
-				}, {
-					before: [],
-					lines: ['Dataset 2: 40'],
-					after: []
 				}],
 				afterBody: [],
 				footer: [],
+				labelTextColors: ['#fff'],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
-				}, {
 					borderColor: defaults.color,
 					backgroundColor: defaults.color
 				}]
 			}));
 
 			expect(tooltip.x).toBeCloseToPixel(267);
-			expect(tooltip.y).toBeCloseToPixel(155);
+			expect(tooltip.y).toBeCloseToPixel(312);
+
+			done();
 		});
-
-		it('Should only display if intersecting if intersect is set', function() {
-			var chart = window.acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						label: 'Dataset 1',
-						data: [10, 20, 30],
-						pointHoverBorderColor: 'rgb(255, 0, 0)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
-					}, {
-						label: 'Dataset 2',
-						data: [40, 40, 40],
-						pointHoverBorderColor: 'rgb(0, 0, 255)',
-						pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-					}],
-					labels: ['Point 1', 'Point 2', 'Point 3']
-				},
-				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: true
-					}
-				}
-			});
-
-			// Trigger an event over top of the
-			var meta = chart.getDatasetMeta(0);
-			var point = meta.data[1];
-
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point.x,
-				clientY: 0
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
-
-			// Check and see if tooltip was displayed
-			var tooltip = chart.tooltip;
-
-			expect(tooltip).toEqual(jasmine.objectContaining({
-				opacity: 0,
-			}));
-		});
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
-	it('Should display in single mode', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					label: 'Dataset 1',
-					data: [10, 20, 30],
-					pointHoverBorderColor: 'rgb(255, 0, 0)',
-					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
-				}, {
-					label: 'Dataset 2',
-					data: [40, 40, 40],
-					pointHoverBorderColor: 'rgb(0, 0, 255)',
-					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
-				}],
-				labels: ['Point 1', 'Point 2', 'Point 3']
-			},
-			options: {
-				tooltips: {
-					mode: 'nearest',
-					intersect: true
-				}
-			}
-		});
-
-		// Trigger an event over top of the
-		var meta = chart.getDatasetMeta(0);
-		var point = meta.data[1];
-
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
-
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point.x,
-			clientY: rect.top + point.y
-		});
-
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip.options.xPadding).toEqual(6);
-		expect(tooltip.options.yPadding).toEqual(6);
-		expect(tooltip.xAlign).toEqual('left');
-		expect(tooltip.yAlign).toEqual('center');
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Body
-			bodyFontColor: '#fff',
-			bodyFontFamily: defaults.fontFamily,
-			bodyFontStyle: defaults.fontStyle,
-			bodyAlign: 'left',
-			bodyFontSize: defaults.fontSize,
-			bodySpacing: 2,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Title
-			titleFontColor: '#fff',
-			titleFontFamily: defaults.fontFamily,
-			titleFontStyle: 'bold',
-			titleFontSize: defaults.fontSize,
-			titleAlign: 'left',
-			titleSpacing: 2,
-			titleMarginBottom: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Footer
-			footerFontColor: '#fff',
-			footerFontFamily: defaults.fontFamily,
-			footerFontStyle: 'bold',
-			footerFontSize: defaults.fontSize,
-			footerAlign: 'left',
-			footerSpacing: 2,
-			footerMarginTop: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Appearance
-			caretSize: 5,
-			caretPadding: 2,
-			cornerRadius: 6,
-			backgroundColor: 'rgba(0,0,0,0.8)',
-			multiKeyBackground: '#fff',
-			displayColors: true
-		}));
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			opacity: 1,
-
-			// Text
-			title: ['Point 2'],
-			beforeBody: [],
-			body: [{
-				before: [],
-				lines: ['Dataset 1: 20'],
-				after: []
-			}],
-			afterBody: [],
-			footer: [],
-			labelTextColors: ['#fff'],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
-
-		expect(tooltip.x).toBeCloseToPixel(267);
-		expect(tooltip.y).toBeCloseToPixel(312);
-	});
-
-	it('Should display information from user callbacks', function() {
+	it('Should display information from user callbacks', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -393,102 +366,93 @@ describe('Core.Tooltip', function() {
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point.x,
-			clientY: rect.top + point.y
+			expect(tooltip.options.xPadding).toEqual(6);
+			expect(tooltip.options.yPadding).toEqual(6);
+			expect(tooltip.xAlign).toEqual('center');
+			expect(tooltip.yAlign).toEqual('top');
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Body
+				bodyFontColor: '#fff',
+				bodyFontFamily: defaults.fontFamily,
+				bodyFontStyle: defaults.fontStyle,
+				bodyAlign: 'left',
+				bodyFontSize: defaults.fontSize,
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Title
+				titleFontColor: '#fff',
+				titleFontFamily: defaults.fontFamily,
+				titleFontStyle: 'bold',
+				titleFontSize: defaults.fontSize,
+				titleAlign: 'left',
+				titleSpacing: 2,
+				titleMarginBottom: 6,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Footer
+				footerFontColor: '#fff',
+				footerFontFamily: defaults.fontFamily,
+				footerFontStyle: 'bold',
+				footerFontSize: defaults.fontSize,
+				footerAlign: 'left',
+				footerSpacing: 2,
+				footerMarginTop: 6,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Appearance
+				caretSize: 5,
+				caretPadding: 2,
+				cornerRadius: 6,
+				backgroundColor: 'rgba(0,0,0,0.8)',
+				multiKeyBackground: '#fff',
+			}));
+
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				opacity: 1,
+
+				// Text
+				title: ['beforeTitle', 'title', 'afterTitle'],
+				beforeBody: ['beforeBody'],
+				body: [{
+					before: ['beforeLabel'],
+					lines: ['label'],
+					after: ['afterLabel']
+				}, {
+					before: ['beforeLabel'],
+					lines: ['label'],
+					after: ['afterLabel']
+				}],
+				afterBody: ['afterBody'],
+				footer: ['beforeFooter', 'footer', 'afterFooter'],
+				labelTextColors: ['labelTextColor', 'labelTextColor'],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}, {
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			expect(tooltip.x).toBeCloseToPixel(214);
+			expect(tooltip.y).toBeCloseToPixel(190);
+
+			done();
 		});
-
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip.options.xPadding).toEqual(6);
-		expect(tooltip.options.yPadding).toEqual(6);
-		expect(tooltip.xAlign).toEqual('center');
-		expect(tooltip.yAlign).toEqual('top');
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Body
-			bodyFontColor: '#fff',
-			bodyFontFamily: defaults.fontFamily,
-			bodyFontStyle: defaults.fontStyle,
-			bodyAlign: 'left',
-			bodyFontSize: defaults.fontSize,
-			bodySpacing: 2,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Title
-			titleFontColor: '#fff',
-			titleFontFamily: defaults.fontFamily,
-			titleFontStyle: 'bold',
-			titleFontSize: defaults.fontSize,
-			titleAlign: 'left',
-			titleSpacing: 2,
-			titleMarginBottom: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Footer
-			footerFontColor: '#fff',
-			footerFontFamily: defaults.fontFamily,
-			footerFontStyle: 'bold',
-			footerFontSize: defaults.fontSize,
-			footerAlign: 'left',
-			footerSpacing: 2,
-			footerMarginTop: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Appearance
-			caretSize: 5,
-			caretPadding: 2,
-			cornerRadius: 6,
-			backgroundColor: 'rgba(0,0,0,0.8)',
-			multiKeyBackground: '#fff',
-		}));
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			opacity: 1,
-
-			// Text
-			title: ['beforeTitle', 'title', 'afterTitle'],
-			beforeBody: ['beforeBody'],
-			body: [{
-				before: ['beforeLabel'],
-				lines: ['label'],
-				after: ['afterLabel']
-			}, {
-				before: ['beforeLabel'],
-				lines: ['label'],
-				after: ['afterLabel']
-			}],
-			afterBody: ['afterBody'],
-			footer: ['beforeFooter', 'footer', 'afterFooter'],
-			labelTextColors: ['labelTextColor', 'labelTextColor'],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}, {
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
-
-		expect(tooltip.x).toBeCloseToPixel(214);
-		expect(tooltip.y).toBeCloseToPixel(190);
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
-	it('Should allow sorting items', function() {
+	it('Should allow sorting items', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -519,57 +483,49 @@ describe('Core.Tooltip', function() {
 		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point0.x,
-			clientY: rect.top + point0.y
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				// Positioning
+				xAlign: 'left',
+				yAlign: 'center',
+
+				// Text
+				title: ['Point 2'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['Dataset 2: 40'],
+					after: []
+				}, {
+					before: [],
+					lines: ['Dataset 1: 20'],
+					after: []
+				}],
+				afterBody: [],
+				footer: [],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}, {
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			expect(tooltip.x).toBeCloseToPixel(267);
+			expect(tooltip.y).toBeCloseToPixel(155);
+
+			done();
 		});
+		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			// Positioning
-			xAlign: 'left',
-			yAlign: 'center',
-
-			// Text
-			title: ['Point 2'],
-			beforeBody: [],
-			body: [{
-				before: [],
-				lines: ['Dataset 2: 40'],
-				after: []
-			}, {
-				before: [],
-				lines: ['Dataset 1: 20'],
-				after: []
-			}],
-			afterBody: [],
-			footer: [],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}, {
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
-
-		expect(tooltip.x).toBeCloseToPixel(267);
-		expect(tooltip.y).toBeCloseToPixel(155);
 	});
 
-	it('Should allow reversing items', function() {
+	it('Should allow reversing items', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -598,57 +554,49 @@ describe('Core.Tooltip', function() {
 		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point0.x,
-			clientY: rect.top + point0.y
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				// Positioning
+				xAlign: 'left',
+				yAlign: 'center',
+
+				// Text
+				title: ['Point 2'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['Dataset 2: 40'],
+					after: []
+				}, {
+					before: [],
+					lines: ['Dataset 1: 20'],
+					after: []
+				}],
+				afterBody: [],
+				footer: [],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}, {
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			expect(tooltip.x).toBeCloseToPixel(267);
+			expect(tooltip.y).toBeCloseToPixel(155);
+
+			done();
 		});
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			// Positioning
-			xAlign: 'left',
-			yAlign: 'center',
-
-			// Text
-			title: ['Point 2'],
-			beforeBody: [],
-			body: [{
-				before: [],
-				lines: ['Dataset 2: 40'],
-				after: []
-			}, {
-				before: [],
-				lines: ['Dataset 1: 20'],
-				after: []
-			}],
-			afterBody: [],
-			footer: [],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}, {
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
-
-		expect(tooltip.x).toBeCloseToPixel(267);
-		expect(tooltip.y).toBeCloseToPixel(155);
+		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
-	it('Should follow dataset order', function() {
+	it('Should follow dataset order', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -678,57 +626,49 @@ describe('Core.Tooltip', function() {
 		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point0.x,
-			clientY: rect.top + point0.y
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				// Positioning
+				xAlign: 'left',
+				yAlign: 'center',
+
+				// Text
+				title: ['Point 2'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['Dataset 2: 40'],
+					after: []
+				}, {
+					before: [],
+					lines: ['Dataset 1: 20'],
+					after: []
+				}],
+				afterBody: [],
+				footer: [],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}, {
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			expect(tooltip.x).toBeCloseToPixel(267);
+			expect(tooltip.y).toBeCloseToPixel(155);
+
+			done();
 		});
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			// Positioning
-			xAlign: 'left',
-			yAlign: 'center',
-
-			// Text
-			title: ['Point 2'],
-			beforeBody: [],
-			body: [{
-				before: [],
-				lines: ['Dataset 2: 40'],
-				after: []
-			}, {
-				before: [],
-				lines: ['Dataset 1: 20'],
-				after: []
-			}],
-			afterBody: [],
-			footer: [],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}, {
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
-
-		expect(tooltip.x).toBeCloseToPixel(267);
-		expect(tooltip.y).toBeCloseToPixel(155);
+		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
-	it('should filter items from the tooltip using the callback', function() {
+	it('should filter items from the tooltip using the callback', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -761,47 +701,39 @@ describe('Core.Tooltip', function() {
 		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point0.x,
-			clientY: rect.top + point0.y
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				// Positioning
+				xAlign: 'left',
+				yAlign: 'center',
+
+				// Text
+				title: ['Point 2'],
+				beforeBody: [],
+				body: [{
+					before: [],
+					lines: ['Dataset 2: 40'],
+					after: []
+				}],
+				afterBody: [],
+				footer: [],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			done();
 		});
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			// Positioning
-			xAlign: 'left',
-			yAlign: 'center',
-
-			// Text
-			title: ['Point 2'],
-			beforeBody: [],
-			body: [{
-				before: [],
-				lines: ['Dataset 2: 40'],
-				after: []
-			}],
-			afterBody: [],
-			footer: [],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
+		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
-	it('should set the caretPadding based on a config setting', function() {
+	it('should set the caretPadding based on a config setting', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -830,31 +762,23 @@ describe('Core.Tooltip', function() {
 		var meta0 = chart.getDatasetMeta(0);
 		var point0 = meta0.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
 
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point0.x,
-			clientY: rect.top + point0.y
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Positioning
+				caretPadding: 10,
+			}));
+
+			done();
 		});
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Positioning
-			caretPadding: 10,
-		}));
+		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
 	['line', 'bar', 'horizontalBar'].forEach(function(type) {
-		it('Should have dataPoints in a ' + type + ' chart', function() {
+		it('Should have dataPoints in a ' + type + ' chart', function(done) {
 			var chart = window.acquireChart({
 				type: type,
 				data: {
@@ -883,27 +807,32 @@ describe('Core.Tooltip', function() {
 			var pointIndex = 1;
 			var datasetIndex = 0;
 			var point = chart.getDatasetMeta(datasetIndex).data[pointIndex];
+
+			afterEvent(chart, 'mousemove', function() {
+				// Check and see if tooltip was displayed
+				var tooltip = chart.tooltip;
+
+				expect(tooltip instanceof Object).toBe(true);
+				expect(tooltip.dataPoints instanceof Array).toBe(true);
+				expect(tooltip.dataPoints.length).toBe(1);
+
+				var tooltipItem = tooltip.dataPoints[0];
+
+				expect(tooltipItem.index).toBe(pointIndex);
+				expect(tooltipItem.datasetIndex).toBe(datasetIndex);
+				expect(typeof tooltipItem.label).toBe('string');
+				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
+				expect(typeof tooltipItem.value).toBe('string');
+				expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+
+				done();
+			});
+
 			jasmine.triggerMouseEvent(chart, 'mousemove', point);
-
-			// Check and see if tooltip was displayed
-			var tooltip = chart.tooltip;
-
-			expect(tooltip instanceof Object).toBe(true);
-			expect(tooltip.dataPoints instanceof Array).toBe(true);
-			expect(tooltip.dataPoints.length).toBe(1);
-
-			var tooltipItem = tooltip.dataPoints[0];
-
-			expect(tooltipItem.index).toBe(pointIndex);
-			expect(tooltipItem.datasetIndex).toBe(datasetIndex);
-			expect(typeof tooltipItem.label).toBe('string');
-			expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
-			expect(typeof tooltipItem.value).toBe('string');
-			expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
 		});
 	});
 
-	it('Should not update if active element has not changed', function() {
+	it('Should not update if active element has not changed', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -937,36 +866,29 @@ describe('Core.Tooltip', function() {
 		var meta = chart.getDatasetMeta(0);
 		var firstPoint = meta.data[1];
 
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
-
-		var firstEvent = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: false,
-			cancelable: true,
-			clientX: rect.left + firstPoint.x,
-			clientY: rect.top + firstPoint.y
-		});
-
 		var tooltip = chart.tooltip;
 		spyOn(tooltip, 'update');
 
-		/* Manually trigger rather than having an async test */
+		afterEvent(chart, 'mousemove', function() {
+			expect(tooltip.update).toHaveBeenCalledWith(true);
 
+			// Reset calls
+			tooltip.update.calls.reset();
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(tooltip.update).not.toHaveBeenCalled();
+
+				done();
+			});
+			// Second dispatch change event (same event), should not update tooltip
+			jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+		});
 		// First dispatch change event, should update tooltip
-		node.dispatchEvent(firstEvent);
-		expect(tooltip.update).toHaveBeenCalledWith(true);
-
-		// Reset calls
-		tooltip.update.calls.reset();
-
-		// Second dispatch change event (same event), should not update tooltip
-		node.dispatchEvent(firstEvent);
-		expect(tooltip.update).not.toHaveBeenCalled();
+		jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
 	});
 
 	describe('positioners', function() {
-		it('Should call custom positioner with correct parameters and scope', function() {
+		it('Should call custom positioner with correct parameters and scope', function(done) {
 
 			Chart.Tooltip.positioners.test = function() {
 				return {x: 0, y: 0};
@@ -1003,29 +925,22 @@ describe('Core.Tooltip', function() {
 			var datasetIndex = 0;
 			var meta = chart.getDatasetMeta(datasetIndex);
 			var point = meta.data[pointIndex];
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-			var evt = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point.x,
-				clientY: rect.top + point.y
-			});
-
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
-
 			var fn = Chart.Tooltip.positioners.test;
-			expect(fn.calls.count()).toBe(1);
-			expect(fn.calls.first().args[0] instanceof Array).toBe(true);
-			expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
-			expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
-			expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(fn.calls.count()).toBe(1);
+				expect(fn.calls.first().args[0] instanceof Array).toBe(true);
+				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
+				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
+				expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
+
+				done();
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
 		});
 	});
 
-	it('Should avoid tooltip truncation in x axis if there is enough space to show tooltip without truncation', function() {
+	it('Should avoid tooltip truncation in x axis if there is enough space to show tooltip without truncation', function(done) {
 		var chart = window.acquireChart({
 			type: 'pie',
 			data: {
@@ -1057,46 +972,47 @@ describe('Core.Tooltip', function() {
 			}
 		});
 
-		// Trigger an event over top of the slice
-		for (var slice = 0; slice < 2; slice++) {
+		function testSlice(slice, count) {
 			var meta = chart.getDatasetMeta(0);
 			var point = meta.data[slice].getCenterPoint();
 			var tooltipPosition = meta.data[slice].tooltipPosition();
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
 
-			var mouseMoveEvent = new MouseEvent('mousemove', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: rect.left + point.x,
-				clientY: rect.top + point.y
-			});
-			var mouseOutEvent = new MouseEvent('mouseout');
-
-			// Lets cycle while tooltip is narrower than chart area
-			var infiniteCycleDefense = 70;
-			for (var i = 0; i < infiniteCycleDefense; i++) {
+			function recursive(left) {
 				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'l';
 				chart.update();
-				node.dispatchEvent(mouseOutEvent);
-				node.dispatchEvent(mouseMoveEvent);
-				var tooltip = chart.tooltip;
-				expect(tooltip.dataPoints.length).toBe(1);
-				expect(tooltip.x).toBeGreaterThanOrEqual(0);
-				if (tooltip.width <= chart.width) {
-					expect(tooltip.x + tooltip.width).toBeLessThanOrEqual(chart.width);
-				}
-				expect(tooltip.caretX).toBeCloseToPixel(tooltipPosition.x);
-				// if tooltip is longer than chart area then all tests done
-				if (tooltip.width > chart.width) {
-					break;
-				}
+
+				afterEvent(chart, 'mouseout', function() {
+					afterEvent(chart, 'mousemove', function() {
+						var tooltip = chart.tooltip;
+						expect(tooltip.dataPoints.length).toBe(1);
+						expect(tooltip.x).toBeGreaterThanOrEqual(0);
+						if (tooltip.width <= chart.width) {
+							expect(tooltip.x + tooltip.width).toBeLessThanOrEqual(chart.width);
+						}
+						expect(tooltip.caretX).toBeCloseToPixel(tooltipPosition.x);
+						// if tooltip is longer than chart area then all tests done
+						if (tooltip.width > chart.width || left === 0) {
+							done(left === 0 && new Error('max iterations reached'));
+						} else {
+							recursive(left - 1);
+						}
+					});
+					jasmine.triggerMouseEvent(chart, 'mousemove', point);
+				});
+
+				jasmine.triggerMouseEvent(chart, 'mouseout', point);
 			}
+
+			recursive(count);
+		}
+
+		// Trigger an event over top of the slice
+		for (var slice = 0; slice < 2; slice++) {
+			testSlice(slice, 70);
 		}
 	});
 
-	it('Should split newlines into separate lines in user callbacks', function() {
+	it('Should split newlines into separate lines in user callbacks', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
@@ -1161,95 +1077,89 @@ describe('Core.Tooltip', function() {
 		// Trigger an event over top of the
 		var meta = chart.getDatasetMeta(0);
 		var point = meta.data[1];
-		var node = chart.canvas;
-		var rect = node.getBoundingClientRect();
-		var evt = new MouseEvent('mousemove', {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-			clientX: rect.left + point.x,
-			clientY: rect.top + point.y
+
+		afterEvent(chart, 'mousemove', function() {
+			// Check and see if tooltip was displayed
+			var tooltip = chart.tooltip;
+			var defaults = Chart.defaults;
+
+			expect(tooltip.options.xPadding).toEqual(6);
+			expect(tooltip.options.yPadding).toEqual(6);
+			expect(tooltip.xAlign).toEqual('center');
+			expect(tooltip.yAlign).toEqual('top');
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Body
+				bodyFontColor: '#fff',
+				bodyFontFamily: defaults.fontFamily,
+				bodyFontStyle: defaults.fontStyle,
+				bodyAlign: 'left',
+				bodyFontSize: defaults.fontSize,
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Title
+				titleFontColor: '#fff',
+				titleFontFamily: defaults.fontFamily,
+				titleFontStyle: 'bold',
+				titleFontSize: defaults.fontSize,
+				titleAlign: 'left',
+				titleSpacing: 2,
+				titleMarginBottom: 6,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Footer
+				footerFontColor: '#fff',
+				footerFontFamily: defaults.fontFamily,
+				footerFontStyle: 'bold',
+				footerFontSize: defaults.fontSize,
+				footerAlign: 'left',
+				footerSpacing: 2,
+				footerMarginTop: 6,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
+				// Appearance
+				caretSize: 5,
+				caretPadding: 2,
+				cornerRadius: 6,
+				backgroundColor: 'rgba(0,0,0,0.8)',
+				multiKeyBackground: '#fff',
+			}));
+
+			expect(tooltip).toEqual(jasmine.objectContaining({
+				opacity: 1,
+
+				// Text
+				title: ['beforeTitle', 'newline', 'title', 'newline', 'afterTitle', 'newline'],
+				beforeBody: ['beforeBody', 'newline'],
+				body: [{
+					before: ['beforeLabel', 'newline'],
+					lines: ['label'],
+					after: ['afterLabel', 'newline']
+				}, {
+					before: ['beforeLabel', 'newline'],
+					lines: ['label'],
+					after: ['afterLabel', 'newline']
+				}],
+				afterBody: ['afterBody', 'newline'],
+				footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
+				labelTextColors: ['labelTextColor', 'labelTextColor'],
+				labelColors: [{
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}, {
+					borderColor: defaults.color,
+					backgroundColor: defaults.color
+				}]
+			}));
+
+			done();
 		});
 
-		// Manually trigger rather than having an async test
-		node.dispatchEvent(evt);
-
-		// Check and see if tooltip was displayed
-		var tooltip = chart.tooltip;
-		var defaults = Chart.defaults;
-
-		expect(tooltip.options.xPadding).toEqual(6);
-		expect(tooltip.options.yPadding).toEqual(6);
-		expect(tooltip.xAlign).toEqual('center');
-		expect(tooltip.yAlign).toEqual('top');
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Body
-			bodyFontColor: '#fff',
-			bodyFontFamily: defaults.fontFamily,
-			bodyFontStyle: defaults.fontStyle,
-			bodyAlign: 'left',
-			bodyFontSize: defaults.fontSize,
-			bodySpacing: 2,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Title
-			titleFontColor: '#fff',
-			titleFontFamily: defaults.fontFamily,
-			titleFontStyle: 'bold',
-			titleFontSize: defaults.fontSize,
-			titleAlign: 'left',
-			titleSpacing: 2,
-			titleMarginBottom: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Footer
-			footerFontColor: '#fff',
-			footerFontFamily: defaults.fontFamily,
-			footerFontStyle: 'bold',
-			footerFontSize: defaults.fontSize,
-			footerAlign: 'left',
-			footerSpacing: 2,
-			footerMarginTop: 6,
-		}));
-
-		expect(tooltip.options).toEqual(jasmine.objectContaining({
-			// Appearance
-			caretSize: 5,
-			caretPadding: 2,
-			cornerRadius: 6,
-			backgroundColor: 'rgba(0,0,0,0.8)',
-			multiKeyBackground: '#fff',
-		}));
-
-		expect(tooltip).toEqual(jasmine.objectContaining({
-			opacity: 1,
-
-			// Text
-			title: ['beforeTitle', 'newline', 'title', 'newline', 'afterTitle', 'newline'],
-			beforeBody: ['beforeBody', 'newline'],
-			body: [{
-				before: ['beforeLabel', 'newline'],
-				lines: ['label'],
-				after: ['afterLabel', 'newline']
-			}, {
-				before: ['beforeLabel', 'newline'],
-				lines: ['label'],
-				after: ['afterLabel', 'newline']
-			}],
-			afterBody: ['afterBody', 'newline'],
-			footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
-			labelTextColors: ['labelTextColor', 'labelTextColor'],
-			labelColors: [{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}, {
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
-			}]
-		}));
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
 	describe('text align', function() {

@@ -7,6 +7,7 @@ env:
 
 globals:
   acquireChart: true
+  afterEvent: true
   Chart: true
   moment: true
   waitForResize: true
