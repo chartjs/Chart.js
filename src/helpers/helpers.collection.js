@@ -1,49 +1,49 @@
 'use strict';
 
 /**
- * Compare function for binary search
- * @callback lookupCompare
- * @param {any} item - item to compare
- * @return less than 0 if item is lower, greater than 0 if item is higher
+ * Binary search
+ * @param {array} table - the table search. must be sorted!
+ * @param {string} key - property name for the value in each entry
+ * @param {number} value - value to find
+ * @private
  */
-
-/**
- * @see adapted from https://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
- * @param {array} table - array to search. Must be sorted!
- * @param {lookupCompare} compare - compare function
- */
-export function lookupFn(table, compare) {
-	let lo = 0;
+export function _lookup(table, key, value) {
 	let hi = table.length - 1;
-	let mid, i0, i1;
+	let lo = 0;
+	let mid;
 
-	while (lo >= 0 && lo <= hi) {
+	while (hi - lo > 1) {
 		mid = (lo + hi) >> 1;
-		i0 = mid > 0 && table[mid - 1] || null;
-		i1 = table[mid];
-
-		if (!i0) {
-			// given value is outside table (before first item)
-			return {lo: null, hi: i1, loIndex: null, hiIndex: mid};
-		} else if (compare(i1) < 0) {
-			lo = mid + 1;
-		} else if (compare(i0) > 0) {
-			hi = mid - 1;
+		if (table[mid][key] < value) {
+			lo = mid;
 		} else {
-			return {lo: i0, hi: i1, loIndex: mid - 1, hiIndex: mid};
+			hi = mid;
 		}
 	}
 
-	// given value is outside table (after last item)
-	return {lo: i1, hi: null, loIndex: mid, hiIndex: null};
+	return {lo, hi};
 }
 
 /**
- * Looks up items around or at specified value in table
- * @param {array} table - array to search. Must be sorted!
- * @param {string} key - item property name used for comparison
- * @param {number} value - value to compare against
+ * Reverse binary search
+ * @param {array} table - the table search. must be sorted!
+ * @param {string} key - property name for the value in each entry
+ * @param {number} value - value to find
+ * @private
  */
-export function lookup(table, key, value) {
-	return lookupFn(table, (item) => item[key] - value);
+export function _rlookup(table, key, value) {
+	let hi = table.length - 1;
+	let lo = 0;
+	let mid;
+
+	while (hi - lo > 1) {
+		mid = (lo + hi) >> 1;
+		if (table[mid][key] < value) {
+			hi = mid;
+		} else {
+			lo = mid;
+		}
+	}
+
+	return {lo, hi};
 }
