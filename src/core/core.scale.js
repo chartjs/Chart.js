@@ -135,26 +135,6 @@ function getScaleLabelHeight(options) {
 	return font.lineHeight + padding.height;
 }
 
-function parseFontOptions(options, nestedOpts) {
-	return helpers.extend(helpers.options._parseFont({
-		fontFamily: valueOrDefault(nestedOpts.fontFamily, options.fontFamily),
-		fontSize: valueOrDefault(nestedOpts.fontSize, options.fontSize),
-		fontStyle: valueOrDefault(nestedOpts.fontStyle, options.fontStyle),
-		lineHeight: valueOrDefault(nestedOpts.lineHeight, options.lineHeight)
-	}), {
-		color: resolve([nestedOpts.fontColor, options.fontColor, defaults.fontColor]),
-		lineWidth: valueOrDefault(nestedOpts.lineWidth, options.lineWidth),
-		strokeStyle: valueOrDefault(nestedOpts.strokeStyle, options.strokeStyle)
-	});
-}
-
-function parseTickFontOptions(options) {
-	const minor = parseFontOptions(options, options.minor);
-	const major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
-
-	return {minor, major};
-}
-
 function getEvenSpacing(arr) {
 	const len = arr.length;
 	let i, diff;
@@ -627,13 +607,12 @@ class Scale extends Element {
 
 		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display) {
-			const tickFonts = parseTickFontOptions(tickOpts);
 			const labelSizes = me._getLabelSizes();
 			const firstLabelSize = labelSizes.first;
 			const lastLabelSize = labelSizes.last;
 			const widestLabelSize = labelSizes.widest;
 			const highestLabelSize = labelSizes.highest;
-			const lineSpace = tickFonts.minor.lineHeight * 0.4;
+			const lineSpace = highestLabelSize.offset * 0.8;
 			const tickPadding = tickOpts.padding;
 
 			if (isHorizontal) {
@@ -756,7 +735,6 @@ class Scale extends Element {
 	_computeLabelSizes() {
 		const me = this;
 		const ctx = me.ctx;
-		const tickFonts = parseTickFontOptions(me.options.ticks);
 		const caches = me._longestTextCache;
 		const sampleSize = me.options.ticks.sampleSize;
 		const widths = [];
@@ -771,7 +749,7 @@ class Scale extends Element {
 
 		for (i = 0; i < length; ++i) {
 			label = ticks[i].label;
-			tickFont = ticks[i].major ? tickFonts.major : tickFonts.minor;
+			tickFont = me._resolveTickFontOptions(i);
 			ctx.font = fontString = tickFont.string;
 			cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
 			lineHeight = tickFont.lineHeight;
@@ -1104,7 +1082,6 @@ class Scale extends Element {
 		const isMirrored = optionTicks.mirror;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const fonts = parseTickFontOptions(optionTicks);
 		const tickPadding = optionTicks.padding;
 		const tl = getTickMarkLength(options.gridLines);
 		const rotation = -helpers.math.toRadians(me.labelRotation);
@@ -1148,7 +1125,7 @@ class Scale extends Element {
 			label = tick.label;
 
 			pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
-			font = tick.major ? fonts.major : fonts.minor;
+			font = me._resolveTickFontOptions(i);
 			lineHeight = font.lineHeight;
 			lineCount = isArray(label) ? label.length : 1;
 
@@ -1449,6 +1426,27 @@ class Scale extends Element {
 			}
 		}
 		return result;
+	}
+
+	_resolveTickFontOptions(index) {
+		const me = this;
+		const options = me.options.ticks;
+		const context = {
+			chart: me.chart,
+			scale: me,
+			tick: me.ticks[index],
+			index: index
+		};
+		return helpers.extend(helpers.options._parseFont({
+			fontFamily: resolve([options.fontFamily], context),
+			fontSize: resolve([options.fontSize], context),
+			fontStyle: resolve([options.fontStyle], context),
+			lineHeight: resolve([options.lineHeight], context)
+		}), {
+			color: resolve([options.fontColor, defaults.fontColor], context),
+			lineWidth: resolve([options.lineWidth], context),
+			strokeStyle: resolve([options.strokeStyle], context)
+		});
 	}
 }
 
