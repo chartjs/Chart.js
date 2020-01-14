@@ -242,6 +242,9 @@ function resolveOptions(options) {
 	options.bodyFontStyle = valueOrDefault(options.bodyFontStyle, defaults.fontStyle);
 	options.bodyFontSize = valueOrDefault(options.bodyFontSize, defaults.fontSize);
 
+	options.boxHeight = valueOrDefault(options.boxHeight, options.bodyFontSize);
+	options.boxWidth = valueOrDefault(options.boxWidth, options.bodyFontSize);
+
 	options.titleFontFamily = valueOrDefault(options.titleFontFamily, defaults.fontFamily);
 	options.titleFontStyle = valueOrDefault(options.titleFontStyle, defaults.fontStyle);
 	options.titleFontSize = valueOrDefault(options.titleFontSize, defaults.fontSize);
@@ -259,9 +262,10 @@ function resolveOptions(options) {
 function getTooltipSize(tooltip) {
 	const ctx = tooltip._chart.ctx;
 	const {body, footer, options, title} = tooltip;
-	const {bodyFontSize, footerFontSize, titleFontSize} = options;
+	const {bodyFontSize, footerFontSize, titleFontSize, boxWidth, boxHeight} = options;
 	const titleLineCount = title.length;
 	const footerLineCount = footer.length;
+	const bodyLineItemCount = body.length;
 
 	let height = options.yPadding * 2; // Tooltip Padding
 	let width = 0;
@@ -276,7 +280,10 @@ function getTooltipSize(tooltip) {
 			+ options.titleMarginBottom;
 	}
 	if (combinedBodyLength) {
-		height += combinedBodyLength * bodyFontSize
+		// Body lines may include some extra height depending on boxHeight
+		const bodyLineHeight = options.displayColors ? Math.max(boxHeight, bodyFontSize) : bodyFontSize;
+		height += bodyLineItemCount * bodyLineHeight
+			+ (combinedBodyLength - bodyLineItemCount) * bodyFontSize
 			+ (combinedBodyLength - 1) * options.bodySpacing;
 	}
 	if (footerLineCount) {
@@ -301,7 +308,7 @@ function getTooltipSize(tooltip) {
 	helpers.each(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
-	widthPadding = options.displayColors ? (bodyFontSize + 2) : 0;
+	widthPadding = options.displayColors ? (boxWidth + 2) : 0;
 	helpers.each(body, (bodyItem) => {
 		helpers.each(bodyItem.before, maxLineWidth);
 		helpers.each(bodyItem.lines, maxLineWidth);
@@ -757,22 +764,24 @@ export class Tooltip extends Element {
 		const me = this;
 		const options = me.options;
 		const labelColors = me.labelColors[i];
-		const bodyFontSize = options.bodyFontSize;
+		const {boxHeight, boxWidth, bodyFontSize} = options;
 		const colorX = getAlignedX(me, 'left');
 		const rtlColorX = rtlHelper.x(colorX);
+		const yOffSet = boxHeight < bodyFontSize ? (bodyFontSize - boxHeight) / 2 : 0;
+		const colorY = pt.y + yOffSet;
 
 		// Fill a white rect so that colours merge nicely if the opacity is < 1
 		ctx.fillStyle = options.multiKeyBackground;
-		ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
+		ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
 
 		// Border
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = labelColors.borderColor;
-		ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
+		ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
 
 		// Inner square
 		ctx.fillStyle = labelColors.backgroundColor;
-		ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+		ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2), colorY + 1, boxWidth - 2, boxHeight - 2);
 
 		// restore fillStyle
 		ctx.fillStyle = me.labelTextColors[i];
@@ -781,14 +790,15 @@ export class Tooltip extends Element {
 	drawBody(pt, ctx) {
 		const me = this;
 		const {body, options} = me;
-		const {bodyFontSize, bodySpacing, bodyAlign, displayColors} = options;
+		const {bodyFontSize, bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth} = options;
+		let bodyLineHeight = bodyFontSize;
 		let xLinePadding = 0;
 
 		const rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
 		const fillLineOfText = function(line) {
-			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
-			pt.y += bodyFontSize + bodySpacing;
+			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
+			pt.y += bodyLineHeight + bodySpacing;
 		};
 
 		const bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
@@ -805,7 +815,7 @@ export class Tooltip extends Element {
 		helpers.each(me.beforeBody, fillLineOfText);
 
 		xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
-			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
+			? bodyAlign === 'center' ? (boxWidth / 2 + 1) : (boxWidth + 2)
 			: 0;
 
 		// Draw body lines now
@@ -820,10 +830,13 @@ export class Tooltip extends Element {
 			// Draw Legend-like boxes if needed
 			if (displayColors && lines.length) {
 				me._drawColorBox(ctx, pt, i, rtlHelper);
+				bodyLineHeight = Math.max(bodyFontSize, boxHeight);
 			}
 
 			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				fillLineOfText(lines[j]);
+				// Reset for any lines that don't include colorbox
+				bodyLineHeight = bodyFontSize;
 			}
 
 			helpers.each(bodyItem.after, fillLineOfText);
@@ -831,6 +844,7 @@ export class Tooltip extends Element {
 
 		// Reset back to 0 for after body
 		xLinePadding = 0;
+		bodyLineHeight = bodyFontSize;
 
 		// After body lines
 		helpers.each(me.afterBody, fillLineOfText);
