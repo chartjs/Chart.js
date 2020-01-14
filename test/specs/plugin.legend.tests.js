@@ -602,7 +602,7 @@ describe('Legend block tests', function() {
 	});
 
 	describe('callbacks', function() {
-		it('should call onClick, onHover and onLeave at the correct times', function() {
+		it('should call onClick, onHover and onLeave at the correct times', function(done) {
 			var clickItem = null;
 			var hoverItem = null;
 			var leaveItem = null;
@@ -636,17 +636,22 @@ describe('Legend block tests', function() {
 				y: hb.top + (hb.height / 2)
 			};
 
+			afterEvent(chart, 'click', function() {
+				expect(clickItem).toBe(chart.legend.legendItems[0]);
+
+				afterEvent(chart, 'mousemove', function() {
+					expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+					afterEvent(chart, 'mousemove', function() {
+						expect(leaveItem).toBe(chart.legend.legendItems[0]);
+
+						done();
+					});
+					jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+				});
+				jasmine.triggerMouseEvent(chart, 'mousemove', el);
+			});
 			jasmine.triggerMouseEvent(chart, 'click', el);
-
-			expect(clickItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', el);
-
-			expect(hoverItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
-
-			expect(leaveItem).toBe(chart.legend.legendItems[0]);
 		});
 	});
 });

@@ -3,7 +3,7 @@ describe('Chart.controllers.scatter', function() {
 		expect(typeof Chart.controllers.scatter).toBe('function');
 	});
 
-	it('should test default tooltip callbacks', function() {
+	it('should test default tooltip callbacks', function(done) {
 		var chart = window.acquireChart({
 			type: 'scatter',
 			data: {
@@ -18,11 +18,16 @@ describe('Chart.controllers.scatter', function() {
 			options: {}
 		});
 		var point = chart.getDatasetMeta(0).data[0];
-		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
-		// Title should be empty
-		expect(chart.tooltip.title.length).toBe(0);
-		expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
+		afterEvent(chart, 'mousemove', function() {
+			// Title should be empty
+			expect(chart.tooltip.title.length).toBe(0);
+			expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
+
+			done();
+		});
+
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
 	describe('showLines option', function() {

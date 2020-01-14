@@ -356,7 +356,7 @@ describe('Platform.dom', function() {
 	});
 
 	describe('event handling', function() {
-		it('should notify plugins about events', function() {
+		it('should notify plugins about events', function(done) {
 			var notifiedEvent;
 			var plugin = {
 				afterEvent: function(chart, e) {
@@ -377,32 +377,24 @@ describe('Platform.dom', function() {
 				plugins: [plugin]
 			});
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-			var clientX = (rect.left + rect.right) / 2;
-			var clientY = (rect.top + rect.bottom) / 2;
+			afterEvent(chart, 'click', function() {
+				// Check that notifiedEvent is correct
+				expect(notifiedEvent).not.toBe(undefined);
 
-			var evt = new MouseEvent('click', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: clientX,
-				clientY: clientY
+				// Is type correctly translated
+				expect(notifiedEvent.type).toBe('click');
+
+				// Relative Position
+				expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
+				expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
+
+				done();
 			});
 
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
-
-			// Check that notifiedEvent is correct
-			expect(notifiedEvent).not.toBe(undefined);
-			expect(notifiedEvent.native).toBe(evt);
-
-			// Is type correctly translated
-			expect(notifiedEvent.type).toBe(evt.type);
-
-			// Relative Position
-			expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
-			expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
+			jasmine.triggerMouseEvent(chart, 'click', {
+				x: chart.width / 2,
+				y: chart.height / 2
+			});
 		});
 	});
 });

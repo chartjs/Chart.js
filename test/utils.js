@@ -106,6 +106,18 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function afterEvent(chart, type, callback) {
+	var override = chart.eventHandler;
+	chart.eventHandler = function(event) {
+		override.call(this, event);
+		if (event.type === type) {
+			chart.eventHandler = override;
+			// eslint-disable-next-line callback-return
+			callback();
+		}
+	};
+}
+
 function _resolveElementPoint(el) {
 	var point = {x: 0, y: 0};
 	if (el) {
@@ -140,5 +152,6 @@ module.exports = {
 	releaseChart: releaseChart,
 	readImageData: readImageData,
 	triggerMouseEvent: triggerMouseEvent,
-	waitForResize: waitForResize
+	waitForResize: waitForResize,
+	afterEvent: afterEvent
 };
