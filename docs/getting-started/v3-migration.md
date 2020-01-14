@@ -45,6 +45,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Options
 
+* Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * `Polar area` `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`

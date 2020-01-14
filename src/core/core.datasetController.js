@@ -476,7 +476,7 @@ helpers.extend(DatasetController.prototype, {
 	_configure: function() {
 		const me = this;
 		me._config = helpers.merge({}, [
-			me.chart.options.datasets[me._type],
+			me.chart.options[me._type].datasets,
 			me.getDataset(),
 		], {
 			merger: function(key, target, source) {

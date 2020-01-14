@@ -559,18 +559,18 @@ describe('Chart.controllers.line', function() {
 
 	describe('dataset global defaults', function() {
 		beforeEach(function() {
-			this._defaults = Chart.helpers.clone(Chart.defaults.datasets.line);
+			this._defaults = Chart.helpers.clone(Chart.defaults.line.datasets);
 		});
 
 		afterEach(function() {
-			Chart.defaults.datasets.line = this._defaults;
+			Chart.defaults.line.datasets = this._defaults;
 			delete this._defaults;
 		});
 
 		it('should utilize the dataset global default options', function() {
-			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
+			Chart.defaults.line.datasets = Chart.defaults.line.datasets || {};
 
-			Chart.helpers.merge(Chart.defaults.datasets.line, {
+			Chart.helpers.merge(Chart.defaults.line.datasets, {
 				spanGaps: true,
 				lineTension: 0.231,
 				backgroundColor: '#add',
@@ -611,9 +611,9 @@ describe('Chart.controllers.line', function() {
 		});
 
 		it('should be overriden by user-supplied values', function() {
-			Chart.defaults.datasets.line = Chart.defaults.datasets.line || {};
+			Chart.defaults.line.datasets = Chart.defaults.line.datasets || {};
 
-			Chart.helpers.merge(Chart.defaults.datasets.line, {
+			Chart.helpers.merge(Chart.defaults.line.datasets, {
 				spanGaps: true,
 				lineTension: 0.231
 			});
@@ -630,8 +630,8 @@ describe('Chart.controllers.line', function() {
 					labels: ['label1', 'label2']
 				},
 				options: {
-					datasets: {
-						line: {
+					line: {
+						datasets: {
 							lineTension: 0.345,
 							backgroundColor: '#add'
 						}
@@ -661,8 +661,8 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
-				datasets: {
-					line: {
+				line: {
+					datasets: {
 						spanGaps: true,
 						lineTension: 0.231,
 						backgroundColor: '#add',

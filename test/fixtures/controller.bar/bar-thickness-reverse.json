@@ -18,8 +18,8 @@
             "responsive": false,
             "legend": false,
             "title": false,
-            "datasets": {
-                "bar": {
+            "bar": {
+                "datasets": {
                     "barPercentage": 1,
                     "categoryPercentage": 1
                 }

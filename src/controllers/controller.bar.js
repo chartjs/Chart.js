@@ -12,6 +12,17 @@ defaults._set('bar', {
 		mode: 'index'
 	},
 
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height']
+			}
+		}
+	},
+
 	scales: {
 		x: {
 			type: 'category',
@@ -23,19 +34,6 @@ defaults._set('bar', {
 		y: {
 			type: 'linear',
 			beginAtZero: true,
-		}
-	}
-});
-
-defaults._set('datasets', {
-	bar: {
-		categoryPercentage: 0.8,
-		barPercentage: 0.9,
-		animation: {
-			numbers: {
-				type: 'number',
-				properties: ['x', 'y', 'base', 'width', 'height']
-			}
 		}
 	}
 });
