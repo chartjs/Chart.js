@@ -285,7 +285,11 @@ describe('Platform.dom', function() {
 
 	describe('controller.destroy', function() {
 		it('should reset context to default values', function() {
-			var chart = acquireChart({});
+			var wrapper = document.createElement('div');
+			var canvas = document.createElement('canvas');
+			wrapper.appendChild(canvas);
+			window.document.body.appendChild(wrapper);
+			var chart = new Chart(canvas, {});
 			var context = chart.ctx;
 
 			chart.destroy();
@@ -308,27 +312,28 @@ describe('Platform.dom', function() {
 			}, function(value, key) {
 				expect(context[key]).toBe(value);
 			});
+
+			wrapper.parentNode.removeChild(wrapper);
 		});
 
 		it('should restore canvas initial values', function(done) {
-			var chart = acquireChart({
+			var wrapper = document.createElement('div');
+			var canvas = document.createElement('canvas');
+
+			canvas.setAttribute('width', 180);
+			canvas.setAttribute('style', 'width: 512px; height: 480px');
+			wrapper.setAttribute('style', 'width: 450px; height: 450px; position: relative');
+
+			wrapper.appendChild(canvas);
+			window.document.body.appendChild(wrapper);
+
+			var chart = new Chart(canvas.getContext('2d'), {
 				options: {
 					responsive: true,
 					maintainAspectRatio: false
 				}
-			}, {
-				canvas: {
-					width: 180,
-					style: 'width: 512px; height: 480px'
-				},
-				wrapper: {
-					style: 'width: 450px; height: 450px; position: relative'
-				}
 			});
 
-			var canvas = chart.canvas;
-			var wrapper = canvas.parentNode;
-			wrapper.style.width = '475px';
 			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 475, dh: 450,
@@ -343,8 +348,10 @@ describe('Platform.dom', function() {
 				expect(canvas.style.height).toBe('480px');
 				expect(canvas.style.display).toBe('');
 
+				wrapper.parentNode.removeChild(wrapper);
 				done();
 			});
+			wrapper.style.width = '475px';
 		});
 	});
 
