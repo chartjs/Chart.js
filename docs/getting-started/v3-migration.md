@@ -102,6 +102,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `ILayoutItem.minSize`
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Line.calculatePointY`
+* `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.handleDirectionalChanges` is now private
 * `Scale.longestLabelWidth`
@@ -117,6 +118,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Element._ctx`
 * `Element._model`
 * `Element._view`
+* `LogarithmicScale._valueOffset`
 * `TimeScale._getPixelForOffset`
 * `TimeScale.getLabelWidth`
 * `Tooltip._lastActive`
