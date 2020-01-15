@@ -64,9 +64,8 @@ class Point extends Element {
 	draw(ctx, chartArea) {
 		const me = this;
 		const options = me.options;
-		const radius = options.radius;
 
-		if (me.skip || radius <= 0) {
+		if (me.skip || options.radius <= 0) {
 			return;
 		}
 
@@ -75,7 +74,7 @@ class Point extends Element {
 			ctx.strokeStyle = options.borderColor;
 			ctx.lineWidth = options.borderWidth;
 			ctx.fillStyle = options.backgroundColor;
-			helpers.canvas.drawPoint(ctx, options, radius, me.x, me.y);
+			helpers.canvas.drawPoint(ctx, options, me.x, me.y);
 		}
 	}
 }

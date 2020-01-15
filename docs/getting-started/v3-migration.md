@@ -204,5 +204,5 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ##### Canvas Helper
 
-* The second parameter to `drawPoint` is now the full options object, so `options.pointStyle` and `options.rotation` are no longer passed explicitly
+* The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
 

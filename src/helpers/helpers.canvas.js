@@ -32,10 +32,11 @@ export function clear(chart) {
 	chart.ctx.clearRect(0, 0, chart.width, chart.height);
 }
 
-export function drawPoint(ctx, options, radius, x, y) {
+export function drawPoint(ctx, options, x, y) {
 	var type, xOffset, yOffset, size, cornerRadius;
 	var style = options.pointStyle;
 	var rotation = options.rotation;
+	var radius = options.radius;
 	var rad = (rotation || 0) * RAD_PER_DEG;
 
 	if (style && typeof style === 'object') {
