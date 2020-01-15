@@ -138,7 +138,7 @@ function lookup(table, key, value) {
 
 	while (lo >= 0 && lo <= hi) {
 		mid = (lo + hi) >> 1;
-		i0 = table[mid - 1] || null;
+		i0 = mid > 0 && table[mid - 1] || null;
 		i1 = table[mid];
 
 		if (!i0) {
@@ -735,7 +735,7 @@ class TimeScale extends Scale {
 		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
-		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.global.defaultFontSize);
+		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.fontSize);
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
@@ -755,12 +755,9 @@ class TimeScale extends Scale {
 		const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
 		const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
 		const size = me._getLabelSize(exampleLabel);
-		let capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
-
-		if (me.options.offset) {
-			capacity--;
-		}
-
+		// subtract 1 - if offset then there's one less label than tick
+		// if not offset then one half label padding is added to each end leaving room for one less label
+		const capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h) - 1;
 		return capacity > 0 ? capacity : 1;
 	}
 }

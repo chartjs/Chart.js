@@ -88,7 +88,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
-| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
 | `xAxisID` | The ID of the x axis to plot this dataset on.
 | `yAxisID` | The ID of the y axis to plot this dataset on.
 
@@ -166,7 +166,7 @@ If the `steppedLine` value is set to anything other than false, `lineTension` wi
 
 ## Configuration Options
 
-The line chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults.global`, to form the options passed to the chart.
+The line chart defines the following configuration options. These options are merged with the global chart configuration options, `Chart.defaults`, to form the options passed to the chart.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

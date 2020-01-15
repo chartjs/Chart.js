@@ -1,17 +1,6 @@
 // Test the rectangle element
 
 describe('Arc element tests', function() {
-	it ('Should be constructed', function() {
-		var arc = new Chart.elements.Arc({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		expect(arc).not.toBe(undefined);
-		expect(arc._datasetIndex).toBe(2);
-		expect(arc._index).toBe(1);
-	});
-
 	it ('should determine if in range', function() {
 		// Mock out the arc as if the controller put it there
 		var arc = new Chart.elements.Arc({

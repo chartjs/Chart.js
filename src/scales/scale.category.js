@@ -8,6 +8,9 @@ const defaultConfig = {
 class CategoryScale extends Scale {
 	_parse(raw, index) {
 		const labels = this._getLabels();
+		if (labels[index] === raw) {
+			return index;
+		}
 		const first = labels.indexOf(raw);
 		const last = labels.lastIndexOf(raw);
 		return first === -1 || first !== last ? index : first;

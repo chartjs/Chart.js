@@ -1,20 +1,19 @@
 'use strict';
 
-const defaults = require('../core/core.defaults');
-const Element = require('../core/core.element');
-const helpers = require('../helpers/index');
-const layouts = require('../core/core.layouts');
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import helpers from '../helpers/index';
+import layouts from '../core/core.layouts';
 
-defaults._set('global', {
-	title: {
-		display: false,
-		fontStyle: 'bold',
-		fullWidth: true,
-		padding: 10,
-		position: 'top',
-		text: '',
-		weight: 2000         // by default greater than legend (1000) to be above
-	}
+defaults._set('title', {
+	align: 'center',
+	display: false,
+	fontStyle: 'bold',
+	fullWidth: true,
+	padding: 10,
+	position: 'top',
+	text: '',
+	weight: 2000         // by default greater than legend (1000) to be above
 });
 
 /**
@@ -61,8 +60,6 @@ class Title extends Element {
 		//
 		me.afterUpdate();
 
-		return me.minSize;
-
 	}
 	afterUpdate() {}
 
@@ -84,12 +81,6 @@ class Title extends Element {
 			me.top = 0;
 			me.bottom = me.height;
 		}
-
-		// Reset minSize
-		me.minSize = {
-			width: 0,
-			height: 0
-		};
 	}
 	afterSetDimensions() {}
 
@@ -105,7 +96,7 @@ class Title extends Element {
 	fit() {
 		var me = this;
 		var opts = me.options;
-		var minSize = me.minSize = {};
+		var minSize = {};
 		var isHorizontal = me.isHorizontal();
 		var lineCount, textSize;
 
@@ -130,35 +121,64 @@ class Title extends Element {
 
 	// Actually draw the title block on the canvas
 	draw() {
-		var me = this;
-		var ctx = me.ctx;
-		var opts = me.options;
+		const me = this;
+		const ctx = me.ctx;
+		const opts = me.options;
 
 		if (!opts.display) {
 			return;
 		}
 
-		var fontOpts = helpers.options._parseFont(opts);
-		var lineHeight = fontOpts.lineHeight;
-		var offset = lineHeight / 2 + me._padding.top;
-		var rotation = 0;
-		var top = me.top;
-		var left = me.left;
-		var bottom = me.bottom;
-		var right = me.right;
-		var maxWidth, titleX, titleY;
+		const fontOpts = helpers.options._parseFont(opts);
+		const lineHeight = fontOpts.lineHeight;
+		const offset = lineHeight / 2 + me._padding.top;
+		let rotation = 0;
+		const top = me.top;
+		const left = me.left;
+		const bottom = me.bottom;
+		const right = me.right;
+		let maxWidth, titleX, titleY;
+		let align;
 
-		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.global.defaultFontColor); // render in correct colour
+		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
 		ctx.font = fontOpts.string;
 
 		// Horizontal
 		if (me.isHorizontal()) {
-			titleX = left + ((right - left) / 2); // midpoint of the width
+			switch (opts.align) {
+			case 'start':
+				titleX = left;
+				align = 'left';
+				break;
+			case 'end':
+				titleX = right;
+				align = 'right';
+				break;
+			default:
+				titleX = left + ((right - left) / 2);
+				align = 'center';
+				break;
+			}
+
 			titleY = top + offset;
 			maxWidth = right - left;
 		} else {
 			titleX = opts.position === 'left' ? left + offset : right - offset;
-			titleY = top + ((bottom - top) / 2);
+
+			switch (opts.align) {
+			case 'start':
+				titleY = opts.position === 'left' ? bottom : top;
+				align = 'left';
+				break;
+			case 'end':
+				titleY = opts.position === 'left' ? top : bottom;
+				align = 'right';
+				break;
+			default:
+				titleY = top + ((bottom - top) / 2);
+				align = 'center';
+				break;
+			}
 			maxWidth = bottom - top;
 			rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
 		}
@@ -166,7 +186,7 @@ class Title extends Element {
 		ctx.save();
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = 'center';
+		ctx.textAlign = align;
 		ctx.textBaseline = 'middle';
 
 		var text = opts.text;
@@ -196,7 +216,7 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 	chart.titleBlock = title;
 }
 
-module.exports = {
+export default {
 	id: 'title',
 
 	/**
@@ -221,7 +241,7 @@ module.exports = {
 		var titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			helpers.mergeIf(titleOpts, defaults.global.title);
+			helpers.mergeIf(titleOpts, defaults.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);

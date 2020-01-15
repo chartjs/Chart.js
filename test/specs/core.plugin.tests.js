@@ -306,7 +306,7 @@ describe('Chart.plugins', function() {
 		it('should call plugins with default options when plugin options is TRUE', function() {
 			var plugin = {id: 'a', hook: function() {}};
 
-			Chart.defaults.global.plugins.a = {a: 42};
+			Chart.defaults.plugins.a = {a: 42};
 			Chart.plugins.register(plugin);
 
 			var chart = window.acquireChart({
@@ -324,14 +324,14 @@ describe('Chart.plugins', function() {
 			expect(plugin.hook).toHaveBeenCalled();
 			expect(plugin.hook.calls.first().args[1]).toEqual({a: 42});
 
-			delete Chart.defaults.global.plugins.a;
+			delete Chart.defaults.plugins.a;
 		});
 
 
 		it('should call plugins with default options if plugin config options is undefined', function() {
 			var plugin = {id: 'a', hook: function() {}};
 
-			Chart.defaults.global.plugins.a = {a: 'foobar'};
+			Chart.defaults.plugins.a = {a: 'foobar'};
 			Chart.plugins.register(plugin);
 			spyOn(plugin, 'hook');
 
@@ -342,7 +342,7 @@ describe('Chart.plugins', function() {
 			expect(plugin.hook).toHaveBeenCalled();
 			expect(plugin.hook.calls.first().args[1]).toEqual({a: 'foobar'});
 
-			delete Chart.defaults.global.plugins.a;
+			delete Chart.defaults.plugins.a;
 		});
 
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167

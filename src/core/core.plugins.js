@@ -1,18 +1,16 @@
 'use strict';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
+import defaults from './core.defaults';
+import helpers from '../helpers/';
 
-defaults._set('global', {
-	plugins: {}
-});
+defaults._set('plugins', {});
 
 /**
  * The plugin service singleton
  * @namespace Chart.plugins
  * @since 2.1.0
  */
-module.exports = {
+export default {
 	/**
 	 * Globally registered plugins.
 	 * @private
@@ -144,7 +142,7 @@ module.exports = {
 			}
 
 			if (opts === true) {
-				opts = helpers.clone(defaults.global.plugins[id]);
+				opts = helpers.clone(defaults.plugins[id]);
 			}
 
 			plugins.push(plugin);

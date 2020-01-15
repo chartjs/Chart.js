@@ -89,15 +89,6 @@ myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
 ```
 
-## .generateLegend()
-
-Returns an HTML string of a legend for that chart. The legend is generated from the `legendCallback` in the options.
-
-```javascript
-myLineChart.generateLegend();
-// => returns HTML string of a legend for this chart
-```
-
 ## .getElementAtEvent(e)
 
 Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned. The value returned from this method is an array with a single parameter. An array is used to keep a consistent API between the `get*AtEvent` methods.
@@ -155,4 +146,22 @@ Extensive examples of usage are available in the [Chart.js tests](https://github
 ```javascript
 var meta = myChart.getDatasetMeta(0);
 var x = meta.data[0].x;
+```
+
+## setDatasetVisibility(datasetIndex, visibility)
+
+Sets the visibility for a given dataset. This can be used to build a chart legend in HTML. During click on one of the HTML items, you can call `setDatasetVisibility` to change the appropriate dataset.
+
+```javascript
+chart.setDatasetVisibility(1, false); // hides dataset at index 1
+chart.update(); // chart now renders with dataset hidden
+```
+
+## setDataVisibility(datasetIndex, index, visibility)
+
+Like [setDatasetVisibility](#setdatasetvisibility) except that it hides only a single item in the dataset. **Note** this only applies to polar area and doughnut charts at the moment. It will have no affect on line, bar, radar, or scatter charts.
+
+```javascript
+chart.setDataVisibility(0, 2, false); // hides the item in dataset 0, at index 2
+chart.update(); // chart now renders with item hidden
 ```

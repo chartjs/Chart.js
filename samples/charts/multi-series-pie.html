@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Multi Series Pie Chart</title>
+	<script src="../../dist/Chart.js"></script>
+	<script src="../utils.js"></script>
+</head>
+
+<body>
+	<div id="canvas-holder" style="width:40%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	<script>
+		var ctx = document.getElementById('chart-area');
+		new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: [
+					'Overall Yay',
+					'Overall Nay',
+					'Group A Yay',
+					'Group A Nay',
+					'Group B Yay',
+					'Group B Nay',
+					'Group C Yay',
+					'Group C Nay'
+				],
+				datasets: [
+					{backgroundColor: ['#AAA', '#777'], data: [21, 79]},
+					{
+						backgroundColor: ['hsl(0, 100%, 60%)', 'hsl(0, 100%, 35%)'],
+						data: [33, 67]
+					},
+					{
+						backgroundColor: ['hsl(100, 100%, 60%)', 'hsl(100, 100%, 35%)'],
+						data: [20, 80]
+					},
+					{
+						backgroundColor: ['hsl(180, 100%, 60%)', 'hsl(180, 100%, 35%)'],
+						data: [10, 90]
+					}
+				]
+			},
+			options: {
+				legend: {
+					labels: {
+						generateLabels: function(chart) {
+							// Get the default label list
+							var original = Chart.defaults.pie.legend.labels.generateLabels;
+							var labels = original.call(this, chart);
+
+							// Build an array of colors used in the datasets of the chart
+							var datasetColors = chart.data.datasets.map(function(e) {
+								return e.backgroundColor;
+							});
+							datasetColors = datasetColors.flat();
+
+							// Modify the color and hide state of each label
+							labels.forEach(label => {
+								// There are twice as many labels as there are datasets. This converts the label index into the corresponding dataset index
+								label.datasetIndex = (label.index - label.index % 2) / 2;
+
+								// The hidden state must match the dataset's hidden state
+								label.hidden = !chart.isDatasetVisible(label.datasetIndex);
+
+								// Change the color to match the dataset
+								label.fillStyle = datasetColors[label.index];
+							});
+
+							return labels;
+						}
+					},
+					onClick: function(mouseEvent, legendItem) {
+						// toggle the visibility of the dataset from what it currently is
+						this.chart.getDatasetMeta(
+							legendItem.datasetIndex
+						).hidden = this.chart.isDatasetVisible(legendItem.datasetIndex);
+						this.chart.update();
+					}
+				},
+				tooltips: {
+					callbacks: {
+						label: function(tooltipItem, data) {
+							var labelIndex = (tooltipItem.datasetIndex * 2) + tooltipItem.index;
+							return data.labels[labelIndex] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+						}
+					}
+				}
+			}
+		});
+	</script>
+</body>
+
+</html>

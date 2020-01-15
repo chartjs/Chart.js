@@ -4,8 +4,8 @@
 
 'use strict';
 
-var helpers = require('../helpers/index');
-var stylesheet = require('./platform.dom.css');
+import helpers from '../helpers';
+import stylesheet from './platform.dom.css';
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -312,7 +312,7 @@ function injectCSS(rootNode, css) {
 	}
 }
 
-module.exports = {
+export default {
 	/**
 	 * When `true`, prevents the automatic injection of the stylesheet required to
 	 * correctly detect when the chart is added to the DOM and then resized. This
@@ -422,9 +422,9 @@ module.exports = {
 
 		var expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
 		var proxies = expando.proxies || (expando.proxies = {});
-		var proxy = proxies[chart.id + '_' + type] = function(event) {
+		var proxy = proxies[chart.id + '_' + type] = throttled(function(event) {
 			listener(fromNativeEvent(event, chart));
-		};
+		}, chart);
 
 		addListener(canvas, type, proxy);
 	},

@@ -28,6 +28,10 @@ new Chart(ctx, {
 });
 ```
 
+## Provide ordered data
+
+If the data is unordered, Chart.js needs to sort it. This can be slow in some cases, so its always a good idea to provide ordered data.
+
 ## Specify `min` and `max` for scales
 
 If you specify the `min` and `max`, the scale does not have to compute the range from the data.

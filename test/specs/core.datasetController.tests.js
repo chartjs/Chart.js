@@ -118,6 +118,55 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	it('should parse data using correct scales', function() {
+		const data1 = [0, 1, 2, 3, 4, 5];
+		const data2 = ['a', 'b', 'c', 'd', 'a'];
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [
+					{data: data1},
+					{data: data2, xAxisID: 'x2', yAxisID: 'y2'}
+				]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+						labels: ['one', 'two', 'three', 'four', 'five', 'six']
+					},
+					x2: {
+						type: 'logarithmic',
+						labels: ['1', '10', '100', '1000', '2000']
+					},
+					y: {
+						type: 'linear'
+					},
+					y2: {
+						type: 'category',
+						labels: ['a', 'b', 'c', 'd', 'e']
+					}
+				}
+			}
+		});
+
+		const meta1 = chart.getDatasetMeta(0);
+		const parsedXValues1 = meta1._parsed.map(p => p.x);
+		const parsedYValues1 = meta1._parsed.map(p => p.y);
+
+		expect(meta1.data.length).toBe(6);
+		expect(parsedXValues1).toEqual([0, 1, 2, 3, 4, 5]); // label indices
+		expect(parsedYValues1).toEqual(data1);
+
+		const meta2 = chart.getDatasetMeta(1);
+		const parsedXValues2 = meta2._parsed.map(p => p.x);
+		const parsedYValues2 = meta2._parsed.map(p => p.y);
+
+		expect(meta2.data.length).toBe(5);
+		expect(parsedXValues2).toEqual([1, 10, 100, 1000, 2000]); // logarithmic scale labels
+		expect(parsedYValues2).toEqual([0, 1, 2, 3, 0]); // label indices
+	});
+
 	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
 		const data = [0, 1, 2, 3, 4, 5];
 		const chart = acquireChart({
@@ -250,14 +299,22 @@ describe('Chart.DatasetController', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		expect(meta.data.length).toBe(6);
+		expect(meta._parsed.map(p => p.y)).toEqual(data0);
 
 		chart.data.datasets[0].data = data1;
 		chart.update();
 
 		expect(meta.data.length).toBe(3);
+		expect(meta._parsed.map(p => p.y)).toEqual(data1);
 
-		data1.push(9, 10, 11);
+		data1.push(9);
+		expect(meta.data.length).toBe(4);
+
+		chart.data.datasets[0].data = data0;
+		chart.update();
+
 		expect(meta.data.length).toBe(6);
+		expect(meta._parsed.map(p => p.y)).toEqual(data0);
 	});
 
 	it('should re-synchronize metadata when data are unusually altered', function() {
@@ -329,6 +386,50 @@ describe('Chart.DatasetController', function() {
 
 		expect(meta.xAxisID).toBe('secondXScaleID');
 		expect(meta.yAxisID).toBe('secondYScaleID');
+	});
+
+	it('should re-synchronize stacks when stack is changed', function() {
+		var chart = acquireChart({
+			type: 'bar',
+			data: {
+				labels: ['a', 'b'],
+				datasets: [{
+					data: [1, 10],
+					stack: '1'
+				}, {
+					data: [2, 20],
+					stack: '2'
+				}, {
+					data: [3, 30],
+					stack: '1'
+				}]
+			}
+		});
+
+		expect(chart._stacks).toEqual({
+			'x.y.1.bar': {
+				0: {0: 1, 2: 3},
+				1: {0: 10, 2: 30}
+			},
+			'x.y.2.bar': {
+				0: {1: 2},
+				1: {1: 20}
+			}
+		});
+
+		chart.data.datasets[2].stack = '2';
+		chart.update();
+
+		expect(chart._stacks).toEqual({
+			'x.y.1.bar': {
+				0: {0: 1},
+				1: {0: 10}
+			},
+			'x.y.2.bar': {
+				0: {1: 2, 2: 3},
+				1: {1: 20, 2: 30}
+			}
+		});
 	});
 
 	it('should cleanup attached properties when the reference changes or when the chart is destroyed', function() {

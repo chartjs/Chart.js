@@ -1,15 +1,15 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
-var PI = Math.PI;
-var DOUBLE_PI = PI * 2;
-var HALF_PI = PI / 2;
+const PI = Math.PI;
+const DOUBLE_PI = PI * 2;
+const HALF_PI = PI / 2;
 
 defaults._set('doughnut', {
 	animation: {
@@ -21,27 +21,6 @@ defaults._set('doughnut', {
 		animateRotate: true,
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
-	},
-	legendCallback: function(chart) {
-		var list = document.createElement('ul');
-		var data = chart.data;
-		var datasets = data.datasets;
-		var labels = data.labels;
-		var i, ilen, listItem, listItemSpan;
-
-		list.setAttribute('class', chart.id + '-legend');
-		if (datasets.length) {
-			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
-				listItem = list.appendChild(document.createElement('li'));
-				listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
-				if (labels[i]) {
-					listItem.appendChild(document.createTextNode(labels[i]));
-				}
-			}
-		}
-
-		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -119,7 +98,7 @@ defaults._set('doughnut', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
 

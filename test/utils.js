@@ -55,7 +55,7 @@ function acquireChart(config, options) {
 	config.options = config.options || {};
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
-	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
+	config.options.fontFamily = config.options.fontFamily || 'Arial';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);
@@ -106,6 +106,18 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function afterEvent(chart, type, callback) {
+	var override = chart.eventHandler;
+	chart.eventHandler = function(event) {
+		override.call(this, event);
+		if (event.type === type) {
+			chart.eventHandler = override;
+			// eslint-disable-next-line callback-return
+			callback();
+		}
+	};
+}
+
 function _resolveElementPoint(el) {
 	var point = {x: 0, y: 0};
 	if (el) {
@@ -140,5 +152,6 @@ module.exports = {
 	releaseChart: releaseChart,
 	readImageData: readImageData,
 	triggerMouseEvent: triggerMouseEvent,
-	waitForResize: waitForResize
+	waitForResize: waitForResize,
+	afterEvent: afterEvent
 };

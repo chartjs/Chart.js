@@ -1,11 +1,11 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var resolve = helpers.options.resolve;
+const resolve = helpers.options.resolve;
 
 defaults._set('polarArea', {
 	animation: {
@@ -32,28 +32,7 @@ defaults._set('polarArea', {
 		}
 	},
 
-	startAngle: -0.5 * Math.PI,
-	legendCallback: function(chart) {
-		var list = document.createElement('ul');
-		var data = chart.data;
-		var datasets = data.datasets;
-		var labels = data.labels;
-		var i, ilen, listItem, listItemSpan;
-
-		list.setAttribute('class', chart.id + '-legend');
-		if (datasets.length) {
-			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
-				listItem = list.appendChild(document.createElement('li'));
-				listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
-				if (labels[i]) {
-					listItem.appendChild(document.createTextNode(labels[i]));
-				}
-			}
-		}
-
-		return list.outerHTML;
-	},
+	startAngle: 0,
 	legend: {
 		labels: {
 			generateLabels: function(chart) {
@@ -106,7 +85,13 @@ defaults._set('polarArea', {
 	}
 });
 
-module.exports = DatasetController.extend({
+function getStartAngleRadians(deg) {
+	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
+	// Here we adjust to standard unit circle used in drawing, where 0 is at right.
+	return helpers.math.toRadians(deg) - 0.5 * Math.PI;
+}
+
+export default DatasetController.extend({
 
 	dataElementType: elements.Arc,
 
@@ -138,13 +123,10 @@ module.exports = DatasetController.extend({
 	},
 
 	update: function(mode) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var arcs = meta.data;
+		const arcs = this._cachedMeta.data;
 
-		me._updateRadius();
-
-		me.updateElements(arcs, 0, mode);
+		this._updateRadius();
+		this.updateElements(arcs, 0, mode);
 	},
 
 	/**
@@ -175,7 +157,7 @@ module.exports = DatasetController.extend({
 		const scale = chart.scales.r;
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
-		const datasetStartAngle = opts.startAngle || 0;
+		const datasetStartAngle = getStartAngleRadians(opts.startAngle);
 		let angle = datasetStartAngle;
 		let i;
 

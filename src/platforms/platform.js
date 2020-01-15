@@ -1,18 +1,18 @@
 'use strict';
 
-var helpers = require('../helpers/index');
-var basic = require('./platform.basic');
-var dom = require('./platform.dom');
+import helpers from '../helpers/index';
+import basic from './platform.basic';
+import dom from './platform.dom';
 
 // @TODO Make possible to select another platform at build time.
-var implementation = dom._enabled ? dom : basic;
+const implementation = dom._enabled ? dom : basic;
 
 /**
  * @namespace Chart.platform
  * @see https://chartjs.gitbooks.io/proposals/content/Platform.html
  * @since 2.4.0
  */
-module.exports = helpers.extend({
+export default helpers.extend({
 	/**
 	 * @since 2.7.0
 	 */

@@ -3,7 +3,7 @@ describe('Legend block tests', function() {
 	describe('auto', jasmine.fixture.specs('plugin.legend'));
 
 	it('should have the correct default config', function() {
-		expect(Chart.defaults.global.legend).toEqual({
+		expect(Chart.defaults.legend).toEqual({
 			display: true,
 			position: 'top',
 			align: 'center',
@@ -20,6 +20,12 @@ describe('Legend block tests', function() {
 				boxWidth: 40,
 				padding: 10,
 				generateLabels: jasmine.any(Function)
+			},
+
+			title: {
+				display: false,
+				position: 'center',
+				text: '',
 			}
 		});
 	});
@@ -591,12 +597,12 @@ describe('Legend block tests', function() {
 			chart.options.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
-			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.legend));
 		});
 	});
 
 	describe('callbacks', function() {
-		it('should call onClick, onHover and onLeave at the correct times', function() {
+		it('should call onClick, onHover and onLeave at the correct times', function(done) {
 			var clickItem = null;
 			var hoverItem = null;
 			var leaveItem = null;
@@ -630,17 +636,22 @@ describe('Legend block tests', function() {
 				y: hb.top + (hb.height / 2)
 			};
 
+			afterEvent(chart, 'click', function() {
+				expect(clickItem).toBe(chart.legend.legendItems[0]);
+
+				afterEvent(chart, 'mousemove', function() {
+					expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+					afterEvent(chart, 'mousemove', function() {
+						expect(leaveItem).toBe(chart.legend.legendItems[0]);
+
+						done();
+					});
+					jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+				});
+				jasmine.triggerMouseEvent(chart, 'mousemove', el);
+			});
 			jasmine.triggerMouseEvent(chart, 'click', el);
-
-			expect(clickItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', el);
-
-			expect(hoverItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
-
-			expect(leaveItem).toBe(chart.legend.legendItems[0]);
 		});
 	});
 });

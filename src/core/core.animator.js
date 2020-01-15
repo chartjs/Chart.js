@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('../helpers/index');
+import helpers from '../helpers';
 
 function drawFPS(chart, count, date, lastDate) {
 	const fps = (1000 / (date - lastDate)) | 0;
@@ -64,12 +64,11 @@ class Animator {
 	_update() {
 		const me = this;
 		const date = Date.now();
-		const charts = me._charts;
 		let remaining = 0;
 
-		for (let [chart, anims] of charts) {
+		me._charts.forEach(function(anims, chart) {
 			if (!anims.running || !anims.items.length) {
-				continue;
+				return;
 			}
 			const items = anims.items;
 			let i = items.length - 1;
@@ -105,12 +104,12 @@ class Animator {
 			}
 
 			remaining += items.length;
-		}
+		});
 
-		this._lastDate = date;
+		me._lastDate = date;
 
 		if (remaining === 0) {
-			this._running = false;
+			me._running = false;
 		}
 	}
 
@@ -208,4 +207,4 @@ class Animator {
 
 const instance = new Animator();
 
-module.exports = instance;
+export default instance;

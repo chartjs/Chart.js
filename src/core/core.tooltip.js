@@ -1,113 +1,111 @@
 'use strict';
 
-const defaults = require('./core.defaults');
-const Element = require('./core.element');
-const helpers = require('../helpers/index');
-const Animations = require('./core.animations');
+import defaults from './core.defaults';
+import Element from './core.element';
+import helpers from '../helpers/index';
+import Animations from './core.animations';
 
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 
-defaults._set('global', {
-	tooltips: {
-		enabled: true,
-		custom: null,
-		mode: 'nearest',
-		position: 'average',
-		intersect: true,
-		backgroundColor: 'rgba(0,0,0,0.8)',
-		titleFontStyle: 'bold',
-		titleSpacing: 2,
-		titleMarginBottom: 6,
-		titleFontColor: '#fff',
-		titleAlign: 'left',
-		bodySpacing: 2,
-		bodyFontColor: '#fff',
-		bodyAlign: 'left',
-		footerFontStyle: 'bold',
-		footerSpacing: 2,
-		footerMarginTop: 6,
-		footerFontColor: '#fff',
-		footerAlign: 'left',
-		yPadding: 6,
-		xPadding: 6,
-		caretPadding: 2,
-		caretSize: 5,
-		cornerRadius: 6,
-		multiKeyBackground: '#fff',
-		displayColors: true,
-		borderColor: 'rgba(0,0,0,0)',
-		borderWidth: 0,
-		animation: {
-			duration: 400,
-			easing: 'easeOutQuart',
-			numbers: {
-				type: 'number',
-				properties: ['x', 'y', 'width', 'height'],
-			},
-			opacity: {
-				easing: 'linear',
-				duration: 200
-			}
+defaults._set('tooltips', {
+	enabled: true,
+	custom: null,
+	mode: 'nearest',
+	position: 'average',
+	intersect: true,
+	backgroundColor: 'rgba(0,0,0,0.8)',
+	titleFontStyle: 'bold',
+	titleSpacing: 2,
+	titleMarginBottom: 6,
+	titleFontColor: '#fff',
+	titleAlign: 'left',
+	bodySpacing: 2,
+	bodyFontColor: '#fff',
+	bodyAlign: 'left',
+	footerFontStyle: 'bold',
+	footerSpacing: 2,
+	footerMarginTop: 6,
+	footerFontColor: '#fff',
+	footerAlign: 'left',
+	yPadding: 6,
+	xPadding: 6,
+	caretPadding: 2,
+	caretSize: 5,
+	cornerRadius: 6,
+	multiKeyBackground: '#fff',
+	displayColors: true,
+	borderColor: 'rgba(0,0,0,0)',
+	borderWidth: 0,
+	animation: {
+		duration: 400,
+		easing: 'easeOutQuart',
+		numbers: {
+			type: 'number',
+			properties: ['x', 'y', 'width', 'height'],
 		},
-		callbacks: {
-			// Args are: (tooltipItems, data)
-			beforeTitle: helpers.noop,
-			title: function(tooltipItems, data) {
-				var title = '';
-				var labels = data.labels;
-				var labelCount = labels ? labels.length : 0;
-
-				if (tooltipItems.length > 0) {
-					var item = tooltipItems[0];
-					if (item.label) {
-						title = item.label;
-					} else if (labelCount > 0 && item.index < labelCount) {
-						title = labels[item.index];
-					}
-				}
-
-				return title;
-			},
-			afterTitle: helpers.noop,
-
-			// Args are: (tooltipItems, data)
-			beforeBody: helpers.noop,
-
-			// Args are: (tooltipItem, data)
-			beforeLabel: helpers.noop,
-			label: function(tooltipItem, data) {
-				var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-				if (label) {
-					label += ': ';
-				}
-				if (!helpers.isNullOrUndef(tooltipItem.value)) {
-					label += tooltipItem.value;
-				}
-				return label;
-			},
-			labelColor: function(tooltipItem, chart) {
-				var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
-				var options = meta.controller.getStyle(tooltipItem.index);
-				return {
-					borderColor: options.borderColor,
-					backgroundColor: options.backgroundColor
-				};
-			},
-			labelTextColor: function() {
-				return this.options.bodyFontColor;
-			},
-			afterLabel: helpers.noop,
-
-			// Args are: (tooltipItems, data)
-			afterBody: helpers.noop,
-
-			// Args are: (tooltipItems, data)
-			beforeFooter: helpers.noop,
-			footer: helpers.noop,
-			afterFooter: helpers.noop
+		opacity: {
+			easing: 'linear',
+			duration: 200
 		}
+	},
+	callbacks: {
+		// Args are: (tooltipItems, data)
+		beforeTitle: helpers.noop,
+		title: function(tooltipItems, data) {
+			var title = '';
+			var labels = data.labels;
+			var labelCount = labels ? labels.length : 0;
+
+			if (tooltipItems.length > 0) {
+				var item = tooltipItems[0];
+				if (item.label) {
+					title = item.label;
+				} else if (labelCount > 0 && item.index < labelCount) {
+					title = labels[item.index];
+				}
+			}
+
+			return title;
+		},
+		afterTitle: helpers.noop,
+
+		// Args are: (tooltipItems, data)
+		beforeBody: helpers.noop,
+
+		// Args are: (tooltipItem, data)
+		beforeLabel: helpers.noop,
+		label: function(tooltipItem, data) {
+			var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+			if (label) {
+				label += ': ';
+			}
+			if (!helpers.isNullOrUndef(tooltipItem.value)) {
+				label += tooltipItem.value;
+			}
+			return label;
+		},
+		labelColor: function(tooltipItem, chart) {
+			var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
+			var options = meta.controller.getStyle(tooltipItem.index);
+			return {
+				borderColor: options.borderColor,
+				backgroundColor: options.backgroundColor
+			};
+		},
+		labelTextColor: function() {
+			return this.options.bodyFontColor;
+		},
+		afterLabel: helpers.noop,
+
+		// Args are: (tooltipItems, data)
+		afterBody: helpers.noop,
+
+		// Args are: (tooltipItems, data)
+		beforeFooter: helpers.noop,
+		footer: helpers.noop,
+		afterFooter: helpers.noop
 	}
 });
 
@@ -161,7 +159,7 @@ var positioners = {
 			var el = elements[i].element;
 			if (el && el.hasValue()) {
 				var center = el.getCenterPoint();
-				var d = helpers.distanceBetweenPoints(eventPosition, center);
+				var d = helpers.math.distanceBetweenPoints(eventPosition, center);
 
 				if (d < minDistance) {
 					minDistance = d;
@@ -221,10 +219,10 @@ function createTooltipItem(chart, item) {
 	const {label, value} = chart.getDatasetMeta(datasetIndex).controller._getLabelAndValue(index);
 
 	return {
-		label: label,
-		value: value,
-		index: index,
-		datasetIndex: datasetIndex
+		label,
+		value,
+		index,
+		datasetIndex
 	};
 }
 
@@ -233,21 +231,20 @@ function createTooltipItem(chart, item) {
  * @param options {object} the tooltip options
  */
 function resolveOptions(options) {
-	var globalDefaults = defaults.global;
 
-	options = helpers.extend({}, globalDefaults.tooltips, options);
+	options = helpers.extend({}, defaults.tooltips, options);
 
-	options.bodyFontFamily = valueOrDefault(options.bodyFontFamily, globalDefaults.defaultFontFamily);
-	options.bodyFontStyle = valueOrDefault(options.bodyFontStyle, globalDefaults.defaultFontStyle);
-	options.bodyFontSize = valueOrDefault(options.bodyFontSize, globalDefaults.defaultFontSize);
+	options.bodyFontFamily = valueOrDefault(options.bodyFontFamily, defaults.fontFamily);
+	options.bodyFontStyle = valueOrDefault(options.bodyFontStyle, defaults.fontStyle);
+	options.bodyFontSize = valueOrDefault(options.bodyFontSize, defaults.fontSize);
 
-	options.titleFontFamily = valueOrDefault(options.titleFontFamily, globalDefaults.defaultFontFamily);
-	options.titleFontStyle = valueOrDefault(options.titleFontStyle, globalDefaults.defaultFontStyle);
-	options.titleFontSize = valueOrDefault(options.titleFontSize, globalDefaults.defaultFontSize);
+	options.titleFontFamily = valueOrDefault(options.titleFontFamily, defaults.fontFamily);
+	options.titleFontStyle = valueOrDefault(options.titleFontStyle, defaults.fontStyle);
+	options.titleFontSize = valueOrDefault(options.titleFontSize, defaults.fontSize);
 
-	options.footerFontFamily = valueOrDefault(options.footerFontFamily, globalDefaults.defaultFontFamily);
-	options.footerFontStyle = valueOrDefault(options.footerFontStyle, globalDefaults.defaultFontStyle);
-	options.footerFontSize = valueOrDefault(options.footerFontSize, globalDefaults.defaultFontSize);
+	options.footerFontFamily = valueOrDefault(options.footerFontFamily, defaults.fontFamily);
+	options.footerFontStyle = valueOrDefault(options.footerFontStyle, defaults.fontStyle);
+	options.footerFontSize = valueOrDefault(options.footerFontSize, defaults.fontSize);
 
 	return options;
 }
@@ -455,7 +452,6 @@ class Tooltip extends Element {
 		const me = this;
 		me.opacity = 0;
 		me._active = [];
-		me._lastActive = [];
 		me.initialize();
 	}
 
@@ -965,28 +961,26 @@ class Tooltip extends Element {
 	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent(e) {
-		var me = this;
-		var options = me.options;
-		var changed = false;
-
-		me._lastActive = me._lastActive || [];
+		const me = this;
+		const options = me.options;
+		const lastActive = me._active || [];
+		let changed = false;
+		let active = [];
 
 		// Find Active Elements for tooltips
-		if (e.type === 'mouseout') {
-			me._active = [];
-		} else {
-			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+		if (e.type !== 'mouseout') {
+			active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 			if (options.reverse) {
-				me._active.reverse();
+				active.reverse();
 			}
 		}
 
 		// Remember Last Actives
-		changed = !helpers._elementsEqual(me._active, me._lastActive);
+		changed = !helpers._elementsEqual(active, lastActive);
 
 		// Only handle target event on tooltip change
 		if (changed) {
-			me._lastActive = me._active;
+			me._active = active;
 
 			if (options.enabled || options.custom) {
 				me._eventPosition = {
@@ -995,7 +989,6 @@ class Tooltip extends Element {
 				};
 
 				me.update(true);
-				// me.pivot();
 			}
 		}
 
@@ -1008,4 +1001,4 @@ class Tooltip extends Element {
  */
 Tooltip.positioners = positioners;
 
-module.exports = Tooltip;
+export default Tooltip;

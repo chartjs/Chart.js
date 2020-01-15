@@ -1,39 +1,58 @@
 /**
  * @namespace Chart
  */
-var Chart = require('./core/core.controller');
+import Chart from './core/core.controller';
 
-Chart.helpers = require('./helpers/index');
-Chart._adapters = require('./core/core.adapters');
-Chart.Animation = require('./core/core.animation');
-Chart.Animator = require('./core/core.animator');
-Chart.animationService = require('./core/core.animations');
-Chart.controllers = require('./controllers/index');
-Chart.DatasetController = require('./core/core.datasetController');
-Chart.defaults = require('./core/core.defaults');
-Chart.Element = require('./core/core.element');
-Chart.elements = require('./elements/index');
-Chart.Interaction = require('./core/core.interaction');
-Chart.layouts = require('./core/core.layouts');
-Chart.platform = require('./platforms/platform');
-Chart.plugins = require('./core/core.plugins');
-Chart.Scale = require('./core/core.scale');
-Chart.scaleService = require('./core/core.scaleService');
-Chart.Ticks = require('./core/core.ticks');
-Chart.Tooltip = require('./core/core.tooltip');
+import helpers from './helpers';
+import _adapters from './core/core.adapters';
+import Animation from './core/core.animation';
+import Animator from './core/core.animator';
+import animationService from './core/core.animations';
+import controllers from './controllers';
+import DatasetController from './core/core.datasetController';
+import defaults from './core/core.defaults';
+import Element from './core/core.element';
+import elements from './elements';
+import Interaction from './core/core.interaction';
+import layouts from './core/core.layouts';
+import platform from './platforms/platform';
+import pluginsCore from './core/core.plugins';
+import Scale from './core/core.scale';
+import scaleService from './core/core.scaleService';
+import Ticks from './core/core.ticks';
+import Tooltip from './core/core.tooltip';
+
+Chart.helpers = helpers;
+Chart._adapters = _adapters;
+Chart.Animation = Animation;
+Chart.Animator = Animator;
+Chart.animationService = animationService;
+Chart.controllers = controllers;
+Chart.DatasetController = DatasetController;
+Chart.defaults = defaults;
+Chart.Element = Element;
+Chart.elements = elements;
+Chart.Interaction = Interaction;
+Chart.layouts = layouts;
+Chart.platform = platform;
+Chart.plugins = pluginsCore;
+Chart.Scale = Scale;
+Chart.scaleService = scaleService;
+Chart.Ticks = Ticks;
+Chart.Tooltip = Tooltip;
 
 // Register built-in scales
-const scales = require('./scales');
+import scales from './scales';
 Object.keys(scales).forEach(function(type) {
 	const scale = scales[type];
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
 
 // Load to register built-in adapters (as side effects)
-require('./adapters');
+import './adapters';
 
 // Loading built-in plugins
-var plugins = require('./plugins');
+import plugins from './plugins';
 for (var k in plugins) {
 	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
 		Chart.plugins.register(plugins[k]);
@@ -42,7 +61,8 @@ for (var k in plugins) {
 
 Chart.platform.initialize();
 
-module.exports = Chart;
 if (typeof window !== 'undefined') {
 	window.Chart = Chart;
 }
+
+export default Chart;

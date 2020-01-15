@@ -71,7 +71,7 @@ At this point we have a chart rendering how we'd like. It's important to note th
 
 ## Drawing order
 
- By default, datasets are drawn so that first one is top-most. This can be altered by specifying `order` option to datasets. `order` defaults to `0`.
+ By default, datasets are drawn so that first one is top-most. This can be altered by specifying `order` option to datasets. `order` defaults to `0`. Note that this also affects stacking, legend and tooltip. So its essentially the same as reordering the datasets.
 
  ```javascript
 var mixedChart = new Chart(ctx, {
@@ -81,13 +81,13 @@ var mixedChart = new Chart(ctx, {
             label: 'Bar Dataset',
             data: [10, 20, 30, 40],
             // this dataset is drawn below
-            order: 1
+            order: 2
         }, {
             label: 'Line Dataset',
             data: [10, 10, 10, 10],
             type: 'line',
             // this dataset is drawn on top
-            order: 2
+            order: 1
         }],
         labels: ['January', 'February', 'March', 'April']
     },

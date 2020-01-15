@@ -1,15 +1,26 @@
 'use strict';
 
-var DatasetController = require('../core/core.datasetController');
-var defaults = require('../core/core.defaults');
-var elements = require('../elements/index');
-var helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
-var valueOrDefault = helpers.valueOrDefault;
+const valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('bar', {
 	hover: {
 		mode: 'index'
+	},
+
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height']
+			}
+		}
 	},
 
 	scales: {
@@ -22,21 +33,7 @@ defaults._set('bar', {
 		},
 		y: {
 			type: 'linear',
-		}
-	}
-});
-
-defaults._set('global', {
-	datasets: {
-		bar: {
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
-			animation: {
-				numbers: {
-					type: 'number',
-					properties: ['x', 'y', 'base', 'width', 'height']
-				}
-			}
+			beginAtZero: true,
 		}
 	}
 });
@@ -145,7 +142,7 @@ function parseFloatBar(arr, item, vScale, i) {
 
 	// Store `barEnd` (furthest away from origin) as parsed value,
 	// to make stacking straight forward
-	item[vScale.id] = barEnd;
+	item[vScale.axis] = barEnd;
 
 	item._custom = {
 		barStart: barStart,
@@ -168,12 +165,12 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
 		item = {};
-		item[iScale.id] = singleScale || iScale._parse(labels[i], i);
+		item[iScale.axis] = singleScale || iScale._parse(labels[i], i);
 
 		if (helpers.isArray(entry)) {
 			parseFloatBar(entry, item, vScale, i);
 		} else {
-			item[vScale.id] = vScale._parse(entry, i);
+			item[vScale.axis] = vScale._parse(entry, i);
 		}
 
 		parsed.push(item);
@@ -181,7 +178,11 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	return parsed;
 }
 
-module.exports = DatasetController.extend({
+function isFloatBar(custom) {
+	return custom && custom.barStart !== undefined && custom.barEnd !== undefined;
+}
+
+export default DatasetController.extend({
 
 	dataElementType: elements.Rectangle,
 
@@ -231,12 +232,12 @@ module.exports = DatasetController.extend({
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.id] = iScale._parseObject(obj, iScale.axis, i);
+			item[iScale.axis] = iScale._parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
 			if (helpers.isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
-				item[vScale.id] = vScale._parseObject(obj, vProp, i);
+				item[vScale.axis] = vScale._parseObject(obj, vProp, i);
 			}
 			parsed.push(item);
 		}
@@ -252,12 +253,12 @@ module.exports = DatasetController.extend({
 		const {iScale, vScale} = meta;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		const value = custom
+		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
-			: '' + vScale.getLabelForValue(parsed[vScale.id]);
+			: '' + vScale.getLabelForValue(parsed[vScale.axis]);
 
 		return {
-			label: '' + iScale.getLabelForValue(parsed[iScale.id]),
+			label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
 			value: value
 		};
 	},
@@ -355,6 +356,13 @@ module.exports = DatasetController.extend({
 			}
 		}
 
+		// No stacks? that means there is no visible data. Let's still initialize an `undefined`
+		// stack where possible invisible bars will be located.
+		// https://github.com/chartjs/Chart.js/issues/6368
+		if (!stacks.length) {
+			stacks.push(undefined);
+		}
+
 		return stacks;
 	},
 
@@ -395,7 +403,7 @@ module.exports = DatasetController.extend({
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.id]));
+			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.axis]));
 		}
 
 		return {
@@ -418,9 +426,9 @@ module.exports = DatasetController.extend({
 		const minBarLength = options.minBarLength;
 		const parsed = me._getParsed(index);
 		const custom = parsed._custom;
-		let value = parsed[vScale.id];
+		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : parsed[vScale.id];
+		let length = meta._stacked ? me._applyStack(vScale, parsed) : value;
 		let base, head, size;
 
 		if (length !== value) {
@@ -428,7 +436,7 @@ module.exports = DatasetController.extend({
 			length = value;
 		}
 
-		if (custom && custom.barStart !== undefined && custom.barEnd !== undefined) {
+		if (isFloatBar(custom)) {
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
@@ -438,7 +446,14 @@ module.exports = DatasetController.extend({
 			start += value;
 		}
 
-		base = vScale.getPixelForValue(start);
+		// Limit the bar to only extend up to 10 pixels past scale bounds (chartArea)
+		// So we don't try to draw so huge rectangles.
+		// https://github.com/chartjs/Chart.js/issues/5247
+		// TODO: use borderWidth instead (need to move the parsing from rectangle)
+		base = helpers.math._limitValue(vScale.getPixelForValue(start),
+			vScale._startPixel - 10,
+			vScale._endPixel + 10);
+
 		head = vScale.getPixelForValue(start + length);
 		size = head - base;
 
@@ -490,7 +505,7 @@ module.exports = DatasetController.extend({
 		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[vScale.id])) {
+			if (!isNaN(me._getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

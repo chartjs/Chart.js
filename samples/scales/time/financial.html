@@ -3,7 +3,7 @@
 
 <head>
 	<title>Line Chart</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
 	<script src="../../../dist/Chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
@@ -122,7 +122,9 @@
 						ticks: {
 							major: {
 								enabled: true,
-								fontStyle: 'bold'
+							},
+							fontStyle: function(context) {
+								return context.tick.major ? 'bold' : undefined;
 							},
 							source: 'data',
 							autoSkip: true,

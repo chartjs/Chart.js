@@ -88,24 +88,6 @@ describe('Default Configs', function() {
 			}]);
 		});
 
-		it('should return the correct html legend', function() {
-			var config = Chart.defaults.doughnut;
-			var chart = window.acquireChart({
-				type: 'doughnut',
-				data: {
-					labels: ['label1', 'label2'],
-					datasets: [{
-						data: [10, 20],
-						backgroundColor: ['red', 'green']
-					}]
-				},
-				options: config
-			});
-
-			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li></ul>';
-			expect(chart.generateLegend()).toBe(expectedLegend);
-		});
-
 		it('should return correct legend label objects', function() {
 			var config = Chart.defaults.doughnut;
 			var chart = window.acquireChart({
@@ -202,24 +184,6 @@ describe('Default Configs', function() {
 				lines: ['label2: 20'],
 				after: []
 			}]);
-		});
-
-		it('should return the correct html legend', function() {
-			var config = Chart.defaults.polarArea;
-			var chart = window.acquireChart({
-				type: 'polarArea',
-				data: {
-					labels: ['label1', 'label2'],
-					datasets: [{
-						data: [10, 20],
-						backgroundColor: ['red', 'green']
-					}]
-				},
-				options: config
-			});
-
-			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li></ul>';
-			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
 		it('should return correct legend label objects', function() {

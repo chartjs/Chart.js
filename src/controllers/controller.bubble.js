@@ -1,9 +1,9 @@
 'use strict';
 
-const DatasetController = require('../core/core.datasetController');
-const defaults = require('../core/core.defaults');
-const elements = require('../elements/index');
-const helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
 const resolve = helpers.options.resolve;
 
@@ -34,7 +34,7 @@ defaults._set('bubble', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 	/**
 	 * @protected
 	 */
@@ -59,15 +59,13 @@ module.exports = DatasetController.extend({
 	 */
 	_parseObjectData: function(meta, data, start, count) {
 		const {xScale, yScale} = meta;
-		const xId = xScale.id;
-		const yId = yScale.id;
 		const parsed = [];
 		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
-				[xId]: xScale._parseObject(item, 'x', i),
-				[yId]: yScale._parseObject(item, 'y', i),
+				x: xScale._parseObject(item, 'x', i),
+				y: yScale._parseObject(item, 'y', i),
 				_custom: item && item.r && +item.r
 			});
 		}
@@ -96,8 +94,8 @@ module.exports = DatasetController.extend({
 		const meta = me._cachedMeta;
 		const {xScale, yScale} = meta;
 		const parsed = me._getParsed(index);
-		const x = xScale.getLabelForValue(parsed[xScale.id]);
-		const y = yScale.getLabelForValue(parsed[yScale.id]);
+		const x = xScale.getLabelForValue(parsed.x);
+		const y = yScale.getLabelForValue(parsed.y);
 		const r = parsed._custom;
 
 		return {
@@ -127,14 +125,13 @@ module.exports = DatasetController.extend({
 		const firstOpts = me._resolveDataElementOptions(start, mode);
 		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
-		let i;
 
-		for (i = 0; i < points.length; i++) {
+		for (let i = 0; i < points.length; i++) {
 			const point = points[i];
 			const index = start + i;
 			const parsed = !reset && me._getParsed(index);
-			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed[xScale.id]);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed[yScale.id]);
+			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
 			const properties = {
 				x,
 				y,
@@ -142,8 +139,7 @@ module.exports = DatasetController.extend({
 			};
 
 			if (includeOptions) {
-				properties.options = i === 0 ? firstOpts
-					: me._resolveDataElementOptions(i, mode);
+				properties.options = me._resolveDataElementOptions(i, mode);
 
 				if (reset) {
 					properties.options.radius = 0;

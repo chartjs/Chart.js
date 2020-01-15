@@ -3,7 +3,8 @@
 The chart legend displays data about the datasets that are appearing on the chart.
 
 ## Configuration options
-The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
+
+The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.legend`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -18,16 +19,21 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
+| `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 ## Position
+
 Position of the legend. Options are:
+
 * `'top'`
 * `'left'`
 * `'bottom'`
 * `'right'`
 
 ## Align
+
 Alignment of the legend. Options are:
+
 * `'start'`
 * `'center'`
 * `'end'`
@@ -49,6 +55,21 @@ The legend label configuration is nested below the legend configuration using th
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
 | `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the mimimum value between boxWidth and fontSize).
+
+## Legend Title Configuration
+
+The legend title configuration is nested below the legend configuration using the `title` key.
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `display` | `boolean` | `false` | Is the legend title displayed.
+| `fontSize` | `number` | `12` | Font size of text.
+| `fontStyle` | `string` | `'normal'` | Font style of text.
+| `fontColor` | `Color` | `'#666'` | Color of text.
+| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
+| `lineHeight` | `number` | | Line height of the text. If unset, is computed from the font size.
+| `padding` | <code>number&#124;object</code> | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
+| `text` | `string` | | The string title.
 
 ## Legend Item Interface
 
@@ -115,6 +136,7 @@ var chart = new Chart(ctx, {
 It can be common to want to trigger different behaviour when clicking an item in the legend. This can be easily achieved using a callback in the config object.
 
 The default legend click handler is:
+
 ```javascript
 function(e, legendItem) {
     var index = legendItem.datasetIndex;
@@ -132,7 +154,7 @@ function(e, legendItem) {
 Lets say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
 
 ```javascript
-var defaultLegendClickHandler = Chart.defaults.global.legend.onClick;
+var defaultLegendClickHandler = Chart.defaults.legend.onClick;
 var newLegendClickHandler = function (e, legendItem) {
     var index = legendItem.datasetIndex;
 
@@ -163,23 +185,3 @@ var chart = new Chart(ctx, {
 ```
 
 Now when you click the legend in this chart, the visibility of the first two datasets will be linked together.
-
-## HTML Legends
-
-Sometimes you need a very complex legend. In these cases, it makes sense to generate an HTML legend. Charts provide a `generateLegend()` method on their prototype that returns an HTML string for the legend.
-
-To configure how this legend is generated, you can change the `legendCallback` config property.
-
-```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        legendCallback: function(chart) {
-            // Return the HTML string here.
-        }
-    }
-});
-```
-
-Note that legendCallback is not called automatically and you must call `generateLegend()` yourself in code when creating a legend using this method.

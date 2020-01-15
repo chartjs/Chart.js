@@ -5,27 +5,25 @@ import Animation from './core.animation';
 import defaults from '../core/core.defaults';
 import {noop, extend, isObject} from '../helpers/helpers.core';
 
-defaults._set('global', {
-	animation: {
-		duration: 1000,
-		easing: 'easeOutQuart',
-		active: {
-			duration: 400
-		},
-		resize: {
-			duration: 0
-		},
-		numbers: {
-			type: 'number',
-			properties: ['x', 'y', 'borderWidth', 'radius', 'tension']
-		},
-		colors: {
-			type: 'color',
-			properties: ['borderColor', 'backgroundColor']
-		},
-		onProgress: noop,
-		onComplete: noop
-	}
+defaults._set('animation', {
+	duration: 1000,
+	easing: 'easeOutQuart',
+	active: {
+		duration: 400
+	},
+	resize: {
+		duration: 0
+	},
+	numbers: {
+		type: 'number',
+		properties: ['x', 'y', 'borderWidth', 'radius', 'tension']
+	},
+	colors: {
+		type: 'color',
+		properties: ['borderColor', 'backgroundColor']
+	},
+	onProgress: noop,
+	onComplete: noop
 });
 
 function copyOptions(target, values) {
@@ -73,7 +71,7 @@ export default class Animations {
 			if (!isObject(cfg)) {
 				return;
 			}
-			for (let prop of cfg.properties || [key]) {
+			(cfg.properties || [key]).forEach(function(prop) {
 				// Can have only one config per animation.
 				if (!animatedProps.has(prop)) {
 					animatedProps.set(prop, extend({}, animDefaults, cfg));
@@ -81,7 +79,7 @@ export default class Animations {
 					// Single property targetting config wins over multi-targetting.
 					animatedProps.set(prop, extend({}, animatedProps.get(prop), cfg));
 				}
-			}
+			});
 		});
 	}
 

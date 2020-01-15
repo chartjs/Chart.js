@@ -41,8 +41,8 @@ module.exports = {
 			responsive: false,
 			legend: false,
 			title: false,
-			datasets: {
-				line: {
+			line: {
+				datasets: {
 					lineTension: 0.4,
 					borderWidth: 1,
 					pointRadius: 1.5,

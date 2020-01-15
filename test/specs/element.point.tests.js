@@ -1,17 +1,6 @@
 describe('Chart.elements.Point', function() {
 	describe('auto', jasmine.fixture.specs('element.point'));
 
-	it ('Should be constructed', function() {
-		var point = new Chart.elements.Point({
-			_datasetIndex: 2,
-			_index: 1
-		});
-
-		expect(point).not.toBe(undefined);
-		expect(point._datasetIndex).toBe(2);
-		expect(point._index).toBe(1);
-	});
-
 	it ('Should correctly identify as in range', function() {
 		// Mock out the point as if we were made by the controller
 		var point = new Chart.elements.Point({

@@ -285,7 +285,11 @@ describe('Platform.dom', function() {
 
 	describe('controller.destroy', function() {
 		it('should reset context to default values', function() {
-			var chart = acquireChart({});
+			var wrapper = document.createElement('div');
+			var canvas = document.createElement('canvas');
+			wrapper.appendChild(canvas);
+			window.document.body.appendChild(wrapper);
+			var chart = new Chart(canvas, {});
 			var context = chart.ctx;
 
 			chart.destroy();
@@ -308,27 +312,28 @@ describe('Platform.dom', function() {
 			}, function(value, key) {
 				expect(context[key]).toBe(value);
 			});
+
+			wrapper.parentNode.removeChild(wrapper);
 		});
 
 		it('should restore canvas initial values', function(done) {
-			var chart = acquireChart({
+			var wrapper = document.createElement('div');
+			var canvas = document.createElement('canvas');
+
+			canvas.setAttribute('width', 180);
+			canvas.setAttribute('style', 'width: 512px; height: 480px');
+			wrapper.setAttribute('style', 'width: 450px; height: 450px; position: relative');
+
+			wrapper.appendChild(canvas);
+			window.document.body.appendChild(wrapper);
+
+			var chart = new Chart(canvas.getContext('2d'), {
 				options: {
 					responsive: true,
 					maintainAspectRatio: false
 				}
-			}, {
-				canvas: {
-					width: 180,
-					style: 'width: 512px; height: 480px'
-				},
-				wrapper: {
-					style: 'width: 450px; height: 450px; position: relative'
-				}
 			});
 
-			var canvas = chart.canvas;
-			var wrapper = canvas.parentNode;
-			wrapper.style.width = '475px';
 			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 475, dh: 450,
@@ -343,13 +348,15 @@ describe('Platform.dom', function() {
 				expect(canvas.style.height).toBe('480px');
 				expect(canvas.style.display).toBe('');
 
+				wrapper.parentNode.removeChild(wrapper);
 				done();
 			});
+			wrapper.style.width = '475px';
 		});
 	});
 
 	describe('event handling', function() {
-		it('should notify plugins about events', function() {
+		it('should notify plugins about events', function(done) {
 			var notifiedEvent;
 			var plugin = {
 				afterEvent: function(chart, e) {
@@ -370,32 +377,24 @@ describe('Platform.dom', function() {
 				plugins: [plugin]
 			});
 
-			var node = chart.canvas;
-			var rect = node.getBoundingClientRect();
-			var clientX = (rect.left + rect.right) / 2;
-			var clientY = (rect.top + rect.bottom) / 2;
+			afterEvent(chart, 'click', function() {
+				// Check that notifiedEvent is correct
+				expect(notifiedEvent).not.toBe(undefined);
 
-			var evt = new MouseEvent('click', {
-				view: window,
-				bubbles: true,
-				cancelable: true,
-				clientX: clientX,
-				clientY: clientY
+				// Is type correctly translated
+				expect(notifiedEvent.type).toBe('click');
+
+				// Relative Position
+				expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
+				expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
+
+				done();
 			});
 
-			// Manually trigger rather than having an async test
-			node.dispatchEvent(evt);
-
-			// Check that notifiedEvent is correct
-			expect(notifiedEvent).not.toBe(undefined);
-			expect(notifiedEvent.native).toBe(evt);
-
-			// Is type correctly translated
-			expect(notifiedEvent.type).toBe(evt.type);
-
-			// Relative Position
-			expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
-			expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
+			jasmine.triggerMouseEvent(chart, 'click', {
+				x: chart.width / 2,
+				y: chart.height / 2
+			});
 		});
 	});
 });

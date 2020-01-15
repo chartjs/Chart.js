@@ -3,10 +3,11 @@
 The chart title defines text to draw at the top of the chart.
 
 ## Title Configuration
-The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.global.title`.
+The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.title`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `align` | `string` | `'center'` | Alignment of the title. [more...](#align)
 | `display` | `boolean` | `false` | Is the title shown?
 | `position` | `string` | `'top'` | Position of title. [more...](#position)
 | `fontSize` | `number` | `12` | Font size.
@@ -23,6 +24,14 @@ Possible title position values are:
 * `'left'`
 * `'bottom'`
 * `'right'`
+
+## Align
+
+Alignment of the title. Options are:
+
+* `'start'`
+* `'center'`
+* `'end'`
 
 ## Example Usage
 

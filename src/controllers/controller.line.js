@@ -1,9 +1,9 @@
 'use strict';
 
-const DatasetController = require('../core/core.datasetController');
-const defaults = require('../core/core.defaults');
-const elements = require('../elements/index');
-const helpers = require('../helpers/index');
+import DatasetController from '../core/core.datasetController';
+import defaults from '../core/core.defaults';
+import elements from '../elements';
+import helpers from '../helpers';
 
 const valueOrDefault = helpers.valueOrDefault;
 const resolve = helpers.options.resolve;
@@ -26,7 +26,7 @@ defaults._set('line', {
 	}
 });
 
-module.exports = DatasetController.extend({
+export default DatasetController.extend({
 
 	datasetElementType: elements.Line,
 
@@ -98,14 +98,13 @@ module.exports = DatasetController.extend({
 		const firstOpts = me._resolveDataElementOptions(start, mode);
 		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
-		let i;
 
-		for (i = 0; i < points.length; ++i) {
+		for (let i = 0; i < points.length; ++i) {
 			const index = start + i;
 			const point = points[i];
 			const parsed = me._getParsed(index);
-			const x = xScale.getPixelForValue(parsed[xScale.id]);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed[yScale.id]);
+			const x = xScale.getPixelForValue(parsed.x);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed.y);
 			const properties = {
 				x,
 				y,
@@ -113,8 +112,7 @@ module.exports = DatasetController.extend({
 			};
 
 			if (includeOptions) {
-				properties.options = i === 0 ? firstOpts
-					: me._resolveDataElementOptions(index, mode);
+				properties.options = me._resolveDataElementOptions(index, mode);
 			}
 
 			me._updateElement(point, index, properties, mode);
@@ -166,16 +164,26 @@ module.exports = DatasetController.extend({
 		const meta = me._cachedMeta;
 		const points = meta.data || [];
 		const area = chart.chartArea;
-		const ilen = points.length;
-		let i = 0;
+		const active = [];
+		let ilen = points.length;
+		let i, point;
 
 		if (me._showLine) {
 			meta.dataset.draw(ctx, area);
 		}
 
+
 		// Draw the points
-		for (; i < ilen; ++i) {
-			points[i].draw(ctx, area);
+		for (i = 0; i < ilen; ++i) {
+			point = points[i];
+			if (point.active) {
+				active.push(point);
+			} else {
+				point.draw(ctx, area);
+			}
+		}
+		for (i = 0, ilen = active.length; i < ilen; ++i) {
+			active[i].draw(ctx, area);
 		}
 	},
 });

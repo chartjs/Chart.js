@@ -1,7 +1,7 @@
 'use strict';
 
-var BarController = require('./controller.bar');
-var defaults = require('../core/core.defaults');
+import BarController from './controller.bar';
+import defaults from '../core/core.defaults';
 
 defaults._set('horizontalBar', {
 	hover: {
@@ -12,7 +12,8 @@ defaults._set('horizontalBar', {
 	scales: {
 		x: {
 			type: 'linear',
-			position: 'bottom'
+			position: 'bottom',
+			beginAtZero: true
 		},
 		y: {
 			type: 'category',
@@ -22,6 +23,11 @@ defaults._set('horizontalBar', {
 				offsetGridLines: true
 			}
 		}
+	},
+
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9
 	},
 
 	elements: {
@@ -36,16 +42,7 @@ defaults._set('horizontalBar', {
 	}
 });
 
-defaults._set('global', {
-	datasets: {
-		horizontalBar: {
-			categoryPercentage: 0.8,
-			barPercentage: 0.9
-		}
-	}
-});
-
-module.exports = BarController.extend({
+export default BarController.extend({
 	/**
 	 * @private
 	 */
