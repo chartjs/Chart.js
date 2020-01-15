@@ -173,3 +173,9 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Interactions
 
 * Interaction mode methods now return an array of objects containing the `element`, `datasetIndex`, and `index`
+
+#### Helpers
+
+##### Canvas Helper
+
+* The second parameter to `drawPoint` is now the full options object, so `options.pointStyle` and `options.rotation` are no longer passed explicitly

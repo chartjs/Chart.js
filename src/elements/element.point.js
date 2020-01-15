@@ -76,9 +76,8 @@ class Point extends Element {
 		if (chartArea === undefined || helpers.canvas._isPointInArea(me, chartArea)) {
 			ctx.strokeStyle = options.borderColor;
 			ctx.lineWidth = options.borderWidth;
-			ctx.lineWidthShadow = options.borderWidth;
 			ctx.fillStyle = options.backgroundColor;
-			helpers.canvas.drawPoint(ctx, options.pointStyle, radius, me.x, me.y, options.rotation);
+			helpers.canvas.drawPoint(ctx, options, radius, me.x, me.y);
 		}
 	}
 }
