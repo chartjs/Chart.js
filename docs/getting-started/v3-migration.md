@@ -199,3 +199,10 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Layout
 
 * `ILayoutItem.update` no longer has a return value
+
+#### Helpers
+
+##### Canvas Helper
+
+* The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
+
