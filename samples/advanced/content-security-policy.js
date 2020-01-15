@@ -1,7 +1,7 @@
 var utils = Samples.utils;
 
 // CSP: disable automatic style injection
-Chart.platform.disableCSSInjection = true;
+Chart.platform.current.disableCSSInjection = true;
 
 utils.srand(110);
 

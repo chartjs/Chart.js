@@ -59,7 +59,7 @@ for (var k in plugins) {
 	}
 }
 
-Chart.platform.initialize();
+Chart.platform.current.initialize();
 
 if (typeof window !== 'undefined') {
 	window.Chart = Chart;

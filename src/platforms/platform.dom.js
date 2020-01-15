@@ -313,6 +313,8 @@ function injectCSS(rootNode, css) {
 }
 
 export default {
+	type: 'dom',
+
 	/**
 	 * When `true`, prevents the automatic injection of the stylesheet required to
 	 * correctly detect when the chart is added to the DOM and then resized. This

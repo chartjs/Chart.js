@@ -154,7 +154,7 @@ class Chart {
 
 		config = initConfig(config);
 
-		const context = platform.acquireContext(item, config);
+		const context = platform.current.acquireContext(item, config);
 		const canvas = context && context.canvas;
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
@@ -851,7 +851,7 @@ class Chart {
 		if (canvas) {
 			me.unbindEvents();
 			helpers.canvas.clear(me);
-			platform.releaseContext(me.ctx);
+			platform.current.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
@@ -880,7 +880,7 @@ class Chart {
 		};
 
 		helpers.each(me.options.events, function(type) {
-			platform.addEventListener(me, type, listener);
+			platform.current.addEventListener(me, type, listener);
 			listeners[type] = listener;
 		});
 
@@ -891,7 +891,7 @@ class Chart {
 				me.resize();
 			};
 
-			platform.addEventListener(me, 'resize', listener);
+			platform.current.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		}
 	}
@@ -908,7 +908,7 @@ class Chart {
 
 		delete me._listeners;
 		helpers.each(listeners, function(listener, type) {
-			platform.removeEventListener(me, type, listener);
+			platform.current.removeEventListener(me, type, listener);
 		});
 	}
 
