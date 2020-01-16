@@ -688,7 +688,7 @@ export default {
 		}
 	},
 
-	beforeUpdate: function(chart) {
+	afterUpdate: function(chart) {
 		var legendOpts = chart.options.legend;
 		var legend = chart.legend;
 
@@ -698,6 +698,7 @@ export default {
 			if (legend) {
 				layouts.configure(chart, legend, legendOpts);
 				legend.options = legendOpts;
+				legend.buildLabels();
 			} else {
 				createNewLegendAndAttach(chart, legendOpts);
 			}
