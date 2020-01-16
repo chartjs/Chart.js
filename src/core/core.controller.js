@@ -152,7 +152,7 @@ function onAnimationProgress(ctx) {
  * Chart.js can take a string id of a canvas element, a 2d context, or a canvas element itself.
  * Attempt to unwrap the item passed into the chart constructor so that it is a canvas element (if possible).
  */
-function unwrapItem(item) {
+function getCanvas(item) {
 	if (typeof document !== undefined && typeof item === 'string') {
 		item = document.getElementById(item);
 	} else if (item.length) {
@@ -172,10 +172,10 @@ class Chart {
 		const me = this;
 
 		config = initConfig(config);
-		const unwrappedItem = unwrapItem(item);
-		me.initializePlatform(unwrappedItem, config);
+		const initialCanvas = getCanvas(item);
+		me._initializePlatform(initialCanvas, config);
 
-		const context = me.platform.acquireContext(unwrappedItem, config);
+		const context = me.platform.acquireContext(initialCanvas, config);
 		const canvas = context && context.canvas;
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
@@ -217,14 +217,14 @@ class Chart {
 		Animator.listen(me, 'complete', onAnimationsComplete);
 		Animator.listen(me, 'progress', onAnimationProgress);
 
-		me.initialize();
+		me._initialize();
 		me.update();
 	}
 
 	/**
 	 * @private
 	 */
-	initialize() {
+	_initialize() {
 		const me = this;
 
 		// Before init plugin notification
@@ -250,17 +250,14 @@ class Chart {
 	/**
 	 * @private
 	 */
-	initializePlatform(item, config) {
+	_initializePlatform(canvas, config) {
 		const me = this;
 
 		if (config.platform) {
-			if (!(config.platform instanceof Platform)) {
-				throw new Error('If config.platform is used, it must be an instance of Chart.platforms.Platform or one of its descendants');
-			}
 			me.platform = new config.platform(config);
-		} else if (typeof window === 'undefined' || typeof document === 'undefined' || !item) {
+		} else if (typeof window === 'undefined' || typeof document === 'undefined') {
 			me.platform = new BasicPlatform(config);
-		} else if (window.OffscreenCanvas && item instanceof window.OffscreenCanvas) {
+		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
 			me.platform = new BasicPlatform(config);
 		} else {
 			me.platform = new DomPlatform(config);

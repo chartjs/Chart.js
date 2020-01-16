@@ -315,10 +315,13 @@ function injectCSS(rootNode, css) {
 
 /**
  * Platform class for charts that can access the DOM and global window/document properties
- * @constructor
  * @extends Platform
  */
 export default class DomPlatform extends Platform {
+	/**
+	 * @constructor
+	 * @param {object} options - The chart options
+	 */
 	constructor(options) {
 		super();
 
@@ -329,7 +332,7 @@ export default class DomPlatform extends Platform {
 		 * to be manually imported to make this library compatible with any CSP.
 		 * See https://github.com/chartjs/Chart.js/issues/5208
 		 */
-		this.disableCSSInjection = options.disableCSSInjection || false;
+		this.disableCSSInjection = options.disableCSSInjection;
 	}
 
 	/**
@@ -348,24 +351,24 @@ export default class DomPlatform extends Platform {
 		}
 	}
 
-	acquireContext(item, config) {
+	acquireContext(canvas, config) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker
 		// https://github.com/chartjs/Chart.js/issues/2807
-		var context = item && item.getContext && item.getContext('2d');
+		var context = canvas && canvas.getContext && canvas.getContext('2d');
 
-		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
+		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the canvas is
 		// inside an iframe or when running in a protected environment. We could guess the
 		// types from their toString() value but let's keep things flexible and assume it's
-		// a sufficient condition if the item has a context2D which has item as `canvas`.
+		// a sufficient condition if the canvas has a context2D which has canvas as `canvas`.
 		// https://github.com/chartjs/Chart.js/issues/3887
 		// https://github.com/chartjs/Chart.js/issues/4102
 		// https://github.com/chartjs/Chart.js/issues/4152
-		if (context && context.canvas === item) {
+		if (context && context.canvas === canvas) {
 			// Load platform resources on first chart creation, to make it possible to
 			// import the library before setting platform options.
-			this._ensureLoaded(item);
-			initCanvas(item, config);
+			this._ensureLoaded(canvas);
+			initCanvas(canvas, config);
 			return context;
 		}
 

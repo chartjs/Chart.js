@@ -63,6 +63,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 * The dataset option `tension` was renamed to `lineTension`
+* To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
+* To disable CSS injection (necessary in some iframe contexts), `Chart.platform.disableCSSInjection = true` is no longer supported. Pass `disableCSSInjection: true` in the config object instead.
 
 ### Animations
 
@@ -161,6 +163,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
+* `chart.initialize` was renamed to `chart._initialize` (labeled as private but not named as such)
 
 ### Changed
 
@@ -211,5 +214,3 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Chart.platform` no longer exists. Every chart instance now has a separate platform instance, `chart.platform`.
 * `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `Platform`, a class that all platforms must extend from.
 * If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
-* T override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
-* To disable CSS injection (necessary in some iframe contexts), `Chart.platform.disableCSSInjection = true` is no longer supported. Pass `disableCSSInjection: true` in the config object instead.

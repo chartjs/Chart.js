@@ -5,14 +5,16 @@
  */
 export default class Platform {
 	/**
-	 * @param {object} options - The chart options
+	 * @constructor
+	 * The Platform constructor has no required parameters, but chart options are passed in as
+	 * the first and only parameter to all Platform constructors.
 	 */
 	constructor() {}
 
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
-	 * @param {*} item - The native item from which to acquire context (platform specific)
+	 * @param {canvas} canvas - The canvas from which to acquire context (platform specific)
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
