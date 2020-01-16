@@ -206,3 +206,10 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
 
+#### Platform
+
+* `Chart.platform` no longer exists. Every chart instance now has a separate platform instance, `chart.platform`.
+* `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `Platform`, a class that all platforms must extend from.
+* If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
+* T override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
+* To disable CSS injection (necessary in some iframe contexts), `Chart.platform.disableCSSInjection = true` is no longer supported. Pass `disableCSSInjection: true` in the config object instead.

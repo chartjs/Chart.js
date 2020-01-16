@@ -5,14 +5,18 @@
 
 'use strict';
 
-module.exports = {
-	type: 'basic',
-	acquireContext: function(item) {
-		if (item && item.canvas) {
-			// Support for any object associated to a canvas (including a context2d)
-			item = item.canvas;
-		}
+import Platform from './platform';
 
-		return item && item.getContext('2d') || null;
+/**
+ * Platform class for charts without access to the DOM or to many element properties
+ * This platform is used by default for any chart passed an OffscreenCanvas.
+ * @extends Platform
+ */
+export default class BasicPlatform extends Platform {
+	acquireContext(item) {
+		// To prevent canvas fingerprinting, some add-ons undefine the getContext
+		// method, for example: https://github.com/kkapsner/CanvasBlocker
+		// https://github.com/chartjs/Chart.js/issues/2807
+		return item && item.getContext && item.getContext('2d') || null;
 	}
-};
+}

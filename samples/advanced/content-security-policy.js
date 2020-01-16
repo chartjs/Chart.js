@@ -1,8 +1,5 @@
 var utils = Samples.utils;
 
-// CSP: disable automatic style injection
-Chart.platform.current.disableCSSInjection = true;
-
 utils.srand(110);
 
 function generateData() {
@@ -48,7 +45,9 @@ window.addEventListener('load', function() {
 						return (size / 24) * base;
 					}
 				}
-			}
+			},
+			// CSP: disable automatic style injection
+			disableCSSInjection: true
 		}
 	});
 });

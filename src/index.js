@@ -15,7 +15,7 @@ import Element from './core/core.element';
 import elements from './elements';
 import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
-import platform from './platforms/platform';
+import platforms from './platforms/platforms';
 import pluginsCore from './core/core.plugins';
 import Scale from './core/core.scale';
 import scaleService from './core/core.scaleService';
@@ -34,7 +34,7 @@ Chart.Element = Element;
 Chart.elements = elements;
 Chart.Interaction = Interaction;
 Chart.layouts = layouts;
-Chart.platform = platform;
+Chart.platforms = platforms;
 Chart.plugins = pluginsCore;
 Chart.Scale = Scale;
 Chart.scaleService = scaleService;
@@ -58,8 +58,6 @@ for (var k in plugins) {
 		Chart.plugins.register(plugins[k]);
 	}
 }
-
-Chart.platform.current.initialize();
 
 if (typeof window !== 'undefined') {
 	window.Chart = Chart;

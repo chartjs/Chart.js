@@ -6,7 +6,7 @@ import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import platform from '../platforms/platform';
+import {BasicPlatform, DomPlatform, Platform} from '../platforms/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
 import Tooltip from './core.tooltip';
@@ -148,13 +148,34 @@ function onAnimationProgress(ctx) {
 	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
 }
 
+/**
+ * Chart.js can take a string id of a canvas element, a 2d context, or a canvas element itself.
+ * Attempt to unwrap the item passed into the chart constructor so that it is a canvas element (if possible).
+ */
+function unwrapItem(item) {
+	if (typeof document !== undefined && typeof item === 'string') {
+		item = document.getElementById(item);
+	} else if (item.length) {
+		// Support for array based queries (such as jQuery)
+		item = item[0];
+	}
+
+	if (item && item.canvas) {
+		// Support for any object associated to a canvas (including a context2d)
+		item = item.canvas;
+	}
+	return item;
+}
+
 class Chart {
 	constructor(item, config) {
 		const me = this;
 
 		config = initConfig(config);
+		const unwrappedItem = unwrapItem(item);
+		me.initializePlatform(unwrappedItem, config);
 
-		const context = platform.current.acquireContext(item, config);
+		const context = me.platform.acquireContext(unwrappedItem, config);
 		const canvas = context && context.canvas;
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
@@ -224,6 +245,26 @@ class Chart {
 		plugins.notify(me, 'afterInit');
 
 		return me;
+	}
+
+	/**
+	 * @private
+	 */
+	initializePlatform(item, config) {
+		const me = this;
+
+		if (config.platform) {
+			if (!(config.platform instanceof Platform)) {
+				throw new Error('If config.platform is used, it must be an instance of Chart.platforms.Platform or one of its descendants');
+			}
+			me.platform = new config.platform(config);
+		} else if (typeof window === 'undefined' || typeof document === 'undefined' || !item) {
+			me.platform = new BasicPlatform(config);
+		} else if (window.OffscreenCanvas && item instanceof window.OffscreenCanvas) {
+			me.platform = new BasicPlatform(config);
+		} else {
+			me.platform = new DomPlatform(config);
+		}
 	}
 
 	clear() {
@@ -851,7 +892,7 @@ class Chart {
 		if (canvas) {
 			me.unbindEvents();
 			helpers.canvas.clear(me);
-			platform.current.releaseContext(me.ctx);
+			me.platform.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
@@ -880,7 +921,7 @@ class Chart {
 		};
 
 		helpers.each(me.options.events, function(type) {
-			platform.current.addEventListener(me, type, listener);
+			me.platform.addEventListener(me, type, listener);
 			listeners[type] = listener;
 		});
 
@@ -891,7 +932,7 @@ class Chart {
 				me.resize();
 			};
 
-			platform.current.addEventListener(me, 'resize', listener);
+			me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		}
 	}
@@ -908,7 +949,7 @@ class Chart {
 
 		delete me._listeners;
 		helpers.each(listeners, function(listener, type) {
-			platform.current.removeEventListener(me, type, listener);
+			me.platform.removeEventListener(me, type, listener);
 		});
 	}
 
