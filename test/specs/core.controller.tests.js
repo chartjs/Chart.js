@@ -728,6 +728,8 @@ describe('Chart', function() {
 				}
 			});
 
+			var wrapper = chart.canvas.parentNode;
+
 			waitForResize(chart, function() {
 				var canvas = chart.canvas;
 				expect(chart).toBeChartOfSize({
@@ -749,6 +751,8 @@ describe('Chart', function() {
 						rw: 455, rh: 455,
 					});
 
+					chart.destroy();
+					window.document.body.removeChild(wrapper);
 					done();
 				});
 				canvas.parentNode.style.width = '455px';
