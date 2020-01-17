@@ -135,25 +135,23 @@ class Rectangle extends Element {
 	}
 
 	draw(ctx) {
-		var options = this.options;
-		var rects = boundingRects(this);
-		var outer = rects.outer;
-		var inner = rects.inner;
-
-		ctx.fillStyle = options.backgroundColor;
-		ctx.fillRect(outer.x, outer.y, outer.w, outer.h);
-
-		if (outer.w === inner.w && outer.h === inner.h) {
-			return;
-		}
+		const options = this.options;
+		const {inner, outer} = boundingRects(this);
 
 		ctx.save();
-		ctx.beginPath();
-		ctx.rect(outer.x, outer.y, outer.w, outer.h);
-		ctx.clip();
-		ctx.fillStyle = options.borderColor;
-		ctx.rect(inner.x, inner.y, inner.w, inner.h);
-		ctx.fill('evenodd');
+
+		if (outer.w !== inner.w || outer.h !== inner.h) {
+			ctx.beginPath();
+			ctx.rect(outer.x, outer.y, outer.w, outer.h);
+			ctx.clip();
+			ctx.rect(inner.x, inner.y, inner.w, inner.h);
+			ctx.fillStyle = options.borderColor;
+			ctx.fill('evenodd');
+		}
+
+		ctx.fillStyle = options.backgroundColor;
+		ctx.fillRect(inner.x, inner.y, inner.w, inner.h);
+
 		ctx.restore();
 	}
 
