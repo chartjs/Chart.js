@@ -29,6 +29,7 @@ function readImageData(url, callback) {
  * @param {object} options - Chart acquisition options.
  * @param {object} options.canvas - Canvas attributes.
  * @param {object} options.wrapper - Canvas wrapper attributes.
+ * @param {boolean} options.useOffscreenCanvas - use an OffscreenCanvas instead of the normal HTMLCanvasElement.
  * @param {boolean} options.persistent - If true, the chart will not be released after the spec.
  */
 function acquireChart(config, options) {
@@ -64,7 +65,21 @@ function acquireChart(config, options) {
 	window.document.body.appendChild(wrapper);
 
 	try {
-		var ctx = canvas.getContext('2d');
+		var ctx;
+		if (options.useOffscreenCanvas) {
+			if (!canvas.transferControlToOffscreen) {
+				// If this browser does not support offscreen canvas, mark the test as 'pending', which will skip the
+				// test.
+				// TODO: switch to skip() once it's implemented (https://github.com/jasmine/jasmine/issues/1709), or
+				// remove if all browsers implement `transferControlToOffscreen`
+				pending();
+				return;
+			}
+			var offscreenCanvas = canvas.transferControlToOffscreen();
+			ctx = offscreenCanvas.getContext('2d');
+		} else {
+			ctx = canvas.getContext('2d');
+		}
 		if (options.spriteText) {
 			spritingOn(ctx);
 		}
