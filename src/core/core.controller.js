@@ -697,7 +697,6 @@ class Chart {
 		const me = this;
 		const ctx = me.ctx;
 		const clip = meta._clip;
-		const canvas = me.canvas;
 		const area = me.chartArea;
 		const args = {
 			meta: meta,
@@ -710,9 +709,9 @@ class Chart {
 
 		helpers.canvas.clipArea(ctx, {
 			left: clip.left === false ? 0 : area.left - clip.left,
-			right: clip.right === false ? canvas.width : area.right + clip.right,
+			right: clip.right === false ? me.width : area.right + clip.right,
 			top: clip.top === false ? 0 : area.top - clip.top,
-			bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
+			bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
 		});
 
 		meta.controller.draw();
