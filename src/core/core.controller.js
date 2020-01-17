@@ -6,7 +6,7 @@ import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform, Platform} from '../platforms/platforms';
+import {BasicPlatform, DomPlatform} from '../platforms/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
 import Tooltip from './core.tooltip';
@@ -148,12 +148,16 @@ function onAnimationProgress(ctx) {
 	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
 }
 
+function isDomSupported() {
+	return typeof window !== undefined && typeof document !== undefined;
+}
+
 /**
  * Chart.js can take a string id of a canvas element, a 2d context, or a canvas element itself.
  * Attempt to unwrap the item passed into the chart constructor so that it is a canvas element (if possible).
  */
 function getCanvas(item) {
-	if (typeof document !== undefined && typeof item === 'string') {
+	if (isDomSupported() && typeof item === 'string') {
 		item = document.getElementById(item);
 	} else if (item.length) {
 		// Support for array based queries (such as jQuery)
@@ -255,7 +259,7 @@ class Chart {
 
 		if (config.platform) {
 			me.platform = new config.platform(config);
-		} else if (typeof window === 'undefined' || typeof document === 'undefined') {
+		} else if (!isDomSupported()) {
 			me.platform = new BasicPlatform(config);
 		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
 			me.platform = new BasicPlatform(config);
