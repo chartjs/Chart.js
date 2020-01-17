@@ -153,9 +153,7 @@ export function getMaximumHeight(domNode) {
 
 export function retinaScale(chart, forceRatio) {
 	const pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
-	const canvas = chart.canvas;
-	const height = chart.height;
-	const width = chart.width;
+	const {canvas, width, height} = chart;
 
 	canvas.height = height * pixelRatio;
 	canvas.width = width * pixelRatio;
