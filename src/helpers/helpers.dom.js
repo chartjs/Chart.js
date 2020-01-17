@@ -124,7 +124,10 @@ export function getRelativePosition(evt, chart) {
 export function getMaximumWidth(domNode) {
 	var container = _getParentNode(domNode);
 	if (!container) {
-		return domNode.clientWidth;
+		if (typeof domNode.clientWidth === 'number') {
+			return domNode.clientWidth;
+		}
+		return domNode.width;
 	}
 
 	var clientWidth = container.clientWidth;
@@ -139,7 +142,10 @@ export function getMaximumWidth(domNode) {
 export function getMaximumHeight(domNode) {
 	var container = _getParentNode(domNode);
 	if (!container) {
-		return domNode.clientHeight;
+		if (typeof domNode.clientHeight === 'number') {
+			return domNode.clientHeight;
+		}
+		return domNode.height;
 	}
 
 	var clientHeight = container.clientHeight;
@@ -162,7 +168,7 @@ export function retinaScale(chart, forceRatio) {
 	// If no style has been set on the canvas, the render size is used as display size,
 	// making the chart visually bigger, so let's enforce it to the "correct" values.
 	// See https://github.com/chartjs/Chart.js/issues/3575
-	if (!canvas.style.height && !canvas.style.width) {
+	if (canvas.style && !canvas.style.height && !canvas.style.width) {
 		canvas.style.height = height + 'px';
 		canvas.style.width = width + 'px';
 	}

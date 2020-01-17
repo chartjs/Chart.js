@@ -294,8 +294,10 @@ class Chart {
 
 		canvas.width = me.width = newWidth;
 		canvas.height = me.height = newHeight;
-		canvas.style.width = newWidth + 'px';
-		canvas.style.height = newHeight + 'px';
+		if (canvas.style) {
+			canvas.style.width = newWidth + 'px';
+			canvas.style.height = newHeight + 'px';
+		}
 
 		helpers.dom.retinaScale(me, newRatio);
 
