@@ -16,7 +16,7 @@ import elements from './elements';
 import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
 import platform from './platforms/platform';
-import pluginsCore from './core/core.plugins';
+import plugins from './core/core.plugins';
 import Scale from './core/core.scale';
 import scaleService from './core/core.scaleService';
 import Ticks from './core/core.ticks';
@@ -35,29 +35,20 @@ Chart.elements = elements;
 Chart.Interaction = Interaction;
 Chart.layouts = layouts;
 Chart.platform = platform;
-Chart.plugins = pluginsCore;
+Chart.plugins = plugins;
 Chart.Scale = Scale;
 Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
 Chart.Tooltip = Tooltip;
 
 // Register built-in scales
-import scales from './scales';
-Object.keys(scales).forEach(function(type) {
-	const scale = scales[type];
-	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
-});
+import './scales';
 
 // Load to register built-in adapters (as side effects)
 import './adapters';
 
 // Loading built-in plugins
-import plugins from './plugins';
-for (var k in plugins) {
-	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
-		Chart.plugins.register(plugins[k]);
-	}
-}
+import './plugins';
 
 Chart.platform.initialize();
 

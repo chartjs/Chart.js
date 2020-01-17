@@ -1,6 +1,7 @@
 'use strict';
 
 import Scale from '../core/core.scale';
+import scaleService from '../core/core.scaleService';
 
 const defaultConfig = {
 };
@@ -97,4 +98,7 @@ class CategoryScale extends Scale {
 
 // INTERNAL: static default options, registered in src/index.js
 CategoryScale._defaults = defaultConfig;
+
+scaleService.registerScaleType('category', CategoryScale, CategoryScale._defaults);
+
 export default CategoryScale;

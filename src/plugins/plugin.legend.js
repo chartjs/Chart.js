@@ -4,6 +4,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import helpers from '../helpers';
 import layouts from '../core/core.layouts';
+import plugins from '../core/core.plugins';
 
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 const valueOrDefault = helpers.valueOrDefault;
@@ -668,7 +669,7 @@ function createNewLegendAndAttach(chart, legendOpts) {
 	chart.legend = legend;
 }
 
-export default {
+const LegendPlugin = {
 	id: 'legend',
 
 	/**
@@ -715,3 +716,7 @@ export default {
 		}
 	}
 };
+
+plugins.register(LegendPlugin);
+
+export default LegendPlugin;

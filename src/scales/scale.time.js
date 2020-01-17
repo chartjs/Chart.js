@@ -5,6 +5,7 @@ import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
+import scaleService from '../core/core.scaleService';
 
 const resolve = helpers.options.resolve;
 const valueOrDefault = helpers.valueOrDefault;
@@ -764,4 +765,7 @@ class TimeScale extends Scale {
 
 // INTERNAL: static default options, registered in src/index.js
 TimeScale._defaults = defaultConfig;
+
+scaleService.registerScaleType('time', TimeScale, TimeScale._defaults);
+
 export default TimeScale;

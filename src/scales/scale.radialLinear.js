@@ -4,6 +4,7 @@ import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
+import scaleService from '../core/core.scaleService';
 import Ticks from '../core/core.ticks';
 
 const valueOrDefault = helpers.valueOrDefault;
@@ -527,4 +528,7 @@ class RadialLinearScale extends LinearScaleBase {
 
 // INTERNAL: static default options, registered in src/index.js
 RadialLinearScale._defaults = defaultConfig;
+
+scaleService.registerScaleType('radialLinear', RadialLinearScale, RadialLinearScale._defaults);
+
 export default RadialLinearScale;

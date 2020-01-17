@@ -7,9 +7,9 @@ import radialLinear from './scale.radialLinear';
 import time from './scale.time';
 
 export default {
-	category: category,
-	linear: linear,
-	logarithmic: logarithmic,
-	radialLinear: radialLinear,
-	time: time
+	category,
+	linear,
+	logarithmic,
+	radialLinear,
+	time
 };

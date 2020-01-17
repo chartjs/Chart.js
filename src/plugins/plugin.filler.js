@@ -8,6 +8,7 @@
 
 import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
+import plugins from '../core/core.plugins';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {valueOrDefault, isFinite, isArray, extend} from '../helpers/helpers.core';
@@ -372,7 +373,7 @@ function doFill(ctx, cfg) {
 	ctx.restore();
 }
 
-export default {
+const FillerPlugin = {
 	id: 'filler',
 
 	afterDatasetsUpdate: function(chart, options) {
@@ -444,3 +445,7 @@ export default {
 		}
 	}
 };
+
+plugins.register(FillerPlugin);
+
+export default FillerPlugin;

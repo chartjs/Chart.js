@@ -3,6 +3,7 @@
 import {isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_parseFont} from '../helpers/helpers.options';
 import LinearScaleBase from './scale.linearbase';
+import scaleService from '../core/core.scaleService';
 import Ticks from '../core/core.ticks';
 
 const defaultConfig = {
@@ -73,4 +74,7 @@ class LinearScale extends LinearScaleBase {
 
 // INTERNAL: static default options, registered in src/index.js
 LinearScale._defaults = defaultConfig;
+
+scaleService.registerScaleType('linear', LinearScale, LinearScale._defaults);
+
 export default LinearScale;

@@ -4,6 +4,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import helpers from '../helpers/index';
 import layouts from '../core/core.layouts';
+import plugins from '../core/core.plugins';
 
 defaults._set('title', {
 	align: 'center',
@@ -216,7 +217,7 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 	chart.titleBlock = title;
 }
 
-export default {
+const TitlePlugin = {
 	id: 'title',
 
 	/**
@@ -255,3 +256,7 @@ export default {
 		}
 	}
 };
+
+plugins.register(TitlePlugin);
+
+export default TitlePlugin;

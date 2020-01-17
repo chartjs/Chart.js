@@ -3,6 +3,7 @@
 import {isFinite} from '../helpers/helpers.core';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
+import scaleService from '../core/core.scaleService';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
@@ -176,4 +177,7 @@ class LogarithmicScale extends Scale {
 
 // INTERNAL: static default options, registered in src/index.js
 LogarithmicScale._defaults = defaultConfig;
+
+scaleService.registerScaleType('logarithmic', LogarithmicScale, LogarithmicScale._defaults);
+
 export default LogarithmicScale;
