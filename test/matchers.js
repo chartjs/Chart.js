@@ -1,7 +1,7 @@
 'use strict';
 
-var pixelmatch = require('pixelmatch');
-var utils = require('./utils');
+import pixelmatch from 'pixelmatch';
+import utils from './utils';
 
 function toPercent(value) {
 	return Math.round(value * 10000) / 100;
@@ -196,7 +196,7 @@ function toEqualImageData() {
 	};
 }
 
-module.exports = {
+export default {
 	toBeCloseToPixel: toBeCloseToPixel,
 	toEqualOneOf: toEqualOneOf,
 	toBeValidChart: toBeValidChart,

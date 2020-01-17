@@ -7,4 +7,4 @@
 
 // Built-in moment adapter that we need to keep for backward compatibility
 // https://github.com/chartjs/Chart.js/issues/5542
-require('./adapter.moment');
+import './adapter.moment';
