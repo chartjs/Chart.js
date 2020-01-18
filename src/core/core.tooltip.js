@@ -790,7 +790,7 @@ class Tooltip extends Element {
 			lines = bodyItem.lines;
 			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
-				if (displayColors) {
+				if (displayColors && j === 0) {
 					me._drawColorBox(ctx, pt, i, rtlHelper);
 				}
 
