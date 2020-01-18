@@ -249,10 +249,6 @@ class Chart {
 		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
 
-		if (me.width === newWidth && me.height === newHeight) {
-			return;
-		}
-
 		canvas.width = me.width = newWidth;
 		canvas.height = me.height = newHeight;
 		canvas.style.width = newWidth + 'px';

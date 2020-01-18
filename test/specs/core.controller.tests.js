@@ -547,6 +547,40 @@ describe('Chart', function() {
 			wrapper.style.display = 'block';
 		});
 
+		// https://github.com/chartjs/Chart.js/issues/5485
+		it('should resize the canvas when the devicePixelRatio changes', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					devicePixelRatio: 1
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 400px; height: 200px; position: relative'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 400, dh: 200,
+				rw: 400, rh: 200,
+			});
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 400, dh: 200,
+					rw: 800, rh: 400,
+				});
+
+				done();
+			});
+			chart.options.devicePixelRatio = 2;
+			chart.resize();
+		});
+
 		// https://github.com/chartjs/Chart.js/issues/3790
 		it('should resize the canvas if attached to the DOM after construction', function(done) {
 			var canvas = document.createElement('canvas');
