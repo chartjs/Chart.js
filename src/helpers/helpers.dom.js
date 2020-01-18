@@ -152,24 +152,18 @@ export function getMaximumHeight(domNode) {
 }
 
 export function retinaScale(chart, forceRatio) {
-	var pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
-	if (pixelRatio === 1) {
-		return;
-	}
+	const pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+	const {canvas, width, height} = chart;
 
-	var canvasElement = chart.canvas;
-	var height = chart.height;
-	var width = chart.width;
-
-	canvasElement.height = height * pixelRatio;
-	canvasElement.width = width * pixelRatio;
-	chart.ctx.scale(pixelRatio, pixelRatio);
+	canvas.height = height * pixelRatio;
+	canvas.width = width * pixelRatio;
+	chart.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
 	// If no style has been set on the canvas, the render size is used as display size,
 	// making the chart visually bigger, so let's enforce it to the "correct" values.
 	// See https://github.com/chartjs/Chart.js/issues/3575
-	if (!canvasElement.style.height && !canvasElement.style.width) {
-		canvasElement.style.height = height + 'px';
-		canvasElement.style.width = width + 'px';
+	if (!canvas.style.height && !canvas.style.width) {
+		canvas.style.height = height + 'px';
+		canvas.style.width = width + 'px';
 	}
 }
