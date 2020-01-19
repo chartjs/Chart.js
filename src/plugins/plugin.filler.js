@@ -164,11 +164,11 @@ function pointsFromSegments(boundary, line) {
 		const first = linePoints[segment.start];
 		const last = linePoints[segment.end];
 		if (y !== null) {
-			points.push({x: first.x, y});
-			points.push({x: last.x, y});
+			points.push({x: first.x, y, _prop: 'x', _ref: first});
+			points.push({x: last.x, y, _prop: 'x', _ref: last});
 		} else if (x !== null) {
-			points.push({x, y: first.y});
-			points.push({x, y: last.y});
+			points.push({x, y: first.y, _prop: 'y', _ref: first});
+			points.push({x, y: last.y, _prop: 'y', _ref: last});
 		}
 	});
 	return points;
@@ -263,6 +263,17 @@ function _segments(line, target, property) {
 	const points = line.points;
 	const tpoints = target.points;
 	const parts = [];
+
+	if (target.segments) {
+		// Update properties from reference points. (In case those points are animating)
+		for (let i = 0, ilen = tpoints.length; i < ilen; ++i) {
+			const point = tpoints[i];
+			const prop = point._prop;
+			if (prop) {
+				point[prop] = point._ref[prop];
+			}
+		}
+	}
 
 	for (let segment of line.segments) {
 		const bounds = getBounds(property, points[segment.start], points[segment.end], segment.loop);
