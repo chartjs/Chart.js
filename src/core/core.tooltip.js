@@ -788,12 +788,12 @@ class Tooltip extends Element {
 			helpers.each(bodyItem.before, fillLineOfText);
 
 			lines = bodyItem.lines;
-			for (j = 0, jlen = lines.length; j < jlen; ++j) {
-				// Draw Legend-like boxes if needed
-				if (displayColors) {
-					me._drawColorBox(ctx, pt, i, rtlHelper);
-				}
+			// Draw Legend-like boxes if needed
+			if (displayColors && lines.length) {
+				me._drawColorBox(ctx, pt, i, rtlHelper);
+			}
 
+			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				fillLineOfText(lines[j]);
 			}
 
