@@ -241,6 +241,7 @@ class Chart {
 		const options = me.options;
 		const canvas = me.canvas;
 		const aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
+		const oldRatio = me.currentDevicePixelRatio;
 
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
@@ -248,13 +249,18 @@ class Chart {
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
+		const newRatio = options.devicePixelRatio || platform.getDevicePixelRatio();
+
+		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
+			return;
+		}
 
 		canvas.width = me.width = newWidth;
 		canvas.height = me.height = newHeight;
 		canvas.style.width = newWidth + 'px';
 		canvas.style.height = newHeight + 'px';
 
-		helpers.dom.retinaScale(me, options.devicePixelRatio);
+		helpers.dom.retinaScale(me, newRatio);
 
 		if (!silent) {
 			// Notify any plugins about the resize

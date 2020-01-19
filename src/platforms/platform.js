@@ -50,7 +50,14 @@ export default helpers.extend({
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener: function() {}
+	removeEventListener: function() {},
+
+	/**
+	 * Returs current devicePixelRatio of the device this platform is connected to.
+	 */
+	getDevicePixelRatio: function() {
+		return 1;
+	}
 
 }, implementation);
 

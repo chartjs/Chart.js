@@ -445,5 +445,9 @@ export default {
 		}
 
 		removeListener(canvas, type, proxy);
+	},
+
+	getDevicePixelRatio: function() {
+		return window.devicePixelRatio;
 	}
 };
