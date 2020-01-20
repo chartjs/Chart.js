@@ -1007,7 +1007,7 @@ export default {
 	_element: Tooltip,
 
 	afterInit: function(chart) {
-		var tooltipOpts = chart.options.tooltips;
+		const tooltipOpts = chart.options.tooltips;
 
 		if (tooltipOpts) {
 			chart.tooltip = new Tooltip({_chart: chart});
