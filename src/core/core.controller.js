@@ -9,7 +9,6 @@ import layouts from './core.layouts';
 import platform from '../platforms/platform';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
-import Tooltip from './core.tooltip';
 
 const valueOrDefault = helpers.valueOrDefault;
 
@@ -117,8 +116,6 @@ function updateConfig(chart) {
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
-
-	chart.tooltip.initialize();
 }
 
 const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
@@ -217,8 +214,6 @@ class Chart {
 			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
 		}
-
-		me.initToolTip();
 
 		// After init plugin notification
 		plugins.notify(me, 'afterInit');
@@ -466,7 +461,7 @@ class Chart {
 	*/
 	reset() {
 		this.resetElements();
-		this.tooltip.initialize();
+		plugins.notify(this, 'reset');
 	}
 
 	update(mode) {
@@ -638,8 +633,6 @@ class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		me._drawTooltip();
-
 		plugins.notify(me, 'afterDraw');
 	}
 
@@ -721,27 +714,6 @@ class Chart {
 		helpers.canvas.unclipArea(ctx);
 
 		plugins.notify(me, 'afterDatasetDraw', [args]);
-	}
-
-	/**
-	 * Draws tooltip unless a plugin returns `false` to the `beforeTooltipDraw`
-	 * hook, in which case, plugins will not be called on `afterTooltipDraw`.
-	 * @private
-	 */
-	_drawTooltip() {
-		const me = this;
-		const tooltip = me.tooltip;
-		const args = {
-			tooltip: tooltip
-		};
-
-		if (plugins.notify(me, 'beforeTooltipDraw', [args]) === false) {
-			return;
-		}
-
-		tooltip.draw(me.ctx);
-
-		plugins.notify(me, 'afterTooltipDraw', [args]);
 	}
 
 	/**
@@ -866,10 +838,6 @@ class Chart {
 		return this.canvas.toDataURL.apply(this.canvas, arguments);
 	}
 
-	initToolTip() {
-		this.tooltip = new Tooltip({_chart: this});
-	}
-
 	/**
 	 * @private
 	 */
@@ -958,17 +926,12 @@ class Chart {
 	 */
 	eventHandler(e) {
 		const me = this;
-		const tooltip = me.tooltip;
 
 		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
 			return;
 		}
 
 		me.handleEvent(e);
-
-		if (tooltip) {
-			tooltip.handleEvent(e);
-		}
 
 		plugins.notify(me, 'afterEvent', [e]);
 

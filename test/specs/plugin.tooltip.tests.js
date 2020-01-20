@@ -1,4 +1,6 @@
 // Test the rectangle element
+const Tooltip = Chart.plugins.getAll().find(p => p.id === 'tooltip')._element;
+
 describe('Core.Tooltip', function() {
 	describe('auto', jasmine.fixture.specs('core.tooltip'));
 
@@ -890,11 +892,11 @@ describe('Core.Tooltip', function() {
 	describe('positioners', function() {
 		it('Should call custom positioner with correct parameters and scope', function(done) {
 
-			Chart.Tooltip.positioners.test = function() {
+			Tooltip.positioners.test = function() {
 				return {x: 0, y: 0};
 			};
 
-			spyOn(Chart.Tooltip.positioners, 'test').and.callThrough();
+			spyOn(Tooltip.positioners, 'test').and.callThrough();
 
 			var chart = window.acquireChart({
 				type: 'line',
@@ -925,14 +927,14 @@ describe('Core.Tooltip', function() {
 			var datasetIndex = 0;
 			var meta = chart.getDatasetMeta(datasetIndex);
 			var point = meta.data[pointIndex];
-			var fn = Chart.Tooltip.positioners.test;
+			var fn = Tooltip.positioners.test;
 
 			afterEvent(chart, 'mousemove', function() {
 				expect(fn.calls.count()).toBe(1);
 				expect(fn.calls.first().args[0] instanceof Array).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
-				expect(fn.calls.first().object instanceof Chart.Tooltip).toBe(true);
+				expect(fn.calls.first().object instanceof Tooltip).toBe(true);
 
 				done();
 			});
@@ -1261,7 +1263,7 @@ describe('Core.Tooltip', function() {
 		];
 
 		var mockContext = window.createMockContext();
-		var tooltip = new Chart.Tooltip({
+		var tooltip = new Tooltip({
 			_chart: {
 				options: {
 					tooltips: {
