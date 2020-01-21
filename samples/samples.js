@@ -122,6 +122,9 @@
 			title: 'Line (point data)',
 			path: 'scales/time/line-point-data.html'
 		}, {
+			title: 'Line (break on 2 day gap)',
+			path: 'scales/time/line-max-span.html'
+		}, {
 			title: 'Time Series',
 			path: 'scales/time/financial.html'
 		}, {

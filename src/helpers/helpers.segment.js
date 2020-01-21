@@ -179,11 +179,11 @@ function solidSegments(points, start, max, loop) {
 
 	for (end = start + 1; end <= max; ++end) {
 		const cur = points[end % count];
-		if (cur.skip) {
+		if (cur.skip || cur.stop) {
 			if (!prev.skip) {
 				loop = false;
 				result.push({start: start % count, end: (end - 1) % count, loop});
-				start = last = null;
+				start = last = cur.stop ? end : null;
 			}
 		} else {
 			last = end;
@@ -218,7 +218,7 @@ export function _computeSegments(line) {
 	const loop = !!line._loop;
 	const {start, end} = findStartAndEnd(points, count, loop, spanGaps);
 
-	if (spanGaps) {
+	if (spanGaps === true) {
 		return [{start, end, loop}];
 	}
 
