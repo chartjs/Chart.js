@@ -148,7 +148,7 @@ describe('Core.Tooltip', function() {
 
 				done();
 			});
-			jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: chart.chartArea.top});
+			jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: chart.chartArea.top + 10});
 		});
 
 		it('Should only display if intersecting if intersect is set', function(done) {
