@@ -184,6 +184,7 @@ function getTarget(source) {
 	const boundary = computeBoundary(source);
 	let points = [];
 	let _loop = false;
+	let _refPoints = false;
 
 	if (boundary instanceof simpleArc) {
 		return boundary;
@@ -194,8 +195,15 @@ function getTarget(source) {
 		points = boundary;
 	} else {
 		points = pointsFromSegments(boundary, line);
+		_refPoints = true;
 	}
-	return points.length ? new Line({points, options: {tension: 0}, _loop, _fullLoop: _loop}) : null;
+	return points.length ? new Line({
+		points,
+		options: {tension: 0},
+		_loop,
+		_fullLoop: _loop,
+		_refPoints
+	}) : null;
 }
 
 function resolveTarget(sources, index, propagate) {
@@ -264,7 +272,7 @@ function _segments(line, target, property) {
 	const tpoints = target.points;
 	const parts = [];
 
-	if (target.segments) {
+	if (target._refPoints) {
 		// Update properties from reference points. (In case those points are animating)
 		for (let i = 0, ilen = tpoints.length; i < ilen; ++i) {
 			const point = tpoints[i];
