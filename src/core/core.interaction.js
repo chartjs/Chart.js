@@ -57,6 +57,9 @@ function binarySearch(metaset, axis, value, intersect) {
 		if (!intersect) {
 			return lookupMethod(data, axis, value);
 		} else if (controller._sharedOptions) {
+			// _sharedOptions indicates that each element has equal options -> equal proportions
+			// So we can do a ranged binary search based on the range of first element and
+			// be confident to get the full range of indices that can intersect with the value.
 			const el = data[0];
 			const range = typeof el.getRange === 'function' && el.getRange(axis);
 			if (range) {
@@ -66,6 +69,7 @@ function binarySearch(metaset, axis, value, intersect) {
 			}
 		}
 	}
+	// Default to all elements, when binary search can not be used.
 	return {lo: 0, hi: data.length - 1};
 }
 
