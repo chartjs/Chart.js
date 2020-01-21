@@ -888,10 +888,6 @@ class Chart {
 		if (mode === 'dataset') {
 			meta = this.getDatasetMeta(items[0].datasetIndex);
 			meta.controller['_' + prefix + 'DatasetHoverStyle']();
-			for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-				meta.controller[prefix + 'HoverStyle'](meta.data[i], items[0].datasetIndex, i);
-			}
-			return;
 		}
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {

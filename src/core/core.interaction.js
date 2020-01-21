@@ -228,7 +228,12 @@ export default {
 			let items = options.intersect ? getIntersectItems(chart, position, axis) : getNearestItems(chart, position, axis);
 
 			if (items.length > 0) {
-				items = [{datasetIndex: items[0].datasetIndex}]; // when mode: 'dataset' we only need to return datasetIndex
+				const datasetIndex = items[0].datasetIndex;
+				const data = chart.getDatasetMeta(datasetIndex).data;
+				items = [];
+				for (let i = 0; i < data.length; ++i) {
+					items.push({element: data[i], datasetIndex, index: i});
+				}
 			}
 
 			return items;

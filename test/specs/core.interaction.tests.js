@@ -227,8 +227,8 @@ describe('Core.Interaction', function() {
 					y: point.y
 				};
 
-				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true});
-				expect(elements).toEqual([{datasetIndex: 0}]);
+				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true}).map(item => item.element);
+				expect(elements).toEqual(meta.data);
 			});
 
 			it ('should return an empty array if nothing found', function() {
@@ -283,8 +283,8 @@ describe('Core.Interaction', function() {
 					y: chart.chartArea.top
 				};
 
-				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'x', intersect: false});
-				expect(elements).toEqual([{datasetIndex: 0}]);
+				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
+				expect(elements).toEqual(chart.getDatasetMeta(0).data);
 			});
 
 			it ('axis: y gets correct items', function() {
@@ -297,8 +297,8 @@ describe('Core.Interaction', function() {
 					y: chart.chartArea.top
 				};
 
-				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'y', intersect: false});
-				expect(elements).toEqual([{datasetIndex: 1}]);
+				var elements = Chart.Interaction.modes.dataset(chart, evt, {axis: 'y', intersect: false}).map(item => item.element);
+				expect(elements).toEqual(chart.getDatasetMeta(1).data);
 			});
 
 			it ('axis: xy gets correct items', function() {
@@ -311,8 +311,8 @@ describe('Core.Interaction', function() {
 					y: chart.chartArea.top
 				};
 
-				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: false});
-				expect(elements).toEqual([{datasetIndex: 1}]);
+				var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: false}).map(item => item.element);
+				expect(elements).toEqual(chart.getDatasetMeta(1).data);
 			});
 		});
 	});
