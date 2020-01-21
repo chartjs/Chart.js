@@ -3,11 +3,9 @@
 /**
  * Abstract class that allows abstracting platform dependencies away from the chart.
  */
-export default class Platform {
+export default class BasePlatform {
 	/**
 	 * @constructor
-	 * The Platform constructor has no required parameters, but chart options are passed in as
-	 * the first and only parameter to all Platform constructors.
 	 */
 	constructor() {}
 

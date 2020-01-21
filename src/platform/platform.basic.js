@@ -5,14 +5,14 @@
 
 'use strict';
 
-import Platform from './platform';
+import BasePlatform from './platform.base';
 
 /**
  * Platform class for charts without access to the DOM or to many element properties
  * This platform is used by default for any chart passed an OffscreenCanvas.
- * @extends Platform
+ * @extends BasePlatform
  */
-export default class BasicPlatform extends Platform {
+export default class BasicPlatform extends BasePlatform {
 	acquireContext(item) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker

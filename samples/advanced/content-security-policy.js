@@ -1,6 +1,8 @@
 var utils = Samples.utils;
 
 utils.srand(110);
+// CSP: disable automatic style injection
+Chart.platform.disableCSSInjection = true;
 
 function generateData() {
 	var DATA_COUNT = 16;
@@ -46,8 +48,6 @@ window.addEventListener('load', function() {
 					}
 				}
 			},
-			// CSP: disable automatic style injection
-			disableCSSInjection: true
 		}
 	});
 });

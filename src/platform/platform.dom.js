@@ -6,7 +6,8 @@
 
 import helpers from '../helpers';
 import stylesheet from './platform.dom.css';
-import Platform from './platform';
+import BasePlatform from './platform.base';
+import platform from './platform';
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -315,14 +316,13 @@ function injectCSS(rootNode, css) {
 
 /**
  * Platform class for charts that can access the DOM and global window/document properties
- * @extends Platform
+ * @extends BasePlatform
  */
-export default class DomPlatform extends Platform {
+export default class DomPlatform extends BasePlatform {
 	/**
 	 * @constructor
-	 * @param {object} options - The chart options
 	 */
-	constructor(options) {
+	constructor() {
 		super();
 
 		/**
@@ -332,7 +332,7 @@ export default class DomPlatform extends Platform {
 		 * to be manually imported to make this library compatible with any CSP.
 		 * See https://github.com/chartjs/Chart.js/issues/5208
 		 */
-		this.disableCSSInjection = options.disableCSSInjection;
+		this.disableCSSInjection = platform.disableCSSInjection;
 	}
 
 	/**

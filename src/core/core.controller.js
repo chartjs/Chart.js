@@ -6,7 +6,7 @@ import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform} from '../platforms/platforms';
+import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
 
@@ -253,13 +253,13 @@ class Chart {
 		const me = this;
 
 		if (config.platform) {
-			me.platform = new config.platform(config);
+			me.platform = new config.platform();
 		} else if (!isDomSupported()) {
-			me.platform = new BasicPlatform(config);
+			me.platform = new BasicPlatform();
 		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
-			me.platform = new BasicPlatform(config);
+			me.platform = new BasicPlatform();
 		} else {
-			me.platform = new DomPlatform(config);
+			me.platform = new DomPlatform();
 		}
 	}
 
