@@ -932,21 +932,17 @@ class Chart {
 		plugins.notify(me, 'afterEvent', [e]);
 
 		me.render();
-
-		return me;
 	}
 
 	/**
 	 * Handle an event
-	 * @private
 	 * @param {IEvent} event the event to handle
-	 * @return {boolean} true if the chart needs to re-render
+	 * @private
 	 */
 	handleEvent(e) {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;
-		let changed = false;
 
 		me.lastActive = me.lastActive || [];
 
@@ -961,6 +957,7 @@ class Chart {
 
 		// Invoke onHover hook
 		// Need to call with native event here to not break backwards compatibility
+		// TODO(v3): probably shouldn't have two ways to specify onHover
 		helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
@@ -970,15 +967,12 @@ class Chart {
 			}
 		}
 
-		changed = !helpers._elementsEqual(me.active, me.lastActive);
-		if (changed) {
+		if (!helpers._elementsEqual(me.active, me.lastActive)) {
 			me._updateHoverStyles();
 		}
 
 		// Remember Last Actives
 		me.lastActive = me.active;
-
-		return changed;
 	}
 }
 
