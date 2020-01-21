@@ -61,13 +61,14 @@ Example:
 ```javascript
 /**
  * Custom positioner
- * @function Chart.Tooltip.positioners.custom
+ * @function Tooltip.positioners.custom
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
  */
-Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
-    /** @type {Chart.Tooltip} */
+const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
+tooltipPlugin.positioners.custom = function(elements, eventPosition) {
+    /** @type {Tooltip} */
     var tooltip = this;
 
     /* ... */
@@ -99,7 +100,7 @@ Allows filtering of [tooltip items](#tooltip-item-interface). Must implement at 
 
 ## Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Chart.Tooltip` constructor.
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
 
 All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the `data` object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 

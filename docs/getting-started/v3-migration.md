@@ -79,6 +79,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Chart.Controller`
 * `Chart.prototype.generateLegend`
 * `Chart.types`
+* `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
 * `DatasetController.createMetaDataset`

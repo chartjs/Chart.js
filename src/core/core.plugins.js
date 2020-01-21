@@ -201,6 +201,13 @@ export default {
  * @param {object} options - The plugin options.
  */
 /**
+ * @method IPlugin#reset
+ * @desc Called during chart reset
+ * @param {Chart.Controller} chart - The chart instance.
+ * @param {object} options - The plugin options.
+ * @since version 3.0.0
+ */
+/**
  * @method IPlugin#beforeDatasetsUpdate
  * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
  * the datasets update is cancelled until another `update` is triggered.

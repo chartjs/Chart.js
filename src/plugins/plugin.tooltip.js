@@ -1,9 +1,10 @@
 'use strict';
 
-import defaults from './core.defaults';
-import Element from './core.element';
+import Animations from '../core/core.animations';
+import defaults from '../core/core.defaults';
+import Element from '../core/core.element';
+import plugins from '../core/core.plugins';
 import helpers from '../helpers/index';
-import Animations from './core.animations';
 
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
@@ -1001,4 +1002,49 @@ class Tooltip extends Element {
  */
 Tooltip.positioners = positioners;
 
-export default Tooltip;
+export default {
+	id: 'tooltip',
+	_element: Tooltip,
+	positioners,
+
+	afterInit: function(chart) {
+		const tooltipOpts = chart.options.tooltips;
+
+		if (tooltipOpts) {
+			chart.tooltip = new Tooltip({_chart: chart});
+		}
+	},
+
+	beforeUpdate: function(chart) {
+		if (chart.tooltip) {
+			chart.tooltip.initialize();
+		}
+	},
+
+	reset: function(chart) {
+		if (chart.tooltip) {
+			chart.tooltip.initialize();
+		}
+	},
+
+	afterDraw: function(chart) {
+		const tooltip = chart.tooltip;
+		const args = {
+			tooltip
+		};
+
+		if (plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
+			return;
+		}
+
+		tooltip.draw(chart.ctx);
+
+		plugins.notify(chart, 'afterTooltipDraw', [args]);
+	},
+
+	afterEvent: function(chart, e) {
+		if (chart.tooltip) {
+			chart.tooltip.handleEvent(e);
+		}
+	}
+};
