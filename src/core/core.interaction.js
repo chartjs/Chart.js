@@ -1,8 +1,8 @@
 'use strict';
 
 import helpers from '../helpers/index';
-import {isNumber} from '../helpers/helpers.math';
 import {_isPointInArea} from '../helpers/helpers.canvas';
+import {_lookup, _rlookup} from '../helpers/helpers.collection';
 
 /**
  * Helper function to get relative position for an event
@@ -42,38 +42,58 @@ function evaluateAllVisibleItems(chart, handler) {
 }
 
 /**
- * Helper function to check the items at the hovered index on the index scale
+ * Helper function to do binary search when possible
+ * @param {object} metaset - the dataset meta
+ * @param {string} axis - the axis mide. x|y|xy
+ * @param {number} value - the value to find
+ * @param {boolean} intersect - should the element intersect
+ * @returns {lo, hi} indices to search data array between
+ */
+function binarySearch(metaset, axis, value, intersect) {
+	const {controller, data, _sorted} = metaset;
+	const iScale = controller._cachedMeta.iScale;
+	if (iScale && axis === iScale.axis && _sorted) {
+		const lookupMethod = iScale._reversePixels ? _rlookup : _lookup;
+		if (!intersect) {
+			return lookupMethod(data, axis, value);
+		} else if (controller._sharedOptions) {
+			// _sharedOptions indicates that each element has equal options -> equal proportions
+			// So we can do a ranged binary search based on the range of first element and
+			// be confident to get the full range of indices that can intersect with the value.
+			const el = data[0];
+			const range = typeof el.getRange === 'function' && el.getRange(axis);
+			if (range) {
+				const start = lookupMethod(data, axis, value - range);
+				const end = lookupMethod(data, axis, value + range);
+				return {lo: start.lo, hi: end.hi};
+			}
+		}
+	}
+	// Default to all elements, when binary search can not be used.
+	return {lo: 0, hi: data.length - 1};
+}
+
+/**
+ * Helper function to get items using binary search, when the data is sorted.
  * @param {Chart} chart - the chart
  * @param {string} axis - the axis mode. x|y|xy
  * @param {object} position - the point to be nearest to
  * @param {function} handler - the callback to execute for each visible item
- * @return whether all scales were of a suitable type
+ * @param {boolean} intersect - consider intersecting items
  */
-function evaluateItemsAtIndex(chart, axis, position, handler) {
+function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 	const metasets = chart._getSortedVisibleDatasetMetas();
-	const indices = [];
+	const value = position[axis];
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
-		const metaset = metasets[i];
-		const iScale = metaset.controller._cachedMeta.iScale;
-		if (!iScale || axis !== iScale.axis || !iScale.getIndexForPixel) {
-			return false;
-		}
-		const index = iScale.getIndexForPixel(position[axis]);
-		if (!isNumber(index)) {
-			return false;
-		}
-		indices.push(index);
-	}
-	// do this only after checking whether all scales are of a suitable type
-	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
-		const metaset = metasets[i];
-		const index = indices[i];
-		const element = metaset.data[index];
-		if (!element.skip) {
-			handler(element, metaset.index, index);
+		const {index, data} = metasets[i];
+		let {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
+		for (let j = lo; j <= hi; ++j) {
+			const element = data[j];
+			if (!element.skip) {
+				handler(element, index, j);
+			}
 		}
 	}
-	return true;
 }
 
 /**
@@ -112,12 +132,7 @@ function getIntersectItems(chart, position, axis) {
 		}
 	};
 
-	const optimized = evaluateItemsAtIndex(chart, axis, position, evaluationFunc);
-	if (optimized) {
-		return items;
-	}
-
-	evaluateAllVisibleItems(chart, evaluationFunc);
+	optimizedEvaluateItems(chart, axis, position, evaluationFunc, true);
 	return items;
 }
 
@@ -154,12 +169,7 @@ function getNearestItems(chart, position, axis, intersect) {
 		}
 	};
 
-	const optimized = evaluateItemsAtIndex(chart, axis, position, evaluationFunc);
-	if (optimized) {
-		return items;
-	}
-
-	evaluateAllVisibleItems(chart, evaluationFunc);
+	optimizedEvaluateItems(chart, axis, position, evaluationFunc);
 	return items;
 }
 

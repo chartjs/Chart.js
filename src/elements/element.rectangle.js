@@ -181,6 +181,10 @@ class Rectangle extends Element {
 			y: this.y
 		};
 	}
+
+	getRange(axis) {
+		return axis === 'x' ? this.width / 2 : this.height / 2;
+	}
 }
 
 Rectangle.prototype._type = 'rectangle';

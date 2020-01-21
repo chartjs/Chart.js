@@ -77,6 +77,11 @@ class Point extends Element {
 			helpers.canvas.drawPoint(ctx, options, me.x, me.y);
 		}
 	}
+
+	getRange() {
+		const options = this.options || {};
+		return options.radius + options.hitRadius;
+	}
 }
 
 Point.prototype._type = 'point';

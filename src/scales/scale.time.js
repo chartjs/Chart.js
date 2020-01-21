@@ -5,6 +5,7 @@ import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
+import {_lookup} from '../helpers/helpers.collection';
 
 const resolve = helpers.options.resolve;
 const valueOrDefault = helpers.valueOrDefault;
@@ -130,33 +131,6 @@ function buildLookupTable(timestamps, min, max, distribution) {
 	return table;
 }
 
-// @see adapted from https://www.anujgakhar.com/2014/03/01/binary-search-in-javascript/
-function lookup(table, key, value) {
-	let lo = 0;
-	let hi = table.length - 1;
-	let mid, i0, i1;
-
-	while (lo >= 0 && lo <= hi) {
-		mid = (lo + hi) >> 1;
-		i0 = mid > 0 && table[mid - 1] || null;
-		i1 = table[mid];
-
-		if (!i0) {
-			// given value is outside table (before first item)
-			return {lo: null, hi: i1};
-		} else if (i1[key] < value) {
-			lo = mid + 1;
-		} else if (i0[key] > value) {
-			hi = mid - 1;
-		} else {
-			return {lo: i0, hi: i1};
-		}
-	}
-
-	// given value is outside table (after last item)
-	return {lo: i1, hi: null};
-}
-
 /**
  * Linearly interpolates the given source `value` using the table items `skey` values and
  * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
@@ -164,11 +138,11 @@ function lookup(table, key, value) {
  * index [0, 1] or [n - 1, n] are used for the interpolation.
  */
 function interpolate(table, skey, sval, tkey) {
-	const range = lookup(table, skey, sval);
+	const {lo, hi} = _lookup(table, skey, sval);
 
 	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	const prev = !range.lo ? table[0] : !range.hi ? table[table.length - 2] : range.lo;
-	const next = !range.lo ? table[1] : !range.hi ? table[table.length - 1] : range.hi;
+	const prev = table[lo];
+	const next = table[hi];
 
 	const span = next[skey] - prev[skey];
 	const ratio = span ? (sval - prev[skey]) / span : 0;
@@ -714,15 +688,6 @@ class TimeScale extends Scale {
 		const offsets = me._offsets;
 		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		return interpolate(me._table, 'pos', pos, 'time');
-	}
-
-	getIndexForPixel(pixel) {
-		const me = this;
-		if (me.options.distribution !== 'series') {
-			return null; // not implemented
-		}
-		const index = Math.round(me._numIndices * me.getDecimalForPixel(pixel));
-		return index < 0 || index >= me.numIndices ? null : index;
 	}
 
 	/**

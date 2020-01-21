@@ -980,6 +980,10 @@ helpers.extend(DatasetController.prototype, {
 	 * @private
 	 */
 	_getSharedOptions: function(mode, el, options) {
+		if (!mode) {
+			// store element option sharing status for usage in interactions
+			this._sharedOptions = options && options.$shared;
+		}
 		if (mode !== 'reset' && options && options.$shared && el && el.options && el.options.$shared) {
 			return {target: el.options, options};
 		}
