@@ -6,7 +6,7 @@
 
 'use strict';
 
-var helpers = require('../helpers/index');
+import helpers from '../helpers';
 
 function abstract() {
 	throw new Error(
@@ -105,4 +105,6 @@ DateAdapter.override = function(members) {
 	helpers.extend(DateAdapter.prototype, members);
 };
 
-module.exports._date = DateAdapter;
+export default {
+	_date: DateAdapter
+};

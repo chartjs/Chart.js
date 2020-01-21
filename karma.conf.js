@@ -59,6 +59,7 @@ module.exports = function(karma) {
 		].concat((args.inputs || 'test/specs/**/*.js').split(';')),
 
 		preprocessors: {
+			'test/specs/**/*.js': ['rollup'],
 			'test/index.js': ['rollup'],
 			'src/index.js': ['sources']
 		},

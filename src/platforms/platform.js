@@ -44,6 +44,13 @@ export default class Platform {
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
 	removeEventListener() {}
+
+	/**
+	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
+	 */
+	getDevicePixelRatio() {
+		return 1;
+	}
 }
 
 /**

@@ -16,8 +16,6 @@ describe('Chart namespace', function() {
 			expect(Chart.Scale instanceof Object).toBeTruthy();
 			expect(Chart.scaleService instanceof Object).toBeTruthy();
 			expect(Chart.Ticks instanceof Object).toBeTruthy();
-			expect(Chart.Tooltip instanceof Object).toBeTruthy();
-			expect(Chart.Tooltip.positioners instanceof Object).toBeTruthy();
 		});
 	});
 

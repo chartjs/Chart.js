@@ -20,7 +20,6 @@ import pluginsCore from './core/core.plugins';
 import Scale from './core/core.scale';
 import scaleService from './core/core.scaleService';
 import Ticks from './core/core.ticks';
-import Tooltip from './core/core.tooltip';
 
 Chart.helpers = helpers;
 Chart._adapters = _adapters;
@@ -39,7 +38,6 @@ Chart.plugins = pluginsCore;
 Chart.Scale = Scale;
 Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
-Chart.Tooltip = Tooltip;
 
 // Register built-in scales
 import scales from './scales';

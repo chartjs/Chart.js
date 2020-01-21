@@ -1,8 +1,8 @@
 'use strict';
 
+import * as math from '../../src/helpers/helpers.math';
 
 describe('Chart.helpers.math', function() {
-	var math = Chart.helpers.math;
 	var factorize = math._factorize;
 	var decimalPlaces = math._decimalPlaces;
 

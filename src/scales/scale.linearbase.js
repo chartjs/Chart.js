@@ -13,22 +13,18 @@ const isNullOrUndef = helpers.isNullOrUndef;
  * @returns {number[]} array of tick values
  */
 function generateTicks(generationOptions, dataRange) {
-	var ticks = [];
+	const ticks = [];
 	// To get a "nice" value for the tick spacing, we will use the appropriately named
 	// "nice number" algorithm. See https://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 	// for details.
 
-	var MIN_SPACING = 1e-14;
-	var stepSize = generationOptions.stepSize;
-	var unit = stepSize || 1;
-	var maxNumSpaces = generationOptions.maxTicks - 1;
-	var min = generationOptions.min;
-	var max = generationOptions.max;
-	var precision = generationOptions.precision;
-	var rmin = dataRange.min;
-	var rmax = dataRange.max;
-	var spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
-	var factor, niceMin, niceMax, numSpaces;
+	const MIN_SPACING = 1e-14;
+	const {stepSize, min, max, precision} = generationOptions;
+	const unit = stepSize || 1;
+	const maxNumSpaces = generationOptions.maxTicks - 1;
+	const {min: rmin, max: rmax} = dataRange;
+	let spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
+	let factor, niceMin, niceMax, numSpaces;
 
 	// Beyond MIN_SPACING floating point numbers being to lose precision
 	// such that we can't do the math necessary to generate ticks
@@ -55,12 +51,10 @@ function generateTicks(generationOptions, dataRange) {
 	niceMax = Math.ceil(rmax / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
-	if (stepSize) {
+	if (stepSize && !isNullOrUndef(min) && !isNullOrUndef(max)) {
 		// If very close to our whole number, use it.
-		if (!isNullOrUndef(min) && almostWhole(min / spacing, spacing / 1000)) {
+		if (almostWhole((max - min) / stepSize, spacing / 1000)) {
 			niceMin = min;
-		}
-		if (!isNullOrUndef(max) && almostWhole(max / spacing, spacing / 1000)) {
 			niceMax = max;
 		}
 	}
@@ -163,11 +157,10 @@ class LinearScaleBase extends Scale {
 	}
 
 	getTickLimit() {
-		var me = this;
-		var tickOpts = me.options.ticks;
-		var stepSize = tickOpts.stepSize;
-		var maxTicksLimit = tickOpts.maxTicksLimit;
-		var maxTicks;
+		const me = this;
+		const tickOpts = me.options.ticks;
+		let {maxTicksLimit, stepSize} = tickOpts;
+		let maxTicks;
 
 		if (stepSize) {
 			maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;

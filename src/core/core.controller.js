@@ -9,7 +9,6 @@ import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platforms/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
-import Tooltip from './core.tooltip';
 
 const valueOrDefault = helpers.valueOrDefault;
 
@@ -117,8 +116,6 @@ function updateConfig(chart) {
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
 	chart.ensureScalesHaveIDs();
 	chart.buildOrUpdateScales();
-
-	chart.tooltip.initialize();
 }
 
 const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
@@ -243,8 +240,6 @@ class Chart {
 			me.resize(true);
 		}
 
-		me.initToolTip();
-
 		// After init plugin notification
 		plugins.notify(me, 'afterInit');
 
@@ -283,6 +278,7 @@ class Chart {
 		const options = me.options;
 		const canvas = me.canvas;
 		const aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
+		const oldRatio = me.currentDevicePixelRatio;
 
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
@@ -290,8 +286,9 @@ class Chart {
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
+		const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
 
-		if (me.width === newWidth && me.height === newHeight) {
+		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
 			return;
 		}
 
@@ -300,7 +297,7 @@ class Chart {
 		canvas.style.width = newWidth + 'px';
 		canvas.style.height = newHeight + 'px';
 
-		helpers.dom.retinaScale(me, options.devicePixelRatio);
+		helpers.dom.retinaScale(me, newRatio);
 
 		if (!silent) {
 			// Notify any plugins about the resize
@@ -506,7 +503,7 @@ class Chart {
 	*/
 	reset() {
 		this.resetElements();
-		this.tooltip.initialize();
+		plugins.notify(this, 'reset');
 	}
 
 	update(mode) {
@@ -678,8 +675,6 @@ class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		me._drawTooltip();
-
 		plugins.notify(me, 'afterDraw');
 	}
 
@@ -739,7 +734,6 @@ class Chart {
 		const me = this;
 		const ctx = me.ctx;
 		const clip = meta._clip;
-		const canvas = me.canvas;
 		const area = me.chartArea;
 		const args = {
 			meta: meta,
@@ -752,9 +746,9 @@ class Chart {
 
 		helpers.canvas.clipArea(ctx, {
 			left: clip.left === false ? 0 : area.left - clip.left,
-			right: clip.right === false ? canvas.width : area.right + clip.right,
+			right: clip.right === false ? me.width : area.right + clip.right,
 			top: clip.top === false ? 0 : area.top - clip.top,
-			bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
+			bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
 		});
 
 		meta.controller.draw();
@@ -762,27 +756,6 @@ class Chart {
 		helpers.canvas.unclipArea(ctx);
 
 		plugins.notify(me, 'afterDatasetDraw', [args]);
-	}
-
-	/**
-	 * Draws tooltip unless a plugin returns `false` to the `beforeTooltipDraw`
-	 * hook, in which case, plugins will not be called on `afterTooltipDraw`.
-	 * @private
-	 */
-	_drawTooltip() {
-		const me = this;
-		const tooltip = me.tooltip;
-		const args = {
-			tooltip: tooltip
-		};
-
-		if (plugins.notify(me, 'beforeTooltipDraw', [args]) === false) {
-			return;
-		}
-
-		tooltip.draw(me.ctx);
-
-		plugins.notify(me, 'afterTooltipDraw', [args]);
 	}
 
 	/**
@@ -907,10 +880,6 @@ class Chart {
 		return this.canvas.toDataURL.apply(this.canvas, arguments);
 	}
 
-	initToolTip() {
-		this.tooltip = new Tooltip({_chart: this});
-	}
-
 	/**
 	 * @private
 	 */
@@ -961,10 +930,6 @@ class Chart {
 		if (mode === 'dataset') {
 			meta = this.getDatasetMeta(items[0].datasetIndex);
 			meta.controller['_' + prefix + 'DatasetHoverStyle']();
-			for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-				meta.controller[prefix + 'HoverStyle'](meta.data[i], items[0].datasetIndex, i);
-			}
-			return;
 		}
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
@@ -999,17 +964,12 @@ class Chart {
 	 */
 	eventHandler(e) {
 		const me = this;
-		const tooltip = me.tooltip;
 
 		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
 			return;
 		}
 
 		me.handleEvent(e);
-
-		if (tooltip) {
-			tooltip.handleEvent(e);
-		}
 
 		plugins.notify(me, 'afterEvent', [e]);
 

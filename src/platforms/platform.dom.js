@@ -440,4 +440,8 @@ export default class DomPlatform extends Platform {
 
 		removeListener(canvas, type, proxy);
 	}
+
+	getDevicePixelRatio() {
+		return window.devicePixelRatio;
+	}
 }

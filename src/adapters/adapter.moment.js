@@ -2,10 +2,10 @@
 
 'use strict';
 
-var moment = require('moment');
-var adapters = require('../core/core.adapters');
+import moment from 'moment';
+import adapters from '../core/core.adapters';
 
-var FORMATS = {
+const FORMATS = {
 	datetime: 'MMM D, YYYY, h:mm:ss a',
 	millisecond: 'h:mm:ss.SSS a',
 	second: 'h:mm:ss a',
