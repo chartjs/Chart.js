@@ -1005,6 +1005,7 @@ Tooltip.positioners = positioners;
 export default {
 	id: 'tooltip',
 	_element: Tooltip,
+	positioners,
 
 	afterInit: function(chart) {
 		const tooltipOpts = chart.options.tooltips;
