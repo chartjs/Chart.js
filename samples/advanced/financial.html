@@ -39,7 +39,6 @@
 	<button id="update">update</button>
 	<script>
 		function isFirstUnitOfPeriod(date, unit, period) {
-			date = moment(date);
 			let first = date.clone().startOf(period);
 			while (first.isoWeekday() > 5) {
 				first.add(1, 'days');
@@ -152,11 +151,11 @@
 							// Determine units according to our own logic
 							// Make sure there's at least 10 ticks generated. autoSkip will remove any extras
 							const units = ['second', 'minute', 'hour', 'day', 'month', 'year'];
-							const adapter = scale._adapter;
+							const duration = moment.duration(moment(scale.max).diff(scale.min));
 							const unit = document.getElementById('unit').value;
 							let minorUnit = unit;
 							for (let i = units.indexOf(minorUnit); i < units.length; i++) {
-								const periods = adapter.diff(scale.max, scale.min, units[i]);
+								const periods = duration.as(units[i]);
 								if (periods < 10) {
 									break;
 								}
@@ -169,6 +168,7 @@
 
 							// Generate ticks according to our own logic
 							const timestamps = scale._cache.all;
+							const firstDate = moment(timestamps[0]);
 
 							function findIndex(ts) {
 								// Note that we could make this faster by doing a binary search
@@ -181,17 +181,17 @@
 									}
 								}
 								if (result === 0) {
-									return isFirstUnitOfPeriod(timestamps[0], unit, minorUnit) ? 0 : 1;
+									return isFirstUnitOfPeriod(firstDate, unit, minorUnit) ? 0 : 1;
 								}
 								return result;
 							}
 
 							// minor ticks
-							// Calculate the first period of each minor unit, find the next timestamp, and make it a tick
-							const start = adapter.startOf(scale.min, minorUnit);
+							let start = moment(scale.min).startOf(minorUnit);
+							const end = moment(scale.max);
 							const values = new Set();
-							for (let date = start; date < scale.max; date = adapter.add(date, 1, minorUnit)) {
-								const index = findIndex(date);
+							for (let date = start; date.isBefore(end); date.add(1, minorUnit)) {
+								const index = findIndex(+date);
 								if (index !== -1) {
 									values.add(timestamps[index]);
 								}
@@ -200,7 +200,7 @@
 
 							// major ticks
 							for (let i = 0; i < ticks.length; i++) {
-								if (!majorUnit || isFirstUnitOfPeriod(ticks[i].value, unit, majorUnit)) {
+								if (!majorUnit || isFirstUnitOfPeriod(moment(ticks[i].value), unit, majorUnit)) {
 									ticks[i].major = true;
 								}
 							}
