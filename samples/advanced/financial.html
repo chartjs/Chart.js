@@ -167,15 +167,15 @@
 							}
 
 							// Generate ticks according to our own logic
-							const timestamps = scale._cache.all;
-							const firstDate = moment(timestamps[0]);
+							const data = scale.chart.data.datasets[0].data;
+							const firstDate = moment(data[0].t);
 
 							function findIndex(ts) {
 								// Note that we could make this faster by doing a binary search
 								// However, Chart.helpers.collection._lookup requires key and it's already pretty fast
 								let result = -1;
-								for (let i = 0; i < timestamps.length; i++) {
-									if (timestamps[i] >= ts) {
+								for (let i = 0; i < data.length; i++) {
+									if (data[i].t >= ts) {
 										result = i;
 										break;
 									}
@@ -193,7 +193,7 @@
 							for (let date = start; date.isBefore(end); date.add(1, minorUnit)) {
 								const index = findIndex(+date);
 								if (index !== -1) {
-									values.add(timestamps[index]);
+									values.add(data[index].t);
 								}
 							}
 							const ticks = Array.from(values, value => ({value}));
