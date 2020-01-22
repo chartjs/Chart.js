@@ -2,7 +2,7 @@
 
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import elements from '../elements';
+import Arc from '../elements/element.arc';
 import helpers from '../helpers';
 
 const valueOrDefault = helpers.valueOrDefault;
@@ -100,7 +100,7 @@ defaults._set('doughnut', {
 
 export default DatasetController.extend({
 
-	dataElementType: elements.Arc,
+	dataElementType: Arc,
 
 	linkScales: helpers.noop,
 

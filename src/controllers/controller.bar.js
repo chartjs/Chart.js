@@ -2,7 +2,7 @@
 
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import elements from '../elements';
+import Rectangle from '../elements/element.rectangle';
 import helpers from '../helpers';
 
 const valueOrDefault = helpers.valueOrDefault;
@@ -184,7 +184,7 @@ function isFloatBar(custom) {
 
 export default DatasetController.extend({
 
-	dataElementType: elements.Rectangle,
+	dataElementType: Rectangle,
 
 	/**
 	 * @private

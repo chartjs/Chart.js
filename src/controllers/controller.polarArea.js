@@ -2,7 +2,7 @@
 
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import elements from '../elements';
+import Arc from '../elements/element.arc';
 import helpers from '../helpers';
 
 const resolve = helpers.options.resolve;
@@ -93,7 +93,7 @@ function getStartAngleRadians(deg) {
 
 export default DatasetController.extend({
 
-	dataElementType: elements.Arc,
+	dataElementType: Arc,
 
 	/**
 	 * @private
