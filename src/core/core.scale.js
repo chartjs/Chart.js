@@ -1129,9 +1129,13 @@ class Scale extends Element {
 
 			if (isHorizontal) {
 				x = pixel;
-				textOffset = position === 'top'
-					? ((!rotation ? 0.5 : 1) - lineCount) * lineHeight
-					: (!rotation ? 0.5 : 0) * lineHeight;
+				if (position === 'top') {
+					textOffset = (Math.sin(rotation) * (lineCount / 2) + 0.5) * lineHeight;
+					textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+				} else {
+					textOffset = Math.sin(rotation) * (lineCount / 2) * lineHeight;
+					textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+				}
 			} else {
 				y = pixel;
 				textOffset = (1 - lineCount) * lineHeight / 2;
