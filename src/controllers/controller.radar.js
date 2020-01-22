@@ -2,7 +2,8 @@
 
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import elements from '../elements';
+import Line from '../elements/element.line';
+import Point from '../elements/element.point';
 import helpers from '../helpers';
 
 const valueOrDefault = helpers.valueOrDefault;
@@ -22,9 +23,9 @@ defaults._set('radar', {
 });
 
 export default DatasetController.extend({
-	datasetElementType: elements.Line,
+	datasetElementType: Line,
 
-	dataElementType: elements.Point,
+	dataElementType: Point,
 
 	/**
 	 * @private

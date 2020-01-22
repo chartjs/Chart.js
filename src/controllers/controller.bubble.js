@@ -2,7 +2,7 @@
 
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import elements from '../elements';
+import Point from '../elements/element.point';
 import helpers from '../helpers';
 
 const resolve = helpers.options.resolve;
@@ -38,7 +38,7 @@ export default DatasetController.extend({
 	/**
 	 * @protected
 	 */
-	dataElementType: elements.Point,
+	dataElementType: Point,
 
 	/**
 	 * @private
