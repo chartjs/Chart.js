@@ -43,6 +43,7 @@ deploy:
   skip_cleanup: true
   file_glob: true
   file:
+  - ./src/**/*
   - ./dist/*.css
   - ./dist/*.js
   - ./dist/*.zip
