@@ -10,7 +10,7 @@ describe('Test the scale service', function() {
 		Constructor.defaults = {
 			testProp: true
 		};
-		Chart.scaleService.registerScaleType(Constructor);
+		Chart.scaleService.registerScales(Constructor);
 
 		// Should equal defaults but not be an identical object
 		expect(Chart.scaleService.getScaleDefaults(type)).toEqual(jasmine.objectContaining({

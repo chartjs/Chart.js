@@ -41,11 +41,7 @@ Chart.Ticks = Ticks;
 
 // Register built-in scales
 import scales from './scales';
-for (let k in scales) {
-	if (Object.prototype.hasOwnProperty.call(scales, k)) {
-		Chart.scaleService.registerScaleType(scales[k]);
-	}
-}
+Chart.scaleService.registerScales(...Object.keys(scales).map(key => scales[key]));
 
 // Load to register built-in adapters (as side effects)
 import './adapters';

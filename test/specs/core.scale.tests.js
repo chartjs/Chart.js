@@ -462,7 +462,7 @@ describe('Core.scale', function() {
 			});
 			customScale.id = 'customScale';
 			customScale.defaults = {};
-			Chart.scaleService.registerScaleType(customScale);
+			Chart.scaleService.registerScales(customScale);
 
 			var chart = window.acquireChart({
 				type: 'line',
