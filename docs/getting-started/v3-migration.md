@@ -13,6 +13,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 * `options.ticks.userCallback` was renamed to `options.ticks.callback`
 * `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
+* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
 
 ### Tooltip
 

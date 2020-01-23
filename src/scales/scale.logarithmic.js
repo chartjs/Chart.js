@@ -4,6 +4,7 @@ import {isFinite} from '../helpers/helpers.core';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
+import Chart from '../core/core.controller';
 import Ticks from '../core/core.ticks';
 
 function isMajor(tickVal) {
@@ -52,7 +53,7 @@ function generateTicks(generationOptions, dataRange) {
 const defaultConfig = {
 	// label settings
 	ticks: {
-		callback: Ticks.formatters.logarithmic,
+		callback: Ticks.formatters.numeric,
 		major: {
 			enabled: true
 		}
@@ -136,7 +137,7 @@ class LogarithmicScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return value === undefined ? 0 : new Intl.NumberFormat().format(value);
+		return value === undefined ? 0 : new Intl.NumberFormat(Chart.platform.locale).format(value);
 	}
 
 	getPixelForTick(index) {

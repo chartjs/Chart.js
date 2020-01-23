@@ -34,6 +34,7 @@ function acquireChart(config, options) {
 	var canvas = document.createElement('canvas');
 	var chart, key;
 
+	Chart.platform.locale = 'en-US';
 	config = config || {};
 	options = options || {};
 	options.canvas = options.canvas || {height: 512, width: 512};

@@ -44,7 +44,7 @@ const defaultConfig = {
 		// Number - The backdrop padding to the side of the label in pixels
 		backdropPaddingX: 2,
 
-		callback: Ticks.formatters.linear
+		callback: Ticks.formatters.numeric
 	},
 
 	pointLabels: {

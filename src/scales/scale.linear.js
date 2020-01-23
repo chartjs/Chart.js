@@ -7,7 +7,7 @@ import Ticks from '../core/core.ticks';
 
 const defaultConfig = {
 	ticks: {
-		callback: Ticks.formatters.linear
+		callback: Ticks.formatters.numeric
 	}
 };
 
