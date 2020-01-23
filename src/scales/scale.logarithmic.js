@@ -174,6 +174,6 @@ class LogarithmicScale extends Scale {
 	}
 }
 
-// INTERNAL: static default options, registered in src/index.js
-LogarithmicScale._defaults = defaultConfig;
+LogarithmicScale.id = 'logarithmic';
+LogarithmicScale.defaults = defaultConfig;
 export default LogarithmicScale;

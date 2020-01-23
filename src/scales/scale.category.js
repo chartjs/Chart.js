@@ -95,6 +95,6 @@ class CategoryScale extends Scale {
 	}
 }
 
-// INTERNAL: static default options, registered in src/index.js
-CategoryScale._defaults = defaultConfig;
+CategoryScale.id = 'category';
+CategoryScale.defaults = defaultConfig;
 export default CategoryScale;

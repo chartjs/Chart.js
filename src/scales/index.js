@@ -1,15 +1,15 @@
 'use strict';
 
-import category from './scale.category';
-import linear from './scale.linear';
-import logarithmic from './scale.logarithmic';
-import radialLinear from './scale.radialLinear';
-import time from './scale.time';
+import CategoryScale from './scale.category';
+import LinearScale from './scale.linear';
+import LogarithmicScale from './scale.logarithmic';
+import RadialLinearScale from './scale.radialLinear';
+import TimeScale from './scale.time';
 
 export default {
-	category: category,
-	linear: linear,
-	logarithmic: logarithmic,
-	radialLinear: radialLinear,
-	time: time
+	CategoryScale,
+	LinearScale,
+	LogarithmicScale,
+	RadialLinearScale,
+	TimeScale
 };

@@ -71,6 +71,7 @@ class LinearScale extends LinearScaleBase {
 	}
 }
 
-// INTERNAL: static default options, registered in src/index.js
-LinearScale._defaults = defaultConfig;
+LinearScale.id = 'linear';
+LinearScale.defaults = defaultConfig;
+
 export default LinearScale;

@@ -727,6 +727,6 @@ class TimeScale extends Scale {
 	}
 }
 
-// INTERNAL: static default options, registered in src/index.js
-TimeScale._defaults = defaultConfig;
+TimeScale.id = 'time';
+TimeScale.defaults = defaultConfig;
 export default TimeScale;

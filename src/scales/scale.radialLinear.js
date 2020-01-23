@@ -525,6 +525,6 @@ class RadialLinearScale extends LinearScaleBase {
 	_drawTitle() {}
 }
 
-// INTERNAL: static default options, registered in src/index.js
-RadialLinearScale._defaults = defaultConfig;
+RadialLinearScale.id = 'radialLinear';
+RadialLinearScale.defaults = defaultConfig;
 export default RadialLinearScale;
