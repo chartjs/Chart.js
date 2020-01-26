@@ -6,7 +6,7 @@ import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import platform from '../platforms/platform';
+import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
 
@@ -145,13 +145,38 @@ function onAnimationProgress(ctx) {
 	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
 }
 
+function isDomSupported() {
+	return typeof window !== undefined && typeof document !== undefined;
+}
+
+/**
+ * Chart.js can take a string id of a canvas element, a 2d context, or a canvas element itself.
+ * Attempt to unwrap the item passed into the chart constructor so that it is a canvas element (if possible).
+ */
+function getCanvas(item) {
+	if (isDomSupported() && typeof item === 'string') {
+		item = document.getElementById(item);
+	} else if (item.length) {
+		// Support for array based queries (such as jQuery)
+		item = item[0];
+	}
+
+	if (item && item.canvas) {
+		// Support for any object associated to a canvas (including a context2d)
+		item = item.canvas;
+	}
+	return item;
+}
+
 class Chart {
 	constructor(item, config) {
 		const me = this;
 
 		config = initConfig(config);
+		const initialCanvas = getCanvas(item);
+		me._initializePlatform(initialCanvas, config);
 
-		const context = platform.acquireContext(item, config);
+		const context = me.platform.acquireContext(initialCanvas, config);
 		const canvas = context && context.canvas;
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
@@ -193,14 +218,14 @@ class Chart {
 		Animator.listen(me, 'complete', onAnimationsComplete);
 		Animator.listen(me, 'progress', onAnimationProgress);
 
-		me.initialize();
+		me._initialize();
 		me.update();
 	}
 
 	/**
 	 * @private
 	 */
-	initialize() {
+	_initialize() {
 		const me = this;
 
 		// Before init plugin notification
@@ -219,6 +244,23 @@ class Chart {
 		plugins.notify(me, 'afterInit');
 
 		return me;
+	}
+
+	/**
+	 * @private
+	 */
+	_initializePlatform(canvas, config) {
+		const me = this;
+
+		if (config.platform) {
+			me.platform = new config.platform();
+		} else if (!isDomSupported()) {
+			me.platform = new BasicPlatform();
+		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
+			me.platform = new BasicPlatform();
+		} else {
+			me.platform = new DomPlatform();
+		}
 	}
 
 	clear() {
@@ -244,7 +286,7 @@ class Chart {
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
-		const newRatio = options.devicePixelRatio || platform.getDevicePixelRatio();
+		const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
 
 		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
 			return;
@@ -824,7 +866,7 @@ class Chart {
 		if (canvas) {
 			me.unbindEvents();
 			helpers.canvas.clear(me);
-			platform.releaseContext(me.ctx);
+			me.platform.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
@@ -849,7 +891,7 @@ class Chart {
 		};
 
 		helpers.each(me.options.events, function(type) {
-			platform.addEventListener(me, type, listener);
+			me.platform.addEventListener(me, type, listener);
 			listeners[type] = listener;
 		});
 
@@ -860,7 +902,7 @@ class Chart {
 				me.resize();
 			};
 
-			platform.addEventListener(me, 'resize', listener);
+			me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		}
 	}
@@ -877,7 +919,7 @@ class Chart {
 
 		delete me._listeners;
 		helpers.each(listeners, function(listener, type) {
-			platform.removeEventListener(me, type, listener);
+			me.platform.removeEventListener(me, type, listener);
 		});
 	}
 

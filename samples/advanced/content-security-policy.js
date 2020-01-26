@@ -1,9 +1,8 @@
 var utils = Samples.utils;
 
+utils.srand(110);
 // CSP: disable automatic style injection
 Chart.platform.disableCSSInjection = true;
-
-utils.srand(110);
 
 function generateData() {
 	var DATA_COUNT = 16;

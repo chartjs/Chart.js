@@ -6,6 +6,8 @@
 
 import helpers from '../helpers';
 import stylesheet from './platform.dom.css';
+import BasePlatform from './platform.base';
+import platform from './platform';
 
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -312,29 +314,33 @@ function injectCSS(rootNode, css) {
 	}
 }
 
-export default {
+/**
+ * Platform class for charts that can access the DOM and global window/document properties
+ * @extends BasePlatform
+ */
+export default class DomPlatform extends BasePlatform {
 	/**
-	 * When `true`, prevents the automatic injection of the stylesheet required to
-	 * correctly detect when the chart is added to the DOM and then resized. This
-	 * switch has been added to allow external stylesheet (`dist/Chart(.min)?.js`)
-	 * to be manually imported to make this library compatible with any CSP.
-	 * See https://github.com/chartjs/Chart.js/issues/5208
+	 * @constructor
 	 */
-	disableCSSInjection: false,
+	constructor() {
+		super();
 
-	/**
-	 * This property holds whether this platform is enabled for the current environment.
-	 * Currently used by platform.js to select the proper implementation.
-	 * @private
-	 */
-	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
+		/**
+		 * When `true`, prevents the automatic injection of the stylesheet required to
+		 * correctly detect when the chart is added to the DOM and then resized. This
+		 * switch has been added to allow external stylesheet (`dist/Chart(.min)?.js`)
+		 * to be manually imported to make this library compatible with any CSP.
+		 * See https://github.com/chartjs/Chart.js/issues/5208
+		 */
+		this.disableCSSInjection = platform.disableCSSInjection;
+	}
 
 	/**
 	 * Initializes resources that depend on platform options.
 	 * @param {HTMLCanvasElement} canvas - The Canvas element.
 	 * @private
 	 */
-	_ensureLoaded: function(canvas) {
+	_ensureLoaded(canvas) {
 		if (!this.disableCSSInjection) {
 			// If the canvas is in a shadow DOM, then the styles must also be inserted
 			// into the same shadow DOM.
@@ -343,45 +349,33 @@ export default {
 			var targetNode = root.host ? root : document.head;
 			injectCSS(targetNode, stylesheet);
 		}
-	},
+	}
 
-	acquireContext: function(item, config) {
-		if (typeof item === 'string') {
-			item = document.getElementById(item);
-		} else if (item.length) {
-			// Support for array based queries (such as jQuery)
-			item = item[0];
-		}
-
-		if (item && item.canvas) {
-			// Support for any object associated to a canvas (including a context2d)
-			item = item.canvas;
-		}
-
+	acquireContext(canvas, config) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker
 		// https://github.com/chartjs/Chart.js/issues/2807
-		var context = item && item.getContext && item.getContext('2d');
+		var context = canvas && canvas.getContext && canvas.getContext('2d');
 
-		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
+		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the canvas is
 		// inside an iframe or when running in a protected environment. We could guess the
 		// types from their toString() value but let's keep things flexible and assume it's
-		// a sufficient condition if the item has a context2D which has item as `canvas`.
+		// a sufficient condition if the canvas has a context2D which has canvas as `canvas`.
 		// https://github.com/chartjs/Chart.js/issues/3887
 		// https://github.com/chartjs/Chart.js/issues/4102
 		// https://github.com/chartjs/Chart.js/issues/4152
-		if (context && context.canvas === item) {
+		if (context && context.canvas === canvas) {
 			// Load platform resources on first chart creation, to make it possible to
 			// import the library before setting platform options.
-			this._ensureLoaded(item);
-			initCanvas(item, config);
+			this._ensureLoaded(canvas);
+			initCanvas(canvas, config);
 			return context;
 		}
 
 		return null;
-	},
+	}
 
-	releaseContext: function(context) {
+	releaseContext(context) {
 		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
 			return;
@@ -410,9 +404,9 @@ export default {
 		canvas.width = canvas.width;
 
 		delete canvas[EXPANDO_KEY];
-	},
+	}
 
-	addEventListener: function(chart, type, listener) {
+	addEventListener(chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
@@ -427,9 +421,9 @@ export default {
 		}, chart);
 
 		addListener(canvas, type, proxy);
-	},
+	}
 
-	removeEventListener: function(chart, type, listener) {
+	removeEventListener(chart, type, listener) {
 		var canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
@@ -445,9 +439,9 @@ export default {
 		}
 
 		removeListener(canvas, type, proxy);
-	},
+	}
 
-	getDevicePixelRatio: function() {
+	getDevicePixelRatio() {
 		return window.devicePixelRatio;
 	}
-};
+}

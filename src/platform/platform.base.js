@@ -1,31 +1,22 @@
 'use strict';
 
-import helpers from '../helpers/index';
-import basic from './platform.basic';
-import dom from './platform.dom';
-
-// @TODO Make possible to select another platform at build time.
-const implementation = dom._enabled ? dom : basic;
-
 /**
- * @namespace Chart.platform
- * @see https://chartjs.gitbooks.io/proposals/content/Platform.html
- * @since 2.4.0
+ * Abstract class that allows abstracting platform dependencies away from the chart.
  */
-export default helpers.extend({
+export default class BasePlatform {
 	/**
-	 * @since 2.7.0
+	 * @constructor
 	 */
-	initialize: function() {},
+	constructor() {}
 
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
-	 * @param {*} item - The native item from which to acquire context (platform specific)
+	 * @param {canvas} canvas - The canvas from which to acquire context (platform specific)
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext: function() {},
+	acquireContext() {}
 
 	/**
 	 * Called at chart destruction time, releases any resources associated to the context
@@ -33,7 +24,7 @@ export default helpers.extend({
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext: function() {},
+	releaseContext() {}
 
 	/**
 	 * Registers the specified listener on the given chart.
@@ -42,7 +33,7 @@ export default helpers.extend({
 	 * @param {function} listener - Receives a notification (an object that implements
 	 * the {@link IEvent} interface) when an event of the specified type occurs.
 	 */
-	addEventListener: function() {},
+	addEventListener() {}
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
@@ -50,25 +41,15 @@ export default helpers.extend({
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener: function() {},
+	removeEventListener() {}
 
 	/**
-	 * Returs current devicePixelRatio of the device this platform is connected to.
+	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
 	 */
-	getDevicePixelRatio: function() {
+	getDevicePixelRatio() {
 		return 1;
 	}
-
-}, implementation);
-
-/**
- * @interface IPlatform
- * Allows abstracting platform dependencies away from the chart
- * @borrows Chart.platform.acquireContext as acquireContext
- * @borrows Chart.platform.releaseContext as releaseContext
- * @borrows Chart.platform.addEventListener as addEventListener
- * @borrows Chart.platform.removeEventListener as removeEventListener
- */
+}
 
 /**
  * @interface IEvent

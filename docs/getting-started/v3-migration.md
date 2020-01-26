@@ -63,6 +63,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 * The dataset option `tension` was renamed to `lineTension`
+* To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
 ### Animations
 
@@ -162,6 +163,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
+* `chart.initialize` was renamed to `chart._initialize` (labeled as private but not named as such)
 
 ### Changed
 
@@ -207,3 +209,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
 
+#### Platform
+
+* `Chart.platform` is no longer the platform object used by charts. It contains only a single configuration option, `disableCSSInjection`. Every chart instance now has a separate platform instance.
+* `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `BasePlatform`, a class that all platforms must extend from.
+* If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
