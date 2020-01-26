@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+	<script src="../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width:1000px">
+		<p>This example demonstrates a time series scale with custom logic for generating minor and major ticks. Major ticks are bolded</p>
+		<p>For more specific functionality for financial charts, please see <a href="https://github.com/chartjs/chartjs-chart-financial">chartjs-chart-financial</a></p>
+		<canvas id="chart1"></canvas>
+	</div>
+	<br>
+	<br>
+	Chart Type:
+	<select id="type">
+		<option value="line">Line</option>
+		<option value="bar">Bar</option>
+	</select>
+	<select id="unit">
+		<option value="second">Second</option>
+		<option value="minute">Minute</option>
+		<option value="hour">Hour</option>
+		<option value="day" selected>Day</option>
+		<option value="month">Month</option>
+		<option value="year">Year</option>
+	</select>
+	<button id="update">update</button>
+	<script>
+		function isFirstUnitOfPeriod(date, unit, period) {
+			let first = date.clone().startOf(period);
+			while (first.isoWeekday() > 5) {
+				first.add(1, 'days');
+			}
+			if (unit === 'second' || unit === 'minute' || unit === 'hour') {
+				first = first.hours(9).minutes(30);
+			}
+			return date.isSame(first);
+		}
+
+		// Generate data between the stock market hours of 9:30am - 5pm.
+		// This method is slow and unoptimized, but in real life we'd be fetching it from the server.
+		function generateData() {
+			const unit = document.getElementById('unit').value;
+
+			function unitLessThanDay() {
+				return unit === 'second' || unit === 'minute' || unit === 'hour';
+			}
+
+			function beforeNineThirty(date) {
+				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
+			}
+
+			// Returns true if outside 9:30am-4pm on a weekday
+			function outsideMarketHours(date) {
+				if (date.isoWeekday() > 5) {
+					return true;
+				}
+				if (unitLessThanDay() && (beforeNineThirty(date) || date.hour() > 16)) {
+					return true;
+				}
+				return false;
+			}
+
+			function randomNumber(min, max) {
+				return Math.random() * (max - min) + min;
+			}
+
+			function randomBar(date, lastClose) {
+				const open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
+				const close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
+				return {
+					t: date.valueOf(),
+					y: close
+				};
+			}
+
+			let date = moment('Jan 01 1990', 'MMM DD YYYY');
+			const now = moment();
+			const data = [];
+			const lessThanDay = unitLessThanDay();
+			for (; data.length < 600 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+				if (outsideMarketHours(date)) {
+					if (!lessThanDay || !beforeNineThirty(date)) {
+						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
+					}
+					if (lessThanDay) {
+						date = date.hour(9).minute(30).second(0);
+					}
+				}
+				data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
+			}
+
+			return data;
+		}
+
+		const ctx = document.getElementById('chart1').getContext('2d');
+		ctx.canvas.width = 1000;
+		ctx.canvas.height = 300;
+
+		const color = Chart.helpers.color;
+		const cfg = {
+			data: {
+				datasets: [{
+					label: 'CHRT - Chart.js Corporation',
+					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.red,
+					data: generateData(),
+					type: 'line',
+					pointRadius: 0,
+					fill: false,
+					lineTension: 0,
+					borderWidth: 2
+				}]
+			},
+			options: {
+				animation: {
+					duration: 0
+				},
+				scales: {
+					x: {
+						type: 'time',
+						distribution: 'series',
+						offset: true,
+						ticks: {
+							major: {
+								enabled: true,
+							},
+							fontStyle: function(context) {
+								return context.tick.major ? 'bold' : undefined;
+							},
+							source: 'labels', // We provided no labels. Generate no ticks. We'll make our own
+							autoSkip: true,
+							autoSkipPadding: 75,
+							maxRotation: 0,
+							sampleSize: 100
+						},
+						// Custom logic that chooses ticks from dataset timestamp by choosing first timestamp in time period
+						afterBuildTicks: function(scale) {
+							// Determine units according to our own logic
+							// Make sure there's at least 10 ticks generated. autoSkip will remove any extras
+							const units = ['second', 'minute', 'hour', 'day', 'month', 'year'];
+							const duration = moment.duration(moment(scale.max).diff(scale.min));
+							const unit = document.getElementById('unit').value;
+							let minorUnit = unit;
+							for (let i = units.indexOf(minorUnit); i < units.length; i++) {
+								const periods = duration.as(units[i]);
+								if (periods < 10) {
+									break;
+								}
+								minorUnit = units[i];
+							}
+							let majorUnit;
+							if (units.indexOf(minorUnit) !== units.length - 1) {
+								majorUnit = units[units.indexOf(minorUnit) + 1];
+							}
+
+							// Generate ticks according to our own logic
+							const data = scale.chart.data.datasets[0].data;
+							const firstDate = moment(data[0].t);
+
+							function findIndex(ts) {
+								// Note that we could make this faster by doing a binary search
+								// However, Chart.helpers.collection._lookup requires key and it's already pretty fast
+								let result = -1;
+								for (let i = 0; i < data.length; i++) {
+									if (data[i].t >= ts) {
+										result = i;
+										break;
+									}
+								}
+								if (result === 0) {
+									return isFirstUnitOfPeriod(firstDate, unit, minorUnit) ? 0 : 1;
+								}
+								return result;
+							}
+
+							// minor ticks
+							let start = moment(scale.min).startOf(minorUnit);
+							const end = moment(scale.max);
+							const values = new Set();
+							for (let date = start; date.isBefore(end); date.add(1, minorUnit)) {
+								const index = findIndex(+date);
+								if (index !== -1) {
+									values.add(data[index].t);
+								}
+							}
+							const ticks = Array.from(values, value => ({value}));
+
+							// major ticks
+							for (let i = 0; i < ticks.length; i++) {
+								if (!majorUnit || isFirstUnitOfPeriod(moment(ticks[i].value), unit, majorUnit)) {
+									ticks[i].major = true;
+								}
+							}
+							scale.ticks = ticks;
+						}
+					},
+					y: {
+						type: 'linear',
+						gridLines: {
+							drawBorder: false
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Closing price ($)'
+						}
+					}
+				},
+				tooltips: {
+					intersect: false,
+					mode: 'index',
+					callbacks: {
+						label: function(tooltipItem, myData) {
+							let label = myData.datasets[tooltipItem.datasetIndex].label || '';
+							if (label) {
+								label += ': ';
+							}
+							label += parseFloat(tooltipItem.value).toFixed(2);
+							return label;
+						}
+					}
+				}
+			}
+		};
+
+		const chart = new Chart(ctx, cfg);
+
+		document.getElementById('update').addEventListener('click', function() {
+			const type = document.getElementById('type').value;
+			const dataset = chart.config.data.datasets[0];
+			dataset.type = type;
+			dataset.data = generateData();
+			chart.update();
+		});
+
+	</script>
+</body>
+
+</html>
