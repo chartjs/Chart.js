@@ -84,7 +84,7 @@ defaults._set('tooltips', {
 			}
 			const value = tooltipItem.value;
 			if (!helpers.isNullOrUndef(value)) {
-				label += isNaN(value) ? value : new Intl.NumberFormat().format(value);
+				label += !helpers.isFinite(value) ? value : new Intl.NumberFormat().format(value);
 			}
 			return label;
 		},
