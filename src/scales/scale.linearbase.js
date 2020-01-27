@@ -242,6 +242,10 @@ class LinearScaleBase extends Scale {
 		me._endValue = end;
 		me._valueRange = end - start;
 	}
+
+	getLabelForValue(value) {
+		return new Intl.NumberFormat().format(value);
+	}
 }
 
 export default LinearScaleBase;

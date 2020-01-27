@@ -414,7 +414,7 @@ describe('Test the radial linear scale', function() {
 				}
 			}
 		});
-		expect(chart.scales.r.getLabelForValue(5)).toBe(5);
+		expect(chart.scales.r.getLabelForValue(5)).toBe('5');
 	});
 
 	it('should get the correct distance from the center point', function() {

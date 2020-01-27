@@ -332,7 +332,7 @@ describe('Linear Scale', function() {
 		});
 		chart.update();
 
-		expect(chart.scales.y.getLabelForValue(7)).toBe(7);
+		expect(chart.scales.y.getLabelForValue(7)).toBe('7');
 	});
 
 	it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
