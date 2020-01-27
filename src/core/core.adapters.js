@@ -24,7 +24,7 @@ function abstract() {
 
 /**
  * Currently supported unit string values.
- * @typedef {('millisecond'|'second'|'minute'|'hour'|'day'|'week'|'month'|'quarter'|'year')} Unit
+ * @typedef {('millisecond'|'second'|'minute'|'hour'|'day'|'week'|'isoWeek'|'month'|'quarter'|'year')} Unit
  * @memberof Chart._adapters._date
  */
 

@@ -6,7 +6,6 @@ describe('Time scale tests', function() {
 
 		options = options || {};
 		options.type = 'time';
-		options.id = 'xScale0';
 
 		var chart = window.acquireChart({
 			type: 'line',
@@ -127,7 +126,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(44);
+			expect(ticks.length).toEqual(9);
 		});
 
 		it('should accept labels as date objects', function() {
@@ -138,7 +137,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(scale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(44);
+			expect(ticks.length).toEqual(9);
 		});
 
 		it('should accept data as xy points', function() {
@@ -185,7 +184,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(xScale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(37);
+			expect(ticks.length).toEqual(9);
 		});
 
 		it('should accept data as ty points', function() {
@@ -232,7 +231,7 @@ describe('Time scale tests', function() {
 			var ticks = getLabels(tScale);
 
 			// `bounds === 'data'`: first and last ticks removed since outside the data range
-			expect(ticks.length).toEqual(37);
+			expect(ticks.length).toEqual(9);
 		});
 	});
 
@@ -588,7 +587,7 @@ describe('Time scale tests', function() {
 						},
 					}
 				}
-			}, {canvas: {width: 800, height: 200}});
+			}, {canvas: {width: 600, height: 200}});
 
 			this.scale = this.chart.scales.x;
 		});
@@ -697,7 +696,7 @@ describe('Time scale tests', function() {
 		it('should get the correct labels for ticks', function() {
 			var labels = getLabels(this.scale);
 
-			expect(labels.length).toEqual(21);
+			expect(labels.length).toEqual(13);
 			expect(labels[0]).toEqual('<8:00:00>');
 			expect(labels[labels.length - 1]).toEqual('<8:01:00>');
 		});
@@ -710,7 +709,7 @@ describe('Time scale tests', function() {
 			chart.update();
 
 			var labels = getLabels(this.scale);
-			expect(labels.length).toEqual(21);
+			expect(labels.length).toEqual(13);
 			expect(labels[0]).toEqual('{8:00:00}');
 			expect(labels[labels.length - 1]).toEqual('{8:01:00}');
 		});
@@ -949,8 +948,7 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment('2017', 'YYYY'));
 				expect(scale.max).toEqual(+moment('2043', 'YYYY'));
-				expect(getLabels(scale)).toEqual([
-					'2017', '2018', '2019', '2020', '2025', '2042', '2043']);
+				expect(getLabels(scale)).toEqual(['2017', '2019', '2025', '2043']);
 			});
 			it ('should not add ticks for min and max if they extend the labels range', function() {
 				var chart = this.chart;
@@ -963,8 +961,7 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment('2012', 'YYYY'));
 				expect(scale.max).toEqual(+moment('2051', 'YYYY'));
-				expect(getLabels(scale)).toEqual([
-					'2017', '2018', '2019', '2020', '2025', '2042', '2043']);
+				expect(getLabels(scale)).toEqual(['2017', '2020', '2025', '2042', '2051']);
 			});
 			it ('should not duplicate ticks if min and max are the labels limits', function() {
 				var chart = this.chart;
@@ -977,8 +974,7 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment('2017', 'YYYY'));
 				expect(scale.max).toEqual(+moment('2043', 'YYYY'));
-				expect(getLabels(scale)).toEqual([
-					'2017', '2018', '2019', '2020', '2025', '2042', '2043']);
+				expect(getLabels(scale)).toEqual(['2017', '2019', '2025', '2043']);
 			});
 			it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
 				var chart = this.chart;
@@ -989,8 +985,7 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment('2018', 'YYYY'));
 				expect(scale.max).toEqual(+moment('2043', 'YYYY'));
-				expect(getLabels(scale)).toEqual([
-					'2018', '2020', '2043']);
+				expect(getLabels(scale)).toEqual(['2018', '2020', '2043']);
 			});
 			it ('should correctly handle empty `data.labels` and hidden datasets using `time.unit`', function() {
 				var chart = this.chart;
@@ -1005,7 +1000,7 @@ describe('Time scale tests', function() {
 
 				expect(scale.min).toEqual(+moment().startOf('year'));
 				expect(scale.max).toEqual(+moment().endOf('year') + 1);
-				expect(getLabels(scale)).toEqual([]);
+				expect(getLabels(scale)).toEqual(['2020', '2021']);
 			});
 		});
 	});
@@ -1186,8 +1181,7 @@ describe('Time scale tests', function() {
 				expect(scale.max).toEqual(+moment('02/23 11:00', 'MM/DD HH:mm'));
 				expect(scale.getPixelForValue(moment('02/20 08:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(scale.left);
 				expect(scale.getPixelForValue(moment('02/23 11:00', 'MM/DD HH:mm').valueOf())).toBeCloseToPixel(scale.left + scale.width);
-				expect(getLabels(scale)).toEqual([
-					'Feb 21', 'Feb 22', 'Feb 23']);
+				expect(getLabels(scale)).toEqual(['Feb 21', 'Feb 22', 'Feb 23']);
 			});
 		});
 
@@ -1736,6 +1730,11 @@ describe('Time scale tests', function() {
 							},
 							source: 'data',
 							autoSkip: true
+						},
+						time: {
+							displayFormats: {
+								quarter: 'MMM YYYY'
+							}
 						}
 					},
 				}

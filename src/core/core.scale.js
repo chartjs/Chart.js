@@ -457,6 +457,12 @@ class Scale extends Element {
 		me.determineDataLimits();
 		me.afterDataLimits();
 
+		// _configure is called twice, once here, once from core.controller.updateLayout.
+		// Here we haven't been positioned yet, but dimensions are correct.
+		// Variables set in _configure are needed for buildTicks and calculateLabelRotation.
+		// It's ok that coordinates are not correct yet, only dimensions matter.
+		me._configure();
+
 		me.beforeBuildTicks();
 
 		me.ticks = me.buildTicks() || [];
@@ -469,12 +475,6 @@ class Scale extends Element {
 		samplingEnabled = sampleSize < me.ticks.length;
 		me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
 
-		// _configure is called twice, once here, once from core.controller.updateLayout.
-		// Here we haven't been positioned yet, but dimensions are correct.
-		// Variables set in _configure are needed for calculateLabelRotation, and
-		// it's ok that coordinates are not correct there, only dimensions matter.
-		me._configure();
-
 		// Tick Rotation
 		me.beforeCalculateLabelRotation();
 		me.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
@@ -485,7 +485,7 @@ class Scale extends Element {
 		me.afterFit();
 
 		// Auto-skip
-		me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
+		me.ticks = tickOpts.display && tickOpts.autoSkip ? me._autoSkip(me.ticks) : me.ticks;
 
 		if (samplingEnabled) {
 			// Generate labels using all non-skipped ticks
@@ -1512,7 +1512,7 @@ class Scale extends Element {
 		const context = {
 			chart: me.chart,
 			scale: me,
-			tick: me.ticks[index],
+			tick: me.ticks && me.ticks[index],
 			index: index
 		};
 		return extend(_parseFont({

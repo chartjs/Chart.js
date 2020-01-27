@@ -269,7 +269,7 @@ class LinearScaleBase extends Scale {
 
 	_configure() {
 		const me = this;
-		const ticks = me.ticks;
+		const ticks = me.ticks || [];
 		let start = me.min;
 		let end = me.max;
 
