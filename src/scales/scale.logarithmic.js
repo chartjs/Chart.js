@@ -136,7 +136,7 @@ class LogarithmicScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return value === undefined ? 0 : value;
+		return value === undefined ? 0 : new Intl.NumberFormat().format(value);
 	}
 
 	getPixelForTick(index) {

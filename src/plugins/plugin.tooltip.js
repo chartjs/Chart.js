@@ -77,13 +77,14 @@ defaults._set('tooltips', {
 		// Args are: (tooltipItem, data)
 		beforeLabel: helpers.noop,
 		label: function(tooltipItem, data) {
-			var label = data.datasets[tooltipItem.datasetIndex].label || '';
+			let label = data.datasets[tooltipItem.datasetIndex].label || '';
 
 			if (label) {
 				label += ': ';
 			}
-			if (!helpers.isNullOrUndef(tooltipItem.value)) {
-				label += tooltipItem.value;
+			const value = tooltipItem.value;
+			if (!helpers.isNullOrUndef(value)) {
+				label += value;
 			}
 			return label;
 		},
