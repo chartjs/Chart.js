@@ -9,19 +9,19 @@ import stylesheet from './platform.dom.css';
 import BasePlatform from './platform.base';
 import platform from './platform';
 
-var EXPANDO_KEY = '$chartjs';
-var CSS_PREFIX = 'chartjs-';
-var CSS_SIZE_MONITOR = CSS_PREFIX + 'size-monitor';
-var CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
-var CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
-var ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
+const EXPANDO_KEY = '$chartjs';
+const CSS_PREFIX = 'chartjs-';
+const CSS_SIZE_MONITOR = CSS_PREFIX + 'size-monitor';
+const CSS_RENDER_MONITOR = CSS_PREFIX + 'render-monitor';
+const CSS_RENDER_ANIMATION = CSS_PREFIX + 'render-animation';
+const ANIMATION_START_EVENTS = ['animationstart', 'webkitAnimationStart'];
 
 /**
  * DOM event types -> Chart.js event types.
  * Note: only events with different types are mapped.
  * @see https://developer.mozilla.org/en-US/docs/Web/Events
  */
-var EVENT_TYPES = {
+const EVENT_TYPES = {
 	touchstart: 'mousedown',
 	touchmove: 'mousemove',
 	touchend: 'mouseup',
@@ -54,12 +54,12 @@ function readUsedSize(element, property) {
  * to determine the aspect ratio to apply in case no explicit height has been specified.
  */
 function initCanvas(canvas, config) {
-	var style = canvas.style;
+	const style = canvas.style;
 
 	// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
 	// returns null or '' if no explicit value has been set to the canvas attribute.
-	var renderHeight = canvas.getAttribute('height');
-	var renderWidth = canvas.getAttribute('width');
+	const renderHeight = canvas.getAttribute('height');
+	const renderWidth = canvas.getAttribute('width');
 
 	// Chart.js modifies some canvas values that we want to restore on destroy
 	canvas[EXPANDO_KEY] = {
@@ -80,7 +80,7 @@ function initCanvas(canvas, config) {
 	style.display = style.display || 'block';
 
 	if (renderWidth === null || renderWidth === '') {
-		var displayWidth = readUsedSize(canvas, 'width');
+		const displayWidth = readUsedSize(canvas, 'width');
 		if (displayWidth !== undefined) {
 			canvas.width = displayWidth;
 		}
@@ -93,8 +93,8 @@ function initCanvas(canvas, config) {
 			// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
 			canvas.height = canvas.width / (config.options.aspectRatio || 2);
 		} else {
-			var displayHeight = readUsedSize(canvas, 'height');
-			if (displayWidth !== undefined) {
+			const displayHeight = readUsedSize(canvas, 'height');
+			if (displayHeight !== undefined) {
 				canvas.height = displayHeight;
 			}
 		}
@@ -109,9 +109,9 @@ function initCanvas(canvas, config) {
  * @private
  */
 var supportsEventListenerOptions = (function() {
-	var supports = false;
+	let supports = false;
 	try {
-		var options = Object.defineProperty({}, 'passive', {
+		const options = Object.defineProperty({}, 'passive', {
 			// eslint-disable-next-line getter-return
 			get: function() {
 				supports = true;
@@ -147,14 +147,14 @@ function createEvent(type, chart, x, y, nativeEvent) {
 }
 
 function fromNativeEvent(event, chart) {
-	var type = EVENT_TYPES[event.type] || event.type;
-	var pos = helpers.dom.getRelativePosition(event, chart);
+	const type = EVENT_TYPES[event.type] || event.type;
+	const pos = helpers.dom.getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
 function throttled(fn, thisArg) {
-	var ticking = false;
-	var args = [];
+	let ticking = false;
+	let args = [];
 
 	return function() {
 		args = Array.prototype.slice.call(arguments);
@@ -171,20 +171,20 @@ function throttled(fn, thisArg) {
 }
 
 function createDiv(cls) {
-	var el = document.createElement('div');
+	const el = document.createElement('div');
 	el.className = cls || '';
 	return el;
 }
 
 // Implementation based on https://github.com/marcj/css-element-queries
 function createResizer(handler) {
-	var maxSize = 1000000;
+	const maxSize = 1000000;
 
 	// NOTE(SB) Don't use innerHTML because it could be considered unsafe.
 	// https://github.com/chartjs/Chart.js/issues/5902
-	var resizer = createDiv(CSS_SIZE_MONITOR);
-	var expand = createDiv(CSS_SIZE_MONITOR + '-expand');
-	var shrink = createDiv(CSS_SIZE_MONITOR + '-shrink');
+	const resizer = createDiv(CSS_SIZE_MONITOR);
+	const expand = createDiv(CSS_SIZE_MONITOR + '-expand');
+	const shrink = createDiv(CSS_SIZE_MONITOR + '-shrink');
 
 	expand.appendChild(createDiv());
 	shrink.appendChild(createDiv());
@@ -198,7 +198,7 @@ function createResizer(handler) {
 		shrink.scrollTop = maxSize;
 	};
 
-	var onScroll = function() {
+	const onScroll = function() {
 		resizer._reset();
 		handler();
 	};
@@ -211,8 +211,8 @@ function createResizer(handler) {
 
 // https://davidwalsh.name/detect-node-insertion
 function watchForRender(node, handler) {
-	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
-	var proxy = expando.renderProxy = function(e) {
+	const expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
+	const proxy = expando.renderProxy = function(e) {
 		if (e.animationName === CSS_RENDER_ANIMATION) {
 			handler();
 		}
@@ -233,8 +233,8 @@ function watchForRender(node, handler) {
 }
 
 function unwatchForRender(node) {
-	var expando = node[EXPANDO_KEY] || {};
-	var proxy = expando.renderProxy;
+	const expando = node[EXPANDO_KEY] || {};
+	const proxy = expando.renderProxy;
 
 	if (proxy) {
 		ANIMATION_START_EVENTS.forEach(function(type) {
@@ -248,13 +248,13 @@ function unwatchForRender(node) {
 }
 
 function addResizeListener(node, listener, chart) {
-	var expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
+	const expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
-	var resizer = expando.resizer = createResizer(throttled(function() {
+	const resizer = expando.resizer = createResizer(throttled(function() {
 		if (expando.resizer) {
-			var container = chart.options.maintainAspectRatio && node.parentNode;
-			var w = container ? container.clientWidth : 0;
+			const container = chart.options.maintainAspectRatio && node.parentNode;
+			const w = container ? container.clientWidth : 0;
 			listener(createEvent('resize', chart));
 			if (container && container.clientWidth < w && chart.canvas) {
 				// If the container size shrank during chart resize, let's assume
@@ -273,7 +273,7 @@ function addResizeListener(node, listener, chart) {
 	// sure that `node` is attached to the DOM before injecting the resizer element.
 	watchForRender(node, function() {
 		if (expando.resizer) {
-			var container = node.parentNode;
+			const container = node.parentNode;
 			if (container && container !== resizer.parentNode) {
 				container.insertBefore(resizer, container.firstChild);
 			}
@@ -285,8 +285,8 @@ function addResizeListener(node, listener, chart) {
 }
 
 function removeResizeListener(node) {
-	var expando = node[EXPANDO_KEY] || {};
-	var resizer = expando.resizer;
+	const expando = node[EXPANDO_KEY] || {};
+	const resizer = expando.resizer;
 
 	delete expando.resizer;
 	unwatchForRender(node);
@@ -303,7 +303,7 @@ function removeResizeListener(node) {
  */
 function injectCSS(rootNode, css) {
 	// https://stackoverflow.com/q/3922139
-	var expando = rootNode[EXPANDO_KEY] || (rootNode[EXPANDO_KEY] = {});
+	const expando = rootNode[EXPANDO_KEY] || (rootNode[EXPANDO_KEY] = {});
 	if (!expando.containsStyles) {
 		expando.containsStyles = true;
 		css = '/* Chart.js */\n' + css;
@@ -345,8 +345,8 @@ export default class DomPlatform extends BasePlatform {
 			// If the canvas is in a shadow DOM, then the styles must also be inserted
 			// into the same shadow DOM.
 			// https://github.com/chartjs/Chart.js/issues/5763
-			var root = canvas.getRootNode ? canvas.getRootNode() : document;
-			var targetNode = root.host ? root : document.head;
+			const root = canvas.getRootNode ? canvas.getRootNode() : document;
+			const targetNode = root.host ? root : document.head;
 			injectCSS(targetNode, stylesheet);
 		}
 	}
@@ -355,7 +355,7 @@ export default class DomPlatform extends BasePlatform {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker
 		// https://github.com/chartjs/Chart.js/issues/2807
-		var context = canvas && canvas.getContext && canvas.getContext('2d');
+		const context = canvas && canvas.getContext && canvas.getContext('2d');
 
 		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the canvas is
 		// inside an iframe or when running in a protected environment. We could guess the
@@ -407,16 +407,16 @@ export default class DomPlatform extends BasePlatform {
 	}
 
 	addEventListener(chart, type, listener) {
-		var canvas = chart.canvas;
+		const canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
 			addResizeListener(canvas, listener, chart);
 			return;
 		}
 
-		var expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
-		var proxies = expando.proxies || (expando.proxies = {});
-		var proxy = proxies[chart.id + '_' + type] = throttled(function(event) {
+		const expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
+		const proxies = expando.proxies || (expando.proxies = {});
+		const proxy = proxies[chart.id + '_' + type] = throttled(function(event) {
 			listener(fromNativeEvent(event, chart));
 		}, chart);
 
@@ -424,16 +424,16 @@ export default class DomPlatform extends BasePlatform {
 	}
 
 	removeEventListener(chart, type, listener) {
-		var canvas = chart.canvas;
+		const canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
 			removeResizeListener(canvas);
 			return;
 		}
 
-		var expando = listener[EXPANDO_KEY] || {};
-		var proxies = expando.proxies || {};
-		var proxy = proxies[chart.id + '_' + type];
+		const expando = listener[EXPANDO_KEY] || {};
+		const proxies = expando.proxies || {};
+		const proxy = proxies[chart.id + '_' + type];
 		if (!proxy) {
 			return;
 		}
