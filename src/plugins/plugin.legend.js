@@ -83,7 +83,7 @@ defaults._set('legend', {
 
 /**
  * Helper function to get the box width based on the usePointStyle option
- * @param {object} labelopts - the label options on the legend
+ * @param {object} labelOpts - the label options on the legend
  * @param {number} fontSize - the label font size
  * @return {number} width of the color box area
  */
@@ -616,8 +616,8 @@ class Legend extends Element {
 
 	/**
 	 * Handle an event
+	 * @param {IEvent} e - The event to handle
 	 * @private
-	 * @param {IEvent} event - The event to handle
 	 */
 	handleEvent(e) {
 		var me = this;

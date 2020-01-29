@@ -6,7 +6,7 @@ import {_lookup, _rlookup} from '../helpers/helpers.collection';
 
 /**
  * Helper function to get relative position for an event
- * @param {Event|IEvent} event - The event to get the position for
+ * @param {Event|IEvent} e - The event to get the position for
  * @param {Chart} chart - The chart
  * @returns {object} the event position
  */
