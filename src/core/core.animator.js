@@ -1,7 +1,5 @@
 'use strict';
 
-import helpers from '../helpers';
-
 function drawFPS(chart, count, date, lastDate) {
 	const fps = (1000 / (date - lastDate)) | 0;
 	const ctx = chart.ctx;
@@ -48,7 +46,7 @@ class Animator {
 		}
 		me._running = true;
 
-		me._request = helpers.requestAnimFrame.call(window, function() {
+		me._request = window.requestAnimationFrame(function() {
 			me._update();
 			me._request = null;
 

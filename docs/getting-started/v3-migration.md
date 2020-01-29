@@ -99,6 +99,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.numberOfLabelLines`
 * `helpers.previousItem`
 * `helpers.removeEvent`
+* `helpers.requestAnimFrame`
 * `helpers.roundedRect`
 * `helpers.scaleMerge`
 * `helpers.where`
