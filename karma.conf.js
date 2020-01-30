@@ -1,9 +1,12 @@
 /* eslint-env es6 */
 
 const commonjs = require('rollup-plugin-commonjs');
+const webWorkerLoader = require('rollup-plugin-web-worker-loader');
 const istanbul = require('rollup-plugin-istanbul');
 const resolve = require('rollup-plugin-node-resolve');
 const builds = require('./rollup.config');
+const babel = require('rollup-plugin-babel');
+const stylesheet = require('./rollup.plugins').stylesheet;
 
 module.exports = function(karma) {
 	const args = karma.args || {};
@@ -67,7 +70,10 @@ module.exports = function(karma) {
 		rollupPreprocessor: {
 			plugins: [
 				resolve(),
-				commonjs()
+				commonjs(),
+				// The two plugins below are required to load the BasicChartWebWorker.
+				stylesheet({extract: true}),
+				webWorkerLoader()
 			],
 			output: {
 				name: 'test',

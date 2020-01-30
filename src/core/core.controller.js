@@ -146,7 +146,7 @@ function onAnimationProgress(ctx) {
 }
 
 function isDomSupported() {
-	return typeof window !== undefined && typeof document !== undefined;
+	return typeof window !== 'undefined' && typeof document !== 'undefined';
 }
 
 /**
@@ -256,7 +256,7 @@ class Chart {
 			me.platform = new config.platform();
 		} else if (!isDomSupported()) {
 			me.platform = new BasicPlatform();
-		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
+		} else if (typeof OffscreenCanvas !== 'undefined' && canvas instanceof OffscreenCanvas) {
 			me.platform = new BasicPlatform();
 		} else {
 			me.platform = new DomPlatform();
