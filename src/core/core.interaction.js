@@ -47,7 +47,7 @@ function evaluateAllVisibleItems(chart, handler) {
  * @param {string} axis - the axis mide. x|y|xy
  * @param {number} value - the value to find
  * @param {boolean} intersect - should the element intersect
- * @returns {lo, hi} indices to search data array between
+ * @returns {{lo:number, hi:number}} indices to search data array between
  */
 function binarySearch(metaset, axis, value, intersect) {
 	const {controller, data, _sorted} = metaset;
@@ -140,7 +140,7 @@ function getIntersectItems(chart, position, axis) {
  * Helper function to get the items nearest to the event position considering all visible items in the chart
  * @param {Chart} chart - the chart to look at elements from
  * @param {object} position - the point to be nearest to
- * @param {function} axis - the axes along which to measure distance
+ * @param {string} axis - the axes along which to measure distance
  * @param {boolean} intersect - if true, only consider items that intersect the position
  * @return {ChartElement[]} the nearest items
  */

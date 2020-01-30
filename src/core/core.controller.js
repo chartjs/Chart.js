@@ -981,7 +981,7 @@ class Chart {
 	/**
 	 * Handle an event
 	 * @private
-	 * @param {IEvent} event the event to handle
+	 * @param {IEvent} e the event to handle
 	 * @return {boolean} true if the chart needs to re-render
 	 */
 	handleEvent(e) {
