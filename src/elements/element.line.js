@@ -167,9 +167,9 @@ function fastPathSegment(ctx, line, segment, params) {
 }
 
 /**
- * @private
  * @param {Line} line - the line
  * @returns {function}
+ * @private
  */
 function _getSegmentMethod(line) {
 	const opts = line.options;
