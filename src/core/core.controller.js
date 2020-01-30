@@ -136,13 +136,13 @@ function onAnimationsComplete(ctx) {
 	const animationOptions = chart.options.animation;
 
 	plugins.notify(chart, 'afterRender');
-	helpers.callback(animationOptions && animationOptions.onComplete, arguments, chart);
+	helpers.callback(animationOptions && animationOptions.onComplete, [ctx], chart);
 }
 
 function onAnimationProgress(ctx) {
 	const chart = ctx.chart;
 	const animationOptions = chart.options.animation;
-	helpers.callback(animationOptions && animationOptions.onProgress, arguments, chart);
+	helpers.callback(animationOptions && animationOptions.onProgress, [ctx], chart);
 }
 
 function isDomSupported() {
@@ -346,7 +346,7 @@ class Chart {
 			items = items.concat(
 				Object.keys(scaleOpts).map(function(axisID) {
 					const axisOptions = scaleOpts[axisID];
-					const isRadial = axisID.charAt(0).toLowerCase === 'r';
+					const isRadial = axisID.charAt(0).toLowerCase() === 'r';
 					const isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
 					return {
 						options: axisOptions,
