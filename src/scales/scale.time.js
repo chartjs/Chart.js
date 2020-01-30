@@ -2,13 +2,11 @@
 
 import adapters from '../core/core.adapters';
 import defaults from '../core/core.defaults';
-import helpers from '../helpers/index';
+import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
+import {resolve} from '../helpers/helpers.options';
 import Scale from '../core/core.scale';
 import {_lookup} from '../helpers/helpers.collection';
-
-const resolve = helpers.options.resolve;
-const valueOrDefault = helpers.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
 const MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
@@ -152,7 +150,7 @@ function interpolate(table, skey, sval, tkey) {
 }
 
 function parse(scale, input) {
-	if (helpers.isNullOrUndef(input)) {
+	if (isNullOrUndef(input)) {
 		return null;
 	}
 
@@ -166,7 +164,7 @@ function parse(scale, input) {
 	}
 
 	// Only parse if its not a timestamp already
-	if (!helpers.isFinite(value)) {
+	if (!isFinite(value)) {
 		value = typeof parser === 'string'
 			? adapter.parse(value, parser)
 			: adapter.parse(value);
@@ -543,7 +541,7 @@ class TimeScale extends Scale {
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
 
-		helpers.mergeIf(time.displayFormats, adapter.formats());
+		mergeIf(time.displayFormats, adapter.formats());
 	}
 
 	determineDataLimits() {
@@ -574,8 +572,8 @@ class TimeScale extends Scale {
 			}
 		}
 
-		min = helpers.isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
-		max = helpers.isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
+		min = isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
+		max = isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
 
 		// Make sure that max is strictly higher than min (required by the lookup table)
 		me.min = Math.min(min, max);
