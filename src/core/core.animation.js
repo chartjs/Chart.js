@@ -1,6 +1,6 @@
 'use strict';
 
-import helpers from '../helpers';
+import helpers from '../helpers/index';
 import {effects} from '../helpers/helpers.easing';
 import {resolve} from '../helpers/helpers.options';
 
@@ -23,22 +23,21 @@ const interpolators = {
 
 class Animation {
 	constructor(cfg, target, prop, to) {
-		const me = this;
 		const currentValue = target[prop];
 
 		to = resolve([cfg.to, to, currentValue, cfg.from]);
 		let from = resolve([cfg.from, currentValue, to]);
 
-		me._active = true;
-		me._fn = cfg.fn || interpolators[cfg.type || typeof from];
-		me._easing = effects[cfg.easing || 'linear'];
-		me._start = Math.floor(Date.now() + (cfg.delay || 0));
-		me._duration = Math.floor(cfg.duration);
-		me._loop = !!cfg.loop;
-		me._target = target;
-		me._prop = prop;
-		me._from = from;
-		me._to = to;
+		this._active = true;
+		this._fn = cfg.fn || interpolators[cfg.type || typeof from];
+		this._easing = effects[cfg.easing || 'linear'];
+		this._start = Math.floor(Date.now() + (cfg.delay || 0));
+		this._duration = Math.floor(cfg.duration);
+		this._loop = !!cfg.loop;
+		this._target = target;
+		this._prop = prop;
+		this._from = from;
+		this._to = to;
 	}
 
 	active() {

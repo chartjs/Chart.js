@@ -5,12 +5,17 @@ import {isNumber} from '../helpers/helpers.math';
 
 class Element {
 
-	constructor(configuration) {
-		if (configuration) {
-			extend(this, configuration);
-		}
+	/**
+	 * @param {object} [cfg] optional configuration
+	 */
+	constructor(cfg) {
+		this.x = undefined;
+		this.y = undefined;
+		this.hidden = undefined;
 
-		// this.hidden = false; we assume Element has an attribute called hidden, but do not initialize to save memory
+		if (cfg) {
+			extend(this, cfg);
+		}
 	}
 
 	tooltipPosition() {

@@ -1,26 +1,29 @@
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var file = require('gulp-file');
-var jsdoc = require('gulp-jsdoc3');
-var replace = require('gulp-replace');
-var size = require('gulp-size');
-var streamify = require('gulp-streamify');
-var terser = require('gulp-terser');
-var zip = require('gulp-zip');
-var exec = require('child_process').exec;
-var karma = require('karma');
-var merge = require('merge-stream');
-var yargs = require('yargs');
-var path = require('path');
-var htmllint = require('gulp-htmllint');
-var pkg = require('./package.json');
+const gulp = require('gulp');
+const eslint = require('gulp-eslint');
+const file = require('gulp-file');
+const replace = require('gulp-replace');
+const size = require('gulp-size');
+const streamify = require('gulp-streamify');
+const terser = require('gulp-terser');
+const zip = require('gulp-zip');
+const exec = require('child_process').exec;
+const karma = require('karma');
+const merge = require('merge-stream');
+const yargs = require('yargs');
+const path = require('path');
+const htmllint = require('gulp-htmllint');
+const typescript = require('gulp-typescript');
+const typedoc = require("gulp-typedoc");
 
-var argv = yargs
+const pkg = require('./package.json');
+const tsProject = typescript.createProject('./tsconfig.json');
+
+const argv = yargs
   .option('verbose', {default: false})
   .argv;
 
-var srcDir = './src/';
-var outDir = './dist/';
+const srcDir = './src/';
+const outDir = './dist/';
 
 gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
@@ -28,9 +31,10 @@ gulp.task('package', packageTask);
 gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
 gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
+gulp.task('tsc', typescriptTask);
 gulp.task('docs', docsTask);
 gulp.task('unittest', unittestTask);
-gulp.task('test', gulp.parallel('lint', 'unittest'));
+gulp.task('test', gulp.parallel('lint', 'tsc', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
@@ -38,10 +42,10 @@ gulp.task('default', gulp.parallel('build'));
 
 function run(bin, args, done) {
   return new Promise(function(resolve, reject) {
-    var exe = '"' + process.execPath + '"';
-    var src = require.resolve(bin);
-    var cmd = [exe, src].concat(args || []).join(' ');
-    var ps = exec(cmd);
+    const exe = '"' + process.execPath + '"';
+    const src = require.resolve(bin);
+    const cmd = [exe, src].concat(args || []).join(' ');
+    const ps = exec(cmd);
 
     ps.stdout.pipe(process.stdout);
     ps.stderr.pipe(process.stderr);
@@ -60,7 +64,7 @@ function run(bin, args, done) {
  * Specs: https://github.com/bower/spec/blob/master/json.md
  */
 function bowerTask() {
-  var json = JSON.stringify({
+  const json = JSON.stringify({
       name: pkg.name,
       description: pkg.description,
       homepage: pkg.homepage,
@@ -101,7 +105,7 @@ function packageTask() {
 }
 
 function lintJsTask() {
-  var files = [
+  const files = [
     'samples/**/*.html',
     'samples/**/*.js',
     'src/**/*.js',
@@ -111,7 +115,7 @@ function lintJsTask() {
   // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
   // compare to what the current codebase can support, and since it's not straightforward
   // to fix, let's turn them as warnings and rewrite code later progressively.
-  var options = {
+  const options = {
     rules: {
       'complexity': [1, 10],
       'max-statements': [1, 30]
@@ -124,6 +128,12 @@ function lintJsTask() {
     .pipe(eslint.failAfterError());
 }
 
+function typescriptTask() {
+    return tsProject.src()
+        .pipe(tsProject())
+        .js.pipe(gulp.dest('dist'));
+}
+
 function lintHtmlTask() {
   return gulp.src('samples/**/*.html')
     .pipe(htmllint({
@@ -132,20 +142,19 @@ function lintHtmlTask() {
 }
 
 function docsTask(done) {
-  var bin = require.resolve('gitbook-cli/bin/gitbook.js');
-  var cmd = argv.watch ? 'serve' : 'build';
+  const bin = require.resolve('gitbook-cli/bin/gitbook.js');
+  const cmd = argv.watch ? 'serve' : 'build';
 
   return run(bin, ['install', './'])
     .then(() => run(bin, [cmd, './', './dist/docs']))
     .then(() => {
-      var config = {
-        opts: {
-          destination: './dist/docs/jsdoc'
-        },
-        recurse: true
+      const config = {
+          moduleResolution: "Node",
+          target: "ES6",
+          out: "./dist/docs/typedoc"
       };
       gulp.src(['./src/**/*.js'], {read: false})
-        .pipe(jsdoc(config, done));
+        .pipe(typedoc(config, done));
     }).catch((err) => {
       done(new Error(err.stdout || err));
     });

@@ -106,11 +106,27 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 class LinearScaleBase extends Scale {
+
+	constructor(cfg) {
+		super(cfg);
+
+		/** @type {number} */
+		this.start = undefined;
+		/** @type {number} */
+		this.end = undefined;
+		/** @type {number} */
+		this._startValue = undefined;
+		/** @type {number} */
+		this._endValue = undefined;
+		/** @type {number} */
+		this._valueRange = undefined;
+	}
+
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (isNullOrUndef(raw)) {
 			return NaN;
 		}
-		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(raw)) {
+		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(+raw)) {
 			return NaN;
 		}
 

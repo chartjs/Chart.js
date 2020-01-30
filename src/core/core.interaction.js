@@ -5,13 +5,21 @@ import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 
 /**
+ * @typedef { import("./core.controller").default } Chart
+ */
+
+/**
+ * @typedef { import("../platform/platform.base").IEvent } IEvent
+ */
+
+/**
  * Helper function to get relative position for an event
  * @param {Event|IEvent} e - The event to get the position for
  * @param {Chart} chart - The chart
  * @returns {object} the event position
  */
 function getRelativePosition(e, chart) {
-	if (e.native) {
+	if ('native' in e) {
 		return {
 			x: e.x,
 			y: e.y
@@ -175,6 +183,7 @@ function getNearestItems(chart, position, axis, intersect) {
 
 /**
  * @interface IInteractionOptions
+ * @typedef {object} IInteractionOptions
  */
 /**
  * If true, only consider items that intersect the point

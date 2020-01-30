@@ -3,6 +3,18 @@
 import defaults from './core.defaults';
 import {clone} from '../helpers/helpers.core';
 
+/**
+ * @typedef { import("./core.controller").default } Chart
+ */
+
+/**
+ * @typedef { import("../platform/platform.base").IEvent } IEvent
+ */
+
+/**
+ * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
+ */
+
 defaults._set('plugins', {});
 
 /**
@@ -171,6 +183,7 @@ export default {
 /**
  * Plugin extension hooks.
  * @interface IPlugin
+ * @typedef {object} IPlugin
  * @since 2.1.0
  */
 /**

@@ -48,7 +48,7 @@
   * [Styling](axes/styling.md)
 * [Developers](developers/README.md)
   * [Chart.js API](developers/api.md)
-  * [JSDoc](jsdoc/index.html)
+  * [TypeDoc](typedoc/index.html)
   * [Updating Charts](developers/updates.md)
   * [Plugins](developers/plugins.md)
   * [New Charts](developers/charts.md)

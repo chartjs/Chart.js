@@ -1,6 +1,10 @@
 'use strict';
 
 /**
+ * @typedef { import("../core/core.controller").default } Chart
+ */
+
+/**
  * Abstract class that allows abstracting platform dependencies away from the chart.
  */
 export default class BasePlatform {
@@ -12,11 +16,13 @@ export default class BasePlatform {
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
-	 * @param {canvas} canvas - The canvas from which to acquire context (platform specific)
+	 * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext(canvas, options) {} // eslint-disable-line no-unused-vars
+	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars
+		return undefined;
+	}
 
 	/**
 	 * Called at chart destruction time, releases any resources associated to the context
@@ -24,7 +30,9 @@ export default class BasePlatform {
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext(context) {} // eslint-disable-line no-unused-vars
+	releaseContext(context) { // eslint-disable-line no-unused-vars
+		return false;
+	}
 
 	/**
 	 * Registers the specified listener on the given chart.
@@ -53,6 +61,7 @@ export default class BasePlatform {
 
 /**
  * @interface IEvent
+ * @typedef {object} IEvent
  * @prop {string} type - The event type name, possible values are:
  * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
  * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'

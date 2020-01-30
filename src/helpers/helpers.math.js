@@ -10,6 +10,7 @@ const PITAU = TAU + PI;
  * @alias Chart.helpers.math
  * @namespace
  */
+
 /**
  * Returns an array of factors sorted from 1 to sqrt(value)
  * @private
@@ -58,6 +59,9 @@ export function almostWhole(x, epsilon) {
 	return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 }
 
+/**
+ * @private
+ */
 export function _setMinAndMaxByKey(array, target, property) {
 	var i, ilen, value;
 

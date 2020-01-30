@@ -60,8 +60,7 @@ const overrideTextDirection = function(ctx, direction) {
 	}
 };
 
-const restoreTextDirection = function(ctx) {
-	var original = ctx.prevTextDirection;
+const restoreTextDirection = function(ctx, original) {
 	if (original !== undefined) {
 		delete ctx.prevTextDirection;
 		ctx.canvas.style.setProperty('direction', original[0], original[1]);

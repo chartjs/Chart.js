@@ -146,7 +146,7 @@ class BubbleController extends DatasetController {
 		var chart = me.chart;
 		var dataset = me.getDataset();
 		var parsed = me._getParsed(index);
-		var values = DatasetController.prototype._resolveDataElementOptions.apply(me, arguments);
+		var values = super._resolveDataElementOptions.apply(me, arguments);
 
 		// Scriptable options
 		var context = {

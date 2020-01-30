@@ -8,6 +8,10 @@ import {callback as call, extend, mergeIf, valueOrDefault} from '../helpers/help
 import {_parseFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
+/**
+ * @typedef { import("../platform/platform.base").IEvent } IEvent
+ */
+
 defaults._set('legend', {
 	display: true,
 	position: 'top',
@@ -101,19 +105,43 @@ class Legend extends Element {
 	constructor(config) {
 		super();
 
-		const me = this;
-		extend(me, config);
+		extend(this, config);
 
 		// Contains hit boxes for each dataset (in dataset order)
-		me.legendHitBoxes = [];
+		this.legendHitBoxes = [];
 
 		/**
  		 * @private
  		 */
-		me._hoveredItem = null;
+		this._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
-		me.doughnutMode = false;
+		this.doughnutMode = false;
+
+		this.chart = config.chart;
+		this.options = config.options;
+		this.ctx = config.ctx;
+		this.legendItems = undefined;
+		this.columnWidths = undefined;
+		this.columnHeights = undefined;
+		this.lineWidths = undefined;
+		this._minSize = undefined;
+		this.maxHeight = undefined;
+		this.maxWidth = undefined;
+		this.top = undefined;
+		this.bottom = undefined;
+		this.left = undefined;
+		this.right = undefined;
+		this.height = undefined;
+		this.width = undefined;
+		this.margins = undefined;
+		this.paddingTop = undefined;
+		this.paddingBottom = undefined;
+		this.paddingLeft = undefined;
+		this.paddingRight = undefined;
+		this.position = undefined;
+		this.weight = undefined;
+		this.fullWidth = undefined;
 	}
 
 	// These methods are ordered by lifecycle. Utilities then follow.

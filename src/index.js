@@ -3,16 +3,16 @@
  */
 import Chart from './core/core.controller';
 
-import helpers from './helpers';
+import helpers from './helpers/index';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import Animator from './core/core.animator';
 import animationService from './core/core.animations';
-import controllers from './controllers';
+import controllers from './controllers/index';
 import DatasetController from './core/core.datasetController';
 import defaults from './core/core.defaults';
 import Element from './core/core.element';
-import elements from './elements';
+import elements from './elements/index';
 import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
 import platforms from './platform/platforms';
@@ -42,17 +42,17 @@ Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
 
 // Register built-in scales
-import scales from './scales';
+import scales from './scales/index';
 Object.keys(scales).forEach(function(type) {
 	const scale = scales[type];
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
 
 // Load to register built-in adapters (as side effects)
-import './adapters';
+import './adapters/index';
 
 // Loading built-in plugins
-import plugins from './plugins';
+import plugins from './plugins/index';
 for (var k in plugins) {
 	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
 		Chart.plugins.register(plugins[k]);
@@ -60,6 +60,7 @@ for (var k in plugins) {
 }
 
 if (typeof window !== 'undefined') {
+	// @ts-ignore
 	window.Chart = Chart;
 }
 

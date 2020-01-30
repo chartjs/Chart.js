@@ -6,6 +6,18 @@ const defaultConfig = {
 };
 
 class CategoryScale extends Scale {
+
+	constructor(cfg) {
+		super(cfg);
+
+		/** @type {number} */
+		this._numLabels = undefined;
+		/** @type {number} */
+		this._startValue = undefined;
+		/** @type {number} */
+		this._valueRange = undefined;
+	}
+
 	_parse(raw, index) {
 		const labels = this._getLabels();
 		if (labels[index] === raw) {

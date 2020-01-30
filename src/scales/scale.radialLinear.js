@@ -253,8 +253,8 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	var ctx = scale.ctx;
 	var circular = gridLineOpts.circular;
 	var valueCount = scale.chart.data.labels.length;
-	var lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1);
-	var lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+	var lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1, undefined);
+	var lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1, undefined);
 	var pointPosition;
 
 	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
@@ -293,6 +293,20 @@ function numberOrZero(param) {
 }
 
 class RadialLinearScale extends LinearScaleBase {
+
+	constructor(cfg) {
+		super(cfg);
+
+		/** @type {number} */
+		this.xCenter = undefined;
+		/** @type {number} */
+		this.yCenter = undefined;
+		/** @type {number} */
+		this.drawingArea = undefined;
+		/** @type {string[]} */
+		this.pointLabels = undefined;
+	}
+
 	setDimensions() {
 		var me = this;
 

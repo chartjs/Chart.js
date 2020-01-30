@@ -110,7 +110,7 @@ class RadarController extends DatasetController {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
-		const values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
+		const values = super._resolveDatasetElementOptions.apply(me, arguments);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
@@ -128,12 +128,12 @@ RadarController.prototype.dataElementType = Point;
  */
 RadarController.prototype._datasetElementOptions = [
 	'backgroundColor',
-	'borderWidth',
 	'borderColor',
 	'borderCapStyle',
 	'borderDash',
 	'borderDashOffset',
 	'borderJoinStyle',
+	'borderWidth',
 	'fill'
 ];
 

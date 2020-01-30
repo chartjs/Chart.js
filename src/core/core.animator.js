@@ -1,6 +1,10 @@
 'use strict';
 
-import helpers from '../helpers';
+import helpers from '../helpers/index';
+
+/**
+ * @typedef { import("./core.controller").default } Chart
+ */
 
 function drawFPS(chart, count, date, lastDate) {
 	const fps = (1000 / (date - lastDate)) | 0;
@@ -21,6 +25,7 @@ class Animator {
 		this._request = null;
 		this._charts = new Map();
 		this._running = false;
+		this._lastDate = undefined;
 	}
 
 	/**

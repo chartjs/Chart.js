@@ -1,6 +1,6 @@
 'use strict';
 
-import helpers from '../helpers';
+import helpers from '../helpers/index';
 import Animations from './core.animations';
 
 const resolve = helpers.options.resolve;
@@ -217,21 +217,28 @@ function getFirstScaleId(chart, axis) {
 
 class DatasetController {
 
-	/** Base class for all dataset controllers (line, bar, etc) */
 	constructor(chart, datasetIndex) {
-		this.initialize(chart, datasetIndex);
+		this.chart = chart;
+		this._ctx = chart.ctx;
+		this.index = datasetIndex;
+		this._cachedAnimations = {};
+		this._cachedDataOpts = {};
+		this._cachedMeta = this.getMeta();
+		this._type = this._cachedMeta.type;
+		this._config = undefined;
+		this._parsing = false;
+		this._data = undefined;
+		this._dataCopy = undefined;
+		this._objectData = undefined;
+		this._labels = undefined;
+		this._scaleStacked = {};
+
+		this.initialize();
 	}
 
-	initialize(chart, datasetIndex) {
+	initialize() {
 		const me = this;
-		let meta;
-		me.chart = chart;
-		me._ctx = chart.ctx;
-		me.index = datasetIndex;
-		me._cachedAnimations = {};
-		me._cachedDataOpts = {};
-		me._cachedMeta = meta = me.getMeta();
-		me._type = meta.type;
+		const meta = me._cachedMeta;
 		me._configure();
 		me.linkScales();
 		meta._stacked = isStacked(meta.vScale, meta);
@@ -707,6 +714,7 @@ class DatasetController {
 	}
 
 	/**
+	 * @return {number|boolean}
 	 * @private
 	 */
 	_getMaxOverflow() {
@@ -763,6 +771,9 @@ class DatasetController {
 		}
 	}
 
+	/**
+	 * @private
+	 */
 	_addAutomaticHoverColors(index, options) {
 		const me = this;
 		const getHoverColor = helpers.getHoverColor;
@@ -783,7 +794,7 @@ class DatasetController {
 	 * or the data if the index is specified
 	 * @param {number} index - data index
 	 * @param {boolean} [active] - true if hover
-	 * @return {IStyleInterface} style object
+	 * @return {object} style object
 	 */
 	getStyle(index, active) {
 		const me = this;
@@ -803,6 +814,9 @@ class DatasetController {
 		return options;
 	}
 
+	/**
+	 * @private
+	 */
 	_getContext(index, active) {
 		return {
 			chart: this.chart,
@@ -821,6 +835,7 @@ class DatasetController {
 		const me = this;
 		const chart = me.chart;
 		const datasetOpts = me._config;
+		// @ts-ignore
 		const options = chart.options.elements[me.datasetElementType.prototype._type] || {};
 		const elementOptions = me._datasetElementOptions;
 		const values = {};
@@ -854,6 +869,7 @@ class DatasetController {
 		}
 		const chart = me.chart;
 		const datasetOpts = me._config;
+		// @ts-ignore
 		const options = chart.options.elements[me.dataElementType.prototype._type] || {};
 		const elementOptions = me._dataElementOptions;
 		const values = {};
@@ -1067,6 +1083,8 @@ class DatasetController {
 		me.updateElements(elements, start, 'reset');
 	}
 
+	updateElements(element, start, mode) {} // eslint-disable-line no-unused-vars
+
 	/**
 	 * @private
 	 */
@@ -1119,47 +1137,45 @@ class DatasetController {
 
 DatasetController.extend = helpers.inherits;
 
-DatasetController.extend({
-	/**
-	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
-	 * @type {Chart.core.element}
-	 */
-	datasetElementType: null,
+/**
+ * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+ */
+DatasetController.prototype.datasetElementType = null;
 
-	/**
-	 * Element type used to generate a meta data (e.g. Chart.element.Point).
-	 * @type {Chart.core.element}
-	 */
-	dataElementType: null,
+/**
+ * Element type used to generate a meta data (e.g. Chart.element.Point).
+ */
+DatasetController.prototype.dataElementType = null;
 
-	/**
-	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
-	 * A derived controller may override this to resolve controller-specific options.
-	 * The keys defined here are for backward compatibility for legend styles.
-	 * @private
-	 */
-	_datasetElementOptions: [
-		'backgroundColor',
-		'borderCapStyle',
-		'borderColor',
-		'borderDash',
-		'borderDashOffset',
-		'borderJoinStyle',
-		'borderWidth'
-	],
+/**
+ * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
+ * A derived controller may override this to resolve controller-specific options.
+ * The keys defined here are for backward compatibility for legend styles.
+ * @type {string[]}
+ * @private
+ */
+DatasetController.prototype._datasetElementOptions = [
+	'backgroundColor',
+	'borderCapStyle',
+	'borderColor',
+	'borderDash',
+	'borderDashOffset',
+	'borderJoinStyle',
+	'borderWidth'
+];
 
-	/**
-	 * Data element option keys to be resolved in _resolveDataElementOptions.
-	 * A derived controller may override this to resolve controller-specific options.
-	 * The keys defined here are for backward compatibility for legend styles.
-	 * @private
-	 */
-	_dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderWidth',
-		'pointStyle'
-	]
-});
+/**
+ * Data element option keys to be resolved in _resolveDataElementOptions.
+ * A derived controller may override this to resolve controller-specific options.
+ * The keys defined here are for backward compatibility for legend styles.
+ * @type {string[]|object}
+ * @private
+ */
+DatasetController.prototype._dataElementOptions = [
+	'backgroundColor',
+	'borderColor',
+	'borderWidth',
+	'pointStyle'
+];
 
 export default DatasetController;

@@ -63,7 +63,7 @@ export function isObject(value) {
  * @returns {boolean}
  */
 const isNumberFinite = (value) => {
-	return (typeof value === 'number' || value instanceof Number) && isFinite(value);
+	return (typeof value === 'number' || value instanceof Number) && isFinite(+value);
 };
 export {
 	isNumberFinite as isFinite,
@@ -171,6 +171,7 @@ export function arrayEquals(a0, a1) {
  * @param {Array} a0 - The array to compare
  * @param {Array} a1 - The array to compare
  * @returns {boolean}
+ * @private
  */
 export function _elementsEqual(a0, a1) {
 	let i, ilen, v0, v1;
@@ -337,6 +338,9 @@ export function inherits(extensions) {
 	return ChartElement;
 }
 
+/**
+ * @private
+ */
 export function _deprecated(scope, value, previous, current) {
 	if (value !== undefined) {
 		console.warn(scope + ': "' + previous +

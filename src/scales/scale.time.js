@@ -515,6 +515,33 @@ const defaultConfig = {
 };
 
 class TimeScale extends Scale {
+
+	constructor(props) {
+		super(props);
+
+		const options = this.options;
+		const time = options.time || (options.time = {});
+		const adapter = this._adapter = new adapters._date(options.adapters.date);
+
+
+		this._cache = {};
+
+		/** @type {string | undefined} */
+		this._unit = undefined;
+		/** @type {string | undefined} */
+		this._majorUnit = undefined;
+		/** @type {object | undefined} */
+		this._offsets = undefined;
+		/** @type {object[] | undefined} */
+		this._table = undefined;
+
+		// Backward compatibility: before introducing adapter, `displayFormats` was
+		// supposed to contain *all* unit/string pairs but this can't be resolved
+		// when loading the scale (adapters are loaded afterward), so let's populate
+		// missing formats on update
+		mergeIf(time.displayFormats, adapter.formats());
+	}
+
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (raw === undefined) {
 			return NaN;
@@ -534,25 +561,6 @@ class TimeScale extends Scale {
 
 	_invalidateCaches() {
 		this._cache = {};
-	}
-
-	constructor(props) {
-		super(props);
-
-		const me = this;
-		const options = me.options;
-		const time = options.time || (options.time = {});
-		const adapter = me._adapter = new adapters._date(options.adapters.date);
-
-
-		me._cache = {};
-
-		// Backward compatibility: before introducing adapter, `displayFormats` was
-		// supposed to contain *all* unit/string pairs but this can't be resolved
-		// when loading the scale (adapters are loaded afterward), so let's populate
-		// missing formats on update
-
-		mergeIf(time.displayFormats, adapter.formats());
 	}
 
 	determineDataLimits() {

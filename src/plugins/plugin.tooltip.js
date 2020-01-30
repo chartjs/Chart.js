@@ -6,6 +6,10 @@ import Element from '../core/core.element';
 import plugins from '../core/core.plugins';
 import helpers from '../helpers/index';
 
+/**
+ * @typedef { import("../platform/platform.base").IEvent } IEvent
+ */
+
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 
@@ -199,7 +203,7 @@ function pushOrConcat(base, toPush) {
 
 /**
  * Returns array of strings split by newline
- * @param {string|undefined} str - The value to split by newline.
+ * @param {*} str - The value to split by newline.
  * @returns {string|string[]} value if newline present - Returned from String split() method
  * @function
  */
@@ -449,12 +453,33 @@ function getBeforeAfterBodyLines(callback) {
 
 class Tooltip extends Element {
 	constructor(config) {
-		super(config);
+		super();
 
-		const me = this;
-		me.opacity = 0;
-		me._active = [];
-		me.initialize();
+		this.opacity = 0;
+		this._active = [];
+		this._chart = config._chart;
+		this._eventPosition = undefined;
+		this._size = undefined;
+		this._cachedAnimations = undefined;
+		this.$animations = undefined;
+		this.options = undefined;
+		this.dataPoints = undefined;
+		this.title = undefined;
+		this.beforeBody = undefined;
+		this.body = undefined;
+		this.afterBody = undefined;
+		this.footer = undefined;
+		this.xAlign = undefined;
+		this.yAlign = undefined;
+		this.x = undefined;
+		this.y = undefined;
+		this.height = undefined;
+		this.width = undefined;
+		this.caretX = undefined;
+		this.labelColors = undefined;
+		this.labelTextColors = undefined;
+
+		this.initialize();
 	}
 
 	initialize() {
