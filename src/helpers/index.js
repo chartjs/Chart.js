@@ -113,7 +113,7 @@ export default {
 
 		return niceFraction * Math.pow(10, exponent);
 	},
-	// Request animation polyfill - https://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+	// Request animation polyfill
 	requestAnimFrame: (function() {
 		if (typeof window === 'undefined') {
 			return function(callback) {
@@ -121,10 +121,6 @@ export default {
 			};
 		}
 		return window.requestAnimationFrame ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame ||
-			window.oRequestAnimationFrame ||
-			window.msRequestAnimationFrame ||
 			function(callback) {
 				return window.setTimeout(callback, 1000 / 60);
 			};
