@@ -1,7 +1,7 @@
 'use strict';
 
-import helpers from '../helpers';
-const math = helpers.math;
+import {isArray} from '../helpers/helpers.core';
+import {log10} from '../helpers/helpers.math';
 
 /**
  * Namespace to hold static tick generation functions
@@ -20,7 +20,7 @@ export default {
 		 * @return {string|string[]} the label to display
 		 */
 		values: function(value) {
-			return helpers.isArray(value) ? value : '' + value;
+			return isArray(value) ? value : '' + value;
 		},
 
 		/**
@@ -28,7 +28,7 @@ export default {
 		 * @method Chart.Ticks.formatters.linear
 		 * @param tickValue {number} the value to be formatted
 		 * @param index {number} the position of the tickValue parameter in the ticks array
-		 * @param ticks {number[]} the list of ticks being converted
+		 * @param ticks {object[]} the list of ticks being converted
 		 * @return {string} string representation of the tickValue parameter
 		 */
 		linear: function(tickValue, index, ticks) {
@@ -43,13 +43,13 @@ export default {
 				}
 			}
 
-			var logDelta = math.log10(Math.abs(delta));
+			var logDelta = log10(Math.abs(delta));
 			var tickString = '';
 
 			if (tickValue !== 0) {
 				var maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
 				if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
-					var logTick = math.log10(Math.abs(tickValue));
+					var logTick = log10(Math.abs(tickValue));
 					var numExponential = Math.floor(logTick) - Math.floor(logDelta);
 					numExponential = Math.max(Math.min(numExponential, 20), 0);
 					tickString = tickValue.toExponential(numExponential);
