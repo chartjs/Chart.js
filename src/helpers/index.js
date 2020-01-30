@@ -120,10 +120,7 @@ export default {
 				callback();
 			};
 		}
-		return window.requestAnimationFrame ||
-			function(callback) {
-				return window.setTimeout(callback, 1000 / 60);
-			};
+		return window.requestAnimationFrame;
 	}()),
 	// -- Canvas methods
 	fontString: function(pixelSize, fontStyle, fontFamily) {
