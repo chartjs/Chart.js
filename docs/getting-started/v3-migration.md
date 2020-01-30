@@ -101,6 +101,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.measureText` was moved to the `helpers.canvas` namespace and made private
 * `helpers.min`
 * `helpers.nextItem`
+* `helpers.niceNum`
 * `helpers.numberOfLabelLines`
 * `helpers.previousItem`
 * `helpers.removeEvent`
