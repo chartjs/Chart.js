@@ -167,7 +167,7 @@ function fastPathSegment(ctx, line, segment, params) {
 }
 
 /**
- * @priavte
+ * @private
  * @param {Line} line - the line
  * @returns {function}
  */
