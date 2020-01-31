@@ -36,43 +36,6 @@ export default {
 	math,
 	rtl,
 
-	findIndex: Array.prototype.findIndex ?
-		function(array, callback, scope) {
-			return array.findIndex(callback, scope);
-		} :
-		function(array, callback, scope) {
-			scope = scope === undefined ? array : scope;
-			for (var i = 0, ilen = array.length; i < ilen; ++i) {
-				if (callback.call(scope, array[i], i, array)) {
-					return i;
-				}
-			}
-			return -1;
-		},
-	findNextWhere: function(arrayToSearch, filterCallback, startIndex) {
-		// Default to start of the array
-		if (coreHelpers.isNullOrUndef(startIndex)) {
-			startIndex = -1;
-		}
-		for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
-			var currentItem = arrayToSearch[i];
-			if (filterCallback(currentItem)) {
-				return currentItem;
-			}
-		}
-	},
-	findPreviousWhere: function(arrayToSearch, filterCallback, startIndex) {
-		// Default to end of the array
-		if (coreHelpers.isNullOrUndef(startIndex)) {
-			startIndex = arrayToSearch.length;
-		}
-		for (var i = startIndex - 1; i >= 0; i--) {
-			var currentItem = arrayToSearch[i];
-			if (filterCallback(currentItem)) {
-				return currentItem;
-			}
-		}
-	},
 	// Implementation of the nice number algorithm used in determining where axis labels will go
 	niceNum: function(range, round) {
 		var exponent = Math.floor(math.log10(range));

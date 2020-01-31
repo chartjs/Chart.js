@@ -6,19 +6,6 @@ describe('Core helper tests', function() {
 		helpers = window.Chart.helpers;
 	});
 
-	it('should filter an array', function() {
-		var data = [-10, 0, 6, 0, 7];
-		var callback = function(item) {
-			return item > 2;
-		};
-		expect(helpers.findNextWhere(data, callback)).toEqual(6);
-		expect(helpers.findNextWhere(data, callback, 2)).toBe(7);
-		expect(helpers.findNextWhere(data, callback, 4)).toBe(undefined);
-		expect(helpers.findPreviousWhere(data, callback)).toBe(7);
-		expect(helpers.findPreviousWhere(data, callback, 3)).toBe(6);
-		expect(helpers.findPreviousWhere(data, callback, 0)).toBe(undefined);
-	});
-
 	it('should generate integer ids', function() {
 		var uid = helpers.uid();
 		expect(uid).toEqual(jasmine.any(Number));
