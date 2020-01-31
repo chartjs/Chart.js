@@ -1,10 +1,37 @@
 'use strict';
 
-import helpers from '../helpers/index';
-import {almostEquals, almostWhole, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
+import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 
-const isNullOrUndef = helpers.isNullOrUndef;
+// Implementation of the nice number algorithm used in determining where axis labels will go
+function niceNum(range, round) {
+	const exponent = Math.floor(log10(range));
+	const fraction = range / Math.pow(10, exponent);
+	let niceFraction;
+
+	if (round) {
+		if (fraction < 1.5) {
+			niceFraction = 1;
+		} else if (fraction < 3) {
+			niceFraction = 2;
+		} else if (fraction < 7) {
+			niceFraction = 5;
+		} else {
+			niceFraction = 10;
+		}
+	} else if (fraction <= 1.0) {
+		niceFraction = 1;
+	} else if (fraction <= 2) {
+		niceFraction = 2;
+	} else if (fraction <= 5) {
+		niceFraction = 5;
+	} else {
+		niceFraction = 10;
+	}
+
+	return niceFraction * Math.pow(10, exponent);
+}
 
 /**
  * Generate a set of linear ticks
@@ -23,7 +50,7 @@ function generateTicks(generationOptions, dataRange) {
 	const unit = stepSize || 1;
 	const maxNumSpaces = generationOptions.maxTicks - 1;
 	const {min: rmin, max: rmax} = dataRange;
-	let spacing = helpers.niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
+	let spacing = niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
 	let factor, niceMin, niceMax, numSpaces;
 
 	// Beyond MIN_SPACING floating point numbers being to lose precision
@@ -35,7 +62,7 @@ function generateTicks(generationOptions, dataRange) {
 	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
 	if (numSpaces > maxNumSpaces) {
 		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
-		spacing = helpers.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
+		spacing = niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
 	if (stepSize || isNullOrUndef(precision)) {
@@ -80,7 +107,7 @@ function generateTicks(generationOptions, dataRange) {
 
 class LinearScaleBase extends Scale {
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
-		if (helpers.isNullOrUndef(raw)) {
+		if (isNullOrUndef(raw)) {
 			return NaN;
 		}
 		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(raw)) {
@@ -91,15 +118,15 @@ class LinearScaleBase extends Scale {
 	}
 
 	handleTickRangeOptions() {
-		var me = this;
-		var opts = me.options;
+		const me = this;
+		const opts = me.options;
 
 		// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 		// do nothing since that would make the chart weird. If the user really wants a weird chart
 		// axis, they can manually override it
 		if (opts.beginAtZero) {
-			var minSign = sign(me.min);
-			var maxSign = sign(me.max);
+			const minSign = sign(me.min);
+			const maxSign = sign(me.max);
 
 			if (minSign < 0 && maxSign < 0) {
 				// move the top up to 0
@@ -110,8 +137,8 @@ class LinearScaleBase extends Scale {
 			}
 		}
 
-		var setMin = opts.min !== undefined || opts.suggestedMin !== undefined;
-		var setMax = opts.max !== undefined || opts.suggestedMax !== undefined;
+		const setMin = opts.min !== undefined || opts.suggestedMin !== undefined;
+		const setMax = opts.max !== undefined || opts.suggestedMax !== undefined;
 
 		if (opts.min !== undefined) {
 			me.min = opts.min;
@@ -185,25 +212,25 @@ class LinearScaleBase extends Scale {
 	}
 
 	buildTicks() {
-		var me = this;
-		var opts = me.options;
-		var tickOpts = opts.ticks;
+		const me = this;
+		const opts = me.options;
+		const tickOpts = opts.ticks;
 
 		// Figure out what the max number of ticks we can support it is based on the size of
 		// the axis area. For now, we say that the minimum tick spacing in pixels must be 40
 		// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
 		// the graph. Make sure we always have at least 2 ticks
-		var maxTicks = me.getTickLimit();
+		let maxTicks = me.getTickLimit();
 		maxTicks = Math.max(2, maxTicks);
 
-		var numericGeneratorOptions = {
+		const numericGeneratorOptions = {
 			maxTicks: maxTicks,
 			min: opts.min,
 			max: opts.max,
 			precision: tickOpts.precision,
-			stepSize: helpers.valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
+			stepSize: valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
 		};
-		var ticks = generateTicks(numericGeneratorOptions, me);
+		let ticks = generateTicks(numericGeneratorOptions, me);
 
 		ticks = me._handleDirectionalChanges(ticks);
 
@@ -225,16 +252,15 @@ class LinearScaleBase extends Scale {
 	}
 
 	_configure() {
-		var me = this;
-		var ticks = me.ticks;
-		var start = me.min;
-		var end = me.max;
-		var offset;
+		const me = this;
+		const ticks = me.ticks;
+		let start = me.min;
+		let end = me.max;
 
 		Scale.prototype._configure.call(me);
 
 		if (me.options.offset && ticks.length) {
-			offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;
+			const offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;
 			start -= offset;
 			end += offset;
 		}
