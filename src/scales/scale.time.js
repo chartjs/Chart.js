@@ -4,7 +4,6 @@ import adapters from '../core/core.adapters';
 import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
-import {resolve} from '../helpers/helpers.options';
 import Scale from '../core/core.scale';
 import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
 
