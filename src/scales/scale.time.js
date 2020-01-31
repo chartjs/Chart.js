@@ -645,22 +645,15 @@ class TimeScale extends Scale {
 	 */
 	_tickFormatFunction(time, index, ticks, format) {
 		const me = this;
-		const adapter = me._adapter;
 		const options = me.options;
 		const formats = options.time.displayFormats;
-		const minorFormat = formats[me._unit];
 		const majorUnit = me._majorUnit;
+		const minorFormat = formats[me._unit];
 		const majorFormat = formats[majorUnit];
 		const tick = ticks[index];
-		const tickOpts = options.ticks;
 		const major = majorUnit && majorFormat && tick && tick.major;
-		const label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		const nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
-		const formatter = resolve([
-			nestedTickOpts.callback,
-			tickOpts.callback
-		]);
-
+		const label = me._adapter.format(time, format ? format : major ? majorFormat : minorFormat);
+		const formatter = options.ticks.callback;
 		return formatter ? formatter(label, index, ticks) : label;
 	}
 
