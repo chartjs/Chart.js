@@ -18,7 +18,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'|'ltr` on the canvas for rendering the legend, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or `'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 ## Position
