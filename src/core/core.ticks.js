@@ -49,8 +49,9 @@ export default {
 			const logDelta = log10(Math.abs(delta));
 
 			const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
+			const minTick = Math.min(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
 			const locale = scale.chart.options.locale;
-			if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
+			if (maxTick < 1e-4 || minTick > 1e+7) { // all ticks are small or big numbers; use scientific notation
 				const logTick = log10(Math.abs(tickValue));
 				let numExponential = Math.floor(logTick) - Math.floor(logDelta);
 				numExponential = Math.max(Math.min(numExponential, 20), 0);
