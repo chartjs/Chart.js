@@ -27,57 +27,6 @@ describe('Core helper tests', function() {
 		expect(helpers.uid()).toBe(uid + 3);
 	});
 
-	it('should return the width of the longest text in an Array and 2D Array', function() {
-		var context = window.createMockContext();
-		var font = "normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-		var arrayOfThings1D = ['FooBar', 'Bar'];
-		var arrayOfThings2D = [['FooBar_1', 'Bar_2'], 'Foo_1'];
-
-
-		// Regardless 'FooBar' is the longest label it should return (characters * 10)
-		expect(helpers.longestText(context, font, arrayOfThings1D, {})).toEqual(60);
-		expect(helpers.longestText(context, font, arrayOfThings2D, {})).toEqual(80);
-		// We check to make sure we made the right calls to the canvas.
-		expect(context.getCalls()).toEqual([{
-			name: 'measureText',
-			args: ['FooBar']
-		}, {
-			name: 'measureText',
-			args: ['Bar']
-		}, {
-			name: 'measureText',
-			args: ['FooBar_1']
-		}, {
-			name: 'measureText',
-			args: ['Bar_2']
-		}, {
-			name: 'measureText',
-			args: ['Foo_1']
-		}]);
-	});
-
-	it('compare text with current longest and update', function() {
-		var context = window.createMockContext();
-		var data = {};
-		var gc = [];
-		var longest = 70;
-
-		expect(helpers.measureText(context, data, gc, longest, 'foobar')).toEqual(70);
-		expect(helpers.measureText(context, data, gc, longest, 'foobar_')).toEqual(70);
-		expect(helpers.measureText(context, data, gc, longest, 'foobar_1')).toEqual(80);
-		// We check to make sure we made the right calls to the canvas.
-		expect(context.getCalls()).toEqual([{
-			name: 'measureText',
-			args: ['foobar']
-		}, {
-			name: 'measureText',
-			args: ['foobar_']
-		}, {
-			name: 'measureText',
-			args: ['foobar_1']
-		}]);
-	});
-
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
 			return typeof obj === 'object' && Object.prototype.hasOwnProperty.call(obj, 'values') && Object.prototype.hasOwnProperty.call(obj.values, 'rgb');

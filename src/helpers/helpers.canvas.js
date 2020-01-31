@@ -1,5 +1,7 @@
 'use strict';
 
+import {isArray} from './helpers.core';
+
 const PI = Math.PI;
 const RAD_PER_DEG = PI / 180;
 const DOUBLE_PI = PI * 2;
@@ -10,6 +12,69 @@ const TWO_THIRDS_PI = PI * 2 / 3;
 /**
  * @namespace Chart.helpers.canvas
  */
+
+/**
+ * @private
+ */
+export function _measureText(ctx, data, gc, longest, string) {
+	let textWidth = data[string];
+	if (!textWidth) {
+		textWidth = data[string] = ctx.measureText(string).width;
+		gc.push(string);
+	}
+	if (textWidth > longest) {
+		longest = textWidth;
+	}
+	return longest;
+}
+
+/**
+ * @private
+ */
+export function _longestText(ctx, font, arrayOfThings, cache) {
+	cache = cache || {};
+	var data = cache.data = cache.data || {};
+	var gc = cache.garbageCollect = cache.garbageCollect || [];
+
+	if (cache.font !== font) {
+		data = cache.data = {};
+		gc = cache.garbageCollect = [];
+		cache.font = font;
+	}
+
+	ctx.font = font;
+	var longest = 0;
+	var ilen = arrayOfThings.length;
+	var i, j, jlen, thing, nestedThing;
+	for (i = 0; i < ilen; i++) {
+		thing = arrayOfThings[i];
+
+		// Undefined strings and arrays should not be measured
+		if (thing !== undefined && thing !== null && isArray(thing) !== true) {
+			longest = _measureText(ctx, data, gc, longest, thing);
+		} else if (isArray(thing)) {
+			// if it is an array lets measure each element
+			// to do maybe simplify this function a bit so we can do this more recursively?
+			for (j = 0, jlen = thing.length; j < jlen; j++) {
+				nestedThing = thing[j];
+				// Undefined strings and arrays should not be measured
+				if (nestedThing !== undefined && nestedThing !== null && !isArray(nestedThing)) {
+					longest = _measureText(ctx, data, gc, longest, nestedThing);
+				}
+			}
+		}
+	}
+
+	var gcLen = gc.length / 2;
+	if (gcLen > arrayOfThings.length) {
+		for (i = 0; i < gcLen; i++) {
+			delete data[gc[i]];
+		}
+		gc.splice(0, gcLen);
+	}
+	return longest;
+}
+
 /**
  * Returns the aligned pixel value to avoid anti-aliasing blur
  * @param {Chart} chart - The chart instance.

@@ -2,6 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
+import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
@@ -72,7 +73,7 @@ function getTickBackdropHeight(opts) {
 function measureLabelSize(ctx, lineHeight, label) {
 	if (helpers.isArray(label)) {
 		return {
-			w: helpers.longestText(ctx, ctx.font, label),
+			w: _longestText(ctx, ctx.font, label),
 			h: label.length * lineHeight
 		};
 	}

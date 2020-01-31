@@ -26,18 +26,6 @@ const colorHelper = !color ?
 		return color(value);
 	};
 
-function measureText(ctx, data, gc, longest, string) {
-	var textWidth = data[string];
-	if (!textWidth) {
-		textWidth = data[string] = ctx.measureText(string).width;
-		gc.push(string);
-	}
-	if (textWidth > longest) {
-		longest = textWidth;
-	}
-	return longest;
-}
-
 export default {
 	...coreHelpers,
 	canvas,
@@ -133,50 +121,6 @@ export default {
 	fontString: function(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 	},
-	longestText: function(ctx, font, arrayOfThings, cache) {
-		cache = cache || {};
-		var data = cache.data = cache.data || {};
-		var gc = cache.garbageCollect = cache.garbageCollect || [];
-
-		if (cache.font !== font) {
-			data = cache.data = {};
-			gc = cache.garbageCollect = [];
-			cache.font = font;
-		}
-
-		ctx.font = font;
-		var longest = 0;
-		var ilen = arrayOfThings.length;
-		var i, j, jlen, thing, nestedThing;
-		for (i = 0; i < ilen; i++) {
-			thing = arrayOfThings[i];
-
-			// Undefined strings and arrays should not be measured
-			if (thing !== undefined && thing !== null && coreHelpers.isArray(thing) !== true) {
-				longest = measureText(ctx, data, gc, longest, thing);
-			} else if (coreHelpers.isArray(thing)) {
-				// if it is an array lets measure each element
-				// to do maybe simplify this function a bit so we can do this more recursively?
-				for (j = 0, jlen = thing.length; j < jlen; j++) {
-					nestedThing = thing[j];
-					// Undefined strings and arrays should not be measured
-					if (nestedThing !== undefined && nestedThing !== null && !coreHelpers.isArray(nestedThing)) {
-						longest = measureText(ctx, data, gc, longest, nestedThing);
-					}
-				}
-			}
-		}
-
-		var gcLen = gc.length / 2;
-		if (gcLen > arrayOfThings.length) {
-			for (i = 0; i < gcLen; i++) {
-				delete data[gc[i]];
-			}
-			gc.splice(0, gcLen);
-		}
-		return longest;
-	},
-	measureText,
 	color: colorHelper,
 	getHoverColor: function(colorValue) {
 		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
