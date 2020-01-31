@@ -2,7 +2,7 @@
 
 import helpers from '../helpers/index';
 import {_isPointInArea} from '../helpers/helpers.canvas';
-import {_lookup, _rlookup} from '../helpers/helpers.collection';
+import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 
 /**
  * Helper function to get relative position for an event
@@ -53,7 +53,7 @@ function binarySearch(metaset, axis, value, intersect) {
 	const {controller, data, _sorted} = metaset;
 	const iScale = controller._cachedMeta.iScale;
 	if (iScale && axis === iScale.axis && _sorted && data.length) {
-		const lookupMethod = iScale._reversePixels ? _rlookup : _lookup;
+		const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
 		if (!intersect) {
 			return lookupMethod(data, axis, value);
 		} else if (controller._sharedOptions) {
