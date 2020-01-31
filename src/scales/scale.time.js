@@ -652,7 +652,7 @@ class TimeScale extends Scale {
 			tickOpts.callback
 		]);
 
-		return formatter ? formatter(label, index, ticks) : label;
+		return formatter ? formatter(label, index, ticks, me) : label;
 	}
 
 	generateTickLabels(ticks) {

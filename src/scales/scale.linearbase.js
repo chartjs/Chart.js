@@ -2,7 +2,6 @@
 
 import helpers from '../helpers/index';
 import {almostEquals, almostWhole, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
-import Chart from '../core/core.controller';
 import Scale from '../core/core.scale';
 
 const isNullOrUndef = helpers.isNullOrUndef;
@@ -245,7 +244,7 @@ class LinearScaleBase extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return new Intl.NumberFormat(Chart.platform.locale).format(value);
+		return new Intl.NumberFormat(this.options.locale).format(value);
 	}
 }
 

@@ -4,7 +4,6 @@ import {isFinite} from '../helpers/helpers.core';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
-import Chart from '../core/core.controller';
 import Ticks from '../core/core.ticks';
 
 function isMajor(tickVal) {
@@ -137,7 +136,7 @@ class LogarithmicScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return value === undefined ? 0 : new Intl.NumberFormat(Chart.platform.locale).format(value);
+		return value === undefined ? 0 : new Intl.NumberFormat(this.options.locale).format(value);
 	}
 
 	getPixelForTick(index) {

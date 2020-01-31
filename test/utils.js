@@ -34,7 +34,6 @@ function acquireChart(config, options) {
 	var canvas = document.createElement('canvas');
 	var chart, key;
 
-	Chart.platform.locale = 'en-US';
 	config = config || {};
 	options = options || {};
 	options.canvas = options.canvas || {height: 512, width: 512};
@@ -57,6 +56,7 @@ function acquireChart(config, options) {
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
 	config.options.fontFamily = config.options.fontFamily || 'Arial';
+	config.options.locale = config.options.locale || 'en-US';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);

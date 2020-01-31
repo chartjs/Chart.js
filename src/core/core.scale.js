@@ -508,7 +508,7 @@ class Scale extends Element {
 		let i, ilen, tick;
 		for (i = 0, ilen = ticks.length; i < ilen; i++) {
 			tick = ticks[i];
-			tick.label = call(tickOpts.callback, [tick.value, i, ticks], me);
+			tick.label = call(tickOpts.callback, [tick.value, i, ticks, me], me);
 		}
 	}
 	afterTickToLabelConversion() {
