@@ -288,17 +288,10 @@ function determineMajorUnit(unit) {
 	}
 }
 
-function addTick(scale, ticks, time) {
-	if (scale.options.ticks.source !== 'data') {
-		ticks.add(time);
-		return;
-	}
-
-	const timestamps = getDataTimestamps(scale);
+function addTick(timestamps, ticks, time) {
 	if (!timestamps.length) {
 		return;
 	}
-
 	const {lo, hi} = _lookup(timestamps, time);
 	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
 	ticks.add(timestamp);
@@ -336,15 +329,30 @@ function generate(scale) {
 		throw min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor;
 	}
 
-	for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-		addTick(scale, ticks, time);
+	if (scale.options.ticks.source === 'data') {
+		// need to make sure ticks are in data in this case
+		const timestamps = getDataTimestamps(scale);
+
+		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+			addTick(timestamps, ticks, time);
+		}
+
+		if (time === max || options.bounds === 'ticks') {
+			addTick(timestamps, ticks, time);
+		}
+	} else {
+		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+			ticks.add(time);
+		}
+
+		if (time === max || options.bounds === 'ticks') {
+			ticks.add(time);
+		}
 	}
 
-	if (time === max || options.bounds === 'ticks') {
-		addTick(scale, ticks, time);
-	}
-
-	return Array.from(ticks);
+	const result = [];
+	ticks.forEach(t => result.push(t));
+	return result;
 }
 
 /**
