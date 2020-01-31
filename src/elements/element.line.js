@@ -166,6 +166,11 @@ function fastPathSegment(ctx, line, segment, params) {
 	}
 }
 
+/**
+ * @param {Line} line - the line
+ * @returns {function}
+ * @private
+ */
 function _getSegmentMethod(line) {
 	const opts = line.options;
 	const borderDash = opts.borderDash && opts.borderDash.length;
@@ -271,7 +276,7 @@ class Line extends Element {
 			interpolated[property] = point[property];
 			result.push(interpolated);
 		}
-		return result.lenght === 1 ? result[0] : result;
+		return result.length === 1 ? result[0] : result;
 	}
 
 	/**
