@@ -11,11 +11,7 @@ import * as options from './helpers.options';
 import * as math from './helpers.math';
 import * as rtl from './helpers.rtl';
 
-const colorHelper = !color ?
-	function(value) {
-		console.error('Color.js not found!');
-		return value;
-	} :
+const colorHelper =
 	function(value) {
 		if (value instanceof CanvasGradient || value instanceof CanvasPattern) {
 			// TODO: figure out what this should be. Previously returned
