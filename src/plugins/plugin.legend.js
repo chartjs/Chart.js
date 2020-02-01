@@ -2,11 +2,11 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers';
 import layouts from '../core/core.layouts';
-
-const getRtlHelper = helpers.rtl.getRtlAdapter;
-const valueOrDefault = helpers.valueOrDefault;
+import {drawPoint} from '../helpers/helpers.canvas';
+import {callback as call, extend, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {_parseFont, toPadding} from '../helpers/helpers.options';
+import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
 defaults._set('legend', {
 	display: true,
@@ -102,7 +102,7 @@ class Legend extends Element {
 		super();
 
 		const me = this;
-		helpers.extend(me, config);
+		extend(me, config);
 
 		// Contains hit boxes for each dataset (in dataset order)
 		me.legendHitBoxes = [];
@@ -194,7 +194,7 @@ class Legend extends Element {
 	buildLabels() {
 		var me = this;
 		var labelOpts = me.options.labels || {};
-		var legendItems = helpers.callback(labelOpts.generateLabels, [me.chart], me) || [];
+		var legendItems = call(labelOpts.generateLabels, [me.chart], me) || [];
 
 		if (labelOpts.filter) {
 			legendItems = legendItems.filter(function(item) {
@@ -222,7 +222,7 @@ class Legend extends Element {
 		const display = opts.display;
 
 		const ctx = me.ctx;
-		const labelFont = helpers.options._parseFont(labelOpts);
+		const labelFont = _parseFont(labelOpts);
 		const fontSize = labelFont.size;
 
 		// Reset hit boxes
@@ -346,10 +346,10 @@ class Legend extends Element {
 		}
 
 		me._drawTitle();
-		const rtlHelper = getRtlHelper(opts.rtl, me.left, me._minSize.width);
+		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
 		const fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
-		const labelFont = helpers.options._parseFont(labelOpts);
+		const labelFont = _parseFont(labelOpts);
 		const fontSize = labelFont.size;
 		let cursor;
 
@@ -399,7 +399,7 @@ class Legend extends Element {
 				var centerY = y + fontSize / 2;
 
 				// Draw pointStyle as legend symbol
-				helpers.canvas.drawPoint(ctx, drawOptions, centerX, centerY);
+				drawPoint(ctx, drawOptions, centerX, centerY);
 			} else {
 				// Draw box as legend symbol
 				ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
@@ -456,7 +456,7 @@ class Legend extends Element {
 			};
 		}
 
-		helpers.rtl.overrideTextDirection(me.ctx, opts.textDirection);
+		overrideTextDirection(me.ctx, opts.textDirection);
 
 		var itemHeight = fontSize + labelOpts.padding;
 		me.legendItems.forEach(function(legendItem, i) {
@@ -499,21 +499,21 @@ class Legend extends Element {
 			}
 		});
 
-		helpers.rtl.restoreTextDirection(me.ctx, opts.textDirection);
+		restoreTextDirection(me.ctx, opts.textDirection);
 	}
 
 	_drawTitle() {
 		const me = this;
 		const opts = me.options;
 		const titleOpts = opts.title;
-		const titleFont = helpers.options._parseFont(titleOpts);
-		const titlePadding = helpers.options.toPadding(titleOpts.padding);
+		const titleFont = _parseFont(titleOpts);
+		const titlePadding = toPadding(titleOpts.padding);
 
 		if (!titleOpts.display) {
 			return;
 		}
 
-		const rtlHelper = getRtlHelper(opts.rtl, me.left, me.minSize.width);
+		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.minSize.width);
 		const ctx = me.ctx;
 		const fontColor = valueOrDefault(titleOpts.fontColor, defaults.fontColor);
 		const position = titleOpts.position;
@@ -586,8 +586,8 @@ class Legend extends Element {
 
 	_computeTitleHeight() {
 		const titleOpts = this.options.title;
-		const titleFont = helpers.options._parseFont(titleOpts);
-		const titlePadding = helpers.options.toPadding(titleOpts.padding);
+		const titleFont = _parseFont(titleOpts);
+		const titlePadding = toPadding(titleOpts.padding);
 		return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
 	}
 
@@ -698,7 +698,7 @@ export default {
 		var legend = chart.legend;
 
 		if (legendOpts) {
-			helpers.mergeIf(legendOpts, defaults.legend);
+			mergeIf(legendOpts, defaults.legend);
 
 			if (legend) {
 				layouts.configure(chart, legend, legendOpts);
