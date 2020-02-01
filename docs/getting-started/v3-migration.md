@@ -143,9 +143,11 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
 * `helpers.callCallback` was renamed to `helpers.callback`
 * `helpers.clear` was renamed to `helpers.canvas.clear`
+* `helpers.color` was renamed to `helpers.color.color`
 * `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
 * `helpers.drawRoundedRectangle` was renamed to `helpers.canvas.roundedRect`
 * `helpers.getAngleFromPoint` was renamed to `helpers.math.getAngleFromPoint`
+* `helpers.getHoverColor` was renamed to `helpers.color.getHoverColor`
 * `helpers.getMaximumHeight` was renamed to `helpers.dom.getMaximumHeight`
 * `helpers.getMaximumWidth` was renamed to `helpers.dom.getMaximumWidth`
 * `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`

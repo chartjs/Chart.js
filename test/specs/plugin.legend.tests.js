@@ -413,7 +413,7 @@ describe('Legend block tests', function() {
 					label: 'dataset1',
 					backgroundColor: function(ctx) {
 						var value = ctx.dataset.data[ctx.dataIndex] || 0;
-						return helpers.color({r: value * 10, g: 0, b: 0}).rgbString();
+						return helpers.color.color({r: value * 10, g: 0, b: 0}).rgbString();
 					},
 					borderWidth: function(ctx) {
 						var value = ctx.dataset.data[ctx.dataIndex] || 0;
@@ -421,7 +421,7 @@ describe('Legend block tests', function() {
 					},
 					borderColor: function(ctx) {
 						var value = ctx.dataset.data[ctx.dataIndex] || 0;
-						return helpers.color({r: 255 - value * 10, g: 0, b: 0}).rgbString();
+						return helpers.color.color({r: 255 - value * 10, g: 0, b: 0}).rgbString();
 					},
 					data: [5, 10, 15, 20]
 				}],

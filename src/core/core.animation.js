@@ -1,6 +1,7 @@
 'use strict';
 
-import helpers from '../helpers';
+import {color} from '../helpers/helpers.color';
+import {effects} from '../helpers/helpers.easing';
 
 const transparent = 'transparent';
 const interpolators = {
@@ -8,8 +9,8 @@ const interpolators = {
 		return from + (to - from) * factor;
 	},
 	color: function(from, to, factor) {
-		var c0 = helpers.color(from || transparent);
-		var c1 = c0.valid && helpers.color(to || transparent);
+		var c0 = color(from || transparent);
+		var c1 = c0.valid && color(to || transparent);
 		return c1 && c1.valid
 			? c1.mix(c0, factor).rgbaString()
 			: to;
@@ -36,7 +37,7 @@ class Animation {
 
 		me._active = true;
 		me._fn = cfg.fn || interpolators[cfg.type || typeof from];
-		me._easing = helpers.easing.effects[cfg.easing || 'linear'];
+		me._easing = effects[cfg.easing || 'linear'];
 		me._start = Math.floor(Date.now() + (cfg.delay || 0));
 		me._duration = Math.floor(cfg.duration);
 		me._loop = !!cfg.loop;

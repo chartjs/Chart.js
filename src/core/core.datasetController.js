@@ -1,7 +1,8 @@
 'use strict';
 
 import Animations from './core.animations';
-import {arrayEquals, extend, getHoverColor, inherits, merge, _merger, mergeIf, isArray, isObject, valueOrDefault} from '../helpers/helpers.core';
+import {getHoverColor} from '../helpers/helpers.color';
+import {arrayEquals, extend, inherits, merge, _merger, mergeIf, isArray, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {sign} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
