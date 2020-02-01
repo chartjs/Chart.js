@@ -1,9 +1,9 @@
 'use strict';
 
-import helpers from '../helpers';
 import Animations from './core.animations';
-
-const resolve = helpers.options.resolve;
+import {arrayEquals, extend, getHoverColor, inherits, merge, _merger, mergeIf, isArray, isObject, valueOrDefault} from '../helpers/helpers.core';
+import {sign} from '../helpers/helpers.math';
+import {resolve} from '../helpers/helpers.options';
 
 const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -78,7 +78,7 @@ function defaultClip(xScale, yScale, allowedOverflow) {
 function toClip(value) {
 	var t, r, b, l;
 
-	if (helpers.isObject(value)) {
+	if (isObject(value)) {
 		t = value.top;
 		r = value.right;
 		b = value.bottom;
@@ -146,7 +146,7 @@ function applyStack(stack, value, dsIndex, allOther) {
 			break;
 		}
 		otherValue = stack.values[datasetIndex];
-		if (!isNaN(otherValue) && (value === 0 || helpers.math.sign(value) === helpers.math.sign(otherValue))) {
+		if (!isNaN(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
 			value += otherValue;
 		}
 	}
@@ -333,7 +333,7 @@ class DatasetController {
 		// real-time charts), we need to monitor these data modifications and synchronize
 		// the internal meta data accordingly.
 
-		if (helpers.isObject(data)) {
+		if (isObject(data)) {
 			// Object data is currently monitored for replacement only
 			if (me._objectData === data) {
 				return false;
@@ -341,7 +341,7 @@ class DatasetController {
 			me._data = convertObjectDataToArray(data);
 			me._objectData = data;
 		} else {
-			if (me._data === data && helpers.arrayEquals(data, me._dataCopy)) {
+			if (me._data === data && arrayEquals(data, me._dataCopy)) {
 				return false;
 			}
 
@@ -434,13 +434,13 @@ class DatasetController {
 	 */
 	_configure() {
 		const me = this;
-		me._config = helpers.merge({}, [
+		me._config = merge({}, [
 			me.chart.options[me._type].datasets,
 			me.getDataset(),
 		], {
 			merger: function(key, target, source) {
 				if (key !== 'data') {
-					helpers._merger(key, target, source);
+					_merger(key, target, source);
 				}
 			}
 		});
@@ -467,9 +467,9 @@ class DatasetController {
 			meta._parsed = data;
 			meta._sorted = true;
 		} else {
-			if (helpers.isArray(data[start])) {
+			if (isArray(data[start])) {
 				parsed = me._parseArrayData(meta, data, start, count);
-			} else if (helpers.isObject(data[start])) {
+			} else if (isObject(data[start])) {
 				parsed = me._parseObjectData(meta, data, start, count);
 			} else {
 				parsed = me._parsePrimitiveData(meta, data, start, count);
@@ -738,7 +738,7 @@ class DatasetController {
 		me._cachedAnimations = {};
 		me._cachedDataOpts = {};
 		me.update(mode);
-		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
+		meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	}
 
@@ -765,7 +765,6 @@ class DatasetController {
 
 	_addAutomaticHoverColors(index, options) {
 		const me = this;
-		const getHoverColor = helpers.getHoverColor;
 		const normalOptions = me.getStyle(index);
 		const missingColors = Object.keys(normalOptions).filter(key => {
 			return key.indexOf('Color') !== -1 && !(key in options);
@@ -861,7 +860,7 @@ class DatasetController {
 		const info = {cacheable: !active};
 		let keys, i, ilen, key, value, readKey;
 
-		if (helpers.isArray(elementOptions)) {
+		if (isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
 				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
@@ -920,13 +919,13 @@ class DatasetController {
 		const context = me._getContext(index, active);
 		const datasetAnim = resolve([me._config.animation], context, index, info);
 		const chartAnim = resolve([chart.options.animation], context, index, info);
-		let config = helpers.mergeIf({}, [datasetAnim, chartAnim]);
+		let config = mergeIf({}, [datasetAnim, chartAnim]);
 
 		if (active && config.active) {
-			config = helpers.extend({}, config, config.active);
+			config = extend({}, config, config.active);
 		}
 		if (mode === 'resize' && config.resize) {
-			config = helpers.extend({}, config, config.resize);
+			config = extend({}, config, config.resize);
 		}
 
 		const animations = new Animations(chart, config);
@@ -966,7 +965,7 @@ class DatasetController {
 	 */
 	_updateElement(element, index, properties, mode) {
 		if (mode === 'reset' || mode === 'none') {
-			helpers.extend(element, properties);
+			extend(element, properties);
 		} else {
 			this._resolveAnimations(index, mode).update(element, properties);
 		}
@@ -1117,7 +1116,7 @@ class DatasetController {
 	}
 }
 
-DatasetController.extend = helpers.inherits;
+DatasetController.extend = inherits;
 
 DatasetController.extend({
 	/**
