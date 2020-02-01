@@ -29,10 +29,9 @@ export default {
 		 * @param tickValue {number} the value to be formatted
 		 * @param index {number} the position of the tickValue parameter in the ticks array
 		 * @param ticks {object[]} the list of ticks being converted
-		 * @param scale {Scale} the scale that these labels will be placed on
 		 * @return {string} string representation of the tickValue parameter
 		 */
-		numeric: function(tickValue, index, ticks, scale) {
+		numeric: function(tickValue, index, ticks) {
 			if (tickValue === 0) {
 				return '0'; // never show decimal places for 0
 			}
@@ -50,7 +49,7 @@ export default {
 
 			const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
 			const minTick = Math.min(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
-			const locale = scale.chart.options.locale;
+			const locale = this.chart.options.locale;
 			if (maxTick < 1e-4 || minTick > 1e+7) { // all ticks are small or big numbers; use scientific notation
 				const logTick = log10(Math.abs(tickValue));
 				let numExponential = Math.floor(logTick) - Math.floor(logDelta);
