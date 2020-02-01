@@ -1,12 +1,11 @@
 /* eslint-env es6 */
 
-const commonjs = require('rollup-plugin-commonjs');
-const resolve = require('rollup-plugin-node-resolve');
-const babel = require('rollup-plugin-babel');
-const terser = require('rollup-plugin-terser').terser;
-const optional = require('./rollup.plugins').optional;
-const stylesheet = require('./rollup.plugins').stylesheet;
-const pkg = require('./package.json');
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import babel from 'rollup-plugin-babel';
+import {terser} from 'rollup-plugin-terser';
+import {optional, stylesheet} from './rollup.plugins';
+import pkg from './package.json';
 
 const input = 'src/index.js';
 const banner = `/*!
@@ -16,7 +15,7 @@ const banner = `/*!
  * Released under the MIT License
  */`;
 
-module.exports = [
+export default [
 	// ES6 builds
 	// dist/Chart.esm.min.js
 	// dist/Chart.esm.js
@@ -143,4 +142,4 @@ module.exports = [
 			'moment'
 		]
 	}
-];
+]

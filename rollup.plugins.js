@@ -1,12 +1,12 @@
 /* eslint-env es6 */
-const cleancss = require('clean-css');
-const path = require('path');
+import cleancss from 'clean-css';
+import path from 'path';
 
 const UMD_WRAPPER_RE = /(\(function \(global, factory\) \{)((?:\s.*?)*)(\}\(this,)/;
 const CJS_FACTORY_RE = /(module.exports = )(factory\(.*?\))( :)/;
 const AMD_FACTORY_RE = /(define\()(.*?, factory)(\) :)/;
 
-function optional(config = {}) {
+export function optional(config = {}) {
 	return {
 		name: 'optional',
 		renderChunk(code, chunk, options) {
@@ -56,10 +56,10 @@ function optional(config = {}) {
 			return code.replace(UMD_WRAPPER_RE, `$1${content}$3`);
 		}
 	};
-}
+};
 
 // https://github.com/chartjs/Chart.js/issues/5208
-function stylesheet(config = {}) {
+export function stylesheet(config = {}) {
 	const minifier = new cleancss();
 	const styles = [];
 
@@ -102,9 +102,4 @@ function stylesheet(config = {}) {
 			});
 		}
 	};
-}
-
-module.exports = {
-	optional,
-	stylesheet
 };
