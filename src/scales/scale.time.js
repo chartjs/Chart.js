@@ -230,11 +230,13 @@ function determineMajorUnit(unit) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(scale, min, max, capacity) {
+function generate(scale) {
 	const adapter = scale._adapter;
+	const min = scale.min;
+	const max = scale.max;
 	const options = scale.options;
 	const timeOpts = options.time;
-	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
+	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
 	const stepSize = resolve([timeOpts.stepSize, timeOpts.unitStepSize, 1]);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	const ticks = [];
@@ -396,22 +398,15 @@ function getAllTimestamps(scale) {
 
 
 function getTimestampsForTicks(scale) {
-	const min = scale.min;
-	const max = scale.max;
 	const options = scale.options;
-	const capacity = scale._getLabelCapacity(min);
 	const source = options.ticks.source;
-	let timestamps;
 
 	if (source === 'data' || (source === 'auto' && options.distribution === 'series')) {
-		timestamps = getAllTimestamps(scale);
+		return getAllTimestamps(scale);
 	} else if (source === 'labels') {
-		timestamps = getLabelTimestamps(scale);
-	} else {
-		timestamps = generate(scale, min, max, capacity, options);
+		return getLabelTimestamps(scale);
 	}
-
-	return timestamps;
+	return generate(scale);
 }
 
 function getTimestampsForTable(scale) {
