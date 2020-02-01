@@ -56,8 +56,6 @@ function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 			hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
 			hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
 	}
-
-	return undefined;
 }
 
 export function getStyle(el, property) {
