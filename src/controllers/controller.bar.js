@@ -3,9 +3,9 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Rectangle from '../elements/element.rectangle';
-import helpers from '../helpers';
-
-const valueOrDefault = helpers.valueOrDefault;
+import {clipArea, unclipArea} from '../helpers/helpers.canvas';
+import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import {_limitValue, sign} from '../helpers/helpers.math';
 
 defaults._set('bar', {
 	hover: {
@@ -69,12 +69,12 @@ function computeFitCategoryTraits(index, ruler, options) {
 	var thickness = options.barThickness;
 	var count = ruler.stackCount;
 	var curr = ruler.pixels[index];
-	var min = helpers.isNullOrUndef(thickness)
+	var min = isNullOrUndef(thickness)
 		? computeMinSampleSize(ruler.scale, ruler.pixels)
 		: -1;
 	var size, ratio;
 
-	if (helpers.isNullOrUndef(thickness)) {
+	if (isNullOrUndef(thickness)) {
 		size = min * options.categoryPercentage;
 		ratio = options.barPercentage;
 	} else {
@@ -167,7 +167,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 		item = {};
 		item[iScale.axis] = singleScale || iScale._parse(labels[i], i);
 
-		if (helpers.isArray(entry)) {
+		if (isArray(entry)) {
 			parseFloatBar(entry, item, vScale, i);
 		} else {
 			item[vScale.axis] = vScale._parse(entry, i);
@@ -234,7 +234,7 @@ export default DatasetController.extend({
 			item = {};
 			item[iScale.axis] = iScale._parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
-			if (helpers.isArray(value)) {
+			if (isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
 				item[vScale.axis] = vScale._parseObject(obj, vProp, i);
@@ -440,7 +440,7 @@ export default DatasetController.extend({
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
-			if (value !== 0 && helpers.math.sign(value) !== helpers.math.sign(custom.barEnd)) {
+			if (value !== 0 && sign(value) !== sign(custom.barEnd)) {
 				start = 0;
 			}
 			start += value;
@@ -450,7 +450,7 @@ export default DatasetController.extend({
 		// So we don't try to draw so huge rectangles.
 		// https://github.com/chartjs/Chart.js/issues/5247
 		// TODO: use borderWidth instead (need to move the parsing from rectangle)
-		base = helpers.math._limitValue(vScale.getPixelForValue(start),
+		base = _limitValue(vScale.getPixelForValue(start),
 			vScale._startPixel - 10,
 			vScale._endPixel + 10);
 
@@ -502,7 +502,7 @@ export default DatasetController.extend({
 		const ilen = rects.length;
 		let i = 0;
 
-		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+		clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
 			if (!isNaN(me._getParsed(i)[vScale.axis])) {
@@ -510,7 +510,7 @@ export default DatasetController.extend({
 			}
 		}
 
-		helpers.canvas.unclipArea(chart.ctx);
+		unclipArea(chart.ctx);
 	}
 
 });

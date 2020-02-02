@@ -4,9 +4,7 @@ import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
 import Point from '../elements/element.point';
-import helpers from '../helpers';
-
-const valueOrDefault = helpers.valueOrDefault;
+import {valueOrDefault} from '../helpers/helpers.core';
 
 defaults._set('radar', {
 	spanGaps: false,
