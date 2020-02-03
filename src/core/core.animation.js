@@ -4,8 +4,8 @@ import helpers from '../helpers';
 
 const transparent = 'transparent';
 const interpolators = {
-	number: function(from, to, factor) {
-		return from + (to - from) * factor;
+	boolean: function(from, to, factor) {
+		return factor > 0.9 ? to : from;
 	},
 	color: function(from, to, factor) {
 		var c0 = helpers.color(from || transparent);
@@ -13,6 +13,9 @@ const interpolators = {
 		return c1 && c1.valid
 			? c1.mix(c0, factor).rgbaString()
 			: to;
+	},
+	number: function(from, to, factor) {
+		return from + (to - from) * factor;
 	}
 };
 
@@ -32,6 +35,10 @@ class Animation {
 			from = to;
 		} else if (to === undefined) {
 			to = from;
+		}
+
+		if (cfg.to !== undefined) {
+			to = cfg.to;
 		}
 
 		me._active = true;

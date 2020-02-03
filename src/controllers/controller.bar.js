@@ -263,9 +263,11 @@ class BarController extends DatasetController {
 
 	update(mode) {
 		const me = this;
-		const rects = me._cachedMeta.data;
+		const meta = me._cachedMeta;
 
-		me.updateElements(rects, 0, mode);
+		if (!meta._skipUpdate) {
+			me.updateElements(meta.data, 0, mode);
+		}
 	}
 
 	updateElements(rectangles, start, mode) {

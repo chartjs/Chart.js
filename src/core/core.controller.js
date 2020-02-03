@@ -838,6 +838,35 @@ class Chart {
 		}
 	}
 
+	_updateVisibility(datasetIndex, index, visible) {
+		const me = this;
+		const mode = visible ? 'show' : 'hide';
+		const meta = me.getDatasetMeta(datasetIndex);
+		const anims = meta.controller._resolveAnimations(undefined, mode);
+		if (index === undefined) {
+			me.setDatasetVisibility(datasetIndex, visible);
+			// Animate visible state, so hide animation can be seen
+			anims.update(meta, {visible});
+		} else {
+			if (!meta.data[index]) {
+				return;
+			}
+			me.setDataVisibility(datasetIndex, index, visible);
+		}
+		meta._skipUpdate = true;
+		me.update();
+		meta._skipUpdate = false;
+		me.updateDataset(datasetIndex, mode);
+	}
+
+	hide(datasetIndex, index) {
+		this._updateVisibility(datasetIndex, index, false);
+	}
+
+	show(datasetIndex, index) {
+		this._updateVisibility(datasetIndex, index, true);
+	}
+
 	/**
 	 * @private
 	 */

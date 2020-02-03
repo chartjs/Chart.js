@@ -41,6 +41,10 @@ class LineController extends DatasetController {
 		const config = me._config;
 		const showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
 
+		if (meta._skipUpdate) {
+			return;
+		}
+
 		// Update Line
 		if (showLine && mode !== 'resize') {
 			const properties = {
@@ -52,9 +56,7 @@ class LineController extends DatasetController {
 		}
 
 		// Update Points
-		if (meta.visible) {
-			me.updateElements(points, 0, mode);
-		}
+		me.updateElements(points, 0, mode);
 	}
 
 	updateElements(points, start, mode) {
