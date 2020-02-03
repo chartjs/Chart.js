@@ -541,8 +541,8 @@ describe('Linear Scale', function() {
 		expect(chart.scales.y.min).toBe(-1010);
 		expect(chart.scales.y.max).toBe(1010);
 		var labels = getLabels(chart.scales.y);
-		expect(labels[0]).toBe('1010');
-		expect(labels[labels.length - 1]).toBe('-1010');
+		expect(labels[0]).toBe('1,010');
+		expect(labels[labels.length - 1]).toBe('-1,010');
 	});
 
 	it('Should use min, max and stepSize to create fixed spaced ticks', function() {

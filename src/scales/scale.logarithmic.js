@@ -52,7 +52,7 @@ function generateTicks(generationOptions, dataRange) {
 const defaultConfig = {
 	// label settings
 	ticks: {
-		callback: Ticks.formatters.logarithmic,
+		callback: Ticks.formatters.numeric,
 		major: {
 			enabled: true
 		}
@@ -136,7 +136,7 @@ class LogarithmicScale extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return value === undefined ? 0 : new Intl.NumberFormat().format(value);
+		return value === undefined ? 0 : new Intl.NumberFormat(this.options.locale).format(value);
 	}
 
 	getPixelForTick(index) {

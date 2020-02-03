@@ -24,49 +24,42 @@ export default {
 		},
 
 		/**
-		 * Formatter for linear numeric ticks
-		 * @method Chart.Ticks.formatters.linear
+		 * Formatter for numeric ticks
+		 * @method Chart.Ticks.formatters.numeric
 		 * @param tickValue {number} the value to be formatted
 		 * @param index {number} the position of the tickValue parameter in the ticks array
 		 * @param ticks {object[]} the list of ticks being converted
 		 * @return {string} string representation of the tickValue parameter
 		 */
-		linear: function(tickValue, index, ticks) {
+		numeric: function(tickValue, index, ticks) {
+			if (tickValue === 0) {
+				return '0'; // never show decimal places for 0
+			}
+
 			// If we have lots of ticks, don't use the ones
-			var delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
+			let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
 			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
-			if (Math.abs(delta) > 1) {
-				if (tickValue !== Math.floor(tickValue)) {
-					// not an integer
-					delta = tickValue - Math.floor(tickValue);
-				}
+			if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
+				// not an integer
+				delta = tickValue - Math.floor(tickValue);
 			}
 
-			var logDelta = log10(Math.abs(delta));
-			var tickString = '';
+			const logDelta = log10(Math.abs(delta));
 
-			if (tickValue !== 0) {
-				var maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
-				if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
-					var logTick = log10(Math.abs(tickValue));
-					var numExponential = Math.floor(logTick) - Math.floor(logDelta);
-					numExponential = Math.max(Math.min(numExponential, 20), 0);
-					tickString = tickValue.toExponential(numExponential);
-				} else {
-					var numDecimal = -1 * Math.floor(logDelta);
-					numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-					tickString = tickValue.toFixed(numDecimal);
-				}
-			} else {
-				tickString = '0'; // never show decimal places for 0
+			const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
+			const minTick = Math.min(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
+			const locale = this.chart.options.locale;
+			if (maxTick < 1e-4 || minTick > 1e+7) { // all ticks are small or big numbers; use scientific notation
+				const logTick = log10(Math.abs(tickValue));
+				let numExponential = Math.floor(logTick) - Math.floor(logDelta);
+				numExponential = Math.max(Math.min(numExponential, 20), 0);
+				return new Intl.NumberFormat(locale, {notation: 'scientific', minimumFractionDigits: numExponential, maximumFractionDigits: numExponential}).format(tickValue);
 			}
 
-			return tickString;
-		},
-
-		logarithmic: function(tickValue) {
-			return tickValue === 0 ? '0' : tickValue.toExponential();
+			let numDecimal = -1 * Math.floor(logDelta);
+			numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+			return new Intl.NumberFormat(locale, {minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal}).format(tickValue);
 		}
 	}
 };

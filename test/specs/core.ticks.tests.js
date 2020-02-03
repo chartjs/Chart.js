@@ -8,8 +8,7 @@ describe('Test tick generators', function() {
 		expect(typeof Chart.Ticks).toBeDefined();
 		expect(typeof Chart.Ticks.formatters).toBeDefined();
 		expect(typeof Chart.Ticks.formatters.values).toBe('function');
-		expect(typeof Chart.Ticks.formatters.linear).toBe('function');
-		expect(typeof Chart.Ticks.formatters.logarithmic).toBe('function');
+		expect(typeof Chart.Ticks.formatters.numeric).toBe('function');
 	});
 
 	it('Should generate linear spaced ticks with correct precision', function() {

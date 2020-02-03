@@ -214,7 +214,7 @@ describe('Test the radial linear scale', function() {
 
 		expect(chart.scales.r.min).toBe(-1010);
 		expect(chart.scales.r.max).toBe(1010);
-		expect(getLabels(chart.scales.r)).toEqual(['-1010', '-1000', '-500', '0', '500', '1000', '1010']);
+		expect(getLabels(chart.scales.r)).toEqual(['-1,010', '-1,000', '-500', '0', '500', '1,000', '1,010']);
 	});
 
 	it('should forcibly include 0 in the range if the beginAtZero option is used', function() {

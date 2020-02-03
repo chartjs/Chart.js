@@ -56,6 +56,7 @@ function acquireChart(config, options) {
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
 	config.options.fontFamily = config.options.fontFamily || 'Arial';
+	config.options.locale = config.options.locale || 'en-US';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);

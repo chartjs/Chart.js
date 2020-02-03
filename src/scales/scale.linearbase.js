@@ -270,7 +270,7 @@ class LinearScaleBase extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return new Intl.NumberFormat().format(value);
+		return new Intl.NumberFormat(this.options.locale).format(value);
 	}
 }
 
