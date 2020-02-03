@@ -39,6 +39,7 @@ function parseMaxStyle(styleValue, node, parentProperty) {
  * @param {HTMLElement} domNode - the node to check the constraint on
  * @param {string} maxStyle - the style that defines the maximum for the direction we are using ('max-width' / 'max-height')
  * @param {string} percentageProperty - property of parent to use when calculating width as a percentage
+ * @return {number|undefined} number or undefined if no constraint
  * @see {@link https://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser}
  */
 function getConstraintDimension(domNode, maxStyle, percentageProperty) {
@@ -55,8 +56,6 @@ function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 			hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
 			hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
 	}
-
-	return 'none';
 }
 
 export function getStyle(el, property) {
@@ -65,12 +64,12 @@ export function getStyle(el, property) {
 		document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 }
 
-// returns Number or undefined if no constraint
+/** @return {number|undefined} number or undefined if no constraint */
 function getConstraintWidth(domNode) {
 	return getConstraintDimension(domNode, 'max-width', 'clientWidth');
 }
 
-// returns Number or undefined if no constraint
+/** @return {number|undefined} number or undefined if no constraint */
 function getConstraintHeight(domNode) {
 	return getConstraintDimension(domNode, 'max-height', 'clientHeight');
 }

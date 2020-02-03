@@ -299,7 +299,7 @@ class Scale extends Element {
 	 * Get the padding needed for the scale
 	 * @method getPadding
 	 * @private
-	 * @returns {Padding} the necessary padding
+	 * @returns {object} the necessary padding
 	 */
 	getPadding() {
 		const me = this;
@@ -491,6 +491,9 @@ class Scale extends Element {
 	beforeBuildTicks() {
 		call(this.options.beforeBuildTicks, [this]);
 	}
+	/**
+	 * @return {object[]} the ticks
+	 */
 	buildTicks() {}
 	afterBuildTicks() {
 		call(this.options.afterBuildTicks, [this]);
@@ -800,17 +803,15 @@ class Scale extends Element {
 	 * Returns the location of the given data point. Value can either be an index or a numerical value
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param value
-	 * @param index
-	 * @param datasetIndex
 	 */
-	getPixelForValue() {}
+	getPixelForValue(value) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Used to get the data value from a given pixel. This is the inverse of getPixelForValue
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param pixel
 	 */
-	getValueForPixel() {}
+	getValueForPixel(pixel) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Returns the location of the tick at the given index

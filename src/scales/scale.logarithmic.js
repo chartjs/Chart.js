@@ -19,7 +19,7 @@ function finiteOrDefault(value, def) {
  * Generate a set of logarithmic ticks
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
- * @returns {number[]} array of tick values
+ * @returns {object[]} array of tick objects
  */
 function generateTicks(generationOptions, dataRange) {
 	const endExp = Math.floor(log10(dataRange.max));

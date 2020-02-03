@@ -430,9 +430,9 @@ function getLabelBounds(scale) {
 /**
  * Return subset of `timestamps` between `min` and `max`.
  * Timestamps are assumend to be in sorted order.
- * @param {int[]} timestamps - array of timestamps
- * @param {int} min - min value (timestamp)
- * @param {int} max - max value (timestamp)
+ * @param {number[]} timestamps - array of timestamps
+ * @param {number} min - min value (timestamp)
+ * @param {number} max - max value (timestamp)
  */
 function filterBetween(timestamps, min, max) {
 	let start = 0;

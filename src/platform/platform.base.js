@@ -16,7 +16,7 @@ export default class BasePlatform {
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext() {}
+	acquireContext(canvas, options) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Called at chart destruction time, releases any resources associated to the context
@@ -24,7 +24,7 @@ export default class BasePlatform {
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext() {}
+	releaseContext(context) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Registers the specified listener on the given chart.
@@ -33,7 +33,7 @@ export default class BasePlatform {
 	 * @param {function} listener - Receives a notification (an object that implements
 	 * the {@link IEvent} interface) when an event of the specified type occurs.
 	 */
-	addEventListener() {}
+	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
@@ -41,7 +41,7 @@ export default class BasePlatform {
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener() {}
+	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.

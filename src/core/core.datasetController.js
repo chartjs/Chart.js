@@ -461,7 +461,7 @@ helpers.extend(DatasetController.prototype, {
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me.resyncElements(dataChanged | labelsChanged | scaleChanged | stackChanged);
+		me.resyncElements(dataChanged || labelsChanged || scaleChanged || stackChanged);
 
 		// if stack changed, update stack values for the whole dataset
 		if (stackChanged) {
@@ -783,7 +783,10 @@ helpers.extend(DatasetController.prototype, {
 		me._cacheScaleStackStatus();
 	},
 
-	update: helpers.noop,
+	/**
+	 * @param {string} mode
+	 */
+	update: function(mode) {}, // eslint-disable-line no-unused-vars
 
 	draw: function() {
 		const ctx = this._ctx;
@@ -820,6 +823,7 @@ helpers.extend(DatasetController.prototype, {
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index
+	 * @param {boolean} [active] - true if hover
 	 * @return {IStyleInterface} style object
 	 */
 	getStyle: function(index, active) {

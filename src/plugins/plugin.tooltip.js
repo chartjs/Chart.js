@@ -199,7 +199,7 @@ function pushOrConcat(base, toPush) {
 
 /**
  * Returns array of strings split by newline
- * @param {string} value - The value to split by newline.
+ * @param {string} str - The value to split by newline.
  * @returns {string[]} value if newline present - Returned from String split() method
  * @function
  */
@@ -959,7 +959,7 @@ class Tooltip extends Element {
 	/**
 	 * Handle an event
 	 * @private
-	 * @param {IEvent} event - The event to handle
+	 * @param {IEvent} e - The event to handle
 	 * @returns {boolean} true if the tooltip changed
 	 */
 	handleEvent(e) {

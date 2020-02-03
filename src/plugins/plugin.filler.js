@@ -47,7 +47,7 @@ function parseFillOption(line) {
 // @todo if (fill[0] === '#')
 function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
-	let target = parseFloat(fill, 10);
+	let target = parseFloat(fill);
 
 	if (isFinite(target) && Math.floor(target) === target) {
 		if (fill[0] === '-' || fill[0] === '+') {

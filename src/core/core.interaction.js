@@ -6,7 +6,7 @@ import {_lookup, _rlookup} from '../helpers/helpers.collection';
 
 /**
  * Helper function to get relative position for an event
- * @param {Event|IEvent} event - The event to get the position for
+ * @param {Event|IEvent} e - The event to get the position for
  * @param {Chart} chart - The chart
  * @returns {object} the event position
  */
@@ -47,7 +47,7 @@ function evaluateAllVisibleItems(chart, handler) {
  * @param {string} axis - the axis mide. x|y|xy
  * @param {number} value - the value to find
  * @param {boolean} intersect - should the element intersect
- * @returns {lo, hi} indices to search data array between
+ * @returns {{lo:number, hi:number}} indices to search data array between
  */
 function binarySearch(metaset, axis, value, intersect) {
 	const {controller, data, _sorted} = metaset;
@@ -79,7 +79,7 @@ function binarySearch(metaset, axis, value, intersect) {
  * @param {string} axis - the axis mode. x|y|xy
  * @param {object} position - the point to be nearest to
  * @param {function} handler - the callback to execute for each visible item
- * @param {boolean} intersect - consider intersecting items
+ * @param {boolean} [intersect] - consider intersecting items
  */
 function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 	const metasets = chart._getSortedVisibleDatasetMetas();
@@ -140,8 +140,8 @@ function getIntersectItems(chart, position, axis) {
  * Helper function to get the items nearest to the event position considering all visible items in the chart
  * @param {Chart} chart - the chart to look at elements from
  * @param {object} position - the point to be nearest to
- * @param {function} axis - the axes along which to measure distance
- * @param {boolean} intersect - if true, only consider items that intersect the position
+ * @param {string} axis - the axes along which to measure distance
+ * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @return {ChartElement[]} the nearest items
  */
 function getNearestItems(chart, position, axis, intersect) {
