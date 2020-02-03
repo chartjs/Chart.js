@@ -215,55 +215,14 @@ function getFirstScaleId(chart, axis) {
 	}).shift();
 }
 
-// Base class for all dataset controllers (line, bar, etc)
-var DatasetController = function(chart, datasetIndex) {
-	this.initialize(chart, datasetIndex);
-};
+class DatasetController {
 
-helpers.extend(DatasetController.prototype, {
+	/** Base class for all dataset controllers (line, bar, etc) */
+	constructor(chart, datasetIndex) {
+		this.initialize(chart, datasetIndex);
+	}
 
-	/**
-	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
-	 * @type {Chart.core.element}
-	 */
-	datasetElementType: null,
-
-	/**
-	 * Element type used to generate a meta data (e.g. Chart.element.Point).
-	 * @type {Chart.core.element}
-	 */
-	dataElementType: null,
-
-	/**
-	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
-	 * A derived controller may override this to resolve controller-specific options.
-	 * The keys defined here are for backward compatibility for legend styles.
-	 * @private
-	 */
-	_datasetElementOptions: [
-		'backgroundColor',
-		'borderCapStyle',
-		'borderColor',
-		'borderDash',
-		'borderDashOffset',
-		'borderJoinStyle',
-		'borderWidth'
-	],
-
-	/**
-	 * Data element option keys to be resolved in _resolveDataElementOptions.
-	 * A derived controller may override this to resolve controller-specific options.
-	 * The keys defined here are for backward compatibility for legend styles.
-	 * @private
-	 */
-	_dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderWidth',
-		'pointStyle'
-	],
-
-	initialize: function(chart, datasetIndex) {
+	initialize(chart, datasetIndex) {
 		const me = this;
 		let meta;
 		me.chart = chart;
@@ -277,13 +236,13 @@ helpers.extend(DatasetController.prototype, {
 		me.linkScales();
 		meta._stacked = isStacked(meta.vScale, meta);
 		me.addElements();
-	},
+	}
 
-	updateIndex: function(datasetIndex) {
+	updateIndex(datasetIndex) {
 		this.index = datasetIndex;
-	},
+	}
 
-	linkScales: function() {
+	linkScales() {
 		const me = this;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
@@ -297,75 +256,75 @@ helpers.extend(DatasetController.prototype, {
 		meta.rScale = me.getScaleForId(rid);
 		meta.iScale = me._getIndexScale();
 		meta.vScale = me._getValueScale();
-	},
+	}
 
-	getDataset: function() {
+	getDataset() {
 		return this.chart.data.datasets[this.index];
-	},
+	}
 
-	getMeta: function() {
+	getMeta() {
 		return this.chart.getDatasetMeta(this.index);
-	},
+	}
 
-	getScaleForId: function(scaleID) {
+	getScaleForId(scaleID) {
 		return this.chart.scales[scaleID];
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getValueScaleId: function() {
+	_getValueScaleId() {
 		return this._cachedMeta.yAxisID;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getIndexScaleId: function() {
+	_getIndexScaleId() {
 		return this._cachedMeta.xAxisID;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getValueScale: function() {
+	_getValueScale() {
 		return this.getScaleForId(this._getValueScaleId());
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getIndexScale: function() {
+	_getIndexScale() {
 		return this.getScaleForId(this._getIndexScaleId());
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getOtherScale: function(scale) {
+	_getOtherScale(scale) {
 		const meta = this._cachedMeta;
 		return scale === meta.iScale
 			? meta.vScale
 			: meta.iScale;
-	},
+	}
 
-	reset: function() {
+	reset() {
 		this._update('reset');
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	destroy: function() {
+	destroy() {
 		if (this._data) {
 			unlistenArrayEvents(this._data, this);
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_dataCheck: function() {
+	_dataCheck() {
 		const me = this;
 		const dataset = me.getDataset();
 		const data = dataset.data || (dataset.data = []);
@@ -401,12 +360,12 @@ helpers.extend(DatasetController.prototype, {
 			me._data = data;
 		}
 		return true;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_labelCheck: function() {
+	_labelCheck() {
 		const me = this;
 		const iScale = me._cachedMeta.iScale;
 		const labels = iScale ? iScale._getLabels() : me.chart.data.labels;
@@ -417,9 +376,9 @@ helpers.extend(DatasetController.prototype, {
 
 		me._labels = labels;
 		return true;
-	},
+	}
 
-	addElements: function() {
+	addElements() {
 		const me = this;
 		const meta = me._cachedMeta;
 		let i, ilen, data;
@@ -435,9 +394,9 @@ helpers.extend(DatasetController.prototype, {
 		if (me.datasetElementType) {
 			meta.dataset = new me.datasetElementType();
 		}
-	},
+	}
 
-	buildOrUpdateElements: function() {
+	buildOrUpdateElements() {
 		const me = this;
 		const dataChanged = me._dataCheck();
 		const labelsChanged = me._labelCheck();
@@ -467,13 +426,13 @@ helpers.extend(DatasetController.prototype, {
 		if (stackChanged) {
 			updateStacks(me, meta._parsed);
 		}
-	},
+	}
 
 	/**
 	 * Merges user-supplied and default dataset-level options
 	 * @private
 	 */
-	_configure: function() {
+	_configure() {
 		const me = this;
 		me._config = helpers.merge({}, [
 			me.chart.options[me._type].datasets,
@@ -486,12 +445,12 @@ helpers.extend(DatasetController.prototype, {
 			}
 		});
 		me._parsing = resolve([me._config.parsing, me.chart.options.parsing, true]);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_parse: function(start, count) {
+	_parse(start, count) {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
@@ -535,7 +494,7 @@ helpers.extend(DatasetController.prototype, {
 
 		iScale._invalidateCaches();
 		vScale._invalidateCaches();
-	},
+	}
 
 	/**
 	 * Parse array of primitive values
@@ -548,7 +507,7 @@ helpers.extend(DatasetController.prototype, {
 	 * Example: {xScale0: 0, yScale0: 1}
 	 * @private
 	 */
-	_parsePrimitiveData: function(meta, data, start, count) {
+	_parsePrimitiveData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const iAxis = iScale.axis;
 		const vAxis = vScale.axis;
@@ -565,7 +524,7 @@ helpers.extend(DatasetController.prototype, {
 			};
 		}
 		return parsed;
-	},
+	}
 
 	/**
 	 * Parse array of arrays
@@ -578,7 +537,7 @@ helpers.extend(DatasetController.prototype, {
 	 * Example: {x: 0, y: 1}
 	 * @private
 	 */
-	_parseArrayData: function(meta, data, start, count) {
+	_parseArrayData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
@@ -592,7 +551,7 @@ helpers.extend(DatasetController.prototype, {
 			};
 		}
 		return parsed;
-	},
+	}
 
 	/**
 	 * Parse array of objects
@@ -605,7 +564,7 @@ helpers.extend(DatasetController.prototype, {
 	 * Example: {xScale0: 0, yScale0: 1, _custom: {r: 10, foo: 'bar'}}
 	 * @private
 	 */
-	_parseObjectData: function(meta, data, start, count) {
+	_parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
@@ -619,19 +578,19 @@ helpers.extend(DatasetController.prototype, {
 			};
 		}
 		return parsed;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getParsed: function(index) {
+	_getParsed(index) {
 		return this._cachedMeta._parsed[index];
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_applyStack: function(scale, parsed) {
+	_applyStack(scale, parsed) {
 		const chart = this.chart;
 		const meta = this._cachedMeta;
 		const value = parsed[scale.axis];
@@ -640,12 +599,12 @@ helpers.extend(DatasetController.prototype, {
 			values: parsed._stacks[scale.axis]
 		};
 		return applyStack(stack, value, meta.index);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getMinMax: function(scale, canStack) {
+	_getMinMax(scale, canStack) {
 		const meta = this._cachedMeta;
 		const {data, _parsed} = meta;
 		const sorted = meta._sorted && scale === meta.iScale;
@@ -697,12 +656,12 @@ helpers.extend(DatasetController.prototype, {
 			}
 		}
 		return {min, max};
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getAllParsedValues: function(scale) {
+	_getAllParsedValues(scale) {
 		const parsed = this._cachedMeta._parsed;
 		const values = [];
 		let i, ilen, value;
@@ -714,12 +673,12 @@ helpers.extend(DatasetController.prototype, {
 			}
 		}
 		return values;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_cacheScaleStackStatus: function() {
+	_cacheScaleStackStatus() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -729,12 +688,12 @@ helpers.extend(DatasetController.prototype, {
 			cache[iScale.id] = iScale.options.stacked;
 			cache[vScale.id] = vScale.options.stacked;
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_scaleCheck: function() {
+	_scaleCheck() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -745,19 +704,19 @@ helpers.extend(DatasetController.prototype, {
 			!vScale ||
 			cache[iScale.id] !== iScale.options.stacked ||
 			cache[vScale.id] !== vScale.options.stacked;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getMaxOverflow: function() {
+	_getMaxOverflow() {
 		return false;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLabelAndValue: function(index) {
+	_getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -767,12 +726,12 @@ helpers.extend(DatasetController.prototype, {
 			label: iScale ? '' + iScale.getLabelForValue(parsed[iScale.axis]) : '',
 			value: vScale ? '' + vScale.getLabelForValue(parsed[vScale.axis]) : ''
 		};
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_update: function(mode) {
+	_update(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
 		me._configure();
@@ -781,14 +740,14 @@ helpers.extend(DatasetController.prototype, {
 		me.update(mode);
 		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me._getMaxOverflow())));
 		me._cacheScaleStackStatus();
-	},
+	}
 
 	/**
 	 * @param {string} mode
 	 */
-	update: function(mode) {}, // eslint-disable-line no-unused-vars
+	update(mode) {} // eslint-disable-line no-unused-vars
 
-	draw: function() {
+	draw() {
 		const ctx = this._ctx;
 		const meta = this._cachedMeta;
 		const elements = meta.data || [];
@@ -802,9 +761,9 @@ helpers.extend(DatasetController.prototype, {
 		for (; i < ilen; ++i) {
 			elements[i].draw(ctx);
 		}
-	},
+	}
 
-	_addAutomaticHoverColors: function(index, options) {
+	_addAutomaticHoverColors(index, options) {
 		const me = this;
 		const getHoverColor = helpers.getHoverColor;
 		const normalOptions = me.getStyle(index);
@@ -817,7 +776,7 @@ helpers.extend(DatasetController.prototype, {
 			color = missingColors[i];
 			options[color] = getHoverColor(normalOptions[color]);
 		}
-	},
+	}
 
 	/**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
@@ -826,7 +785,7 @@ helpers.extend(DatasetController.prototype, {
 	 * @param {boolean} [active] - true if hover
 	 * @return {IStyleInterface} style object
 	 */
-	getStyle: function(index, active) {
+	getStyle(index, active) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const dataset = meta.dataset;
@@ -842,7 +801,7 @@ helpers.extend(DatasetController.prototype, {
 			me._addAutomaticHoverColors(index, options);
 		}
 		return options;
-	},
+	}
 
 	_getContext(index, active) {
 		return {
@@ -853,12 +812,12 @@ helpers.extend(DatasetController.prototype, {
 			active
 		};
 
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions: function(active) {
+	_resolveDatasetElementOptions(active) {
 		const me = this;
 		const chart = me.chart;
 		const datasetOpts = me._config;
@@ -881,12 +840,12 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		return values;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(index, mode) {
+	_resolveDataElementOptions(index, mode) {
 		const me = this;
 		const active = mode === 'active';
 		const cached = me._cachedDataOpts;
@@ -942,12 +901,12 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		return values;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_resolveAnimations: function(index, mode, active) {
+	_resolveAnimations(index, mode, active) {
 		const me = this;
 		const chart = me.chart;
 		const cached = me._cachedAnimations;
@@ -977,13 +936,13 @@ helpers.extend(DatasetController.prototype, {
 		}
 
 		return animations;
-	},
+	}
 
 	/**
 	 * Utility for checking if the options are shared and should be animated separately.
 	 * @private
 	 */
-	_getSharedOptions: function(mode, el, options) {
+	_getSharedOptions(mode, el, options) {
 		if (!mode) {
 			// store element option sharing status for usage in interactions
 			this._sharedOptions = options && options.$shared;
@@ -991,37 +950,37 @@ helpers.extend(DatasetController.prototype, {
 		if (mode !== 'reset' && options && options.$shared && el && el.options && el.options.$shared) {
 			return {target: el.options, options};
 		}
-	},
+	}
 
 	/**
 	 * Utility for determining if `options` should be included in the updated properties
 	 * @private
 	 */
-	_includeOptions: function(mode, sharedOptions) {
+	_includeOptions(mode, sharedOptions) {
 		return mode !== 'resize' && !sharedOptions;
-	},
+	}
 
 	/**
 	 * Utility for updating a element with new properties, using animations when appropriate.
 	 * @private
 	 */
-	_updateElement: function(element, index, properties, mode) {
+	_updateElement(element, index, properties, mode) {
 		if (mode === 'reset' || mode === 'none') {
 			helpers.extend(element, properties);
 		} else {
 			this._resolveAnimations(index, mode).update(element, properties);
 		}
-	},
+	}
 
 	/**
 	 * Utility to animate the shared options, that are potentially affecting multiple elements.
 	 * @private
 	 */
-	_updateSharedOptions: function(sharedOptions, mode) {
+	_updateSharedOptions(sharedOptions, mode) {
 		if (sharedOptions) {
 			this._resolveAnimations(undefined, mode).update(sharedOptions.target, sharedOptions.options);
 		}
-	},
+	}
 
 	/**
 	 * @private
@@ -1029,42 +988,42 @@ helpers.extend(DatasetController.prototype, {
 	_setStyle(element, index, mode, active) {
 		element.active = active;
 		this._resolveAnimations(index, mode, active).update(element, {options: this.getStyle(index, active)});
-	},
+	}
 
-	removeHoverStyle: function(element, datasetIndex, index) {
+	removeHoverStyle(element, datasetIndex, index) {
 		this._setStyle(element, index, 'active', false);
-	},
+	}
 
-	setHoverStyle: function(element, datasetIndex, index) {
+	setHoverStyle(element, datasetIndex, index) {
 		this._setStyle(element, index, 'active', true);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_removeDatasetHoverStyle: function() {
+	_removeDatasetHoverStyle() {
 		const element = this._cachedMeta.dataset;
 
 		if (element) {
 			this._setStyle(element, undefined, 'active', false);
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_setDatasetHoverStyle: function() {
+	_setDatasetHoverStyle() {
 		const element = this._cachedMeta.dataset;
 
 		if (element) {
 			this._setStyle(element, undefined, 'active', true);
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	resyncElements: function(changed) {
+	resyncElements(changed) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const numMeta = meta.data.length;
@@ -1083,12 +1042,12 @@ helpers.extend(DatasetController.prototype, {
 		} else if (changed) {
 			me._parse(0, numData);
 		}
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	insertElements: function(start, count) {
+	insertElements(start, count) {
 		const me = this;
 		const elements = new Array(count);
 		const meta = me._cachedMeta;
@@ -1106,58 +1065,101 @@ helpers.extend(DatasetController.prototype, {
 		me._parse(start, count);
 
 		me.updateElements(elements, start, 'reset');
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	removeElements: function(start, count) {
+	removeElements(start, count) {
 		const me = this;
 		if (me._parsing) {
 			me._cachedMeta._parsed.splice(start, count);
 		}
 		me._cachedMeta.data.splice(start, count);
-	},
+	}
 
 
 	/**
 	 * @private
 	 */
-	onDataPush: function() {
+	onDataPush() {
 		const count = arguments.length;
 		this.insertElements(this.getDataset().data.length - count, count);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	onDataPop: function() {
+	onDataPop() {
 		this.removeElements(this._cachedMeta.data.length - 1, 1);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	onDataShift: function() {
+	onDataShift() {
 		this.removeElements(0, 1);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	onDataSplice: function(start, count) {
+	onDataSplice(start, count) {
 		this.removeElements(start, count);
 		this.insertElements(start, arguments.length - 2);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	onDataUnshift: function() {
+	onDataUnshift() {
 		this.insertElements(0, arguments.length);
 	}
-});
+}
 
 DatasetController.extend = helpers.inherits;
+
+DatasetController.extend({
+	/**
+	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+	 * @type {Chart.core.element}
+	 */
+	datasetElementType: null,
+
+	/**
+	 * Element type used to generate a meta data (e.g. Chart.element.Point).
+	 * @type {Chart.core.element}
+	 */
+	dataElementType: null,
+
+	/**
+	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_datasetElementOptions: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth'
+	],
+
+	/**
+	 * Data element option keys to be resolved in _resolveDataElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'pointStyle'
+	]
+});
 
 export default DatasetController;
