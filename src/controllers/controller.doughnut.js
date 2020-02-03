@@ -3,9 +3,7 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Arc from '../elements/element.arc';
-import helpers from '../helpers';
-
-const valueOrDefault = helpers.valueOrDefault;
+import {isArray, noop, valueOrDefault} from '../helpers/helpers.core';
 
 const PI = Math.PI;
 const DOUBLE_PI = PI * 2;
@@ -83,7 +81,7 @@ defaults._set('doughnut', {
 				var dataLabel = data.labels[tooltipItem.index];
 				var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-				if (helpers.isArray(dataLabel)) {
+				if (isArray(dataLabel)) {
 					// show value on first line of multiline label
 					// need to clone because we are changing the value
 					dataLabel = dataLabel.slice();
@@ -102,7 +100,7 @@ export default DatasetController.extend({
 
 	dataElementType: Arc,
 
-	linkScales: helpers.noop,
+	linkScales: noop,
 
 	/**
 	 * @private

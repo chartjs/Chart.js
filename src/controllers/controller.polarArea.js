@@ -3,9 +3,8 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Arc from '../elements/element.arc';
-import helpers from '../helpers';
-
-const resolve = helpers.options.resolve;
+import {toRadians} from '../helpers/helpers.math';
+import {resolve} from '../helpers/helpers.options';
 
 defaults._set('polarArea', {
 	animation: {
@@ -88,7 +87,7 @@ defaults._set('polarArea', {
 function getStartAngleRadians(deg) {
 	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
 	// Here we adjust to standard unit circle used in drawing, where 0 is at right.
-	return helpers.math.toRadians(deg) - 0.5 * Math.PI;
+	return toRadians(deg) - 0.5 * Math.PI;
 }
 
 export default DatasetController.extend({

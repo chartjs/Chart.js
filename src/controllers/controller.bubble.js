@@ -3,9 +3,8 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Point from '../elements/element.point';
-import helpers from '../helpers';
-
-const resolve = helpers.options.resolve;
+import {extend} from '../helpers/helpers.core';
+import {resolve} from '../helpers/helpers.options';
 
 defaults._set('bubble', {
 	animation: {
@@ -172,7 +171,7 @@ export default DatasetController.extend({
 
 		// In case values were cached (and thus frozen), we need to clone the values
 		if (values.$shared) {
-			values = helpers.extend({}, values, {$shared: false});
+			values = extend({}, values, {$shared: false});
 		}
 
 

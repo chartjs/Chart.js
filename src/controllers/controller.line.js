@@ -4,10 +4,9 @@ import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
 import Point from '../elements/element.point';
-import helpers from '../helpers';
-
-const valueOrDefault = helpers.valueOrDefault;
-const resolve = helpers.options.resolve;
+import {valueOrDefault} from '../helpers/helpers.core';
+import {isNumber} from '../helpers/helpers.math';
+import {resolve} from '../helpers/helpers.options';
 
 defaults._set('line', {
 	showLines: true,
@@ -100,7 +99,7 @@ export default DatasetController.extend({
 		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
-		const maxGapLength = helpers.math.isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
+		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
 		let prevParsed;
 
 		for (let i = 0; i < points.length; ++i) {
