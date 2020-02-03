@@ -1081,8 +1081,8 @@ describe('Time scale tests', function() {
 
 				options.time.unit = 'year';
 				chart.data.labels = [];
-				chart.getDatasetMeta(0).hidden = true;
-				chart.getDatasetMeta(1).hidden = true;
+				var meta = chart.getDatasetMeta(1);
+				meta.hidden = true;
 				chart.update();
 
 				expect(scale.min).toEqual(+moment().startOf('year'));

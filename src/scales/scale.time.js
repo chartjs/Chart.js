@@ -350,9 +350,7 @@ function generate(scale) {
 		}
 	}
 
-	const result = [];
-	ticks.forEach(t => result.push(t));
-	return result;
+	return [...ticks];
 }
 
 /**
