@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers';
+import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';
 
 const defaultColor = defaults.color;
 
@@ -70,11 +70,11 @@ class Point extends Element {
 		}
 
 		// Clipping for Points.
-		if (chartArea === undefined || helpers.canvas._isPointInArea(me, chartArea)) {
+		if (chartArea === undefined || _isPointInArea(me, chartArea)) {
 			ctx.strokeStyle = options.borderColor;
 			ctx.lineWidth = options.borderWidth;
 			ctx.fillStyle = options.backgroundColor;
-			helpers.canvas.drawPoint(ctx, options, me.x, me.y);
+			drawPoint(ctx, options, me.x, me.y);
 		}
 	}
 

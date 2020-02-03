@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers';
+import {isObject} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
@@ -79,7 +79,7 @@ function parseBorderWidth(bar, maxW, maxH) {
 	var skip = parseBorderSkipped(bar);
 	var t, r, b, l;
 
-	if (helpers.isObject(value)) {
+	if (isObject(value)) {
 		t = +value.top || 0;
 		r = +value.right || 0;
 		b = +value.bottom || 0;
