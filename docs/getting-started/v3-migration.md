@@ -60,10 +60,11 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.ticks.reverse` was renamed to `scales[id].reverse`
 * `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales[id].suggestedMax`
 * `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales[id].suggestedMin`
+* `scales.[x/y]Axes.ticks.unitStepSize` was removed. Use `scales[id].ticks.stepSize`
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
-* The dataset option `tension` was renamed to `lineTension`
+* The dataset option `tension` was removed. Use `lineTension`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
 ### Animations
