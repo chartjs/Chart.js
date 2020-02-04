@@ -1,10 +1,6 @@
+import {color, getHoverColor} from '../../src/helpers/helpers.color';
+
 describe('Core helper tests', function() {
-
-	var helpers;
-
-	beforeAll(function() {
-		helpers = window.Chart.helpers;
-	});
 
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
@@ -12,7 +8,7 @@ describe('Core helper tests', function() {
 		}
 
 		it('should return a color when called with a color', function() {
-			expect(isColorInstance(helpers.color.color('rgb(1, 2, 3)'))).toBe(true);
+			expect(isColorInstance(color('rgb(1, 2, 3)'))).toBe(true);
 		});
 	});
 
@@ -27,7 +23,7 @@ describe('Core helper tests', function() {
 				var pattern = patternContext.createPattern(dots, 'repeat');
 				patternContext.fillStyle = pattern;
 
-				var backgroundColor = helpers.color.getHoverColor(chartContext.createPattern(patternCanvas, 'repeat'));
+				var backgroundColor = getHoverColor(chartContext.createPattern(patternCanvas, 'repeat'));
 
 				expect(backgroundColor instanceof CanvasPattern).toBe(true);
 
@@ -39,13 +35,13 @@ describe('Core helper tests', function() {
 			var context = document.createElement('canvas').getContext('2d');
 			var gradient = context.createLinearGradient(0, 1, 2, 3);
 
-			expect(helpers.color.getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
+			expect(getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
 		});
 
 		it('should return a modified version of color when called with a color', function() {
 			var originalColorRGB = 'rgb(70, 191, 189)';
 
-			expect(helpers.color.getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
+			expect(getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
 		});
 	});
 });
