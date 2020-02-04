@@ -17,3 +17,5 @@ export function getHoverColor(colorValue) {
 		colorValue :
 		colorLib(colorValue).saturate(0.5).darken(0.1).rgbString();
 }
+
+export default color;
