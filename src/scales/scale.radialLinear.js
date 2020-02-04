@@ -329,8 +329,8 @@ class RadialLinearScale extends LinearScaleBase {
 		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
 
 		// Point labels
-		me.pointLabels = me.chart.data.labels.map(function() {
-			var label = helpers.callback(me.options.pointLabels.callback, arguments, me);
+		me.pointLabels = me.chart.data.labels.map(function(value, index) {
+			var label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}

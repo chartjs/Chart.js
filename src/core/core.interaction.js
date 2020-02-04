@@ -117,7 +117,7 @@ function getDistanceMetricForAxis(axis) {
  * @param {Chart} chart - the chart
  * @param {object} position - the point to be nearest to
  * @param {string} axis - the axis mode. x|y|xy
- * @return {ChartElement[]} the nearest items
+ * @return {object[]} the nearest items
  */
 function getIntersectItems(chart, position, axis) {
 	const items = [];
@@ -142,7 +142,7 @@ function getIntersectItems(chart, position, axis) {
  * @param {object} position - the point to be nearest to
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
- * @return {ChartElement[]} the nearest items
+ * @return {object[]} the nearest items
  */
 function getNearestItems(chart, position, axis, intersect) {
 	const distanceMetric = getDistanceMetricForAxis(axis);
