@@ -838,33 +838,33 @@ class Chart {
 		}
 	}
 
-	_updateVisibility(datasetIndex, index, visible) {
+	/**
+	 * @private
+	 */
+	_updateDatasetVisibility(datasetIndex, visible) {
 		const me = this;
 		const mode = visible ? 'show' : 'hide';
 		const meta = me.getDatasetMeta(datasetIndex);
 		const anims = meta.controller._resolveAnimations(undefined, mode);
-		if (index === undefined) {
-			me.setDatasetVisibility(datasetIndex, visible);
-			// Animate visible state, so hide animation can be seen
-			anims.update(meta, {visible});
-		} else {
-			if (!meta.data[index]) {
-				return;
-			}
-			me.setDataVisibility(datasetIndex, index, visible);
-		}
+		me.setDatasetVisibility(datasetIndex, visible);
+
+		// Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
+		anims.update(meta, {visible});
+
+		// First update everything else, but the dataset that is changing visibility
 		meta._skipUpdate = true;
 		me.update();
+		// Then update the dataset with proper mode.
 		meta._skipUpdate = false;
 		me.updateDataset(datasetIndex, mode);
 	}
 
-	hide(datasetIndex, index) {
-		this._updateVisibility(datasetIndex, index, false);
+	hide(datasetIndex) {
+		this._updateDatasetVisibility(datasetIndex, false);
 	}
 
-	show(datasetIndex, index) {
-		this._updateVisibility(datasetIndex, index, true);
+	show(datasetIndex) {
+		this._updateDatasetVisibility(datasetIndex, true);
 	}
 
 	/**

@@ -5,7 +5,7 @@ import helpers from '../helpers';
 const transparent = 'transparent';
 const interpolators = {
 	boolean: function(from, to, factor) {
-		return factor > 0.9 ? to : from;
+		return factor > 0.5 ? to : from;
 	},
 	color: function(from, to, factor) {
 		var c0 = helpers.color(from || transparent);

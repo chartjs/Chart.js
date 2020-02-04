@@ -9,7 +9,7 @@ const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['borderColor', 'backgroundColor'];
 
 defaults._set('animation', {
-	// Plain properties are copied to each object
+	// Plain properties can be overridden in each object
 	duration: 1000,
 	easing: 'easeOutQuart',
 	onProgress: noop,
@@ -40,7 +40,7 @@ defaults._set('animation', {
 		},
 		visible: {
 			type: 'boolean',
-			duration: 0
+			duration: 0 // show immediately
 		},
 	},
 	hide: {
@@ -51,7 +51,7 @@ defaults._set('animation', {
 		},
 		visible: {
 			type: 'boolean',
-			easing: 'linear'
+			easing: 'easeInExpo' // for keeping the dataset visible almost all the way through the animation
 		},
 	}
 });

@@ -20,9 +20,10 @@ The following animation options are available. The global options for are define
 | `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
 | `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
 | [property] | `object` | `undefined` | Option overrides for [property].
-| [collection] | `object` | `undefined` | Option overrides for multiple properties, identified by `properties` array.
+| [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
+| [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
 
-Default collections:
+### Default collections
 
 | Name | Option | Value
 | ---- | ------ | -----
@@ -34,6 +35,17 @@ Default collections:
 Direct property configuration overrides configuration of same property in a collection.
 
 These defaults can be overridden in `options.animation` and `dataset.animation`.
+
+### Default modes
+
+| Mode | Option | Value
+| -----| ------ | -----
+| active | duration | 400
+| resize | duration | 0
+| show | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }`
+| | visible | `{ type: 'boolean', duration: 0 }`
+| hide | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }`
+| | visible | `{ type: 'boolean', easing: 'easeInExpo' }`
 
 ## Easing
 
