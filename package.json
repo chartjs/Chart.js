@@ -73,7 +73,6 @@
     "yargs": "^14.0.0"
   },
   "dependencies": {
-    "add": "^2.0.6",
     "chartjs-color": "^2.1.0"
   }
 }

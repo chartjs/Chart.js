@@ -5,7 +5,6 @@ const webWorkerLoader = require('rollup-plugin-web-worker-loader');
 const istanbul = require('rollup-plugin-istanbul');
 const resolve = require('rollup-plugin-node-resolve');
 const builds = require('./rollup.config');
-const babel = require('rollup-plugin-babel');
 const stylesheet = require('./rollup.plugins').stylesheet;
 
 module.exports = function(karma) {
