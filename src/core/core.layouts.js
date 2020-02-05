@@ -1,9 +1,8 @@
 'use strict';
 
 import defaults from './core.defaults';
-import helpers from '../helpers';
-
-const extend = helpers.extend;
+import {each, extend} from '../helpers/helpers.core';
+import {toPadding} from '../helpers/helpers.options';
 
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
@@ -302,7 +301,7 @@ export default {
 		}
 
 		var layoutOptions = chart.options.layout || {};
-		var padding = helpers.options.toPadding(layoutOptions.padding);
+		var padding = toPadding(layoutOptions.padding);
 
 		var availableWidth = width - padding.width;
 		var availableHeight = height - padding.height;
@@ -385,7 +384,7 @@ export default {
 		};
 
 		// Finally update boxes in chartArea (radial scale for example)
-		helpers.each(boxes.chartArea, function(layout) {
+		each(boxes.chartArea, function(layout) {
 			var box = layout.box;
 			extend(box, chart.chartArea);
 			box.update(chartArea.w, chartArea.h);
