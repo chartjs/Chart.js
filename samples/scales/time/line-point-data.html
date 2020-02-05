@@ -91,8 +91,13 @@
 						},
 						ticks: {
 							major: {
-								fontStyle: 'bold',
-								fontColor: '#FF0000'
+								enabled: true
+							},
+							fontStyle: function(context) {
+								return context.tick && context.tick.major ? 'bold' : undefined;
+							},
+							fontColor: function(context) {
+								return context.tick && context.tick.major ? '#FF0000' : undefined;
 							}
 						}
 					},

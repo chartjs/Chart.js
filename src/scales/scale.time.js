@@ -4,7 +4,6 @@ import adapters from '../core/core.adapters';
 import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
-import {resolve} from '../helpers/helpers.options';
 import Scale from '../core/core.scale';
 import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
 
@@ -645,22 +644,15 @@ class TimeScale extends Scale {
 	 */
 	_tickFormatFunction(time, index, ticks, format) {
 		const me = this;
-		const adapter = me._adapter;
 		const options = me.options;
 		const formats = options.time.displayFormats;
-		const minorFormat = formats[me._unit];
 		const majorUnit = me._majorUnit;
+		const minorFormat = formats[me._unit];
 		const majorFormat = formats[majorUnit];
 		const tick = ticks[index];
-		const tickOpts = options.ticks;
 		const major = majorUnit && majorFormat && tick && tick.major;
-		const label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		const nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
-		const formatter = resolve([
-			nestedTickOpts.callback,
-			tickOpts.callback
-		]);
-
+		const label = me._adapter.format(time, format ? format : major ? majorFormat : minorFormat);
+		const formatter = options.ticks.callback;
 		return formatter ? formatter(label, index, ticks) : label;
 	}
 
