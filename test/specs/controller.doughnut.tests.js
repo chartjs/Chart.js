@@ -352,8 +352,8 @@ describe('Chart.controllers.doughnut', function() {
 			var arc = chart.getDatasetMeta(0).data[0];
 
 			afterEvent(chart, 'mousemove', function() {
-				expect(arc.options.backgroundColor).toBe('rgb(49, 135, 221)');
-				expect(arc.options.borderColor).toBe('rgb(22, 89, 156)');
+				expect(arc.options.backgroundColor).toBe('#3187DD');
+				expect(arc.options.borderColor).toBe('#175A9D');
 				expect(arc.options.borderWidth).toBe(2);
 
 				afterEvent(chart, 'mouseout', function() {
