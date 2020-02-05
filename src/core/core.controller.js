@@ -594,13 +594,14 @@ class Chart {
 	 */
 	updateDatasets(mode) {
 		const me = this;
+		const isFun = typeof mode === 'function';
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
 		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i, mode);
+			me.updateDataset(i, isFun ? mode(i) : mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
@@ -851,12 +852,7 @@ class Chart {
 		// Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
 		anims.update(meta, {visible});
 
-		// First update everything else, but the dataset that is changing visibility
-		meta._skipUpdate = true;
-		me.update();
-		// Then update the dataset with proper mode.
-		meta._skipUpdate = false;
-		me.updateDataset(datasetIndex, mode);
+		me.update((index) => index === datasetIndex ? mode : undefined);
 	}
 
 	hide(datasetIndex) {
