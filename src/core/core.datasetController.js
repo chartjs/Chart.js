@@ -922,11 +922,8 @@ class DatasetController {
 		const chartAnim = resolve([chart.options.animation], context, index, info);
 		let config = helpers.mergeIf({}, [datasetAnim, chartAnim]);
 
-		if (active && config.active) {
-			config = helpers.extend({}, config, config.active);
-		}
-		if (mode === 'resize' && config.resize) {
-			config = helpers.extend({}, config, config.resize);
+		if (config[mode]) {
+			config = helpers.extend({}, config, config[mode]);
 		}
 
 		const animations = new Animations(chart, config);
@@ -957,6 +954,9 @@ class DatasetController {
 	 * @private
 	 */
 	_includeOptions(mode, sharedOptions) {
+		if (mode === 'hide' || mode === 'show') {
+			return true;
+		}
 		return mode !== 'resize' && !sharedOptions;
 	}
 

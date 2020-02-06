@@ -1,11 +1,13 @@
 'use strict';
 
 import helpers from '../helpers';
+import {effects} from '../helpers/helpers.easing';
+import {resolve} from '../helpers/helpers.options';
 
 const transparent = 'transparent';
 const interpolators = {
-	number: function(from, to, factor) {
-		return from + (to - from) * factor;
+	boolean: function(from, to, factor) {
+		return factor > 0.5 ? to : from;
 	},
 	color: function(from, to, factor) {
 		var c0 = helpers.color(from || transparent);
@@ -13,30 +15,23 @@ const interpolators = {
 		return c1 && c1.valid
 			? c1.mix(c0, factor).rgbaString()
 			: to;
+	},
+	number: function(from, to, factor) {
+		return from + (to - from) * factor;
 	}
 };
 
 class Animation {
 	constructor(cfg, target, prop, to) {
 		const me = this;
-		let from = cfg.from;
+		const currentValue = target[prop];
 
-		if (from === undefined) {
-			from = target[prop];
-		}
-		if (to === undefined) {
-			to = target[prop];
-		}
-
-		if (from === undefined) {
-			from = to;
-		} else if (to === undefined) {
-			to = from;
-		}
+		to = resolve([cfg.to, to, currentValue, cfg.from]);
+		let from = resolve([cfg.from, currentValue, to]);
 
 		me._active = true;
 		me._fn = cfg.fn || interpolators[cfg.type || typeof from];
-		me._easing = helpers.easing.effects[cfg.easing || 'linear'];
+		me._easing = effects[cfg.easing || 'linear'];
 		me._start = Math.floor(Date.now() + (cfg.delay || 0));
 		me._duration = Math.floor(cfg.duration);
 		me._loop = !!cfg.loop;

@@ -91,9 +91,10 @@ class Animator {
 
 			if (draw) {
 				chart.draw();
-				if (chart.options.animation.debug) {
-					drawFPS(chart, items.length, date, me._lastDate);
-				}
+			}
+
+			if (chart.options.animation.debug) {
+				drawFPS(chart, items.length, date, me._lastDate);
 			}
 
 			me._notify(chart, anims, date, 'progress');

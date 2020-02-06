@@ -594,13 +594,14 @@ class Chart {
 	 */
 	updateDatasets(mode) {
 		const me = this;
+		const isFunction = typeof mode === 'function';
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
 		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i, mode);
+			me.updateDataset(i, isFunction ? mode({datesetIndex: i}) : mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
@@ -836,6 +837,30 @@ class Chart {
 		if (meta.data[index]) {
 			meta.data[index].hidden = !visible;
 		}
+	}
+
+	/**
+	 * @private
+	 */
+	_updateDatasetVisibility(datasetIndex, visible) {
+		const me = this;
+		const mode = visible ? 'show' : 'hide';
+		const meta = me.getDatasetMeta(datasetIndex);
+		const anims = meta.controller._resolveAnimations(undefined, mode);
+		me.setDatasetVisibility(datasetIndex, visible);
+
+		// Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
+		anims.update(meta, {visible});
+
+		me.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
+	}
+
+	hide(datasetIndex) {
+		this._updateDatasetVisibility(datasetIndex, false);
+	}
+
+	show(datasetIndex) {
+		this._updateDatasetVisibility(datasetIndex, true);
 	}
 
 	/**
