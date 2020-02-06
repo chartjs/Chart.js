@@ -594,14 +594,14 @@ class Chart {
 	 */
 	updateDatasets(mode) {
 		const me = this;
-		const isFun = typeof mode === 'function';
+		const isFunction = typeof mode === 'function';
 
 		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
 		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i, isFun ? mode(i) : mode);
+			me.updateDataset(i, isFunction ? mode({datesetIndex: i}) : mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
@@ -852,7 +852,7 @@ class Chart {
 		// Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
 		anims.update(meta, {visible});
 
-		me.update((index) => index === datasetIndex ? mode : undefined);
+		me.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
 	}
 
 	hide(datasetIndex) {
