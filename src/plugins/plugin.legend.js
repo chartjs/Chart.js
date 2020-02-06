@@ -513,7 +513,7 @@ class Legend extends Element {
 			return;
 		}
 
-		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.minSize.width);
+		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
 		const fontColor = valueOrDefault(titleOpts.fontColor, defaults.fontColor);
 		const position = titleOpts.position;
