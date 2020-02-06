@@ -182,49 +182,36 @@ function isFloatBar(custom) {
 	return custom && custom.barStart !== undefined && custom.barEnd !== undefined;
 }
 
-export default DatasetController.extend({
+class BarController extends DatasetController {
 
-	dataElementType: Rectangle,
-
-	/**
-	 * @private
-	 */
-	_dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderSkipped',
-		'borderWidth',
-		'barPercentage',
-		'barThickness',
-		'categoryPercentage',
-		'maxBarThickness',
-		'minBarLength'
-	],
+	constructor(chart, datasetIndex) {
+		super(chart, datasetIndex);
+	}
 
 	/**
 	 * Overriding primitive data parsing since we support mixed primitive/array
 	 * data for float bars
 	 * @private
 	 */
-	_parsePrimitiveData: function() {
+	_parsePrimitiveData() {
 		return parseArrayOrPrimitive.apply(this, arguments);
-	},
+	}
 
 	/**
 	 * Overriding array data parsing since we support mixed primitive/array
 	 * data for float bars
 	 * @private
 	 */
-	_parseArrayData: function() {
+	_parseArrayData() {
 		return parseArrayOrPrimitive.apply(this, arguments);
-	},
+	}
 
 	/**
 	 * Overriding object data parsing since we support mixed primitive/array
 	 * value-scale data for float bars
 	 * @private
 	 */
-	_parseObjectData: function(meta, data, start, count) {
+	_parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const vProp = vScale.axis;
 		const parsed = [];
@@ -242,12 +229,12 @@ export default DatasetController.extend({
 			parsed.push(item);
 		}
 		return parsed;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLabelAndValue: function(index) {
+	_getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {iScale, vScale} = meta;
@@ -261,9 +248,9 @@ export default DatasetController.extend({
 			label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
 			value: value
 		};
-	},
+	}
 
-	initialize: function() {
+	initialize() {
 		var me = this;
 		var meta;
 
@@ -272,16 +259,16 @@ export default DatasetController.extend({
 		meta = me._cachedMeta;
 		meta.stack = me.getDataset().stack;
 		meta.bar = true;
-	},
+	}
 
-	update: function(mode) {
+	update(mode) {
 		const me = this;
 		const rects = me._cachedMeta.data;
 
 		me.updateElements(rects, 0, mode);
-	},
+	}
 
-	updateElements: function(rectangles, start, mode) {
+	updateElements(rectangles, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
@@ -322,7 +309,7 @@ export default DatasetController.extend({
 		}
 
 		me._updateSharedOptions(sharedOptions, mode);
-	},
+	}
 
 	/**
 	 * Returns the stacks based on groups and bar visibility.
@@ -330,7 +317,7 @@ export default DatasetController.extend({
 	 * @returns {string[]} The list of stack IDs
 	 * @private
 	 */
-	_getStacks: function(last) {
+	_getStacks(last) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -364,15 +351,15 @@ export default DatasetController.extend({
 		}
 
 		return stacks;
-	},
+	}
 
 	/**
 	 * Returns the effective number of stacks based on groups and bar visibility.
 	 * @private
 	 */
-	getStackCount: function() {
+	getStackCount() {
 		return this._getStacks().length;
-	},
+	}
 
 	/**
 	 * Returns the stack index for the given dataset based on groups and bar visibility.
@@ -381,7 +368,7 @@ export default DatasetController.extend({
 	 * @returns {number} The stack index
 	 * @private
 	 */
-	getStackIndex: function(datasetIndex, name) {
+	getStackIndex(datasetIndex, name) {
 		var stacks = this._getStacks(datasetIndex);
 		var index = (name !== undefined)
 			? stacks.indexOf(name)
@@ -390,12 +377,12 @@ export default DatasetController.extend({
 		return (index === -1)
 			? stacks.length - 1
 			: index;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	getRuler: function() {
+	getRuler() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -413,13 +400,13 @@ export default DatasetController.extend({
 			stackCount: me.getStackCount(),
 			scale: iScale
 		};
-	},
+	}
 
 	/**
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
-	calculateBarValuePixels: function(index, options) {
+	calculateBarValuePixels(index, options) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
@@ -468,12 +455,12 @@ export default DatasetController.extend({
 			head: head,
 			center: head + size / 2
 		};
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	calculateBarIndexPixels: function(index, ruler, options) {
+	calculateBarIndexPixels(index, ruler, options) {
 		var me = this;
 		var range = options.barThickness === 'flex'
 			? computeFlexCategoryTraits(index, ruler, options)
@@ -491,9 +478,9 @@ export default DatasetController.extend({
 			center: center,
 			size: size
 		};
-	},
+	}
 
-	draw: function() {
+	draw() {
 		const me = this;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
@@ -513,4 +500,23 @@ export default DatasetController.extend({
 		unclipArea(chart.ctx);
 	}
 
-});
+}
+
+BarController.prototype.dataElementType = Rectangle;
+
+/**
+ * @private
+ */
+BarController.prototype._dataElementOptions = [
+	'backgroundColor',
+	'borderColor',
+	'borderSkipped',
+	'borderWidth',
+	'barPercentage',
+	'barThickness',
+	'categoryPercentage',
+	'maxBarThickness',
+	'minBarLength'
+];
+
+export default BarController;

@@ -33,30 +33,17 @@ defaults._set('bubble', {
 	}
 });
 
-export default DatasetController.extend({
-	/**
-	 * @protected
-	 */
-	dataElementType: Point,
+class BubbleController extends DatasetController {
 
-	/**
-	 * @private
-	 */
-	_dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderWidth',
-		'hitRadius',
-		'radius',
-		'pointStyle',
-		'rotation'
-	],
+	constructor(chart, datasetIndex) {
+		super(chart, datasetIndex);
+	}
 
 	/**
 	 * Parse array of objects
 	 * @private
 	 */
-	_parseObjectData: function(meta, data, start, count) {
+	_parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = [];
 		let i, ilen, item;
@@ -69,12 +56,12 @@ export default DatasetController.extend({
 			});
 		}
 		return parsed;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getMaxOverflow: function() {
+	_getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
 		let i = (meta.data || []).length - 1;
@@ -83,12 +70,12 @@ export default DatasetController.extend({
 			max = Math.max(max, me.getStyle(i, true).radius);
 		}
 		return max > 0 && max;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getLabelAndValue: function(index) {
+	_getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {xScale, yScale} = meta;
@@ -101,23 +88,23 @@ export default DatasetController.extend({
 			label: meta.label,
 			value: '(' + x + ', ' + y + (r ? ', ' + r : '') + ')'
 		};
-	},
+	}
 
 	/**
 	 * @protected
 	 */
-	update: function(mode) {
+	update(mode) {
 		const me = this;
 		const points = me._cachedMeta.data;
 
 		// Update Points
 		me.updateElements(points, 0, mode);
-	},
+	}
 
 	/**
 	 * @protected
 	 */
-	updateElements: function(points, start, mode) {
+	updateElements(points, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale} = me._cachedMeta;
@@ -149,12 +136,12 @@ export default DatasetController.extend({
 		}
 
 		me._updateSharedOptions(sharedOptions, mode);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_resolveDataElementOptions: function(index, mode) {
+	_resolveDataElementOptions(index, mode) {
 		var me = this;
 		var chart = me.chart;
 		var dataset = me.getDataset();
@@ -187,4 +174,25 @@ export default DatasetController.extend({
 
 		return values;
 	}
-});
+}
+
+/**
+ * @protected
+ */
+BubbleController.prototype.dataElementType = Point;
+
+/**
+ * @private
+ */
+BubbleController.prototype._dataElementOptions = [
+	'backgroundColor',
+	'borderColor',
+	'borderWidth',
+	'hitRadius',
+	'radius',
+	'pointStyle',
+	'rotation'
+];
+
+
+export default BubbleController;

@@ -26,47 +26,13 @@ defaults._set('line', {
 	}
 });
 
-export default DatasetController.extend({
+class LineController extends DatasetController {
 
-	datasetElementType: Line,
+	constructor(chart, datasetIndex) {
+		super(chart, datasetIndex);
+	}
 
-	dataElementType: Point,
-
-	/**
-	 * @private
-	 */
-	_datasetElementOptions: [
-		'backgroundColor',
-		'borderCapStyle',
-		'borderColor',
-		'borderDash',
-		'borderDashOffset',
-		'borderJoinStyle',
-		'borderWidth',
-		'capBezierPoints',
-		'cubicInterpolationMode',
-		'fill'
-	],
-
-	/**
-	 * @private
-	 */
-	_dataElementOptions: {
-		backgroundColor: 'pointBackgroundColor',
-		borderColor: 'pointBorderColor',
-		borderWidth: 'pointBorderWidth',
-		hitRadius: 'pointHitRadius',
-		hoverHitRadius: 'pointHitRadius',
-		hoverBackgroundColor: 'pointHoverBackgroundColor',
-		hoverBorderColor: 'pointHoverBorderColor',
-		hoverBorderWidth: 'pointHoverBorderWidth',
-		hoverRadius: 'pointHoverRadius',
-		pointStyle: 'pointStyle',
-		radius: 'pointRadius',
-		rotation: 'pointRotation'
-	},
-
-	update: function(mode) {
+	update(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
@@ -89,9 +55,9 @@ export default DatasetController.extend({
 		if (meta.visible) {
 			me.updateElements(points, 0, mode);
 		}
-	},
+	}
 
-	updateElements: function(points, start, mode) {
+	updateElements(points, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
@@ -125,12 +91,12 @@ export default DatasetController.extend({
 		}
 
 		me._updateSharedOptions(sharedOptions, mode);
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions: function() {
+	_resolveDatasetElementOptions() {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
@@ -145,12 +111,12 @@ export default DatasetController.extend({
 		values.steppedLine = resolve([config.steppedLine, lineOptions.stepped]);
 
 		return values;
-	},
+	}
 
 	/**
 	 * @private
 	 */
-	_getMaxOverflow: function() {
+	_getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const border = me._showLine && meta.dataset.options.borderWidth || 0;
@@ -161,9 +127,9 @@ export default DatasetController.extend({
 		const firstPoint = data[0].size();
 		const lastPoint = data[data.length - 1].size();
 		return Math.max(border, firstPoint, lastPoint) / 2;
-	},
+	}
 
-	draw: function() {
+	draw() {
 		const me = this;
 		const ctx = me._ctx;
 		const chart = me.chart;
@@ -191,5 +157,45 @@ export default DatasetController.extend({
 		for (i = 0, ilen = active.length; i < ilen; ++i) {
 			active[i].draw(ctx, area);
 		}
-	},
-});
+	}
+}
+
+LineController.prototype.datasetElementType = Line;
+
+LineController.prototype.dataElementType = Point;
+
+/**
+ * @private
+ */
+LineController.prototype._datasetElementOptions = [
+	'backgroundColor',
+	'borderCapStyle',
+	'borderColor',
+	'borderDash',
+	'borderDashOffset',
+	'borderJoinStyle',
+	'borderWidth',
+	'capBezierPoints',
+	'cubicInterpolationMode',
+	'fill'
+];
+
+/**
+ * @private
+ */
+LineController.prototype._dataElementOptions = {
+	backgroundColor: 'pointBackgroundColor',
+	borderColor: 'pointBorderColor',
+	borderWidth: 'pointBorderWidth',
+	hitRadius: 'pointHitRadius',
+	hoverHitRadius: 'pointHitRadius',
+	hoverBackgroundColor: 'pointHoverBackgroundColor',
+	hoverBorderColor: 'pointHoverBorderColor',
+	hoverBorderWidth: 'pointHoverBorderWidth',
+	hoverRadius: 'pointHoverRadius',
+	pointStyle: 'pointStyle',
+	radius: 'pointRadius',
+	rotation: 'pointRotation'
+};
+
+export default LineController;
