@@ -293,6 +293,9 @@ class Scale extends Element {
 		return {min, max};
 	}
 
+	/**
+	 * @private
+ 	 */
 	_invalidateCaches() {}
 
 	/**
@@ -1060,8 +1063,8 @@ class Scale extends Element {
 			});
 		}
 
-		items.ticksLength = ticksLength;
-		items.borderValue = borderValue;
+		me._ticksLength = ticksLength;
+		me._borderValue = borderValue;
 
 		return items;
 	}
@@ -1206,10 +1209,10 @@ class Scale extends Element {
 			const firstLineWidth = axisWidth;
 			context = {
 				scale: me,
-				tick: me.ticks[items.ticksLength - 1],
+				tick: me.ticks[me._ticksLength - 1],
 			};
-			const lastLineWidth = resolve([gridLines.lineWidth, 1], context, items.ticksLength - 1);
-			const borderValue = items.borderValue;
+			const lastLineWidth = resolve([gridLines.lineWidth, 1], context, me._ticksLength - 1);
+			const borderValue = me._borderValue;
 			let x1, x2, y1, y2;
 
 			if (me.isHorizontal()) {
@@ -1424,6 +1427,9 @@ class Scale extends Element {
 		return result;
 	}
 
+	/**
+	 * @private
+ 	 */
 	_resolveTickFontOptions(index) {
 		const me = this;
 		const options = me.options.ticks;
