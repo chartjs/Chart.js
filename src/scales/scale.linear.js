@@ -31,7 +31,10 @@ class LinearScale extends LinearScaleBase {
 		me.handleTickRangeOptions();
 	}
 
-	// Returns the maximum number of ticks based on the scale dimension
+	/**
+	 * Returns the maximum number of ticks based on the scale dimension
+	 * @private
+ 	 */
 	_computeTickLimit() {
 		var me = this;
 		var tickFont;

@@ -30,6 +30,8 @@ class LineController extends DatasetController {
 
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
+
+		this._showLine = undefined;
 	}
 
 	update(mode) {

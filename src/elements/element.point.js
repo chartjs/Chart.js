@@ -3,6 +3,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';
+import {extend} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
@@ -22,8 +23,16 @@ defaults._set('elements', {
 
 class Point extends Element {
 
-	constructor(props) {
-		super(props);
+	constructor(cfg) {
+		super();
+
+		this.options = undefined;
+		this.skip = undefined;
+		this.stop = undefined;
+
+		if (cfg) {
+			extend(this, cfg);
+		}
 	}
 
 	inRange(mouseX, mouseY) {

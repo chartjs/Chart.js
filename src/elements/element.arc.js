@@ -2,6 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
+import {extend} from '../helpers/helpers.core';
 import {getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
@@ -92,8 +93,19 @@ function drawBorder(ctx, vm, arc) {
 
 class Arc extends Element {
 
-	constructor(props) {
-		super(props);
+	constructor(cfg) {
+		super();
+
+		this.options = undefined;
+		this.circumference = undefined;
+		this.startAngle = undefined;
+		this.endAngle = undefined;
+		this.innerRadius = undefined;
+		this.outerRadius = undefined;
+
+		if (cfg) {
+			extend(this, cfg);
+		}
 	}
 
 	inRange(chartX, chartY) {

@@ -43,11 +43,12 @@
     "gulp-eslint": "^6.0.0",
     "gulp-file": "^0.4.0",
     "gulp-htmllint": "^0.0.16",
-    "gulp-jsdoc3": "^2.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-size": "^3.0.0",
     "gulp-streamify": "^1.0.2",
     "gulp-terser": "^1.1.6",
+    "gulp-typedoc": "^2.2.4",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-zip": "^5.0.0",
     "jasmine": "^3.3.0",
     "jasmine-core": "^3.3.0",
@@ -69,6 +70,8 @@
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-terser": "^5.1.3",
+    "typedoc": "^0.16.9",
+    "typescript": "^3.7.5",
     "yargs": "^14.0.0"
   },
   "dependencies": {

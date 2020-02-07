@@ -54,7 +54,7 @@ export default {
 				const logTick = log10(Math.abs(tickValue));
 				let numExponential = Math.floor(logTick) - Math.floor(logDelta);
 				numExponential = Math.max(Math.min(numExponential, 20), 0);
-				return new Intl.NumberFormat(locale, {notation: 'scientific', minimumFractionDigits: numExponential, maximumFractionDigits: numExponential}).format(tickValue);
+				return tickValue.toExponential(numExponential);
 			}
 
 			let numDecimal = -1 * Math.floor(logDelta);

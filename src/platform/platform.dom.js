@@ -4,10 +4,12 @@
 
 'use strict';
 
-import helpers from '../helpers';
-import stylesheet from './platform.dom.css';
+import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
 import platform from './platform';
+
+// @ts-ignore
+import stylesheet from './platform.dom.css';
 
 const EXPANDO_KEY = '$chartjs';
 const CSS_PREFIX = 'chartjs-';
@@ -177,7 +179,7 @@ function createDiv(cls) {
 }
 
 // Implementation based on https://github.com/marcj/css-element-queries
-function createResizer(handler) {
+function createResizer(domPlatform, handler) {
 	const maxSize = 1000000;
 
 	// NOTE(SB) Don't use innerHTML because it could be considered unsafe.
@@ -191,7 +193,7 @@ function createResizer(handler) {
 
 	resizer.appendChild(expand);
 	resizer.appendChild(shrink);
-	resizer._reset = function() {
+	domPlatform._reset = function() {
 		expand.scrollLeft = maxSize;
 		expand.scrollTop = maxSize;
 		shrink.scrollLeft = maxSize;
@@ -199,7 +201,7 @@ function createResizer(handler) {
 	};
 
 	const onScroll = function() {
-		resizer._reset();
+		domPlatform._reset();
 		handler();
 	};
 
@@ -247,11 +249,11 @@ function unwatchForRender(node) {
 	node.classList.remove(CSS_RENDER_MONITOR);
 }
 
-function addResizeListener(node, listener, chart) {
+function addResizeListener(node, listener, chart, domPlatform) {
 	const expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
-	const resizer = expando.resizer = createResizer(throttled(function() {
+	const resizer = expando.resizer = createResizer(domPlatform, throttled(function() {
 		if (expando.resizer) {
 			const container = chart.options.maintainAspectRatio && node.parentNode;
 			const w = container ? container.clientWidth : 0;
@@ -279,7 +281,7 @@ function addResizeListener(node, listener, chart) {
 			}
 
 			// The container size might have changed, let's reset the resizer state.
-			resizer._reset();
+			domPlatform._reset();
 		}
 	});
 }
@@ -298,7 +300,7 @@ function removeResizeListener(node) {
 
 /**
  * Injects CSS styles inline if the styles are not already present.
- * @param {HTMLDocument|ShadowRoot} rootNode - the node to contain the <style>.
+ * @param {Node} rootNode - the HTMLDocument|ShadowRoot node to contain the <style>.
  * @param {string} css - the CSS to be injected.
  */
 function injectCSS(rootNode, css) {
@@ -346,6 +348,7 @@ export default class DomPlatform extends BasePlatform {
 			// into the same shadow DOM.
 			// https://github.com/chartjs/Chart.js/issues/5763
 			const root = canvas.getRootNode ? canvas.getRootNode() : document;
+			// @ts-ignore
 			const targetNode = root.host ? root : document.head;
 			injectCSS(targetNode, stylesheet);
 		}
@@ -378,7 +381,7 @@ export default class DomPlatform extends BasePlatform {
 	releaseContext(context) {
 		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
-			return;
+			return false;
 		}
 
 		const initial = canvas[EXPANDO_KEY].initial;
@@ -404,13 +407,14 @@ export default class DomPlatform extends BasePlatform {
 		canvas.width = canvas.width;
 
 		delete canvas[EXPANDO_KEY];
+		return true;
 	}
 
 	addEventListener(chart, type, listener) {
 		const canvas = chart.canvas;
 		if (type === 'resize') {
 			// Note: the resize event is not supported on all browsers.
-			addResizeListener(canvas, listener, chart);
+			addResizeListener(canvas, listener, chart, this);
 			return;
 		}
 

@@ -10,7 +10,7 @@ import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {valueOrDefault, isFinite, isArray, extend} from '../helpers/helpers.core';
+import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
 defaults._set('plugins', {
@@ -91,7 +91,9 @@ function computeLinearBoundary(source) {
 // TODO: use elements.Arc instead
 class simpleArc {
 	constructor(opts) {
-		extend(this, opts);
+		this.x = opts.x;
+		this.y = opts.y;
+		this.radius = opts.radius;
 	}
 
 	pathSegment(ctx, bounds, opts) {
@@ -192,6 +194,7 @@ function getTarget(source) {
 
 	if (isArray(boundary)) {
 		_loop = true;
+		// @ts-ignore
 		points = boundary;
 	} else {
 		points = pointsFromSegments(boundary, line);
@@ -354,14 +357,15 @@ function _fill(ctx, cfg) {
 
 		ctx.beginPath();
 
-		let loop = !!line.pathSegment(ctx, src);
-		if (loop) {
+		const lineLoop = !!line.pathSegment(ctx, src);
+		if (lineLoop) {
 			ctx.closePath();
 		} else {
 			interpolatedLineTo(ctx, target, end, property);
 		}
 
-		loop &= target.pathSegment(ctx, tgt, {move: loop, reverse: true});
+		const targetLoop = !!target.pathSegment(ctx, tgt, {move: lineLoop, reverse: true});
+		const loop = lineLoop && targetLoop;
 		if (!loop) {
 			interpolatedLineTo(ctx, target, start, property);
 		}
@@ -411,7 +415,8 @@ export default {
 					fill: decodeFill(line, i, count),
 					chart: chart,
 					scale: meta.vScale,
-					line
+					line,
+					target: undefined
 				};
 			}
 

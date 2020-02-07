@@ -60,6 +60,20 @@ const defaultConfig = {
 };
 
 class LogarithmicScale extends Scale {
+
+	constructor(cfg) {
+		super(cfg);
+
+		/** @type {number} */
+		this.start = undefined;
+		/** @type {number} */
+		this.end = undefined;
+		/** @type {number} */
+		this._startValue = undefined;
+		/** @type {number} */
+		this._valueRange = undefined;
+	}
+
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
 		if (value === 0) {

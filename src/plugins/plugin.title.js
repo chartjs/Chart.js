@@ -23,11 +23,25 @@ class Title extends Element {
 	constructor(config) {
 		super();
 
-		var me = this;
-		helpers.extend(me, config);
+		helpers.extend(this, config);
 
-		// Contains hit boxes for each dataset (in dataset order)
-		me.legendHitBoxes = [];
+		this.chart = config.chart;
+		this.options = config.options;
+		this.ctx = config.ctx;
+		this.margins = undefined;
+		this._padding = undefined;
+		this.legendHitBoxes = []; // Contains hit boxes for each dataset (in dataset order)
+		this.top = undefined;
+		this.bottom = undefined;
+		this.left = undefined;
+		this.right = undefined;
+		this.width = undefined;
+		this.height = undefined;
+		this.maxWidth = undefined;
+		this.maxHeight = undefined;
+		this.position = undefined;
+		this.weight = undefined;
+		this.fullWidth = undefined;
 	}
 
 	// These methods are ordered by lifecycle. Utilities then follow.

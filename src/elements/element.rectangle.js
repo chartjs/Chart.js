@@ -2,7 +2,7 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {isObject} from '../helpers/helpers.core';
+import {extend, isObject} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
@@ -130,8 +130,18 @@ function inRange(bar, x, y) {
 
 class Rectangle extends Element {
 
-	constructor(props) {
-		super(props);
+	constructor(cfg) {
+		super();
+
+		this.options = undefined;
+		this.horizontal = undefined;
+		this.base = undefined;
+		this.width = undefined;
+		this.height = undefined;
+
+		if (cfg) {
+			extend(this, cfg);
+		}
 	}
 
 	draw(ctx) {

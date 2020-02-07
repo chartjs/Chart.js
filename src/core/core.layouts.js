@@ -4,6 +4,10 @@ import defaults from './core.defaults';
 import {each, extend} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
+/**
+ * @typedef { import("./core.controller").default } Chart
+ */
+
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
 
 function filterByPosition(array, position) {
@@ -208,13 +212,15 @@ defaults._set('layout', {
 
 /**
  * @interface ILayoutItem
+ * @typedef {object} ILayoutItem
  * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'
  * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
  * @prop {boolean} fullWidth - if true, and the item is horizontal, then push vertical boxes down
  * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
  * @prop {function} update - Takes two parameters: width and height. Returns size of item
- * @prop {function} getPadding -  Returns an object with padding on the edges
+ * @prop {function} draw - Draws the element
+ * @prop {function} [getPadding] -  Returns an object with padding on the edges
  * @prop {number} width - Width of item. Must be valid after update()
  * @prop {number} height - Height of item. Must be valid after update()
  * @prop {number} left - Left edge of the item. Set by layout system and cannot be used in update
@@ -244,6 +250,7 @@ export default {
 		item.fullWidth = item.fullWidth || false;
 		item.position = item.position || 'top';
 		item.weight = item.weight || 0;
+		// @ts-ignore
 		item._layers = item._layers || function() {
 			return [{
 				z: 0,
@@ -363,7 +370,7 @@ export default {
 			fitBoxes(verticalBoxes, chartArea, params);
 		}
 
-		handleMaxPadding(chartArea, params);
+		handleMaxPadding(chartArea);
 
 		// Finally place the boxes to correct coordinates
 		placeBoxes(boxes.leftAndTop, chartArea, params);

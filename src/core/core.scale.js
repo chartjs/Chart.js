@@ -224,6 +224,82 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 
 class Scale extends Element {
 
+	constructor(cfg) {
+		super();
+
+		/** @type {string} */
+		this.id = cfg.id;
+		this.type = cfg.type;
+		/** @type {object} */
+		this.options = cfg.options;
+		this.ctx = cfg.ctx;
+		this.chart = cfg.chart;
+
+		// implements box
+		/** @type {number} */
+		this.top = undefined;
+		/** @type {number} */
+		this.bottom = undefined;
+		/** @type {number} */
+		this.left = undefined;
+		/** @type {number} */
+		this.right = undefined;
+		/** @type {number} */
+		this.width = undefined;
+		/** @type {number} */
+		this.height = undefined;
+		this.margins = {
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom: 0
+		};
+		// TODO: make maxWidth, maxHeight private
+		/** @type {number} */
+		this.maxWidth = undefined;
+		/** @type {number} */
+		this.maxHeight = undefined;
+		/** @type {number} */
+		this.paddingTop = undefined;
+		/** @type {number} */
+		this.paddingBottom = undefined;
+		/** @type {number} */
+		this.paddingLeft = undefined;
+		/** @type {number} */
+		this.paddingRight = undefined;
+
+		// scale-specific properties
+		/** @type {string} */
+		this.axis = undefined;
+		/** @type {number} */
+		this.labelRotation = undefined;
+		this.min = undefined;
+		this.max = undefined;
+		/** @type {object[]} */
+		this.ticks = null;
+		/** @type {object[]} */
+		this._gridLineItems = null;
+		/** @type {object[]} */
+		this._labelItems = null;
+		/** @type {object} */
+		this._labelSizes = null;
+		/** @type {number} */
+		this._length = undefined;
+		/** @type {object} */
+		this._longestTextCache = {};
+		/** @type {number} */
+		this._maxLabelLines = undefined;
+		/** @type {number} */
+		this._startPixel = undefined;
+		/** @type {number} */
+		this._endPixel = undefined;
+		this._reversePixels = undefined;
+		this._userMax = undefined;
+		this._userMin = undefined;
+		this._ticksLength = undefined;
+		this._borderValue = undefined;
+	}
+
 	/**
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
@@ -356,7 +432,6 @@ class Scale extends Element {
 		me.beforeUpdate();
 
 		// Absorb the master measurements
-		// TODO: make maxWidth, maxHeight private
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
 		me.margins = extend({
@@ -369,7 +444,6 @@ class Scale extends Element {
 		me.ticks = null;
 		me._labelSizes = null;
 		me._maxLabelLines = 0;
-		me._longestTextCache = me._longestTextCache || {};
 		me._gridLineItems = null;
 		me._labelItems = null;
 
@@ -497,7 +571,9 @@ class Scale extends Element {
 	/**
 	 * @return {object[]} the ticks
 	 */
-	buildTicks() {}
+	buildTicks() {
+		return [];
+	}
 	afterBuildTicks() {
 		call(this.options.afterBuildTicks, [this]);
 	}

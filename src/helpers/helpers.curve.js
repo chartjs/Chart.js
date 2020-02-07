@@ -152,6 +152,9 @@ function capBezierPoints(points, area) {
 	}
 }
 
+/**
+ * @private
+ */
 export function _updateBezierControlPoints(points, options, area, loop) {
 	var i, ilen, point, controlPoints;
 

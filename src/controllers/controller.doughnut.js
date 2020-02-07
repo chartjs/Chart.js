@@ -100,6 +100,9 @@ class DoughnutController extends DatasetController {
 
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
+
+		this.innerRadius = undefined;
+		this.outerRadius = undefined;
 	}
 
 	linkScales() {}

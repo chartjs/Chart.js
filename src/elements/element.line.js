@@ -2,10 +2,15 @@
 
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
+import {extend} from '../helpers/helpers.core';
 import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.interpolation';
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
+
+/**
+ * @typedef { import("./element.point").default } Point
+ */
 
 const defaultColor = defaults.color;
 
@@ -178,6 +183,9 @@ function _getSegmentMethod(line) {
 	return useFastPath ? fastPathSegment : pathSegment;
 }
 
+/**
+ * @private
+ */
 function _getInterpolationMethod(options) {
 	if (options.steppedLine) {
 		return _steppedInterpolation;
@@ -192,8 +200,19 @@ function _getInterpolationMethod(options) {
 
 class Line extends Element {
 
-	constructor(props) {
-		super(props);
+	constructor(cfg) {
+		super();
+
+		this.options = undefined;
+		this._loop = undefined;
+		this._fullLoop = undefined;
+		this._controlPointsUpdated = undefined;
+		this._points = undefined;
+		this._segments = undefined;
+
+		if (cfg) {
+			extend(this, cfg);
+		}
 	}
 
 	updateControlPoints(chartArea) {
@@ -299,19 +318,16 @@ class Line extends Element {
 	/**
 	 * Append all segments of this line to current path.
 	 * @param {CanvasRenderingContext2D} ctx
-	 * @param {object} params
-	 * @param {object} params.move - move to starting point (vs line to it)
-	 * @param {object} params.reverse - path the segment from end to start
 	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
 	 */
-	path(ctx, params) {
+	path(ctx) {
 		const me = this;
 		const segments = me.segments;
 		const ilen = segments.length;
 		const segmentMethod = _getSegmentMethod(me);
 		let loop = me._loop;
 		for (let i = 0; i < ilen; ++i) {
-			loop &= segmentMethod(ctx, me, segments[i], params);
+			loop &= segmentMethod(ctx, me, segments[i]);
 		}
 		return !!loop;
 	}

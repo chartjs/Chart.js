@@ -2,6 +2,10 @@
 
 import {isArray} from './helpers.core';
 
+/**
+ * @typedef { import("../core/core.controller").default } Chart
+ */
+
 const PI = Math.PI;
 const RAD_PER_DEG = PI / 180;
 const DOUBLE_PI = PI * 2;
@@ -251,7 +255,7 @@ export function _steppedLineTo(ctx, previous, target, flip, mode) {
 		const midpoint = (previous.x + target.x) / 2.0;
 		ctx.lineTo(midpoint, previous.y);
 		ctx.lineTo(midpoint, target.y);
-	} else if (mode === 'after' ^ flip) {
+	} else if (mode === 'after' !== !!flip) {
 		ctx.lineTo(previous.x, target.y);
 	} else {
 		ctx.lineTo(target.x, previous.y);
