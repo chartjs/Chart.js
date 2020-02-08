@@ -358,23 +358,23 @@ function generate(scale) {
  * They add extra margins on the both sides by scaling down the original scale.
  * Offsets are added when the `offset` option is true.
  */
-function computeOffsets(table, ticks, min, max, options) {
+function computeOffsets(table, timestamps, min, max, options) {
 	let start = 0;
 	let end = 0;
 	let first, last;
 
-	if (options.offset && ticks.length) {
-		first = interpolate(table, 'time', ticks[0], 'pos');
-		if (ticks.length === 1) {
+	if (options.offset && timestamps.length) {
+		first = interpolate(table, 'time', timestamps[0], 'pos');
+		if (timestamps.length === 1) {
 			start = 1 - first;
 		} else {
-			start = (interpolate(table, 'time', ticks[1], 'pos') - first) / 2;
+			start = (interpolate(table, 'time', timestamps[1], 'pos') - first) / 2;
 		}
-		last = interpolate(table, 'time', ticks[ticks.length - 1], 'pos');
-		if (ticks.length === 1) {
+		last = interpolate(table, 'time', timestamps[timestamps.length - 1], 'pos');
+		if (timestamps.length === 1) {
 			end = last;
 		} else {
-			end = (last - interpolate(table, 'time', ticks[ticks.length - 2], 'pos')) / 2;
+			end = (last - interpolate(table, 'time', timestamps[timestamps.length - 2], 'pos')) / 2;
 		}
 	}
 
@@ -626,7 +626,7 @@ class TimeScale extends Scale {
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
-		me._offsets = computeOffsets(me._table, ticks, min, max, options);
+		me._offsets = computeOffsets(me._table, getDataTimestamps(me), min, max, options);
 
 		if (options.reverse) {
 			ticks.reverse();

@@ -1317,7 +1317,7 @@ describe('Time scale tests', function() {
 					this.chart = window.acquireChart({
 						type: 'line',
 						data: {
-							labels: ['2017', '2019', '2020', '2025'],
+							labels: ['2017', '2018', '2019', '2020', '2021'],
 							datasets: [{data: [0, 1, 2, 3, 4]}]
 						},
 						options: {
@@ -1325,7 +1325,8 @@ describe('Time scale tests', function() {
 								x: {
 									type: 'time',
 									time: {
-										parser: 'YYYY'
+										parser: 'YYYY',
+										unit: 'year'
 									},
 									ticks: {
 										source: source
@@ -1341,7 +1342,7 @@ describe('Time scale tests', function() {
 					var scale = this.chart.scales.x;
 
 					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left);
-					expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(scale.left + scale.width);
+					expect(scale.getPixelForValue(moment('2021').valueOf())).toBeCloseToPixel(scale.left + scale.width);
 				});
 
 				it ('should add offset from the edges if offset is true', function() {
@@ -1357,7 +1358,7 @@ describe('Time scale tests', function() {
 					var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
 
 					expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
-					expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
+					expect(scale.getPixelForValue(moment('2021').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
 				});
 
 				it ('should not add offset if min and max extend the labels range', function() {
@@ -1430,8 +1431,8 @@ describe('Time scale tests', function() {
 				this.chart = window.acquireChart({
 					type: 'line',
 					data: {
-						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						labels: ['2017', '2018', '2019', '2020', '2021'],
+						datasets: [{data: [0, 1, 2, 3, 4]}]
 					},
 					options: {
 						scales: {
@@ -1440,6 +1441,7 @@ describe('Time scale tests', function() {
 								reverse: true,
 								time: {
 									parser: 'YYYY',
+									unit: 'year'
 								},
 								ticks: {
 									source: 'labels',
@@ -1456,13 +1458,13 @@ describe('Time scale tests', function() {
 			it ('should reverse the labels', function() {
 				var scale = this.chart.scales.x;
 				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + scale.width);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left);
+				expect(scale.getPixelForValue(moment('2021').valueOf())).toBeCloseToPixel(scale.left);
 			});
 
 			it ('should reverse the values for pixels', function() {
 				var scale = this.chart.scales.x;
 				expect(scale.getValueForPixel(scale.left)).toBeCloseToTime({
-					value: moment('2042-01-01T00:00:00'),
+					value: moment('2021-01-01T00:00:00'),
 					unit: 'hour',
 				});
 				expect(scale.getValueForPixel(scale.left + scale.width)).toBeCloseToTime({
@@ -1480,11 +1482,11 @@ describe('Time scale tests', function() {
 				chart.update();
 
 				var numTicks = scale.ticks.length;
-				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
-				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+				var firstTickInterval = scale.getPixelForTick(numTicks - 2) - scale.getPixelForTick(numTicks - 1);
+				var lastTickInterval = scale.getPixelForTick(0) - scale.getPixelForTick(1);
 
 				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left + scale.width - lastTickInterval / 2);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
+				expect(scale.getPixelForValue(moment('2021').valueOf())).toBeCloseToPixel(scale.left + firstTickInterval / 2);
 			});
 
 			it ('should reverse the values for pixels if offset is true', function() {
@@ -1496,12 +1498,12 @@ describe('Time scale tests', function() {
 				chart.update();
 
 				var numTicks = scale.ticks.length;
-				var firstTickInterval = scale.getPixelForTick(1) - scale.getPixelForTick(0);
-				var lastTickInterval = scale.getPixelForTick(numTicks - 1) - scale.getPixelForTick(numTicks - 2);
+				var firstTickInterval = scale.getPixelForTick(numTicks - 2) - scale.getPixelForTick(numTicks - 1);
+				var lastTickInterval = scale.getPixelForTick(0) - scale.getPixelForTick(1);
 
 				expect(scale.getValueForPixel(scale.left + lastTickInterval / 2)).toBeCloseToTime({
-					value: moment('2042-01-01T00:00:00'),
-					unit: 'hour',
+					value: moment('2021-01-01T00:00:00'),
+					unit: 'year',
 				});
 				expect(scale.getValueForPixel(scale.left + scale.width - firstTickInterval / 2)).toBeCloseToTime({
 					value: moment('2017-01-01T00:00:00'),
