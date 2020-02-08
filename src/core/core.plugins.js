@@ -22,26 +22,28 @@ defaults._set('plugins', {});
  * @namespace Chart.plugins
  * @since 2.1.0
  */
-export default {
-	/**
-	 * Globally registered plugins.
-	 * @private
-	 */
-	_plugins: [],
+class PluginService {
+	constructor() {
+		/**
+		 * Globally registered plugins.
+		 * @private
+		 */
+		this._plugins = [];
 
-	/**
-	 * This identifier is used to invalidate the descriptors cache attached to each chart
-	 * when a global plugin is registered or unregistered. In this case, the cache ID is
-	 * incremented and descriptors are regenerated during following API calls.
-	 * @private
-	 */
-	_cacheId: 0,
+		/**
+		 * This identifier is used to invalidate the descriptors cache attached to each chart
+		 * when a global plugin is registered or unregistered. In this case, the cache ID is
+		 * incremented and descriptors are regenerated during following API calls.
+		 * @private
+		 */
+		this._cacheId = 0;
+	}
 
 	/**
 	 * Registers the given plugin(s) if not already registered.
 	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
-	register: function(plugins) {
+	register(plugins) {
 		var p = this._plugins;
 		([]).concat(plugins).forEach(function(plugin) {
 			if (p.indexOf(plugin) === -1) {
@@ -50,13 +52,13 @@ export default {
 		});
 
 		this._cacheId++;
-	},
+	}
 
 	/**
 	 * Unregisters the given plugin(s) only if registered.
 	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
-	unregister: function(plugins) {
+	unregister(plugins) {
 		var p = this._plugins;
 		([]).concat(plugins).forEach(function(plugin) {
 			var idx = p.indexOf(plugin);
@@ -66,34 +68,34 @@ export default {
 		});
 
 		this._cacheId++;
-	},
+	}
 
 	/**
 	 * Remove all registered plugins.
 	 * @since 2.1.5
 	 */
-	clear: function() {
+	clear() {
 		this._plugins = [];
 		this._cacheId++;
-	},
+	}
 
 	/**
 	 * Returns the number of registered plugins?
 	 * @returns {number}
 	 * @since 2.1.5
 	 */
-	count: function() {
+	count() {
 		return this._plugins.length;
-	},
+	}
 
 	/**
 	 * Returns all registered plugin instances.
 	 * @returns {IPlugin[]} array of plugin objects.
 	 * @since 2.1.5
 	 */
-	getAll: function() {
+	getAll() {
 		return this._plugins;
-	},
+	}
 
 	/**
 	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
@@ -104,7 +106,7 @@ export default {
 	 * @param {Array} [args] - Extra arguments to apply to the hook call.
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
-	notify: function(chart, hook, args) {
+	notify(chart, hook, args) {
 		var descriptors = this.descriptors(chart);
 		var ilen = descriptors.length;
 		var i, descriptor, plugin, params, method;
@@ -123,14 +125,14 @@ export default {
 		}
 
 		return true;
-	},
+	}
 
 	/**
 	 * Returns descriptors of enabled plugins for the given chart.
 	 * @returns {object[]} [{ plugin, options }]
 	 * @private
 	 */
-	descriptors: function(chart) {
+	descriptors(chart) {
 		var cache = chart.$plugins || (chart.$plugins = {});
 		if (cache.id === this._cacheId) {
 			return cache.descriptors;
@@ -167,7 +169,7 @@ export default {
 		cache.descriptors = descriptors;
 		cache.id = this._cacheId;
 		return descriptors;
-	},
+	}
 
 	/**
 	 * Invalidates cache for the given chart: descriptors hold a reference on plugin option,
@@ -175,10 +177,13 @@ export default {
 	 * https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 	 * @private
 	 */
-	_invalidate: function(chart) {
+	_invalidate(chart) {
 		delete chart.$plugins;
 	}
-};
+}
+
+// singleton instance
+export default new PluginService();
 
 /**
  * Plugin extension hooks.
