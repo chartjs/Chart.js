@@ -62,12 +62,17 @@
 				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
 			}
 
+
+			function after4pm(date) {
+				return date.hour() > 16 || (date.hour() === 16 && date.minute() > 0);
+			}
+
 			// Returns true if outside 9:30am-4pm on a weekday
 			function outsideMarketHours(date) {
 				if (date.isoWeekday() > 5) {
 					return true;
 				}
-				if (unitLessThanDay() && (beforeNineThirty(date) || date.hour() > 16)) {
+				if (unitLessThanDay() && (beforeNineThirty(date) || after4pm(date))) {
 					return true;
 				}
 				return false;
@@ -140,69 +145,26 @@
 							fontStyle: function(context) {
 								return context.tick.major ? 'bold' : undefined;
 							},
-							source: 'labels', // We provided no labels. Generate no ticks. We'll make our own
+							source: 'data',
 							autoSkip: true,
 							autoSkipPadding: 75,
 							maxRotation: 0,
 							sampleSize: 100
 						},
-						// Custom logic that chooses ticks from dataset timestamp by choosing first timestamp in time period
+						// Custom logic that chooses major ticks by first timestamp in time period
+						// E.g. if March 1 & 2 are missing from dataset because they're weekends, we pick March 3 to be beginning of month
 						afterBuildTicks: function(scale) {
-							// Determine units according to our own logic
-							// Make sure there's at least 10 ticks generated. autoSkip will remove any extras
 							const units = ['second', 'minute', 'hour', 'day', 'month', 'year'];
-							const duration = moment.duration(moment(scale.max).diff(scale.min));
 							const unit = document.getElementById('unit').value;
-							let minorUnit = unit;
-							for (let i = units.indexOf(minorUnit); i < units.length; i++) {
-								const periods = duration.as(units[i]);
-								if (periods < 10) {
-									break;
-								}
-								minorUnit = units[i];
-							}
 							let majorUnit;
-							if (units.indexOf(minorUnit) !== units.length - 1) {
-								majorUnit = units[units.indexOf(minorUnit) + 1];
+							if (units.indexOf(unit) !== units.length - 1) {
+								majorUnit = units[units.indexOf(unit) + 1];
 							}
-
-							// Generate ticks according to our own logic
-							const data = scale.chart.data.datasets[0].data;
-							const firstDate = moment(data[0].t);
-
-							function findIndex(ts) {
-								// Note that we could make this faster by doing a binary search
-								// However, Chart.helpers.collection._lookup requires key and it's already pretty fast
-								let result = -1;
-								for (let i = 0; i < data.length; i++) {
-									if (data[i].t >= ts) {
-										result = i;
-										break;
-									}
-								}
-								if (result === 0) {
-									return isFirstUnitOfPeriod(firstDate, unit, minorUnit) ? 0 : 1;
-								}
-								return result;
-							}
-
-							// minor ticks
-							let start = moment(scale.min).startOf(minorUnit);
-							const end = moment(scale.max);
-							const values = new Set();
-							for (let date = start; date.isBefore(end); date.add(1, minorUnit)) {
-								const index = findIndex(+date);
-								if (index !== -1) {
-									values.add(data[index].t);
-								}
-							}
-							const ticks = Array.from(values, value => ({value}));
 
 							// major ticks
+							const ticks = scale.ticks;
 							for (let i = 0; i < ticks.length; i++) {
-								if (!majorUnit || isFirstUnitOfPeriod(moment(ticks[i].value), unit, majorUnit)) {
-									ticks[i].major = true;
-								}
+								ticks[i].major = !majorUnit || isFirstUnitOfPeriod(moment(ticks[i].value), unit, majorUnit);
 							}
 							scale.ticks = ticks;
 						}
