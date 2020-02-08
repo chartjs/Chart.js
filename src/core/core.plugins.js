@@ -183,9 +183,7 @@ class PluginService {
 }
 
 // singleton instance
-const plugins = new PluginService();
-
-export default plugins;
+export default new PluginService();
 
 /**
  * Plugin extension hooks.
