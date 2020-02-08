@@ -6,7 +6,7 @@ import {extend, isObject} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
-defaults._set('elements', {
+defaults.set('elements', {
 	rectangle: {
 		backgroundColor: defaultColor,
 		borderColor: defaultColor,

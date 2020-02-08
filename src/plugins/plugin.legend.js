@@ -12,7 +12,7 @@ import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../hel
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
 
-defaults._set('legend', {
+defaults.set('legend', {
 	display: true,
 	position: 'top',
 	align: 'center',

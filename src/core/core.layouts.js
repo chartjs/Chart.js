@@ -201,7 +201,7 @@ function placeBoxes(boxes, chartArea, params) {
 	chartArea.y = y;
 }
 
-defaults._set('layout', {
+defaults.set('layout', {
 	padding: {
 		top: 0,
 		right: 0,

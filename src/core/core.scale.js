@@ -8,7 +8,7 @@ import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
 import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
-defaults._set('scale', {
+defaults.set('scale', {
 	display: true,
 	offset: false,
 	reverse: false,

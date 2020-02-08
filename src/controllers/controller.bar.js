@@ -7,7 +7,7 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';
 
-defaults._set('bar', {
+defaults.set('bar', {
 	hover: {
 		mode: 'index'
 	},

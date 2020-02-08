@@ -9,7 +9,7 @@ const PI = Math.PI;
 const DOUBLE_PI = PI * 2;
 const HALF_PI = PI / 2;
 
-defaults._set('doughnut', {
+defaults.set('doughnut', {
 	animation: {
 		numbers: {
 			type: 'number',

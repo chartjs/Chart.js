@@ -3,7 +3,7 @@
 import LineController from './controller.line';
 import defaults from '../core/core.defaults';
 
-defaults._set('scatter', {
+defaults.set('scatter', {
 	scales: {
 		x: {
 			type: 'linear',

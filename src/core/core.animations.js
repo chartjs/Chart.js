@@ -8,7 +8,7 @@ import {noop, extend, isObject} from '../helpers/helpers.core';
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['borderColor', 'backgroundColor'];
 
-defaults._set('animation', {
+defaults.set('animation', {
 	// Plain properties can be overridden in each object
 	duration: 1000,
 	easing: 'easeOutQuart',

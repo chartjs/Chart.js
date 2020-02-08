@@ -13,7 +13,7 @@ import helpers from '../helpers/index';
 const valueOrDefault = helpers.valueOrDefault;
 const getRtlHelper = helpers.rtl.getRtlAdapter;
 
-defaults._set('tooltips', {
+defaults.set('tooltips', {
 	enabled: true,
 	custom: null,
 	mode: 'nearest',

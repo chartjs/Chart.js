@@ -6,7 +6,7 @@ import Line from '../elements/element.line';
 import Point from '../elements/element.point';
 import {valueOrDefault} from '../helpers/helpers.core';
 
-defaults._set('radar', {
+defaults.set('radar', {
 	spanGaps: false,
 	scales: {
 		r: {

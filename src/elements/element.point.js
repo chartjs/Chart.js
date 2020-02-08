@@ -7,7 +7,7 @@ import {extend} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
-defaults._set('elements', {
+defaults.set('elements', {
 	point: {
 		radius: 3,
 		pointStyle: 'circle',

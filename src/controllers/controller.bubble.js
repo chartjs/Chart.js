@@ -6,7 +6,7 @@ import Point from '../elements/element.point';
 import {extend} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 
-defaults._set('bubble', {
+defaults.set('bubble', {
 	animation: {
 		numbers: {
 			properties: ['x', 'y', 'borderWidth', 'radius']
