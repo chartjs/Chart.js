@@ -795,8 +795,8 @@ describe('Chart.controllers.line', function() {
 			var point = chart.getDatasetMeta(0).data[0];
 
 			afterEvent(chart, 'mousemove', function() {
-				expect(point.options.backgroundColor).toBe('rgb(49, 135, 221)');
-				expect(point.options.borderColor).toBe('rgb(22, 89, 156)');
+				expect(point.options.backgroundColor).toBe('#3187DD');
+				expect(point.options.borderColor).toBe('#175A9D');
 				expect(point.options.borderWidth).toBe(1);
 				expect(point.options.radius).toBe(4);
 

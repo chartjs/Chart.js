@@ -1,6 +1,6 @@
 'use strict';
 
-import color from 'chartjs-color';
+import color from '@kurkle/color';
 
 import * as coreHelpers from './helpers.core';
 import * as canvas from './helpers.canvas';
@@ -49,6 +49,6 @@ export default {
 	getHoverColor: function(colorValue) {
 		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
 			colorValue :
-			colorHelper(colorValue).saturate(0.5).darken(0.1).rgbString();
+			colorHelper(colorValue).saturate(0.5).darken(0.1).hexString();
 	}
 };

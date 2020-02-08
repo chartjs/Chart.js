@@ -75,6 +75,6 @@
     "yargs": "^14.0.0"
   },
   "dependencies": {
-    "chartjs-color": "^2.1.0"
+    "@kurkle/color": "^0.1.1"
   }
 }

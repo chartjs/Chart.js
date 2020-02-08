@@ -1279,8 +1279,8 @@ describe('Chart.controllers.bar', function() {
 		var bar = meta.data[0];
 
 		meta.controller.setHoverStyle(bar, 1, 0);
-		expect(bar.options.backgroundColor).toBe('rgb(230, 0, 0)');
-		expect(bar.options.borderColor).toBe('rgb(0, 0, 230)');
+		expect(bar.options.backgroundColor).toBe('#E60000');
+		expect(bar.options.borderColor).toBe('#0000E6');
 		expect(bar.options.borderWidth).toBe(2);
 
 		// Set a dataset style

@@ -13,7 +13,7 @@ const interpolators = {
 		var c0 = helpers.color(from || transparent);
 		var c1 = c0.valid && helpers.color(to || transparent);
 		return c1 && c1.valid
-			? c1.mix(c0, factor).rgbaString()
+			? c1.mix(c0, factor).hexString()
 			: to;
 	},
 	number: function(from, to, factor) {
