@@ -27,7 +27,8 @@
     "bower.json",
     "composer.json",
     "dist/*.css",
-    "dist/*.js"
+    "dist/*.js",
+    "dist/types/**/*.d.ts"
   ],
   "devDependencies": {
     "@babel/core": "^7.8.4",

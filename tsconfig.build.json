@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+	  "target": "ES6",
+	  "moduleResolution": "Node",
+	  "allowSyntheticDefaultImports": true,
+	  "allowJs": true,
+	  "checkJs": true,
+	  "noEmit": false,
+	  "declaration": true,
+	  "declarationDir": "dist/types",
+	  "emitDeclarationOnly": true
+	},
+	"include": [
+	  "./src/**/*.js"
+	]
+  }

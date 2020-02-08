@@ -28,7 +28,7 @@ function abstract() {
  * @memberof Chart._adapters._date
  */
 
-class DateAdapter {
+export class DateAdapter {
 
 	constructor(options) {
 		this.options = options || {};

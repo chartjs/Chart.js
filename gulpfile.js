@@ -18,6 +18,7 @@ const typedoc = require('gulp-typedoc');
 
 const pkg = require('./package.json');
 const tsProject = typescript.createProject('./tsconfig.json');
+const tsBuild = typescript.createProject('./tsconfig.build.json');
 
 const argv = yargs
 	.option('verbose', {default: false})
@@ -27,7 +28,9 @@ const srcDir = './src/';
 const outDir = './dist/';
 
 gulp.task('bower', bowerTask);
-gulp.task('build', buildTask);
+gulp.task('buildjs', buildTask);
+gulp.task('buildts', typescriptDefinitionsTask);
+gulp.task('build', gulp.parallel('buildjs', 'buildts'));
 gulp.task('package', packageTask);
 gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
@@ -132,6 +135,12 @@ function lintJsTask() {
 function typescriptTask() {
 	return tsProject.src()
 		.pipe(tsProject())
+		.js.pipe(gulp.dest('dist'));
+}
+
+function typescriptDefinitionsTask() {
+	return tsBuild.src()
+		.pipe(tsBuild())
 		.js.pipe(gulp.dest('dist'));
 }
 

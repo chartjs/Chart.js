@@ -208,6 +208,7 @@ class Chart {
 		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
+		this.$plugins = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
