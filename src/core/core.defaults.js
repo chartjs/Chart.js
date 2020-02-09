@@ -35,9 +35,9 @@ class Defaults {
 		this.doughnut = undefined;
 	}
 	/**
-	 * @private
 	 * @param {string} scope
 	 * @param {*} values
+	 * @private
 	 */
 	set(scope, values) {
 		return merge(this[scope] || (this[scope] = {}), values);
@@ -45,6 +45,4 @@ class Defaults {
 }
 
 // singleton instance
-const defaults = new Defaults();
-
-export default defaults;
+export default new Defaults();
