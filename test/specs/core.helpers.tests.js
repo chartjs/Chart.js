@@ -16,7 +16,7 @@ describe('Core helper tests', function() {
 
 	describe('Color helper', function() {
 		function isColorInstance(obj) {
-			return typeof obj === 'object' && Object.prototype.hasOwnProperty.call(obj, 'valid');
+			return typeof obj === 'object' && obj.valid;
 		}
 
 		it('should return a color when called with a color', function() {
