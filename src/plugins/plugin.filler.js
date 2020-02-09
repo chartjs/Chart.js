@@ -13,7 +13,7 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
-defaults._set('plugins', {
+defaults.set('plugins', {
 	filler: {
 		propagate: true
 	}

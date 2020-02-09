@@ -6,7 +6,7 @@ import {extend} from '../helpers/helpers.core';
 import {getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
-defaults._set('elements', {
+defaults.set('elements', {
 	arc: {
 		backgroundColor: defaults.color,
 		borderColor: '#fff',

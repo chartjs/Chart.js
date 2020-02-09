@@ -15,7 +15,7 @@ import {clone} from '../helpers/helpers.core';
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 
-defaults._set('plugins', {});
+defaults.set('plugins', {});
 
 /**
  * The plugin service singleton

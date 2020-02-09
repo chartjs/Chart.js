@@ -8,7 +8,7 @@ import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
-defaults._set('line', {
+defaults.set('line', {
 	showLines: true,
 	spanGaps: false,
 

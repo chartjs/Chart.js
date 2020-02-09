@@ -6,7 +6,7 @@ import Arc from '../elements/element.arc';
 import {toRadians} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
-defaults._set('polarArea', {
+defaults.set('polarArea', {
 	animation: {
 		numbers: {
 			type: 'number',

@@ -5,7 +5,7 @@ import Element from '../core/core.element';
 import helpers from '../helpers/index';
 import layouts from '../core/core.layouts';
 
-defaults._set('title', {
+defaults.set('title', {
 	align: 'center',
 	display: false,
 	fontStyle: 'bold',

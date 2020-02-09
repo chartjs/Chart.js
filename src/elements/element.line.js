@@ -14,7 +14,7 @@ import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
 const defaultColor = defaults.color;
 
-defaults._set('elements', {
+defaults.set('elements', {
 	line: {
 		tension: 0.4,
 		backgroundColor: defaultColor,

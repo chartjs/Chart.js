@@ -3,7 +3,7 @@
 import BarController from './controller.bar';
 import defaults from '../core/core.defaults';
 
-defaults._set('horizontalBar', {
+defaults.set('horizontalBar', {
 	hover: {
 		mode: 'index',
 		axis: 'y'
