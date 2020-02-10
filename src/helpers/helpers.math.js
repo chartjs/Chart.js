@@ -99,7 +99,7 @@ export function toDegrees(radians) {
  */
 export function _decimalPlaces(x) {
 	if (!isFiniteNumber(x)) {
-		return;
+		return NaN;
 	}
 	let e = 1;
 	let p = 0;

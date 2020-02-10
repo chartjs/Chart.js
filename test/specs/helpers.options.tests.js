@@ -87,8 +87,7 @@ describe('Chart.helpers.options', function() {
 				lineHeight: 63,
 				size: 42,
 				string: 'xxxyyy 42px foobar',
-				style: 'xxxyyy',
-				weight: null
+				style: 'xxxyyy'
 			});
 
 			Object.assign(Chart.defaults, {
@@ -109,8 +108,7 @@ describe('Chart.helpers.options', function() {
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
-				style: 'zzz',
-				weight: null
+				style: 'zzz'
 			});
 		});
 		it ('should handle a string font size', function() {
@@ -124,8 +122,7 @@ describe('Chart.helpers.options', function() {
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
-				style: 'zzz',
-				weight: null
+				style: 'zzz'
 			});
 		});
 		it('should return null as a font string if fontSize or fontFamily are missing', function() {

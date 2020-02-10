@@ -5,7 +5,11 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "checkJs": true,
-    "noEmit": true
+    "noEmit": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true
   },
   "typedocOptions": {
     "name": "Chart.js",

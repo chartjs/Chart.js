@@ -44,6 +44,9 @@ function parseMaxStyle(styleValue, node, parentProperty) {
  */
 function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 	const view = document.defaultView;
+	if (!view) {
+		return undefined;
+	}
 	const parentNode = _getParentNode(domNode);
 	const constrainedNode = view.getComputedStyle(domNode)[maxStyle];
 	const constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
@@ -59,9 +62,13 @@ function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 }
 
 export function getStyle(el, property) {
-	return el.currentStyle ?
-		el.currentStyle[property] :
-		document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
+	if (el.currentStyle) {
+		return el.currentStyle[property];
+	}
+	if (!document.defaultView) {
+		return undefined;
+	}
+	return document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 }
 
 /** @return {number=} number or undefined if no constraint */
@@ -132,7 +139,7 @@ export function getMaximumWidth(domNode) {
 
 	const w = clientWidth - paddingLeft - paddingRight;
 	const cw = getConstraintWidth(domNode);
-	return isNaN(cw) ? w : Math.min(w, cw);
+	return typeof cw === 'undefined' || isNaN(cw) ? w : Math.min(w, cw);
 }
 
 export function getMaximumHeight(domNode) {
@@ -147,7 +154,7 @@ export function getMaximumHeight(domNode) {
 
 	const h = clientHeight - paddingTop - paddingBottom;
 	const ch = getConstraintHeight(domNode);
-	return isNaN(ch) ? h : Math.min(h, ch);
+	return typeof ch === 'undefined' || isNaN(ch) ? h : Math.min(h, ch);
 }
 
 export function retinaScale(chart, forceRatio) {

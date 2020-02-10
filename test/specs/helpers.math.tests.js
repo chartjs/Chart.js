@@ -33,9 +33,9 @@ describe('Chart.helpers.math', function() {
 		expect(decimalPlaces(0)).toBe(0);
 		expect(decimalPlaces(0.01)).toBe(2);
 		expect(decimalPlaces(-0.01)).toBe(2);
-		expect(decimalPlaces('1')).toBe(undefined);
-		expect(decimalPlaces('')).toBe(undefined);
-		expect(decimalPlaces(undefined)).toBe(undefined);
+		expect(decimalPlaces('1')).toBeNaN();
+		expect(decimalPlaces('')).toBeNaN();
+		expect(decimalPlaces(undefined)).toBeNaN();
 		expect(decimalPlaces(12345678.1234)).toBe(4);
 		expect(decimalPlaces(1234567890.1234567)).toBe(7);
 	});

@@ -6,6 +6,10 @@ import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
 import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
+/**
+ * @typedef { import("./core.controller").default } Chart
+ */
+
 defaults.set('scale', {
 	display: true,
 	offset: false,
@@ -227,25 +231,22 @@ class Scale extends Element {
 
 		/** @type {string} */
 		this.id = cfg.id;
+		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
 		this.options = cfg.options;
+		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
+		/** @type {Chart} */
 		this.chart = cfg.chart;
 
 		// implements box
-		/** @type {number} */
-		this.top = undefined;
-		/** @type {number} */
-		this.bottom = undefined;
-		/** @type {number} */
-		this.left = undefined;
-		/** @type {number} */
-		this.right = undefined;
-		/** @type {number} */
-		this.width = undefined;
-		/** @type {number} */
-		this.height = undefined;
+		this.top = -1;
+		this.bottom = -1;
+		this.left = -1;
+		this.right = -1;
+		this.width = -1;
+		this.height = -1;
 		this.margins = {
 			left: 0,
 			right: 0,
@@ -253,18 +254,12 @@ class Scale extends Element {
 			bottom: 0
 		};
 		// TODO: make maxWidth, maxHeight private
-		/** @type {number} */
-		this.maxWidth = undefined;
-		/** @type {number} */
-		this.maxHeight = undefined;
-		/** @type {number} */
-		this.paddingTop = undefined;
-		/** @type {number} */
-		this.paddingBottom = undefined;
-		/** @type {number} */
-		this.paddingLeft = undefined;
-		/** @type {number} */
-		this.paddingRight = undefined;
+		this.maxWidth = -1;
+		this.maxHeight = -1;
+		this.paddingTop = -1;
+		this.paddingBottom = -1;
+		this.paddingLeft = -1;
+		this.paddingRight = -1;
 
 		// scale-specific properties
 		/** @type {string=} */
@@ -274,26 +269,22 @@ class Scale extends Element {
 		this.min = undefined;
 		this.max = undefined;
 		/** @type {object[]} */
-		this.ticks = null;
+		this.ticks = [];
 		/** @type {object[]|null} */
 		this._gridLineItems = null;
 		/** @type {object[]|null} */
 		this._labelItems = null;
 		/** @type {object|null} */
 		this._labelSizes = null;
-		/** @type {number} */
-		this._length = undefined;
-		/** @type {object} */
+		this._length = -1;
 		this._longestTextCache = {};
-		/** @type {number} */
-		this._startPixel = undefined;
-		/** @type {number} */
-		this._endPixel = undefined;
-		this._reversePixels = undefined;
+		this._startPixel = -1;
+		this._endPixel = -1;
+		this._reversePixels = false;
 		this._userMax = undefined;
 		this._userMin = undefined;
-		this._ticksLength = undefined;
-		this._borderValue = undefined;
+		this._ticksLength = -1;
+		this._borderValue = -1;
 	}
 
 	/**
@@ -441,7 +432,7 @@ class Scale extends Element {
 			bottom: 0
 		}, margins);
 
-		me.ticks = null;
+		me.ticks = [];
 		me._labelSizes = null;
 		me._gridLineItems = null;
 		me._labelItems = null;
@@ -690,6 +681,7 @@ class Scale extends Element {
 			const highestLabelSize = labelSizes.highest;
 			const lineSpace = highestLabelSize.offset * 0.8;
 			const tickPadding = tickOpts.padding;
+			const numTicks = me.ticks.length;
 
 			if (isHorizontal) {
 				// A horizontal axis is more constrained by the height.
@@ -704,8 +696,8 @@ class Scale extends Element {
 
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
-				const offsetLeft = me.getPixelForTick(0) - me.left;
-				const offsetRight = me.right - me.getPixelForTick(me.ticks.length - 1);
+				const offsetLeft = numTicks ? me.getPixelForTick(0) - me.left : 0;
+				const offsetRight = numTicks ? me.right - me.getPixelForTick(numTicks - 1) : 0;
 				let paddingLeft, paddingRight;
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
@@ -921,9 +913,7 @@ class Scale extends Element {
 		const numTicks = me.ticks.length;
 		const tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
 
-		return index < 0 || index > numTicks - 1
-			? null
-			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
+		return me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
 	}
 
 	/**
@@ -999,11 +989,11 @@ class Scale extends Element {
 		if (numMajorIndices > 0) {
 			let i, ilen;
 			const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-			skip(ticks, newTicks, spacing, isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, newTicks, spacing, avgMajorSpacing === null ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
 				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			skip(ticks, newTicks, spacing, last, isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			skip(ticks, newTicks, spacing, last, avgMajorSpacing === null ? ticks.length : last + avgMajorSpacing);
 			return newTicks;
 		}
 		skip(ticks, newTicks, spacing);
@@ -1101,25 +1091,25 @@ class Scale extends Element {
 			tx1 = borderValue + axisHalfWidth;
 			tx2 = me.left + tl;
 		} else if (axis === 'x') {
-			if (position === 'center') {
-				borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
-			} else if (isObject(position)) {
+			if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			} else {
+				borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2);
 			}
 
 			y1 = chartArea.top;
 			y2 = chartArea.bottom;
 			ty1 = borderValue + axisHalfWidth;
 			ty2 = ty1 + tl;
-		} else if (axis === 'y') {
-			if (position === 'center') {
-				borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
-			} else if (isObject(position)) {
+		} else { // axis === 'y'
+			if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			} else {
+				borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
 			}
 
 			tx1 = borderValue - axisHalfWidth;
@@ -1419,7 +1409,9 @@ class Scale extends Element {
 		const position = options.position;
 		const isReverse = me.options.reverse;
 		let rotation = 0;
-		let scaleLabelX, scaleLabelY, textAlign;
+		/** @type CanvasTextAlign */
+		let textAlign;
+		let scaleLabelX, scaleLabelY;
 
 		if (me.isHorizontal()) {
 			switch (scaleLabelAlign) {

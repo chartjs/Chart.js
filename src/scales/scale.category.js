@@ -8,12 +8,9 @@ class CategoryScale extends Scale {
 	constructor(cfg) {
 		super(cfg);
 
-		/** @type {number} */
-		this._numLabels = undefined;
-		/** @type {number} */
-		this._startValue = undefined;
-		/** @type {number} */
-		this._valueRange = undefined;
+		this._numLabels = -1;
+		this._startValue = -1;
+		this._valueRange = -1;
 	}
 
 	/**
@@ -91,11 +88,7 @@ class CategoryScale extends Scale {
 
 	getPixelForTick(index) {
 		const me = this;
-		const ticks = me.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return me.getPixelForValue(index * me._numLabels / ticks.length + me.min);
+		return me.getPixelForValue(index * me._numLabels / me.ticks.length + me.min);
 	}
 
 	getValueForPixel(pixel) {

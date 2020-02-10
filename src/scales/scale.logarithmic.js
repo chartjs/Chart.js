@@ -62,14 +62,10 @@ class LogarithmicScale extends Scale {
 	constructor(cfg) {
 		super(cfg);
 
-		/** @type {number} */
-		this.start = undefined;
-		/** @type {number} */
-		this.end = undefined;
-		/** @type {number} */
-		this._startValue = undefined;
-		/** @type {number} */
-		this._valueRange = undefined;
+		this.start = -1;
+		this.end = -1;
+		this._startValue = -1;
+		this._valueRange = -1;
 	}
 
 	/**
@@ -159,11 +155,8 @@ class LogarithmicScale extends Scale {
 	}
 
 	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
+		const me = this;
+		return me.getPixelForValue(me.ticks[index].value);
 	}
 
 	/**

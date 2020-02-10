@@ -13,7 +13,6 @@ function toFontString(font) {
 	}
 
 	return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
 		+ font.size + 'px '
 		+ font.family;
 }
@@ -98,9 +97,7 @@ export function _parseFont(options) {
 		family: valueOrDefault(options.fontFamily, defaults.fontFamily),
 		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaults.lineHeight), size),
 		size,
-		style: valueOrDefault(options.fontStyle, defaults.fontStyle),
-		weight: null,
-		string: ''
+		style: valueOrDefault(options.fontStyle, defaults.fontStyle)
 	};
 
 	font.string = toFontString(font);
