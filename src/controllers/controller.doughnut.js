@@ -13,7 +13,7 @@ defaults.set('doughnut', {
 	animation: {
 		numbers: {
 			type: 'number',
-			properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
+			properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y']
 		},
 		// Boolean - Whether we animate the rotation of the Doughnut
 		animateRotate: true,
