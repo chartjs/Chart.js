@@ -12,11 +12,11 @@ describe('Chart.DatasetController', function() {
 
 		var controller = chart.getDatasetMeta(0).controller;
 		var methods = [
-			'onDataPush',
-			'onDataPop',
-			'onDataShift',
-			'onDataSplice',
-			'onDataUnshift'
+			'_onDataPush',
+			'_onDataPop',
+			'_onDataShift',
+			'_onDataSplice',
+			'_onDataUnshift'
 		];
 
 		methods.forEach(function(method) {

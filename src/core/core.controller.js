@@ -208,6 +208,7 @@ class Chart {
 		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
+		this.$plugins = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -454,7 +455,7 @@ class Chart {
 
 		if (numMeta > numData) {
 			for (let i = numData; i < numMeta; ++i) {
-				me.destroyDatasetMeta(i);
+				me._destroyDatasetMeta(i);
 			}
 			metasets.splice(numData, numMeta - numData);
 		}
@@ -473,7 +474,7 @@ class Chart {
 			const type = dataset.type || me.config.type;
 
 			if (meta.type && meta.type !== type) {
-				me.destroyDatasetMeta(i);
+				me._destroyDatasetMeta(i);
 				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
@@ -504,7 +505,7 @@ class Chart {
 	 * Reset the elements of all datasets
 	 * @private
 	 */
-	resetElements() {
+	_resetElements() {
 		const me = this;
 		helpers.each(me.data.datasets, function(dataset, datasetIndex) {
 			me.getDatasetMeta(datasetIndex).controller.reset();
@@ -515,7 +516,7 @@ class Chart {
 	* Resets the chart back to its state before the initial animation
 	*/
 	reset() {
-		this.resetElements();
+		this._resetElements();
 		plugins.notify(this, 'reset');
 	}
 
@@ -543,7 +544,7 @@ class Chart {
 			me.getDatasetMeta(i).controller.buildOrUpdateElements();
 		}
 
-		me.updateLayout();
+		me._updateLayout();
 
 		// Can only reset the new controllers after the scales have been updated
 		if (me.options.animation) {
@@ -552,7 +553,7 @@ class Chart {
 			});
 		}
 
-		me.updateDatasets(mode);
+		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
 		plugins.notify(me, 'afterUpdate');
@@ -561,7 +562,7 @@ class Chart {
 
 		// Replay last event from before update
 		if (me._lastEvent) {
-			me.eventHandler(me._lastEvent);
+			me._eventHandler(me._lastEvent);
 		}
 
 		me.render();
@@ -574,7 +575,7 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterLayout`.
 	 * @private
 	 */
-	updateLayout() {
+	_updateLayout() {
 		const me = this;
 
 		if (plugins.notify(me, 'beforeLayout') === false) {
@@ -605,7 +606,7 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterDatasetsUpdate`.
 	 * @private
 	 */
-	updateDatasets(mode) {
+	_updateDatasets(mode) {
 		const me = this;
 		const isFunction = typeof mode === 'function';
 
@@ -614,7 +615,7 @@ class Chart {
 		}
 
 		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
+			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
@@ -625,7 +626,7 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
 	 * @private
 	 */
-	updateDataset(index, mode) {
+	_updateDataset(index, mode) {
 		const me = this;
 		const meta = me.getDatasetMeta(index);
 		const args = {meta, index, mode};
@@ -682,7 +683,7 @@ class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		me.drawDatasets();
+		me._drawDatasets();
 
 		// Rest of layers
 		for (; i < layers.length; ++i) {
@@ -723,7 +724,7 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
-	drawDatasets() {
+	_drawDatasets() {
 		const me = this;
 		let metasets, i;
 
@@ -733,7 +734,7 @@ class Chart {
 
 		metasets = me._getSortedVisibleDatasetMetas();
 		for (i = metasets.length - 1; i >= 0; --i) {
-			me.drawDataset(metasets[i]);
+			me._drawDataset(metasets[i]);
 		}
 
 		plugins.notify(me, 'afterDatasetsDraw');
@@ -744,7 +745,7 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
 	 * @private
 	 */
-	drawDataset(meta) {
+	_drawDataset(meta) {
 		const me = this;
 		const ctx = me.ctx;
 		const clip = meta._clip;
@@ -879,12 +880,12 @@ class Chart {
 	/**
 	 * @private
 	 */
-	destroyDatasetMeta(datasetIndex) {
+	_destroyDatasetMeta(datasetIndex) {
 		const me = this;
 		const meta = me._metasets && me._metasets[datasetIndex];
 
 		if (meta) {
-			meta.controller.destroy();
+			meta.controller._destroy();
 			delete me._metasets[datasetIndex];
 		}
 	}
@@ -898,7 +899,7 @@ class Chart {
 
 		// dataset controllers need to cleanup associated data
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.destroyDatasetMeta(i);
+			me._destroyDatasetMeta(i);
 		}
 
 		if (canvas) {
@@ -925,7 +926,7 @@ class Chart {
 		const me = this;
 		const listeners = me._listeners;
 		let listener = function() {
-			me.eventHandler.apply(me, arguments);
+			me._eventHandler.apply(me, arguments);
 		};
 
 		helpers.each(me.options.events, function(type) {
@@ -1000,14 +1001,14 @@ class Chart {
 	/**
 	 * @private
 	 */
-	eventHandler(e) {
+	_eventHandler(e) {
 		const me = this;
 
 		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
 			return;
 		}
 
-		me.handleEvent(e);
+		me._handleEvent(e);
 
 		plugins.notify(me, 'afterEvent', [e]);
 
@@ -1018,11 +1019,11 @@ class Chart {
 
 	/**
 	 * Handle an event
-	 * @private
 	 * @param {IEvent} e the event to handle
 	 * @return {boolean} true if the chart needs to re-render
+	 * @private
 	 */
-	handleEvent(e) {
+	_handleEvent(e) {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;

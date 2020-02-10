@@ -10,7 +10,7 @@ const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 /**
  * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
  * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
- * called on the 'onData*' callbacks (e.g. onDataPush, etc.) with same arguments.
+ * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
  */
 function listenArrayEvents(array, listener) {
 	if (array._chartjs) {
@@ -27,7 +27,7 @@ function listenArrayEvents(array, listener) {
 	});
 
 	arrayEvents.forEach(function(key) {
-		var method = 'onData' + key.charAt(0).toUpperCase() + key.slice(1);
+		var method = '_onData' + key.charAt(0).toUpperCase() + key.slice(1);
 		var base = array[key];
 
 		Object.defineProperty(array, key, {
@@ -322,7 +322,7 @@ class DatasetController {
 	/**
 	 * @private
 	 */
-	destroy() {
+	_destroy() {
 		if (this._data) {
 			unlistenArrayEvents(this._data, this);
 		}
@@ -427,7 +427,7 @@ class DatasetController {
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me.resyncElements(dataChanged || labelsChanged || scaleChanged || stackChanged);
+		me._resyncElements(dataChanged || labelsChanged || scaleChanged || stackChanged);
 
 		// if stack changed, update stack values for the whole dataset
 		if (stackChanged) {
@@ -1039,16 +1039,16 @@ class DatasetController {
 	/**
 	 * @private
 	 */
-	resyncElements(changed) {
+	_resyncElements(changed) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const numMeta = meta.data.length;
 		const numData = me._data.length;
 
 		if (numData > numMeta) {
-			me.insertElements(numMeta, numData - numMeta);
+			me._insertElements(numMeta, numData - numMeta);
 			if (changed && numMeta) {
-				// insertElements parses the new elements. The old ones might need parsing too.
+				// _insertElements parses the new elements. The old ones might need parsing too.
 				me._parse(0, numMeta);
 			}
 		} else if (numData < numMeta) {
@@ -1063,7 +1063,7 @@ class DatasetController {
 	/**
 	 * @private
 	 */
-	insertElements(start, count) {
+	_insertElements(start, count) {
 		const me = this;
 		const elements = new Array(count);
 		const meta = me._cachedMeta;
@@ -1088,7 +1088,7 @@ class DatasetController {
 	/**
 	 * @private
 	 */
-	removeElements(start, count) {
+	_removeElements(start, count) {
 		const me = this;
 		if (me._parsing) {
 			me._cachedMeta._parsed.splice(start, count);
@@ -1100,38 +1100,38 @@ class DatasetController {
 	/**
 	 * @private
 	 */
-	onDataPush() {
+	_onDataPush() {
 		const count = arguments.length;
-		this.insertElements(this.getDataset().data.length - count, count);
+		this._insertElements(this.getDataset().data.length - count, count);
 	}
 
 	/**
 	 * @private
 	 */
-	onDataPop() {
-		this.removeElements(this._cachedMeta.data.length - 1, 1);
+	_onDataPop() {
+		this._removeElements(this._cachedMeta.data.length - 1, 1);
 	}
 
 	/**
 	 * @private
 	 */
-	onDataShift() {
-		this.removeElements(0, 1);
+	_onDataShift() {
+		this._removeElements(0, 1);
 	}
 
 	/**
 	 * @private
 	 */
-	onDataSplice(start, count) {
-		this.removeElements(start, count);
-		this.insertElements(start, arguments.length - 2);
+	_onDataSplice(start, count) {
+		this._removeElements(start, count);
+		this._insertElements(start, arguments.length - 2);
 	}
 
 	/**
 	 * @private
 	 */
-	onDataUnshift() {
-		this.insertElements(0, arguments.length);
+	_onDataUnshift() {
+		this._insertElements(0, arguments.length);
 	}
 }
 

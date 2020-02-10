@@ -176,9 +176,33 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Renamed private APIs
 
+* `BarController.calculateBarIndexPixels` was renamed to `BarController._calculateBarIndexPixels`
+* `BarController.calculateBarValuePixels` was renamed to `BarController._calculateBarValuePixels`
+* `BarController.getStackCount` was renamed to `BarController._getStackCount`
+* `BarController.getStackIndex` was renamed to `BarController._getStackIndex`
+* `BarController.getRuler` was renamed to `BarController._getRuler`
+* `Chart.destroyDatasetMeta` was renamed to `Chart._destroyDatasetMeta`
+* `Chart.drawDataset` was renamed to `Chart._drawDataset`
+* `Chart.drawDatasets` was renamed to `Chart._drawDatasets`
+* `Chart.eventHandler` was renamed to `Chart._eventHandler`
+* `Chart.handleEvent` was renamed to `Chart._handleEvent`
+* `Chart.initialize` was renamed to `Chart._initialize`
+* `Chart.resetElements` was renamed to `Chart._resetElements`
+* `Chart.unbindEvents` was renamed to `Chart._unbindEvents`
+* `Chart.updateDataset` was renamed to `Chart._updateDataset`
+* `Chart.updateDatasets` was renamed to `Chart._updateDatasets`
+* `Chart.updateLayout` was renamed to `Chart._updateLayout`
+* `DatasetController.destroy` was renamed to `DatasetController._destroy`
+* `DatasetController.insertElements` was renamed to `DatasetController._insertElements`
+* `DatasetController.onDataPop` was renamed to `DatasetController._onDataPop`
+* `DatasetController.onDataPush` was renamed to `DatasetController._onDataPush`
+* `DatasetController.onDataShift` was renamed to `DatasetController._onDataShift`
+* `DatasetController.onDataSplice` was renamed to `DatasetController._onDataSplice`
+* `DatasetController.onDataUnshift` was renamed to `DatasetController._onDataUnshift`
+* `DatasetController.removeElements` was renamed to `DatasetController._removeElements`
+* `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
-* `chart.initialize` was renamed to `chart._initialize` (labeled as private but not named as such)
 
 ### Changed
 
