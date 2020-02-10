@@ -85,7 +85,7 @@ module.exports = {
 							clientX: rect.left + point.x,
 							clientY: rect.top + point.y
 						};
-						chart.handleEvent(event);
+						chart._handleEvent(event);
 						chart.tooltip.handleEvent(event);
 						chart.tooltip.opacity = j / 10;
 						chart.tooltip.draw(chart.ctx);

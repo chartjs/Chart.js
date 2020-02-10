@@ -107,7 +107,7 @@ class PluginService {
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
 	notify(chart, hook, args) {
-		var descriptors = this.descriptors(chart);
+		var descriptors = this._descriptors(chart);
 		var ilen = descriptors.length;
 		var i, descriptor, plugin, params, method;
 
@@ -133,7 +133,7 @@ class PluginService {
 	 * @returns {object[]} [{ plugin, options }]
 	 * @private
 	 */
-	descriptors(chart) {
+	_descriptors(chart) {
 		var cache = chart.$plugins || (chart.$plugins = {});
 		if (cache.id === this._cacheId) {
 			return cache.descriptors;

@@ -108,11 +108,11 @@ function waitForResize(chart, callback) {
 }
 
 function afterEvent(chart, type, callback) {
-	var override = chart.eventHandler;
-	chart.eventHandler = function(event) {
+	var override = chart._eventHandler;
+	chart._eventHandler = function(event) {
 		override.call(this, event);
 		if (event.type === type) {
-			chart.eventHandler = override;
+			chart._eventHandler = override;
 			// eslint-disable-next-line callback-return
 			callback();
 		}

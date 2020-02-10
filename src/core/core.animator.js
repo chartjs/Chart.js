@@ -119,6 +119,9 @@ class Animator {
 		}
 	}
 
+	/**
+	 * @private
+	 */
 	_getAnims(chart) {
 		const charts = this._charts;
 		let anims = charts.get(chart);
