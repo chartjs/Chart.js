@@ -3,7 +3,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {extend} from '../helpers/helpers.core';
-import {getAngleFromPoint} from '../helpers/helpers.math';
+import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
 defaults.set('elements', {
@@ -16,12 +16,8 @@ defaults.set('elements', {
 });
 
 function clipArc(ctx, arc) {
-	var startAngle = arc.startAngle;
-	var endAngle = arc.endAngle;
-	var pixelMargin = arc.pixelMargin;
-	var angleMargin = pixelMargin / arc.outerRadius;
-	var x = arc.x;
-	var y = arc.y;
+	const {startAngle, endAngle, pixelMargin, x, y} = arc;
+	let angleMargin = pixelMargin / arc.outerRadius;
 
 	// Draw an inner border by cliping the arc and drawing a double-width border
 	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
@@ -38,8 +34,8 @@ function clipArc(ctx, arc) {
 }
 
 function drawFullCircleBorders(ctx, vm, arc, inner) {
-	var endAngle = arc.endAngle;
-	var i;
+	const endAngle = arc.endAngle;
+	let i;
 
 	if (inner) {
 		arc.endAngle = arc.startAngle + TAU;
@@ -66,7 +62,7 @@ function drawFullCircleBorders(ctx, vm, arc, inner) {
 
 function drawBorder(ctx, vm, arc) {
 	const options = vm.options;
-	var inner = options.borderAlign === 'inner';
+	const inner = options.borderAlign === 'inner';
 
 	if (inner) {
 		ctx.lineWidth = options.borderWidth * 2;
@@ -108,37 +104,26 @@ class Arc extends Element {
 		}
 	}
 
+	/**
+	 * @param {number} chartX
+	 * @param {number} chartY
+	 */
 	inRange(chartX, chartY) {
-		var me = this;
+		const me = this;
 
-		var pointRelativePosition = getAngleFromPoint(me, {x: chartX, y: chartY});
-		var angle = pointRelativePosition.angle;
-		var distance = pointRelativePosition.distance;
-
-		// Sanitise angle range
-		var startAngle = me.startAngle;
-		var endAngle = me.endAngle;
-		while (endAngle < startAngle) {
-			endAngle += TAU;
-		}
-		while (angle > endAngle) {
-			angle -= TAU;
-		}
-		while (angle < startAngle) {
-			angle += TAU;
-		}
+		const {angle, distance} = getAngleFromPoint(me, {x: chartX, y: chartY});
 
 		// Check if within the range of the open/close angle
-		var betweenAngles = (angle >= startAngle && angle <= endAngle);
-		var withinRadius = (distance >= me.innerRadius && distance <= me.outerRadius);
+		const betweenAngles = _angleBetween(angle, me.startAngle, me.endAngle);
+		const withinRadius = (distance >= me.innerRadius && distance <= me.outerRadius);
 
 		return (betweenAngles && withinRadius);
 	}
 
 	getCenterPoint() {
-		var me = this;
-		var halfAngle = (me.startAngle + me.endAngle) / 2;
-		var halfRadius = (me.innerRadius + me.outerRadius) / 2;
+		const me = this;
+		const halfAngle = (me.startAngle + me.endAngle) / 2;
+		const halfRadius = (me.innerRadius + me.outerRadius) / 2;
 		return {
 			x: me.x + Math.cos(halfAngle) * halfRadius,
 			y: me.y + Math.sin(halfAngle) * halfRadius
@@ -146,9 +131,9 @@ class Arc extends Element {
 	}
 
 	tooltipPosition() {
-		var me = this;
-		var centreAngle = me.startAngle + ((me.endAngle - me.startAngle) / 2);
-		var rangeFromCentre = (me.outerRadius - me.innerRadius) / 2 + me.innerRadius;
+		const me = this;
+		const centreAngle = me.startAngle + ((me.endAngle - me.startAngle) / 2);
+		const rangeFromCentre = (me.outerRadius - me.innerRadius) / 2 + me.innerRadius;
 
 		return {
 			x: me.x + (Math.cos(centreAngle) * rangeFromCentre),
@@ -157,10 +142,10 @@ class Arc extends Element {
 	}
 
 	draw(ctx) {
-		var me = this;
-		var options = me.options;
-		var pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
-		var arc = {
+		const me = this;
+		const options = me.options;
+		const pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
+		const arc = {
 			x: me.x,
 			y: me.y,
 			innerRadius: me.innerRadius,
@@ -170,7 +155,7 @@ class Arc extends Element {
 			endAngle: me.endAngle,
 			fullCircles: Math.floor(me.circumference / TAU)
 		};
-		var i;
+		let i;
 
 		ctx.save();
 
