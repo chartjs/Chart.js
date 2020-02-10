@@ -751,6 +751,9 @@ class Tooltip extends Element {
 		}
 	}
 
+	/**
+	 * @private
+	 */
 	_drawColorBox(ctx, pt, i, rtlHelper) {
 		const me = this;
 		const options = me.options;
@@ -983,7 +986,6 @@ class Tooltip extends Element {
 
 	/**
 	 * Handle an event
-	 * @private
 	 * @param {IEvent} e - The event to handle
 	 * @returns {boolean} true if the tooltip changed
 	 */

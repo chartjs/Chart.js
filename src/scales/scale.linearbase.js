@@ -122,6 +122,9 @@ class LinearScaleBase extends Scale {
 		this._valueRange = undefined;
 	}
 
+	/**
+	 * @private
+	 */
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (isNullOrUndef(raw)) {
 			return NaN;
@@ -219,10 +222,16 @@ class LinearScaleBase extends Scale {
 		return maxTicks;
 	}
 
+	/**
+	 * @private
+	 */
 	_computeTickLimit() {
 		return Number.POSITIVE_INFINITY;
 	}
 
+	/**
+	 * @private
+	 */
 	_handleDirectionalChanges(ticks) {
 		return ticks;
 	}
@@ -267,6 +276,9 @@ class LinearScaleBase extends Scale {
 		return ticks;
 	}
 
+	/**
+	 * @private
+	 */
 	_configure() {
 		const me = this;
 		const ticks = me.ticks;

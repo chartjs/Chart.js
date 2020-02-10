@@ -379,7 +379,7 @@ class Scale extends Element {
 
 	/**
 	 * Get the padding needed for the scale
-	 * @return {{top: number, left: number, bottom: number, right: number}}
+	 * @return {{top: number, left: number, bottom: number, right: number}} the necessary padding
 	 * @private
 	 */
 	getPadding() {
@@ -746,7 +746,7 @@ class Scale extends Element {
 			}
 		}
 
-		me.handleMargins();
+		me._handleMargins();
 
 		if (isHorizontal) {
 			me.width = me._length = chart.width - me.margins.left - me.margins.right;
@@ -761,7 +761,7 @@ class Scale extends Element {
 	 * Handle margins and padding interactions
 	 * @private
 	 */
-	handleMargins() {
+	_handleMargins() {
 		const me = this;
 		if (me.margins) {
 			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
@@ -792,6 +792,7 @@ class Scale extends Element {
 
 	/**
 	 * @param {object[]} ticks
+	 * @private
 	 */
 	_convertTicksToLabels(ticks) {
 		const me = this;

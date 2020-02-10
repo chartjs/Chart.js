@@ -18,6 +18,9 @@ class CategoryScale extends Scale {
 		this._valueRange = undefined;
 	}
 
+	/**
+	 * @private
+	 */
 	_parse(raw, index) {
 		const labels = this._getLabels();
 		if (labels[index] === raw) {
@@ -65,6 +68,9 @@ class CategoryScale extends Scale {
 		return value;
 	}
 
+	/**
+	 * @private
+	 */
 	_configure() {
 		const me = this;
 

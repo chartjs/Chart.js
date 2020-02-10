@@ -74,6 +74,9 @@ class LogarithmicScale extends Scale {
 		this._valueRange = undefined;
 	}
 
+	/**
+	 * @private
+	 */
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		const value = LinearScaleBase.prototype._parse.apply(this, arguments);
 		if (value === 0) {
@@ -165,6 +168,9 @@ class LogarithmicScale extends Scale {
 		return this.getPixelForValue(ticks[index].value);
 	}
 
+	/**
+	 * @private
+	 */
 	_configure() {
 		const me = this;
 		let start = me.min;

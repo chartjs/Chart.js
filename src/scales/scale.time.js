@@ -605,6 +605,7 @@ class TimeScale extends Scale {
 	 * @param {*} raw
 	 * @param {number} index
 	 * @return {number}
+	 * @private
 	 */
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (raw === undefined) {
@@ -618,6 +619,7 @@ class TimeScale extends Scale {
 	 * @param {string} axis
 	 * @param {number} index
 	 * @return {number}
+	 * @private
 	 */
 	_parseObject(obj, axis, index) {
 		if (obj && obj.t) {
@@ -629,6 +631,9 @@ class TimeScale extends Scale {
 		return null;
 	}
 
+	/**
+	 * @private
+	 */
 	_invalidateCaches() {
 		this._cache = {
 			data: [],
