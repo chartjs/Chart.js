@@ -614,7 +614,7 @@ class Chart {
 		}
 
 		for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-			me.updateDataset(i, isFunction ? mode({datesetIndex: i}) : mode);
+			me.updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
 		plugins.notify(me, 'afterDatasetsUpdate');
