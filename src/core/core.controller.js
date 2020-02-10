@@ -208,6 +208,7 @@ class Chart {
 		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
+		this.$plugins = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -884,7 +885,7 @@ class Chart {
 		const meta = me._metasets && me._metasets[datasetIndex];
 
 		if (meta) {
-			meta.controller.destroy();
+			meta.controller._destroy();
 			delete me._metasets[datasetIndex];
 		}
 	}

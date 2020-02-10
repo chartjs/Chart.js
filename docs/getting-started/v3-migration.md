@@ -176,9 +176,23 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Renamed private APIs
 
+* `BarController.calculateBarIndexPixels` was renamed to `BarController._calculateBarIndexPixels`
+* `BarController.calculateBarValuePixels` was renamed to `BarController._calculateBarValuePixels`
+* `BarController.getStackCount` was renamed to `BarController._getStackCount`
+* `BarController.getStackIndex` was renamed to `BarController._getStackIndex`
+* `BarController.getRuler` was renamed to `BarController._getRuler`
+* `Chart.initialize` was renamed to `Chart._initialize`
+* `DatasetController.destroy` was renamed to `DatasetController._destroy`
+* `DatasetController.insertElements` was renamed to `DatasetController._insertElements`
+* `DatasetController.onDataPop` was renamed to `DatasetController._onDataPop`
+* `DatasetController.onDataPush` was renamed to `DatasetController._onDataPush`
+* `DatasetController.onDataShift` was renamed to `DatasetController._onDataShift`
+* `DatasetController.onDataSplice` was renamed to `DatasetController._onDataSplice`
+* `DatasetController.onDataUnshift` was renamed to `DatasetController._onDataUnshift`
+* `DatasetController.removeElements` was renamed to `DatasetController._removeElements`
+* `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
-* `chart.initialize` was renamed to `chart._initialize` (labeled as private but not named as such)
 
 ### Changed
 

@@ -274,7 +274,7 @@ class BarController extends DatasetController {
 		const vscale = me._cachedMeta.vScale;
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
-		const ruler = me.getRuler();
+		const ruler = me._getRuler();
 		const firstOpts = me._resolveDataElementOptions(start, mode);
 		const sharedOptions = me._getSharedOptions(mode, rectangles[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
@@ -284,8 +284,8 @@ class BarController extends DatasetController {
 		for (i = 0; i < rectangles.length; i++) {
 			const index = start + i;
 			const options = me._resolveDataElementOptions(index, mode);
-			const vpixels = me.calculateBarValuePixels(index, options);
-			const ipixels = me.calculateBarIndexPixels(index, ruler, options);
+			const vpixels = me._calculateBarValuePixels(index, options);
+			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 
 			const properties = {
 				horizontal,
@@ -357,7 +357,7 @@ class BarController extends DatasetController {
 	 * Returns the effective number of stacks based on groups and bar visibility.
 	 * @private
 	 */
-	getStackCount() {
+	_getStackCount() {
 		return this._getStacks().length;
 	}
 
@@ -368,7 +368,7 @@ class BarController extends DatasetController {
 	 * @returns {number} The stack index
 	 * @private
 	 */
-	getStackIndex(datasetIndex, name) {
+	_getStackIndex(datasetIndex, name) {
 		var stacks = this._getStacks(datasetIndex);
 		var index = (name !== undefined)
 			? stacks.indexOf(name)
@@ -382,7 +382,7 @@ class BarController extends DatasetController {
 	/**
 	 * @private
 	 */
-	getRuler() {
+	_getRuler() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -397,7 +397,7 @@ class BarController extends DatasetController {
 			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
-			stackCount: me.getStackCount(),
+			stackCount: me._getStackCount(),
 			scale: iScale
 		};
 	}
@@ -406,7 +406,7 @@ class BarController extends DatasetController {
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
-	calculateBarValuePixels(index, options) {
+	_calculateBarValuePixels(index, options) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
@@ -460,13 +460,13 @@ class BarController extends DatasetController {
 	/**
 	 * @private
 	 */
-	calculateBarIndexPixels(index, ruler, options) {
+	_calculateBarIndexPixels(index, ruler, options) {
 		var me = this;
 		var range = options.barThickness === 'flex'
 			? computeFlexCategoryTraits(index, ruler, options)
 			: computeFitCategoryTraits(index, ruler, options);
 
-		var stackIndex = me.getStackIndex(me.index, me._cachedMeta.stack);
+		var stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack);
 		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 		var size = Math.min(
 			valueOrDefault(options.maxBarThickness, Infinity),

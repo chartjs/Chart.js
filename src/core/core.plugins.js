@@ -129,6 +129,7 @@ class PluginService {
 
 	/**
 	 * Returns descriptors of enabled plugins for the given chart.
+	 * @param {Chart} chart
 	 * @returns {object[]} [{ plugin, options }]
 	 * @private
 	 */
@@ -175,6 +176,7 @@ class PluginService {
 	 * Invalidates cache for the given chart: descriptors hold a reference on plugin option,
 	 * but in some cases, this reference can be changed by the user when updating options.
 	 * https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
+	 * @param {Chart} chart
 	 * @private
 	 */
 	_invalidate(chart) {

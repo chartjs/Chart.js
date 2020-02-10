@@ -67,7 +67,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackCount()).toBe(2);
+			expect(meta.controller._getStackCount()).toBe(2);
 		});
 	});
 
@@ -90,7 +90,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackCount()).toBe(4);
+			expect(meta.controller._getStackCount()).toBe(4);
 		});
 	});
 
@@ -123,7 +123,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackCount()).toBe(1);
+			expect(meta.controller._getStackCount()).toBe(1);
 		});
 	});
 
@@ -156,7 +156,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackCount()).toBe(4);
+			expect(meta.controller._getStackCount()).toBe(4);
 		});
 	});
 
@@ -179,7 +179,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(3);
+			expect(meta.controller._getStackCount()).toBe(3);
 		});
 	});
 
@@ -212,7 +212,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(2);
+			expect(meta.controller._getStackCount()).toBe(2);
 		});
 	});
 
@@ -245,7 +245,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(4);
+			expect(meta.controller._getStackCount()).toBe(4);
 		});
 	});
 
@@ -268,7 +268,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(2);
+			expect(meta.controller._getStackCount()).toBe(2);
 		});
 	});
 
@@ -301,7 +301,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(2);
+			expect(meta.controller._getStackCount()).toBe(2);
 		});
 	});
 
@@ -334,7 +334,7 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(3);
-			expect(meta.controller.getStackCount()).toBe(4);
+			expect(meta.controller._getStackCount()).toBe(4);
 		});
 	});
 
@@ -357,8 +357,8 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(3)).toBe(1);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(3)).toBe(1);
 		});
 	});
 
@@ -381,10 +381,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(1);
-			expect(meta.controller.getStackIndex(2)).toBe(2);
-			expect(meta.controller.getStackIndex(3)).toBe(3);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(1);
+			expect(meta.controller._getStackIndex(2)).toBe(2);
+			expect(meta.controller._getStackIndex(3)).toBe(3);
 		});
 	});
 
@@ -417,10 +417,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(0);
-			expect(meta.controller.getStackIndex(2)).toBe(0);
-			expect(meta.controller.getStackIndex(3)).toBe(0);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(0);
+			expect(meta.controller._getStackIndex(2)).toBe(0);
+			expect(meta.controller._getStackIndex(3)).toBe(0);
 		});
 	});
 
@@ -453,10 +453,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(1);
-			expect(meta.controller.getStackIndex(2)).toBe(2);
-			expect(meta.controller.getStackIndex(3)).toBe(3);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(1);
+			expect(meta.controller._getStackIndex(2)).toBe(2);
+			expect(meta.controller._getStackIndex(3)).toBe(3);
 		});
 	});
 
@@ -479,10 +479,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(0);
-			expect(meta.controller.getStackIndex(2)).toBe(1);
-			expect(meta.controller.getStackIndex(3)).toBe(2);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(0);
+			expect(meta.controller._getStackIndex(2)).toBe(1);
+			expect(meta.controller._getStackIndex(3)).toBe(2);
 		});
 	});
 
@@ -515,10 +515,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(0);
-			expect(meta.controller.getStackIndex(2)).toBe(1);
-			expect(meta.controller.getStackIndex(3)).toBe(1);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(0);
+			expect(meta.controller._getStackIndex(2)).toBe(1);
+			expect(meta.controller._getStackIndex(3)).toBe(1);
 		});
 	});
 
@@ -551,10 +551,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(1);
-			expect(meta.controller.getStackIndex(2)).toBe(2);
-			expect(meta.controller.getStackIndex(3)).toBe(3);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(1);
+			expect(meta.controller._getStackIndex(2)).toBe(2);
+			expect(meta.controller._getStackIndex(3)).toBe(3);
 		});
 	});
 
@@ -577,10 +577,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(0);
-			expect(meta.controller.getStackIndex(2)).toBe(1);
-			expect(meta.controller.getStackIndex(3)).toBe(1);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(0);
+			expect(meta.controller._getStackIndex(2)).toBe(1);
+			expect(meta.controller._getStackIndex(3)).toBe(1);
 		});
 	});
 
@@ -613,10 +613,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(0);
-			expect(meta.controller.getStackIndex(2)).toBe(1);
-			expect(meta.controller.getStackIndex(3)).toBe(1);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(0);
+			expect(meta.controller._getStackIndex(2)).toBe(1);
+			expect(meta.controller._getStackIndex(3)).toBe(1);
 		});
 	});
 
@@ -649,10 +649,10 @@ describe('Chart.controllers.bar', function() {
 			});
 
 			var meta = chart.getDatasetMeta(1);
-			expect(meta.controller.getStackIndex(0)).toBe(0);
-			expect(meta.controller.getStackIndex(1)).toBe(1);
-			expect(meta.controller.getStackIndex(2)).toBe(2);
-			expect(meta.controller.getStackIndex(3)).toBe(3);
+			expect(meta.controller._getStackIndex(0)).toBe(0);
+			expect(meta.controller._getStackIndex(1)).toBe(1);
+			expect(meta.controller._getStackIndex(2)).toBe(2);
+			expect(meta.controller._getStackIndex(3)).toBe(3);
 		});
 	});
 
