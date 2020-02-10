@@ -327,6 +327,7 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @return {{min: number, max: number, minDefined: boolean, maxDefined: boolean}}
 	 * @private
 	 * @since 3.0
 	 */
@@ -343,6 +344,8 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @param {boolean} canStack
+	 * @return {{min: number, max: number}}
 	 * @private
 	 * @since 3.0
 	 */
@@ -376,9 +379,8 @@ class Scale extends Element {
 
 	/**
 	 * Get the padding needed for the scale
-	 * @method getPadding
+	 * @return {{top: number, left: number, bottom: number, right: number}}
 	 * @private
-	 * @returns {object} the necessary padding
 	 */
 	getPadding() {
 		const me = this;
@@ -392,6 +394,7 @@ class Scale extends Element {
 
 	/**
 	 * Returns the scale tick objects ({label, major})
+	 * @return {object[]}
 	 * @since 2.7
 	 */
 	getTicks() {
@@ -399,8 +402,9 @@ class Scale extends Element {
 	}
 
 	/**
-	* @private
-	*/
+	 * @return {string[]}
+	 * @private
+	 */
 	_getLabels() {
 		const data = this.chart.data;
 		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
@@ -417,7 +421,7 @@ class Scale extends Element {
 	/**
 	 * @param {number} maxWidth - the max width in pixels
 	 * @param {number} maxHeight - the max height in pixels
-	 * @param {object} margins - the space between the edge of the other scales and edge of the chart
+	 * @param {{top: number, left: number, bottom: number, right: number}} margins - the space between the edge of the other scales and edge of the chart
 	 *   This space comes from two sources:
 	 *     - padding - space that's required to show the labels at the edges of the scale
 	 *     - thickness of scales or legends in another orientation
@@ -583,6 +587,7 @@ class Scale extends Element {
 	}
 	/**
 	 * Convert ticks to label strings
+	 * @param {object[]} ticks
 	 */
 	generateTickLabels(ticks) {
 		const me = this;
@@ -771,14 +776,23 @@ class Scale extends Element {
 	}
 
 	// Shared Methods
+	/**
+	 * @return {boolean}
+	 */
 	isHorizontal() {
 		const {axis, position} = this.options;
 		return position === 'top' || position === 'bottom' || axis === 'x';
 	}
+	/**
+	 * @return {boolean}
+	 */
 	isFullWidth() {
 		return this.options.fullWidth;
 	}
 
+	/**
+	 * @param {object[]} ticks
+	 */
 	_convertTicksToLabels(ticks) {
 		const me = this;
 
@@ -790,6 +804,7 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @return {{ first: object, last: object, widest: object, highest: object }}
 	 * @private
 	 */
 	_getLabelSizes() {
@@ -806,6 +821,7 @@ class Scale extends Element {
 	/**
 	 * Returns {width, height, offset} objects for the first, last, widest, highest tick
 	 * labels where offset indicates the anchor point offset from the top in pixels.
+	 * @return {{ first: object, last: object, widest: object, highest: object }}
 	 * @private
 	 */
 	_computeLabelSizes() {
@@ -872,7 +888,8 @@ class Scale extends Element {
 
 	/**
 	 * Used to get the label to display in the tooltip for the given value
-	 * @param value
+	 * @param {*} value
+	 * @return {string}
 	 */
 	getLabelForValue(value) {
 		return value;
@@ -881,20 +898,26 @@ class Scale extends Element {
 	/**
 	 * Returns the location of the given data point. Value can either be an index or a numerical value
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
-	 * @param value
+	 * @param {*} value
+	 * @return {number}
 	 */
-	getPixelForValue(value) {} // eslint-disable-line no-unused-vars
+	getPixelForValue(value) { // eslint-disable-line no-unused-vars
+		return NaN;
+	}
 
 	/**
 	 * Used to get the data value from a given pixel. This is the inverse of getPixelForValue
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
-	 * @param pixel
+	 * @param {number} pixel
+	 * @return {*}
 	 */
 	getValueForPixel(pixel) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Returns the location of the tick at the given index
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
+	 * @param {number} index
+	 * @return {number}
 	 */
 	getPixelForTick(index) {
 		const me = this;
@@ -910,6 +933,8 @@ class Scale extends Element {
 	/**
 	 * Utility for getting the pixel location of a percentage of scale
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
+	 * @param {number} decimal
+	 * @return {number}
 	 */
 	getPixelForDecimal(decimal) {
 		const me = this;
@@ -921,6 +946,10 @@ class Scale extends Element {
 		return me._startPixel + decimal * me._length;
 	}
 
+	/**
+	 * @param {number} pixel
+	 * @return {number}
+	 */
 	getDecimalForPixel(pixel) {
 		const decimal = (pixel - this._startPixel) / this._length;
 		return this._reversePixels ? 1 - decimal : decimal;
@@ -929,11 +958,15 @@ class Scale extends Element {
 	/**
 	 * Returns the pixel for the minimum chart value
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
+	 * @return {number}
 	 */
 	getBasePixel() {
 		return this.getPixelForValue(this.getBaseValue());
 	}
 
+	/**
+	 * @return {number}
+	 */
 	getBaseValue() {
 		const {min, max} = this;
 
@@ -944,6 +977,8 @@ class Scale extends Element {
 
 	/**
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
+	 * @param {object[]} ticks
+	 * @return {object[]}
 	 * @private
 	 */
 	_autoSkip(ticks) {
@@ -980,6 +1015,7 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @return {number}
 	 * @private
 	 */
 	_tickSize() {
@@ -1003,6 +1039,7 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @return {boolean}
 	 * @private
 	 */
 	_isVisible() {
@@ -1450,6 +1487,7 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @return {object[]}
 	 * @private
 	 */
 	_layers() {
@@ -1485,6 +1523,7 @@ class Scale extends Element {
 	/**
 	 * Returns visible dataset metas that are attached to this scale
 	 * @param {string} [type] - if specified, also filter by dataset type
+	 * @return {object[]}
 	 * @private
 	 */
 	_getMatchingVisibleMetas(type) {
@@ -1504,6 +1543,8 @@ class Scale extends Element {
 	}
 
 	/**
+	 * @param {number} index
+	 * @return {object}
 	 * @private
  	 */
 	_resolveTickFontOptions(index) {

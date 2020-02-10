@@ -149,8 +149,12 @@ class LogarithmicScale extends Scale {
 		return ticks;
 	}
 
+	/**
+	 * @param {number} value
+	 * @return {string}
+	 */
 	getLabelForValue(value) {
-		return value === undefined ? 0 : new Intl.NumberFormat(this.options.locale).format(value);
+		return value === undefined ? '0' : new Intl.NumberFormat(this.options.locale).format(value);
 	}
 
 	getPixelForTick(index) {
