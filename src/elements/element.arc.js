@@ -3,7 +3,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {extend} from '../helpers/helpers.core';
-import {getAngleFromPoint} from '../helpers/helpers.math';
+import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
 defaults.set('elements', {
@@ -108,6 +108,10 @@ class Arc extends Element {
 		}
 	}
 
+	/**
+	 * @param {number} chartX
+	 * @param {number} chartY
+	 */
 	inRange(chartX, chartY) {
 		var me = this;
 
@@ -115,22 +119,9 @@ class Arc extends Element {
 		var angle = pointRelativePosition.angle;
 		var distance = pointRelativePosition.distance;
 
-		// Sanitise angle range
-		var startAngle = me.startAngle;
-		var endAngle = me.endAngle;
-		while (endAngle < startAngle) {
-			endAngle += TAU;
-		}
-		while (angle > endAngle) {
-			angle -= TAU;
-		}
-		while (angle < startAngle) {
-			angle += TAU;
-		}
-
 		// Check if within the range of the open/close angle
-		var betweenAngles = (angle >= startAngle && angle <= endAngle);
-		var withinRadius = (distance >= me.innerRadius && distance <= me.outerRadius);
+		const betweenAngles = _angleBetween(angle, me.startAngle, me.endAngle);
+		const withinRadius = (distance >= me.innerRadius && distance <= me.outerRadius);
 
 		return (betweenAngles && withinRadius);
 	}
