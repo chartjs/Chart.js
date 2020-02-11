@@ -194,7 +194,7 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 	}
 }
 
-function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
+function skip(ticks, newTicks, spacing, majorStart?, majorEnd?) {
 	const start = valueOrDefault(majorStart, 0);
 	const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
 	let count = 0;
@@ -224,80 +224,55 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 
 class Scale extends Element {
 
+	public id: string;
+	public type: string;
+	public options: any;
+	public ctx: any;
+	public chart: any;
+
+	// implements box
+	public top: number;
+	public bottom: number;
+	public left: number;
+	public right: number;
+	public width: number;
+	public height: number;
+	public margins: {top:number,bottom:number,left:number,right:number};
+	// TODO: make maxWidth, maxHeight private
+	public maxWidth: number;
+	public maxHeight: number;
+	public paddingTop: number;
+	public paddingBottom: number;
+	public paddingLeft: number;
+	public paddingRight: number;
+
+	// scale-specific properties
+	public axis: string;
+	public labelRotation: number|undefined;
+	public min: any;
+	public max: any;
+	public ticks: {value:any, major?:boolean, label?:string}[];
+	public _gridLineItems: object[]|null;
+	public _labelItems: object[]|null;
+	public _labelSizes: any;
+	public _length: number;
+	public _longestTextCache: object;
+	public _startPixel: number;
+	public _endPixel: number;
+	public _reversePixels: boolean;
+	public _userMax: any;
+	public _userMin: any;
+	public _ticksLength: number;
+	public _borderValue: number|undefined;
+
 	constructor(cfg) {
 		super();
 
-		/** @type {string} */
 		this.id = cfg.id;
 		this.type = cfg.type;
-		/** @type {object} */
 		this.options = cfg.options;
 		this.ctx = cfg.ctx;
 		this.chart = cfg.chart;
-
-		// implements box
-		/** @type {number} */
-		this.top = undefined;
-		/** @type {number} */
-		this.bottom = undefined;
-		/** @type {number} */
-		this.left = undefined;
-		/** @type {number} */
-		this.right = undefined;
-		/** @type {number} */
-		this.width = undefined;
-		/** @type {number} */
-		this.height = undefined;
-		this.margins = {
-			left: 0,
-			right: 0,
-			top: 0,
-			bottom: 0
-		};
-		// TODO: make maxWidth, maxHeight private
-		/** @type {number} */
-		this.maxWidth = undefined;
-		/** @type {number} */
-		this.maxHeight = undefined;
-		/** @type {number} */
-		this.paddingTop = undefined;
-		/** @type {number} */
-		this.paddingBottom = undefined;
-		/** @type {number} */
-		this.paddingLeft = undefined;
-		/** @type {number} */
-		this.paddingRight = undefined;
-
-		// scale-specific properties
-		/** @type {string} */
-		this.axis = undefined;
-		/** @type {number} */
-		this.labelRotation = undefined;
-		this.min = undefined;
-		this.max = undefined;
-		/** @type {object[]} */
-		this.ticks = null;
-		/** @type {object[]} */
-		this._gridLineItems = null;
-		/** @type {object[]} */
-		this._labelItems = null;
-		/** @type {object} */
-		this._labelSizes = null;
-		/** @type {number} */
-		this._length = undefined;
-		/** @type {object} */
-		this._longestTextCache = {};
-		/** @type {number} */
-		this._maxLabelLines = undefined;
-		/** @type {number} */
-		this._startPixel = undefined;
-		/** @type {number} */
-		this._endPixel = undefined;
-		this._reversePixels = undefined;
-		this._userMax = undefined;
-		this._userMin = undefined;
-		this._ticksLength = undefined;
-		this._borderValue = undefined;
 	}
 
 	/**
@@ -445,9 +420,8 @@ class Scale extends Element {
 			bottom: 0
 		}, margins);
 
-		me.ticks = null;
+		me.ticks = [];
 		me._labelSizes = null;
-		me._maxLabelLines = 0;
 		me._gridLineItems = null;
 		me._labelItems = null;
 
@@ -917,7 +891,7 @@ class Scale extends Element {
 	 * Returns the location of the tick at the given index
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param {number} index
-	 * @return {number}
+	 * @return {number|null}
 	 */
 	getPixelForTick(index) {
 		const me = this;
@@ -1003,11 +977,11 @@ class Scale extends Element {
 		if (numMajorIndices > 0) {
 			let i, ilen;
 			const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-			skip(ticks, newTicks, spacing, isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, newTicks, spacing, avgMajorSpacing === null ? 0 : first - avgMajorSpacing, first);
 			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
 				skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			skip(ticks, newTicks, spacing, last, isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			skip(ticks, newTicks, spacing, last, avgMajorSpacing === null ? ticks.length : last + avgMajorSpacing);
 			return newTicks;
 		}
 		skip(ticks, newTicks, spacing);
@@ -1111,6 +1085,8 @@ class Scale extends Element {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			} else {
+				throw new Error('unexpected position ' + position);
 			}
 
 			y1 = chartArea.top;
@@ -1124,6 +1100,8 @@ class Scale extends Element {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
 				borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
+			} else {
+				throw new Error('unexpected position ' + position);
 			}
 
 			tx1 = borderValue - axisHalfWidth;
@@ -1500,22 +1478,22 @@ class Scale extends Element {
 			// backward compatibility: draw has been overridden by custom scale
 			return [{
 				z: tz,
-				draw: function() {
-					me.draw.apply(me, arguments);
+				draw: function(chartArea) {
+					me.draw(chartArea);
 				}
 			}];
 		}
 
 		return [{
 			z: gz,
-			draw: function() {
-				me._drawGrid.apply(me, arguments);
-				me._drawTitle.apply(me, arguments);
+			draw: function(chartArea) {
+				me._drawGrid(chartArea);
+				me._drawTitle();
 			}
 		}, {
 			z: tz,
-			draw: function() {
-				me._drawLabels.apply(me, arguments);
+			draw: function(chartArea) {
+				me._drawLabels(chartArea);
 			}
 		}];
 	}
@@ -1526,7 +1504,7 @@ class Scale extends Element {
 	 * @return {object[]}
 	 * @private
 	 */
-	_getMatchingVisibleMetas(type) {
+	_getMatchingVisibleMetas(type?: string) {
 		const me = this;
 		const metas = me.chart._getSortedVisibleDatasetMetas();
 		const axisID = me.axis + 'AxisID';
@@ -1567,8 +1545,10 @@ class Scale extends Element {
 			strokeStyle: resolve([options.strokeStyle], context)
 		});
 	}
-}
 
-Scale.prototype._draw = Scale.prototype.draw;
+	_draw(chartArea) {
+		this.draw(chartArea);
+	}
+}
 
 export default Scale;
