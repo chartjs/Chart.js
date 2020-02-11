@@ -5,7 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "checkJs": true,
-    "noEmit": true
+    "outDir": "./dist/js"
   },
   "typedocOptions": {
     "name": "Chart.js",
