@@ -6,10 +6,8 @@ import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- */
-
-/**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef {{axis?:'x'|'y'|'xy', intersect:boolean}} IInteractionOptions
  */
 
 /**
@@ -180,16 +178,6 @@ function getNearestItems(chart, position, axis, intersect) {
 	optimizedEvaluateItems(chart, axis, position, evaluationFunc);
 	return items;
 }
-
-/**
- * @interface IInteractionOptions
- * @typedef {object} IInteractionOptions
- */
-/**
- * If true, only consider items that intersect the point
- * @name IInterfaceOptions#boolean
- * @type Boolean
- */
 
 /**
  * Contains interaction related functions
