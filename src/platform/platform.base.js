@@ -1,6 +1,8 @@
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
+ * IEvent interface is defined in /types/IEvent.d.ts for documentation
+ * @typedef {{type: string, native?: Event, x: number, y: number}} IEvent
  */
 
 /**
@@ -49,14 +51,3 @@ export default class BasePlatform {
 		return 1;
 	}
 }
-
-/**
- * @interface IEvent
- * @typedef {object} IEvent
- * @prop {string} type - The event type name, possible values are:
- * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
- * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
- * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
- * @prop {number} x - The mouse x position, relative to the canvas (null for incompatible events)
- * @prop {number} y - The mouse y position, relative to the canvas (null for incompatible events)
- */

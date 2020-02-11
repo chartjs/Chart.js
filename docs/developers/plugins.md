@@ -104,6 +104,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
- ## Plugin Core API
+## Plugin Core API
 
-Read more about the [existing plugin extension hooks](../jsdoc/IPlugin.html).
+Read more about the [existing plugin extension hooks](../typedoc/interfaces/iplugin.html).

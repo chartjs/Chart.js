@@ -149,13 +149,8 @@ function docsTask(done) {
 	return run(bin, ['install', './'])
 		.then(() => run(bin, [cmd, './', './dist/docs']))
 		.then(() => {
-			const config = {
-				moduleResolution: 'Node',
-				target: 'ES6',
-				out: './dist/docs/typedoc'
-			};
-			gulp.src(['./src/**/*.js'], {read: false})
-				.pipe(typedoc(config, done));
+			gulp.src(['./src/**/*.js', './types/**/*.d.ts'], {read: false})
+				.pipe(typedoc(tsProject.config.typedocOptions, done));
 		}).catch((err) => {
 			done(new Error(err.stdout || err));
 		});

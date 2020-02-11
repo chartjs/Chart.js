@@ -12,10 +12,14 @@
   },
   "typedocOptions": {
     "name": "Chart.js",
+    "mode": "file",
+    "target": "ES6",
+    "includeDeclarations": true,
     "excludeExternals": true,
     "excludeNotExported": true,
     "includeVersion": true,
-    "inputFiles": ["./src"],
+    "exclude": ["./node_modules"],
+    "inputFiles": ["./src", "./types"],
     "out": "./dist/docs/typedoc"
   },
   "include": [
