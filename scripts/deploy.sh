@@ -8,7 +8,7 @@ TARGET_REPO_URL="https://$GITHUB_AUTH_TOKEN@github.com/chartjs/chartjs.github.io
 VERSION_REGEX='[[:digit:]]+.[[:digit:]]+.[[:digit:]]+(-.*)?'
 
 # Make sure that this script is executed only for the release and master branches
-if [ "$TRAVIS_BRANCH" == "release" ]; then
+if [ "$TRAVIS_BRANCH" =~ ^release.*$ ]; then
     # Travis executes this script from the repository root, so at the same level than package.json
     VERSION=$(node -p -e "require('./package.json').version")
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
