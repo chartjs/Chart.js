@@ -1,5 +1,3 @@
-'use strict';
-
 import {merge} from '../helpers/helpers.core';
 
 class Defaults {

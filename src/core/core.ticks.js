@@ -1,5 +1,3 @@
-'use strict';
-
 import {isArray} from '../helpers/helpers.core';
 import {log10} from '../helpers/helpers.math';
 
@@ -19,7 +17,7 @@ export default {
 		 * @param value the value to display
 		 * @return {string|string[]} the label to display
 		 */
-		values: function(value) {
+		values(value) {
 			return isArray(value) ? value : '' + value;
 		},
 
@@ -31,7 +29,7 @@ export default {
 		 * @param ticks {object[]} the list of ticks being converted
 		 * @return {string} string representation of the tickValue parameter
 		 */
-		numeric: function(tickValue, index, ticks) {
+		numeric(tickValue, index, ticks) {
 			if (tickValue === 0) {
 				return '0'; // never show decimal places for 0
 			}

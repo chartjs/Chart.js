@@ -1,7 +1,5 @@
 // TODO v3 - make this adapter external (chartjs-adapter-moment)
 
-'use strict';
-
 import moment from 'moment';
 import adapters from '../core/core.adapters';
 
@@ -21,11 +19,11 @@ const FORMATS = {
 adapters._date.override(typeof moment === 'function' ? {
 	_id: 'moment', // DEBUG ONLY
 
-	formats: function() {
+	formats() {
 		return FORMATS;
 	},
 
-	parse: function(value, format) {
+	parse(value, format) {
 		if (typeof value === 'string' && typeof format === 'string') {
 			value = moment(value, format);
 		} else if (!(value instanceof moment)) {
@@ -34,19 +32,19 @@ adapters._date.override(typeof moment === 'function' ? {
 		return value.isValid() ? value.valueOf() : null;
 	},
 
-	format: function(time, format) {
+	format(time, format) {
 		return moment(time).format(format);
 	},
 
-	add: function(time, amount, unit) {
+	add(time, amount, unit) {
 		return moment(time).add(amount, unit).valueOf();
 	},
 
-	diff: function(max, min, unit) {
+	diff(max, min, unit) {
 		return moment(max).diff(moment(min), unit);
 	},
 
-	startOf: function(time, unit, weekday) {
+	startOf(time, unit, weekday) {
 		time = moment(time);
 		if (unit === 'isoWeek') {
 			return time.isoWeekday(weekday).valueOf();
@@ -54,7 +52,7 @@ adapters._date.override(typeof moment === 'function' ? {
 		return time.startOf(unit).valueOf();
 	},
 
-	endOf: function(time, unit) {
+	endOf(time, unit) {
 		return moment(time).endOf(unit).valueOf();
 	}
 } : {});

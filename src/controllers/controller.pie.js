@@ -1,5 +1,3 @@
-'use strict';
-
 import DoughnutController from './controller.doughnut';
 import defaults from '../core/core.defaults';
 import {clone} from '../helpers/helpers.core';

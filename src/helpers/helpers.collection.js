@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Binary search
  * @param {array} table - the table search. must be sorted!

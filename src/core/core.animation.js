@@ -1,22 +1,20 @@
-'use strict';
-
 import helpers from '../helpers/index';
-import {effects} from '../helpers/helpers.easing';
+import effects from '../helpers/helpers.easing';
 import {resolve} from '../helpers/helpers.options';
 
 const transparent = 'transparent';
 const interpolators = {
-	boolean: function(from, to, factor) {
+	boolean(from, to, factor) {
 		return factor > 0.5 ? to : from;
 	},
-	color: function(from, to, factor) {
-		var c0 = helpers.color(from || transparent);
-		var c1 = c0.valid && helpers.color(to || transparent);
+	color(from, to, factor) {
+		const c0 = helpers.color(from || transparent);
+		const c1 = c0.valid && helpers.color(to || transparent);
 		return c1 && c1.valid
 			? c1.mix(c0, factor).hexString()
 			: to;
 	},
-	number: function(from, to, factor) {
+	number(from, to, factor) {
 		return from + (to - from) * factor;
 	}
 };
@@ -26,7 +24,7 @@ class Animation {
 		const currentValue = target[prop];
 
 		to = resolve([cfg.to, to, currentValue, cfg.from]);
-		let from = resolve([cfg.from, currentValue, to]);
+		const from = resolve([cfg.from, currentValue, to]);
 
 		this._active = true;
 		this._fn = cfg.fn || interpolators[cfg.type || typeof from];

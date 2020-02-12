@@ -1,5 +1,3 @@
-'use strict';
-
 import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
 
 /**
@@ -34,6 +32,7 @@ function getSegment(segment, points, bounds) {
 	const {property, start: startBound, end: endBound} = bounds;
 	const {between, normalize} = propertyFn(property);
 	const count = points.length;
+	// eslint-disable-next-line prefer-const
 	let {start, end, loop} = segment;
 	let i, ilen;
 
@@ -124,8 +123,8 @@ export function _boundSegment(segment, points, bounds) {
 export function _boundSegments(line, bounds) {
 	const result = [];
 
-	for (let segment of line.segments) {
-		let sub = _boundSegment(segment, line.points, bounds);
+	for (const segment of line.segments) {
+		const sub = _boundSegment(segment, line.points, bounds);
 		if (sub.length) {
 			result.push(...sub);
 		}

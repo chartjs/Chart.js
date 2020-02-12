@@ -9,22 +9,22 @@ export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
 
 	// This function must also respect "skipped" points
 
-	var previous = firstPoint.skip ? middlePoint : firstPoint;
-	var current = middlePoint;
-	var next = afterPoint.skip ? middlePoint : afterPoint;
+	const previous = firstPoint.skip ? middlePoint : firstPoint;
+	const current = middlePoint;
+	const next = afterPoint.skip ? middlePoint : afterPoint;
 
-	var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
-	var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
+	const d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
+	const d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
 
-	var s01 = d01 / (d01 + d12);
-	var s12 = d12 / (d01 + d12);
+	let s01 = d01 / (d01 + d12);
+	let s12 = d12 / (d01 + d12);
 
 	// If all points are the same, s01 & s02 will be inf
 	s01 = isNaN(s01) ? 0 : s01;
 	s12 = isNaN(s12) ? 0 : s12;
 
-	var fa = t * s01; // scaling factor for triangle Ta
-	var fb = t * s12;
+	const fa = t * s01; // scaling factor for triangle Ta
+	const fb = t * s12;
 
 	return {
 		previous: {
@@ -44,17 +44,15 @@ export function splineCurveMonotone(points) {
 	// between the dataset discrete points due to the interpolation.
 	// See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
 
-	var pointsWithTangents = (points || []).map(function(point) {
-		return {
-			model: point,
-			deltaK: 0,
-			mK: 0
-		};
-	});
+	const pointsWithTangents = (points || []).map((point) => ({
+		model: point,
+		deltaK: 0,
+		mK: 0
+	}));
 
 	// Calculate slopes (deltaK) and initialize tangents (mK)
-	var pointsLen = pointsWithTangents.length;
-	var i, pointBefore, pointCurrent, pointAfter;
+	const pointsLen = pointsWithTangents.length;
+	let i, pointBefore, pointCurrent, pointAfter;
 	for (i = 0; i < pointsLen; ++i) {
 		pointCurrent = pointsWithTangents[i];
 		if (pointCurrent.model.skip) {
@@ -64,7 +62,7 @@ export function splineCurveMonotone(points) {
 		pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
 		pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
 		if (pointAfter && !pointAfter.model.skip) {
-			var slopeDeltaX = (pointAfter.model.x - pointCurrent.model.x);
+			const slopeDeltaX = (pointAfter.model.x - pointCurrent.model.x);
 
 			// In the case of two points that appear at the same x pixel, slopeDeltaX is 0
 			pointCurrent.deltaK = slopeDeltaX !== 0 ? (pointAfter.model.y - pointCurrent.model.y) / slopeDeltaX : 0;
@@ -82,7 +80,7 @@ export function splineCurveMonotone(points) {
 	}
 
 	// Adjust tangents to ensure monotonic properties
-	var alphaK, betaK, tauK, squaredMagnitude;
+	let alphaK, betaK, tauK, squaredMagnitude;
 	for (i = 0; i < pointsLen - 1; ++i) {
 		pointCurrent = pointsWithTangents[i];
 		pointAfter = pointsWithTangents[i + 1];
@@ -108,7 +106,7 @@ export function splineCurveMonotone(points) {
 	}
 
 	// Compute control points
-	var deltaX;
+	let deltaX;
 	for (i = 0; i < pointsLen; ++i) {
 		pointCurrent = pointsWithTangents[i];
 		if (pointCurrent.model.skip) {
@@ -135,7 +133,7 @@ function capControlPoint(pt, min, max) {
 }
 
 function capBezierPoints(points, area) {
-	var i, ilen, point;
+	let i, ilen, point;
 	for (i = 0, ilen = points.length; i < ilen; ++i) {
 		point = points[i];
 		if (!_isPointInArea(point, area)) {
@@ -156,13 +154,11 @@ function capBezierPoints(points, area) {
  * @private
  */
 export function _updateBezierControlPoints(points, options, area, loop) {
-	var i, ilen, point, controlPoints;
+	let i, ilen, point, controlPoints;
 
 	// Only consider points that are drawn in case the spanGaps option is used
 	if (options.spanGaps) {
-		points = points.filter(function(pt) {
-			return !pt.skip;
-		});
+		points = points.filter((pt) => !pt.skip);
 	}
 
 	if (options.cubicInterpolationMode === 'monotone') {

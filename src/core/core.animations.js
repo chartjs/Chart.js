@@ -1,5 +1,3 @@
-'use strict';
-
 import Animator from './core.animator';
 import Animation from './core.animation';
 import defaults from '../core/core.defaults';
@@ -57,8 +55,8 @@ defaults.set('animation', {
 });
 
 function copyOptions(target, values) {
-	let oldOpts = target.options;
-	let newOpts = values.options;
+	const oldOpts = target.options;
+	const newOpts = values.options;
 	if (!oldOpts || !newOpts || newOpts.$shared) {
 		return;
 	}
@@ -101,7 +99,7 @@ export default class Animations {
 			if (!isObject(cfg)) {
 				return;
 			}
-			(cfg.properties || [key]).forEach(function(prop) {
+			(cfg.properties || [key]).forEach((prop) => {
 				// Can have only one config per animation.
 				if (!animatedProps.has(prop)) {
 					animatedProps.set(prop, extend({}, animDefaults, cfg));
@@ -152,16 +150,16 @@ export default class Animations {
 		let i;
 
 		for (i = props.length - 1; i >= 0; --i) {
-			let prop = props[i];
+			const prop = props[i];
 			if (prop.charAt(0) === '$') {
 				continue;
 			}
 
 			if (prop === 'options') {
-				animations.push.apply(animations, this._animateOptions(target, values));
+				animations.push(...this._animateOptions(target, values));
 				continue;
 			}
-			let value = values[prop];
+			const value = values[prop];
 			let animation = running[prop];
 			if (animation) {
 				animation.cancel();

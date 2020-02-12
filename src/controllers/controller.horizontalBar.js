@@ -1,5 +1,3 @@
-'use strict';
-
 import BarController from './controller.bar';
 import defaults from '../core/core.defaults';
 
@@ -43,10 +41,6 @@ defaults.set('horizontalBar', {
 });
 
 class HorizontalBarController extends BarController {
-
-	constructor(chart, datasetIndex) {
-		super(chart, datasetIndex);
-	}
 
 	/**
 	 * @private

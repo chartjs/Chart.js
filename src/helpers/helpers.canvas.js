@@ -1,5 +1,3 @@
-'use strict';
-
 import {isArray} from './helpers.core';
 
 /**
@@ -37,8 +35,8 @@ export function _measureText(ctx, data, gc, longest, string) {
  */
 export function _longestText(ctx, font, arrayOfThings, cache) {
 	cache = cache || {};
-	var data = cache.data = cache.data || {};
-	var gc = cache.garbageCollect = cache.garbageCollect || [];
+	let data = cache.data = cache.data || {};
+	let gc = cache.garbageCollect = cache.garbageCollect || [];
 
 	if (cache.font !== font) {
 		data = cache.data = {};
@@ -47,9 +45,9 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 	}
 
 	ctx.font = font;
-	var longest = 0;
-	var ilen = arrayOfThings.length;
-	var i, j, jlen, thing, nestedThing;
+	let longest = 0;
+	const ilen = arrayOfThings.length;
+	let i, j, jlen, thing, nestedThing;
 	for (i = 0; i < ilen; i++) {
 		thing = arrayOfThings[i];
 
@@ -69,7 +67,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 		}
 	}
 
-	var gcLen = gc.length / 2;
+	const gcLen = gc.length / 2;
 	if (gcLen > arrayOfThings.length) {
 		for (i = 0; i < gcLen; i++) {
 			delete data[gc[i]];
@@ -102,11 +100,11 @@ export function clear(chart) {
 }
 
 export function drawPoint(ctx, options, x, y) {
-	var type, xOffset, yOffset, size, cornerRadius;
-	var style = options.pointStyle;
-	var rotation = options.rotation;
-	var radius = options.radius;
-	var rad = (rotation || 0) * RAD_PER_DEG;
+	let type, xOffset, yOffset, size, cornerRadius;
+	const style = options.pointStyle;
+	const rotation = options.rotation;
+	const radius = options.radius;
+	let rad = (rotation || 0) * RAD_PER_DEG;
 
 	if (style && typeof style === 'object') {
 		type = style.toString();

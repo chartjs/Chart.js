@@ -3,8 +3,6 @@
  * @see https://github.com/chartjs/Chart.js/pull/4591#issuecomment-319575939
  */
 
-'use strict';
-
 import BasePlatform from './platform.base';
 
 /**
@@ -13,6 +11,7 @@ import BasePlatform from './platform.base';
  * @extends BasePlatform
  */
 export default class BasicPlatform extends BasePlatform {
+	// eslint-disable-next-line class-methods-use-this
 	acquireContext(item) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker

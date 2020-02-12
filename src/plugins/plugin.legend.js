@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
@@ -21,9 +19,9 @@ defaults.set('legend', {
 	weight: 1000,
 
 	// a callback that will handle
-	onClick: function(e, legendItem) {
-		var index = legendItem.datasetIndex;
-		var ci = this.chart;
+	onClick(e, legendItem) {
+		const index = legendItem.datasetIndex;
+		const ci = this.chart;
 		if (ci.isDatasetVisible(index)) {
 			ci.hide(index);
 			legendItem.hidden = true;
@@ -50,13 +48,13 @@ defaults.set('legend', {
 		// lineDashOffset :
 		// lineJoin :
 		// lineWidth :
-		generateLabels: function(chart) {
-			var datasets = chart.data.datasets;
-			var options = chart.options.legend || {};
-			var usePointStyle = options.labels && options.labels.usePointStyle;
+		generateLabels(chart) {
+			const datasets = chart.data.datasets;
+			const options = chart.options.legend || {};
+			const usePointStyle = options.labels && options.labels.usePointStyle;
 
-			return chart._getSortedDatasetMetas().map(function(meta) {
-				var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+			return chart._getSortedDatasetMetas().map((meta) => {
+				const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
 
 				return {
 					text: datasets[meta.index].label,
@@ -148,10 +146,11 @@ class Legend extends Element {
 	// Any function defined here is inherited by all legend types.
 	// Any function can be extended by the legend type
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeUpdate() {}
 
 	update(maxWidth, maxHeight, margins) {
-		var me = this;
+		const me = this;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -178,14 +177,16 @@ class Legend extends Element {
 		me.afterUpdate();
 	}
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterUpdate() {}
 
 	//
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeSetDimensions() {}
 
 	setDimensions() {
-		var me = this;
+		const me = this;
 		// Set the unconstrained dimension before label rotation
 		if (me.isHorizontal()) {
 			// Reset position before calculating rotation
@@ -213,21 +214,21 @@ class Legend extends Element {
 		};
 	}
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterSetDimensions() {}
 
 	//
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeBuildLabels() {}
 
 	buildLabels() {
-		var me = this;
-		var labelOpts = me.options.labels || {};
-		var legendItems = call(labelOpts.generateLabels, [me.chart], me) || [];
+		const me = this;
+		const labelOpts = me.options.labels || {};
+		let legendItems = call(labelOpts.generateLabels, [me.chart], me) || [];
 
 		if (labelOpts.filter) {
-			legendItems = legendItems.filter(function(item) {
-				return labelOpts.filter(item, me.chart.data);
-			});
+			legendItems = legendItems.filter((item) => labelOpts.filter(item, me.chart.data));
 		}
 
 		if (me.options.reverse) {
@@ -237,10 +238,12 @@ class Legend extends Element {
 		me.legendItems = legendItems;
 	}
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterBuildLabels() {}
 
 	//
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeFit() {}
 
 	fit() {
@@ -283,7 +286,7 @@ class Legend extends Element {
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
 
-			me.legendItems.forEach(function(legendItem, i) {
+			me.legendItems.forEach((legendItem, i) => {
 				const boxWidth = getBoxWidth(labelOpts, fontSize);
 				const width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
@@ -296,7 +299,7 @@ class Legend extends Element {
 				hitboxes[i] = {
 					left: 0,
 					top: 0,
-					width: width,
+					width,
 					height: fontSize
 				};
 
@@ -313,8 +316,8 @@ class Legend extends Element {
 			let currentColWidth = 0;
 			let currentColHeight = 0;
 
-			let heightLimit = minSize.height - titleHeight;
-			me.legendItems.forEach(function(legendItem, i) {
+			const heightLimit = minSize.height - titleHeight;
+			me.legendItems.forEach((legendItem, i) => {
 				const boxWidth = getBoxWidth(labelOpts, fontSize);
 				const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
@@ -350,6 +353,7 @@ class Legend extends Element {
 		me.height = minSize.height;
 	}
 
+	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterFit() {}
 
 	// Shared Methods
@@ -389,11 +393,11 @@ class Legend extends Element {
 		ctx.fillStyle = fontColor; // render in correct colour
 		ctx.font = labelFont.string;
 
-		var boxWidth = getBoxWidth(labelOpts, fontSize);
-		var hitboxes = me.legendHitBoxes;
+		const boxWidth = getBoxWidth(labelOpts, fontSize);
+		const hitboxes = me.legendHitBoxes;
 
 		// current position
-		var drawLegendBox = function(x, y, legendItem) {
+		const drawLegendBox = function(x, y, legendItem) {
 			if (isNaN(boxWidth) || boxWidth <= 0) {
 				return;
 			}
@@ -401,7 +405,7 @@ class Legend extends Element {
 			// Set the ctx for the box
 			ctx.save();
 
-			var lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+			const lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
 			ctx.fillStyle = valueOrDefault(legendItem.fillStyle, defaultColor);
 			ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 			ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
@@ -423,8 +427,8 @@ class Legend extends Element {
 					rotation: legendItem.rotation,
 					borderWidth: lineWidth
 				};
-				var centerX = rtlHelper.xPlus(x, boxWidth / 2);
-				var centerY = y + fontSize / 2;
+				const centerX = rtlHelper.xPlus(x, boxWidth / 2);
+				const centerY = y + fontSize / 2;
 
 				// Draw pointStyle as legend symbol
 				drawPoint(ctx, drawOptions, centerX, centerY);
@@ -439,10 +443,10 @@ class Legend extends Element {
 			ctx.restore();
 		};
 
-		var fillText = function(x, y, legendItem, textWidth) {
-			var halfFontSize = fontSize / 2;
-			var xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
-			var yMiddle = y + halfFontSize;
+		const fillText = function(x, y, legendItem, textWidth) {
+			const halfFontSize = fontSize / 2;
+			const xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
+			const yMiddle = y + halfFontSize;
 
 			ctx.fillText(legendItem.text, xLeft, yMiddle);
 
@@ -456,7 +460,7 @@ class Legend extends Element {
 			}
 		};
 
-		var alignmentOffset = function(dimension, blockSize) {
+		const alignmentOffset = function(dimension, blockSize) {
 			switch (opts.align) {
 			case 'start':
 				return labelOpts.padding;
@@ -486,12 +490,12 @@ class Legend extends Element {
 
 		overrideTextDirection(me.ctx, opts.textDirection);
 
-		var itemHeight = fontSize + labelOpts.padding;
-		me.legendItems.forEach(function(legendItem, i) {
-			var textWidth = ctx.measureText(legendItem.text).width;
-			var width = boxWidth + (fontSize / 2) + textWidth;
-			var x = cursor.x;
-			var y = cursor.y;
+		const itemHeight = fontSize + labelOpts.padding;
+		me.legendItems.forEach((legendItem, i) => {
+			const textWidth = ctx.measureText(legendItem.text).width;
+			const width = boxWidth + (fontSize / 2) + textWidth;
+			let x = cursor.x;
+			let y = cursor.y;
 
 			rtlHelper.setWidth(me._minSize.width);
 
@@ -510,7 +514,7 @@ class Legend extends Element {
 				y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
 			}
 
-			var realX = rtlHelper.x(x);
+			const realX = rtlHelper.x(x);
 
 			drawLegendBox(realX, y, legendItem);
 
@@ -629,8 +633,8 @@ class Legend extends Element {
 	 * @private
 	 */
 	_getLegendItemAt(x, y) {
-		var me = this;
-		var i, hitBox, lh;
+		const me = this;
+		let i, hitBox, lh;
 
 		if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
 			// See if we are touching one of the dataset boxes
@@ -653,10 +657,9 @@ class Legend extends Element {
 	 * @param {IEvent} e - The event to handle
 	 */
 	handleEvent(e) {
-		var me = this;
-		var opts = me.options;
-		var type = e.type === 'mouseup' ? 'click' : e.type;
-		var hoveredItem;
+		const me = this;
+		const opts = me.options;
+		const type = e.type === 'mouseup' ? 'click' : e.type;
 
 		if (type === 'mousemove') {
 			if (!opts.onHover && !opts.onLeave) {
@@ -671,7 +674,7 @@ class Legend extends Element {
 		}
 
 		// Chart event already has relative position in it
-		hoveredItem = me._getLegendItemAt(e.x, e.y);
+		const hoveredItem = me._getLegendItemAt(e.x, e.y);
 
 		if (type === 'click') {
 			if (hoveredItem && opts.onClick) {
@@ -695,10 +698,10 @@ class Legend extends Element {
 }
 
 function createNewLegendAndAttach(chart, legendOpts) {
-	var legend = new Legend({
+	const legend = new Legend({
 		ctx: chart.ctx,
 		options: legendOpts,
-		chart: chart
+		chart
 	});
 
 	layouts.configure(chart, legend, legendOpts);
@@ -718,17 +721,17 @@ export default {
 	 */
 	_element: Legend,
 
-	beforeInit: function(chart) {
-		var legendOpts = chart.options.legend;
+	beforeInit(chart) {
+		const legendOpts = chart.options.legend;
 
 		if (legendOpts) {
 			createNewLegendAndAttach(chart, legendOpts);
 		}
 	},
 
-	afterUpdate: function(chart) {
-		var legendOpts = chart.options.legend;
-		var legend = chart.legend;
+	afterUpdate(chart) {
+		const legendOpts = chart.options.legend;
+		const legend = chart.legend;
 
 		if (legendOpts) {
 			mergeIf(legendOpts, defaults.legend);
@@ -746,8 +749,8 @@ export default {
 		}
 	},
 
-	afterEvent: function(chart, e) {
-		var legend = chart.legend;
+	afterEvent(chart, e) {
+		const legend = chart.legend;
 		if (legend) {
 			legend.handleEvent(e);
 		}

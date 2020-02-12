@@ -1,5 +1,3 @@
-'use strict';
-
 import helpers from '../helpers/index';
 
 /**
@@ -31,12 +29,13 @@ class Animator {
 	/**
 	 * @private
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	_notify(chart, anims, date, type) {
 		const callbacks = anims.listeners[type] || [];
 		const numSteps = anims.duration;
 
 		callbacks.forEach(fn => fn({
-			chart: chart,
+			chart,
 			numSteps,
 			currentStep: date - anims.start
 		}));
@@ -53,7 +52,7 @@ class Animator {
 		}
 		me._running = true;
 
-		me._request = helpers.requestAnimFrame.call(window, function() {
+		me._request = helpers.requestAnimFrame.call(window, () => {
 			me._update();
 			me._request = null;
 
@@ -71,7 +70,7 @@ class Animator {
 		const date = Date.now();
 		let remaining = 0;
 
-		me._charts.forEach(function(anims, chart) {
+		me._charts.forEach((anims, chart) => {
 			if (!anims.running || !anims.items.length) {
 				return;
 			}

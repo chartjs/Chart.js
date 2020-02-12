@@ -1,5 +1,3 @@
-'use strict';
-
 import BasePlatform from './platform.base';
 import BasicPlatform from './platform.basic';
 import DomPlatform from './platform.dom';

@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -9,18 +8,13 @@
  */
 export default class BasePlatform {
 	/**
-	 * @constructor
-	 */
-	constructor() {}
-
-	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
 	 * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars
+	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars,class-methods-use-this
 		return undefined;
 	}
 
@@ -30,7 +24,7 @@ export default class BasePlatform {
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext(context) { // eslint-disable-line no-unused-vars
+	releaseContext(context) { // eslint-disable-line no-unused-vars,class-methods-use-this
 		return false;
 	}
 
@@ -41,7 +35,7 @@ export default class BasePlatform {
 	 * @param {function} listener - Receives a notification (an object that implements
 	 * the {@link IEvent} interface) when an event of the specified type occurs.
 	 */
-	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
+	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
@@ -49,12 +43,12 @@ export default class BasePlatform {
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
+	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
 
 	/**
 	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
 	 */
-	getDevicePixelRatio() {
+	getDevicePixelRatio() { // eslint-disable-line class-methods-use-this
 		return 1;
 	}
 }

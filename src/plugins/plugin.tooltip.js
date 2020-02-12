@@ -1,5 +1,3 @@
-'use strict';
-
 import Animations from '../core/core.animations';
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
@@ -57,13 +55,13 @@ defaults.set('tooltips', {
 	callbacks: {
 		// Args are: (tooltipItems, data)
 		beforeTitle: helpers.noop,
-		title: function(tooltipItems, data) {
-			var title = '';
-			var labels = data.labels;
-			var labelCount = labels ? labels.length : 0;
+		title(tooltipItems, data) {
+			let title = '';
+			const labels = data.labels;
+			const labelCount = labels ? labels.length : 0;
 
 			if (tooltipItems.length > 0) {
-				var item = tooltipItems[0];
+				const item = tooltipItems[0];
 				if (item.label) {
 					title = item.label;
 				} else if (labelCount > 0 && item.index < labelCount) {
@@ -80,7 +78,7 @@ defaults.set('tooltips', {
 
 		// Args are: (tooltipItem, data)
 		beforeLabel: helpers.noop,
-		label: function(tooltipItem, data) {
+		label(tooltipItem, data) {
 			let label = data.datasets[tooltipItem.datasetIndex].label || '';
 
 			if (label) {
@@ -92,15 +90,15 @@ defaults.set('tooltips', {
 			}
 			return label;
 		},
-		labelColor: function(tooltipItem, chart) {
-			var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
-			var options = meta.controller.getStyle(tooltipItem.index);
+		labelColor(tooltipItem, chart) {
+			const meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
+			const options = meta.controller.getStyle(tooltipItem.index);
 			return {
 				borderColor: options.borderColor,
 				backgroundColor: options.backgroundColor
 			};
 		},
-		labelTextColor: function() {
+		labelTextColor() {
 			return this.options.bodyFontColor;
 		},
 		afterLabel: helpers.noop,
@@ -115,27 +113,27 @@ defaults.set('tooltips', {
 	}
 });
 
-var positioners = {
+const positioners = {
 	/**
 	 * Average mode places the tooltip at the average position of the elements shown
 	 * @function Chart.Tooltip.positioners.average
 	 * @param items {object[]} the items being displayed in the tooltip
 	 * @returns {object} tooltip position
 	 */
-	average: function(items) {
+	average(items) {
 		if (!items.length) {
 			return false;
 		}
 
-		var i, len;
-		var x = 0;
-		var y = 0;
-		var count = 0;
+		let i, len;
+		let x = 0;
+		let y = 0;
+		let count = 0;
 
 		for (i = 0, len = items.length; i < len; ++i) {
-			var el = items[i].element;
+			const el = items[i].element;
 			if (el && el.hasValue()) {
-				var pos = el.tooltipPosition();
+				const pos = el.tooltipPosition();
 				x += pos.x;
 				y += pos.y;
 				++count;
@@ -155,17 +153,17 @@ var positioners = {
 	 * @param eventPosition {object} the position of the event in canvas coordinates
 	 * @returns {object} the tooltip position
 	 */
-	nearest: function(items, eventPosition) {
-		var x = eventPosition.x;
-		var y = eventPosition.y;
-		var minDistance = Number.POSITIVE_INFINITY;
-		var i, len, nearestElement;
+	nearest(items, eventPosition) {
+		let x = eventPosition.x;
+		let y = eventPosition.y;
+		let minDistance = Number.POSITIVE_INFINITY;
+		let i, len, nearestElement;
 
 		for (i = 0, len = items.length; i < len; ++i) {
-			var el = items[i].element;
+			const el = items[i].element;
 			if (el && el.hasValue()) {
-				var center = el.getCenterPoint();
-				var d = helpers.math.distanceBetweenPoints(eventPosition, center);
+				const center = el.getCenterPoint();
+				const d = helpers.math.distanceBetweenPoints(eventPosition, center);
 
 				if (d < minDistance) {
 					minDistance = d;
@@ -175,14 +173,14 @@ var positioners = {
 		}
 
 		if (nearestElement) {
-			var tp = nearestElement.tooltipPosition();
+			const tp = nearestElement.tooltipPosition();
 			x = tp.x;
 			y = tp.y;
 		}
 
 		return {
-			x: x,
-			y: y
+			x,
+			y
 		};
 	}
 };
@@ -269,9 +267,7 @@ function getTooltipSize(tooltip) {
 	let width = 0;
 
 	// Count of all lines in the body
-	var combinedBodyLength = body.reduce(function(count, bodyItem) {
-		return count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length;
-	}, 0);
+	let combinedBodyLength = body.reduce((count, bodyItem) => count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length, 0);
 	combinedBodyLength += tooltip.beforeBody.length + tooltip.afterBody.length;
 
 	if (titleLineCount) {
@@ -290,8 +286,8 @@ function getTooltipSize(tooltip) {
 	}
 
 	// Title width
-	var widthPadding = 0;
-	var maxLineWidth = function(line) {
+	let widthPadding = 0;
+	const maxLineWidth = function(line) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
@@ -304,7 +300,7 @@ function getTooltipSize(tooltip) {
 
 	// Body lines may include some extra width due to the color box
 	widthPadding = options.displayColors ? (bodyFontSize + 2) : 0;
-	helpers.each(body, function(bodyItem) {
+	helpers.each(body, (bodyItem) => {
 		helpers.each(bodyItem.before, maxLineWidth);
 		helpers.each(bodyItem.lines, maxLineWidth);
 		helpers.each(bodyItem.after, maxLineWidth);
@@ -328,9 +324,9 @@ function getTooltipSize(tooltip) {
  */
 function determineAlignment(chart, options, size) {
 	const {x, y, width, height} = size;
-	var chartArea = chart.chartArea;
-	var xAlign = 'center';
-	var yAlign = 'center';
+	const chartArea = chart.chartArea;
+	let xAlign = 'center';
+	let yAlign = 'center';
 
 	if (y < height) {
 		yAlign = 'top';
@@ -338,11 +334,9 @@ function determineAlignment(chart, options, size) {
 		yAlign = 'bottom';
 	}
 
-	var lf, rf; // functions to determine left, right alignment
-	var olf, orf; // functions to determine if left/right alignment causes tooltip to go outside chart
-	var yf; // function to get the y alignment if the tooltip goes outside of the left or right edges
-	var midX = (chartArea.left + chartArea.right) / 2;
-	var midY = (chartArea.top + chartArea.bottom) / 2;
+	let lf, rf; // functions to determine left, right alignment
+	const midX = (chartArea.left + chartArea.right) / 2;
+	const midY = (chartArea.top + chartArea.bottom) / 2;
 
 	if (yAlign === 'center') {
 		lf = (value) => value <= midX;
@@ -352,9 +346,11 @@ function determineAlignment(chart, options, size) {
 		rf = (value) => value >= (chart.width - (width / 2));
 	}
 
-	olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
-	orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
-	yf = (value) => value <= midY ? 'top' : 'bottom';
+	// functions to determine if left/right alignment causes tooltip to go outside chart
+	const olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
+	const orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
+	// function to get the y alignment if the tooltip goes outside of the left or right edges
+	const yf = (value) => value <= midY ? 'top' : 'bottom';
 
 	if (lf(x)) {
 		xAlign = 'left';
@@ -381,6 +377,7 @@ function determineAlignment(chart, options, size) {
 }
 
 function alignX(size, xAlign, chartWidth) {
+	// eslint-disable-next-line prefer-const
 	let {x, width} = size;
 	if (xAlign === 'right') {
 		x -= width;
@@ -397,6 +394,7 @@ function alignX(size, xAlign, chartWidth) {
 }
 
 function alignY(size, yAlign, paddingAndSize) {
+	// eslint-disable-next-line prefer-const
 	let {y, height} = size;
 	if (yAlign === 'top') {
 		y += paddingAndSize;
@@ -418,7 +416,7 @@ function getBackgroundPoint(options, size, alignment, chart) {
 	const radiusAndPadding = cornerRadius + caretPadding;
 
 	let x = alignX(size, xAlign, chart.width);
-	let y = alignY(size, yAlign, paddingAndSize);
+	const y = alignY(size, yAlign, paddingAndSize);
 
 	if (yAlign === 'center') {
 		if (xAlign === 'left') {
@@ -508,16 +506,16 @@ class Tooltip extends Element {
 
 	// Get the title
 	// Args are: (tooltipItem, data)
-	getTitle() {
-		var me = this;
-		var opts = me.options;
-		var callbacks = opts.callbacks;
+	getTitle(tooltipitem, data) {
+		const me = this;
+		const opts = me.options;
+		const callbacks = opts.callbacks;
 
-		var beforeTitle = callbacks.beforeTitle.apply(me, arguments);
-		var title = callbacks.title.apply(me, arguments);
-		var afterTitle = callbacks.afterTitle.apply(me, arguments);
+		const beforeTitle = callbacks.beforeTitle.apply(me, [tooltipitem, data]);
+		const title = callbacks.title.apply(me, [tooltipitem, data]);
+		const afterTitle = callbacks.afterTitle.apply(me, [tooltipitem, data]);
 
-		var lines = [];
+		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeTitle));
 		lines = pushOrConcat(lines, splitNewlines(title));
 		lines = pushOrConcat(lines, splitNewlines(afterTitle));
@@ -526,18 +524,18 @@ class Tooltip extends Element {
 	}
 
 	// Args are: (tooltipItem, data)
-	getBeforeBody() {
-		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, arguments));
+	getBeforeBody(tooltipitem, data) {
+		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, [tooltipitem, data]));
 	}
 
 	// Args are: (tooltipItem, data)
 	getBody(tooltipItems, data) {
-		var me = this;
-		var callbacks = me.options.callbacks;
-		var bodyItems = [];
+		const me = this;
+		const callbacks = me.options.callbacks;
+		const bodyItems = [];
 
-		helpers.each(tooltipItems, function(tooltipItem) {
-			var bodyItem = {
+		helpers.each(tooltipItems, (tooltipItem) => {
+			const bodyItem = {
 				before: [],
 				lines: [],
 				after: []
@@ -553,21 +551,21 @@ class Tooltip extends Element {
 	}
 
 	// Args are: (tooltipItem, data)
-	getAfterBody() {
-		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, arguments));
+	getAfterBody(tooltipitem, data) {
+		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, [tooltipitem, data]));
 	}
 
 	// Get the footer and beforeFooter and afterFooter lines
 	// Args are: (tooltipItem, data)
-	getFooter() {
-		var me = this;
-		var callbacks = me.options.callbacks;
+	getFooter(tooltipitem, data) {
+		const me = this;
+		const callbacks = me.options.callbacks;
 
-		var beforeFooter = callbacks.beforeFooter.apply(me, arguments);
-		var footer = callbacks.footer.apply(me, arguments);
-		var afterFooter = callbacks.afterFooter.apply(me, arguments);
+		const beforeFooter = callbacks.beforeFooter.apply(me, [tooltipitem, data]);
+		const footer = callbacks.footer.apply(me, [tooltipitem, data]);
+		const afterFooter = callbacks.afterFooter.apply(me, [tooltipitem, data]);
 
-		var lines = [];
+		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeFooter));
 		lines = pushOrConcat(lines, splitNewlines(footer));
 		lines = pushOrConcat(lines, splitNewlines(afterFooter));
@@ -594,20 +592,16 @@ class Tooltip extends Element {
 
 		// If the user provided a filter function, use it to modify the tooltip items
 		if (options.filter) {
-			tooltipItems = tooltipItems.filter(function(a) {
-				return options.filter(a, data);
-			});
+			tooltipItems = tooltipItems.filter((a) => options.filter(a, data));
 		}
 
 		// If the user provided a sorting function, use it to modify the tooltip items
 		if (options.itemSort) {
-			tooltipItems = tooltipItems.sort(function(a, b) {
-				return options.itemSort(a, b, data);
-			});
+			tooltipItems = tooltipItems.sort((a, b) => options.itemSort(a, b, data));
 		}
 
 		// Determine colors for boxes
-		helpers.each(tooltipItems, function(tooltipItem) {
+		helpers.each(tooltipItems, (tooltipItem) => {
 			labelColors.push(options.callbacks.labelColor.call(me, tooltipItem, me._chart));
 			labelTextColors.push(options.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
 		});
@@ -670,7 +664,7 @@ class Tooltip extends Element {
 	}
 
 	drawCaret(tooltipPoint, ctx, size) {
-		var caretPosition = this.getCaretPosition(tooltipPoint, size);
+		const caretPosition = this.getCaretPosition(tooltipPoint, size);
 
 		ctx.lineTo(caretPosition.x1, caretPosition.y1);
 		ctx.lineTo(caretPosition.x2, caretPosition.y2);
@@ -722,12 +716,12 @@ class Tooltip extends Element {
 	drawTitle(pt, ctx) {
 		const me = this;
 		const options = me.options;
-		var title = me.title;
-		var length = title.length;
-		var titleFontSize, titleSpacing, i;
+		const title = me.title;
+		const length = title.length;
+		let titleFontSize, titleSpacing, i;
 
 		if (length) {
-			var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
+			const rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
 			pt.x = getAlignedX(me, options.titleAlign);
 
@@ -783,17 +777,17 @@ class Tooltip extends Element {
 		const me = this;
 		const {body, options} = me;
 		const {bodyFontSize, bodySpacing, bodyAlign, displayColors} = options;
-		var xLinePadding = 0;
+		let xLinePadding = 0;
 
-		var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
+		const rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
-		var fillLineOfText = function(line) {
+		const fillLineOfText = function(line) {
 			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
 			pt.y += bodyFontSize + bodySpacing;
 		};
 
-		var bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
-		var bodyItem, textColor, lines, i, j, ilen, jlen;
+		const bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
+		let bodyItem, textColor, lines, i, j, ilen, jlen;
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'middle';
@@ -841,12 +835,12 @@ class Tooltip extends Element {
 	drawFooter(pt, ctx) {
 		const me = this;
 		const options = me.options;
-		var footer = me.footer;
-		var length = footer.length;
-		var footerFontSize, i;
+		const footer = me.footer;
+		const length = footer.length;
+		let footerFontSize, i;
 
 		if (length) {
-			var rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
+			const rtlHelper = getRtlHelper(options.rtl, me.x, me.width);
 
 			pt.x = getAlignedX(me, options.footerAlign);
 			pt.y += options.footerMarginTop;
@@ -943,11 +937,11 @@ class Tooltip extends Element {
 
 		me._updateAnimationTarget();
 
-		var tooltipSize = {
+		const tooltipSize = {
 			width: me.width,
 			height: me.height
 		};
-		var pt = {
+		const pt = {
 			x: me.x,
 			y: me.y
 		};
@@ -956,7 +950,7 @@ class Tooltip extends Element {
 		opacity = Math.abs(opacity) < 1e-3 ? 0 : opacity;
 
 		// Truthy/falsey value for empty tooltip
-		var hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
+		const hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
 
 		if (options.enabled && hasTooltipContent) {
 			ctx.save();
@@ -1035,7 +1029,7 @@ export default {
 	_element: Tooltip,
 	positioners,
 
-	afterInit: function(chart) {
+	afterInit(chart) {
 		const tooltipOpts = chart.options.tooltips;
 
 		if (tooltipOpts) {
@@ -1043,19 +1037,19 @@ export default {
 		}
 	},
 
-	beforeUpdate: function(chart) {
+	beforeUpdate(chart) {
 		if (chart.tooltip) {
 			chart.tooltip.initialize();
 		}
 	},
 
-	reset: function(chart) {
+	reset(chart) {
 		if (chart.tooltip) {
 			chart.tooltip.initialize();
 		}
 	},
 
-	afterDraw: function(chart) {
+	afterDraw(chart) {
 		const tooltip = chart.tooltip;
 		const args = {
 			tooltip
@@ -1070,7 +1064,7 @@ export default {
 		plugins.notify(chart, 'afterTooltipDraw', [args]);
 	},
 
-	afterEvent: function(chart, e) {
+	afterEvent(chart, e) {
 		if (chart.tooltip) {
 			chart.tooltip.handleEvent(e);
 		}

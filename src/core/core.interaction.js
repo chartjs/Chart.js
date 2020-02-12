@@ -1,5 +1,3 @@
-'use strict';
-
 import helpers from '../helpers/index';
 import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
@@ -92,7 +90,7 @@ function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 	const value = position[axis];
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
 		const {index, data} = metasets[i];
-		let {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
+		const {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
 		for (let j = lo; j <= hi; ++j) {
 			const element = data[j];
 			if (!element.skip) {
@@ -196,7 +194,7 @@ export default {
 		 * @param {IInteractionOptions} options - options to use during interaction
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		index: function(chart, e, options) {
+		index(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			// Default axis for index mode is 'x' to match old behaviour
 			const axis = options.axis || 'x';
@@ -207,7 +205,7 @@ export default {
 				return [];
 			}
 
-			chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
+			chart._getSortedVisibleDatasetMetas().forEach((meta) => {
 				const index = items[0].index;
 				const element = meta.data[index];
 
@@ -229,7 +227,7 @@ export default {
 		 * @param {IInteractionOptions} options - options to use during interaction
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		dataset: function(chart, e, options) {
+		dataset(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			const axis = options.axis || 'xy';
 			let items = options.intersect ? getIntersectItems(chart, position, axis) : getNearestItems(chart, position, axis);
@@ -255,7 +253,7 @@ export default {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		point: function(chart, e, options) {
+		point(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			const axis = options.axis || 'xy';
 			return getIntersectItems(chart, position, axis);
@@ -269,7 +267,7 @@ export default {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		nearest: function(chart, e, options) {
+		nearest(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			const axis = options.axis || 'xy';
 			return getNearestItems(chart, position, axis, options.intersect);
@@ -283,12 +281,12 @@ export default {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		x: function(chart, e, options) {
+		x(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			const items = [];
 			let intersectsItem = false;
 
-			evaluateAllVisibleItems(chart, function(element, datasetIndex, index) {
+			evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
 				if (element.inXRange(position.x)) {
 					items.push({element, datasetIndex, index});
 				}
@@ -314,12 +312,12 @@ export default {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Object[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		y: function(chart, e, options) {
+		y(chart, e, options) {
 			const position = getRelativePosition(e, chart);
 			const items = [];
 			let intersectsItem = false;
 
-			evaluateAllVisibleItems(chart, function(element, datasetIndex, index) {
+			evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
 				if (element.inYRange(position.y)) {
 					items.push({element, datasetIndex, index});
 				}

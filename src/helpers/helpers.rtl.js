@@ -1,42 +1,40 @@
-'use strict';
-
-var getRtlAdapter = function(rectX, width) {
+const getRtlAdapter = function(rectX, width) {
 	return {
-		x: function(x) {
+		x(x) {
 			return rectX + rectX + width - x;
 		},
-		setWidth: function(w) {
+		setWidth(w) {
 			width = w;
 		},
-		textAlign: function(align) {
+		textAlign(align) {
 			if (align === 'center') {
 				return align;
 			}
 			return align === 'right' ? 'left' : 'right';
 		},
-		xPlus: function(x, value) {
+		xPlus(x, value) {
 			return x - value;
 		},
-		leftForLtr: function(x, itemWidth) {
+		leftForLtr(x, itemWidth) {
 			return x - itemWidth;
 		},
 	};
 };
 
-var getLtrAdapter = function() {
+const getLtrAdapter = function() {
 	return {
-		x: function(x) {
+		x(x) {
 			return x;
 		},
-		setWidth: function(w) { // eslint-disable-line no-unused-vars
+		setWidth(w) { // eslint-disable-line no-unused-vars
 		},
-		textAlign: function(align) {
+		textAlign(align) {
 			return align;
 		},
-		xPlus: function(x, value) {
+		xPlus(x, value) {
 			return x + value;
 		},
-		leftForLtr: function(x, _itemWidth) { // eslint-disable-line no-unused-vars
+		leftForLtr(x, _itemWidth) { // eslint-disable-line no-unused-vars
 			return x;
 		},
 	};
@@ -47,7 +45,7 @@ const getAdapter = function(rtl, rectX, width) {
 };
 
 const overrideTextDirection = function(ctx, direction) {
-	var style, original;
+	let style, original;
 	if (direction === 'ltr' || direction === 'rtl') {
 		style = ctx.canvas.style;
 		original = [

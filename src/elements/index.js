@@ -1,5 +1,3 @@
-'use strict';
-
 import Arc from './element.arc';
 import Line from './element.line';
 import Point from './element.point';

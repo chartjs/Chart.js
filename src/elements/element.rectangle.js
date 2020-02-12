@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {extend, isObject} from '../helpers/helpers.core';
@@ -22,7 +20,7 @@ defaults.set('elements', {
  * @private
  */
 function getBarBounds(bar) {
-	var x1, x2, y1, y2, half;
+	let x1, x2, y1, y2, half;
 
 	if (bar.horizontal) {
 		half = bar.height / 2;
@@ -51,8 +49,8 @@ function swap(orig, v1, v2) {
 }
 
 function parseBorderSkipped(bar) {
-	var edge = bar.options.borderSkipped;
-	var res = {};
+	let edge = bar.options.borderSkipped;
+	const res = {};
 
 	if (!edge) {
 		return res;
@@ -75,9 +73,9 @@ function skipOrLimit(skip, value, min, max) {
 }
 
 function parseBorderWidth(bar, maxW, maxH) {
-	var value = bar.options.borderWidth;
-	var skip = parseBorderSkipped(bar);
-	var t, r, b, l;
+	const value = bar.options.borderWidth;
+	const skip = parseBorderSkipped(bar);
+	let t, r, b, l;
 
 	if (isObject(value)) {
 		t = +value.top || 0;
@@ -97,10 +95,10 @@ function parseBorderWidth(bar, maxW, maxH) {
 }
 
 function boundingRects(bar) {
-	var bounds = getBarBounds(bar);
-	var width = bounds.right - bounds.left;
-	var height = bounds.bottom - bounds.top;
-	var border = parseBorderWidth(bar, width / 2, height / 2);
+	const bounds = getBarBounds(bar);
+	const width = bounds.right - bounds.left;
+	const height = bounds.bottom - bounds.top;
+	const border = parseBorderWidth(bar, width / 2, height / 2);
 
 	return {
 		outer: {
@@ -119,9 +117,9 @@ function boundingRects(bar) {
 }
 
 function inRange(bar, x, y) {
-	var skipX = x === null;
-	var skipY = y === null;
-	var bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar);
+	const skipX = x === null;
+	const skipY = y === null;
+	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar);
 
 	return bounds
 		&& (skipX || x >= bounds.left && x <= bounds.right)

@@ -1,5 +1,3 @@
-'use strict';
-
 import {isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_parseFont} from '../helpers/helpers.options';
 import LinearScaleBase from './scale.linearbase';
@@ -16,8 +14,8 @@ class LinearScale extends LinearScaleBase {
 		const me = this;
 		const options = me.options;
 		const minmax = me._getMinMax(true);
-		let min = minmax.min;
-		let max = minmax.max;
+		const min = minmax.min;
+		const max = minmax.max;
 
 		me.min = isFinite(min) ? min : valueOrDefault(options.suggestedMin, 0);
 		me.max = isFinite(max) ? max : valueOrDefault(options.suggestedMax, 1);
@@ -36,13 +34,12 @@ class LinearScale extends LinearScaleBase {
 	 * @private
  	 */
 	_computeTickLimit() {
-		var me = this;
-		var tickFont;
+		const me = this;
 
 		if (me.isHorizontal()) {
 			return Math.ceil(me.width / 40);
 		}
-		tickFont = _parseFont(me.options.ticks);
+		const tickFont = _parseFont(me.options.ticks);
 		return Math.ceil(me.height / tickFont.lineHeight);
 	}
 
@@ -57,7 +54,7 @@ class LinearScale extends LinearScaleBase {
 
 	// Utils
 	getPixelForValue(value) {
-		var me = this;
+		const me = this;
 		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
 	}
 

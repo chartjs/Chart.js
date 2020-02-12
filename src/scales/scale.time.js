@@ -1,5 +1,3 @@
-'use strict';
-
 import adapters from '../core/core.adapters';
 import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
@@ -102,13 +100,13 @@ function parse(scale, input) {
 function getDataTimestamps(scale) {
 	const isSeries = scale.options.distribution === 'series';
 	let timestamps = scale._cache.data || [];
-	let i, ilen, metas;
+	let i, ilen;
 
 	if (timestamps.length) {
 		return timestamps;
 	}
 
-	metas = scale._getMatchingVisibleMetas();
+	const metas = scale._getMatchingVisibleMetas();
 
 	if (isSeries && metas.length) {
 		return metas[0].controller._getAllParsedValues(scale);
@@ -129,13 +127,13 @@ function getDataTimestamps(scale) {
 function getLabelTimestamps(scale) {
 	const isSeries = scale.options.distribution === 'series';
 	const timestamps = scale._cache.labels || [];
-	let i, ilen, labels;
+	let i, ilen;
 
 	if (timestamps.length) {
 		return timestamps;
 	}
 
-	labels = scale._getLabels();
+	const labels = scale._getLabels();
 	for (i = 0, ilen = labels.length; i < ilen; ++i) {
 		timestamps.push(parse(scale, labels[i]));
 	}
@@ -149,14 +147,13 @@ function getLabelTimestamps(scale) {
  */
 function getAllTimestamps(scale) {
 	let timestamps = scale._cache.all || [];
-	let label, data;
 
 	if (timestamps.length) {
 		return timestamps;
 	}
 
-	data = getDataTimestamps(scale);
-	label = getLabelTimestamps(scale);
+	const data = getDataTimestamps(scale);
+	const label = getLabelTimestamps(scale);
 	if (data.length && label.length) {
 		// If combining labels and data (data might not contain all labels),
 		// we need to recheck uniqueness and sort
@@ -298,7 +295,7 @@ function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
  * @return {object}
  */
 function determineMajorUnit(unit) {
-	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+	for (let i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
 		if (INTERVALS.get(UNITS[i]).common) {
 			return UNITS[i];
 		}
@@ -349,7 +346,7 @@ function generate(scale) {
 
 	// Prevent browser from freezing in case user options request millions of milliseconds
 	if (adapter.diff(max, min, minor) > 100000 * stepSize) {
-		throw min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor;
+		throw new Error(min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor);
 	}
 
 	if (scale.options.ticks.source === 'data') {
@@ -408,7 +405,7 @@ function computeOffsets(table, timestamps, min, max, options) {
 		}
 	}
 
-	return {start: start, end: end, factor: 1 / (start + 1 + end)};
+	return {start, end, factor: 1 / (start + 1 + end)};
 }
 
 /**
@@ -450,7 +447,7 @@ function ticksFromTimestamps(scale, values, majorUnit) {
 		map[value] = i;
 
 		ticks.push({
-			value: value,
+			value,
 			major: false
 		});
 	}
@@ -647,6 +644,7 @@ class TimeScale extends Scale {
 		const options = me.options;
 		const adapter = me._adapter;
 		const unit = options.time.unit || 'day';
+		// eslint-disable-next-line prefer-const
 		let {min, max, minDefined, maxDefined} = me._getUserBounds();
 
 		/**
@@ -754,7 +752,7 @@ class TimeScale extends Scale {
 		const majorFormat = majorUnit && formats[majorUnit];
 		const tick = ticks[index];
 		const major = majorUnit && majorFormat && tick && tick.major;
-		const label = me._adapter.format(time, format ? format : major ? majorFormat : minorFormat);
+		const label = me._adapter.format(time, format || (major ? majorFormat : minorFormat));
 		const formatter = options.ticks.callback;
 		return formatter ? formatter(label, index, ticks) : label;
 	}
