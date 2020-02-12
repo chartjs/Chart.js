@@ -530,6 +530,9 @@ class Legend extends Element {
 		restoreTextDirection(me.ctx, opts.textDirection);
 	}
 
+	/**
+	 * @private
+	 */
 	_drawTitle() {
 		const me = this;
 		const opts = me.options;
@@ -612,6 +615,9 @@ class Legend extends Element {
 		ctx.fillText(titleOpts.text, x, y);
 	}
 
+	/**
+	 * @private
+	 */
 	_computeTitleHeight() {
 		const titleOpts = this.options.title;
 		const titleFont = _parseFont(titleOpts);
@@ -645,7 +651,6 @@ class Legend extends Element {
 	/**
 	 * Handle an event
 	 * @param {IEvent} e - The event to handle
-	 * @private
 	 */
 	handleEvent(e) {
 		var me = this;

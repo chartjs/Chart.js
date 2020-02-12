@@ -201,6 +201,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `DatasetController.onDataUnshift` was renamed to `DatasetController._onDataUnshift`
 * `DatasetController.removeElements` was renamed to `DatasetController._removeElements`
 * `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
+* `RadialLinearScale.setReductions` was renamed to `RadialLinearScale._setReductions`
+* `Scale.handleMargins` was renamed to `Scale._handleMargins`
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 

@@ -71,6 +71,7 @@ function getSegment(segment, points, bounds) {
  * @param {string} bounds.property - the property of a `Point` we are bounding. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the property
  * @param {number} bounds.end - end value of the property
+ * @private
  **/
 export function _boundSegment(segment, points, bounds) {
 	if (!bounds) {
@@ -121,6 +122,7 @@ export function _boundSegment(segment, points, bounds) {
  * @param {string} bounds.property - the property we are bounding with. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the `property`
  * @param {number} bounds.end - end value of the `property`
+ * @private
  */
 export function _boundSegments(line, bounds) {
 	const result = [];
@@ -213,6 +215,7 @@ function solidSegments(points, start, max, loop) {
  * Compute the continuous segments that define the whole line
  * There can be skipped points within a segment, if spanGaps is true.
  * @param {Line} line
+ * @private
  */
 export function _computeSegments(line) {
 	const points = line.points;

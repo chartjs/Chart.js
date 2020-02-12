@@ -45,8 +45,8 @@ const EVENT_TYPES = {
  * @returns {number} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
-	var value = helpers.dom.getStyle(element, property);
-	var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
+	const value = helpers.dom.getStyle(element, property);
+	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 	return matches ? Number(matches[1]) : undefined;
 }
 
@@ -110,7 +110,7 @@ function initCanvas(canvas, config) {
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
  * @private
  */
-var supportsEventListenerOptions = (function() {
+const supportsEventListenerOptions = (function() {
 	let supports = false;
 	try {
 		const options = Object.defineProperty({}, 'passive', {
@@ -128,7 +128,7 @@ var supportsEventListenerOptions = (function() {
 
 // Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
 // https://github.com/chartjs/Chart.js/issues/4287
-var eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
+const eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
 function addListener(node, type, listener) {
 	node.addEventListener(type, listener, eventListenerOptions);

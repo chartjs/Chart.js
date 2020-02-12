@@ -183,7 +183,7 @@ function fitWithPointLabels(scale) {
 		}
 	}
 
-	scale.setReductions(scale.drawingArea, furthestLimits, furthestAngles);
+	scale._setReductions(scale.drawingArea, furthestLimits, furthestAngles);
 }
 
 function getTextAlignForAngle(angle) {
@@ -332,7 +332,10 @@ class RadialLinearScale extends LinearScaleBase {
 		me.handleTickRangeOptions();
 	}
 
-	// Returns the maximum number of ticks based on the scale dimension
+	/**
+	 * Returns the maximum number of ticks based on the scale dimension
+	 * @private
+	 */
 	_computeTickLimit() {
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
 	}
@@ -364,7 +367,7 @@ class RadialLinearScale extends LinearScaleBase {
 	 * Set radius reductions and determine new radius and center point
 	 * @private
 	 */
-	setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
+	_setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
 		var me = this;
 		var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
 		var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
