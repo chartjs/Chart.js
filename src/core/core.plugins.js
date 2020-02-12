@@ -5,13 +5,7 @@ import {clone} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- */
-
-/**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
- */
-
-/**
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 

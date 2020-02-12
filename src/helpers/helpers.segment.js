@@ -4,9 +4,6 @@ import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
 
 /**
  * @typedef { import("../elements/element.line").default } Line
- */
-
-/**
  * @typedef { import("../elements/element.point").default } Point
  */
 
