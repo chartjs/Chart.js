@@ -366,6 +366,7 @@ export default new PluginService();
  * @param {Chart} chart - The chart instance.
  * @param {IEvent} event - The event object.
  * @param {object} options - The plugin options.
+ * @param {boolean} replay - True if this event is replayed from `Chart.update`
  */
 /**
  * @method IPlugin#afterEvent
@@ -374,6 +375,7 @@ export default new PluginService();
  * @param {Chart} chart - The chart instance.
  * @param {IEvent} event - The event object.
  * @param {object} options - The plugin options.
+ * @param {boolean} replay - True if this event is replayed from `Chart.update`
  */
 /**
  * @method IPlugin#resize

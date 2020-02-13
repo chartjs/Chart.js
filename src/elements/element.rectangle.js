@@ -15,25 +15,33 @@ defaults.set('elements', {
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
- * @param bar {Rectangle} the bar
+ * @param {Rectangle} bar the bar
+ * @param {boolean} [useFinalPosition]
  * @return {object} bounds of the bar
  * @private
  */
-function getBarBounds(bar) {
+function getBarBounds(bar, useFinalPosition) {
+	const {x, y, base, width, height} = bar.getProps([
+		'x',
+		'y',
+		'base',
+		'width',
+		'height'], useFinalPosition);
+
 	let x1, x2, y1, y2, half;
 
 	if (bar.horizontal) {
-		half = bar.height / 2;
-		x1 = Math.min(bar.x, bar.base);
-		x2 = Math.max(bar.x, bar.base);
-		y1 = bar.y - half;
-		y2 = bar.y + half;
+		half = height / 2;
+		x1 = Math.min(x, base);
+		x2 = Math.max(x, base);
+		y1 = y - half;
+		y2 = y + half;
 	} else {
-		half = bar.width / 2;
-		x1 = bar.x - half;
-		x2 = bar.x + half;
-		y1 = Math.min(bar.y, bar.base);
-		y2 = Math.max(bar.y, bar.base);
+		half = width / 2;
+		x1 = x - half;
+		x2 = x + half;
+		y1 = Math.min(y, base);
+		y2 = Math.max(y, base);
 	}
 
 	return {
@@ -116,10 +124,10 @@ function boundingRects(bar) {
 	};
 }
 
-function inRange(bar, x, y) {
+function inRange(bar, x, y, useFinalPosition) {
 	const skipX = x === null;
 	const skipY = y === null;
-	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar);
+	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar, useFinalPosition);
 
 	return bounds
 		&& (skipX || x >= bounds.left && x <= bounds.right)
@@ -163,20 +171,20 @@ class Rectangle extends Element {
 		ctx.restore();
 	}
 
-	inRange(mouseX, mouseY) {
-		return inRange(this, mouseX, mouseY);
+	inRange(mouseX, mouseY, useFinalPosition) {
+		return inRange(this, mouseX, mouseY, useFinalPosition);
 	}
 
-	inXRange(mouseX) {
-		return inRange(this, mouseX, null);
+	inXRange(mouseX, useFinalPosition) {
+		return inRange(this, mouseX, null, useFinalPosition);
 	}
 
-	inYRange(mouseY) {
-		return inRange(this, null, mouseY);
+	inYRange(mouseY, useFinalPosition) {
+		return inRange(this, null, mouseY, useFinalPosition);
 	}
 
 	getCenterPoint() {
-		const {x, y, base, horizontal} = this;
+		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal']);
 		return {
 			x: horizontal ? (x + base) / 2 : x,
 			y: horizontal ? y : (y + base) / 2

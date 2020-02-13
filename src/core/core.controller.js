@@ -200,7 +200,7 @@ class Chart {
 		this.chartArea = undefined;
 		this.data = undefined;
 		this.active = undefined;
-		this.lastActive = undefined;
+		this.lastActive = [];
 		this._lastEvent = undefined;
 		this._listeners = {resize: undefined};
 		this._sortedMetasets = [];
@@ -568,7 +568,7 @@ class Chart {
 
 		// Replay last event from before update
 		if (me._lastEvent) {
-			me._eventHandler(me._lastEvent);
+			me._eventHandler(me._lastEvent, true);
 		}
 
 		me.render();
@@ -794,10 +794,10 @@ class Chart {
 		return Interaction.modes.index(this, e, {intersect: false});
 	}
 
-	getElementsAtEventForMode(e, mode, options) {
+	getElementsAtEventForMode(e, mode, options, useFinalPosition) {
 		const method = Interaction.modes[mode];
 		if (typeof method === 'function') {
-			return method(this, e, options);
+			return method(this, e, options, useFinalPosition);
 		}
 
 		return [];
@@ -1007,16 +1007,16 @@ class Chart {
 	/**
 	 * @private
 	 */
-	_eventHandler(e) {
+	_eventHandler(e, replay) {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
+		if (plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
 			return;
 		}
 
-		me._handleEvent(e);
+		me._handleEvent(e, replay);
 
-		plugins.notify(me, 'afterEvent', [e]);
+		plugins.notify(me, 'afterEvent', [e, replay]);
 
 		me.render();
 
@@ -1026,23 +1026,24 @@ class Chart {
 	/**
 	 * Handle an event
 	 * @param {IEvent} e the event to handle
+	 * @param {boolean} [replay] - true if the event was replayed by `update`
 	 * @return {boolean} true if the chart needs to re-render
 	 * @private
 	 */
-	_handleEvent(e) {
+	_handleEvent(e, replay) {
 		const me = this;
-		const options = me.options || {};
+		const options = me.options;
 		const hoverOptions = options.hover;
+		// If the event is replayed from `update`, we should evaluate with the final positions.
+		const useFinalPosition = replay;
 		let changed = false;
-
-		me.lastActive = me.lastActive || [];
 
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
 			me.active = [];
 			me._lastEvent = null;
 		} else {
-			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
 			me._lastEvent = e.type === 'click' ? me._lastEvent : e;
 		}
 
@@ -1058,7 +1059,7 @@ class Chart {
 		}
 
 		changed = !helpers._elementsEqual(me.active, me.lastActive);
-		if (changed) {
+		if (changed || replay) {
 			me._updateHoverStyles();
 		}
 
