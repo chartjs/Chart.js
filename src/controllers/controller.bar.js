@@ -186,8 +186,8 @@ class BarController extends DatasetController {
 	 * data for float bars
 	 * @private
 	 */
-	_parsePrimitiveData(...args) {
-		return parseArrayOrPrimitive.apply(this, args);
+	_parsePrimitiveData(meta, data, start, count) {
+		return parseArrayOrPrimitive(meta, data, start, count);
 	}
 
 	/**
@@ -195,8 +195,8 @@ class BarController extends DatasetController {
 	 * data for float bars
 	 * @private
 	 */
-	_parseArrayData(...args) {
-		return parseArrayOrPrimitive.apply(this, args);
+	_parseArrayData(meta, data, start, count) {
+		return parseArrayOrPrimitive(meta, data, start, count);
 	}
 
 	/**
@@ -243,10 +243,10 @@ class BarController extends DatasetController {
 		};
 	}
 
-	initialize(...args) {
+	initialize() {
 		const me = this;
 
-		DatasetController.prototype.initialize.apply(me, args);
+		super.initialize();
 
 		const meta = me._cachedMeta;
 		meta.stack = me.getDataset().stack;

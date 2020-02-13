@@ -140,7 +140,7 @@ class BubbleController extends DatasetController {
 		const chart = me.chart;
 		const dataset = me.getDataset();
 		const parsed = me._getParsed(index);
-		let values = super._resolveDataElementOptions.apply(me, [index, mode]);
+		let values = super._resolveDataElementOptions(index, mode);
 
 		// Scriptable options
 		const context = {

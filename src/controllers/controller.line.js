@@ -94,12 +94,12 @@ class LineController extends DatasetController {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions(...args) {
+	_resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
 		const lineOptions = options.elements.line;
-		const values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, args);
+		const values = super._resolveDatasetElementOptions(active);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158

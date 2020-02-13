@@ -100,11 +100,11 @@ class RadarController extends DatasetController {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions(...args) {
+	_resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
-		const values = super._resolveDatasetElementOptions.apply(me, args);
+		const values = super._resolveDatasetElementOptions(active);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
