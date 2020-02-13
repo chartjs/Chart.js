@@ -1,5 +1,3 @@
-'use strict';
-
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Arc from '../elements/element.arc';
@@ -22,12 +20,12 @@ defaults.set('doughnut', {
 	},
 	legend: {
 		labels: {
-			generateLabels: function(chart) {
-				var data = chart.data;
+			generateLabels(chart) {
+				const data = chart.data;
 				if (data.labels.length && data.datasets.length) {
-					return data.labels.map(function(label, i) {
-						var meta = chart.getDatasetMeta(0);
-						var style = meta.controller.getStyle(i);
+					return data.labels.map((label, i) => {
+						const meta = chart.getDatasetMeta(0);
+						const style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
@@ -45,10 +43,10 @@ defaults.set('doughnut', {
 			}
 		},
 
-		onClick: function(e, legendItem) {
-			var index = legendItem.index;
-			var chart = this.chart;
-			var i, ilen, meta;
+		onClick(e, legendItem) {
+			const index = legendItem.index;
+			const chart = this.chart;
+			let i, ilen, meta;
 
 			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 				meta = chart.getDatasetMeta(i);
@@ -74,12 +72,12 @@ defaults.set('doughnut', {
 	// Need to override these to give a nice default
 	tooltips: {
 		callbacks: {
-			title: function() {
+			title() {
 				return '';
 			},
-			label: function(tooltipItem, data) {
-				var dataLabel = data.labels[tooltipItem.index];
-				var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+			label(tooltipItem, data) {
+				let dataLabel = data.labels[tooltipItem.index];
+				const value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
 				if (isArray(dataLabel)) {
 					// show value on first line of multiline label
@@ -112,9 +110,9 @@ class DoughnutController extends DatasetController {
 	 * @private
 	 */
 	_parse(start, count) {
-		var data = this.getDataset().data;
-		var meta = this._cachedMeta;
-		var i, ilen;
+		const data = this.getDataset().data;
+		const meta = this._cachedMeta;
+		let i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			meta._parsed[i] = +data[i];
 		}
@@ -122,9 +120,9 @@ class DoughnutController extends DatasetController {
 
 	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
 	getRingIndex(datasetIndex) {
-		var ringIndex = 0;
+		let ringIndex = 0;
 
-		for (var j = 0; j < datasetIndex; ++j) {
+		for (let j = 0; j < datasetIndex; ++j) {
 			if (this.chart.isDatasetVisible(j)) {
 				++ringIndex;
 			}
@@ -134,51 +132,50 @@ class DoughnutController extends DatasetController {
 	}
 
 	update(mode) {
-		var me = this;
-		var chart = me.chart;
-		var chartArea = chart.chartArea;
-		var opts = chart.options;
-		var ratioX = 1;
-		var ratioY = 1;
-		var offsetX = 0;
-		var offsetY = 0;
-		var meta = me._cachedMeta;
-		var arcs = meta.data;
-		var cutout = opts.cutoutPercentage / 100 || 0;
-		var circumference = opts.circumference;
-		var chartWeight = me._getRingWeight(me.index);
-		var maxWidth, maxHeight, i, ilen;
+		const me = this;
+		const chart = me.chart;
+		const chartArea = chart.chartArea;
+		const opts = chart.options;
+		let ratioX = 1;
+		let ratioY = 1;
+		let offsetX = 0;
+		let offsetY = 0;
+		const meta = me._cachedMeta;
+		const arcs = meta.data;
+		const cutout = opts.cutoutPercentage / 100 || 0;
+		const circumference = opts.circumference;
+		const chartWeight = me._getRingWeight(me.index);
 
 		// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
 		if (circumference < DOUBLE_PI) {
-			var startAngle = opts.rotation % DOUBLE_PI;
+			let startAngle = opts.rotation % DOUBLE_PI;
 			startAngle += startAngle >= PI ? -DOUBLE_PI : startAngle < -PI ? DOUBLE_PI : 0;
-			var endAngle = startAngle + circumference;
-			var startX = Math.cos(startAngle);
-			var startY = Math.sin(startAngle);
-			var endX = Math.cos(endAngle);
-			var endY = Math.sin(endAngle);
-			var contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI;
-			var contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= DOUBLE_PI + HALF_PI;
-			var contains180 = startAngle === -PI || endAngle >= PI;
-			var contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
-			var minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
-			var minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
-			var maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
-			var maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
+			const endAngle = startAngle + circumference;
+			const startX = Math.cos(startAngle);
+			const startY = Math.sin(startAngle);
+			const endX = Math.cos(endAngle);
+			const endY = Math.sin(endAngle);
+			const contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI;
+			const contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= DOUBLE_PI + HALF_PI;
+			const contains180 = startAngle === -PI || endAngle >= PI;
+			const contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
+			const minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
+			const minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
+			const maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
+			const maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
 			ratioX = (maxX - minX) / 2;
 			ratioY = (maxY - minY) / 2;
 			offsetX = -(maxX + minX) / 2;
 			offsetY = -(maxY + minY) / 2;
 		}
 
-		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+		for (let i = 0, ilen = arcs.length; i < ilen; ++i) {
 			arcs[i]._options = me._resolveDataElementOptions(i, mode);
 		}
 
 		chart.borderWidth = me.getMaxBorderWidth();
-		maxWidth = (chartArea.right - chartArea.left - chart.borderWidth) / ratioX;
-		maxHeight = (chartArea.bottom - chartArea.top - chart.borderWidth) / ratioY;
+		const maxWidth = (chartArea.right - chartArea.left - chart.borderWidth) / ratioX;
+		const maxHeight = (chartArea.bottom - chartArea.top - chart.borderWidth) / ratioY;
 		chart.outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
 		chart.innerRadius = Math.max(chart.outerRadius * cutout, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
@@ -263,7 +260,7 @@ class DoughnutController extends DatasetController {
 	}
 
 	calculateCircumference(value) {
-		var total = this._cachedMeta.total;
+		const total = this._cachedMeta.total;
 		if (total > 0 && !isNaN(value)) {
 			return DOUBLE_PI * (Math.abs(value) / total);
 		}
@@ -272,10 +269,10 @@ class DoughnutController extends DatasetController {
 
 	// gets the max border or hover width to properly scale pie charts
 	getMaxBorderWidth(arcs) {
-		var me = this;
-		var max = 0;
-		var chart = me.chart;
-		var i, ilen, meta, controller, options;
+		const me = this;
+		let max = 0;
+		const chart = me.chart;
+		let i, ilen, meta, controller, options;
 
 		if (!arcs) {
 			// Find the outmost visible dataset
@@ -310,9 +307,9 @@ class DoughnutController extends DatasetController {
 	 * @private
 	 */
 	_getRingWeightOffset(datasetIndex) {
-		var ringWeightOffset = 0;
+		let ringWeightOffset = 0;
 
-		for (var i = 0; i < datasetIndex; ++i) {
+		for (let i = 0; i < datasetIndex; ++i) {
 			if (this.chart.isDatasetVisible(i)) {
 				ringWeightOffset += this._getRingWeight(i);
 			}

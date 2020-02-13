@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from './core.defaults';
 import {clone} from '../helpers/helpers.core';
 
@@ -38,8 +36,8 @@ class PluginService {
 	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
 	register(plugins) {
-		var p = this._plugins;
-		([]).concat(plugins).forEach(function(plugin) {
+		const p = this._plugins;
+		([]).concat(plugins).forEach((plugin) => {
 			if (p.indexOf(plugin) === -1) {
 				p.push(plugin);
 			}
@@ -53,9 +51,9 @@ class PluginService {
 	 * @param {IPlugin[]|IPlugin} plugins plugin instance(s).
 	 */
 	unregister(plugins) {
-		var p = this._plugins;
-		([]).concat(plugins).forEach(function(plugin) {
-			var idx = p.indexOf(plugin);
+		const p = this._plugins;
+		([]).concat(plugins).forEach((plugin) => {
+			const idx = p.indexOf(plugin);
 			if (idx !== -1) {
 				p.splice(idx, 1);
 			}
@@ -101,9 +99,9 @@ class PluginService {
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
 	notify(chart, hook, args) {
-		var descriptors = this._descriptors(chart);
-		var ilen = descriptors.length;
-		var i, descriptor, plugin, params, method;
+		const descriptors = this._descriptors(chart);
+		const ilen = descriptors.length;
+		let i, descriptor, plugin, params, method;
 
 		for (i = 0; i < ilen; ++i) {
 			descriptor = descriptors[i];
@@ -128,24 +126,24 @@ class PluginService {
 	 * @private
 	 */
 	_descriptors(chart) {
-		var cache = chart.$plugins || (chart.$plugins = {});
+		const cache = chart.$plugins || (chart.$plugins = {});
 		if (cache.id === this._cacheId) {
 			return cache.descriptors;
 		}
 
-		var plugins = [];
-		var descriptors = [];
-		var config = (chart && chart.config) || {};
-		var options = (config.options && config.options.plugins) || {};
+		const plugins = [];
+		const descriptors = [];
+		const config = (chart && chart.config) || {};
+		const options = (config.options && config.options.plugins) || {};
 
-		this._plugins.concat(config.plugins || []).forEach(function(plugin) {
-			var idx = plugins.indexOf(plugin);
+		this._plugins.concat(config.plugins || []).forEach((plugin) => {
+			const idx = plugins.indexOf(plugin);
 			if (idx !== -1) {
 				return;
 			}
 
-			var id = plugin.id;
-			var opts = options[id];
+			const id = plugin.id;
+			let opts = options[id];
 			if (opts === false) {
 				return;
 			}
@@ -156,7 +154,7 @@ class PluginService {
 
 			plugins.push(plugin);
 			descriptors.push({
-				plugin: plugin,
+				plugin,
 				options: opts || {}
 			});
 		});

@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {extend} from '../helpers/helpers.core';
@@ -150,7 +148,7 @@ class Arc extends Element {
 			y: me.y,
 			innerRadius: me.innerRadius,
 			outerRadius: Math.max(me.outerRadius - pixelMargin, 0),
-			pixelMargin: pixelMargin,
+			pixelMargin,
 			startAngle: me.startAngle,
 			endAngle: me.endAngle,
 			fullCircles: Math.floor(me.circumference / TAU)

@@ -1,12 +1,24 @@
-extends: chartjs
+extends:
+  - chartjs
+  - esnext
 
 env:
   es6: true
   browser: true
   node: true
 
+parser: babel-eslint
+
 parserOptions:
-  ecmaVersion: 2018
-  sourceType: 'module'
+  ecmaVersion: 7
+  sourceType: module
+  ecmaFeatures:
+    impliedStrict: true
+    modules: true
+    experimentalObjectRestSpread: true
 
 plugins: ['html']
+
+rules:
+  class-methods-use-this: 0
+  no-empty-function: 0

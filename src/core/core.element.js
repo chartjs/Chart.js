@@ -1,5 +1,3 @@
-'use strict';
-
 import {extend, inherits} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 

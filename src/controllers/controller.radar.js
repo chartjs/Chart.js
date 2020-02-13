@@ -1,5 +1,3 @@
-'use strict';
-
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
@@ -21,10 +19,6 @@ defaults.set('radar', {
 });
 
 class RadarController extends DatasetController {
-
-	constructor(chart, datasetIndex) {
-		super(chart, datasetIndex);
-	}
 
 	/**
 	 * @private
@@ -106,11 +100,11 @@ class RadarController extends DatasetController {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions() {
+	_resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
-		const values = super._resolveDatasetElementOptions.apply(me, arguments);
+		const values = super._resolveDatasetElementOptions(active);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);

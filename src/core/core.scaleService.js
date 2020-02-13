@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from './core.defaults';
 import {clone, each, extend, merge} from '../helpers/helpers.core';
 import layouts from './core.layouts';
@@ -13,26 +11,26 @@ export default {
 
 	// Scale config defaults
 	defaults: {},
-	registerScaleType: function(type, scaleConstructor, scaleDefaults) {
+	registerScaleType(type, scaleConstructor, scaleDefaults) {
 		this.constructors[type] = scaleConstructor;
 		this.defaults[type] = clone(scaleDefaults);
 	},
-	getScaleConstructor: function(type) {
+	getScaleConstructor(type) {
 		return Object.prototype.hasOwnProperty.call(this.constructors, type) ? this.constructors[type] : undefined;
 	},
-	getScaleDefaults: function(type) {
+	getScaleDefaults(type) {
 		// Return the scale defaults merged with the global settings so that we always use the latest ones
 		return Object.prototype.hasOwnProperty.call(this.defaults, type) ? merge({}, [defaults.scale, this.defaults[type]]) : {};
 	},
-	updateScaleDefaults: function(type, additions) {
-		var me = this;
+	updateScaleDefaults(type, additions) {
+		const me = this;
 		if (Object.prototype.hasOwnProperty.call(me.defaults, type)) {
 			me.defaults[type] = extend(me.defaults[type], additions);
 		}
 	},
-	addScalesToLayout: function(chart) {
+	addScalesToLayout(chart) {
 		// Adds each scale to the chart.boxes array to be sized accordingly
-		each(chart.scales, function(scale) {
+		each(chart.scales, (scale) => {
 			// Set ILayoutItem parameters for backwards compatibility
 			scale.fullWidth = scale.options.fullWidth;
 			scale.position = scale.options.position;

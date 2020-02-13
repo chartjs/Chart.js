@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -8,11 +7,6 @@
  * Abstract class that allows abstracting platform dependencies away from the chart.
  */
 export default class BasePlatform {
-	/**
-	 * @constructor
-	 */
-	constructor() {}
-
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.

@@ -1,5 +1,3 @@
-'use strict';
-
 import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -97,7 +95,7 @@ function generateTicks(generationOptions, dataRange) {
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
 	ticks.push({value: isNullOrUndef(min) ? niceMin : min});
-	for (var j = 1; j < numSpaces; ++j) {
+	for (let j = 1; j < numSpaces; ++j) {
 		ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
 	}
 	ticks.push({value: isNullOrUndef(max) ? niceMax : max});
@@ -205,6 +203,7 @@ class LinearScaleBase extends Scale {
 	getTickLimit() {
 		const me = this;
 		const tickOpts = me.options.ticks;
+		// eslint-disable-next-line prefer-const
 		let {maxTicksLimit, stepSize} = tickOpts;
 		let maxTicks;
 
@@ -249,7 +248,7 @@ class LinearScaleBase extends Scale {
 		maxTicks = Math.max(2, maxTicks);
 
 		const numericGeneratorOptions = {
-			maxTicks: maxTicks,
+			maxTicks,
 			min: opts.min,
 			max: opts.max,
 			precision: tickOpts.precision,

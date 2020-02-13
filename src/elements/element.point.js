@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';

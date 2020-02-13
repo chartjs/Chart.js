@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable import/no-namespace */
 
 import color from '@kurkle/color';
 
@@ -6,7 +6,7 @@ import * as coreHelpers from './helpers.core';
 import * as canvas from './helpers.canvas';
 import * as curve from './helpers.curve';
 import * as dom from './helpers.dom';
-import * as easing from './helpers.easing';
+import effects from './helpers.easing';
 import * as options from './helpers.options';
 import * as math from './helpers.math';
 import * as rtl from './helpers.rtl';
@@ -27,7 +27,7 @@ export default {
 	canvas,
 	curve,
 	dom,
-	easing,
+	easing: {effects},
 	options,
 	math,
 	rtl,
@@ -42,11 +42,11 @@ export default {
 		return window.requestAnimationFrame;
 	}()),
 	// -- Canvas methods
-	fontString: function(pixelSize, fontStyle, fontFamily) {
+	fontString(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 	},
 	color: colorHelper,
-	getHoverColor: function(colorValue) {
+	getHoverColor(colorValue) {
 		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
 			colorValue :
 			colorHelper(colorValue).saturate(0.5).darken(0.1).hexString();

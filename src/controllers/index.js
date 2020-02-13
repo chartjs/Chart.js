@@ -1,5 +1,3 @@
-'use strict';
-
 import bar from './controller.bar';
 import bubble from './controller.bubble';
 import doughnut from './controller.doughnut';
@@ -15,13 +13,13 @@ import scatter from './controller.scatter';
 // by the controller in core.controller.js (`controllers[meta.type]`).
 
 export default {
-	bar: bar,
-	bubble: bubble,
-	doughnut: doughnut,
-	horizontalBar: horizontalBar,
-	line: line,
-	polarArea: polarArea,
-	pie: pie,
-	radar: radar,
-	scatter: scatter
+	bar,
+	bubble,
+	doughnut,
+	horizontalBar,
+	line,
+	polarArea,
+	pie,
+	radar,
+	scatter
 };

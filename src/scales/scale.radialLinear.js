@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import helpers from '../helpers/index';
 import {_longestText} from '../helpers/helpers.canvas';
@@ -55,14 +53,14 @@ const defaultConfig = {
 		fontSize: 10,
 
 		// Function - Used to convert point labels
-		callback: function(label) {
+		callback(label) {
 			return label;
 		}
 	}
 };
 
 function getTickBackdropHeight(opts) {
-	var tickOpts = opts.ticks;
+	const tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
 		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
@@ -134,33 +132,33 @@ function fitWithPointLabels(scale) {
 	//
 	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
-	var plFont = helpers.options._parseFont(scale.options.pointLabels);
+	const plFont = helpers.options._parseFont(scale.options.pointLabels);
 
 	// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 	// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-	var furthestLimits = {
+	const furthestLimits = {
 		l: 0,
 		r: scale.width,
 		t: 0,
 		b: scale.height - scale.paddingTop
 	};
-	var furthestAngles = {};
-	var i, textSize, pointPosition;
+	const furthestAngles = {};
+	let i, textSize, pointPosition;
 
 	scale.ctx.font = plFont.string;
 	scale._pointLabelSizes = [];
 
-	var valueCount = scale.chart.data.labels.length;
+	const valueCount = scale.chart.data.labels.length;
 	for (i = 0; i < valueCount; i++) {
 		pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
 		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
 		scale._pointLabelSizes[i] = textSize;
 
 		// Add quarter circle to make degree 0 mean top of circle
-		var angleRadians = scale.getIndexAngle(i);
-		var angle = toDegrees(angleRadians);
-		var hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
-		var vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
+		const angleRadians = scale.getIndexAngle(i);
+		const angle = toDegrees(angleRadians);
+		const hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
+		const vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
 
 		if (hLimits.start < furthestLimits.l) {
 			furthestLimits.l = hLimits.start;
@@ -197,8 +195,8 @@ function getTextAlignForAngle(angle) {
 }
 
 function fillText(ctx, text, position, lineHeight) {
-	var y = position.y + lineHeight / 2;
-	var i, ilen;
+	let y = position.y + lineHeight / 2;
+	let i, ilen;
 
 	if (helpers.isArray(text)) {
 		for (i = 0, ilen = text.length; i < ilen; ++i) {
@@ -219,29 +217,29 @@ function adjustPointPositionForLabelHeight(angle, textSize, position) {
 }
 
 function drawPointLabels(scale) {
-	var ctx = scale.ctx;
-	var opts = scale.options;
-	var pointLabelOpts = opts.pointLabels;
-	var tickBackdropHeight = getTickBackdropHeight(opts);
-	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-	var plFont = helpers.options._parseFont(pointLabelOpts);
+	const ctx = scale.ctx;
+	const opts = scale.options;
+	const pointLabelOpts = opts.pointLabels;
+	const tickBackdropHeight = getTickBackdropHeight(opts);
+	const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+	const plFont = helpers.options._parseFont(pointLabelOpts);
 
 	ctx.save();
 
 	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
-	for (var i = scale.chart.data.labels.length - 1; i >= 0; i--) {
+	for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
 		// Extra pixels out for some label spacing
-		var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-		var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
+		const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+		const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 		// Keep this in loop since we may support array properties here
-		var pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
+		const pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
 		ctx.fillStyle = pointLabelFontColor;
 
-		var angleRadians = scale.getIndexAngle(i);
-		var angle = toDegrees(angleRadians);
+		const angleRadians = scale.getIndexAngle(i);
+		const angle = toDegrees(angleRadians);
 		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
 		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
@@ -250,12 +248,12 @@ function drawPointLabels(scale) {
 }
 
 function drawRadiusLine(scale, gridLineOpts, radius, index) {
-	var ctx = scale.ctx;
-	var circular = gridLineOpts.circular;
-	var valueCount = scale.chart.data.labels.length;
-	var lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1, undefined);
-	var lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1, undefined);
-	var pointPosition;
+	const ctx = scale.ctx;
+	const circular = gridLineOpts.circular;
+	const valueCount = scale.chart.data.labels.length;
+	const lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1, undefined);
+	const lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1, undefined);
+	let pointPosition;
 
 	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
 		return;
@@ -278,7 +276,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 		pointPosition = scale.getPointPosition(0, radius);
 		ctx.moveTo(pointPosition.x, pointPosition.y);
 
-		for (var i = 1; i < valueCount; i++) {
+		for (let i = 1; i < valueCount; i++) {
 			pointPosition = scale.getPointPosition(i, radius);
 			ctx.lineTo(pointPosition.x, pointPosition.y);
 		}
@@ -308,7 +306,7 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	setDimensions() {
-		var me = this;
+		const me = this;
 
 		// Set the unconstrained dimension before label rotation
 		me.width = me.maxWidth;
@@ -320,10 +318,10 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	determineDataLimits() {
-		var me = this;
-		var minmax = me._getMinMax(false);
-		var min = minmax.min;
-		var max = minmax.max;
+		const me = this;
+		const minmax = me._getMinMax(false);
+		const min = minmax.min;
+		const max = minmax.max;
 
 		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
 		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
@@ -341,20 +339,20 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	generateTickLabels(ticks) {
-		var me = this;
+		const me = this;
 
 		LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
 
 		// Point labels
-		me.pointLabels = me.chart.data.labels.map(function(value, index) {
-			var label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
+		me.pointLabels = me.chart.data.labels.map((value, index) => {
+			const label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}
 
 	fit() {
-		var me = this;
-		var opts = me.options;
+		const me = this;
+		const opts = me.options;
 
 		if (opts.display && opts.pointLabels.display) {
 			fitWithPointLabels(me);
@@ -368,11 +366,11 @@ class RadialLinearScale extends LinearScaleBase {
 	 * @private
 	 */
 	_setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
-		var me = this;
-		var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
-		var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
-		var radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
-		var radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me.paddingTop), 0) / Math.cos(furthestAngles.b);
+		const me = this;
+		let radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
+		let radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
+		let radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
+		let radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me.paddingTop), 0) / Math.cos(furthestAngles.b);
 
 		radiusReductionLeft = numberOrZero(radiusReductionLeft);
 		radiusReductionRight = numberOrZero(radiusReductionRight);
@@ -386,34 +384,34 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	setCenterPoint(leftMovement, rightMovement, topMovement, bottomMovement) {
-		var me = this;
-		var maxRight = me.width - rightMovement - me.drawingArea;
-		var maxLeft = leftMovement + me.drawingArea;
-		var maxTop = topMovement + me.drawingArea;
-		var maxBottom = (me.height - me.paddingTop) - bottomMovement - me.drawingArea;
+		const me = this;
+		const maxRight = me.width - rightMovement - me.drawingArea;
+		const maxLeft = leftMovement + me.drawingArea;
+		const maxTop = topMovement + me.drawingArea;
+		const maxBottom = (me.height - me.paddingTop) - bottomMovement - me.drawingArea;
 
 		me.xCenter = Math.floor(((maxLeft + maxRight) / 2) + me.left);
 		me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
 	}
 
 	getIndexAngle(index) {
-		var chart = this.chart;
-		var angleMultiplier = Math.PI * 2 / chart.data.labels.length;
-		var options = chart.options || {};
-		var startAngle = options.startAngle || 0;
+		const chart = this.chart;
+		const angleMultiplier = Math.PI * 2 / chart.data.labels.length;
+		const options = chart.options || {};
+		const startAngle = options.startAngle || 0;
 
 		return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
 	}
 
 	getDistanceFromCenterForValue(value) {
-		var me = this;
+		const me = this;
 
 		if (helpers.isNullOrUndef(value)) {
 			return NaN;
 		}
 
 		// Take into account half font size + the yPadding of the top value
-		var scalingFactor = me.drawingArea / (me.max - me.min);
+		const scalingFactor = me.drawingArea / (me.max - me.min);
 		if (me.options.reverse) {
 			return (me.max - value) * scalingFactor;
 		}
@@ -421,8 +419,8 @@ class RadialLinearScale extends LinearScaleBase {
 	}
 
 	getPointPosition(index, distanceFromCenter) {
-		var me = this;
-		var angle = me.getIndexAngle(index) - (Math.PI / 2);
+		const me = this;
+		const angle = me.getIndexAngle(index) - (Math.PI / 2);
 		return {
 			x: Math.cos(angle) * distanceFromCenter + me.xCenter,
 			y: Math.sin(angle) * distanceFromCenter + me.yCenter,
@@ -442,21 +440,21 @@ class RadialLinearScale extends LinearScaleBase {
 	 * @private
 	 */
 	_drawGrid() {
-		var me = this;
-		var ctx = me.ctx;
-		var opts = me.options;
-		var gridLineOpts = opts.gridLines;
-		var angleLineOpts = opts.angleLines;
-		var lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
-		var lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
-		var i, offset, position;
+		const me = this;
+		const ctx = me.ctx;
+		const opts = me.options;
+		const gridLineOpts = opts.gridLines;
+		const angleLineOpts = opts.angleLines;
+		const lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
+		const lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
+		let i, offset, position;
 
 		if (opts.pointLabels.display) {
 			drawPointLabels(me);
 		}
 
 		if (gridLineOpts.display) {
-			me.ticks.forEach(function(tick, index) {
+			me.ticks.forEach((tick, index) => {
 				if (index !== 0) {
 					offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 					drawRadiusLine(me, gridLineOpts, offset, index);
@@ -490,19 +488,19 @@ class RadialLinearScale extends LinearScaleBase {
 	 * @private
 	 */
 	_drawLabels() {
-		var me = this;
-		var ctx = me.ctx;
-		var opts = me.options;
-		var tickOpts = opts.ticks;
+		const me = this;
+		const ctx = me.ctx;
+		const opts = me.options;
+		const tickOpts = opts.ticks;
 
 		if (!tickOpts.display) {
 			return;
 		}
 
-		var startAngle = me.getIndexAngle(0);
-		var tickFont = helpers.options._parseFont(tickOpts);
-		var tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
-		var offset, width;
+		const startAngle = me.getIndexAngle(0);
+		const tickFont = helpers.options._parseFont(tickOpts);
+		const tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
+		let offset, width;
 
 		ctx.save();
 		ctx.font = tickFont.string;
@@ -511,7 +509,7 @@ class RadialLinearScale extends LinearScaleBase {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		me.ticks.forEach(function(tick, index) {
+		me.ticks.forEach((tick, index) => {
 			if (index === 0 && !opts.reverse) {
 				return;
 			}

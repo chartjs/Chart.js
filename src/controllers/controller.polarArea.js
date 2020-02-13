@@ -1,5 +1,3 @@
-'use strict';
-
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Arc from '../elements/element.arc';
@@ -34,12 +32,12 @@ defaults.set('polarArea', {
 	startAngle: 0,
 	legend: {
 		labels: {
-			generateLabels: function(chart) {
-				var data = chart.data;
+			generateLabels(chart) {
+				const data = chart.data;
 				if (data.labels.length && data.datasets.length) {
-					return data.labels.map(function(label, i) {
-						var meta = chart.getDatasetMeta(0);
-						var style = meta.controller.getStyle(i);
+					return data.labels.map((label, i) => {
+						const meta = chart.getDatasetMeta(0);
+						const style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
@@ -57,10 +55,10 @@ defaults.set('polarArea', {
 			}
 		},
 
-		onClick: function(e, legendItem) {
-			var index = legendItem.index;
-			var chart = this.chart;
-			var i, ilen, meta;
+		onClick(e, legendItem) {
+			const index = legendItem.index;
+			const chart = this.chart;
+			let i, ilen, meta;
 
 			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 				meta = chart.getDatasetMeta(i);
@@ -74,10 +72,10 @@ defaults.set('polarArea', {
 	// Need to override these to give a nice default
 	tooltips: {
 		callbacks: {
-			title: function() {
+			title() {
 				return '';
 			},
-			label: function(item, data) {
+			label(item, data) {
 				return data.labels[item.index] + ': ' + item.value;
 			}
 		}
@@ -124,11 +122,11 @@ class PolarAreaController extends DatasetController {
 	 * @private
 	 */
 	_updateRadius() {
-		var me = this;
-		var chart = me.chart;
-		var chartArea = chart.chartArea;
-		var opts = chart.options;
-		var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+		const me = this;
+		const chart = me.chart;
+		const chartArea = chart.chartArea;
+		const opts = chart.options;
+		const minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
 		chart.outerRadius = Math.max(minSize / 2, 0);
 		chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
@@ -190,11 +188,11 @@ class PolarAreaController extends DatasetController {
 	}
 
 	countVisibleElements() {
-		var dataset = this.getDataset();
-		var meta = this._cachedMeta;
-		var count = 0;
+		const dataset = this.getDataset();
+		const meta = this._cachedMeta;
+		let count = 0;
 
-		meta.data.forEach(function(element, index) {
+		meta.data.forEach((element, index) => {
 			if (!isNaN(dataset.data[index]) && !element.hidden) {
 				count++;
 			}
@@ -207,20 +205,20 @@ class PolarAreaController extends DatasetController {
 	 * @private
 	 */
 	_computeAngle(index) {
-		var me = this;
-		var meta = me._cachedMeta;
-		var count = meta.count;
-		var dataset = me.getDataset();
+		const me = this;
+		const meta = me._cachedMeta;
+		const count = meta.count;
+		const dataset = me.getDataset();
 
 		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
 			return 0;
 		}
 
 		// Scriptable options
-		var context = {
+		const context = {
 			chart: me.chart,
 			dataIndex: index,
-			dataset: dataset,
+			dataset,
 			datasetIndex: me.index
 		};
 

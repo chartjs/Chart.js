@@ -2,8 +2,6 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
-'use strict';
-
 import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
 import platform from './platform';
@@ -115,7 +113,7 @@ const supportsEventListenerOptions = (function() {
 	try {
 		const options = Object.defineProperty({}, 'passive', {
 			// eslint-disable-next-line getter-return
-			get: function() {
+			get() {
 				supports = true;
 			}
 		});
@@ -140,8 +138,8 @@ function removeListener(node, type, listener) {
 
 function createEvent(type, chart, x, y, nativeEvent) {
 	return {
-		type: type,
-		chart: chart,
+		type,
+		chart,
 		native: nativeEvent || null,
 		x: x !== undefined ? x : null,
 		y: y !== undefined ? y : null,
@@ -158,13 +156,12 @@ function throttled(fn, thisArg) {
 	let ticking = false;
 	let args = [];
 
-	return function() {
-		args = Array.prototype.slice.call(arguments);
-		thisArg = thisArg || this;
+	return function(...rest) {
+		args = Array.prototype.slice.call(rest);
 
 		if (!ticking) {
 			ticking = true;
-			helpers.requestAnimFrame.call(window, function() {
+			helpers.requestAnimFrame.call(window, () => {
 				ticking = false;
 				fn.apply(thisArg, args);
 			});
@@ -220,7 +217,7 @@ function watchForRender(node, handler) {
 		}
 	};
 
-	ANIMATION_START_EVENTS.forEach(function(type) {
+	ANIMATION_START_EVENTS.forEach((type) => {
 		addListener(node, type, proxy);
 	});
 
@@ -239,7 +236,7 @@ function unwatchForRender(node) {
 	const proxy = expando.renderProxy;
 
 	if (proxy) {
-		ANIMATION_START_EVENTS.forEach(function(type) {
+		ANIMATION_START_EVENTS.forEach((type) => {
 			removeListener(node, type, proxy);
 		});
 
@@ -253,7 +250,7 @@ function addResizeListener(node, listener, chart, domPlatform) {
 	const expando = node[EXPANDO_KEY] || (node[EXPANDO_KEY] = {});
 
 	// Let's keep track of this added resizer and thus avoid DOM query when removing it.
-	const resizer = expando.resizer = createResizer(domPlatform, throttled(function() {
+	const resizer = expando.resizer = createResizer(domPlatform, throttled(() => {
 		if (expando.resizer) {
 			const container = chart.options.maintainAspectRatio && node.parentNode;
 			const w = container ? container.clientWidth : 0;
@@ -273,7 +270,7 @@ function addResizeListener(node, listener, chart, domPlatform) {
 
 	// The resizer needs to be attached to the node parent, so we first need to be
 	// sure that `node` is attached to the DOM before injecting the resizer element.
-	watchForRender(node, function() {
+	watchForRender(node, () => {
 		if (expando.resizer) {
 			const container = node.parentNode;
 			if (container && container !== resizer.parentNode) {
@@ -309,7 +306,7 @@ function injectCSS(rootNode, css) {
 	if (!expando.containsStyles) {
 		expando.containsStyles = true;
 		css = '/* Chart.js */\n' + css;
-		var style = document.createElement('style');
+		const style = document.createElement('style');
 		style.setAttribute('type', 'text/css');
 		style.appendChild(document.createTextNode(css));
 		rootNode.appendChild(style);
@@ -385,7 +382,7 @@ export default class DomPlatform extends BasePlatform {
 		}
 
 		const initial = canvas[EXPANDO_KEY].initial;
-		['height', 'width'].forEach(function(prop) {
+		['height', 'width'].forEach((prop) => {
 			const value = initial[prop];
 			if (helpers.isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
@@ -395,7 +392,7 @@ export default class DomPlatform extends BasePlatform {
 		});
 
 		const style = initial.style || {};
-		Object.keys(style).forEach(function(key) {
+		Object.keys(style).forEach((key) => {
 			canvas.style[key] = style[key];
 		});
 
@@ -420,7 +417,7 @@ export default class DomPlatform extends BasePlatform {
 
 		const expando = listener[EXPANDO_KEY] || (listener[EXPANDO_KEY] = {});
 		const proxies = expando.proxies || (expando.proxies = {});
-		const proxy = proxies[chart.id + '_' + type] = throttled(function(event) {
+		const proxy = proxies[chart.id + '_' + type] = throttled((event) => {
 			listener(fromNativeEvent(event, chart));
 		}, chart);
 

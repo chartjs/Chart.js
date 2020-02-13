@@ -43,7 +43,7 @@ Chart.Ticks = Ticks;
 
 // Register built-in scales
 import scales from './scales/index';
-Object.keys(scales).forEach(function(type) {
+Object.keys(scales).forEach((type) => {
 	const scale = scales[type];
 	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
 });
@@ -53,7 +53,7 @@ import './adapters/index';
 
 // Loading built-in plugins
 import plugins from './plugins/index';
-for (var k in plugins) {
+for (const k in plugins) {
 	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
 		Chart.plugins.register(plugins[k]);
 	}

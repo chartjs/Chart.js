@@ -4,8 +4,6 @@
  * @private
  */
 
-'use strict';
-
 import {extend} from '../helpers/helpers.core';
 
 /**

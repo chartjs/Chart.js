@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @namespace Chart.helpers
  */
@@ -14,7 +12,7 @@ export function noop() {}
  * @function
  */
 export const uid = (function() {
-	var id = 0;
+	let id = 0;
 	return function() {
 		return id++;
 	};
@@ -40,7 +38,7 @@ export function isArray(value) {
 	if (Array.isArray && Array.isArray(value)) {
 		return true;
 	}
-	var type = Object.prototype.toString.call(value);
+	const type = Object.prototype.toString.call(value);
 	if (type.substr(0, 7) === '[object' && type.substr(-6) === 'Array]') {
 		return true;
 	}
@@ -62,9 +60,7 @@ export function isObject(value) {
  * @param {*} value  - The value to test.
  * @returns {boolean}
  */
-const isNumberFinite = (value) => {
-	return (typeof value === 'number' || value instanceof Number) && isFinite(+value);
-};
+const isNumberFinite = (value) => (typeof value === 'number' || value instanceof Number) && isFinite(+value);
 export {
 	isNumberFinite as isFinite,
 };
@@ -114,7 +110,7 @@ export function callback(fn, args, thisArg) {
  * @param {boolean} [reverse] - If true, iterates backward on the loopable.
  */
 export function each(loopable, fn, thisArg, reverse) {
-	var i, len, keys;
+	let i, len, keys;
 	if (isArray(loopable)) {
 		len = loopable.length;
 		if (reverse) {
@@ -143,7 +139,7 @@ export function each(loopable, fn, thisArg, reverse) {
  * @returns {boolean}
  */
 export function arrayEquals(a0, a1) {
-	var i, ilen, v0, v1;
+	let i, ilen, v0, v1;
 
 	if (!a0 || !a1 || a0.length !== a1.length) {
 		return false;
@@ -203,10 +199,10 @@ export function clone(source) {
 	}
 
 	if (isObject(source)) {
-		var target = {};
-		var keys = Object.keys(source);
-		var klen = keys.length;
-		var k = 0;
+		const target = {};
+		const keys = Object.keys(source);
+		const klen = keys.length;
+		let k = 0;
 
 		for (; k < klen; ++k) {
 			target[keys[k]] = clone(source[keys[k]]);
@@ -224,8 +220,8 @@ export function clone(source) {
  * @private
  */
 export function _merger(key, target, source, options) {
-	var tval = target[key];
-	var sval = source[key];
+	const tval = target[key];
+	const sval = source[key];
 
 	if (isObject(tval) && isObject(sval)) {
 		// eslint-disable-next-line no-use-before-define
@@ -245,25 +241,24 @@ export function _merger(key, target, source, options) {
  * @returns {object} The `target` object.
  */
 export function merge(target, source, options) {
-	var sources = isArray(source) ? source : [source];
-	var ilen = sources.length;
-	var merger, i, keys, klen, k;
+	const sources = isArray(source) ? source : [source];
+	const ilen = sources.length;
 
 	if (!isObject(target)) {
 		return target;
 	}
 
 	options = options || {};
-	merger = options.merger || _merger;
+	const merger = options.merger || _merger;
 
-	for (i = 0; i < ilen; ++i) {
+	for (let i = 0; i < ilen; ++i) {
 		source = sources[i];
 		if (!isObject(source)) {
 			continue;
 		}
 
-		keys = Object.keys(source);
-		for (k = 0, klen = keys.length; k < klen; ++k) {
+		const keys = Object.keys(source);
+		for (let k = 0, klen = keys.length; k < klen; ++k) {
 			merger(keys[k], target, source, options);
 		}
 	}
@@ -288,8 +283,8 @@ export function mergeIf(target, source) {
  * @private
  */
 export function _mergerIf(key, target, source) {
-	var tval = target[key];
-	var sval = source[key];
+	const tval = target[key];
+	const sval = source[key];
 
 	if (isObject(tval) && isObject(sval)) {
 		mergeIf(tval, sval);
@@ -305,9 +300,9 @@ export function _mergerIf(key, target, source) {
  * @param {object} argN - Additional objects containing properties to merge in target.
  * @returns {object} The `target` object.
  */
-export const extend = Object.assign || function(target) {
-	return merge(target, [].slice.call(arguments, 1), {
-		merger: function(key, dst, src) {
+export const extend = Object.assign || function(target, ...args) {
+	return merge(target, args, {
+		merger(key, dst, src) {
 			dst[key] = src[key];
 		}
 	});
@@ -317,12 +312,14 @@ export const extend = Object.assign || function(target) {
  * Basic javascript inheritance based on the model created in Backbone.js
  */
 export function inherits(extensions) {
-	var me = this;
-	var ChartElement = (extensions && Object.prototype.hasOwnProperty.call(extensions, 'constructor')) ? extensions.constructor : function() {
+	// eslint-disable-next-line no-invalid-this
+	const me = this;
+	const ChartElement = (extensions && Object.prototype.hasOwnProperty.call(extensions, 'constructor')) ? extensions.constructor : function() {
+		// eslint-disable-next-line prefer-rest-params
 		return me.apply(this, arguments);
 	};
 
-	var Surrogate = function() {
+	const Surrogate = function() {
 		this.constructor = ChartElement;
 	};
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import {isFinite as isFiniteNumber} from './helpers.core';
 
 const PI = Math.PI;
@@ -16,9 +14,9 @@ const PITAU = TAU + PI;
  * @private
  */
 export function _factorize(value) {
-	var result = [];
-	var sqrt = Math.sqrt(value);
-	var i;
+	const result = [];
+	const sqrt = Math.sqrt(value);
+	let i;
 
 	for (i = 1; i < sqrt; i++) {
 		if (value % i === 0) {
@@ -30,18 +28,16 @@ export function _factorize(value) {
 		result.push(sqrt);
 	}
 
-	result.sort(function(a, b) {
-		return a - b;
-	}).pop();
+	result.sort((a, b) => a - b).pop();
 	return result;
 }
 
 export const log10 = Math.log10 || function(x) {
-	var exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
+	const exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
 	// Check for whole powers of 10,
 	// which due to floating point rounding error should be corrected.
-	var powerOf10 = Math.round(exponent);
-	var isPowerOf10 = x === Math.pow(10, powerOf10);
+	const powerOf10 = Math.round(exponent);
+	const isPowerOf10 = x === Math.pow(10, powerOf10);
 
 	return isPowerOf10 ? powerOf10 : exponent;
 };
@@ -55,7 +51,7 @@ export function almostEquals(x, y, epsilon) {
 }
 
 export function almostWhole(x, epsilon) {
-	var rounded = Math.round(x);
+	const rounded = Math.round(x);
 	return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 }
 
@@ -63,7 +59,7 @@ export function almostWhole(x, epsilon) {
  * @private
  */
 export function _setMinAndMaxByKey(array, target, property) {
-	var i, ilen, value;
+	let i, ilen, value;
 
 	for (i = 0, ilen = array.length; i < ilen; i++) {
 		value = array[i][property];
@@ -105,8 +101,8 @@ export function _decimalPlaces(x) {
 	if (!isFiniteNumber(x)) {
 		return;
 	}
-	var e = 1;
-	var p = 0;
+	let e = 1;
+	let p = 0;
 	while (Math.round(x * e) / e !== x) {
 		e *= 10;
 		p++;
@@ -116,18 +112,18 @@ export function _decimalPlaces(x) {
 
 // Gets the angle from vertical upright to the point about a centre.
 export function getAngleFromPoint(centrePoint, anglePoint) {
-	var distanceFromXCenter = anglePoint.x - centrePoint.x;
-	var distanceFromYCenter = anglePoint.y - centrePoint.y;
-	var radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
+	const distanceFromXCenter = anglePoint.x - centrePoint.x;
+	const distanceFromYCenter = anglePoint.y - centrePoint.y;
+	const radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
 
-	var angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
+	let angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
 	if (angle < (-0.5 * PI)) {
 		angle += TAU; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
 	}
 
 	return {
-		angle: angle,
+		angle,
 		distance: radialDistanceFromCenter
 	};
 }

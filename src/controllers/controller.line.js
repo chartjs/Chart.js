@@ -1,5 +1,3 @@
-'use strict';
-
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
@@ -96,12 +94,12 @@ class LineController extends DatasetController {
 	/**
 	 * @private
 	 */
-	_resolveDatasetElementOptions() {
+	_resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
 		const lineOptions = options.elements.line;
-		const values = DatasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
+		const values = super._resolveDatasetElementOptions(active);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158

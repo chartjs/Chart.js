@@ -1,5 +1,3 @@
-'use strict';
-
 import defaults from '../core/core.defaults';
 import {isNullOrUndef, isArray, isObject, valueOrDefault} from './helpers.core';
 
@@ -33,7 +31,7 @@ function toFontString(font) {
  * @since 2.7.0
  */
 export function toLineHeight(value, size) {
-	var matches = ('' + value).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
+	const matches = ('' + value).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
 	if (!matches || matches[1] === 'normal') {
 		return size * 1.2;
 	}
@@ -61,7 +59,7 @@ export function toLineHeight(value, size) {
  * @since 2.7.0
  */
 export function toPadding(value) {
-	var t, r, b, l;
+	let t, r, b, l;
 
 	if (isObject(value)) {
 		t = +value.top || 0;
@@ -99,7 +97,7 @@ export function _parseFont(options) {
 	const font = {
 		family: valueOrDefault(options.fontFamily, defaults.fontFamily),
 		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaults.lineHeight), size),
-		size: size,
+		size,
 		style: valueOrDefault(options.fontStyle, defaults.fontStyle),
 		weight: null,
 		string: ''
@@ -121,8 +119,8 @@ export function _parseFont(options) {
  * @since 2.7.0
  */
 export function resolve(inputs, context, index, info) {
-	var cacheable = true;
-	var i, ilen, value;
+	let cacheable = true;
+	let i, ilen, value;
 
 	for (i = 0, ilen = inputs.length; i < ilen; ++i) {
 		value = inputs[i];
