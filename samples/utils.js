@@ -39,7 +39,7 @@ window.chartColors = {
 	];
 
 	var Samples = global.Samples || (global.Samples = {});
-	var Color = global.Color;
+	var Color = Chart.helpers.color;
 
 	Samples.utils = {
 		// Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
