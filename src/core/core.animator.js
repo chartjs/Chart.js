@@ -210,6 +210,14 @@ class Animator {
 		anims.items = [];
 		this._notify(chart, anims, Date.now(), 'complete');
 	}
+
+	/**
+	 * Remove chart from Animator
+	 * @param {Chart} chart
+	 */
+	remove(chart) {
+		return this._charts.delete(chart);
+	}
 }
 
 const instance = new Animator();

@@ -893,6 +893,7 @@ class Chart {
 		let i, ilen;
 
 		me.stop();
+		Animator.remove(me);
 
 		// dataset controllers need to cleanup associated data
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
