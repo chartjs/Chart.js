@@ -374,7 +374,7 @@ class Scale extends Element {
 	/**
 	 * @private
  	 */
-	_invalidateCaches() {} // eslint-disable-line
+	_invalidateCaches() {}
 
 	/**
 	 * Get the padding needed for the scale
