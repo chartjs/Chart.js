@@ -29,7 +29,6 @@ class Animator {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_notify(chart, anims, date, type) {
 		const callbacks = anims.listeners[type] || [];
 		const numSteps = anims.duration;

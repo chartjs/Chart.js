@@ -123,7 +123,6 @@ class LinearScaleBase extends Scale {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (isNullOrUndef(raw)) {
 			return NaN;
@@ -225,7 +224,6 @@ class LinearScaleBase extends Scale {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_computeTickLimit() {
 		return Number.POSITIVE_INFINITY;
 	}
@@ -233,7 +231,6 @@ class LinearScaleBase extends Scale {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_handleDirectionalChanges(ticks) {
 		return ticks;
 	}

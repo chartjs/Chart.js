@@ -171,7 +171,7 @@ class PluginService {
 	 * @param {Chart} chart
 	 * @private
 	 */
-	_invalidate(chart) { // eslint-disable-line class-methods-use-this
+	_invalidate(chart) {
 		delete chart.$plugins;
 	}
 }

@@ -573,7 +573,7 @@ class Scale extends Element {
 	/**
 	 * @return {object[]} the ticks
 	 */
-	buildTicks() { // eslint-disable-line class-methods-use-this
+	buildTicks() {
 		return [];
 	}
 	afterBuildTicks() {
@@ -890,7 +890,7 @@ class Scale extends Element {
 	 * @param {*} value
 	 * @return {string}
 	 */
-	getLabelForValue(value) {// eslint-disable-line class-methods-use-this
+	getLabelForValue(value) {
 		return value;
 	}
 

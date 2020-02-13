@@ -509,7 +509,6 @@ class DatasetController {
 	 * Example: {xScale0: 0, yScale0: 1}
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parsePrimitiveData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const iAxis = iScale.axis;
@@ -540,7 +539,6 @@ class DatasetController {
 	 * Example: {x: 0, y: 1}
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parseArrayData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
@@ -568,7 +566,6 @@ class DatasetController {
 	 * Example: {xScale0: 0, yScale0: 1, _custom: {r: 10, foo: 'bar'}}
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
@@ -715,7 +712,6 @@ class DatasetController {
 	 * @return {number|boolean}
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_getMaxOverflow() {
 		return false;
 	}
@@ -966,7 +962,6 @@ class DatasetController {
 	 * Utility for determining if `options` should be included in the updated properties
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_includeOptions(mode, sharedOptions) {
 		if (mode === 'hide' || mode === 'show') {
 			return true;

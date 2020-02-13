@@ -11,7 +11,6 @@ import BasePlatform from './platform.base';
  * @extends BasePlatform
  */
 export default class BasicPlatform extends BasePlatform {
-	// eslint-disable-next-line class-methods-use-this
 	acquireContext(item) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker

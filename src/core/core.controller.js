@@ -264,7 +264,6 @@ class Chart {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_initializePlatform(canvas, config) {
 		if (config.platform) {
 			return new config.platform();

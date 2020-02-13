@@ -375,7 +375,6 @@ export default class DomPlatform extends BasePlatform {
 		return null;
 	}
 
-	// eslint-disable-next-line class-methods-use-this
 	releaseContext(context) {
 		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
@@ -425,7 +424,6 @@ export default class DomPlatform extends BasePlatform {
 		addListener(canvas, type, proxy);
 	}
 
-	// eslint-disable-next-line class-methods-use-this
 	removeEventListener(chart, type, listener) {
 		const canvas = chart.canvas;
 		if (type === 'resize') {
@@ -444,7 +442,6 @@ export default class DomPlatform extends BasePlatform {
 		removeListener(canvas, type, proxy);
 	}
 
-	// eslint-disable-next-line class-methods-use-this
 	getDevicePixelRatio() {
 		return window.devicePixelRatio;
 	}

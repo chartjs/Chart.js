@@ -48,7 +48,7 @@ export default class BasePlatform {
 	/**
 	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
 	 */
-	getDevicePixelRatio() { // eslint-disable-line class-methods-use-this
+	getDevicePixelRatio() {
 		return 1;
 	}
 }

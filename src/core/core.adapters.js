@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 /**
  * @namespace Chart._adapters
  * @since 2.8.0
