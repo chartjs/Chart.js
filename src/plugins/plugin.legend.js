@@ -146,7 +146,6 @@ class Legend extends Element {
 	// Any function defined here is inherited by all legend types.
 	// Any function can be extended by the legend type
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeUpdate() {}
 
 	update(maxWidth, maxHeight, margins) {
@@ -177,12 +176,8 @@ class Legend extends Element {
 		me.afterUpdate();
 	}
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterUpdate() {}
 
-	//
-
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeSetDimensions() {}
 
 	setDimensions() {
@@ -214,12 +209,8 @@ class Legend extends Element {
 		};
 	}
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterSetDimensions() {}
 
-	//
-
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeBuildLabels() {}
 
 	buildLabels() {
@@ -238,12 +229,8 @@ class Legend extends Element {
 		me.legendItems = legendItems;
 	}
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterBuildLabels() {}
 
-	//
-
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeFit() {}
 
 	fit() {
@@ -353,7 +340,6 @@ class Legend extends Element {
 		me.height = minSize.height;
 	}
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	afterFit() {}
 
 	// Shared Methods

@@ -538,7 +538,6 @@ class RadialLinearScale extends LinearScaleBase {
 	/**
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	_drawTitle() {}
 }
 

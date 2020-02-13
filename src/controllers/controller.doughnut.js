@@ -103,7 +103,7 @@ class DoughnutController extends DatasetController {
 		this.outerRadius = undefined;
 	}
 
-	linkScales() {} // eslint-disable-line class-methods-use-this,no-empty-function
+	linkScales() {}
 
 	/**
 	 * Override data parsing, since we are not using scales

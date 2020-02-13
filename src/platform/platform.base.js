@@ -14,7 +14,7 @@ export default class BasePlatform {
 	 * @param {object} options - The chart options
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars,class-methods-use-this
+	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars
 		return undefined;
 	}
 
@@ -24,7 +24,7 @@ export default class BasePlatform {
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext(context) { // eslint-disable-line no-unused-vars,class-methods-use-this
+	releaseContext(context) { // eslint-disable-line no-unused-vars
 		return false;
 	}
 
@@ -35,7 +35,7 @@ export default class BasePlatform {
 	 * @param {function} listener - Receives a notification (an object that implements
 	 * the {@link IEvent} interface) when an event of the specified type occurs.
 	 */
-	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
+	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
@@ -43,7 +43,7 @@ export default class BasePlatform {
 	 * @param {string} type - The ({@link IEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
-	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
+	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.

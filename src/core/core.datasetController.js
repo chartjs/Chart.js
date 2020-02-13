@@ -752,7 +752,7 @@ class DatasetController {
 	/**
 	 * @param {string} mode
 	 */
-	update(mode) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
+	update(mode) {} // eslint-disable-line no-unused-vars
 
 	draw() {
 		const ctx = this._ctx;
@@ -1081,7 +1081,7 @@ class DatasetController {
 		me.updateElements(elements, start, 'reset');
 	}
 
-	updateElements(element, start, mode) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
+	updateElements(element, start, mode) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * @private

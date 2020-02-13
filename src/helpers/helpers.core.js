@@ -4,7 +4,7 @@
 /**
  * An empty function that can be used, for example, for optional callback.
  */
-export function noop() {} // eslint-disable-line no-empty-function
+export function noop() {}
 
 /**
  * Returns a unique id, sequentially generated from a global variable.

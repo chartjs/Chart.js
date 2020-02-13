@@ -37,7 +37,6 @@ class BubbleController extends DatasetController {
 	 * Parse array of objects
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = [];

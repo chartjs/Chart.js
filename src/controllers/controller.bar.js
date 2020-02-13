@@ -204,7 +204,6 @@ class BarController extends DatasetController {
 	 * value-scale data for float bars
 	 * @private
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	_parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const vProp = vScale.axis;

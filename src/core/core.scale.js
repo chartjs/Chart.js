@@ -305,7 +305,7 @@ class Scale extends Element {
 	 * @private
 	 * @since 3.0
 	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars,class-methods-use-this
+	_parse(raw, index) { // eslint-disable-line no-unused-vars
 		return raw;
 	}
 
@@ -374,7 +374,7 @@ class Scale extends Element {
 	/**
 	 * @private
  	 */
-	_invalidateCaches() {} // eslint-disable-line class-methods-use-this,no-empty-function
+	_invalidateCaches() {} // eslint-disable-line
 
 	/**
 	 * Get the padding needed for the scale
@@ -561,7 +561,7 @@ class Scale extends Element {
 	beforeDataLimits() {
 		call(this.options.beforeDataLimits, [this]);
 	}
-	determineDataLimits() {} // eslint-disable-line class-methods-use-this,no-empty-function
+	determineDataLimits() {}
 	afterDataLimits() {
 		call(this.options.afterDataLimits, [this]);
 	}
@@ -900,7 +900,7 @@ class Scale extends Element {
 	 * @param {*} value
 	 * @return {number}
 	 */
-	getPixelForValue(value) { // eslint-disable-line no-unused-vars,class-methods-use-this
+	getPixelForValue(value) { // eslint-disable-line no-unused-vars
 		return NaN;
 	}
 
@@ -910,7 +910,7 @@ class Scale extends Element {
 	 * @param {number} pixel
 	 * @return {*}
 	 */
-	getValueForPixel(pixel) {} // eslint-disable-line no-unused-vars,class-methods-use-this,no-empty-function
+	getValueForPixel(pixel) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Returns the location of the tick at the given index

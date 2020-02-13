@@ -44,8 +44,9 @@ class Title extends Element {
 
 	// These methods are ordered by lifecycle. Utilities then follow.
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	beforeUpdate() {}
+
 	update(maxWidth, maxHeight, margins) {
 		const me = this;
 
@@ -74,13 +75,12 @@ class Title extends Element {
 		me.afterUpdate();
 
 	}
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	afterUpdate() {}
 
-	//
 
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeSetDimensions() {}
+
 	setDimensions() {
 		const me = this;
 		// Set the unconstrained dimension before label rotation
@@ -97,22 +97,17 @@ class Title extends Element {
 			me.bottom = me.height;
 		}
 	}
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	afterSetDimensions() {}
 
-	//
-
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeBuildLabels() {}
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	buildLabels() {}
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	afterBuildLabels() {}
 
-	//
-
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
 	beforeFit() {}
+
 	fit() {
 		const me = this;
 		const opts = me.options;
@@ -130,7 +125,7 @@ class Title extends Element {
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
-	// eslint-disable-next-line class-methods-use-this,no-empty-function
+
 	afterFit() {}
 
 	// Shared Methods

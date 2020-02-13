@@ -18,3 +18,7 @@ parserOptions:
     experimentalObjectRestSpread: true
 
 plugins: ['html']
+
+rules:
+  class-methods-use-this: 0
+  no-empty-function: 0
