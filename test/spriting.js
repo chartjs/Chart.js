@@ -53,7 +53,7 @@ function measureText(text) {
 	return {width};
 }
 
-function blitText(text, x, y) {
+function spriteWrite(text, x, y) {
 	if (text && text.charCodeAt) {
 		const align = this.textAlign;
 		if (align === 'center' || align === 'right') {
@@ -82,17 +82,17 @@ function blitText(text, x, y) {
 	}
 }
 
-export function blitOn(ctx) {
+export function spritingOn(ctx) {
 	if (ctx && !ctx._fillText) {
 		ctx._fillText = ctx.fillText;
 		ctx._measureText = ctx.measureText;
 
-		ctx.fillText = blitText;
+		ctx.fillText = spriteWrite;
 		ctx.measureText = measureText;
 	}
 }
 
-export function blitOff(ctx) {
+export function spritingOff(ctx) {
 	if (ctx && ctx._fillText) {
 		ctx.fillText = ctx._fillText;
 		ctx.measureText = ctx._measureText;

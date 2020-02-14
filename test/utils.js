@@ -1,4 +1,4 @@
-import {blitOn, blitOff} from './text.blit';
+import {spritingOn, spritingOff} from './spriting';
 
 function createCanvas(w, h) {
 	var canvas = document.createElement('canvas');
@@ -65,8 +65,8 @@ function acquireChart(config, options) {
 
 	try {
 		var ctx = canvas.getContext('2d');
-		if (options.blitText) {
-			blitOn(ctx);
+		if (options.spriteText) {
+			spritingOn(ctx);
 		}
 		chart = new Chart(ctx, config);
 	} catch (e) {
@@ -83,7 +83,7 @@ function acquireChart(config, options) {
 }
 
 function releaseChart(chart) {
-	blitOff(chart.ctx);
+	spritingOff(chart.ctx);
 	chart.destroy();
 
 	var wrapper = (chart.$test || {}).wrapper;

@@ -25,6 +25,6 @@ module.exports = {
 		}
 	},
 	options: {
-		blitText: true
+		spriteText: true
 	}
 };
