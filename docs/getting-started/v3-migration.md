@@ -103,6 +103,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.findIndex`
 * `helpers.findNextWhere`
 * `helpers.findPreviousWhere`
+* `helpers.extend`. Use `Object.assign` instead
 * `helpers.indexOf`
 * `helpers.lineTo`
 * `helpers.longestText` was moved to the `helpers.canvas` namespace and made private

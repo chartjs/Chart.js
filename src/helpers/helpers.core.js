@@ -294,21 +294,6 @@ export function _mergerIf(key, target, source) {
 }
 
 /**
- * Applies the contents of two or more objects together into the first object.
- * @param {object} target - The target object in which all objects are merged into.
- * @param {object} arg1 - Object containing additional properties to merge in target.
- * @param {object} argN - Additional objects containing properties to merge in target.
- * @returns {object} The `target` object.
- */
-export const extend = Object.assign || function(target, ...args) {
-	return merge(target, args, {
-		merger(key, dst, src) {
-			dst[key] = src[key];
-		}
-	});
-};
-
-/**
  * Basic javascript inheritance based on the model created in Backbone.js
  */
 export function inherits(extensions) {
@@ -328,7 +313,7 @@ export function inherits(extensions) {
 	ChartElement.extend = inherits;
 
 	if (extensions) {
-		extend(ChartElement.prototype, extensions);
+		Object.assign(ChartElement.prototype, extensions);
 	}
 
 	ChartElement.__super__ = me.prototype;

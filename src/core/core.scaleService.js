@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {clone, each, extend, merge} from '../helpers/helpers.core';
+import {clone, each, merge} from '../helpers/helpers.core';
 import layouts from './core.layouts';
 
 export default {
@@ -25,7 +25,7 @@ export default {
 	updateScaleDefaults(type, additions) {
 		const me = this;
 		if (Object.prototype.hasOwnProperty.call(me.defaults, type)) {
-			me.defaults[type] = extend(me.defaults[type], additions);
+			me.defaults[type] = Object.assign(me.defaults[type], additions);
 		}
 	},
 	addScalesToLayout(chart) {

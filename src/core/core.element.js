@@ -1,4 +1,4 @@
-import {extend, inherits} from '../helpers/helpers.core';
+import {inherits} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 
 class Element {
@@ -12,7 +12,7 @@ class Element {
 		this.hidden = undefined;
 
 		if (cfg) {
-			extend(this, cfg);
+			Object.assign(this, cfg);
 		}
 	}
 

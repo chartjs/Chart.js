@@ -1,7 +1,7 @@
 import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
-import {callback as call, each, extend, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
 import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
@@ -436,7 +436,7 @@ class Scale extends Element {
 		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
-		me.margins = extend({
+		me.margins = Object.assign({
 			left: 0,
 			right: 0,
 			top: 0,
@@ -1555,7 +1555,7 @@ class Scale extends Element {
 			tick: me.ticks[index],
 			index
 		};
-		return extend(_parseFont({
+		return Object.assign(_parseFont({
 			fontFamily: resolve([options.fontFamily], context),
 			fontSize: resolve([options.fontSize], context),
 			fontStyle: resolve([options.fontStyle], context),

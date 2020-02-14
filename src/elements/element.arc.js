@@ -1,6 +1,5 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {extend} from '../helpers/helpers.core';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
@@ -98,7 +97,7 @@ class Arc extends Element {
 		this.outerRadius = undefined;
 
 		if (cfg) {
-			extend(this, cfg);
+			Object.assign(this, cfg);
 		}
 	}
 

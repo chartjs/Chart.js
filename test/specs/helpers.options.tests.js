@@ -75,7 +75,7 @@ describe('Chart.helpers.options', function() {
 			const fontStyle = Chart.defaults.fontStyle;
 			const lineHeight = Chart.defaults.lineHeight;
 
-			Chart.helpers.extend(Chart.defaults, {
+			Object.assign(Chart.defaults, {
 				fontFamily: 'foobar',
 				fontSize: 42,
 				fontStyle: 'xxxyyy',
@@ -91,7 +91,7 @@ describe('Chart.helpers.options', function() {
 				weight: null
 			});
 
-			Chart.helpers.extend(Chart.defaults, {
+			Object.assign(Chart.defaults, {
 				fontFamily,
 				fontSize,
 				fontStyle,
