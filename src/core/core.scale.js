@@ -286,8 +286,6 @@ class Scale extends Element {
 		/** @type {object} */
 		this._longestTextCache = {};
 		/** @type {number} */
-		this._maxLabelLines = undefined;
-		/** @type {number} */
 		this._startPixel = undefined;
 		/** @type {number} */
 		this._endPixel = undefined;
@@ -445,7 +443,6 @@ class Scale extends Element {
 
 		me.ticks = null;
 		me._labelSizes = null;
-		me._maxLabelLines = 0;
 		me._gridLineItems = null;
 		me._labelItems = null;
 
