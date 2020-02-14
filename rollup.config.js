@@ -1,3 +1,4 @@
+/* eslint-disable import/no-commonjs */
 /* eslint-env es6 */
 
 const commonjs = require('rollup-plugin-commonjs');
@@ -25,7 +26,7 @@ module.exports = [
 	// dist/Chart.min.js
 	// dist/Chart.js
 	{
-		input: input,
+		input,
 		plugins: [
 			resolve(),
 			commonjs(),
@@ -42,7 +43,7 @@ module.exports = [
 		output: {
 			name: 'Chart',
 			file: 'dist/Chart.js',
-			banner: banner,
+			banner,
 			format: 'umd',
 			indent: false,
 			globals: {
@@ -54,7 +55,7 @@ module.exports = [
 		]
 	},
 	{
-		input: input,
+		input,
 		plugins: [
 			resolve(),
 			commonjs(),
@@ -92,7 +93,7 @@ module.exports = [
 	// dist/Chart.esm.min.js
 	// dist/Chart.esm.js
 	{
-		input: input,
+		input,
 		plugins: [
 			resolve(),
 			commonjs(),
@@ -106,7 +107,7 @@ module.exports = [
 		output: {
 			name: 'Chart',
 			file: 'dist/Chart.esm.js',
-			banner: banner,
+			banner,
 			format: 'esm',
 			indent: false,
 			globals: {
@@ -118,7 +119,7 @@ module.exports = [
 		]
 	},
 	{
-		input: input,
+		input,
 		plugins: [
 			resolve(),
 			commonjs(),
