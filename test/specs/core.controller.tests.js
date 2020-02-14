@@ -303,20 +303,6 @@ describe('Chart', function() {
 		});
 	});
 
-	describe('config.options.responsive: false', function() {
-		it('should not inject the resizer element', function() {
-			var chart = acquireChart({
-				options: {
-					responsive: false
-				}
-			});
-
-			var wrapper = chart.canvas.parentNode;
-			expect(wrapper.childNodes.length).toBe(1);
-			expect(wrapper.firstChild.tagName).toBe('CANVAS');
-		});
-	});
-
 	describe('config.options.responsive: true (maintainAspectRatio: false)', function() {
 		it('should fill parent width and height', function() {
 			var chart = acquireChart({
@@ -633,9 +619,6 @@ describe('Chart', function() {
 			});
 
 			waitForResize(chart, function() {
-				var resizer = wrapper.firstChild;
-				expect(resizer.className).toBe('chartjs-size-monitor');
-				expect(resizer.tagName).toBe('DIV');
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 355,
 					rw: 455, rh: 355,
@@ -644,8 +627,6 @@ describe('Chart', function() {
 				var target = document.createElement('div');
 
 				waitForResize(chart, function() {
-					expect(target.firstChild).toBe(resizer);
-					expect(wrapper.firstChild).toBe(null);
 					expect(chart).toBeChartOfSize({
 						dw: 640, dh: 480,
 						rw: 640, rh: 480,
@@ -935,31 +916,6 @@ describe('Chart', function() {
 			expect(chart).toBeChartOfSize({
 				dw: 320, dh: 240,
 				rw: 960, rh: 720,
-			});
-		});
-	});
-
-	describe('controller.destroy', function() {
-		it('should remove the resizer element when responsive: true', function(done) {
-			var chart = acquireChart({
-				options: {
-					responsive: true
-				}
-			});
-
-			waitForResize(chart, function() {
-				var wrapper = chart.canvas.parentNode;
-				var resizer = wrapper.firstChild;
-				expect(wrapper.childNodes.length).toBe(2);
-				expect(resizer.className).toBe('chartjs-size-monitor');
-				expect(resizer.tagName).toBe('DIV');
-
-				chart.destroy();
-
-				expect(wrapper.childNodes.length).toBe(1);
-				expect(wrapper.firstChild.tagName).toBe('CANVAS');
-
-				done();
 			});
 		});
 	});

@@ -7,6 +7,7 @@ import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
+import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
@@ -246,14 +247,15 @@ class Chart {
 		// Before init plugin notification
 		plugins.notify(me, 'beforeInit');
 
-		helpers.dom.retinaScale(me, me.options.devicePixelRatio);
-
-		me.bindEvents();
+		// helpers.dom.retinaScale(me, me.options.devicePixelRatio);
 
 		if (me.options.responsive) {
-			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
+		} else {
+			helpers.dom.retinaScale(me, me.options.devicePixelRatio);
 		}
+
+		me.bindEvents();
 
 		// After init plugin notification
 		plugins.notify(me, 'afterInit');
@@ -285,19 +287,23 @@ class Chart {
 		return this;
 	}
 
-	resize(silent) {
+	resize(silent, width, height) {
 		const me = this;
 		const options = me.options;
 		const canvas = me.canvas;
-		const aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
-		const oldRatio = me.currentDevicePixelRatio;
+		const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
 
+		if (height === undefined) {
+			width = getMaximumWidth(canvas);
+			height = getMaximumHeight(canvas);
+		}
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
+		const newWidth = Math.max(0, Math.floor(width));
+		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
 
-		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		const newWidth = Math.max(0, Math.floor(helpers.dom.getMaximumWidth(canvas)));
-		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : helpers.dom.getMaximumHeight(canvas)));
+		// detect devicePixelRation changes
+		const oldRatio = me.currentDevicePixelRatio;
 		const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
 
 		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
@@ -903,7 +909,7 @@ class Chart {
 		if (canvas) {
 			me.unbindEvents();
 			helpers.canvas.clear(me);
-			me.platform.releaseContext(me.ctx);
+			me.platform.releaseContext(me, me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
@@ -932,13 +938,11 @@ class Chart {
 			listeners[type] = listener;
 		});
 
-		// Elements used to detect size change should not be injected for non responsive charts.
-		// See https://github.com/chartjs/Chart.js/issues/2210
 		if (me.options.responsive) {
-			listener = function() {
-				me.resize();
+			// resize
+			listener = function(width, height) {
+				me.resize(false, width, height);
 			};
-
 			me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		}

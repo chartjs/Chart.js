@@ -7,6 +7,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Completely rewritten animation system
 * Rewritten filler plugin with numerous bug fixes
 * API Documentation generated and verified by TypeScript
+* No more CSS injection
 * Tons of bug fixes
 
 ## End user migration
@@ -88,6 +89,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Chart.chart.chart`
 * `Chart.Controller`
 * `Chart.prototype.generateLegend`
+* `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
 * `Chart.types`
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
 * `DatasetController.addElementAndReset`
@@ -253,6 +255,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Platform
 
-* `Chart.platform` is no longer the platform object used by charts. It contains only a single configuration option, `disableCSSInjection`. Every chart instance now has a separate platform instance.
+* `Chart.platform` is no longer the platform object used by charts. Every chart instance now has a separate platform instance.
 * `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `BasePlatform`, a class that all platforms must extend from.
 * If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.

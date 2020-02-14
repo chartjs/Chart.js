@@ -245,9 +245,6 @@
 			title: 'Progress bar',
 			path: 'advanced/progress-bar.html'
 		}, {
-			title: 'Content Security Policy',
-			path: 'advanced/content-security-policy.html'
-		}, {
 			title: 'Polar Area Radial Gradient',
 			path: 'advanced/radial-gradient.html'
 		}, {
