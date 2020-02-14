@@ -4,6 +4,7 @@
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
+const cleanup = require('rollup-plugin-cleanup');
 const terser = require('rollup-plugin-terser').terser;
 const optional = require('./rollup.plugins').optional;
 const stylesheet = require('./rollup.plugins').stylesheet;
@@ -94,6 +95,7 @@ module.exports = [
 			stylesheet({
 				extract: true
 			}),
+			cleanup(),
 		],
 		output: {
 			name: 'Chart',
