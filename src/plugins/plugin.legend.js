@@ -2,7 +2,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, extend, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {_parseFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
@@ -103,7 +103,7 @@ class Legend extends Element {
 	constructor(config) {
 		super();
 
-		extend(this, config);
+		Object.assign(this, config);
 
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];

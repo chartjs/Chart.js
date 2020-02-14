@@ -236,7 +236,7 @@ function createTooltipItem(chart, item) {
  */
 function resolveOptions(options) {
 
-	options = helpers.extend({}, defaults.tooltips, options);
+	options = Object.assign({}, defaults.tooltips, options);
 
 	options.bodyFontFamily = valueOrDefault(options.bodyFontFamily, defaults.fontFamily);
 	options.bodyFontStyle = valueOrDefault(options.bodyFontStyle, defaults.fontStyle);
@@ -636,7 +636,7 @@ class Tooltip extends Element {
 			me.footer = me.getFooter(tooltipItems, data);
 
 			const size = me._size = getTooltipSize(me);
-			const positionAndSize = helpers.extend({}, position, size);
+			const positionAndSize = Object.assign({}, position, size);
 			const alignment = determineAlignment(me._chart, options, positionAndSize);
 			const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, me._chart);
 
@@ -917,7 +917,7 @@ class Tooltip extends Element {
 			if (!position) {
 				return;
 			}
-			const positionAndSize = helpers.extend({}, position, me._size);
+			const positionAndSize = Object.assign({}, position, me._size);
 			const alignment = determineAlignment(chart, options, positionAndSize);
 			const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
 			if (animX._to !== point.x || animY._to !== point.y) {

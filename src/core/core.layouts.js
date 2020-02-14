@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {each, extend} from '../helpers/helpers.core';
+import {each} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
 /**
@@ -348,8 +348,8 @@ export default {
 			vBoxMaxWidth: availableWidth / 2 / verticalBoxes.length,
 			hBoxMaxHeight: availableHeight / 2
 		});
-		const chartArea = extend({
-			maxPadding: extend({}, padding),
+		const chartArea = Object.assign({
+			maxPadding: Object.assign({}, padding),
 			w: availableWidth,
 			h: availableHeight,
 			x: padding.left,
@@ -390,7 +390,7 @@ export default {
 		// Finally update boxes in chartArea (radial scale for example)
 		each(boxes.chartArea, (layout) => {
 			const box = layout.box;
-			extend(box, chart.chartArea);
+			Object.assign(box, chart.chartArea);
 			box.update(chartArea.w, chartArea.h);
 		});
 	}

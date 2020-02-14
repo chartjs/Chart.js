@@ -1,6 +1,5 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {extend} from '../helpers/helpers.core';
 import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.interpolation';
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
@@ -210,7 +209,7 @@ class Line extends Element {
 		this._segments = undefined;
 
 		if (cfg) {
-			extend(this, cfg);
+			Object.assign(this, cfg);
 		}
 	}
 

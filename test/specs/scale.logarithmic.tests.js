@@ -842,7 +842,7 @@ describe('Logarithmic Scale tests', function() {
 			scaleConfig[setup.axis] = {
 				type: 'logarithmic'
 			};
-			Chart.helpers.extend(scaleConfig, setup.scale);
+			Object.assign(scaleConfig, setup.scale);
 			scaleConfig[setup.axis].type = 'logarithmic';
 
 			var description = 'dataset has stack option and ' + setup.describe
@@ -987,9 +987,9 @@ describe('Logarithmic Scale tests', function() {
 								data: setup.dataset
 							}],
 						};
-						Chart.helpers.extend(xConfig, setup.scale);
-						Chart.helpers.extend(yConfig, setup.scale);
-						Chart.helpers.extend(data, setup.data || {});
+						Object.assign(xConfig, setup.scale);
+						Object.assign(yConfig, setup.scale);
+						Object.assign(data, setup.data || {});
 						this.chart = window.acquireChart({
 							type: 'line',
 							data: data,
@@ -1109,9 +1109,9 @@ describe('Logarithmic Scale tests', function() {
 								data: setup.dataset
 							}],
 						};
-						Chart.helpers.extend(xConfig, setup.scale);
-						Chart.helpers.extend(yConfig, setup.scale);
-						Chart.helpers.extend(data, setup.data || {});
+						Object.assign(xConfig, setup.scale);
+						Object.assign(yConfig, setup.scale);
+						Object.assign(data, setup.data || {});
 						this.chart = window.acquireChart({
 							type: 'line',
 							data: data,

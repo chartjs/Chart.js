@@ -4,8 +4,6 @@
  * @private
  */
 
-import {extend} from '../helpers/helpers.core';
-
 /**
  * @return {*}
  */
@@ -108,7 +106,7 @@ class DateAdapter {
 }
 
 DateAdapter.override = function(members) {
-	extend(DateAdapter.prototype, members);
+	Object.assign(DateAdapter.prototype, members);
 };
 
 export default {

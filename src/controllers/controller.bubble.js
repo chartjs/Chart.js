@@ -1,7 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import Point from '../elements/element.point';
-import {extend} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 
 defaults.set('bubble', {
@@ -152,7 +151,7 @@ class BubbleController extends DatasetController {
 
 		// In case values were cached (and thus frozen), we need to clone the values
 		if (values.$shared) {
-			values = extend({}, values, {$shared: false});
+			values = Object.assign({}, values, {$shared: false});
 		}
 
 

@@ -9,6 +9,10 @@ const stylesheet = require('./rollup.plugins').stylesheet;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
+
+// regexp for file exlusinon for babel. we are excluding from the exclusion the modules that need to be transpiled
+const exclude = /node_modules\/(?!(@kurkle\/color)\/).*/;
+
 const banner = `/*!
  * Chart.js v${pkg.version}
  * ${pkg.homepage}
@@ -17,66 +21,6 @@ const banner = `/*!
  */`;
 
 module.exports = [
-	// ES6 builds
-	// dist/Chart.esm.min.js
-	// dist/Chart.esm.js
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet({
-				extract: true
-			}),
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.esm.js',
-			banner: banner,
-			format: 'esm',
-			indent: false,
-			globals: {
-				moment: 'moment'
-			}
-		},
-		external: [
-			'moment'
-		]
-	},
-	{
-		input: input,
-		plugins: [
-			resolve(),
-			commonjs(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			stylesheet({
-				extract: true,
-				minify: true
-			}),
-			terser({
-				output: {
-					preamble: banner
-				}
-			})
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.esm.min.js',
-			format: 'esm',
-			indent: false,
-			globals: {
-				moment: 'moment'
-			}
-		},
-		external: [
-			'moment'
-		]
-	},
 	// UMD builds
 	// dist/Chart.min.js
 	// dist/Chart.js
@@ -86,7 +30,7 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel({
-				exclude: 'node_modules/**'
+				exclude
 			}),
 			stylesheet({
 				extract: true
@@ -115,7 +59,7 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel({
-				exclude: 'node_modules/**'
+				exclude
 			}),
 			optional({
 				include: ['moment']
@@ -142,5 +86,66 @@ module.exports = [
 		external: [
 			'moment'
 		]
-	}
+	},
+
+	// ES6 builds
+	// dist/Chart.esm.min.js
+	// dist/Chart.esm.js
+	{
+		input: input,
+		plugins: [
+			resolve(),
+			commonjs(),
+			babel({
+				exclude
+			}),
+			stylesheet({
+				extract: true
+			}),
+		],
+		output: {
+			name: 'Chart',
+			file: 'dist/Chart.esm.js',
+			banner: banner,
+			format: 'esm',
+			indent: false,
+			globals: {
+				moment: 'moment'
+			}
+		},
+		external: [
+			'moment'
+		]
+	},
+	{
+		input: input,
+		plugins: [
+			resolve(),
+			commonjs(),
+			babel({
+				exclude
+			}),
+			stylesheet({
+				extract: true,
+				minify: true
+			}),
+			terser({
+				output: {
+					preamble: banner
+				}
+			})
+		],
+		output: {
+			name: 'Chart',
+			file: 'dist/Chart.esm.min.js',
+			format: 'esm',
+			indent: false,
+			globals: {
+				moment: 'moment'
+			}
+		},
+		external: [
+			'moment'
+		]
+	},
 ];

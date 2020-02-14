@@ -413,7 +413,7 @@ describe('Chart.helpers.core', function() {
 		it('should merge object properties in target and return target', function() {
 			var target = {a: 'abc', b: 56};
 			var object = {b: 0, c: [2, 5, 6]};
-			var result = helpers.extend(target, object);
+			var result = Object.assign(target, object);
 
 			expect(result).toBe(target);
 			expect(target).toEqual({a: 'abc', b: 0, c: [2, 5, 6]});
@@ -424,7 +424,7 @@ describe('Chart.helpers.core', function() {
 			var o1 = {a: 5, c: 6};
 			var o2 = {a: 7, e: 8};
 
-			helpers.extend(target, o0, o1, o2);
+			Object.assign(target, o0, o1, o2);
 
 			expect(target).toEqual({a: 7, b: 1, c: 6, d: 4, e: 8});
 		});
@@ -432,7 +432,7 @@ describe('Chart.helpers.core', function() {
 			var target = {a: {b: 0, c: 1}};
 			var object = {a: {b: 2, d: 3}};
 
-			helpers.extend(target, object);
+			Object.assign(target, object);
 
 			expect(target).toEqual({a: {b: 2, d: 3}});
 			expect(target.a).toBe(object.a);

@@ -1,6 +1,6 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {extend, isObject} from '../helpers/helpers.core';
+import {isObject} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
@@ -138,7 +138,7 @@ class Rectangle extends Element {
 		this.height = undefined;
 
 		if (cfg) {
-			extend(this, cfg);
+			Object.assign(this, cfg);
 		}
 	}
 

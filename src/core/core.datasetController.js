@@ -932,7 +932,7 @@ class DatasetController {
 		let config = helpers.mergeIf({}, [datasetAnim, chartAnim]);
 
 		if (config[mode]) {
-			config = helpers.extend({}, config, config[mode]);
+			config = Object.assign({}, config, config[mode]);
 		}
 
 		const animations = new Animations(chart, config);
@@ -975,7 +975,7 @@ class DatasetController {
 	 */
 	_updateElement(element, index, properties, mode) {
 		if (mode === 'reset' || mode === 'none') {
-			helpers.extend(element, properties);
+			Object.assign(element, properties);
 		} else {
 			this._resolveAnimations(index, mode).update(element, properties);
 		}

@@ -21,7 +21,7 @@ class Title extends Element {
 	constructor(config) {
 		super();
 
-		helpers.extend(this, config);
+		Object.assign(this, config);
 
 		this.chart = config.chart;
 		this.options = config.options;
