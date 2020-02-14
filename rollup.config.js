@@ -11,9 +11,6 @@ const pkg = require('./package.json');
 
 const input = 'src/index.js';
 
-// regexp for file exlusinon for babel. we are excluding from the exclusion the modules that need to be transpiled
-const exclude = /node_modules\/(?!(@kurkle\/color)\/).*/;
-
 const banner = `/*!
  * Chart.js v${pkg.version}
  * ${pkg.homepage}
@@ -30,9 +27,7 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude
-			}),
+			babel(),
 			stylesheet({
 				extract: true
 			}),
@@ -59,9 +54,7 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude
-			}),
+			babel(),
 			optional({
 				include: ['moment']
 			}),
@@ -97,9 +90,7 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude
-			}),
+			babel(),
 			stylesheet({
 				extract: true
 			}),
@@ -123,9 +114,7 @@ module.exports = [
 		plugins: [
 			resolve(),
 			commonjs(),
-			babel({
-				exclude
-			}),
+			babel(),
 			stylesheet({
 				extract: true,
 				minify: true
