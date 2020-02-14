@@ -9,6 +9,8 @@ function getValues(scale) {
 }
 
 describe('Category scale tests', function() {
+	describe('auto', jasmine.fixture.specs('scale.category'));
+
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		expect(Constructor).not.toBe(undefined);
@@ -57,33 +59,6 @@ describe('Category scale tests', function() {
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
-	it('Should generate ticks from the data labels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.position = 'bottom';
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
-			},
-			id: scaleID
-		});
-
-		scale.determineDataLimits();
-		scale.ticks = scale.buildTicks();
-		expect(getValues(scale)).toEqual(mockData.labels);
-	});
 
 	it('Should generate ticks from the data xLabels', function() {
 		var scaleID = 'myScale';
