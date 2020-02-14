@@ -122,9 +122,10 @@ export function _boundSegment(segment, points, bounds) {
  */
 export function _boundSegments(line, bounds) {
 	const result = [];
+	const segments = line.segments;
 
-	for (const segment of line.segments) {
-		const sub = _boundSegment(segment, line.points, bounds);
+	for (let i = 0; i < segments.length; i++) {
+		const sub = _boundSegment(segments[i], line.points, bounds);
 		if (sub.length) {
 			result.push(...sub);
 		}

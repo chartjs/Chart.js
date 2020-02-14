@@ -265,6 +265,7 @@ function _getEdge(a, b, prop, fn) {
 }
 
 function _segments(line, target, property) {
+	const segments = line.segments;
 	const points = line.points;
 	const tpoints = target.points;
 	const parts = [];
@@ -280,7 +281,8 @@ function _segments(line, target, property) {
 		}
 	}
 
-	for (const segment of line.segments) {
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
 		const bounds = getBounds(property, points[segment.start], points[segment.end], segment.loop);
 
 		if (!target.segments) {
@@ -298,13 +300,14 @@ function _segments(line, target, property) {
 		// Get all segments from `target` that intersect the bounds of current segment of `line`
 		const subs = _boundSegments(target, bounds);
 
-		for (const sub of subs) {
+		for (let j = 0; j < subs.length; ++j) {
+			const sub = subs[j];
 			const subBounds = getBounds(property, tpoints[sub.start], tpoints[sub.end], sub.loop);
 			const fillSources = _boundSegment(segment, points, subBounds);
 
-			for (const source of fillSources) {
+			for (let k = 0; k < fillSources.length; k++) {
 				parts.push({
-					source,
+					source: fillSources[k],
 					target: sub,
 					start: {
 						[property]: _getEdge(bounds, subBounds, 'start', Math.max)
