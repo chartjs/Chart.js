@@ -46,7 +46,7 @@ function readUsedSize(element, property) {
  * since responsiveness is handled by the controller.resize() method. The config is used
  * to determine the aspect ratio to apply in case no explicit height has been specified.
  */
-function initCanvas(canvas, config) { // eslint-disable-line no-unused-vars
+function initCanvas(canvas, config) {
 	const style = canvas.style;
 
 	// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
@@ -250,18 +250,21 @@ function unlistenForResize(proxies) {
  * @param {Function} listener
  */
 function listenForResize(canvas, proxies, listener) {
+	// Helper for recursing when canvas is detached from it's parent
 	const detached = () => listenForResize(canvas, proxies, listener);
 
-	// Canvas was detached from it's parent
+	// First make sure all observers are removed
 	unlistenForResize(proxies);
+	// Then check if we are attached
 	const container = _getParentNode(canvas);
 	if (container) {
-		// The canvas was immediately re-attached
+		// The canvas is attached (or was immediately re-attached when called through `detached`)
 		proxies.resize = watchForResize(container, listener);
 		proxies.detach = watchForDetachment(canvas, detached);
 	} else {
+		// The canvas is detached
 		proxies.attach = watchForAttachment(canvas, () => {
-			// The canvas was attached
+			// The canvas was attached.
 			removeObserver(proxies, 'attach');
 			const parent = _getParentNode(canvas);
 			proxies.resize = watchForResize(parent, listener);
@@ -275,14 +278,6 @@ function listenForResize(canvas, proxies, listener) {
  * @extends BasePlatform
  */
 export default class DomPlatform extends BasePlatform {
-
-	/**
-	 * Initializes resources that depend on platform options.
-	 * @param {HTMLCanvasElement} canvas - The Canvas element.
-	 * @private
-	 */
-	_ensureLoaded(canvas) { // eslint-disable-line no-unused-vars
-	}
 
 	acquireContext(canvas, config) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
@@ -300,7 +295,6 @@ export default class DomPlatform extends BasePlatform {
 		if (context && context.canvas === canvas) {
 			// Load platform resources on first chart creation, to make it possible to
 			// import the library before setting platform options.
-			this._ensureLoaded(canvas);
 			initCanvas(canvas, config);
 			return context;
 		}
@@ -308,7 +302,7 @@ export default class DomPlatform extends BasePlatform {
 		return null;
 	}
 
-	releaseContext(context) { // eslint-disable-line no-unused-vars
+	releaseContext(context) {
 		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
 			return false;

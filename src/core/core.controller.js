@@ -247,9 +247,8 @@ class Chart {
 		// Before init plugin notification
 		plugins.notify(me, 'beforeInit');
 
-		// helpers.dom.retinaScale(me, me.options.devicePixelRatio);
-
 		if (me.options.responsive) {
+			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
 		} else {
 			helpers.dom.retinaScale(me, me.options.devicePixelRatio);
@@ -299,6 +298,7 @@ class Chart {
 		}
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
+		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 		const newWidth = Math.max(0, Math.floor(width));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
 
@@ -909,7 +909,7 @@ class Chart {
 		if (canvas) {
 			me.unbindEvents();
 			helpers.canvas.clear(me);
-			me.platform.releaseContext(me, me.ctx);
+			me.platform.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
@@ -939,10 +939,10 @@ class Chart {
 		});
 
 		if (me.options.responsive) {
-			// resize
 			listener = function(width, height) {
 				me.resize(false, width, height);
 			};
+
 			me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		}
