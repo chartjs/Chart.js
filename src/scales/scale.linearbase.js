@@ -111,16 +111,11 @@ class LinearScaleBase extends Scale {
 	constructor(cfg) {
 		super(cfg);
 
-		/** @type {number} */
-		this.start = undefined;
-		/** @type {number} */
-		this.end = undefined;
-		/** @type {number} */
-		this._startValue = undefined;
-		/** @type {number} */
-		this._endValue = undefined;
-		/** @type {number} */
-		this._valueRange = undefined;
+		this.start = -1;
+		this.end = -1;
+		this._startValue = -1;
+		this._endValue = -1;
+		this._valueRange = -1;
 	}
 
 	/**

@@ -202,7 +202,7 @@ class Chart {
 		this.active = undefined;
 		this.lastActive = undefined;
 		this._lastEvent = undefined;
-		this._listeners = {resize: undefined};
+		this._listeners = {resize: () => {}};
 		this._sortedMetasets = [];
 		this._updating = false;
 		this.scales = {};

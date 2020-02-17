@@ -6,6 +6,10 @@ import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
 import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
+/**
+ * @typedef { import("./core.controller").default } Chart
+ */
+
 defaults.set('scale', {
 	display: true,
 	offset: false,
@@ -227,25 +231,22 @@ class Scale extends Element {
 
 		/** @type {string} */
 		this.id = cfg.id;
+		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
 		this.options = cfg.options;
+		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
+		/** @type {Chart} */
 		this.chart = cfg.chart;
 
 		// implements box
-		/** @type {number} */
-		this.top = undefined;
-		/** @type {number} */
-		this.bottom = undefined;
-		/** @type {number} */
-		this.left = undefined;
-		/** @type {number} */
-		this.right = undefined;
-		/** @type {number} */
-		this.width = undefined;
-		/** @type {number} */
-		this.height = undefined;
+		this.top = -1;
+		this.bottom = -1;
+		this.left = -1;
+		this.right = -1;
+		this.width = -1;
+		this.height = -1;
 		this.margins = {
 			left: 0,
 			right: 0,
@@ -253,18 +254,12 @@ class Scale extends Element {
 			bottom: 0
 		};
 		// TODO: make maxWidth, maxHeight private
-		/** @type {number} */
-		this.maxWidth = undefined;
-		/** @type {number} */
-		this.maxHeight = undefined;
-		/** @type {number} */
-		this.paddingTop = undefined;
-		/** @type {number} */
-		this.paddingBottom = undefined;
-		/** @type {number} */
-		this.paddingLeft = undefined;
-		/** @type {number} */
-		this.paddingRight = undefined;
+		this.maxWidth = -1;
+		this.maxHeight = -1;
+		this.paddingTop = -1;
+		this.paddingBottom = -1;
+		this.paddingLeft = -1;
+		this.paddingRight = -1;
 
 		// scale-specific properties
 		/** @type {string=} */
@@ -274,26 +269,23 @@ class Scale extends Element {
 		this.min = undefined;
 		this.max = undefined;
 		/** @type {object[]} */
-		this.ticks = null;
+		this.ticks = [];
 		/** @type {object[]|null} */
 		this._gridLineItems = null;
 		/** @type {object[]|null} */
 		this._labelItems = null;
 		/** @type {object|null} */
 		this._labelSizes = null;
-		/** @type {number} */
-		this._length = undefined;
+		this._length = -1;
 		/** @type {object} */
 		this._longestTextCache = {};
-		/** @type {number} */
-		this._startPixel = undefined;
-		/** @type {number} */
-		this._endPixel = undefined;
-		this._reversePixels = undefined;
+		this._startPixel = -1;
+		this._endPixel = -1;
+		this._reversePixels = false;
 		this._userMax = undefined;
 		this._userMin = undefined;
-		this._ticksLength = undefined;
-		this._borderValue = undefined;
+		this._ticksLength = -1;
+		this._borderValue = -1;
 	}
 
 	/**
@@ -441,7 +433,7 @@ class Scale extends Element {
 			bottom: 0
 		}, margins);
 
-		me.ticks = null;
+		me.ticks = [];
 		me._labelSizes = null;
 		me._gridLineItems = null;
 		me._labelItems = null;
@@ -1419,7 +1411,9 @@ class Scale extends Element {
 		const position = options.position;
 		const isReverse = me.options.reverse;
 		let rotation = 0;
-		let scaleLabelX, scaleLabelY, textAlign;
+		/** @type CanvasTextAlign */
+		let textAlign;
+		let scaleLabelX, scaleLabelY;
 
 		if (me.isHorizontal()) {
 			switch (scaleLabelAlign) {

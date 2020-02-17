@@ -295,14 +295,11 @@ class RadialLinearScale extends LinearScaleBase {
 	constructor(cfg) {
 		super(cfg);
 
-		/** @type {number} */
-		this.xCenter = undefined;
-		/** @type {number} */
-		this.yCenter = undefined;
-		/** @type {number} */
-		this.drawingArea = undefined;
+		this.xCenter = -1;
+		this.yCenter = -1;
+		this.drawingArea = -1;
 		/** @type {string[]} */
-		this.pointLabels = undefined;
+		this.pointLabels = [];
 	}
 
 	setDimensions() {
