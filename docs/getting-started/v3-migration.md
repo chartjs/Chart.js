@@ -86,10 +86,16 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ### Removed
 
+* `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Controller`
+* `Chart.innerRadius`
+* `Chart.offsetX`
+* `Chart.offsetY`
+* `Chart.outerRadius`
 * `Chart.prototype.generateLegend`
 * `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
+* `Chart.radiusLength`
 * `Chart.types`
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
 * `DatasetController.addElementAndReset`

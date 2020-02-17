@@ -46,20 +46,6 @@ describe('Chart.controllers.doughnut', function() {
 		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
-	it('should set the innerRadius to 0 if the config option is 0', function() {
-		var chart = window.acquireChart({
-			type: 'pie',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}],
-				labels: []
-			}
-		});
-
-		expect(chart.innerRadius).toBe(0);
-	});
-
 	it ('should reset and update elements', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
@@ -302,13 +288,9 @@ describe('Chart.controllers.doughnut', function() {
 
 		chart.update();
 
-		expect(chart.chartArea.bottom - chart.chartArea.top).toBe(512);
-		expect(chart.borderWidth).toBe(8);
-		expect(chart.outerRadius).toBe(252);
-		expect(chart.innerRadius).toBe(126);
-		expect(chart.radiusLength).toBe(63);
-
 		var controller = chart.getDatasetMeta(0).controller;
+		expect(chart.chartArea.bottom - chart.chartArea.top).toBe(512);
+
 		expect(controller.getMaxBorderWidth()).toBe(8);
 		expect(controller.outerRadius).toBe(252);
 		expect(controller.innerRadius).toBe(189);
