@@ -215,8 +215,9 @@ class DoughnutController extends DatasetController {
 		const animationOpts = opts.animation;
 		const centerX = (chartArea.left + chartArea.right) / 2;
 		const centerY = (chartArea.top + chartArea.bottom) / 2;
-		const innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
-		const outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
+		const animateScale = reset && animationOpts.animateScale;
+		const innerRadius = animateScale ? 0 : me.innerRadius;
+		const outerRadius = animateScale ? 0 : me.outerRadius;
 		const firstOpts = me._resolveDataElementOptions(start, mode);
 		const sharedOptions = me._getSharedOptions(mode, arcs[start], firstOpts);
 		const includeOptions = me._includeOptions(mode, sharedOptions);
