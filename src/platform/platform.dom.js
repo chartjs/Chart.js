@@ -178,11 +178,24 @@ function throttled(fn, thisArg) {
  * @return {ResizeObserver}
  */
 function watchForResize(element, fn) {
+	const resize = throttled((width, height) => {
+		const w = element.clientWidth;
+		fn(width, height);
+		if (w < element.clientWidth) {
+			// If the container size shrank during chart resize, let's assume
+			// scrollbar appeared. So we resize again with the scrollbar visible -
+			// effectively making chart smaller and the scrollbar hidden again.
+			// Because we are inside `throttled`, and currently `ticking`, scroll
+			// events are ignored during this whole 2 resize process.
+			// If we assumed wrong and something else happened, we are resizing
+			// twice in a frame (potential performance issue)
+			fn();
+		}
+	}, window);
+
 	const observer = new ResizeObserver(entries => {
 		const entry = entries[0];
-		helpers.requestAnimFrame.call(window, () => {
-			fn(entry.contentRect.width, entry.contentRect.height);
-		});
+		resize(entry.contentRect.width, entry.contentRect.height);
 	});
 	observer.observe(element);
 	return observer;

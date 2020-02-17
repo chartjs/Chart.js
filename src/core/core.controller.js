@@ -942,7 +942,9 @@ class Chart {
 
 		if (me.options.responsive) {
 			listener = function(width, height) {
-				me.resize(false, width, height);
+				if (me.canvas) {
+					me.resize(false, width, height);
+				}
 			};
 
 			me.platform.addEventListener(me, 'resize', listener);
