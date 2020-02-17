@@ -9,7 +9,7 @@ function isConstrainedValue(value) {
 /**
  * @private
  */
-function _getParentNode(domNode) {
+export function _getParentNode(domNode) {
 	let parent = domNode.parentNode;
 	if (parent && parent.toString() === '[object ShadowRoot]') {
 		parent = parent.host;

@@ -1,7 +1,4 @@
-/* eslint-env es6 */
-const cleancss = require('clean-css');
-const path = require('path');
-
+/* eslint-disable import/no-commonjs */
 const UMD_WRAPPER_RE = /(\(function \(global, factory\) \{)((?:\s.*?)*)(\}\(this,)/;
 const CJS_FACTORY_RE = /(module.exports = )(factory\(.*?\))( :)/;
 const AMD_FACTORY_RE = /(define\()(.*?, factory)(\) :)/;
@@ -24,7 +21,7 @@ function optional(config = {}) {
 			let factory = (CJS_FACTORY_RE.exec(content) || [])[2];
 			let updated = false;
 
-			for (let lib of chunk.imports) {
+			for (const lib of chunk.imports) {
 				if (!include || include.indexOf(lib) !== -1) {
 					const regex = new RegExp(`require\\('${lib}'\\)`);
 					if (!regex.test(factory)) {
@@ -58,53 +55,6 @@ function optional(config = {}) {
 	};
 }
 
-// https://github.com/chartjs/Chart.js/issues/5208
-function stylesheet(config = {}) {
-	const minifier = new cleancss();
-	const styles = [];
-
-	return {
-		name: 'stylesheet',
-		transform(code, id) {
-			// Note that 'id' can be mapped to a CJS proxy import, in which case
-			// 'id' will start with 'commonjs-proxy', so let's first check if we
-			// are importing an existing css file (i.e. startsWith()).
-			if (!id.startsWith(path.resolve('.')) || !id.endsWith('.css')) {
-				return;
-			}
-
-			if (config.minify) {
-				code = minifier.minify(code).styles;
-			}
-
-			// keep track of all imported stylesheets (already minified)
-			styles.push(code);
-
-			return {
-				code: 'export default ' + JSON.stringify(code)
-			};
-		},
-		generateBundle(opts, bundle) {
-			if (!config.extract) {
-				return;
-			}
-
-			const entry = Object.keys(bundle).find(v => bundle[v].isEntry);
-			const name = (entry || '').replace(/\.js$/i, '.css');
-			if (!name) {
-				this.error('failed to guess the output file name');
-			}
-
-			this.emitFile({
-				type: 'asset',
-				source: styles.filter(v => !!v).join(''),
-				fileName: name
-			});
-		}
-	};
-}
-
 module.exports = {
-	optional,
-	stylesheet
+	optional
 };

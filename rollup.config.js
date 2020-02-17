@@ -7,7 +7,6 @@ const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
 const terser = require('rollup-plugin-terser').terser;
 const optional = require('./rollup.plugins').optional;
-const stylesheet = require('./rollup.plugins').stylesheet;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
@@ -29,13 +28,12 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel(),
-			stylesheet({
-				extract: true
-			}),
 			optional({
 				include: ['moment']
 			}),
-			cleanup(),
+			cleanup({
+				sourcemap: true
+			})
 		],
 		output: {
 			name: 'Chart',
@@ -59,10 +57,6 @@ module.exports = [
 			babel(),
 			optional({
 				include: ['moment']
-			}),
-			stylesheet({
-				extract: true,
-				minify: true
 			}),
 			terser({
 				output: {
@@ -93,10 +87,9 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel(),
-			stylesheet({
-				extract: true
-			}),
-			cleanup(),
+			cleanup({
+				sourcemap: true
+			})
 		],
 		output: {
 			name: 'Chart',
@@ -118,10 +111,6 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel(),
-			stylesheet({
-				extract: true,
-				minify: true
-			}),
 			terser({
 				output: {
 					preamble: banner
