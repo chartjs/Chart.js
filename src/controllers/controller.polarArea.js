@@ -128,12 +128,12 @@ class PolarAreaController extends DatasetController {
 		const opts = chart.options;
 		const minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
-		chart.outerRadius = Math.max(minSize / 2, 0);
-		chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
-		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
+		const outerRadius = Math.max(minSize / 2, 0);
+		const innerRadius = Math.max(opts.cutoutPercentage ? (outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
+		const radiusLength = (outerRadius - innerRadius) / chart.getVisibleDatasetCount();
 
-		me.outerRadius = chart.outerRadius - (chart.radiusLength * me.index);
-		me.innerRadius = me.outerRadius - chart.radiusLength;
+		me.outerRadius = outerRadius - (radiusLength * me.index);
+		me.innerRadius = me.outerRadius - radiusLength;
 	}
 
 	updateElements(arcs, start, mode) {
