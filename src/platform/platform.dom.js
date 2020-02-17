@@ -7,6 +7,10 @@ import BasePlatform from './platform.base';
 import {_getParentNode} from '../helpers/helpers.dom';
 import ResizeObserver from 'resize-observer-polyfill';
 
+/**
+ * @typedef { import("../core/core.controller").default } Chart
+ */
+
 const EXPANDO_KEY = '$chartjs';
 
 /**
@@ -45,6 +49,8 @@ function readUsedSize(element, property) {
  * Initializes the canvas style and render size without modifying the canvas display size,
  * since responsiveness is handled by the controller.resize() method. The config is used
  * to determine the aspect ratio to apply in case no explicit height has been specified.
+ * @param {HTMLCanvasElement} canvas
+ * @param {{ options: any; }} config
  */
 function initCanvas(canvas, config) {
 	const style = canvas.style;
@@ -169,7 +175,7 @@ function throttled(fn, thisArg) {
  * Calling `fn` is limited to once per animation frame
  * @param {Element} element - The element to monitor
  * @param {function} fn - Callback function to call when resized
- * @return {ResizeObserver=}
+ * @return {ResizeObserver}
  */
 function watchForResize(element, fn) {
 	const observer = new ResizeObserver(entries => {
@@ -186,7 +192,7 @@ function watchForResize(element, fn) {
  * Detect attachment of `element` or its direct `parent` to DOM
  * @param {Element} element - The element to watch for
  * @param {function} fn - Callback function to call when attachment is detected
- * @return {MutationObserver=}
+ * @return {MutationObserver}
  */
 function watchForAttachment(element, fn) {
 	const observer = new MutationObserver(entries => {
@@ -229,6 +235,10 @@ function watchForDetachment(element, fn) {
 	return observer;
 }
 
+/**
+ * @param {{ [x: string]: any; resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
+ * @param {string} type
+ */
 function removeObserver(proxies, type) {
 	const observer = proxies[type];
 	if (observer) {
@@ -237,17 +247,19 @@ function removeObserver(proxies, type) {
 	}
 }
 
+/**
+ * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
+ */
 function unlistenForResize(proxies) {
 	removeObserver(proxies, 'attach');
 	removeObserver(proxies, 'detach');
 	removeObserver(proxies, 'resize');
 }
 
-
 /**
- * @param {Element} canvas
+ * @param {HTMLCanvasElement} canvas
  * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- * @param {Function} listener
+ * @param {function} listener
  */
 function listenForResize(canvas, proxies, listener) {
 	// Helper for recursing when canvas is detached from it's parent
@@ -279,6 +291,11 @@ function listenForResize(canvas, proxies, listener) {
  */
 export default class DomPlatform extends BasePlatform {
 
+	/**
+	 * @param {HTMLCanvasElement} canvas
+	 * @param {{ options: { aspectRatio?: number; }; }} config
+	 * @return {CanvasRenderingContext2D=}
+	 */
 	acquireContext(canvas, config) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext
 		// method, for example: https://github.com/kkapsner/CanvasBlocker
@@ -302,6 +319,9 @@ export default class DomPlatform extends BasePlatform {
 		return null;
 	}
 
+	/**
+	 * @param {CanvasRenderingContext2D} context
+	 */
 	releaseContext(context) {
 		const canvas = context.canvas;
 		if (!canvas[EXPANDO_KEY]) {
@@ -334,6 +354,12 @@ export default class DomPlatform extends BasePlatform {
 		return true;
 	}
 
+	/**
+	 *
+	 * @param {Chart} chart
+	 * @param {string} type
+	 * @param {function} listener
+	 */
 	addEventListener(chart, type, listener) {
 		// Can have only one listener per type, so make sure previous is removed
 		this.removeEventListener(chart, type);
@@ -351,6 +377,11 @@ export default class DomPlatform extends BasePlatform {
 		addListener(canvas, type, proxy);
 	}
 
+
+	/**
+	 * @param {Chart} chart
+	 * @param {string} type
+	 */
 	removeEventListener(chart, type) {
 		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});

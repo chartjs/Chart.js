@@ -87,7 +87,9 @@ module.exports = [
 			resolve(),
 			commonjs(),
 			babel(),
-			cleanup()
+			cleanup({
+				sourcemap: true
+			})
 		],
 		output: {
 			name: 'Chart',

@@ -208,6 +208,7 @@ class Chart {
 		this.scales = {};
 		this.scale = undefined;
 		this.$plugins = undefined;
+		this.$proxies = {};
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -292,12 +293,13 @@ class Chart {
 		const canvas = me.canvas;
 		const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
 
-		if (height === undefined) {
+		if (width === undefined || height === undefined) {
 			width = getMaximumWidth(canvas);
 			height = getMaximumHeight(canvas);
 		}
 		// the canvas render width and height will be casted to integers so make sure that
 		// the canvas display style uses the same integer values to avoid blurring effect.
+
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 		const newWidth = Math.max(0, Math.floor(width));
 		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
