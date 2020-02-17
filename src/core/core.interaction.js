@@ -50,7 +50,7 @@ function evaluateAllVisibleItems(chart, handler) {
  * @param {object} metaset - the dataset meta
  * @param {string} axis - the axis mide. x|y|xy
  * @param {number} value - the value to find
- * @param {boolean} intersect - should the element intersect
+ * @param {boolean} [intersect] - should the element intersect
  * @returns {{lo:number, hi:number}} indices to search data array between
  */
 function binarySearch(metaset, axis, value, intersect) {

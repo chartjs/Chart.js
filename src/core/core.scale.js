@@ -267,19 +267,19 @@ class Scale extends Element {
 		this.paddingRight = undefined;
 
 		// scale-specific properties
-		/** @type {string} */
+		/** @type {string=} */
 		this.axis = undefined;
-		/** @type {number} */
+		/** @type {number=} */
 		this.labelRotation = undefined;
 		this.min = undefined;
 		this.max = undefined;
 		/** @type {object[]} */
 		this.ticks = null;
-		/** @type {object[]} */
+		/** @type {object[]|null} */
 		this._gridLineItems = null;
-		/** @type {object[]} */
+		/** @type {object[]|null} */
 		this._labelItems = null;
-		/** @type {object} */
+		/** @type {object|null} */
 		this._labelSizes = null;
 		/** @type {number} */
 		this._length = undefined;

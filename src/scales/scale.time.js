@@ -615,7 +615,7 @@ class TimeScale extends Scale {
 	 * @param {object} obj
 	 * @param {string} axis
 	 * @param {number} index
-	 * @return {number}
+	 * @return {number|null}
 	 * @private
 	 */
 	_parseObject(obj, axis, index) {

@@ -12,11 +12,8 @@ export default class BasePlatform {
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
 	 * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
 	 * @param {object} options - The chart options
-	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
-	acquireContext(canvas, options) { // eslint-disable-line no-unused-vars
-		return undefined;
-	}
+	acquireContext(canvas, options) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Called at chart destruction time, releases any resources associated to the context

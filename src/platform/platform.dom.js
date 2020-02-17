@@ -37,7 +37,7 @@ const EVENT_TYPES = {
  * `element` has a size relative to its parent and this last one is not yet displayed,
  * for example because of `display: none` on a parent node.
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
- * @returns {number} Size in pixels or undefined if unknown.
+ * @returns {number=} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
 	const value = helpers.dom.getStyle(element, property);
@@ -307,7 +307,7 @@ export default class DomPlatform extends BasePlatform {
 	/**
 	 * @param {HTMLCanvasElement} canvas
 	 * @param {{ options: { aspectRatio?: number; }; }} config
-	 * @return {CanvasRenderingContext2D=}
+	 * @return {CanvasRenderingContext2D|null}
 	 */
 	acquireContext(canvas, config) {
 		// To prevent canvas fingerprinting, some add-ons undefine the getContext

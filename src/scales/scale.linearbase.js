@@ -2,7 +2,10 @@ import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 
-// Implementation of the nice number algorithm used in determining where axis labels will go
+/**
+ * Implementation of the nice number algorithm used in determining where axis labels will go
+ * @return {number}
+ */
 function niceNum(range, round) {
 	const exponent = Math.floor(log10(range));
 	const fraction = range / Math.pow(10, exponent);

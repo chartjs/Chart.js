@@ -63,7 +63,7 @@ function getSegment(segment, points, bounds) {
  * @param {number} segment.end - end index of the segment, referring the points array
  * @param {boolean} segment.loop - indicates that the segment is a loop
  * @param {Point[]} points - the points that this segment refers to
- * @param {object} bounds
+ * @param {object} [bounds]
  * @param {string} bounds.property - the property of a `Point` we are bounding. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the property
  * @param {number} bounds.end - end value of the property
@@ -114,7 +114,7 @@ export function _boundSegment(segment, points, bounds) {
 /**
  * Returns the segments of the line that are inside given bounds
  * @param {Line} line
- * @param {object} bounds
+ * @param {object} [bounds]
  * @param {string} bounds.property - the property we are bounding with. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the `property`
  * @param {number} bounds.end - end value of the `property`
