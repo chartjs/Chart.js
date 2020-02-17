@@ -256,10 +256,10 @@ class Scale extends Element {
 		// TODO: make maxWidth, maxHeight private
 		this.maxWidth = -1;
 		this.maxHeight = -1;
-		this.paddingTop = -1;
-		this.paddingBottom = -1;
-		this.paddingLeft = -1;
-		this.paddingRight = -1;
+		this.paddingTop = 0;
+		this.paddingBottom = 0;
+		this.paddingLeft = 0;
+		this.paddingRight = 0;
 
 		// scale-specific properties
 		/** @type {string=} */
