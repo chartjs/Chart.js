@@ -4,7 +4,7 @@ import {isNullOrUndef, isArray, isObject, valueOrDefault} from './helpers.core';
 /**
  * Converts the given font object into a CSS font string.
  * @param {object} font - A font object.
- * @return {string} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+ * @return {string|null} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  * @private
  */
 function toFontString(font) {
