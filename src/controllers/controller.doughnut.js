@@ -184,7 +184,7 @@ class DoughnutController extends DatasetController {
 		const maxHeight = (chartArea.bottom - chartArea.top - borderWidth) / ratioY;
 		const outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
 		const innerRadius = Math.max(outerRadius * cutout, 0);
-		const radiusLength = (outerRadius - innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
+		const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
 		me.offsetX = offsetX * outerRadius;
 		me.offsetY = offsetY * outerRadius;
 
@@ -332,11 +332,11 @@ class DoughnutController extends DatasetController {
 	}
 
 	/**
-	 * Returns the sum of all visibile data set weights.  This value can be 0.
+	 * Returns the sum of all visibile data set weights.
 	 * @private
 	 */
 	_getVisibleDatasetWeightTotal() {
-		return this._getRingWeightOffset(this.chart.data.datasets.length);
+		return this._getRingWeightOffset(this.chart.data.datasets.length) || 1;
 	}
 }
 
