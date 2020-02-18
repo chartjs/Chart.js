@@ -21,35 +21,25 @@ defaults.set('elements', {
  * @private
  */
 function getBarBounds(bar, useFinalPosition) {
-	const {x, y, base, width, height} = bar.getProps([
-		'x',
-		'y',
-		'base',
-		'width',
-		'height'], useFinalPosition);
+	const {x, y, base, width, height} = bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition);
 
-	let x1, x2, y1, y2, half;
+	let left, right, top, bottom, half;
 
 	if (bar.horizontal) {
 		half = height / 2;
-		x1 = Math.min(x, base);
-		x2 = Math.max(x, base);
-		y1 = y - half;
-		y2 = y + half;
+		left = Math.min(x, base);
+		right = Math.max(x, base);
+		top = y - half;
+		bottom = y + half;
 	} else {
 		half = width / 2;
-		x1 = x - half;
-		x2 = x + half;
-		y1 = Math.min(y, base);
-		y2 = Math.max(y, base);
+		left = x - half;
+		right = x + half;
+		top = Math.min(y, base);
+		bottom = Math.max(y, base);
 	}
 
-	return {
-		left: x1,
-		top: y1,
-		right: x2,
-		bottom: y2
-	};
+	return {left, top, right, bottom};
 }
 
 function swap(orig, v1, v2) {
