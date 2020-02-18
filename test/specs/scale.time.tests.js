@@ -822,7 +822,7 @@ describe('Time scale tests', function() {
 			},
 		});
 		expect(chart.scales.y.width).toEqual(0);
-		expect(chart.scales.y.maxWidth).toEqual(0);
+		expect(chart.scales.y._maxWidth).toEqual(0);
 		expect(chart.width).toEqual(0);
 	});
 

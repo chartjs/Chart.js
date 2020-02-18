@@ -89,8 +89,8 @@ function updateDims(chartArea, params, layout) {
 	layout.size = layout.horizontal ? box.height : box.width;
 	chartArea[layout.pos] += layout.size;
 
-	if (box.getPadding) {
-		const boxPadding = box.getPadding();
+	if (box._getPadding) {
+		const boxPadding = box._getPadding();
 		maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
 		maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
 		maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
@@ -217,7 +217,7 @@ defaults.set('layout', {
  * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
  * @prop {function} update - Takes two parameters: width and height. Returns size of item
  * @prop {function} draw - Draws the element
- * @prop {function} [getPadding] -  Returns an object with padding on the edges
+ * @prop {function} [_getPadding] -  Returns an object with padding on the edges
  * @prop {number} width - Width of item. Must be valid after update()
  * @prop {number} height - Height of item. Must be valid after update()
  * @prop {number} left - Left edge of the item. Set by layout system and cannot be used in update

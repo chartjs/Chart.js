@@ -246,25 +246,18 @@ class Scale extends Element {
 		this.width = undefined;
 		/** @type {number} */
 		this.height = undefined;
-		this.margins = {
+		this._margins = {
 			left: 0,
 			right: 0,
 			top: 0,
 			bottom: 0
 		};
-		// TODO: make maxWidth, maxHeight private
-		/** @type {number} */
-		this.maxWidth = undefined;
-		/** @type {number} */
-		this.maxHeight = undefined;
-		/** @type {number} */
-		this.paddingTop = undefined;
-		/** @type {number} */
-		this.paddingBottom = undefined;
-		/** @type {number} */
-		this.paddingLeft = undefined;
-		/** @type {number} */
-		this.paddingRight = undefined;
+		this._maxWidth = -1;
+		this._maxHeight = -1;
+		this._paddingTop = 0;
+		this._paddingBottom = 0;
+		this._paddingLeft = 0;
+		this._paddingRight = 0;
 
 		// scale-specific properties
 		/** @type {string=} */
@@ -379,13 +372,13 @@ class Scale extends Element {
 	 * @return {{top: number, left: number, bottom: number, right: number}} the necessary padding
 	 * @private
 	 */
-	getPadding() {
+	_getPadding() {
 		const me = this;
 		return {
-			left: me.paddingLeft || 0,
-			top: me.paddingTop || 0,
-			right: me.paddingRight || 0,
-			bottom: me.paddingBottom || 0
+			left: me._paddingLeft || 0,
+			top: me._paddingTop || 0,
+			right: me._paddingRight || 0,
+			bottom: me._paddingBottom || 0
 		};
 	}
 
@@ -432,9 +425,9 @@ class Scale extends Element {
 		me.beforeUpdate();
 
 		// Absorb the master measurements
-		me.maxWidth = maxWidth;
-		me.maxHeight = maxHeight;
-		me.margins = Object.assign({
+		me._maxWidth = maxWidth;
+		me._maxHeight = maxHeight;
+		me._margins = Object.assign({
 			left: 0,
 			right: 0,
 			top: 0,
@@ -533,11 +526,11 @@ class Scale extends Element {
 		// Set the unconstrained dimension before label rotation
 		if (me.isHorizontal()) {
 			// Reset position before calculating rotation
-			me.width = me.maxWidth;
+			me.width = me._maxWidth;
 			me.left = 0;
 			me.right = me.width;
 		} else {
-			me.height = me.maxHeight;
+			me.height = me._maxHeight;
 
 			// Reset position before calculating rotation
 			me.top = 0;
@@ -545,10 +538,10 @@ class Scale extends Element {
 		}
 
 		// Reset padding
-		me.paddingLeft = 0;
-		me.paddingTop = 0;
-		me.paddingRight = 0;
-		me.paddingBottom = 0;
+		me._paddingLeft = 0;
+		me._paddingTop = 0;
+		me._paddingRight = 0;
+		me._paddingBottom = 0;
 	}
 	afterSetDimensions() {
 		call(this.options.afterSetDimensions, [this]);
@@ -623,13 +616,13 @@ class Scale extends Element {
 
 		// Estimate the width of each grid based on the canvas width, the maximum
 		// label width and the number of tick intervals
-		const maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
-		tickWidth = options.offset ? me.maxWidth / numTicks : maxWidth / (numTicks - 1);
+		const maxWidth = Math.min(me._maxWidth, me.chart.width - maxLabelWidth);
+		tickWidth = options.offset ? me._maxWidth / numTicks : maxWidth / (numTicks - 1);
 
 		// Allow 3 pixels x2 padding either side for label readability
 		if (maxLabelWidth + 6 > tickWidth) {
 			tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
-			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
+			maxHeight = me._maxHeight - getTickMarkLength(options.gridLines)
 				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
 			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
 			labelRotation = toDegrees(Math.min(
@@ -669,14 +662,14 @@ class Scale extends Element {
 
 		// Width
 		if (isHorizontal) {
-			minSize.width = me.maxWidth;
+			minSize.width = me._maxWidth;
 		} else if (display) {
 			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
 		}
 
 		// height
 		if (!isHorizontal) {
-			minSize.height = me.maxHeight; // fill all the height
+			minSize.height = me._maxHeight; // fill all the height
 		} else if (display) {
 			minSize.height = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
 		}
@@ -702,7 +695,7 @@ class Scale extends Element {
 					+ cosRotation * (highestLabelSize.height - (isRotated ? highestLabelSize.offset : 0))
 					+ (isRotated ? 0 : lineSpace); // padding
 
-				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
+				minSize.height = Math.min(me._maxHeight, minSize.height + labelHeight + tickPadding);
 
 				const offsetLeft = me.getPixelForTick(0) - me.left;
 				const offsetRight = me.right - me.getPixelForTick(me.ticks.length - 1);
@@ -724,8 +717,8 @@ class Scale extends Element {
 
 				// Adjust padding taking into account changes in offsets
 				// and add 3 px to move away from canvas edges
-				me.paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
-				me.paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
+				me._paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
+				me._paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
 			} else {
 				// A vertical axis is more constrained by the width. Labels are the
 				// dominant factor here, so get that length first and account for padding
@@ -734,21 +727,21 @@ class Scale extends Element {
 					// tickPadding is not implemented for horizontal
 					widestLabelSize.width + tickPadding + lineSpace;
 
-				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
+				minSize.width = Math.min(me._maxWidth, minSize.width + labelWidth);
 
-				me.paddingTop = firstLabelSize.height / 2;
-				me.paddingBottom = lastLabelSize.height / 2;
+				me._paddingTop = firstLabelSize.height / 2;
+				me._paddingBottom = lastLabelSize.height / 2;
 			}
 		}
 
 		me._handleMargins();
 
 		if (isHorizontal) {
-			me.width = me._length = chart.width - me.margins.left - me.margins.right;
+			me.width = me._length = chart.width - me._margins.left - me._margins.right;
 			me.height = minSize.height;
 		} else {
 			me.width = minSize.width;
-			me.height = me._length = chart.height - me.margins.top - me.margins.bottom;
+			me.height = me._length = chart.height - me._margins.top - me._margins.bottom;
 		}
 	}
 
@@ -758,11 +751,11 @@ class Scale extends Element {
 	 */
 	_handleMargins() {
 		const me = this;
-		if (me.margins) {
-			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
-			me.margins.top = Math.max(me.paddingTop, me.margins.top);
-			me.margins.right = Math.max(me.paddingRight, me.margins.right);
-			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
+		if (me._margins) {
+			me._margins.left = Math.max(me._paddingLeft, me._margins.left);
+			me._margins.top = Math.max(me._paddingTop, me._margins.top);
+			me._margins.right = Math.max(me._paddingRight, me._margins.right);
+			me._margins.bottom = Math.max(me._paddingBottom, me._margins.bottom);
 		}
 	}
 

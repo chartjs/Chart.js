@@ -128,6 +128,13 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Scale.handleDirectionalChanges` is now private
 * `Scale.longestLabelWidth`
 * `Scale.longestTextCache` is now private
+* `Scale.margins` is now private
+* `Scale.maxHeight` is now private
+* `Scale.maxWidth` is now private
+* `Scale.paddingBottom` is now private
+* `Scale.paddingLeft` is now private
+* `Scale.paddingRight` is now private
+* `Scale.paddingTop` is now private
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
 * `Scale.tickValues` is now private
@@ -205,6 +212,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `DatasetController.removeElements` was renamed to `DatasetController._removeElements`
 * `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
 * `RadialLinearScale.setReductions` was renamed to `RadialLinearScale._setReductions`
+* `Scale.getPadding` was renamed to `Scale._getPadding`
 * `Scale.handleMargins` was renamed to `Scale._handleMargins`
 * `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`

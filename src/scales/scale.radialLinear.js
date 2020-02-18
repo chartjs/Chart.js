@@ -140,7 +140,7 @@ function fitWithPointLabels(scale) {
 		l: 0,
 		r: scale.width,
 		t: 0,
-		b: scale.height - scale.paddingTop
+		b: scale.height - scale._paddingTop
 	};
 	const furthestAngles = {};
 	let i, textSize, pointPosition;
@@ -309,12 +309,12 @@ class RadialLinearScale extends LinearScaleBase {
 		const me = this;
 
 		// Set the unconstrained dimension before label rotation
-		me.width = me.maxWidth;
-		me.height = me.maxHeight;
-		me.paddingTop = getTickBackdropHeight(me.options) / 2;
+		me.width = me._maxWidth;
+		me.height = me._maxHeight;
+		me._paddingTop = getTickBackdropHeight(me.options) / 2;
 		me.xCenter = Math.floor(me.width / 2);
-		me.yCenter = Math.floor((me.height - me.paddingTop) / 2);
-		me.drawingArea = Math.min(me.height - me.paddingTop, me.width) / 2;
+		me.yCenter = Math.floor((me.height - me._paddingTop) / 2);
+		me.drawingArea = Math.min(me.height - me._paddingTop, me.width) / 2;
 	}
 
 	determineDataLimits() {
@@ -370,7 +370,7 @@ class RadialLinearScale extends LinearScaleBase {
 		let radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
 		let radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
 		let radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
-		let radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me.paddingTop), 0) / Math.cos(furthestAngles.b);
+		let radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me._paddingTop), 0) / Math.cos(furthestAngles.b);
 
 		radiusReductionLeft = numberOrZero(radiusReductionLeft);
 		radiusReductionRight = numberOrZero(radiusReductionRight);
@@ -388,10 +388,10 @@ class RadialLinearScale extends LinearScaleBase {
 		const maxRight = me.width - rightMovement - me.drawingArea;
 		const maxLeft = leftMovement + me.drawingArea;
 		const maxTop = topMovement + me.drawingArea;
-		const maxBottom = (me.height - me.paddingTop) - bottomMovement - me.drawingArea;
+		const maxBottom = (me.height - me._paddingTop) - bottomMovement - me.drawingArea;
 
 		me.xCenter = Math.floor(((maxLeft + maxRight) / 2) + me.left);
-		me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
+		me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me._paddingTop);
 	}
 
 	getIndexAngle(index) {
