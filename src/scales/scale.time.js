@@ -7,30 +7,31 @@ import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
+ * @typedef {{common: boolean, size: number, steps?: number}} Interval
  */
 
 // Integer constants are from the ES6 spec.
 const MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 /**
- * @type {Map<Unit, {common: boolean, size: number, steps?: number}>}
+ * @type {Object<Unit, Interval>}
  */
-const INTERVALS = new Map();
-INTERVALS.set('millisecond', {common: true, size: 1, steps: 1000});
-INTERVALS.set('second', {common: true, size: 1000, steps: 60});
-INTERVALS.set('minute', {common: true, size: 60000, steps: 60});
-INTERVALS.set('hour', {common: true, size: 3600000, steps: 24});
-INTERVALS.set('day', {common: true, size: 86400000, steps: 30});
-INTERVALS.set('week', {common: false, size: 604800000, steps: 4});
-INTERVALS.set('month', {common: true, size: 2.628e9, steps: 12});
-INTERVALS.set('quarter', {common: false, size: 7.884e9, steps: 4});
-INTERVALS.set('year', {common: true, size: 3.154e10});
+const INTERVALS = {
+	millisecond: {common: true, size: 1, steps: 1000},
+	second: {common: true, size: 1000, steps: 60},
+	minute: {common: true, size: 60000, steps: 60},
+	hour: {common: true, size: 3600000, steps: 24},
+	day: {common: true, size: 86400000, steps: 30},
+	week: {common: false, size: 604800000, steps: 4},
+	month: {common: true, size: 2.628e9, steps: 12},
+	quarter: {common: false, size: 7.884e9, steps: 4},
+	year: {common: true, size: 3.154e10}
+};
 
 /**
  * @type {Unit[]}
  */
-const UNITS = [];
-INTERVALS.forEach((v, k) => UNITS.push(k));
+const UNITS = /** @type Unit[] */(Object.keys(INTERVALS));
 
 /**
  * @param {number} a
@@ -60,7 +61,7 @@ function arrayUnique(items) {
 
 /**
  * @param {TimeScale} scale
- * {*} input
+ * @param {*} input
  */
 function parse(scale, input) {
 	if (isNullOrUndef(input)) {
@@ -256,11 +257,10 @@ function interpolate(table, skey, sval, tkey) {
  */
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 	const ilen = UNITS.length;
-	let i, interval, factor;
 
-	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
-		interval = INTERVALS.get(UNITS[i]);
-		factor = interval.steps ? interval.steps : MAX_INTEGER;
+	for (let i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
+		const interval = INTERVALS[UNITS[i]];
+		const factor = interval.steps ? interval.steps : MAX_INTEGER;
 
 		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
@@ -282,7 +282,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
 	for (let i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		const unit = UNITS[i];
-		if (INTERVALS.get(unit).common && scale._adapter.diff(max, min, unit) >= numTicks - 1) {
+		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= numTicks - 1) {
 			return unit;
 		}
 	}
@@ -296,7 +296,7 @@ function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
  */
 function determineMajorUnit(unit) {
 	for (let i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS.get(UNITS[i]).common) {
+		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
 	}
@@ -438,6 +438,7 @@ function setMajorTicks(scale, ticks, map, majorUnit) {
  */
 function ticksFromTimestamps(scale, values, majorUnit) {
 	const ticks = [];
+	/** @type {Object<number,object>} */
 	const map = {};
 	const ilen = values.length;
 	let i, value;
@@ -575,7 +576,7 @@ class TimeScale extends Scale {
 		const time = options.time || (options.time = {});
 		const adapter = this._adapter = new adapters._date(options.adapters.date);
 
-
+		/** @type {{data: number[], labels: number[], all: number[]}} */
 		this._cache = {
 			data: [],
 			labels: [],
@@ -584,7 +585,7 @@ class TimeScale extends Scale {
 
 		/** @type {Unit} */
 		this._unit = 'day';
-		/** @type {Unit | undefined} */
+		/** @type {Unit=} */
 		this._majorUnit = undefined;
 		/** @type {object} */
 		this._offsets = {};

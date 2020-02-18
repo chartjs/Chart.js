@@ -42,7 +42,7 @@ const EVENT_TYPES = {
 function readUsedSize(element, property) {
 	const value = helpers.dom.getStyle(element, property);
 	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
-	return matches ? Number(matches[1]) : undefined;
+	return matches ? +matches[1] : undefined;
 }
 
 /**
@@ -110,19 +110,22 @@ function initCanvas(canvas, config) {
  * @private
  */
 const supportsEventListenerOptions = (function() {
-	let supports = false;
+	let passiveSupported = false;
 	try {
-		const options = Object.defineProperty({}, 'passive', {
-			// eslint-disable-next-line getter-return
-			get() {
-				supports = true;
+		const options = {
+			get passive() { // This function will be called when the browser attempts to access the passive property.
+				passiveSupported = true;
+				return false;
 			}
-		});
-		window.addEventListener('e', null, options);
+		};
+		// @ts-ignore
+		window.addEventListener('test', null, options);
+		// @ts-ignore
+		window.removeEventListener('test', null, options);
 	} catch (e) {
 		// continue regardless of error
 	}
-	return supports;
+	return passiveSupported;
 }());
 
 // Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
