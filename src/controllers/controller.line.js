@@ -106,7 +106,7 @@ class LineController extends DatasetController {
 		// This option gives lines the ability to span gaps
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
-		values.steppedLine = resolve([config.steppedLine, lineOptions.stepped]);
+		values.stepped = resolve([config.stepped, lineOptions.stepped]);
 
 		return values;
 	}
