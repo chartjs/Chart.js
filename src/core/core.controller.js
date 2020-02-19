@@ -8,6 +8,8 @@ import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
 import scaleService from '../core/core.scaleService';
 import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';
+// @ts-ignore
+import {version} from '../../package.json';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
@@ -172,6 +174,8 @@ function getCanvas(item) {
 }
 
 class Chart {
+	static version = version;
+
 	constructor(item, config) {
 		const me = this;
 
