@@ -1000,7 +1000,7 @@ class Tooltip extends Element {
 		}
 
 		// Remember Last Actives
-		changed = !helpers._elementsEqual(active, lastActive);
+		changed = replay || !helpers._elementsEqual(active, lastActive);
 
 		// Only handle target event on tooltip change
 		if (changed) {
