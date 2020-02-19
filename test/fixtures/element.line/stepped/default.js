@@ -8,7 +8,7 @@ module.exports = {
 					borderColor: 'red',
 					fill: false,
 					lineTension: 0,
-					steppedLine: true
+					stepped: true
 				}
 			]
 		},

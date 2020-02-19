@@ -40,7 +40,7 @@ function lineTo(ctx, previous, target) {
 }
 
 function getLineMethod(options) {
-	if (options.steppedLine) {
+	if (options.stepped) {
 		return _steppedLineTo;
 	}
 
@@ -84,7 +84,7 @@ function pathSegment(ctx, line, segment, params) {
 			ctx.moveTo(point.x, point.y);
 			move = false;
 		} else {
-			lineMethod(ctx, prev, point, reverse, options.steppedLine);
+			lineMethod(ctx, prev, point, reverse, options.stepped);
 		}
 
 		prev = point;
@@ -92,7 +92,7 @@ function pathSegment(ctx, line, segment, params) {
 
 	if (loop) {
 		point = points[(start + (reverse ? ilen : 0)) % count];
-		lineMethod(ctx, prev, point, reverse, options.steppedLine);
+		lineMethod(ctx, prev, point, reverse, options.stepped);
 	}
 
 	return !!loop;
@@ -177,7 +177,7 @@ function fastPathSegment(ctx, line, segment, params) {
 function _getSegmentMethod(line) {
 	const opts = line.options;
 	const borderDash = opts.borderDash && opts.borderDash.length;
-	const useFastPath = !line._loop && !opts.tension && !opts.steppedLine && !borderDash;
+	const useFastPath = !line._loop && !opts.tension && !opts.stepped && !borderDash;
 	return useFastPath ? fastPathSegment : pathSegment;
 }
 
@@ -185,7 +185,7 @@ function _getSegmentMethod(line) {
  * @private
  */
 function _getInterpolationMethod(options) {
-	if (options.steppedLine) {
+	if (options.stepped) {
 		return _steppedInterpolation;
 	}
 
@@ -219,7 +219,7 @@ class Line extends Element {
 			return;
 		}
 		const options = me.options;
-		if (options.tension && !options.steppedLine) {
+		if (options.tension && !options.stepped) {
 			const loop = options.spanGaps ? me._loop : me._fullLoop;
 			_updateBezierControlPoints(me._points, options, chartArea, loop);
 		}
@@ -289,7 +289,7 @@ class Line extends Element {
 				continue;
 			}
 			const t = Math.abs((value - p1[property]) / (p2[property] - p1[property]));
-			const interpolated = _interpolate(p1, p2, t, options.steppedLine);
+			const interpolated = _interpolate(p1, p2, t, options.stepped);
 			interpolated[property] = point[property];
 			result.push(interpolated);
 		}

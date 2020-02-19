@@ -93,7 +93,7 @@ new Chart(ctx, {
 
 ### Automatic data decimation during draw
 
-Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `steppedLine` is `false` (default) and `borderDash` is `[]` (default).`
+Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `stepped` is `false` (default) and `borderDash` is `[]` (default).`
 This improves rendering speed by skipping drawing of invisible line segments.
 
 ```javascript
@@ -105,7 +105,7 @@ new Chart(ctx, {
             line: {
                 tension: 0, // disables bezier curves
                 fill: false,
-                steppedLine: false,
+                stepped: false,
                 borderDash: []
             }
         }
