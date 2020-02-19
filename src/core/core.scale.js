@@ -246,13 +246,12 @@ class Scale extends Element {
 		this.width = undefined;
 		/** @type {number} */
 		this.height = undefined;
-		this.margins = {
+		this._margins = {
 			left: 0,
 			right: 0,
 			top: 0,
 			bottom: 0
 		};
-		// TODO: make maxWidth, maxHeight private
 		/** @type {number} */
 		this.maxWidth = undefined;
 		/** @type {number} */
@@ -434,7 +433,7 @@ class Scale extends Element {
 		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
-		me.margins = Object.assign({
+		me._margins = Object.assign({
 			left: 0,
 			right: 0,
 			top: 0,
@@ -744,11 +743,11 @@ class Scale extends Element {
 		me._handleMargins();
 
 		if (isHorizontal) {
-			me.width = me._length = chart.width - me.margins.left - me.margins.right;
+			me.width = me._length = chart.width - me._margins.left - me._margins.right;
 			me.height = minSize.height;
 		} else {
 			me.width = minSize.width;
-			me.height = me._length = chart.height - me.margins.top - me.margins.bottom;
+			me.height = me._length = chart.height - me._margins.top - me._margins.bottom;
 		}
 	}
 
@@ -758,11 +757,11 @@ class Scale extends Element {
 	 */
 	_handleMargins() {
 		const me = this;
-		if (me.margins) {
-			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
-			me.margins.top = Math.max(me.paddingTop, me.margins.top);
-			me.margins.right = Math.max(me.paddingRight, me.margins.right);
-			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
+		if (me._margins) {
+			me._margins.left = Math.max(me.paddingLeft, me._margins.left);
+			me._margins.top = Math.max(me.paddingTop, me._margins.top);
+			me._margins.right = Math.max(me.paddingRight, me._margins.right);
+			me._margins.bottom = Math.max(me.paddingBottom, me._margins.bottom);
 		}
 	}
 
