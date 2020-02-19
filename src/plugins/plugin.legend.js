@@ -132,7 +132,7 @@ class Legend extends Element {
 		this.right = undefined;
 		this.height = undefined;
 		this.width = undefined;
-		this.margins = undefined;
+		this._margins = undefined;
 		this.paddingTop = undefined;
 		this.paddingBottom = undefined;
 		this.paddingLeft = undefined;
@@ -157,7 +157,7 @@ class Legend extends Element {
 		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
-		me.margins = margins;
+		me._margins = margins;
 
 		// Dimensions
 		me.beforeSetDimensions();

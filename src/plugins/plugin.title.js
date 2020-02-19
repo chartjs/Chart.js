@@ -26,7 +26,7 @@ class Title extends Element {
 		this.chart = config.chart;
 		this.options = config.options;
 		this.ctx = config.ctx;
-		this.margins = undefined;
+		this._margins = undefined;
 		this._padding = undefined;
 		this.legendHitBoxes = []; // Contains hit boxes for each dataset (in dataset order)
 		this.top = undefined;
@@ -56,7 +56,7 @@ class Title extends Element {
 		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
-		me.margins = margins;
+		me._margins = margins;
 
 		// Dimensions
 		me.beforeSetDimensions();

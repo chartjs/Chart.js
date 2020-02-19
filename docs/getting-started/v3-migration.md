@@ -128,15 +128,18 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.where`
 * `ILayoutItem.minSize`
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
+* `Legend.margins` is now private
 * `Line.calculatePointY`
 * `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.handleDirectionalChanges` is now private
 * `Scale.longestLabelWidth`
 * `Scale.longestTextCache` is now private
+* `Scale.margins` is now private
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
 * `Scale.tickValues` is now private
+* `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
 #### Removal of private APIs
