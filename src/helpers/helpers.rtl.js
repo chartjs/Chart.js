@@ -1,4 +1,4 @@
-const getRtlAdapter = function(rectX, width) {
+const getRightToLeftAdapter = function(rectX, width) {
 	return {
 		x(x) {
 			return rectX + rectX + width - x;
@@ -21,7 +21,7 @@ const getRtlAdapter = function(rectX, width) {
 	};
 };
 
-const getLtrAdapter = function() {
+const getLeftToRightAdapter = function() {
 	return {
 		x(x) {
 			return x;
@@ -40,11 +40,11 @@ const getLtrAdapter = function() {
 	};
 };
 
-const getAdapter = function(rtl, rectX, width) {
-	return rtl ? getRtlAdapter(rectX, width) : getLtrAdapter();
-};
+export function getRtlAdapter(rtl, rectX, width) {
+	return rtl ? getRightToLeftAdapter(rectX, width) : getLeftToRightAdapter();
+}
 
-const overrideTextDirection = function(ctx, direction) {
+export function overrideTextDirection(ctx, direction) {
 	let style, original;
 	if (direction === 'ltr' || direction === 'rtl') {
 		style = ctx.canvas.style;
@@ -56,17 +56,11 @@ const overrideTextDirection = function(ctx, direction) {
 		style.setProperty('direction', direction, 'important');
 		ctx.prevTextDirection = original;
 	}
-};
+}
 
-const restoreTextDirection = function(ctx, original) {
+export function restoreTextDirection(ctx, original) {
 	if (original !== undefined) {
 		delete ctx.prevTextDirection;
 		ctx.canvas.style.setProperty('direction', original[0], original[1]);
 	}
-};
-
-export {
-	getAdapter as getRtlAdapter,
-	overrideTextDirection,
-	restoreTextDirection
-};
+}
