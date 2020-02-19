@@ -142,15 +142,11 @@ class Arc extends Element {
 		};
 	}
 
-	tooltipPosition() {
-		const me = this;
-		const centreAngle = me.startAngle + ((me.endAngle - me.startAngle) / 2);
-		const rangeFromCentre = (me.outerRadius - me.innerRadius) / 2 + me.innerRadius;
-
-		return {
-			x: me.x + (Math.cos(centreAngle) * rangeFromCentre),
-			y: me.y + (Math.sin(centreAngle) * rangeFromCentre)
-		};
+	/**
+	 * @param {boolean} [useFinalPosition]
+	 */
+	tooltipPosition(useFinalPosition) {
+		return this.getCenterPoint(useFinalPosition);
 	}
 
 	draw(ctx) {

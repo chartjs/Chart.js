@@ -63,15 +63,6 @@ class Point extends Element {
 		return (radius + borderWidth) * 2;
 	}
 
-	tooltipPosition() {
-		const options = this.options;
-		return {
-			x: this.x,
-			y: this.y,
-			padding: options.radius + options.borderWidth
-		};
-	}
-
 	draw(ctx, chartArea) {
 		const me = this;
 		const options = me.options;

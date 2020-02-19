@@ -16,11 +16,12 @@ class Element {
 		}
 	}
 
-	tooltipPosition() {
-		return {
-			x: this.x,
-			y: this.y
-		};
+	/**
+	 * @param {boolean} [useFinalPosition]
+	 */
+	tooltipPosition(useFinalPosition) {
+		const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
+		return {x, y};
 	}
 
 	hasValue() {

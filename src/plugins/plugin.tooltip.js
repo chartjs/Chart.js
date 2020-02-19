@@ -912,7 +912,7 @@ class Tooltip extends Element {
 		const anims = me.$animations;
 		const animX = anims && anims.x;
 		const animY = anims && anims.y;
-		if (animX && animX.active() || animY && animY.active()) {
+		if (animX || animY) {
 			const position = positioners[options.position].call(me, me._active, me._eventPosition);
 			if (!position) {
 				return;

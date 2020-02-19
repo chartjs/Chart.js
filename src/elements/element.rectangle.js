@@ -173,18 +173,11 @@ class Rectangle extends Element {
 		return inRange(this, null, mouseY, useFinalPosition);
 	}
 
-	getCenterPoint() {
-		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal']);
+	getCenterPoint(useFinalPosition) {
+		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal', useFinalPosition]);
 		return {
 			x: horizontal ? (x + base) / 2 : x,
 			y: horizontal ? y : (y + base) / 2
-		};
-	}
-
-	tooltipPosition() {
-		return {
-			x: this.x,
-			y: this.y
 		};
 	}
 
