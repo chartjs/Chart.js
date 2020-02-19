@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define */
+/* eslint-disable import/no-nodejs-modules, import/no-commonjs, no-use-before-define */
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
 const file = require('gulp-file');
@@ -42,7 +42,7 @@ gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
 gulp.task('default', gulp.parallel('build'));
 
 function run(bin, args) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		const exe = '"' + process.execPath + '"';
 		const src = require.resolve(bin);
 		const cmd = [exe, src].concat(args || []).join(' ');
@@ -50,7 +50,7 @@ function run(bin, args) {
 
 		ps.stdout.pipe(process.stdout);
 		ps.stderr.pipe(process.stderr);
-		ps.on('close', function(error) {
+		ps.on('close', (error) => {
 			if (error) {
 				reject(error);
 			} else {
@@ -162,6 +162,7 @@ function docsTask(done) {
 }
 
 function unittestTask(done) {
+	process.env.NODE_ENV = 'test';
 	new karma.Server({
 		configFile: path.join(__dirname, 'karma.conf.js'),
 		singleRun: !argv.watch,
@@ -173,7 +174,7 @@ function unittestTask(done) {
 		}
 	},
 	// https://github.com/karma-runner/gulp-karma/issues/18
-	function(error) {
+	(error) => {
 		error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
 		done(error);
 	}).start();
