@@ -1,7 +1,5 @@
 /* eslint-disable import/no-namespace */
 
-import color from '@kurkle/color';
-
 import * as coreHelpers from './helpers.core';
 import * as canvas from './helpers.canvas';
 import * as curve from './helpers.curve';
@@ -11,16 +9,7 @@ import * as options from './helpers.options';
 import * as math from './helpers.math';
 import * as rtl from './helpers.rtl';
 
-const colorHelper =
-	function(value) {
-		if (value instanceof CanvasGradient || value instanceof CanvasPattern) {
-			// TODO: figure out what this should be. Previously returned
-			// the default color
-			return value;
-		}
-
-		return color(value);
-	};
+import {color, getHoverColor} from './helpers.color';
 
 export default {
 	...coreHelpers,
@@ -45,10 +34,6 @@ export default {
 	fontString(pixelSize, fontStyle, fontFamily) {
 		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 	},
-	color: colorHelper,
-	getHoverColor(colorValue) {
-		return (colorValue instanceof CanvasPattern || colorValue instanceof CanvasGradient) ?
-			colorValue :
-			colorHelper(colorValue).saturate(0.5).darken(0.1).hexString();
-	}
+	color,
+	getHoverColor
 };
