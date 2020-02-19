@@ -1,7 +1,6 @@
 /* eslint-disable import/no-commonjs */
 /* eslint-env es6 */
 
-const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
@@ -28,7 +27,6 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			commonjs(),
 			babel(),
 			optional({
 				include: ['moment']
@@ -56,7 +54,6 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			commonjs(),
 			babel(),
 			optional({
 				include: ['moment']
@@ -89,7 +86,6 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			commonjs(),
 			babel(),
 			cleanup({
 				sourcemap: true
@@ -114,7 +110,6 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			commonjs(),
 			babel(),
 			terser({
 				output: {
