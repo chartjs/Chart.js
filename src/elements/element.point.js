@@ -18,7 +18,9 @@ defaults.set('elements', {
 	}
 });
 
-class Point extends Element {
+export default class Point extends Element {
+
+	static _type = 'point';
 
 	constructor(cfg) {
 		super();
@@ -89,7 +91,3 @@ class Point extends Element {
 		return options.radius + options.hitRadius;
 	}
 }
-
-Point.prototype._type = 'point';
-
-export default Point;

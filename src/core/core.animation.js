@@ -19,7 +19,7 @@ const interpolators = {
 	}
 };
 
-class Animation {
+export default class Animation {
 	constructor(cfg, target, prop, to) {
 		const currentValue = target[prop];
 
@@ -80,5 +80,3 @@ class Animation {
 		me._target[prop] = me._fn(from, to, factor);
 	}
 }
-
-export default Animation;

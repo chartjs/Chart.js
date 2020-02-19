@@ -95,10 +95,7 @@ function getBoxWidth(labelOpts, fontSize) {
 		labelOpts.boxWidth;
 }
 
-/**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
- */
-class Legend extends Element {
+export class Legend extends Element {
 
 	constructor(config) {
 		super();

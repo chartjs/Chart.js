@@ -173,8 +173,16 @@ function getCanvas(item) {
 	return item;
 }
 
-class Chart {
+export default class Chart {
+
 	static version = version;
+
+	/**
+	 * NOTE(SB) We actually don't use this container anymore but we need to keep it
+	 * for backward compatibility. Though, it can still be useful for plugins that
+	 * would need to work on multiple charts?!
+	 */
+	static instances = {};
 
 	constructor(item, config) {
 		const me = this;
@@ -1073,12 +1081,3 @@ class Chart {
 		return changed;
 	}
 }
-
-/**
- * NOTE(SB) We actually don't use this container anymore but we need to keep it
- * for backward compatibility. Though, it can still be useful for plugins that
- * would need to work on multiple charts?!
- */
-Chart.instances = {};
-
-export default Chart;

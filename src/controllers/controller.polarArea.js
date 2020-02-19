@@ -88,7 +88,7 @@ function getStartAngleRadians(deg) {
 	return toRadians(deg) - 0.5 * Math.PI;
 }
 
-class PolarAreaController extends DatasetController {
+export default class PolarAreaController extends DatasetController {
 
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
@@ -243,5 +243,3 @@ PolarAreaController.prototype._dataElementOptions = [
 	'hoverBorderColor',
 	'hoverBorderWidth'
 ];
-
-export default PolarAreaController;

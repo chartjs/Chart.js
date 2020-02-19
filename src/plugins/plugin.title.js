@@ -14,10 +14,7 @@ defaults.set('title', {
 	weight: 2000         // by default greater than legend (1000) to be above
 });
 
-/**
- * IMPORTANT: this class is exposed publicly as Chart.Title, backward compatibility required!
- */
-class Title extends Element {
+export class Title extends Element {
 	constructor(config) {
 		super();
 

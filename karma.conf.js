@@ -1,9 +1,9 @@
 /* eslint-disable import/no-commonjs */
 
+const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
 const builds = require('./rollup.config');
-const babel = require('rollup-plugin-babel');
 
 module.exports = function(karma) {
 	const args = karma.args || {};

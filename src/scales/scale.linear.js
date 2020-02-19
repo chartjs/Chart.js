@@ -9,7 +9,11 @@ const defaultConfig = {
 	}
 };
 
-class LinearScale extends LinearScaleBase {
+export default class LinearScale extends LinearScaleBase {
+
+	// INTERNAL: static default options, registered in src/index.js
+	static _defaults = defaultConfig;
+
 	determineDataLimits() {
 		const me = this;
 		const options = me.options;
@@ -70,7 +74,3 @@ class LinearScale extends LinearScaleBase {
 		return this.getPixelForValue(ticks[index].value);
 	}
 }
-
-// INTERNAL: static default options, registered in src/index.js
-LinearScale._defaults = defaultConfig;
-export default LinearScale;

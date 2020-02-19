@@ -40,7 +40,7 @@ defaults.set('horizontalBar', {
 	}
 });
 
-class HorizontalBarController extends BarController {
+export default class HorizontalBarController extends BarController {
 
 	/**
 	 * @private
@@ -56,5 +56,3 @@ class HorizontalBarController extends BarController {
 		return this._cachedMeta.yAxisID;
 	}
 }
-
-export default HorizontalBarController;

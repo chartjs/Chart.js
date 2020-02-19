@@ -290,7 +290,10 @@ function numberOrZero(param) {
 	return isNumber(param) ? param : 0;
 }
 
-class RadialLinearScale extends LinearScaleBase {
+export default class RadialLinearScale extends LinearScaleBase {
+
+	// INTERNAL: static default options, registered in src/index.js
+	static _defaults = defaultConfig;
 
 	constructor(cfg) {
 		super(cfg);
@@ -540,7 +543,3 @@ class RadialLinearScale extends LinearScaleBase {
 	 */
 	_drawTitle() {}
 }
-
-// INTERNAL: static default options, registered in src/index.js
-RadialLinearScale._defaults = defaultConfig;
-export default RadialLinearScale;

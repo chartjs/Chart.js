@@ -1,6 +1,9 @@
 import {merge} from '../helpers/helpers.core';
 
-class Defaults {
+/**
+ * Please use the module's default export which provides a singleton instance
+ */
+export class Defaults {
 	constructor() {
 		this.color = 'rgba(0,0,0,0.1)';
 		this.elements = {};
@@ -35,7 +38,6 @@ class Defaults {
 	/**
 	 * @param {string} scope
 	 * @param {*} values
-	 * @private
 	 */
 	set(scope, values) {
 		return merge(this[scope] || (this[scope] = {}), values);

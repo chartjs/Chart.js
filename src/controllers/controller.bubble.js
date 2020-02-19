@@ -30,7 +30,7 @@ defaults.set('bubble', {
 	}
 });
 
-class BubbleController extends DatasetController {
+export default class BubbleController extends DatasetController {
 
 	/**
 	 * Parse array of objects
@@ -186,6 +186,3 @@ BubbleController.prototype._dataElementOptions = [
 	'pointStyle',
 	'rotation'
 ];
-
-
-export default BubbleController;

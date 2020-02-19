@@ -210,7 +210,9 @@ function getFirstScaleId(chart, axis) {
 	return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
-class DatasetController {
+export default class DatasetController {
+
+	static extend = helpers.inherits;
 
 	constructor(chart, datasetIndex) {
 		this.chart = chart;
@@ -829,7 +831,7 @@ class DatasetController {
 		const chart = me.chart;
 		const datasetOpts = me._config;
 		// @ts-ignore
-		const options = chart.options.elements[me.datasetElementType.prototype._type] || {};
+		const options = chart.options.elements[me.datasetElementType._type] || {};
 		const elementOptions = me._datasetElementOptions;
 		const values = {};
 		const context = me._getContext(undefined, active);
@@ -863,7 +865,7 @@ class DatasetController {
 		const chart = me.chart;
 		const datasetOpts = me._config;
 		// @ts-ignore
-		const options = chart.options.elements[me.dataElementType.prototype._type] || {};
+		const options = chart.options.elements[me.dataElementType._type] || {};
 		const elementOptions = me._dataElementOptions;
 		const values = {};
 		const context = me._getContext(index, active);
@@ -1128,8 +1130,6 @@ class DatasetController {
 	}
 }
 
-DatasetController.extend = helpers.inherits;
-
 /**
  * Element type used to generate a meta dataset (e.g. Chart.element.Line).
  */
@@ -1170,5 +1170,3 @@ DatasetController.prototype._dataElementOptions = [
 	'borderWidth',
 	'pointStyle'
 ];
-
-export default DatasetController;

@@ -223,7 +223,7 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 	}
 }
 
-class Scale extends Element {
+export default class Scale extends Element {
 
 	// eslint-disable-next-line max-statements
 	constructor(cfg) {
@@ -1572,5 +1572,3 @@ class Scale extends Element {
 }
 
 Scale.prototype._draw = Scale.prototype.draw;
-
-export default Scale;
