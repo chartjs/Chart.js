@@ -11,6 +11,7 @@ Chart.defaults.elements.rectangle.borderWidth = 2;
 ```
 
 ## Point Configuration
+
 Point elements are used to represent the points in a line, radar or bubble chart.
 
 Global point options: `Chart.defaults.elements.point`.
@@ -30,6 +31,7 @@ Global point options: `Chart.defaults.elements.point`.
 ### Point Styles
 
 The following values are supported:
+
 - `'circle'`
 - `'cross'`
 - `'crossRot'`
@@ -44,6 +46,7 @@ The following values are supported:
 If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
 ## Line Configuration
+
 Line elements are used to represent the line in a line chart.
 
 Global line options: `Chart.defaults.elements.line`.
@@ -61,9 +64,10 @@ Global line options: `Chart.defaults.elements.line`.
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
 | `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode)
 | `fill` | <code>boolean&#124;string</code> | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
-| `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
+| `stepped` | `boolean` | `false` | `true` to show the line as a stepped (`tension` will be ignored).
 
 ## Rectangle Configuration
+
 Rectangle elements are used to represent the bars in a bar chart.
 
 Global rectangle options: `Chart.defaults.elements.rectangle`.
@@ -76,6 +80,7 @@ Global rectangle options: `Chart.defaults.elements.rectangle`.
 | `borderSkipped` | `string` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
 
 ## Arc Configuration
+
 Arcs are used in the polar area, doughnut and pie charts.
 
 Global arc options: `Chart.defaults.elements.arc`.

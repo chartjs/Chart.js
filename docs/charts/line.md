@@ -78,7 +78,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
 | [`showLine`](#line-styling) | `boolean` | - | - | `undefined`
 | [`spanGaps`](#line-styling) | <code>boolean&#124;number</code> | - | - | `undefined`
-| [`stepped`](#stepped-line) | <code>boolean&#124;string</code> | - | - | `false`
+| [`stepped`](#stepped) | <code>boolean&#124;string</code> | - | - | `false`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 
@@ -152,7 +152,7 @@ The `'monotone'` algorithm is more suited to `y = f(x)` datasets : it preserves 
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
-### Stepped Line
+### Stepped
 
 The following values are supported for `stepped`.
 
