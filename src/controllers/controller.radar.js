@@ -1,7 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import {Line, Point} from '../elements/index';
-import {valueOrDefault} from '../helpers/helpers.core';
 
 defaults.set('radar', {
 	spanGaps: false,
@@ -18,6 +17,9 @@ defaults.set('radar', {
 });
 
 export default class RadarController extends DatasetController {
+
+	static datasetElementType = Line;
+	static dataElementType = Point;
 
 	/**
 	 * @protected
@@ -57,7 +59,7 @@ export default class RadarController extends DatasetController {
 			points,
 			_loop: true,
 			_fullLoop: labels.length === points.length,
-			options: me.resolveDatasetElementOptions()
+			options: me.resolveDatasetElementOptions(mode)
 		};
 
 		me.updateElement(line, undefined, properties, mode);
@@ -95,48 +97,4 @@ export default class RadarController extends DatasetController {
 			me.updateElement(point, index, properties, mode);
 		}
 	}
-
-	/**
-	 * @protected
-	 */
-	resolveDatasetElementOptions(active) {
-		const me = this;
-		const config = me._config;
-		const options = me.chart.options;
-		const values = super.resolveDatasetElementOptions(active);
-
-		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
-
-		return values;
-	}
 }
-
-RadarController.prototype.datasetElementType = Line;
-
-RadarController.prototype.dataElementType = Point;
-
-RadarController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderCapStyle',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'fill'
-];
-
-RadarController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
-};

@@ -3,8 +3,19 @@ import {isNumber} from '../helpers/helpers.math';
 
 export default class Element {
 
+	static _type = 'element';
+
 	static extend = inherits;
 
+	/**
+	 * Default options. Everything is looked up with `hover` prefix, so
+	 * only need to define those in case the default value is different.
+	 */
+	static _defaults = {};
+
+	/**
+	 * @param {object} [cfg] optional configuration
+	 */
 	constructor(cfg) {
 		this.x = undefined;
 		this.y = undefined;

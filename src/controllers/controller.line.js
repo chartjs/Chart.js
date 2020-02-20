@@ -3,7 +3,6 @@ import defaults from '../core/core.defaults';
 import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
-import {resolve} from '../helpers/helpers.options';
 
 defaults.set('line', {
 	showLines: true,
@@ -25,6 +24,9 @@ defaults.set('line', {
 
 export default class LineController extends DatasetController {
 
+	static datasetElementType = Line;
+	static dataElementType = Point;
+
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
@@ -44,7 +46,7 @@ export default class LineController extends DatasetController {
 		if (showLine && mode !== 'resize') {
 			const properties = {
 				points,
-				options: me.resolveDatasetElementOptions()
+				options: me.resolveDatasetElementOptions(mode)
 			};
 
 			me.updateElement(line, undefined, properties, mode);
@@ -93,26 +95,6 @@ export default class LineController extends DatasetController {
 	/**
 	 * @protected
 	 */
-	resolveDatasetElementOptions(active) {
-		const me = this;
-		const config = me._config;
-		const options = me.chart.options;
-		const lineOptions = options.elements.line;
-		const values = super.resolveDatasetElementOptions(active);
-
-		// The default behavior of lines is to break at null values, according
-		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
-		// This option gives lines the ability to span gaps
-		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
-		values.stepped = resolve([config.stepped, lineOptions.stepped]);
-
-		return values;
-	}
-
-	/**
-	 * @protected
-	 */
 	getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
@@ -156,35 +138,3 @@ export default class LineController extends DatasetController {
 		}
 	}
 }
-
-LineController.prototype.datasetElementType = Line;
-
-LineController.prototype.dataElementType = Point;
-
-LineController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderCapStyle',
-	'borderColor',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'capBezierPoints',
-	'cubicInterpolationMode',
-	'fill'
-];
-
-LineController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverHitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
-};

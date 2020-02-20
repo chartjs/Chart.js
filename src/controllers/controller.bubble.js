@@ -1,7 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import {Point} from '../elements/index';
-import {resolve} from '../helpers/helpers.options';
 
 defaults.set('bubble', {
 	animation: {
@@ -29,6 +28,8 @@ defaults.set('bubble', {
 });
 
 export default class BubbleController extends DatasetController {
+
+	static dataElementType = Point;
 
 	/**
 	 * Parse array of objects
@@ -58,7 +59,7 @@ export default class BubbleController extends DatasetController {
 		let i = (meta.data || []).length - 1;
 		let max = 0;
 		for (; i >= 0; --i) {
-			max = Math.max(max, me.getStyle(i, true).radius);
+			max = Math.max(max, Point.size(me.getStyle(i, false)), Point.size(me.getStyle(i, true)));
 		}
 		return max > 0 && max;
 	}
@@ -124,51 +125,26 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
+	 * @param {number} index
+	 * @param {string} [mode]
 	 * @protected
 	 */
 	resolveDataElementOptions(index, mode) {
-		const me = this;
-		const chart = me.chart;
-		const dataset = me.getDataset();
-		const parsed = me.getParsed(index);
-		let values = super.resolveDataElementOptions(index, mode);
+		const parsed = this.getParsed(index);
 
-		// Scriptable options
-		const context = {
-			chart,
-			dataIndex: index,
-			dataset,
-			datasetIndex: me.index
+		// Custom options to consider at top priority.
+		const custom = {
+			radius: parsed && parsed._custom
 		};
 
-		// In case values were cached (and thus frozen), we need to clone the values
-		if (values.$shared) {
-			values = Object.assign({}, values, {$shared: false});
-		}
+		const values = super.resolveDataElementOptions(index, mode, custom);
 
-
-		// Custom radius resolution
-		if (mode !== 'active') {
-			values.radius = 0;
+		// In `'active'` mode, `radius` is resolved from `hoverRadius`.
+		// In Bubble chart we want `hoverRadius` to increase the `radius`.
+		if (mode === 'active') {
+			values.radius += (parsed._custom || 0);
 		}
-		values.radius += resolve([
-			parsed && parsed._custom,
-			me._config.radius,
-			chart.options.elements.point.radius
-		], context, index);
 
 		return values;
 	}
 }
-
-BubbleController.prototype.dataElementType = Point;
-
-BubbleController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'hitRadius',
-	'radius',
-	'pointStyle',
-	'rotation'
-];

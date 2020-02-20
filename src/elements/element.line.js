@@ -11,21 +11,6 @@ import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
 const defaultColor = defaults.color;
 
-defaults.set('elements', {
-	line: {
-		tension: 0.4,
-		backgroundColor: defaultColor,
-		borderWidth: 3,
-		borderColor: defaultColor,
-		borderCapStyle: 'butt',
-		borderDash: [],
-		borderDashOffset: 0.0,
-		borderJoinStyle: 'miter',
-		capBezierPoints: true,
-		fill: true
-	}
-});
-
 function setStyle(ctx, vm) {
 	ctx.lineCap = vm.borderCapStyle;
 	ctx.setLineDash(vm.borderDash);
@@ -200,6 +185,26 @@ export default class Line extends Element {
 
 	static _type = 'line';
 
+	/**
+	 * Default options. Everything is looked up with `hover` prefix, so
+	 * only need to define those in case the default value is different.
+	 */
+	static _defaults = {
+		backgroundColor: defaultColor,
+		borderCapStyle: 'butt',
+		borderColor: defaultColor,
+		borderDash: [],
+		borderDashOffset: 0,
+		borderJoinStyle: 'miter',
+		borderWidth: 3,
+		capBezierPoints: true,
+		cubicInterpolationMode: '',
+		fill: true,
+		spanGaps: undefined,
+		stepped: false,
+		tension: 0.4
+	};
+
 	constructor(cfg) {
 		super();
 
@@ -357,3 +362,5 @@ export default class Line extends Element {
 		ctx.restore();
 	}
 }
+
+defaults.set('elements', {line: Line._defaults});

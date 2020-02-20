@@ -133,7 +133,6 @@ describe('Plugin.filler', function() {
 						{fill: NaN},
 						{fill: Infinity},
 						{fill: ''},
-						{fill: null},
 						{fill: []},
 					]
 				}
@@ -150,7 +149,6 @@ describe('Plugin.filler', function() {
 				false, // NaN
 				false, // !isFinite
 				false, // empty string
-				false, // null
 				false, // array
 			]);
 		});

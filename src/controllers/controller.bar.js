@@ -181,6 +181,8 @@ function isFloatBar(custom) {
 
 export default class BarController extends DatasetController {
 
+	static dataElementType = Rectangle;
+
 	/**
 	 * Overriding primitive data parsing since we support mixed primitive/array
 	 * data for float bars
@@ -493,17 +495,3 @@ export default class BarController extends DatasetController {
 	}
 
 }
-
-BarController.prototype.dataElementType = Rectangle;
-
-BarController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderSkipped',
-	'borderWidth',
-	'barPercentage',
-	'barThickness',
-	'categoryPercentage',
-	'maxBarThickness',
-	'minBarLength'
-];

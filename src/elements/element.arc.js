@@ -1,16 +1,8 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
-const TAU = Math.PI * 2;
 
-defaults.set('elements', {
-	arc: {
-		backgroundColor: defaults.color,
-		borderColor: '#fff',
-		borderWidth: 2,
-		borderAlign: 'center'
-	}
-});
+const TAU = Math.PI * 2;
 
 function clipArc(ctx, arc) {
 	const {startAngle, endAngle, pixelMargin, x, y} = arc;
@@ -87,6 +79,17 @@ function drawBorder(ctx, vm, arc) {
 export default class Arc extends Element {
 
 	static _type = 'arc';
+
+	/**
+	 * Default options. Everything is looked up with `hover` prefix, so
+	 * only need to define those in case the default value is different.
+	 */
+	static _defaults = {
+		backgroundColor: defaults.color,
+		borderColor: '#fff',
+		borderWidth: 2,
+		borderAlign: 'center'
+	};
 
 	constructor(cfg) {
 		super();
@@ -197,3 +200,5 @@ export default class Arc extends Element {
 		ctx.restore();
 	}
 }
+
+defaults.set('elements', {arc: Arc._defaults});

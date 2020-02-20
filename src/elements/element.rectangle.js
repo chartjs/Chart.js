@@ -4,15 +4,6 @@ import {isObject} from '../helpers/helpers.core';
 
 const defaultColor = defaults.color;
 
-defaults.set('elements', {
-	rectangle: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
-		borderSkipped: 'bottom',
-		borderWidth: 0
-	}
-});
-
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
  * @param {Rectangle} bar the bar
@@ -128,6 +119,22 @@ export default class Rectangle extends Element {
 
 	static _type = 'rectangle';
 
+	/**
+	 * Default options. Everything is looked up with `hover` prefix, so
+	 * only need to define those in case the default value is different.
+	 */
+	static _defaults = {
+		backgroundColor: defaultColor,
+		barPercentage: 0.9,
+		barThickness: undefined,
+		borderColor: defaultColor,
+		borderSkipped: 'bottom',
+		borderWidth: 0,
+		categoryPercentage: 0.8,
+		maxBarThickness: undefined,
+		minBarLength: undefined,
+	};
+
 	constructor(cfg) {
 		super();
 
@@ -187,3 +194,5 @@ export default class Rectangle extends Element {
 		return axis === 'x' ? this.width / 2 : this.height / 2;
 	}
 }
+
+defaults.set('elements', {rectangle: Rectangle._defaults});

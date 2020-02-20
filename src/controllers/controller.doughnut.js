@@ -130,6 +130,8 @@ function getRatioAndOffset(rotation, circumference, cutout) {
 
 export default class DoughnutController extends DatasetController {
 
+	static dataElementType = Arc;
+
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
@@ -339,15 +341,3 @@ export default class DoughnutController extends DatasetController {
 		return this._getRingWeightOffset(this.chart.data.datasets.length) || 1;
 	}
 }
-
-DoughnutController.prototype.dataElementType = Arc;
-
-DoughnutController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'borderAlign',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth',
-];

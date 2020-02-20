@@ -1,5 +1,10 @@
 import defaults from '../core/core.defaults';
 import {isNullOrUndef, isArray, isObject, valueOrDefault} from './helpers.core';
+import {getHoverColor} from './helpers.color';
+
+/**
+ * @typedef { import("../core/core.controller").default } Chart
+ */
 
 /**
  * Converts the given font object into a CSS font string.
@@ -142,4 +147,52 @@ export function resolve(inputs, context, index, info) {
 			return value;
 		}
 	}
+}
+
+const ucFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const notIndexable = ['borderDash', 'fill'];
+const indexable = (key, index) => notIndexable.indexOf(key) !== -1 ? undefined : index;
+
+/**
+ * @param {*} elementType
+ * @param {object[]} inputs
+ * @param {{ chart?: Chart; dataIndex?: number; dataset?: any; datasetIndex?: number; active?: boolean; index?: number; }} context
+ * @param {string} mode
+ */
+export function resolveElementOptions(elementType, inputs, context, mode) {
+	const defs = elementType._defaults;
+	const values = {};
+	const info = {cacheable: true};
+	const index = context.dataIndex ?? context.datasetIndex;
+	const keys = Object.keys(defs);
+	let hoverColorsToDo = [];
+
+	if (mode === 'active') {
+		// try to resolve with `hover` prefix first
+		keys.forEach((key) => {
+			if (key.substring(0, 5) !== 'hover') {
+				const hoverKey = 'hover' + ucFirst(key); // hoverBorderColor
+				const typeHoverKey = elementType._type + ucFirst(hoverKey); // pointHoverBorderColor
+				values[key] = resolve(inputs.map(input => input && (input[typeHoverKey] ?? input[hoverKey])), context, indexable(key, index), info);
+			}
+		});
+		hoverColorsToDo = keys.filter(key => key.indexOf('Color') !== -1 && values[key] === undefined);
+	}
+
+	keys.forEach((key) => {
+		const typeKey = elementType._type + ucFirst(key); // pointBorderColor
+		values[key] = values[key] ?? resolve(inputs.map(input => input && (input[typeKey] ?? input[key])), context, indexable(key, index), info) ?? defs[key];
+	});
+
+	// Apply default hover color for those that did not have value specified
+	hoverColorsToDo.forEach((key) => {
+		values[key] = getHoverColor(values[key]);
+	});
+
+	// `$shared` indicades this set of options can be shared between multiple elements.
+	// Sharing is used to reduce number of properties to change during animation.
+	values.$shared = info.cacheable;
+
+	return values;
 }

@@ -4,23 +4,31 @@ import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';
 
 const defaultColor = defaults.color;
 
-defaults.set('elements', {
-	point: {
-		radius: 3,
-		pointStyle: 'circle',
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
-		borderWidth: 1,
-		// Hover
-		hitRadius: 1,
-		hoverRadius: 4,
-		hoverBorderWidth: 1
-	}
-});
-
 export default class Point extends Element {
 
 	static _type = 'point';
+
+	/**
+	 * Default options. Everything is looked up with `hover` prefix, so
+	 * only need to define those in case the default value is different.
+	 */
+	static _defaults = {
+		backgroundColor: defaultColor,
+		borderColor: defaultColor,
+		borderWidth: 1,
+		hitRadius: 1,
+		hoverBorderWidth: 1,
+		hoverRadius: 4,
+		pointStyle: 'circle',
+		radius: 3,
+		rotation: undefined
+	}
+
+	static size(options) {
+		const radius = Math.max(options.radius, options.hoverRadius) || 0;
+		const borderWidth = radius && options.borderWidth || 0;
+		return (radius + borderWidth) * 2;
+	}
 
 	constructor(cfg) {
 		super();
@@ -59,10 +67,7 @@ export default class Point extends Element {
 	}
 
 	size() {
-		const options = this.options || {};
-		const radius = Math.max(options.radius, options.hoverRadius) || 0;
-		const borderWidth = radius && options.borderWidth || 0;
-		return (radius + borderWidth) * 2;
+		return Point.size(this.options || {});
 	}
 
 	draw(ctx, chartArea) {
@@ -87,3 +92,5 @@ export default class Point extends Element {
 		return options.radius + options.hitRadius;
 	}
 }
+
+defaults.set('elements', {point: Point._defaults});

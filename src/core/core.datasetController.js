@@ -1,12 +1,11 @@
 import helpers from '../helpers/index';
 import Animations from './core.animations';
+import {resolve, resolveElementOptions} from '../helpers/helpers.options';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import("./core.controller").default } Chart
  * @typedef { import("../core/core.scale").default } Scale
  */
-
-const resolve = helpers.options.resolve;
 
 const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -220,6 +219,18 @@ export default class DatasetController {
 	static extend = helpers.inherits;
 
 	/**
+	 * Element type used to generate a meta dataset (e.g. Line).
+	 * @type {*} // {typeof Element} only usable if Element is imported to JS
+	 */
+	static datasetElementType = null;
+
+	/**
+	 * Element type used to generate a meta data (e.g. Point).
+	 * @type {*} // {typeof Element} only usable if Element is imported to JS
+	 */
+	static dataElementType = null;
+
+	/**
 	 * @param {Chart} chart
 	 * @param {number} datasetIndex
 	 */
@@ -403,13 +414,14 @@ export default class DatasetController {
 
 		const data = me._data;
 		const metaData = meta.data = new Array(data.length);
+		const constructor = /** @type {typeof DatasetController} */(me.constructor);
 
 		for (let i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = new me.dataElementType();
+			metaData[i] = new constructor.dataElementType();
 		}
 
-		if (me.datasetElementType) {
-			meta.dataset = new me.datasetElementType();
+		if (constructor.datasetElementType) {
+			meta.dataset = new constructor.datasetElementType();
 		}
 	}
 
@@ -780,22 +792,6 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
-	 */
-	_addAutomaticHoverColors(index, options) {
-		const me = this;
-		const getHoverColor = helpers.getHoverColor;
-		const normalOptions = me.getStyle(index);
-		const missingColors = Object.keys(normalOptions).filter(key => key.indexOf('Color') !== -1 && !(key in options));
-		let i = missingColors.length - 1;
-		let color;
-		for (; i >= 0; i--) {
-			color = missingColors[i];
-			options[color] = getHoverColor(normalOptions[color]);
-		}
-	}
-
-	/**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index
@@ -811,13 +807,10 @@ export default class DatasetController {
 			me.configure();
 		}
 
-		const options = dataset && index === undefined
-			? me.resolveDatasetElementOptions(active)
-			: me.resolveDataElementOptions(index || 0, active && 'active');
-		if (active) {
-			me._addAutomaticHoverColors(index, options);
-		}
-		return options;
+		const mode = active && 'active';
+		return dataset && index === undefined
+			? me.resolveDatasetElementOptions(mode)
+			: me.resolveDataElementOptions(index || 0, mode);
 	}
 
 	/**
@@ -835,93 +828,56 @@ export default class DatasetController {
 	}
 
 	/**
+	 * @param {*} elementType - element type
+	 * @param {number} index - element index
+	 * @param {string} mode - update / animation mode
+	 * @param {object} [custom] - custom options
 	 * @protected
 	 */
-	resolveDatasetElementOptions(active) {
+	resolveElementOptions(elementType, index, mode, custom) {
 		const me = this;
-		const chart = me.chart;
+		const type = elementType._type;
+		const opts = me.chart.options;
+		const elemOpts = opts.elements[type];
 		const datasetOpts = me._config;
-		// @ts-ignore
-		const options = chart.options.elements[me.datasetElementType._type] || {};
-		const elementOptions = me.datasetElementOptions;
-		const values = {};
-		const context = me._getContext(undefined, active);
-		let i, ilen, key, readKey, value;
+		const context = me._getContext(index, mode === 'active');
 
-		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
-			key = elementOptions[i];
-			readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-			value = resolve([
-				datasetOpts[readKey],
-				options[readKey]
-			], context);
-			if (value !== undefined) {
-				values[key] = value;
-			}
-		}
-
-		return values;
+		return resolveElementOptions(elementType, [custom, datasetOpts, elemOpts, opts], context, mode);
 	}
 
 	/**
 	 * @protected
 	 */
-	resolveDataElementOptions(index, mode) {
-		const me = this;
-		const active = mode === 'active';
-		const cached = me._cachedDataOpts;
-		if (cached[mode]) {
+	resolveDatasetElementOptions(mode) {
+		// @ts-ignore
+		return this.resolveElementOptions(this.constructor.datasetElementType, undefined, mode);
+	}
+
+	/**
+	 * @protected
+	 */
+	resolveDataElementOptions(index, mode, custom) {
+		const cached = this._cachedDataOpts;
+
+		// If there is custom input, cache can not be safely used
+		if (!custom && cached[mode]) {
 			return cached[mode];
 		}
-		const chart = me.chart;
-		const datasetOpts = me._config;
-		// @ts-ignore
-		const options = chart.options.elements[me.dataElementType._type] || {};
-		const elementOptions = me.dataElementOptions;
-		const values = {};
-		const context = me._getContext(index, active);
-		const info = {cacheable: !active};
-		let keys, i, ilen, key, value, readKey;
 
-		if (helpers.isArray(elementOptions)) {
-			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
-				key = elementOptions[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
-			}
-		} else {
-			keys = Object.keys(elementOptions);
-			for (i = 0, ilen = keys.length; i < ilen; ++i) {
-				key = keys[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[elementOptions[readKey]],
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
-			}
+		// @ts-ignore
+		const values = this.resolveElementOptions(this.constructor.dataElementType, index, mode, custom);
+
+		// If there is custom input, values can not be safely cached
+		if (custom && values.$shared) {
+			values.$shared = false;
 		}
 
-		if (info.cacheable) {
-			// `$shared` indicades this set of options can be shared between multiple elements.
-			// Sharing is used to reduce number of properties to change during animation.
-			values.$shared = true;
-
+		if (values.$shared) {
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
 			cached[mode] = values;
 		}
-
 		return values;
 	}
 
@@ -1077,7 +1033,8 @@ export default class DatasetController {
 		let i;
 
 		for (i = 0; i < count; ++i) {
-			elements[i] = new me.dataElementType();
+			// @ts-ignore
+			elements[i] = new me.constructor.dataElementType();
 		}
 		data.splice(start, 0, ...elements);
 
@@ -1140,42 +1097,3 @@ export default class DatasetController {
 		this._insertElements(0, arguments.length);
 	}
 }
-
-/**
- * Element type used to generate a meta dataset (e.g. Chart.element.Line).
- */
-DatasetController.prototype.datasetElementType = null;
-
-/**
- * Element type used to generate a meta data (e.g. Chart.element.Point).
- */
-DatasetController.prototype.dataElementType = null;
-
-/**
- * Dataset element option keys to be resolved in resolveDatasetElementOptions.
- * A derived controller may override this to resolve controller-specific options.
- * The keys defined here are for backward compatibility for legend styles.
- * @type {string[]}
- */
-DatasetController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderCapStyle',
-	'borderColor',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth'
-];
-
-/**
- * Data element option keys to be resolved in resolveDataElementOptions.
- * A derived controller may override this to resolve controller-specific options.
- * The keys defined here are for backward compatibility for legend styles.
- * @type {string[]|object}
- */
-DatasetController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'pointStyle'
-];
