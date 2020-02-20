@@ -449,7 +449,7 @@ function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
 }
 
-class Tooltip extends Element {
+export class Tooltip extends Element {
 	constructor(config) {
 		super();
 

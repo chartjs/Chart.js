@@ -106,7 +106,7 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-class LinearScaleBase extends Scale {
+export default class LinearScaleBase extends Scale {
 
 	constructor(cfg) {
 		super(cfg);
@@ -302,5 +302,3 @@ class LinearScaleBase extends Scale {
 		return new Intl.NumberFormat(this.options.locale).format(value);
 	}
 }
-
-export default LinearScaleBase;

@@ -18,7 +18,7 @@ defaults.set('radar', {
 	}
 });
 
-class RadarController extends DatasetController {
+export default class RadarController extends DatasetController {
 
 	/**
 	 * @private
@@ -147,5 +147,3 @@ RadarController.prototype._dataElementOptions = {
 	radius: 'pointRadius',
 	rotation: 'pointRotation'
 };
-
-export default RadarController;

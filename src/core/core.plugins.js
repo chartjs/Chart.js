@@ -14,7 +14,7 @@ defaults.set('plugins', {});
  * @namespace Chart.plugins
  * @since 2.1.0
  */
-class PluginService {
+export class PluginService {
 	constructor() {
 		/**
 		 * Globally registered plugins.

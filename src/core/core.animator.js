@@ -18,7 +18,10 @@ function drawFPS(chart, count, date, lastDate) {
 	ctx.restore();
 }
 
-class Animator {
+/**
+ * Please use the module's default export which provides a singleton instance
+ */
+export class Animator {
 	constructor() {
 		this._request = null;
 		this._charts = new Map();
@@ -220,6 +223,5 @@ class Animator {
 	}
 }
 
-const instance = new Animator();
-
-export default instance;
+// singleton instance
+export default new Animator();

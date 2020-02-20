@@ -179,7 +179,7 @@ function isFloatBar(custom) {
 	return custom && custom.barStart !== undefined && custom.barEnd !== undefined;
 }
 
-class BarController extends DatasetController {
+export default class BarController extends DatasetController {
 
 	/**
 	 * Overriding primitive data parsing since we support mixed primitive/array
@@ -510,5 +510,3 @@ BarController.prototype._dataElementOptions = [
 	'maxBarThickness',
 	'minBarLength'
 ];
-
-export default BarController;

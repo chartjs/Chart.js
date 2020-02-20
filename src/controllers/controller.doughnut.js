@@ -128,7 +128,7 @@ function getRatioAndOffset(rotation, circumference, cutout) {
 	return {ratioX, ratioY, offsetX, offsetY};
 }
 
-class DoughnutController extends DatasetController {
+export default class DoughnutController extends DatasetController {
 
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
@@ -356,5 +356,3 @@ DoughnutController.prototype._dataElementOptions = [
 	'hoverBorderColor',
 	'hoverBorderWidth',
 ];
-
-export default DoughnutController;

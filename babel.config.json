@@ -1,8 +1,8 @@
 {
   "presets": ["@babel/preset-env"],
   "plugins": [
-    "@babel/plugin-transform-object-assign",
-    "@babel/plugin-proposal-class-properties"
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-object-assign"
   ],
   "env": {
     "test": {

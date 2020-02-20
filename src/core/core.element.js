@@ -1,7 +1,9 @@
 import {inherits} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 
-class Element {
+export default class Element {
+
+	static extend = inherits;
 
 	/**
 	 * @param {object} [cfg] optional configuration
@@ -27,6 +29,3 @@ class Element {
 		return isNumber(this.x) && isNumber(this.y);
 	}
 }
-
-Element.extend = inherits;
-export default Element;
