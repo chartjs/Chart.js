@@ -34,6 +34,7 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-object-assign": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
+    "@rollup/plugin-json": "^4.0.2",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "coveralls": "^3.0.9",
