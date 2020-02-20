@@ -31,8 +31,7 @@ describe('Chart.elements.Point', function() {
 
 		expect(point.tooltipPosition()).toEqual({
 			x: 10,
-			y: 15,
-			padding: 8
+			y: 15
 		});
 	});
 
