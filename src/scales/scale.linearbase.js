@@ -119,8 +119,7 @@ class LinearScaleBase extends Scale {
 		this._startValue = undefined;
 		/** @type {number} */
 		this._endValue = undefined;
-		/** @type {number} */
-		this._valueRange = undefined;
+		this._valueRange = 0;
 	}
 
 	/**

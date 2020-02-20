@@ -302,7 +302,7 @@ class RadialLinearScale extends LinearScaleBase {
 		/** @type {number} */
 		this.drawingArea = undefined;
 		/** @type {string[]} */
-		this.pointLabels = undefined;
+		this.pointLabels = [];
 	}
 
 	setDimensions() {

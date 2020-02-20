@@ -8,12 +8,10 @@ class CategoryScale extends Scale {
 	constructor(cfg) {
 		super(cfg);
 
-		/** @type {number} */
-		this._numLabels = undefined;
+		this._numLabels = 0;
 		/** @type {number} */
 		this._startValue = undefined;
-		/** @type {number} */
-		this._valueRange = undefined;
+		this._valueRange = 0;
 	}
 
 	/**
