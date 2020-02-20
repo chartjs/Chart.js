@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import Arc from '../elements/element.arc';
+import {Arc} from '../elements/index';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
 
 /**

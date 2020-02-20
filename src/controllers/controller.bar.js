@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import Rectangle from '../elements/element.rectangle';
+import {Rectangle} from '../elements/index';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';

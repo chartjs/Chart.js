@@ -20,9 +20,6 @@ describe('Chart namespace', function() {
 	});
 
 	describe('Chart.elements', function() {
-		it('should be an object', function() {
-			expect(Chart.elements instanceof Object).toBeTruthy();
-		});
 		it('should contains "elements" classes', function() {
 			expect(Chart.elements.Arc instanceof Function).toBeTruthy();
 			expect(Chart.elements.Line instanceof Function).toBeTruthy();
