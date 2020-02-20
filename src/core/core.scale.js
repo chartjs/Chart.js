@@ -287,15 +287,17 @@ class Scale extends Element {
 		this._labelItems = null;
 		/** @type {object|null} */
 		this._labelSizes = null;
-		this._length = -1;
+		this._length = 0;
 		this._longestTextCache = {};
-		this._startPixel = -1;
-		this._endPixel = -1;
+		/** @type {number} */
+		this._startPixel = undefined;
+		/** @type {number} */
+		this._endPixel = undefined;
 		this._reversePixels = false;
 		this._userMax = undefined;
 		this._userMin = undefined;
-		this._ticksLength = -1;
-		this._borderValue = -1;
+		this._ticksLength = 0;
+		this._borderValue = 0;
 	}
 
 	/**

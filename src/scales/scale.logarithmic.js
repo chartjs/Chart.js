@@ -66,8 +66,9 @@ class LogarithmicScale extends Scale {
 		this.start = undefined;
 		/** @type {number} */
 		this.end = undefined;
-		this._startValue = -1;
-		this._valueRange = -1;
+		/** @type {number} */
+		this._startValue = undefined;
+		this._valueRange = 0;
 	}
 
 	/**
