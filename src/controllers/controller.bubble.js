@@ -34,17 +34,16 @@ export default class BubbleController extends DatasetController {
 
 	/**
 	 * Parse array of objects
-	 * @private
 	 */
-	_parseObjectData(meta, data, start, count) {
+	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = [];
 		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
-				x: xScale._parseObject(item, 'x', i),
-				y: yScale._parseObject(item, 'y', i),
+				x: xScale.parseObject(item, 'x', i),
+				y: yScale.parseObject(item, 'y', i),
 				_custom: item && item.r && +item.r
 			});
 		}
@@ -52,7 +51,7 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getMaxOverflow() {
 		const me = this;
@@ -66,7 +65,7 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getLabelAndValue(index) {
 		const me = this;
@@ -83,9 +82,6 @@ export default class BubbleController extends DatasetController {
 		};
 	}
 
-	/**
-	 * @protected
-	 */
 	update(mode) {
 		const me = this;
 		const points = me._cachedMeta.data;
@@ -94,9 +90,6 @@ export default class BubbleController extends DatasetController {
 		me.updateElements(points, 0, mode);
 	}
 
-	/**
-	 * @protected
-	 */
 	updateElements(points, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
@@ -132,7 +125,7 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_resolveDataElementOptions(index, mode) {
 		const me = this;
@@ -169,14 +162,8 @@ export default class BubbleController extends DatasetController {
 	}
 }
 
-/**
- * @protected
- */
 BubbleController.prototype.dataElementType = Point;
 
-/**
- * @private
- */
 BubbleController.prototype._dataElementOptions = [
 	'backgroundColor',
 	'borderColor',

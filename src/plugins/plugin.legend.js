@@ -518,7 +518,7 @@ export class Legend extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawTitle() {
 		const me = this;

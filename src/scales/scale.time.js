@@ -107,7 +107,7 @@ function getDataTimestamps(scale) {
 		return timestamps;
 	}
 
-	const metas = scale._getMatchingVisibleMetas();
+	const metas = scale.getMatchingVisibleMetas();
 
 	if (isSeries && metas.length) {
 		return metas[0].controller._getAllParsedValues(scale);
@@ -134,7 +134,7 @@ function getLabelTimestamps(scale) {
 		return timestamps;
 	}
 
-	const labels = scale._getLabels();
+	const labels = scale.getLabels();
 	for (i = 0, ilen = labels.length; i < ilen; ++i) {
 		timestamps.push(parse(scale, labels[i]));
 	}
@@ -329,7 +329,7 @@ function generate(scale) {
 	const max = scale.max;
 	const options = scale.options;
 	const timeOpts = options.time;
-	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
+	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale.getLabelCapacity(min));
 	const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	const ticks = new Set();
@@ -606,9 +606,8 @@ export default class TimeScale extends Scale {
 	 * @param {*} raw
 	 * @param {number} index
 	 * @return {number}
-	 * @private
 	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars
+	parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (raw === undefined) {
 			return NaN;
 		}
@@ -620,22 +619,18 @@ export default class TimeScale extends Scale {
 	 * @param {string} axis
 	 * @param {number} index
 	 * @return {number|null}
-	 * @private
 	 */
-	_parseObject(obj, axis, index) {
+	parseObject(obj, axis, index) {
 		if (obj && obj.t) {
-			return this._parse(obj.t, index);
+			return this.parse(obj.t, index);
 		}
 		if (obj[axis] !== undefined) {
-			return this._parse(obj[axis], index);
+			return this.parse(obj[axis], index);
 		}
 		return null;
 	}
 
-	/**
-	 * @private
-	 */
-	_invalidateCaches() {
+	invalidateCaches() {
 		this._cache = {
 			data: [],
 			labels: [],
@@ -708,7 +703,7 @@ export default class TimeScale extends Scale {
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
 		// autoSkip is enabled because we don't yet know what the final number of ticks will be
 		me._unit = timeOpts.unit || (tickOpts.autoSkip
-			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me._getLabelCapacity(min))
+			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me.getLabelCapacity(min))
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
@@ -830,9 +825,8 @@ export default class TimeScale extends Scale {
 	/**
 	 * @param {number} exampleTime
 	 * @return {number}
-	 * @private
 	 */
-	_getLabelCapacity(exampleTime) {
+	getLabelCapacity(exampleTime) {
 		const me = this;
 		const timeOpts = me.options.time;
 		const displayFormats = timeOpts.displayFormats;

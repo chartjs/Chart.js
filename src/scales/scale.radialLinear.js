@@ -335,7 +335,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 	/**
 	 * Returns the maximum number of ticks based on the scale dimension
-	 * @private
+	 * @protected
 	 */
 	_computeTickLimit() {
 		return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
@@ -440,7 +440,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawGrid() {
 		const me = this;
@@ -488,7 +488,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawLabels() {
 		const me = this;
@@ -539,7 +539,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawTitle() {}
 }

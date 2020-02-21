@@ -92,7 +92,7 @@ export default class LineController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_resolveDatasetElementOptions(active) {
 		const me = this;
@@ -112,7 +112,7 @@ export default class LineController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getMaxOverflow() {
 		const me = this;
@@ -162,9 +162,6 @@ LineController.prototype.datasetElementType = Line;
 
 LineController.prototype.dataElementType = Point;
 
-/**
- * @private
- */
 LineController.prototype._datasetElementOptions = [
 	'backgroundColor',
 	'borderCapStyle',
@@ -178,9 +175,6 @@ LineController.prototype._datasetElementOptions = [
 	'fill'
 ];
 
-/**
- * @private
- */
 LineController.prototype._dataElementOptions = {
 	backgroundColor: 'pointBackgroundColor',
 	borderColor: 'pointBorderColor',

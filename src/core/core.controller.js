@@ -424,8 +424,8 @@ export default class Chart {
 			scale.axis = scale.options.position === 'chartArea' ? 'r' : scale.isHorizontal() ? 'x' : 'y';
 
 			// parse min/max value, so we can properly determine min/max for other scales
-			scale._userMin = scale._parse(scale.options.min);
-			scale._userMax = scale._parse(scale.options.max);
+			scale._userMin = scale.parse(scale.options.min);
+			scale._userMax = scale.parse(scale.options.max);
 
 			// TODO(SB): I think we should be able to remove this custom case (options.scale)
 			// and consider it as a regular scale part of the "scales"" map only! This would
@@ -732,9 +732,10 @@ export default class Chart {
 	}
 
 	/**
-	 * @private
+	 * Gets the visible dataset metas in drawing order
+	 * @return {object[]}
 	 */
-	_getSortedVisibleDatasetMetas() {
+	getSortedVisibleDatasetMetas() {
 		return this._getSortedDatasetMetas(true);
 	}
 
@@ -750,7 +751,7 @@ export default class Chart {
 			return;
 		}
 
-		const metasets = me._getSortedVisibleDatasetMetas();
+		const metasets = me.getSortedVisibleDatasetMetas();
 		for (let i = metasets.length - 1; i >= 0; --i) {
 			me._drawDataset(metasets[i]);
 		}
@@ -847,7 +848,7 @@ export default class Chart {
 	}
 
 	getVisibleDatasetCount() {
-		return this._getSortedVisibleDatasetMetas().length;
+		return this.getSortedVisibleDatasetMetas().length;
 	}
 
 	isDatasetVisible(datasetIndex) {

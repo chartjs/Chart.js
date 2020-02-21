@@ -31,7 +31,7 @@ function getRelativePosition(e, chart) {
  * @param {function} handler - the callback to execute for each visible item
  */
 function evaluateAllVisibleItems(chart, handler) {
-	const metasets = chart._getSortedVisibleDatasetMetas();
+	const metasets = chart.getSortedVisibleDatasetMetas();
 	let index, data, element;
 
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
@@ -86,7 +86,7 @@ function binarySearch(metaset, axis, value, intersect) {
  * @param {boolean} [intersect] - consider intersecting items
  */
 function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
-	const metasets = chart._getSortedVisibleDatasetMetas();
+	const metasets = chart.getSortedVisibleDatasetMetas();
 	const value = position[axis];
 	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
 		const {index, data} = metasets[i];
@@ -205,7 +205,7 @@ export default {
 				return [];
 			}
 
-			chart._getSortedVisibleDatasetMetas().forEach((meta) => {
+			chart.getSortedVisibleDatasetMetas().forEach((meta) => {
 				const index = items[0].index;
 				const element = meta.data[index];
 

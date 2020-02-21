@@ -122,10 +122,7 @@ export default class LinearScaleBase extends Scale {
 		this._valueRange = 0;
 	}
 
-	/**
-	 * @private
-	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars
+	parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (isNullOrUndef(raw)) {
 			return NaN;
 		}
@@ -224,14 +221,14 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_computeTickLimit() {
 		return Number.POSITIVE_INFINITY;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_handleDirectionalChanges(ticks) {
 		return ticks;
@@ -278,7 +275,7 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_configure() {
 		const me = this;
@@ -286,7 +283,7 @@ export default class LinearScaleBase extends Scale {
 		let start = me.min;
 		let end = me.max;
 
-		Scale.prototype._configure.call(me);
+		super._configure();
 
 		if (me.options.offset && ticks.length) {
 			const offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;

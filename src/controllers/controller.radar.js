@@ -21,21 +21,21 @@ defaults.set('radar', {
 export default class RadarController extends DatasetController {
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getIndexScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getValueScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getLabelAndValue(index) {
 		const me = this;
@@ -43,7 +43,7 @@ export default class RadarController extends DatasetController {
 		const parsed = me._getParsed(index);
 
 		return {
-			label: vScale._getLabels()[index],
+			label: vScale.getLabels()[index],
 			value: '' + vScale.getLabelForValue(parsed[vScale.axis])
 		};
 	}
@@ -53,7 +53,7 @@ export default class RadarController extends DatasetController {
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
 		const points = meta.data || [];
-		const labels = meta.iScale._getLabels();
+		const labels = meta.iScale.getLabels();
 		const properties = {
 			points,
 			_loop: true,
@@ -98,7 +98,7 @@ export default class RadarController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_resolveDatasetElementOptions(active) {
 		const me = this;
@@ -117,9 +117,6 @@ RadarController.prototype.datasetElementType = Line;
 
 RadarController.prototype.dataElementType = Point;
 
-/**
- * @private
- */
 RadarController.prototype._datasetElementOptions = [
 	'backgroundColor',
 	'borderColor',
@@ -131,9 +128,6 @@ RadarController.prototype._datasetElementOptions = [
 	'fill'
 ];
 
-/**
- * @private
- */
 RadarController.prototype._dataElementOptions = {
 	backgroundColor: 'pointBackgroundColor',
 	borderColor: 'pointBorderColor',

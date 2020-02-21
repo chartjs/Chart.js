@@ -35,7 +35,7 @@ export default class LinearScale extends LinearScaleBase {
 
 	/**
 	 * Returns the maximum number of ticks based on the scale dimension
-	 * @private
+	 * @protected
  	 */
 	_computeTickLimit() {
 		const me = this;
@@ -49,7 +49,7 @@ export default class LinearScale extends LinearScaleBase {
 
 	/**
 	 * Called after the ticks are built
-	 * @private
+	 * @protected
 	 */
 	_handleDirectionalChanges(ticks) {
 		// If we are in a vertical orientation the top value is the highest so reverse the array

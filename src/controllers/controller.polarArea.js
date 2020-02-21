@@ -98,14 +98,14 @@ export default class PolarAreaController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getIndexScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getValueScaleId() {
 		return this._cachedMeta.rAxisID;
@@ -231,9 +231,6 @@ export default class PolarAreaController extends DatasetController {
 
 PolarAreaController.prototype.dataElementType = Arc;
 
-/**
- * @private
- */
 PolarAreaController.prototype._dataElementOptions = [
 	'backgroundColor',
 	'borderColor',

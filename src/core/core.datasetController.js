@@ -1,6 +1,11 @@
 import helpers from '../helpers/index';
 import Animations from './core.animations';
 
+/**
+ * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import("../core/core.scale").default } Scale
+ */
+
 const resolve = helpers.options.resolve;
 
 const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
@@ -214,6 +219,10 @@ export default class DatasetController {
 
 	static extend = helpers.inherits;
 
+	/**
+	 * @param {Chart} chart
+	 * @param {number} datasetIndex
+	 */
 	constructor(chart, datasetIndex) {
 		this.chart = chart;
 		this._ctx = chart.ctx;
@@ -270,19 +279,24 @@ export default class DatasetController {
 		return this.chart.getDatasetMeta(this.index);
 	}
 
+	/**
+	 *
+	 * @param {string} scaleID
+	 * @return {Scale}
+	 */
 	getScaleForId(scaleID) {
 		return this.chart.scales[scaleID];
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getValueScaleId() {
 		return this._cachedMeta.yAxisID;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getIndexScaleId() {
 		return this._cachedMeta.xAxisID;
@@ -372,7 +386,7 @@ export default class DatasetController {
 	_labelCheck() {
 		const me = this;
 		const iScale = me._cachedMeta.iScale;
-		const labels = iScale ? iScale._getLabels() : me.chart.data.labels;
+		const labels = iScale ? iScale.getLabels() : me.chart.data.labels;
 
 		if (me._labels === labels) {
 			return false;
@@ -452,9 +466,9 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_parse(start, count) {
+	parse(start, count) {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, vScale, _stacked} = meta;
@@ -472,11 +486,11 @@ export default class DatasetController {
 			meta._sorted = true;
 		} else {
 			if (helpers.isArray(data[start])) {
-				parsed = me._parseArrayData(meta, data, start, count);
+				parsed = me.parseArrayData(meta, data, start, count);
 			} else if (helpers.isObject(data[start])) {
-				parsed = me._parseObjectData(meta, data, start, count);
+				parsed = me.parseObjectData(meta, data, start, count);
 			} else {
-				parsed = me._parsePrimitiveData(meta, data, start, count);
+				parsed = me.parsePrimitiveData(meta, data, start, count);
 			}
 
 
@@ -496,8 +510,8 @@ export default class DatasetController {
 			updateStacks(me, parsed);
 		}
 
-		iScale._invalidateCaches();
-		vScale._invalidateCaches();
+		iScale.invalidateCaches();
+		vScale.invalidateCaches();
 	}
 
 	/**
@@ -509,13 +523,12 @@ export default class DatasetController {
 	 * @returns {object} parsed item - item containing index and a parsed value
 	 * for each scale id.
 	 * Example: {xScale0: 0, yScale0: 1}
-	 * @private
 	 */
-	_parsePrimitiveData(meta, data, start, count) {
+	parsePrimitiveData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const iAxis = iScale.axis;
 		const vAxis = vScale.axis;
-		const labels = iScale._getLabels();
+		const labels = iScale.getLabels();
 		const singleScale = iScale === vScale;
 		const parsed = new Array(count);
 		let i, ilen, index;
@@ -523,8 +536,8 @@ export default class DatasetController {
 		for (i = 0, ilen = count; i < ilen; ++i) {
 			index = i + start;
 			parsed[i] = {
-				[iAxis]: singleScale || iScale._parse(labels[index], index),
-				[vAxis]: vScale._parse(data[index], index)
+				[iAxis]: singleScale || iScale.parse(labels[index], index),
+				[vAxis]: vScale.parse(data[index], index)
 			};
 		}
 		return parsed;
@@ -539,9 +552,8 @@ export default class DatasetController {
 	 * @returns {object} parsed item - item containing index and a parsed value
 	 * for each scale id.
 	 * Example: {x: 0, y: 1}
-	 * @private
 	 */
-	_parseArrayData(meta, data, start, count) {
+	parseArrayData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
@@ -550,8 +562,8 @@ export default class DatasetController {
 			index = i + start;
 			item = data[index];
 			parsed[i] = {
-				x: xScale._parse(item[0], index),
-				y: yScale._parse(item[1], index)
+				x: xScale.parse(item[0], index),
+				y: yScale.parse(item[1], index)
 			};
 		}
 		return parsed;
@@ -566,9 +578,8 @@ export default class DatasetController {
 	 * @returns {object} parsed item - item containing index and a parsed value
 	 * for each scale id. _custom is optional
 	 * Example: {xScale0: 0, yScale0: 1, _custom: {r: 10, foo: 'bar'}}
-	 * @private
 	 */
-	_parseObjectData(meta, data, start, count) {
+	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
@@ -577,22 +588,22 @@ export default class DatasetController {
 			index = i + start;
 			item = data[index];
 			parsed[i] = {
-				x: xScale._parseObject(item, 'x', index),
-				y: yScale._parseObject(item, 'y', index)
+				x: xScale.parseObject(item, 'x', index),
+				y: yScale.parseObject(item, 'y', index)
 			};
 		}
 		return parsed;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getParsed(index) {
 		return this._cachedMeta._parsed[index];
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_applyStack(scale, parsed) {
 		const chart = this.chart;
@@ -606,7 +617,7 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getMinMax(scale, canStack) {
 		const meta = this._cachedMeta;
@@ -712,14 +723,14 @@ export default class DatasetController {
 
 	/**
 	 * @return {number|boolean}
-	 * @private
+	 * @protected
 	 */
 	_getMaxOverflow() {
 		return false;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_getLabelAndValue(index) {
 		const me = this;
@@ -824,7 +835,7 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_resolveDatasetElementOptions(active) {
 		const me = this;
@@ -853,7 +864,7 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_resolveDataElementOptions(index, mode) {
 		const me = this;
@@ -948,7 +959,7 @@ export default class DatasetController {
 
 	/**
 	 * Utility for checking if the options are shared and should be animated separately.
-	 * @private
+	 * @protected
 	 */
 	_getSharedOptions(mode, el, options) {
 		if (!mode) {
@@ -962,7 +973,7 @@ export default class DatasetController {
 
 	/**
 	 * Utility for determining if `options` should be included in the updated properties
-	 * @private
+	 * @protected
 	 */
 	_includeOptions(mode, sharedOptions) {
 		if (mode === 'hide' || mode === 'show') {
@@ -973,7 +984,7 @@ export default class DatasetController {
 
 	/**
 	 * Utility for updating a element with new properties, using animations when appropriate.
-	 * @private
+	 * @protected
 	 */
 	_updateElement(element, index, properties, mode) {
 		if (mode === 'reset' || mode === 'none') {
@@ -985,7 +996,7 @@ export default class DatasetController {
 
 	/**
 	 * Utility to animate the shared options, that are potentially affecting multiple elements.
-	 * @private
+	 * @protected
 	 */
 	_updateSharedOptions(sharedOptions, mode) {
 		if (sharedOptions) {
@@ -1044,14 +1055,14 @@ export default class DatasetController {
 			me._insertElements(numMeta, numData - numMeta);
 			if (changed && numMeta) {
 				// _insertElements parses the new elements. The old ones might need parsing too.
-				me._parse(0, numMeta);
+				me.parse(0, numMeta);
 			}
 		} else if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
 			meta._parsed.splice(numData, numMeta - numData);
-			me._parse(0, numData);
+			me.parse(0, numData);
 		} else if (changed) {
-			me._parse(0, numData);
+			me.parse(0, numData);
 		}
 	}
 
@@ -1073,7 +1084,7 @@ export default class DatasetController {
 		if (me._parsing) {
 			meta._parsed.splice(start, 0, ...new Array(count));
 		}
-		me._parse(start, count);
+		me.parse(start, count);
 
 		me.updateElements(elements, start, 'reset');
 	}
@@ -1145,7 +1156,6 @@ DatasetController.prototype.dataElementType = null;
  * A derived controller may override this to resolve controller-specific options.
  * The keys defined here are for backward compatibility for legend styles.
  * @type {string[]}
- * @private
  */
 DatasetController.prototype._datasetElementOptions = [
 	'backgroundColor',
@@ -1162,7 +1172,6 @@ DatasetController.prototype._datasetElementOptions = [
  * A derived controller may override this to resolve controller-specific options.
  * The keys defined here are for backward compatibility for legend styles.
  * @type {string[]|object}
- * @private
  */
 DatasetController.prototype._dataElementOptions = [
 	'backgroundColor',

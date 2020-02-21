@@ -143,9 +143,9 @@ export default class DoughnutController extends DatasetController {
 
 	/**
 	 * Override data parsing, since we are not using scales
-	 * @private
+	 * @protected
 	 */
-	_parse(start, count) {
+	parse(start, count) {
 		const data = this.getDataset().data;
 		const meta = this._cachedMeta;
 		let i, ilen;
@@ -343,10 +343,6 @@ export default class DoughnutController extends DatasetController {
 
 DoughnutController.prototype.dataElementType = Arc;
 
-
-/**
- * @private
- */
 DoughnutController.prototype._dataElementOptions = [
 	'backgroundColor',
 	'borderColor',

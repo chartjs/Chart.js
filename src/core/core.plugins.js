@@ -169,7 +169,7 @@ export class PluginService {
 	 * but in some cases, this reference can be changed by the user when updating options.
 	 * https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 	 * @param {Chart} chart
-	 * @private
+	 * @internal
 	 */
 	_invalidate(chart) {
 		delete chart.$plugins;

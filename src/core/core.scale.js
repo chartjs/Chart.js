@@ -304,10 +304,9 @@ export default class Scale extends Element {
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
 	 * @param {number} index
-	 * @private
 	 * @since 3.0
 	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars
+	parse(raw, index) { // eslint-disable-line no-unused-vars
 		return raw;
 	}
 
@@ -316,19 +315,18 @@ export default class Scale extends Element {
 	 * @param {object} obj
 	 * @param {string} axis
 	 * @param {number} index
-	 * @private
 	 * @since 3.0
 	 */
-	_parseObject(obj, axis, index) {
+	parseObject(obj, axis, index) {
 		if (obj[axis] !== undefined) {
-			return this._parse(obj[axis], index);
+			return this.parse(obj[axis], index);
 		}
 		return null;
 	}
 
 	/**
 	 * @return {{min: number, max: number, minDefined: boolean, maxDefined: boolean}}
-	 * @private
+	 * @protected
 	 * @since 3.0
 	 */
 	_getUserBounds() {
@@ -346,7 +344,7 @@ export default class Scale extends Element {
 	/**
 	 * @param {boolean} canStack
 	 * @return {{min: number, max: number}}
-	 * @private
+	 * @protected
 	 * @since 3.0
 	 */
 	_getMinMax(canStack) {
@@ -359,7 +357,7 @@ export default class Scale extends Element {
 			return {min, max};
 		}
 
-		const metas = me._getMatchingVisibleMetas();
+		const metas = me.getMatchingVisibleMetas();
 		for (let i = 0, ilen = metas.length; i < ilen; ++i) {
 			minmax = metas[i].controller._getMinMax(me, canStack);
 			if (!minDefined) {
@@ -373,10 +371,7 @@ export default class Scale extends Element {
 		return {min, max};
 	}
 
-	/**
-	 * @private
- 	 */
-	_invalidateCaches() {}
+	invalidateCaches() {}
 
 	/**
 	 * Get the padding needed for the scale
@@ -404,9 +399,8 @@ export default class Scale extends Element {
 
 	/**
 	 * @return {string[]}
-	 * @private
 	 */
-	_getLabels() {
+	getLabels() {
 		const data = this.chart.data;
 		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
 	}
@@ -501,7 +495,7 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_configure() {
 		const me = this;
@@ -1049,7 +1043,7 @@ export default class Scale extends Element {
 			return !!display;
 		}
 
-		return this._getMatchingVisibleMetas().length > 0;
+		return this.getMatchingVisibleMetas().length > 0;
 	}
 
 	/**
@@ -1269,7 +1263,7 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawGrid(chartArea) {
 		const me = this;
@@ -1348,7 +1342,7 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawLabels(chartArea) {
 		const me = this;
@@ -1403,7 +1397,7 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
 	_drawTitle(chartArea) { // eslint-disable-line no-unused-vars
 		const me = this;
@@ -1526,11 +1520,10 @@ export default class Scale extends Element {
 	 * Returns visible dataset metas that are attached to this scale
 	 * @param {string} [type] - if specified, also filter by dataset type
 	 * @return {object[]}
-	 * @private
 	 */
-	_getMatchingVisibleMetas(type) {
+	getMatchingVisibleMetas(type) {
 		const me = this;
-		const metas = me.chart._getSortedVisibleDatasetMetas();
+		const metas = me.chart.getSortedVisibleDatasetMetas();
 		const axisID = me.axis + 'AxisID';
 		const result = [];
 		let i, ilen;
