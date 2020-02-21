@@ -84,7 +84,7 @@ export default class LogarithmicScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me._getMinMax(true);
+		const minmax = me.getMinMax(true);
 		const min = minmax.min;
 		const max = minmax.max;
 
@@ -168,11 +168,11 @@ export default class LogarithmicScale extends Scale {
 	/**
 	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 		const start = me.min;
 
-		super._configure();
+		super.configure();
 
 		me._startValue = log10(start);
 		me._valueRange = log10(me.max) - log10(start);

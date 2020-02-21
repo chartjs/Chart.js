@@ -217,9 +217,9 @@ export default class DoughnutController extends DatasetController {
 		const animateScale = reset && animationOpts.animateScale;
 		const innerRadius = animateScale ? 0 : me.innerRadius;
 		const outerRadius = animateScale ? 0 : me.outerRadius;
-		const firstOpts = me._resolveDataElementOptions(start, mode);
-		const sharedOptions = me._getSharedOptions(mode, arcs[start], firstOpts);
-		const includeOptions = me._includeOptions(mode, sharedOptions);
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(mode, arcs[start], firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 		let startAngle = opts.rotation;
 		let i;
 
@@ -241,13 +241,13 @@ export default class DoughnutController extends DatasetController {
 				innerRadius
 			};
 			if (includeOptions) {
-				properties.options = me._resolveDataElementOptions(index, mode);
+				properties.options = me.resolveDataElementOptions(index, mode);
 			}
 			startAngle += circumference;
 
-			me._updateElement(arc, index, properties, mode);
+			me.updateElement(arc, index, properties, mode);
 		}
-		me._updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	calculateTotal() {
@@ -288,7 +288,7 @@ export default class DoughnutController extends DatasetController {
 					arcs = meta.data;
 					controller = meta.controller;
 					if (controller !== me) {
-						controller._configure();
+						controller.configure();
 					}
 					break;
 				}
@@ -300,7 +300,7 @@ export default class DoughnutController extends DatasetController {
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			options = controller._resolveDataElementOptions(i);
+			options = controller.resolveDataElementOptions(i);
 			if (options.borderAlign !== 'inner') {
 				max = Math.max(max, options.borderWidth || 0, options.hoverBorderWidth || 0);
 			}

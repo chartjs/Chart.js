@@ -17,7 +17,7 @@ export default class LinearScale extends LinearScaleBase {
 	determineDataLimits() {
 		const me = this;
 		const options = me.options;
-		const minmax = me._getMinMax(true);
+		const minmax = me.getMinMax(true);
 		const min = minmax.min;
 		const max = minmax.max;
 
@@ -37,7 +37,7 @@ export default class LinearScale extends LinearScaleBase {
 	 * Returns the maximum number of ticks based on the scale dimension
 	 * @protected
  	 */
-	_computeTickLimit() {
+	computeTickLimit() {
 		const me = this;
 
 		if (me.isHorizontal()) {
@@ -51,7 +51,7 @@ export default class LinearScale extends LinearScaleBase {
 	 * Called after the ticks are built
 	 * @protected
 	 */
-	_handleDirectionalChanges(ticks) {
+	handleDirectionalChanges(ticks) {
 		// If we are in a vertical orientation the top value is the highest so reverse the array
 		return this.isHorizontal() ? ticks : ticks.reverse();
 	}

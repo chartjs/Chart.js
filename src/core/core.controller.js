@@ -605,10 +605,10 @@ export default class Chart {
 
 		me._layers = [];
 		helpers.each(me.boxes, (box) => {
-			// _configure is called twice, once in core.scale.update and once here.
+			// configure is called twice, once in core.scale.update and once here.
 			// Here the boxes are fully updated and at their final positions.
-			if (box._configure) {
-				box._configure();
+			if (box.configure) {
+				box.configure();
 			}
 			me._layers.push(...box._layers());
 		}, me);

@@ -329,7 +329,7 @@ export default class Scale extends Element {
 	 * @protected
 	 * @since 3.0
 	 */
-	_getUserBounds() {
+	getUserBounds() {
 		let min = this._userMin;
 		let max = this._userMax;
 		if (isNullOrUndef(min) || isNaN(min)) {
@@ -347,10 +347,10 @@ export default class Scale extends Element {
 	 * @protected
 	 * @since 3.0
 	 */
-	_getMinMax(canStack) {
+	getMinMax(canStack) {
 		const me = this;
 		// eslint-disable-next-line prefer-const
-		let {min, max, minDefined, maxDefined} = me._getUserBounds();
+		let {min, max, minDefined, maxDefined} = me.getUserBounds();
 		let minmax;
 
 		if (minDefined && maxDefined) {
@@ -359,7 +359,7 @@ export default class Scale extends Element {
 
 		const metas = me.getMatchingVisibleMetas();
 		for (let i = 0, ilen = metas.length; i < ilen; ++i) {
-			minmax = metas[i].controller._getMinMax(me, canStack);
+			minmax = metas[i].controller.getMinMax(me, canStack);
 			if (!minDefined) {
 				min = Math.min(min, minmax.min);
 			}
@@ -466,11 +466,11 @@ export default class Scale extends Element {
 		const samplingEnabled = sampleSize < me.ticks.length;
 		me._convertTicksToLabels(samplingEnabled ? sample(me.ticks, sampleSize) : me.ticks);
 
-		// _configure is called twice, once here, once from core.controller.updateLayout.
+		// configure is called twice, once here, once from core.controller.updateLayout.
 		// Here we haven't been positioned yet, but dimensions are correct.
-		// Variables set in _configure are needed for calculateLabelRotation, and
+		// Variables set in configure are needed for calculateLabelRotation, and
 		// it's ok that coordinates are not correct there, only dimensions matter.
-		me._configure();
+		me.configure();
 
 		// Tick Rotation
 		me.beforeCalculateLabelRotation();
@@ -497,7 +497,7 @@ export default class Scale extends Element {
 	/**
 	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 		let reversePixels = me.options.reverse;
 		let startPixel, endPixel;
@@ -1265,7 +1265,7 @@ export default class Scale extends Element {
 	/**
 	 * @protected
 	 */
-	_drawGrid(chartArea) {
+	drawGrid(chartArea) {
 		const me = this;
 		const gridLines = me.options.gridLines;
 		const ctx = me.ctx;
@@ -1344,7 +1344,7 @@ export default class Scale extends Element {
 	/**
 	 * @protected
 	 */
-	_drawLabels(chartArea) {
+	drawLabels(chartArea) {
 		const me = this;
 		const optionTicks = me.options.ticks;
 
@@ -1399,7 +1399,7 @@ export default class Scale extends Element {
 	/**
 	 * @protected
 	 */
-	_drawTitle(chartArea) { // eslint-disable-line no-unused-vars
+	drawTitle(chartArea) { // eslint-disable-line no-unused-vars
 		const me = this;
 		const ctx = me.ctx;
 		const options = me.options;
@@ -1477,9 +1477,9 @@ export default class Scale extends Element {
 			return;
 		}
 
-		me._drawGrid(chartArea);
-		me._drawTitle();
-		me._drawLabels(chartArea);
+		me.drawGrid(chartArea);
+		me.drawTitle();
+		me.drawLabels(chartArea);
 	}
 
 	/**
@@ -1505,13 +1505,13 @@ export default class Scale extends Element {
 		return [{
 			z: gz,
 			draw(chartArea) {
-				me._drawGrid(chartArea);
-				me._drawTitle();
+				me.drawGrid(chartArea);
+				me.drawTitle();
 			}
 		}, {
 			z: tz,
 			draw(chartArea) {
-				me._drawLabels(chartArea);
+				me.drawLabels(chartArea);
 			}
 		}];
 	}

@@ -45,14 +45,14 @@ export default class HorizontalBarController extends BarController {
 	/**
 	 * @protected
 	 */
-	_getValueScaleId() {
+	getValueScaleId() {
 		return this._cachedMeta.xAxisID;
 	}
 
 	/**
 	 * @protected
 	 */
-	_getIndexScaleId() {
+	getIndexScaleId() {
 		return this._cachedMeta.yAxisID;
 	}
 }

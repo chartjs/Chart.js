@@ -65,10 +65,10 @@ export default class CategoryScale extends Scale {
 	/**
 	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 
-		super._configure();
+		super.configure();
 
 		if (!me.isHorizontal()) {
 			// For backward compatibility, vertical category scale reverse is inverted.

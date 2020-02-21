@@ -100,14 +100,14 @@ export default class PolarAreaController extends DatasetController {
 	/**
 	 * @protected
 	 */
-	_getIndexScaleId() {
+	getIndexScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
 	 * @protected
 	 */
-	_getValueScaleId() {
+	getValueScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
@@ -180,10 +180,10 @@ export default class PolarAreaController extends DatasetController {
 				outerRadius,
 				startAngle,
 				endAngle,
-				options: me._resolveDataElementOptions(index)
+				options: me.resolveDataElementOptions(index)
 			};
 
-			me._updateElement(arc, index, properties, mode);
+			me.updateElement(arc, index, properties, mode);
 		}
 	}
 

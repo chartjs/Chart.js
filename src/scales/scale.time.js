@@ -110,11 +110,11 @@ function getDataTimestamps(scale) {
 	const metas = scale.getMatchingVisibleMetas();
 
 	if (isSeries && metas.length) {
-		return metas[0].controller._getAllParsedValues(scale);
+		return metas[0].controller.getAllParsedValues(scale);
 	}
 
 	for (i = 0, ilen = metas.length; i < ilen; ++i) {
-		timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
+		timestamps = timestamps.concat(metas[i].controller.getAllParsedValues(scale));
 	}
 
 	// We can not assume data is in order or unique - not even for single dataset
@@ -329,7 +329,8 @@ function generate(scale) {
 	const max = scale.max;
 	const options = scale.options;
 	const timeOpts = options.time;
-	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale.getLabelCapacity(min));
+	// @ts-ignore
+	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
 	const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	const ticks = new Set();
@@ -644,7 +645,7 @@ export default class TimeScale extends Scale {
 		const adapter = me._adapter;
 		const unit = options.time.unit || 'day';
 		// eslint-disable-next-line prefer-const
-		let {min, max, minDefined, maxDefined} = me._getUserBounds();
+		let {min, max, minDefined, maxDefined} = me.getUserBounds();
 
 		/**
 		 * @param {object} bounds
@@ -666,7 +667,7 @@ export default class TimeScale extends Scale {
 			// If `bounds` is `'ticks'` and `ticks.source` is `'labels'`,
 			// data bounds are ignored (and don't need to be determined)
 			if (options.bounds !== 'ticks' || options.ticks.source !== 'labels') {
-				_applyBounds(me._getMinMax(false));
+				_applyBounds(me.getMinMax(false));
 			}
 		}
 
@@ -703,7 +704,7 @@ export default class TimeScale extends Scale {
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
 		// autoSkip is enabled because we don't yet know what the final number of ticks will be
 		me._unit = timeOpts.unit || (tickOpts.autoSkip
-			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me.getLabelCapacity(min))
+			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me._getLabelCapacity(min))
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
@@ -825,8 +826,9 @@ export default class TimeScale extends Scale {
 	/**
 	 * @param {number} exampleTime
 	 * @return {number}
+	 * @private
 	 */
-	getLabelCapacity(exampleTime) {
+	_getLabelCapacity(exampleTime) {
 		const me = this;
 		const timeOpts = me.options.time;
 		const displayFormats = timeOpts.displayFormats;

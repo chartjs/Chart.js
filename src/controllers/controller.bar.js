@@ -184,6 +184,7 @@ export default class BarController extends DatasetController {
 	/**
 	 * Overriding primitive data parsing since we support mixed primitive/array
 	 * data for float bars
+	 * @protected
 	 */
 	parsePrimitiveData(meta, data, start, count) {
 		return parseArrayOrPrimitive(meta, data, start, count);
@@ -192,6 +193,7 @@ export default class BarController extends DatasetController {
 	/**
 	 * Overriding array data parsing since we support mixed primitive/array
 	 * data for float bars
+	 * @protected
 	 */
 	parseArrayData(meta, data, start, count) {
 		return parseArrayOrPrimitive(meta, data, start, count);
@@ -200,6 +202,7 @@ export default class BarController extends DatasetController {
 	/**
 	 * Overriding object data parsing since we support mixed primitive/array
 	 * value-scale data for float bars
+	 * @protected
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
@@ -224,11 +227,11 @@ export default class BarController extends DatasetController {
 	/**
 	 * @protected
 	 */
-	_getLabelAndValue(index) {
+	getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {iScale, vScale} = meta;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
 		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
@@ -264,15 +267,15 @@ export default class BarController extends DatasetController {
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
 		const ruler = me._getRuler();
-		const firstOpts = me._resolveDataElementOptions(start, mode);
-		const sharedOptions = me._getSharedOptions(mode, rectangles[start], firstOpts);
-		const includeOptions = me._includeOptions(mode, sharedOptions);
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(mode, rectangles[start], firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
 		let i;
 
 		for (i = 0; i < rectangles.length; i++) {
 			const index = start + i;
-			const options = me._resolveDataElementOptions(index, mode);
+			const options = me.resolveDataElementOptions(index, mode);
 			const vpixels = me._calculateBarValuePixels(index, options);
 			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 
@@ -287,17 +290,17 @@ export default class BarController extends DatasetController {
 
 			// all borders are drawn for floating bar
 			/* TODO: float bars border skipping magic
-			if (me._getParsed(i)._custom) {
+			if (me.getParsed(i)._custom) {
 				model.borderSkipped = null;
 			}
 			*/
 			if (includeOptions) {
 				properties.options = options;
 			}
-			me._updateElement(rectangles[i], index, properties, mode);
+			me.updateElement(rectangles[i], index, properties, mode);
 		}
 
-		me._updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**
@@ -379,7 +382,7 @@ export default class BarController extends DatasetController {
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.axis]));
+			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis]));
 		}
 
 		return {
@@ -400,11 +403,11 @@ export default class BarController extends DatasetController {
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
 		const minBarLength = options.minBarLength;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
 		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : value;
+		let length = meta._stacked ? me.applyStack(vScale, parsed) : value;
 		let head, size;
 
 		if (length !== value) {
@@ -481,7 +484,7 @@ export default class BarController extends DatasetController {
 		clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[vScale.axis])) {
+			if (!isNaN(me.getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

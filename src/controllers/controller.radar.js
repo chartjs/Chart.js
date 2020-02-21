@@ -23,24 +23,24 @@ export default class RadarController extends DatasetController {
 	/**
 	 * @protected
 	 */
-	_getIndexScaleId() {
+	getIndexScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
 	 * @protected
 	 */
-	_getValueScaleId() {
+	getValueScaleId() {
 		return this._cachedMeta.rAxisID;
 	}
 
 	/**
 	 * @protected
 	 */
-	_getLabelAndValue(index) {
+	getLabelAndValue(index) {
 		const me = this;
 		const vScale = me._cachedMeta.vScale;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 
 		return {
 			label: vScale.getLabels()[index],
@@ -58,10 +58,10 @@ export default class RadarController extends DatasetController {
 			points,
 			_loop: true,
 			_fullLoop: labels.length === points.length,
-			options: me._resolveDatasetElementOptions()
+			options: me.resolveDatasetElementOptions()
 		};
 
-		me._updateElement(line, undefined, properties, mode);
+		me.updateElement(line, undefined, properties, mode);
 
 		// Update Points
 		me.updateElements(points, 0, mode);
@@ -79,7 +79,7 @@ export default class RadarController extends DatasetController {
 		for (i = 0; i < points.length; i++) {
 			const point = points[i];
 			const index = start + i;
-			const options = me._resolveDataElementOptions(index);
+			const options = me.resolveDataElementOptions(index);
 			const pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
 
 			const x = reset ? scale.xCenter : pointPosition.x;
@@ -93,18 +93,18 @@ export default class RadarController extends DatasetController {
 				options
 			};
 
-			me._updateElement(point, index, properties, mode);
+			me.updateElement(point, index, properties, mode);
 		}
 	}
 
 	/**
 	 * @protected
 	 */
-	_resolveDatasetElementOptions(active) {
+	resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
-		const values = super._resolveDatasetElementOptions(active);
+		const values = super.resolveDatasetElementOptions(active);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
