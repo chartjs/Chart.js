@@ -143,7 +143,6 @@ export default class DoughnutController extends DatasetController {
 
 	/**
 	 * Override data parsing, since we are not using scales
-	 * @protected
 	 */
 	parse(start, count) {
 		const data = this.getDataset().data;

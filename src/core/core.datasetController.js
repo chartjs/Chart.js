@@ -466,7 +466,8 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @protected
+	 * @param {number} start
+	 * @param {number} count
 	 */
 	parse(start, count) {
 		const me = this;

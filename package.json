@@ -80,6 +80,6 @@
     "yargs": "^14.2.2"
   },
   "dependencies": {
-    "@kurkle/color": "^0.1.3"
+    "@kurkle/color": "^0.1.6"
   }
 }
