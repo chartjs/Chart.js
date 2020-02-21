@@ -165,7 +165,7 @@ export default class BubbleController extends DatasetController {
 
 BubbleController.prototype.dataElementType = Point;
 
-BubbleController.prototype._dataElementOptions = [
+BubbleController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderWidth',

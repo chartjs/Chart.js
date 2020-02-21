@@ -316,6 +316,7 @@ export default class Scale extends Element {
 	 * @param {string} axis
 	 * @param {number} index
 	 * @since 3.0
+	 * @protected
 	 */
 	parseObject(obj, axis, index) {
 		if (obj[axis] !== undefined) {

@@ -117,7 +117,7 @@ RadarController.prototype.datasetElementType = Line;
 
 RadarController.prototype.dataElementType = Point;
 
-RadarController.prototype._datasetElementOptions = [
+RadarController.prototype.datasetElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderCapStyle',
@@ -128,7 +128,7 @@ RadarController.prototype._datasetElementOptions = [
 	'fill'
 ];
 
-RadarController.prototype._dataElementOptions = {
+RadarController.prototype.dataElementOptions = {
 	backgroundColor: 'pointBackgroundColor',
 	borderColor: 'pointBorderColor',
 	borderWidth: 'pointBorderWidth',

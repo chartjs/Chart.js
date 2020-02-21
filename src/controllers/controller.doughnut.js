@@ -342,7 +342,7 @@ export default class DoughnutController extends DatasetController {
 
 DoughnutController.prototype.dataElementType = Arc;
 
-DoughnutController.prototype._dataElementOptions = [
+DoughnutController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderWidth',

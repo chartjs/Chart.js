@@ -231,7 +231,7 @@ export default class PolarAreaController extends DatasetController {
 
 PolarAreaController.prototype.dataElementType = Arc;
 
-PolarAreaController.prototype._dataElementOptions = [
+PolarAreaController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderWidth',

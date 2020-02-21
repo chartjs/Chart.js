@@ -496,7 +496,7 @@ export default class BarController extends DatasetController {
 
 BarController.prototype.dataElementType = Rectangle;
 
-BarController.prototype._dataElementOptions = [
+BarController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderSkipped',

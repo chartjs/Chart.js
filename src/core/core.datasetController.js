@@ -280,7 +280,6 @@ export default class DatasetController {
 	}
 
 	/**
-	 *
 	 * @param {string} scaleID
 	 * @return {Scale}
 	 */
@@ -844,7 +843,7 @@ export default class DatasetController {
 		const datasetOpts = me._config;
 		// @ts-ignore
 		const options = chart.options.elements[me.datasetElementType._type] || {};
-		const elementOptions = me._datasetElementOptions;
+		const elementOptions = me.datasetElementOptions;
 		const values = {};
 		const context = me._getContext(undefined, active);
 		let i, ilen, key, readKey, value;
@@ -878,7 +877,7 @@ export default class DatasetController {
 		const datasetOpts = me._config;
 		// @ts-ignore
 		const options = chart.options.elements[me.dataElementType._type] || {};
-		const elementOptions = me._dataElementOptions;
+		const elementOptions = me.dataElementOptions;
 		const values = {};
 		const context = me._getContext(index, active);
 		const info = {cacheable: !active};
@@ -1158,7 +1157,7 @@ DatasetController.prototype.dataElementType = null;
  * The keys defined here are for backward compatibility for legend styles.
  * @type {string[]}
  */
-DatasetController.prototype._datasetElementOptions = [
+DatasetController.prototype.datasetElementOptions = [
 	'backgroundColor',
 	'borderCapStyle',
 	'borderColor',
@@ -1174,7 +1173,7 @@ DatasetController.prototype._datasetElementOptions = [
  * The keys defined here are for backward compatibility for legend styles.
  * @type {string[]|object}
  */
-DatasetController.prototype._dataElementOptions = [
+DatasetController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderWidth',

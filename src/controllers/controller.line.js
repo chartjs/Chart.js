@@ -162,7 +162,7 @@ LineController.prototype.datasetElementType = Line;
 
 LineController.prototype.dataElementType = Point;
 
-LineController.prototype._datasetElementOptions = [
+LineController.prototype.datasetElementOptions = [
 	'backgroundColor',
 	'borderCapStyle',
 	'borderColor',
@@ -175,7 +175,7 @@ LineController.prototype._datasetElementOptions = [
 	'fill'
 ];
 
-LineController.prototype._dataElementOptions = {
+LineController.prototype.dataElementOptions = {
 	backgroundColor: 'pointBackgroundColor',
 	borderColor: 'pointBorderColor',
 	borderWidth: 'pointBorderWidth',
