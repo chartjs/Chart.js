@@ -8,6 +8,7 @@ import Ticks from './core.ticks';
 
 /**
  * @typedef { import("./core.controller").default } Chart
+ * @typedef {{value:any, label?:string, major?:boolean}} Tick
  */
 
 defaults.set('scale', {
@@ -64,7 +65,11 @@ defaults.set('scale', {
 	}
 });
 
-/** Returns a new array containing numItems from arr */
+/**
+ * Returns a new array containing numItems from arr
+ * @param {any[]} arr
+ * @param {number} numItems
+ */
 function sample(arr, numItems) {
 	const result = [];
 	const increment = arr.length / numItems;
@@ -77,6 +82,11 @@ function sample(arr, numItems) {
 	return result;
 }
 
+/**
+ * @param {Scale} scale
+ * @param {number} index
+ * @param {boolean} offsetGridLines
+ */
 function getPixelForGridLine(scale, index, offsetGridLines) {
 	const length = scale.ticks.length;
 	const validIndex = Math.min(index, length - 1);
@@ -104,6 +114,10 @@ function getPixelForGridLine(scale, index, offsetGridLines) {
 	return lineValue;
 }
 
+/**
+ * @param {object} caches
+ * @param {number} length
+ */
 function garbageCollect(caches, length) {
 	each(caches, (cache) => {
 		const gc = cache.gc;
@@ -118,10 +132,16 @@ function garbageCollect(caches, length) {
 	});
 }
 
+/**
+ * @param {object} options
+ */
 function getTickMarkLength(options) {
 	return options.drawTicks ? options.tickMarkLength : 0;
 }
 
+/**
+ * @param {object} options
+ */
 function getScaleLabelHeight(options) {
 	if (!options.display) {
 		return 0;
@@ -133,6 +153,9 @@ function getScaleLabelHeight(options) {
 	return font.lineHeight + padding.height;
 }
 
+/**
+ * @param {number[]} arr
+ */
 function getEvenSpacing(arr) {
 	const len = arr.length;
 	let i, diff;
@@ -149,6 +172,12 @@ function getEvenSpacing(arr) {
 	return diff;
 }
 
+/**
+ * @param {number[]} majorIndices
+ * @param {Tick[]} ticks
+ * @param {number} axisLength
+ * @param {number} ticksLimit
+ */
 function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 	const evenMajorSpacing = getEvenSpacing(majorIndices);
 	const spacing = ticks.length / ticksLimit;
@@ -169,6 +198,9 @@ function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
 	return Math.max(spacing, 1);
 }
 
+/**
+ * @param {Tick[]} ticks
+ */
 function getMajorIndices(ticks) {
 	const result = [];
 	let i, ilen;
@@ -180,6 +212,12 @@ function getMajorIndices(ticks) {
 	return result;
 }
 
+/**
+ * @param {Tick[]} ticks
+ * @param {Tick[]} newTicks
+ * @param {number[]} majorIndices
+ * @param {number} spacing
+ */
 function skipMajors(ticks, newTicks, majorIndices, spacing) {
 	let count = 0;
 	let next = majorIndices[0];
@@ -195,6 +233,13 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 	}
 }
 
+/**
+ * @param {Tick[]} ticks
+ * @param {Tick[]} newTicks
+ * @param {number} spacing
+ * @param {number} [majorStart]
+ * @param {number} [majorEnd]
+ */
 function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 	const start = valueOrDefault(majorStart, 0);
 	const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
@@ -279,7 +324,7 @@ export default class Scale extends Element {
 		this.labelRotation = undefined;
 		this.min = undefined;
 		this.max = undefined;
-		/** @type {object[]} */
+		/** @type {Tick[]} */
 		this.ticks = [];
 		/** @type {object[]|null} */
 		this._gridLineItems = null;
@@ -394,8 +439,8 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * Returns the scale tick objects ({label, major})
-	 * @return {object[]}
+	 * Returns the scale tick objects
+	 * @return {Tick[]}
 	 * @since 2.7
 	 */
 	getTicks() {
@@ -586,7 +631,7 @@ export default class Scale extends Element {
 	}
 	/**
 	 * Convert ticks to label strings
-	 * @param {object[]} ticks
+	 * @param {Tick[]} ticks
 	 */
 	generateTickLabels(ticks) {
 		const me = this;
@@ -790,7 +835,7 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * @param {object[]} ticks
+	 * @param {Tick[]} ticks
 	 * @private
 	 */
 	_convertTicksToLabels(ticks) {
@@ -977,8 +1022,8 @@ export default class Scale extends Element {
 
 	/**
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
-	 * @param {object[]} ticks
-	 * @return {object[]}
+	 * @param {Tick[]} ticks
+	 * @return {Tick[]}
 	 * @private
 	 */
 	_autoSkip(ticks) {
@@ -1077,7 +1122,7 @@ export default class Scale extends Element {
 		const alignBorderValue = function(pixel) {
 			return _alignPixel(chart, pixel, axisWidth);
 		};
-		let borderValue, i, tick, lineValue, alignedLineValue;
+		let borderValue, i, lineValue, alignedLineValue;
 		let tx1, ty1, tx2, ty2, x1, y1, x2, y2;
 
 		if (position === 'top') {
@@ -1133,7 +1178,8 @@ export default class Scale extends Element {
 		}
 
 		for (i = 0; i < ticksLength; ++i) {
-			tick = ticks[i] || {};
+			/** @type {Tick|object} */
+			const tick = ticks[i] || {};
 
 			context = {
 				scale: me,
