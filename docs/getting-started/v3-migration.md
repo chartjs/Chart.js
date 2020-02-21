@@ -139,6 +139,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
 * `Scale.tickValues` is now private
+* `TimeScale.getLabelCapacity` is now private
 * `TimeScale.tickFormatFunction` is now private
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
