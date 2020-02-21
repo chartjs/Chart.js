@@ -86,7 +86,7 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			babel(),
+			babel({envName: 'es6'}),
 			cleanup({
 				sourcemap: true
 			})
@@ -110,7 +110,7 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			babel(),
+			babel({envName: 'es6'}),
 			terser({
 				output: {
 					preamble: banner
