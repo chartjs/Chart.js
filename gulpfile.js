@@ -162,6 +162,8 @@ function docsTask(done) {
 }
 
 function unittestTask(done) {
+	// use `env.test` from `babel.config.json` for karma builds
+	process.env.NODE_ENV = 'test';
 	new karma.Server({
 		configFile: path.join(__dirname, 'karma.conf.js'),
 		singleRun: !argv.watch,
