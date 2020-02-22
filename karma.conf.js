@@ -67,7 +67,7 @@ module.exports = function(karma) {
 		rollupPreprocessor: {
 			plugins: [
 				resolve(),
-				babel({envName: 'test', exclude: 'node_modules/**'}), // use babel since we have ES proposal features
+				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
 				commonjs()
 			],
 			output: {
