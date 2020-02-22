@@ -68,9 +68,7 @@ module.exports = function(karma) {
 			plugins: [
 				resolve(),
 				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
-				commonjs({
-					include: "node_modules/**"
-				})
+				commonjs({exclude: ['src/**', 'test/**']})
 			],
 			output: {
 				name: 'test',
