@@ -73,7 +73,7 @@ function mergeScaleConfig(config, options) {
 	// apply scale defaults, if not overridden by dataset defaults
 	Object.keys(scales).forEach(key => {
 		const scale = scales[key];
-		helpers.mergeIf(scale, [chartDefaults.scales[scale.axis], scaleService.getScaleDefaults(scale.type)]);
+		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
 	});
 
 	return scales;
