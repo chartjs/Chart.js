@@ -17,6 +17,10 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. If you are using a date library other than moment, you no longer need to exclude moment from your build.
 
+## Chart types
+
+* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`baseAxis`](../charts/bar.md#general) option
+
 ### Ticks
 
 * `options.ticks.userCallback` was renamed to `options.ticks.callback`
@@ -147,6 +151,10 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Removal of private APIs
 
 * `Chart.data.datasets[datasetIndex]._meta`
+* `DatasetController._getIndexScaleId`
+* `DatasetController._getIndexScale`
+* `DatasetController._getValueScaleId`
+* `DatasetController._getValueScale`
 * `Element._ctx`
 * `Element._model`
 * `Element._view`
