@@ -45,10 +45,10 @@ export default class LineController extends DatasetController {
 		if (showLine && mode !== 'resize') {
 			const properties = {
 				points,
-				options: me._resolveDatasetElementOptions()
+				options: me.resolveDatasetElementOptions()
 			};
 
-			me._updateElement(line, undefined, properties, mode);
+			me.updateElement(line, undefined, properties, mode);
 		}
 
 		// Update Points
@@ -59,9 +59,9 @@ export default class LineController extends DatasetController {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
-		const firstOpts = me._resolveDataElementOptions(start, mode);
-		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
-		const includeOptions = me._includeOptions(mode, sharedOptions);
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
 		let prevParsed;
@@ -69,9 +69,9 @@ export default class LineController extends DatasetController {
 		for (let i = 0; i < points.length; ++i) {
 			const index = start + i;
 			const point = points[i];
-			const parsed = me._getParsed(index);
+			const parsed = me.getParsed(index);
 			const x = xScale.getPixelForValue(parsed.x);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me._applyStack(yScale, parsed) : parsed.y);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y);
 			const properties = {
 				x,
 				y,
@@ -80,26 +80,26 @@ export default class LineController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me._resolveDataElementOptions(index, mode);
+				properties.options = me.resolveDataElementOptions(index, mode);
 			}
 
-			me._updateElement(point, index, properties, mode);
+			me.updateElement(point, index, properties, mode);
 
 			prevParsed = parsed;
 		}
 
-		me._updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_resolveDatasetElementOptions(active) {
+	resolveDatasetElementOptions(active) {
 		const me = this;
 		const config = me._config;
 		const options = me.chart.options;
 		const lineOptions = options.elements.line;
-		const values = super._resolveDatasetElementOptions(active);
+		const values = super.resolveDatasetElementOptions(active);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
@@ -112,9 +112,9 @@ export default class LineController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getMaxOverflow() {
+	getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const border = me._showLine && meta.dataset.options.borderWidth || 0;
@@ -162,10 +162,7 @@ LineController.prototype.datasetElementType = Line;
 
 LineController.prototype.dataElementType = Point;
 
-/**
- * @private
- */
-LineController.prototype._datasetElementOptions = [
+LineController.prototype.datasetElementOptions = [
 	'backgroundColor',
 	'borderCapStyle',
 	'borderColor',
@@ -178,10 +175,7 @@ LineController.prototype._datasetElementOptions = [
 	'fill'
 ];
 
-/**
- * @private
- */
-LineController.prototype._dataElementOptions = {
+LineController.prototype.dataElementOptions = {
 	backgroundColor: 'pointBackgroundColor',
 	borderColor: 'pointBorderColor',
 	borderWidth: 'pointBorderWidth',

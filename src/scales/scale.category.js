@@ -17,11 +17,8 @@ export default class CategoryScale extends Scale {
 		this._valueRange = 0;
 	}
 
-	/**
-	 * @private
-	 */
-	_parse(raw, index) {
-		const labels = this._getLabels();
+	parse(raw, index) {
+		const labels = this.getLabels();
 		if (labels[index] === raw) {
 			return index;
 		}
@@ -32,7 +29,7 @@ export default class CategoryScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const max = me._getLabels().length - 1;
+		const max = me.getLabels().length - 1;
 
 		me.min = Math.max(me._userMin || 0, 0);
 		me.max = Math.min(me._userMax || max, max);
@@ -43,7 +40,7 @@ export default class CategoryScale extends Scale {
 		const min = me.min;
 		const max = me.max;
 		const offset = me.options.offset;
-		let labels = me._getLabels();
+		let labels = me.getLabels();
 
 		// If we are viewing some subset of labels, slice the original array
 		labels = (min === 0 && max === labels.length - 1) ? labels : labels.slice(min, max + 1);
@@ -57,7 +54,7 @@ export default class CategoryScale extends Scale {
 
 	getLabelForValue(value) {
 		const me = this;
-		const labels = me._getLabels();
+		const labels = me.getLabels();
 
 		if (value >= 0 && value < labels.length) {
 			return labels[value];
@@ -66,12 +63,12 @@ export default class CategoryScale extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 
-		Scale.prototype._configure.call(me);
+		super.configure();
 
 		if (!me.isHorizontal()) {
 			// For backward compatibility, vertical category scale reverse is inverted.
@@ -84,7 +81,7 @@ export default class CategoryScale extends Scale {
 		const me = this;
 
 		if (typeof value !== 'number') {
-			value = me._parse(value);
+			value = me.parse(value);
 		}
 
 		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);

@@ -34,17 +34,17 @@ export default class BubbleController extends DatasetController {
 
 	/**
 	 * Parse array of objects
-	 * @private
+	 * @protected
 	 */
-	_parseObjectData(meta, data, start, count) {
+	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
 		const parsed = [];
 		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
-				x: xScale._parseObject(item, 'x', i),
-				y: yScale._parseObject(item, 'y', i),
+				x: xScale.parseObject(item, 'x', i),
+				y: yScale.parseObject(item, 'y', i),
 				_custom: item && item.r && +item.r
 			});
 		}
@@ -52,9 +52,9 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getMaxOverflow() {
+	getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
 		let i = (meta.data || []).length - 1;
@@ -66,13 +66,13 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getLabelAndValue(index) {
+	getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {xScale, yScale} = meta;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 		const x = xScale.getLabelForValue(parsed.x);
 		const y = yScale.getLabelForValue(parsed.y);
 		const r = parsed._custom;
@@ -83,9 +83,6 @@ export default class BubbleController extends DatasetController {
 		};
 	}
 
-	/**
-	 * @protected
-	 */
 	update(mode) {
 		const me = this;
 		const points = me._cachedMeta.data;
@@ -94,21 +91,18 @@ export default class BubbleController extends DatasetController {
 		me.updateElements(points, 0, mode);
 	}
 
-	/**
-	 * @protected
-	 */
 	updateElements(points, start, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale} = me._cachedMeta;
-		const firstOpts = me._resolveDataElementOptions(start, mode);
-		const sharedOptions = me._getSharedOptions(mode, points[start], firstOpts);
-		const includeOptions = me._includeOptions(mode, sharedOptions);
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
 		for (let i = 0; i < points.length; i++) {
 			const point = points[i];
 			const index = start + i;
-			const parsed = !reset && me._getParsed(index);
+			const parsed = !reset && me.getParsed(index);
 			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
 			const properties = {
@@ -118,28 +112,28 @@ export default class BubbleController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me._resolveDataElementOptions(i, mode);
+				properties.options = me.resolveDataElementOptions(i, mode);
 
 				if (reset) {
 					properties.options.radius = 0;
 				}
 			}
 
-			me._updateElement(point, index, properties, mode);
+			me.updateElement(point, index, properties, mode);
 		}
 
-		me._updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_resolveDataElementOptions(index, mode) {
+	resolveDataElementOptions(index, mode) {
 		const me = this;
 		const chart = me.chart;
 		const dataset = me.getDataset();
-		const parsed = me._getParsed(index);
-		let values = super._resolveDataElementOptions(index, mode);
+		const parsed = me.getParsed(index);
+		let values = super.resolveDataElementOptions(index, mode);
 
 		// Scriptable options
 		const context = {
@@ -169,15 +163,9 @@ export default class BubbleController extends DatasetController {
 	}
 }
 
-/**
- * @protected
- */
 BubbleController.prototype.dataElementType = Point;
 
-/**
- * @private
- */
-BubbleController.prototype._dataElementOptions = [
+BubbleController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderWidth',

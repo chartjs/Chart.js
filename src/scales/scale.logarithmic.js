@@ -74,11 +74,8 @@ export default class LogarithmicScale extends Scale {
 		this._valueRange = 0;
 	}
 
-	/**
-	 * @private
-	 */
-	_parse(raw, index) {
-		const value = LinearScaleBase.prototype._parse.apply(this, [raw, index]);
+	parse(raw, index) {
+		const value = LinearScaleBase.prototype.parse.apply(this, [raw, index]);
 		if (value === 0) {
 			return undefined;
 		}
@@ -87,7 +84,7 @@ export default class LogarithmicScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me._getMinMax(true);
+		const minmax = me.getMinMax(true);
 		const min = minmax.min;
 		const max = minmax.max;
 
@@ -169,13 +166,13 @@ export default class LogarithmicScale extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 		const start = me.min;
 
-		Scale.prototype._configure.call(me);
+		super.configure();
 
 		me._startValue = log10(start);
 		me._valueRange = log10(me.max) - log10(start);

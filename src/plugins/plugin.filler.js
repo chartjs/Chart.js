@@ -121,7 +121,7 @@ class simpleArc {
 function computeCircularBoundary(source) {
 	const {scale, fill} = source;
 	const options = scale.options;
-	const length = scale._getLabels().length;
+	const length = scale.getLabels().length;
 	const target = [];
 	const start = options.reverse ? scale.max : scale.min;
 	const end = options.reverse ? scale.min : scale.max;
@@ -433,7 +433,7 @@ export default {
 	},
 
 	beforeDatasetsDraw(chart) {
-		const metasets = chart._getSortedVisibleDatasetMetas();
+		const metasets = chart.getSortedVisibleDatasetMetas();
 		const area = chart.chartArea;
 		let i, meta;
 

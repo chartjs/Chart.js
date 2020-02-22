@@ -657,8 +657,8 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.x;
 		var controller = chart.getDatasetMeta(0).controller;
-		expect(xScale.getLabelForValue(controller._getParsed(0)[xScale.id])).toBeTruthy();
-		expect(xScale.getLabelForValue(controller._getParsed(0)[xScale.id])).toBe('Jan 1, 2015, 8:00:00 pm');
+		expect(xScale.getLabelForValue(controller.getParsed(0)[xScale.id])).toBeTruthy();
+		expect(xScale.getLabelForValue(controller.getParsed(0)[xScale.id])).toBe('Jan 1, 2015, 8:00:00 pm');
 		expect(xScale.getLabelForValue(xScale.getValueForPixel(xScale.getPixelForTick(6)))).toBe('Jan 10, 2015, 12:00:00 pm');
 	});
 
@@ -737,7 +737,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.x;
 		var controller = chart.getDatasetMeta(0).controller;
-		var value = controller._getParsed(0)[xScale.id];
+		var value = controller.getParsed(0)[xScale.id];
 		expect(xScale.getLabelForValue(value)).toBeTruthy();
 		expect(xScale.getLabelForValue(value)).toBe('Jan 1, 2015, 8:00:00 pm');
 	});
@@ -766,7 +766,7 @@ describe('Time scale tests', function() {
 
 		var xScale = chart.scales.x;
 		var controller = chart.getDatasetMeta(0).controller;
-		var label = xScale.getLabelForValue(controller._getParsed(0)[xScale.id]);
+		var label = xScale.getLabelForValue(controller.getParsed(0)[xScale.id]);
 		expect(label).toEqual('Jan 8, 2018, 5:14:23 am');
 	});
 

@@ -107,14 +107,14 @@ function getDataTimestamps(scale) {
 		return timestamps;
 	}
 
-	const metas = scale._getMatchingVisibleMetas();
+	const metas = scale.getMatchingVisibleMetas();
 
 	if (isSeries && metas.length) {
-		return metas[0].controller._getAllParsedValues(scale);
+		return metas[0].controller.getAllParsedValues(scale);
 	}
 
 	for (i = 0, ilen = metas.length; i < ilen; ++i) {
-		timestamps = timestamps.concat(metas[i].controller._getAllParsedValues(scale));
+		timestamps = timestamps.concat(metas[i].controller.getAllParsedValues(scale));
 	}
 
 	// We can not assume data is in order or unique - not even for single dataset
@@ -134,7 +134,7 @@ function getLabelTimestamps(scale) {
 		return timestamps;
 	}
 
-	const labels = scale._getLabels();
+	const labels = scale.getLabels();
 	for (i = 0, ilen = labels.length; i < ilen; ++i) {
 		timestamps.push(parse(scale, labels[i]));
 	}
@@ -329,6 +329,7 @@ function generate(scale) {
 	const max = scale.max;
 	const options = scale.options;
 	const timeOpts = options.time;
+	// @ts-ignore
 	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
 	const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
@@ -606,9 +607,8 @@ export default class TimeScale extends Scale {
 	 * @param {*} raw
 	 * @param {number} index
 	 * @return {number}
-	 * @private
 	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars
+	parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (raw === undefined) {
 			return NaN;
 		}
@@ -620,22 +620,18 @@ export default class TimeScale extends Scale {
 	 * @param {string} axis
 	 * @param {number} index
 	 * @return {number|null}
-	 * @private
 	 */
-	_parseObject(obj, axis, index) {
+	parseObject(obj, axis, index) {
 		if (obj && obj.t) {
-			return this._parse(obj.t, index);
+			return this.parse(obj.t, index);
 		}
 		if (obj[axis] !== undefined) {
-			return this._parse(obj[axis], index);
+			return this.parse(obj[axis], index);
 		}
 		return null;
 	}
 
-	/**
-	 * @private
-	 */
-	_invalidateCaches() {
+	invalidateCaches() {
 		this._cache = {
 			data: [],
 			labels: [],
@@ -649,7 +645,7 @@ export default class TimeScale extends Scale {
 		const adapter = me._adapter;
 		const unit = options.time.unit || 'day';
 		// eslint-disable-next-line prefer-const
-		let {min, max, minDefined, maxDefined} = me._getUserBounds();
+		let {min, max, minDefined, maxDefined} = me.getUserBounds();
 
 		/**
 		 * @param {object} bounds
@@ -671,7 +667,7 @@ export default class TimeScale extends Scale {
 			// If `bounds` is `'ticks'` and `ticks.source` is `'labels'`,
 			// data bounds are ignored (and don't need to be determined)
 			if (options.bounds !== 'ticks' || options.ticks.source !== 'labels') {
-				_applyBounds(me._getMinMax(false));
+				_applyBounds(me.getMinMax(false));
 			}
 		}
 

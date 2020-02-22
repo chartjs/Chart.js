@@ -220,7 +220,7 @@ function splitNewlines(str) {
  */
 function createTooltipItem(chart, item) {
 	const {datasetIndex, index} = item;
-	const {label, value} = chart.getDatasetMeta(datasetIndex).controller._getLabelAndValue(index);
+	const {label, value} = chart.getDatasetMeta(datasetIndex).controller.getLabelAndValue(index);
 
 	return {
 		label,

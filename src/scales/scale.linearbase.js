@@ -122,10 +122,7 @@ export default class LinearScaleBase extends Scale {
 		this._valueRange = 0;
 	}
 
-	/**
-	 * @private
-	 */
-	_parse(raw, index) { // eslint-disable-line no-unused-vars
+	parse(raw, index) { // eslint-disable-line no-unused-vars
 		if (isNullOrUndef(raw)) {
 			return NaN;
 		}
@@ -212,7 +209,7 @@ export default class LinearScaleBase extends Scale {
 		if (stepSize) {
 			maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
 		} else {
-			maxTicks = me._computeTickLimit();
+			maxTicks = me.computeTickLimit();
 			maxTicksLimit = maxTicksLimit || 11;
 		}
 
@@ -224,16 +221,16 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_computeTickLimit() {
+	computeTickLimit() {
 		return Number.POSITIVE_INFINITY;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_handleDirectionalChanges(ticks) {
+	handleDirectionalChanges(ticks) {
 		return ticks;
 	}
 
@@ -258,7 +255,7 @@ export default class LinearScaleBase extends Scale {
 		};
 		let ticks = generateTicks(numericGeneratorOptions, me);
 
-		ticks = me._handleDirectionalChanges(ticks);
+		ticks = me.handleDirectionalChanges(ticks);
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
@@ -278,15 +275,15 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_configure() {
+	configure() {
 		const me = this;
 		const ticks = me.ticks;
 		let start = me.min;
 		let end = me.max;
 
-		Scale.prototype._configure.call(me);
+		super.configure();
 
 		if (me.options.offset && ticks.length) {
 			const offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;

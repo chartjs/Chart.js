@@ -43,16 +43,16 @@ defaults.set('horizontalBar', {
 export default class HorizontalBarController extends BarController {
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getValueScaleId() {
+	getValueScaleId() {
 		return this._cachedMeta.xAxisID;
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getIndexScaleId() {
+	getIndexScaleId() {
 		return this._cachedMeta.yAxisID;
 	}
 }

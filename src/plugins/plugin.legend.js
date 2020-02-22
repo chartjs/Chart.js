@@ -360,7 +360,7 @@ export class Legend extends Element {
 			return;
 		}
 
-		me._drawTitle();
+		me.drawTitle();
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
 		const fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
@@ -518,9 +518,9 @@ export class Legend extends Element {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_drawTitle() {
+	drawTitle() {
 		const me = this;
 		const opts = me.options;
 		const titleOpts = opts.title;

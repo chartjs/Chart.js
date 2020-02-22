@@ -125,8 +125,8 @@ function computeFlexCategoryTraits(index, ruler, options) {
 }
 
 function parseFloatBar(arr, item, vScale, i) {
-	const startValue = vScale._parse(arr[0], i);
-	const endValue = vScale._parse(arr[1], i);
+	const startValue = vScale.parse(arr[0], i);
+	const endValue = vScale.parse(arr[1], i);
 	const min = Math.min(startValue, endValue);
 	const max = Math.max(startValue, endValue);
 	let barStart = min;
@@ -154,7 +154,7 @@ function parseFloatBar(arr, item, vScale, i) {
 function parseArrayOrPrimitive(meta, data, start, count) {
 	const iScale = meta.iScale;
 	const vScale = meta.vScale;
-	const labels = iScale._getLabels();
+	const labels = iScale.getLabels();
 	const singleScale = iScale === vScale;
 	const parsed = [];
 	let i, ilen, item, entry;
@@ -162,12 +162,12 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	for (i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
 		item = {};
-		item[iScale.axis] = singleScale || iScale._parse(labels[i], i);
+		item[iScale.axis] = singleScale || iScale.parse(labels[i], i);
 
 		if (isArray(entry)) {
 			parseFloatBar(entry, item, vScale, i);
 		} else {
-			item[vScale.axis] = vScale._parse(entry, i);
+			item[vScale.axis] = vScale.parse(entry, i);
 		}
 
 		parsed.push(item);
@@ -184,27 +184,27 @@ export default class BarController extends DatasetController {
 	/**
 	 * Overriding primitive data parsing since we support mixed primitive/array
 	 * data for float bars
-	 * @private
+	 * @protected
 	 */
-	_parsePrimitiveData(meta, data, start, count) {
+	parsePrimitiveData(meta, data, start, count) {
 		return parseArrayOrPrimitive(meta, data, start, count);
 	}
 
 	/**
 	 * Overriding array data parsing since we support mixed primitive/array
 	 * data for float bars
-	 * @private
+	 * @protected
 	 */
-	_parseArrayData(meta, data, start, count) {
+	parseArrayData(meta, data, start, count) {
 		return parseArrayOrPrimitive(meta, data, start, count);
 	}
 
 	/**
 	 * Overriding object data parsing since we support mixed primitive/array
 	 * value-scale data for float bars
-	 * @private
+	 * @protected
 	 */
-	_parseObjectData(meta, data, start, count) {
+	parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
 		const vProp = vScale.axis;
 		const parsed = [];
@@ -212,12 +212,12 @@ export default class BarController extends DatasetController {
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.axis] = iScale._parseObject(obj, iScale.axis, i);
+			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
 			value = obj[vProp];
 			if (isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
-				item[vScale.axis] = vScale._parseObject(obj, vProp, i);
+				item[vScale.axis] = vScale.parseObject(obj, vProp, i);
 			}
 			parsed.push(item);
 		}
@@ -225,13 +225,13 @@ export default class BarController extends DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getLabelAndValue(index) {
+	getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {iScale, vScale} = meta;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
 		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
@@ -267,15 +267,15 @@ export default class BarController extends DatasetController {
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
 		const ruler = me._getRuler();
-		const firstOpts = me._resolveDataElementOptions(start, mode);
-		const sharedOptions = me._getSharedOptions(mode, rectangles[start], firstOpts);
-		const includeOptions = me._includeOptions(mode, sharedOptions);
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(mode, rectangles[start], firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
 		let i;
 
 		for (i = 0; i < rectangles.length; i++) {
 			const index = start + i;
-			const options = me._resolveDataElementOptions(index, mode);
+			const options = me.resolveDataElementOptions(index, mode);
 			const vpixels = me._calculateBarValuePixels(index, options);
 			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 
@@ -290,17 +290,17 @@ export default class BarController extends DatasetController {
 
 			// all borders are drawn for floating bar
 			/* TODO: float bars border skipping magic
-			if (me._getParsed(i)._custom) {
+			if (me.getParsed(i)._custom) {
 				model.borderSkipped = null;
 			}
 			*/
 			if (includeOptions) {
 				properties.options = options;
 			}
-			me._updateElement(rectangles[i], index, properties, mode);
+			me.updateElement(rectangles[i], index, properties, mode);
 		}
 
-		me._updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**
@@ -313,7 +313,7 @@ export default class BarController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
-		const metasets = iScale._getMatchingVisibleMetas(me._type);
+		const metasets = iScale.getMatchingVisibleMetas(me._type);
 		const stacked = iScale.options.stacked;
 		const ilen = metasets.length;
 		const stacks = [];
@@ -382,7 +382,7 @@ export default class BarController extends DatasetController {
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me._getParsed(i)[iScale.axis]));
+			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis]));
 		}
 
 		return {
@@ -403,11 +403,11 @@ export default class BarController extends DatasetController {
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
 		const minBarLength = options.minBarLength;
-		const parsed = me._getParsed(index);
+		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
 		let value = parsed[vScale.axis];
 		let start = 0;
-		let length = meta._stacked ? me._applyStack(vScale, parsed) : value;
+		let length = meta._stacked ? me.applyStack(vScale, parsed) : value;
 		let head, size;
 
 		if (length !== value) {
@@ -484,7 +484,7 @@ export default class BarController extends DatasetController {
 		clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me._getParsed(i)[vScale.axis])) {
+			if (!isNaN(me.getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}
@@ -496,10 +496,7 @@ export default class BarController extends DatasetController {
 
 BarController.prototype.dataElementType = Rectangle;
 
-/**
- * @private
- */
-BarController.prototype._dataElementOptions = [
+BarController.prototype.dataElementOptions = [
 	'backgroundColor',
 	'borderColor',
 	'borderSkipped',

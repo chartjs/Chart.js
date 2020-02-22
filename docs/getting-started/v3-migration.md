@@ -133,13 +133,14 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Line.calculatePointY`
 * `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
-* `Scale.handleDirectionalChanges` is now private
 * `Scale.longestLabelWidth`
 * `Scale.longestTextCache` is now private
 * `Scale.margins` is now private
 * `Scale.mergeTicksOptions`
 * `Scale.ticksAsNumbers`
 * `Scale.tickValues` is now private
+* `TimeScale.getLabelCapacity` is now private
+* `TimeScale.tickFormatFunction` is now private
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
@@ -150,7 +151,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Element._model`
 * `Element._view`
 * `LogarithmicScale._valueOffset`
-* `TimeScale._getPixelForOffset`
+* `TimeScale.getPixelForOffset`
 * `TimeScale.getLabelWidth`
 * `Tooltip._lastActive`
 
@@ -182,9 +183,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.toDegrees` was renamed to `helpers.math.toDegrees`
 * `helpers.toRadians` was renamed to `helpers.math.toRadians`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
-* `TimeScale.getLabelCapacity` was renamed to `TimeScale._getLabelCapacity`
-* `TimeScale.getPixelForOffset` was renamed to `TimeScale._getPixelForOffset`
-* `TimeScale.tickFormatFunction` was renamed to `TimeScale._tickFormatFunction`
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
 #### Renamed private APIs
