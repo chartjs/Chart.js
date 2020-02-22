@@ -1,9 +1,10 @@
 module.exports = {
 	threshold: 0.01,
 	config: {
-		type: 'horizontalBar',
+		type: 'bar',
 		data: {
 			datasets: [{
+				baseAxis: 'y',
 				data: [10, 5, 0, 25, 78]
 			}],
 			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']

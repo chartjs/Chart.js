@@ -11,6 +11,9 @@ defaults.set('radar', {
 			type: 'radialLinear',
 		}
 	},
+	datasets: {
+		baseAxis: 'r'
+	},
 	elements: {
 		line: {
 			tension: 0 // no bezier in radar
@@ -19,20 +22,6 @@ defaults.set('radar', {
 });
 
 export default class RadarController extends DatasetController {
-
-	/**
-	 * @protected
-	 */
-	getIndexScaleId() {
-		return this._cachedMeta.rAxisID;
-	}
-
-	/**
-	 * @protected
-	 */
-	getValueScaleId() {
-		return this._cachedMeta.rAxisID;
-	}
 
 	/**
 	 * @protected
@@ -72,7 +61,7 @@ export default class RadarController extends DatasetController {
 	updateElements(points, start, mode) {
 		const me = this;
 		const dataset = me.getDataset();
-		const scale = me.chart.scales.r;
+		const scale = me._cachedMeta.rScale;
 		const reset = mode === 'reset';
 		let i;
 

@@ -264,11 +264,14 @@ export default class DatasetController {
 		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
 		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
 		const rid = meta.rAxisID = dataset.rAxisID || getFirstScaleId(chart, 'r');
+		const baseAxis = meta.baseAxis;
+		const iid = meta.iAxisID = baseAxis === 'x' ? xid : baseAxis === 'r' ? rid : yid;
+		const vid = meta.vAxisID = baseAxis === 'x' ? yid : baseAxis === 'r' ? rid : xid;
 		meta.xScale = me.getScaleForId(xid);
 		meta.yScale = me.getScaleForId(yid);
 		meta.rScale = me.getScaleForId(rid);
-		meta.iScale = me._getIndexScale();
-		meta.vScale = me._getValueScale();
+		meta.iScale = me.getScaleForId(iid);
+		meta.vScale = me.getScaleForId(vid);
 	}
 
 	getDataset() {
@@ -285,34 +288,6 @@ export default class DatasetController {
 	 */
 	getScaleForId(scaleID) {
 		return this.chart.scales[scaleID];
-	}
-
-	/**
-	 * @protected
-	 */
-	getValueScaleId() {
-		return this._cachedMeta.yAxisID;
-	}
-
-	/**
-	 * @protected
-	 */
-	getIndexScaleId() {
-		return this._cachedMeta.xAxisID;
-	}
-
-	/**
-	 * @private
-	 */
-	_getValueScale() {
-		return this.getScaleForId(this.getValueScaleId());
-	}
-
-	/**
-	 * @private
-	 */
-	_getIndexScale() {
-		return this.getScaleForId(this.getIndexScaleId());
 	}
 
 	/**

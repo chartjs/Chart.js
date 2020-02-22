@@ -77,7 +77,7 @@ Global rectangle options: `Chart.defaults.elements.rectangle`.
 | `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar fill color.
 | `borderWidth` | `number` | `0` | Bar stroke width.
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar stroke color.
-| `borderSkipped` | `string` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
+| `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'bottom'`, `'left'`, `'top'` or `'right'`.
 
 ## Arc Configuration
 

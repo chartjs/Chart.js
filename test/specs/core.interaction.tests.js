@@ -153,8 +153,15 @@ describe('Core.Interaction', function() {
 
 			it ('axis: y gets correct items', function() {
 				var chart = window.acquireChart({
-					type: 'horizontalBar',
-					data: data
+					type: 'bar',
+					data: data,
+					options: {
+						bar: {
+							datasets: {
+								baseAxis: 'y'
+							}
+						}
+					}
 				});
 
 				var meta0 = chart.getDatasetMeta(0);
@@ -271,8 +278,15 @@ describe('Core.Interaction', function() {
 
 			it ('axis: x gets correct items', function() {
 				var chart = window.acquireChart({
-					type: 'horizontalBar',
-					data: data
+					type: 'bar',
+					data: data,
+					options: {
+						bar: {
+							datasets: {
+								baseAxis: 'y'
+							}
+						}
+					}
 				});
 
 				var evt = {

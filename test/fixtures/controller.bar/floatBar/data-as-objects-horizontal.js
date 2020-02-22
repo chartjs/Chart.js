@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		type: 'horizontalBar',
+		type: 'bar',
 		data: {
 			labels: ['a', 'b', 'c'],
 			datasets: [
@@ -17,6 +17,11 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
+			bar: {
+				datasets: {
+					baseAxis: 'y'
+				}
+			},
 			scales: {
 				x: {display: false, min: 0},
 				y: {display: false, stacked: true}

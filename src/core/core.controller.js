@@ -17,6 +17,24 @@ import {version} from '../../package.json';
 
 const valueOrDefault = helpers.valueOrDefault;
 
+function getBaseAxis(type, options) {
+	const typeDefaults = defaults[type] || {};
+	const typeDatasetDefaults = typeDefaults.datasets || {};
+	const typeOptions = options[type] || {};
+	const datasetOptions = typeOptions.datasets || {};
+	return datasetOptions.baseAxis || typeDatasetDefaults.baseAxis || 'x';
+}
+
+function getAxisFromDefaultScaleID(id, baseAxis) {
+	let ret = id;
+	if (id === 'i') {
+		ret = baseAxis;
+	} else if (id === 'v') {
+		ret = baseAxis === 'x' ? 'y' : 'x';
+	}
+	return ret;
+}
+
 function mergeScaleConfig(config, options) {
 	options = options || {};
 	const chartDefaults = defaults[config.type] || {scales: {}};
@@ -25,37 +43,37 @@ function mergeScaleConfig(config, options) {
 	const scales = {};
 
 	// First figure out first scale id's per axis.
-	// Note: for now, axis is determined from first letter of scale id!
 	Object.keys(configScales).forEach(id => {
-		const axis = id[0];
+		const scaleConf = configScales[id];
+		const axis = scaleConf.axis || id[0];
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = helpers.mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
+		scales[id] = helpers.mergeIf({axis}, [scaleConf, chartDefaults.scales[axis]]);
 	});
 
 	// Backward compatibility
 	if (options.scale) {
-		scales[options.scale.id || 'r'] = helpers.mergeIf({}, [options.scale, chartDefaults.scales.r]);
+		scales[options.scale.id || 'r'] = helpers.mergeIf({axis: 'r'}, [options.scale, chartDefaults.scales.r]);
 		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
-		const datasetDefaults = defaults[dataset.type || config.type] || {scales: {}};
+		const type = dataset.type || config.type;
+		const baseAxis = dataset.baseAxis || getBaseAxis(type, options);
+		const datasetDefaults = defaults[type] || {};
 		const defaultScaleOptions = datasetDefaults.scales || {};
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
-			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
+			const axis = getAxisFromDefaultScaleID(defaultID, baseAxis);
+			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
 			scales[id] = scales[id] || {};
-			helpers.mergeIf(scales[id], [
-				configScales[id],
-				defaultScaleOptions[defaultID]
-			]);
+			helpers.mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
 		});
 	});
 
 	// apply scale defaults, if not overridden by dataset defaults
 	Object.keys(scales).forEach(key => {
 		const scale = scales[key];
-		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
+		helpers.mergeIf(scale, [chartDefaults.scales[scale.axis], scaleService.getScaleDefaults(scale.type)]);
 	});
 
 	return scales;
@@ -497,6 +515,7 @@ export default class Chart {
 				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
+			meta.baseAxis = dataset.baseAxis || getBaseAxis(type, me.options);
 			meta.order = dataset.order || 0;
 			me._updateMetasetIndex(meta, i);
 			meta.label = '' + dataset.label;

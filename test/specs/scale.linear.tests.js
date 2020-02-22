@@ -1003,9 +1003,14 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
+				bar: {
+					datasets: {
+						baseAxis: 'y'
+					}
+				},
 				scales: {
 					x: {
 						stacked: true
@@ -1031,6 +1036,7 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
+				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [2500, 2000, 1500],
@@ -1039,7 +1045,7 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
 				scales: {
@@ -1058,6 +1064,7 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
+				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [2500, 2000, 1500]
@@ -1065,7 +1072,7 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
 				scales: {
@@ -1084,6 +1091,7 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
+				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [-2500, -2000, -1500]
@@ -1091,7 +1099,7 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
 				scales: {
@@ -1132,9 +1140,10 @@ describe('Linear Scale', function() {
 
 	it('Should get correct pixel values when horizontal', function() {
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: {
 				datasets: [{
+					baseAxis: 'y',
 					data: [0.05, -25, 10, 15, 20, 25, 30, 35]
 				}]
 			},

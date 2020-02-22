@@ -1,7 +1,6 @@
 import bar from './controller.bar';
 import bubble from './controller.bubble';
 import doughnut from './controller.doughnut';
-import horizontalBar from './controller.horizontalBar';
 import line from './controller.line';
 import polarArea from './controller.polarArea';
 import pie from './controller.pie';
@@ -16,7 +15,6 @@ export default {
 	bar,
 	bubble,
 	doughnut,
-	horizontalBar,
 	line,
 	polarArea,
 	pie,

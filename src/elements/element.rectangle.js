@@ -8,7 +8,7 @@ defaults.set('elements', {
 	rectangle: {
 		backgroundColor: defaultColor,
 		borderColor: defaultColor,
-		borderSkipped: 'bottom',
+		borderSkipped: 'start',
 		borderWidth: 0
 	}
 });
@@ -48,6 +48,10 @@ function swap(orig, v1, v2) {
 	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
 }
 
+function startEnd(v, start, end) {
+	return v === 'start' ? start : v === 'end' ? end : v;
+}
+
 function parseBorderSkipped(bar) {
 	let edge = bar.options.borderSkipped;
 	const res = {};
@@ -59,9 +63,15 @@ function parseBorderSkipped(bar) {
 	if (bar.horizontal) {
 		if (bar.base > bar.x) {
 			edge = swap(edge, 'left', 'right');
+			edge = startEnd(edge, 'right', 'left');
+		} else {
+			edge = startEnd(edge, 'left', 'right');
 		}
 	} else if (bar.base < bar.y) {
 		edge = swap(edge, 'bottom', 'top');
+		edge = startEnd(edge, 'top', 'bottom');
+	} else {
+		edge = startEnd(edge, 'bottom', 'top');
 	}
 
 	res[edge] = true;

@@ -11,6 +11,7 @@ defaults.set('bar', {
 	},
 
 	datasets: {
+		baseAxis: 'x',
 		categoryPercentage: 0.8,
 		barPercentage: 0.9,
 		animation: {
@@ -22,14 +23,14 @@ defaults.set('bar', {
 	},
 
 	scales: {
-		x: {
+		i: {
 			type: 'category',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
 		},
-		y: {
+		v: {
 			type: 'linear',
 			beginAtZero: true,
 		}

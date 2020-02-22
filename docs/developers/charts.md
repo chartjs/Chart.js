@@ -67,7 +67,6 @@ Extending or replacing an existing controller type is easy. Simply replace the c
 The built in controller types are:
 * `Chart.controllers.line`
 * `Chart.controllers.bar`
-* `Chart.controllers.horizontalBar`
 * `Chart.controllers.radar`
 * `Chart.controllers.doughnut`
 * `Chart.controllers.polarArea`

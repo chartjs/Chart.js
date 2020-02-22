@@ -69,8 +69,9 @@ the color of the bars is generally set this way.
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`baseAxis`](#general) | `string` | `'x'` | The base axis for the dataset. Use `'y'` for horizontal bar.
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'bottom'`
+| [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'start'`
 | [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
 | [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
@@ -86,6 +87,7 @@ the color of the bars is generally set this way.
 
 | Name | Description
 | ---- | ----
+| `baseAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
@@ -116,6 +118,8 @@ that derive from a bar chart.
 
 Options are:
 
+* `'start'`
+* `'end'`
 * `'bottom'`
 * `'left'`
 * `'top'`
@@ -263,10 +267,11 @@ The following dataset properties are specific to stacked bar charts.
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 {% chartjs %}
 {
-    "type": "horizontalBar",
+    "type": "bar",
     "data": {
         "labels": ["January", "February", "March", "April", "May", "June", "July"],
         "datasets": [{
+            "axis: "y",
             "label": "My First Dataset",
             "data": [65, 59, 80, 81, 56, 55, 40],
             "fill": false,
@@ -305,7 +310,7 @@ A horizontal bar chart is a variation on a vertical bar chart. It is sometimes u
 
 ```javascript
 var myBarChart = new Chart(ctx, {
-    type: 'horizontalBar',
+    type: 'bar',
     data: data,
     options: options
 });
@@ -314,8 +319,6 @@ var myBarChart = new Chart(ctx, {
 ### Config Options
 
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
-
-The default horizontal bar configuration is specified in `Chart.defaults.horizontalBar`.
 
 ## Internal data format
 
