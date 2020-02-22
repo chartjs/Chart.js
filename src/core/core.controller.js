@@ -151,7 +151,7 @@ function onAnimationProgress(ctx) {
 }
 
 function isDomSupported() {
-	return typeof window !== undefined && typeof document !== undefined;
+	return typeof window !== 'undefined' && typeof document !== 'undefined';
 }
 
 /**
@@ -282,9 +282,7 @@ export default class Chart {
 	_initializePlatform(canvas, config) {
 		if (config.platform) {
 			return new config.platform();
-		} else if (!isDomSupported()) {
-			return new BasicPlatform();
-		} else if (window.OffscreenCanvas && canvas instanceof window.OffscreenCanvas) {
+		} else if (!isDomSupported() || (typeof OffscreenCanvas !== 'undefined' && canvas instanceof OffscreenCanvas)) {
 			return new BasicPlatform();
 		}
 		return new DomPlatform();
@@ -327,8 +325,10 @@ export default class Chart {
 
 		canvas.width = me.width = newWidth;
 		canvas.height = me.height = newHeight;
-		canvas.style.width = newWidth + 'px';
-		canvas.style.height = newHeight + 'px';
+		if (canvas.style) {
+			canvas.style.width = newWidth + 'px';
+			canvas.style.height = newHeight + 'px';
+		}
 
 		helpers.dom.retinaScale(me, newRatio);
 

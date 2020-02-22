@@ -69,6 +69,42 @@ There are many approaches to data decimation and selection of an algorithm will 
 
 Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
 
+## Render Chart.js in a web worker (Chrome only)
+
+Chome (in version 69) added the ability to [transfer rendering control of a canvas](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) to a web worker. Web workers can use the [OffscreenCanvas API](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) to render from a web worker onto canvases in the DOM. Chart.js is a canvas-based library and supports rendering in a web worker - just pass an OffscreenCanvas into the Chart constructor instead of a Canvas element. Note that as of today, this API is only supported in Chrome.
+
+By moving all Chart.js calculations onto a separate thread, the main thread can be freed up for other uses. Some tips and tricks when using Chart.js in a web worker:
+* Transferring data between threads can be expensive, so ensure that your config and data objects are as small as possible. Try generating them on the worker side if you can (workers can make HTTP requests!) or passing them to your worker as ArrayBuffers, which can be transferred quickly from one thread to another.
+* You can't transfer functions between threads, so if your config object includes functions you'll have to strip them out before transferring and then add them back later.
+* You can't access the DOM from worker threads, so Chart.js plugins that use the DOM (including any mouse interactions) will likely not work.
+* Ensure that you have a fallback if you support browsers other than the most modern Chrome browser.
+* Resizing the chart must be done manually. See an example in the worker code below.
+
+Example main thread code:
+
+```javascript
+const config = {};
+const canvas = new HTMLCanvasElement();
+const offscreenCanvas = canvas.transferControlToOffscreen();
+
+const worker = new Worker('worker.js');
+worker.postMessage({canvas: offscreenCanvas, config}, [offscreenCanvas]);
+```
+
+Example worker code, in `worker.js`:
+
+```javascript
+onmessage = function(event) {
+    const {canvas, config} = event.data;
+    const chart = new Chart(canvas, config);
+
+    // Resizing the chart must be done manually, since OffscreenCanvas does not include event listeners.
+    canvas.width = 100;
+    canvas.height = 100;
+    chart.resize();
+};
+```
+
 ## Line Charts
 
 ### Disable Bezier Curves
