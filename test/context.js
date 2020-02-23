@@ -1,5 +1,5 @@
 // Code from https://stackoverflow.com/questions/4406864/html-canvas-unit-testing
-var Context = function() {
+const Context = function() {
 	this._calls = []; // names/args of recorded calls
 	this._initMethods();
 
@@ -136,4 +136,4 @@ Context.prototype.resetCalls = function() {
 	this._calls = [];
 };
 
-module.exports = Context;
+export default Context;
