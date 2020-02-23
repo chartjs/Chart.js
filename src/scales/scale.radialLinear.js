@@ -4,6 +4,7 @@ import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import scaleService from '../core/core.scaleService';
 
 const valueOrDefault = helpers.valueOrDefault;
 const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
@@ -543,3 +544,5 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 */
 	drawTitle() {}
 }
+
+scaleService.registerScaleType('radialLinear', RadialLinearScale, defaultConfig);

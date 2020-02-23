@@ -1,4 +1,5 @@
 import Scale from '../core/core.scale';
+import scaleService from '../core/core.scaleService';
 
 const defaultConfig = {
 };
@@ -106,3 +107,5 @@ export default class CategoryScale extends Scale {
 		return this.bottom;
 	}
 }
+
+scaleService.registerScaleType('category', CategoryScale, defaultConfig);

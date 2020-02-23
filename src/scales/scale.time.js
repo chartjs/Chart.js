@@ -4,6 +4,7 @@ import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpe
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
+import scaleService from '../core/core.scaleService';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
@@ -843,3 +844,5 @@ export default class TimeScale extends Scale {
 		return capacity > 0 ? capacity : 1;
 	}
 }
+
+scaleService.registerScaleType('time', TimeScale, defaultConfig);

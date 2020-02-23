@@ -3,6 +3,7 @@ import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import scaleService from '../core/core.scaleService';
 
 function isMajor(tickVal) {
 	const remain = tickVal / (Math.pow(10, Math.floor(log10(tickVal))));
@@ -194,3 +195,5 @@ export default class LogarithmicScale extends Scale {
 		return Math.pow(10, me._startValue + decimal * me._valueRange);
 	}
 }
+
+scaleService.registerScaleType('logarithmic', LogarithmicScale, defaultConfig);

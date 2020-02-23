@@ -2,6 +2,7 @@ import {isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_parseFont} from '../helpers/helpers.options';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import scaleService from '../core/core.scaleService';
 
 const defaultConfig = {
 	ticks: {
@@ -74,3 +75,5 @@ export default class LinearScale extends LinearScaleBase {
 		return this.getPixelForValue(ticks[index].value);
 	}
 }
+
+scaleService.registerScaleType('linear', LinearScale, defaultConfig);

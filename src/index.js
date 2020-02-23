@@ -1,3 +1,4 @@
+/* eslint-disable import/no-namespace */
 /**
  * @namespace Chart
  */
@@ -18,6 +19,7 @@ import layouts from './core/core.layouts';
 import platforms from './platform/platforms';
 import pluginsCore from './core/core.plugins';
 import Scale from './core/core.scale';
+import * as scales from './scales/index';
 import scaleService from './core/core.scaleService';
 import Ticks from './core/core.ticks';
 
@@ -36,15 +38,9 @@ Chart.layouts = layouts;
 Chart.platforms = platforms;
 Chart.plugins = pluginsCore;
 Chart.Scale = Scale;
+Chart.scales = scales;
 Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
-
-// Register built-in scales
-import scales from './scales/index';
-Object.keys(scales).forEach((type) => {
-	const scale = scales[type];
-	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
-});
 
 // Load to register built-in adapters (as side effects)
 import './adapters/index';
