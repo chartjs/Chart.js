@@ -291,6 +291,8 @@ function getTooltipSize(tooltip) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
+	ctx.save();
+
 	ctx.font = helpers.fontString(titleFontSize, options.titleFontStyle, options.titleFontFamily);
 	helpers.each(tooltip.title, maxLineWidth);
 
@@ -312,6 +314,8 @@ function getTooltipSize(tooltip) {
 	// Footer width
 	ctx.font = helpers.fontString(footerFontSize, options.footerFontStyle, options.footerFontFamily);
 	helpers.each(tooltip.footer, maxLineWidth);
+
+	ctx.restore();
 
 	// Add padding
 	width += 2 * options.xPadding;

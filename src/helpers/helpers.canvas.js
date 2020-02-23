@@ -44,6 +44,8 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 		cache.font = font;
 	}
 
+	ctx.save();
+
 	ctx.font = font;
 	let longest = 0;
 	const ilen = arrayOfThings.length;
@@ -66,6 +68,8 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 			}
 		}
 	}
+
+	ctx.restore();
 
 	const gcLen = gc.length / 2;
 	if (gcLen > arrayOfThings.length) {
