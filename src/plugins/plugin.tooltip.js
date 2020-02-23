@@ -474,6 +474,7 @@ class Tooltip extends Element {
 		this.height = undefined;
 		this.width = undefined;
 		this.caretX = undefined;
+		this.caretY = undefined;
 		this.labelColors = undefined;
 		this.labelTextColors = undefined;
 
@@ -917,10 +918,17 @@ class Tooltip extends Element {
 			if (!position) {
 				return;
 			}
+			const size = me._size = getTooltipSize(me);
 			const positionAndSize = Object.assign({}, position, me._size);
 			const alignment = determineAlignment(chart, options, positionAndSize);
 			const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
 			if (animX._to !== point.x || animY._to !== point.y) {
+				me.xAlign = alignment.xAlign;
+				me.yAlign = alignment.yAlign;
+				me.width = size.width;
+				me.height = size.height;
+				me.caretX = position.x;
+				me.caretY = position.y;
 				me._resolveAnimations().update(me, point);
 			}
 		}
