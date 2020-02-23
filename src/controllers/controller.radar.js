@@ -12,7 +12,7 @@ defaults.set('radar', {
 		}
 	},
 	datasets: {
-		baseAxis: 'r'
+		indexAxis: 'r'
 	},
 	elements: {
 		line: {

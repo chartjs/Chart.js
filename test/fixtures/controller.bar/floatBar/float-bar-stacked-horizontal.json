@@ -17,11 +17,7 @@
         "options": {
             "title": false,
             "legend": false,
-			"bar": {
-				"datasets": {
-					"baseAxis": "y"
-				}
-			},
+            "indexAxis": "y",
             "scales": {
                 "x": {
                     "display": false,

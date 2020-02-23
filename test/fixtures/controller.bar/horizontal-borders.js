@@ -20,11 +20,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
-			bar: {
-				datasets: {
-					baseAxis: 'y'
-				}
-			},
+			indexAxis: 'y',
 			elements: {
 				rectangle: {
 					backgroundColor: '#AAAAAA80',

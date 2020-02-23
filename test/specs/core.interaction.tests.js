@@ -156,11 +156,7 @@ describe('Core.Interaction', function() {
 					type: 'bar',
 					data: data,
 					options: {
-						bar: {
-							datasets: {
-								baseAxis: 'y'
-							}
-						}
+						indexAxis: 'y',
 					}
 				});
 
@@ -281,11 +277,7 @@ describe('Core.Interaction', function() {
 					type: 'bar',
 					data: data,
 					options: {
-						bar: {
-							datasets: {
-								baseAxis: 'y'
-							}
-						}
+						indexAxis: 'y',
 					}
 				});
 

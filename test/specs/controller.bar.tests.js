@@ -1388,11 +1388,7 @@ describe('Chart.controllers.bar', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
-					bar: {
-						datasets: {
-							baseAxis: 'y'
-						}
-					},
+					indexAxis: 'y',
 					scales: {
 						y: {
 							min: 'March',
@@ -1408,11 +1404,7 @@ describe('Chart.controllers.bar', function() {
 				type: 'bar',
 				data: this.data,
 				options: {
-					bar: {
-						datasets: {
-							baseAxis: 'y'
-						}
-					},
+					indexAxis: 'y',
 					scales: {
 						x: {
 							stacked: true
@@ -1527,7 +1519,7 @@ describe('Chart.controllers.bar', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					baseAxis: 'y',
+					indexAxis: 'y',
 					minBarLength: minBarLength,
 					data: [0.05, -0.05, 10, 15, 20, 25, 30, 35]
 				}]

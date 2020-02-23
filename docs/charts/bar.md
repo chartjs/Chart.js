@@ -69,7 +69,6 @@ the color of the bars is generally set this way.
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`baseAxis`](#general) | `string` | `'x'` | The base axis for the dataset. Use `'y'` for horizontal bar.
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'start'`
 | [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
@@ -78,6 +77,7 @@ the color of the bars is generally set this way.
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | - | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | - | Yes | `1`
+| [`indexAxis`](#general) | `string` | `'x'` | The base axis for the dataset. Use `'y'` for horizontal bar.
 | [`label`](#general) | `string` | - | - | `''`
 | [`order`](#general) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
@@ -87,8 +87,8 @@ the color of the bars is generally set this way.
 
 | Name | Description
 | ---- | ----
-| `baseAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
+| `indexAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
 | `xAxisID` | The ID of the x axis to plot this dataset on.

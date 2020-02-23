@@ -828,14 +828,14 @@ describe('Logarithmic Scale tests', function() {
 		];
 		config.forEach(function(setup) {
 			var scaleConfig = {};
-			var baseAxis, chartStart, chartEnd;
+			var indexAxis, chartStart, chartEnd;
 
 			if (setup.axis === 'x') {
-				baseAxis = 'y';
+				indexAxis = 'y';
 				chartStart = 'left';
 				chartEnd = 'right';
 			} else {
-				baseAxis = 'x';
+				indexAxis = 'x';
 				chartStart = 'bottom';
 				chartEnd = 'top';
 			}
@@ -856,11 +856,7 @@ describe('Logarithmic Scale tests', function() {
 							datasets: setup.data || data,
 						},
 						options: {
-							bar: {
-								datasets: {
-									baseAxis
-								}
-							},
+							indexAxis,
 							scales: scaleConfig
 						}
 					});

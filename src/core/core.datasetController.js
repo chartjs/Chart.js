@@ -264,9 +264,9 @@ export default class DatasetController {
 		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
 		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
 		const rid = meta.rAxisID = dataset.rAxisID || getFirstScaleId(chart, 'r');
-		const baseAxis = meta.baseAxis;
-		const iid = meta.iAxisID = baseAxis === 'x' ? xid : baseAxis === 'r' ? rid : yid;
-		const vid = meta.vAxisID = baseAxis === 'x' ? yid : baseAxis === 'r' ? rid : xid;
+		const indexAxis = meta.indexAxis;
+		const iid = meta.iAxisID = indexAxis === 'x' ? xid : indexAxis === 'r' ? rid : yid;
+		const vid = meta.vAxisID = indexAxis === 'x' ? yid : indexAxis === 'r' ? rid : xid;
 		meta.xScale = me.getScaleForId(xid);
 		meta.yScale = me.getScaleForId(yid);
 		meta.rScale = me.getScaleForId(rid);

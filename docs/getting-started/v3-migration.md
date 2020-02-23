@@ -19,7 +19,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ## Chart types
 
-* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`baseAxis`](../charts/bar.md#general) option
+* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](../charts/bar.md#general) option
 
 ### Ticks
 

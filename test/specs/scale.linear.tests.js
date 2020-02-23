@@ -1006,11 +1006,7 @@ describe('Linear Scale', function() {
 			type: 'bar',
 			data: barData,
 			options: {
-				bar: {
-					datasets: {
-						baseAxis: 'y'
-					}
-				},
+				indexAxis: 'y',
 				scales: {
 					x: {
 						stacked: true
@@ -1036,7 +1032,6 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
-				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [2500, 2000, 1500],
@@ -1048,6 +1043,7 @@ describe('Linear Scale', function() {
 			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: 20
@@ -1064,7 +1060,6 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
-				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [2500, 2000, 1500]
@@ -1075,6 +1070,7 @@ describe('Linear Scale', function() {
 			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: 0,
@@ -1091,7 +1087,6 @@ describe('Linear Scale', function() {
 		var barData = {
 			labels: ['S1', 'S2', 'S3'],
 			datasets: [{
-				baseAxis: 'y',
 				label: 'dataset 1',
 				backgroundColor: '#382765',
 				data: [-2500, -2000, -1500]
@@ -1102,6 +1097,7 @@ describe('Linear Scale', function() {
 			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: -3000,
@@ -1143,11 +1139,11 @@ describe('Linear Scale', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					baseAxis: 'y',
 					data: [0.05, -25, 10, 15, 20, 25, 30, 35]
 				}]
 			},
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						type: 'linear',

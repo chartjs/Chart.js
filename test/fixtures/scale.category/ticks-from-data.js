@@ -4,12 +4,12 @@ module.exports = {
 		type: 'bar',
 		data: {
 			datasets: [{
-				baseAxis: 'y',
 				data: [10, 5, 0, 25, 78]
 			}],
 			labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
 		},
 		options: {
+			indexAxis: 'y',
 			legend: false,
 			title: false,
 			elements: {

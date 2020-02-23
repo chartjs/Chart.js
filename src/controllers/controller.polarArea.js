@@ -14,7 +14,7 @@ defaults.set('polarArea', {
 		animateScale: true
 	},
 	datasets: {
-		baseAxis: 'r'
+		indexAxis: 'r'
 	},
 	scales: {
 		r: {

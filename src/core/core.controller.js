@@ -17,28 +17,33 @@ import {version} from '../../package.json';
 
 const valueOrDefault = helpers.valueOrDefault;
 
-function getBaseAxis(type, options) {
+function getIndexAxis(type, options) {
 	const typeDefaults = defaults[type] || {};
-	const typeDatasetDefaults = typeDefaults.datasets || {};
+	const datasetDefaults = typeDefaults.datasets || {};
 	const typeOptions = options[type] || {};
 	const datasetOptions = typeOptions.datasets || {};
-	return datasetOptions.baseAxis || typeDatasetDefaults.baseAxis || 'x';
+	return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
 }
 
-function getAxisFromDefaultScaleID(id, baseAxis) {
-	let ret = id;
-	if (id === 'i') {
-		ret = baseAxis;
-	} else if (id === 'v') {
-		ret = baseAxis === 'x' ? 'y' : 'x';
+function getAxisFromDefaultScaleID(id, indexAxis) {
+	let axis = id;
+	if (id === '_index_') {
+		axis = indexAxis;
+	} else if (id === '_value_') {
+		axis = indexAxis === 'x' ? 'y' : 'x';
 	}
-	return ret;
+	return axis;
+}
+
+function getDefaultScaleIDFromAxis(axis, indexAxis) {
+	return axis === indexAxis ? '_index_' : '_value_';
 }
 
 function mergeScaleConfig(config, options) {
 	options = options || {};
 	const chartDefaults = defaults[config.type] || {scales: {}};
 	const configScales = options.scales || {};
+	const chartIndexAxis = getIndexAxis(config.type, options);
 	const firstIDs = {};
 	const scales = {};
 
@@ -46,8 +51,9 @@ function mergeScaleConfig(config, options) {
 	Object.keys(configScales).forEach(id => {
 		const scaleConf = configScales[id];
 		const axis = scaleConf.axis || id[0];
+		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = helpers.mergeIf({axis}, [scaleConf, chartDefaults.scales[axis]]);
+		scales[id] = helpers.mergeIf({axis}, [scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
 	});
 
 	// Backward compatibility
@@ -59,11 +65,11 @@ function mergeScaleConfig(config, options) {
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
 		const type = dataset.type || config.type;
-		const baseAxis = dataset.baseAxis || getBaseAxis(type, options);
+		const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
 		const datasetDefaults = defaults[type] || {};
 		const defaultScaleOptions = datasetDefaults.scales || {};
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
-			const axis = getAxisFromDefaultScaleID(defaultID, baseAxis);
+			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
 			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
 			scales[id] = scales[id] || {};
 			helpers.mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
@@ -515,7 +521,7 @@ export default class Chart {
 				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
-			meta.baseAxis = dataset.baseAxis || getBaseAxis(type, me.options);
+			meta.indexAxis = dataset.indexAxis || getIndexAxis(type, me.options);
 			meta.order = dataset.order || 0;
 			me._updateMetasetIndex(meta, i);
 			meta.label = '' + dataset.label;

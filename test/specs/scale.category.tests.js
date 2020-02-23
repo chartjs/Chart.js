@@ -469,7 +469,6 @@ describe('Category scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					baseAxis: 'y',
 					data: [
 						{x: 10, y: 0},
 						{x: 5, y: 1},
@@ -481,6 +480,7 @@ describe('Category scale tests', function() {
 				labels: [0, 1, 2, 3]
 			},
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						type: 'linear',
