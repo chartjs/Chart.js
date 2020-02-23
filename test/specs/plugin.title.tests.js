@@ -116,11 +116,11 @@ describe('Title block tests', function() {
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'save',
 			args: []
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'translate',
 			args: [300, 67.2]
@@ -169,11 +169,11 @@ describe('Title block tests', function() {
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'save',
 			args: []
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'translate',
 			args: [117.2, 250]
@@ -205,11 +205,11 @@ describe('Title block tests', function() {
 		title.draw();
 
 		expect(context.getCalls()).toEqual([{
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'save',
 			args: []
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'translate',
 			args: [117.2, 250]

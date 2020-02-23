@@ -152,9 +152,6 @@ export class Title extends Element {
 		let maxWidth, titleX, titleY;
 		let align;
 
-		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
-		ctx.font = fontOpts.string;
-
 		// Horizontal
 		if (me.isHorizontal()) {
 			switch (opts.align) {
@@ -196,6 +193,10 @@ export class Title extends Element {
 		}
 
 		ctx.save();
+
+		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
+		ctx.font = fontOpts.string;
+
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
 		ctx.textAlign = align;

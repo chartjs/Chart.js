@@ -49,11 +49,20 @@ describe('Chart.helpers.canvas', function() {
 		expect(helpers.canvas._longestText(context, font, arrayOfThings2D, {})).toEqual(80);
 		// We check to make sure we made the right calls to the canvas.
 		expect(context.getCalls()).toEqual([{
+			name: 'save',
+			args: []
+		}, {
 			name: 'measureText',
 			args: ['FooBar']
 		}, {
 			name: 'measureText',
 			args: ['Bar']
+		}, {
+			name: 'restore',
+			args: []
+		}, {
+			name: 'save',
+			args: []
 		}, {
 			name: 'measureText',
 			args: ['FooBar_1']
@@ -63,6 +72,9 @@ describe('Chart.helpers.canvas', function() {
 		}, {
 			name: 'measureText',
 			args: ['Foo_1']
+		}, {
+			name: 'restore',
+			args: []
 		}]);
 	});
 
