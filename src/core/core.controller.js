@@ -1034,8 +1034,22 @@ class Chart {
 		const me = this;
 		const options = me.options;
 		const hoverOptions = options.hover;
+
 		// If the event is replayed from `update`, we should evaluate with the final positions.
+		//
+		// The `replay`:
+		// It's the last event (excluding click) that has occured before `update`.
+		// So mouse has not moved. It's also over the chart, because there is a `replay`.
+		//
+		// The why:
+		// If animations are active, the elements haven't moved yet compared to state before update.
+		// But if they will, we are activating the elements that would be active, if this check
+		// was done after the animations have completed. => "final positions".
+		// If there is no animations, the "final" and "current" positions are equal.
+		// This is done so we do not have to evaluate the active elements each animation frame
+		// - it would be expensive.
 		const useFinalPosition = replay;
+
 		let changed = false;
 
 		// Find Active Elements for hover and tooltips
