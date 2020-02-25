@@ -34,23 +34,28 @@ export default class Point extends Element {
 		}
 	}
 
-	inRange(mouseX, mouseY) {
+	inRange(mouseX, mouseY, useFinalPosition) {
 		const options = this.options;
-		return ((Math.pow(mouseX - this.x, 2) + Math.pow(mouseY - this.y, 2)) < Math.pow(options.hitRadius + options.radius, 2));
+		const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
+		return ((Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2)) < Math.pow(options.hitRadius + options.radius, 2));
 	}
 
-	inXRange(mouseX) {
+	inXRange(mouseX, useFinalPosition) {
 		const options = this.options;
-		return (Math.abs(mouseX - this.x) < options.radius + options.hitRadius);
+		const {x} = this.getProps(['x'], useFinalPosition);
+
+		return (Math.abs(mouseX - x) < options.radius + options.hitRadius);
 	}
 
-	inYRange(mouseY) {
+	inYRange(mouseY, useFinalPosition) {
 		const options = this.options;
-		return (Math.abs(mouseY - this.y) < options.radius + options.hitRadius);
+		const {y} = this.getProps(['x'], useFinalPosition);
+		return (Math.abs(mouseY - y) < options.radius + options.hitRadius);
 	}
 
-	getCenterPoint() {
-		return {x: this.x, y: this.y};
+	getCenterPoint(useFinalPosition) {
+		const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
+		return {x, y};
 	}
 
 	size() {
@@ -58,15 +63,6 @@ export default class Point extends Element {
 		const radius = Math.max(options.radius, options.hoverRadius) || 0;
 		const borderWidth = radius && options.borderWidth || 0;
 		return (radius + borderWidth) * 2;
-	}
-
-	tooltipPosition() {
-		const options = this.options;
-		return {
-			x: this.x,
-			y: this.y,
-			padding: options.radius + options.borderWidth
-		};
 	}
 
 	draw(ctx, chartArea) {

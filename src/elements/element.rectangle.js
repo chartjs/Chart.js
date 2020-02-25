@@ -15,33 +15,31 @@ defaults.set('elements', {
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
- * @param bar {Rectangle} the bar
+ * @param {Rectangle} bar the bar
+ * @param {boolean} [useFinalPosition]
  * @return {object} bounds of the bar
  * @private
  */
-function getBarBounds(bar) {
-	let x1, x2, y1, y2, half;
+function getBarBounds(bar, useFinalPosition) {
+	const {x, y, base, width, height} = bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition);
+
+	let left, right, top, bottom, half;
 
 	if (bar.horizontal) {
-		half = bar.height / 2;
-		x1 = Math.min(bar.x, bar.base);
-		x2 = Math.max(bar.x, bar.base);
-		y1 = bar.y - half;
-		y2 = bar.y + half;
+		half = height / 2;
+		left = Math.min(x, base);
+		right = Math.max(x, base);
+		top = y - half;
+		bottom = y + half;
 	} else {
-		half = bar.width / 2;
-		x1 = bar.x - half;
-		x2 = bar.x + half;
-		y1 = Math.min(bar.y, bar.base);
-		y2 = Math.max(bar.y, bar.base);
+		half = width / 2;
+		left = x - half;
+		right = x + half;
+		top = Math.min(y, base);
+		bottom = Math.max(y, base);
 	}
 
-	return {
-		left: x1,
-		top: y1,
-		right: x2,
-		bottom: y2
-	};
+	return {left, top, right, bottom};
 }
 
 function swap(orig, v1, v2) {
@@ -116,10 +114,10 @@ function boundingRects(bar) {
 	};
 }
 
-function inRange(bar, x, y) {
+function inRange(bar, x, y, useFinalPosition) {
 	const skipX = x === null;
 	const skipY = y === null;
-	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar);
+	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar, useFinalPosition);
 
 	return bounds
 		&& (skipX || x >= bounds.left && x <= bounds.right)
@@ -165,30 +163,23 @@ export default class Rectangle extends Element {
 		ctx.restore();
 	}
 
-	inRange(mouseX, mouseY) {
-		return inRange(this, mouseX, mouseY);
+	inRange(mouseX, mouseY, useFinalPosition) {
+		return inRange(this, mouseX, mouseY, useFinalPosition);
 	}
 
-	inXRange(mouseX) {
-		return inRange(this, mouseX, null);
+	inXRange(mouseX, useFinalPosition) {
+		return inRange(this, mouseX, null, useFinalPosition);
 	}
 
-	inYRange(mouseY) {
-		return inRange(this, null, mouseY);
+	inYRange(mouseY, useFinalPosition) {
+		return inRange(this, null, mouseY, useFinalPosition);
 	}
 
-	getCenterPoint() {
-		const {x, y, base, horizontal} = this;
+	getCenterPoint(useFinalPosition) {
+		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal', useFinalPosition]);
 		return {
 			x: horizontal ? (x + base) / 2 : x,
 			y: horizontal ? y : (y + base) / 2
-		};
-	}
-
-	tooltipPosition() {
-		return {
-			x: this.x,
-			y: this.y
 		};
 	}
 

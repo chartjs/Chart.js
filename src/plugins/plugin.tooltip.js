@@ -478,6 +478,7 @@ export class Tooltip extends Element {
 		this.height = undefined;
 		this.width = undefined;
 		this.caretX = undefined;
+		this.caretY = undefined;
 		this.labelColors = undefined;
 		this.labelTextColors = undefined;
 
@@ -916,15 +917,22 @@ export class Tooltip extends Element {
 		const anims = me.$animations;
 		const animX = anims && anims.x;
 		const animY = anims && anims.y;
-		if (animX && animX.active() || animY && animY.active()) {
+		if (animX || animY) {
 			const position = positioners[options.position].call(me, me._active, me._eventPosition);
 			if (!position) {
 				return;
 			}
+			const size = me._size = getTooltipSize(me);
 			const positionAndSize = Object.assign({}, position, me._size);
 			const alignment = determineAlignment(chart, options, positionAndSize);
 			const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
 			if (animX._to !== point.x || animY._to !== point.y) {
+				me.xAlign = alignment.xAlign;
+				me.yAlign = alignment.yAlign;
+				me.width = size.width;
+				me.height = size.height;
+				me.caretX = position.x;
+				me.caretY = position.y;
 				me._resolveAnimations().update(me, point);
 			}
 		}
@@ -985,9 +993,10 @@ export class Tooltip extends Element {
 	/**
 	 * Handle an event
 	 * @param {IEvent} e - The event to handle
+	 * @param {boolean} [replay] - This is a replayed event (from update)
 	 * @returns {boolean} true if the tooltip changed
 	 */
-	handleEvent(e) {
+	handleEvent(e, replay) {
 		const me = this;
 		const options = me.options;
 		const lastActive = me._active || [];
@@ -996,14 +1005,14 @@ export class Tooltip extends Element {
 
 		// Find Active Elements for tooltips
 		if (e.type !== 'mouseout') {
-			active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+			active = me._chart.getElementsAtEventForMode(e, options.mode, options, replay);
 			if (options.reverse) {
 				active.reverse();
 			}
 		}
 
 		// Remember Last Actives
-		changed = !helpers._elementsEqual(active, lastActive);
+		changed = replay || !helpers._elementsEqual(active, lastActive);
 
 		// Only handle target event on tooltip change
 		if (changed) {
@@ -1068,9 +1077,11 @@ export default {
 		plugins.notify(chart, 'afterTooltipDraw', [args]);
 	},
 
-	afterEvent(chart, e) {
+	afterEvent(chart, e, replay) {
 		if (chart.tooltip) {
-			chart.tooltip.handleEvent(e);
+			// If the event is replayed from `update`, we should evaluate with the final positions.
+			const useFinalPosition = replay;
+			chart.tooltip.handleEvent(e, useFinalPosition);
 		}
 	}
 };

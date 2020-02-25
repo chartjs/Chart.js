@@ -106,38 +106,49 @@ export default class Arc extends Element {
 	/**
 	 * @param {number} chartX
 	 * @param {number} chartY
+	 * @param {boolean} [useFinalPosition]
 	 */
-	inRange(chartX, chartY) {
-		const me = this;
-
-		const {angle, distance} = getAngleFromPoint(me, {x: chartX, y: chartY});
-
-		// Check if within the range of the open/close angle
-		const betweenAngles = _angleBetween(angle, me.startAngle, me.endAngle);
-		const withinRadius = (distance >= me.innerRadius && distance <= me.outerRadius);
+	inRange(chartX, chartY, useFinalPosition) {
+		const point = this.getProps(['x', 'y'], useFinalPosition);
+		const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
+		const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
+			'startAngle',
+			'endAngle',
+			'innerRadius',
+			'outerRadius',
+			'circumference'
+		], useFinalPosition);
+		const betweenAngles = circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
+		const withinRadius = (distance >= innerRadius && distance <= outerRadius);
 
 		return (betweenAngles && withinRadius);
 	}
 
-	getCenterPoint() {
-		const me = this;
-		const halfAngle = (me.startAngle + me.endAngle) / 2;
-		const halfRadius = (me.innerRadius + me.outerRadius) / 2;
+	/**
+	 * @param {boolean} [useFinalPosition]
+	 */
+	getCenterPoint(useFinalPosition) {
+		const {x, y, startAngle, endAngle, innerRadius, outerRadius} = this.getProps([
+			'x',
+			'y',
+			'startAngle',
+			'endAngle',
+			'innerRadius',
+			'outerRadius'
+		], useFinalPosition);
+		const halfAngle = (startAngle + endAngle) / 2;
+		const halfRadius = (innerRadius + outerRadius) / 2;
 		return {
-			x: me.x + Math.cos(halfAngle) * halfRadius,
-			y: me.y + Math.sin(halfAngle) * halfRadius
+			x: x + Math.cos(halfAngle) * halfRadius,
+			y: y + Math.sin(halfAngle) * halfRadius
 		};
 	}
 
-	tooltipPosition() {
-		const me = this;
-		const centreAngle = me.startAngle + ((me.endAngle - me.startAngle) / 2);
-		const rangeFromCentre = (me.outerRadius - me.innerRadius) / 2 + me.innerRadius;
-
-		return {
-			x: me.x + (Math.cos(centreAngle) * rangeFromCentre),
-			y: me.y + (Math.sin(centreAngle) * rangeFromCentre)
-		};
+	/**
+	 * @param {boolean} [useFinalPosition]
+	 */
+	tooltipPosition(useFinalPosition) {
+		return this.getCenterPoint(useFinalPosition);
 	}
 
 	draw(ctx) {

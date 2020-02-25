@@ -19,6 +19,21 @@ describe('Arc element tests', function() {
 		expect(arc.inRange(-1.0 * Math.sqrt(7), Math.sqrt(7))).toBe(false);
 	});
 
+	it ('should determine if in range, when full circle', function() {
+		// Mock out the arc as if the controller put it there
+		var arc = new Chart.elements.Arc({
+			startAngle: -Math.PI,
+			endAngle: Math.PI * 1.5,
+			x: 0,
+			y: 0,
+			innerRadius: 0,
+			outerRadius: 10,
+			circumference: Math.PI * 2
+		});
+
+		expect(arc.inRange(7, 7)).toBe(true);
+	});
+
 	it ('should get the tooltip position', function() {
 		// Mock out the arc as if the controller put it there
 		var arc = new Chart.elements.Arc({

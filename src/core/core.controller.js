@@ -212,7 +212,7 @@ export default class Chart {
 		this.chartArea = undefined;
 		this.data = undefined;
 		this.active = undefined;
-		this.lastActive = undefined;
+		this.lastActive = [];
 		this._lastEvent = undefined;
 		/** @type {{resize?: function}} */
 		this._listeners = {};
@@ -581,7 +581,7 @@ export default class Chart {
 
 		// Replay last event from before update
 		if (me._lastEvent) {
-			me._eventHandler(me._lastEvent);
+			me._eventHandler(me._lastEvent, true);
 		}
 
 		me.render();
@@ -808,10 +808,10 @@ export default class Chart {
 		return Interaction.modes.index(this, e, {intersect: false});
 	}
 
-	getElementsAtEventForMode(e, mode, options) {
+	getElementsAtEventForMode(e, mode, options, useFinalPosition) {
 		const method = Interaction.modes[mode];
 		if (typeof method === 'function') {
-			return method(this, e, options);
+			return method(this, e, options, useFinalPosition);
 		}
 
 		return [];
@@ -1021,16 +1021,16 @@ export default class Chart {
 	/**
 	 * @private
 	 */
-	_eventHandler(e) {
+	_eventHandler(e, replay) {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeEvent', [e]) === false) {
+		if (plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
 			return;
 		}
 
-		me._handleEvent(e);
+		me._handleEvent(e, replay);
 
-		plugins.notify(me, 'afterEvent', [e]);
+		plugins.notify(me, 'afterEvent', [e, replay]);
 
 		me.render();
 
@@ -1040,23 +1040,38 @@ export default class Chart {
 	/**
 	 * Handle an event
 	 * @param {IEvent} e the event to handle
+	 * @param {boolean} [replay] - true if the event was replayed by `update`
 	 * @return {boolean} true if the chart needs to re-render
 	 * @private
 	 */
-	_handleEvent(e) {
+	_handleEvent(e, replay) {
 		const me = this;
-		const options = me.options || {};
+		const options = me.options;
 		const hoverOptions = options.hover;
-		let changed = false;
 
-		me.lastActive = me.lastActive || [];
+		// If the event is replayed from `update`, we should evaluate with the final positions.
+		//
+		// The `replay`:
+		// It's the last event (excluding click) that has occured before `update`.
+		// So mouse has not moved. It's also over the chart, because there is a `replay`.
+		//
+		// The why:
+		// If animations are active, the elements haven't moved yet compared to state before update.
+		// But if they will, we are activating the elements that would be active, if this check
+		// was done after the animations have completed. => "final positions".
+		// If there is no animations, the "final" and "current" positions are equal.
+		// This is done so we do not have to evaluate the active elements each animation frame
+		// - it would be expensive.
+		const useFinalPosition = replay;
+
+		let changed = false;
 
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
 			me.active = [];
 			me._lastEvent = null;
 		} else {
-			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
 			me._lastEvent = e.type === 'click' ? me._lastEvent : e;
 		}
 
@@ -1072,7 +1087,7 @@ export default class Chart {
 		}
 
 		changed = !helpers._elementsEqual(me.active, me.lastActive);
-		if (changed) {
+		if (changed || replay) {
 			me._updateHoverStyles();
 		}
 
