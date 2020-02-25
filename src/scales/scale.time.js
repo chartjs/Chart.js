@@ -539,10 +539,10 @@ const defaultConfig = {
 
 	adapters: {},
 	time: {
-		parser: false, // false == a pattern string from https://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
+		parser: false, // false == a pattern string from or a custom callback that converts its argument to a timestamp
 		unit: false, // false == automatic or override with week, month, year, etc.
 		round: false, // none, or override with week, month, year, etc.
-		isoWeekday: false, // override week start day - see https://momentjs.com/docs/#/get-set/iso-weekday/
+		isoWeekday: false, // override week start day
 		minUnit: 'millisecond',
 		displayFormats: {}
 	},
