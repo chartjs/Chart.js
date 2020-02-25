@@ -55,7 +55,8 @@ module.exports = function(karma) {
 			{pattern: 'test/fixtures/**/*.png', included: false},
 			'node_modules/moment/min/moment.min.js',
 			'test/index.js',
-			'src/index.js'
+			'src/index.js',
+			'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js'
 		].concat((args.inputs || 'test/specs/**/*.js').split(';')),
 
 		preprocessors: {

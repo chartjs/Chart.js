@@ -39,6 +39,7 @@
     "@rollup/plugin-node-resolve": "^7.1.1",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
+    "chartjs-adapter-moment": "^0.1.1",
     "coveralls": "^3.0.9",
     "eslint": "^6.8.0",
     "eslint-config-chartjs": "^0.2.0",
