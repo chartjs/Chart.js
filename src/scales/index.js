@@ -1,13 +1,5 @@
-import CategoryScale from './scale.category';
-import LinearScale from './scale.linear';
-import LogarithmicScale from './scale.logarithmic';
-import RadialLinearScale from './scale.radialLinear';
-import TimeScale from './scale.time';
-
-export default {
-	CategoryScale,
-	LinearScale,
-	LogarithmicScale,
-	RadialLinearScale,
-	TimeScale
-};
+export {default as CategoryScale} from './scale.category';
+export {default as LinearScale} from './scale.linear';
+export {default as LogarithmicScale} from './scale.logarithmic';
+export {default as RadialLinearScale} from './scale.radialLinear';
+export {default as TimeScale} from './scale.time';
