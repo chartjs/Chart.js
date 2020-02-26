@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import Point from '../elements/element.point';
+import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
 
 defaults.set('bubble', {

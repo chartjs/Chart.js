@@ -1,11 +1,4 @@
-import Arc from './element.arc';
-import Line from './element.line';
-import Point from './element.point';
-import Rectangle from './element.rectangle';
-
-export default {
-	Arc,
-	Line,
-	Point,
-	Rectangle
-};
+export {default as Arc} from './element.arc';
+export {default as Line} from './element.line';
+export {default as Point} from './element.point';
+export {default as Rectangle} from './element.rectangle';

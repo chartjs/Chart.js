@@ -1,7 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
-import Line from '../elements/element.line';
-import Point from '../elements/element.point';
+import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';

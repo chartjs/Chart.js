@@ -1,3 +1,5 @@
+/* eslint-disable import/no-namespace, import/namespace */
+
 /**
  * @namespace Chart
  */
@@ -12,7 +14,7 @@ import controllers from './controllers/index';
 import DatasetController from './core/core.datasetController';
 import defaults from './core/core.defaults';
 import Element from './core/core.element';
-import elements from './elements/index';
+import * as elements from './elements/index';
 import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
 import platforms from './platform/platforms';
