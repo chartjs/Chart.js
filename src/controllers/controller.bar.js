@@ -2,7 +2,7 @@ import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import {Rectangle} from '../elements/index';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import {isArray, isNullOrUndef, valueOrDefault, resolveObjectKey} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';
 
 defaults.set('bar', {
@@ -202,18 +202,20 @@ export default class BarController extends DatasetController {
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
-		const vProp = vScale.axis;
+		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
+		const iAxisKey = iScale.axis === 'x' ? xAxisKey : yAxisKey;
+		const vAxisKey = vScale.axis === 'x' ? xAxisKey : yAxisKey;
 		const parsed = [];
 		let i, ilen, item, obj, value;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
-			value = obj[vProp];
+			item[iScale.axis] = iScale.parse(resolveObjectKey(obj, iAxisKey), i);
+			value = resolveObjectKey(obj, vAxisKey);
 			if (isArray(value)) {
 				parseFloatBar(value, item, vScale, i);
 			} else {
-				item[vScale.axis] = vScale.parseObject(obj, vProp, i);
+				item[vScale.axis] = vScale.parse(value, i);
 			}
 			parsed.push(item);
 		}

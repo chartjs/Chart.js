@@ -370,21 +370,6 @@ export default class Scale extends Element {
 	}
 
 	/**
-	 * Parse an object for axis to internal representation.
-	 * @param {object} obj
-	 * @param {string} axis
-	 * @param {number} index
-	 * @since 3.0
-	 * @protected
-	 */
-	parseObject(obj, axis, index) {
-		if (obj[axis] !== undefined) {
-			return this.parse(obj[axis], index);
-		}
-		return null;
-	}
-
-	/**
 	 * @return {{min: number, max: number, minDefined: boolean, maxDefined: boolean}}
 	 * @protected
 	 * @since 3.0

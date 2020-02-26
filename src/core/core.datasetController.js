@@ -1,5 +1,5 @@
 import Animations from './core.animations';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
@@ -231,6 +231,7 @@ export default class DatasetController {
 		this._cachedMeta = this.getMeta();
 		this._type = this._cachedMeta.type;
 		this._config = undefined;
+		/** @type {boolean | object} */
 		this._parsing = false;
 		this._data = undefined;
 		this._objectData = undefined;
@@ -549,6 +550,7 @@ export default class DatasetController {
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
+		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
 		const parsed = new Array(count);
 		let i, ilen, index, item;
 
@@ -556,8 +558,8 @@ export default class DatasetController {
 			index = i + start;
 			item = data[index];
 			parsed[i] = {
-				x: xScale.parseObject(item, 'x', index),
-				y: yScale.parseObject(item, 'y', index)
+				x: xScale.parse(resolveObjectKey(item, xAxisKey), index),
+				y: yScale.parse(resolveObjectKey(item, yAxisKey), index)
 			};
 		}
 		return parsed;

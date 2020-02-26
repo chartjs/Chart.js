@@ -2,6 +2,7 @@ import DatasetController from '../core/core.datasetController';
 import defaults from '../core/core.defaults';
 import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
+import {resolveObjectKey} from '../helpers/helpers.core';
 
 defaults.set('bubble', {
 	animation: {
@@ -36,13 +37,14 @@ export default class BubbleController extends DatasetController {
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
+		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
 		const parsed = [];
 		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
-				x: xScale.parseObject(item, 'x', i),
-				y: yScale.parseObject(item, 'y', i),
+				x: xScale.parse(resolveObjectKey(item, xAxisKey), i),
+				y: yScale.parse(resolveObjectKey(item, yAxisKey), i),
 				_custom: item && item.r && +item.r
 			});
 		}
