@@ -27,6 +27,23 @@ data: [{x:'Sales', y:20}, {x:'Revenue', y:10}]
 
 This is also the internal format used for parsed data. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 
+## Object[] using custom properties
+
+```javascript
+type: 'bar',
+data: {
+    datasets: [{
+        data: [{id: 'Sales', value: 1500}, {id: 'Purchases', nested: {value: 500}}]
+    }]
+},
+options: {
+    parsing: {
+        xAxisKey: 'id',
+        yAxisKey: 'nested.value'
+    }
+}
+```
+
 ## Object
 
 ```javascript

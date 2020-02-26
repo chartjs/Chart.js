@@ -10,7 +10,7 @@ The time scale requires both a date library and corresponding adapter to be pres
 
 ### Input Data
 
-The x-axis data points may additionally be specified via the `t` or `x` attribute when using the time scale.
+The x-axis data points may additionally be specified via the `x` property when using the time scale. For additional options, see [data structures](../../general/data-structures.md).
 
 ```javascript
 data: [{
@@ -151,7 +151,7 @@ The `bounds` property controls the scale boundary strategy (bypassed by `min`/`m
 The `ticks.source` property controls the ticks generation.
 
 * `'auto'`: generates "optimal" ticks based on scale size and time options
-* `'data'`: generates ticks from data (including labels from data `{t|x|y}` objects)
+* `'data'`: generates ticks from data (including labels from data `{x|y}` objects)
 * `'labels'`: generates ticks from user given `labels` ONLY
 
 ### Parser

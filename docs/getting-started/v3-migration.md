@@ -76,6 +76,10 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * The dataset option `tension` was removed. Use `lineTension`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
+## Time scale
+
+* `t` is not parsed from object data by default anymore. Defaults is `x` or `y`, depending on the orientation. The input properties of object data can now be freely specified, see [data structures](../general/data-structures.md) for details.
+
 ### Animations
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
