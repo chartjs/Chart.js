@@ -10,17 +10,7 @@ The time scale requires both a date library and corresponding adapter to be pres
 
 ### Input Data
 
-The x-axis data points may additionally be specified via the `x` property when using the time scale. For additional options, see [data structures](../../general/data-structures.md).
-
-```javascript
-data: [{
-    x: new Date(),
-    y: 1
-}, {
-    t: new Date(),
-    y: 10
-}]
-```
+See [data structures](../../general/data-structures.md).
 
 ### Date Formats
 
