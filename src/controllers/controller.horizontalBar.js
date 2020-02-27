@@ -10,12 +10,10 @@ defaults.set('horizontalBar', {
 	scales: {
 		x: {
 			type: 'linear',
-			position: 'bottom',
 			beginAtZero: true
 		},
 		y: {
 			type: 'category',
-			position: 'left',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
