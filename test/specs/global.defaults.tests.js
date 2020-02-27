@@ -121,7 +121,7 @@ describe('Default Configs', function() {
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
+				hidden: false,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2
@@ -219,7 +219,7 @@ describe('Default Configs', function() {
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
+				hidden: false,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2

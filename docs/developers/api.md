@@ -166,6 +166,14 @@ chart.setDataVisibility(0, 2, false); // hides the item in dataset 0, at index 2
 chart.update(); // chart now renders with item hidden
 ```
 
+## toggleDataVisibility(index)
+
+Like [setDataVisibility](#setDataVisibility), but toggles the visibility of an item in all datasets.
+
+## getDataVisibility(index)
+
+Returns the stored visibility state of an data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset needs to explicitly support this feature for it to have an effect. From internal chart types, doughnut / pie and polar area use this.
+
 ## hide(datasetIndex)
 
 Sets the visibility for the given dataset to false. Updates the chart and animates the dataset with `'hide'` mode. This animation can be configured under the `hide` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.

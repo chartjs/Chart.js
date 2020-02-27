@@ -222,6 +222,7 @@ export default class Chart {
 		this.scale = undefined;
 		this.$plugins = undefined;
 		this.$proxies = {};
+		this._hiddenIndices = {};
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -870,6 +871,17 @@ export default class Chart {
 		if (meta.data[index]) {
 			meta.data[index].hidden = !visible;
 		}
+	}
+
+	toggleDataVisibility(index) {
+		const hidden = this._hiddenIndices[index] = !this._hiddenIndices[index];
+		for (let i = 0, ilen = (this.data.datasets || []).length; i < ilen; ++i) {
+			this.setDataVisibility(i, index, !hidden);
+		}
+	}
+
+	getDataVisibility(index) {
+		return !this._hiddenIndices[index];
 	}
 
 	/**

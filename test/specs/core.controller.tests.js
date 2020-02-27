@@ -1380,5 +1380,29 @@ describe('Chart', function() {
 			var meta = chart.getDatasetMeta(0);
 			expect(meta.data[1].hidden).toBe(true);
 		});
+
+		it('should toggle data visibility by index', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+
+			var meta = chart.getDatasetMeta(0);
+
+			expect(chart.getDataVisibility(1)).toBe(true);
+			expect(meta.data[1].hidden).toBe(false);
+
+			chart.toggleDataVisibility(1);
+			expect(chart.getDataVisibility(1)).toBe(false);
+			expect(meta.data[1].hidden).toBe(true);
+
+			chart.update();
+			expect(chart.getDataVisibility(1)).toBe(false);
+			expect(meta.data[1].hidden).toBe(true);
+		});
 	});
 });

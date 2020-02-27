@@ -44,7 +44,7 @@ defaults.set('polarArea', {
 							fillStyle: style.backgroundColor,
 							strokeStyle: style.borderColor,
 							lineWidth: style.borderWidth,
-							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+							hidden: !chart.getDataVisibility(i),
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -56,16 +56,8 @@ defaults.set('polarArea', {
 		},
 
 		onClick(e, legendItem) {
-			const index = legendItem.index;
-			const chart = this.chart;
-			let i, ilen, meta;
-
-			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
-				meta = chart.getDatasetMeta(i);
-				meta.data[index].hidden = !meta.data[index].hidden;
-			}
-
-			chart.update();
+			this.chart.toggleDataVisibility(legendItem.index);
+			this.chart.update();
 		}
 	},
 
