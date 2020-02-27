@@ -78,7 +78,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ## Time scale
 
-* `t` is not parsed from object data by default anymore. Defaults is `x` or `y`, depending on the orientation. The input properties of object data can now be freely specified, see [data structures](../general/data-structures.md) for details.
+* `t` is not parsed from object data by default anymore. The default property parsed is `x` or `y`, depending on the orientation. The input properties of object data can now be freely specified, see [data structures](../general/data-structures.md) for details.
 
 ### Animations
 
