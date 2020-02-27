@@ -3,6 +3,7 @@ globals:
   Chart: true
   Samples: true
   moment: true
+  luxon: true
   randomScalingFactor: true
 
 rules:
