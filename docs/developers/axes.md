@@ -6,7 +6,7 @@ Axes in Chart.js can be individually extended. Axes should always derive from `C
 let MyScale = Chart.Scale.extend({
     /* extensions ... */
 });
-MyScale.id = myScale;
+MyScale.id = 'myScale';
 MyScale.defaults = defaultConfigObject;
 
 // MyScale is now derived from Chart.Scale
