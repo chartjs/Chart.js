@@ -3,8 +3,9 @@
 
 <head>
 	<title>Line Chart</title>
-	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
 	<script src="../../dist/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@1.15.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.0"></script>
 	<script src="../utils.js"></script>
 	<style>
 		canvas {
@@ -39,14 +40,14 @@
 	<button id="update">update</button>
 	<script>
 		function isFirstUnitOfPeriod(date, unit, period) {
-			let first = date.clone().startOf(period);
-			while (first.isoWeekday() > 5) {
-				first.add(1, 'days');
+			let first = date.startOf(period);
+			while (first.weekday > 5) {
+				first = first.plus({day: 1});
 			}
 			if (unit === 'second' || unit === 'minute' || unit === 'hour') {
-				first = first.hours(9).minutes(30);
+				first = first.set({hour: 9, minute: 30});
 			}
-			return date.isSame(first);
+			return date === first;
 		}
 
 		// Generate data between the stock market hours of 9:30am - 5pm.
@@ -59,17 +60,17 @@
 			}
 
 			function beforeNineThirty(date) {
-				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
+				return date.hour < 9 || (date.hour === 9 && date.minute < 30);
 			}
 
 
 			function after4pm(date) {
-				return date.hour() > 16 || (date.hour() === 16 && date.minute() > 0);
+				return date.hour > 16 || (date.hour === 16 && date.minute > 0);
 			}
 
 			// Returns true if outside 9:30am-4pm on a weekday
 			function outsideMarketHours(date) {
-				if (date.isoWeekday() > 5) {
+				if (date.weekday > 5) {
 					return true;
 				}
 				if (unitLessThanDay() && (beforeNineThirty(date) || after4pm(date))) {
@@ -86,22 +87,24 @@
 				const open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
 				const close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
 				return {
-					t: date.valueOf(),
+					x: date.valueOf(),
 					y: close
 				};
 			}
 
-			let date = moment('Jan 01 1990', 'MMM DD YYYY');
-			const now = moment();
+			let date = luxon.DateTime.fromFormat('Jan 01 1990', 'LLL dd yyyy');
+			const now = luxon.DateTime.local();
 			const data = [];
 			const lessThanDay = unitLessThanDay();
-			for (; data.length < 600 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
+			const plus = {};
+			plus[unit] = 1;
+			for (; data.length < 600 && date < now; date = date.plus(plus).startOf(unit)) {
 				if (outsideMarketHours(date)) {
 					if (!lessThanDay || !beforeNineThirty(date)) {
-						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
+						date = date.plus({day: date.weekday >= 5 ? 8 - date.weekday : 1});
 					}
 					if (lessThanDay) {
-						date = date.hour(9).minute(30).second(0);
+						date = date.set({hour: 9, minute: 30});
 					}
 				}
 				data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
@@ -164,7 +167,7 @@
 							// major ticks
 							const ticks = scale.ticks;
 							for (let i = 0; i < ticks.length; i++) {
-								ticks[i].major = !majorUnit || isFirstUnitOfPeriod(moment(ticks[i].value), unit, majorUnit);
+								ticks[i].major = !majorUnit || isFirstUnitOfPeriod(luxon.DateTime.fromMillis(ticks[i].value), unit, majorUnit);
 							}
 							scale.ticks = ticks;
 						}

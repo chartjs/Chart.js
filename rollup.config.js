@@ -4,7 +4,6 @@
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
 const json = require('@rollup/plugin-json');
-const optional = require('./rollup.plugins').optional;
 const resolve = require('@rollup/plugin-node-resolve');
 const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
@@ -28,9 +27,6 @@ module.exports = [
 			json(),
 			resolve(),
 			babel(),
-			optional({
-				include: ['moment']
-			}),
 			cleanup({
 				sourcemap: true
 			})
@@ -41,13 +37,7 @@ module.exports = [
 			banner,
 			format: 'umd',
 			indent: false,
-			globals: {
-				moment: 'moment'
-			}
 		},
-		external: [
-			'moment'
-		]
 	},
 	{
 		input,
@@ -55,9 +45,6 @@ module.exports = [
 			json(),
 			resolve(),
 			babel(),
-			optional({
-				include: ['moment']
-			}),
 			terser({
 				output: {
 					preamble: banner
@@ -69,13 +56,7 @@ module.exports = [
 			file: 'dist/Chart.min.js',
 			format: 'umd',
 			indent: false,
-			globals: {
-				moment: 'moment'
-			}
 		},
-		external: [
-			'moment'
-		]
 	},
 
 	// ES6 builds
@@ -97,13 +78,7 @@ module.exports = [
 			banner,
 			format: 'esm',
 			indent: false,
-			globals: {
-				moment: 'moment'
-			}
 		},
-		external: [
-			'moment'
-		]
 	},
 	{
 		input,
@@ -122,12 +97,6 @@ module.exports = [
 			file: 'dist/Chart.esm.min.js',
 			format: 'esm',
 			indent: false,
-			globals: {
-				moment: 'moment'
-			}
 		},
-		external: [
-			'moment'
-		]
 	},
 ];

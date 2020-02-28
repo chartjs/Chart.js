@@ -45,9 +45,6 @@ Chart.Ticks = Ticks;
 import * as scales from './scales/index';
 Object.keys(scales).forEach(key => Chart.scaleService.registerScale(scales[key]));
 
-// Load to register built-in adapters (as side effects)
-import './adapters/index';
-
 // Loading built-in plugins
 import plugins from './plugins/index';
 for (const k in plugins) {

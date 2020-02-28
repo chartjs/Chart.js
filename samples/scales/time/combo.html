@@ -3,8 +3,8 @@
 
 <head>
 	<title>Line Chart - Combo Time Scale</title>
-	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
 	<script src="../../../dist/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 		canvas {
@@ -28,7 +28,10 @@
 	<button id="removeData">Remove Data</button>
 	<script>
 		function newDate(days) {
-			return moment().startOf('day').add(days, 'd').valueOf();
+			var date = new Date();
+			date.setHours(0, 0, 0, 0);
+			date.setDate(date.getDate() + days);
+			return date.valueOf();
 		}
 
 		var labels = [];
