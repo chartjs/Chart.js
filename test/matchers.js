@@ -69,6 +69,19 @@ function toBeCloseToPixel() {
 	};
 }
 
+function toBeCloseToPoint() {
+	function rnd(v) {
+		return Math.round(v * 100) / 100;
+	}
+	return {
+		compare: function(actual, expected) {
+			return {
+				pass: rnd(actual.x) === rnd(expected.x) && rnd(actual.y) === rnd(expected.y)
+			};
+		}
+	};
+}
+
 function toEqualOneOf() {
 	return {
 		compare: function(actual, expecteds) {
@@ -197,9 +210,10 @@ function toEqualImageData() {
 }
 
 export default {
-	toBeCloseToPixel: toBeCloseToPixel,
-	toEqualOneOf: toEqualOneOf,
-	toBeValidChart: toBeValidChart,
-	toBeChartOfSize: toBeChartOfSize,
-	toEqualImageData: toEqualImageData
+	toBeCloseToPixel,
+	toBeCloseToPoint,
+	toEqualOneOf,
+	toBeValidChart,
+	toBeChartOfSize,
+	toEqualImageData
 };
