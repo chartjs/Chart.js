@@ -191,7 +191,7 @@ export default class DoughnutController extends DatasetController {
 		const me = this;
 		const opts = me.chart.options;
 		const meta = me._cachedMeta;
-		return reset && opts.animation.animateRotate ? 0 : meta.data[i].hidden ? 0 : me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI);
+		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI) : 0;
 	}
 
 	updateElements(arcs, start, mode) {
@@ -247,7 +247,7 @@ export default class DoughnutController extends DatasetController {
 
 		for (i = 0; i < metaData.length; i++) {
 			const value = meta._parsed[i];
-			if (!isNaN(value) && !metaData[i].hidden) {
+			if (!isNaN(value) && this.chart.getDataVisibility(i)) {
 				total += Math.abs(value);
 			}
 		}

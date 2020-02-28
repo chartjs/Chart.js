@@ -152,7 +152,7 @@ export default class PolarAreaController extends DatasetController {
 			const index = start + i;
 			let startAngle = angle;
 			let endAngle = angle + me._computeAngle(index);
-			let outerRadius = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+			let outerRadius = this.chart.getDataVisibility(index) ? scale.getDistanceFromCenterForValue(dataset.data[index]) : 0;
 			angle = endAngle;
 
 			if (reset) {
@@ -185,7 +185,7 @@ export default class PolarAreaController extends DatasetController {
 		let count = 0;
 
 		meta.data.forEach((element, index) => {
-			if (!isNaN(dataset.data[index]) && !element.hidden) {
+			if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
 				count++;
 			}
 		});
@@ -202,7 +202,7 @@ export default class PolarAreaController extends DatasetController {
 		const count = meta.count;
 		const dataset = me.getDataset();
 
-		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
+		if (isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
 			return 0;
 		}
 

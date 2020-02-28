@@ -144,18 +144,16 @@ describe('Default Configs', function() {
 				},
 				options: config
 			});
-			var meta = chart.getDatasetMeta(0);
-
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
 			config.legend.onClick.call(chart.legend, null, legendItem);
 
-			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
 			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
+			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
 
@@ -242,18 +240,16 @@ describe('Default Configs', function() {
 				},
 				options: config
 			});
-			var meta = chart.getDatasetMeta(0);
-
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
 			config.legend.onClick.call(chart.legend, null, legendItem);
 
-			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
 			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
+			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
 });

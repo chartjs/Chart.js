@@ -104,6 +104,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `DatasetController.createMetaDataset`
 * `Element.getArea`
 * `Element.height`
+* `Element.hidden` was replaced by chart level status, usable with `getDataVisibility(index)` / `toggleDataVisibility(index)`
 * `Element.initialize`
 * `Element.inLabelRange`
 * `helpers.addEvent`

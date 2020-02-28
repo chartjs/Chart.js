@@ -865,19 +865,8 @@ export default class Chart {
 		meta.hidden = !visible;
 	}
 
-	setDataVisibility(datasetIndex, index, visible) {
-		const meta = this.getDatasetMeta(datasetIndex);
-
-		if (meta.data[index]) {
-			meta.data[index].hidden = !visible;
-		}
-	}
-
 	toggleDataVisibility(index) {
-		const hidden = this._hiddenIndices[index] = !this._hiddenIndices[index];
-		for (let i = 0, ilen = (this.data.datasets || []).length; i < ilen; ++i) {
-			this.setDataVisibility(i, index, !hidden);
-		}
+		this._hiddenIndices[index] = !this._hiddenIndices[index];
 	}
 
 	getDataVisibility(index) {
