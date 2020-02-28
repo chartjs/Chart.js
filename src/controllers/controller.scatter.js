@@ -4,12 +4,10 @@ import defaults from '../core/core.defaults';
 defaults.set('scatter', {
 	scales: {
 		x: {
-			type: 'linear',
-			position: 'bottom'
+			type: 'linear'
 		},
 		y: {
-			type: 'linear',
-			position: 'left'
+			type: 'linear'
 		}
 	},
 

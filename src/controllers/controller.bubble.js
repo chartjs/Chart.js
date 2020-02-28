@@ -11,12 +11,10 @@ defaults.set('bubble', {
 	},
 	scales: {
 		x: {
-			type: 'linear',
-			position: 'bottom'
+			type: 'linear'
 		},
 		y: {
-			type: 'linear',
-			position: 'left'
+			type: 'linear'
 		}
 	},
 
