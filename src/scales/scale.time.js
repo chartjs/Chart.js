@@ -567,8 +567,9 @@ const defaultConfig = {
 
 export default class TimeScale extends Scale {
 
+	static id = 'time';
 	// INTERNAL: static default options, registered in src/index.js
-	static _defaults = defaultConfig;
+	static defaults = defaultConfig;
 
 	/**
 	 * @param {object} props

@@ -6,6 +6,8 @@ Axes in Chart.js can be individually extended. Axes should always derive from `C
 let MyScale = Chart.Scale.extend({
     /* extensions ... */
 });
+MyScale.id = 'myScale';
+MyScale.defaults = defaultConfigObject;
 
 // MyScale is now derived from Chart.Scale
 ```
@@ -13,7 +15,7 @@ let MyScale = Chart.Scale.extend({
 Once you have created your scale class, you need to register it with the global chart object so that it can be used. A default config for the scale may be provided when registering the constructor. The first parameter to the register function is a string key that is used later to identify which scale type to use for a chart.
 
 ```javascript
-Chart.scaleService.registerScaleType('myScale', MyScale, defaultConfigObject);
+Chart.scaleService.registerScale(MyScale);
 ```
 
 To use the new scale, simply pass in the string key to the config when creating a chart.
@@ -25,7 +27,7 @@ var lineChart = new Chart(ctx, {
     options: {
         scales: {
             y: {
-                type: 'myScale' // this is the same key that was passed to the registerScaleType function
+                type: 'myScale' // this is the same id that was set on the scale
             }
         }
     }

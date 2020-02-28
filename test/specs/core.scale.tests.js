@@ -460,7 +460,9 @@ describe('Core.scale', function() {
 					return ['tick'];
 				}
 			});
-			Chart.scaleService.registerScaleType('customScale', customScale, {});
+			customScale.id = 'customScale';
+			customScale.defaults = {};
+			Chart.scaleService.registerScale(customScale);
 
 			var chart = window.acquireChart({
 				type: 'line',

@@ -292,8 +292,9 @@ function numberOrZero(param) {
 
 export default class RadialLinearScale extends LinearScaleBase {
 
+	static id = 'radialLinear';
 	// INTERNAL: static default options, registered in src/index.js
-	static _defaults = defaultConfig;
+	static defaults = defaultConfig;
 
 	constructor(cfg) {
 		super(cfg);

@@ -42,11 +42,8 @@ Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
 
 // Register built-in scales
-import scales from './scales/index';
-Object.keys(scales).forEach((type) => {
-	const scale = scales[type];
-	Chart.scaleService.registerScaleType(type, scale, scale._defaults);
-});
+import * as scales from './scales/index';
+Object.keys(scales).forEach(key => Chart.scaleService.registerScale(scales[key]));
 
 // Load to register built-in adapters (as side effects)
 import './adapters/index';

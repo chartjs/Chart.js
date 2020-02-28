@@ -223,6 +223,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `Scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
 * `Scale.getPixelForValue` now has only one parameter. For the `TimeScale` that parameter must be millis since the epoch
+* `ScaleService.registerScaleType` was renamed to `ScaleService.registerScale` and now takes a scale constructors which is expected to have `id` and `defaults` properties.
 
 ##### Ticks
 

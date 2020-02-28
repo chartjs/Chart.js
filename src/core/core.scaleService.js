@@ -11,9 +11,11 @@ export default {
 
 	// Scale config defaults
 	defaults: {},
-	registerScaleType(type, scaleConstructor, scaleDefaults) {
-		this.constructors[type] = scaleConstructor;
-		this.defaults[type] = clone(scaleDefaults);
+	registerScale(scaleConstructor) {
+		const me = this;
+		const type = scaleConstructor.id;
+		me.constructors[type] = scaleConstructor;
+		me.defaults[type] = clone(scaleConstructor.defaults);
 	},
 	getScaleConstructor(type) {
 		return Object.prototype.hasOwnProperty.call(this.constructors, type) ? this.constructors[type] : undefined;
