@@ -6,7 +6,7 @@ import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
-import scaleService from '../core/core.scaleService';
+import scaleService from './core.scaleService';
 import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';
 // @ts-ignore
 import {version} from '../../package.json';

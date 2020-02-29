@@ -2,8 +2,8 @@ import helpers from '../helpers/index';
 import Animations from './core.animations';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
- * @typedef { import("../core/core.scale").default } Scale
+ * @typedef { import("./core.controller").default } Chart
+ * @typedef { import("./core.scale").default } Scale
  */
 
 const resolve = helpers.options.resolve;
