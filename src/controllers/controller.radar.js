@@ -19,6 +19,10 @@ defaults.set('radar', {
 
 export default class RadarController extends DatasetController {
 
+	static datasetElementType = Line;
+
+	static dataElementType = Point;
+
 	/**
 	 * @protected
 	 */
@@ -111,10 +115,6 @@ export default class RadarController extends DatasetController {
 		return values;
 	}
 }
-
-RadarController.prototype.datasetElementType = Line;
-
-RadarController.prototype.dataElementType = Point;
 
 RadarController.prototype.datasetElementOptions = [
 	'backgroundColor',

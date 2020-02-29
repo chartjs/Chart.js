@@ -90,6 +90,8 @@ function getStartAngleRadians(deg) {
 
 export default class PolarAreaController extends DatasetController {
 
+	static dataElementType = Arc;
+
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
@@ -228,8 +230,6 @@ export default class PolarAreaController extends DatasetController {
 		], context, index);
 	}
 }
-
-PolarAreaController.prototype.dataElementType = Arc;
 
 PolarAreaController.prototype.dataElementOptions = [
 	'backgroundColor',

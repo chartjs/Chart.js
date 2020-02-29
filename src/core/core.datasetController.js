@@ -220,6 +220,16 @@ export default class DatasetController {
 	static extend = helpers.inherits;
 
 	/**
+	 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+	 */
+	static datasetElementType = null;
+
+	/**
+	 * Element type used to generate a meta data (e.g. Chart.element.Point).
+	 */
+	static dataElementType = null;
+
+	/**
 	 * @param {Chart} chart
 	 * @param {number} datasetIndex
 	 */
@@ -403,13 +413,14 @@ export default class DatasetController {
 
 		const data = me._data;
 		const metaData = meta.data = new Array(data.length);
+		const constructor = /** @type {typeof DatasetController} */ (me.constructor);
 
 		for (let i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = new me.dataElementType();
+			metaData[i] = new constructor.dataElementType();
 		}
 
-		if (me.datasetElementType) {
-			meta.dataset = new me.datasetElementType();
+		if (constructor.datasetElementType) {
+			meta.dataset = new constructor.datasetElementType();
 		}
 	}
 
@@ -842,7 +853,7 @@ export default class DatasetController {
 		const chart = me.chart;
 		const datasetOpts = me._config;
 		// @ts-ignore
-		const options = chart.options.elements[me.datasetElementType._type] || {};
+		const options = chart.options.elements[me.constructor.datasetElementType._type] || {};
 		const elementOptions = me.datasetElementOptions;
 		const values = {};
 		const context = me._getContext(undefined, active);
@@ -876,7 +887,7 @@ export default class DatasetController {
 		const chart = me.chart;
 		const datasetOpts = me._config;
 		// @ts-ignore
-		const options = chart.options.elements[me.dataElementType._type] || {};
+		const options = chart.options.elements[me.constructor.dataElementType._type] || {};
 		const elementOptions = me.dataElementOptions;
 		const values = {};
 		const context = me._getContext(index, active);
@@ -1076,8 +1087,9 @@ export default class DatasetController {
 		const data = meta.data;
 		let i;
 
+		const constructor = /** @type {typeof DatasetController} */ (me.constructor);
 		for (i = 0; i < count; ++i) {
-			elements[i] = new me.dataElementType();
+			elements[i] = new constructor.dataElementType();
 		}
 		data.splice(start, 0, ...elements);
 
@@ -1140,16 +1152,6 @@ export default class DatasetController {
 		this._insertElements(0, arguments.length);
 	}
 }
-
-/**
- * Element type used to generate a meta dataset (e.g. Chart.element.Line).
- */
-DatasetController.prototype.datasetElementType = null;
-
-/**
- * Element type used to generate a meta data (e.g. Chart.element.Point).
- */
-DatasetController.prototype.dataElementType = null;
 
 /**
  * Dataset element option keys to be resolved in resolveDatasetElementOptions.

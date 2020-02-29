@@ -30,6 +30,8 @@ defaults.set('bubble', {
 
 export default class BubbleController extends DatasetController {
 
+	static dataElementType = Point;
+
 	/**
 	 * Parse array of objects
 	 * @protected
@@ -160,8 +162,6 @@ export default class BubbleController extends DatasetController {
 		return values;
 	}
 }
-
-BubbleController.prototype.dataElementType = Point;
 
 BubbleController.prototype.dataElementOptions = [
 	'backgroundColor',

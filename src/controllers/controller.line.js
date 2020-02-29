@@ -25,6 +25,10 @@ defaults.set('line', {
 
 export default class LineController extends DatasetController {
 
+	static datasetElementType = Line;
+
+	static dataElementType = Point;
+
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
@@ -156,10 +160,6 @@ export default class LineController extends DatasetController {
 		}
 	}
 }
-
-LineController.prototype.datasetElementType = Line;
-
-LineController.prototype.dataElementType = Point;
 
 LineController.prototype.datasetElementOptions = [
 	'backgroundColor',
