@@ -1,6 +1,6 @@
 import Animator from './core.animator';
 import Animation from './core.animation';
-import defaults from '../core/core.defaults';
+import defaults from './core.defaults';
 import {noop, isObject} from '../helpers/helpers.core';
 
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];

@@ -6,7 +6,7 @@ import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
  * @typedef { import("./core.controller").default } Chart
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  * @typedef {{axis?: string, intersect?: boolean}} InteractionOptions
- * @typedef {{datasetIndex: number, index: number, element: import("../core/core.element").default}} InteractionItem
+ * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
  */
 
 /**
