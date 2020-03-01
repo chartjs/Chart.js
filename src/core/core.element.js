@@ -8,7 +8,6 @@ export default class Element {
 	constructor(cfg) {
 		this.x = undefined;
 		this.y = undefined;
-		this.hidden = false;
 		this.active = false;
 		this.options = undefined;
 		this.$animations = undefined;

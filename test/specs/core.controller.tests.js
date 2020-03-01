@@ -1365,9 +1365,9 @@ describe('Chart', function() {
 			expect(meta.hidden).toBe(true);
 		});
 
-		it('should hide a single data item', function() {
+		it('should toggle data visibility by index', function() {
 			var chart = acquireChart({
-				type: 'polarArea',
+				type: 'pie',
 				data: {
 					datasets: [{
 						data: [1, 2, 3]
@@ -1375,10 +1375,13 @@ describe('Chart', function() {
 				}
 			});
 
-			chart.setDataVisibility(0, 1, false);
+			expect(chart.getDataVisibility(1)).toBe(true);
 
-			var meta = chart.getDatasetMeta(0);
-			expect(meta.data[1].hidden).toBe(true);
+			chart.toggleDataVisibility(1);
+			expect(chart.getDataVisibility(1)).toBe(false);
+
+			chart.update();
+			expect(chart.getDataVisibility(1)).toBe(false);
 		});
 	});
 });

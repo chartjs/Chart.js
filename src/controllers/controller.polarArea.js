@@ -44,7 +44,7 @@ defaults.set('polarArea', {
 							fillStyle: style.backgroundColor,
 							strokeStyle: style.borderColor,
 							lineWidth: style.borderWidth,
-							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+							hidden: !chart.getDataVisibility(i),
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -56,16 +56,8 @@ defaults.set('polarArea', {
 		},
 
 		onClick(e, legendItem) {
-			const index = legendItem.index;
-			const chart = this.chart;
-			let i, ilen, meta;
-
-			for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
-				meta = chart.getDatasetMeta(i);
-				meta.data[index].hidden = !meta.data[index].hidden;
-			}
-
-			chart.update();
+			this.chart.toggleDataVisibility(legendItem.index);
+			this.chart.update();
 		}
 	},
 
@@ -160,7 +152,7 @@ export default class PolarAreaController extends DatasetController {
 			const index = start + i;
 			let startAngle = angle;
 			let endAngle = angle + me._computeAngle(index);
-			let outerRadius = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+			let outerRadius = this.chart.getDataVisibility(index) ? scale.getDistanceFromCenterForValue(dataset.data[index]) : 0;
 			angle = endAngle;
 
 			if (reset) {
@@ -193,7 +185,7 @@ export default class PolarAreaController extends DatasetController {
 		let count = 0;
 
 		meta.data.forEach((element, index) => {
-			if (!isNaN(dataset.data[index]) && !element.hidden) {
+			if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
 				count++;
 			}
 		});
@@ -210,7 +202,7 @@ export default class PolarAreaController extends DatasetController {
 		const count = meta.count;
 		const dataset = me.getDataset();
 
-		if (isNaN(dataset.data[index]) || meta.data[index].hidden) {
+		if (isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
 			return 0;
 		}
 

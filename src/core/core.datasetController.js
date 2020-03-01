@@ -624,7 +624,7 @@ export default class DatasetController {
 	 */
 	getMinMax(scale, canStack) {
 		const meta = this._cachedMeta;
-		const {data, _parsed} = meta;
+		const _parsed = meta._parsed;
 		const sorted = meta._sorted && scale === meta.iScale;
 		const ilen = _parsed.length;
 		const otherScale = this._getOtherScale(scale);
@@ -632,7 +632,7 @@ export default class DatasetController {
 		let min = Number.POSITIVE_INFINITY;
 		let max = Number.NEGATIVE_INFINITY;
 		const {min: otherMin, max: otherMax} = getUserBounds(otherScale);
-		let i, item, value, parsed, otherValue;
+		let i, value, parsed, otherValue;
 
 		function _compute() {
 			if (stack) {
@@ -648,11 +648,10 @@ export default class DatasetController {
 		}
 
 		function _skip() {
-			item = data[i];
 			parsed = _parsed[i];
 			value = parsed[scale.axis];
 			otherValue = parsed[otherScale.axis];
-			return ((item && item.hidden) || isNaN(value) || otherMin > otherValue || otherMax < otherValue);
+			return (isNaN(value) || otherMin > otherValue || otherMax < otherValue);
 		}
 
 		for (i = 0; i < ilen; ++i) {
