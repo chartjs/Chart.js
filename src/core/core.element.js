@@ -5,16 +5,12 @@ export default class Element {
 
 	static extend = inherits;
 
-	constructor(cfg) {
+	constructor() {
 		this.x = undefined;
 		this.y = undefined;
 		this.active = false;
 		this.options = undefined;
 		this.$animations = undefined;
-
-		if (cfg) {
-			Object.assign(this, cfg);
-		}
 	}
 
 	/**

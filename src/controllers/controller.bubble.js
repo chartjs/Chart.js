@@ -124,6 +124,8 @@ export default class BubbleController extends DatasetController {
 	}
 
 	/**
+	 * @param {number} index
+	 * @param {string} [mode]
 	 * @protected
 	 */
 	resolveDataElementOptions(index, mode) {
