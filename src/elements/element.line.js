@@ -14,7 +14,7 @@ const defaultColor = defaults.color;
 defaults.set('elements', {
 	line: {
 		backgroundColor: defaultColor,
-		borderCapStyle: 'butt'
+		borderCapStyle: 'butt',
 		borderColor: defaultColor,
 		borderDash: [],
 		borderDashOffset: 0,
