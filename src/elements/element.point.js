@@ -6,15 +6,14 @@ const defaultColor = defaults.color;
 
 defaults.set('elements', {
 	point: {
-		radius: 3,
-		pointStyle: 'circle',
 		backgroundColor: defaultColor,
 		borderColor: defaultColor,
 		borderWidth: 1,
-		// Hover
 		hitRadius: 1,
+		hoverBorderWidth: 1,
 		hoverRadius: 4,
-		hoverBorderWidth: 1
+		pointStyle: 'circle',
+		radius: 3
 	}
 });
 

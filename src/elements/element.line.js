@@ -13,16 +13,16 @@ const defaultColor = defaults.color;
 
 defaults.set('elements', {
 	line: {
-		tension: 0.4,
 		backgroundColor: defaultColor,
-		borderWidth: 3,
-		borderColor: defaultColor,
 		borderCapStyle: 'butt',
+		borderColor: defaultColor,
 		borderDash: [],
-		borderDashOffset: 0.0,
+		borderDashOffset: 0,
 		borderJoinStyle: 'miter',
+		borderWidth: 3,
 		capBezierPoints: true,
-		fill: true
+		fill: true,
+		tension: 0.4
 	}
 });
 
