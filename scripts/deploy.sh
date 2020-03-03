@@ -22,8 +22,14 @@ function update_latest {
     local out_path=$1
     local latest=($(ls -v $out_path | egrep '^('$VERSION_REGEX')$' | tail -1))
     if [ "$latest" == "" ]; then latest='master'; fi
-    rm -f $out_path/latest
-    ln -s $latest $out_path/latest
+
+    if [[ "$latest" =~ ^[^-]+$ ]]; then
+        rm -f $out_path/latest
+        ln -s $latest $out_path/latest
+    fi
+
+    rm -f $out_path/next
+    ln -s $latest $out_path/next
 }
 
 function deploy_files {
