@@ -20,10 +20,22 @@ fi
 
 function update_latest {
     local out_path=$1
+
+    # The most recent directory whose name is a version number
     local latest=($(ls -v $out_path | egrep '^('$VERSION_REGEX')$' | tail -1))
+
+    # As soon as a single version is deployed this line is a no-op
     if [ "$latest" == "" ]; then latest='master'; fi
-    rm -f $out_path/latest
-    ln -s $latest $out_path/latest
+
+    # Don't update "latest" on alpha or beta releases
+    if [[ "$latest" =~ ^[^-]+$ ]]; then
+        rm -f $out_path/latest
+        ln -s $latest $out_path/latest
+    fi
+
+    # Always update "next"
+    rm -f $out_path/next
+    ln -s $latest $out_path/next
 }
 
 function deploy_files {
