@@ -13,6 +13,14 @@ describe('Platform.dom', function() {
 			document.getElementById(canvasId).remove();
 		});
 
+		it('should use the DomPlatform by default', function() {
+			var chart = acquireChart({type: 'line'});
+
+			expect(chart.platform).toBeInstanceOf(Chart.platforms.DomPlatform);
+
+			chart.destroy();
+		});
+
 		// see https://github.com/chartjs/Chart.js/issues/2807
 		it('should gracefully handle invalid item', function() {
 			var chart = new Chart('foobar');

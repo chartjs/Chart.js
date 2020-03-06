@@ -2,7 +2,9 @@
 
 const babel = require('rollup-plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve');
+const webWorkerLoader = require('rollup-plugin-web-worker-loader');
 const builds = require('./rollup.config');
 
 module.exports = function(karma) {
@@ -67,9 +69,11 @@ module.exports = function(karma) {
 
 		rollupPreprocessor: {
 			plugins: [
+				json(),
 				resolve(),
 				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
-				commonjs({exclude: ['src/**', 'test/**']})
+				commonjs({exclude: ['src/**', 'test/**']}),
+				webWorkerLoader()
 			],
 			output: {
 				name: 'test',
