@@ -36,8 +36,7 @@ deploy:
 - provider: script
   script: ./scripts/release.sh
   skip_cleanup: true
-  on:
-    branch: release
+  if: branch IN (release, release-3.x)
 - provider: releases
   api_key: $GITHUB_AUTH_TOKEN
   skip_cleanup: true
