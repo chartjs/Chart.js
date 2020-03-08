@@ -17,42 +17,9 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 
-### Ticks
-
-* `options.ticks.userCallback` was renamed to `options.ticks.callback`
-* `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
-* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
-
-### Tooltip
-
-* `xLabel` and `yLabel` were removed. Please use `index` and `value`
-
-### Interactions
-
-* `interactions` are now limited to the chart area
-* `{mode: 'label'}` was replaced with `{mode: 'index'}`
-* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
-* `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
-* `options.onClick` is now limited to the chart area
-
-### Customizability
-
-* `custom` attribute of elements was removed. Please use scriptable options
-* The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
-* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
-
-## Defaults
-
-* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
-* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
-  * `defaultColor` was renamed to `color`
-  * `defaultFontColor` was renamed to `fontColor`
-  * `defaultFontFamily` was renamed to `fontFamily`
-  * `defaultFontSize` was renamed to `fontSize`
-  * `defaultFontStyle` was renamed to `fontStyle`
-  * `defaultLineHeight` was renamed to `lineHeight`
-
 ### Options
+
+A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
 
 * Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * `Polar area` `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
@@ -76,12 +43,123 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * The dataset option `tension` was removed. Use `lineTension`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
-### Animations
+#### Scales
+
+The configuration options for scales is the largest change in v3. The `xAxes` and `yAxes` arrays were removed and axis options are individual scales now keyed by scale ID.
+
+The v2 configuration below is shown with it's new v3 configuration
+
+```javascript
+options: {
+  scales: {
+    xAxes: [{
+      id: 'x',
+      type: 'time',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        fontStyle: function(context) {
+          return context.tick && context.tick.major ? 'bold' : undefined;
+        },
+        fontColor: function(context) {
+          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        }
+      }
+    }],
+    yAxes: [{
+      id: 'y',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'value'
+      }
+    }]
+  }
+}
+```
+
+And now, in v3:
+
+```javascript
+options: {
+  scales: {
+    x: {
+      type: 'time',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        fontStyle: function(context) {
+          return context.tick && context.tick.major ? 'bold' : undefined;
+        },
+        fontColor: function(context) {
+          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        }
+      }
+    },
+    y: {
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'value'
+      }
+    }
+  }
+}
+```
+
+#### Animations
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
 
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
+
+#### Customizability
+
+* `custom` attribute of elements was removed. Please use scriptable options
+* The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
+* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
+
+#### Interactions
+
+* `interactions` are now limited to the chart area
+* `{mode: 'label'}` was replaced with `{mode: 'index'}`
+* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
+* `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
+* `options.onClick` is now limited to the chart area
+
+#### Ticks
+
+* `options.ticks.userCallback` was renamed to `options.ticks.callback`
+* `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
+* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
+
+#### Tooltip
+
+* `xLabel` and `yLabel` were removed. Please use `index` and `value`
+
+#### Defaults
+
+* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
+* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
+* `defaultColor` was renamed to `color`
+* `defaultFontColor` was renamed to `fontColor`
+* `defaultFontFamily` was renamed to `fontFamily`
+* `defaultFontSize` was renamed to `fontSize`
+* `defaultFontStyle` was renamed to `fontStyle`
+* `defaultLineHeight` was renamed to `lineHeight`
 
 ## Developer migration
 
