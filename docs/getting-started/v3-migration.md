@@ -87,6 +87,9 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ### Removed
 
+The following properties and methods were removed during v3 development:
+
+#### Chart
 * `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Controller`
@@ -99,14 +102,25 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Chart.radiusLength`
 * `Chart.types`
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
+* `ILayoutItem.minSize`
+
+#### Dataset Controller
+
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
 * `DatasetController.createMetaDataset`
+
+#### Elements
+
 * `Element.getArea`
 * `Element.height`
 * `Element.hidden` was replaced by chart level status, usable with `getDataVisibility(index)` / `toggleDataVisibility(index)`
 * `Element.initialize`
 * `Element.inLabelRange`
+* `Line.calculatePointY`
+
+#### Helpers
+
 * `helpers.addEvent`
 * `helpers.aliasPixel`
 * `helpers.configMerge`
@@ -128,10 +142,9 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.roundedRect`
 * `helpers.scaleMerge`
 * `helpers.where`
-* `ILayoutItem.minSize`
-* `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
-* `Legend.margins` is now private
-* `Line.calculatePointY`
+
+#### Scales
+
 * `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.longestLabelWidth`
@@ -142,10 +155,17 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Scale.tickValues` is now private
 * `TimeScale.getLabelCapacity` is now private
 * `TimeScale.tickFormatFunction` is now private
+
+#### Plugins (Legend, Title, and Tooltip)
+
+* `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
+* `Legend.margins` is now private
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
 #### Removal of private APIs
+
+The following private APIs were removed.
 
 * `Chart.data.datasets[datasetIndex]._meta`
 * `Element._ctx`
@@ -157,6 +177,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Tooltip._lastActive`
 
 ### Renamed
+
+The following properties were renamed during v3 development:
 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
@@ -187,6 +209,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
 #### Renamed private APIs
+
+The private APIs listed below were renamed:
 
 * `BarController.calculateBarIndexPixels` was renamed to `BarController._calculateBarIndexPixels`
 * `BarController.calculateBarValuePixels` was renamed to `BarController._calculateBarValuePixels`
@@ -219,6 +243,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 
 ### Changed
+
+The APIs listed in this section have changed in signature or behaviour from version 2.
 
 #### Scales
 
