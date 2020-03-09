@@ -39,9 +39,21 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
+* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
 * The dataset option `tension` was removed. Use `lineTension`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
+
+#### Defaults
+
+* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
+* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
+* `defaultColor` was renamed to `color`
+* `defaultFontColor` was renamed to `fontColor`
+* `defaultFontFamily` was renamed to `fontFamily`
+* `defaultFontSize` was renamed to `fontSize`
+* `defaultFontStyle` was renamed to `fontStyle`
+* `defaultLineHeight` was renamed to `lineHeight`
 
 #### Scales
 
@@ -130,7 +142,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 * `custom` attribute of elements was removed. Please use scriptable options
 * The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
-* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
 
 #### Interactions
 
@@ -149,17 +160,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Tooltip
 
 * `xLabel` and `yLabel` were removed. Please use `index` and `value`
-
-#### Defaults
-
-* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
-* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
-* `defaultColor` was renamed to `color`
-* `defaultFontColor` was renamed to `fontColor`
-* `defaultFontFamily` was renamed to `fontFamily`
-* `defaultFontSize` was renamed to `fontSize`
-* `defaultFontStyle` was renamed to `fontStyle`
-* `defaultLineHeight` was renamed to `lineHeight`
 
 ## Developer migration
 
