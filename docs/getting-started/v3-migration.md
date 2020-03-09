@@ -36,6 +36,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales[id].suggestedMax`
 * `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales[id].suggestedMin`
 * `scales.[x/y]Axes.ticks.unitStepSize` was removed. Use `scales[id].ticks.stepSize`
+* `scales.[x/y]Axes.ticks.userCallback` was renamed to `scales[id].ticks.callback`
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
@@ -153,7 +154,6 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Ticks
 
-* `options.ticks.userCallback` was renamed to `options.ticks.callback`
 * `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
 * `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
 
