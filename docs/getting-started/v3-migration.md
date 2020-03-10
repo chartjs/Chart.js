@@ -21,7 +21,8 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
 
-* Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
+* `hover.animationDuration` is now configured in `animation.active.duration`
+* `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 * `Polar area` `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
@@ -40,9 +41,10 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
-* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
+* `scales.[x/y]Axes.zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
 * The dataset option `tension` was removed. Use `lineTension`
+* Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
 #### Defaults
@@ -136,8 +138,6 @@ options: {
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
 
-* `hover.animationDuration` is now configured in `animation.active.duration`
-* `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 
 #### Customizability
 
