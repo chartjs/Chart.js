@@ -23,7 +23,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
-* `Polar area` `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
+* Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
@@ -165,7 +165,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ### Removed
 
-The following properties and methods were removed during v3 development:
+The following properties and methods were removed:
 
 #### Chart
 * `Chart.borderWidth`
