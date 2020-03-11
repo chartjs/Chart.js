@@ -36,7 +36,9 @@ deploy:
 - provider: script
   script: ./scripts/release.sh
   skip_cleanup: true
-  if: branch IN (release, release-3.x)
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(release.*)$
 - provider: releases
   api_key: $GITHUB_AUTH_TOKEN
   skip_cleanup: true
