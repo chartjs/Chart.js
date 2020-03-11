@@ -17,45 +17,13 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 
-### Ticks
-
-* `options.ticks.userCallback` was renamed to `options.ticks.callback`
-* `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
-* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
-
-### Tooltip
-
-* `xLabel` and `yLabel` were removed. Please use `index` and `value`
-
-### Interactions
-
-* `interactions` are now limited to the chart area
-* `{mode: 'label'}` was replaced with `{mode: 'index'}`
-* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
-* `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
-* `options.onClick` is now limited to the chart area
-
-### Customizability
-
-* `custom` attribute of elements was removed. Please use scriptable options
-* The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
-* The `zeroLine*` options of axes were removed. Use scriptable scale options instead.
-
-## Defaults
-
-* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
-* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
-  * `defaultColor` was renamed to `color`
-  * `defaultFontColor` was renamed to `fontColor`
-  * `defaultFontFamily` was renamed to `fontFamily`
-  * `defaultFontSize` was renamed to `fontSize`
-  * `defaultFontStyle` was renamed to `fontStyle`
-  * `defaultLineHeight` was renamed to `lineHeight`
-
 ### Options
 
-* Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
-* `Polar area` `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
+A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
+
+* `hover.animationDuration` is now configured in `animation.active.duration`
+* `responsiveAnimationDuration` is now configured in `animation.resize.duration`
+* Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`
 * `scales.[x/y]Axes.barThickness` was moved to dataset option `barThickness`
@@ -69,24 +37,137 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * `scales.[x/y]Axes.ticks.suggestedMax` was renamed to `scales[id].suggestedMax`
 * `scales.[x/y]Axes.ticks.suggestedMin` was renamed to `scales[id].suggestedMin`
 * `scales.[x/y]Axes.ticks.unitStepSize` was removed. Use `scales[id].ticks.stepSize`
+* `scales.[x/y]Axes.ticks.userCallback` was renamed to `scales[id].ticks.callback`
 * `scales.[x/y]Axes.time.format` was renamed to `scales[id].time.parser`
 * `scales.[x/y]Axes.time.max` was renamed to `scales[id].max`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
+* `scales.[x/y]Axes.zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
 * The dataset option `tension` was removed. Use `lineTension`
+* Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 
-### Animations
+#### Defaults
+
+* `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
+* `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
+* `defaultColor` was renamed to `color`
+* `defaultFontColor` was renamed to `fontColor`
+* `defaultFontFamily` was renamed to `fontFamily`
+* `defaultFontSize` was renamed to `fontSize`
+* `defaultFontStyle` was renamed to `fontStyle`
+* `defaultLineHeight` was renamed to `lineHeight`
+
+#### Scales
+
+The configuration options for scales is the largest change in v3. The `xAxes` and `yAxes` arrays were removed and axis options are individual scales now keyed by scale ID.
+
+The v2 configuration below is shown with it's new v3 configuration
+
+```javascript
+options: {
+  scales: {
+    xAxes: [{
+      id: 'x',
+      type: 'time',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        fontStyle: function(context) {
+          return context.tick && context.tick.major ? 'bold' : undefined;
+        },
+        fontColor: function(context) {
+          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        }
+      }
+    }],
+    yAxes: [{
+      id: 'y',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'value'
+      }
+    }]
+  }
+}
+```
+
+And now, in v3:
+
+```javascript
+options: {
+  scales: {
+    x: {
+      type: 'time',
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        fontStyle: function(context) {
+          return context.tick && context.tick.major ? 'bold' : undefined;
+        },
+        fontColor: function(context) {
+          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        }
+      }
+    },
+    y: {
+      display: true,
+      scaleLabel: {
+        display: true,
+        labelString: 'value'
+      }
+    }
+  }
+}
+```
+
+#### Animations
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
 
-* `hover.animationDuration` is now configured in `animation.active.duration`
-* `responsiveAnimationDuration` is now configured in `animation.resize.duration`
+
+#### Customizability
+
+* `custom` attribute of elements was removed. Please use scriptable options
+* The `hover` property of scriptable options `context` object was renamed to `active` to align it with the datalabels plugin.
+
+#### Interactions
+
+* `interactions` are now limited to the chart area
+* `{mode: 'label'}` was replaced with `{mode: 'index'}`
+* `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
+* `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
+* `options.onClick` is now limited to the chart area
+
+#### Ticks
+
+* `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
+* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
+
+#### Tooltip
+
+* `xLabel` and `yLabel` were removed. Please use `index` and `value`
 
 ## Developer migration
 
 ### Removed
 
+The following properties and methods were removed:
+
+#### Chart
 * `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Controller`
@@ -99,14 +180,25 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Chart.radiusLength`
 * `Chart.types`
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
+* `ILayoutItem.minSize`
+
+#### Dataset Controller
+
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
 * `DatasetController.createMetaDataset`
+
+#### Elements
+
 * `Element.getArea`
 * `Element.height`
 * `Element.hidden` was replaced by chart level status, usable with `getDataVisibility(index)` / `toggleDataVisibility(index)`
 * `Element.initialize`
 * `Element.inLabelRange`
+* `Line.calculatePointY`
+
+#### Helpers
+
 * `helpers.addEvent`
 * `helpers.aliasPixel`
 * `helpers.configMerge`
@@ -128,10 +220,9 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers.roundedRect`
 * `helpers.scaleMerge`
 * `helpers.where`
-* `ILayoutItem.minSize`
-* `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
-* `Legend.margins` is now private
-* `Line.calculatePointY`
+
+#### Scales
+
 * `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.longestLabelWidth`
@@ -142,10 +233,17 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Scale.tickValues` is now private
 * `TimeScale.getLabelCapacity` is now private
 * `TimeScale.tickFormatFunction` is now private
+
+#### Plugins (Legend, Title, and Tooltip)
+
+* `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
+* `Legend.margins` is now private
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
 #### Removal of private APIs
+
+The following private APIs were removed.
 
 * `Chart.data.datasets[datasetIndex]._meta`
 * `Element._ctx`
@@ -157,6 +255,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Tooltip._lastActive`
 
 ### Renamed
+
+The following properties were renamed during v3 development:
 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
@@ -187,6 +287,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
 #### Renamed private APIs
+
+The private APIs listed below were renamed:
 
 * `BarController.calculateBarIndexPixels` was renamed to `BarController._calculateBarIndexPixels`
 * `BarController.calculateBarValuePixels` was renamed to `BarController._calculateBarValuePixels`
@@ -219,6 +321,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 
 ### Changed
+
+The APIs listed in this section have changed in signature or behaviour from version 2.
 
 #### Scales
 
