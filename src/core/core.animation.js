@@ -42,6 +42,19 @@ export default class Animation {
 		return this._active;
 	}
 
+	update(cfg, to, date) {
+		const me = this;
+		if (me._active) {
+			const currentValue = me._target[me._prop];
+			const elapsed = date - me._start;
+			const remain = me._duration - elapsed;
+			me._start = date;
+			me._duration = Math.floor(Math.max(remain, cfg.duration));
+			me._to = resolve([cfg.to, to, currentValue, cfg.from]);
+			me._from = resolve([cfg.from, currentValue, to]);
+		}
+	}
+
 	cancel() {
 		const me = this;
 		if (me._active) {
