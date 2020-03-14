@@ -343,7 +343,6 @@ export default class Chart {
 				options.onResize(me, newSize);
 			}
 
-			me.stop();
 			me.update('resize');
 		}
 	}
