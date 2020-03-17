@@ -648,6 +648,12 @@ helpers.extend(Chart.prototype, /** @lends Chart */ {
 
 				render: function(chart, animationObject) {
 					var easingFunction = helpers.easing.effects[animationObject.easing];
+
+					if (easingFunction == null) {
+						console.error("Could not find easingFunction for easing:", animationObject.easing);
+						return;
+					}
+
 					var currentStep = animationObject.currentStep;
 					var stepDecimal = currentStep / animationObject.numSteps;
 
