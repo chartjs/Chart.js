@@ -5,7 +5,6 @@
 import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
 import {_getParentNode} from '../helpers/helpers.dom';
-import ResizeObserver from 'resize-observer-polyfill';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -178,7 +177,6 @@ function throttled(fn, thisArg) {
  * Calling `fn` is limited to once per animation frame
  * @param {Element} element - The element to monitor
  * @param {function} fn - Callback function to call when resized
- * @return {ResizeObserver}
  */
 function watchForResize(element, fn) {
 	const resize = throttled((width, height) => {
@@ -196,6 +194,7 @@ function watchForResize(element, fn) {
 		}
 	}, window);
 
+	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
 	const observer = new ResizeObserver(entries => {
 		const entry = entries[0];
 		resize(entry.contentRect.width, entry.contentRect.height);
