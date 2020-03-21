@@ -3,7 +3,7 @@ import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
-import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
+import {_filterBetween, _lookup, _lookupByKey} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
@@ -494,30 +494,6 @@ function getLabelBounds(scale) {
 	return {min, max};
 }
 
-/**
- * Return subset of `timestamps` between `min` and `max`.
- * Timestamps are assumend to be in sorted order.
- * @param {number[]} timestamps - array of timestamps
- * @param {number} min - min value (timestamp)
- * @param {number} max - max value (timestamp)
- */
-function filterBetween(timestamps, min, max) {
-	let start = 0;
-	let end = timestamps.length - 1;
-
-	while (start < end && timestamps[start] < min) {
-		start++;
-	}
-	while (end > start && timestamps[end] > max) {
-		end--;
-	}
-	end++; // slice does not include last element
-
-	return start > 0 || end < timestamps.length
-		? timestamps.slice(start, end)
-		: timestamps;
-}
-
 const defaultConfig = {
 	/**
 	 * Data distribution along the scale:
@@ -699,7 +675,7 @@ export default class TimeScale extends Scale {
 		const min = me.min;
 		const max = me.max;
 
-		const ticks = filterBetween(timestamps, min, max);
+		const ticks = _filterBetween(timestamps, min, max);
 
 		// PRIVATE
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
