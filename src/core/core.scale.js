@@ -726,7 +726,7 @@ export default class Scale extends Element {
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
-		if (tickOpts.display && display) {
+		if (tickOpts.display && display && me.ticks.length) {
 			const labelSizes = me._getLabelSizes();
 			const firstLabelSize = labelSizes.first;
 			const lastLabelSize = labelSizes.last;
