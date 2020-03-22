@@ -75,6 +75,7 @@
     "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-cleanup": "^3.1.1",
+    "rollup-plugin-polyfill": "^3.0.0",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-web-worker-loader": "^0.8.1",
     "typedoc": "^0.16.10",
