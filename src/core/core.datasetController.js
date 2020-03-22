@@ -682,7 +682,7 @@ export default class DatasetController {
 
 		for (i = 0, ilen = parsed.length; i < ilen; ++i) {
 			value = parsed[i][scale.axis];
-			if (!isNaN(value)) {
+			if (helpers.math.isNumber(value)) {
 				values.push(value);
 			}
 		}
