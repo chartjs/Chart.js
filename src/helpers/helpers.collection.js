@@ -77,22 +77,16 @@ export function _rlookupByKey(table, key, value) {
  * @param {number} max - max value
  */
 export function _filterBetween(values, min, max) {
-	const maxIndex = values.length - 1;
 	let start = 0;
-	let end = maxIndex;
+	let end = values.length;
 
-	while (start < maxIndex && values[start] < min) {
+	while (start < end && values[start] < min) {
 		start++;
 	}
-	while (end > 0 && values[end] > max) {
+	while (end > start && values[end - 1] > max) {
 		end--;
 	}
 
-	if (start >= end) {
-		return [];
-	}
-
-	end++; // slice does not include last element
 	return start > 0 || end < values.length
 		? values.slice(start, end)
 		: values;

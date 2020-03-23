@@ -30,6 +30,7 @@ describe('helpers.collection', function() {
 
 	it('Should filter a sorted array', function() {
 		expect(_filterBetween([1, 2, 3, 4, 5, 6, 7, 8, 9], 5, 8)).toEqual([5, 6, 7, 8]);
+		expect(_filterBetween([1], 1, 1)).toEqual([1]);
 		expect(_filterBetween([1583049600000], 1584816327553, 1585680327553)).toEqual([]);
 	});
 });
