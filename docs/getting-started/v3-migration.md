@@ -171,10 +171,10 @@ The following properties and methods were removed:
 * `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Controller`
-* `Chart.innerRadius`
+* `Chart.innerRadius` now lives on doughnut, pie, and polarArea controllers
 * `Chart.offsetX`
 * `Chart.offsetY`
-* `Chart.outerRadius`
+* `Chart.outerRadius` now lives on doughnut, pie, and polarArea controllers
 * `Chart.prototype.generateLegend`
 * `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
 * `Chart.radiusLength`
