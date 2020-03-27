@@ -758,18 +758,6 @@ export default class TimeScale extends Scale {
 	}
 
 	/**
-	 * @param {number} index
-	 * @return {number}
-	 */
-	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
-	}
-
-	/**
 	 * @param {number} pixel
 	 * @return {number}
 	 */
