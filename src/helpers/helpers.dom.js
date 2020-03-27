@@ -86,7 +86,7 @@ function _calculatePadding(container, padding, parentDimension) {
 export function getRelativePosition(evt, chart) {
 	let mouseX, mouseY;
 	const e = evt.originalEvent || evt;
-	const canvasElement = evt.target || evt.srcElement;
+	const canvasElement = chart.canvas;
 	const boundingRect = canvasElement.getBoundingClientRect();
 
 	const touches = e.touches;
