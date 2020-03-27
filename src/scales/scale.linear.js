@@ -66,12 +66,4 @@ export default class LinearScale extends LinearScaleBase {
 	getValueForPixel(pixel) {
 		return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
 	}
-
-	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
-	}
 }

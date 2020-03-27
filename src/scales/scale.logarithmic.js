@@ -158,14 +158,6 @@ export default class LogarithmicScale extends Scale {
 		return value === undefined ? '0' : new Intl.NumberFormat(this.options.locale).format(value);
 	}
 
-	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
-	}
-
 	/**
 	 * @protected
 	 */

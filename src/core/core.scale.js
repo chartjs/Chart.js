@@ -960,14 +960,11 @@ export default class Scale extends Element {
 	 * @return {number}
 	 */
 	getPixelForTick(index) {
-		const me = this;
-		const offset = me.options.offset;
-		const numTicks = me.ticks.length;
-		const tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
-
-		return index < 0 || index > numTicks - 1
-			? null
-			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
+		const ticks = this.ticks;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index].value);
 	}
 
 	/**
