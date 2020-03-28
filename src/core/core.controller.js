@@ -313,8 +313,8 @@ export default class Chart {
 		// the canvas display style uses the same integer values to avoid blurring effect.
 
 		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		const newWidth = Math.max(0, Math.round(width));
-		const newHeight = Math.max(0, Math.round(aspectRatio ? newWidth / aspectRatio : height));
+		const newWidth = Math.max(0, Math.floor(width));
+		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
 
 		// detect devicePixelRation changes
 		const oldRatio = me.currentDevicePixelRatio;
