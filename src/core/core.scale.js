@@ -175,10 +175,9 @@ function getEvenSpacing(arr) {
 /**
  * @param {number[]} majorIndices
  * @param {Tick[]} ticks
- * @param {number} axisLength
  * @param {number} ticksLimit
  */
-function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+function calculateSpacing(majorIndices, ticks, ticksLimit) {
 	const evenMajorSpacing = getEvenSpacing(majorIndices);
 	const spacing = ticks.length / ticksLimit;
 
@@ -1021,8 +1020,7 @@ export default class Scale extends Element {
 	_autoSkip(ticks) {
 		const me = this;
 		const tickOpts = me.options.ticks;
-		const axisLength = me._length;
-		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize();
+		const ticksLimit = tickOpts.maxTicksLimit || me._length / me._tickSize();
 		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
 		const numMajorIndices = majorIndices.length;
 		const first = majorIndices[0];
@@ -1035,7 +1033,7 @@ export default class Scale extends Element {
 			return newTicks;
 		}
 
-		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
+		const spacing = calculateSpacing(majorIndices, ticks, ticksLimit);
 
 		if (numMajorIndices > 0) {
 			let i, ilen;
