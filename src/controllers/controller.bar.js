@@ -66,14 +66,10 @@ function computeMinSampleSize(scale, pixels) {
 function computeFitCategoryTraits(index, ruler, options) {
 	const thickness = options.barThickness;
 	const count = ruler.stackCount;
-	const curr = ruler.pixels[index];
-	const min = isNullOrUndef(thickness)
-		? computeMinSampleSize(ruler.scale, ruler.pixels)
-		: -1;
 	let size, ratio;
 
 	if (isNullOrUndef(thickness)) {
-		size = min * options.categoryPercentage;
+		size = ruler.min * options.categoryPercentage;
 		ratio = options.barPercentage;
 	} else {
 		// When bar thickness is enforced, category and bar percentages are ignored.
@@ -86,7 +82,7 @@ function computeFitCategoryTraits(index, ruler, options) {
 	return {
 		chunk: size / count,
 		ratio,
-		start: curr - (size / 2)
+		start: ruler.pixels[index] - (size / 2)
 	};
 }
 
@@ -385,7 +381,14 @@ export default class BarController extends DatasetController {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis]));
 		}
 
+		// Note: a potential optimization would be to skip computing this
+		// only if the barThickness option is defined
+		// Since a scriptable option may return null or undefined that
+		// means the option would have to be of type number
+		const min = computeMinSampleSize(iScale, pixels);
+
 		return {
+			min,
 			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
