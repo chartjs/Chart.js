@@ -1165,6 +1165,111 @@ describe('Core.Tooltip', function() {
 		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
+	it('Custom tooltips should show', function(done) {
+		var tooltipEl = null;
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [20, 40, 60],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				tooltips: {
+					yPadding: 8,
+					xPadding: 10,
+					enabled: false,
+					custom: function(tooltipModel) {
+						tooltipEl = document.getElementById('chartjs-tooltip');
+						if (!tooltipEl) {
+							tooltipEl = document.createElement('div');
+							tooltipEl.id = 'chartjs-tooltip';
+							tooltipEl.innerHTML = '<table></table>';
+							document.body.appendChild(tooltipEl);
+						}
+						tooltipEl.classList.remove('above', 'below', 'no-transform');
+						if (tooltipModel.yAlign) {
+							tooltipEl.classList.add(tooltipModel.yAlign);
+						} else {
+							tooltipEl.classList.add('no-transform');
+						}
+						function getBody(bodyItem) {
+							return bodyItem.lines;
+						}
+						if (tooltipModel.body) {
+							var titleLines = tooltipModel.title || [];
+							var bodyLines = tooltipModel.body.map(getBody);
+							var innerHtml = '<thead>';
+							titleLines.forEach(function(title) {
+								innerHtml += '<tr><th>' + title + '</th></tr>';
+							});
+							innerHtml += '</thead><tbody>';
+							bodyLines.forEach(function(body, i) {
+								var colors = tooltipModel.labelColors[i];
+								var style = 'background:' + colors.backgroundColor;
+								style += '; border-color:' + colors.borderColor;
+								style += '; border-width: 2px';
+								var span = '<span style="' + style + '"></span>';
+								innerHtml += '<tr><td>' + span + body + '</td></tr>';
+							});
+							innerHtml += '</tbody>';
+							var tableRoot = tooltipEl.querySelector('table');
+							tableRoot.innerHTML = innerHtml;
+						}
+						tooltipEl.style.opacity = 1;
+						tooltipEl.style.fontSize = tooltipModel.options.bodyFontSize + 'px';
+						tooltipEl.style.fontStyle = tooltipModel.options.bodyFontStyle;
+						const padding = tooltipModel.options.yPadding + 'px ' + tooltipModel.options.xPadding + 'px';
+						tooltipEl.style.padding = padding;
+						tooltipEl.style.pointerEvents = 'none';
+					}
+				}
+			}
+		});
+		var meta = chart.getDatasetMeta(0);
+		var point = meta.data[1];
+		afterEvent(chart, 'mousemove', function() {
+			var tooltip = chart.tooltip;
+			function getParameterName(fn) {
+				if (typeof fn !== 'object' && typeof fn !== 'function') {
+					return;
+				}
+				const COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+				const DEFAULT_PARAMS = new RegExp('/=[^,)]+/', 'mg');
+				const FAT_ARROWS = new RegExp('/=>.*$/', 'mg');
+				let code = fn.prototype ? fn.prototype.constructor.toString() : fn.toString();
+				code = code
+					.replace(COMMENTS, '')
+					.replace(FAT_ARROWS, '')
+					.replace(DEFAULT_PARAMS, '');
+				let result = code.slice(code.indexOf('(') + 1, code.indexOf(')')).match(/([^\s,]+)/g);
+				return result === null ? [] : result;
+			}
+			expect(typeof tooltip.options.custom).toEqual('function');
+			expect(getParameterName(tooltip.options.custom).length).toEqual(1);
+			if (tooltip.yAlign) {
+				tooltipEl.classList.contains(tooltip.yAlign);
+			} else {
+				tooltipEl.classList.contains('no-transform');
+			}
+			expect(tooltipEl.style.fontSize).toEqual(tooltip.options.bodyFontSize + 'px');
+			expect(tooltipEl.style.fontStyle).toEqual(tooltip.options.bodyFontStyle);
+			expect(tooltipEl.style.padding).toEqual(tooltip.options.yPadding + 'px ' + tooltip.options.xPadding + 'px');
+			document.body.removeChild(tooltipEl);
+			done();
+		});
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
+	});
+
 	describe('text align', function() {
 		var defaults = Chart.defaults;
 		var makeView = function(title, body, footer) {
