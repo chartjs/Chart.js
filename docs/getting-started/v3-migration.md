@@ -155,7 +155,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Ticks
 
 * `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
-* `Chart.Ticks.formatters.linear` and `Chart.Ticks.formatters.logarithmic` were replaced with `Chart.Ticks.formatters.numeric`.
+* `Chart.Ticks.formatters.linear` was renamed to `Chart.Ticks.formatters.numeric`.
 
 #### Tooltip
 

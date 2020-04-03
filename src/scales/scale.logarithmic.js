@@ -50,7 +50,7 @@ function generateTicks(generationOptions, dataRange) {
 const defaultConfig = {
 	// label settings
 	ticks: {
-		callback: Ticks.formatters.numeric,
+		callback: Ticks.formatters.logarithmic,
 		major: {
 			enabled: true
 		}
