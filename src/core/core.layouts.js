@@ -236,7 +236,7 @@ export default {
 	 * Register a box to a chart.
 	 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
 	 * @param {Chart} chart - the chart to use
-	 * @param {ILayoutItem} item - the item to add to be layed out
+	 * @param {ILayoutItem} item - the item to add to be laid out
 	 */
 	addBox(chart, item) {
 		if (!chart.boxes) {
