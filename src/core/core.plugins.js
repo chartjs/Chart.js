@@ -266,7 +266,7 @@ export default new PluginService();
  */
 /**
  * @method IPlugin#afterLayout
- * @desc Called after the `chart` has been layed out. Note that this hook will not
+ * @desc Called after the `chart` has been laid out. Note that this hook will not
  * be called if the layout update has been previously cancelled.
  * @param {Chart} chart - The chart instance.
  * @param {object} options - The plugin options.
