@@ -1,19 +1,11 @@
 # Installation
-Chart.js can be installed via npm or bower. It is recommended to get Chart.js this way.
 
 ## npm
 [![npm](https://img.shields.io/npm/v/chart.js.svg?style=flat-square&maxAge=600)](https://npmjs.com/package/chart.js)
 [![npm](https://img.shields.io/npm/dm/chart.js.svg?style=flat-square&maxAge=600)](https://npmjs.com/package/chart.js)
 
-```bash
-npm install chart.js --save
-```
-
-## Bower
-[![bower](https://img.shields.io/bower/v/chartjs.svg?style=flat-square&maxAge=600)](https://libraries.io/bower/chartjs)
-
-```bash
-bower install chart.js --save
+```sh
+npm install chart.js 
 ```
 
 ## CDN
