@@ -221,6 +221,10 @@ The following properties and methods were removed:
 * `helpers.scaleMerge`
 * `helpers.where`
 
+#### Layout
+
+* `Layout.defaults`
+
 #### Scales
 
 * `LogarithmicScale.minNotZero`
