@@ -230,7 +230,6 @@ defaults.set('layout', {
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 // It is this service's responsibility of carrying out that layout.
 export default {
-	defaults: {},
 
 	/**
 	 * Register a box to a chart.

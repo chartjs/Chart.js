@@ -6,7 +6,6 @@ describe('Chart.layouts', function() {
 	it('should be exposed through Chart.layouts', function() {
 		expect(Chart.layouts).toBeDefined();
 		expect(typeof Chart.layouts).toBe('object');
-		expect(Chart.layouts.defaults).toBeDefined();
 		expect(Chart.layouts.addBox).toBeDefined();
 		expect(Chart.layouts.removeBox).toBeDefined();
 		expect(Chart.layouts.configure).toBeDefined();
