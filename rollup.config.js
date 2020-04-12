@@ -3,7 +3,7 @@
 
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
-const polyfill = require('rollup-plugin-polyfill')
+const polyfill = require('rollup-plugin-polyfill');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve');
 const terser = require('rollup-plugin-terser').terser;
