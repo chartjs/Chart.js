@@ -486,6 +486,37 @@ describe('Time scale tests', function() {
 		expect(xScale.getLabelForValue(value)).toBe('Jan 1, 2015, 8:00:00 pm');
 	});
 
+	it('should round to isoWeekday', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [{x: '2020-04-12T20:00:00', y: 1}, {x: '2020-04-13T20:00:00', y: 2}]
+				}]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'time',
+						ticks: {
+							source: 'data'
+						},
+						time: {
+							unit: 'week',
+							round: 'week',
+							isoWeekday: 1,
+							displayFormats: {
+								week: 'WW'
+							}
+						}
+					},
+				}
+			}
+		});
+
+		expect(getLabels(chart.scales.x)).toEqual(['15', '16']);
+	});
+
 	it('should get the correct label for a timestamp', function() {
 		var chart = window.acquireChart({
 			type: 'line',

@@ -70,7 +70,7 @@ function parse(scale, input) {
 
 	const adapter = scale._adapter;
 	const options = scale.options.time;
-	const parser = options.parser;
+	const {parser, round, isoWeekday} = options;
 	let value = input;
 
 	if (typeof parser === 'function') {
@@ -88,8 +88,10 @@ function parse(scale, input) {
 		return value;
 	}
 
-	if (options.round) {
-		value = scale._adapter.startOf(value, options.round);
+	if (round) {
+		value = round === 'week' && isoWeekday
+			? scale._adapter.startOf(value, 'isoWeek', isoWeekday)
+			: scale._adapter.startOf(value, round);
 	}
 
 	return +value;
