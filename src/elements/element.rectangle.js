@@ -176,7 +176,7 @@ export default class Rectangle extends Element {
 	}
 
 	getCenterPoint(useFinalPosition) {
-		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal', useFinalPosition]);
+		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition);
 		return {
 			x: horizontal ? (x + base) / 2 : x,
 			y: horizontal ? y : (y + base) / 2
