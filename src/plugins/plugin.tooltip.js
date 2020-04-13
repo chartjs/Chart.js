@@ -45,7 +45,7 @@ defaults.set('tooltips', {
 		easing: 'easeOutQuart',
 		numbers: {
 			type: 'number',
-			properties: ['x', 'y', 'width', 'height'],
+			properties: ['x', 'y', 'width', 'height', 'caretX', 'caretY'],
 		},
 		opacity: {
 			easing: 'linear',
