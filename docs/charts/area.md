@@ -13,9 +13,9 @@ Both [line](line.md) and [radar](radar.md) charts support a `fill` option on the
 | Boundary <sup>2</sup> | `string` | `'start'`, `'end'`, `'origin'` |
 | Disabled <sup>3</sup> | `boolean` | `false` |
 
-> <sup>1</sup> dataset filling modes have been introduced in version 2.6.0<br>
-> <sup>2</sup> prior version 2.6.0, boundary values was `'zero'`, `'top'`, `'bottom'` (deprecated)<br>
-> <sup>3</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br>
+> <sup>1</sup> dataset filling modes have been introduced in version 2.6.0<br/>
+> <sup>2</sup> prior version 2.6.0, boundary values was `'zero'`, `'top'`, `'bottom'` (deprecated)<br/>
+> <sup>3</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br/>
 
 **Example**
 ```javascript
