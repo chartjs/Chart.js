@@ -1,7 +1,6 @@
 /* eslint-disable import/no-nodejs-modules, import/no-commonjs, no-use-before-define */
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
-const file = require('gulp-file');
 const replace = require('gulp-replace');
 const size = require('gulp-size');
 const streamify = require('gulp-streamify');
@@ -26,7 +25,6 @@ const argv = yargs
 const srcDir = './src/';
 const outDir = './dist/';
 
-gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('lint-html', lintHtmlTask);
@@ -58,32 +56,6 @@ function run(bin, args) {
 			}
 		});
 	});
-}
-
-/**
- * Generates the bower.json manifest file which will be pushed along release tags.
- * Specs: https://github.com/bower/spec/blob/master/json.md
- */
-function bowerTask() {
-	const json = JSON.stringify({
-		name: pkg.name,
-		description: pkg.description,
-		homepage: pkg.homepage,
-		license: pkg.license,
-		version: pkg.version,
-		main: outDir + 'Chart.js',
-		ignore: [
-			'.github',
-			'.codeclimate.yml',
-			'.gitignore',
-			'.npmignore',
-			'.travis.yml',
-			'scripts'
-		]
-	}, null, 2);
-
-	return file('bower.json', json, {src: true})
-		.pipe(gulp.dest('./'));
 }
 
 function buildTask() {

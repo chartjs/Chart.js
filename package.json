@@ -24,7 +24,6 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "files": [
-    "bower.json",
     "composer.json",
     "dist/*.css",
     "dist/*.js"
@@ -48,7 +47,6 @@
     "gitbook-cli": "^2.3.2",
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
-    "gulp-file": "^0.4.0",
     "gulp-htmllint": "^0.0.16",
     "gulp-replace": "^1.0.0",
     "gulp-size": "^3.0.0",
