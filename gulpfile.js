@@ -13,7 +13,6 @@ const yargs = require('yargs');
 const path = require('path');
 const htmllint = require('gulp-htmllint');
 const typescript = require('gulp-typescript');
-const typedoc = require('gulp-typedoc');
 
 const pkg = require('./package.json');
 const tsProject = typescript.createProject('./tsconfig.json');
@@ -31,7 +30,6 @@ gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
 gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('tsc', typescriptTask);
-gulp.task('docs', docsTask);
 gulp.task('unittest', unittestTask);
 gulp.task('test', gulp.parallel('lint', 'tsc', 'unittest'));
 gulp.task('library-size', librarySizeTask);
@@ -112,25 +110,6 @@ function lintHtmlTask() {
 		.pipe(htmllint({
 			failOnError: true,
 		}));
-}
-
-function docsTask(done) {
-	const bin = require.resolve('gitbook-cli/bin/gitbook.js');
-	const cmd = argv.watch ? 'serve' : 'build';
-
-	return run(bin, ['install', './'])
-		.then(() => run(bin, [cmd, './', './dist/docs']))
-		.then(() => {
-			const config = {
-				moduleResolution: 'Node',
-				target: 'ES6',
-				out: './dist/docs/typedoc'
-			};
-			gulp.src(['./src/**/*.js'], {read: false})
-				.pipe(typedoc(config, done));
-		}).catch((err) => {
-			done(new Error(err.stdout || err));
-		});
 }
 
 function unittestTask(done) {

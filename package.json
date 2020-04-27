@@ -28,6 +28,10 @@
     "dist/*.css",
     "dist/*.js"
   ],
+  "scripts": {
+    "docs": "cd docs && npm install && npm run build && mkdir -p ../dist && cp -r build ../dist/docs",
+    "typedoc": "npx typedoc"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -51,7 +55,6 @@
     "gulp-size": "^3.0.0",
     "gulp-streamify": "^1.0.2",
     "gulp-terser": "^1.2.0",
-    "gulp-typedoc": "^2.2.4",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-zip": "^5.0.1",
     "jasmine": "^3.5.0",
