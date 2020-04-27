@@ -6,7 +6,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Additional configurability and scriptable options with better defaults
 * Completely rewritten animation system
 * Rewritten filler plugin with numerous bug fixes
-* API Documentation generated and verified by TypeScript
+* API Documentation generated and verified by TypeDoc
 * No more CSS injection
 * Tons of bug fixes
 
