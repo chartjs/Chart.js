@@ -13,7 +13,6 @@ script:
   - gulp test --coverage
   - gulp docs
   - gulp package
-  - gulp bower
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 sudo: required
