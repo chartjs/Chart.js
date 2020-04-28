@@ -197,7 +197,15 @@ function watchForResize(element, fn) {
 	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
 	const observer = new ResizeObserver(entries => {
 		const entry = entries[0];
-		resize(entry.contentRect.width, entry.contentRect.height);
+		const width = entry.contentRect.width;
+		const height = entry.contentRect.height;
+		// When its container's display is set to 'none' the callback will be called with a
+		// size of (0, 0), which will cause the chart to lost its original height, so skip
+		// resizing in such case.
+		if (width === 0 && height === 0) {
+			return;
+		}
+		resize(width, height);
 	});
 	observer.observe(element);
 	return observer;
