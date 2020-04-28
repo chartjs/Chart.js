@@ -386,7 +386,12 @@ export default class DomPlatform extends BasePlatform {
 		}
 
 		const proxy = proxies[type] = throttled((event) => {
-			listener(fromNativeEvent(event, chart));
+			// This case can occur if the chart is destroyed while waiting
+			// for the throttled function to occur. We prevent crashes by checking
+			// for a destroyed chart
+			if (chart.ctx !== null) {
+				listener(fromNativeEvent(event, chart));
+			}
 		}, chart);
 
 		addListener(canvas, type, proxy);
