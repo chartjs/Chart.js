@@ -51,7 +51,6 @@ jobs:
       run: |
         gulp docs
         gulp package
-        gulp bower
     - name: Publish Test Results
       run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
       shell: bash

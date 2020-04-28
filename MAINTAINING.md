@@ -16,8 +16,7 @@ creation fails and the release process is aborted.
 Merging into the `release` branch kicks off the automated release process:
 
 * build of the `dist/*.js` files
-* `bower.json` is generated from `package.json`
-* `dist/*.js` and `bower.json` are added to a detached branch
+* `dist/*.js` is added to a detached branch
 * a tag is created from the `package.json` version
 * tag (with dist files) is pushed to GitHub
 
@@ -32,5 +31,5 @@ Finally, [cdnjs](https://cdnjs.com/libraries/Chart.js) is automatically updated 
 ### Further Reading
 
 * [Travis GitHub releases](https://github.com/chartjs/Chart.js/pull/2555)
-* [Bower support and dist/* files](https://github.com/chartjs/Chart.js/issues/3033)
+* [dist/* files](https://github.com/chartjs/Chart.js/issues/3033)
 * [cdnjs npm auto update](https://github.com/cdnjs/cdnjs/pull/8401)
