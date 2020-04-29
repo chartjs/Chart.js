@@ -35,6 +35,8 @@ function update_with_tag {
     move_sample_scripts $tag
 
     deploy_versioned_files $tag
+
+    sed -i -e "s/VERSION/$tag/g" "$tag/docs/docusaurus.config.js"
 }
 
 # tag is next|latest|master

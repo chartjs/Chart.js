@@ -1,13 +1,14 @@
+// VERSION replaced by deploy script
 module.exports = {
   title: 'Chart.js',
   tagline: 'Open source HTML5 Charts for your website',
   url: 'https://chartjs.org',
-  baseUrl: '/',
+  baseUrl: '/docs/VERSION/',
   favicon: 'img/favicon.ico',
   organizationName: 'chartjs', // Usually your GitHub org/user name.
   projectName: 'chartjs.github.io', // Usually your repo name.
   plugins: ['@docusaurus/plugin-google-analytics'],
-  scripts: ['https://www.chartjs.org/dist/next/Chart.min.js'],
+  scripts: ['https://www.chartjs.org/dist/VERSION/Chart.min.js'],
   themeConfig: {
     googleAnalytics: {
       trackingID: 'UA-28909194-3',
@@ -30,7 +31,7 @@ module.exports = {
           items: [
             {
               label: 'Samples',
-              href: 'https://www.chartjs.org/samples/latest/',
+              href: 'https://www.chartjs.org/samples/VERSION/',
             },
             {
               label: 'v2 Docs',
