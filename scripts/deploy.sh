@@ -37,16 +37,14 @@ function update_with_tag {
     deploy_versioned_files $tag
 }
 
-# https://www.chartjs.org/docs/next|latest/
-# https://www.chartjs.org/samples/next|latest/
-# https://www.chartjs.org/dist/next|latest/Chart.*js
+# tag is next|latest|master
+# https://www.chartjs.org/docs/$tag/
+# https://www.chartjs.org/samples/$tag/
+# https://www.chartjs.org/dist/$tag/Chart.*js
 function update_tagged_files {
     if [ "$VERSION" == "master" ]; then
-        return
-    fi
-
-    # Don't update "latest" on alpha or beta releases but update "next"
-    if [[ "$VERSION" =~ ^[^-]+$ ]]; then
+        update_with_tag master
+    elif [[ "$VERSION" =~ ^[^-]+$ ]]; then
         update_with_tag lastest
     else
         update_with_tag next
