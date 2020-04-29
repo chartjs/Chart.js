@@ -27,16 +27,16 @@ function move_sample_scripts {
 
 function update_with_tag {
     local tag=$1
-    rm -rf "$tag/docs"
-    cp -r ../dist/docs $tag
-    rm -rf "$tag/samples"
-    cp -r ../dist/samples $tag
+    rm -rf "docs/$tag"
+    cp -r ../dist/docs docs/$tag
+    rm -rf "samples/$tag"
+    cp -r ../samples samples/$tag
 
     move_sample_scripts $tag
 
     deploy_versioned_files $tag
 
-    sed -i -e "s/VERSION/$tag/g" "$tag/docs/docusaurus.config.js"
+    sed -i -e "s/VERSION/$tag/g" "docs/$tag/docusaurus.config.js"
 }
 
 # tag is next|latest|master
@@ -55,7 +55,7 @@ function update_tagged_files {
 
 function deploy_versioned_files {
     local version=$1
-    local in_files='dist/Chart*.js'
+    local in_files='../dist/Chart*.js'
     local out_path='./dist'
     rm -rf $out_path/$version
     mkdir -p $out_path/$version
