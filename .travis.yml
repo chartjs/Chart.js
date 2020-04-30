@@ -11,6 +11,7 @@ services:
 script:
   - gulp build
   - gulp test --coverage
+  - ./scripts/docs-config.sh
   - npm run docs
   - npm run typedoc
   - gulp package

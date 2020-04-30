@@ -5,9 +5,10 @@ set -e
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
 TARGET_REPO_URL="https://$GITHUB_AUTH_TOKEN@github.com/chartjs/chartjs.github.io.git"
-VERSION_REGEX='[[:digit:]]+.[[:digit:]]+.[[:digit:]]+(-.*)?'
 
+# Note: this code also exists in docs-config.sh
 # Make sure that this script is executed only for the release and master branches
+VERSION_REGEX='[[:digit:]]+.[[:digit:]]+.[[:digit:]]+(-.*)?'
 if [[ "$TRAVIS_BRANCH" =~ ^release.*$ ]]; then
     # Travis executes this script from the repository root, so at the same level than package.json
     VERSION=$(node -p -e "require('./package.json').version")
@@ -35,10 +36,9 @@ function update_with_tag {
     move_sample_scripts $tag
 
     deploy_versioned_files $tag
-
-    sed -i -e "s/VERSION/$tag/g" "docs/$tag/docusaurus.config.js"
 }
 
+# Note: this code also exists in docs-config.sh
 # tag is next|latest|master
 # https://www.chartjs.org/docs/$tag/
 # https://www.chartjs.org/samples/$tag/
