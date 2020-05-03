@@ -13,15 +13,23 @@
 
 ## Documentation
 
-- [Introduction](https://www.chartjs.org/docs/latest/)
-- [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
-- [General](https://www.chartjs.org/docs/latest/general/)
-- [Configuration](https://www.chartjs.org/docs/latest/configuration/)
-- [Charts](https://www.chartjs.org/docs/latest/charts/)
-- [Axes](https://www.chartjs.org/docs/latest/axes/)
-- [Developers](https://www.chartjs.org/docs/latest/developers/)
-- [Popular Extensions](https://github.com/chartjs/awesome)
-- [Samples](https://www.chartjs.org/samples/)
+-   [Introduction](https://www.chartjs.org/docs/latest/)
+-   [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
+-   [General](https://www.chartjs.org/docs/latest/general/)
+-   [Configuration](https://www.chartjs.org/docs/latest/configuration/)
+-   [Charts](https://www.chartjs.org/docs/latest/charts/)
+-   [Axes](https://www.chartjs.org/docs/latest/axes/)
+-   [Developers](https://www.chartjs.org/docs/latest/developers/)
+-   [Popular Extensions](https://github.com/chartjs/awesome)
+-   [Samples](https://www.chartjs.org/samples/)
+
+## On Translations
+
+Translations for this documentation project.
+
+### South Korea
+
+-   Translation repo : [/chartjs-kr/chartjs-kr.github.io](https://github.com/chartjs-kr/chartjs-kr.github.io)
 
 ## Contributing
 
