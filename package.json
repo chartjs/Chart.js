@@ -28,6 +28,10 @@
     "dist/*.css",
     "dist/*.js"
   ],
+  "scripts": {
+    "docs": "cd docs && npm install && npm run build && mkdir -p ../dist && cp -r build ../dist/docs",
+    "typedoc": "npx typedoc"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -44,7 +48,6 @@
     "eslint-config-chartjs": "^0.2.0",
     "eslint-config-esnext": "^4.0.0",
     "eslint-plugin-html": "^6.0.0",
-    "gitbook-cli": "^2.3.2",
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
     "gulp-htmllint": "^0.0.16",
@@ -52,14 +55,13 @@
     "gulp-size": "^3.0.0",
     "gulp-streamify": "^1.0.2",
     "gulp-terser": "^1.2.0",
-    "gulp-typedoc": "^2.2.4",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-zip": "^5.0.1",
     "jasmine": "^3.5.0",
     "jasmine-core": "^3.5.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-coverage": "^2.0.1",
+    "karma-coverage": "^2.0.2",
     "karma-edge-launcher": "^0.4.2",
     "karma-firefox-launcher": "^1.3.0",
     "karma-jasmine": "^3.1.1",
