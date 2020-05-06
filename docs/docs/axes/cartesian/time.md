@@ -66,7 +66,7 @@ For example, to create a chart with a time scale that always displayed units per
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',
-    data: data,
+    data: dataset,
     options: {
         scales: {
             x: {
@@ -101,7 +101,7 @@ For example, to set the display format for the `quarter` unit to show the month 
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',
-    data: data,
+    data: dataset,
     options: {
         scales: {
             x: {
@@ -127,7 +127,7 @@ The `distribution` property controls the data distribution along the scale:
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',
-    data: data,
+    data: dataset,
     options: {
         scales: {
             x: {
