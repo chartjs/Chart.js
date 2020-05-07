@@ -14,7 +14,7 @@ module.exports = {
       apiKey: 'd7ee00a3cbaaf3c33e28ad1c274e7ba6',
       indexName: 'chartjs',
       algoliaOptions: {
-        facetFilters: [`version:${versions[0]}`],
+        facetFilters: [`version:VERSION`],
       }
     },
     googleAnalytics: {
