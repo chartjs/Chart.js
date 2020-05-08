@@ -39,11 +39,19 @@ The following commands are now available from the repository root:
 > gulp lint                 // perform code linting (ESLint)
 > gulp test                 // perform code linting and run unit tests
 > gulp test --browsers ...  // test with specified browsers (comma-separated)
-> gulp docs                 // build the documentation in ./dist/docs
-> gulp docs --watch         // starts the gitbook live reloaded server
 ```
 
 More information can be found in [gulpfile.js](https://github.com/chartjs/Chart.js/blob/master/gulpfile.js).
+
+### Documentation
+
+We use [Docusaurus v2](https://v2.docusaurus.io/docs/introduction) to manage the docs which are contained as Markdown files in the docs directory. You can run the doc server locally using the commands provided by Docusaurus:
+
+```
+$ cd docs
+$ npm install
+$ npm run start
+```
 
 ### Image-Based Tests
 
