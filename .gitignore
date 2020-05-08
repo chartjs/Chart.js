@@ -1,9 +1,24 @@
+# Deployment
 /coverage
 /custom
 /dist
-/docs/index.md
 /gh-pages
-/jsdoc
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Docs
+.docusaurus
+.cache-loader
+build/
+
+# Development
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .idea
 .project
 .settings
@@ -11,16 +26,3 @@
 *.log
 *.swp
 *.stackdump
-build
-
-node_modules
-npm-debug.log*
-
-.docusaurus
-.cache-loader
-
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
