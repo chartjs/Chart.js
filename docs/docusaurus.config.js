@@ -10,6 +10,13 @@ module.exports = {
   plugins: ['@docusaurus/plugin-google-analytics'],
   scripts: ['https://www.chartjs.org/dist/VERSION/Chart.min.js'],
   themeConfig: {
+    algolia: {
+      apiKey: 'd7ee00a3cbaaf3c33e28ad1c274e7ba6',
+      indexName: 'chartjs',
+      algoliaOptions: {
+        facetFilters: [`version:VERSION`],
+      }
+    },
     googleAnalytics: {
       trackingID: 'UA-28909194-3',
       // Optional fields.
