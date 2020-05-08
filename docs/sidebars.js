@@ -1,8 +1,8 @@
 module.exports = {
   someSidebar: {
-    Introduction: ['README'],
+    Introduction: ['index'],
     'Getting Started': [
-      'getting-started/README',
+      'getting-started/index',
       'getting-started/installation',
       'getting-started/integration',
       'getting-started/usage',
@@ -13,14 +13,14 @@ module.exports = {
       'general/accessibility',
       'general/responsive',
       'general/device-pixel-ratio',
-      {Interactions: ['general/interactions/README', 'general/interactions/events', 'general/interactions/modes']},
+      {Interactions: ['general/interactions/index', 'general/interactions/events', 'general/interactions/modes']},
       'general/options',
       'general/colors',
       'general/fonts',
       'general/performance'
     ],
     Configuration: [
-      'configuration/README',
+      'configuration/index',
       'configuration/animations',
       'configuration/layout',
       'configuration/legend',
@@ -40,23 +40,23 @@ module.exports = {
       'charts/mixed'
     ],
     Axes:[
-     'axes/README',
+     'axes/index',
      { Cartesian: [
-       'axes/cartesian/README',
+       'axes/cartesian/index',
        'axes/cartesian/category',
        'axes/cartesian/linear',
        'axes/cartesian/logarithmic',
        'axes/cartesian/time'
      ]},
      { Radial: [
-       'axes/radial/README',
+       'axes/radial/index',
        'axes/radial/linear'
      ]},
      'axes/labelling',
      'axes/styling'
    ],
    Developers: [
-     'developers/README',
+     'developers/index',
      'developers/api',
      {
        type: 'link',
