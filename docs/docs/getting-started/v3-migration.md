@@ -173,15 +173,27 @@ The following properties and methods were removed:
 #### Chart
 * `Chart.borderWidth`
 * `Chart.chart.chart`
+* `Chart.Bar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
+* `Chart.Bubble`. New charts are created via `new Chart` and providing the appropriate `type` parameter
+* `Chart.Chart`
 * `Chart.Controller`
+* `Chart.Doughnut`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.innerRadius` now lives on doughnut, pie, and polarArea controllers
+* `Chart.Legend` was moved to `Chart.plugins.legend._element` and made private
+* `Chart.Line`. New charts are created via `new Chart` and providing the appropriate `type` parameter
+* `Chart.LinearScaleBase` now must be imported and cannot be accessed off the `Chart` object
 * `Chart.offsetX`
 * `Chart.offsetY`
 * `Chart.outerRadius` now lives on doughnut, pie, and polarArea controllers
+* `Chart.PolarArea`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.prototype.generateLegend`
 * `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
+* `Chart.PluginBase`
+* `Chart.Radar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.radiusLength`
+* `Chart.Scatter`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.types`
+* `Chart.Title` was moved to `Chart.plugins.title._element` and made private
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
 * `ILayoutItem.minSize`
 
@@ -267,6 +279,9 @@ The following properties were renamed during v3 development:
 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
+* `Chart.canvasHelpers` was renamed to `Chart.helpers.canvas`
+* `Chart.layoutService` was renamed to `Chart.layouts`
+* `Chart.pluginService` was renamed to `Chart.plugins`
 * `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 * `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
 * `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
