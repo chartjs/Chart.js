@@ -309,6 +309,11 @@ export default class RadialLinearScale extends LinearScaleBase {
 		this.pointLabels = [];
 	}
 
+	init(options) {
+		super.init(options);
+		this.axis = 'r';
+	}
+
 	setDimensions() {
 		const me = this;
 

@@ -278,7 +278,7 @@ export default class Scale extends Element {
 		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
-		this.options = cfg.options;
+		this.options = undefined;
 		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
 		/** @type {Chart} */
@@ -345,9 +345,24 @@ export default class Scale extends Element {
 	}
 
 	/**
+	 * @param {object} options
+	 * @since 3.0
+	 */
+	init(options) {
+		const me = this;
+		me.options = options;
+
+		me.axis = me.isHorizontal() ? 'x' : 'y';
+
+		// parse min/max value, so we can properly determine min/max for other scales
+		me._userMin = me.parse(options.min);
+		me._userMax = me.parse(options.max);
+	}
+
+	/**
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
-	 * @param {number} index
+	 * @param {number} [index]
 	 * @since 3.0
 	 */
 	parse(raw, index) { // eslint-disable-line no-unused-vars
