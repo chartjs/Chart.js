@@ -403,9 +403,6 @@ export default class Chart {
 			let scale = null;
 			if (id in scales && scales[id].type === scaleType) {
 				scale = scales[id];
-				scale.options = scaleOptions;
-				scale.ctx = me.ctx;
-				scale.chart = me;
 			} else {
 				const scaleClass = scaleService.getScaleConstructor(scaleType);
 				if (!scaleClass) {
@@ -414,18 +411,13 @@ export default class Chart {
 				scale = new scaleClass({
 					id,
 					type: scaleType,
-					options: scaleOptions,
 					ctx: me.ctx,
 					chart: me
 				});
 				scales[scale.id] = scale;
 			}
 
-			scale.axis = scale.options.position === 'chartArea' ? 'r' : scale.isHorizontal() ? 'x' : 'y';
-
-			// parse min/max value, so we can properly determine min/max for other scales
-			scale._userMin = scale.parse(scale.options.min);
-			scale._userMax = scale.parse(scale.options.max);
+			scale.init(scaleOptions);
 
 			// TODO(SB): I think we should be able to remove this custom case (options.scale)
 			// and consider it as a regular scale part of the "scales"" map only! This would
