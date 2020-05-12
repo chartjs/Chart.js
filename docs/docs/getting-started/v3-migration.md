@@ -197,8 +197,9 @@ The following properties and methods were removed:
 * `Chart.Tooltip` is now provided by the tooltip plugin. The positioners can be accessed from `tooltipPlugin.positioners`
 * `ILayoutItem.minSize`
 
-#### Dataset Controller
+#### Dataset Controllers
 
+* `BarController.getDatasetMeta().bar`
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
 * `DatasetController.createMetaDataset`

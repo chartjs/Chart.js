@@ -246,7 +246,6 @@ export default class BarController extends DatasetController {
 
 		const meta = me._cachedMeta;
 		meta.stack = me.getDataset().stack;
-		meta.bar = true;
 	}
 
 	update(mode) {
