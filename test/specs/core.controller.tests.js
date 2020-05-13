@@ -386,26 +386,25 @@ describe('Chart', function() {
 			});
 
 			var wrapper = chart.canvas.parentNode;
-			waitForResize(chart, function() {
-				// Chart won't be invisible when wrapper is resizing to (0, 0)
-				expect(chart).toBeChartOfSize({
-					dw: 300, dh: 350,
-					rw: 300, rh: 350,
-				});
-
-				waitForResize(chart, function() {
-					expect(chart).toBeChartOfSize({
-						dw: 150, dh: 250,
-						rw: 150, rh: 250,
-					});
-
-					done();
-				});
-				wrapper.style.width = '150px';
-				wrapper.style.height = '250px';
-			});
 			wrapper.style.width = '0px';
 			wrapper.style.height = '0px';
+
+			// Chart won't resize when wrapper is resizing to (0, 0)
+			expect(chart).toBeChartOfSize({
+				dw: 300, dh: 350,
+				rw: 300, rh: 350,
+			});
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 150, dh: 250,
+					rw: 150, rh: 250,
+				});
+
+				done();
+			});
+			wrapper.style.width = '150px';
+			wrapper.style.height = '250px';
 		});
 
 		it('should resize the canvas when parent is RTL and width changes', function(done) {
