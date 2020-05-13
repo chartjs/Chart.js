@@ -387,9 +387,10 @@ describe('Chart', function() {
 
 			var wrapper = chart.canvas.parentNode;
 			waitForResize(chart, function() {
+				// Chart won't be invisible when wrapper is resizing to (0, 0)
 				expect(chart).toBeChartOfSize({
-					dw: 0, dh: 0,
-					rw: 0, rh: 0,
+					dw: 300, dh: 350,
+					rw: 300, rh: 350,
 				});
 
 				waitForResize(chart, function() {
