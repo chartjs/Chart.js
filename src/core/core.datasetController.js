@@ -234,6 +234,7 @@ export default class DatasetController {
 		this._config = undefined;
 		this._parsing = false;
 		this._data = undefined;
+		this._dataCopy = undefined;
 		this._dataModified = false;
 		this._objectData = undefined;
 		this._labels = undefined;
@@ -358,7 +359,7 @@ export default class DatasetController {
 			me._data = convertObjectDataToArray(data);
 			me._objectData = data;
 		} else {
-			if (me._data === data && !me._dataModified) {
+			if (me._data === data && !me._dataModified && helpers.arrayEquals(data, me._dataCopy)) {
 				return false;
 			}
 
@@ -369,6 +370,8 @@ export default class DatasetController {
 
 			// Store a copy to detect direct modifications.
 			// Note: This is suboptimal, but better than always parsing the data
+			me._dataCopy = data.slice(0);
+
 			me._dataModified = false;
 
 			if (data && Object.isExtensible(data)) {
