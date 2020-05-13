@@ -80,6 +80,12 @@ function getConstraintHeight(domNode) {
 function _calculatePadding(container, padding, parentDimension) {
 	padding = getStyle(container, padding);
 
+	// If the padding is not set at all and the node is not in the DOM, this can be an empty string
+	// In that case, we need to handle it as no padding
+	if (padding === '') {
+		return 0;
+	}
+
 	return padding.indexOf('%') > -1 ? parentDimension * parseInt(padding, 10) / 100 : parseInt(padding, 10);
 }
 
