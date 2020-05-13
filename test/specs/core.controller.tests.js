@@ -365,6 +365,48 @@ describe('Chart', function() {
 			wrapper.style.width = '455px';
 		});
 
+		it('should restore the original size when parent became invisible', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 300px; height: 350px; position: relative'
+				}
+			});
+
+			expect(chart).toBeChartOfSize({
+				dw: 300, dh: 350,
+				rw: 300, rh: 350,
+			});
+
+			var wrapper = chart.canvas.parentNode;
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 0, dh: 0,
+					rw: 0, rh: 0,
+				});
+
+				waitForResize(chart, function() {
+					expect(chart).toBeChartOfSize({
+						dw: 150, dh: 250,
+						rw: 150, rh: 250,
+					});
+
+					done();
+				});
+				wrapper.style.width = '150px';
+				wrapper.style.height = '250px';
+			});
+			wrapper.style.width = '0px';
+			wrapper.style.height = '0px';
+		});
+
 		it('should resize the canvas when parent is RTL and width changes', function(done) {
 			var chart = acquireChart({
 				options: {
