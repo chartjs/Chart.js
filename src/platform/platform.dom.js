@@ -2,6 +2,8 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
+import ResizeObserver from 'resize-observer-polyfill';
+
 import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
 import {_getParentNode} from '../helpers/helpers.dom';

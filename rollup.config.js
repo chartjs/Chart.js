@@ -25,7 +25,7 @@ module.exports = [
 	{
 		input,
 		plugins: [
-			polyfill(['resize-observer-polyfill', './platform/platform.dom.js']),
+			polyfill(['./platform/platform.dom.js']),
 			json(),
 			resolve(),
 			babel(),
