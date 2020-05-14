@@ -18,8 +18,6 @@ Latest builds are available for testing at:
  - https://www.chartjs.org/dist/master/Chart.js
  - https://www.chartjs.org/dist/master/Chart.min.js
 
-> Note: Development builds are currently only available via HTTP, so in order to include them in [JSFiddle](https://jsfiddle.net) or [CodePen](https://codepen.io), you need to access these tools via HTTP as well.
-
 **WARNING: Development builds MUST not be used for production purposes or as replacement for CDN.**
 
 ## Browser support
@@ -37,12 +35,13 @@ Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test
 
 ## Previous versions
 
+To migrate from version 3 to version 2, please see [the v3 migration guide](../getting-started/v3-migration).
+
 Version 2 has a completely different API than earlier versions.
 
 Most earlier version options have current equivalents or are the same.
 
-Please use the documentation that is available on [chartjs.org](https://www.chartjs.org/docs/) for the current version of Chart.js.
+Please note - documentation for previous versions are available online or in the GitHub repo.
 
-Please note - documentation for previous versions are available on the GitHub repo.
-
+- [2.9.3 Documentation](https://www.chartjs.org/docs/2.9.3/)
 - [1.x Documentation](https://github.com/chartjs/Chart.js/tree/v1.1.1/docs)
