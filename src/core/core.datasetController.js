@@ -982,7 +982,7 @@ export default class DatasetController {
 	}
 
 	/**
-	 * Utility for updating a element with new properties, using animations when appropriate.
+	 * Utility for updating an element with new properties, using animations when appropriate.
 	 * @protected
 	 */
 	updateElement(element, index, properties, mode) {
