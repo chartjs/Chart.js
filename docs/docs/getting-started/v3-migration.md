@@ -166,6 +166,22 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ## Developer migration
 
+While the end-user migration for Chart.js 3 is fairly straight-forward, the developer migration can be more complicated. Please reach out for help in the #dev [Slack](https://chartjs-slack.herokuapp.com/) channel if tips on migrating would be helpful.
+
+Some of the biggest things that have changed:
+* There is a completely rewritten and more performant animation system.
+  * `Element._model` and `Element._view` are no longer used and properties are now set directly on the elements. You will have to use the method `getProps` to access these properties inside most methods such as `inXRange`/`inYRange` and `getCenterPoint`. Please take a look at [the Chart.js-provided elements](https://github.com/chartjs/Chart.js/tree/master/src/elements) for examples.
+  * When building the elements in a controller, it's now suggested to call `updateElement` to provide the element properties. There are also methods such as `getSharedOptions` and `includeOptions` that have been added to skip redundant computation. Please take a look at [the Chart.js-provided controllers](https://github.com/chartjs/Chart.js/tree/master/src/controllers) for examples.
+* Scales introduced a new parsing API. This API takes user data and converts it into a more standard format. E.g. it allows users to provide numeric data as a `string` and converts it to a `number` where necessary. Previously this was done on the fly as charts were rendered. Now it's done up front with the ability to skip it for better performance if users provide data in the correct format. If you're using standard data format like `x`/`y` you may not need to do anything. If you're using a custom data format you will have to override some of the parse methods in `core.datasetController.js`. An example can be found in [chartjs-chart-financial](https://github.com/chartjs/chartjs-chart-financial), which uses an `{o, h, l, c}` data format.
+
+A few changes were made to controllers that are more straight-forward, but will affect all controllers:
+
+* Options:
+  * `global` was removed from the defaults namespace as it was unnecessary and sometimes inconsistent
+  * Dataset defaults are now under the chart type options instead of vice-versa. This was not able to be done when introduced in 2.x for backwards compatibility. Fixing it removes the biggest stumbling block that new chart developers encountered
+  * Scale default options need to be updated as described in the end user migration section (e.g. `x` instead of `xAxes` and `y` instead of `yAxes`)
+* `updateElement` was changed to `updateElements` and has a new method signature as described below. This provides performance enhancements such as allowing easier reuse of computations that are common to all elements and reducing the number of function calls
+
 ### Removed
 
 The following properties and methods were removed:
