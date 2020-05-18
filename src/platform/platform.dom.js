@@ -278,33 +278,28 @@ function unlistenForResize(proxies) {
  */
 function listenForResize(chart, proxies, listener) {
 	const canvas = chart.canvas;
-	chart.attached = false;
-
-	// First make sure all observers are removed
-	unlistenForResize(proxies);
-
 	const container = _getParentNode(canvas);
 
 	const detached = () => {
-		chart.attached = false;
 		listenForResize(chart, proxies, listener);
 	};
 
 	const attached = () => {
-		proxies.resize = watchForResize(container, listener);
+		const parent = container || _getParentNode(canvas);
+		proxies.resize = watchForResize(parent, listener);
 		proxies.detach = watchForDetachment(canvas, detached);
 	};
 
+	unlistenForResize(proxies);
 
-	if (container) {
-		if (_getParentNode(container)) {
-			attached();
-		} else {
-			proxies.attach = watchForAttachment(container, attached);
-		}
-	} else {
-		proxies.attach = watchForAttachment(canvas, attached);
+	if (container && _getParentNode(container)) {
+		attached();
+		return true;
 	}
+
+	proxies.attach = watchForAttachment(container || canvas, attached);
+
+	return false;
 }
 
 /**

@@ -961,7 +961,7 @@ export default class Chart {
 				}
 			};
 
-			me.platform.addEventListener(me, 'resize', listener);
+			me.attached = me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
 		} else {
 			me.attached = true;
