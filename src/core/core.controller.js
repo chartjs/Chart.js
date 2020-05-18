@@ -223,7 +223,7 @@ export default class Chart {
 		this.$plugins = undefined;
 		this.$proxies = {};
 		this._hiddenIndices = {};
-		this.attached = false;
+		this.attached = true;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -251,7 +251,9 @@ export default class Chart {
 		Animator.listen(me, 'progress', onAnimationProgress);
 
 		me._initialize();
-		me.update();
+		if (me.attached) {
+			me.update();
+		}
 	}
 
 	/**
@@ -344,7 +346,12 @@ export default class Chart {
 				options.onResize(me, newSize);
 			}
 
-			me.update('resize');
+			if (me.attached) {
+				me.update('resize');
+			} else {
+				me.attached = true;
+				me.update();
+			}
 		}
 	}
 
@@ -956,6 +963,8 @@ export default class Chart {
 
 			me.platform.addEventListener(me, 'resize', listener);
 			listeners.resize = listener;
+		} else {
+			me.attached = true;
 		}
 	}
 
