@@ -119,8 +119,6 @@ function updateConfig(chart) {
 	chart.options.scales = scaleConfig;
 
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
-	chart.ensureScalesHaveIDs();
-	chart.buildOrUpdateScales();
 }
 
 const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
@@ -538,6 +536,9 @@ export default class Chart {
 		me._updating = true;
 
 		updateConfig(me);
+
+		me.ensureScalesHaveIDs();
+		me.buildOrUpdateScales();
 
 		// plugins options references might have change, let's invalidate the cache
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
