@@ -223,6 +223,7 @@ export default class Chart {
 		this.$plugins = undefined;
 		this.$proxies = {};
 		this._hiddenIndices = {};
+		this.attached = false;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -663,7 +664,7 @@ export default class Chart {
 		};
 
 		if (Animator.has(me)) {
-			if (!Animator.running(me)) {
+			if (me.attached && !Animator.running(me)) {
 				Animator.start(me);
 			}
 		} else {

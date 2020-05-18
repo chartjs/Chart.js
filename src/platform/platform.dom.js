@@ -272,23 +272,29 @@ function unlistenForResize(proxies) {
 }
 
 /**
- * @param {HTMLCanvasElement} canvas
+ * @param {Chart} chart
  * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
  * @param {function} listener
  */
-function listenForResize(canvas, proxies, listener) {
+function listenForResize(chart, proxies, listener) {
+	const canvas = chart.canvas;
 	// Helper for recursing when canvas is detached from it's parent
-	const detached = () => listenForResize(canvas, proxies, listener);
+	const detached = () => {
+		chart.attached = false;
+		listenForResize(chart, proxies, listener);
+	};
 
 	// First make sure all observers are removed
 	unlistenForResize(proxies);
 	// Then check if we are attached
 	const container = _getParentNode(canvas);
 	if (container) {
+		chart.attached = true;
 		// The canvas is attached (or was immediately re-attached when called through `detached`)
 		proxies.resize = watchForResize(container, listener);
 		proxies.detach = watchForDetachment(canvas, detached);
 	} else {
+		chart.attached = false;
 		// The canvas is detached
 		proxies.attach = watchForAttachment(canvas, () => {
 			// The canvas was attached.
@@ -296,6 +302,7 @@ function listenForResize(canvas, proxies, listener) {
 			const parent = _getParentNode(canvas);
 			proxies.resize = watchForResize(parent, listener);
 			proxies.detach = watchForDetachment(canvas, detached);
+			chart.attached = true;
 		});
 	}
 }
@@ -382,7 +389,7 @@ export default class DomPlatform extends BasePlatform {
 		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
 		if (type === 'resize') {
-			return listenForResize(canvas, proxies, listener);
+			return listenForResize(chart, proxies, listener);
 		}
 
 		const proxy = proxies[type] = throttled((event) => {
