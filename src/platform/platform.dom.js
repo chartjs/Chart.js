@@ -272,16 +272,15 @@ function unlistenForResize(proxies) {
 }
 
 /**
- * @param {Chart} chart
+ * @param {HTMLCanvasElement} canvas
  * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
  * @param {function} listener
  */
-function listenForResize(chart, proxies, listener) {
-	const canvas = chart.canvas;
+function listenForResize(canvas, proxies, listener) {
 	const container = _getParentNode(canvas);
 
 	const detached = () => {
-		listenForResize(chart, proxies, listener);
+		listenForResize(canvas, proxies, listener);
 	};
 
 	const attached = () => {
@@ -384,7 +383,7 @@ export default class DomPlatform extends BasePlatform {
 		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
 		if (type === 'resize') {
-			return listenForResize(chart, proxies, listener);
+			return listenForResize(canvas, proxies, listener);
 		}
 
 		const proxy = proxies[type] = throttled((event) => {
