@@ -127,7 +127,7 @@ export function getRelativePosition(evt, chart) {
 }
 
 function fallbackIfNotValid(measure, fallback) {
-	return typeof measure === 'number' && measure > 0 ? measure : fallback;
+	return typeof measure === 'number' ? measure : fallback;
 }
 
 export function getMaximumWidth(domNode) {
