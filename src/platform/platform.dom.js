@@ -278,32 +278,36 @@ function unlistenForResize(proxies) {
  */
 function listenForResize(chart, proxies, listener) {
 	const canvas = chart.canvas;
-	// Helper for recursing when canvas is detached from it's parent
+
+	// First make sure all observers are removed
+	unlistenForResize(proxies);
+
+	const container = _getParentNode(canvas);
+
 	const detached = () => {
 		chart.attached = false;
 		listenForResize(chart, proxies, listener);
 	};
 
-	// First make sure all observers are removed
-	unlistenForResize(proxies);
-	// Then check if we are attached
-	const container = _getParentNode(canvas);
-	if (container) {
+	const attached = () => {
 		chart.attached = true;
-		// The canvas is attached (or was immediately re-attached when called through `detached`)
+		listener();
 		proxies.resize = watchForResize(container, listener);
 		proxies.detach = watchForDetachment(canvas, detached);
+	};
+
+
+	if (container) {
+		const upper = _getParentNode(container);
+		if (upper) {
+			attached();
+		} else {
+			chart.attached = false;
+			proxies.attach = watchForAttachment(container, attached);
+		}
 	} else {
 		chart.attached = false;
-		// The canvas is detached
-		proxies.attach = watchForAttachment(canvas, () => {
-			// The canvas was attached.
-			removeObserver(proxies, 'attach');
-			const parent = _getParentNode(canvas);
-			proxies.resize = watchForResize(parent, listener);
-			proxies.detach = watchForDetachment(canvas, detached);
-			chart.attached = true;
-		});
+		proxies.attach = watchForAttachment(canvas, attached);
 	}
 }
 
