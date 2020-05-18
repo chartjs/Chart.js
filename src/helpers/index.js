@@ -21,11 +21,13 @@ export default {
 	math,
 	rtl,
 
-	// Request animation polyfill
+	/**
+	 * Request animation polyfill
+	 */
 	requestAnimFrame: (function() {
 		if (typeof window === 'undefined') {
 			return function(callback) {
-				callback();
+				return callback();
 			};
 		}
 		return window.requestAnimationFrame;
