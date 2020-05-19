@@ -235,6 +235,7 @@ export default class DatasetController {
 		this._parsing = false;
 		this._data = undefined;
 		this._dataCopy = undefined;
+		this._dataModified = false;
 		this._objectData = undefined;
 		this._labels = undefined;
 		this._scaleStacked = {};
@@ -359,7 +360,7 @@ export default class DatasetController {
 			me._data = convertObjectDataToArray(data);
 			me._objectData = data;
 		} else {
-			if (me._data === data && helpers.arrayEquals(data, me._dataCopy)) {
+			if (me._data === data && !me._dataModified && helpers.arrayEquals(data, me._dataCopy)) {
 				return false;
 			}
 
@@ -371,6 +372,8 @@ export default class DatasetController {
 			// Store a copy to detect direct modifications.
 			// Note: This is suboptimal, but better than always parsing the data
 			me._dataCopy = data.slice(0);
+
+			me._dataModified = false;
 
 			if (data && Object.isExtensible(data)) {
 				listenArrayEvents(data, me);
@@ -1111,6 +1114,7 @@ export default class DatasetController {
 	_onDataPush() {
 		const count = arguments.length;
 		this._insertElements(this.getDataset().data.length - count, count);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1118,6 +1122,7 @@ export default class DatasetController {
 	 */
 	_onDataPop() {
 		this._removeElements(this._cachedMeta.data.length - 1, 1);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1125,6 +1130,7 @@ export default class DatasetController {
 	 */
 	_onDataShift() {
 		this._removeElements(0, 1);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1133,6 +1139,7 @@ export default class DatasetController {
 	_onDataSplice(start, count) {
 		this._removeElements(start, count);
 		this._insertElements(start, arguments.length - 2);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1140,6 +1147,7 @@ export default class DatasetController {
 	 */
 	_onDataUnshift() {
 		this._insertElements(0, arguments.length);
+		this._dataModified = true;
 	}
 }
 
