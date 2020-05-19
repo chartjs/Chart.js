@@ -275,6 +275,7 @@ function unlistenForResize(proxies) {
  * @param {HTMLCanvasElement} canvas
  * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
  * @param {function} listener
+ * @return {boolean} `true` if canvas and its parent is attached to DOM
  */
 function listenForResize(canvas, proxies, listener) {
 	const container = _getParentNode(canvas);
