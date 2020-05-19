@@ -339,6 +339,7 @@ export default class DatasetController {
 	}
 
 	/**
+	 * @return {boolean} whether the data was modified
 	 * @private
 	 */
 	_dataCheck() {
