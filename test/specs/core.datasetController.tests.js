@@ -343,6 +343,32 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data.length).toBe(42);
 	});
 
+	// https://github.com/chartjs/Chart.js/issues/7243
+	it('should re-synchronize metadata when data is moved and values are equal', function() {
+		var data = [10, 10, 10, 10, 10, 10];
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b', 'c', 'd', 'e', 'f'],
+				datasets: [{
+					data,
+					fill: true
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.data.length).toBe(6);
+		const firstX = meta.data[0].x;
+
+		data.push(data.shift());
+		chart.update();
+
+		expect(meta.data.length).toBe(6);
+		expect(meta.data[0].x).toEqual(firstX);
+	});
+
 	it('should re-synchronize metadata when scaleID changes', function() {
 		var chart = acquireChart({
 			type: 'line',
