@@ -1,15 +1,5 @@
-'use strict';
-
-var category = require('./scale.category');
-var linear = require('./scale.linear');
-var logarithmic = require('./scale.logarithmic');
-var radialLinear = require('./scale.radialLinear');
-var time = require('./scale.time');
-
-module.exports = {
-	category: category,
-	linear: linear,
-	logarithmic: logarithmic,
-	radialLinear: radialLinear,
-	time: time
-};
+export {default as CategoryScale} from './scale.category';
+export {default as LinearScale} from './scale.linear';
+export {default as LogarithmicScale} from './scale.logarithmic';
+export {default as RadialLinearScale} from './scale.radialLinear';
+export {default as TimeScale} from './scale.time';

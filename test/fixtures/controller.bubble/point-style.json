@@ -44,8 +44,8 @@
                     {"x": 9, "y": 2}
                 ],
                 "backgroundColor": "transparent",
-                "borderColor": "0000ff",
-                "borderWidth": 0,
+                "borderColor": "#0000ff",
+                "borderWidth": 1,
                 "pointStyle": [
                     "circle",
                     "cross",
@@ -73,7 +73,7 @@
                 ],
                 "backgroundColor": "#00ff00",
                 "borderColor": "#0000ff",
-                "borderWidth": 0,
+                "borderWidth": 1,
                 "pointStyle": [
                     "circle",
                     "cross",
@@ -93,19 +93,17 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{"display": false}],
-                "yAxes": [{
+                "x": {"display": false},
+                "y": {
                     "display": false,
-                    "ticks": {
-                        "min": 0,
-                        "max": 4
-                    }
-                }]
+                    "min": 0,
+                    "max": 4
+                }
             },
             "elements": {
                 "line": {
                     "borderColor": "transparent",
-                    "borderWidth": 0,
+                    "borderWidth": 1,
                     "fill": false
                 },
                 "point": {

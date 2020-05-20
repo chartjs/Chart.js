@@ -1,30 +1,29 @@
-'use strict';
+import BarController from './controller.bar';
+import defaults from '../core/core.defaults';
 
-var BarController = require('./controller.bar');
-var defaults = require('../core/core.defaults');
-
-defaults._set('horizontalBar', {
+defaults.set('horizontalBar', {
 	hover: {
 		mode: 'index',
 		axis: 'y'
 	},
 
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'linear',
-			position: 'bottom'
-		}],
-
-		yAxes: [{
+			beginAtZero: true
+		},
+		y: {
 			type: 'category',
-			position: 'left',
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
-		}]
+		}
+	},
+
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9
 	},
 
 	elements: {
@@ -39,19 +38,19 @@ defaults._set('horizontalBar', {
 	}
 });
 
-module.exports = BarController.extend({
-	/**
-	 * @private
-	 */
-	_getValueScaleId: function() {
-		return this.getMeta().xAxisID;
-	},
+export default class HorizontalBarController extends BarController {
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getIndexScaleId: function() {
-		return this.getMeta().yAxisID;
+	getValueScaleId() {
+		return this._cachedMeta.xAxisID;
 	}
-});
 
+	/**
+	 * @protected
+	 */
+	getIndexScaleId() {
+		return this._cachedMeta.yAxisID;
+	}
+}

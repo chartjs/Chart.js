@@ -1,8 +1,10 @@
-/* eslint-env es6 */
+/* eslint-disable import/no-commonjs */
 
-const commonjs = require('rollup-plugin-commonjs');
-const istanbul = require('rollup-plugin-istanbul');
-const resolve = require('rollup-plugin-node-resolve');
+const babel = require('rollup-plugin-babel');
+const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
+const resolve = require('@rollup/plugin-node-resolve');
+const webWorkerLoader = require('rollup-plugin-web-worker-loader');
 const builds = require('./rollup.config');
 
 module.exports = function(karma) {
@@ -22,7 +24,7 @@ module.exports = function(karma) {
 	karma.set({
 		frameworks: ['jasmine'],
 		reporters: ['progress', 'kjhtml'],
-		browsers: ['chrome', 'firefox'],
+		browsers: (args.browsers || 'chrome,firefox').split(','),
 		logLevel: karma.LOG_WARN,
 
 		// Explicitly disable hardware acceleration to make image
@@ -40,6 +42,12 @@ module.exports = function(karma) {
 				prefs: {
 					'layers.acceleration.disabled': true
 				}
+			},
+			safari: {
+				base: 'SafariPrivate'
+			},
+			edge: {
+				base: 'Edge'
 			}
 		},
 
@@ -49,18 +57,23 @@ module.exports = function(karma) {
 			{pattern: 'test/fixtures/**/*.png', included: false},
 			'node_modules/moment/min/moment.min.js',
 			'test/index.js',
-			'src/index.js'
-		].concat(args.inputs),
+			'src/index.js',
+			'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js'
+		].concat((args.inputs || 'test/specs/**/*.js').split(';')),
 
 		preprocessors: {
+			'test/specs/**/*.js': ['rollup'],
 			'test/index.js': ['rollup'],
 			'src/index.js': ['sources']
 		},
 
 		rollupPreprocessor: {
 			plugins: [
+				json(),
 				resolve(),
-				commonjs()
+				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
+				commonjs({exclude: ['src/**', 'test/**']}),
+				webWorkerLoader()
 			],
 			output: {
 				name: 'test',
@@ -95,14 +108,5 @@ module.exports = function(karma) {
 				{type: 'lcovonly', subdir: '.'}
 			]
 		};
-		[
-			karma.rollupPreprocessor,
-			karma.customPreprocessors.sources.options
-		].forEach(v => {
-			(v.plugins || (v.plugins = [])).unshift(
-				istanbul({
-					include: 'src/**/*.js'
-				}));
-		});
 	}
 };

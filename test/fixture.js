@@ -2,7 +2,7 @@
 
 'use strict';
 
-var utils = require('./utils');
+import utils from './utils';
 
 function readFile(url, callback) {
 	var request = new XMLHttpRequest();
@@ -79,7 +79,6 @@ function specsFromFixtures(path) {
 	};
 }
 
-module.exports = {
+export default {
 	specs: specsFromFixtures
 };
-

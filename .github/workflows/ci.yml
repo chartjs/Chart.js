@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - "2.9"
+  pull_request:
+    branches:
+      - master
+      - "2.9"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - name: Setup xvfb
+      run: |
+        Xvfb :99 -screen 0 1024x768x24 &
+        echo "::set-env name=DISPLAY:::99.0"
+      if: runner.os == 'Linux'
+    - name: Install gulp
+      run: npm install --global gulp
+      if: runner.os == 'macOS'
+    - name: Install chrome
+      run: |
+        brew update
+        brew cask install google-chrome
+      if: runner.os == 'macOS'
+    - name: Select browsers
+      run: |
+        if [ "${{ runner.os }}" == "macOS" ]; then
+          echo "::set-env name=BROWSERS::--browsers chrome"
+        fi
+      shell: bash
+    - name: Build and Test
+      run: |
+        npm install
+        gulp build
+        gulp test --coverage ${BROWSERS}
+    - name: Package
+      run: |
+        npm run docs
+        npm run typedoc
+        gulp package
+    - name: Publish Test Results
+      run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+      shell: bash
+      continue-on-error: true

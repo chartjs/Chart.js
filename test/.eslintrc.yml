@@ -1,12 +1,16 @@
 parserOptions:
-  ecmaVersion: 5 # don't rely on default, since its changed by env: es6
+  ecmaVersion: 6
 
 env:
-  es6: true # also changes default ecmaVersion to 6
+  es6: true
   jasmine: true
+  commonjs: true
+  es2017: false
+  es2020: false
 
 globals:
   acquireChart: true
+  afterEvent: true
   Chart: true
   moment: true
   waitForResize: true
@@ -15,4 +19,19 @@ globals:
 rules:
   # Best Practices
   complexity: 0
-  max-statements: 0
+  max-statements: [0, 100]
+  # Loosen up for tests
+  no-var: 0
+  prefer-arrow-callback: 0
+  prefer-spread: 0
+  prefer-const: 0
+  object-shorthand: 0
+  import/no-commonjs: 0
+  no-invalid-this: 0
+  array-callback-return: 0
+  operator-assignment: 0
+  no-empty-function: 0
+  import/no-namespace: 0
+  prefer-rest-params: 0
+  no-unneeded-ternary: 0
+

@@ -1,26 +1,48 @@
-'use strict';
+import {merge} from '../helpers/helpers.core';
 
-var helpers = require('../helpers/helpers.core');
-
-var defaults = {
-	/**
-	 * @private
-	 */
-	_set: function(scope, values) {
-		return helpers.merge(this[scope] || (this[scope] = {}), values);
+/**
+ * Please use the module's default export which provides a singleton instance
+ */
+export class Defaults {
+	constructor() {
+		this.color = 'rgba(0,0,0,0.1)';
+		this.elements = {};
+		this.events = [
+			'mousemove',
+			'mouseout',
+			'click',
+			'touchstart',
+			'touchmove'
+		];
+		this.fontColor = '#666';
+		this.fontFamily = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+		this.fontSize = 12;
+		this.fontStyle = 'normal';
+		this.lineHeight = 1.2;
+		this.hover = {
+			onHover: null,
+			mode: 'nearest',
+			intersect: true
+		};
+		this.maintainAspectRatio = true;
+		this.onClick = null;
+		this.responsive = true;
+		this.showLines = true;
+		this.plugins = undefined;
+		this.scale = undefined;
+		this.legend = undefined;
+		this.title = undefined;
+		this.tooltips = undefined;
+		this.doughnut = undefined;
 	}
-};
+	/**
+	 * @param {string} scope
+	 * @param {*} values
+	 */
+	set(scope, values) {
+		return merge(this[scope] || (this[scope] = {}), values);
+	}
+}
 
-// TODO(v3): remove 'global' from namespace.  all default are global and
-// there's inconsistency around which options are under 'global'
-defaults._set('global', {
-	defaultColor: 'rgba(0,0,0,0.1)',
-	defaultFontColor: '#666',
-	defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-	defaultFontSize: 12,
-	defaultFontStyle: 'normal',
-	defaultLineHeight: 1.2,
-	showLines: true
-});
-
-module.exports = defaults;
+// singleton instance
+export default new Defaults();

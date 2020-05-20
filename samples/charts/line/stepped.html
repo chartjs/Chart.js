@@ -36,8 +36,8 @@
 				data: {
 					labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'],
 					datasets: [{
-						label: 'steppedLine: ' + details.steppedLine,
-						steppedLine: details.steppedLine,
+						label: 'stepped: ' + details.stepped,
+						stepped: details.stepped,
 						data: data,
 						borderColor: details.color,
 						fill: false,
@@ -66,29 +66,29 @@
 				randomScalingFactor()
 			];
 
-			var steppedLineSettings = [{
-				steppedLine: false,
+			var steppedSettings = [{
+				stepped: false,
 				label: 'No Step Interpolation',
 				color: window.chartColors.red
 			}, {
-				steppedLine: true,
+				stepped: true,
 				label: 'Step Before Interpolation',
 				color: window.chartColors.green
 			}, {
-				steppedLine: 'before',
+				stepped: 'before',
 				label: 'Step Before Interpolation',
 				color: window.chartColors.green
 			}, {
-				steppedLine: 'after',
+				stepped: 'after',
 				label: 'Step After Interpolation',
 				color: window.chartColors.purple
 			}, {
-				steppedLine: 'middle',
+				stepped: 'middle',
 				label: 'Step Middle Interpolation',
 				color: window.chartColors.blue
 			}];
 
-			steppedLineSettings.forEach(function(details) {
+			steppedSettings.forEach(function(details) {
 				var div = document.createElement('div');
 				div.classList.add('chart-container');
 

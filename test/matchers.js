@@ -1,7 +1,7 @@
 'use strict';
 
-var pixelmatch = require('pixelmatch');
-var utils = require('./utils');
+import pixelmatch from 'pixelmatch';
+import utils from './utils';
 
 function toPercent(value) {
 	return Math.round(value * 10000) / 100;
@@ -65,6 +65,19 @@ function toBeCloseToPixel() {
 			}
 
 			return {pass: result};
+		}
+	};
+}
+
+function toBeCloseToPoint() {
+	function rnd(v) {
+		return Math.round(v * 100) / 100;
+	}
+	return {
+		compare: function(actual, expected) {
+			return {
+				pass: rnd(actual.x) === rnd(expected.x) && rnd(actual.y) === rnd(expected.y)
+			};
 		}
 	};
 }
@@ -196,10 +209,11 @@ function toEqualImageData() {
 	};
 }
 
-module.exports = {
-	toBeCloseToPixel: toBeCloseToPixel,
-	toEqualOneOf: toEqualOneOf,
-	toBeValidChart: toBeValidChart,
-	toBeChartOfSize: toBeChartOfSize,
-	toEqualImageData: toEqualImageData
+export default {
+	toBeCloseToPixel,
+	toBeCloseToPoint,
+	toEqualOneOf,
+	toBeValidChart,
+	toBeChartOfSize,
+	toEqualImageData
 };

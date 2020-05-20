@@ -12,19 +12,14 @@ describe('Chart namespace', function() {
 			expect(Chart.Interaction instanceof Object).toBeTruthy();
 			expect(Chart.layouts instanceof Object).toBeTruthy();
 			expect(Chart.plugins instanceof Object).toBeTruthy();
-			expect(Chart.platform instanceof Object).toBeTruthy();
+			expect(Chart.platforms instanceof Object).toBeTruthy();
 			expect(Chart.Scale instanceof Object).toBeTruthy();
 			expect(Chart.scaleService instanceof Object).toBeTruthy();
 			expect(Chart.Ticks instanceof Object).toBeTruthy();
-			expect(Chart.Tooltip instanceof Object).toBeTruthy();
-			expect(Chart.Tooltip.positioners instanceof Object).toBeTruthy();
 		});
 	});
 
 	describe('Chart.elements', function() {
-		it('should be an object', function() {
-			expect(Chart.elements instanceof Object).toBeTruthy();
-		});
 		it('should contains "elements" classes', function() {
 			expect(Chart.elements.Arc instanceof Function).toBeTruthy();
 			expect(Chart.elements.Line instanceof Function).toBeTruthy();
@@ -36,11 +31,6 @@ describe('Chart namespace', function() {
 	describe('Chart.helpers', function() {
 		it('should be an object', function() {
 			expect(Chart.helpers instanceof Object).toBeTruthy();
-		});
-		it('should contains "helpers" namespaces', function() {
-			expect(Chart.helpers.easing instanceof Object).toBeTruthy();
-			expect(Chart.helpers.canvas instanceof Object).toBeTruthy();
-			expect(Chart.helpers.options instanceof Object).toBeTruthy();
 		});
 	});
 });

@@ -1,0 +1,38 @@
+{
+    "config": {
+        "type": "scatter",
+        "data": {
+            "datasets": [{
+                "borderColor": "red",
+                "data": [{"x":-5,"y":5},{"x":-4,"y":6},{"x":-3,"y":7},{"x":-2,"y":6},{"x":-1,"y":5},{"x":0,"y":4},{"x":1,"y":3},{"x":2,"y":2},{"x":3,"y":5},{"x":4,"y":7},{"x":5,"y":9}],
+                "fill": false,
+                "showLine": true,
+                "borderWidth": 20,
+                "pointRadius": 0
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "x": {
+                    "min": -2,
+                    "ticks": {
+                        "display": false
+                    }
+                },
+                "y": {"ticks": {"display": false}}
+            },
+            "layout": {
+                "padding": 24
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

@@ -1,53 +1,51 @@
-'use strict';
-
-var getRtlAdapter = function(rectX, width) {
+const getRightToLeftAdapter = function(rectX, width) {
 	return {
-		x: function(x) {
+		x(x) {
 			return rectX + rectX + width - x;
 		},
-		setWidth: function(w) {
+		setWidth(w) {
 			width = w;
 		},
-		textAlign: function(align) {
+		textAlign(align) {
 			if (align === 'center') {
 				return align;
 			}
 			return align === 'right' ? 'left' : 'right';
 		},
-		xPlus: function(x, value) {
+		xPlus(x, value) {
 			return x - value;
 		},
-		leftForLtr: function(x, itemWidth) {
+		leftForLtr(x, itemWidth) {
 			return x - itemWidth;
 		},
 	};
 };
 
-var getLtrAdapter = function() {
+const getLeftToRightAdapter = function() {
 	return {
-		x: function(x) {
+		x(x) {
 			return x;
 		},
-		setWidth: function(w) { // eslint-disable-line no-unused-vars
+		setWidth(w) { // eslint-disable-line no-unused-vars
 		},
-		textAlign: function(align) {
+		textAlign(align) {
 			return align;
 		},
-		xPlus: function(x, value) {
+		xPlus(x, value) {
 			return x + value;
 		},
-		leftForLtr: function(x, _itemWidth) { // eslint-disable-line no-unused-vars
+		leftForLtr(x, _itemWidth) { // eslint-disable-line no-unused-vars
 			return x;
 		},
 	};
 };
 
-var getAdapter = function(rtl, rectX, width) {
-	return rtl ? getRtlAdapter(rectX, width) : getLtrAdapter();
-};
+export function getRtlAdapter(rtl, rectX, width) {
+	return rtl ? getRightToLeftAdapter(rectX, width) : getLeftToRightAdapter();
+}
 
-var overrideTextDirection = function(ctx, direction) {
-	var style, original;
+export function overrideTextDirection(ctx, direction) {
+	let style, original;
 	if (direction === 'ltr' || direction === 'rtl') {
 		style = ctx.canvas.style;
 		original = [
@@ -58,18 +56,11 @@ var overrideTextDirection = function(ctx, direction) {
 		style.setProperty('direction', direction, 'important');
 		ctx.prevTextDirection = original;
 	}
-};
+}
 
-var restoreTextDirection = function(ctx) {
-	var original = ctx.prevTextDirection;
+export function restoreTextDirection(ctx, original) {
 	if (original !== undefined) {
 		delete ctx.prevTextDirection;
 		ctx.canvas.style.setProperty('direction', original[0], original[1]);
 	}
-};
-
-module.exports = {
-	getRtlAdapter: getAdapter,
-	overrideTextDirection: overrideTextDirection,
-	restoreTextDirection: restoreTextDirection,
-};
+}

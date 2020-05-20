@@ -38,8 +38,8 @@ module.exports = {
 			legend: false,
 			title: false,
 			scales: {
-				xAxes: [{display: false}],
-				yAxes: [{display: false}]
+				x: {display: false},
+				y: {display: false}
 			},
 			elements: {
 				line: {
@@ -82,14 +82,13 @@ module.exports = {
 						event = {
 							type: 'mousemove',
 							target: canvas,
-							clientX: rect.left + point._model.x,
-							clientY: rect.top + point._model.y
+							clientX: rect.left + point.x,
+							clientY: rect.top + point.y
 						};
-						chart.handleEvent(event);
+						chart._handleEvent(event);
 						chart.tooltip.handleEvent(event);
-						chart.tooltip.transition(1);
-						chart.tooltip._view.opacity = j / 10;
-						chart.tooltip.draw();
+						chart.tooltip.opacity = j / 10;
+						chart.tooltip.draw(chart.ctx);
 					}
 				}
 			}

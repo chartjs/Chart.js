@@ -36,9 +36,7 @@ module.exports = {
 			},
 			scale: {
 				display: false,
-				ticks: {
-					min: -1
-				}
+				min: -1
 			}
 		}
 	},

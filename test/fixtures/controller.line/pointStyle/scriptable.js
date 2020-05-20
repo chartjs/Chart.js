@@ -44,15 +44,11 @@ module.exports = {
 				}
 			},
 			scales: {
-				xAxes: [{display: false}],
-				yAxes: [
-					{
-						display: false,
-						ticks: {
-							beginAtZero: true
-						}
-					}
-				]
+				x: {display: false},
+				y: {
+					display: false,
+					beginAtZero: true
+				}
 			}
 		}
 	},

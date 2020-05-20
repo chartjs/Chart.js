@@ -64,23 +64,21 @@
 					mode: 'index'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						display: true,
 						scaleLabel: {
 							display: true
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						display: true,
 						scaleLabel: {
 							display: true,
 							labelString: 'Value'
 						},
-						ticks: {
-							suggestedMin: -10,
-							suggestedMax: 200,
-						}
-					}]
+						suggestedMin: -10,
+						suggestedMax: 200
+					}
 				}
 			}
 		};

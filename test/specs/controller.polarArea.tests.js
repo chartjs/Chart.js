@@ -108,17 +108,16 @@ describe('Chart.controllers.polarArea', function() {
 			{o: 51, s: 0.5 * Math.PI, e: Math.PI},
 			{o: 0, s: Math.PI, e: 1.5 * Math.PI}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(259);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
-			expect(meta.data[i]._model.startAngle).toBe(expected.s);
-			expect(meta.data[i]._model.endAngle).toBe(expected.e);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+			expect(meta.data[i].x).toBeCloseToPixel(256);
+			expect(meta.data[i].y).toBeCloseToPixel(259);
+			expect(meta.data[i].innerRadius).toBeCloseToPixel(0);
+			expect(meta.data[i].outerRadius).toBeCloseToPixel(expected.o);
+			expect(meta.data[i].startAngle).toBe(expected.s);
+			expect(meta.data[i].endAngle).toBe(expected.e);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 255, 0)',
-				borderWidth: 1.2,
-				label: chart.data.labels[i]
+				borderWidth: 1.2
 			}));
 		});
 
@@ -130,32 +129,17 @@ describe('Chart.controllers.polarArea', function() {
 		chart.update();
 
 		for (var i = 0; i < 4; ++i) {
-			expect(meta.data[i]._model.backgroundColor).toBe('rgb(128, 129, 130)');
-			expect(meta.data[i]._model.borderColor).toBe('rgb(56, 57, 58)');
-			expect(meta.data[i]._model.borderWidth).toBe(1.123);
+			expect(meta.data[i].options.backgroundColor).toBe('rgb(128, 129, 130)');
+			expect(meta.data[i].options.borderColor).toBe('rgb(56, 57, 58)');
+			expect(meta.data[i].options.borderWidth).toBe(1.123);
 		}
-
-		// arc styles
-		meta.data[0].custom = {
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderColor: 'rgb(4, 6, 8)',
-			borderWidth: 0.787
-		};
 
 		chart.update();
 
-		expect(meta.data[0]._model.x).toBeCloseToPixel(256);
-		expect(meta.data[0]._model.y).toBeCloseToPixel(259);
-		expect(meta.data[0]._model.innerRadius).toBeCloseToPixel(0);
-		expect(meta.data[0]._model.outerRadius).toBeCloseToPixel(177);
-		expect(meta.data[0]._model).toEqual(jasmine.objectContaining({
-			startAngle: -0.5 * Math.PI,
-			endAngle: 0,
-			backgroundColor: 'rgb(0, 1, 3)',
-			borderWidth: 0.787,
-			borderColor: 'rgb(4, 6, 8)',
-			label: 'label1'
-		}));
+		expect(meta.data[0].x).toBeCloseToPixel(256);
+		expect(meta.data[0].y).toBeCloseToPixel(259);
+		expect(meta.data[0].innerRadius).toBeCloseToPixel(0);
+		expect(meta.data[0].outerRadius).toBeCloseToPixel(177);
 	});
 
 	it('should update elements with start angle from options', function() {
@@ -172,7 +156,7 @@ describe('Chart.controllers.polarArea', function() {
 				showLines: true,
 				legend: false,
 				title: false,
-				startAngle: 0, // default is -0.5 * Math.PI
+				startAngle: 90, // default is 0
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -192,17 +176,16 @@ describe('Chart.controllers.polarArea', function() {
 			{o: 51, s: Math.PI, e: 1.5 * Math.PI},
 			{o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(259);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(0);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(expected.o);
-			expect(meta.data[i]._model.startAngle).toBe(expected.s);
-			expect(meta.data[i]._model.endAngle).toBe(expected.e);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
+			expect(meta.data[i].x).toBeCloseToPixel(256);
+			expect(meta.data[i].y).toBeCloseToPixel(259);
+			expect(meta.data[i].innerRadius).toBeCloseToPixel(0);
+			expect(meta.data[i].outerRadius).toBeCloseToPixel(expected.o);
+			expect(meta.data[i].startAngle).toBe(expected.s);
+			expect(meta.data[i].endAngle).toBe(expected.e);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 255, 0)',
-				borderWidth: 1.2,
-				label: chart.data.labels[i]
+				borderWidth: 1.2
 			}));
 		});
 	});
@@ -277,22 +260,28 @@ describe('Chart.controllers.polarArea', function() {
 			});
 		});
 
-		it ('should handle default hover styles', function() {
+		it ('should handle default hover styles', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(49, 135, 221)');
-			expect(arc._model.borderColor).toBe('rgb(22, 89, 156)');
-			expect(arc._model.borderWidth).toBe(2);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('#3187DD');
+				expect(arc.options.borderColor).toBe('#175A9D');
+				expect(arc.options.borderWidth).toBe(2);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via dataset properties', function() {
+		it ('should handle hover styles defined via dataset properties', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -304,18 +293,24 @@ describe('Chart.controllers.polarArea', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via element options', function() {
+		it ('should handle hover styles defined via element options', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -327,38 +322,21 @@ describe('Chart.controllers.polarArea', function() {
 
 			chart.update();
 
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
+
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
 			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
-		});
-
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var arc = chart.getDatasetMeta(0).data[0];
-
-			arc.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-			};
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
 		});
 	});
 });

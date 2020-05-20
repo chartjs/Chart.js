@@ -1,0 +1,34 @@
+{
+    "config": {
+        "type": "line",
+        "data": {
+            "xLabels": ["January", "February", "March", "April", "May", "June", "July"],
+            "yLabels": ["", "Request Added", "Request Viewed", "Request Accepted", "Request Solved", "Solving Confirmed"],
+            "datasets": [{
+                "label": "My First dataset",
+                "data": ["", "Request Added", "Request Added", "Request Added", "Request Viewed", "Request Viewed", "Request Viewed"],
+                "fill": false,
+                "borderColor": "red",
+                "backgroundColor": "red"
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "x": {"display": false},
+                "y": {
+                    "type": "category",
+                    "display": false
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

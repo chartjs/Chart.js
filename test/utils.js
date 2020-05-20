@@ -1,3 +1,5 @@
+import {spritingOn, spritingOff} from './spriting';
+
 function createCanvas(w, h) {
 	var canvas = document.createElement('canvas');
 	canvas.width = w;
@@ -27,6 +29,7 @@ function readImageData(url, callback) {
  * @param {object} options - Chart acquisition options.
  * @param {object} options.canvas - Canvas attributes.
  * @param {object} options.wrapper - Canvas wrapper attributes.
+ * @param {boolean} options.useOffscreenCanvas - use an OffscreenCanvas instead of the normal HTMLCanvasElement.
  * @param {boolean} options.persistent - If true, the chart will not be released after the spec.
  */
 function acquireChart(config, options) {
@@ -40,13 +43,13 @@ function acquireChart(config, options) {
 	options.wrapper = options.wrapper || {class: 'chartjs-wrapper'};
 
 	for (key in options.canvas) {
-		if (options.canvas.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(options.canvas, key)) {
 			canvas.setAttribute(key, options.canvas[key]);
 		}
 	}
 
 	for (key in options.wrapper) {
-		if (options.wrapper.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(options.wrapper, key)) {
 			wrapper.setAttribute(key, options.wrapper[key]);
 		}
 	}
@@ -55,13 +58,32 @@ function acquireChart(config, options) {
 	config.options = config.options || {};
 	config.options.animation = config.options.animation === undefined ? false : config.options.animation;
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
-	config.options.defaultFontFamily = config.options.defaultFontFamily || 'Arial';
+	config.options.fontFamily = config.options.fontFamily || 'Arial';
+	config.options.locale = config.options.locale || 'en-US';
 
 	wrapper.appendChild(canvas);
 	window.document.body.appendChild(wrapper);
 
 	try {
-		chart = new Chart(canvas.getContext('2d'), config);
+		var ctx;
+		if (options.useOffscreenCanvas) {
+			if (!canvas.transferControlToOffscreen) {
+				// If this browser does not support offscreen canvas, mark the test as 'pending', which will skip the
+				// test.
+				// TODO: switch to skip() once it's implemented (https://github.com/jasmine/jasmine/issues/1709), or
+				// remove if all browsers implement `transferControlToOffscreen`
+				pending();
+				return;
+			}
+			var offscreenCanvas = canvas.transferControlToOffscreen();
+			ctx = offscreenCanvas.getContext('2d');
+		} else {
+			ctx = canvas.getContext('2d');
+		}
+		if (options.spriteText) {
+			spritingOn(ctx);
+		}
+		chart = new Chart(ctx, config);
 	} catch (e) {
 		window.document.body.removeChild(wrapper);
 		throw e;
@@ -76,6 +98,7 @@ function acquireChart(config, options) {
 }
 
 function releaseChart(chart) {
+	spritingOff(chart.ctx);
 	chart.destroy();
 
 	var wrapper = (chart.$test || {}).wrapper;
@@ -106,6 +129,18 @@ function waitForResize(chart, callback) {
 	};
 }
 
+function afterEvent(chart, type, callback) {
+	var override = chart._eventHandler;
+	chart._eventHandler = function(event) {
+		override.call(this, event);
+		if (event.type === type) {
+			chart._eventHandler = override;
+			// eslint-disable-next-line callback-return
+			callback();
+		}
+	};
+}
+
 function _resolveElementPoint(el) {
 	var point = {x: 0, y: 0};
 	if (el) {
@@ -113,8 +148,6 @@ function _resolveElementPoint(el) {
 			point = el.getCenterPoint();
 		} else if (el.x !== undefined && el.y !== undefined) {
 			point = el;
-		} else if (el._model && el._model.x !== undefined && el._model.y !== undefined) {
-			point = el._model;
 		}
 	}
 	return point;
@@ -135,12 +168,13 @@ function triggerMouseEvent(chart, type, el) {
 	node.dispatchEvent(event);
 }
 
-module.exports = {
+export default {
 	injectCSS: injectCSS,
 	createCanvas: createCanvas,
 	acquireChart: acquireChart,
 	releaseChart: releaseChart,
 	readImageData: readImageData,
 	triggerMouseEvent: triggerMouseEvent,
-	waitForResize: waitForResize
+	waitForResize: waitForResize,
+	afterEvent: afterEvent
 };

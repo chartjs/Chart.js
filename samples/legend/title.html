@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Legend Title Positions</title>
+	<script src="../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+		.chart-container {
+			width: 500px;
+			margin-left: 40px;
+			margin-right: 40px;
+		}
+		.container {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="chart-container">
+			<canvas id="chart-legend-top-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-legend-top-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-legend-top-end"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-legend-left-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-legend-left-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-legend-left-end"></canvas>
+		</div>
+	</div>
+	<script>
+		var color = Chart.helpers.color;
+		function createConfig(legendPosition, titlePosition, align, colorName) {
+			return {
+				type: 'line',
+				data: {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+					datasets: [{
+						label: 'My First dataset',
+						data: [
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor()
+						],
+						backgroundColor: color(window.chartColors[colorName]).alpha(0.5).rgbString(),
+						borderColor: window.chartColors[colorName],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						align: align,
+						position: legendPosition,
+						title: {
+							display: true,
+							text: 'Legend Title',
+							position: titlePosition,
+						}
+					},
+					scales: {
+						x: {
+							display: true,
+							scaleLabel: {
+								display: true,
+								labelString: 'Month'
+							}
+						},
+						y: {
+							display: true,
+							scaleLabel: {
+								display: true,
+								labelString: 'Value'
+							}
+						}
+					},
+					title: {
+						display: true,
+						text: 'Legend Title Position: ' + titlePosition
+					}
+				}
+			};
+		}
+
+		window.onload = function() {
+			[{
+				id: 'chart-legend-top-start',
+				align: 'start',
+				legendPosition: 'top',
+				titlePosition: 'start',
+				color: 'red'
+			}, {
+				id: 'chart-legend-top-center',
+				align: 'center',
+				legendPosition: 'top',
+				titlePosition: 'center',
+				color: 'orange'
+			}, {
+				id: 'chart-legend-top-end',
+				align: 'end',
+				legendPosition: 'top',
+				titlePosition: 'end',
+				color: 'yellow'
+			}, {
+				id: 'chart-legend-left-start',
+				align: 'start',
+				legendPosition: 'left',
+				titlePosition: 'start',
+				color: 'green'
+			}, {
+				id: 'chart-legend-left-center',
+				align: 'center',
+				legendPosition: 'left',
+				titlePosition: 'center',
+				color: 'blue'
+			}, {
+				id: 'chart-legend-left-end',
+				align: 'end',
+				legendPosition: 'left',
+				titlePosition: 'end',
+				color: 'purple'
+			}].forEach(function(details) {
+				var ctx = document.getElementById(details.id).getContext('2d');
+				var config = createConfig(details.legendPosition, details.titlePosition, details.align, details.color);
+				new Chart(ctx, config);
+			});
+		};
+	</script>
+</body>
+
+</html>

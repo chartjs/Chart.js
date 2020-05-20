@@ -1,0 +1,46 @@
+{
+    "config": {
+        "data": {
+            "labels": ["2016", "2018", "2020", "2024", "2030"],
+            "datasets": [{
+                "type": "bar",
+                "barThickness": 16,
+                "backgroundColor": "#FF6384",
+                "data": [1, null, 3, 4, 5]
+            }, {
+                "type": "bar",
+                "barThickness": 8,
+                "backgroundColor": "#36A2EB",
+                "data": [5, 4, 3, null, 1]
+            }]
+        },
+        "options": {
+            "responsive": false,
+            "legend": false,
+            "title": false,
+            "scales": {
+                "x": {
+                    "type": "time",
+                    "offset": true,
+                    "display": false,
+                    "time": {
+                        "parser": "YYYY"
+                    },
+                    "ticks": {
+                        "source": "labels"
+                    }
+                },
+                "y": {
+                    "display": false,
+                    "beginAtZero": true
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 256,
+            "width": 512
+        }
+    }
+}

@@ -3,7 +3,13 @@ globals:
   Chart: true
   Samples: true
   moment: true
+  luxon: true
   randomScalingFactor: true
 
 rules:
   no-new: 0
+  no-var: 0
+  object-shorthand: 0
+  prefer-arrow-callback: 0
+  no-invalid-this: 0
+  no-unneeded-ternary: 0

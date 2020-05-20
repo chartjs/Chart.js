@@ -1,11 +1,14 @@
+function getLabels(scale) {
+	return scale.ticks.map(t => t.label);
+}
+
 describe('Test tick generators', function() {
 	// formatters are used as default config values so users want to be able to reference them
 	it('Should expose formatters api', function() {
 		expect(typeof Chart.Ticks).toBeDefined();
 		expect(typeof Chart.Ticks.formatters).toBeDefined();
 		expect(typeof Chart.Ticks.formatters.values).toBe('function');
-		expect(typeof Chart.Ticks.formatters.linear).toBe('function');
-		expect(typeof Chart.Ticks.formatters.logarithmic).toBe('function');
+		expect(typeof Chart.Ticks.formatters.numeric).toBe('function');
 	});
 
 	it('Should generate linear spaced ticks with correct precision', function() {
@@ -21,7 +24,7 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'linear',
 						position: 'bottom',
 						ticks: {
@@ -29,24 +32,24 @@ describe('Test tick generators', function() {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'linear',
 						ticks: {
 							callback: function(value) {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xAxis = chart.scales['x-axis-0'];
-		var yAxis = chart.scales['y-axis-0'];
+		var xLabels = getLabels(chart.scales.x);
+		var yLabels = getLabels(chart.scales.y);
 
-		expect(xAxis.ticks).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
-		expect(yAxis.ticks).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
+		expect(xLabels).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
+		expect(yLabels).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
 	});
 
 	it('Should generate logarithmic spaced ticks with correct precision', function() {
@@ -62,35 +65,35 @@ describe('Test tick generators', function() {
 					display: false,
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						type: 'logarithmic',
 						position: 'bottom',
+						min: 0.1,
+						max: 1,
 						ticks: {
-							min: 0.1,
-							max: 1,
 							callback: function(value) {
 								return value.toString();
 							}
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'logarithmic',
+						min: 0.1,
+						max: 1,
 						ticks: {
-							min: 0.1,
-							max: 1,
 							callback: function(value) {
 								return value.toString();
 							}
 						}
-					}]
+					}
 				}
 			}
 		});
 
-		var xAxis = chart.scales['x-axis-0'];
-		var yAxis = chart.scales['y-axis-0'];
+		var xLabels = getLabels(chart.scales.x);
+		var yLabels = getLabels(chart.scales.y);
 
-		expect(xAxis.ticks).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
-		expect(yAxis.ticks).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1']);
+		expect(xLabels).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
+		expect(yLabels).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1']);
 	});
 });

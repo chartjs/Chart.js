@@ -1,9 +1,9 @@
 'use strict';
 
-var fixture = require('./fixture');
-var Context = require('./context');
-var matchers = require('./matchers');
-var utils = require('./utils');
+import fixture from './fixture';
+import Context from './context';
+import matchers from './matchers';
+import utils from './utils';
 
 (function() {
 
@@ -30,6 +30,7 @@ var utils = require('./utils');
 	window.devicePixelRatio = 1;
 
 	window.acquireChart = acquireChart;
+	window.afterEvent = utils.afterEvent;
 	window.releaseChart = releaseChart;
 	window.waitForResize = utils.waitForResize;
 	window.createMockContext = createMockContext;

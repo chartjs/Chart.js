@@ -18,12 +18,12 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[0]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[0], datasetIndex: 0, index: 0}];
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['My dataset: (10, 12, 5)'],
 				after: []
@@ -46,12 +46,12 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['label2: 20'],
 				after: []
@@ -72,12 +72,12 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: [
 					'row1: 20',
@@ -86,24 +86,6 @@ describe('Default Configs', function() {
 				],
 				after: []
 			}]);
-		});
-
-		it('should return the correct html legend', function() {
-			var config = Chart.defaults.doughnut;
-			var chart = window.acquireChart({
-				type: 'doughnut',
-				data: {
-					labels: ['label1', 'label2'],
-					datasets: [{
-						data: [10, 20],
-						backgroundColor: ['red', 'green']
-					}]
-				},
-				options: config
-			});
-
-			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li></ul>';
-			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
 		it('should return correct legend label objects', function() {
@@ -139,7 +121,7 @@ describe('Default Configs', function() {
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
+				hidden: false,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2
@@ -162,18 +144,16 @@ describe('Default Configs', function() {
 				},
 				options: config
 			});
-			var meta = chart.getDatasetMeta(0);
-
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
 			config.legend.onClick.call(chart.legend, null, legendItem);
 
-			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
 			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
+			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
 
@@ -192,34 +172,16 @@ describe('Default Configs', function() {
 			});
 
 			// fake out the tooltip hover and force the tooltip to update
-			chart.tooltip._active = [chart.getDatasetMeta(0).data[1]];
+			chart.tooltip._active = [{element: chart.getDatasetMeta(0).data[1], datasetIndex: 0, index: 1}];
 			chart.tooltip.update();
 
 			// Title is always blank
-			expect(chart.tooltip._model.title).toEqual([]);
-			expect(chart.tooltip._model.body).toEqual([{
+			expect(chart.tooltip.title).toEqual([]);
+			expect(chart.tooltip.body).toEqual([{
 				before: [],
 				lines: ['label2: 20'],
 				after: []
 			}]);
-		});
-
-		it('should return the correct html legend', function() {
-			var config = Chart.defaults.polarArea;
-			var chart = window.acquireChart({
-				type: 'polarArea',
-				data: {
-					labels: ['label1', 'label2'],
-					datasets: [{
-						data: [10, 20],
-						backgroundColor: ['red', 'green']
-					}]
-				},
-				options: config
-			});
-
-			var expectedLegend = '<ul class="' + chart.id + '-legend"><li><span style="background-color: red;"></span>label1</li><li><span style="background-color: green;"></span>label2</li></ul>';
-			expect(chart.generateLegend()).toBe(expectedLegend);
 		});
 
 		it('should return correct legend label objects', function() {
@@ -255,7 +217,7 @@ describe('Default Configs', function() {
 			}, {
 				text: 'label3',
 				fillStyle: 'blue',
-				hidden: true,
+				hidden: false,
 				index: 2,
 				strokeStyle: '#000',
 				lineWidth: 2
@@ -278,18 +240,16 @@ describe('Default Configs', function() {
 				},
 				options: config
 			});
-			var meta = chart.getDatasetMeta(0);
-
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
 			config.legend.onClick.call(chart.legend, null, legendItem);
 
-			expect(meta.data[0].hidden).toBe(true);
+			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
 			config.legend.onClick.call(chart.legend, null, legendItem);
-			expect(meta.data[0].hidden).toBe(false);
+			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
 });

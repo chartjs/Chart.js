@@ -64,14 +64,12 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{"display": false}],
-                "yAxes": [{
+                "x": {"display": false},
+                "y": {
                     "display": false,
-                    "ticks": {
-                        "min": 0,
-                        "max": 4
-                    }
-                }]
+                    "min": 0,
+                    "max": 4
+                }
             },
             "elements": {
                 "line": {

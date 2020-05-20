@@ -44,17 +44,17 @@
 					text: 'Grid Line Settings'
 				},
 				scales: {
-					yAxes: [{
+					y: {
 						gridLines: {
 							drawBorder: false,
 							color: ['pink', 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple']
 						},
+						min: 0,
+						max: 100,
 						ticks: {
-							min: 0,
-							max: 100,
 							stepSize: 10
 						}
-					}]
+					}
 				}
 			}
 		};

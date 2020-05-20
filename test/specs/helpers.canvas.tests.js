@@ -23,70 +23,6 @@ describe('Chart.helpers.canvas', function() {
 		});
 	});
 
-	describe('roundedRect', function() {
-		it('should create a rounded rectangle path', function() {
-			var context = window.createMockContext();
-
-			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 5);
-
-			expect(context.getCalls()).toEqual([
-				{name: 'moveTo', args: [10, 25]},
-				{name: 'arc', args: [15, 25, 5, -Math.PI, -Math.PI / 2]},
-				{name: 'arc', args: [35, 25, 5, -Math.PI / 2, 0]},
-				{name: 'arc', args: [35, 55, 5, 0, Math.PI / 2]},
-				{name: 'arc', args: [15, 55, 5, Math.PI / 2, Math.PI]},
-				{name: 'closePath', args: []},
-				{name: 'moveTo', args: [10, 20]}
-			]);
-		});
-		it('should optimize path if radius is exactly half of height', function() {
-			var context = window.createMockContext();
-
-			helpers.canvas.roundedRect(context, 10, 20, 40, 30, 15);
-
-			expect(context.getCalls()).toEqual([
-				{name: 'moveTo', args: [10, 35]},
-				{name: 'moveTo', args: [25, 20]},
-				{name: 'arc', args: [35, 35, 15, -Math.PI / 2, Math.PI / 2]},
-				{name: 'arc', args: [25, 35, 15, Math.PI / 2, Math.PI * 3 / 2]},
-				{name: 'closePath', args: []},
-				{name: 'moveTo', args: [10, 20]}
-			]);
-		});
-		it('should optimize path if radius is exactly half of width', function() {
-			var context = window.createMockContext();
-
-			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 15);
-
-			expect(context.getCalls()).toEqual([
-				{name: 'moveTo', args: [10, 35]},
-				{name: 'arc', args: [25, 35, 15, -Math.PI, 0]},
-				{name: 'arc', args: [25, 45, 15, 0, Math.PI]},
-				{name: 'closePath', args: []},
-				{name: 'moveTo', args: [10, 20]}
-			]);
-		});
-		it('should optimize path if radius is exactly half of width and height', function() {
-			var context = window.createMockContext();
-
-			helpers.canvas.roundedRect(context, 10, 20, 30, 30, 15);
-
-			expect(context.getCalls()).toEqual([
-				{name: 'moveTo', args: [10, 35]},
-				{name: 'arc', args: [25, 35, 15, -Math.PI, Math.PI]},
-				{name: 'closePath', args: []},
-				{name: 'moveTo', args: [10, 20]}
-			]);
-		});
-		it('should optimize path if radius is 0', function() {
-			var context = window.createMockContext();
-
-			helpers.canvas.roundedRect(context, 10, 20, 30, 40, 0);
-
-			expect(context.getCalls()).toEqual([{name: 'rect', args: [10, 20, 30, 40]}]);
-		});
-	});
-
 	describe('isPointInArea', function() {
 		it('should determine if a point is in the area', function() {
 			var isPointInArea = helpers.canvas._isPointInArea;
@@ -96,8 +32,71 @@ describe('Chart.helpers.canvas', function() {
 			expect(isPointInArea({x: -1e-12, y: -1e-12}, area)).toBe(true);
 			expect(isPointInArea({x: 512, y: 256}, area)).toBe(true);
 			expect(isPointInArea({x: 512 + 1e-12, y: 256 + 1e-12}, area)).toBe(true);
-			expect(isPointInArea({x: -1e-3, y: 0}, area)).toBe(false);
-			expect(isPointInArea({x: 0, y: 256 + 1e-3}, area)).toBe(false);
+			expect(isPointInArea({x: -0.5, y: 0}, area)).toBe(false);
+			expect(isPointInArea({x: 0, y: 256.5}, area)).toBe(false);
 		});
+	});
+
+	it('should return the width of the longest text in an Array and 2D Array', function() {
+		var context = window.createMockContext();
+		var font = "normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+		var arrayOfThings1D = ['FooBar', 'Bar'];
+		var arrayOfThings2D = [['FooBar_1', 'Bar_2'], 'Foo_1'];
+
+
+		// Regardless 'FooBar' is the longest label it should return (characters * 10)
+		expect(helpers.canvas._longestText(context, font, arrayOfThings1D, {})).toEqual(60);
+		expect(helpers.canvas._longestText(context, font, arrayOfThings2D, {})).toEqual(80);
+		// We check to make sure we made the right calls to the canvas.
+		expect(context.getCalls()).toEqual([{
+			name: 'save',
+			args: []
+		}, {
+			name: 'measureText',
+			args: ['FooBar']
+		}, {
+			name: 'measureText',
+			args: ['Bar']
+		}, {
+			name: 'restore',
+			args: []
+		}, {
+			name: 'save',
+			args: []
+		}, {
+			name: 'measureText',
+			args: ['FooBar_1']
+		}, {
+			name: 'measureText',
+			args: ['Bar_2']
+		}, {
+			name: 'measureText',
+			args: ['Foo_1']
+		}, {
+			name: 'restore',
+			args: []
+		}]);
+	});
+
+	it('compare text with current longest and update', function() {
+		var context = window.createMockContext();
+		var data = {};
+		var gc = [];
+		var longest = 70;
+
+		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar')).toEqual(70);
+		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar_')).toEqual(70);
+		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar_1')).toEqual(80);
+		// We check to make sure we made the right calls to the canvas.
+		expect(context.getCalls()).toEqual([{
+			name: 'measureText',
+			args: ['foobar']
+		}, {
+			name: 'measureText',
+			args: ['foobar_']
+		}, {
+			name: 'measureText',
+			args: ['foobar_1']
+		}]);
 	});
 });

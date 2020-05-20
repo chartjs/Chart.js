@@ -46,20 +46,6 @@ describe('Chart.controllers.doughnut', function() {
 		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
 	});
 
-	it('should set the innerRadius to 0 if the config option is 0', function() {
-		var chart = window.acquireChart({
-			type: 'pie',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, 4]
-				}],
-				labels: []
-			}
-		});
-
-		expect(chart.innerRadius).toBe(0);
-	});
-
 	it ('should reset and update elements', function() {
 		var chart = window.acquireChart({
 			type: 'doughnut',
@@ -78,6 +64,7 @@ describe('Chart.controllers.doughnut', function() {
 				legend: false,
 				title: false,
 				animation: {
+					duration: 0,
 					animateRotate: true,
 					animateScale: false
 				},
@@ -106,15 +93,14 @@ describe('Chart.controllers.doughnut', function() {
 			{c: 0},
 			{c: 0}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(192);
-			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				startAngle: Math.PI * -0.5,
-				endAngle: Math.PI * -0.5,
-				label: chart.data.labels[i],
+			expect(meta.data[i].x).toBeCloseToPixel(256);
+			expect(meta.data[i].y).toBeCloseToPixel(256);
+			expect(meta.data[i].outerRadius).toBeCloseToPixel(256);
+			expect(meta.data[i].innerRadius).toBeCloseToPixel(192);
+			expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i].startAngle).toBeCloseToPixel(Math.PI * -0.5);
+			expect(meta.data[i].endAngle).toBeCloseToPixel(Math.PI * -0.5);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 0, 255)',
 				borderWidth: 2
@@ -129,15 +115,14 @@ describe('Chart.controllers.doughnut', function() {
 			{c: 0, s: 2.2689280275, e: 2.2689280275},
 			{c: 2.4434609527, s: 2.2689280275, e: 4.7123889803}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(256);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(192);
-			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
-			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
-			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
-			expect(meta.data[i]._model).toEqual(jasmine.objectContaining({
-				label: chart.data.labels[i],
+			expect(meta.data[i].x).toBeCloseToPixel(256);
+			expect(meta.data[i].y).toBeCloseToPixel(256);
+			expect(meta.data[i].outerRadius).toBeCloseToPixel(256);
+			expect(meta.data[i].innerRadius).toBeCloseToPixel(192);
+			expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i].startAngle).toBeCloseTo(expected.s, 8);
+			expect(meta.data[i].endAngle).toBeCloseTo(expected.e, 8);
+			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(0, 0, 255)',
 				borderWidth: 2
@@ -202,13 +187,13 @@ describe('Chart.controllers.doughnut', function() {
 			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.x).toBeCloseToPixel(512);
-			expect(meta.data[i]._model.y).toBeCloseToPixel(512);
-			expect(meta.data[i]._model.outerRadius).toBeCloseToPixel(512);
-			expect(meta.data[i]._model.innerRadius).toBeCloseToPixel(384);
-			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
-			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
-			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
+			expect(meta.data[i].x).toBeCloseToPixel(512);
+			expect(meta.data[i].y).toBeCloseToPixel(512);
+			expect(meta.data[i].outerRadius).toBeCloseToPixel(512);
+			expect(meta.data[i].innerRadius).toBeCloseToPixel(384);
+			expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i].startAngle).toBeCloseTo(expected.s, 8);
+			expect(meta.data[i].endAngle).toBeCloseTo(expected.e, 8);
 		});
 	});
 
@@ -246,9 +231,9 @@ describe('Chart.controllers.doughnut', function() {
 			{c: Math.PI / 8, s: Math.PI, e: Math.PI + Math.PI / 8},
 			{c: 3 * Math.PI / 8, s: Math.PI + Math.PI / 8, e: Math.PI + Math.PI / 2}
 		].forEach(function(expected, i) {
-			expect(meta.data[i]._model.circumference).toBeCloseTo(expected.c, 8);
-			expect(meta.data[i]._model.startAngle).toBeCloseTo(expected.s, 8);
-			expect(meta.data[i]._model.endAngle).toBeCloseTo(expected.e, 8);
+			expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
+			expect(meta.data[i].startAngle).toBeCloseTo(expected.s, 8);
+			expect(meta.data[i].endAngle).toBeCloseTo(expected.e, 8);
 		});
 	});
 
@@ -303,13 +288,9 @@ describe('Chart.controllers.doughnut', function() {
 
 		chart.update();
 
-		expect(chart.chartArea.bottom - chart.chartArea.top).toBe(512);
-		expect(chart.borderWidth).toBe(8);
-		expect(chart.outerRadius).toBe(252);
-		expect(chart.innerRadius).toBe(126);
-		expect(chart.radiusLength).toBe(63);
-
 		var controller = chart.getDatasetMeta(0).controller;
+		expect(chart.chartArea.bottom - chart.chartArea.top).toBe(512);
+
 		expect(controller.getMaxBorderWidth()).toBe(8);
 		expect(controller.outerRadius).toBe(252);
 		expect(controller.innerRadius).toBe(189);
@@ -348,22 +329,28 @@ describe('Chart.controllers.doughnut', function() {
 			});
 		});
 
-		it ('should handle default hover styles', function() {
+		it ('should handle default hover styles', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(49, 135, 221)');
-			expect(arc._model.borderColor).toBe('rgb(22, 89, 156)');
-			expect(arc._model.borderWidth).toBe(2);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('#3187DD');
+				expect(arc.options.borderColor).toBe('#175A9D');
+				expect(arc.options.borderWidth).toBe(2);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via dataset properties', function() {
+		it ('should handle hover styles defined via dataset properties', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -375,18 +362,24 @@ describe('Chart.controllers.doughnut', function() {
 
 			chart.update();
 
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
 
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
 		});
 
-		it ('should handle hover styles defined via element options', function() {
+		it ('should handle hover styles defined via element options', function(done) {
 			var chart = this.chart;
 			var arc = chart.getDatasetMeta(0).data[0];
 
@@ -398,38 +391,21 @@ describe('Chart.controllers.doughnut', function() {
 
 			chart.update();
 
+			afterEvent(chart, 'mousemove', function() {
+				expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
+				expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
+				expect(arc.options.borderWidth).toBe(8.4);
+
+				afterEvent(chart, 'mouseout', function() {
+					expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
+					expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
+					expect(arc.options.borderWidth).toBe(2);
+
+					done();
+				});
+				jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+			});
 			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
-		});
-
-		it ('should handle hover styles defined via element custom', function() {
-			var chart = this.chart;
-			var arc = chart.getDatasetMeta(0).data[0];
-
-			arc.custom = {
-				hoverBackgroundColor: 'rgb(200, 100, 150)',
-				hoverBorderColor: 'rgb(150, 50, 100)',
-				hoverBorderWidth: 8.4,
-			};
-
-			chart.update();
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(200, 100, 150)');
-			expect(arc._model.borderColor).toBe('rgb(150, 50, 100)');
-			expect(arc._model.borderWidth).toBe(8.4);
-
-			jasmine.triggerMouseEvent(chart, 'mouseout', arc);
-			expect(arc._model.backgroundColor).toBe('rgb(100, 150, 200)');
-			expect(arc._model.borderColor).toBe('rgb(50, 100, 150)');
-			expect(arc._model.borderWidth).toBe(2);
 		});
 	});
 });

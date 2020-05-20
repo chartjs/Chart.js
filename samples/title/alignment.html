@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Title Positions & Alignment</title>
+	<script src="../../dist/Chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+		.chart-container {
+			width: 500px;
+			margin-left: 40px;
+			margin-right: 40px;
+		}
+		.container {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="chart-container">
+			<canvas id="chart-title-top-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-title-top-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-title-top-end"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-title-left-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-title-left-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-title-left-end"></canvas>
+		</div>
+	</div>
+	<script>
+		var color = Chart.helpers.color;
+		function createConfig(titlePosition, titleAlignment, colorName) {
+			return {
+				type: 'line',
+				data: {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+					datasets: [{
+						label: 'My First dataset',
+						data: [
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor()
+						],
+						backgroundColor: color(window.chartColors[colorName]).alpha(0.5).rgbString(),
+						borderColor: window.chartColors[colorName],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						display: false,
+					},
+					scales: {
+						x: {
+							display: true,
+							scaleLabel: {
+								display: true,
+								labelString: 'Month'
+							}
+						},
+						y: {
+							display: true,
+							scaleLabel: {
+								display: true,
+								labelString: 'Value'
+							}
+						}
+					},
+					title: {
+						align: titleAlignment,
+						display: true,
+						position: titlePosition,
+						text: 'Title Position: ' + titlePosition + ', Align: ' + titleAlignment
+					}
+				}
+			};
+		}
+
+		window.onload = function() {
+			[{
+				id: 'chart-title-top-start',
+				titleAlignment: 'start',
+				titlePosition: 'top',
+				color: 'red'
+			}, {
+				id: 'chart-title-top-center',
+				titleAlignment: 'center',
+				titlePosition: 'top',
+				color: 'orange'
+			}, {
+				id: 'chart-title-top-end',
+				titleAlignment: 'end',
+				titlePosition: 'top',
+				color: 'yellow'
+			}, {
+				id: 'chart-title-left-start',
+				titleAlignment: 'start',
+				titlePosition: 'left',
+				color: 'green'
+			}, {
+				id: 'chart-title-left-center',
+				titleAlignment: 'center',
+				titlePosition: 'left',
+				color: 'blue'
+			}, {
+				id: 'chart-title-left-end',
+				titleAlignment: 'end',
+				titlePosition: 'left',
+				color: 'purple'
+			}].forEach(function(details) {
+				var ctx = document.getElementById(details.id).getContext('2d');
+				var config = createConfig(details.titlePosition, details.titleAlignment, details.color);
+				new Chart(ctx, config);
+			});
+		};
+	</script>
+</body>
+
+</html>

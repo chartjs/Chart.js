@@ -11,7 +11,7 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "ticks": {
                         "display": false
                     },
@@ -19,8 +19,8 @@
                         "display": false,
                         "drawBorder": false
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "ticks": {
                         "labelOffset": 25
                     },
@@ -28,7 +28,7 @@
                         "display": false,
                         "drawBorder": false
                     }
-                }]
+                }
             }
         }
     },

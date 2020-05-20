@@ -39,14 +39,14 @@
 					text: 'Chart with Non Numeric Y Axis'
 				},
 				scales: {
-					xAxes: [{
+					x: {
 						display: true,
 						scaleLabel: {
 							display: true,
 							labelString: 'Month'
 						}
-					}],
-					yAxes: [{
+					},
+					y: {
 						type: 'category',
 						position: 'left',
 						display: true,
@@ -54,10 +54,8 @@
 							display: true,
 							labelString: 'Request State'
 						},
-						ticks: {
-							reverse: true
-						}
-					}]
+						reverse: true
+					}
 				}
 			}
 		};

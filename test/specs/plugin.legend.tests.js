@@ -3,7 +3,7 @@ describe('Legend block tests', function() {
 	describe('auto', jasmine.fixture.specs('plugin.legend'));
 
 	it('should have the correct default config', function() {
-		expect(Chart.defaults.global.legend).toEqual({
+		expect(Chart.defaults.legend).toEqual({
 			display: true,
 			position: 'top',
 			align: 'center',
@@ -20,6 +20,12 @@ describe('Legend block tests', function() {
 				boxWidth: 40,
 				padding: 10,
 				generateLabels: jasmine.any(Function)
+			},
+
+			title: {
+				display: false,
+				position: 'center',
+				text: '',
 			}
 		});
 	});
@@ -149,7 +155,7 @@ describe('Legend block tests', function() {
 			datasetIndex: 1
 		}, {
 			text: 'dataset3',
-			fillStyle: 'rgba(0,0,0,0)',
+			fillStyle: 'rgba(0,0,0,0.1)',
 			hidden: false,
 			lineCap: 'butt',
 			lineDash: [],
@@ -160,6 +166,81 @@ describe('Legend block tests', function() {
 			pointStyle: undefined,
 			rotation: undefined,
 			datasetIndex: 2
+		}]);
+	});
+
+	it('should reverse correctly', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'round',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					data: []
+				}, {
+					label: 'dataset2',
+					hidden: true,
+					borderJoinStyle: 'round',
+					data: []
+				}, {
+					label: 'dataset3',
+					borderWidth: 10,
+					borderColor: 'green',
+					pointStyle: 'crossRot',
+					fill: false,
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					reverse: true
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset3',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: false,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'miter',
+			lineWidth: 10,
+			strokeStyle: 'green',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 2
+		}, {
+			text: 'dataset2',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: true,
+			lineCap: 'butt',
+			lineDash: [],
+			lineDashOffset: 0,
+			lineJoin: 'round',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 1
+		}, {
+			text: 'dataset1',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: 'round',
+			lineDash: [2, 2],
+			lineDashOffset: 5.5,
+			lineJoin: 'miter',
+			lineWidth: 3,
+			strokeStyle: 'rgba(0,0,0,0.1)',
+			pointStyle: undefined,
+			rotation: undefined,
+			datasetIndex: 0
 		}]);
 	});
 
@@ -516,12 +597,12 @@ describe('Legend block tests', function() {
 			chart.options.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
-			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.global.legend));
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.legend));
 		});
 	});
 
 	describe('callbacks', function() {
-		it('should call onClick, onHover and onLeave at the correct times', function() {
+		it('should call onClick, onHover and onLeave at the correct times', function(done) {
 			var clickItem = null;
 			var hoverItem = null;
 			var leaveItem = null;
@@ -555,17 +636,22 @@ describe('Legend block tests', function() {
 				y: hb.top + (hb.height / 2)
 			};
 
+			afterEvent(chart, 'click', function() {
+				expect(clickItem).toBe(chart.legend.legendItems[0]);
+
+				afterEvent(chart, 'mousemove', function() {
+					expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+					afterEvent(chart, 'mousemove', function() {
+						expect(leaveItem).toBe(chart.legend.legendItems[0]);
+
+						done();
+					});
+					jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+				});
+				jasmine.triggerMouseEvent(chart, 'mousemove', el);
+			});
 			jasmine.triggerMouseEvent(chart, 'click', el);
-
-			expect(clickItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', el);
-
-			expect(hoverItem).toBe(chart.legend.legendItems[0]);
-
-			jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
-
-			expect(leaveItem).toBe(chart.legend.legendItems[0]);
 		});
 	});
 });

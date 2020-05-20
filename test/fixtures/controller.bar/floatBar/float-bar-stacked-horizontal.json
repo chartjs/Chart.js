@@ -18,18 +18,16 @@
             "title": false,
             "legend": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "display": false,
                     "stacked": true
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
                     "stacked": true,
-                    "ticks": {
-                        "min": -8,
-                        "max": 12
-                    }
-                }]
+                    "min": -8,
+                    "max": 12
+                }
             }
         }
     },

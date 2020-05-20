@@ -1,10 +1,8 @@
-'use strict';
+import defaults from './core.defaults';
+import {clone, each, merge} from '../helpers/helpers.core';
+import layouts from './core.layouts';
 
-var defaults = require('./core.defaults');
-var helpers = require('../helpers/index');
-var layouts = require('./core.layouts');
-
-module.exports = {
+export default {
 	// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
 	// use the new chart options to grab the correct scale
 	constructors: {},
@@ -13,26 +11,28 @@ module.exports = {
 
 	// Scale config defaults
 	defaults: {},
-	registerScaleType: function(type, scaleConstructor, scaleDefaults) {
-		this.constructors[type] = scaleConstructor;
-		this.defaults[type] = helpers.clone(scaleDefaults);
+	registerScale(scaleConstructor) {
+		const me = this;
+		const type = scaleConstructor.id;
+		me.constructors[type] = scaleConstructor;
+		me.defaults[type] = clone(scaleConstructor.defaults);
 	},
-	getScaleConstructor: function(type) {
-		return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
+	getScaleConstructor(type) {
+		return Object.prototype.hasOwnProperty.call(this.constructors, type) ? this.constructors[type] : undefined;
 	},
-	getScaleDefaults: function(type) {
+	getScaleDefaults(type) {
 		// Return the scale defaults merged with the global settings so that we always use the latest ones
-		return this.defaults.hasOwnProperty(type) ? helpers.merge({}, [defaults.scale, this.defaults[type]]) : {};
+		return Object.prototype.hasOwnProperty.call(this.defaults, type) ? merge({}, [defaults.scale, this.defaults[type]]) : {};
 	},
-	updateScaleDefaults: function(type, additions) {
-		var me = this;
-		if (me.defaults.hasOwnProperty(type)) {
-			me.defaults[type] = helpers.extend(me.defaults[type], additions);
+	updateScaleDefaults(type, additions) {
+		const me = this;
+		if (Object.prototype.hasOwnProperty.call(me.defaults, type)) {
+			me.defaults[type] = Object.assign(me.defaults[type], additions);
 		}
 	},
-	addScalesToLayout: function(chart) {
+	addScalesToLayout(chart) {
 		// Adds each scale to the chart.boxes array to be sized accordingly
-		helpers.each(chart.scales, function(scale) {
+		each(chart.scales, (scale) => {
 			// Set ILayoutItem parameters for backwards compatibility
 			scale.fullWidth = scale.options.fullWidth;
 			scale.position = scale.options.position;

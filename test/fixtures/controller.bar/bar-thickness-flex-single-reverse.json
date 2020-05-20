@@ -5,6 +5,9 @@
             "labels": ["2016", "2018", "2020", "2024", "2030"],
             "datasets": [{
                 "backgroundColor": "#FF6384",
+                "barThickness": "flex",
+                "barPercentage": 1,
+                "categoryPercentage": 1,
                 "data": [1]
             }]
         },
@@ -13,26 +16,22 @@
             "legend": false,
             "title": false,
             "scales": {
-                "xAxes": [{
+                "x": {
                     "type": "time",
                     "display": false,
-                    "barThickness": "flex",
-                    "barPercentage": 1,
-                    "categoryPercentage": 1,
+                    "offset": false,
                     "time": {
                         "parser": "YYYY"
                     },
+                    "reverse": true,
                     "ticks": {
-                        "source": "labels",
-                        "reverse": true
+                        "source": "labels"
                     }
-                }],
-                "yAxes": [{
+                },
+                "y": {
                     "display": false,
-                    "ticks": {
-                        "beginAtZero": true
-                    }
-                }]
+                    "beginAtZero": true
+                }
             }
         }
     },
