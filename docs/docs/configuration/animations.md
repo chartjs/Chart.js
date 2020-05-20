@@ -36,18 +36,18 @@ The following animation options are available. The global options for are define
 
 Direct property configuration overrides configuration of same property in a collection.
 
-These defaults can be overridden in `options.animation` and `dataset.animation`.
+These defaults can be overridden in `options.animation` or `dataset.animation` and `tooltip.animation`. These keys are also [Scriptable](../general/options.md#scriptable-options)
 
 ### Default modes
 
-| Mode | Option | Value
+| Mode | Option | Value | Description
 | -----| ------ | -----
-| active | duration | 400
-| resize | duration | 0
-| show | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }`
-| | visible | `{ type: 'boolean', duration: 0 }`
-| hide | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }`
-| | visible | `{ type: 'boolean', easing: 'easeInExpo' }`
+| `'active'` | duration | 400 | Override default duration to 400ms for hover animations
+| `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
+| `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
+| | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / / [api](../developers/api.md#hidedatasetIndex).
+| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false very at late phase of animation
 
 ## Easing
 
