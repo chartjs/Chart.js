@@ -7,7 +7,7 @@ import {BasicPlatform, DomPlatform} from '../platform/platforms';
 import plugins from './core.plugins';
 import scaleService from './core.scaleService';
 import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
-import {mergeIf, merge, _merger, each, callback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -139,13 +139,13 @@ function onAnimationsComplete(ctx) {
 	const animationOptions = chart.options.animation;
 
 	plugins.notify(chart, 'afterRender');
-	callback(animationOptions && animationOptions.onComplete, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onComplete, [ctx], chart);
 }
 
 function onAnimationProgress(ctx) {
 	const chart = ctx.chart;
 	const animationOptions = chart.options.animation;
-	callback(animationOptions && animationOptions.onProgress, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onProgress, [ctx], chart);
 }
 
 function isDomSupported() {
@@ -660,7 +660,7 @@ export default class Chart {
 		}
 		const onComplete = function() {
 			plugins.notify(me, 'afterRender');
-			callback(animationOptions && animationOptions.onComplete, [], me);
+			callCallback(animationOptions && animationOptions.onComplete, [], me);
 		};
 
 		if (Animator.has(me)) {
@@ -1070,7 +1070,7 @@ export default class Chart {
 
 		// Invoke onHover hook
 		// Need to call with native event here to not break backwards compatibility
-		callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
+		callCallback(options.onHover || options.hover.onHover, [e.native, me.active], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
 			if (options.onClick && _isPointInArea(e, me.chartArea)) {

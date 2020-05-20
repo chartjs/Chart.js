@@ -3,7 +3,7 @@ import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
-import {valueOrDefault, isArray, valueAtIndexOrDefault, isFinite, callback, isNullOrUndef} from '../helpers/helpers.core';
+import {valueOrDefault, isArray, valueAtIndexOrDefault, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
 import {_parseFont, resolve} from '../helpers/helpers.options';
 
 
@@ -352,7 +352,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map((value, index) => {
-			const label = callback(me.options.pointLabels.callback, [value, index], me);
+			const label = callCallback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}
