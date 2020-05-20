@@ -232,7 +232,7 @@ function createResizeObserver(chart, type, listener) {
 		}
 	}, window);
 
-	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
+	// @ts-ignore until https://github.com/microsoft/TypeScript/issues/37861 implemented
 	const observer = new ResizeObserver(entries => {
 		const entry = entries[0];
 		resize(entry.contentRect.width, entry.contentRect.height);
