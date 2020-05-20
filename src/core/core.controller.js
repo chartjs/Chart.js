@@ -943,14 +943,22 @@ export default class Chart {
 		const listeners = me._listeners;
 		const platform = me.platform;
 
+		const _add = (type, listener) => {
+			platform.addEventListener(me, type, listener);
+			listeners[type] = listener;
+		};
+		const _remove = (type, listener) => {
+			if (listeners[type]) {
+				platform.removeEventListener(me, type, listener);
+				delete listeners[type];
+			}
+		};
+
 		let listener = function(e) {
 			me._eventHandler(e);
 		};
 
-		helpers.each(me.options.events, (type) => {
-			platform.addEventListener(me, type, listener);
-			listeners[type] = listener;
-		});
+		helpers.each(me.options.events, (type) => _add(type, listener));
 
 		if (me.options.responsive) {
 			listener = (width, height) => {
@@ -961,32 +969,22 @@ export default class Chart {
 
 			let detached; // eslint-disable-line prefer-const
 			const attached = () => {
-				if (listeners.attach) {
-					platform.removeEventListener(me, 'attach', attached);
-					delete listeners.attach;
-				}
+				_remove('attach', attached);
 
 				me.resize();
 				me.attached = true;
 
-				platform.addEventListener(me, 'resize', listener);
-				listeners.resize = listener;
-
-				platform.addEventListener(me, 'detach', detached);
-				listeners.detach = detached;
+				_add('resize', listener);
+				_add('detach', detached);
 			};
 
 			detached = () => {
 				me.attached = false;
 
-				if (listeners.resize) {
-					platform.removeEventListener(me, 'resize', listener);
-					delete listeners.resize;
-				}
-
-				platform.addEventListener(me, 'attach', attached);
-				listeners.attach = attached;
+				_remove('resize', listener);
+				_add('attach', attached);
 			};
+
 			if (platform.isAttached(me.canvas)) {
 				attached();
 			} else {

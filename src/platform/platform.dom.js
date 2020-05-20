@@ -172,51 +172,17 @@ function throttled(fn, thisArg) {
 	};
 }
 
-/**
- * Watch for resize of `element`.
- * Calling `fn` is limited to once per animation frame
- * @param {Element} element - The element to monitor
- * @param {function} fn - Callback function to call when resized
- */
-function watchForResize(element, fn) {
-	const resize = throttled((width, height) => {
-		const w = element.clientWidth;
-		fn(width, height);
-		if (w < element.clientWidth) {
-			// If the container size shrank during chart resize, let's assume
-			// scrollbar appeared. So we resize again with the scrollbar visible -
-			// effectively making chart smaller and the scrollbar hidden again.
-			// Because we are inside `throttled`, and currently `ticking`, scroll
-			// events are ignored during this whole 2 resize process.
-			// If we assumed wrong and something else happened, we are resizing
-			// twice in a frame (potential performance issue)
-			fn();
-		}
-	}, window);
-
-	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
-	const observer = new ResizeObserver(entries => {
-		const entry = entries[0];
-		resize(entry.contentRect.width, entry.contentRect.height);
-	});
-	observer.observe(element);
-	return observer;
-}
-
-/**
- * Detect attachment of `element` or its direct `parent` to DOM
- * @param {Element} element - The element to watch for
- * @param {function} fn - Callback function to call when attachment is detected
- * @return {MutationObserver}
- */
-function watchForAttachment(element, fn) {
+function createAttachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	const element = container || canvas;
 	const observer = new MutationObserver(entries => {
 		const parent = _getParentNode(element);
 		entries.forEach(entry => {
 			for (let i = 0; i < entry.addedNodes.length; i++) {
 				const added = entry.addedNodes[i];
 				if (added === element || added === parent) {
-					fn(entry.target);
+					listener(entry.target);
 				}
 			}
 		});
@@ -225,50 +191,54 @@ function watchForAttachment(element, fn) {
 	return observer;
 }
 
-/**
- * Watch for detachment of `element` from its direct `parent`.
- * @param {Element} element - The element to watch
- * @param {function} fn - Callback function to call when detached.
- * @return {MutationObserver=}
- */
-function watchForDetachment(element, fn) {
-	const parent = _getParentNode(element);
-	if (!parent) {
+function createDetachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	if (!container) {
 		return;
 	}
 	const observer = new MutationObserver(entries => {
 		entries.forEach(entry => {
 			for (let i = 0; i < entry.removedNodes.length; i++) {
-				if (entry.removedNodes[i] === element) {
-					fn();
+				if (entry.removedNodes[i] === canvas) {
+					listener();
 					break;
 				}
 			}
 		});
 	});
-	observer.observe(parent, {childList: true});
+	observer.observe(container, {childList: true});
 	return observer;
-}
-
-function createAttachObserver(chart, type, listener) {
-	const canvas = chart.canvas;
-	const container = canvas && _getParentNode(canvas);
-	return watchForAttachment(container || canvas, listener);
-}
-
-function createDetachObserver(chart, type, listener) {
-	const canvas = chart.canvas;
-	if (canvas) {
-		return watchForDetachment(canvas, listener);
-	}
 }
 
 function createResizeObserver(chart, type, listener) {
 	const canvas = chart.canvas;
 	const container = canvas && _getParentNode(canvas);
-	if (container) {
-		return watchForResize(container, listener);
+	if (!container) {
+		return;
 	}
+	const resize = throttled((width, height) => {
+		const w = container.clientWidth;
+		listener(width, height);
+		if (w < container.clientWidth) {
+			// If the container size shrank during chart resize, let's assume
+			// scrollbar appeared. So we resize again with the scrollbar visible -
+			// effectively making chart smaller and the scrollbar hidden again.
+			// Because we are inside `throttled`, and currently `ticking`, scroll
+			// events are ignored during this whole 2 resize process.
+			// If we assumed wrong and something else happened, we are resizing
+			// twice in a frame (potential performance issue)
+			listener();
+		}
+	}, window);
+
+	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
+	const observer = new ResizeObserver(entries => {
+		const entry = entries[0];
+		resize(entry.contentRect.width, entry.contentRect.height);
+	});
+	observer.observe(container);
+	return observer;
 }
 
 function releaseObserver(canvas, type, observer) {
@@ -277,7 +247,7 @@ function releaseObserver(canvas, type, observer) {
 	}
 }
 
-function createProxyForNative(chart, type, listener) {
+function createProxyAndListen(chart, type, listener) {
 	const canvas = chart.canvas;
 	const proxy = throttled((event) => {
 		// This case can occur if the chart is destroyed while waiting
@@ -378,7 +348,7 @@ export default class DomPlatform extends BasePlatform {
 			detach: createDetachObserver,
 			resize: createResizeObserver
 		};
-		const handler = handlers[type] || createProxyForNative;
+		const handler = handlers[type] || createProxyAndListen;
 		proxies[type] = handler(chart, type, listener);
 	}
 
