@@ -141,7 +141,6 @@ options: {
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
 
-
 #### Customizability
 
 * `custom` attribute of elements was removed. Please use scriptable options
@@ -169,6 +168,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 While the end-user migration for Chart.js 3 is fairly straight-forward, the developer migration can be more complicated. Please reach out for help in the #dev [Slack](https://chartjs-slack.herokuapp.com/) channel if tips on migrating would be helpful.
 
 Some of the biggest things that have changed:
+
 * There is a completely rewritten and more performant animation system.
   * `Element._model` and `Element._view` are no longer used and properties are now set directly on the elements. You will have to use the method `getProps` to access these properties inside most methods such as `inXRange`/`inYRange` and `getCenterPoint`. Please take a look at [the Chart.js-provided elements](https://github.com/chartjs/Chart.js/tree/master/src/elements) for examples.
   * When building the elements in a controller, it's now suggested to call `updateElement` to provide the element properties. There are also methods such as `getSharedOptions` and `includeOptions` that have been added to skip redundant computation. Please take a look at [the Chart.js-provided controllers](https://github.com/chartjs/Chart.js/tree/master/src/controllers) for examples.
@@ -187,6 +187,7 @@ A few changes were made to controllers that are more straight-forward, but will 
 The following properties and methods were removed:
 
 #### Chart
+
 * `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Bar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
@@ -411,3 +412,4 @@ The APIs listed in this section have changed in signature or behaviour from vers
 * `Chart.platform` is no longer the platform object used by charts. Every chart instance now has a separate platform instance.
 * `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `BasePlatform`, a class that all platforms must extend from.
 * If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
+* `isAttached` method was added to platform.

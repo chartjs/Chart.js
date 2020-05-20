@@ -48,6 +48,14 @@ export default class BasePlatform {
 	getDevicePixelRatio() {
 		return 1;
 	}
+
+	/**
+	 * @param {HTMLCanvasElement} canvas
+	 * @returns {boolean} true if the canvas is attached to the platform, false if not.
+	 */
+	isAttached(canvas) { // eslint-disable-line no-unused-vars
+		return true;
+	}
 }
 
 /**

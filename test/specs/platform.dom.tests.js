@@ -1,3 +1,5 @@
+import {DomPlatform} from '../../src/platform/platforms';
+
 describe('Platform.dom', function() {
 
 	describe('context acquisition', function() {
@@ -403,6 +405,26 @@ describe('Platform.dom', function() {
 				x: chart.width / 2,
 				y: chart.height / 2
 			});
+		});
+	});
+
+	describe('isAttached', function() {
+		it('should detect detached when canvas is attached to DOM', function() {
+			var platform = new DomPlatform();
+			var canvas = document.createElement('canvas');
+			var div = document.createElement('div');
+
+			expect(platform.isAttached(canvas)).toEqual(false);
+			div.appendChild(canvas);
+			expect(platform.isAttached(canvas)).toEqual(false);
+			document.body.appendChild(div);
+
+			expect(platform.isAttached(canvas)).toEqual(true);
+
+			div.removeChild(canvas);
+			expect(platform.isAttached(canvas)).toEqual(false);
+			document.body.removeChild(div);
+			expect(platform.isAttached(canvas)).toEqual(false);
 		});
 	});
 });
