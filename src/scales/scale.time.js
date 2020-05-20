@@ -1,5 +1,4 @@
 import adapters from '../core/core.adapters';
-import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -785,7 +784,7 @@ export default class TimeScale extends Scale {
 		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
-		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.fontSize);
+		const tickFontSize = me._resolveTickFontOptions(0).size;
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),

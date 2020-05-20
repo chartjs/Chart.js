@@ -3,7 +3,7 @@ import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
 import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
-import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
+import {toFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
 /**
@@ -147,7 +147,7 @@ function getScaleLabelHeight(options) {
 		return 0;
 	}
 
-	const font = _parseFont(options);
+	const font = toFont(options.font);
 	const padding = toPadding(options.padding);
 
 	return font.lineHeight + padding.height;
@@ -1466,8 +1466,7 @@ export default class Scale extends Element {
 			return;
 		}
 
-		const scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.fontColor);
-		const scaleLabelFont = _parseFont(scaleLabel);
+		const scaleLabelFont = toFont(scaleLabel.font);
 		const scaleLabelPadding = toPadding(scaleLabel.padding);
 		const halfLineHeight = scaleLabelFont.lineHeight / 2;
 		const scaleLabelAlign = scaleLabel.align;
@@ -1521,7 +1520,7 @@ export default class Scale extends Element {
 		ctx.rotate(rotation);
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
-		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
+		ctx.fillStyle = scaleLabelFont.color;
 		ctx.font = scaleLabelFont.string;
 		ctx.fillText(scaleLabel.labelString, 0, 0);
 		ctx.restore();
@@ -1597,27 +1596,19 @@ export default class Scale extends Element {
 	/**
 	 * @param {number} index
 	 * @return {object}
-	 * @private
+	 * @protected
  	 */
 	_resolveTickFontOptions(index) {
 		const me = this;
 		const options = me.options.ticks;
+		const ticks = me.ticks || [];
 		const context = {
 			chart: me.chart,
 			scale: me,
-			tick: me.ticks[index],
+			tick: ticks[index],
 			index
 		};
-		return Object.assign(_parseFont({
-			fontFamily: resolve([options.fontFamily], context),
-			fontSize: resolve([options.fontSize], context),
-			fontStyle: resolve([options.fontStyle], context),
-			lineHeight: resolve([options.lineHeight], context)
-		}), {
-			color: resolve([options.fontColor, defaults.fontColor], context),
-			lineWidth: resolve([options.lineWidth], context),
-			strokeStyle: resolve([options.strokeStyle], context)
-		});
+		return toFont(resolve([options.font], context));
 	}
 }
 

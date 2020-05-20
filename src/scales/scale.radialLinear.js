@@ -4,7 +4,7 @@ import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helper
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, valueAtIndexOrDefault, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {_parseFont, resolve} from '../helpers/helpers.options';
+import {toFont, resolve} from '../helpers/helpers.options';
 
 
 const defaultConfig = {
@@ -48,7 +48,9 @@ const defaultConfig = {
 		display: true,
 
 		// Number - Point label font size in pixels
-		fontSize: 10,
+		font: {
+			size: 10
+		},
 
 		// Function - Used to convert point labels
 		callback(label) {
@@ -61,7 +63,7 @@ function getTickBackdropHeight(opts) {
 	const tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
@@ -130,7 +132,7 @@ function fitWithPointLabels(scale) {
 	//
 	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
-	const plFont = _parseFont(scale.options.pointLabels);
+	const plFont = toFont(scale.options.pointLabels.font);
 
 	// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 	// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
@@ -220,11 +222,10 @@ function drawPointLabels(scale) {
 	const pointLabelOpts = opts.pointLabels;
 	const tickBackdropHeight = getTickBackdropHeight(opts);
 	const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-	const plFont = _parseFont(pointLabelOpts);
+	const plFont = toFont(pointLabelOpts.font);
 
 	ctx.save();
 
-	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
 	for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
@@ -233,8 +234,8 @@ function drawPointLabels(scale) {
 		const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 		// Keep this in loop since we may support array properties here
-		const pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
-		ctx.fillStyle = pointLabelFontColor;
+		ctx.font = plFont.string;
+		ctx.fillStyle = plFont.color;
 
 		const angleRadians = scale.getIndexAngle(i);
 		const angle = toDegrees(angleRadians);
@@ -505,8 +506,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 		}
 
 		const startAngle = me.getIndexAngle(0);
-		const tickFont = _parseFont(tickOpts);
-		const tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
+		const tickFont = toFont(tickOpts.font);
 		let offset, width;
 
 		ctx.save();
@@ -535,7 +535,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickFontColor;
+			ctx.fillStyle = tickFont.color;
 			ctx.fillText(tick.label, 0, -offset);
 		});
 

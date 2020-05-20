@@ -10,7 +10,9 @@ describe('Title block tests', function() {
 			position: 'top',
 			fullWidth: true,
 			weight: 2000,
-			fontStyle: 'bold',
+			font: {
+				style: 'bold'
+			},
 			padding: 10,
 			text: ''
 		});
@@ -74,7 +76,7 @@ describe('Title block tests', function() {
 		options.text = ['line1', 'line2'];
 		options.position = 'left';
 		options.display = true;
-		options.lineHeight = 1.5;
+		options.font.lineHeight = 1.5;
 
 		var title = new Title({
 			chart: chart,

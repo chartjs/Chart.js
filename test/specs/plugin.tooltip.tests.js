@@ -75,33 +75,39 @@ describe('Core.Tooltip', function() {
 				expect(tooltip.xAlign).toEqual('left');
 				expect(tooltip.yAlign).toEqual('center');
 
-				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Body
-					bodyFontColor: '#fff',
-					bodyFontFamily: defaults.fontFamily,
-					bodyFontStyle: defaults.fontStyle,
-					bodyAlign: 'left',
-					bodyFontSize: defaults.fontSize,
-					bodySpacing: 2,
+				expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: defaults.font.style,
+					size: defaults.font.size,
 				}));
 
 				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Title
-					titleFontColor: '#fff',
-					titleFontFamily: defaults.fontFamily,
-					titleFontStyle: 'bold',
-					titleFontSize: defaults.fontSize,
+					bodyAlign: 'left',
+					bodySpacing: 2,
+				}));
+
+				expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: 'bold',
+					size: defaults.font.size,
+				}));
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
 					titleAlign: 'left',
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 				}));
 
+				expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: 'bold',
+					size: defaults.font.size,
+				}));
+
 				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Footer
-					footerFontColor: '#fff',
-					footerFontFamily: defaults.fontFamily,
-					footerFontStyle: 'bold',
-					footerFontSize: defaults.fontSize,
 					footerAlign: 'left',
 					footerSpacing: 2,
 					footerMarginTop: 6,
@@ -233,33 +239,39 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('left');
 			expect(tooltip.yAlign).toEqual('center');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -275,25 +287,22 @@ describe('Core.Tooltip', function() {
 				displayColors: true
 			}));
 
-			expect(tooltip).toEqual(jasmine.objectContaining({
-				opacity: 1,
+			expect(tooltip.opacity).toEqual(1);
+			expect(tooltip.title).toEqual(['Point 2']);
+			expect(tooltip.beforeBody).toEqual([]);
+			expect(tooltip.body).toEqual([{
+				before: [],
+				lines: ['Dataset 1: 20'],
+				after: []
+			}]);
+			expect(tooltip.afterBody).toEqual([]);
+			expect(tooltip.footer).toEqual([]);
+			expect(tooltip.labelTextColors).toEqual(['#fff']);
 
-				// Text
-				title: ['Point 2'],
-				beforeBody: [],
-				body: [{
-					before: [],
-					lines: ['Dataset 1: 20'],
-					after: []
-				}],
-				afterBody: [],
-				footer: [],
-				labelTextColors: ['#fff'],
-				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
-				}]
-			}));
+			expect(tooltip.labelColors).toEqual([{
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
+			}]);
 
 			expect(tooltip.x).toBeCloseToPixel(267);
 			expect(tooltip.y).toBeCloseToPixel(312);
@@ -379,33 +388,38 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('center');
 			expect(tooltip.yAlign).toEqual('top');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
-				titleAlign: 'left',
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -1091,33 +1105,39 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('center');
 			expect(tooltip.yAlign).toEqual('top');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -1182,27 +1202,33 @@ describe('Core.Tooltip', function() {
 					yPadding: 5,
 
 					// Body
-					bodyFontColor: '#fff',
-					bodyFontFamily: defaults.fontFamily,
-					bodyFontStyle: defaults.fontStyle,
+					bodyFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: defaults.font.style,
+						size: defaults.font.size,
+					},
 					bodyAlign: body,
-					bodyFontSize: defaults.fontSize,
 					bodySpacing: 2,
 
 					// Title
-					titleFontColor: '#fff',
-					titleFontFamily: defaults.fontFamily,
-					titleFontStyle: 'bold',
-					titleFontSize: defaults.fontSize,
+					titleFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: 'bold',
+						size: defaults.font.size,
+					},
 					titleAlign: title,
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 
 					// Footer
-					footerFontColor: '#fff',
-					footerFontFamily: defaults.fontFamily,
-					footerFontStyle: 'bold',
-					footerFontSize: defaults.fontSize,
+					footerFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: 'bold',
+						size: defaults.font.size,
+					},
 					footerAlign: footer,
 					footerSpacing: 2,
 					footerMarginTop: 6,

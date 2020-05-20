@@ -5,6 +5,7 @@ title: Title
 The chart title defines text to draw at the top of the chart.
 
 ## Title Configuration
+
 The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.title`.
 
 | Name | Type | Default | Description
@@ -12,16 +13,15 @@ The title configuration is passed into the `options.title` namespace. The global
 | `align` | `string` | `'center'` | Alignment of the title. [more...](#align)
 | `display` | `boolean` | `false` | Is the title shown?
 | `position` | `string` | `'top'` | Position of title. [more...](#position)
-| `fontSize` | `number` | `12` | Font size.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family for the title text.
-| `fontColor` | `Color` | `'#666'` | Font color.
-| `fontStyle` | `string` | `'bold'` | Font style.
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `padding` | <code>number&#124;{top: number, bottom: number}</code> | `10` | Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
 | `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
 | `text` | <code>string&#124;string[]</code> | `''` | Title text to display. If specified as an array, text is rendered on multiple lines.
 
 ### Position
+
 Possible title position values are:
+
 * `'top'`
 * `'left'`
 * `'bottom'`
