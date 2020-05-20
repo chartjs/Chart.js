@@ -250,56 +250,47 @@ function watchForDetachment(element, fn) {
 	return observer;
 }
 
-/**
- * @param {{ [x: string]: any; resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- * @param {string} type
- */
-function removeObserver(proxies, type) {
-	const observer = proxies[type];
+function createAttachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	return watchForAttachment(container || canvas, listener);
+}
+
+function createDetachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	if (canvas) {
+		return watchForDetachment(canvas, listener);
+	}
+}
+
+function createResizeObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	if (container) {
+		return watchForResize(container, listener);
+	}
+}
+
+function releaseObserver(canvas, type, observer) {
 	if (observer) {
 		observer.disconnect();
-		proxies[type] = undefined;
 	}
 }
 
-/**
- * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- */
-function unlistenForResize(proxies) {
-	removeObserver(proxies, 'attach');
-	removeObserver(proxies, 'detach');
-	removeObserver(proxies, 'resize');
-}
+function createProxyForNative(chart, type, listener) {
+	const canvas = chart.canvas;
+	const proxy = throttled((event) => {
+		// This case can occur if the chart is destroyed while waiting
+		// for the throttled function to occur. We prevent crashes by checking
+		// for a destroyed chart
+		if (chart.ctx !== null) {
+			listener(fromNativeEvent(event, chart));
+		}
+	}, chart);
 
-/**
- * @param {HTMLCanvasElement} canvas
- * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- * @param {function} listener
- * @return {boolean} `true` if canvas and its parent is attached to DOM
- */
-function listenForResize(canvas, proxies, listener) {
-	const container = _getParentNode(canvas);
+	addListener(canvas, type, proxy);
 
-	const detached = () => {
-		listenForResize(canvas, proxies, listener);
-	};
-
-	const attached = () => {
-		const parent = container || _getParentNode(canvas);
-		proxies.resize = watchForResize(parent, listener);
-		proxies.detach = watchForDetachment(canvas, detached);
-	};
-
-	unlistenForResize(proxies);
-
-	if (container && _getParentNode(container)) {
-		attached();
-		return true;
-	}
-
-	proxies.attach = watchForAttachment(container || canvas, attached);
-
-	return false;
+	return proxy;
 }
 
 /**
@@ -381,22 +372,14 @@ export default class DomPlatform extends BasePlatform {
 		// Can have only one listener per type, so make sure previous is removed
 		this.removeEventListener(chart, type);
 
-		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
-		if (type === 'resize') {
-			return listenForResize(canvas, proxies, listener);
-		}
-
-		const proxy = proxies[type] = throttled((event) => {
-			// This case can occur if the chart is destroyed while waiting
-			// for the throttled function to occur. We prevent crashes by checking
-			// for a destroyed chart
-			if (chart.ctx !== null) {
-				listener(fromNativeEvent(event, chart));
-			}
-		}, chart);
-
-		addListener(canvas, type, proxy);
+		const handlers = {
+			attach: createAttachObserver,
+			detach: createDetachObserver,
+			resize: createResizeObserver
+		};
+		const handler = handlers[type] || createProxyForNative;
+		proxies[type] = handler(chart, type, listener);
 	}
 
 
@@ -407,21 +390,32 @@ export default class DomPlatform extends BasePlatform {
 	removeEventListener(chart, type) {
 		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
-
-		if (type === 'resize') {
-			return unlistenForResize(proxies);
-		}
-
 		const proxy = proxies[type];
+
 		if (!proxy) {
 			return;
 		}
 
-		removeListener(canvas, type, proxy);
+		const handlers = {
+			attach: releaseObserver,
+			detach: releaseObserver,
+			resize: releaseObserver
+		};
+		const handler = handlers[type] || removeListener;
+		handler(canvas, type, proxy);
 		proxies[type] = undefined;
 	}
 
 	getDevicePixelRatio() {
 		return window.devicePixelRatio;
+	}
+
+
+	/**
+	 * @param {HTMLCanvasElement} canvas
+	 */
+	isAttached(canvas) {
+		const container = _getParentNode(canvas);
+		return !!(container && _getParentNode(container));
 	}
 }

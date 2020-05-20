@@ -214,7 +214,7 @@ export default class Chart {
 		this.active = undefined;
 		this.lastActive = [];
 		this._lastEvent = undefined;
-		/** @type {{resize?: function}} */
+		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
 		this._sortedMetasets = [];
 		this._updating = false;
@@ -346,12 +346,8 @@ export default class Chart {
 				options.onResize(me, newSize);
 			}
 
-			if (me.attached) {
-				me.update('resize');
-			} else {
-				me.attached = true;
-				me.update();
-			}
+			// Only apply 'resize' mode if we are attached, else do a regular update.
+			me.update(me.attached && 'resize');
 		}
 	}
 
@@ -945,24 +941,57 @@ export default class Chart {
 	bindEvents() {
 		const me = this;
 		const listeners = me._listeners;
+		const platform = me.platform;
+
 		let listener = function(e) {
 			me._eventHandler(e);
 		};
 
 		helpers.each(me.options.events, (type) => {
-			me.platform.addEventListener(me, type, listener);
+			platform.addEventListener(me, type, listener);
 			listeners[type] = listener;
 		});
 
 		if (me.options.responsive) {
-			listener = function(width, height) {
+			listener = (width, height) => {
 				if (me.canvas) {
 					me.resize(false, width, height);
 				}
 			};
 
-			me.attached = me.platform.addEventListener(me, 'resize', listener);
-			listeners.resize = listener;
+			let detached; // eslint-disable-line prefer-const
+			const attached = () => {
+				if (listeners.attach) {
+					platform.removeEventListener(me, 'attach', attached);
+					delete listeners.attach;
+				}
+
+				me.resize();
+				me.attached = true;
+
+				platform.addEventListener(me, 'resize', listener);
+				listeners.resize = listener;
+
+				platform.addEventListener(me, 'detach', detached);
+				listeners.detach = detached;
+			};
+
+			detached = () => {
+				me.attached = false;
+
+				if (listeners.resize) {
+					platform.removeEventListener(me, 'resize', listener);
+					delete listeners.resize;
+				}
+
+				platform.addEventListener(me, 'attach', attached);
+				listeners.attach = attached;
+			};
+			if (platform.isAttached(me.canvas)) {
+				attached();
+			} else {
+				detached();
+			}
 		} else {
 			me.attached = true;
 		}

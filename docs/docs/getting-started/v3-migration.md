@@ -412,4 +412,4 @@ The APIs listed in this section have changed in signature or behaviour from vers
 * `Chart.platform` is no longer the platform object used by charts. Every chart instance now has a separate platform instance.
 * `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `BasePlatform`, a class that all platforms must extend from.
 * If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
-* `DomPlatform.addEventListener` for `'resize'` `type` now returns `boolean` indicating whether the element is attached to DOM or not.
+* `isAttached` method was added to platform.
