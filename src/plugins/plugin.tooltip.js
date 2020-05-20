@@ -219,8 +219,8 @@ function splitNewlines(str) {
  * @return new tooltip item
  */
 function createTooltipItem(chart, item) {
-	const { datasetIndex, index } = item;
-	const { label, value } = chart.getDatasetMeta(datasetIndex).controller.getLabelAndValue(index);
+	const {datasetIndex, index} = item;
+	const {label, value} = chart.getDatasetMeta(datasetIndex).controller.getLabelAndValue(index);
 
 	return {
 		label,
@@ -261,8 +261,8 @@ function resolveOptions(options) {
  */
 function getTooltipSize(tooltip) {
 	const ctx = tooltip._chart.ctx;
-	const { body, footer, options, title } = tooltip;
-	const { bodyFontSize, footerFontSize, titleFontSize, boxWidth, boxHeight } = options;
+	const {body, footer, options, title} = tooltip;
+	const {bodyFontSize, footerFontSize, titleFontSize, boxWidth, boxHeight} = options;
 	const titleLineCount = title.length;
 	const footerLineCount = footer.length;
 	const bodyLineItemCount = body.length;
@@ -294,7 +294,7 @@ function getTooltipSize(tooltip) {
 
 	// Title width
 	let widthPadding = 0;
-	const maxLineWidth = function (line) {
+	const maxLineWidth = function(line) {
 		width = Math.max(width, ctx.measureText(line).width + widthPadding);
 	};
 
@@ -327,14 +327,14 @@ function getTooltipSize(tooltip) {
 	// Add padding
 	width += 2 * options.xPadding;
 
-	return { width, height };
+	return {width, height};
 }
 
 /**
  * Helper to get the alignment of a tooltip given the size
  */
 function determineAlignment(chart, options, size) {
-	const { x, y, width, height } = size;
+	const {x, y, width, height} = size;
 	const chartArea = chart.chartArea;
 	let xAlign = 'center';
 	let yAlign = 'center';
@@ -389,7 +389,7 @@ function determineAlignment(chart, options, size) {
 
 function alignX(size, xAlign, chartWidth) {
 	// eslint-disable-next-line prefer-const
-	let { x, width } = size;
+	let {x, width} = size;
 	if (xAlign === 'right') {
 		x -= width;
 	} else if (xAlign === 'center') {
@@ -406,7 +406,7 @@ function alignX(size, xAlign, chartWidth) {
 
 function alignY(size, yAlign, paddingAndSize) {
 	// eslint-disable-next-line prefer-const
-	let { y, height } = size;
+	let {y, height} = size;
 	if (yAlign === 'top') {
 		y += paddingAndSize;
 	} else if (yAlign === 'bottom') {
@@ -421,8 +421,8 @@ function alignY(size, yAlign, paddingAndSize) {
  * Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
  */
 function getBackgroundPoint(options, size, alignment, chart) {
-	const { caretSize, caretPadding, cornerRadius } = options;
-	const { xAlign, yAlign } = alignment;
+	const {caretSize, caretPadding, cornerRadius} = options;
+	const {xAlign, yAlign} = alignment;
 	const paddingAndSize = caretSize + caretPadding;
 	const radiusAndPadding = cornerRadius + caretPadding;
 
@@ -441,7 +441,7 @@ function getBackgroundPoint(options, size, alignment, chart) {
 		x += radiusAndPadding;
 	}
 
-	return { x, y };
+	return {x, y};
 }
 
 function getAlignedX(tooltip, align) {
@@ -684,10 +684,10 @@ export class Tooltip extends Element {
 	}
 
 	getCaretPosition(tooltipPoint, size) {
-		const { xAlign, yAlign, options } = this;
-		const { cornerRadius, caretSize } = options;
-		const { x: ptX, y: ptY } = tooltipPoint;
-		const { width, height } = size;
+		const {xAlign, yAlign, options} = this;
+		const {cornerRadius, caretSize} = options;
+		const {x: ptX, y: ptY} = tooltipPoint;
+		const {width, height} = size;
 		let x1, x2, x3, y1, y2, y3;
 
 		if (yAlign === 'center') {
@@ -722,7 +722,7 @@ export class Tooltip extends Element {
 			}
 			y3 = y1;
 		}
-		return { x1, x2, x3, y1, y2, y3 };
+		return {x1, x2, x3, y1, y2, y3};
 	}
 
 	drawTitle(pt, ctx) {
@@ -764,7 +764,7 @@ export class Tooltip extends Element {
 		const me = this;
 		const options = me.options;
 		const labelColors = me.labelColors[i];
-		const { boxHeight, boxWidth, bodyFontSize } = options;
+		const {boxHeight, boxWidth, bodyFontSize} = options;
 		const colorX = getAlignedX(me, 'left');
 		const rtlColorX = rtlHelper.x(colorX);
 		const yOffSet = boxHeight < bodyFontSize ? (bodyFontSize - boxHeight) / 2 : 0;
@@ -789,14 +789,14 @@ export class Tooltip extends Element {
 
 	drawBody(pt, ctx) {
 		const me = this;
-		const { body, options } = me;
-		const { bodyFontSize, bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth } = options;
+		const {body, options} = me;
+		const {bodyFontSize, bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth} = options;
 		let bodyLineHeight = bodyFontSize;
 		let xLinePadding = 0;
 
 		const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
 
-		const fillLineOfText = function (line) {
+		const fillLineOfText = function(line) {
 			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
 			pt.y += bodyLineHeight + bodySpacing;
 		};
@@ -880,9 +880,9 @@ export class Tooltip extends Element {
 	}
 
 	drawBackground(pt, ctx, tooltipSize) {
-		const { xAlign, yAlign, options } = this;
-		const { x, y } = pt;
-		const { width, height } = tooltipSize;
+		const {xAlign, yAlign, options} = this;
+		const {x, y} = pt;
+		const {width, height} = tooltipSize;
 		const radius = options.cornerRadius;
 
 		ctx.fillStyle = options.backgroundColor;
@@ -1060,7 +1060,7 @@ export default {
 		const tooltipOpts = chart.options.tooltips;
 
 		if (tooltipOpts) {
-			chart.tooltip = new Tooltip({ _chart: chart });
+			chart.tooltip = new Tooltip({_chart: chart});
 		}
 	},
 

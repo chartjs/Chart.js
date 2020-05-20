@@ -1,4 +1,4 @@
-import { requestAnimFrame } from "../helpers/helpers.extras";
+import {requestAnimFrame} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("./core.controller").default } Chart
