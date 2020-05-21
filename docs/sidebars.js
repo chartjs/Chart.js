@@ -64,7 +64,7 @@ module.exports = {
 			{
 				type: 'link',
 				label: 'TypeDoc',
-				href: 'https://chartjs.org/docs/' + docsVersion + '/typedoc/index.html'
+				href: 'https://chartjs.org/docs/' + docsVersion + '/typedoc/'
 			},
 			'developers/updates',
 			'developers/plugins',
