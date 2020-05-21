@@ -31,7 +31,7 @@ gulp.task('lint-js', lintJsTask);
 gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('tsc', typescriptTask);
 gulp.task('unittest', unittestTask);
-gulp.task('test', gulp.parallel('lint', 'tsc', 'unittest'));
+gulp.task('test', gulp.series('lint', 'tsc', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
