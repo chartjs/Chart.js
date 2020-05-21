@@ -4,7 +4,7 @@ import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform} from '../platform/platforms';
+import {BasicPlatform, DomPlatform} from '../platform';
 import plugins from './core.plugins';
 import scaleService from './core.scaleService';
 import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';

@@ -17,7 +17,7 @@ import Element from './core/core.element';
 import * as elements from './elements/index';
 import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
-import platforms from './platform/platforms';
+import * as platforms from './platform';
 import pluginsCore from './core/core.plugins';
 import Scale from './core/core.scale';
 import scaleService from './core/core.scaleService';
