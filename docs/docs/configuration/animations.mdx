@@ -4,6 +4,107 @@ title: Animations
 
 Chart.js animates charts out of the box. A number of options are provided to configure how the animation looks and how long it takes.
 
+import { useEffect } from 'react';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+    defaultValue='tension'
+    values={[
+        {label: 'Looping tension', value: 'tension' },
+        {label: 'Hide and show', value: 'hideshow' },
+    ]}
+>
+<TabItem value="tension">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a0').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Looping tension',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+              tension: {
+                  duration: 1000,
+                  easing: 'linear',
+                  from: 1,
+                  to: 0,
+                  loop: true
+              }
+          },
+          scales: {
+            y: { // defining min and max so hiding the dataset does not change scale range
+              min: 0,
+              max: 100
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a0" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+
+<TabItem value="hideshow">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a1').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Try hiding me',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+            show: {
+                x: {
+                    from: 0
+                },
+                y: {
+                    from: 0
+                }
+            },
+            hide: {
+                x: {
+                    to: 0
+                },
+                y: {
+                    to: 0
+                }
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a1" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+</Tabs>
+
 ## Animation Configuration
 
 The following animation options are available. The global options for are defined in `Chart.defaults.animation`.
@@ -16,12 +117,12 @@ The following animation options are available. The global options for are define
 | `onProgress` | `function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
 | `onComplete` | `function` | `null` | Callback called when all animations are completed. [more...](#animation-callbacks)
 | `delay` | `number` | `undefined` | Delay before starting the animations.
-| `loop` | `boolean` | `undefined` | If set to `true`, loop the animations loop endlessly.
-| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, '`color`'.
+| `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
+| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
 | `from`  | <code>number&#124;Color</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
 | `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
 | `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
-| [property] | `object` | `undefined` | Option overrides for [property].
+| [property] | `object` | `undefined` | Option overrides for single [property]. These have precedence over [collection].
 | [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
 | [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
 

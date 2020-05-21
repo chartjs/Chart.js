@@ -9,6 +9,7 @@ module.exports = {
   projectName: 'chartjs.github.io', // Usually your repo name.
   plugins: ['@docusaurus/plugin-google-analytics'],
   scripts: ['https://www.chartjs.org/dist/VERSION/Chart.min.js'],
+  themes: ['@docusaurus/theme-live-codeblock'],
   themeConfig: {
     algolia: {
       apiKey: 'd7ee00a3cbaaf3c33e28ad1c274e7ba6',
