@@ -20,7 +20,7 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or `'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 ## Position
@@ -49,14 +49,11 @@ The legend label configuration is nested below the legend configuration using th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `boxWidth` | `number` | `40` | Width of coloured box.
-| `fontSize` | `number` | `12` | Font size of text.
-| `fontStyle` | `string` | `'normal'` | Font style of text.
-| `fontColor` | `Color` | `'#666'` | Color of text.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
-| `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the mimimum value between boxWidth and fontSize).
+| `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
 
 ## Legend Title Configuration
 
@@ -65,10 +62,7 @@ The legend title configuration is nested below the legend configuration using th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `false` | Is the legend title displayed.
-| `fontSize` | `number` | `12` | Font size of text.
-| `fontStyle` | `string` | `'normal'` | Font style of text.
-| `fontColor` | `Color` | `'#666'` | Color of text.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `lineHeight` | `number` | | Line height of the text. If unset, is computed from the font size.
 | `padding` | <code>number&#124;object</code> | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
 | `text` | `string` | | The string title.

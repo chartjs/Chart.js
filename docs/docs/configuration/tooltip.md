@@ -17,23 +17,14 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
 | `filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
 | `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
-| `titleFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Title font.
-| `titleFontSize` | `number` | `12` | Title font size.
-| `titleFontStyle` | `string` | `'bold'` | Title font style.
-| `titleFontColor` | `Color` | `'#fff'` | Title font color.
+| `titleFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](fonts.md).
 | `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
 | `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
 | `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
-| `bodyFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Body line font.
-| `bodyFontSize` | `number` | `12` | Body font size.
-| `bodyFontStyle` | `string` | `'normal'` | Body font style.
-| `bodyFontColor` | `Color` | `'#fff'` | Body font color.
+| `bodyFont` | `Font` | `{color: '#fff'}` | See [Fonts](fonts.md).
 | `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
 | `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
-| `footerFontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Footer font.
-| `footerFontSize` | `number` | `12` | Footer font size.
-| `footerFontStyle` | `string` | `'bold'` | Footer font style.
-| `footerFontColor` | `Color` | `'#fff'` | Footer font color.
+| `footerFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](fonts.md).
 | `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
 | `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
@@ -44,8 +35,8 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
 | `multiKeyBackground` | `Color` | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
-| `boxWidth` | `number` | `bodyFontSize` | Width of the color box if displayColors is true.
-| `boxHeight` | `number` | `bodyFontSize` | Height of the color box if displayColors is true.
+| `boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
+| `boxHeight` | `number` | `bodyFont.size` | Height of the color box if displayColors is true.
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
@@ -54,6 +45,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 ### Position Modes
 
 Possible modes are:
+
 * `'average'`
 * `'nearest'`
 
@@ -62,6 +54,7 @@ Possible modes are:
 New modes can be defined by adding functions to the `Chart.Tooltip.positioners` map.
 
 Example:
+
 ```javascript
 /**
  * Custom positioner
@@ -155,6 +148,7 @@ var chart = new Chart(ctx, {
 ### Label Color Callback
 
 For example, to return a red box for each item in the tooltip you could do:
+
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',
@@ -275,9 +269,7 @@ var myPieChart = new Chart(ctx, {
                 tooltipEl.style.position = 'absolute';
                 tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
                 tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                tooltipEl.style.font = tooltipModel.bodyFont.string;
                 tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
                 tooltipEl.style.pointerEvents = 'none';
             }
@@ -289,6 +281,7 @@ var myPieChart = new Chart(ctx, {
 See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
+
 The tooltip model contains parameters that can be used to render the tooltip.
 
 ```javascript
@@ -322,20 +315,14 @@ The tooltip model contains parameters that can be used to render the tooltip.
     beforeBody: string[],
     // line of text that appear after the body and before the footer
     afterBody: string[],
-    bodyFontColor: Color,
-    _bodyFontFamily: string,
-    _bodyFontStyle: string,
+    bodyFont: Font,
     _bodyAlign: string,
-    bodyFontSize: number,
     bodySpacing: number,
 
     // Title
     // lines of text that form the title
     title: string[],
-    titleFontColor: Color,
-    _titleFontFamily: string,
-    _titleFontStyle: string,
-    titleFontSize: number,
+    titleFont: Font,
     _titleAlign: string,
     titleSpacing: number,
     titleMarginBottom: number,
@@ -343,10 +330,7 @@ The tooltip model contains parameters that can be used to render the tooltip.
     // Footer
     // lines of text that form the footer
     footer: string[],
-    footerFontColor: Color,
-    _footerFontFamily: string,
-    _footerFontStyle: string,
-    footerFontSize: number,
+    footerFont: Font,
     _footerAlign: string,
     footerSpacing: number,
     footerMarginTop: number,

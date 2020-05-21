@@ -1,11 +1,7 @@
-'use strict';
+const {toLineHeight, toPadding, toFont, resolve} = Chart.helpers.options; // from '../../src/helpers/helpers.options';
 
 describe('Chart.helpers.options', function() {
-	var options = Chart.helpers.options;
-
 	describe('toLineHeight', function() {
-		var toLineHeight = options.toLineHeight;
-
 		it ('should support keyword values', function() {
 			expect(toLineHeight('normal', 16)).toBe(16 * 1.2);
 		});
@@ -28,8 +24,6 @@ describe('Chart.helpers.options', function() {
 	});
 
 	describe('toPadding', function() {
-		var toPadding = options.toPadding;
-
 		it ('should support number values', function() {
 			expect(toPadding(4)).toEqual(
 				{top: 4, right: 4, bottom: 4, left: 4, height: 8, width: 8});
@@ -66,102 +60,102 @@ describe('Chart.helpers.options', function() {
 		});
 	});
 
-	describe('_parseFont', function() {
-		var parseFont = options._parseFont;
+	describe('toFont', function() {
+		it('should return a font with default values', function() {
+			const defaultFont = Object.assign({}, Chart.defaults.font);
 
-		it ('should return a font with default values', function() {
-			const fontFamily = Chart.defaults.fontFamily;
-			const fontSize = Chart.defaults.fontSize;
-			const fontStyle = Chart.defaults.fontStyle;
-			const lineHeight = Chart.defaults.lineHeight;
-
-			Object.assign(Chart.defaults, {
-				fontFamily: 'foobar',
-				fontSize: 42,
-				fontStyle: 'xxxyyy',
+			Object.assign(Chart.defaults.font, {
+				color: 'bar',
+				family: 'foobar',
+				size: 42,
+				style: 'xxxyyy',
 				lineHeight: 1.5
 			});
 
-			expect(parseFont({})).toEqual({
+			expect(toFont({})).toEqual({
+				color: 'bar',
 				family: 'foobar',
 				lineHeight: 63,
 				size: 42,
 				string: 'xxxyyy 42px foobar',
 				style: 'xxxyyy',
-				weight: null
+				weight: null,
+				lineWidth: 0,
+				strokeStyle: undefined
 			});
 
-			Object.assign(Chart.defaults, {
-				fontFamily,
-				fontSize,
-				fontStyle,
-				lineHeight
-			});
+			Object.assign(Chart.defaults.font, defaultFont);
 		});
 		it ('should return a font with given values', function() {
-			expect(parseFont({
-				fontFamily: 'bla',
+			expect(toFont({
+				color: 'asd',
+				family: 'bla',
 				lineHeight: 8,
-				fontSize: 21,
-				fontStyle: 'zzz'
+				size: 21,
+				style: 'zzz'
 			})).toEqual({
+				color: 'asd',
 				family: 'bla',
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
 				style: 'zzz',
-				weight: null
+				weight: null,
+				lineWidth: 0,
+				strokeStyle: undefined
 			});
 		});
 		it ('should handle a string font size', function() {
-			expect(parseFont({
-				fontFamily: 'bla',
+			expect(toFont({
+				color: 'asd',
+				family: 'bla',
 				lineHeight: 8,
-				fontSize: '21',
-				fontStyle: 'zzz'
+				size: '21',
+				style: 'zzz'
 			})).toEqual({
+				color: 'asd',
 				family: 'bla',
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
 				style: 'zzz',
-				weight: null
+				weight: null,
+				lineWidth: 0,
+				strokeStyle: undefined
 			});
 		});
-		it('should return null as a font string if fontSize or fontFamily are missing', function() {
-			const fontFamily = Chart.defaults.fontFamily;
-			const fontSize = Chart.defaults.fontSize;
-			delete Chart.defaults.fontFamily;
-			delete Chart.defaults.fontSize;
+		it('should return null as a font string if size or family are missing', function() {
+			const fontFamily = Chart.defaults.font.family;
+			const fontSize = Chart.defaults.font.size;
+			delete Chart.defaults.font.family;
+			delete Chart.defaults.font.size;
 
-			expect(parseFont({
-				fontStyle: 'italic',
-				fontSize: 12
+			expect(toFont({
+				style: 'italic',
+				size: 12
 			}).string).toBeNull();
-			expect(parseFont({
-				fontStyle: 'italic',
-				fontFamily: 'serif'
+			expect(toFont({
+				style: 'italic',
+				family: 'serif'
 			}).string).toBeNull();
 
-			Chart.defaults.fontFamily = fontFamily;
-			Chart.defaults.fontSize = fontSize;
+			Chart.defaults.font.family = fontFamily;
+			Chart.defaults.font.size = fontSize;
 		});
-		it('fontStyle should be optional for font strings', function() {
-			const fontStyle = Chart.defaults.fontStyle;
-			delete Chart.defaults.fontStyle;
+		it('font.style should be optional for font strings', function() {
+			const fontStyle = Chart.defaults.font.style;
+			delete Chart.defaults.font.style;
 
-			expect(parseFont({
-				fontSize: 12,
-				fontFamily: 'serif'
+			expect(toFont({
+				size: 12,
+				family: 'serif'
 			}).string).toBe('12px serif');
 
-			Chart.defaults.fontStyle = fontStyle;
+			Chart.defaults.font.style = fontStyle;
 		});
 	});
 
 	describe('resolve', function() {
-		var resolve = options.resolve;
-
 		it ('should fallback to the first defined input', function() {
 			expect(resolve([42])).toBe(42);
 			expect(resolve([42, 'foo'])).toBe(42);

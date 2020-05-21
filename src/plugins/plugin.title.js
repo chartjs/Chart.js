@@ -1,13 +1,15 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {isArray, valueOrDefault, mergeIf} from '../helpers/helpers.core';
-import {toPadding, _parseFont} from '../helpers/helpers.options';
+import {isArray, mergeIf} from '../helpers/helpers.core';
+import {toPadding, toFont} from '../helpers/helpers.options';
 
 defaults.set('title', {
 	align: 'center',
 	display: false,
-	fontStyle: 'bold',
+	font: {
+		style: 'bold',
+	},
 	fullWidth: true,
 	padding: 10,
 	position: 'top',
@@ -119,7 +121,7 @@ export class Title extends Element {
 
 		const lineCount = isArray(opts.text) ? opts.text.length : 1;
 		me._padding = toPadding(opts.padding);
-		const textSize = lineCount * _parseFont(opts).lineHeight + me._padding.height;
+		const textSize = lineCount * toFont(opts.font).lineHeight + me._padding.height;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
@@ -142,7 +144,7 @@ export class Title extends Element {
 			return;
 		}
 
-		const fontOpts = _parseFont(opts);
+		const fontOpts = toFont(opts);
 		const lineHeight = fontOpts.lineHeight;
 		const offset = lineHeight / 2 + me._padding.top;
 		let rotation = 0;
@@ -195,7 +197,7 @@ export class Title extends Element {
 
 		ctx.save();
 
-		ctx.fillStyle = valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
+		ctx.fillStyle = fontOpts.color;
 		ctx.font = fontOpts.string;
 
 		ctx.translate(titleX, titleY);

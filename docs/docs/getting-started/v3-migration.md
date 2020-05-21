@@ -55,11 +55,11 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
 * `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
 * `defaultColor` was renamed to `color`
-* `defaultFontColor` was renamed to `fontColor`
-* `defaultFontFamily` was renamed to `fontFamily`
-* `defaultFontSize` was renamed to `fontSize`
-* `defaultFontStyle` was renamed to `fontStyle`
-* `defaultLineHeight` was renamed to `lineHeight`
+* `defaultFontColor` was renamed to `font.color`
+* `defaultFontFamily` was renamed to `font.family`
+* `defaultFontSize` was renamed to `font.size`
+* `defaultFontStyle` was renamed to `font.style`
+* `defaultLineHeight` was renamed to `font.lineHeight`
 
 #### Scales
 
@@ -82,11 +82,13 @@ options: {
         major: {
           enabled: true
         },
-        fontStyle: function(context) {
-          return context.tick && context.tick.major ? 'bold' : undefined;
-        },
-        fontColor: function(context) {
-          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              style: 'bold',
+              color: '#FF0000'
+            };
+          }
         }
       }
     }],
@@ -118,11 +120,13 @@ options: {
         major: {
           enabled: true
         },
-        fontStyle: function(context) {
-          return context.tick && context.tick.major ? 'bold' : undefined;
-        },
-        fontColor: function(context) {
-          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              style: 'bold',
+              color: '#FF0000'
+            };
+          }
         }
       }
     },
