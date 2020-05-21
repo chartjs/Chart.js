@@ -1,22 +1,6 @@
 import defaults from '../core/core.defaults';
-import {isNullOrUndef, isArray, isObject, valueOrDefault} from './helpers.core';
-
-/**
- * Converts the given font object into a CSS font string.
- * @param {object} font - A font object.
- * @return {string|null} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
- * @private
- */
-function toFontString(font) {
-	if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
-		return null;
-	}
-
-	return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
-		+ font.size + 'px '
-		+ font.family;
-}
+import {isArray, isObject, valueOrDefault} from './helpers.core';
+import {toFontString} from './helpers.canvas';
 
 /**
  * @alias Chart.helpers.options
@@ -84,22 +68,26 @@ export function toPadding(value) {
  * Parses font options and returns the font object.
  * @param {object} options - A object that contains font options to be parsed.
  * @return {object} The font object.
- * @todo Support font.* options and renamed to toFont().
  * @private
  */
-export function _parseFont(options) {
-	let size = valueOrDefault(options.fontSize, defaults.fontSize);
+export function toFont(options) {
+	const defaultFont = defaults.font;
+	options = options || {};
+	let size = valueOrDefault(options.size, defaultFont.size);
 
 	if (typeof size === 'string') {
 		size = parseInt(size, 10);
 	}
 
 	const font = {
-		family: valueOrDefault(options.fontFamily, defaults.fontFamily),
-		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaults.lineHeight), size),
+		color: valueOrDefault(options.color, defaultFont.color),
+		family: valueOrDefault(options.family, defaultFont.family),
+		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaultFont.lineHeight), size),
+		lineWidth: valueOrDefault(options.lineWidth, defaultFont.lineWidth),
 		size,
-		style: valueOrDefault(options.fontStyle, defaults.fontStyle),
-		weight: null,
+		style: valueOrDefault(options.style, defaultFont.style),
+		weight: valueOrDefault(options.weight, defaultFont.weight),
+		strokeStyle: valueOrDefault(options.strokeStyle, defaultFont.strokeStyle),
 		string: ''
 	};
 
