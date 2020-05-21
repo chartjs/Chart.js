@@ -107,7 +107,7 @@ function example() {
 
 ## Animation Configuration
 
-The following animation options are available. The global options for are defined in `Chart.defaults.animation`.
+The following animation options are available. The global options are defined in `Chart.defaults.animation`.
 The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
 
 | Name | Type | Default | Description
@@ -123,7 +123,7 @@ The default configuration is defined here: <a href="https://github.com/chartjs/C
 | `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
 | `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
 | `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
-| [property] | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tenstion [property]** example above.
+| [property] | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
 | [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array. Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
 | [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
 
