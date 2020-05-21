@@ -1,7 +1,8 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import helpers from '../helpers/index';
 import layouts from '../core/core.layouts';
+import {isArray, valueOrDefault, mergeIf} from '../helpers/helpers.core';
+import {toPadding, _parseFont} from '../helpers/helpers.options';
 
 defaults.set('title', {
 	align: 'center',
@@ -116,9 +117,9 @@ export class Title extends Element {
 			return;
 		}
 
-		const lineCount = helpers.isArray(opts.text) ? opts.text.length : 1;
-		me._padding = helpers.options.toPadding(opts.padding);
-		const textSize = lineCount * helpers.options._parseFont(opts).lineHeight + me._padding.height;
+		const lineCount = isArray(opts.text) ? opts.text.length : 1;
+		me._padding = toPadding(opts.padding);
+		const textSize = lineCount * _parseFont(opts).lineHeight + me._padding.height;
 		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
@@ -141,7 +142,7 @@ export class Title extends Element {
 			return;
 		}
 
-		const fontOpts = helpers.options._parseFont(opts);
+		const fontOpts = _parseFont(opts);
 		const lineHeight = fontOpts.lineHeight;
 		const offset = lineHeight / 2 + me._padding.top;
 		let rotation = 0;
@@ -194,7 +195,7 @@ export class Title extends Element {
 
 		ctx.save();
 
-		ctx.fillStyle = helpers.valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
+		ctx.fillStyle = valueOrDefault(opts.fontColor, defaults.fontColor); // render in correct colour
 		ctx.font = fontOpts.string;
 
 		ctx.translate(titleX, titleY);
@@ -203,7 +204,7 @@ export class Title extends Element {
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
-		if (helpers.isArray(text)) {
+		if (isArray(text)) {
 			let y = 0;
 			for (let i = 0; i < text.length; ++i) {
 				ctx.fillText(text[i], 0, y, maxWidth);
@@ -254,7 +255,7 @@ export default {
 		const titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			helpers.mergeIf(titleOpts, defaults.title);
+			mergeIf(titleOpts, defaults.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);

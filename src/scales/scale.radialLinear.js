@@ -1,13 +1,11 @@
 import defaults from '../core/core.defaults';
-import helpers from '../helpers/index';
 import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import {valueOrDefault, isArray, valueAtIndexOrDefault, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
+import {_parseFont, resolve} from '../helpers/helpers.options';
 
-const valueOrDefault = helpers.valueOrDefault;
-const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-const resolve = helpers.options.resolve;
 
 const defaultConfig = {
 	display: true,
@@ -69,7 +67,7 @@ function getTickBackdropHeight(opts) {
 }
 
 function measureLabelSize(ctx, lineHeight, label) {
-	if (helpers.isArray(label)) {
+	if (isArray(label)) {
 		return {
 			w: _longestText(ctx, ctx.font, label),
 			h: label.length * lineHeight
@@ -132,7 +130,7 @@ function fitWithPointLabels(scale) {
 	//
 	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
-	const plFont = helpers.options._parseFont(scale.options.pointLabels);
+	const plFont = _parseFont(scale.options.pointLabels);
 
 	// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 	// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
@@ -198,7 +196,7 @@ function fillText(ctx, text, position, lineHeight) {
 	let y = position.y + lineHeight / 2;
 	let i, ilen;
 
-	if (helpers.isArray(text)) {
+	if (isArray(text)) {
 		for (i = 0, ilen = text.length; i < ilen; ++i) {
 			ctx.fillText(text[i], position.x, y);
 			y += lineHeight;
@@ -222,7 +220,7 @@ function drawPointLabels(scale) {
 	const pointLabelOpts = opts.pointLabels;
 	const tickBackdropHeight = getTickBackdropHeight(opts);
 	const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-	const plFont = helpers.options._parseFont(pointLabelOpts);
+	const plFont = _parseFont(pointLabelOpts);
 
 	ctx.save();
 
@@ -332,8 +330,8 @@ export default class RadialLinearScale extends LinearScaleBase {
 		const min = minmax.min;
 		const max = minmax.max;
 
-		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
-		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
+		me.min = isFinite(min) && !isNaN(min) ? min : 0;
+		me.max = isFinite(max) && !isNaN(max) ? max : 0;
 
 		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
@@ -354,7 +352,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map((value, index) => {
-			const label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
+			const label = callCallback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}
@@ -415,7 +413,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	getDistanceFromCenterForValue(value) {
 		const me = this;
 
-		if (helpers.isNullOrUndef(value)) {
+		if (isNullOrUndef(value)) {
 			return NaN;
 		}
 
@@ -507,7 +505,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 		}
 
 		const startAngle = me.getIndexAngle(0);
-		const tickFont = helpers.options._parseFont(tickOpts);
+		const tickFont = _parseFont(tickOpts);
 		const tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
 		let offset, width;
 

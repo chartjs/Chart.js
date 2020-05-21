@@ -1,6 +1,6 @@
-import helpers from '../helpers/index';
 import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
+import {getRelativePosition as helpersGetRelativePosition} from '../helpers/helpers.dom';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -23,7 +23,7 @@ function getRelativePosition(e, chart) {
 		};
 	}
 
-	return helpers.dom.getRelativePosition(e, chart);
+	return helpersGetRelativePosition(e, chart);
 }
 
 /**
