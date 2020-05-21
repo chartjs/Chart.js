@@ -126,13 +126,14 @@ export function getRelativePosition(evt, chart) {
 	};
 }
 
+function fallbackIfNotValid(measure, fallback) {
+	return typeof measure === 'number' ? measure : fallback;
+}
+
 export function getMaximumWidth(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientWidth === 'number') {
-			return domNode.clientWidth;
-		}
-		return domNode.width;
+		return fallbackIfNotValid(domNode.clientWidth, domNode.width);
 	}
 
 	const clientWidth = container.clientWidth;
@@ -147,10 +148,7 @@ export function getMaximumWidth(domNode) {
 export function getMaximumHeight(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientHeight === 'number') {
-			return domNode.clientHeight;
-		}
-		return domNode.height;
+		return fallbackIfNotValid(domNode.clientHeight, domNode.height);
 	}
 
 	const clientHeight = container.clientHeight;
