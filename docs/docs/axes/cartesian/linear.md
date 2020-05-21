@@ -18,6 +18,7 @@ The following options are provided by the linear scale. They are all located in 
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 | `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
 | `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)

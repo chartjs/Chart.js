@@ -53,8 +53,11 @@ const formatters = {
 		const logDelta = log10(Math.abs(delta));
 		const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0); // toFixed has a max of 20 decimal places
 
+		const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
+		Object.assign(options, this.options.ticks.format);
+
 		// @ts-ignore until TypeScript 4.0 because "notation" was previously experimental API
-		return new Intl.NumberFormat(locale, {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal}).format(tickValue);
+		return new Intl.NumberFormat(locale, options).format(tickValue);
 	}
 };
 
