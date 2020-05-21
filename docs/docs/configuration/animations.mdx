@@ -11,8 +11,8 @@ import TabItem from '@theme/TabItem';
 <Tabs
     defaultValue='tension'
     values={[
-        {label: 'Looping tension', value: 'tension' },
-        {label: 'Hide and show', value: 'hideshow' },
+        {label: 'Looping tension [property]', value: 'tension' },
+        {label: 'Hide and show [mode]', value: 'hideshow' },
     ]}
 >
 <TabItem value="tension">
@@ -108,6 +108,7 @@ function example() {
 ## Animation Configuration
 
 The following animation options are available. The global options for are defined in `Chart.defaults.animation`.
+The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -119,12 +120,12 @@ The following animation options are available. The global options for are define
 | `delay` | `number` | `undefined` | Delay before starting the animations.
 | `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
 | `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
-| `from`  | <code>number&#124;Color</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
 | `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
 | `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
-| [property] | `object` | `undefined` | Option overrides for single [property]. These have precedence over [collection].
-| [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
-| [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
+| [property] | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tenstion [property]** example above.
+| [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array. Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
+| [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
 
 ### Default collections
 
@@ -139,15 +140,19 @@ Direct property configuration overrides configuration of same property in a coll
 
 These defaults can be overridden in `options.animation` or `dataset.animation` and `tooltip.animation`. These keys are also [Scriptable](../general/options.md#scriptable-options)
 
+:::note
+These default collections are overridden by most dataset controllers.
+:::
+
 ### Default modes
 
 | Mode | Option | Value | Description
-| -----| ------ | -----
+| -----| ------ | ----- | -----
 | `'active'` | duration | 400 | Override default duration to 400ms for hover animations
 | `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
 | `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
 | | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
-| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / / [api](../developers/api.md#hidedatasetIndex).
+| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
 | | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false very at late phase of animation
 
 ## Easing
