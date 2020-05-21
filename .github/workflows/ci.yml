@@ -37,14 +37,12 @@ jobs:
         brew cask install google-chrome
       if: runner.os == 'macOS'
     - name: Select browsers / macOs
-      uses: allenevans/set-env@v1.0.0
-      with:
-        BROWSERS: '--browsers chrome'
+      run: echo "::set-env name=BROWSERS::--browsers chrome"
+      shell: bash
       if: runner.os == 'macOS'
     - name: Select browsers / Windows
-      uses: allenevans/set-env@v1.0.0
-      with:
-        BROWSERS: '--browsers chrome,firefox,edge'
+      run: echo "::set-env name=BROWSERS::--browsers chrome,firefox,edge"
+      shell: bash
       if: runner.os == 'Windows'
     - name: Build and Test
       run: |
