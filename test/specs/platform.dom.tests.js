@@ -1,4 +1,4 @@
-import {DomPlatform} from '../../src/platform/platforms';
+import {DomPlatform} from '../../src/platform';
 
 describe('Platform.dom', function() {
 
