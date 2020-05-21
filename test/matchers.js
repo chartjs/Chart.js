@@ -174,7 +174,8 @@ function toEqualImageData() {
 		compare: function(actual, expected, opts) {
 			var message = null;
 			var debug = opts.debug || false;
-			var tolerance = opts.tolerance === undefined ? 0.001 : opts.tolerance;
+			var edge = window && window.navigator && window.navigator.userAgent.indexOf('Edge') > -1;
+			var tolerance = opts.tolerance === undefined ? edge ? 0.02 : 0.001 : opts.tolerance;
 			var threshold = opts.threshold === undefined ? 0.1 : opts.threshold;
 			var ctx, idata, ddata, w, h, count, ratio;
 

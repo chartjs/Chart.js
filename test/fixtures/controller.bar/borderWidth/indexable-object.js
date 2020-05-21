@@ -29,7 +29,7 @@ module.exports = {
 			elements: {
 				rectangle: {
 					backgroundColor: 'transparent',
-					borderColor: '#80808080',
+					borderColor: 'rgba(128, 128, 128, 0.5)',
 					borderSkipped: false,
 					borderWidth: [
 						{bottom: 1, left: 5, top: 1, right: 5},

@@ -25,7 +25,7 @@ module.exports = {
 			elements: {
 				rectangle: {
 					backgroundColor: 'transparent',
-					borderColor: '#80808080',
+					borderColor: 'rgba(128, 128, 128, 0.5)',
 					borderSkipped: false,
 					borderWidth: function(ctx) {
 						return {left: ctx.dataIndex * 2};

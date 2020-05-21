@@ -40,6 +40,8 @@ jobs:
       run: |
         if [ "${{ runner.os }}" == "macOS" ]; then
           echo "::set-env name=BROWSERS::--browsers chrome"
+        elif [ "${{ runner.os }}" == "windows" ]; then
+          echo "::set-env name=BROWSERS::--browsers chrome,firefox,edge"
         fi
       shell: bash
     - name: Build and Test
