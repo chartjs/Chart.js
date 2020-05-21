@@ -42,11 +42,11 @@ Chart.scaleService = scaleService;
 Chart.Ticks = Ticks;
 
 // Register built-in scales
-import * as scales from './scales/index';
+import * as scales from './scales';
 Object.keys(scales).forEach(key => Chart.scaleService.registerScale(scales[key]));
 
 // Loading built-in plugins
-import plugins from './plugins/index';
+import * as plugins from './plugins';
 for (const k in plugins) {
 	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
 		Chart.plugins.register(plugins[k]);
