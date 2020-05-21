@@ -1,5 +1,6 @@
-import Animator from './core.animator';
-import controllers from '../controllers/index';
+/* eslint-disable import/no-namespace */
+import {default as Animator} from './core.animator';
+import * as controllers from '../controllers';
 import defaults from './core.defaults';
 import helpers from '../helpers/index';
 import Interaction from './core.interaction';
