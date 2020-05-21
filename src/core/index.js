@@ -1,0 +1,14 @@
+export {default as _adapters} from './core.adapters';
+export {default as Animation} from './core.animation';
+export {default as Animations} from './core.animations';
+export {default as Animator} from './core.animator';
+export {default as Chart} from './core.controller';
+export {default as DatasetController} from './core.datasetController';
+export {default as Defaults} from './core.defaults';
+export {default as Element} from './core.element';
+export {default as Interaction} from './core.interaction';
+export {default as Layouts} from './core.layouts';
+export {default as Plugins} from './core.plugins';
+export {default as Scale} from './core.scale';
+export {default as ScaleService} from './core.scaleService';
+export {default as Ticks} from './core.ticks';
