@@ -1,6 +1,6 @@
-import helpers from '../helpers/index';
 import effects from '../helpers/helpers.easing';
 import {resolve} from '../helpers/helpers.options';
+import {color as helpersColor} from '../helpers/helpers.color';
 
 const transparent = 'transparent';
 const interpolators = {
@@ -8,8 +8,8 @@ const interpolators = {
 		return factor > 0.5 ? to : from;
 	},
 	color(from, to, factor) {
-		const c0 = helpers.color(from || transparent);
-		const c1 = c0.valid && helpers.color(to || transparent);
+		const c0 = helpersColor(from || transparent);
+		const c1 = c0.valid && helpersColor(to || transparent);
 		return c1 && c1.valid
 			? c1.mix(c0, factor).hexString()
 			: to;

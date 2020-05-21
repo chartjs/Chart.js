@@ -1,4 +1,4 @@
-import helpers from '../helpers/index';
+import {requestAnimFrame} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -54,7 +54,7 @@ export class Animator {
 		}
 		me._running = true;
 
-		me._request = helpers.requestAnimFrame.call(window, () => {
+		me._request = requestAnimFrame.call(window, () => {
 			me._update();
 			me._request = null;
 

@@ -10,6 +10,7 @@ import * as math from './helpers.math';
 import * as rtl from './helpers.rtl';
 
 import {color, getHoverColor} from './helpers.color';
+import {requestAnimFrame, fontString} from './helpers.extras';
 
 export default {
 	...coreHelpers,
@@ -21,21 +22,9 @@ export default {
 	math,
 	rtl,
 
-	/**
-	 * Request animation polyfill
-	 */
-	requestAnimFrame: (function() {
-		if (typeof window === 'undefined') {
-			return function(callback) {
-				return callback();
-			};
-		}
-		return window.requestAnimationFrame;
-	}()),
+	requestAnimFrame,
 	// -- Canvas methods
-	fontString(pixelSize, fontStyle, fontFamily) {
-		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
-	},
+	fontString,
 	color,
 	getHoverColor
 };
