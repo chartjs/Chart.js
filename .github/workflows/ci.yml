@@ -42,13 +42,13 @@ jobs:
       if: runner.os == 'macOS'
     - name: Select browsers / Windows
       run: echo "::set-env name=BROWSERS::--browsers chrome,firefox,edge"
-      shell: bash
+      shell: cmd
       if: runner.os == 'Windows'
     - name: Build and Test
       run: |
         npm install
         gulp build
-        gulp test --coverage ${BROWSERS}
+        gulp test --coverage ${{ env.BROWSERS }}
     - name: Package
       run: |
         npm run docs
