@@ -1629,4 +1629,20 @@ describe('Chart.controllers.bar', function() {
 		expect(data[0].base + minBarLength).toEqual(data[0].x);
 		expect(data[1].base - minBarLength).toEqual(data[1].x);
 	});
+
+	describe('Float bar', function() {
+		it('Should return correct values from getMinMax', function() {
+			var chart = window.acquireChart({
+				type: 'bar',
+				data: {
+					labels: ['a'],
+					datasets: [{
+						data: [[10, -10]]
+					}]
+				}
+			});
+
+			expect(chart.scales.y.getMinMax()).toEqual({min: -10, max: 10});
+		});
+	});
 });

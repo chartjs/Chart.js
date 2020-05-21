@@ -223,6 +223,23 @@ export default class BarController extends DatasetController {
 	/**
 	 * @protected
 	 */
+	getMinMax(scale, canStack) {
+		const result = super.getMinMax(scale, canStack);
+
+		for (let i = 0; i < this._cachedMeta.data.length; i++) {
+			const custom = this.getParsed(i)._custom;
+			if (custom) {
+				result.min = Math.min(custom.min, result.min);
+				result.max = Math.max(custom.max, result.max);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * @protected
+	 */
 	getLabelAndValue(index) {
 		const me = this;
 		const meta = me._cachedMeta;
