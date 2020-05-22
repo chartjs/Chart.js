@@ -45,5 +45,8 @@ The context object contains the following properties:
 - `dataset`: dataset at index `datasetIndex`
 - `datasetIndex`: index of the current dataset
 - `active`: true if element is active (hovered)
+- `scale`: the associated scale
+- `index`: index of the current tick
+- `tick`: the associated Tick object: `{value:any, label?:string, major?:boolean}`
 
-**Important**: since the context can represent different types of entities (dataset, data, etc.), some properties may be `undefined` so be sure to test any context property before using it.
+**Important**: since the context can represent different types of entities (dataset, data, ticks, etc.), some properties may be `undefined` so be sure to test any context property before using it.
