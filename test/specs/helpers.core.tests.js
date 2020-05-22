@@ -301,6 +301,25 @@ describe('Chart.helpers.core', function() {
 			expect(output.o.a).not.toBe(a1);
 			expect(output.a).not.toBe(a0);
 		});
+		it('should preserve prototype of objects', function() {
+			// https://github.com/chartjs/Chart.js/issues/7340
+			function MyConfigObject(s) {
+				this._s = s;
+			}
+			MyConfigObject.prototype.func = function() {
+				return 10;
+			};
+			var original = new MyConfigObject('something');
+			var output = helpers.merge({}, {
+				plugins: [{
+					test: original
+				}]
+			});
+			var clone = output.plugins[0].test;
+			expect(clone).toBeInstanceOf(MyConfigObject);
+			expect(clone).toEqual(original);
+			expect(clone === original).toBeFalse();
+		});
 	});
 
 	describe('merge', function() {
