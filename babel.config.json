@@ -1,19 +1,22 @@
 {
-  "presets": [
-    [
-		"@babel/preset-env", {
-			"loose": true
+	"presets": [
+		[
+			"@babel/preset-env",
+			{
+				"loose": true
+			}
+		]
+	],
+	"env": {
+		"umd": {
+			"plugins": [
+				"@babel/plugin-transform-object-assign"
+			]
+		},
+		"test": {
+			"plugins": [
+				"istanbul"
+			]
 		}
-	]
-  ],
-  "plugins": [
-    "@babel/plugin-transform-object-assign"
-  ],
-  "env": {
-    "test": {
-      "plugins": [
-        "istanbul"
-      ]
-    }
-  }
+	}
 }

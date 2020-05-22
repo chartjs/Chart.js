@@ -3,6 +3,7 @@
 /custom
 /dist
 /gh-pages
+/helpers
 
 # Node.js
 node_modules/
