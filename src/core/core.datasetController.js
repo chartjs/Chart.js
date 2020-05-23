@@ -1,4 +1,5 @@
 import Animations from './core.animations';
+import defaults from './core.defaults';
 import {isObject, inherits, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
@@ -1189,3 +1190,23 @@ DatasetController.prototype.dataElementOptions = [
 	'borderWidth',
 	'pointStyle'
 ];
+
+/**
+ * @type {{[key: string]: typeof DatasetController}}
+ */
+export const controllers = {};
+
+export function registerController(controller) {
+	if (controllers[controller.id] != null) {
+		// already registered
+		return;
+	}
+	if (typeof controller.preRegister === 'function') {
+		controller.preRegister();
+	}
+	controllers[controller.id] = controller;
+	defaults.set(controller.id, controller.defaults);
+	if (typeof controller.postRegister === 'function') {
+		controller.postRegister();
+	}
+}

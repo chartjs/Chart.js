@@ -1,9 +1,8 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
 
-defaults.set('bubble', {
+const defaults = {
 	animation: {
 		numbers: {
 			properties: ['x', 'y', 'borderWidth', 'radius']
@@ -26,7 +25,7 @@ defaults.set('bubble', {
 			}
 		}
 	}
-});
+};
 
 export default class BubbleController extends DatasetController {
 
@@ -163,14 +162,18 @@ export default class BubbleController extends DatasetController {
 	}
 }
 
-BubbleController.prototype.dataElementType = Point;
+BubbleController.id = 'bubble';
+BubbleController.defaults = defaults;
+BubbleController.preRegister = () => {
+	BubbleController.prototype.dataElementType = Point;
 
-BubbleController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'hitRadius',
-	'radius',
-	'pointStyle',
-	'rotation'
-];
+	BubbleController.prototype.dataElementOptions = [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hitRadius',
+		'radius',
+		'pointStyle',
+		'rotation'
+	];
+}

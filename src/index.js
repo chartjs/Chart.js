@@ -10,8 +10,7 @@ import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import {default as Animator} from './core/core.animator';
 import animationService from './core/core.animations';
-import * as controllers from './controllers';
-import DatasetController from './core/core.datasetController';
+import DatasetController, {controllers, registerController} from './core/core.datasetController';
 import defaults from './core/core.defaults';
 import Element from './core/core.element';
 import * as elements from './elements/index';
@@ -52,6 +51,11 @@ for (const k in plugins) {
 		Chart.plugins.register(plugins[k]);
 	}
 }
+
+// Register built-in controllers
+import * as builtInControllers from './controllers';
+Object.keys(builtInControllers).forEach(key => registerController(builtInControllers[key]));
+
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore

@@ -1,10 +1,9 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Arc} from '../elements/index';
 import {toRadians} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
-defaults.set('polarArea', {
+const defaults = {
 	animation: {
 		numbers: {
 			type: 'number',
@@ -72,7 +71,7 @@ defaults.set('polarArea', {
 			}
 		}
 	}
-});
+};
 
 function getStartAngleRadians(deg) {
 	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
@@ -221,14 +220,18 @@ export default class PolarAreaController extends DatasetController {
 	}
 }
 
-PolarAreaController.prototype.dataElementType = Arc;
+PolarAreaController.id = 'polarArea';
+PolarAreaController.defaults = defaults;
+PolarAreaController.preRegister = () => {
+	PolarAreaController.prototype.dataElementType = Arc;
 
-PolarAreaController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'borderAlign',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth'
-];
+	PolarAreaController.prototype.dataElementOptions = [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth'
+	];
+};

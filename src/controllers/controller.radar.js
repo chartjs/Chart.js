@@ -3,7 +3,7 @@ import defaults from '../core/core.defaults';
 import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 
-defaults.set('radar', {
+const defaults = {
 	spanGaps: false,
 	scales: {
 		r: {
@@ -15,7 +15,7 @@ defaults.set('radar', {
 			tension: 0 // no bezier in radar
 		}
 	}
-});
+};
 
 export default class RadarController extends DatasetController {
 
@@ -112,31 +112,35 @@ export default class RadarController extends DatasetController {
 	}
 }
 
-RadarController.prototype.datasetElementType = Line;
+RadarController.id = 'radar';
+RadarController.defaults = defaults;
+RadarController.preRegister = () => {
+	RadarController.prototype.datasetElementType = Line;
 
-RadarController.prototype.dataElementType = Point;
+	RadarController.prototype.dataElementType = Point;
 
-RadarController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderCapStyle',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'fill'
-];
+	RadarController.prototype.datasetElementOptions = [
+		'backgroundColor',
+		'borderColor',
+		'borderCapStyle',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'fill'
+	];
 
-RadarController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
+	RadarController.prototype.dataElementOptions = {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	};
 };

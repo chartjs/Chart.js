@@ -1,11 +1,10 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Rectangle} from '../elements/index';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';
 
-defaults.set('bar', {
+const defaults = {
 	hover: {
 		mode: 'index'
 	},
@@ -34,7 +33,7 @@ defaults.set('bar', {
 			beginAtZero: true,
 		}
 	}
-});
+};
 
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
@@ -496,16 +495,20 @@ export default class BarController extends DatasetController {
 
 }
 
-BarController.prototype.dataElementType = Rectangle;
+BarController.id = 'bar';
+BarController.defaults = defaults;
+BarController.preRegister = () => {
+	BarController.prototype.dataElementType = Rectangle;
 
-BarController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderSkipped',
-	'borderWidth',
-	'barPercentage',
-	'barThickness',
-	'categoryPercentage',
-	'maxBarThickness',
-	'minBarLength'
-];
+	BarController.prototype.dataElementOptions = [
+		'backgroundColor',
+		'borderColor',
+		'borderSkipped',
+		'borderWidth',
+		'barPercentage',
+		'barThickness',
+		'categoryPercentage',
+		'maxBarThickness',
+		'minBarLength'
+	];
+};

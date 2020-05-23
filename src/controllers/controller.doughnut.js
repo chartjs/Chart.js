@@ -1,5 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Arc} from '../elements/index';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
 
@@ -11,7 +10,7 @@ const PI = Math.PI;
 const DOUBLE_PI = PI * 2;
 const HALF_PI = PI / 2;
 
-defaults.set('doughnut', {
+const defaults = {
 	animation: {
 		numbers: {
 			type: 'number',
@@ -85,7 +84,7 @@ defaults.set('doughnut', {
 			}
 		}
 	}
-});
+};
 
 function getRatioAndOffset(rotation, circumference, cutout) {
 	let ratioX = 1;
@@ -329,14 +328,18 @@ export default class DoughnutController extends DatasetController {
 	}
 }
 
-DoughnutController.prototype.dataElementType = Arc;
+DoughnutController.id = 'doughnut';
+DoughnutController.defaults = defaults;
+DoughnutController.preRegister = () => {
+	DoughnutController.prototype.dataElementType = Arc;
 
-DoughnutController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'borderAlign',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth',
-];
+	DoughnutController.prototype.dataElementOptions = [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+	];
+};

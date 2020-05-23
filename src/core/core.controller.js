@@ -1,12 +1,12 @@
 /* eslint-disable import/no-namespace, import/namespace */
 import {default as Animator} from './core.animator';
-import * as controllers from '../controllers';
 import defaults from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
 import plugins from './core.plugins';
 import scaleService from './core.scaleService';
+import { controllers } from './core.datasetController';
 import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
 import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';

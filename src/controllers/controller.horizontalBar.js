@@ -1,7 +1,6 @@
 import BarController from './controller.bar';
-import defaults from '../core/core.defaults';
 
-defaults.set('horizontalBar', {
+const defaults = {
 	hover: {
 		mode: 'index',
 		axis: 'y'
@@ -36,7 +35,7 @@ defaults.set('horizontalBar', {
 		mode: 'index',
 		axis: 'y'
 	}
-});
+};
 
 export default class HorizontalBarController extends BarController {
 
@@ -54,3 +53,6 @@ export default class HorizontalBarController extends BarController {
 		return this._cachedMeta.yAxisID;
 	}
 }
+
+HorizontalBarController.id = 'horizontalBar';
+HorizontalBarController.defaults = defaults;

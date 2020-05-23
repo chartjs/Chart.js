@@ -1,7 +1,6 @@
 import LineController from './controller.line';
-import defaults from '../core/core.defaults';
 
-defaults.set('scatter', {
+const defaults = {
 	scales: {
 		x: {
 			type: 'linear'
@@ -25,7 +24,13 @@ defaults.set('scatter', {
 			}
 		}
 	}
-});
+};
 
-// Scatter charts use line controllers
-export default LineController;
+export default class ScatterController extends LineController {
+
+}
+ScatterController.id = 'scatter';
+ScatterController.defaults = defaults;
+ScatterController.preRegister = () => {
+	LineController.preRegister();
+}

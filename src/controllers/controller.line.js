@@ -1,11 +1,10 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
-defaults.set('line', {
+const defaults = {
 	showLines: true,
 	spanGaps: false,
 
@@ -21,7 +20,7 @@ defaults.set('line', {
 			type: 'linear',
 		},
 	}
-});
+};
 
 export default class LineController extends DatasetController {
 
@@ -157,34 +156,38 @@ export default class LineController extends DatasetController {
 	}
 }
 
-LineController.prototype.datasetElementType = Line;
+LineController.id = 'line';
+LineController.defaults = defaults;
+LineController.preRegister = () => {
+	LineController.prototype.datasetElementType = Line;
 
-LineController.prototype.dataElementType = Point;
+	LineController.prototype.dataElementType = Point;
 
-LineController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderCapStyle',
-	'borderColor',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'capBezierPoints',
-	'cubicInterpolationMode',
-	'fill'
-];
+	LineController.prototype.datasetElementOptions = [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'capBezierPoints',
+		'cubicInterpolationMode',
+		'fill'
+	];
 
-LineController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverHitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
+	LineController.prototype.dataElementOptions = {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverHitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	};
 };
