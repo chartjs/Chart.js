@@ -14,9 +14,9 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
 | `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
 | `fullWidth` | `boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `function` | | A callback that is called when a click event is registered on a label item.
-| `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
-| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+| `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
+| `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
+| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item. Arguments: `[event, legendItem, legend]`.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
@@ -134,16 +134,16 @@ It can be common to want to trigger different behaviour when clicking an item in
 The default legend click handler is:
 
 ```javascript
-function(e, legendItem) {
-    var index = legendItem.datasetIndex;
-    var ci = this.chart;
-    var meta = ci.getDatasetMeta(index);
-
-    // See controller.isDatasetVisible comment
-    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-
-    // We hid a dataset ... rerender the chart
-    ci.update();
+function(e, legendItem, legend) {
+    const index = legendItem.datasetIndex;
+    const ci = legend.chart;
+    if (ci.isDatasetVisible(index)) {
+        ci.hide(index);
+        legendItem.hidden = true;
+    } else {
+        ci.show(index);
+        legendItem.hidden = false;
+    }
 }
 ```
 
@@ -151,14 +151,14 @@ Lets say we wanted instead to link the display of the first two datasets. We cou
 
 ```javascript
 var defaultLegendClickHandler = Chart.defaults.legend.onClick;
-var newLegendClickHandler = function (e, legendItem) {
+var newLegendClickHandler = function (e, legendItem, legend) {
     var index = legendItem.datasetIndex;
 
     if (index > 1) {
         // Do the original logic
         defaultLegendClickHandler(e, legendItem);
     } else {
-        let ci = this.chart;
+        let ci = legend.chart;
         [
             ci.getDatasetMeta(0),
             ci.getDatasetMeta(1)

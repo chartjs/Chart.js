@@ -147,12 +147,12 @@ describe('Default Configs', function() {
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
-			config.legend.onClick.call(chart.legend, null, legendItem);
+			config.legend.onClick(null, legendItem, chart.legend);
 
 			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
-			config.legend.onClick.call(chart.legend, null, legendItem);
+			config.legend.onClick(null, legendItem, chart.legend);
 			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
@@ -243,12 +243,12 @@ describe('Default Configs', function() {
 			spyOn(chart, 'update').and.callThrough();
 
 			var legendItem = chart.legend.legendItems[0];
-			config.legend.onClick.call(chart.legend, null, legendItem);
+			config.legend.onClick(null, legendItem, chart.legend);
 
 			expect(chart.getDataVisibility(0)).toBe(false);
 			expect(chart.update).toHaveBeenCalled();
 
-			config.legend.onClick.call(chart.legend, null, legendItem);
+			config.legend.onClick(null, legendItem, chart.legend);
 			expect(chart.getDataVisibility(0)).toBe(true);
 		});
 	});
