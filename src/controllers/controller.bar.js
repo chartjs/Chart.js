@@ -500,7 +500,7 @@ export default class BarController extends DatasetController {
 
 BarController.id = 'bar';
 BarController.defaults = defaults;
-BarController.preRegister = () => {
+BarController.beforeRegister = () => {
 	BarController.prototype.dataElementType = Rectangle;
 
 	BarController.prototype.dataElementOptions = [

@@ -7,8 +7,8 @@ export default class PieController extends DoughnutController {
 
 }
 PieController.id = 'pie';
-PieController.preRegister = () => {
-	DoughnutController.preRegister();
+PieController.beforeRegister = () => {
+	DoughnutController.beforeRegister();
 	PieController.defaults = merge({}, [DoughnutController.defaults, {
 		cutoutPercentage: 0
 	}]);

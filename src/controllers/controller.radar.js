@@ -116,7 +116,7 @@ export default class RadarController extends DatasetController {
 
 RadarController.id = 'radar';
 RadarController.defaults = defaults;
-RadarController.preRegister = () => {
+RadarController.beforeRegister = () => {
 	RadarController.prototype.datasetElementType = Line;
 
 	RadarController.prototype.dataElementType = Point;

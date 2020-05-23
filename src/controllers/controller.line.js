@@ -161,7 +161,7 @@ export default class LineController extends DatasetController {
 
 LineController.id = 'line';
 LineController.defaults = defaults;
-LineController.preRegister = () => {
+LineController.beforeRegister = () => {
 	LineController.prototype.datasetElementType = Line;
 
 	LineController.prototype.dataElementType = Point;

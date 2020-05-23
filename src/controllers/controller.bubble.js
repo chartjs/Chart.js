@@ -167,7 +167,7 @@ export default class BubbleController extends DatasetController {
 
 BubbleController.id = 'bubble';
 BubbleController.defaults = defaults;
-BubbleController.preRegister = () => {
+BubbleController.beforeRegister = () => {
 	BubbleController.prototype.dataElementType = Point;
 
 	BubbleController.prototype.dataElementOptions = [

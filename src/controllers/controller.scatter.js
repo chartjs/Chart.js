@@ -35,6 +35,6 @@ export default class ScatterController extends LineController {
 
 ScatterController.id = 'scatter';
 ScatterController.defaults = defaults;
-ScatterController.preRegister = () => {
-	LineController.preRegister();
+ScatterController.beforeRegister = () => {
+	LineController.beforeRegister();
 };

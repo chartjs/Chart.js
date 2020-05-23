@@ -225,7 +225,7 @@ export default class PolarAreaController extends DatasetController {
 
 PolarAreaController.id = 'polarArea';
 PolarAreaController.defaults = defaults;
-PolarAreaController.preRegister = () => {
+PolarAreaController.beforeRegister = () => {
 	PolarAreaController.prototype.dataElementType = Arc;
 
 	PolarAreaController.prototype.dataElementOptions = [

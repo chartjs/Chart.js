@@ -1,6 +1,6 @@
 import Animations from './core.animations';
 import defaults from './core.defaults';
-import {isObject, inherits, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
+import {isObject, inherits, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals, callback as callCallback} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
@@ -1201,12 +1201,8 @@ export function registerController(controller) {
 		// already registered
 		return;
 	}
-	if (typeof controller.preRegister === 'function') {
-		controller.preRegister();
-	}
+	callCallback(controller.beforeRegister, [], controller);
 	controllers[controller.id] = controller;
 	defaults.set(controller.id, controller.defaults);
-	if (typeof controller.postRegister === 'function') {
-		controller.postRegister();
-	}
+	callCallback(controller.afterRegister, [], controller);
 }

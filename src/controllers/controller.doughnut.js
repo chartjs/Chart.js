@@ -333,7 +333,7 @@ export default class DoughnutController extends DatasetController {
 
 DoughnutController.id = 'doughnut';
 DoughnutController.defaults = defaults;
-DoughnutController.preRegister = () => {
+DoughnutController.beforeRegister = () => {
 	DoughnutController.prototype.dataElementType = Arc;
 
 	DoughnutController.prototype.dataElementOptions = [
