@@ -157,6 +157,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
 * `options.onClick` is now limited to the chart area
+* `options.onClick` and `options.onHover` now receive the `chart` instance as a 3rd argument
 
 #### Ticks
 
