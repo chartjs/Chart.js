@@ -660,18 +660,18 @@ export class Legend extends Element {
 
 		if (type === 'click') {
 			if (hoveredItem) {
-				call(opts.onClick, [e, hoveredItem, me]);
+				call(opts.onClick, [e, hoveredItem, me], me);
 			}
 		} else {
 			if (opts.onLeave && hoveredItem !== me._hoveredItem) {
 				if (me._hoveredItem) {
-					call(opts.onLeave, [e, me._hoveredItem, me]);
+					call(opts.onLeave, [e, me._hoveredItem, me], me);
 				}
 				me._hoveredItem = hoveredItem;
 			}
 
 			if (hoveredItem) {
-				call(opts.onHover, [e, hoveredItem, me]);
+				call(opts.onHover, [e, hoveredItem, me], me);
 			}
 		}
 	}
