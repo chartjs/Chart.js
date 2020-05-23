@@ -280,8 +280,8 @@ The following properties and methods were removed:
 
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Legend.margins` is now private
-* Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument rather than implicitly via `this`
-* Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. `event.native` accesses the parameter from v2.
+* Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument in addition to implicitly via `this`
+* Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 
