@@ -6,10 +6,10 @@ import {merge} from '../helpers/helpers.core';
 export default class PieController extends DoughnutController {
 
 }
-PieController.id = 'pid';
+PieController.id = 'pie';
 PieController.preRegister = () => {
 	DoughnutController.preRegister();
 	PieController.defaults = merge({}, [DoughnutController.defaults, {
 		cutoutPercentage: 0
 	}]);
-}
+};

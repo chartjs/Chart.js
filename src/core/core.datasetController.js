@@ -1197,7 +1197,7 @@ DatasetController.prototype.dataElementOptions = [
 export const controllers = {};
 
 export function registerController(controller) {
-	if (controllers[controller.id] != null) {
+	if (typeof controllers[controller.id] !== 'undefined') {
 		// already registered
 		return;
 	}

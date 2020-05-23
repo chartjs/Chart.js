@@ -29,8 +29,9 @@ const defaults = {
 export default class ScatterController extends LineController {
 
 }
+
 ScatterController.id = 'scatter';
 ScatterController.defaults = defaults;
 ScatterController.preRegister = () => {
 	LineController.preRegister();
-}
+};

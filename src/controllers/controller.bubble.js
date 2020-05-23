@@ -176,4 +176,4 @@ BubbleController.preRegister = () => {
 		'pointStyle',
 		'rotation'
 	];
-}
+};
