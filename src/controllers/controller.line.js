@@ -4,6 +4,9 @@ import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	showLines: true,
 	spanGaps: false,

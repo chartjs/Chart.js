@@ -4,6 +4,9 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	hover: {
 		mode: 'index'

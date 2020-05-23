@@ -1,5 +1,8 @@
 import LineController from './controller.line';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	scales: {
 		x: {

@@ -1,5 +1,8 @@
 import BarController from './controller.bar';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	hover: {
 		mode: 'index',

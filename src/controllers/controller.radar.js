@@ -2,6 +2,9 @@ import DatasetController from '../core/core.datasetController';
 import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	spanGaps: false,
 	scales: {

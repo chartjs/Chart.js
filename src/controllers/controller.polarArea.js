@@ -3,6 +3,9 @@ import {Arc} from '../elements/index';
 import {toRadians} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	animation: {
 		numbers: {

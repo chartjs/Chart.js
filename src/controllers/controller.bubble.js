@@ -2,6 +2,9 @@ import DatasetController from '../core/core.datasetController';
 import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	animation: {
 		numbers: {

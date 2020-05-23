@@ -10,6 +10,9 @@ const PI = Math.PI;
 const DOUBLE_PI = PI * 2;
 const HALF_PI = PI / 2;
 
+/**
+ * @type {any}
+ */
 const defaults = {
 	animation: {
 		numbers: {
