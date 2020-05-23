@@ -1,5 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
 import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 
