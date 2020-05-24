@@ -502,4 +502,25 @@ describe('Chart.DatasetController', function() {
 			expect(data1[hook]).toBe(Array.prototype[hook]);
 		});
 	});
+
+	it('should resolve data element options to the default color', function() {
+		var data0 = [0, 1, 2, 3, 4, 5];
+		var oldColor = Chart.defaults.color;
+		Chart.defaults.color = 'red';
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: data0
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.dataset.options.borderColor).toBe('red');
+		expect(meta.data[0].options.borderColor).toBe('red');
+
+		// Reset old shared state
+		Chart.defaults.color = oldColor;
+	});
 });
