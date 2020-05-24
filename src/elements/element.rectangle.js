@@ -1,14 +1,5 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {isObject} from '../helpers/helpers.core';
-
-const scope = 'elements.rectangle';
-defaults.set(scope, {
-	borderSkipped: 'bottom',
-	borderWidth: 0
-});
-
-defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
@@ -121,7 +112,7 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-class Rectangle extends Element {
+export default class Rectangle extends Element {
 
 	constructor(cfg) {
 		super();
@@ -183,6 +174,14 @@ class Rectangle extends Element {
 	}
 }
 
-Rectangle._type = 'rectangle';
+Rectangle.id = 'rectangle';
 
-export default Rectangle;
+Rectangle.defaults = {
+	borderSkipped: 'bottom',
+	borderWidth: 0
+};
+
+Rectangle.defaultRoutes = {
+	backgroundColor: 'color',
+	borderColor: 'color'
+};

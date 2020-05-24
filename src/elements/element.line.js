@@ -1,4 +1,3 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../helpers/helpers.interpolation';
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
@@ -8,20 +7,6 @@ import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 /**
  * @typedef { import("./element.point").default } Point
  */
-
-const scope = 'elements.line';
-defaults.set(scope, {
-	borderCapStyle: 'butt',
-	borderDash: [],
-	borderDashOffset: 0,
-	borderJoinStyle: 'miter',
-	borderWidth: 3,
-	capBezierPoints: true,
-	fill: true,
-	tension: 0.4
-});
-
-defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');
 
 function setStyle(ctx, vm) {
 	ctx.lineCap = vm.borderCapStyle;
@@ -193,7 +178,7 @@ function _getInterpolationMethod(options) {
 	return _pointInLine;
 }
 
-class Line extends Element {
+export default class Line extends Element {
 
 	constructor(cfg) {
 		super();
@@ -353,6 +338,20 @@ class Line extends Element {
 	}
 }
 
-Line._type = 'line';
+Line.id = 'line';
 
-export default Line;
+Line.defaults = {
+	borderCapStyle: 'butt',
+	borderDash: [],
+	borderDashOffset: 0,
+	borderJoinStyle: 'miter',
+	borderWidth: 3,
+	capBezierPoints: true,
+	fill: true,
+	tension: 0.4
+};
+
+Line.defaultRoutes = {
+	backgroundColor: 'color',
+	borderColor: 'color'
+};

@@ -9,6 +9,6 @@ export {default as Element} from './core.element';
 export {default as Interaction} from './core.interaction';
 export {default as layouts} from './core.layouts';
 export {default as plugins} from './core.plugins';
+export {default as registry} from './core.registry';
 export {default as Scale} from './core.scale';
-export {default as ScaleService} from './core.scaleService';
 export {default as Ticks} from './core.ticks';

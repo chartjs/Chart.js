@@ -1,32 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
-
-defaults.set('bubble', {
-	animation: {
-		numbers: {
-			properties: ['x', 'y', 'borderWidth', 'radius']
-		}
-	},
-	scales: {
-		x: {
-			type: 'linear'
-		},
-		y: {
-			type: 'linear'
-		}
-	},
-
-	tooltips: {
-		callbacks: {
-			title() {
-				// Title doesn't make sense for scatter since we format the data as a point
-				return '';
-			}
-		}
-	}
-});
 
 export default class BubbleController extends DatasetController {
 
@@ -163,14 +136,42 @@ export default class BubbleController extends DatasetController {
 	}
 }
 
-BubbleController.prototype.dataElementType = Point;
+BubbleController.id = 'bubble';
 
-BubbleController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'hitRadius',
-	'radius',
-	'pointStyle',
-	'rotation'
-];
+/**
+ * @type {any}
+ */
+BubbleController.defaults = {
+	datasetElementType: false,
+	dataElementType: 'point',
+	dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hitRadius',
+		'radius',
+		'pointStyle',
+		'rotation'
+	],
+	animation: {
+		numbers: {
+			properties: ['x', 'y', 'borderWidth', 'radius']
+		}
+	},
+	scales: {
+		x: {
+			type: 'linear'
+		},
+		y: {
+			type: 'linear'
+		}
+	},
+	tooltips: {
+		callbacks: {
+			title() {
+				// Title doesn't make sense for scatter since we format the data as a point
+				return '';
+			}
+		}
+	}
+};

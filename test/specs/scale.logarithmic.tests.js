@@ -3,49 +3,21 @@ function getLabels(scale) {
 }
 
 describe('Logarithmic Scale tests', function() {
-	it('should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+	it('should register', function() {
+		var Constructor = Chart.registry.getScale('logarithmic');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('logarithmic');
+		var defaultConfig = Chart.defaults.scales.logarithmic;
 		expect(defaultConfig).toEqual({
-			display: true,
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true,
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			reverse: false,
-			beginAtZero: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				lineWidth: 0,
-				strokeStyle: '',
+				callback: Chart.Ticks.formatters.logarithmic,
 				major: {
 					enabled: true
-				},
-			},
+				}
+			}
 		});
 
 		// Is this actually a function

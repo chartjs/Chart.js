@@ -58,6 +58,8 @@ export class Defaults {
 		this.tooltips = undefined;
 		this.doughnut = undefined;
 		this._routes = {};
+		this.scales = undefined;
+		this.controllers = undefined;
 	}
 	/**
 	 * @param {string} scope

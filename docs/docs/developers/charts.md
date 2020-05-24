@@ -104,10 +104,11 @@ class Custom extends Chart.controllers.bubble {
         ctx.restore();
     }
 });
+Custom.id = 'derivedBubble';
+Custom.defaults = Chart.defaults.bubble;
 
-// Stores the controller so that the chart initialization routine can look it up with
-// Chart.controllers[type]
-Chart.controllers.derivedBubble = Custom;
+// Stores the controller so that the chart initialization routine can look it up
+Chart.register(Custom);
 
 // Now we can create and use our new chart type
 new Chart(ctx, {
