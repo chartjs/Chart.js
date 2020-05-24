@@ -3,7 +3,7 @@ import DoughnutController from './controller.doughnut';
 /**
  * @type {any}
  */
-const defaults = /*#__PURE__*/Object.assign({}, [DoughnutController.defaults, {
+const defaults = /* #__PURE__*/Object.assign({}, [DoughnutController.defaults, {
 	cutoutPercentage: 0
 }]);
 
