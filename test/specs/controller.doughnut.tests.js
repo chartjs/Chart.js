@@ -3,7 +3,7 @@ describe('Chart.controllers.doughnut', function() {
 
 	it('should be registered as dataset controller', function() {
 		expect(typeof Chart.controllers.doughnut).toBe('function');
-		expect(Chart.controllers.doughnut).toBe(Chart.controllers.pie);
+		expect(typeof Chart.controllers.pie).toBe('function');
 	});
 
 	it('should be constructed', function() {

@@ -1,26 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
-
-defaults.set('radar', {
-	aspectRatio: 1,
-	spanGaps: false,
-	scales: {
-		r: {
-			type: 'radialLinear',
-		}
-	},
-	datasets: {
-		indexAxis: 'r'
-	},
-	elements: {
-		line: {
-			fill: 'start',
-			tension: 0 // no bezier in radar
-		}
-	}
-});
 
 export default class RadarController extends DatasetController {
 
@@ -104,31 +83,53 @@ export default class RadarController extends DatasetController {
 	}
 }
 
-RadarController.prototype.datasetElementType = Line;
+RadarController.id = 'radar';
 
-RadarController.prototype.dataElementType = Point;
+/**
+ * @type {any}
+ */
+RadarController.defaults = {
+	datasetElementType: 'line',
+	datasetElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderCapStyle',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'fill'
+	],
 
-RadarController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderCapStyle',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'fill'
-];
+	dataElementType: 'point',
+	dataElementOptions: {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	},
 
-RadarController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
+	aspectRatio: 1,
+	spanGaps: false,
+	scales: {
+		r: {
+			type: 'radialLinear',
+		}
+	},
+	datasets: {
+		indexAxis: 'r'
+	},
+	elements: {
+		line: {
+			fill: 'start',
+			tension: 0 // no bezier in radar
+		}
+	}
 };

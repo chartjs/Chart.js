@@ -17,8 +17,8 @@ describe('Chart namespace', function() {
 			expect(Chart.platforms.BasicPlatform instanceof Function).toBeTruthy();
 			expect(Chart.platforms.DomPlatform instanceof Function).toBeTruthy();
 
+			expect(Chart.registry instanceof Object).toBeTruthy();
 			expect(Chart.Scale instanceof Object).toBeTruthy();
-			expect(Chart.scaleService instanceof Object).toBeTruthy();
 			expect(Chart.Ticks instanceof Object).toBeTruthy();
 		});
 	});

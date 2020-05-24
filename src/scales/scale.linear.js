@@ -2,13 +2,7 @@ import {isFinite, valueOrDefault} from '../helpers/helpers.core';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
-const defaultConfig = {
-	ticks: {
-		callback: Ticks.formatters.numeric
-	}
-};
-
-class LinearScale extends LinearScaleBase {
+export default class LinearScale extends LinearScaleBase {
 
 	determineDataLimits() {
 		const me = this;
@@ -54,7 +48,11 @@ class LinearScale extends LinearScaleBase {
 
 LinearScale.id = 'linear';
 
-// INTERNAL: default options, registered in src/index.js
-LinearScale.defaults = defaultConfig;
-
-export default LinearScale;
+/**
+ * @type {any}
+ */
+LinearScale.defaults = {
+	ticks: {
+		callback: Ticks.formatters.numeric
+	}
+};
