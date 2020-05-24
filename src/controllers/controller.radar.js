@@ -4,6 +4,7 @@ import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 
 defaults.set('radar', {
+	aspectRatio: 1,
 	spanGaps: false,
 	scales: {
 		r: {
