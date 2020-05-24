@@ -1108,12 +1108,12 @@ export default class Chart {
 
 		// Invoke onHover hook
 		// Need to call with native event here to not break backwards compatibility
-		callCallback(options.onHover || options.hover.onHover, [e.native, me.active], me);
+		callCallback(options.onHover || options.hover.onHover, [e.native, me.active, me], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
-			if (options.onClick && _isPointInArea(e, me.chartArea)) {
+			if (_isPointInArea(e, me.chartArea)) {
 				// Use e.native here for backwards compatibility
-				options.onClick.call(me, e.native, me.active);
+				callCallback(options.onClick, [e, me.active, me], me);
 			}
 		}
 

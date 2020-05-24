@@ -19,9 +19,9 @@ defaults.set('legend', {
 	weight: 1000,
 
 	// a callback that will handle
-	onClick(e, legendItem) {
+	onClick(e, legendItem, legend) {
 		const index = legendItem.datasetIndex;
-		const ci = this.chart;
+		const ci = legend.chart;
 		if (ci.isDatasetVisible(index)) {
 			ci.hide(index);
 			legendItem.hidden = true;
@@ -659,21 +659,19 @@ export class Legend extends Element {
 		const hoveredItem = me._getLegendItemAt(e.x, e.y);
 
 		if (type === 'click') {
-			if (hoveredItem && opts.onClick) {
-				// use e.native for backwards compatibility
-				opts.onClick.call(me, e.native, hoveredItem);
+			if (hoveredItem) {
+				call(opts.onClick, [e, hoveredItem, me], me);
 			}
 		} else {
 			if (opts.onLeave && hoveredItem !== me._hoveredItem) {
 				if (me._hoveredItem) {
-					opts.onLeave.call(me, e.native, me._hoveredItem);
+					call(opts.onLeave, [e, me._hoveredItem, me], me);
 				}
 				me._hoveredItem = hoveredItem;
 			}
 
-			if (opts.onHover && hoveredItem) {
-				// use e.native for backwards compatibility
-				opts.onHover.call(me, e.native, hoveredItem);
+			if (hoveredItem) {
+				call(opts.onHover, [e, hoveredItem, me], me);
 			}
 		}
 	}

@@ -157,6 +157,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
 * `options.onClick` is now limited to the chart area
+* `options.onClick` and `options.onHover` now receive the `chart` instance as a 3rd argument
 
 #### Ticks
 
@@ -279,6 +280,8 @@ The following properties and methods were removed:
 
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Legend.margins` is now private
+* Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument in addition to implicitly via `this`
+* Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 

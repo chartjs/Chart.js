@@ -47,9 +47,9 @@ defaults.set('doughnut', {
 			}
 		},
 
-		onClick(e, legendItem) {
-			this.chart.toggleDataVisibility(legendItem.index);
-			this.chart.update();
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
 		}
 	},
 
