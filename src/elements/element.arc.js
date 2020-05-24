@@ -5,7 +5,6 @@ const TAU = Math.PI * 2;
 
 defaults.set('elements', {
 	arc: {
-		backgroundColor: defaults.color,
 		borderAlign: 'center',
 		borderColor: '#fff',
 		borderWidth: 2

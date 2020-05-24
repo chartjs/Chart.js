@@ -9,13 +9,9 @@ import {_updateBezierControlPoints} from '../helpers/helpers.curve';
  * @typedef { import("./element.point").default } Point
  */
 
-const defaultColor = defaults.color;
-
 defaults.set('elements', {
 	line: {
-		backgroundColor: defaultColor,
 		borderCapStyle: 'butt',
-		borderColor: defaultColor,
 		borderDash: [],
 		borderDashOffset: 0,
 		borderJoinStyle: 'miter',

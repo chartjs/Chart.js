@@ -1,4 +1,5 @@
 import Animations from './core.animations';
+import defaults from '../core/core.defaults';
 import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
@@ -847,6 +848,10 @@ export default class DatasetController {
 		const elementOptions = me.datasetElementOptions;
 		const values = {};
 		const context = me._getContext(undefined, active);
+		const defaultColors = {
+			backgroundColor: defaults.color,
+			borderColor: defaults.color,
+		};
 		let i, ilen, key, readKey, value;
 
 		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
@@ -854,7 +859,8 @@ export default class DatasetController {
 			readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
 			value = resolve([
 				datasetOpts[readKey],
-				options[readKey]
+				options[readKey],
+				defaultColors[readKey],
 			], context);
 			if (value !== undefined) {
 				values[key] = value;
@@ -883,6 +889,10 @@ export default class DatasetController {
 		const elementOptions = me.dataElementOptions;
 		const values = {};
 		const context = me._getContext(index, active);
+		const defaultColors = {
+			backgroundColor: defaults.color,
+			borderColor: defaults.color,
+		};
 		const info = {cacheable: !active};
 		let keys, i, ilen, key, value, readKey;
 
@@ -892,7 +902,8 @@ export default class DatasetController {
 				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
 				value = resolve([
 					datasetOpts[readKey],
-					options[readKey]
+					options[readKey],
+					defaultColors[readKey],
 				], context, index, info);
 				if (value !== undefined) {
 					values[key] = value;
@@ -906,7 +917,8 @@ export default class DatasetController {
 				value = resolve([
 					datasetOpts[elementOptions[readKey]],
 					datasetOpts[readKey],
-					options[readKey]
+					options[readKey],
+					defaultColors[readKey],
 				], context, index, info);
 				if (value !== undefined) {
 					values[key] = value;

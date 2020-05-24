@@ -2,12 +2,8 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {isObject} from '../helpers/helpers.core';
 
-const defaultColor = defaults.color;
-
 defaults.set('elements', {
 	rectangle: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
 		borderSkipped: 'bottom',
 		borderWidth: 0
 	}

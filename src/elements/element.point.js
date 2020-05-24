@@ -2,12 +2,8 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';
 
-const defaultColor = defaults.color;
-
 defaults.set('elements', {
 	point: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
 		borderWidth: 1,
 		hitRadius: 1,
 		hoverBorderWidth: 1,
