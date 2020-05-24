@@ -22,7 +22,7 @@ defaults.set('elements', {
 		borderWidth: 3,
 		capBezierPoints: true,
 		fill: true,
-		tension: 0.4
+		tension: 0
 	}
 });
 
