@@ -7,7 +7,7 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 ## Script Tag
 
 ```html
-<script src="path/to/chartjs/dist/Chart.js"></script>
+<script src="path/to/chartjs/dist/chart.js"></script>
 <script>
     var myChart = new Chart(ctx, {...});
 </script>
@@ -29,10 +29,10 @@ var myChart = new Chart(ctx, {...});
 
 ## Require JS
 
-**Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/Chart.js`, `dist/Chart.min.js`, etc.).
+**Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/chart.js`, `dist/chart.min.js`, etc.).
 
 ```javascript
-require(['path/to/chartjs/dist/Chart.min.js'], function(Chart){
+require(['path/to/chartjs/dist/chart.min.js'], function(Chart){
     var myChart = new Chart(ctx, {...});
 });
 ```

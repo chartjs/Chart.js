@@ -133,7 +133,7 @@ function unittestTask(done) {
 }
 
 function librarySizeTask() {
-	return gulp.src('dist/Chart.bundle.min.js')
+	return gulp.src('dist/chart.min.js')
 		.pipe(size({
 			gzip: true
 		}));
