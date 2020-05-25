@@ -1,13 +1,15 @@
-import Animator from './core.animator';
-import controllers from '../controllers/index';
+/* eslint-disable import/no-namespace, import/namespace */
+import {default as Animator} from './core.animator';
+import * as controllers from '../controllers';
 import defaults from './core.defaults';
-import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform} from '../platform/platforms';
+import {BasicPlatform, DomPlatform} from '../platform';
 import plugins from './core.plugins';
 import scaleService from './core.scaleService';
-import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';
+import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
+import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
+import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
 
@@ -15,7 +17,6 @@ import {version} from '../../package.json';
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
 
-const valueOrDefault = helpers.valueOrDefault;
 
 function mergeScaleConfig(config, options) {
 	options = options || {};
@@ -29,12 +30,12 @@ function mergeScaleConfig(config, options) {
 	Object.keys(configScales).forEach(id => {
 		const axis = id[0];
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = helpers.mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
+		scales[id] = mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
 	});
 
 	// Backward compatibility
 	if (options.scale) {
-		scales[options.scale.id || 'r'] = helpers.mergeIf({}, [options.scale, chartDefaults.scales.r]);
+		scales[options.scale.id || 'r'] = mergeIf({}, [options.scale, chartDefaults.scales.r]);
 		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
@@ -45,7 +46,7 @@ function mergeScaleConfig(config, options) {
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
 			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
 			scales[id] = scales[id] || {};
-			helpers.mergeIf(scales[id], [
+			mergeIf(scales[id], [
 				configScales[id],
 				defaultScaleOptions[defaultID]
 			]);
@@ -55,7 +56,7 @@ function mergeScaleConfig(config, options) {
 	// apply scale defaults, if not overridden by dataset defaults
 	Object.keys(scales).forEach(key => {
 		const scale = scales[key];
-		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
+		mergeIf(scale, scaleService.getScaleDefaults(scale.type));
 	});
 
 	return scales;
@@ -67,10 +68,10 @@ function mergeScaleConfig(config, options) {
  * a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeConfig(...args/* config objects ... */) {
-	return helpers.merge({}, args, {
+	return merge({}, args, {
 		merger(key, target, source, options) {
 			if (key !== 'scales' && key !== 'scale') {
-				helpers._merger(key, target, source, options);
+				_merger(key, target, source, options);
 			}
 		}
 	});
@@ -104,7 +105,7 @@ function isAnimationDisabled(config) {
 function updateConfig(chart) {
 	let newOptions = chart.options;
 
-	helpers.each(chart.scales, (scale) => {
+	each(chart.scales, (scale) => {
 		layouts.removeBox(chart, scale);
 	});
 
@@ -119,8 +120,6 @@ function updateConfig(chart) {
 	chart.options.scales = scaleConfig;
 
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
-	chart.ensureScalesHaveIDs();
-	chart.buildOrUpdateScales();
 }
 
 const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
@@ -141,13 +140,13 @@ function onAnimationsComplete(ctx) {
 	const animationOptions = chart.options.animation;
 
 	plugins.notify(chart, 'afterRender');
-	helpers.callback(animationOptions && animationOptions.onComplete, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onComplete, [ctx], chart);
 }
 
 function onAnimationProgress(ctx) {
 	const chart = ctx.chart;
 	const animationOptions = chart.options.animation;
-	helpers.callback(animationOptions && animationOptions.onProgress, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onProgress, [ctx], chart);
 }
 
 function isDomSupported() {
@@ -196,7 +195,7 @@ export default class Chart {
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
 
-		this.id = helpers.uid();
+		this.id = uid();
 		this.ctx = context;
 		this.canvas = canvas;
 		this.config = config;
@@ -214,7 +213,7 @@ export default class Chart {
 		this.active = undefined;
 		this.lastActive = [];
 		this._lastEvent = undefined;
-		/** @type {{resize?: function}} */
+		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
 		this._sortedMetasets = [];
 		this._updating = false;
@@ -223,6 +222,7 @@ export default class Chart {
 		this.$plugins = undefined;
 		this.$proxies = {};
 		this._hiddenIndices = {};
+		this.attached = true;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -250,7 +250,9 @@ export default class Chart {
 		Animator.listen(me, 'progress', onAnimationProgress);
 
 		me._initialize();
-		me.update();
+		if (me.attached) {
+			me.update();
+		}
 	}
 
 	/**
@@ -266,7 +268,7 @@ export default class Chart {
 			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
 		} else {
-			helpers.dom.retinaScale(me, me.options.devicePixelRatio);
+			retinaScale(me, me.options.devicePixelRatio);
 		}
 
 		me.bindEvents();
@@ -290,7 +292,7 @@ export default class Chart {
 	}
 
 	clear() {
-		helpers.canvas.clear(this);
+		canvasClear(this);
 		return this;
 	}
 
@@ -331,7 +333,7 @@ export default class Chart {
 			canvas.style.height = newHeight + 'px';
 		}
 
-		helpers.dom.retinaScale(me, newRatio);
+		retinaScale(me, newRatio);
 
 		if (!silent) {
 			// Notify any plugins about the resize
@@ -343,7 +345,8 @@ export default class Chart {
 				options.onResize(me, newSize);
 			}
 
-			me.update('resize');
+			// Only apply 'resize' mode if we are attached, else do a regular update.
+			me.update(me.attached && 'resize');
 		}
 	}
 
@@ -352,7 +355,7 @@ export default class Chart {
 		const scalesOptions = options.scales || {};
 		const scaleOptions = options.scale;
 
-		helpers.each(scalesOptions, (axisOptions, axisID) => {
+		each(scalesOptions, (axisOptions, axisID) => {
 			axisOptions.id = axisID;
 		});
 
@@ -390,7 +393,7 @@ export default class Chart {
 			);
 		}
 
-		helpers.each(items, (item) => {
+		each(items, (item) => {
 			const scaleOptions = item.options;
 			const id = scaleOptions.id;
 			const scaleType = valueOrDefault(scaleOptions.type, item.dtype);
@@ -403,9 +406,6 @@ export default class Chart {
 			let scale = null;
 			if (id in scales && scales[id].type === scaleType) {
 				scale = scales[id];
-				scale.options = scaleOptions;
-				scale.ctx = me.ctx;
-				scale.chart = me;
 			} else {
 				const scaleClass = scaleService.getScaleConstructor(scaleType);
 				if (!scaleClass) {
@@ -414,18 +414,13 @@ export default class Chart {
 				scale = new scaleClass({
 					id,
 					type: scaleType,
-					options: scaleOptions,
 					ctx: me.ctx,
 					chart: me
 				});
 				scales[scale.id] = scale;
 			}
 
-			scale.axis = scale.options.position === 'chartArea' ? 'r' : scale.isHorizontal() ? 'x' : 'y';
-
-			// parse min/max value, so we can properly determine min/max for other scales
-			scale._userMin = scale.parse(scale.options.min);
-			scale._userMax = scale.parse(scale.options.max);
+			scale.init(scaleOptions);
 
 			// TODO(SB): I think we should be able to remove this custom case (options.scale)
 			// and consider it as a regular scale part of the "scales"" map only! This would
@@ -435,7 +430,7 @@ export default class Chart {
 			}
 		});
 		// clear up discarded scales
-		helpers.each(updated, (hasUpdated, id) => {
+		each(updated, (hasUpdated, id) => {
 			if (!hasUpdated) {
 				delete scales[id];
 			}
@@ -526,7 +521,7 @@ export default class Chart {
 	 */
 	_resetElements() {
 		const me = this;
-		helpers.each(me.data.datasets, (dataset, datasetIndex) => {
+		each(me.data.datasets, (dataset, datasetIndex) => {
 			me.getDatasetMeta(datasetIndex).controller.reset();
 		}, me);
 	}
@@ -546,6 +541,9 @@ export default class Chart {
 		me._updating = true;
 
 		updateConfig(me);
+
+		me.ensureScalesHaveIDs();
+		me.buildOrUpdateScales();
 
 		// plugins options references might have change, let's invalidate the cache
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
@@ -567,7 +565,7 @@ export default class Chart {
 
 		// Can only reset the new controllers after the scales have been updated
 		if (me.options.animation) {
-			helpers.each(newControllers, (controller) => {
+			each(newControllers, (controller) => {
 				controller.reset();
 			});
 		}
@@ -604,7 +602,7 @@ export default class Chart {
 		layouts.update(me, me.width, me.height);
 
 		me._layers = [];
-		helpers.each(me.boxes, (box) => {
+		each(me.boxes, (box) => {
 			// configure is called twice, once in core.scale.update and once here.
 			// Here the boxes are fully updated and at their final positions.
 			if (box.configure) {
@@ -667,11 +665,11 @@ export default class Chart {
 		}
 		const onComplete = function() {
 			plugins.notify(me, 'afterRender');
-			helpers.callback(animationOptions && animationOptions.onComplete, [], me);
+			callCallback(animationOptions && animationOptions.onComplete, [], me);
 		};
 
 		if (Animator.has(me)) {
-			if (!Animator.running(me)) {
+			if (me.attached && !Animator.running(me)) {
 				Animator.start(me);
 			}
 		} else {
@@ -778,7 +776,7 @@ export default class Chart {
 			return;
 		}
 
-		helpers.canvas.clipArea(ctx, {
+		clipArea(ctx, {
 			left: clip.left === false ? 0 : area.left - clip.left,
 			right: clip.right === false ? me.width : area.right + clip.right,
 			top: clip.top === false ? 0 : area.top - clip.top,
@@ -787,7 +785,7 @@ export default class Chart {
 
 		meta.controller.draw();
 
-		helpers.canvas.unclipArea(ctx);
+		unclipArea(ctx);
 
 		plugins.notify(me, 'afterDatasetDraw', [args]);
 	}
@@ -924,7 +922,7 @@ export default class Chart {
 
 		if (canvas) {
 			me.unbindEvents();
-			helpers.canvas.clear(me);
+			canvasClear(me);
 			me.platform.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
@@ -945,24 +943,57 @@ export default class Chart {
 	bindEvents() {
 		const me = this;
 		const listeners = me._listeners;
+		const platform = me.platform;
+
+		const _add = (type, listener) => {
+			platform.addEventListener(me, type, listener);
+			listeners[type] = listener;
+		};
+		const _remove = (type, listener) => {
+			if (listeners[type]) {
+				platform.removeEventListener(me, type, listener);
+				delete listeners[type];
+			}
+		};
+
 		let listener = function(e) {
 			me._eventHandler(e);
 		};
 
-		helpers.each(me.options.events, (type) => {
-			me.platform.addEventListener(me, type, listener);
-			listeners[type] = listener;
-		});
+		each(me.options.events, (type) => _add(type, listener));
 
 		if (me.options.responsive) {
-			listener = function(width, height) {
+			listener = (width, height) => {
 				if (me.canvas) {
 					me.resize(false, width, height);
 				}
 			};
 
-			me.platform.addEventListener(me, 'resize', listener);
-			listeners.resize = listener;
+			let detached; // eslint-disable-line prefer-const
+			const attached = () => {
+				_remove('attach', attached);
+
+				me.resize();
+				me.attached = true;
+
+				_add('resize', listener);
+				_add('detach', detached);
+			};
+
+			detached = () => {
+				me.attached = false;
+
+				_remove('resize', listener);
+				_add('attach', attached);
+			};
+
+			if (platform.isAttached(me.canvas)) {
+				attached();
+			} else {
+				detached();
+			}
+		} else {
+			me.attached = true;
 		}
 	}
 
@@ -977,7 +1008,7 @@ export default class Chart {
 		}
 
 		delete me._listeners;
-		helpers.each(listeners, (listener, type) => {
+		each(listeners, (listener, type) => {
 			me.platform.removeEventListener(me, type, listener);
 		});
 	}
@@ -1077,16 +1108,16 @@ export default class Chart {
 
 		// Invoke onHover hook
 		// Need to call with native event here to not break backwards compatibility
-		helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
+		callCallback(options.onHover || options.hover.onHover, [e.native, me.active, me], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
-			if (options.onClick && helpers.canvas._isPointInArea(e, me.chartArea)) {
+			if (_isPointInArea(e, me.chartArea)) {
 				// Use e.native here for backwards compatibility
-				options.onClick.call(me, e.native, me.active);
+				callCallback(options.onClick, [e, me.active, me], me);
 			}
 		}
 
-		changed = !helpers._elementsEqual(me.active, me.lastActive);
+		changed = !_elementsEqual(me.active, me.lastActive);
 		if (changed || replay) {
 			me._updateHoverStyles();
 		}

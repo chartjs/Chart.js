@@ -1,7 +1,6 @@
 /* eslint-disable import/no-nodejs-modules, import/no-commonjs, no-use-before-define */
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
-const file = require('gulp-file');
 const replace = require('gulp-replace');
 const size = require('gulp-size');
 const streamify = require('gulp-streamify');
@@ -14,7 +13,6 @@ const yargs = require('yargs');
 const path = require('path');
 const htmllint = require('gulp-htmllint');
 const typescript = require('gulp-typescript');
-const typedoc = require('gulp-typedoc');
 
 const pkg = require('./package.json');
 const tsProject = typescript.createProject('./tsconfig.json');
@@ -26,16 +24,14 @@ const argv = yargs
 const srcDir = './src/';
 const outDir = './dist/';
 
-gulp.task('bower', bowerTask);
 gulp.task('build', buildTask);
 gulp.task('package', packageTask);
 gulp.task('lint-html', lintHtmlTask);
 gulp.task('lint-js', lintJsTask);
 gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('tsc', typescriptTask);
-gulp.task('docs', docsTask);
 gulp.task('unittest', unittestTask);
-gulp.task('test', gulp.parallel('lint', 'tsc', 'unittest'));
+gulp.task('test', gulp.series('lint', 'tsc', 'unittest'));
 gulp.task('library-size', librarySizeTask);
 gulp.task('module-sizes', moduleSizesTask);
 gulp.task('size', gulp.parallel('library-size', 'module-sizes'));
@@ -58,32 +54,6 @@ function run(bin, args) {
 			}
 		});
 	});
-}
-
-/**
- * Generates the bower.json manifest file which will be pushed along release tags.
- * Specs: https://github.com/bower/spec/blob/master/json.md
- */
-function bowerTask() {
-	const json = JSON.stringify({
-		name: pkg.name,
-		description: pkg.description,
-		homepage: pkg.homepage,
-		license: pkg.license,
-		version: pkg.version,
-		main: outDir + 'Chart.js',
-		ignore: [
-			'.github',
-			'.codeclimate.yml',
-			'.gitignore',
-			'.npmignore',
-			'.travis.yml',
-			'scripts'
-		]
-	}, null, 2);
-
-	return file('bower.json', json, {src: true})
-		.pipe(gulp.dest('./'));
 }
 
 function buildTask() {
@@ -140,25 +110,6 @@ function lintHtmlTask() {
 		.pipe(htmllint({
 			failOnError: true,
 		}));
-}
-
-function docsTask(done) {
-	const bin = require.resolve('gitbook-cli/bin/gitbook.js');
-	const cmd = argv.watch ? 'serve' : 'build';
-
-	return run(bin, ['install', './'])
-		.then(() => run(bin, [cmd, './', './dist/docs']))
-		.then(() => {
-			const config = {
-				moduleResolution: 'Node',
-				target: 'ES6',
-				out: './dist/docs/typedoc'
-			};
-			gulp.src(['./src/**/*.js'], {read: false})
-				.pipe(typedoc(config, done));
-		}).catch((err) => {
-			done(new Error(err.stdout || err));
-		});
 }
 
 function unittestTask(done) {

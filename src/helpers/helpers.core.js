@@ -199,7 +199,7 @@ export function clone(source) {
 	}
 
 	if (isObject(source)) {
-		const target = {};
+		const target = Object.create(source);
 		const keys = Object.keys(source);
 		const klen = keys.length;
 		let k = 0;

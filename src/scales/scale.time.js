@@ -1,5 +1,4 @@
 import adapters from '../core/core.adapters';
-import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -555,10 +554,6 @@ export default class TimeScale extends Scale {
 	constructor(props) {
 		super(props);
 
-		const options = this.options;
-		const time = options.time || (options.time = {});
-		const adapter = this._adapter = new adapters._date(options.adapters.date);
-
 		/** @type {{data: number[], labels: number[], all: number[]}} */
 		this._cache = {
 			data: [],
@@ -574,12 +569,19 @@ export default class TimeScale extends Scale {
 		this._offsets = {};
 		/** @type {object[]} */
 		this._table = [];
+	}
+
+	init(options) {
+		const time = options.time || (options.time = {});
+		const adapter = this._adapter = new adapters._date(options.adapters.date);
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
 		mergeIf(time.displayFormats, adapter.formats());
+
+		super.init(options);
 	}
 
 	/**
@@ -782,7 +784,7 @@ export default class TimeScale extends Scale {
 		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
-		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.fontSize);
+		const tickFontSize = me._resolveTickFontOptions(0).size;
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),

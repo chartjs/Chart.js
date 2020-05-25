@@ -55,9 +55,9 @@ defaults.set('polarArea', {
 			}
 		},
 
-		onClick(e, legendItem) {
-			this.chart.toggleDataVisibility(legendItem.index);
-			this.chart.update();
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
 		}
 	},
 
@@ -172,7 +172,7 @@ export default class PolarAreaController extends DatasetController {
 				outerRadius,
 				startAngle,
 				endAngle,
-				options: me.resolveDataElementOptions(index)
+				options: me.resolveDataElementOptions(index, mode)
 			};
 
 			me.updateElement(arc, index, properties, mode);

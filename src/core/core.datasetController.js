@@ -1,12 +1,13 @@
-import helpers from '../helpers/index';
 import Animations from './core.animations';
+import {isObject, inherits, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
+import {resolve} from '../helpers/helpers.options';
+import {getHoverColor} from '../helpers/helpers.color';
+import {sign} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("./core.controller").default } Chart
  * @typedef { import("./core.scale").default } Scale
  */
-
-const resolve = helpers.options.resolve;
 
 const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
@@ -80,7 +81,7 @@ function defaultClip(xScale, yScale, allowedOverflow) {
 function toClip(value) {
 	let t, r, b, l;
 
-	if (helpers.isObject(value)) {
+	if (isObject(value)) {
 		t = value.top;
 		r = value.right;
 		b = value.bottom;
@@ -148,7 +149,7 @@ function applyStack(stack, value, dsIndex, allOther) {
 			break;
 		}
 		otherValue = stack.values[datasetIndex];
-		if (!isNaN(otherValue) && (value === 0 || helpers.math.sign(value) === helpers.math.sign(otherValue))) {
+		if (!isNaN(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
 			value += otherValue;
 		}
 	}
@@ -217,7 +218,7 @@ function getFirstScaleId(chart, axis) {
 
 export default class DatasetController {
 
-	static extend = helpers.inherits;
+	static extend = inherits;
 
 	/**
 	 * @param {Chart} chart
@@ -235,6 +236,7 @@ export default class DatasetController {
 		this._parsing = false;
 		this._data = undefined;
 		this._dataCopy = undefined;
+		this._dataModified = false;
 		this._objectData = undefined;
 		this._labels = undefined;
 		this._scaleStacked = {};
@@ -339,6 +341,7 @@ export default class DatasetController {
 	}
 
 	/**
+	 * @return {boolean} whether the data was modified
 	 * @private
 	 */
 	_dataCheck() {
@@ -350,7 +353,7 @@ export default class DatasetController {
 		// real-time charts), we need to monitor these data modifications and synchronize
 		// the internal meta data accordingly.
 
-		if (helpers.isObject(data)) {
+		if (isObject(data)) {
 			// Object data is currently monitored for replacement only
 			if (me._objectData === data) {
 				return false;
@@ -358,7 +361,7 @@ export default class DatasetController {
 			me._data = convertObjectDataToArray(data);
 			me._objectData = data;
 		} else {
-			if (me._data === data && helpers.arrayEquals(data, me._dataCopy)) {
+			if (me._data === data && !me._dataModified && arrayEquals(data, me._dataCopy)) {
 				return false;
 			}
 
@@ -370,6 +373,8 @@ export default class DatasetController {
 			// Store a copy to detect direct modifications.
 			// Note: This is suboptimal, but better than always parsing the data
 			me._dataCopy = data.slice(0);
+
+			me._dataModified = false;
 
 			if (data && Object.isExtensible(data)) {
 				listenArrayEvents(data, me);
@@ -451,13 +456,13 @@ export default class DatasetController {
 	 */
 	configure() {
 		const me = this;
-		me._config = helpers.merge({}, [
+		me._config = merge({}, [
 			me.chart.options[me._type].datasets,
 			me.getDataset(),
 		], {
 			merger(key, target, source) {
 				if (key !== 'data') {
-					helpers._merger(key, target, source);
+					_merger(key, target, source);
 				}
 			}
 		});
@@ -485,9 +490,9 @@ export default class DatasetController {
 			meta._parsed = data;
 			meta._sorted = true;
 		} else {
-			if (helpers.isArray(data[start])) {
+			if (isArray(data[start])) {
 				parsed = me.parseArrayData(meta, data, start, count);
-			} else if (helpers.isObject(data[start])) {
+			} else if (isObject(data[start])) {
 				parsed = me.parseObjectData(meta, data, start, count);
 			} else {
 				parsed = me.parsePrimitiveData(meta, data, start, count);
@@ -753,7 +758,7 @@ export default class DatasetController {
 		me._cachedAnimations = {};
 		me._cachedDataOpts = {};
 		me.update(mode);
-		meta._clip = toClip(helpers.valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
+		meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
 		me._cacheScaleStackStatus();
 	}
 
@@ -783,7 +788,6 @@ export default class DatasetController {
 	 */
 	_addAutomaticHoverColors(index, options) {
 		const me = this;
-		const getHoverColor = helpers.getHoverColor;
 		const normalOptions = me.getStyle(index);
 		const missingColors = Object.keys(normalOptions).filter(key => key.indexOf('Color') !== -1 && !(key in options));
 		let i = missingColors.length - 1;
@@ -863,6 +867,8 @@ export default class DatasetController {
 	}
 
 	/**
+	 * @param {number} index
+	 * @param {string} mode
 	 * @protected
 	 */
 	resolveDataElementOptions(index, mode) {
@@ -882,7 +888,7 @@ export default class DatasetController {
 		const info = {cacheable: !active};
 		let keys, i, ilen, key, value, readKey;
 
-		if (helpers.isArray(elementOptions)) {
+		if (isArray(elementOptions)) {
 			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
 				key = elementOptions[i];
 				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
@@ -941,7 +947,7 @@ export default class DatasetController {
 		const context = me._getContext(index, active);
 		const datasetAnim = resolve([me._config.animation], context, index, info);
 		const chartAnim = resolve([chart.options.animation], context, index, info);
-		let config = helpers.mergeIf({}, [datasetAnim, chartAnim]);
+		let config = mergeIf({}, [datasetAnim, chartAnim]);
 
 		if (config[mode]) {
 			config = Object.assign({}, config, config[mode]);
@@ -982,7 +988,7 @@ export default class DatasetController {
 	}
 
 	/**
-	 * Utility for updating a element with new properties, using animations when appropriate.
+	 * Utility for updating an element with new properties, using animations when appropriate.
 	 * @protected
 	 */
 	updateElement(element, index, properties, mode) {
@@ -1108,6 +1114,7 @@ export default class DatasetController {
 	_onDataPush() {
 		const count = arguments.length;
 		this._insertElements(this.getDataset().data.length - count, count);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1115,6 +1122,7 @@ export default class DatasetController {
 	 */
 	_onDataPop() {
 		this._removeElements(this._cachedMeta.data.length - 1, 1);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1122,6 +1130,7 @@ export default class DatasetController {
 	 */
 	_onDataShift() {
 		this._removeElements(0, 1);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1130,6 +1139,7 @@ export default class DatasetController {
 	_onDataSplice(start, count) {
 		this._removeElements(start, count);
 		this._insertElements(start, arguments.length - 2);
+		this._dataModified = true;
 	}
 
 	/**
@@ -1137,6 +1147,7 @@ export default class DatasetController {
 	 */
 	_onDataUnshift() {
 		this._insertElements(0, arguments.length);
+		this._dataModified = true;
 	}
 }
 

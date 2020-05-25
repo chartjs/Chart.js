@@ -76,13 +76,13 @@ describe('Category scale tests', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
 			ctx: {},
-			options: config,
 			chart: {
 				data: mockData
 			},
 			id: scaleID
 		});
 
+		scale.init(config);
 		scale.determineDataLimits();
 		scale.ticks = scale.buildTicks();
 		expect(getValues(scale)).toEqual(mockData.xLabels);
@@ -104,13 +104,13 @@ describe('Category scale tests', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('category');
 		var scale = new Constructor({
 			ctx: {},
-			options: config,
 			chart: {
 				data: mockData
 			},
 			id: scaleID
 		});
 
+		scale.init(config);
 		scale.determineDataLimits();
 		scale.ticks = scale.buildTicks();
 		expect(getValues(scale)).toEqual(mockData.yLabels);

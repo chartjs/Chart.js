@@ -11,9 +11,10 @@ services:
 script:
   - gulp build
   - gulp test --coverage
-  - gulp docs
+  - ./scripts/docs-config.sh
+  - npm run docs
+  - npm run typedoc
   - gulp package
-  - gulp bower
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 sudo: required

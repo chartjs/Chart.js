@@ -49,9 +49,9 @@ jobs:
         gulp test --coverage ${BROWSERS}
     - name: Package
       run: |
-        gulp docs
+        npm run docs
+        npm run typedoc
         gulp package
-        gulp bower
     - name: Publish Test Results
       run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
       shell: bash

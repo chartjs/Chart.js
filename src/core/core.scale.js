@@ -3,7 +3,7 @@ import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
 import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
-import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
+import {toFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
 /**
@@ -147,7 +147,7 @@ function getScaleLabelHeight(options) {
 		return 0;
 	}
 
-	const font = _parseFont(options);
+	const font = toFont(options.font);
 	const padding = toPadding(options.padding);
 
 	return font.lineHeight + padding.height;
@@ -278,7 +278,7 @@ export default class Scale extends Element {
 		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
-		this.options = cfg.options;
+		this.options = undefined;
 		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
 		/** @type {Chart} */
@@ -345,9 +345,24 @@ export default class Scale extends Element {
 	}
 
 	/**
+	 * @param {object} options
+	 * @since 3.0
+	 */
+	init(options) {
+		const me = this;
+		me.options = options;
+
+		me.axis = me.isHorizontal() ? 'x' : 'y';
+
+		// parse min/max value, so we can properly determine min/max for other scales
+		me._userMin = me.parse(options.min);
+		me._userMax = me.parse(options.max);
+	}
+
+	/**
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
-	 * @param {number} index
+	 * @param {number} [index]
 	 * @since 3.0
 	 */
 	parse(raw, index) { // eslint-disable-line no-unused-vars
@@ -1451,8 +1466,7 @@ export default class Scale extends Element {
 			return;
 		}
 
-		const scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.fontColor);
-		const scaleLabelFont = _parseFont(scaleLabel);
+		const scaleLabelFont = toFont(scaleLabel.font);
 		const scaleLabelPadding = toPadding(scaleLabel.padding);
 		const halfLineHeight = scaleLabelFont.lineHeight / 2;
 		const scaleLabelAlign = scaleLabel.align;
@@ -1506,7 +1520,7 @@ export default class Scale extends Element {
 		ctx.rotate(rotation);
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
-		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
+		ctx.fillStyle = scaleLabelFont.color;
 		ctx.font = scaleLabelFont.string;
 		ctx.fillText(scaleLabel.labelString, 0, 0);
 		ctx.restore();
@@ -1582,27 +1596,19 @@ export default class Scale extends Element {
 	/**
 	 * @param {number} index
 	 * @return {object}
-	 * @private
+	 * @protected
  	 */
 	_resolveTickFontOptions(index) {
 		const me = this;
 		const options = me.options.ticks;
+		const ticks = me.ticks || [];
 		const context = {
 			chart: me.chart,
 			scale: me,
-			tick: me.ticks[index],
+			tick: ticks[index],
 			index
 		};
-		return Object.assign(_parseFont({
-			fontFamily: resolve([options.fontFamily], context),
-			fontSize: resolve([options.fontSize], context),
-			fontStyle: resolve([options.fontStyle], context),
-			lineHeight: resolve([options.lineHeight], context)
-		}), {
-			color: resolve([options.fontColor, defaults.fontColor], context),
-			lineWidth: resolve([options.lineWidth], context),
-			strokeStyle: resolve([options.strokeStyle], context)
-		});
+		return toFont(resolve([options.font], context));
 	}
 }
 

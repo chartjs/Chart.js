@@ -80,6 +80,12 @@ function getConstraintHeight(domNode) {
 function _calculatePadding(container, padding, parentDimension) {
 	padding = getStyle(container, padding);
 
+	// If the padding is not set at all and the node is not in the DOM, this can be an empty string
+	// In that case, we need to handle it as no padding
+	if (padding === '') {
+		return 0;
+	}
+
 	return padding.indexOf('%') > -1 ? parentDimension * parseInt(padding, 10) / 100 : parseInt(padding, 10);
 }
 
@@ -120,13 +126,14 @@ export function getRelativePosition(evt, chart) {
 	};
 }
 
+function fallbackIfNotValid(measure, fallback) {
+	return typeof measure === 'number' ? measure : fallback;
+}
+
 export function getMaximumWidth(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientWidth === 'number') {
-			return domNode.clientWidth;
-		}
-		return domNode.width;
+		return fallbackIfNotValid(domNode.clientWidth, domNode.width);
 	}
 
 	const clientWidth = container.clientWidth;
@@ -141,10 +148,7 @@ export function getMaximumWidth(domNode) {
 export function getMaximumHeight(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientHeight === 'number') {
-			return domNode.clientHeight;
-		}
-		return domNode.height;
+		return fallbackIfNotValid(domNode.clientHeight, domNode.height);
 	}
 
 	const clientHeight = container.clientHeight;

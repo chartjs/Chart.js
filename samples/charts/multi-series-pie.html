@@ -71,12 +71,12 @@
 							return labels;
 						}
 					},
-					onClick: function(mouseEvent, legendItem) {
+					onClick: function(mouseEvent, legendItem, legend) {
 						// toggle the visibility of the dataset from what it currently is
-						this.chart.getDatasetMeta(
+						legend.chart.getDatasetMeta(
 							legendItem.datasetIndex
-						).hidden = this.chart.isDatasetVisible(legendItem.datasetIndex);
-						this.chart.update();
+						).hidden = legend.chart.isDatasetVisible(legendItem.datasetIndex);
+						legend.chart.update();
 					}
 				},
 				tooltips: {

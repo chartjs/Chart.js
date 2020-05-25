@@ -75,7 +75,7 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.fontSize).toBe(defaults.fontSize);
+			expect(options.font.size).toBe(defaults.font.size);
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
 			expect(options.hover.onHover).toBe(callback);

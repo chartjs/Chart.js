@@ -14,11 +14,16 @@ export class Defaults {
 			'touchstart',
 			'touchmove'
 		];
-		this.fontColor = '#666';
-		this.fontFamily = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-		this.fontSize = 12;
-		this.fontStyle = 'normal';
-		this.lineHeight = 1.2;
+		this.font = {
+			color: '#666',
+			family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			size: 12,
+			style: 'normal',
+			lineHeight: 1.2,
+			weight: null,
+			lineWidth: 0,
+			strokeStyle: undefined
+		};
 		this.hover = {
 			onHover: null,
 			mode: 'nearest',

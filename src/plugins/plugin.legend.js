@@ -3,7 +3,7 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
 import {callback as call, mergeIf, valueOrDefault} from '../helpers/helpers.core';
-import {_parseFont, toPadding} from '../helpers/helpers.options';
+import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
 /**
@@ -19,9 +19,9 @@ defaults.set('legend', {
 	weight: 1000,
 
 	// a callback that will handle
-	onClick(e, legendItem) {
+	onClick(e, legendItem, legend) {
 		const index = legendItem.datasetIndex;
-		const ci = this.chart;
+		const ci = legend.chart;
 		if (ci.isDatasetVisible(index)) {
 			ci.hide(index);
 			legendItem.hidden = true;
@@ -237,7 +237,7 @@ export class Legend extends Element {
 		const display = opts.display;
 
 		const ctx = me.ctx;
-		const labelFont = _parseFont(labelOpts);
+		const labelFont = toFont(labelOpts.font);
 		const fontSize = labelFont.size;
 
 		// Reset hit boxes
@@ -363,8 +363,8 @@ export class Legend extends Element {
 		me.drawTitle();
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
-		const fontColor = valueOrDefault(labelOpts.fontColor, defaults.fontColor);
-		const labelFont = _parseFont(labelOpts);
+		const labelFont = toFont(labelOpts.font);
+		const fontColor = labelFont.color;
 		const fontSize = labelFont.size;
 		let cursor;
 
@@ -524,7 +524,7 @@ export class Legend extends Element {
 		const me = this;
 		const opts = me.options;
 		const titleOpts = opts.title;
-		const titleFont = _parseFont(titleOpts);
+		const titleFont = toFont(titleOpts.font);
 		const titlePadding = toPadding(titleOpts.padding);
 
 		if (!titleOpts.display) {
@@ -533,7 +533,6 @@ export class Legend extends Element {
 
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
-		const fontColor = valueOrDefault(titleOpts.fontColor, defaults.fontColor);
 		const position = titleOpts.position;
 		let x, textAlign;
 
@@ -595,8 +594,8 @@ export class Legend extends Element {
 		// Canvas setup
 		ctx.textAlign = rtlHelper.textAlign(textAlign);
 		ctx.textBaseline = 'middle';
-		ctx.strokeStyle = fontColor;
-		ctx.fillStyle = fontColor;
+		ctx.strokeStyle = titleFont.color;
+		ctx.fillStyle = titleFont.color;
 		ctx.font = titleFont.string;
 
 		ctx.fillText(titleOpts.text, x, y);
@@ -607,7 +606,7 @@ export class Legend extends Element {
 	 */
 	_computeTitleHeight() {
 		const titleOpts = this.options.title;
-		const titleFont = _parseFont(titleOpts);
+		const titleFont = toFont(titleOpts.font);
 		const titlePadding = toPadding(titleOpts.padding);
 		return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
 	}
@@ -660,21 +659,19 @@ export class Legend extends Element {
 		const hoveredItem = me._getLegendItemAt(e.x, e.y);
 
 		if (type === 'click') {
-			if (hoveredItem && opts.onClick) {
-				// use e.native for backwards compatibility
-				opts.onClick.call(me, e.native, hoveredItem);
+			if (hoveredItem) {
+				call(opts.onClick, [e, hoveredItem, me], me);
 			}
 		} else {
 			if (opts.onLeave && hoveredItem !== me._hoveredItem) {
 				if (me._hoveredItem) {
-					opts.onLeave.call(me, e.native, me._hoveredItem);
+					call(opts.onLeave, [e, me._hoveredItem, me], me);
 				}
 				me._hoveredItem = hoveredItem;
 			}
 
-			if (opts.onHover && hoveredItem) {
-				// use e.native for backwards compatibility
-				opts.onHover.call(me, e.native, hoveredItem);
+			if (hoveredItem) {
+				call(opts.onHover, [e, hoveredItem, me], me);
 			}
 		}
 	}

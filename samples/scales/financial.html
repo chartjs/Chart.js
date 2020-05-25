@@ -145,8 +145,8 @@
 							major: {
 								enabled: true,
 							},
-							fontStyle: function(context) {
-								return context.tick.major ? 'bold' : undefined;
+							font: function(context) {
+								return context.tick.major ? {style: 'bold'} : undefined;
 							},
 							source: 'data',
 							autoSkip: true,
