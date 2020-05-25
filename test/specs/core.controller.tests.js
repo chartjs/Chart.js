@@ -386,7 +386,7 @@ describe('Chart', function() {
 					rw: 300, rh: 350,
 				});
 
-				var original= chart.resize;
+				var original = chart.resize;
 				chart.resize = function() {
 					fail('resize should not have been called');
 				};
