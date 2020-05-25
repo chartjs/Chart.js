@@ -55,7 +55,7 @@ function update_tagged_files {
 
 function deploy_versioned_files {
     local version=$1
-    local in_files='../dist/Chart*.js'
+    local in_files='../dist/chart*.js'
     local out_path='./dist'
     rm -rf $out_path/$version
     mkdir -p $out_path/$version

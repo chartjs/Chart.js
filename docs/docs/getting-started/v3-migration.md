@@ -17,6 +17,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Setup and installation
 
+* Distributed files are now in lower case. For example: `dist/chart.js`.
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 
