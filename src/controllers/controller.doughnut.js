@@ -22,6 +22,7 @@ defaults.set('doughnut', {
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
 	},
+	aspectRatio: 1,
 	legend: {
 		labels: {
 			generateLabels(chart) {

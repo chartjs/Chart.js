@@ -50,6 +50,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The dataset option `tension` was removed. Use `lineTension`
 * Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
+* `aspectRatio` defaults to 1 for doughnut, pie, polarArea, and radar charts
 
 #### Defaults
 

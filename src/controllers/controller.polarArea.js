@@ -13,6 +13,7 @@ defaults.set('polarArea', {
 		animateRotate: true,
 		animateScale: true
 	},
+	aspectRatio: 1,
 	scales: {
 		r: {
 			type: 'radialLinear',
