@@ -365,6 +365,59 @@ describe('Chart', function() {
 			wrapper.style.width = '455px';
 		});
 
+		it('should restore the original size when parent became invisible', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 300px; height: 350px; position: relative'
+				}
+			});
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 300, dh: 350,
+					rw: 300, rh: 350,
+				});
+
+				var original = chart.resize;
+				chart.resize = function() {
+					fail('resize should not have been called');
+				};
+
+				var wrapper = chart.canvas.parentNode;
+				wrapper.style.display = 'none';
+
+				setTimeout(function() {
+					expect(wrapper.clientWidth).toEqual(0);
+					expect(wrapper.clientHeight).toEqual(0);
+
+					expect(chart).toBeChartOfSize({
+						dw: 300, dh: 350,
+						rw: 300, rh: 350,
+					});
+
+					chart.resize = original;
+
+					waitForResize(chart, function() {
+						expect(chart).toBeChartOfSize({
+							dw: 300, dh: 350,
+							rw: 300, rh: 350,
+						});
+
+						done();
+					});
+					wrapper.style.display = 'block';
+				}, 200);
+			});
+		});
+
 		it('should resize the canvas when parent is RTL and width changes', function(done) {
 			var chart = acquireChart({
 				options: {
