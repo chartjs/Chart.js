@@ -995,7 +995,7 @@ describe('Core.Tooltip', function() {
 			var tooltipPosition = meta.data[slice].tooltipPosition();
 
 			function recursive(left) {
-				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'l';
+				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'XX';
 				chart.update();
 
 				afterEvent(chart, 'mouseout', function() {
@@ -1025,7 +1025,7 @@ describe('Core.Tooltip', function() {
 
 		// Trigger an event over top of the slice
 		for (var slice = 0; slice < 2; slice++) {
-			testSlice(slice, 70);
+			testSlice(slice, 20);
 		}
 	});
 
