@@ -5,10 +5,11 @@ title: New Charts
 Chart.js 2.0 introduces the concept of controllers for each dataset. Like scales, new controllers can be written as needed.
 
 ```javascript
-Chart.controllers.MyType = Chart.DatasetController.extend({
+class MyType extends Chart.DatasetController {
 
-});
+}
 
+Chart.controllers.MyType = MyType;
 
 // Now we can create a new instance of our chart, using the Chart.js API
 new Chart(ctx, {
@@ -67,6 +68,7 @@ The following methods may optionally be overridden by derived dataset controller
 Extending or replacing an existing controller type is easy. Simply replace the constructor for one of the built in types with your own.
 
 The built in controller types are:
+
 * `Chart.controllers.line`
 * `Chart.controllers.bar`
 * `Chart.controllers.horizontalBar`
@@ -84,10 +86,10 @@ For example, to derive a new chart type that extends from a bubble chart, you wo
 Chart.defaults.derivedBubble = Chart.defaults.bubble;
 
 // I think the recommend using Chart.controllers.bubble.extend({ extensions here });
-var custom = Chart.controllers.bubble.extend({
-    draw: function(ease) {
+class Custom extends Chart.controllers.bubble {
+    draw() {
         // Call super method first
-        Chart.controllers.bubble.prototype.draw.call(this, ease);
+        super.draw(arguments);
 
         // Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
         var meta = this.getMeta();
@@ -105,7 +107,7 @@ var custom = Chart.controllers.bubble.extend({
 
 // Stores the controller so that the chart initialization routine can look it up with
 // Chart.controllers[type]
-Chart.controllers.derivedBubble = custom;
+Chart.controllers.derivedBubble = Custom;
 
 // Now we can create and use our new chart type
 new Chart(ctx, {

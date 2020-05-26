@@ -542,11 +542,7 @@ const defaultConfig = {
 	}
 };
 
-export default class TimeScale extends Scale {
-
-	static id = 'time';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
+class TimeScale extends Scale {
 
 	/**
 	 * @param {object} props
@@ -812,3 +808,10 @@ export default class TimeScale extends Scale {
 		return capacity > 0 ? capacity : 1;
 	}
 }
+
+TimeScale.id = 'time';
+
+// INTERNAL: default options, registered in src/index.js
+TimeScale.defaults = defaultConfig;
+
+export default TimeScale;
