@@ -8,11 +8,7 @@ const defaultConfig = {
 	}
 };
 
-export default class LinearScale extends LinearScaleBase {
-
-	static id = 'linear';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
+class LinearScale extends LinearScaleBase {
 
 	determineDataLimits() {
 		const me = this;
@@ -66,3 +62,10 @@ export default class LinearScale extends LinearScaleBase {
 		return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
 	}
 }
+
+LinearScale.id = 'linear';
+
+// INTERNAL: default options, registered in src/index.js
+LinearScale.defaults = defaultConfig;
+
+export default LinearScale;

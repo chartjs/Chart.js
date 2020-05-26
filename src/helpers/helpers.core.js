@@ -294,33 +294,6 @@ export function _mergerIf(key, target, source) {
 }
 
 /**
- * Basic javascript inheritance based on the model created in Backbone.js
- */
-export function inherits(extensions) {
-	// eslint-disable-next-line no-invalid-this
-	const me = this;
-	const ChartElement = (extensions && Object.prototype.hasOwnProperty.call(extensions, 'constructor')) ? extensions.constructor : function() {
-		// eslint-disable-next-line prefer-rest-params
-		return me.apply(this, arguments);
-	};
-
-	const Surrogate = function() {
-		this.constructor = ChartElement;
-	};
-
-	Surrogate.prototype = me.prototype;
-	ChartElement.prototype = new Surrogate();
-	ChartElement.extend = inherits;
-
-	if (extensions) {
-		Object.assign(ChartElement.prototype, extensions);
-	}
-
-	ChartElement.__super__ = me.prototype;
-	return ChartElement;
-}
-
-/**
  * @private
  */
 export function _deprecated(scope, value, previous, current) {
