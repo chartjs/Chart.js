@@ -84,9 +84,7 @@ function drawBorder(ctx, vm, arc) {
 	ctx.stroke();
 }
 
-export default class Arc extends Element {
-
-	static _type = 'arc';
+class Arc extends Element {
 
 	constructor(cfg) {
 		super();
@@ -197,3 +195,7 @@ export default class Arc extends Element {
 		ctx.restore();
 	}
 }
+
+Arc._type = 'arc';
+
+export default Arc;

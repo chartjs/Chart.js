@@ -1,5 +1,5 @@
 import Animations from './core.animations';
-import {isObject, inherits, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
@@ -217,8 +217,6 @@ function getFirstScaleId(chart, axis) {
 }
 
 export default class DatasetController {
-
-	static extend = inherits;
 
 	/**
 	 * @param {Chart} chart

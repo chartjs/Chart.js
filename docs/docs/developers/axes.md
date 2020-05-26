@@ -5,9 +5,9 @@ title: New Axes
 Axes in Chart.js can be individually extended. Axes should always derive from `Chart.Scale` but this is not a mandatory requirement.
 
 ```javascript
-let MyScale = Chart.Scale.extend({
+class MyScale extends Chart.Scale{
     /* extensions ... */
-});
+}
 MyScale.id = 'myScale';
 MyScale.defaults = defaultConfigObject;
 

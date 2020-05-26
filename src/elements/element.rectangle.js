@@ -124,9 +124,7 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-export default class Rectangle extends Element {
-
-	static _type = 'rectangle';
+class Rectangle extends Element {
 
 	constructor(cfg) {
 		super();
@@ -187,3 +185,7 @@ export default class Rectangle extends Element {
 		return axis === 'x' ? this.width / 2 : this.height / 2;
 	}
 }
+
+Rectangle._type = 'rectangle';
+
+export default Rectangle;
