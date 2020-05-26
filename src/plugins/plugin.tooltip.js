@@ -1063,18 +1063,23 @@ export default {
 	},
 
 	beforeUpdate(chart) {
-		if (chart.tooltip) {
-			chart.tooltip.initialize();
+		if (!chart.tooltip) {
+			return;
 		}
+		chart.tooltip.initialize();
 	},
 
 	reset(chart) {
-		if (chart.tooltip) {
-			chart.tooltip.initialize();
+		if (!chart.tooltip) {
+			return;
 		}
+		chart.tooltip.initialize();
 	},
 
 	afterDraw(chart) {
+		if (!chart.tooltip) {
+			return;
+		}
 		const tooltip = chart.tooltip;
 		const args = {
 			tooltip
@@ -1090,10 +1095,11 @@ export default {
 	},
 
 	afterEvent(chart, e, replay) {
-		if (chart.tooltip) {
-			// If the event is replayed from `update`, we should evaluate with the final positions.
-			const useFinalPosition = replay;
-			chart.tooltip.handleEvent(e, useFinalPosition);
+		if (!chart.tooltip) {
+			return;
 		}
+		// If the event is replayed from `update`, we should evaluate with the final positions.
+		const useFinalPosition = replay;
+		chart.tooltip.handleEvent(e, useFinalPosition);
 	}
 };
