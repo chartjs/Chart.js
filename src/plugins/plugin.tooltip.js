@@ -1076,6 +1076,7 @@ export default {
 
 	afterDraw(chart) {
 		const tooltip = chart.tooltip;
+
 		const args = {
 			tooltip
 		};
@@ -1084,7 +1085,9 @@ export default {
 			return;
 		}
 
-		tooltip.draw(chart.ctx);
+		if (tooltip) {
+			tooltip.draw(chart.ctx);
+		}
 
 		plugins.notify(chart, 'afterTooltipDraw', [args]);
 	},
