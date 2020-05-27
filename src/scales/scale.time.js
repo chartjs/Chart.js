@@ -686,7 +686,7 @@ class TimeScale extends Scale {
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
-		me._offsets = computeOffsets(me._table, getDataTimestamps(me), min, max, options);
+		me._offsets = computeOffsets(me._table, timestamps, min, max, options);
 
 		if (options.reverse) {
 			ticks.reverse();
