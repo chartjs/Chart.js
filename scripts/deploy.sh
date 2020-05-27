@@ -42,7 +42,7 @@ function update_with_tag {
 # tag is next|latest|master
 # https://www.chartjs.org/docs/$tag/
 # https://www.chartjs.org/samples/$tag/
-# https://www.chartjs.org/dist/$tag/Chart.*js
+# https://www.chartjs.org/dist/$tag/chart.*js
 function update_tagged_files {
     if [ "$VERSION" == "master" ]; then
         update_with_tag master
