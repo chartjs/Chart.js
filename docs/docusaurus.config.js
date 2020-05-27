@@ -8,9 +8,9 @@ module.exports = {
 	favicon: 'img/favicon.ico',
 	organizationName: 'chartjs', // Usually your GitHub org/user name.
 	projectName: 'chartjs.github.io', // Usually your repo name.
-	plugins: ['@docusaurus/plugin-google-analytics'],
+	plugins: [require.resolve('@docusaurus/plugin-google-analytics')],
 	scripts: ['https://www.chartjs.org/dist/VERSION/Chart.min.js'],
-	themes: ['@docusaurus/theme-live-codeblock'],
+	themes: [require.resolve('@docusaurus/theme-live-codeblock')],
 	themeConfig: {
 		algolia: {
 			apiKey: 'd7ee00a3cbaaf3c33e28ad1c274e7ba6',
@@ -83,6 +83,7 @@ module.exports = {
 			'@docusaurus/preset-classic',
 			{
 				docs: {
+					homePageId: 'index',
 					sidebarPath: require.resolve('./sidebars.js'),
 					routeBasePath: '',
 					editUrl: 'https://github.com/chartjs/Chart.js/edit/master/docs/',
