@@ -180,7 +180,7 @@ function computeNewSize(canvas, width, height, aspectRatio) {
 	// the canvas render width and height will be casted to integers so make sure that
 	// the canvas display style uses the same integer values to avoid blurring effect.
 
-	// Minimum valuesset to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
+	// Minimum values set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
 	width = Math.max(0, Math.floor(width));
 	return {
 		width,
