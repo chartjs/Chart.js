@@ -165,6 +165,10 @@ class Arc extends Element {
 		};
 		let i;
 
+		if (me.circumference === 0) {
+			return;
+		}
+
 		ctx.save();
 
 		ctx.fillStyle = options.backgroundColor;
