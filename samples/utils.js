@@ -41,7 +41,7 @@ window.chartColors = {
 	var Samples = global.Samples || (global.Samples = {});
 	var Color = Chart.helpers.color;
 
-	function applyDefaults(config) {
+	function applyDefaultNumbers(config) {
 		var cfg = config || {};
 		cfg.min = cfg.min || 0;
 		cfg.max = cfg.max || 1;
@@ -68,7 +68,7 @@ window.chartColors = {
 		},
 
 		numbers: function(config) {
-			var cfg = applyDefaults(config);
+			var cfg = applyDefaultNumbers(config);
 			var dfactor = Math.pow(10, cfg.decimals) || 0;
 			var data = [];
 			var i, value;
