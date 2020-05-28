@@ -68,7 +68,6 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-rollup-preprocessor": "^7.0.5",
     "karma-safari-private-launcher": "^1.0.0",
-    "merge-stream": "^2.0.0",
     "moment": "^2.26.0",
     "pixelmatch": "^5.2.0",
     "resize-observer-polyfill": "^1.5.1",
