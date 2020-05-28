@@ -20,6 +20,7 @@ function drawFPS(chart, count, date, lastDate) {
 
 /**
  * Please use the module's default export which provides a singleton instance
+ * Note: class is export for typedoc
  */
 export class Animator {
 	constructor() {
