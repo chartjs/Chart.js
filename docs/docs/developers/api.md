@@ -159,15 +159,6 @@ chart.setDatasetVisibility(1, false); // hides dataset at index 1
 chart.update(); // chart now renders with dataset hidden
 ```
 
-## setDataVisibility(datasetIndex, index, visibility)
-
-Like [setDatasetVisibility](#setdatasetvisibility) except that it hides only a single item in the dataset. **Note** this only applies to polar area and doughnut charts at the moment. It will have no affect on line, bar, radar, or scatter charts.
-
-```javascript
-chart.setDataVisibility(0, 2, false); // hides the item in dataset 0, at index 2
-chart.update(); // chart now renders with item hidden
-```
-
 ## toggleDataVisibility(index)
 
 Toggles the visibility of an item in all datasets. A dataset needs to explicitly support this feature for it to have an effect. From internal chart types, doughnut / pie and polar area use this.
