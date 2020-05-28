@@ -1,4 +1,4 @@
-import Animator from './core.animator';
+import animator from './core.animator';
 import Animation from './core.animation';
 import defaults from './core.defaults';
 import {noop, isObject} from '../helpers/helpers.core';
@@ -206,7 +206,7 @@ export default class Animations {
 		const animations = this._createAnimations(target, values);
 
 		if (animations.length) {
-			Animator.add(this._chart, animations);
+			animator.add(this._chart, animations);
 			return true;
 		}
 	}

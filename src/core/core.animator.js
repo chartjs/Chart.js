@@ -21,7 +21,7 @@ function drawFPS(chart, count, date, lastDate) {
 /**
  * Please use the module's default export which provides a singleton instance
  */
-export class Animator {
+class Animator {
 	constructor() {
 		this._request = null;
 		this._charts = new Map();
