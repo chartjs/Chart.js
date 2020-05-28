@@ -12,17 +12,17 @@ defaults.set('elements', {
 	}
 });
 
-function clipArc(ctx, arc) {
-	const {startAngle, endAngle, pixelMargin, x, y} = arc;
-	let angleMargin = pixelMargin / arc.outerRadius;
+function clipArc(ctx, model) {
+	const {startAngle, endAngle, pixelMargin, x, y} = model;
+	let angleMargin = pixelMargin / model.outerRadius;
 
 	// Draw an inner border by cliping the arc and drawing a double-width border
 	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
 	ctx.beginPath();
-	ctx.arc(x, y, arc.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
-	if (arc.innerRadius > pixelMargin) {
-		angleMargin = pixelMargin / arc.innerRadius;
-		ctx.arc(x, y, arc.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
+	ctx.arc(x, y, model.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
+	if (model.innerRadius > pixelMargin) {
+		angleMargin = pixelMargin / model.innerRadius;
+		ctx.arc(x, y, model.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
 	} else {
 		ctx.arc(x, y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
 	}
@@ -30,35 +30,59 @@ function clipArc(ctx, arc) {
 	ctx.clip();
 }
 
-function drawFullCircleBorders(ctx, vm, arc, inner) {
-	const endAngle = arc.endAngle;
+
+function pathArc(ctx, model) {
+	ctx.beginPath();
+	ctx.arc(model.x, model.y, model.outerRadius, model.startAngle, model.endAngle);
+	ctx.arc(model.x, model.y, model.innerRadius, model.endAngle, model.startAngle, true);
+	ctx.closePath();
+}
+
+function drawArc(ctx, model, circumference) {
+	if (model.fullCircles) {
+		model.endAngle = model.startAngle + TAU;
+
+		pathArc(ctx, model);
+
+		for (let i = 0; i < model.fullCircles; ++i) {
+			ctx.fill();
+		}
+		model.endAngle = model.startAngle + circumference % TAU;
+	}
+
+	pathArc(ctx, model);
+	ctx.fill();
+}
+
+function drawFullCircleBorders(ctx, element, model, inner) {
+	const endAngle = model.endAngle;
 	let i;
 
 	if (inner) {
-		arc.endAngle = arc.startAngle + TAU;
-		clipArc(ctx, arc);
-		arc.endAngle = endAngle;
-		if (arc.endAngle === arc.startAngle && arc.fullCircles) {
-			arc.endAngle += TAU;
-			arc.fullCircles--;
+		model.endAngle = model.startAngle + TAU;
+		clipArc(ctx, model);
+		model.endAngle = endAngle;
+		if (model.endAngle === model.startAngle && model.fullCircles) {
+			model.endAngle += TAU;
+			model.fullCircles--;
 		}
 	}
 
 	ctx.beginPath();
-	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.startAngle + TAU, arc.startAngle, true);
-	for (i = 0; i < arc.fullCircles; ++i) {
+	ctx.arc(model.x, model.y, model.innerRadius, model.startAngle + TAU, model.startAngle, true);
+	for (i = 0; i < model.fullCircles; ++i) {
 		ctx.stroke();
 	}
 
 	ctx.beginPath();
-	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.startAngle + TAU);
-	for (i = 0; i < arc.fullCircles; ++i) {
+	ctx.arc(model.x, model.y, element.outerRadius, model.startAngle, model.startAngle + TAU);
+	for (i = 0; i < model.fullCircles; ++i) {
 		ctx.stroke();
 	}
 }
 
-function drawBorder(ctx, vm, arc) {
-	const options = vm.options;
+function drawBorder(ctx, element, model) {
+	const options = element.options;
 	const inner = options.borderAlign === 'inner';
 
 	if (inner) {
@@ -69,17 +93,17 @@ function drawBorder(ctx, vm, arc) {
 		ctx.lineJoin = 'bevel';
 	}
 
-	if (arc.fullCircles) {
-		drawFullCircleBorders(ctx, vm, arc, inner);
+	if (model.fullCircles) {
+		drawFullCircleBorders(ctx, element, model, inner);
 	}
 
 	if (inner) {
-		clipArc(ctx, arc);
+		clipArc(ctx, model);
 	}
 
 	ctx.beginPath();
-	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.endAngle);
-	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+	ctx.arc(model.x, model.y, element.outerRadius, model.startAngle, model.endAngle);
+	ctx.arc(model.x, model.y, model.innerRadius, model.endAngle, model.startAngle, true);
 	ctx.closePath();
 	ctx.stroke();
 }
@@ -153,7 +177,7 @@ class Arc extends Element {
 		const me = this;
 		const options = me.options;
 		const pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
-		const arc = {
+		const model = {
 			x: me.x,
 			y: me.y,
 			innerRadius: me.innerRadius,
@@ -163,33 +187,20 @@ class Arc extends Element {
 			endAngle: me.endAngle,
 			fullCircles: Math.floor(me.circumference / TAU)
 		};
-		let i;
+
+		if (me.circumference === 0) {
+			return;
+		}
 
 		ctx.save();
 
 		ctx.fillStyle = options.backgroundColor;
 		ctx.strokeStyle = options.borderColor;
 
-		if (arc.fullCircles) {
-			arc.endAngle = arc.startAngle + TAU;
-			ctx.beginPath();
-			ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
-			ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
-			ctx.closePath();
-			for (i = 0; i < arc.fullCircles; ++i) {
-				ctx.fill();
-			}
-			arc.endAngle = arc.startAngle + me.circumference % TAU;
-		}
-
-		ctx.beginPath();
-		ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
-		ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
-		ctx.closePath();
-		ctx.fill();
+		drawArc(ctx, model, me.circumference);
 
 		if (options.borderWidth) {
-			drawBorder(ctx, me, arc);
+			drawBorder(ctx, me, model);
 		}
 
 		ctx.restore();
