@@ -172,8 +172,25 @@ function getCanvas(item) {
 	return item;
 }
 
+function computeNewSize(canvas, width, height, aspectRatio) {
+	if (width === undefined || height === undefined) {
+		width = getMaximumWidth(canvas);
+		height = getMaximumHeight(canvas);
+	}
+	// the canvas render width and height will be casted to integers so make sure that
+	// the canvas display style uses the same integer values to avoid blurring effect.
+
+	// Minimum values set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
+	width = Math.max(0, Math.floor(width));
+	return {
+		width,
+		height: Math.max(0, Math.floor(aspectRatio ? width / aspectRatio : height))
+	};
+}
+
 class Chart {
 
+	// eslint-disable-next-line max-statements
 	constructor(item, config) {
 		const me = this;
 
@@ -297,38 +314,27 @@ class Chart {
 		const options = me.options;
 		const canvas = me.canvas;
 		const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
-
-		if (width === undefined || height === undefined) {
-			width = getMaximumWidth(canvas);
-			height = getMaximumHeight(canvas);
-		}
-		// the canvas render width and height will be casted to integers so make sure that
-		// the canvas display style uses the same integer values to avoid blurring effect.
-
-		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		const newWidth = Math.max(0, Math.floor(width));
-		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
+		const newSize = computeNewSize(canvas, width, height, aspectRatio);
 
 		// detect devicePixelRation changes
 		const oldRatio = me.currentDevicePixelRatio;
 		const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
 
-		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
+		if (me.width === newSize.width && me.height === newSize.height && oldRatio === newRatio) {
 			return;
 		}
 
-		canvas.width = me.width = newWidth;
-		canvas.height = me.height = newHeight;
+		canvas.width = me.width = newSize.width;
+		canvas.height = me.height = newSize.height;
 		if (canvas.style) {
-			canvas.style.width = newWidth + 'px';
-			canvas.style.height = newHeight + 'px';
+			canvas.style.width = newSize.width + 'px';
+			canvas.style.height = newSize.height + 'px';
 		}
 
 		retinaScale(me, newRatio);
 
 		if (!silent) {
 			// Notify any plugins about the resize
-			const newSize = {width: newWidth, height: newHeight};
 			plugins.notify(me, 'resize', [newSize]);
 
 			// Notify of resize
