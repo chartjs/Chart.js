@@ -40,8 +40,7 @@
 	<script>
 		Chart.defaults.pointHitDetectionRadius = 1;
 
-		var customTooltips = function(tooltip) {
-			// Tooltip Element
+		var getOrCreateTooltip = function() {
 			var tooltipEl = document.getElementById('chartjs-tooltip');
 
 			if (!tooltipEl) {
@@ -50,6 +49,13 @@
 				tooltipEl.innerHTML = '<table></table>';
 				this._chart.canvas.parentNode.appendChild(tooltipEl);
 			}
+
+			return tooltipEl;
+		};
+
+		var customTooltips = function(tooltip) {
+			// Tooltip Element
+			var tooltipEl = getOrCreateTooltip();
 
 			// Hide if no tooltip
 			if (tooltip.opacity === 0) {
