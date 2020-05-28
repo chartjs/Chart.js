@@ -1,5 +1,5 @@
 /* eslint-disable import/no-namespace, import/namespace */
-import {default as Animator} from './core.animator';
+import animator from './core.animator';
 import * as controllers from '../controllers';
 import defaults from './core.defaults';
 import Interaction from './core.interaction';
@@ -254,8 +254,8 @@ class Chart {
 			return;
 		}
 
-		Animator.listen(me, 'complete', onAnimationsComplete);
-		Animator.listen(me, 'progress', onAnimationProgress);
+		animator.listen(me, 'complete', onAnimationsComplete);
+		animator.listen(me, 'progress', onAnimationProgress);
 
 		me._initialize();
 		if (me.attached) {
@@ -305,7 +305,7 @@ class Chart {
 	}
 
 	stop() {
-		Animator.stop(this);
+		animator.stop(this);
 		return this;
 	}
 
@@ -665,9 +665,9 @@ class Chart {
 			callCallback(animationOptions && animationOptions.onComplete, [], me);
 		};
 
-		if (Animator.has(me)) {
-			if (me.attached && !Animator.running(me)) {
-				Animator.start(me);
+		if (animator.has(me)) {
+			if (me.attached && !animator.running(me)) {
+				animator.start(me);
 			}
 		} else {
 			me.draw();
@@ -910,7 +910,7 @@ class Chart {
 		let i, ilen;
 
 		me.stop();
-		Animator.remove(me);
+		animator.remove(me);
 
 		// dataset controllers need to cleanup associated data
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
