@@ -6,7 +6,7 @@ The logarithmic scale is use to chart numerical data. It can be placed on either
 
 ## Tick Configuration Options
 
-The logarithmic scale options extend the [common tick configuration](README.md#tick-configuration). This scale does not define any options that are unique to it.
+The logarithmic scale options extend the [common tick configuration](index.md#tick-configuration). This scale does not define any options that are unique to it.
 
 ## Internal data format
 
