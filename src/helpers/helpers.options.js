@@ -120,7 +120,7 @@ export function resolve(inputs, context, index, info) {
 			cacheable = false;
 		}
 		if (index !== undefined && isArray(value)) {
-			value = value[index];
+			value = value[index % value.length];
 			cacheable = false;
 		}
 		if (value !== undefined) {
