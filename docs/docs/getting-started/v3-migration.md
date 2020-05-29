@@ -25,6 +25,12 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
 
+#### Generic changes
+
+* Indexable options are now looping. `backgroundColor: ['red', 'green']` will result in alternating `'red'` / `'green'` if there are more than 2 data points.
+
+#### Specific changes
+
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 * Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
