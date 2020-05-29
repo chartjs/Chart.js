@@ -176,9 +176,14 @@ describe('Chart.helpers.options', function() {
 		});
 		it ('should fallback if an indexable option value is undefined', function() {
 			var input = [42, undefined, 'bar'];
-			expect(resolve([input], undefined, 5)).toBe(undefined);
+			expect(resolve([input], undefined, 1)).toBe(undefined);
 			expect(resolve([input, 'foo'], undefined, 1)).toBe('foo');
-			expect(resolve([input, 'foo'], undefined, 5)).toBe('foo');
+		});
+		it ('should loop if an indexable option index is out of bounds', function() {
+			var input = [42, undefined, 'bar'];
+			expect(resolve([input], undefined, 3)).toBe(42);
+			expect(resolve([input, 'foo'], undefined, 4)).toBe('foo');
+			expect(resolve([input, 'foo'], undefined, 5)).toBe('bar');
 		});
 		it ('should not handle indexable options if index is undefined', function() {
 			var array = [42, 'foo', 'bar'];
@@ -211,7 +216,7 @@ describe('Chart.helpers.options', function() {
 			};
 			expect(resolve([input, 'foo'], {v: 42}, 0)).toBe(42);
 			expect(resolve([input, 'foo'], {v: 42}, 1)).toBe('foo');
-			expect(resolve([input, 'foo'], {v: 42}, 5)).toBe('foo');
+			expect(resolve([input, 'foo'], {v: 42}, 5)).toBe('bar');
 			expect(resolve([input, ['foo', 'bar']], {v: 42}, 1)).toBe('bar');
 		});
 	});
