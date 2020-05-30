@@ -9,7 +9,7 @@ module.exports = {
 	organizationName: 'chartjs', // Usually your GitHub org/user name.
 	projectName: 'chartjs.github.io', // Usually your repo name.
 	plugins: [require.resolve('@docusaurus/plugin-google-analytics')],
-	scripts: ['https://www.chartjs.org/dist/VERSION/Chart.min.js'],
+	scripts: ['https://www.chartjs.org/dist/VERSION/chart.min.js'],
 	themes: [require.resolve('@docusaurus/theme-live-codeblock')],
 	themeConfig: {
 		algolia: {
