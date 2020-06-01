@@ -453,6 +453,39 @@ describe('Test the radial linear scale', function() {
 		expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.max)).toBe(0);
 	});
 
+	it('should get the correct value for a distance from the center point', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+			},
+			options: {
+				scale: {
+					pointLabels: {
+						callback: function(value, index) {
+							return index.toString();
+						}
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.min);
+		expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.max);
+
+		var dist = chart.scales.r.getDistanceFromCenterForValue(5);
+		expect(chart.scales.r.getValueForDistanceFromCenter(dist)).toBe(5);
+
+		chart.scales.r.options.reverse = true;
+		chart.update();
+
+		expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.max);
+		expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.min);
+	});
+
 	it('should correctly get angles for all points', function() {
 		var chart = window.acquireChart({
 			type: 'radar',
