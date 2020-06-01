@@ -300,7 +300,7 @@ function determineMajorUnit(unit) {
 
 /**
  * @param {number[]} timestamps
- * @param {Set<object>} ticks
+ * @param {object} ticks
  * @param {number} time
  */
 function addTick(timestamps, ticks, time) {
