@@ -21,11 +21,11 @@ Global point options: `Chart.defaults.elements.point`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `radius` | `number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | <code>string&#124;Image</code> | `'circle'` | Point style.
+| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Point style.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
-| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Point fill color.
+| `backgroundColor` | `Color` | `Chart.defaults.color` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
-| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Point stroke color.
+| `borderColor` | `Color` | `Chart.defaults.color` | Point stroke color.
 | `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
 | `hoverRadius` | `number` | `4` | Point radius when hovered.
 | `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
@@ -56,16 +56,16 @@ Global line options: `Chart.defaults.elements.line`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `tension` | `number` | `0.4` | Bézier curve tension (`0` for no Bézier curves).
-| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Line fill color.
+| `backgroundColor` | `Color` | `Chart.defaults.color` | Line fill color.
 | `borderWidth` | `number` | `3` | Line stroke width.
-| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Line stroke color.
+| `borderColor` | `Color` | `Chart.defaults.color` | Line stroke color.
 | `borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
 | `borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
 | `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](../charts/line.md#cubicinterpolationmode)
-| `fill` | <code>boolean&#124;string</code> | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
+| `fill` | `boolean`\|`string` | `true` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Rectangle Configuration
@@ -76,9 +76,9 @@ Global rectangle options: `Chart.defaults.elements.rectangle`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar fill color.
+| `backgroundColor` | `Color` | `Chart.defaults.color` | Bar fill color.
 | `borderWidth` | `number` | `0` | Bar stroke width.
-| `borderColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Bar stroke color.
+| `borderColor` | `Color` | `Chart.defaults.color` | Bar stroke color.
 | `borderSkipped` | `string` | `'bottom'` | Skipped (excluded) border: `'bottom'`, `'left'`, `'top'` or `'right'`.
 
 ## Arc Configuration
@@ -90,7 +90,7 @@ Global arc options: `Chart.defaults.elements.arc`.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
-| `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Arc fill color.
+| `backgroundColor` | `Color` | `Chart.defaults.color` | Arc fill color.
 | `borderAlign` | `string` | `'center'` | Arc stroke alignment.
 | `borderColor` | `Color` | `'#fff'` | Arc stroke color.
 | `borderWidth`| `number` | `2` | Arc stroke width.

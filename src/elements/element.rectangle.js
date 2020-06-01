@@ -2,16 +2,13 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {isObject} from '../helpers/helpers.core';
 
-const defaultColor = defaults.color;
-
-defaults.set('elements', {
-	rectangle: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
-		borderSkipped: 'bottom',
-		borderWidth: 0
-	}
+const scope = 'elements.rectangle';
+defaults.set(scope, {
+	borderSkipped: 'bottom',
+	borderWidth: 0
 });
+
+defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation

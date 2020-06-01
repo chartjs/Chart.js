@@ -1,7 +1,25 @@
-import {merge} from '../helpers/helpers.core';
+import {merge, isArray} from '../helpers/helpers.core';
+
+/**
+ * @param {object} node
+ * @param {string} key
+ * @return {object}
+ */
+function getScope(node, key) {
+	if (!key) {
+		return node;
+	}
+	const keys = key.split('.');
+	for (let i = 0, n = keys.length; i < n; ++i) {
+		const k = keys[i];
+		node = node[k] || (node[k] = {});
+	}
+	return node;
+}
 
 /**
  * Please use the module's default export which provides a singleton instance
+ * Note: class is export for typedoc
  */
 export class Defaults {
 	constructor() {
@@ -39,13 +57,49 @@ export class Defaults {
 		this.title = undefined;
 		this.tooltips = undefined;
 		this.doughnut = undefined;
+		this._routes = {};
 	}
 	/**
 	 * @param {string} scope
 	 * @param {*} values
 	 */
 	set(scope, values) {
-		return merge(this[scope] || (this[scope] = {}), values);
+		return merge(getScope(this, scope), values);
+	}
+
+	/**
+	 * Routes the named defaults to fallback to another scope/name
+	 * Examples:
+	 * 	defaults.route('elements.arc', 'backgroundColor', '', 'color')
+	 * 	defaults.route('elements.line', ['backgroundColor', 'borderColor'], '', 'color')
+	 * 	defaults.route('elements.customLine', ['borderWidth', 'tension'], 'elements.line', ['borderWidth', 'tension'])
+	 * @param {string} scope
+	 * @param {string[]} names
+	 * @param {string} targetScope
+	 * @param {string|string[]} targetNames
+	 */
+	route(scope, names, targetScope, targetNames) {
+		const scopeObject = getScope(this, scope);
+		const targetScopeObject = getScope(this, targetScope);
+		const targetNamesIsArray = isArray(targetNames);
+		names.forEach((name, index) => {
+			const privateName = '_' + name;
+			Object.defineProperties(scopeObject, {
+				[privateName]: {
+					writable: true
+				},
+				[name]: {
+					enumerable: true,
+					get() {
+						// @ts-ignore
+						return this[privateName] !== undefined ? this[privateName] : targetScopeObject[targetNamesIsArray ? targetNames[index] : targetNames];
+					},
+					set(value) {
+						this[privateName] = value;
+					}
+				}
+			});
+		});
 	}
 }
 
