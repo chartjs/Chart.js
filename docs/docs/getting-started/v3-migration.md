@@ -247,8 +247,8 @@ The following properties and methods were removed:
 
 * `helpers.addEvent`
 * `helpers.aliasPixel`
+* `helpers.arrayEquals`
 * `helpers.configMerge`
-* `helpers.core.arrayEquals`
 * `helpers.findIndex`
 * `helpers.findNextWhere`
 * `helpers.findPreviousWhere`
