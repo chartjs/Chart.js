@@ -17,7 +17,7 @@ module.exports = function(karma) {
 	const grep = args.grep === true ? '' : args.grep;
 	const specPattern = 'test/specs/**/*' + grep + '*.js';
 
-	// Use the same rollup config as our dist files: when debugging (--watch),
+	// Use the same rollup config as our dist files: when debugging (npm run dev),
 	// we will prefer the unminified build which is easier to browse and works
 	// better with source mapping. In other cases, pick the minified build to
 	// make sure that the minification process (terser) doesn't break anything.
