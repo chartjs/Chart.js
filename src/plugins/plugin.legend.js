@@ -2,7 +2,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, mergeIf, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
@@ -93,6 +93,18 @@ function getBoxWidth(labelOpts, fontSize) {
 	return labelOpts.usePointStyle && labelOpts.boxWidth > fontSize ?
 		fontSize :
 		labelOpts.boxWidth;
+}
+
+/**
+ * Helper function to get the box height
+ * @param {object} labelOpts - the label options on the legend
+ * @param {*} fontSize - the label font size
+ * @return {number} height of the color box area
+ */
+function getBoxHeight(labelOpts, fontSize) {
+	return labelOpts.usePointStyle || isNullOrUndef(labelOpts.boxHeight) ?
+		fontSize :
+		labelOpts.boxHeight;
 }
 
 export class Legend extends Element {
@@ -272,10 +284,12 @@ export class Legend extends Element {
 
 			me.legendItems.forEach((legendItem, i) => {
 				const boxWidth = getBoxWidth(labelOpts, fontSize);
+				const boxHeight = getBoxHeight(labelOpts, fontSize);
 				const width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+				const itemHeight = Math.max(boxHeight, fontSize);
 
 				if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
-					totalHeight += fontSize + labelOpts.padding;
+					totalHeight += itemHeight + labelOpts.padding;
 					lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
 				}
 
@@ -284,7 +298,7 @@ export class Legend extends Element {
 					left: 0,
 					top: 0,
 					width,
-					height: fontSize
+					height: itemHeight
 				};
 
 				lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
@@ -303,6 +317,7 @@ export class Legend extends Element {
 			const heightLimit = minSize.height - titleHeight;
 			me.legendItems.forEach((legendItem, i) => {
 				const boxWidth = getBoxWidth(labelOpts, fontSize);
+				const boxHeight = getBoxHeight(labelOpts, fontSize);
 				const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 				// If too tall, go to new column
@@ -323,7 +338,7 @@ export class Legend extends Element {
 					left: 0,
 					top: 0,
 					width: itemWidth,
-					height: fontSize
+					height: Math.max(fontSize, boxHeight)
 				};
 			});
 
@@ -377,11 +392,12 @@ export class Legend extends Element {
 		ctx.font = labelFont.string;
 
 		const boxWidth = getBoxWidth(labelOpts, fontSize);
+		const boxHeight = getBoxHeight(labelOpts, fontSize);
 		const hitboxes = me.legendHitBoxes;
 
 		// current position
 		const drawLegendBox = function(x, y, legendItem) {
-			if (isNaN(boxWidth) || boxWidth <= 0) {
+			if (isNaN(boxWidth) || boxWidth <= 0 || isNaN(boxHeight) || boxHeight < 0) {
 				return;
 			}
 
@@ -417,9 +433,12 @@ export class Legend extends Element {
 				drawPoint(ctx, drawOptions, centerX, centerY);
 			} else {
 				// Draw box as legend symbol
-				ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
+				// Adjust position when boxHeight < fontSize (want it centered)
+				const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
+
+				ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), yBoxTop, boxWidth, boxHeight);
 				if (lineWidth !== 0) {
-					ctx.strokeRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
+					ctx.strokeRect(rtlHelper.leftForLtr(x, boxWidth), yBoxTop, boxWidth, boxHeight);
 				}
 			}
 
@@ -429,8 +448,7 @@ export class Legend extends Element {
 		const fillText = function(x, y, legendItem, textWidth) {
 			const halfFontSize = fontSize / 2;
 			const xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
-			const yMiddle = y + halfFontSize;
-
+			const yMiddle = y + (Math.max(fontSize, boxHeight) / 2);
 			ctx.fillText(legendItem.text, xLeft, yMiddle);
 
 			if (legendItem.hidden) {
@@ -473,7 +491,7 @@ export class Legend extends Element {
 
 		overrideTextDirection(me.ctx, opts.textDirection);
 
-		const itemHeight = fontSize + labelOpts.padding;
+		const itemHeight = Math.max(fontSize, boxHeight) + labelOpts.padding;
 		me.legendItems.forEach((legendItem, i) => {
 			const textWidth = ctx.measureText(legendItem.text).width;
 			const width = boxWidth + (fontSize / 2) + textWidth;
