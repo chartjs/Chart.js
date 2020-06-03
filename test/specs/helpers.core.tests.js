@@ -241,29 +241,6 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
-	describe('arrayEquals', function() {
-		it('should return false if arrays are not the same', function() {
-			expect(helpers.arrayEquals([], [42])).toBeFalsy();
-			expect(helpers.arrayEquals([42], ['42'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3, 4])).toBeFalsy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['bar', 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, [3, 4]], [1, 2, [3, 'foo']])).toBeFalsy();
-			expect(helpers.arrayEquals([{a: 42}], [{a: 42}])).toBeFalsy();
-		});
-		it('should return false if arrays are not the same', function() {
-			var o0 = {};
-			var o1 = {};
-			var o2 = {};
-
-			expect(helpers.arrayEquals([], [])).toBeTruthy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3])).toBeTruthy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['foo', 'bar'])).toBeTruthy();
-			expect(helpers.arrayEquals([true, false, true], [true, false, true])).toBeTruthy();
-			expect(helpers.arrayEquals([o0, o1, o2], [o0, o1, o2])).toBeTruthy();
-		});
-	});
-
 	describe('_elementsEqual', function() {
 		it('should return true if arrays are the same', function() {
 			expect(helpers._elementsEqual(

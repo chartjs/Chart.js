@@ -369,6 +369,30 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data[0].x).toEqual(firstX);
 	});
 
+	// https://github.com/chartjs/Chart.js/issues/7445
+	it('should re-synchronize metadata when data is objects and directly altered', function() {
+		var data = [{x: 'a', y: 1}, {x: 'b', y: 2}, {x: 'c', y: 3}];
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b', 'c'],
+				datasets: [{
+					data,
+					fill: true
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.data.length).toBe(3);
+		const y3 = meta.data[2].y;
+
+		data[0].y = 3;
+		chart.update();
+		expect(meta.data[0].y).toEqual(y3);
+	});
+
 	it('should re-synchronize metadata when scaleID changes', function() {
 		var chart = acquireChart({
 			type: 'line',
