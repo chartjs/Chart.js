@@ -49,7 +49,7 @@ The majorTick configuration is nested under the ticks configuration in the `majo
 
 ## Indexable Options
 
-Indexable options also accept an array in which each item corresponds to the element at the same index. Note that this method requires to provide as many items as data, so, in most cases, using a [function](#scriptable-options) is more appropriated if supported.
+Indexable options also accept an array in which each item corresponds to the element at the same index. Note that if there are less items than data, the items are looped over. In many cases, using a [function](#scriptable-options) is more appropriated if supported.
 
 Example:
 
