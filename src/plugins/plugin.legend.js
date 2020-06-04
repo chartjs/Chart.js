@@ -102,7 +102,7 @@ function getBoxWidth(labelOpts, fontSize) {
  * @return {number} height of the color box area
  */
 function getBoxHeight(labelOpts, fontSize) {
-	return labelOpts.usePointStyle && labelOpts.boxHeight ?
+	return labelOpts.usePointStyle && labelOpts.boxHeight > fontSize ?
 		fontSize :
 		labelOpts.boxHeight;
 }
