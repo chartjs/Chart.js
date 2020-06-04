@@ -102,7 +102,7 @@ function getBoxWidth(labelOpts, fontSize) {
  * @return {number} height of the color box area
  */
 function getBoxHeight(labelOpts, fontSize) {
-	return labelOpts.usePointStyle || isNullOrUndef(labelOpts.boxHeight) ?
+	return labelOpts.usePointStyle && labelOpts.boxHeight ?
 		fontSize :
 		labelOpts.boxHeight;
 }
@@ -393,6 +393,7 @@ export class Legend extends Element {
 
 		const boxWidth = getBoxWidth(labelOpts, fontSize);
 		const boxHeight = getBoxHeight(labelOpts, fontSize);
+		const height = Math.max(fontSize, boxHeight);
 		const hitboxes = me.legendHitBoxes;
 
 		// current position
@@ -448,7 +449,7 @@ export class Legend extends Element {
 		const fillText = function(x, y, legendItem, textWidth) {
 			const halfFontSize = fontSize / 2;
 			const xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
-			const yMiddle = y + (Math.max(fontSize, boxHeight) / 2);
+			const yMiddle = y + (height / 2);
 			ctx.fillText(legendItem.text, xLeft, yMiddle);
 
 			if (legendItem.hidden) {
@@ -491,7 +492,7 @@ export class Legend extends Element {
 
 		overrideTextDirection(me.ctx, opts.textDirection);
 
-		const itemHeight = Math.max(fontSize, boxHeight) + labelOpts.padding;
+		const itemHeight = height + labelOpts.padding;
 		me.legendItems.forEach((legendItem, i) => {
 			const textWidth = ctx.measureText(legendItem.text).width;
 			const width = boxWidth + (fontSize / 2) + textWidth;
