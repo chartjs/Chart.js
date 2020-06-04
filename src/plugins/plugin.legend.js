@@ -90,9 +90,10 @@ defaults.set('legend', {
  * @return {number} width of the color box area
  */
 function getBoxWidth(labelOpts, fontSize) {
-	return labelOpts.usePointStyle && labelOpts.boxWidth > fontSize ?
+	const {boxWidth} = labelOpts;
+	return (labelOpts.usePointStyle && boxWidth > fontSize) || isNullOrUndef(boxWidth) ?
 		fontSize :
-		labelOpts.boxWidth;
+		boxWidth;
 }
 
 /**
@@ -105,7 +106,7 @@ function getBoxHeight(labelOpts, fontSize) {
 	const {boxHeight} = labelOpts;
 	return (labelOpts.usePointStyle && boxHeight > fontSize) || isNullOrUndef(boxHeight) ?
 		fontSize :
-		labelOpts.boxHeight;
+		boxHeight;
 }
 
 export class Legend extends Element {
