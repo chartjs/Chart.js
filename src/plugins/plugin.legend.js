@@ -103,7 +103,7 @@ function getBoxWidth(labelOpts, fontSize) {
  */
 function getBoxHeight(labelOpts, fontSize) {
 	const {boxHeight} = labelOpts;
-	return (labelOpts.usePointStyle && boxHeight) || isNullOrUndef(boxHeight) > fontSize ?
+	return (labelOpts.usePointStyle && boxHeight > fontSize) || isNullOrUndef(boxHeight) ?
 		fontSize :
 		labelOpts.boxHeight;
 }
