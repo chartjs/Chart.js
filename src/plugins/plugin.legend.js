@@ -2,7 +2,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, mergeIf, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
@@ -102,7 +102,8 @@ function getBoxWidth(labelOpts, fontSize) {
  * @return {number} height of the color box area
  */
 function getBoxHeight(labelOpts, fontSize) {
-	return labelOpts.usePointStyle && labelOpts.boxHeight > fontSize ?
+	const {boxHeight} = labelOpts;
+	return (labelOpts.usePointStyle && boxHeight) || isNullOrUndef(boxHeight) > fontSize ?
 		fontSize :
 		labelOpts.boxHeight;
 }
