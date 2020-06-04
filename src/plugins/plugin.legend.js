@@ -2,7 +2,7 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, mergeIf, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
+import {callback as call, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
@@ -251,6 +251,9 @@ export class Legend extends Element {
 		const ctx = me.ctx;
 		const labelFont = toFont(labelOpts.font);
 		const fontSize = labelFont.size;
+		const boxWidth = getBoxWidth(labelOpts, fontSize);
+		const boxHeight = getBoxHeight(labelOpts, fontSize);
+		const itemHeight = Math.max(boxHeight, fontSize);
 
 		// Reset hit boxes
 		const hitboxes = me.legendHitBoxes = [];
@@ -283,10 +286,7 @@ export class Legend extends Element {
 			ctx.textBaseline = 'middle';
 
 			me.legendItems.forEach((legendItem, i) => {
-				const boxWidth = getBoxWidth(labelOpts, fontSize);
-				const boxHeight = getBoxHeight(labelOpts, fontSize);
 				const width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
-				const itemHeight = Math.max(boxHeight, fontSize);
 
 				if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
 					totalHeight += itemHeight + labelOpts.padding;
@@ -316,8 +316,6 @@ export class Legend extends Element {
 
 			const heightLimit = minSize.height - titleHeight;
 			me.legendItems.forEach((legendItem, i) => {
-				const boxWidth = getBoxWidth(labelOpts, fontSize);
-				const boxHeight = getBoxHeight(labelOpts, fontSize);
 				const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
 				// If too tall, go to new column
@@ -338,7 +336,7 @@ export class Legend extends Element {
 					left: 0,
 					top: 0,
 					width: itemWidth,
-					height: Math.max(fontSize, boxHeight)
+					height: itemHeight,
 				};
 			});
 
