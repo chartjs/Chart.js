@@ -36,8 +36,6 @@ const formatters = {
 		let notation;
 		if (maxTick < 1e-4 || maxTick > 1e+15) {
 			notation = 'scientific';
-		} else if (maxTick > 1e+6) {
-			notation = 'compact';
 		}
 
 		// Figure out how many digits to show
