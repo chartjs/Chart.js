@@ -6,6 +6,8 @@ When supplying colors to Chart options, you can use a number of formats. You can
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 
+Alternatively, you can set the `backgroundGenType` and `borderGenType` options to either `dataset` to automatically generate a color for the dataset, or to `element` to generate a color on a per element basis. These options can also be set in the data config to set them for all datasets in the chart.
+
 ## Patterns and Gradients
 
 An alternative option is to pass a [CanvasPattern](https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern) or [CanvasGradient](https://developer.mozilla.org/en/docs/Web/API/CanvasGradient) object instead of a string colour.
