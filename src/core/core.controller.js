@@ -122,9 +122,9 @@ function updateConfig(chart) {
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
 }
 
-const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
+const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
-	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.has(position) && axis === 'x');
+	return position === 'top' || position === 'bottom' || (KNOWN_POSITIONS.indexOf(position) === -1 && axis === 'x');
 }
 
 function compare2Level(l1, l2) {

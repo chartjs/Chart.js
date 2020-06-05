@@ -219,3 +219,8 @@ new Chart(ctx, {
     }
 });
 ```
+
+### When transpiling with Babel, cosider using `loose` mode
+
+Babel 7.9 changed the way classes are constructed. It is slow, unless used with `loose` mode.
+[More information](https://github.com/babel/babel/issues/11356)

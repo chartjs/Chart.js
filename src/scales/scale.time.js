@@ -44,18 +44,13 @@ function sorter(a, b) {
  * @param {number[]} items
  */
 function arrayUnique(items) {
-	const set = new Set();
-	let i, ilen;
+	const unique = {};
 
-	for (i = 0, ilen = items.length; i < ilen; ++i) {
-		set.add(items[i]);
+	for (let i = 0, ilen = items.length; i < ilen; ++i) {
+		unique[items[i]] = true;
 	}
 
-	if (set.size === ilen) {
-		return items;
-	}
-
-	return [...set];
+	return Object.keys(unique).map(x => +x);
 }
 
 /**
@@ -305,7 +300,7 @@ function determineMajorUnit(unit) {
 
 /**
  * @param {number[]} timestamps
- * @param {Set<object>} ticks
+ * @param {object} ticks
  * @param {number} time
  */
 function addTick(timestamps, ticks, time) {
@@ -314,7 +309,7 @@ function addTick(timestamps, ticks, time) {
 	}
 	const {lo, hi} = _lookup(timestamps, time);
 	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
-	ticks.add(timestamp);
+	ticks[timestamp] = true;
 }
 
 /**
@@ -334,7 +329,7 @@ function generate(scale) {
 	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
 	const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	const ticks = new Set();
+	const ticks = {};
 	let first = min;
 	let time;
 
@@ -364,15 +359,15 @@ function generate(scale) {
 		}
 	} else {
 		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-			ticks.add(time);
+			ticks[time] = true;
 		}
 
 		if (time === max || options.bounds === 'ticks') {
-			ticks.add(time);
+			ticks[time] = true;
 		}
 	}
 
-	return [...ticks];
+	return Object.keys(ticks).map(x => +x);
 }
 
 /**
