@@ -22,6 +22,9 @@
 		}, {
 			title: 'Floating',
 			path: 'charts/bar/float.html'
+		}, {
+			title: 'Auto-Generated Colors',
+			path: 'charts/bar/autocolor-bars.html'
 		}]
 	}, {
 		title: 'Line charts',
@@ -46,6 +49,9 @@
 		}, {
 			title: 'Point sizes',
 			path: 'charts/line/point-sizes.html'
+		}, {
+			title: 'Auto-Generated Colors',
+			path: 'charts/line/autocolor-lines.html'
 		}]
 	}, {
 		title: 'Area charts',
@@ -79,6 +85,9 @@
 		}, {
 			title: 'Pie',
 			path: 'charts/pie.html'
+		}, {
+			title: 'Pie - Auto-Colored',
+			path: 'charts/autocolor-pie.html'
 		}, {
 			title: 'Multi Series Pie',
 			path: 'charts/multi-series-pie.html'
