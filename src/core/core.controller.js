@@ -497,7 +497,7 @@ class Chart {
 		const newControllers = [];
 		const datasets = me.data.datasets;
 		let i, ilen;
-		
+
 		for (i = 0, ilen = datasets.length; i < ilen; i++) {
 			const dataset = datasets[i];
 			let meta = me.getDatasetMeta(i);
