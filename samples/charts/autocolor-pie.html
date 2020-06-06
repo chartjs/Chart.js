@@ -61,20 +61,14 @@
 			window.myPie.update();
 		});
 
-		var colorNames = Object.keys(window.chartColors);
 		document.getElementById('addDataset').addEventListener('click', function() {
 			var newDataset = {
-				backgroundColor: [],
 				data: [],
-				label: 'New dataset ' + config.data.datasets.length,
+				label: 'New dataset ' + config.data.datasets.length
 			};
 
 			for (var index = 0; index < 10; ++index) {
 				newDataset.data.push(randomScalingFactor());
-
-				var colorName = colorNames[index % colorNames.length];
-				var newColor = window.chartColors[colorName];
-				newDataset.backgroundColor.push(newColor);
 			}
 
 			config.data.datasets.push(newDataset);

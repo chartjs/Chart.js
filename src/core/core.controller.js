@@ -12,7 +12,7 @@ import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDef
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
-import {generatedColor, color} from '../helpers/helpers.color';
+import {generatedColor} from '../helpers/helpers.color';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
@@ -96,14 +96,14 @@ function initConfig(config) {
 		const bgType = e.backgroundGenType || data.backgroundGenType;
 		const brType = e.borderGenType || data.borderGenType;
 		if (bgType === 'dataset' || brType === 'dataset') {
-			const color = generatedColor(); // eslint-disable-line no-unused-vars
-			e.backgroundColor = bgType === 'dataset' ? color : e.backgroundColor;
-			e.borderColor = brType === 'dataset' ? color : e.borderColor;
+			const gcolor = generatedColor(); // eslint-disable-line no-unused-vars
+			e.backgroundColor = bgType === 'dataset' ? gcolor : e.backgroundColor;
+			e.borderColor = brType === 'dataset' ? gcolor : e.borderColor;
 		}
 		if (bgType === 'element' || brType === 'element') {
-			const color = e.data.map(() => generatedColor()); // eslint-disable-line no-unused-vars
-			e.backgroundColor = bgType === 'element' ? color : e.backgroundColor;
-			e.borderColor = bgType === 'element' ? color : e.borderColor;
+			const gcolor = e.data.map(() => generatedColor()); // eslint-disable-line no-unused-vars
+			e.backgroundColor = bgType === 'element' ? gcolor : e.backgroundColor;
+			e.borderColor = bgType === 'element' ? gcolor : e.borderColor;
 		}
 	});
 
