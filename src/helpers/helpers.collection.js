@@ -68,3 +68,26 @@ export function _rlookupByKey(table, key, value) {
 
 	return {lo, hi};
 }
+
+/**
+ * Return subset of `values` between `min` and `max` inclusive.
+ * Values are assumed to be in sorted order.
+ * @param {number[]} values - sorted array of values
+ * @param {number} min - min value
+ * @param {number} max - max value
+ */
+export function _filterBetween(values, min, max) {
+	let start = 0;
+	let end = values.length;
+
+	while (start < end && values[start] < min) {
+		start++;
+	}
+	while (end > start && values[end - 1] > max) {
+		end--;
+	}
+
+	return start > 0 || end < values.length
+		? values.slice(start, end)
+		: values;
+}

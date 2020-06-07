@@ -175,10 +175,9 @@ function getEvenSpacing(arr) {
 /**
  * @param {number[]} majorIndices
  * @param {Tick[]} ticks
- * @param {number} axisLength
  * @param {number} ticksLimit
  */
-function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+function calculateSpacing(majorIndices, ticks, ticksLimit) {
 	const evenMajorSpacing = getEvenSpacing(majorIndices);
 	const spacing = ticks.length / ticksLimit;
 
@@ -279,7 +278,7 @@ export default class Scale extends Element {
 		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
-		this.options = cfg.options;
+		this.options = undefined;
 		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
 		/** @type {Chart} */
@@ -346,9 +345,24 @@ export default class Scale extends Element {
 	}
 
 	/**
+	 * @param {object} options
+	 * @since 3.0
+	 */
+	init(options) {
+		const me = this;
+		me.options = options;
+
+		me.axis = me.isHorizontal() ? 'x' : 'y';
+
+		// parse min/max value, so we can properly determine min/max for other scales
+		me._userMin = me.parse(options.min);
+		me._userMax = me.parse(options.max);
+	}
+
+	/**
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
-	 * @param {number} index
+	 * @param {number} [index]
 	 * @since 3.0
 	 */
 	parse(raw, index) { // eslint-disable-line no-unused-vars
@@ -726,7 +740,7 @@ export default class Scale extends Element {
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
-		if (tickOpts.display && display) {
+		if (tickOpts.display && display && me.ticks.length) {
 			const labelSizes = me._getLabelSizes();
 			const firstLabelSize = labelSizes.first;
 			const lastLabelSize = labelSizes.last;
@@ -960,14 +974,11 @@ export default class Scale extends Element {
 	 * @return {number}
 	 */
 	getPixelForTick(index) {
-		const me = this;
-		const offset = me.options.offset;
-		const numTicks = me.ticks.length;
-		const tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
-
-		return index < 0 || index > numTicks - 1
-			? null
-			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
+		const ticks = this.ticks;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index].value);
 	}
 
 	/**
@@ -1024,8 +1035,7 @@ export default class Scale extends Element {
 	_autoSkip(ticks) {
 		const me = this;
 		const tickOpts = me.options.ticks;
-		const axisLength = me._length;
-		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize();
+		const ticksLimit = tickOpts.maxTicksLimit || me._length / me._tickSize();
 		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
 		const numMajorIndices = majorIndices.length;
 		const first = majorIndices[0];
@@ -1038,7 +1048,7 @@ export default class Scale extends Element {
 			return newTicks;
 		}
 
-		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
+		const spacing = calculateSpacing(majorIndices, ticks, ticksLimit);
 
 		if (numMajorIndices > 0) {
 			let i, ilen;

@@ -679,7 +679,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(getLabels(chart.scales.y)).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']);
+		expect(getLabels(chart.scales.y)).toEqual(['', '', '', '50', '', '', '20', '10', '', '', '', '', '5', '', '', '2', '1']);
 	});
 
 	it('should build labels using the user supplied callback', function() {

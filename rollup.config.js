@@ -3,6 +3,7 @@
 
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
+const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve');
 const terser = require('rollup-plugin-terser').terser;
@@ -24,6 +25,9 @@ module.exports = [
 	{
 		input,
 		plugins: [
+			inject({
+				ResizeObserver: 'resize-observer-polyfill'
+			}),
 			json(),
 			resolve(),
 			babel(),
@@ -42,6 +46,9 @@ module.exports = [
 	{
 		input,
 		plugins: [
+			inject({
+				ResizeObserver: 'resize-observer-polyfill'
+			}),
 			json(),
 			resolve(),
 			babel(),

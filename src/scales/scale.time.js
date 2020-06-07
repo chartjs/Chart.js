@@ -3,7 +3,7 @@ import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
-import {_lookup, _lookupByKey} from '../helpers/helpers.collection';
+import {_filterBetween, _lookup, _lookupByKey} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
@@ -70,7 +70,7 @@ function parse(scale, input) {
 
 	const adapter = scale._adapter;
 	const options = scale.options.time;
-	const parser = options.parser;
+	const {parser, round, isoWeekday} = options;
 	let value = input;
 
 	if (typeof parser === 'function') {
@@ -88,8 +88,10 @@ function parse(scale, input) {
 		return value;
 	}
 
-	if (options.round) {
-		value = scale._adapter.startOf(value, options.round);
+	if (round) {
+		value = round === 'week' && isoWeekday
+			? scale._adapter.startOf(value, 'isoWeek', isoWeekday)
+			: scale._adapter.startOf(value, round);
 	}
 
 	return +value;
@@ -494,30 +496,6 @@ function getLabelBounds(scale) {
 	return {min, max};
 }
 
-/**
- * Return subset of `timestamps` between `min` and `max`.
- * Timestamps are assumend to be in sorted order.
- * @param {number[]} timestamps - array of timestamps
- * @param {number} min - min value (timestamp)
- * @param {number} max - max value (timestamp)
- */
-function filterBetween(timestamps, min, max) {
-	let start = 0;
-	let end = timestamps.length - 1;
-
-	while (start < end && timestamps[start] < min) {
-		start++;
-	}
-	while (end > start && timestamps[end] > max) {
-		end--;
-	}
-	end++; // slice does not include last element
-
-	return start > 0 || end < timestamps.length
-		? timestamps.slice(start, end)
-		: timestamps;
-}
-
 const defaultConfig = {
 	/**
 	 * Data distribution along the scale:
@@ -577,10 +555,6 @@ export default class TimeScale extends Scale {
 	constructor(props) {
 		super(props);
 
-		const options = this.options;
-		const time = options.time || (options.time = {});
-		const adapter = this._adapter = new adapters._date(options.adapters.date);
-
 		/** @type {{data: number[], labels: number[], all: number[]}} */
 		this._cache = {
 			data: [],
@@ -596,12 +570,19 @@ export default class TimeScale extends Scale {
 		this._offsets = {};
 		/** @type {object[]} */
 		this._table = [];
+	}
+
+	init(options) {
+		const time = options.time || (options.time = {});
+		const adapter = this._adapter = new adapters._date(options.adapters.date);
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
 		// when loading the scale (adapters are loaded afterward), so let's populate
 		// missing formats on update
 		mergeIf(time.displayFormats, adapter.formats());
+
+		super.init(options);
 	}
 
 	/**
@@ -699,7 +680,7 @@ export default class TimeScale extends Scale {
 		const min = me.min;
 		const max = me.max;
 
-		const ticks = filterBetween(timestamps, min, max);
+		const ticks = _filterBetween(timestamps, min, max);
 
 		// PRIVATE
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
@@ -779,18 +760,6 @@ export default class TimeScale extends Scale {
 		const offsets = me._offsets;
 		const pos = interpolate(me._table, 'time', value, 'pos');
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-	}
-
-	/**
-	 * @param {number} index
-	 * @return {number}
-	 */
-	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
 	}
 
 	/**

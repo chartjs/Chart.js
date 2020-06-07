@@ -110,7 +110,7 @@ export default class BubbleController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(i, mode);
+				properties.options = me.resolveDataElementOptions(index, mode);
 
 				if (reset) {
 					properties.options.radius = 0;
