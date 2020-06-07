@@ -26,16 +26,27 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 
 The following options are provided by the linear radial scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
-| `backdropPaddingX` | `number` | `2` | Horizontal padding of label backdrop.
-| `backdropPaddingY` | `number` | `2` | Vertical padding of label backdrop.
-| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
-| `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
-| `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
-| `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)
-| `showLabelBackdrop` | `boolean` | `true` | If true, draw a background behind the tick labels.
+| Name | Type | Scriptable | Default | Description
+| ---- | ---- | ------- | ------- | -----------
+| `backdropColor` | `Color` | Yes | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
+| `backdropPaddingX` | `number` | | `2` | Horizontal padding of label backdrop.
+| `backdropPaddingY` | `number` | | `2` | Vertical padding of label backdrop.
+| `format` | `object` | | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
+| `maxTicksLimit` | `number` | | `11` | Maximum number of ticks and gridlines to show.
+| `precision` | `number` | | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
+| `stepSize` | `number` | | | User defined fixed step size for the scale. [more...](#step-size)
+| `showLabelBackdrop` | `boolean` | Yes | `true` | If true, draw a background behind the tick labels.
+
+The scriptable context has the following form:
+
+```javascript
+{
+    chart,
+    scale,
+    index,
+    tick
+}
+```
 
 ## Axis Range Settings
 
@@ -93,23 +104,38 @@ let options = {
 
 The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options.
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `display` | `boolean` | `true` | if true, angle lines are shown.
-| `color` | `Color` | `'rgba(0, 0, 0, 0.1)'` | Color of angled lines.
-| `lineWidth` | `number` | `1` | Width of angled lines.
-| `borderDash` | `number[]` | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `number` | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| Name | Type | Scriptable | Default | Description
+| ---- | ---- | ------- | ------- | -----------
+| `display` | `boolean` | | `true` | if true, angle lines are shown.
+| `color` | `Color` | Yes | `'rgba(0, 0, 0, 0.1)'` | Color of angled lines.
+| `lineWidth` | `number` | Yes | `1` | Width of angled lines.
+| `borderDash` | `number[]` | Yes* | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `number` | Yes | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+
+The `borderDash` setting only accepts a static value or a function. Passing an array of arrays is not supported.
+
+The scriptable context has the following form:
+
+```javascript
+{
+    chart,
+    scale,
+    index,
+    label
+}
+```
 
 ## Point Label Options
 
 The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options.
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `display` | `boolean` | `true` | if true, point labels are shown.
-| `callback` | `function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
+| Name | Type | Scriptable | Default | Description
+| ---- | ---- | ------- | ------- | -----------
+| `display` | `boolean` | | `true` | if true, point labels are shown.
+| `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
+| `font` | `Font` | Yes | `defaults.font` | See [Fonts](fonts.md)
+
+The scriptable context is the same as for the [Angle Line Options](#angle-line-options).
 
 ## Internal data format
 
