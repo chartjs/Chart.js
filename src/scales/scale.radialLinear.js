@@ -552,6 +552,12 @@ class RadialLinearScale extends LinearScaleBase {
 		ctx.textBaseline = 'middle';
 
 		me.ticks.forEach((tick, index) => {
+			const context = {
+				chart: me.chart,
+				scale: me,
+				index,
+				tick,
+			};
 			const tickFont = me._resolveTickFontOptions(index);
 			ctx.font = tickFont.string;
 
@@ -561,9 +567,11 @@ class RadialLinearScale extends LinearScaleBase {
 
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
-			if (tickOpts.showLabelBackdrop) {
+			const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
+
+			if (showLabelBackdrop) {
 				width = ctx.measureText(tick.label).width;
-				ctx.fillStyle = tickOpts.backdropColor;
+				ctx.fillStyle = resolve([tickOpts.backdropColor], context, index);
 
 				ctx.fillRect(
 					-width / 2 - tickOpts.backdropPaddingX,
