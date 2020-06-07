@@ -1097,7 +1097,6 @@ class Chart {
 
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
-			active = [];
 			me._lastEvent = null;
 		} else {
 			active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
