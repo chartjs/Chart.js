@@ -46,6 +46,9 @@ module.exports = {
 			}],
 		},
 		options: {
+			legend: {
+				display: false,
+			},
 			scales: {
 				x: {
 					display: false,
