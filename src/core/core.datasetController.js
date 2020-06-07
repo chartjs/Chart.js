@@ -638,7 +638,7 @@ export default class DatasetController {
 		let i, value, parsed, otherValue;
 
 		function _compute() {
-			const values = stack ? parsed._stacks[scale.axis] : undefined;
+			const values = stack && parsed._stacks[scale.axis];
 			if (stack && values) {
 				stack.values = values;
 				// Need to consider individual stack values for data range,
