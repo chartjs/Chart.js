@@ -2,9 +2,10 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
-import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
-import {_getParentNode} from '../helpers/helpers.dom';
+import {_getParentNode, getStyle, getRelativePosition} from '../helpers/helpers.dom';
+import {requestAnimFrame} from '../helpers/helpers.extras';
+import {isNullOrUndef} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -39,7 +40,7 @@ const EVENT_TYPES = {
  * @returns {number=} Size in pixels or undefined if unknown.
  */
 function readUsedSize(element, property) {
-	const value = helpers.dom.getStyle(element, property);
+	const value = getStyle(element, property);
 	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
 	return matches ? +matches[1] : undefined;
 }
@@ -151,7 +152,7 @@ function createEvent(type, chart, x, y, nativeEvent) {
 
 function fromNativeEvent(event, chart) {
 	const type = EVENT_TYPES[event.type] || event.type;
-	const pos = helpers.dom.getRelativePosition(event, chart);
+	const pos = getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
@@ -164,7 +165,7 @@ function throttled(fn, thisArg) {
 
 		if (!ticking) {
 			ticking = true;
-			helpers.requestAnimFrame.call(window, () => {
+			requestAnimFrame.call(window, () => {
 				ticking = false;
 				fn.apply(thisArg, args);
 			});
@@ -235,7 +236,15 @@ function createResizeObserver(chart, type, listener) {
 	// @ts-ignore until https://github.com/microsoft/TypeScript/issues/37861 implemented
 	const observer = new ResizeObserver(entries => {
 		const entry = entries[0];
-		resize(entry.contentRect.width, entry.contentRect.height);
+		const width = entry.contentRect.width;
+		const height = entry.contentRect.height;
+		// When its container's display is set to 'none' the callback will be called with a
+		// size of (0, 0), which will cause the chart to lost its original height, so skip
+		// resizing in such case.
+		if (width === 0 && height === 0) {
+			return;
+		}
+		resize(width, height);
 	});
 	observer.observe(container);
 	return observer;
@@ -309,7 +318,7 @@ export default class DomPlatform extends BasePlatform {
 		const initial = canvas[EXPANDO_KEY].initial;
 		['height', 'width'].forEach((prop) => {
 			const value = initial[prop];
-			if (helpers.isNullOrUndef(value)) {
+			if (isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
 			} else {
 				canvas.setAttribute(prop, value);

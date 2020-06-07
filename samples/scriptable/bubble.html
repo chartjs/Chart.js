@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Scriptable > Bubble | Chart.js sample</title>
 	<link rel="stylesheet" type="text/css" href="../style.css">
-	<script src="../../dist/Chart.min.js"></script>
+	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 </head>
 <body>
@@ -28,13 +28,17 @@
 
 		utils.srand(110);
 
+		function channelValue(x, y, values) {
+			return x < 0 && y < 0 ? values[0] : x < 0 ? values[1] : y < 0 ? values[2] : values[3];
+		}
+
 		function colorize(opaque, context) {
 			var value = context.dataset.data[context.dataIndex];
 			var x = value.x / 100;
 			var y = value.y / 100;
-			var r = x < 0 && y < 0 ? 250 : x < 0 ? 150 : y < 0 ? 50 : 0;
-			var g = x < 0 && y < 0 ? 0 : x < 0 ? 50 : y < 0 ? 150 : 250;
-			var b = x < 0 && y < 0 ? 0 : x > 0 && y > 0 ? 250 : 150;
+			var r = channelValue(x, y, [250, 150, 50, 0]);
+			var g = channelValue(x, y, [0, 50, 150, 250]);
+			var b = channelValue(x, y, [0, 150, 150, 250]);
 			var a = opaque ? 1 : 0.5 * value.v / 1000;
 
 			return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';

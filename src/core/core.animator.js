@@ -1,4 +1,4 @@
-import helpers from '../helpers/index';
+import {requestAnimFrame} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -20,6 +20,7 @@ function drawFPS(chart, count, date, lastDate) {
 
 /**
  * Please use the module's default export which provides a singleton instance
+ * Note: class is export for typedoc
  */
 export class Animator {
 	constructor() {
@@ -54,7 +55,7 @@ export class Animator {
 		}
 		me._running = true;
 
-		me._request = helpers.requestAnimFrame.call(window, () => {
+		me._request = requestAnimFrame.call(window, () => {
 			me._update();
 			me._request = null;
 

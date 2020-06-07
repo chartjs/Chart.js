@@ -1,13 +1,11 @@
 import defaults from '../core/core.defaults';
-import helpers from '../helpers/index';
 import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import {valueOrDefault, isArray, valueAtIndexOrDefault, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
+import {toFont, resolve} from '../helpers/helpers.options';
 
-const valueOrDefault = helpers.valueOrDefault;
-const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-const resolve = helpers.options.resolve;
 
 const defaultConfig = {
 	display: true,
@@ -50,7 +48,9 @@ const defaultConfig = {
 		display: true,
 
 		// Number - Point label font size in pixels
-		fontSize: 10,
+		font: {
+			size: 10
+		},
 
 		// Function - Used to convert point labels
 		callback(label) {
@@ -63,13 +63,13 @@ function getTickBackdropHeight(opts) {
 	const tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
 
 function measureLabelSize(ctx, lineHeight, label) {
-	if (helpers.isArray(label)) {
+	if (isArray(label)) {
 		return {
 			w: _longestText(ctx, ctx.font, label),
 			h: label.length * lineHeight
@@ -132,7 +132,7 @@ function fitWithPointLabels(scale) {
 	//
 	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
-	const plFont = helpers.options._parseFont(scale.options.pointLabels);
+	const plFont = toFont(scale.options.pointLabels.font);
 
 	// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 	// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
@@ -198,7 +198,7 @@ function fillText(ctx, text, position, lineHeight) {
 	let y = position.y + lineHeight / 2;
 	let i, ilen;
 
-	if (helpers.isArray(text)) {
+	if (isArray(text)) {
 		for (i = 0, ilen = text.length; i < ilen; ++i) {
 			ctx.fillText(text[i], position.x, y);
 			y += lineHeight;
@@ -222,11 +222,10 @@ function drawPointLabels(scale) {
 	const pointLabelOpts = opts.pointLabels;
 	const tickBackdropHeight = getTickBackdropHeight(opts);
 	const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-	const plFont = helpers.options._parseFont(pointLabelOpts);
+	const plFont = toFont(pointLabelOpts.font);
 
 	ctx.save();
 
-	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
 	for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
@@ -235,8 +234,8 @@ function drawPointLabels(scale) {
 		const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
 		// Keep this in loop since we may support array properties here
-		const pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
-		ctx.fillStyle = pointLabelFontColor;
+		ctx.font = plFont.string;
+		ctx.fillStyle = plFont.color;
 
 		const angleRadians = scale.getIndexAngle(i);
 		const angle = toDegrees(angleRadians);
@@ -290,11 +289,7 @@ function numberOrZero(param) {
 	return isNumber(param) ? param : 0;
 }
 
-export default class RadialLinearScale extends LinearScaleBase {
-
-	static id = 'radialLinear';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
+class RadialLinearScale extends LinearScaleBase {
 
 	constructor(cfg) {
 		super(cfg);
@@ -332,8 +327,8 @@ export default class RadialLinearScale extends LinearScaleBase {
 		const min = minmax.min;
 		const max = minmax.max;
 
-		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
-		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
+		me.min = isFinite(min) && !isNaN(min) ? min : 0;
+		me.max = isFinite(max) && !isNaN(max) ? max : 0;
 
 		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
@@ -354,7 +349,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map((value, index) => {
-			const label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
+			const label = callCallback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}
@@ -415,7 +410,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	getDistanceFromCenterForValue(value) {
 		const me = this;
 
-		if (helpers.isNullOrUndef(value)) {
+		if (isNullOrUndef(value)) {
 			return NaN;
 		}
 
@@ -425,6 +420,16 @@ export default class RadialLinearScale extends LinearScaleBase {
 			return (me.max - value) * scalingFactor;
 		}
 		return (value - me.min) * scalingFactor;
+	}
+
+	getValueForDistanceFromCenter(distance) {
+		if (isNullOrUndef(distance)) {
+			return NaN;
+		}
+
+		const me = this;
+		const scaledDistance = distance / (me.drawingArea / (me.max - me.min));
+		return me.options.reverse ? me.max - scaledDistance : me.min + scaledDistance;
 	}
 
 	getPointPosition(index, distanceFromCenter) {
@@ -507,8 +512,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 		}
 
 		const startAngle = me.getIndexAngle(0);
-		const tickFont = helpers.options._parseFont(tickOpts);
-		const tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
+		const tickFont = toFont(tickOpts.font);
 		let offset, width;
 
 		ctx.save();
@@ -537,7 +541,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickFontColor;
+			ctx.fillStyle = tickFont.color;
 			ctx.fillText(tick.label, 0, -offset);
 		});
 
@@ -549,3 +553,10 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 */
 	drawTitle() {}
 }
+
+RadialLinearScale.id = 'radialLinear';
+
+// INTERNAL: default options, registered in src/index.js
+RadialLinearScale.defaults = defaultConfig;
+
+export default RadialLinearScale;

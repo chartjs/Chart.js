@@ -1,5 +1,4 @@
 import adapters from '../core/core.adapters';
-import defaults from '../core/core.defaults';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -45,18 +44,13 @@ function sorter(a, b) {
  * @param {number[]} items
  */
 function arrayUnique(items) {
-	const set = new Set();
-	let i, ilen;
+	const unique = {};
 
-	for (i = 0, ilen = items.length; i < ilen; ++i) {
-		set.add(items[i]);
+	for (let i = 0, ilen = items.length; i < ilen; ++i) {
+		unique[items[i]] = true;
 	}
 
-	if (set.size === ilen) {
-		return items;
-	}
-
-	return [...set];
+	return Object.keys(unique).map(x => +x);
 }
 
 /**
@@ -306,7 +300,7 @@ function determineMajorUnit(unit) {
 
 /**
  * @param {number[]} timestamps
- * @param {Set<object>} ticks
+ * @param {object} ticks
  * @param {number} time
  */
 function addTick(timestamps, ticks, time) {
@@ -315,7 +309,7 @@ function addTick(timestamps, ticks, time) {
 	}
 	const {lo, hi} = _lookup(timestamps, time);
 	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
-	ticks.add(timestamp);
+	ticks[timestamp] = true;
 }
 
 /**
@@ -335,7 +329,7 @@ function generate(scale) {
 	const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, scale._getLabelCapacity(min));
 	const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 	const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	const ticks = new Set();
+	const ticks = {};
 	let first = min;
 	let time;
 
@@ -365,15 +359,15 @@ function generate(scale) {
 		}
 	} else {
 		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-			ticks.add(time);
+			ticks[time] = true;
 		}
 
 		if (time === max || options.bounds === 'ticks') {
-			ticks.add(time);
+			ticks[time] = true;
 		}
 	}
 
-	return [...ticks];
+	return Object.keys(ticks).map(x => +x);
 }
 
 /**
@@ -543,11 +537,7 @@ const defaultConfig = {
 	}
 };
 
-export default class TimeScale extends Scale {
-
-	static id = 'time';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
+class TimeScale extends Scale {
 
 	/**
 	 * @param {object} props
@@ -691,7 +681,7 @@ export default class TimeScale extends Scale {
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._table = buildLookupTable(getTimestampsForTable(me), min, max, distribution);
-		me._offsets = computeOffsets(me._table, getDataTimestamps(me), min, max, options);
+		me._offsets = computeOffsets(me._table, timestamps, min, max, options);
 
 		if (options.reverse) {
 			ticks.reverse();
@@ -785,7 +775,7 @@ export default class TimeScale extends Scale {
 		const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
 		const cosRotation = Math.cos(angle);
 		const sinRotation = Math.sin(angle);
-		const tickFontSize = valueOrDefault(ticksOpts.fontSize, defaults.fontSize);
+		const tickFontSize = me._resolveTickFontOptions(0).size;
 
 		return {
 			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
@@ -813,3 +803,10 @@ export default class TimeScale extends Scale {
 		return capacity > 0 ? capacity : 1;
 	}
 }
+
+TimeScale.id = 'time';
+
+// INTERNAL: default options, registered in src/index.js
+TimeScale.defaults = defaultConfig;
+
+export default TimeScale;

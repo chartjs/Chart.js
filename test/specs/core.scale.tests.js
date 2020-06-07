@@ -454,15 +454,15 @@ describe('Core.scale', function() {
 		});
 
 		it('should default to one layer for custom scales', function() {
-			var customScale = Chart.Scale.extend({
-				draw: function() {},
-				convertTicksToLabels: function() {
+			class CustomScale extends Chart.Scale {
+				draw() {}
+				convertTicksToLabels() {
 					return ['tick'];
 				}
-			});
-			customScale.id = 'customScale';
-			customScale.defaults = {};
-			Chart.scaleService.registerScale(customScale);
+			}
+			CustomScale.id = 'customScale';
+			CustomScale.defaults = {};
+			Chart.scaleService.registerScale(CustomScale);
 
 			var chart = window.acquireChart({
 				type: 'line',

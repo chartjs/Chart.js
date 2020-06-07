@@ -1,0 +1,229 @@
+---
+title: Animations
+---
+
+Chart.js animates charts out of the box. A number of options are provided to configure how the animation looks and how long it takes.
+
+import { useEffect } from 'react';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+    defaultValue='tension'
+    values={[
+        {label: 'Looping tension [property]', value: 'tension' },
+        {label: 'Hide and show [mode]', value: 'hideshow' },
+    ]}
+>
+<TabItem value="tension">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a0').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Looping tension',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+              tension: {
+                  duration: 1000,
+                  easing: 'linear',
+                  from: 1,
+                  to: 0,
+                  loop: true
+              }
+          },
+          scales: {
+            y: { // defining min and max so hiding the dataset does not change scale range
+              min: 0,
+              max: 100
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a0" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+
+<TabItem value="hideshow">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a1').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Try hiding me',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+            show: {
+                x: {
+                    from: 0
+                },
+                y: {
+                    from: 0
+                }
+            },
+            hide: {
+                x: {
+                    to: 0
+                },
+                y: {
+                    to: 0
+                }
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a1" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Animation Configuration
+
+The following animation options are available. The global options are defined in `Chart.defaults.animation`.
+The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `duration` | `number` | `1000` | The number of milliseconds an animation takes.
+| `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
+| `onProgress` | `function` | `null` | Callback called on each step of an animation. [more...](#animation-callbacks)
+| `onComplete` | `function` | `null` | Callback called when all animations are completed. [more...](#animation-callbacks)
+| `delay` | `number` | `undefined` | Delay before starting the animations.
+| `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
+| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
+| `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `active` | `object` | `{ duration: 400 }` | Option overrides for `active` animations (hover)
+| `resize` | `object` | `{ duration: 0 }` | Option overrides for `resize` animations.
+| [property] | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
+| [collection] | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array. Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
+| [mode] | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above. A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode)
+
+### Default collections
+
+| Name | Option | Value
+| ---- | ------ | -----
+| `numbers` | `type` | `'number'`
+| | `properties` | `['x', 'y', 'borderWidth', 'radius', 'tension']`
+| `colors` | `type` | `'color'`
+| | `properties` | `['borderColor', 'backgroundColor']`
+
+Direct property configuration overrides configuration of same property in a collection.
+
+These defaults can be overridden in `options.animation` or `dataset.animation` and `tooltip.animation`. These keys are also [Scriptable](../general/options.md#scriptable-options)
+
+:::note
+These default collections are overridden by most dataset controllers.
+:::
+
+### Default modes
+
+| Mode | Option | Value | Description
+| -----| ------ | ----- | -----
+| `'active'` | duration | 400 | Override default duration to 400ms for hover animations
+| `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
+| `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
+| | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
+| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false very at late phase of animation
+
+## Easing
+
+Available options are:
+
+* `'linear'`
+* `'easeInQuad'`
+* `'easeOutQuad'`
+* `'easeInOutQuad'`
+* `'easeInCubic'`
+* `'easeOutCubic'`
+* `'easeInOutCubic'`
+* `'easeInQuart'`
+* `'easeOutQuart'`
+* `'easeInOutQuart'`
+* `'easeInQuint'`
+* `'easeOutQuint'`
+* `'easeInOutQuint'`
+* `'easeInSine'`
+* `'easeOutSine'`
+* `'easeInOutSine'`
+* `'easeInExpo'`
+* `'easeOutExpo'`
+* `'easeInOutExpo'`
+* `'easeInCirc'`
+* `'easeOutCirc'`
+* `'easeInOutCirc'`
+* `'easeInElastic'`
+* `'easeOutElastic'`
+* `'easeInOutElastic'`
+* `'easeInBack'`
+* `'easeOutBack'`
+* `'easeInOutBack'`
+* `'easeInBounce'`
+* `'easeOutBounce'`
+* `'easeInOutBounce'`
+
+See [Robert Penner's easing equations](http://robertpenner.com/easing/).
+
+## Animation Callbacks
+
+The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed following object:
+
+```javascript
+{
+    // Chart object
+    chart: Chart,
+
+    // Number of animations still in progress
+    currentStep: number,
+
+    // Total number of animations at the start of current animation
+    numSteps: number,
+}
+```
+
+The following example fills a progress bar during the chart animation.
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        animation: {
+            onProgress: function(animation) {
+                progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+            }
+        }
+    }
+});
+```
+
+Another example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/advanced/progress-bar.html): this sample displays a progress bar showing how far along the animation is.

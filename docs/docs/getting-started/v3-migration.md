@@ -17,12 +17,19 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 
 ### Setup and installation
 
+* Distributed files are now in lower case. For example: `dist/chart.js`.
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 
 ### Options
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
+
+#### Generic changes
+
+* Indexable options are now looping. `backgroundColor: ['red', 'green']` will result in alternating `'red'` / `'green'` if there are more than 2 data points.
+
+#### Specific changes
 
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
@@ -49,17 +56,18 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The dataset option `tension` was removed. Use `lineTension`
 * Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
+* `aspectRatio` defaults to 1 for doughnut, pie, polarArea, and radar charts
 
 #### Defaults
 
 * `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
 * `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
 * `defaultColor` was renamed to `color`
-* `defaultFontColor` was renamed to `fontColor`
-* `defaultFontFamily` was renamed to `fontFamily`
-* `defaultFontSize` was renamed to `fontSize`
-* `defaultFontStyle` was renamed to `fontStyle`
-* `defaultLineHeight` was renamed to `lineHeight`
+* `defaultFontColor` was renamed to `font.color`
+* `defaultFontFamily` was renamed to `font.family`
+* `defaultFontSize` was renamed to `font.size`
+* `defaultFontStyle` was renamed to `font.style`
+* `defaultLineHeight` was renamed to `font.lineHeight`
 
 #### Scales
 
@@ -82,11 +90,13 @@ options: {
         major: {
           enabled: true
         },
-        fontStyle: function(context) {
-          return context.tick && context.tick.major ? 'bold' : undefined;
-        },
-        fontColor: function(context) {
-          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              style: 'bold',
+              color: '#FF0000'
+            };
+          }
         }
       }
     }],
@@ -118,11 +128,13 @@ options: {
         major: {
           enabled: true
         },
-        fontStyle: function(context) {
-          return context.tick && context.tick.major ? 'bold' : undefined;
-        },
-        fontColor: function(context) {
-          return context.tick && context.tick.major ? '#FF0000' : undefined;
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              style: 'bold',
+              color: '#FF0000'
+            };
+          }
         }
       }
     },
@@ -153,6 +165,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
 * `options.onClick` is now limited to the chart area
+* `options.onClick` and `options.onHover` now receive the `chart` instance as a 3rd argument
 
 #### Ticks
 
@@ -275,6 +288,8 @@ The following properties and methods were removed:
 
 * `IPlugin.afterScaleUpdate`. Use `afterLayout` instead
 * `Legend.margins` is now private
+* Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument in addition to implicitly via `this`
+* Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
 

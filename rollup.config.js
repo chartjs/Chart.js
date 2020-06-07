@@ -5,7 +5,7 @@ const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
 const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
-const resolve = require('@rollup/plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve').default;
 const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
@@ -20,8 +20,8 @@ const banner = `/*!
 
 module.exports = [
 	// UMD builds
-	// dist/Chart.min.js
-	// dist/Chart.js
+	// dist/chart.min.js
+	// dist/chart.js
 	{
 		input,
 		plugins: [
@@ -37,7 +37,7 @@ module.exports = [
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.js',
+			file: 'dist/chart.js',
 			banner,
 			format: 'umd',
 			indent: false,
@@ -60,28 +60,27 @@ module.exports = [
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.min.js',
+			file: 'dist/chart.min.js',
 			format: 'umd',
 			indent: false,
 		},
 	},
 
 	// ES6 builds
-	// dist/Chart.esm.min.js
-	// dist/Chart.esm.js
+	// dist/chart.esm.min.js
+	// dist/chart.esm.js
 	{
 		input,
 		plugins: [
 			json(),
 			resolve(),
-			babel({envName: 'es6'}),
 			cleanup({
 				sourcemap: true
 			})
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.esm.js',
+			file: 'dist/chart.esm.js',
 			banner,
 			format: 'esm',
 			indent: false,
@@ -92,7 +91,6 @@ module.exports = [
 		plugins: [
 			json(),
 			resolve(),
-			babel({envName: 'es6'}),
 			terser({
 				output: {
 					preamble: banner
@@ -101,7 +99,7 @@ module.exports = [
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.esm.min.js',
+			file: 'dist/chart.esm.min.js',
 			format: 'esm',
 			indent: false,
 		},

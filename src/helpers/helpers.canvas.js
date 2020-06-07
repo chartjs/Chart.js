@@ -1,4 +1,4 @@
-import {isArray} from './helpers.core';
+import {isArray, isNullOrUndef} from './helpers.core';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -14,6 +14,23 @@ const TWO_THIRDS_PI = PI * 2 / 3;
 /**
  * @namespace Chart.helpers.canvas
  */
+
+/**
+ * Converts the given font object into a CSS font string.
+ * @param {object} font - A font object.
+ * @return {string|null} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+ * @private
+ */
+export function toFontString(font) {
+	if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
+		return null;
+	}
+
+	return (font.style ? font.style + ' ' : '')
+		+ (font.weight ? font.weight + ' ' : '')
+		+ font.size + 'px '
+		+ font.family;
+}
 
 /**
  * @private

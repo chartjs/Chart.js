@@ -9,12 +9,12 @@ services:
   - xvfb
 
 script:
-  - gulp build
-  - gulp test --coverage
+  - npm run build
+  - npm test
   - ./scripts/docs-config.sh
   - npm run docs
   - npm run typedoc
-  - gulp package
+  - npm pack
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
 sudo: required

@@ -196,9 +196,7 @@ function _getInterpolationMethod(options) {
 	return _pointInLine;
 }
 
-export default class Line extends Element {
-
-	static _type = 'line';
+class Line extends Element {
 
 	constructor(cfg) {
 		super();
@@ -357,3 +355,7 @@ export default class Line extends Element {
 		ctx.restore();
 	}
 }
+
+Line._type = 'line';
+
+export default Line;

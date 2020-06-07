@@ -1,9 +1,6 @@
-import {inherits} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 
 export default class Element {
-
-	static extend = inherits;
 
 	constructor() {
 		this.x = undefined;

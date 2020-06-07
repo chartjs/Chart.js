@@ -3,7 +3,7 @@
 
 <head>
 	<title>Pie Chart with Custom Tooltips</title>
-	<script src="../../dist/Chart.min.js"></script>
+	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 
 	<style>
@@ -98,9 +98,7 @@
 			tooltipEl.style.opacity = 1;
 			tooltipEl.style.left = positionX + tooltip.caretX + 'px';
 			tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-			tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
-			tooltipEl.style.fontSize = tooltip.bodyFontSize;
-			tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
+			tooltipEl.style.font = tooltip.bodyFont.string;
 			tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
 		};
 

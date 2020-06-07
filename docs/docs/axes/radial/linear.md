@@ -108,11 +108,7 @@ The following options are used to configure the point labels that are shown on t
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | if true, point labels are shown.
 | `callback` | `function` | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `fontColor` | <code>Color&#124;Color[]</code> | `'#666'` | Font color for point labels.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family to use when rendering labels.
-| `fontSize` | `number` | `10` | font size in pixels.
-| `fontStyle` | `string` | `'normal'` | Font style to use when rendering point labels.
-| `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 
 ## Internal data format
 

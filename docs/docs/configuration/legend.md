@@ -14,13 +14,13 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
 | `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
 | `fullWidth` | `boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `function` | | A callback that is called when a click event is registered on a label item.
-| `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item.
-| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+| `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
+| `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
+| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item. Arguments: `[event, legendItem, legend]`.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or `'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 ## Position
@@ -49,14 +49,12 @@ The legend label configuration is nested below the legend configuration using th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `boxWidth` | `number` | `40` | Width of coloured box.
-| `fontSize` | `number` | `12` | Font size of text.
-| `fontStyle` | `string` | `'normal'` | Font style of text.
-| `fontColor` | `Color` | `'#666'` | Color of text.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
+| `boxHeight` | `number` | fontSize | Height of the coloured box.
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
-| `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the mimimum value between boxWidth and fontSize).
+| `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
 
 ## Legend Title Configuration
 
@@ -65,10 +63,7 @@ The legend title configuration is nested below the legend configuration using th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `false` | Is the legend title displayed.
-| `fontSize` | `number` | `12` | Font size of text.
-| `fontStyle` | `string` | `'normal'` | Font style of text.
-| `fontColor` | `Color` | `'#666'` | Color of text.
-| `fontFamily` | `string` | `"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"` | Font family of legend text.
+| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `lineHeight` | `number` | | Line height of the text. If unset, is computed from the font size.
 | `padding` | <code>number&#124;object</code> | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
 | `text` | `string` | | The string title.
@@ -140,16 +135,16 @@ It can be common to want to trigger different behaviour when clicking an item in
 The default legend click handler is:
 
 ```javascript
-function(e, legendItem) {
-    var index = legendItem.datasetIndex;
-    var ci = this.chart;
-    var meta = ci.getDatasetMeta(index);
-
-    // See controller.isDatasetVisible comment
-    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-
-    // We hid a dataset ... rerender the chart
-    ci.update();
+function(e, legendItem, legend) {
+    const index = legendItem.datasetIndex;
+    const ci = legend.chart;
+    if (ci.isDatasetVisible(index)) {
+        ci.hide(index);
+        legendItem.hidden = true;
+    } else {
+        ci.show(index);
+        legendItem.hidden = false;
+    }
 }
 ```
 
@@ -157,14 +152,14 @@ Lets say we wanted instead to link the display of the first two datasets. We cou
 
 ```javascript
 var defaultLegendClickHandler = Chart.defaults.legend.onClick;
-var newLegendClickHandler = function (e, legendItem) {
+var newLegendClickHandler = function (e, legendItem, legend) {
     var index = legendItem.datasetIndex;
 
     if (index > 1) {
         // Do the original logic
         defaultLegendClickHandler(e, legendItem);
     } else {
-        let ci = this.chart;
+        let ci = legend.chart;
         [
             ci.getDatasetMeta(0),
             ci.getDatasetMeta(1)

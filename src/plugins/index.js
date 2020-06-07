@@ -1,11 +1,4 @@
-import filler from './plugin.filler';
-import legend from './plugin.legend';
-import title from './plugin.title';
-import tooltip from './plugin.tooltip';
-
-export default {
-	filler,
-	legend,
-	title,
-	tooltip
-};
+export {default as filler} from './plugin.filler';
+export {default as legend} from './plugin.legend';
+export {default as title} from './plugin.title';
+export {default as tooltip} from './plugin.tooltip';

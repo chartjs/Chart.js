@@ -1,5 +1,4 @@
 import {isFinite, valueOrDefault} from '../helpers/helpers.core';
-import {_parseFont} from '../helpers/helpers.options';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 
@@ -9,11 +8,7 @@ const defaultConfig = {
 	}
 };
 
-export default class LinearScale extends LinearScaleBase {
-
-	static id = 'linear';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
+class LinearScale extends LinearScaleBase {
 
 	determineDataLimits() {
 		const me = this;
@@ -44,7 +39,7 @@ export default class LinearScale extends LinearScaleBase {
 		if (me.isHorizontal()) {
 			return Math.ceil(me.width / 40);
 		}
-		const tickFont = _parseFont(me.options.ticks);
+		const tickFont = me._resolveTickFontOptions(0);
 		return Math.ceil(me.height / tickFont.lineHeight);
 	}
 
@@ -67,3 +62,10 @@ export default class LinearScale extends LinearScaleBase {
 		return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
 	}
 }
+
+LinearScale.id = 'linear';
+
+// INTERNAL: default options, registered in src/index.js
+LinearScale.defaults = defaultConfig;
+
+export default LinearScale;

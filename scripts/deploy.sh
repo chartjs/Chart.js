@@ -42,7 +42,7 @@ function update_with_tag {
 # tag is next|latest|master
 # https://www.chartjs.org/docs/$tag/
 # https://www.chartjs.org/samples/$tag/
-# https://www.chartjs.org/dist/$tag/Chart.*js
+# https://www.chartjs.org/dist/$tag/chart.*js
 function update_tagged_files {
     if [ "$VERSION" == "master" ]; then
         update_with_tag master
@@ -55,7 +55,7 @@ function update_tagged_files {
 
 function deploy_versioned_files {
     local version=$1
-    local in_files='../dist/Chart*.js'
+    local in_files='../dist/chart*.js'
     local out_path='./dist'
     rm -rf $out_path/$version
     mkdir -p $out_path/$version

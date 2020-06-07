@@ -13,6 +13,7 @@ defaults.set('polarArea', {
 		animateRotate: true,
 		animateScale: true
 	},
+	aspectRatio: 1,
 	scales: {
 		r: {
 			type: 'radialLinear',
@@ -55,9 +56,9 @@ defaults.set('polarArea', {
 			}
 		},
 
-		onClick(e, legendItem) {
-			this.chart.toggleDataVisibility(legendItem.index);
-			this.chart.update();
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
 		}
 	},
 

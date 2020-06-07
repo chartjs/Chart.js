@@ -22,6 +22,7 @@ defaults.set('doughnut', {
 		// Boolean - Whether we animate scaling the Doughnut from the centre
 		animateScale: false
 	},
+	aspectRatio: 1,
 	legend: {
 		labels: {
 			generateLabels(chart) {
@@ -47,9 +48,9 @@ defaults.set('doughnut', {
 			}
 		},
 
-		onClick(e, legendItem) {
-			this.chart.toggleDataVisibility(legendItem.index);
-			this.chart.update();
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
 		}
 	},
 

@@ -3,7 +3,7 @@
 
 <head>
 	<title>Line Chart with Custom Tooltips</title>
-	<script src="../../dist/Chart.min.js"></script>
+	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 	<style>
 		canvas{
@@ -40,8 +40,7 @@
 	<script>
 		Chart.defaults.pointHitDetectionRadius = 1;
 
-		var customTooltips = function(tooltip) {
-			// Tooltip Element
+		var getOrCreateTooltip = function() {
 			var tooltipEl = document.getElementById('chartjs-tooltip');
 
 			if (!tooltipEl) {
@@ -50,6 +49,13 @@
 				tooltipEl.innerHTML = '<table></table>';
 				this._chart.canvas.parentNode.appendChild(tooltipEl);
 			}
+
+			return tooltipEl;
+		};
+
+		var customTooltips = function(tooltip) {
+			// Tooltip Element
+			var tooltipEl = getOrCreateTooltip();
 
 			// Hide if no tooltip
 			if (tooltip.opacity === 0) {
@@ -102,9 +108,7 @@
 			tooltipEl.style.opacity = 1;
 			tooltipEl.style.left = positionX + tooltip.caretX + 'px';
 			tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-			tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
-			tooltipEl.style.fontSize = tooltip.bodyFontSize + 'px';
-			tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
+			tooltipEl.style.font = tooltip.bodyFont.string;
 			tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
 		};
 

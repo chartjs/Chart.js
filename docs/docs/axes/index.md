@@ -20,12 +20,11 @@ The following properties are common to all axes provided by Chart.js.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
-| `callbacks` | `object` | | Callback functions to hook into the axis lifecycle. [more...](#callbacks)
 | `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
 ### Callbacks
 
-There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process.
+There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process. The options are supplied at the top level of the axis options.
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
