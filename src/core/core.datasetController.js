@@ -638,8 +638,9 @@ export default class DatasetController {
 		let i, value, parsed, otherValue;
 
 		function _compute() {
-			if (stack) {
-				stack.values = parsed._stacks[scale.axis];
+			const values = stack && parsed._stacks[scale.axis];
+			if (stack && values) {
+				stack.values = values;
 				// Need to consider individual stack values for data range,
 				// in addition to the stacked value
 				min = Math.min(min, value);
