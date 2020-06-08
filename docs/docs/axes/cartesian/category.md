@@ -39,7 +39,7 @@ let chart = new Chart(ctx, {
 
 ## Tick Configuration Options
 
-The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object. These options extend the [common tick configuration](README.md#tick-configuration).
+The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object. These options extend the [common tick configuration](index.md#tick-configuration).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
