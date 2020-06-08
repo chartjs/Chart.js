@@ -3,14 +3,14 @@ import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 const TAU = Math.PI * 2;
 
-defaults.set('elements', {
-	arc: {
-		backgroundColor: defaults.color,
-		borderAlign: 'center',
-		borderColor: '#fff',
-		borderWidth: 2
-	}
+const scope = 'elements.arc';
+defaults.set(scope, {
+	borderAlign: 'center',
+	borderColor: '#fff',
+	borderWidth: 2
 });
+
+defaults.route(scope, ['backgroundColor'], '', ['color']);
 
 function clipArc(ctx, model) {
 	const {startAngle, endAngle, pixelMargin, x, y} = model;
