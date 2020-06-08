@@ -13,7 +13,6 @@ The scale label configuration is nested under the scale configuration in the `sc
 | `display` | `boolean` | `false` | If true, display the axis title.
 | `align` | `string` | `'center'` | Alignment of the axis title. Possible options are `'start'`, `'center'` and `'end'`
 | `labelString` | `string` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
-| `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
 | `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
 | `padding` | <code>number&#124;object</code> | `4` | Padding to apply around scale labels. Only `top` and `bottom` are implemented.
 
