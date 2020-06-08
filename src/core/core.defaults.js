@@ -69,9 +69,9 @@ export class Defaults {
 
 	/**
 	 * Routes the named defaults to fallback to another scope/name.
-	 * This routing is useful, when those target values, like defaults.color, is changed runtime.
+	 * This routing is useful when those target values, like defaults.color, are changed runtime.
 	 * If the values would be copied, the runtime change would not take effect. By routing, the
-	 * fallback is evalueated at each access, so its always up to date.
+	 * fallback is evaluated at each access, so its always up to date.
 	 *
 	 * Examples:
 	 *
@@ -101,7 +101,7 @@ export class Defaults {
 				[privateName]: {
 					writable: true
 				},
-				// The actual property is defined as geter/setter so we can do the routing when value is not locally set.
+				// The actual property is defined as getter/setter so we can do the routing when value is not locally set.
 				[name]: {
 					enumerable: true,
 					get() {
