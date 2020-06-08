@@ -1177,12 +1177,12 @@ describe('Chart', function() {
 				// Check and see if tooltip was displayed
 				var tooltip = chart.tooltip;
 
-				expect(chart.lastActive[0].element).toEqual(point);
+				expect(chart._active[0].element).toEqual(point);
 				expect(tooltip._active[0].element).toEqual(point);
 
 				// Update and confirm tooltip is updated
 				chart.update();
-				expect(chart.lastActive[0].element).toEqual(point);
+				expect(chart._active[0].element).toEqual(point);
 				expect(tooltip._active[0].element).toEqual(point);
 
 				done();
