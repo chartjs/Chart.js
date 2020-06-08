@@ -1,5 +1,5 @@
 import Animations from './core.animations';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, arrayEquals} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf} from '../helpers/helpers.core';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
@@ -233,10 +233,7 @@ export default class DatasetController {
 		this._config = undefined;
 		this._parsing = false;
 		this._data = undefined;
-		this._dataCopy = undefined;
-		this._dataModified = false;
 		this._objectData = undefined;
-		this._labels = undefined;
 		this._scaleStacked = {};
 
 		this.initialize();
@@ -339,7 +336,6 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @return {boolean} whether the data was modified
 	 * @private
 	 */
 	_dataCheck() {
@@ -352,50 +348,17 @@ export default class DatasetController {
 		// the internal meta data accordingly.
 
 		if (isObject(data)) {
-			// Object data is currently monitored for replacement only
-			if (me._objectData === data) {
-				return false;
-			}
 			me._data = convertObjectDataToArray(data);
-			me._objectData = data;
-		} else {
-			if (me._data === data && !me._dataModified && arrayEquals(data, me._dataCopy)) {
-				return false;
-			}
-
+		} else if (me._data !== data) {
 			if (me._data) {
 				// This case happens when the user replaced the data array instance.
 				unlistenArrayEvents(me._data, me);
 			}
-
-			// Store a copy to detect direct modifications.
-			// Note: This is suboptimal, but better than always parsing the data
-			me._dataCopy = data.slice(0);
-
-			me._dataModified = false;
-
 			if (data && Object.isExtensible(data)) {
 				listenArrayEvents(data, me);
 			}
 			me._data = data;
 		}
-		return true;
-	}
-
-	/**
-	 * @private
-	 */
-	_labelCheck() {
-		const me = this;
-		const iScale = me._cachedMeta.iScale;
-		const labels = iScale ? iScale.getLabels() : me.chart.data.labels;
-
-		if (me._labels === labels) {
-			return false;
-		}
-
-		me._labels = labels;
-		return true;
 	}
 
 	addElements() {
@@ -418,12 +381,11 @@ export default class DatasetController {
 
 	buildOrUpdateElements() {
 		const me = this;
-		const dataChanged = me._dataCheck();
-		const labelsChanged = me._labelCheck();
-		const scaleChanged = me._scaleCheck();
 		const meta = me._cachedMeta;
 		const dataset = me.getDataset();
 		let stackChanged = false;
+
+		me._dataCheck();
 
 		// make sure cached _stacked status is current
 		meta._stacked = isStacked(meta.vScale, meta);
@@ -440,7 +402,7 @@ export default class DatasetController {
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me._resyncElements(dataChanged || labelsChanged || scaleChanged || stackChanged);
+		me._resyncElements();
 
 		// if stack changed, update stack values for the whole dataset
 		if (stackChanged) {
@@ -706,22 +668,6 @@ export default class DatasetController {
 			cache[iScale.id] = iScale.options.stacked;
 			cache[vScale.id] = vScale.options.stacked;
 		}
-	}
-
-	/**
-	 * @private
-	 */
-	_scaleCheck() {
-		const me = this;
-		const meta = me._cachedMeta;
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
-		const cache = me._scaleStacked;
-		return !cache ||
-			!iScale ||
-			!vScale ||
-			cache[iScale.id] !== iScale.options.stacked ||
-			cache[vScale.id] !== vScale.options.stacked;
 	}
 
 	/**
@@ -1049,7 +995,7 @@ export default class DatasetController {
 	/**
 	 * @private
 	 */
-	_resyncElements(changed) {
+	_resyncElements() {
 		const me = this;
 		const meta = me._cachedMeta;
 		const numMeta = meta.data.length;
@@ -1057,17 +1003,12 @@ export default class DatasetController {
 
 		if (numData > numMeta) {
 			me._insertElements(numMeta, numData - numMeta);
-			if (changed && numMeta) {
-				// _insertElements parses the new elements. The old ones might need parsing too.
-				me.parse(0, numMeta);
-			}
 		} else if (numData < numMeta) {
 			meta.data.splice(numData, numMeta - numData);
 			meta._parsed.splice(numData, numMeta - numData);
-			me.parse(0, numData);
-		} else if (changed) {
-			me.parse(0, numData);
 		}
+		// Re-parse the old elements (new elements are parsed in _insertElements)
+		me.parse(0, Math.min(numData, numMeta));
 	}
 
 	/**
@@ -1113,7 +1054,6 @@ export default class DatasetController {
 	_onDataPush() {
 		const count = arguments.length;
 		this._insertElements(this.getDataset().data.length - count, count);
-		this._dataModified = true;
 	}
 
 	/**
@@ -1121,7 +1061,6 @@ export default class DatasetController {
 	 */
 	_onDataPop() {
 		this._removeElements(this._cachedMeta.data.length - 1, 1);
-		this._dataModified = true;
 	}
 
 	/**
@@ -1129,7 +1068,6 @@ export default class DatasetController {
 	 */
 	_onDataShift() {
 		this._removeElements(0, 1);
-		this._dataModified = true;
 	}
 
 	/**
@@ -1138,7 +1076,6 @@ export default class DatasetController {
 	_onDataSplice(start, count) {
 		this._removeElements(start, count);
 		this._insertElements(start, arguments.length - 2);
-		this._dataModified = true;
 	}
 
 	/**
@@ -1146,7 +1083,6 @@ export default class DatasetController {
 	 */
 	_onDataUnshift() {
 		this._insertElements(0, arguments.length);
-		this._dataModified = true;
 	}
 }
 
