@@ -1,4 +1,4 @@
-import {merge, isArray} from '../helpers/helpers.core';
+import {merge, isArray, valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @param {object} node
@@ -19,7 +19,7 @@ function getScope(node, key) {
 
 /**
  * Please use the module's default export which provides a singleton instance
- * Note: class is export for typedoc
+ * Note: class is exported for typedoc
  */
 export class Defaults {
 	constructor() {
@@ -68,15 +68,26 @@ export class Defaults {
 	}
 
 	/**
-	 * Routes the named defaults to fallback to another scope/name
+	 * Routes the named defaults to fallback to another scope/name.
+	 * This routing is useful, when those target values, like defaults.color, is changed runtime.
+	 * If the values would be copied, the runtime change would not take effect. By routing, the
+	 * fallback is evalueated at each access, so its always up to date.
+	 *
 	 * Examples:
+	 *
 	 * 	defaults.route('elements.arc', 'backgroundColor', '', 'color')
+	 *   - reads the backgroundColor from defaults.color when undefined locally
+	 *
 	 * 	defaults.route('elements.line', ['backgroundColor', 'borderColor'], '', 'color')
+	 *   - reads the backgroundColor and borderColor from defaults.color when undefined locally
+	 *
 	 * 	defaults.route('elements.customLine', ['borderWidth', 'tension'], 'elements.line', ['borderWidth', 'tension'])
-	 * @param {string} scope
-	 * @param {string[]} names
-	 * @param {string} targetScope
-	 * @param {string|string[]} targetNames
+	 *   - reads the borderWidth and tension from elements.line when those are not defined in elements.customLine
+	 *
+	 * @param {string} scope Scope this route applies to.
+	 * @param {string[]} names Names of the properties that should be routed to different namespace when not defined here.
+	 * @param {string} targetScope The namespace where those properties should be routed to. Empty string ('') is the root of defaults.
+	 * @param {string|string[]} targetNames The target name/names in the target scope the properties should be routed to.
 	 */
 	route(scope, names, targetScope, targetNames) {
 		const scopeObject = getScope(this, scope);
@@ -84,15 +95,18 @@ export class Defaults {
 		const targetNamesIsArray = isArray(targetNames);
 		names.forEach((name, index) => {
 			const privateName = '_' + name;
+			const targetName = targetNamesIsArray ? targetNames[index] : targetNames;
 			Object.defineProperties(scopeObject, {
+				// A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
 				[privateName]: {
 					writable: true
 				},
+				// The actual property is defined as geter/setter so we can do the routing when value is not locally set.
 				[name]: {
 					enumerable: true,
 					get() {
 						// @ts-ignore
-						return this[privateName] !== undefined ? this[privateName] : targetScopeObject[targetNamesIsArray ? targetNames[index] : targetNames];
+						return valueOrDefault(this[privateName], targetScopeObject[targetName]);
 					},
 					set(value) {
 						this[privateName] = value;
