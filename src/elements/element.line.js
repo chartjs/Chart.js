@@ -9,22 +9,19 @@ import {_updateBezierControlPoints} from '../helpers/helpers.curve';
  * @typedef { import("./element.point").default } Point
  */
 
-const defaultColor = defaults.color;
-
-defaults.set('elements', {
-	line: {
-		backgroundColor: defaultColor,
-		borderCapStyle: 'butt',
-		borderColor: defaultColor,
-		borderDash: [],
-		borderDashOffset: 0,
-		borderJoinStyle: 'miter',
-		borderWidth: 3,
-		capBezierPoints: true,
-		fill: true,
-		tension: 0.4
-	}
+const scope = 'elements.line';
+defaults.set(scope, {
+	borderCapStyle: 'butt',
+	borderDash: [],
+	borderDashOffset: 0,
+	borderJoinStyle: 'miter',
+	borderWidth: 3,
+	capBezierPoints: true,
+	fill: true,
+	tension: 0.4
 });
+
+defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');
 
 function setStyle(ctx, vm) {
 	ctx.lineCap = vm.borderCapStyle;
