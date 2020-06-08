@@ -6,22 +6,12 @@ import Scale from '../core/core.scale';
  * Implementation of the nice number algorithm used in determining where axis labels will go
  * @return {number}
  */
-function niceNum(range, round) {
+function niceNum(range) {
 	const exponent = Math.floor(log10(range));
 	const fraction = range / Math.pow(10, exponent);
 	let niceFraction;
 
-	if (round) {
-		if (fraction < 1.5) {
-			niceFraction = 1;
-		} else if (fraction < 3) {
-			niceFraction = 2;
-		} else if (fraction < 7) {
-			niceFraction = 5;
-		} else {
-			niceFraction = 10;
-		}
-	} else if (fraction <= 1.0) {
+	if (fraction <= 1.0) {
 		niceFraction = 1;
 	} else if (fraction <= 2) {
 		niceFraction = 2;
