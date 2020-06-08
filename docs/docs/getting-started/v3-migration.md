@@ -166,6 +166,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
 * `options.onClick` is now limited to the chart area
 * `options.onClick` and `options.onHover` now receive the `chart` instance as a 3rd argument
+* `options.onHover` now receives a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 
 #### Ticks
 
@@ -201,6 +202,7 @@ The following properties and methods were removed:
 
 #### Chart
 
+* `Chart.active`
 * `Chart.borderWidth`
 * `Chart.chart.chart`
 * `Chart.Bar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
@@ -209,6 +211,7 @@ The following properties and methods were removed:
 * `Chart.Controller`
 * `Chart.Doughnut`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.innerRadius` now lives on doughnut, pie, and polarArea controllers
+* `Chart.lastActive`
 * `Chart.Legend` was moved to `Chart.plugins.legend._element` and made private
 * `Chart.Line`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.LinearScaleBase` now must be imported and cannot be accessed off the `Chart` object

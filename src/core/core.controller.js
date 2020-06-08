@@ -218,8 +218,7 @@ class Chart {
 		this.currentDevicePixelRatio = undefined;
 		this.chartArea = undefined;
 		this.data = undefined;
-		this.active = undefined;
-		this.lastActive = [];
+		this._active = [];
 		this._lastEvent = undefined;
 		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
@@ -1030,19 +1029,19 @@ class Chart {
 	/**
 	 * @private
 	 */
-	_updateHoverStyles() {
+	_updateHoverStyles(active, lastActive) {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;
 
 		// Remove styling for last active (even if it may still be active)
-		if (me.lastActive.length) {
-			me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
+		if (lastActive.length) {
+			me.updateHoverStyle(lastActive, hoverOptions.mode, false);
 		}
 
 		// Built-in hover styling
-		if (me.active.length && hoverOptions.mode) {
-			me.updateHoverStyle(me.active, hoverOptions.mode, true);
+		if (active.length && hoverOptions.mode) {
+			me.updateHoverStyle(active, hoverOptions.mode, true);
 		}
 	}
 
@@ -1074,6 +1073,7 @@ class Chart {
 	 */
 	_handleEvent(e, replay) {
 		const me = this;
+		const lastActive = me._active || [];
 		const options = me.options;
 		const hoverOptions = options.hover;
 
@@ -1092,35 +1092,31 @@ class Chart {
 		// - it would be expensive.
 		const useFinalPosition = replay;
 
+		let active = [];
 		let changed = false;
 
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
-			me.active = [];
 			me._lastEvent = null;
 		} else {
-			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
+			active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
 			me._lastEvent = e.type === 'click' ? me._lastEvent : e;
 		}
 
 		// Invoke onHover hook
-		// Need to call with native event here to not break backwards compatibility
-		callCallback(options.onHover || options.hover.onHover, [e.native, me.active, me], me);
+		callCallback(options.onHover || options.hover.onHover, [e, active, me], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
 			if (_isPointInArea(e, me.chartArea)) {
-				// Use e.native here for backwards compatibility
-				callCallback(options.onClick, [e, me.active, me], me);
+				callCallback(options.onClick, [e, active, me], me);
 			}
 		}
 
-		changed = !_elementsEqual(me.active, me.lastActive);
+		changed = !_elementsEqual(active, lastActive);
 		if (changed || replay) {
-			me._updateHoverStyles();
+			me._active = active;
+			me._updateHoverStyles(active, lastActive);
 		}
-
-		// Remember Last Actives
-		me.lastActive = me.active;
 
 		return changed;
 	}
