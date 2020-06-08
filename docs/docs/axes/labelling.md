@@ -14,7 +14,7 @@ The scale label configuration is nested under the scale configuration in the `sc
 | `align` | `string` | `'center'` | Alignment of the axis title. Possible options are `'start'`, `'center'` and `'end'`
 | `labelString` | `string` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
 | `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
-| `padding` | <code>number&#124;object</code> | `4` | Padding to apply around scale labels. Only `top` and `bottom` are implemented.
+| `padding` | `number`\|`object` | `4` | Padding to apply around scale labels. Only `top` and `bottom` are implemented.
 
 ## Creating Custom Tick Formats
 

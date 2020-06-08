@@ -2,9 +2,9 @@
 title: Axes
 ---
 
-Axes are an integral part of a chart. They are used to determine how data maps to a pixel value on the chart. In a cartesian chart, there is 1 or more X axis and 1 or more Y axis to map points onto the 2 dimensional canvas. These axes are known as ['cartesian axes'](./cartesian/README.md#cartesian-axes).
+Axes are an integral part of a chart. They are used to determine how data maps to a pixel value on the chart. In a cartesian chart, there is 1 or more X axis and 1 or more Y axis to map points onto the 2 dimensional canvas. These axes are known as ['cartesian axes'](./cartesian/index.md#cartesian-axes).
 
-In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/README.md#radial-axes).
+In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/index.md#radial-axes).
 
 Scales in Chart.js >v2.0 are significantly more powerful, but also different than those of v1.0.
 
@@ -15,11 +15,11 @@ Scales in Chart.js >v2.0 are significantly more powerful, but also different tha
 
 ## Common Configuration
 
-The following properties are common to all axes provided by Chart.js.
+The following options are common to all axes provided by Chart.js.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `display` | <code>boolean&#124;string</code> | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
+| `display` | `boolean`\|`string` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
 | `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
 
 ### Callbacks

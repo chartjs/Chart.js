@@ -6,6 +6,8 @@ The linear scale is use to chart numerical data. It can be placed on either the 
 
 ## Configuration Options
 
+These options extend the [common configuration for all cartesian axes](index.md#configuration-options).
+
 | Name | Type | Description
 | ---- | ---- | -----------
 | `beginAtZero` | `boolean` | if true, scale will include 0 if it is not already included.
@@ -14,7 +16,7 @@ The linear scale is use to chart numerical data. It can be placed on either the 
 
 ## Tick Configuration Options
 
-The following options are provided by the linear scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
+The following tick options are provided by the linear scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](index.md#tick-configuration).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
