@@ -2,7 +2,7 @@
 title: Linear Radial Axis
 ---
 
-The linear scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
+The linear radial scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation the center of the axis.
 
 The following additional configuration options are provided by the radial linear scale.
 
@@ -24,13 +24,14 @@ The axis has configuration properties for ticks, angle lines (line that appear i
 
 ## Tick Options
 
-The following options are provided by the linear scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
+The following options are provided by the linear radial scale. They are all located in the `ticks` sub options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `backdropColor` | `Color` | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
 | `backdropPaddingX` | `number` | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `number` | `2` | Vertical padding of label backdrop.
+| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 | `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
 | `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)

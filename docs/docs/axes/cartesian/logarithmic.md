@@ -6,7 +6,11 @@ The logarithmic scale is use to chart numerical data. It can be placed on either
 
 ## Tick Configuration Options
 
-The logarithmic scale options extend the [common tick configuration](README.md#tick-configuration). This scale does not define any options that are unique to it.
+The following options are provided by the linear scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](README.md#tick-configuration).
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 
 ## Internal data format
 
