@@ -5,7 +5,7 @@ export default class ScatterController extends LineController {
 }
 
 ScatterController.id = 'scatter';
-ScatterController.defaults = /* #__PURE__*/Object.assign({}, LineController.defaults, {
+ScatterController.defaults = {
 	scales: {
 		x: {
 			type: 'linear'
@@ -29,4 +29,4 @@ ScatterController.defaults = /* #__PURE__*/Object.assign({}, LineController.defa
 			}
 		}
 	}
-});
+};

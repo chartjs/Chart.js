@@ -22,7 +22,7 @@ HorizontalBarController.id = 'horizontalBar';
 /**
  * @type {any}
  */
-HorizontalBarController.defaults = /* #__PURE__*/Object.assign({}, BarController.defaults, {
+HorizontalBarController.defaults = {
 	hover: {
 		mode: 'index',
 		axis: 'y'
@@ -57,4 +57,4 @@ HorizontalBarController.defaults = /* #__PURE__*/Object.assign({}, BarController
 		mode: 'index',
 		axis: 'y'
 	}
-});
+};

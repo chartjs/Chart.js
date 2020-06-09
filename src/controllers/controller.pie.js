@@ -10,6 +10,6 @@ PieController.id = 'pie';
 /**
  * @type {any}
  */
-PieController.defaults = /* #__PURE__*/Object.assign({}, DoughnutController.defaults, {
+PieController.defaults = {
 	cutoutPercentage: 0
-});
+};

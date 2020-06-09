@@ -15,7 +15,7 @@ class Registry {
 		this._typedRegistries = [this.controllers, this.scales, this.elements];
 	}
 
-	_process(args, typedRegistry) {
+	_process(args, typedRegistry, scopeOverride) {
 		const me = this;
 		[...args].forEach(arg => {
 			const reg = typedRegistry || me._getRegistryForType(arg);
@@ -23,7 +23,7 @@ class Registry {
 				reg.register(arg);
 			} else {
 				each(arg, item => {
-					(typedRegistry || me._getRegistryForType(item)).register(item);
+					(typedRegistry || me._getRegistryForType(item)).register(item, scopeOverride);
 				});
 			}
 		});
@@ -55,6 +55,13 @@ class Registry {
 	 */
 	addPlugins(...args) {
 		this._process(args, this.plugins);
+	}
+
+	/**
+	 * @param  {...any} args
+	 */
+	addCorePlugins(...args) {
+		this._process(args, this.plugins, '');
 	}
 
 	/**

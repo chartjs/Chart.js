@@ -1,4 +1,3 @@
-import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
 import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
@@ -10,60 +9,6 @@ import Ticks from './core.ticks';
  * @typedef { import("./core.controller").default } Chart
  * @typedef {{value:any, label?:string, major?:boolean}} Tick
  */
-
-defaults.set('scale', {
-	display: true,
-	offset: false,
-	reverse: false,
-	beginAtZero: false,
-
-	// grid line settings
-	gridLines: {
-		display: true,
-		color: 'rgba(0,0,0,0.1)',
-		lineWidth: 1,
-		drawBorder: true,
-		drawOnChartArea: true,
-		drawTicks: true,
-		tickMarkLength: 10,
-		offsetGridLines: false,
-		borderDash: [],
-		borderDashOffset: 0.0
-	},
-
-	// scale label
-	scaleLabel: {
-		// display property
-		display: false,
-
-		// actual label
-		labelString: '',
-
-		// top/bottom padding
-		padding: {
-			top: 4,
-			bottom: 4
-		}
-	},
-
-	// label settings
-	ticks: {
-		minRotation: 0,
-		maxRotation: 50,
-		mirror: false,
-		lineWidth: 0,
-		strokeStyle: '',
-		padding: 0,
-		display: true,
-		autoSkip: true,
-		autoSkipPadding: 0,
-		labelOffset: 0,
-		// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
-		callback: Ticks.formatters.values,
-		minor: {},
-		major: {}
-	}
-});
 
 /**
  * Returns a new array containing numItems from arr
@@ -1613,3 +1558,57 @@ export default class Scale extends Element {
 }
 
 Scale.prototype._draw = Scale.prototype.draw;
+
+Scale.defaults = {
+	display: true,
+	offset: false,
+	reverse: false,
+	beginAtZero: false,
+
+	// grid line settings
+	gridLines: {
+		display: true,
+		color: 'rgba(0,0,0,0.1)',
+		lineWidth: 1,
+		drawBorder: true,
+		drawOnChartArea: true,
+		drawTicks: true,
+		tickMarkLength: 10,
+		offsetGridLines: false,
+		borderDash: [],
+		borderDashOffset: 0.0
+	},
+
+	// scale label
+	scaleLabel: {
+		// display property
+		display: false,
+
+		// actual label
+		labelString: '',
+
+		// top/bottom padding
+		padding: {
+			top: 4,
+			bottom: 4
+		}
+	},
+
+	// label settings
+	ticks: {
+		minRotation: 0,
+		maxRotation: 50,
+		mirror: false,
+		lineWidth: 0,
+		strokeStyle: '',
+		padding: 0,
+		display: true,
+		autoSkip: true,
+		autoSkipPadding: 0,
+		labelOffset: 0,
+		// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
+		callback: Ticks.formatters.values,
+		minor: {},
+		major: {}
+	}
+};

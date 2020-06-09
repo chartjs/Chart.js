@@ -505,7 +505,7 @@ class Chart {
 					dataElementType: registry.getElement(controllerDefaults.dataElementType),
 					datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
 					dataElementOptions: controllerDefaults.dataElementOptions,
-					datasetElementOptions: controllerDefaults.datasetElementType
+					datasetElementOptions: controllerDefaults.datasetElementOptions
 				});
 				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);

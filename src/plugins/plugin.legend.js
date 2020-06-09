@@ -10,79 +10,6 @@ import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../hel
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
 
-defaults.set('legend', {
-	display: true,
-	position: 'top',
-	align: 'center',
-	fullWidth: true,
-	reverse: false,
-	weight: 1000,
-
-	// a callback that will handle
-	onClick(e, legendItem, legend) {
-		const index = legendItem.datasetIndex;
-		const ci = legend.chart;
-		if (ci.isDatasetVisible(index)) {
-			ci.hide(index);
-			legendItem.hidden = true;
-		} else {
-			ci.show(index);
-			legendItem.hidden = false;
-		}
-	},
-
-	onHover: null,
-	onLeave: null,
-
-	labels: {
-		boxWidth: 40,
-		padding: 10,
-		// Generates labels shown in the legend
-		// Valid properties to return:
-		// text : text to display
-		// fillStyle : fill of coloured box
-		// strokeStyle: stroke of coloured box
-		// hidden : if this legend item refers to a hidden item
-		// lineCap : cap style for line
-		// lineDash
-		// lineDashOffset :
-		// lineJoin :
-		// lineWidth :
-		generateLabels(chart) {
-			const datasets = chart.data.datasets;
-			const options = chart.options.legend || {};
-			const usePointStyle = options.labels && options.labels.usePointStyle;
-
-			return chart._getSortedDatasetMetas().map((meta) => {
-				const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-
-				return {
-					text: datasets[meta.index].label,
-					fillStyle: style.backgroundColor,
-					hidden: !meta.visible,
-					lineCap: style.borderCapStyle,
-					lineDash: style.borderDash,
-					lineDashOffset: style.borderDashOffset,
-					lineJoin: style.borderJoinStyle,
-					lineWidth: style.borderWidth,
-					strokeStyle: style.borderColor,
-					pointStyle: style.pointStyle,
-					rotation: style.rotation,
-
-					// Below is extra data used for toggling the datasets
-					datasetIndex: meta.index
-				};
-			}, this);
-		}
-	},
-
-	title: {
-		display: false,
-		position: 'center',
-		text: '',
-	}
-});
-
 /**
  * Helper function to get the box width based on the usePointStyle option
  * @param {object} labelOpts - the label options on the legend
@@ -710,6 +637,79 @@ function createNewLegendAndAttach(chart, legendOpts) {
 
 export default {
 	id: 'legend',
+
+	defaults: {
+		display: true,
+		position: 'top',
+		align: 'center',
+		fullWidth: true,
+		reverse: false,
+		weight: 1000,
+
+		// a callback that will handle
+		onClick(e, legendItem, legend) {
+			const index = legendItem.datasetIndex;
+			const ci = legend.chart;
+			if (ci.isDatasetVisible(index)) {
+				ci.hide(index);
+				legendItem.hidden = true;
+			} else {
+				ci.show(index);
+				legendItem.hidden = false;
+			}
+		},
+
+		onHover: null,
+		onLeave: null,
+
+		labels: {
+			boxWidth: 40,
+			padding: 10,
+			// Generates labels shown in the legend
+			// Valid properties to return:
+			// text : text to display
+			// fillStyle : fill of coloured box
+			// strokeStyle: stroke of coloured box
+			// hidden : if this legend item refers to a hidden item
+			// lineCap : cap style for line
+			// lineDash
+			// lineDashOffset :
+			// lineJoin :
+			// lineWidth :
+			generateLabels(chart) {
+				const datasets = chart.data.datasets;
+				const options = chart.options.legend || {};
+				const usePointStyle = options.labels && options.labels.usePointStyle;
+
+				return chart._getSortedDatasetMetas().map((meta) => {
+					const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+
+					return {
+						text: datasets[meta.index].label,
+						fillStyle: style.backgroundColor,
+						hidden: !meta.visible,
+						lineCap: style.borderCapStyle,
+						lineDash: style.borderDash,
+						lineDashOffset: style.borderDashOffset,
+						lineJoin: style.borderJoinStyle,
+						lineWidth: style.borderWidth,
+						strokeStyle: style.borderColor,
+						pointStyle: style.pointStyle,
+						rotation: style.rotation,
+
+						// Below is extra data used for toggling the datasets
+						datasetIndex: meta.index
+					};
+				}, this);
+			}
+		},
+
+		title: {
+			display: false,
+			position: 'center',
+			text: '',
+		}
+	},
 
 	/**
 	 * Backward compatibility: since 2.1.5, the legend is registered as a plugin, making

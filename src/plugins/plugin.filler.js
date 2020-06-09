@@ -11,12 +11,6 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
-defaults.set('plugins', {
-	filler: {
-		propagate: true
-	}
-});
-
 function getLineByIndex(chart, index) {
 	const meta = chart.getDatasetMeta(index);
 	const visible = meta && chart.isDatasetVisible(index);
@@ -394,6 +388,10 @@ function doFill(ctx, cfg) {
 
 export default {
 	id: 'filler',
+
+	defaults: {
+		propagate: true
+	},
 
 	afterDatasetsUpdate(chart, options) {
 		const count = (chart.data.datasets || []).length;

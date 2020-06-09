@@ -4,19 +4,6 @@ import layouts from '../core/core.layouts';
 import {isArray, mergeIf} from '../helpers/helpers.core';
 import {toPadding, toFont} from '../helpers/helpers.options';
 
-defaults.set('title', {
-	align: 'center',
-	display: false,
-	font: {
-		style: 'bold',
-	},
-	fullWidth: true,
-	padding: 10,
-	position: 'top',
-	text: '',
-	weight: 2000         // by default greater than legend (1000) to be above
-});
-
 export class Title extends Element {
 	constructor(config) {
 		super();
@@ -234,6 +221,19 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 
 export default {
 	id: 'title',
+
+	defaults: {
+		align: 'center',
+		display: false,
+		font: {
+			style: 'bold',
+		},
+		fullWidth: true,
+		padding: 10,
+		position: 'top',
+		text: '',
+		weight: 2000         // by default greater than legend (1000) to be above
+	},
 
 	/**
 	 * Backward compatibility: since 2.1.5, the title is registered as a plugin, making

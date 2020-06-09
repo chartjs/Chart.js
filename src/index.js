@@ -28,7 +28,9 @@ import Ticks from './core/core.ticks';
 Chart.register = (...items) => registry.add(...items);
 
 // Register built-ins
-Chart.register(controllers, scales, elements, plugins);
+Chart.register(controllers, scales, elements);
+// Core plugin options are not located in standard place, hence own registration method.
+registry.addCorePlugins(plugins);
 
 Chart.helpers = helpers;
 Chart._adapters = _adapters;
@@ -47,6 +49,10 @@ Chart.plugins = pluginsCore;
 Chart.registry = registry;
 Chart.Scale = Scale;
 Chart.Ticks = Ticks;
+
+defaults.set('animation', animationService.defaults);
+defaults.set('layout', layouts.defaults);
+defaults.set('scale', Scale.defaults);
 
 for (const k in plugins) {
 	if (Object.prototype.hasOwnProperty.call(plugins, k)) {

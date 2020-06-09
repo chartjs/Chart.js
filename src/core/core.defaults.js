@@ -51,7 +51,7 @@ export class Defaults {
 		this.onClick = null;
 		this.responsive = true;
 		this.showLines = true;
-		this.plugins = undefined;
+		this.plugins = {};
 		this.scale = undefined;
 		this.legend = undefined;
 		this.title = undefined;
@@ -67,6 +67,10 @@ export class Defaults {
 	 */
 	set(scope, values) {
 		return merge(getScope(this, scope), values);
+	}
+
+	get(scope) {
+		return getScope(this, scope);
 	}
 
 	/**

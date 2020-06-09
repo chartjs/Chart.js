@@ -1,58 +1,6 @@
 import animator from './core.animator';
 import Animation from './core.animation';
-import defaults from './core.defaults';
 import {noop, isObject} from '../helpers/helpers.core';
-
-const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
-const colors = ['borderColor', 'backgroundColor'];
-
-defaults.set('animation', {
-	// Plain properties can be overridden in each object
-	duration: 1000,
-	easing: 'easeOutQuart',
-	onProgress: noop,
-	onComplete: noop,
-
-	// Property sets
-	colors: {
-		type: 'color',
-		properties: colors
-	},
-	numbers: {
-		type: 'number',
-		properties: numbers
-	},
-
-	// Update modes. These are overrides / additions to the above animations.
-	active: {
-		duration: 400
-	},
-	resize: {
-		duration: 0
-	},
-	show: {
-		colors: {
-			type: 'color',
-			properties: colors,
-			from: 'transparent'
-		},
-		visible: {
-			type: 'boolean',
-			duration: 0 // show immediately
-		},
-	},
-	hide: {
-		colors: {
-			type: 'color',
-			properties: colors,
-			to: 'transparent'
-		},
-		visible: {
-			type: 'boolean',
-			easing: 'easeInExpo' // for keeping the dataset visible almost all the way through the animation
-		},
-	}
-});
 
 function copyOptions(target, values) {
 	const oldOpts = target.options;
@@ -212,3 +160,53 @@ export default class Animations {
 	}
 }
 
+const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
+const colors = ['borderColor', 'backgroundColor'];
+
+Animations.defaults = {
+	// Plain properties can be overridden in each object
+	duration: 1000,
+	easing: 'easeOutQuart',
+	onProgress: noop,
+	onComplete: noop,
+
+	// Property sets
+	colors: {
+		type: 'color',
+		properties: colors
+	},
+	numbers: {
+		type: 'number',
+		properties: numbers
+	},
+
+	// Update modes. These are overrides / additions to the above animations.
+	active: {
+		duration: 400
+	},
+	resize: {
+		duration: 0
+	},
+	show: {
+		colors: {
+			type: 'color',
+			properties: colors,
+			from: 'transparent'
+		},
+		visible: {
+			type: 'boolean',
+			duration: 0 // show immediately
+		},
+	},
+	hide: {
+		colors: {
+			type: 'color',
+			properties: colors,
+			to: 'transparent'
+		},
+		visible: {
+			type: 'boolean',
+			easing: 'easeInExpo' // for keeping the dataset visible almost all the way through the animation
+		},
+	}
+};

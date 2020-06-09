@@ -1,5 +1,5 @@
 // Test the rectangle element
-const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
+const tooltipPlugin = Chart.registry.getPlugin('tooltips');
 const Tooltip = tooltipPlugin._element;
 
 describe('Core.Tooltip', function() {

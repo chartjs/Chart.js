@@ -1,4 +1,3 @@
-import defaults from './core.defaults';
 import {each} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
@@ -198,15 +197,6 @@ function placeBoxes(boxes, chartArea, params) {
 	chartArea.y = y;
 }
 
-defaults.set('layout', {
-	padding: {
-		top: 0,
-		right: 0,
-		bottom: 0,
-		left: 0
-	}
-});
-
 /**
  * @interface ILayoutItem
  * @typedef {object} ILayoutItem
@@ -230,6 +220,14 @@ defaults.set('layout', {
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
 // It is this service's responsibility of carrying out that layout.
 export default {
+	defaults: {
+		padding: {
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0
+		}
+	},
 
 	/**
 	 * Register a box to a chart.
