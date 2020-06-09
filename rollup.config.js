@@ -39,7 +39,7 @@ module.exports = [
 			}),
 			json(),
 			resolve(),
-			babel({envName: 'umd'}),
+			babel({envName: process.env.NODE_ENV || 'umd'}),
 			cleanup({
 				sourcemap: true
 			})
@@ -60,7 +60,7 @@ module.exports = [
 			}),
 			json(),
 			resolve(),
-			babel({envName: 'umd'}),
+			babel({envName: process.env.NODE_ENV || 'umd'}),
 			terser({
 				output: {
 					preamble: banner
