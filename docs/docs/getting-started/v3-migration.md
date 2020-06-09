@@ -68,6 +68,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `defaultFontSize` was renamed to `font.size`
 * `defaultFontStyle` was renamed to `font.style`
 * `defaultLineHeight` was renamed to `font.lineHeight`
+* Horizontal Bar default tooltip mode was changed from `'index'` to `'nearest'` to match vertical bar charts
 
 #### Scales
 
