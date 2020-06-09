@@ -44,13 +44,22 @@ function sorter(a, b) {
  * @param {number[]} items
  */
 function arrayUnique(items) {
-	const unique = {};
+	const set = new Set();
+	let i, ilen;
 
-	for (let i = 0, ilen = items.length; i < ilen; ++i) {
-		unique[items[i]] = true;
+	for (i = 0, ilen = items.length; i < ilen; ++i) {
+		set.add(items[i]);
 	}
 
-	return Object.keys(unique).map(x => +x);
+	if (set.size === ilen) {
+		return items;
+	}
+
+	const result = [];
+	set.forEach(item => {
+		result.push(item);
+	});
+	return result;
 }
 
 /**
