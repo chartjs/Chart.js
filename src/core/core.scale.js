@@ -411,7 +411,7 @@ export default class Scale extends Element {
 		const me = this;
 		// eslint-disable-next-line prefer-const
 		let {min, max, minDefined, maxDefined} = me.getUserBounds();
-		let minmax;
+		let range;
 
 		if (minDefined && maxDefined) {
 			return {min, max};
@@ -419,12 +419,12 @@ export default class Scale extends Element {
 
 		const metas = me.getMatchingVisibleMetas();
 		for (let i = 0, ilen = metas.length; i < ilen; ++i) {
-			minmax = metas[i].controller.getMinMax(me, canStack);
+			range = metas[i].controller.getMinMax(me, canStack);
 			if (!minDefined) {
-				min = Math.min(min, minmax.min);
+				min = Math.min(min, range.min);
 			}
 			if (!maxDefined) {
-				max = Math.max(max, minmax.max);
+				max = Math.max(max, range.max);
 			}
 		}
 

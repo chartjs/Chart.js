@@ -81,9 +81,7 @@ class LogarithmicScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me.getMinMax(true);
-		const min = minmax.min;
-		const max = minmax.max;
+		const {min, max} = me.getMinMax(true);
 
 		me.min = isFinite(min) ? Math.max(0, min) : null;
 		me.max = isFinite(max) ? Math.max(0, max) : null;

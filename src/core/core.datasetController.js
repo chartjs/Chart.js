@@ -587,31 +587,35 @@ export default class DatasetController {
 	/**
 	 * @protected
 	 */
+	updateRangeFromParsed(range, scale, parsed, stack) {
+		let value = parsed[scale.axis];
+		const values = stack && parsed._stacks[scale.axis];
+		if (stack && values) {
+			stack.values = values;
+			// Need to consider individual stack values for data range,
+			// in addition to the stacked value
+			range.min = Math.min(range.min, value);
+			range.max = Math.max(range.max, value);
+			value = applyStack(stack, value, this._cachedMeta.index, true);
+		}
+		range.min = Math.min(range.min, value);
+		range.max = Math.max(range.max, value);
+	}
+
+	/**
+	 * @protected
+	 */
 	getMinMax(scale, canStack) {
-		const meta = this._cachedMeta;
+		const me = this;
+		const meta = me._cachedMeta;
 		const _parsed = meta._parsed;
 		const sorted = meta._sorted && scale === meta.iScale;
 		const ilen = _parsed.length;
-		const otherScale = this._getOtherScale(scale);
-		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
-		let min = Number.POSITIVE_INFINITY;
-		let max = Number.NEGATIVE_INFINITY;
+		const otherScale = me._getOtherScale(scale);
+		const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(me.chart, true), values: null};
+		const range = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY};
 		const {min: otherMin, max: otherMax} = getUserBounds(otherScale);
 		let i, value, parsed, otherValue;
-
-		function _compute() {
-			const values = stack && parsed._stacks[scale.axis];
-			if (stack && values) {
-				stack.values = values;
-				// Need to consider individual stack values for data range,
-				// in addition to the stacked value
-				min = Math.min(min, value);
-				max = Math.max(max, value);
-				value = applyStack(stack, value, meta.index, true);
-			}
-			min = Math.min(min, value);
-			max = Math.max(max, value);
-		}
 
 		function _skip() {
 			parsed = _parsed[i];
@@ -624,21 +628,23 @@ export default class DatasetController {
 			if (_skip()) {
 				continue;
 			}
-			_compute();
+			me.updateRangeFromParsed(range, scale, parsed, stack);
 			if (sorted) {
+				// if the data is sorted, we don't need to check further from this end of array
 				break;
 			}
 		}
 		if (sorted) {
+			// in the sorted case, find first non-skipped value from other end of array
 			for (i = ilen - 1; i >= 0; --i) {
 				if (_skip()) {
 					continue;
 				}
-				_compute();
+				me.updateRangeFromParsed(range, scale, parsed, stack);
 				break;
 			}
 		}
-		return {min, max};
+		return range;
 	}
 
 	getAllParsedValues(scale) {
