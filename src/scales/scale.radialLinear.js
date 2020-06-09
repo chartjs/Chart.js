@@ -323,9 +323,7 @@ class RadialLinearScale extends LinearScaleBase {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me.getMinMax(false);
-		const min = minmax.min;
-		const max = minmax.max;
+		const {min, max} = me.getMinMax(false);
 
 		me.min = isFinite(min) && !isNaN(min) ? min : 0;
 		me.max = isFinite(max) && !isNaN(max) ? max : 0;
