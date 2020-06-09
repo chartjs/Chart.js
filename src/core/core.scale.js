@@ -1559,6 +1559,9 @@ export default class Scale extends Element {
 
 Scale.prototype._draw = Scale.prototype.draw;
 
+/**
+ * @type {*}
+ */
 Scale.defaults = {
 	display: true,
 	offset: false,
