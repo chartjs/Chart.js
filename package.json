@@ -43,17 +43,17 @@
     "@babel/core": "^7.10.2",
     "@babel/plugin-transform-object-assign": "^7.8.3",
     "@babel/preset-env": "^7.10.2",
-    "@rollup/plugin-commonjs": "^12.0.0",
+    "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-inject": "^4.0.2",
-    "@rollup/plugin-json": "^4.0.3",
-    "@rollup/plugin-node-resolve": "^8.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "chartjs-adapter-moment": "^0.1.1",
     "concurrently": "^5.2.0",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.2",
-    "eslint": "^7.0.0",
+    "eslint": "^7.2.0",
     "eslint-config-chartjs": "^0.2.0",
     "eslint-config-esnext": "^4.1.0",
     "eslint-plugin-html": "^6.0.2",
@@ -71,7 +71,7 @@
     "moment": "^2.26.0",
     "pixelmatch": "^5.2.0",
     "resize-observer-polyfill": "^1.5.1",
-    "rollup": "^2.13.1",
+    "rollup": "^2.15.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-terser": "^6.1.0",
@@ -81,6 +81,6 @@
     "yargs": "^15.3.1"
   },
   "dependencies": {
-    "@kurkle/color": "^0.1.8"
+    "@kurkle/color": "^0.1.9"
   }
 }
