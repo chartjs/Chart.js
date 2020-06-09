@@ -151,7 +151,7 @@ options: {
 
 #### Animations
 
-Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.md) docs for details.
+Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.mdx) docs for details.
 
 #### Customizability
 
