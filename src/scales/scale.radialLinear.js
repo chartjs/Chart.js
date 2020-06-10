@@ -558,13 +558,13 @@ class RadialLinearScale extends LinearScaleBase {
 				index,
 				tick,
 			};
-			const tickFont = me._resolveTickFontOptions(index);
-			ctx.font = tickFont.string;
 
 			if (index === 0 && !opts.reverse) {
 				return;
 			}
 
+			const tickFont = me._resolveTickFontOptions(index);
+			ctx.font = tickFont.string;
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
 			const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
