@@ -37,7 +37,10 @@ module.exports = {
 			scales: {
 				x: {
 					type: 'time',
-					position: 'bottom'
+					position: 'bottom',
+					ticks: {
+						maxRotation: 0
+					}
 				},
 				y: {
 					display: false
