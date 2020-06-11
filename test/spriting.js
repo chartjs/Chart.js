@@ -34,20 +34,19 @@ const fontWidth = [
 	8, 8, 8, 8, 8, 8, 8, 7, 8, 8, 8, 8, 8, 7, 8, 7
 ];
 
-// get coordinates and size for one character (index = character code)
-function getChar(index) {
-	const i = index - startIndex;
-	const size = 17;
-	const x = Math.min(i % columns, columns - 1);
-	const y = Math.min(Math.floor(i / columns), rows - 1);
-	return {sx: x * size, sy: y * size, w: fontWidth[i], h: fontHeight};
+// get coordinates and size for one character
+function getChar(asciiCode) {
+	const index = asciiCode - startIndex;
+	const x = Math.min(index % columns, columns - 1);
+	const y = Math.min(Math.floor(index / columns), rows - 1);
+	return {sx: x * cellWidth, sy: y * cellHeight, w: fontWidth[index], h: fontHeight};
 }
 
 function measureText(text) {
 	let width = 0;
 	if (text && text.charCodeAt) {
 		for (let i = 0; i < text.length; ++i) {
-			width += fontWidth[Math.min(223, text.charCodeAt(i))];
+			width += fontWidth[Math.min(223, text.charCodeAt(i) - startIndex)];
 		}
 	}
 	return {width};
