@@ -120,9 +120,9 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	};
 }
 
-function parseFloatBar(arr, item, vScale, i) {
-	const startValue = vScale.parse(arr[0], i);
-	const endValue = vScale.parse(arr[1], i);
+function parseFloatBar(entry, item, vScale, i) {
+	const startValue = vScale.parse(entry[0], i);
+	const endValue = vScale.parse(entry[1], i);
 	const min = Math.min(startValue, endValue);
 	const max = Math.max(startValue, endValue);
 	let barStart = min;
@@ -147,6 +147,15 @@ function parseFloatBar(arr, item, vScale, i) {
 	};
 }
 
+function parseValue(entry, item, vScale, i) {
+	if (isArray(entry)) {
+		parseFloatBar(entry, item, vScale, i);
+	} else {
+		item[vScale.axis] = vScale.parse(entry, i);
+	}
+	return item;
+}
+
 function parseArrayOrPrimitive(meta, data, start, count) {
 	const iScale = meta.iScale;
 	const vScale = meta.vScale;
@@ -159,14 +168,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 		entry = data[i];
 		item = {};
 		item[iScale.axis] = singleScale || iScale.parse(labels[i], i);
-
-		if (isArray(entry)) {
-			parseFloatBar(entry, item, vScale, i);
-		} else {
-			item[vScale.axis] = vScale.parse(entry, i);
-		}
-
-		parsed.push(item);
+		parsed.push(parseValue(entry, item, vScale, i));
 	}
 	return parsed;
 }
@@ -206,18 +208,12 @@ export default class BarController extends DatasetController {
 		const iAxisKey = iScale.axis === 'x' ? xAxisKey : yAxisKey;
 		const vAxisKey = vScale.axis === 'x' ? xAxisKey : yAxisKey;
 		const parsed = [];
-		let i, ilen, item, obj, value;
+		let i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
 			item[iScale.axis] = iScale.parse(resolveObjectKey(obj, iAxisKey), i);
-			value = resolveObjectKey(obj, vAxisKey);
-			if (isArray(value)) {
-				parseFloatBar(value, item, vScale, i);
-			} else {
-				item[vScale.axis] = vScale.parse(value, i);
-			}
-			parsed.push(item);
+			parsed.push(parseValue(resolveObjectKey(obj, vAxisKey), item, vScale, i));
 		}
 		return parsed;
 	}
