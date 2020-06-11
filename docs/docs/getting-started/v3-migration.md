@@ -257,6 +257,7 @@ The following properties and methods were removed:
 * `helpers.findNextWhere`
 * `helpers.findPreviousWhere`
 * `helpers.extend`. Use `Object.assign` instead
+* `helpers.getValueAtIndexOrDefault`. Use `helpers.resolve` instead.
 * `helpers.indexOf`
 * `helpers.lineTo`
 * `helpers.longestText` was moved to the `helpers.canvas` namespace and made private
@@ -332,7 +333,6 @@ The following properties were renamed during v3 development:
 * `helpers.getMaximumWidth` was renamed to `helpers.dom.getMaximumWidth`
 * `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`
 * `helpers.getStyle` was renamed to `helpers.dom.getStyle`
-* `helpers.getValueAtIndexOrDefault` was renamed to `helpers.valueAtIndexOrDefault`
 * `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
 * `helpers.easingEffects` was renamed to `helpers.easing.effects`
 * `helpers.log10` was renamed to `helpers.math.log10`

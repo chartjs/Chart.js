@@ -76,17 +76,6 @@ export function valueOrDefault(value, defaultValue) {
 }
 
 /**
- * Returns value at the given `index` in array if defined, else returns `defaultValue`.
- * @param {Array} value - The array to lookup for value at `index`.
- * @param {number} index - The index in `value` to lookup for value.
- * @param {*} defaultValue - The value to return if `value[index]` is undefined.
- * @returns {*}
- */
-export function valueAtIndexOrDefault(value, index, defaultValue) {
-	return valueOrDefault(isArray(value) ? value[index] : value, defaultValue);
-}
-
-/**
  * Calls `fn` with the given `args` in the scope defined by `thisArg` and returns the
  * value returned by `fn`. If `fn` is not a function, this method returns undefined.
  * @param {function} fn - The function to call.
