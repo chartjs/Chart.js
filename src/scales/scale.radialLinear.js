@@ -248,8 +248,7 @@ function drawPointLabels(scale) {
 		ctx.font = plFont.string;
 		ctx.fillStyle = plFont.color;
 
-		const angleRadians = scale.getIndexAngle(i);
-		const angle = toDegrees(angleRadians);
+		const angle = toDegrees(scale.getIndexAngle(i));
 		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
 		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
