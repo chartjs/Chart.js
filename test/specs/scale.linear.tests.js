@@ -3,6 +3,8 @@ function getLabels(scale) {
 }
 
 describe('Linear Scale', function() {
+	describe('auto', jasmine.fixture.specs('scale.linear'));
+
 	it('Should register the constructor with the scale service', function() {
 		var Constructor = Chart.scaleService.getScaleConstructor('linear');
 		expect(Constructor).not.toBe(undefined);
@@ -1104,30 +1106,6 @@ describe('Linear Scale', function() {
 		});
 
 		expect(chart.scales.x.max).toEqual(0);
-	});
-
-	it('Should generate max and min that are not equal when data contains values that are very close to each other', function() {
-		var chart = window.acquireChart({
-			type: 'scatter',
-			data: {
-				datasets: [{
-					data: [
-						{x: 1, y: 1.8548483304974972},
-						{x: 2, y: 1.8548483304974974},
-					]
-				}],
-			},
-			options: {
-				scales: {
-					y: {
-						type: 'linear',
-					}
-				}
-			}
-		});
-
-		expect(chart.scales.y).not.toEqual(undefined); // must construct
-		expect(chart.scales.y.max).toBeGreaterThan(chart.scales.y.min);
 	});
 
 	it('Should get correct pixel values when horizontal', function() {
