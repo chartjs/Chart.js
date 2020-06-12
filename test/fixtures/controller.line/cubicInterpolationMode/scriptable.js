@@ -28,7 +28,8 @@ module.exports = {
 					cubicInterpolationMode: function(ctx) {
 						return ctx.datasetIndex === 0 ? 'monotone' : 'default';
 					},
-					fill: false
+					fill: false,
+					tension: 0.4
 				}
 			},
 			layout: {
