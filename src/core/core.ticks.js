@@ -29,7 +29,17 @@ const formatters = {
 			return '0'; // never show decimal places for 0
 		}
 
-		// If we have lots of ticks, don't use the ones
+		const locale = this.chart.options.locale;
+
+		// all ticks are small or there huge numbers; use scientific notation
+		const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
+		let notation;
+		if (maxTick < 1e-4 || maxTick > 1e+15) {
+			notation = 'scientific';
+		}
+
+		// Figure out how many digits to show
+		// The space between the first two ticks might be smaller than normal spacing
 		let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
 		// If we have a number like 2.5 as the delta, figure out how many decimal places we need
@@ -39,20 +49,13 @@ const formatters = {
 		}
 
 		const logDelta = log10(Math.abs(delta));
+		const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0); // toFixed has a max of 20 decimal places
 
-		const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
-		const minTick = Math.min(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
-		const locale = this.chart.options.locale;
-		if (maxTick < 1e-4 || minTick > 1e+7) { // all ticks are small or big numbers; use scientific notation
-			const logTick = log10(Math.abs(tickValue));
-			let numExponential = Math.floor(logTick) - Math.floor(logDelta);
-			numExponential = Math.max(Math.min(numExponential, 20), 0);
-			return tickValue.toExponential(numExponential);
-		}
+		const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
+		Object.assign(options, this.options.ticks.format);
 
-		let numDecimal = -1 * Math.floor(logDelta);
-		numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-		return new Intl.NumberFormat(locale, {minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal}).format(tickValue);
+		// @ts-ignore until TypeScript 4.0 because "notation" was previously experimental API
+		return new Intl.NumberFormat(locale, options).format(tickValue);
 	}
 };
 

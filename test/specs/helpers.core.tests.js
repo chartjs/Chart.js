@@ -119,27 +119,6 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
-	describe('valueAtIndexOrDefault', function() {
-		it('should return the passed value if not an array', function() {
-			expect(helpers.valueAtIndexOrDefault(0, 0, 42)).toBe(0);
-			expect(helpers.valueAtIndexOrDefault('', 0, 42)).toBe('');
-			expect(helpers.valueAtIndexOrDefault(null, 0, 42)).toBe(null);
-			expect(helpers.valueAtIndexOrDefault(false, 0, 42)).toBe(false);
-			expect(helpers.valueAtIndexOrDefault(98, 0, 42)).toBe(98);
-		});
-		it('should return the value at index if defined', function() {
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 1, 42)).toBe(false);
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 2, 42)).toBe('foo');
-		});
-		it('should return the default value if the passed value is undefined', function() {
-			expect(helpers.valueAtIndexOrDefault(undefined, 0, 42)).toBe(42);
-		});
-		it('should return the default value if value at index is undefined', function() {
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 3, 42)).toBe(42);
-			expect(helpers.valueAtIndexOrDefault([1, undefined, 'foo'], 1, 42)).toBe(42);
-		});
-	});
-
 	describe('callback', function() {
 		it('should return undefined if fn is not a function', function() {
 			expect(helpers.callback()).not.toBeDefined();
@@ -238,29 +217,6 @@ describe('Chart.helpers.core', function() {
 			expect(function() {
 				helpers.each(42);
 			}).not.toThrow();
-		});
-	});
-
-	describe('arrayEquals', function() {
-		it('should return false if arrays are not the same', function() {
-			expect(helpers.arrayEquals([], [42])).toBeFalsy();
-			expect(helpers.arrayEquals([42], ['42'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3, 4])).toBeFalsy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['bar', 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, [3, 4]], [1, 2, [3, 'foo']])).toBeFalsy();
-			expect(helpers.arrayEquals([{a: 42}], [{a: 42}])).toBeFalsy();
-		});
-		it('should return false if arrays are not the same', function() {
-			var o0 = {};
-			var o1 = {};
-			var o2 = {};
-
-			expect(helpers.arrayEquals([], [])).toBeTruthy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3])).toBeTruthy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['foo', 'bar'])).toBeTruthy();
-			expect(helpers.arrayEquals([true, false, true], [true, false, true])).toBeTruthy();
-			expect(helpers.arrayEquals([o0, o1, o2], [o0, o1, o2])).toBeTruthy();
 		});
 	});
 

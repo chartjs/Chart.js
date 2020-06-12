@@ -30,7 +30,7 @@ When providing data for the time scale, Chart.js supports all of the formats tha
 
 ## Configuration Options
 
-The following options are provided by the time scale. You may also set options provided by the [common tick configuration](README.md#tick-configuration).
+The following options are provided by the time scale. You may also set options provided by the [common tick configuration](index.md#tick-configuration).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

@@ -13,9 +13,7 @@ class LinearScale extends LinearScaleBase {
 	determineDataLimits() {
 		const me = this;
 		const options = me.options;
-		const minmax = me.getMinMax(true);
-		const min = minmax.min;
-		const max = minmax.max;
+		const {min, max} = me.getMinMax(true);
 
 		me.min = isFinite(min) ? min : valueOrDefault(options.suggestedMin, 0);
 		me.max = isFinite(max) ? max : valueOrDefault(options.suggestedMax, 1);

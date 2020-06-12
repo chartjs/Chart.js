@@ -25,7 +25,8 @@ module.exports = {
 							enabled: true
 						},
 						source: 'data',
-						autoSkip: true
+						autoSkip: true,
+						maxRotation: 0
 					}
 				},
 				y: {
