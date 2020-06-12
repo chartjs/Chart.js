@@ -234,7 +234,6 @@ export default class DatasetController {
 		this._parsing = false;
 		this._data = undefined;
 		this._objectData = undefined;
-		this._scaleStacked = {};
 
 		this.initialize();
 	}
@@ -662,21 +661,6 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
-	 */
-	_cacheScaleStackStatus() {
-		const me = this;
-		const meta = me._cachedMeta;
-		const iScale = meta.iScale;
-		const vScale = meta.vScale;
-		const cache = me._scaleStacked = {};
-		if (iScale && vScale) {
-			cache[iScale.id] = iScale.options.stacked;
-			cache[vScale.id] = vScale.options.stacked;
-		}
-	}
-
-	/**
 	 * @return {number|boolean}
 	 * @protected
 	 */
@@ -710,7 +694,6 @@ export default class DatasetController {
 		me._cachedDataOpts = {};
 		me.update(mode);
 		meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
-		me._cacheScaleStackStatus();
 	}
 
 	/**
