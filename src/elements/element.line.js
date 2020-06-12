@@ -18,7 +18,7 @@ defaults.set(scope, {
 	borderWidth: 3,
 	capBezierPoints: true,
 	fill: true,
-	tension: 0.4
+	tension: 0
 });
 
 defaults.route(scope, ['backgroundColor', 'borderColor'], '', 'color');

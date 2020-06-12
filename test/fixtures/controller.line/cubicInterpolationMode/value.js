@@ -25,6 +25,7 @@ module.exports = {
 					borderWidth: 20,
 					cubicInterpolationMode: 'default',
 					fill: false,
+					tension: 0.4
 				}
 			},
 			layout: {
