@@ -17,7 +17,9 @@ script:
   - npm pack
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true
 
-sudo: required
+os:
+  - linux
+
 dist: bionic
 
 addons:
@@ -31,18 +33,15 @@ addons:
 deploy:
 - provider: script
   script: ./scripts/deploy.sh
-  skip_cleanup: true
   on:
     all_branches: true
 - provider: script
   script: ./scripts/release.sh
-  skip_cleanup: true
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^(release.*)$
 - provider: releases
-  api_key: $GITHUB_AUTH_TOKEN
-  skip_cleanup: true
+  token: $GITHUB_AUTH_TOKEN
   file_glob: true
   file:
   - ./dist/*.css
@@ -53,6 +52,5 @@ deploy:
 - provider: npm
   email: $NPM_AUTH_EMAIL
   api_key: $NPM_AUTH_TOKEN
-  skip_cleanup: true
   on:
     tags: true
