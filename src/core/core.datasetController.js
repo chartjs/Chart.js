@@ -1,5 +1,6 @@
 import Animations from './core.animations';
 import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf} from '../helpers/helpers.core';
+import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
@@ -8,49 +9,6 @@ import {sign} from '../helpers/helpers.math';
  * @typedef { import("./core.controller").default } Chart
  * @typedef { import("./core.scale").default } Scale
  */
-
-const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
-
-/**
- * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
- * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
- * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
- */
-function listenArrayEvents(array, listener) {
-	if (array._chartjs) {
-		array._chartjs.listeners.push(listener);
-		return;
-	}
-
-	Object.defineProperty(array, '_chartjs', {
-		configurable: true,
-		enumerable: false,
-		value: {
-			listeners: [listener]
-		}
-	});
-
-	arrayEvents.forEach((key) => {
-		const method = '_onData' + key.charAt(0).toUpperCase() + key.slice(1);
-		const base = array[key];
-
-		Object.defineProperty(array, key, {
-			configurable: true,
-			enumerable: false,
-			value(...args) {
-				const res = base.apply(this, args);
-
-				array._chartjs.listeners.forEach((object) => {
-					if (typeof object[method] === 'function') {
-						object[method](...args);
-					}
-				});
-
-				return res;
-			}
-		});
-	});
-}
 
 function scaleClip(scale, allowedOverflow) {
 	const opts = scale && scale.options || {};
@@ -96,33 +54,6 @@ function toClip(value) {
 		bottom: b,
 		left: l
 	};
-}
-
-/**
- * Removes the given array event listener and cleanup extra attached properties (such as
- * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
- */
-function unlistenArrayEvents(array, listener) {
-	const stub = array._chartjs;
-	if (!stub) {
-		return;
-	}
-
-	const listeners = stub.listeners;
-	const index = listeners.indexOf(listener);
-	if (index !== -1) {
-		listeners.splice(index, 1);
-	}
-
-	if (listeners.length > 0) {
-		return;
-	}
-
-	arrayEvents.forEach((key) => {
-		delete array[key];
-	});
-
-	delete array._chartjs;
 }
 
 function getSortedDatasetIndices(chart, filterVisible) {
