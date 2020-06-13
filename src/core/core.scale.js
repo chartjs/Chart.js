@@ -1104,8 +1104,10 @@ export default class Scale extends Element {
 		const items = [];
 
 		let context = {
+			chart,
 			scale: me,
 			tick: ticks[0],
+			index: 0,
 		};
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const axisHalfWidth = axisWidth / 2;
@@ -1172,8 +1174,10 @@ export default class Scale extends Element {
 			const tick = ticks[i] || {};
 
 			context = {
+				chart,
 				scale: me,
 				tick,
+				index: i,
 			};
 
 			const lineWidth = resolve([gridLines.lineWidth], context, i);
@@ -1313,8 +1317,10 @@ export default class Scale extends Element {
 		const ctx = me.ctx;
 		const chart = me.chart;
 		let context = {
+			chart,
 			scale: me,
 			tick: me.ticks[0],
+			index: 0,
 		};
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
@@ -1357,8 +1363,10 @@ export default class Scale extends Element {
 			// Draw the line at the edge of the axis
 			const firstLineWidth = axisWidth;
 			context = {
+				chart,
 				scale: me,
 				tick: me.ticks[me._ticksLength - 1],
+				index: me._ticksLength - 1,
 			};
 			const lastLineWidth = resolve([gridLines.lineWidth, 1], context, me._ticksLength - 1);
 			const borderValue = me._borderValue;

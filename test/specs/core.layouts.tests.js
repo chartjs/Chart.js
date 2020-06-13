@@ -3,6 +3,8 @@ function getLabels(scale) {
 }
 
 describe('Chart.layouts', function() {
+	describe('auto', jasmine.fixture.specs('core.layouts'));
+
 	it('should be exposed through Chart.layouts', function() {
 		expect(Chart.layouts).toBeDefined();
 		expect(typeof Chart.layouts).toBe('object');
@@ -94,72 +96,6 @@ describe('Chart.layouts', function() {
 		expect(chart.scales.y.right).toBeCloseToPixel(250);
 		expect(chart.scales.y.top).toBeCloseToPixel(62);
 		expect(chart.scales.y.labelRotation).toBeCloseTo(0);
-	});
-
-	it('should fit scales with long labels correctly', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [
-					{data: [10, 5, 0, 25, 78, -10]}
-				],
-				labels: ['tick1 is very long one', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6 is very long one']
-			},
-			options: {
-				legend: {
-					display: false
-				},
-				scales: {
-					x: {
-						type: 'category',
-						ticks: {
-							maxRotation: 0,
-							autoSkip: false
-						}
-					},
-					y: {
-						type: 'linear',
-						position: 'right'
-					}
-				}
-			}
-		}, {
-			canvas: {
-				height: 150,
-				width: 512
-			}
-		});
-
-		expect(chart.chartArea.bottom).toBeCloseToPixel(120);
-		expect(chart.chartArea.left).toBeCloseToPixel(60);
-		expect(chart.chartArea.right).toBeCloseToPixel(452);
-		expect(chart.chartArea.top).toBeCloseToPixel(7);
-
-		// Is xScale at the right spot
-		expect(chart.scales.x.bottom).toBeCloseToPixel(150);
-		expect(chart.scales.x.left).toBeCloseToPixel(60);
-		expect(chart.scales.x.right).toBeCloseToPixel(452);
-		expect(chart.scales.x.top).toBeCloseToPixel(120);
-		expect(chart.scales.x.labelRotation).toBeCloseTo(0);
-
-		expect(chart.scales.x.height).toBeCloseToPixel(30);
-		expect(chart.scales.x.paddingLeft).toBeCloseToPixel(60);
-		expect(chart.scales.x.paddingTop).toBeCloseToPixel(0);
-		expect(chart.scales.x.paddingRight).toBeCloseToPixel(60);
-		expect(chart.scales.x.paddingBottom).toBeCloseToPixel(0);
-
-		// Is yScale at the right spot
-		expect(chart.scales.y.bottom).toBeCloseToPixel(120);
-		expect(chart.scales.y.left).toBeCloseToPixel(452);
-		expect(chart.scales.y.right).toBeCloseToPixel(486);
-		expect(chart.scales.y.top).toBeCloseToPixel(7);
-		expect(chart.scales.y.labelRotation).toBeCloseTo(0);
-
-		expect(chart.scales.y.width).toBeCloseToPixel(34);
-		expect(chart.scales.y.paddingLeft).toBeCloseToPixel(0);
-		expect(chart.scales.y.paddingTop).toBeCloseToPixel(7);
-		expect(chart.scales.y.paddingRight).toBeCloseToPixel(0);
-		expect(chart.scales.y.paddingBottom).toBeCloseToPixel(7);
 	});
 
 	it('should fit scales that overlap the chart area', function() {
