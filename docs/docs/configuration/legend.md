@@ -50,7 +50,7 @@ The legend label configuration is nested below the legend configuration using th
 | ---- | ---- | ------- | -----------
 | `boxWidth` | `number` | `40` | Width of coloured box.
 | `boxHeight` | `number` | fontSize | Height of the coloured box.
-| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
+| `font` | `Font` | `defaults.font` | See [Fonts](../general/fonts.md)
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
@@ -63,8 +63,7 @@ The legend title configuration is nested below the legend configuration using th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `false` | Is the legend title displayed.
-| `font` | `Font` | `defaults.font` | See [Fonts](fonts.md)
-| `lineHeight` | `number` | | Line height of the text. If unset, is computed from the font size.
+| `font` | `Font` | `defaults.font` | See [Fonts](../general/fonts.md)
 | `padding` | <code>number&#124;object</code> | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
 | `text` | `string` | | The string title.
 
