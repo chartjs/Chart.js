@@ -22,14 +22,14 @@ defaults.set('bar', {
 	},
 
 	scales: {
-		x: {
+		_index_: {
 			type: 'category',
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
 			}
 		},
-		y: {
+		_value_: {
 			type: 'linear',
 			beginAtZero: true,
 		}

@@ -14,10 +14,10 @@ defaults.set('line', {
 	},
 
 	scales: {
-		x: {
+		_index_: {
 			type: 'category',
 		},
-		y: {
+		_value_: {
 			type: 'linear',
 		},
 	}

@@ -395,7 +395,7 @@ describe('Chart.controllers.radar', function() {
 			}
 		});
 
-		var controller = chart.getDatasetMeta(0).controller;
-		expect(controller.getValueScaleId()).toBe('test');
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.vScale.id).toBe('test');
 	});
 });

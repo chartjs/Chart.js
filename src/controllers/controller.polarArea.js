@@ -14,6 +14,9 @@ defaults.set('polarArea', {
 		animateScale: true
 	},
 	aspectRatio: 1,
+	datasets: {
+		indexAxis: 'r'
+	},
 	scales: {
 		r: {
 			type: 'radialLinear',
@@ -90,20 +93,6 @@ export default class PolarAreaController extends DatasetController {
 		this.outerRadius = undefined;
 	}
 
-	/**
-	 * @protected
-	 */
-	getIndexScaleId() {
-		return this._cachedMeta.rAxisID;
-	}
-
-	/**
-	 * @protected
-	 */
-	getValueScaleId() {
-		return this._cachedMeta.rAxisID;
-	}
-
 	update(mode) {
 		const arcs = this._cachedMeta.data;
 
@@ -136,7 +125,7 @@ export default class PolarAreaController extends DatasetController {
 		const dataset = me.getDataset();
 		const opts = chart.options;
 		const animationOpts = opts.animation;
-		const scale = chart.scales.r;
+		const scale = me._cachedMeta.rScale;
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
 		const datasetStartAngle = getStartAngleRadians(opts.startAngle);

@@ -71,7 +71,6 @@ The built in controller types are:
 
 * `Chart.controllers.line`
 * `Chart.controllers.bar`
-* `Chart.controllers.horizontalBar`
 * `Chart.controllers.radar`
 * `Chart.controllers.doughnut`
 * `Chart.controllers.polarArea`

@@ -18,38 +18,62 @@ import {version} from '../../package.json';
  */
 
 
+function getIndexAxis(type, options) {
+	const typeDefaults = defaults[type] || {};
+	const datasetDefaults = typeDefaults.datasets || {};
+	const typeOptions = options[type] || {};
+	const datasetOptions = typeOptions.datasets || {};
+	return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
+}
+
+function getAxisFromDefaultScaleID(id, indexAxis) {
+	let axis = id;
+	if (id === '_index_') {
+		axis = indexAxis;
+	} else if (id === '_value_') {
+		axis = indexAxis === 'x' ? 'y' : 'x';
+	}
+	return axis;
+}
+
+function getDefaultScaleIDFromAxis(axis, indexAxis) {
+	return axis === indexAxis ? '_index_' : '_value_';
+}
+
 function mergeScaleConfig(config, options) {
 	options = options || {};
 	const chartDefaults = defaults[config.type] || {scales: {}};
 	const configScales = options.scales || {};
+	const chartIndexAxis = getIndexAxis(config.type, options);
 	const firstIDs = {};
 	const scales = {};
 
 	// First figure out first scale id's per axis.
-	// Note: for now, axis is determined from first letter of scale id!
 	Object.keys(configScales).forEach(id => {
-		const axis = id[0];
+		const scaleConf = configScales[id];
+		const axis = scaleConf.axis || id[0];
+		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
+		scales[id] = mergeIf({axis}, [scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
 	});
 
 	// Backward compatibility
 	if (options.scale) {
-		scales[options.scale.id || 'r'] = mergeIf({}, [options.scale, chartDefaults.scales.r]);
+		scales[options.scale.id || 'r'] = mergeIf({axis: 'r'}, [options.scale, chartDefaults.scales.r]);
 		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
-		const datasetDefaults = defaults[dataset.type || config.type] || {scales: {}};
+		const type = dataset.type || config.type;
+		const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
+		const datasetDefaults = defaults[type] || {};
 		const defaultScaleOptions = datasetDefaults.scales || {};
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
-			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
+			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
+			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
 			scales[id] = scales[id] || {};
-			mergeIf(scales[id], [
-				configScales[id],
-				defaultScaleOptions[defaultID]
-			]);
+			mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
 		});
 	});
 
@@ -488,6 +512,7 @@ class Chart {
 				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
+			meta.indexAxis = dataset.indexAxis || getIndexAxis(type, me.options);
 			meta.order = dataset.order || 0;
 			me._updateMetasetIndex(meta, i);
 			meta.label = '' + dataset.label;

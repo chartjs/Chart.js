@@ -1,7 +1,7 @@
 module.exports = {
 	threshold: 0.01,
 	config: {
-		type: 'horizontalBar',
+		type: 'bar',
 		data: {
 			labels: [0, 1, 2, 3, 4, 5],
 			datasets: [
@@ -13,13 +13,14 @@ module.exports = {
 				{
 					// option in element (fallback)
 					data: [0, 5, 10, null, -10, -5],
-					borderSkipped: false,
+					borderSkipped: false
 				}
 			]
 		},
 		options: {
 			legend: false,
 			title: false,
+			indexAxis: 'y',
 			elements: {
 				rectangle: {
 					backgroundColor: '#AAAAAA80',
