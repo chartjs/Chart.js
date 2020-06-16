@@ -39,14 +39,6 @@ function getBarBounds(bar, useFinalPosition) {
 	return {left, top, right, bottom};
 }
 
-function swap(orig, v1, v2) {
-	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
-}
-
-function startEnd(v, start, end) {
-	return v === 'start' ? start : v === 'end' ? end : v;
-}
-
 function parseBorderSkipped(bar) {
 	let edge = bar.options.borderSkipped;
 	const res = {};
@@ -55,22 +47,30 @@ function parseBorderSkipped(bar) {
 		return res;
 	}
 
-	if (bar.horizontal) {
-		if (bar.base > bar.x) {
-			edge = swap(edge, 'left', 'right');
-			edge = startEnd(edge, 'right', 'left');
-		} else {
-			edge = startEnd(edge, 'left', 'right');
-		}
-	} else if (bar.base < bar.y) {
-		edge = swap(edge, 'bottom', 'top');
-		edge = startEnd(edge, 'top', 'bottom');
-	} else {
-		edge = startEnd(edge, 'bottom', 'top');
-	}
+	edge = bar.horizontal
+		? parseEdge(edge, 'left', 'right', bar.base > bar.x)
+		: parseEdge(edge, 'bottom', 'top', bar.base < bar.y);
 
 	res[edge] = true;
 	return res;
+}
+
+function parseEdge(edge, a, b, reverse) {
+	if (reverse) {
+		edge = swap(edge, a, b);
+		edge = startEnd(edge, b, a);
+	} else {
+		edge = startEnd(edge, a, b);
+	}
+	return edge;
+}
+
+function swap(orig, v1, v2) {
+	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
+}
+
+function startEnd(v, start, end) {
+	return v === 'start' ? start : v === 'end' ? end : v;
 }
 
 function skipOrLimit(skip, value, min, max) {
