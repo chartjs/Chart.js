@@ -335,9 +335,7 @@ class Chart {
 		if (!silent) {
 			plugins.notify(me, 'resize', [newSize]);
 
-			if (options.onResize) {
-				options.onResize(me, newSize);
-			}
+			callCallback(options.onResize, [newSize], me);
 
 			if (me.attached) {
 				me.update('resize');
