@@ -229,7 +229,7 @@ class Chart {
 		this.$plugins = undefined;
 		this.$proxies = {};
 		this._hiddenIndices = {};
-		this.attached = true;
+		this.attached = false;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -333,16 +333,13 @@ class Chart {
 		retinaScale(me, newRatio);
 
 		if (!silent) {
-			// Notify any plugins about the resize
 			plugins.notify(me, 'resize', [newSize]);
 
-			// Notify of resize
-			if (options.onResize) {
-				options.onResize(me, newSize);
-			}
+			callCallback(options.onResize, [newSize], me);
 
-			// Only apply 'resize' mode if we are attached, else do a regular update.
-			me.update(me.attached && 'resize');
+			if (me.attached) {
+				me.update('resize');
+			}
 		}
 	}
 
