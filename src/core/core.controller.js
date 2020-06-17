@@ -51,7 +51,7 @@ function mergeScaleConfig(config, options) {
 	// First figure out first scale id's per axis.
 	Object.keys(configScales).forEach(id => {
 		const scaleConf = configScales[id];
-		const axis = scaleConf.axis || id[0];
+		const axis = determineAxis(id, scaleConf);
 		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
 		firstIDs[axis] = firstIDs[axis] || id;
 		scales[id] = mergeIf({axis}, [scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
@@ -149,6 +149,22 @@ function updateConfig(chart) {
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
 	return position === 'top' || position === 'bottom' || (KNOWN_POSITIONS.indexOf(position) === -1 && axis === 'x');
+}
+
+function axisFromPosition(position) {
+	if (position === 'top' || position === 'bottom') {
+		return 'x';
+	}
+	if (position === 'left' || position === 'right') {
+		return 'y';
+	}
+}
+
+function determineAxis(id, scaleOptions) {
+	if (id === 'x' || id === 'y' || id === 'r') {
+		return id;
+	}
+	return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
 }
 
 function compare2Level(l1, l2) {
@@ -400,12 +416,13 @@ class Chart {
 
 		if (scaleOpts) {
 			items = items.concat(
-				Object.keys(scaleOpts).map((axisID) => {
-					const axisOptions = scaleOpts[axisID];
-					const isRadial = axisID.charAt(0).toLowerCase() === 'r';
-					const isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
+				Object.keys(scaleOpts).map((id) => {
+					const scaleOptions = scaleOpts[id];
+					const axis = determineAxis(id, scaleOptions);
+					const isRadial = axis === 'r';
+					const isHorizontal = axis === 'x';
 					return {
-						options: axisOptions,
+						options: scaleOptions,
 						dposition: isRadial ? 'chartArea' : isHorizontal ? 'bottom' : 'left',
 						dtype: isRadial ? 'radialLinear' : isHorizontal ? 'category' : 'linear'
 					};
@@ -416,9 +433,10 @@ class Chart {
 		each(items, (item) => {
 			const scaleOptions = item.options;
 			const id = scaleOptions.id;
+			const axis = determineAxis(id, scaleOptions);
 			const scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
-			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, scaleOptions.axis || id[0]) !== positionIsHorizontal(item.dposition)) {
+			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, axis) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
 			}
 
