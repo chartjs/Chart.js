@@ -794,7 +794,7 @@ describe('Core.Tooltip', function() {
 		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
-	['line', 'bar', 'horizontalBar'].forEach(function(type) {
+	['line', 'bar'].forEach(function(type) {
 		it('Should have dataPoints in a ' + type + ' chart', function(done) {
 			var chart = window.acquireChart({
 				type: type,

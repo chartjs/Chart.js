@@ -466,11 +466,9 @@ describe('Category scale tests', function() {
 
 	it('Should get the correct pixel for an object value in a horizontal bar chart', function() {
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: {
 				datasets: [{
-					xAxisID: 'x',
-					yAxisID: 'y',
 					data: [
 						{x: 10, y: 0},
 						{x: 5, y: 1},
@@ -482,6 +480,7 @@ describe('Category scale tests', function() {
 				labels: [0, 1, 2, 3]
 			},
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						type: 'linear',

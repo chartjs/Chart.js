@@ -21,6 +21,10 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the time scale, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 
+### Chart types
+
+* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](../charts/bar.md#general) option
+
 ### Options
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
@@ -304,6 +308,10 @@ The following properties and methods were removed:
 The following private APIs were removed.
 
 * `Chart.data.datasets[datasetIndex]._meta`
+* `DatasetController._getIndexScaleId`
+* `DatasetController._getIndexScale`
+* `DatasetController._getValueScaleId`
+* `DatasetController._getValueScale`
 * `Element._ctx`
 * `Element._model`
 * `Element._view`

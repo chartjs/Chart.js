@@ -1,6 +1,6 @@
 {
     "config": {
-        "type": "horizontalBar",
+        "type": "bar",
         "data": {
             "labels": ["\u25C0", "\u25A0", "\u25C6", "\u25CF"],
             "datasets": [{
@@ -10,6 +10,7 @@
         "options": {
             "legend": false,
             "title": false,
+            "indexAxis": "y",
             "scales": {
                 "x": {
                     "ticks": {

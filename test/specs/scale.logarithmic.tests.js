@@ -828,14 +828,14 @@ describe('Logarithmic Scale tests', function() {
 		];
 		config.forEach(function(setup) {
 			var scaleConfig = {};
-			var type, chartStart, chartEnd;
+			var indexAxis, chartStart, chartEnd;
 
 			if (setup.axis === 'x') {
-				type = 'horizontalBar';
+				indexAxis = 'y';
 				chartStart = 'left';
 				chartEnd = 'right';
 			} else {
-				type = 'bar';
+				indexAxis = 'x';
 				chartStart = 'bottom';
 				chartEnd = 'top';
 			}
@@ -850,12 +850,13 @@ describe('Logarithmic Scale tests', function() {
 			describe(description, function() {
 				it('should define the correct axis limits', function() {
 					var chart = window.acquireChart({
-						type: type,
+						type: 'bar',
 						data: {
 							labels: ['category 1', 'category 2'],
 							datasets: setup.data || data,
 						},
 						options: {
+							indexAxis,
 							scales: scaleConfig
 						}
 					});
@@ -913,18 +914,6 @@ describe('Logarithmic Scale tests', function() {
 					],
 				},
 				type: 'bar',
-				firstTick: 1,
-				lastTick: 10,
-				describe: 'empty dataset with stack option, without min/max'
-			},
-			{
-				data: {
-					datasets: [
-						{data: [], stack: 'stack'},
-						{data: [], stack: 'stack'},
-					],
-				},
-				type: 'horizontalBar',
 				firstTick: 1,
 				lastTick: 10,
 				describe: 'empty dataset with stack option, without min/max'
