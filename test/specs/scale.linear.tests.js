@@ -1005,9 +1005,10 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						stacked: true
@@ -1041,9 +1042,10 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: 20
@@ -1067,9 +1069,10 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: 0,
@@ -1093,9 +1096,10 @@ describe('Linear Scale', function() {
 		};
 
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: barData,
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						min: -3000,
@@ -1110,13 +1114,14 @@ describe('Linear Scale', function() {
 
 	it('Should get correct pixel values when horizontal', function() {
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: {
 				datasets: [{
 					data: [0.05, -25, 10, 15, 20, 25, 30, 35]
 				}]
 			},
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						type: 'linear',

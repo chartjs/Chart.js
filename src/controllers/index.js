@@ -1,7 +1,6 @@
 export {default as bar} from './controller.bar';
 export {default as bubble} from './controller.bubble';
 export {default as doughnut} from './controller.doughnut';
-export {default as horizontalBar} from './controller.horizontalBar';
 export {default as line} from './controller.line';
 export {default as polarArea} from './controller.polarArea';
 export {default as pie} from './controller.pie';

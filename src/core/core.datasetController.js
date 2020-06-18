@@ -188,14 +188,19 @@ export default class DatasetController {
 		const meta = me._cachedMeta;
 		const dataset = me.getDataset();
 
-		const xid = meta.xAxisID = dataset.xAxisID || getFirstScaleId(chart, 'x');
-		const yid = meta.yAxisID = dataset.yAxisID || getFirstScaleId(chart, 'y');
-		const rid = meta.rAxisID = dataset.rAxisID || getFirstScaleId(chart, 'r');
+		const chooseId = (axis, x, y, r) => axis === 'x' ? x : axis === 'r' ? r : y;
+
+		const xid = meta.xAxisID = valueOrDefault(dataset.xAxisID, getFirstScaleId(chart, 'x'));
+		const yid = meta.yAxisID = valueOrDefault(dataset.yAxisID, getFirstScaleId(chart, 'y'));
+		const rid = meta.rAxisID = valueOrDefault(dataset.rAxisID, getFirstScaleId(chart, 'r'));
+		const indexAxis = meta.indexAxis;
+		const iid = meta.iAxisID = chooseId(indexAxis, xid, yid, rid);
+		const vid = meta.vAxisID = chooseId(indexAxis, yid, xid, rid);
 		meta.xScale = me.getScaleForId(xid);
 		meta.yScale = me.getScaleForId(yid);
 		meta.rScale = me.getScaleForId(rid);
-		meta.iScale = me._getIndexScale();
-		meta.vScale = me._getValueScale();
+		meta.iScale = me.getScaleForId(iid);
+		meta.vScale = me.getScaleForId(vid);
 	}
 
 	getDataset() {
@@ -212,34 +217,6 @@ export default class DatasetController {
 	 */
 	getScaleForId(scaleID) {
 		return this.chart.scales[scaleID];
-	}
-
-	/**
-	 * @protected
-	 */
-	getValueScaleId() {
-		return this._cachedMeta.yAxisID;
-	}
-
-	/**
-	 * @protected
-	 */
-	getIndexScaleId() {
-		return this._cachedMeta.xAxisID;
-	}
-
-	/**
-	 * @private
-	 */
-	_getValueScale() {
-		return this.getScaleForId(this.getValueScaleId());
-	}
-
-	/**
-	 * @private
-	 */
-	_getIndexScale() {
-		return this.getScaleForId(this.getIndexScaleId());
 	}
 
 	/**

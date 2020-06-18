@@ -7,6 +7,7 @@ When configuring interaction with the graph via hover or tooltips, a number of d
 The modes are detailed below and how they behave in conjunction with the `intersect` setting.
 
 ## point
+
 Finds all of the items that intersect the point.
 
 ```javascript
@@ -22,6 +23,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## nearest
+
 Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). You can use the `axis` setting to define which directions are used in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
 
 ```javascript
@@ -37,6 +39,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## index
+
 Finds item at the same index. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item, in the x direction, is used to determine the index.
 
 ```javascript
@@ -55,7 +58,7 @@ To use index mode in a chart like the horizontal bar chart, where we search alon
 
 ```javascript
 var chart = new Chart(ctx, {
-    type: 'horizontalBar',
+    type: 'bar',
     data: data,
     options: {
         tooltips: {

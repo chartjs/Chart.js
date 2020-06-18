@@ -1,6 +1,6 @@
 {
     "config": {
-        "type": "horizontalBar",
+        "type": "bar",
         "data": {
             "labels": ["2030", "2034", "2038", "2042"],
             "datasets": [{
@@ -17,6 +17,7 @@
         "options": {
             "title": false,
             "legend": false,
+            "indexAxis": "y",
             "scales": {
                 "x": {
                     "display": false,
