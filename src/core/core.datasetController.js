@@ -147,6 +147,14 @@ function getFirstScaleId(chart, axis) {
 	return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
+function optionKeys(optionNames) {
+	return isArray(optionNames) ? optionNames : Object.keys(optionNames);
+}
+
+function optionKey(key, active) {
+	return active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+}
+
 export default class DatasetController {
 
 	/**
@@ -757,16 +765,17 @@ export default class DatasetController {
 		const options = me.chart.options.elements[type] || {};
 		const values = {};
 		const context = me._getContext(index, active);
-		const keys = isArray(optionNames) ? optionNames : Object.keys(optionNames);
+		const keys = optionKeys(optionNames);
 
 		for (let i = 0, ilen = keys.length; i < ilen; ++i) {
 			const key = keys[i];
-			const readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+			const readKey = optionKey(key, active);
 			const value = resolve([
 				datasetOpts[optionNames[readKey]],
 				datasetOpts[readKey],
 				options[readKey]
 			], context, index, info);
+
 			if (value !== undefined) {
 				values[key] = value;
 			}
