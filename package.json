@@ -25,7 +25,7 @@
   },
   "files": [
     "dist/*.js",
-    "helpers/*.js"
+    "helpers/**/*.js"
   ],
   "scripts": {
     "autobuild": "rollup -c -w",
