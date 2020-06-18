@@ -260,3 +260,19 @@ export function _deprecated(scope, value, previous, current) {
 			'" is deprecated. Please use "' + current + '" instead');
 	}
 }
+
+export function resolveObjectKey(obj, key) {
+	if (key.length < 3) {
+		return obj[key];
+	}
+	const keys = key.split('.');
+	for (let i = 0, n = keys.length; i < n; ++i) {
+		const k = keys[i];
+		if (k in obj) {
+			obj = obj[k];
+		} else {
+			return;
+		}
+	}
+	return obj;
+}

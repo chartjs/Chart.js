@@ -167,6 +167,43 @@ describe('Chart.DatasetController', function() {
 		expect(parsedYValues2).toEqual([0, 1, 2, 3, 0]); // label indices
 	});
 
+	it('should parse using provided keys', function() {
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [
+						{x: 1, data: {key: 'one', value: 20}},
+						{data: {key: 'two', value: 30}}
+					]
+				}]
+			},
+			options: {
+				parsing: {
+					xAxisKey: 'data.key',
+					yAxisKey: 'data.value'
+				},
+				scales: {
+					x: {
+						type: 'category',
+						labels: ['one', 'two']
+					},
+					y: {
+						type: 'linear'
+					},
+				}
+			}
+		});
+
+		const meta = chart.getDatasetMeta(0);
+		const parsedXValues = meta._parsed.map(p => p.x);
+		const parsedYValues = meta._parsed.map(p => p.y);
+
+		expect(meta.data.length).toBe(2);
+		expect(parsedXValues).toEqual([0, 1]); // label indices
+		expect(parsedYValues).toEqual([20, 30]);
+	});
+
 	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
 		const data = [0, 1, 2, 3, 4, 5];
 		const chart = acquireChart({
