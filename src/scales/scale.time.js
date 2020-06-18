@@ -596,22 +596,6 @@ class TimeScale extends Scale {
 		return parse(this, raw);
 	}
 
-	/**
-	 * @param {object} obj
-	 * @param {string} axis
-	 * @param {number} index
-	 * @return {number|null}
-	 */
-	parseObject(obj, axis, index) {
-		if (obj && obj.t) {
-			return this.parse(obj.t, index);
-		}
-		if (obj[axis] !== undefined) {
-			return this.parse(obj[axis], index);
-		}
-		return null;
-	}
-
 	invalidateCaches() {
 		this._cache = {
 			data: [],

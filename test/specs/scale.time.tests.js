@@ -466,7 +466,7 @@ describe('Time scale tests', function() {
 			data: {
 				datasets: [{
 					xAxisID: 'x',
-					data: [{t: '2015-01-01T20:00:00', y: 10}, {t: '2015-01-02T21:00:00', y: 3}]
+					data: [{x: '2015-01-01T20:00:00', y: 10}, {x: '2015-01-02T21:00:00', y: 3}]
 				}],
 			},
 			options: {
@@ -530,6 +530,7 @@ describe('Time scale tests', function() {
 				}],
 			},
 			options: {
+				parsing: {xAxisKey: 't'},
 				scales: {
 					x: {
 						type: 'time',
@@ -697,9 +698,9 @@ describe('Time scale tests', function() {
 						datasets: [
 							{data: [0, 1, 2, 3, 4, 5]},
 							{data: [
-								{t: '2018', y: 6},
-								{t: '2020', y: 7},
-								{t: '2043', y: 8}
+								{x: '2018', y: 6},
+								{x: '2020', y: 7},
+								{x: '2043', y: 8}
 							]}
 						]
 					},
