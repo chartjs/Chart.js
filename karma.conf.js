@@ -81,7 +81,6 @@ module.exports = function(karma) {
 			plugins: [
 				json(),
 				resolve(),
-				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
 				commonjs({exclude: ['src/**', 'test/**']}),
 				webWorkerLoader()
 			],
