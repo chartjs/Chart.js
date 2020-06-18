@@ -147,6 +147,14 @@ function getFirstScaleId(chart, axis) {
 	return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
+function optionKeys(optionNames) {
+	return isArray(optionNames) ? optionNames : Object.keys(optionNames);
+}
+
+function optionKey(key, active) {
+	return active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+}
+
 export default class DatasetController {
 
 	/**
@@ -685,29 +693,10 @@ export default class DatasetController {
 	 * @protected
 	 */
 	resolveDatasetElementOptions(active) {
-		const me = this;
-		const chart = me.chart;
-		const datasetOpts = me._config;
-		// @ts-ignore
-		const options = chart.options.elements[me.datasetElementType._type] || {};
-		const elementOptions = me.datasetElementOptions;
-		const values = {};
-		const context = me._getContext(undefined, active);
-		let i, ilen, key, readKey, value;
-
-		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
-			key = elementOptions[i];
-			readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-			value = resolve([
-				datasetOpts[readKey],
-				options[readKey]
-			], context);
-			if (value !== undefined) {
-				values[key] = value;
-			}
-		}
-
-		return values;
+		return this._resolveOptions(this.datasetElementOptions, {
+			active,
+			type: this.datasetElementType._type
+		});
 	}
 
 	/**
@@ -722,43 +711,14 @@ export default class DatasetController {
 		if (cached[mode]) {
 			return cached[mode];
 		}
-		const chart = me.chart;
-		const datasetOpts = me._config;
-		// @ts-ignore
-		const options = chart.options.elements[me.dataElementType._type] || {};
-		const elementOptions = me.dataElementOptions;
-		const values = {};
-		const context = me._getContext(index, active);
 		const info = {cacheable: !active};
-		let keys, i, ilen, key, value, readKey;
 
-		if (isArray(elementOptions)) {
-			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
-				key = elementOptions[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
-			}
-		} else {
-			keys = Object.keys(elementOptions);
-			for (i = 0, ilen = keys.length; i < ilen; ++i) {
-				key = keys[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[elementOptions[readKey]],
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
-			}
-		}
+		const values = me._resolveOptions(me.dataElementOptions, {
+			index,
+			active,
+			info,
+			type: me.dataElementType._type
+		});
 
 		if (info.cacheable) {
 			// `$shared` indicades this set of options can be shared between multiple elements.
@@ -769,6 +729,35 @@ export default class DatasetController {
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
 			cached[mode] = values;
+		}
+
+		return values;
+	}
+
+	/**
+	 * @private
+	 */
+	_resolveOptions(optionNames, args) {
+		const me = this;
+		const {index, active, type, info} = args;
+		const datasetOpts = me._config;
+		const options = me.chart.options.elements[type] || {};
+		const values = {};
+		const context = me._getContext(index, active);
+		const keys = optionKeys(optionNames);
+
+		for (let i = 0, ilen = keys.length; i < ilen; ++i) {
+			const key = keys[i];
+			const readKey = optionKey(key, active);
+			const value = resolve([
+				datasetOpts[optionNames[readKey]],
+				datasetOpts[readKey],
+				options[readKey]
+			], context, index, info);
+
+			if (value !== undefined) {
+				values[key] = value;
+			}
 		}
 
 		return values;
