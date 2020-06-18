@@ -1,6 +1,5 @@
 /* eslint-disable import/no-commonjs */
 
-const babel = require('rollup-plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
@@ -81,7 +80,6 @@ module.exports = function(karma) {
 			plugins: [
 				json(),
 				resolve(),
-				babel({exclude: 'node_modules/**'}), // use babel since we have ES proposal features
 				commonjs({exclude: ['src/**', 'test/**']}),
 				webWorkerLoader()
 			],
