@@ -752,42 +752,26 @@ export default class DatasetController {
 	 */
 	_resolveOptions(optionNames, args) {
 		const me = this;
-		const chart = me.chart;
 		const {index, active, type, info} = args;
 		const datasetOpts = me._config;
-		// @ts-ignore
-		const options = chart.options.elements[type] || {};
+		const options = me.chart.options.elements[type] || {};
 		const values = {};
 		const context = me._getContext(index, active);
-		let keys, i, ilen, key, value, readKey;
+		const keys = isArray(optionNames) ? optionNames : Object.keys(optionNames);
 
-		if (isArray(optionNames)) {
-			for (i = 0, ilen = optionNames.length; i < ilen; ++i) {
-				key = optionNames[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
-			}
-		} else {
-			keys = Object.keys(optionNames);
-			for (i = 0, ilen = keys.length; i < ilen; ++i) {
-				key = keys[i];
-				readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
-				value = resolve([
-					datasetOpts[optionNames[readKey]],
-					datasetOpts[readKey],
-					options[readKey]
-				], context, index, info);
-				if (value !== undefined) {
-					values[key] = value;
-				}
+		for (let i = 0, ilen = keys.length; i < ilen; ++i) {
+			const key = keys[i];
+			const readKey = active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+			const value = resolve([
+				datasetOpts[optionNames[readKey]],
+				datasetOpts[readKey],
+				options[readKey]
+			], context, index, info);
+			if (value !== undefined) {
+				values[key] = value;
 			}
 		}
+
 		return values;
 	}
 
