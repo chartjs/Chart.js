@@ -2,7 +2,7 @@
 title: Time Cartesian Axis
 ---
 
-The time scale is used to display times and dates. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
+The time scale is used to display times and dates. Data are spread according to the amount of time between data points. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 ## Date Adapters
 
@@ -25,7 +25,6 @@ The following options are provided by the time scale. You may also set options p
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
-| `distribution` | `string` | `'linear'` | How data is plotted. [more...](#scale-distribution)
 | `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
@@ -106,30 +105,6 @@ var chart = new Chart(ctx, {
     }
 });
 ```
-
-### Scale Distribution
-
-The `distribution` property controls the data distribution along the scale:
-
-* `'linear'`: data are spread according to their time (distances can vary)
-* `'series'`: data are spread at the same distance from each other
-
-```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        scales: {
-            x: {
-                type: 'time',
-                distribution: 'series'
-            }
-        }
-    }
-});
-```
-
-When the scale is in `series` mode, the data indices are expected to be unique, sorted, and consistent across datasets.
 
 ### Scale Bounds
 
