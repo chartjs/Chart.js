@@ -306,6 +306,55 @@ module.exports = DatasetController.extend({
 		};
 	},
 
+	adjustStackedMinBarLength: function(datasetIndex, index, options, startIndex)
+	{
+		var totalAboveAdjustment = 0;
+
+		var me = this;
+		var chart = me.chart;
+		var scale = me._getValueScale();
+		var isHorizontal = scale.isHorizontal();
+		var datasets = chart.data.datasets;
+		var metasets = scale._getMatchingVisibleMetas(me._type);
+		var value = scale._parseValue(datasets[datasetIndex].data[index]);
+		var minBarLength = options.minBarLength;
+		var stack = me.getMeta().stack;
+		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+		var ilen = metasets.length;
+
+		if (minBarLength !== undefined)
+		{
+			for (var i = startIndex; i < ilen; ++i) {
+				var imeta = metasets[i];
+
+				if (imeta.stack === stack) {
+					var stackLength = scale._parseValue(datasets[imeta.index].data[index]);
+
+					// Get the size of this bar
+					var ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
+
+					// Ignore NaN bars which aren't rendered
+					if (isNaN(ivalue)) {
+						continue;
+					}
+
+					var barStart = scale.getPixelForValue(0);
+					var barEnd = scale.getPixelForValue(ivalue);
+					var barSize = barEnd - barStart;
+
+					if (Math.abs(barSize) < minBarLength) {
+						if (length >= 0 && !isHorizontal || length < 0 && isHorizontal) {
+							totalAboveAdjustment += minBarLength + barSize;
+						} else {
+							totalAboveAdjustment -= minBarLength - barSize;
+						}
+					}
+				}
+			}
+		}
+		return totalAboveAdjustment;
+	},
+	
 	/**
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
@@ -326,11 +375,16 @@ module.exports = DatasetController.extend({
 		var ilen = metasets.length;
 		var i, imeta, ivalue, base, head, size, stackLength;
 
+		var adjustStackedMinBarLength = 0;
+		
 		if (stacked || (stacked === undefined && stack !== undefined)) {
 			for (i = 0; i < ilen; ++i) {
 				imeta = metasets[i];
 
+				// Break out when we've iterated over all stacked bars below us...
 				if (imeta.index === datasetIndex) {
+					// Find the stacked bars below us who's size was adjusted due to minBarLength so we can factor it into our bar start/end position...
+					adjustStackedMinBarLength = me.adjustStackedMinBarLength(datasetIndex, index, options, i);
 					break;
 				}
 
@@ -345,8 +399,8 @@ module.exports = DatasetController.extend({
 			}
 		}
 
-		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + length);
+		base = scale.getPixelForValue(start) + adjustStackedMinBarLength;
+		head = scale.getPixelForValue(start + length) + adjustStackedMinBarLength;
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
