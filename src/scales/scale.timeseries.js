@@ -37,29 +37,19 @@ function sorter(a, b) {
 class TimeSeriesScale extends TimeScale {
 
 	/**
-	 * Returns all timestamps
-	 * @private
+	 * @param {object} props
 	 */
-	_getTimestampsForTable() {
+	constructor(props) {
+		super(props);
+
+		/** @type {object[]} */
+		this._table = [];
+	}
+
+	initOffsets(timestamps) {
 		const me = this;
-		let timestamps = me._cache.all || [];
-
-		if (timestamps.length) {
-			return timestamps;
-		}
-
-		const data = me.getDataTimestamps();
-		const label = me.getLabelTimestamps();
-		if (data.length && label.length) {
-			// If combining labels and data (data might not contain all labels),
-			// we need to recheck uniqueness and sort
-			timestamps = _arrayUnique(data.concat(label).sort(sorter));
-		} else {
-			timestamps = data.length ? data : label;
-		}
-		timestamps = me._cache.all = timestamps;
-
-		return timestamps;
+		me._table = me.buildLookupTable();
+		super.initOffsets(timestamps);
 	}
 
 	/**
@@ -109,6 +99,32 @@ class TimeSeriesScale extends TimeScale {
 		}
 
 		return table;
+	}
+
+	/**
+	 * Returns all timestamps
+	 * @private
+	 */
+	_getTimestampsForTable() {
+		const me = this;
+		let timestamps = me._cache.all || [];
+
+		if (timestamps.length) {
+			return timestamps;
+		}
+
+		const data = me.getDataTimestamps();
+		const label = me.getLabelTimestamps();
+		if (data.length && label.length) {
+			// If combining labels and data (data might not contain all labels),
+			// we need to recheck uniqueness and sort
+			timestamps = _arrayUnique(data.concat(label).sort(sorter));
+		} else {
+			timestamps = data.length ? data : label;
+		}
+		timestamps = me._cache.all = timestamps;
+
+		return timestamps;
 	}
 
 	/**
