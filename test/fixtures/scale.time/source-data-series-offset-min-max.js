@@ -9,7 +9,7 @@ module.exports = {
 		options: {
 			scales: {
 				x: {
-					type: 'time',
+					type: 'timeseries',
 					min: '2012',
 					max: '2051',
 					offset: true,
@@ -18,8 +18,7 @@ module.exports = {
 					},
 					ticks: {
 						source: 'data'
-					},
-					distribution: 'series'
+					}
 				},
 				y: {
 					display: false

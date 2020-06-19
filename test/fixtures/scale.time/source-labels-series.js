@@ -9,15 +9,14 @@ module.exports = {
 		options: {
 			scales: {
 				x: {
-					type: 'time',
+					type: 'timeseries',
 					time: {
 						parser: 'YYYY',
 						unit: 'year'
 					},
 					ticks: {
 						source: 'labels'
-					},
-					distribution: 'series'
+					}
 				},
 				y: {
 					display: false
