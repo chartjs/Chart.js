@@ -156,7 +156,7 @@ options: {
 }
 ```
 
-Also, the time scale option `distribution: 'series'` was removed and a new chart type `timeseries` was introduced in its place.
+Also, the time scale option `distribution: 'series'` was removed and a new scale type `timeseries` was introduced in its place.
 
 #### Animations
 
