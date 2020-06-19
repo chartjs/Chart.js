@@ -154,6 +154,17 @@ class TimeSeriesScale extends TimeScale {
 		// We could assume labels are in order and unique - but let's not
 		return (me._cache.labels = timestamps);
 	}
+
+	/**
+	 * @param {number} pixel
+	 * @return {number}
+	 */
+	getValueForPixel(pixel) {
+		const me = this;
+		const offsets = me._offsets;
+		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+		return interpolate(me._table, 'pos', pos, 'time');
+	}
 }
 
 TimeSeriesScale.id = 'timeseries';
