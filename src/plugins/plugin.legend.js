@@ -728,6 +728,9 @@ export default {
 		}
 	},
 
+	// During the beforeUpdate step, the layout configuration needs to run
+	// This ensures that if the legend position changes (via an option update)
+	// the layout system respects the change. See https://github.com/chartjs/Chart.js/issues/7527
 	beforeUpdate(chart) {
 		const legendOpts = chart.options.legend;
 		const legend = chart.legend;
@@ -747,6 +750,8 @@ export default {
 		}
 	},
 
+	// The labels need to be built after datasets are updated to ensure that colors
+	// and other styling are correct. See https://github.com/chartjs/Chart.js/issues/6968
 	afterUpdate(chart) {
 		if (chart.legend) {
 			chart.legend.buildLabels();
