@@ -178,30 +178,28 @@ function addTick(timestamps, ticks, time) {
  * where each value is a relative width to the scale and ranges between 0 and 1.
  * They add extra margins on the both sides by scaling down the original scale.
  * Offsets are added when the `offset` option is true.
- * @param {object} table
+ * @param {TimeScale} scale
  * @param {number[]} timestamps
- * @param {number} min
- * @param {number} max
  * @param {object} options
  * @return {object}
  */
-function computeOffsets(table, timestamps, min, max, options) {
+function computeOffsets(scale, timestamps, options) {
 	let start = 0;
 	let end = 0;
 	let first, last;
 
 	if (options.offset && timestamps.length) {
-		first = interpolate(table, 'time', timestamps[0], 'pos');
+		first = scale.getDecimalForValue(timestamps[0]);
 		if (timestamps.length === 1) {
 			start = 1 - first;
 		} else {
-			start = (interpolate(table, 'time', timestamps[1], 'pos') - first) / 2;
+			start = (scale.getDecimalForValue(timestamps[1]) - first) / 2;
 		}
-		last = interpolate(table, 'time', timestamps[timestamps.length - 1], 'pos');
+		last = scale.getDecimalForValue(timestamps[timestamps.length - 1]);
 		if (timestamps.length === 1) {
 			end = last;
 		} else {
-			end = (last - interpolate(table, 'time', timestamps[timestamps.length - 2], 'pos')) / 2;
+			end = (last - scale.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
 		}
 	}
 
@@ -446,7 +444,7 @@ class TimeScale extends Scale {
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
 		me._table = me.buildLookupTable(me.getTimestampsForTable(), min, max);
-		me._offsets = computeOffsets(me._table, timestamps, min, max, options);
+		me._offsets = computeOffsets(me, timestamps, options);
 
 		if (options.reverse) {
 			ticks.reverse();
@@ -590,10 +588,18 @@ class TimeScale extends Scale {
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 * @return {number}
 	 */
+	getDecimalForValue(value) {
+		return interpolate(this._table, 'time', value, 'pos');
+	}
+
+	/**
+	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
+	 * @return {number}
+	 */
 	getPixelForValue(value) {
 		const me = this;
 		const offsets = me._offsets;
-		const pos = interpolate(me._table, 'time', value, 'pos');
+		const pos = me.getDecimalForValue(value);
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
