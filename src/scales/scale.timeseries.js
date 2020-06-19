@@ -70,13 +70,12 @@ class TimeSeriesScale extends TimeScale {
 	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
 	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
 	 *
-	 * @param {number} min
-	 * @param {number} max
 	 * @return {object[]}
 	 * @protected
 	 */
-	buildLookupTable(min, max) {
+	buildLookupTable() {
 		const me = this;
+		const {min, max} = me;
 		const timestamps = me._getTimestampsForTable();
 		if (!timestamps.length) {
 			return [

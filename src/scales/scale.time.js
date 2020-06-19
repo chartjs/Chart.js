@@ -411,7 +411,7 @@ class TimeScale extends Scale {
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
-		me._table = me.buildLookupTable(min, max);
+		me._table = me.buildLookupTable();
 		me._offsets = computeOffsets(me, timestamps, options);
 
 		if (options.reverse) {
@@ -488,15 +488,13 @@ class TimeScale extends Scale {
 	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
 	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
 	 *
-	 * @param {number} min
-	 * @param {number} max
 	 * @return {object[]}
 	 * @protected
 	 */
-	buildLookupTable(min, max) {
+	buildLookupTable() {
 		return [
-			{time: min, pos: 0},
-			{time: max, pos: 1}
+			{time: this.min, pos: 0},
+			{time: this.max, pos: 1}
 		];
 	}
 
