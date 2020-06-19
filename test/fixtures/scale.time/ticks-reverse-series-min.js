@@ -9,12 +9,11 @@ module.exports = {
 		options: {
 			scales: {
 				x: {
-					type: 'time',
+					type: 'timeseries',
 					min: '2012',
 					time: {
 						parser: 'YYYY'
 					},
-					distribution: 'series',
 					reverse: true,
 					ticks: {
 						source: 'labels'

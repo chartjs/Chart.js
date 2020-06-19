@@ -156,6 +156,8 @@ options: {
 }
 ```
 
+Also, the time scale option `distribution: 'series'` was removed and a new scale type `timeseries` was introduced in its place.
+
 #### Animations
 
 Animation system was completely rewritten in Chart.js v3. Each property can now be animated separately. Please see [animations](../configuration/animations.mdx) docs for details.

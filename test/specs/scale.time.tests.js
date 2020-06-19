@@ -79,7 +79,6 @@ describe('Time scale tests', function() {
 			beginAtZero: false,
 			scaleLabel: Chart.defaults.scale.scaleLabel,
 			bounds: 'data',
-			distribution: 'linear',
 			adapters: {},
 			ticks: {
 				minRotation: 0,
@@ -786,8 +785,8 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	describe('when distribution', function() {
-		describe('is "series"', function() {
+	describe('when scale type', function() {
+		describe('is "timeseries"', function() {
 			beforeEach(function() {
 				this.chart = window.acquireChart({
 					type: 'line',
@@ -798,11 +797,10 @@ describe('Time scale tests', function() {
 					options: {
 						scales: {
 							x: {
-								type: 'time',
+								type: 'timeseries',
 								time: {
 									parser: 'YYYY'
 								},
-								distribution: 'series',
 								ticks: {
 									source: 'labels'
 								}
@@ -870,7 +868,7 @@ describe('Time scale tests', function() {
 				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 5);
 			});
 		});
-		describe('is "linear"', function() {
+		describe('is "time"', function() {
 			beforeEach(function() {
 				this.chart = window.acquireChart({
 					type: 'line',
@@ -885,7 +883,6 @@ describe('Time scale tests', function() {
 								time: {
 									parser: 'YYYY'
 								},
-								distribution: 'linear',
 								ticks: {
 									source: 'labels'
 								}
@@ -1087,8 +1084,8 @@ describe('Time scale tests', function() {
 	});
 
 	['auto', 'data', 'labels'].forEach(function(source) {
-		['series', 'linear'].forEach(function(distribution) {
-			describe('when ticks.source is "' + source + '" and distribution is "' + distribution + '"', function() {
+		['timeseries', 'time'].forEach(function(type) {
+			describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
 						type: 'line',
@@ -1099,15 +1096,14 @@ describe('Time scale tests', function() {
 						options: {
 							scales: {
 								x: {
-									type: 'time',
+									type: type,
 									time: {
 										parser: 'YYYY',
 										unit: 'year'
 									},
 									ticks: {
 										source: source
-									},
-									distribution: distribution
+									}
 								}
 							}
 						}
@@ -1154,8 +1150,8 @@ describe('Time scale tests', function() {
 	});
 
 	['data', 'labels'].forEach(function(source) {
-		['series', 'linear'].forEach(function(distribution) {
-			describe('when ticks.source is "' + source + '" and distribution is "' + distribution + '"', function() {
+		['timeseries', 'time'].forEach(function(type) {
+			describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
 						type: 'line',
@@ -1167,14 +1163,13 @@ describe('Time scale tests', function() {
 							scales: {
 								x: {
 									id: 'x',
-									type: 'time',
+									type: type,
 									time: {
 										parser: 'YYYY'
 									},
 									ticks: {
 										source: source
-									},
-									distribution: distribution
+									}
 								}
 							}
 						}
