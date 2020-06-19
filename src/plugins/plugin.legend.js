@@ -728,7 +728,7 @@ export default {
 		}
 	},
 
-	afterUpdate(chart) {
+	beforeUpdate(chart) {
 		const legendOpts = chart.options.legend;
 		const legend = chart.legend;
 
