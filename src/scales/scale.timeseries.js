@@ -1,5 +1,30 @@
 import TimeScale from './scale.time';
-import {_arrayUnique} from '../helpers/helpers.collection';
+import {_arrayUnique, _lookupByKey} from '../helpers/helpers.collection';
+
+/**
+ * Linearly interpolates the given source `value` using the table items `skey` values and
+ * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
+ * returns the position for a timestamp equal to 42. If value is out of bounds, values at
+ * index [0, 1] or [n - 1, n] are used for the interpolation.
+ * @param {object} table
+ * @param {string} skey
+ * @param {number} sval
+ * @param {string} tkey
+ * @return {object}
+ */
+function interpolate(table, skey, sval, tkey) {
+	const {lo, hi} = _lookupByKey(table, skey, sval);
+
+	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
+	const prev = table[lo];
+	const next = table[hi];
+
+	const span = next[skey] - prev[skey];
+	const ratio = span ? (sval - prev[skey]) / span : 0;
+	const offset = (next[tkey] - prev[tkey]) * ratio;
+
+	return prev[tkey] + offset;
+}
 
 /**
  * @param {number} a
@@ -84,6 +109,14 @@ class TimeSeriesScale extends TimeScale {
 		}
 
 		return table;
+	}
+
+	/**
+	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
+	 * @return {number}
+	 */
+	getDecimalForValue(value) {
+		return interpolate(this._table, 'time', value, 'pos');
 	}
 
 	/**
