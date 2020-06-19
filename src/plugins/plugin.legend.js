@@ -738,7 +738,6 @@ export default {
 			if (legend) {
 				layouts.configure(chart, legend, legendOpts);
 				legend.options = legendOpts;
-				legend.buildLabels();
 			} else {
 				createNewLegendAndAttach(chart, legendOpts);
 			}
@@ -747,6 +746,13 @@ export default {
 			delete chart.legend;
 		}
 	},
+
+	afterUpdate(chart) {
+		if (chart.legend) {
+			chart.legend.buildLabels();
+		}
+	},
+
 
 	afterEvent(chart, e) {
 		const legend = chart.legend;
