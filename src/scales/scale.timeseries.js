@@ -1,30 +1,5 @@
 import TimeScale from './scale.time';
-import {_arrayUnique, _lookupByKey} from '../helpers/helpers.collection';
-
-/**
- * Linearly interpolates the given source `value` using the table items `skey` values and
- * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
- * returns the position for a timestamp equal to 42. If value is out of bounds, values at
- * index [0, 1] or [n - 1, n] are used for the interpolation.
- * @param {object} table
- * @param {string} skey
- * @param {number} sval
- * @param {string} tkey
- * @return {object}
- */
-function interpolate(table, skey, sval, tkey) {
-	const {lo, hi} = _lookupByKey(table, skey, sval);
-
-	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	const prev = table[lo];
-	const next = table[hi];
-
-	const span = next[skey] - prev[skey];
-	const ratio = span ? (sval - prev[skey]) / span : 0;
-	const offset = (next[tkey] - prev[tkey]) * ratio;
-
-	return prev[tkey] + offset;
-}
+import {_arrayUnique, _lookup} from '../helpers/helpers.collection';
 
 /**
  * @param {number} a
@@ -42,13 +17,19 @@ class TimeSeriesScale extends TimeScale {
 	constructor(props) {
 		super(props);
 
+		/** @type {function}*/
+		this._normalizeTimestamps = timestamps => timestamps;
+
 		/** @type {object[]} */
 		this._table = [];
 	}
 
+	/**
+	 * @protected
+	 */
 	initOffsets(timestamps) {
 		const me = this;
-		me._table = me.buildLookupTable();
+		me._table = me._buildLookupTable();
 		super.initOffsets(timestamps);
 	}
 
@@ -60,23 +41,19 @@ class TimeSeriesScale extends TimeScale {
 	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
 	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
 	 *
-	 * @return {object[]}
-	 * @protected
+	 * @return {number[]}
+	 * @private
 	 */
-	buildLookupTable() {
+	_buildLookupTable() {
 		const me = this;
 		const {min, max} = me;
 		const timestamps = me._getTimestampsForTable();
 		if (!timestamps.length) {
-			return [
-				{time: min, pos: 0},
-				{time: max, pos: 1}
-			];
+			return [min, max];
 		}
 
-		const table = [];
 		const items = [min];
-		let i, ilen, prev, curr, next;
+		let i, ilen, curr;
 
 		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
 			curr = timestamps[i];
@@ -87,18 +64,7 @@ class TimeSeriesScale extends TimeScale {
 
 		items.push(max);
 
-		for (i = 0, ilen = items.length; i < ilen; ++i) {
-			next = items[i + 1];
-			prev = items[i - 1];
-			curr = items[i];
-
-			// only add points that breaks the scale linearity
-			if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
-				table.push({time: curr, pos: i / (ilen - 1)});
-			}
-		}
-
-		return table;
+		return items;
 	}
 
 	/**
@@ -132,7 +98,9 @@ class TimeSeriesScale extends TimeScale {
 	 * @return {number}
 	 */
 	getDecimalForValue(value) {
-		return interpolate(this._table, 'time', value, 'pos');
+		const table = this._table;
+		const index = _lookup(table, value);
+		return index === null ? null : index / (table.length - 1);
 	}
 
 	/**
@@ -151,35 +119,15 @@ class TimeSeriesScale extends TimeScale {
 	}
 
 	/**
-	 * @protected
-	 */
-	getLabelTimestamps() {
-		const me = this;
-		const timestamps = me._cache.labels || [];
-		let i, ilen;
-
-		if (timestamps.length) {
-			return timestamps;
-		}
-
-		const labels = me.getLabels();
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			timestamps.push(me.parse(labels[i]));
-		}
-
-		// We could assume labels are in order and unique - but let's not
-		return (me._cache.labels = timestamps);
-	}
-
-	/**
 	 * @param {number} pixel
 	 * @return {number}
 	 */
 	getValueForPixel(pixel) {
 		const me = this;
+		const table = this._table;
 		const offsets = me._offsets;
 		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return interpolate(me._table, 'pos', pos, 'time');
+		return table[Math.round(pos * table.length)];
 	}
 }
 

@@ -1,13 +1,22 @@
-import {_filterBetween, _lookup, _lookupByKey, _rlookupByKey} from '../../src/helpers/helpers.collection';
+import {_filterBetween, _lookup, _lookupRange, _lookupByKey, _rlookupByKey} from '../../src/helpers/helpers.collection';
 
 describe('helpers.collection', function() {
 	it('Should do binary search', function() {
 		const data = [0, 2, 6, 9];
-		expect(_lookup(data, 0)).toEqual({lo: 0, hi: 1});
-		expect(_lookup(data, 1)).toEqual({lo: 0, hi: 1});
-		expect(_lookup(data, 3)).toEqual({lo: 1, hi: 2});
-		expect(_lookup(data, 6)).toEqual({lo: 1, hi: 2});
-		expect(_lookup(data, 9)).toEqual({lo: 2, hi: 3});
+		expect(_lookup(data, 0)).toEqual(0);
+		expect(_lookup(data, 1)).toEqual(null);
+		expect(_lookup(data, 3)).toEqual(null);
+		expect(_lookup(data, 6)).toEqual(2);
+		expect(_lookup(data, 9)).toEqual(3);
+	});
+
+	it('Should do binary search returning a range', function() {
+		const data = [0, 2, 6, 9];
+		expect(_lookupRange(data, 0)).toEqual({lo: 0, hi: 1});
+		expect(_lookupRange(data, 1)).toEqual({lo: 0, hi: 1});
+		expect(_lookupRange(data, 3)).toEqual({lo: 1, hi: 2});
+		expect(_lookupRange(data, 6)).toEqual({lo: 1, hi: 2});
+		expect(_lookupRange(data, 9)).toEqual({lo: 2, hi: 3});
 	});
 
 	it('Should do binary search by key', function() {

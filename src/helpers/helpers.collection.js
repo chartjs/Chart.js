@@ -1,10 +1,35 @@
 /**
+ * Binary search. Returns the index if found or undefined if not
+ * @param {array} table - the table search. must be sorted!
+ * @param {number|null} value - value to find
+ * @private
+ */
+export function _lookup(table, value) {
+	let hi = table.length - 1;
+	let lo = 0;
+	let mid;
+
+	while (lo <= hi) {
+		mid = (lo + hi) >> 1;
+		if (table[mid] === value) {
+			return mid;
+		} if (table[mid] < value) {
+			lo = mid + 1;
+		} else {
+			hi = mid - 1;
+		}
+	}
+
+	return null;
+}
+
+/**
  * Binary search
  * @param {array} table - the table search. must be sorted!
  * @param {number} value - value to find
  * @private
  */
-export function _lookup(table, value) {
+export function _lookupRange(table, value) {
 	let hi = table.length - 1;
 	let lo = 0;
 	let mid;

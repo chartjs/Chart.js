@@ -2,7 +2,7 @@ import adapters from '../core/core.adapters';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
-import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
+import {_arrayUnique, _filterBetween, _lookupRange} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
@@ -143,7 +143,7 @@ function addTick(timestamps, ticks, time) {
 	if (!timestamps.length) {
 		return;
 	}
-	const {lo, hi} = _lookup(timestamps, time);
+	const {lo, hi} = _lookupRange(timestamps, time);
 	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
 	ticks[timestamp] = true;
 }
@@ -258,6 +258,8 @@ class TimeScale extends Scale {
 		this._majorUnit = undefined;
 		/** @type {object} */
 		this._offsets = {};
+		/** @type {function}*/
+		this._normalizeTimestamps = timestamps => _arrayUnique(timestamps.sort(sorter));
 	}
 
 	init(options) {
@@ -619,7 +621,7 @@ class TimeScale extends Scale {
 
 		// We can not assume data is in order or unique - not even for single dataset
 		// It seems to be somewhat faster to do sorting first
-		return (me._cache.data = _arrayUnique(timestamps.sort(sorter)));
+		return (me._cache.data = me._normalizeTimestamps(timestamps));
 	}
 
 	/**
@@ -636,11 +638,11 @@ class TimeScale extends Scale {
 
 		const labels = me.getLabels();
 		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			timestamps.push(parse(me, labels[i]));
+			timestamps.push(me.parse(labels[i]));
 		}
 
 		// We could assume labels are in order and unique - but let's not
-		return (me._cache.labels = _arrayUnique(timestamps.sort(sorter)));
+		return (me._cache.labels = me._normalizeTimestamps(timestamps));
 	}
 }
 
