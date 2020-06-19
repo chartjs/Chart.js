@@ -38,9 +38,9 @@ class TimeSeriesScale extends TimeScale {
 
 	/**
 	 * Returns all timestamps
-	 * @protected
+	 * @private
 	 */
-	getTimestampsForTable() {
+	_getTimestampsForTable() {
 		const me = this;
 		let timestamps = me._cache.all || [];
 
@@ -70,13 +70,14 @@ class TimeSeriesScale extends TimeScale {
 	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
 	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
 	 *
-	 * @param {number[]} timestamps - timestamps sorted from lowest to highest.
 	 * @param {number} min
 	 * @param {number} max
 	 * @return {object[]}
 	 * @protected
 	 */
-	buildLookupTable(timestamps, min, max) {
+	buildLookupTable(min, max) {
+		const me = this;
+		const timestamps = me._getTimestampsForTable();
 		if (!timestamps.length) {
 			return [
 				{time: min, pos: 0},
