@@ -91,6 +91,7 @@ export default class LineController extends DatasetController {
 	}
 
 	/**
+	 * @param {boolean} [active]
 	 * @protected
 	 */
 	resolveDatasetElementOptions(active) {
