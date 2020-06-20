@@ -690,6 +690,7 @@ export default class DatasetController {
 	}
 
 	/**
+	 * @param {boolean} [active]
 	 * @protected
 	 */
 	resolveDatasetElementOptions(active) {
