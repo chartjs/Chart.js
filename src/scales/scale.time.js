@@ -2,7 +2,7 @@ import adapters from '../core/core.adapters';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
-import {_arrayUnique, _filterBetween, _lookup, _lookupByKey} from '../helpers/helpers.collection';
+import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
 
 /**
  * @typedef { import("../core/core.adapters").Unit } Unit
@@ -80,31 +80,6 @@ function parse(scale, input) {
 }
 
 /**
- * Linearly interpolates the given source `value` using the table items `skey` values and
- * returns the associated `tkey` value. For example, interpolate(table, 'time', 42, 'pos')
- * returns the position for a timestamp equal to 42. If value is out of bounds, values at
- * index [0, 1] or [n - 1, n] are used for the interpolation.
- * @param {object} table
- * @param {string} skey
- * @param {number} sval
- * @param {string} tkey
- * @return {object}
- */
-function interpolate(table, skey, sval, tkey) {
-	const {lo, hi} = _lookupByKey(table, skey, sval);
-
-	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	const prev = table[lo];
-	const next = table[hi];
-
-	const span = next[skey] - prev[skey];
-	const ratio = span ? (sval - prev[skey]) / span : 0;
-	const offset = (next[tkey] - prev[tkey]) * ratio;
-
-	return prev[tkey] + offset;
-}
-
-/**
  * Figures out what unit results in an appropriate number of auto-generated ticks
  * @param {Unit} minUnit
  * @param {number} min
@@ -171,41 +146,6 @@ function addTick(timestamps, ticks, time) {
 	const {lo, hi} = _lookup(timestamps, time);
 	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
 	ticks[timestamp] = true;
-}
-
-/**
- * Returns the start and end offsets from edges in the form of {start, end}
- * where each value is a relative width to the scale and ranges between 0 and 1.
- * They add extra margins on the both sides by scaling down the original scale.
- * Offsets are added when the `offset` option is true.
- * @param {object} table
- * @param {number[]} timestamps
- * @param {number} min
- * @param {number} max
- * @param {object} options
- * @return {object}
- */
-function computeOffsets(table, timestamps, min, max, options) {
-	let start = 0;
-	let end = 0;
-	let first, last;
-
-	if (options.offset && timestamps.length) {
-		first = interpolate(table, 'time', timestamps[0], 'pos');
-		if (timestamps.length === 1) {
-			start = 1 - first;
-		} else {
-			start = (interpolate(table, 'time', timestamps[1], 'pos') - first) / 2;
-		}
-		last = interpolate(table, 'time', timestamps[timestamps.length - 1], 'pos');
-		if (timestamps.length === 1) {
-			end = last;
-		} else {
-			end = (last - interpolate(table, 'time', timestamps[timestamps.length - 2], 'pos')) / 2;
-		}
-	}
-
-	return {start, end, factor: 1 / (start + 1 + end)};
 }
 
 /**
@@ -318,8 +258,6 @@ class TimeScale extends Scale {
 		this._majorUnit = undefined;
 		/** @type {object} */
 		this._offsets = {};
-		/** @type {object[]} */
-		this._table = [];
 	}
 
 	init(options) {
@@ -353,13 +291,6 @@ class TimeScale extends Scale {
 			labels: [],
 			all: []
 		};
-	}
-
-	/**
-	 * @protected
-	 */
-	getTimestampsForTable() {
-		return [this.min, this.max];
 	}
 
 	determineDataLimits() {
@@ -397,7 +328,7 @@ class TimeScale extends Scale {
 		min = isFinite(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
 		max = isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
 
-		// Make sure that max is strictly higher than min (required by the lookup table)
+		// Make sure that max is strictly higher than min (required by the timeseries lookup table)
 		me.min = Math.min(min, max);
 		me.max = Math.max(min + 1, max);
 	}
@@ -445,14 +376,46 @@ class TimeScale extends Scale {
 			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
 		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
 			: determineMajorUnit(me._unit);
-		me._table = me.buildLookupTable(me.getTimestampsForTable(), min, max);
-		me._offsets = computeOffsets(me._table, timestamps, min, max, options);
+		me.initOffsets(timestamps);
 
 		if (options.reverse) {
 			ticks.reverse();
 		}
 
 		return ticksFromTimestamps(me, ticks, me._majorUnit);
+	}
+
+	/**
+	 * Returns the start and end offsets from edges in the form of {start, end}
+	 * where each value is a relative width to the scale and ranges between 0 and 1.
+	 * They add extra margins on the both sides by scaling down the original scale.
+	 * Offsets are added when the `offset` option is true.
+	 * @param {number[]} timestamps
+	 * @return {object}
+	 * @protected
+	 */
+	initOffsets(timestamps) {
+		const me = this;
+		let start = 0;
+		let end = 0;
+		let first, last;
+
+		if (me.options.offset && timestamps.length) {
+			first = me.getDecimalForValue(timestamps[0]);
+			if (timestamps.length === 1) {
+				start = 1 - first;
+			} else {
+				start = (me.getDecimalForValue(timestamps[1]) - first) / 2;
+			}
+			last = me.getDecimalForValue(timestamps[timestamps.length - 1]);
+			if (timestamps.length === 1) {
+				end = last;
+			} else {
+				end = (last - me.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
+			}
+		}
+
+		me._offsets = {start, end, factor: 1 / (start + 1 + end)};
 	}
 
 	/**
@@ -515,27 +478,6 @@ class TimeScale extends Scale {
 	}
 
 	/**
-	 * Returns an array of {time, pos} objects used to interpolate a specific `time` or position
-	 * (`pos`) on the scale, by searching entries before and after the requested value. `pos` is
-	 * a decimal between 0 and 1: 0 being the start of the scale (left or top) and 1 the other
-	 * extremity (left + width or top + height). Note that it would be more optimized to directly
-	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
-	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
-	 *
-	 * @param {number[]} timestamps - timestamps sorted from lowest to highest.
-	 * @param {number} min
-	 * @param {number} max
-	 * @return {object[]}
-	 * @protected
-	 */
-	buildLookupTable(timestamps, min, max) {
-		return [
-			{time: min, pos: 0},
-			{time: max, pos: 1}
-		];
-	}
-
-	/**
 	 * @param {number} value
 	 * @return {string}
 	 */
@@ -590,10 +532,19 @@ class TimeScale extends Scale {
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 * @return {number}
 	 */
+	getDecimalForValue(value) {
+		const me = this;
+		return (value - me.min) / (me.max - me.min);
+	}
+
+	/**
+	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
+	 * @return {number}
+	 */
 	getPixelForValue(value) {
 		const me = this;
 		const offsets = me._offsets;
-		const pos = interpolate(me._table, 'time', value, 'pos');
+		const pos = me.getDecimalForValue(value);
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
@@ -605,7 +556,7 @@ class TimeScale extends Scale {
 		const me = this;
 		const offsets = me._offsets;
 		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return interpolate(me._table, 'pos', pos, 'time');
+		return me.min + pos * (me.max - me.min);
 	}
 
 	/**
