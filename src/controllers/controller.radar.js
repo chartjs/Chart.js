@@ -88,6 +88,7 @@ export default class RadarController extends DatasetController {
 	}
 
 	/**
+	 * @param {boolean} [active]
 	 * @protected
 	 */
 	resolveDatasetElementOptions(active) {
