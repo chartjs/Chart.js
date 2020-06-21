@@ -2,7 +2,7 @@
 title: Time Series Axis
 ---
 
-The time series scale extends from the time scale and supports all the same options. However, for the time series scale, each data point is spread equidistant. Also, the data indices are expected to be unique, sorted, and consistent across datasets.
+The time series scale extends from the time scale and supports all the same options. However, for the time series scale, each data point is spread equidistant.
 
 ## Example
 
