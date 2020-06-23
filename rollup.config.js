@@ -3,6 +3,7 @@
 
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
+const glob = require('glob');
 const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
@@ -10,6 +11,14 @@ const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
+const inputESM = {
+	'dist/chart.esm': 'src/index.esm.js',
+};
+glob('src/helpers/helpers.*.js', (_er, files) => {
+	files.forEach(file => {
+		inputESM[file.replace(/src\/|helpers\.|\.js/g, '')] = file;
+	});
+});
 
 const banner = `/*!
  * Chart.js v${pkg.version}
@@ -67,10 +76,10 @@ module.exports = [
 	},
 
 	// ES6 builds
-	// dist/chart.esm.min.js
 	// dist/chart.esm.js
+	// helpers/*.js
 	{
-		input,
+		input: inputESM,
 		plugins: [
 			json(),
 			resolve(),
@@ -79,29 +88,11 @@ module.exports = [
 			})
 		],
 		output: {
-			name: 'Chart',
-			file: 'dist/chart.esm.js',
+			dir: './',
+			chunkFileNames: 'helpers/chunks/[name].js',
 			banner,
 			format: 'esm',
 			indent: false,
 		},
-	},
-	{
-		input,
-		plugins: [
-			json(),
-			resolve(),
-			terser({
-				output: {
-					preamble: banner
-				}
-			})
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/chart.esm.min.js',
-			format: 'esm',
-			indent: false,
-		},
-	},
+	}
 ];
