@@ -1023,8 +1023,14 @@ export class Tooltip extends Element {
 			}
 		}
 
+		// When there are multiple items shown, but the tooltip position is nearest mode
+		// an update may need to be made because our position may have changed even though
+		// the items are the same as before.
+		const position = positioners[options.position].call(me, active, e);
+		const positionChanged = this.caretX !== position.x || this.caretY !== position.y;
+
 		// Remember Last Actives
-		changed = replay || !_elementsEqual(active, lastActive);
+		changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
 
 		// Only handle target event on tooltip change
 		if (changed) {

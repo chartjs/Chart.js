@@ -884,7 +884,7 @@ describe('Core.Tooltip', function() {
 		var firstPoint = meta.data[1];
 
 		var tooltip = chart.tooltip;
-		spyOn(tooltip, 'update');
+		spyOn(tooltip, 'update').and.callThrough();
 
 		afterEvent(chart, 'mousemove', function() {
 			expect(tooltip.update).toHaveBeenCalledWith(true);
@@ -899,6 +899,74 @@ describe('Core.Tooltip', function() {
 			});
 			// Second dispatch change event (same event), should not update tooltip
 			jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+		});
+		// First dispatch change event, should update tooltip
+		jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+	});
+
+	it('Should update if active elements are the same, but the position has changed', function(done) {
+		const chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				scales: {
+					x: {
+						stacked: true,
+					},
+					y: {
+						stacked: true
+					}
+				},
+				tooltips: {
+					mode: 'nearest',
+					position: 'nearest',
+					intersect: true,
+					callbacks: {
+						title: function() {
+							return 'registering callback...';
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		const meta = chart.getDatasetMeta(0);
+		const firstPoint = meta.data[1];
+
+		const meta2 = chart.getDatasetMeta(1);
+		const secondPoint = meta2.data[1];
+
+		const tooltip = chart.tooltip;
+		spyOn(tooltip, 'update');
+
+		afterEvent(chart, 'mousemove', function() {
+			expect(tooltip.update).toHaveBeenCalledWith(true);
+
+			// Reset calls
+			tooltip.update.calls.reset();
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(tooltip.update).toHaveBeenCalledWith(true);
+
+				done();
+			});
+			// Second dispatch change event (same event), should update tooltip
+			// because position mode is 'nearest'
+			jasmine.triggerMouseEvent(chart, 'mousemove', secondPoint);
 		});
 		// First dispatch change event, should update tooltip
 		jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
@@ -945,7 +1013,7 @@ describe('Core.Tooltip', function() {
 			var fn = tooltipPlugin.positioners.test;
 
 			afterEvent(chart, 'mousemove', function() {
-				expect(fn.calls.count()).toBe(1);
+				expect(fn.calls.count()).toBe(2);
 				expect(fn.calls.first().args[0] instanceof Array).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
