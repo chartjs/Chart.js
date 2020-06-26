@@ -4,8 +4,8 @@
 <head>
 	<title>Line Chart</title>
 	<script src="../../dist/chart.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/luxon@1.15.0"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1"></script>
 	<script src="../utils.js"></script>
 	<style>
 		canvas {
@@ -138,15 +138,14 @@
 				},
 				scales: {
 					x: {
-						type: 'time',
-						distribution: 'series',
+						type: 'timeseries',
 						offset: true,
 						ticks: {
 							major: {
 								enabled: true,
 							},
 							font: function(context) {
-								return context.tick.major ? {style: 'bold'} : undefined;
+								return context.tick && context.tick.major ? {style: 'bold'} : undefined;
 							},
 							source: 'data',
 							autoSkip: true,
