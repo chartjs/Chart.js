@@ -287,6 +287,7 @@ The following properties and methods were removed:
 
 #### Scales
 
+* `LinearScaleBase.handleDirectionalChanges`
 * `LogarithmicScale.minNotZero`
 * `Scale.getRightValue`
 * `Scale.longestLabelWidth`

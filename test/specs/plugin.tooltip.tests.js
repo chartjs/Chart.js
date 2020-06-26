@@ -2,7 +2,7 @@
 const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
 const Tooltip = tooltipPlugin._element;
 
-describe('Core.Tooltip', function() {
+describe('Plugin.Tooltip', function() {
 	describe('auto', jasmine.fixture.specs('core.tooltip'));
 
 	describe('config', function() {

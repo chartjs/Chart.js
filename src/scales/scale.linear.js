@@ -41,15 +41,6 @@ class LinearScale extends LinearScaleBase {
 		return Math.ceil(me.height / tickFont.lineHeight);
 	}
 
-	/**
-	 * Called after the ticks are built
-	 * @protected
-	 */
-	handleDirectionalChanges(ticks) {
-		// If we are in a vertical orientation the top value is the highest so reverse the array
-		return this.isHorizontal() ? ticks : ticks.reverse();
-	}
-
 	// Utils
 	getPixelForValue(value) {
 		const me = this;
