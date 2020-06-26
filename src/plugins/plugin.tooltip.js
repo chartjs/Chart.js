@@ -602,7 +602,7 @@ export class Tooltip extends Element {
 
 		// If the user provided a filter function, use it to modify the tooltip items
 		if (options.filter) {
-			tooltipItems = tooltipItems.filter((a) => options.filter(a, data));
+			tooltipItems = tooltipItems.filter((element, index, array) => options.filter(element, index, array, data));
 		}
 
 		// If the user provided a sorting function, use it to modify the tooltip items
