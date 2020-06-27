@@ -700,7 +700,7 @@ export class Tooltip extends Element {
 			} else {
 				x1 = ptX + width;
 				x2 = x1 + caretSize;
-				
+
 				// Right draws top -> bottom, thus y1 is on the top
 				y1 = y2 - caretSize;
 				y3 = y2 + caretSize;
