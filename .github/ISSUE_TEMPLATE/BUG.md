@@ -26,7 +26,7 @@ labels: 'type: bug'
   or ideas how to implement the addition or change
 -->
 
-## Steps to Reproduce (for bugs)
+## Steps to Reproduce
 <!--
   Provide a link to a live example. Bug reports MUST be submitted with an
   interactive example (https://codepen.io/pen?template=JXVYzq).
