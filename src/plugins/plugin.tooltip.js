@@ -694,6 +694,7 @@ export class Tooltip extends Element {
 			if (xAlign === 'left') {
 				x1 = ptX;
 				x2 = x1 - caretSize;
+
 				// Left draws bottom -> top, this y1 is on the bottom
 				y1 = y2 + caretSize;
 				y3 = y2 - caretSize;
