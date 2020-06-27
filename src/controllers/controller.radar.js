@@ -23,6 +23,12 @@ defaults.set('radar', {
 });
 
 export default class RadarController extends DatasetController {
+	get datasetElementType() {
+		const options = this.chart.options;
+		const config = this._config;
+		const showLine = valueOrDefault(config.showLine, options.showLines);
+		return showLine ? Line : undefined;
+	}
 
 	/**
 	 * @protected
@@ -44,19 +50,27 @@ export default class RadarController extends DatasetController {
 		const line = meta.dataset;
 		const points = meta.data || [];
 		const labels = meta.iScale.getLabels();
-		const properties = {
-			points,
-			_loop: true,
-			_fullLoop: labels.length === points.length,
-			options: me.resolveDatasetElementOptions()
-		};
+		const options = me.chart.options;
+		const config = me._config;
+		const showLine = valueOrDefault(config.showLine, options.showLines);
 
-		me.updateElement(line, undefined, properties, mode);
+		if (meta.dataset) {
+			const properties = {
+				points,
+				_loop: true,
+				_fullLoop: labels.length === points.length,
+				options: me.resolveDatasetElementOptions()
+			};
+	
+			me.updateElement(line, undefined, properties, mode);
+		}
 
 		// Update Points
 		me.updateElements(points, 0, mode);
 
-		line.updateControlPoints(me.chart.chartArea);
+		if (meta.dataset) {
+			line.updateControlPoints(me.chart.chartArea);
+		}
 	}
 
 	updateElements(points, start, mode) {
@@ -103,8 +117,6 @@ export default class RadarController extends DatasetController {
 		return values;
 	}
 }
-
-RadarController.prototype.datasetElementType = Line;
 
 RadarController.prototype.dataElementType = Point;
 
