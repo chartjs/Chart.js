@@ -71,7 +71,7 @@ var chart = new Chart(ctx, {
 
 ### Display Formats
 
-You may specify a map of display formats with a key for for each unit:
+You may specify a map of display formats with a key for each unit:
 
 * `millisecond`
 * `second`
@@ -83,7 +83,7 @@ You may specify a map of display formats with a key for for each unit:
 * `quarter`
 * `year`
 
-The format string used as a key depends on the date adapter you chose to use.
+The format string used as a value depends on the date adapter you chose to use.
 
 For example, to set the display format for the `quarter` unit to show the month and year, the following config might be passed to the chart constructor.   
 
@@ -125,7 +125,7 @@ The `ticks.source` property controls the ticks generation.
 
 If this property is defined as a string, it is interpreted as a custom format to be used by the date adapter to parse the date.
 
-If this is a function, it must return a type which can be handled by your data adapter's `parse` method.
+If this is a function, it must return a type which can be handled by your date adapter's `parse` method.
 
 ### Internal data format
 
