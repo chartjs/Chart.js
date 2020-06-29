@@ -570,7 +570,7 @@ describe('Chart.layouts', function() {
 			// issue #4441: y-axis labels partially hidden.
 			// minimum horizontal space required to fit labels
 			expect(yAxis.width).toBeCloseToPixel(33);
-			expect(getLabels(yAxis)).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5', '0']);
+			expect(getLabels(yAxis)).toEqual(['0', '0.5', '1.0', '1.5', '2.0', '2.5']);
 		});
 	});
 });

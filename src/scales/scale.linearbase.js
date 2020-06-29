@@ -217,13 +217,6 @@ export default class LinearScaleBase extends Scale {
 		return Number.POSITIVE_INFINITY;
 	}
 
-	/**
-	 * @protected
-	 */
-	handleDirectionalChanges(ticks) {
-		return ticks;
-	}
-
 	buildTicks() {
 		const me = this;
 		const opts = me.options;
@@ -243,9 +236,7 @@ export default class LinearScaleBase extends Scale {
 			precision: tickOpts.precision,
 			stepSize: valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
 		};
-		let ticks = generateTicks(numericGeneratorOptions, me);
-
-		ticks = me.handleDirectionalChanges(ticks);
+		const ticks = generateTicks(numericGeneratorOptions, me);
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
