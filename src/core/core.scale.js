@@ -779,8 +779,8 @@ export default class Scale extends Element {
 
 				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
 
-				me.paddingTop = firstLabelSize.height / 2;
-				me.paddingBottom = lastLabelSize.height / 2;
+				me.paddingTop = lastLabelSize.height / 2;
+				me.paddingBottom = firstLabelSize.height / 2;
 			}
 		}
 
