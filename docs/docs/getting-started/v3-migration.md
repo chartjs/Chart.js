@@ -156,7 +156,8 @@ options: {
 }
 ```
 
-Also, the time scale option `distribution: 'series'` was removed and a new scale type `timeseries` was introduced in its place.
+* The time scale option `distribution: 'series'` was removed and a new scale type `timeseries` was introduced in its place
+* In the time scale, `autoSkip` is now enabled by default for consistency with the other scales
 
 #### Animations
 

@@ -88,7 +88,7 @@ describe('Time scale tests', function() {
 				padding: 0,
 				display: true,
 				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below,
-				autoSkip: false,
+				autoSkip: true,
 				autoSkipPadding: 0,
 				labelOffset: 0,
 				minor: {},

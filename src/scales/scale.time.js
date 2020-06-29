@@ -219,8 +219,6 @@ const defaultConfig = {
 		displayFormats: {}
 	},
 	ticks: {
-		autoSkip: false,
-
 		/**
 		 * Ticks generation input values:
 		 * - 'auto': generates "optimal" ticks based on scale size and time options.
