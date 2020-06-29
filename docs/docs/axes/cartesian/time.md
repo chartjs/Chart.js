@@ -16,7 +16,7 @@ See [data structures](../../general/data-structures.md).
 
 ### Date Formats
 
-When providing data for the time scale, Chart.js supports all of the formats that Moment.js accepts. See [Moment.js docs](https://momentjs.com/docs/#/parsing/) for details.
+When providing data for the time scale, Chart.js uses timestamps defined as milliseconds since the epoch (midnight January 1, 1970 UTC) internally. However, Chart.js also supports all of the formats that your chosen date adapter accepts. You should use timestamps if you'd like to set `parsing: false` for better performance.
 
 ## Configuration Options
 
@@ -31,7 +31,7 @@ The following options are provided by the time scale. You may also set options p
 | `time.isoWeekday` | `boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
 | `time.parser` | <code>string&#124;function</code> | | Custom parser for dates. [more...](#parser)
 | `time.round` | `string` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
-| `time.tooltipFormat` | `string` | | The Moment.js format string to use for the tooltip.
+| `time.tooltipFormat` | `string` | | The format string to use for the tooltip.
 | `time.unit` | `string` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
 | `time.stepSize` | `number` | `1` | The number of units between grid lines.
 | `time.minUnit` | `string` | `'millisecond'` | The minimum display format to be used for a time unit.
@@ -71,21 +71,21 @@ var chart = new Chart(ctx, {
 
 ### Display Formats
 
-The following display formats are used to configure how different time units are formed into strings for the axis tick marks. See [Moment.js](https://momentjs.com/docs/#/displaying/format/) for the allowable format strings.
+You may specify a map of display formats with a key for each unit:
 
-Name | Default | Example
---- | --- | ---
-`millisecond` | `'h:mm:ss.SSS a'` | `'11:20:01.123 AM'`
-`second` | `'h:mm:ss a'` | `'11:20:01 AM'`
-`minute` | `'h:mm a'` | `'11:20 AM'`
-`hour` | `'hA'` | `'11AM'`
-`day` | `'MMM D'` | `'Sep 4'`
-`week` | `'ll'` | `'Sep 4 2015'`
-`month` | `'MMM YYYY'` | `'Sep 2015'`
-`quarter` | `'[Q]Q - YYYY'` | `'Q3 - 2015'`
-`year` | `'YYYY'` | `'2015'`
+* `millisecond`
+* `second`
+* `minute`
+* `hour`
+* `day`
+* `week`
+* `month`
+* `quarter`
+* `year`
 
-For example, to set the display format for the `quarter` unit to show the month and year, the following config would be passed to the chart constructor.
+The format string used as a value depends on the date adapter you chose to use.
+
+For example, to set the display format for the `quarter` unit to show the month and year, the following config might be passed to the chart constructor.   
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -123,9 +123,9 @@ The `ticks.source` property controls the ticks generation.
 
 ### Parser
 
-If this property is defined as a string, it is interpreted as a custom format to be used by Moment.js to parse the date.
+If this property is defined as a string, it is interpreted as a custom format to be used by the date adapter to parse the date.
 
-If this is a function, it must return a Moment.js object given the appropriate data value.
+If this is a function, it must return a type which can be handled by your date adapter's `parse` method.
 
 ### Internal data format
 
