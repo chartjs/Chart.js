@@ -14,17 +14,9 @@ module.exports = {
 					type: 'timeseries',
 					offset: true,
 					ticks: {
-						major: {
-							enabled: true,
-						},
-						font: function(context) {
-							return context.tick && context.tick.major ? {style: 'bold'} : undefined;
-						},
 						source: 'data',
 						autoSkip: true,
-						autoSkipPadding: 75,
-						maxRotation: 0,
-						sampleSize: 100
+						maxRotation: 0
 					}
 				},
 				y: {
