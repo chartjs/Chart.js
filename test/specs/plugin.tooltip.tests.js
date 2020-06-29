@@ -706,7 +706,7 @@ describe('Core.Tooltip', function() {
 			options: {
 				tooltips: {
 					mode: 'index',
-					filter: function(tooltipItem, data) {
+					filter: function(tooltipItem, index, tooltipItems, data) {
 						// For testing purposes remove the first dataset that has a tooltipHidden property
 						return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
 					}
