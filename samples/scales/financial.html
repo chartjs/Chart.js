@@ -4,8 +4,8 @@
 <head>
 	<title>Line Chart</title>
 	<script src="../../dist/chart.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/luxon@1.15.0"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1"></script>
 	<script src="../utils.js"></script>
 	<style>
 		canvas {
@@ -39,17 +39,6 @@
 	</select>
 	<button id="update">update</button>
 	<script>
-		function isFirstUnitOfPeriod(date, unit, period) {
-			let first = date.startOf(period);
-			while (first.weekday > 5) {
-				first = first.plus({day: 1});
-			}
-			if (unit === 'second' || unit === 'minute' || unit === 'hour') {
-				first = first.set({hour: 9, minute: 30});
-			}
-			return date === first;
-		}
-
 		// Generate data between the stock market hours of 9:30am - 5pm.
 		// This method is slow and unoptimized, but in real life we'd be fetching it from the server.
 		function generateData() {
@@ -138,15 +127,14 @@
 				},
 				scales: {
 					x: {
-						type: 'time',
-						distribution: 'series',
+						type: 'timeseries',
 						offset: true,
 						ticks: {
 							major: {
 								enabled: true,
 							},
 							font: function(context) {
-								return context.tick.major ? {style: 'bold'} : undefined;
+								return context.tick && context.tick.major ? {style: 'bold'} : undefined;
 							},
 							source: 'data',
 							autoSkip: true,
@@ -157,17 +145,28 @@
 						// Custom logic that chooses major ticks by first timestamp in time period
 						// E.g. if March 1 & 2 are missing from dataset because they're weekends, we pick March 3 to be beginning of month
 						afterBuildTicks: function(scale) {
-							const units = ['second', 'minute', 'hour', 'day', 'month', 'year'];
-							const unit = document.getElementById('unit').value;
-							let majorUnit;
-							if (units.indexOf(unit) !== units.length - 1) {
-								majorUnit = units[units.indexOf(unit) + 1];
-							}
-
-							// major ticks
+							const majorUnit = scale._majorUnit;
 							const ticks = scale.ticks;
-							for (let i = 0; i < ticks.length; i++) {
-								ticks[i].major = !majorUnit || isFirstUnitOfPeriod(luxon.DateTime.fromMillis(ticks[i].value), unit, majorUnit);
+							const firstTick = ticks[0];
+
+							let val = luxon.DateTime.fromMillis(ticks[0].value);
+							if ((majorUnit === 'minute' && val.second === 0)
+									|| (majorUnit === 'hour' && val.minute === 0)
+									|| (majorUnit === 'day' && val.hour === 9)
+									|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
+									|| (majorUnit === 'year' && val.month === 1)) {
+								firstTick.major = true;
+							} else {
+								firstTick.major = false;
+							}
+							let lastMajor = val.get(majorUnit);
+
+							for (let i = 1; i < ticks.length; i++) {
+								const tick = ticks[i];
+								val = luxon.DateTime.fromMillis(tick.value);
+								const currMajor = val.get(majorUnit);
+								tick.major = currMajor !== lastMajor;
+								lastMajor = currMajor;
 							}
 							scale.ticks = ticks;
 						}
