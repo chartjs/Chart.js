@@ -1,5 +1,5 @@
 module.exports = {
-	threshold: 0.01,
+	threshold: 0.05,
 	config: {
 		type: 'bar',
 		data: {
