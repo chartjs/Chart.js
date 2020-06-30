@@ -194,7 +194,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
 ## External (Custom) Tooltips
 
-Custom tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an oncanvas one. You can enable custom tooltips in the global or chart configuration like so:
+Custom tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `custom` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable custom tooltips in the global or chart configuration like so:
 
 ```javascript
 var myPieChart = new Chart(ctx, {
@@ -205,7 +205,7 @@ var myPieChart = new Chart(ctx, {
             // Disable the on-canvas tooltip
             enabled: false,
 
-            custom: function(tooltipModel) {
+            custom: function(context) {
                 // Tooltip Element
                 var tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -218,6 +218,7 @@ var myPieChart = new Chart(ctx, {
                 }
 
                 // Hide if no tooltip
+                var tooltipModel = context.tooltip;
                 if (tooltipModel.opacity === 0) {
                     tooltipEl.style.opacity = 0;
                     return;
