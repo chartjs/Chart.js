@@ -39,9 +39,7 @@ var myChart = new Chart(ctx, {...});
 ```javascript
 // Rollup
 {
-    external: {
-        ['moment']
-    }
+    external: ['moment']
 }
 ```
 
