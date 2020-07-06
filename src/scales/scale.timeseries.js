@@ -42,7 +42,7 @@ class TimeSeriesScale extends TimeScale {
 		/** @type {object[]} */
 		this._table = [];
 		/** @type {number} */
-		this._size = undefined;
+		this._maxIndex = undefined;
 	}
 
 	/**
@@ -52,7 +52,7 @@ class TimeSeriesScale extends TimeScale {
 		const me = this;
 		const timestamps = me._getTimestampsForTable();
 		me._table = me.buildLookupTable(timestamps);
-		me._size = me._table.length;
+		me._maxIndex = me._table.length - 1;
 		super.initOffsets(timestamps);
 	}
 
@@ -127,8 +127,8 @@ class TimeSeriesScale extends TimeScale {
 	getPixelForValue(value, index) {
 		const me = this;
 		const offsets = me._offsets;
-		const pos = me._normalized && me._size > 1 && !isNullOrUndef(index)
-			? index / (me._size - 1) : me.getDecimalForValue(value);
+		const pos = me._normalized && me._maxIndex > 0 && !isNullOrUndef(index)
+			? index / me._maxIndex : me.getDecimalForValue(value);
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
@@ -137,7 +137,7 @@ class TimeSeriesScale extends TimeScale {
 	 * @return {number}
 	 */
 	getDecimalForValue(value) {
-		return interpolate(this._table, value) / (this._table.length - 1);
+		return interpolate(this._table, value) / this._maxIndex;
 	}
 
 	/**
@@ -148,7 +148,7 @@ class TimeSeriesScale extends TimeScale {
 		const me = this;
 		const offsets = me._offsets;
 		const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return interpolate(me._table, decimal * (this._table.length - 1), true);
+		return interpolate(me._table, decimal * this._maxIndex, true);
 	}
 }
 
