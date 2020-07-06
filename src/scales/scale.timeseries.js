@@ -1,5 +1,6 @@
 import TimeScale from './scale.time';
 import {_lookup} from '../helpers/helpers.collection';
+import {isNullOrUndef} from '../helpers/helpers.core';
 
 /**
  * Linearly interpolates the given source `val` using the table. If value is out of bounds, values
@@ -126,7 +127,8 @@ class TimeSeriesScale extends TimeScale {
 	getPixelForValue(value, index) {
 		const me = this;
 		const offsets = me._offsets;
-		const pos = me._normalized && me._size > 1 ? index / (me._size - 1) : me.getDecimalForValue(value);
+		const pos = me._normalized && me._size > 1 && !isNullOrUndef(index)
+			? index / (me._size - 1) : me.getDecimalForValue(value);
 		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
