@@ -669,7 +669,7 @@ export class Tooltip extends Element {
 		}
 
 		if (changed && options.custom) {
-			options.custom.call(me, [me]);
+			options.custom.call(me, {chart: me._chart, tooltip: me});
 		}
 	}
 
