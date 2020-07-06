@@ -72,7 +72,6 @@ describe('Time scale tests', function() {
 				displayFormats: {}
 			},
 			ticks: {
-				autoSkip: true,
 				source: 'auto',
 				major: {
 					enabled: false
