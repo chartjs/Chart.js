@@ -6,7 +6,7 @@ function getLabels(scale) {
 describe('Test the radial linear scale', function() {
 	describe('auto', jasmine.fixture.specs('scale.radialLinear'));
 
-	it('Should register the constructor with the scale service', function() {
+	it('Should register the constructor with the registry', function() {
 		var Constructor = Chart.registry.getScale('radialLinear');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');

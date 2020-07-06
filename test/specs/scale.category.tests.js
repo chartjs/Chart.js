@@ -11,7 +11,7 @@ function getValues(scale) {
 describe('Category scale tests', function() {
 	describe('auto', jasmine.fixture.specs('scale.category'));
 
-	it('Should register the constructor with the scale service', function() {
+	it('Should register the constructor with the registry', function() {
 		var Constructor = Chart.registry.getScale('category');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');

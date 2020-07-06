@@ -52,7 +52,7 @@ describe('Time scale tests', function() {
 		expect(window.moment).not.toBe(undefined);
 	});
 
-	it('should register the constructor with the scale service', function() {
+	it('should register the constructor with the registry', function() {
 		var Constructor = Chart.registry.getScale('time');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
