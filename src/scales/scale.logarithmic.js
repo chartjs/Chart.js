@@ -47,17 +47,7 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-const defaultConfig = {
-	// label settings
-	ticks: {
-		callback: Ticks.formatters.logarithmic,
-		major: {
-			enabled: true
-		}
-	}
-};
-
-class LogarithmicScale extends Scale {
+export default class LogarithmicScale extends Scale {
 
 	constructor(cfg) {
 		super(cfg);
@@ -184,7 +174,14 @@ class LogarithmicScale extends Scale {
 
 LogarithmicScale.id = 'logarithmic';
 
-// INTERNAL: default options, registered in src/index.js
-LogarithmicScale.defaults = defaultConfig;
-
-export default LogarithmicScale;
+/**
+ * @type {any}
+ */
+LogarithmicScale.defaults = {
+	ticks: {
+		callback: Ticks.formatters.logarithmic,
+		major: {
+			enabled: true
+		}
+	}
+};

@@ -1,16 +1,7 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
+
 const TAU = Math.PI * 2;
-
-const scope = 'elements.arc';
-defaults.set(scope, {
-	borderAlign: 'center',
-	borderColor: '#fff',
-	borderWidth: 2
-});
-
-defaults.route(scope, ['backgroundColor'], '', ['color']);
 
 function clipArc(ctx, model) {
 	const {startAngle, endAngle, pixelMargin, x, y} = model;
@@ -108,7 +99,7 @@ function drawBorder(ctx, element, model) {
 	ctx.stroke();
 }
 
-class Arc extends Element {
+export default class Arc extends Element {
 
 	constructor(cfg) {
 		super();
@@ -207,6 +198,20 @@ class Arc extends Element {
 	}
 }
 
-Arc._type = 'arc';
+Arc.id = 'arc';
 
-export default Arc;
+/**
+ * @type {any}
+ */
+Arc.defaults = {
+	borderAlign: 'center',
+	borderColor: '#fff',
+	borderWidth: 2
+};
+
+/**
+ * @type {any}
+ */
+Arc.defaultRoutes = {
+	backgroundColor: 'color'
+};

@@ -1,9 +1,6 @@
 import Scale from '../core/core.scale';
 
-const defaultConfig = {
-};
-
-class CategoryScale extends Scale {
+export default class CategoryScale extends Scale {
 
 	constructor(cfg) {
 		super(cfg);
@@ -108,7 +105,7 @@ class CategoryScale extends Scale {
 
 CategoryScale.id = 'category';
 
-// INTERNAL: default options, registered in src/index.js
-CategoryScale.defaults = defaultConfig;
-
-export default CategoryScale;
+/**
+ * @type {any}
+ */
+CategoryScale.defaults = {};

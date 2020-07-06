@@ -52,64 +52,32 @@ describe('Time scale tests', function() {
 		expect(window.moment).not.toBe(undefined);
 	});
 
-	it('should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('time');
+	it('should register the constructor with the registry', function() {
+		var Constructor = Chart.registry.getScale('time');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('time');
+		var defaultConfig = Chart.defaults.scales.time;
 		expect(defaultConfig).toEqual({
-			display: true,
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true,
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			reverse: false,
-			beginAtZero: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
 			bounds: 'data',
 			adapters: {},
-			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				source: 'auto',
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below,
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				major: {
-					enabled: false
-				},
-				lineWidth: 0,
-				strokeStyle: '',
-			},
 			time: {
-				parser: false,
-				unit: false,
-				round: false,
-				isoWeekday: false,
+				parser: false, // false == a pattern string from or a custom callback that converts its argument to a timestamp
+				unit: false, // false == automatic or override with week, month, year, etc.
+				round: false, // none, or override with week, month, year, etc.
+				isoWeekday: false, // override week start day
 				minUnit: 'millisecond',
 				displayFormats: {}
+			},
+			ticks: {
+				source: 'auto',
+				major: {
+					enabled: false
+				}
 			}
 		});
-
-		// Is this actually a function
-		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 	it('should correctly determine the unit', function() {
@@ -153,7 +121,7 @@ describe('Time scale tests', function() {
 
 		var config;
 		beforeEach(function() {
-			config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('time'));
+			config = Chart.helpers.clone(Chart.defaults.scales.time);
 			config.ticks.source = 'labels';
 			config.time.unit = 'day';
 		});
@@ -202,7 +170,7 @@ describe('Time scale tests', function() {
 				unit: 'week',
 				isoWeekday: 3 // Wednesday
 			}
-		}, Chart.scaleService.getScaleDefaults('time'));
+		}, Chart.defaults.scales.time);
 
 		var scale = createScale(mockData, config);
 		var ticks = getLabels(scale);

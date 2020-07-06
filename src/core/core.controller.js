@@ -1,12 +1,11 @@
 /* eslint-disable import/no-namespace, import/namespace */
 import animator from './core.animator';
-import * as controllers from '../controllers';
 import defaults from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
 import plugins from './core.plugins';
-import scaleService from './core.scaleService';
+import registry from './core.registry';
 import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
 import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
@@ -80,7 +79,7 @@ function mergeScaleConfig(config, options) {
 	// apply scale defaults, if not overridden by dataset defaults
 	Object.keys(scales).forEach(key => {
 		const scale = scales[key];
-		mergeIf(scale, scaleService.getScaleDefaults(scale.type));
+		mergeIf(scale, [defaults.scales[scale.type], defaults.scale]);
 	});
 
 	return scales;
@@ -442,10 +441,7 @@ class Chart {
 			if (id in scales && scales[id].type === scaleType) {
 				scale = scales[id];
 			} else {
-				const scaleClass = scaleService.getScaleConstructor(scaleType);
-				if (!scaleClass) {
-					return;
-				}
+				const scaleClass = registry.getScale(scaleType);
 				scale = new scaleClass({
 					id,
 					type: scaleType,
@@ -473,7 +469,13 @@ class Chart {
 
 		me.scales = scales;
 
-		scaleService.addScalesToLayout(this);
+		each(scales, (scale) => {
+			// Set ILayoutItem parameters for backwards compatibility
+			scale.fullWidth = scale.options.fullWidth;
+			scale.position = scale.options.position;
+			scale.weight = scale.options.weight;
+			layouts.addBox(me, scale);
+		});
 	}
 
 	/**
@@ -537,11 +539,14 @@ class Chart {
 				meta.controller.updateIndex(i);
 				meta.controller.linkScales();
 			} else {
-				const ControllerClass = controllers[meta.type];
-				if (ControllerClass === undefined) {
-					throw new Error('"' + meta.type + '" is not a chart type.');
-				}
-
+				const controllerDefaults = defaults[type];
+				const ControllerClass = registry.getController(type);
+				Object.assign(ControllerClass.prototype, {
+					dataElementType: registry.getElement(controllerDefaults.dataElementType),
+					datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
+					dataElementOptions: controllerDefaults.dataElementOptions,
+					datasetElementOptions: controllerDefaults.datasetElementOptions
+				});
 				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);
 			}
@@ -1170,5 +1175,7 @@ Chart.version = version;
  * would need to work on multiple charts?!
  */
 Chart.instances = {};
+
+Chart.registry = registry;
 
 export default Chart;

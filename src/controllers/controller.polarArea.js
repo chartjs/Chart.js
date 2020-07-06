@@ -1,82 +1,6 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Arc} from '../elements/index';
 import {toRadians} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
-
-defaults.set('polarArea', {
-	animation: {
-		numbers: {
-			type: 'number',
-			properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
-		},
-		animateRotate: true,
-		animateScale: true
-	},
-	aspectRatio: 1,
-	datasets: {
-		indexAxis: 'r'
-	},
-	scales: {
-		r: {
-			type: 'radialLinear',
-			angleLines: {
-				display: false
-			},
-			beginAtZero: true,
-			gridLines: {
-				circular: true
-			},
-			pointLabels: {
-				display: false
-			}
-		}
-	},
-
-	startAngle: 0,
-	legend: {
-		labels: {
-			generateLabels(chart) {
-				const data = chart.data;
-				if (data.labels.length && data.datasets.length) {
-					return data.labels.map((label, i) => {
-						const meta = chart.getDatasetMeta(0);
-						const style = meta.controller.getStyle(i);
-
-						return {
-							text: label,
-							fillStyle: style.backgroundColor,
-							strokeStyle: style.borderColor,
-							lineWidth: style.borderWidth,
-							hidden: !chart.getDataVisibility(i),
-
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
-				}
-				return [];
-			}
-		},
-
-		onClick(e, legendItem, legend) {
-			legend.chart.toggleDataVisibility(legendItem.index);
-			legend.chart.update();
-		}
-	},
-
-	// Need to override these to give a nice default
-	tooltips: {
-		callbacks: {
-			title() {
-				return '';
-			},
-			label(item, data) {
-				return data.labels[item.index] + ': ' + item.value;
-			}
-		}
-	}
-});
 
 function getStartAngleRadians(deg) {
 	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
@@ -211,14 +135,92 @@ export default class PolarAreaController extends DatasetController {
 	}
 }
 
-PolarAreaController.prototype.dataElementType = Arc;
+PolarAreaController.id = 'polarArea';
 
-PolarAreaController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'borderAlign',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth'
-];
+/**
+ * @type {any}
+ */
+PolarAreaController.defaults = {
+	dataElementType: 'arc',
+	dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth'
+	],
+
+	animation: {
+		numbers: {
+			type: 'number',
+			properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
+		},
+		animateRotate: true,
+		animateScale: true
+	},
+	aspectRatio: 1,
+	datasets: {
+		indexAxis: 'r'
+	},
+	scales: {
+		r: {
+			type: 'radialLinear',
+			angleLines: {
+				display: false
+			},
+			beginAtZero: true,
+			gridLines: {
+				circular: true
+			},
+			pointLabels: {
+				display: false
+			}
+		}
+	},
+
+	startAngle: 0,
+	legend: {
+		labels: {
+			generateLabels(chart) {
+				const data = chart.data;
+				if (data.labels.length && data.datasets.length) {
+					return data.labels.map((label, i) => {
+						const meta = chart.getDatasetMeta(0);
+						const style = meta.controller.getStyle(i);
+
+						return {
+							text: label,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: !chart.getDataVisibility(i),
+
+							// Extra data used for toggling the correct item
+							index: i
+						};
+					});
+				}
+				return [];
+			}
+		},
+
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
+		}
+	},
+
+	// Need to override these to give a nice default
+	tooltips: {
+		callbacks: {
+			title() {
+				return '';
+			},
+			label(item, data) {
+				return data.labels[item.index] + ': ' + item.value;
+			}
+		}
+	}
+};
