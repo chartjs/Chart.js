@@ -46,9 +46,13 @@ class TimeSeriesScale extends TimeScale {
 		this._table = [];
 	}
 
-	initOffsets(timestamps) {
+	/**
+	 * @protected
+	 */
+	initOffsets() {
 		const me = this;
-		me._table = me.buildLookupTable();
+		const timestamps = me._getTimestampsForTable();
+		me._table = me.buildLookupTable(timestamps);
 		super.initOffsets(timestamps);
 	}
 
@@ -59,14 +63,13 @@ class TimeSeriesScale extends TimeScale {
 	 * extremity (left + width or top + height). Note that it would be more optimized to directly
 	 * store pre-computed pixels, but the scale dimensions are not guaranteed at the time we need
 	 * to create the lookup table. The table ALWAYS contains at least two items: min and max.
-	 *
+	 * @param {number[]} timestamps
 	 * @return {object[]}
 	 * @protected
 	 */
-	buildLookupTable() {
+	buildLookupTable(timestamps) {
 		const me = this;
 		const {min, max} = me;
-		const timestamps = me._getTimestampsForTable();
 		if (!timestamps.length) {
 			return [
 				{time: min, pos: 0},
@@ -103,6 +106,7 @@ class TimeSeriesScale extends TimeScale {
 
 	/**
 	 * Returns all timestamps
+	 * @return {number[]}
 	 * @private
 	 */
 	_getTimestampsForTable() {
@@ -136,6 +140,7 @@ class TimeSeriesScale extends TimeScale {
 	}
 
 	/**
+	 * @return {number[]}
 	 * @protected
 	 */
 	getDataTimestamps() {
@@ -151,6 +156,7 @@ class TimeSeriesScale extends TimeScale {
 	}
 
 	/**
+	 * @return {number[]}
 	 * @protected
 	 */
 	getLabelTimestamps() {
