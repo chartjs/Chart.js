@@ -6,7 +6,7 @@ import {_lookup} from '../helpers/helpers.collection';
  * at index [0, 1] or [n - 1, n] are used for the interpolation.
  * @param {object} table
  * @param {number} val
- * @param {boolean} [reverse]
+ * @param {boolean} [reverse] lookup time based on position instead of vice versa
  * @return {object}
  */
 function interpolate(table, val, reverse) {
@@ -14,13 +14,11 @@ function interpolate(table, val, reverse) {
 
 	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
 	if (reverse) {
-		// going from position to time
 		prevSource = Math.floor(val);
 		nextSource = Math.ceil(val);
 		prevTarget = table[prevSource];
 		nextTarget = table[nextSource];
 	} else {
-		// going from time to position
 		const result = _lookup(table, val);
 		prevTarget = result.lo;
 		nextTarget = result.hi;
