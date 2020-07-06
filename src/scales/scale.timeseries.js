@@ -191,7 +191,9 @@ class TimeSeriesScale extends TimeScale {
 
 TimeSeriesScale.id = 'timeseries';
 
-// INTERNAL: default options, registered in src/index.js
+/**
+ * @type {any}
+ */
 TimeSeriesScale.defaults = TimeScale.defaults;
 
 export default TimeSeriesScale;

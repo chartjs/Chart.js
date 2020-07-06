@@ -163,7 +163,7 @@ describe('Chart', function() {
 					}
 				});
 			}
-			expect(createChart).toThrow(new Error('"area" is not a chart type.'));
+			expect(createChart).toThrow(new Error('"area" is not a registered controller.'));
 		});
 	});
 
@@ -175,7 +175,7 @@ describe('Chart', function() {
 				_jasmineCheckC: 'c0'
 			});
 
-			Chart.helpers.merge(Chart.scaleService.defaults.logarithmic, {
+			Chart.helpers.merge(Chart.defaults.scales.logarithmic, {
 				_jasmineCheckB: 'b1',
 				_jasmineCheckC: 'c1',
 			});
@@ -185,8 +185,8 @@ describe('Chart', function() {
 			delete Chart.defaults.scale._jasmineCheckA;
 			delete Chart.defaults.scale._jasmineCheckB;
 			delete Chart.defaults.scale._jasmineCheckC;
-			delete Chart.scaleService.defaults.logarithmic._jasmineCheckB;
-			delete Chart.scaleService.defaults.logarithmic._jasmineCheckC;
+			delete Chart.defaults.scales.logarithmic._jasmineCheckB;
+			delete Chart.defaults.scales.logarithmic._jasmineCheckC;
 		});
 
 		it('should default to "category" for x scales and "linear" for y scales', function() {
@@ -298,8 +298,8 @@ describe('Chart', function() {
 
 			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
 			expect(Chart.defaults._jasmineCheck).not.toBeDefined();
-			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
-			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.scales.linear._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.scales.category._jasmineCheck).not.toBeDefined();
 		});
 	});
 

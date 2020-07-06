@@ -11,52 +11,15 @@ function getValues(scale) {
 describe('Category scale tests', function() {
 	describe('auto', jasmine.fixture.specs('scale.category'));
 
-	it('Should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
+	it('Should register the constructor with the registry', function() {
+		var Constructor = Chart.registry.getScale('category');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('Should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('category');
-		expect(defaultConfig).toEqual({
-			display: true,
-			reverse: false,
-			beginAtZero: false,
-
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true, // draw ticks extending towards the label
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
-			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				major: {},
-				lineWidth: 0,
-				strokeStyle: '',
-			}
-		});
-
-		// Is this actually a function
-		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+		var defaultConfig = Chart.defaults.scales.category;
+		expect(defaultConfig).toEqual({});
 	});
 
 
@@ -71,9 +34,9 @@ describe('Category scale tests', function() {
 			xLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
 		};
 
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		var config = Chart.helpers.clone(Chart.defaults.scales.category);
 		config.position = 'bottom';
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var Constructor = Chart.registry.getScale('category');
 		var scale = new Constructor({
 			ctx: {},
 			chart: {
@@ -99,9 +62,9 @@ describe('Category scale tests', function() {
 			yLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
 		};
 
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
+		var config = Chart.helpers.clone(Chart.defaults.scales.category);
 		config.position = 'left'; // y axis
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
+		var Constructor = Chart.registry.getScale('category');
 		var scale = new Constructor({
 			ctx: {},
 			chart: {

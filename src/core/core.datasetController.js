@@ -686,7 +686,6 @@ export default class DatasetController {
 			datasetIndex: this.index,
 			active
 		};
-
 	}
 
 	/**
@@ -696,7 +695,7 @@ export default class DatasetController {
 	resolveDatasetElementOptions(active) {
 		return this._resolveOptions(this.datasetElementOptions, {
 			active,
-			type: this.datasetElementType._type
+			type: this.datasetElementType.id
 		});
 	}
 
@@ -718,7 +717,7 @@ export default class DatasetController {
 			index,
 			active,
 			info,
-			type: me.dataElementType._type
+			type: me.dataElementType.id
 		});
 
 		if (info.cacheable) {
@@ -974,6 +973,11 @@ export default class DatasetController {
 		this._insertElements(0, arguments.length);
 	}
 }
+
+/**
+ * @type {any}
+ */
+DatasetController.defaults = {};
 
 /**
  * Element type used to generate a meta dataset (e.g. Chart.element.Line).

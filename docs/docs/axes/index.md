@@ -45,14 +45,12 @@ There are a number of config callbacks that can be used to change parameters in 
 
 ### Updating Axis Defaults
 
-The default configuration for a scale can be easily changed using the scale service. All you need to do is to pass in a partial configuration that will be merged with the current scale default configuration to form the new default.
+The default configuration for a scale can be easily changed. All you need to do is set the new options to `Chart.defaults.scales[type]`.
 
 For example, to set the minimum value of 0 for all linear scales, you would do the following. Any linear scales created after this time would now have a minimum of 0.
 
 ```javascript
-Chart.scaleService.updateScaleDefaults('linear', {
-    min: 0
-});
+Chart.defaults.scales.linear.min = 0;
 ```
 
 ## Creating New Axes

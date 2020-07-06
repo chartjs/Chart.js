@@ -5,48 +5,14 @@ function getLabels(scale) {
 describe('Linear Scale', function() {
 	describe('auto', jasmine.fixture.specs('scale.linear'));
 
-	it('Should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('linear');
+	it('Should register the constructor with the registry', function() {
+		var Constructor = Chart.registry.getScale('linear');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('Should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('linear');
-		expect(defaultConfig).toEqual({
-			display: true,
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true, // draw ticks extending towards the label
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			reverse: false,
-			beginAtZero: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
-			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this work nicer, then check below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				major: {},
-				lineWidth: 0,
-				strokeStyle: '',
-			}
-		});
+		var defaultConfig = Chart.defaults.scales.linear;
 
 		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});

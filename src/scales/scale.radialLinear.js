@@ -6,59 +6,6 @@ import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
 import {toFont, resolve} from '../helpers/helpers.options';
 
-
-const defaultConfig = {
-	display: true,
-
-	// Boolean - Whether to animate scaling the chart from the centre
-	animate: true,
-	position: 'chartArea',
-
-	angleLines: {
-		display: true,
-		color: 'rgba(0,0,0,0.1)',
-		lineWidth: 1,
-		borderDash: [],
-		borderDashOffset: 0.0
-	},
-
-	gridLines: {
-		circular: false
-	},
-
-	// label settings
-	ticks: {
-		// Boolean - Show a backdrop to the scale label
-		showLabelBackdrop: true,
-
-		// String - The colour of the label backdrop
-		backdropColor: 'rgba(255,255,255,0.75)',
-
-		// Number - The backdrop padding above & below the label in pixels
-		backdropPaddingY: 2,
-
-		// Number - The backdrop padding to the side of the label in pixels
-		backdropPaddingX: 2,
-
-		callback: Ticks.formatters.numeric
-	},
-
-	pointLabels: {
-		// Boolean - if true, show point labels
-		display: true,
-
-		// Number - Point label font size in pixels
-		font: {
-			size: 10
-		},
-
-		// Function - Used to convert point labels
-		callback(label) {
-			return label;
-		}
-	}
-};
-
 function getTickBackdropHeight(opts) {
 	const tickOpts = opts.ticks;
 
@@ -306,7 +253,7 @@ function numberOrZero(param) {
 	return isNumber(param) ? param : 0;
 }
 
-class RadialLinearScale extends LinearScaleBase {
+export default class RadialLinearScale extends LinearScaleBase {
 
 	constructor(cfg) {
 		super(cfg);
@@ -593,7 +540,57 @@ class RadialLinearScale extends LinearScaleBase {
 
 RadialLinearScale.id = 'radialLinear';
 
-// INTERNAL: default options, registered in src/index.js
-RadialLinearScale.defaults = defaultConfig;
+/**
+ * @type {any}
+ */
+RadialLinearScale.defaults = {
+	display: true,
 
-export default RadialLinearScale;
+	// Boolean - Whether to animate scaling the chart from the centre
+	animate: true,
+	position: 'chartArea',
+
+	angleLines: {
+		display: true,
+		color: 'rgba(0,0,0,0.1)',
+		lineWidth: 1,
+		borderDash: [],
+		borderDashOffset: 0.0
+	},
+
+	gridLines: {
+		circular: false
+	},
+
+	// label settings
+	ticks: {
+		// Boolean - Show a backdrop to the scale label
+		showLabelBackdrop: true,
+
+		// String - The colour of the label backdrop
+		backdropColor: 'rgba(255,255,255,0.75)',
+
+		// Number - The backdrop padding above & below the label in pixels
+		backdropPaddingY: 2,
+
+		// Number - The backdrop padding to the side of the label in pixels
+		backdropPaddingX: 2,
+
+		callback: Ticks.formatters.numeric
+	},
+
+	pointLabels: {
+		// Boolean - if true, show point labels
+		display: true,
+
+		// Number - Point label font size in pixels
+		font: {
+			size: 10
+		},
+
+		// Function - Used to convert point labels
+		callback(label) {
+			return label;
+		}
+	}
+};

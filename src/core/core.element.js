@@ -42,3 +42,13 @@ export default class Element {
 		return ret;
 	}
 }
+
+/**
+ * @type any
+ */
+Element.defaults = {};
+
+/**
+ * @type any
+ */
+Element.defaultRoutes = undefined;
