@@ -69,8 +69,8 @@ export default class LineController extends DatasetController {
 			const index = start + i;
 			const point = points[i];
 			const parsed = me.getParsed(index);
-			const x = xScale.getPixelForValue(parsed.x, i);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
+			const x = xScale.getPixelForValue(parsed.x, index);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, index);
 			const properties = {
 				x,
 				y,
