@@ -49,6 +49,7 @@ Dataset controllers must implement the following interface.
 ```
 
 The following methods may optionally be overridden by derived dataset controllers.
+
 ```javascript
 {
     // Initializes the controller
@@ -79,12 +80,6 @@ The built in controller types are:
 For example, to derive a new chart type that extends from a bubble chart, you would do the following.
 
 ```javascript
-// Sets the default config for 'derivedBubble' to be the same as the bubble defaults.
-// We look for the defaults by doing Chart.defaults[chartType]
-// It looks like a bug exists when the defaults don't exist
-Chart.defaults.derivedBubble = Chart.defaults.bubble;
-
-// I think the recommend using Chart.controllers.bubble.extend({ extensions here });
 class Custom extends Chart.controllers.bubble {
     draw() {
         // Call super method first
