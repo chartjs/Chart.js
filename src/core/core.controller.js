@@ -4,7 +4,7 @@ import defaults from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
-import plugins from './core.plugins';
+import PluginService from './core.plugins';
 import registry from './core.registry';
 import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
 import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
@@ -111,12 +111,15 @@ function initConfig(config) {
 
 	const scaleConfig = mergeScaleConfig(config, config.options);
 
-	config.options = mergeConfig(
+	const options = config.options = mergeConfig(
 		defaults,
 		defaults[config.type],
 		config.options || {});
 
-	config.options.scales = scaleConfig;
+	options.scales = scaleConfig;
+
+	options.title = (options.title !== false) && merge({}, [defaults.plugins.title, options.title]);
+	options.tooltips = (options.tooltips !== false) && merge({}, [defaults.plugins.tooltip, options.tooltips]);
 
 	return config;
 }
@@ -178,7 +181,7 @@ function onAnimationsComplete(ctx) {
 	const chart = ctx.chart;
 	const animationOptions = chart.options.animation;
 
-	plugins.notify(chart, 'afterRender');
+	chart._plugins.notify(chart, 'afterRender');
 	callCallback(animationOptions && animationOptions.onComplete, [ctx], chart);
 }
 
@@ -265,7 +268,7 @@ class Chart {
 		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
-		this.$plugins = undefined;
+		this._plugins = new PluginService();
 		this.$proxies = {};
 		this._hiddenIndices = {};
 		this.attached = false;
@@ -307,8 +310,10 @@ class Chart {
 	_initialize() {
 		const me = this;
 
+		me._plugins.update(me);
+
 		// Before init plugin notification
-		plugins.notify(me, 'beforeInit');
+		me._plugins.notify(me, 'beforeInit');
 
 		if (me.options.responsive) {
 			// Initial resize before chart draws (must be silent to preserve initial animations).
@@ -320,7 +325,7 @@ class Chart {
 		me.bindEvents();
 
 		// After init plugin notification
-		plugins.notify(me, 'afterInit');
+		me._plugins.notify(me, 'afterInit');
 
 		return me;
 	}
@@ -372,7 +377,7 @@ class Chart {
 		retinaScale(me, newRatio);
 
 		if (!silent) {
-			plugins.notify(me, 'resize', [newSize]);
+			me._plugins.notify(me, 'resize', [newSize]);
 
 			callCallback(options.onResize, [newSize], me);
 
@@ -572,7 +577,7 @@ class Chart {
 	*/
 	reset() {
 		this._resetElements();
-		plugins.notify(this, 'reset');
+		this._plugins.notify(this, 'reset');
 	}
 
 	update(mode) {
@@ -588,9 +593,9 @@ class Chart {
 
 		// plugins options references might have change, let's invalidate the cache
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
-		plugins.invalidate(me);
+		me._plugins.update(me);
 
-		if (plugins.notify(me, 'beforeUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeUpdate') === false) {
 			return;
 		}
 
@@ -614,7 +619,7 @@ class Chart {
 		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		plugins.notify(me, 'afterUpdate');
+		me._plugins.notify(me, 'afterUpdate');
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
@@ -636,7 +641,7 @@ class Chart {
 	_updateLayout() {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeLayout') === false) {
+		if (me._plugins.notify(me, 'beforeLayout') === false) {
 			return;
 		}
 
@@ -656,7 +661,7 @@ class Chart {
 			item._idx = index;
 		});
 
-		plugins.notify(me, 'afterLayout');
+		me._plugins.notify(me, 'afterLayout');
 	}
 
 	/**
@@ -668,7 +673,7 @@ class Chart {
 		const me = this;
 		const isFunction = typeof mode === 'function';
 
-		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
@@ -676,7 +681,7 @@ class Chart {
 			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
-		plugins.notify(me, 'afterDatasetsUpdate');
+		me._plugins.notify(me, 'afterDatasetsUpdate');
 	}
 
 	/**
@@ -689,23 +694,23 @@ class Chart {
 		const meta = me.getDatasetMeta(index);
 		const args = {meta, index, mode};
 
-		if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+		if (me._plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
 			return;
 		}
 
 		meta.controller._update(mode);
 
-		plugins.notify(me, 'afterDatasetUpdate', [args]);
+		me._plugins.notify(me, 'afterDatasetUpdate', [args]);
 	}
 
 	render() {
 		const me = this;
 		const animationOptions = me.options.animation;
-		if (plugins.notify(me, 'beforeRender') === false) {
+		if (me._plugins.notify(me, 'beforeRender') === false) {
 			return;
 		}
 		const onComplete = function() {
-			plugins.notify(me, 'afterRender');
+			me._plugins.notify(me, 'afterRender');
 			callCallback(animationOptions && animationOptions.onComplete, [], me);
 		};
 
@@ -729,7 +734,7 @@ class Chart {
 			return;
 		}
 
-		if (plugins.notify(me, 'beforeDraw') === false) {
+		if (me._plugins.notify(me, 'beforeDraw') === false) {
 			return;
 		}
 
@@ -748,7 +753,7 @@ class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		plugins.notify(me, 'afterDraw');
+		me._plugins.notify(me, 'afterDraw');
 	}
 
 	/**
@@ -786,7 +791,7 @@ class Chart {
 	_drawDatasets() {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeDatasetsDraw') === false) {
+		if (me._plugins.notify(me, 'beforeDatasetsDraw') === false) {
 			return;
 		}
 
@@ -795,7 +800,7 @@ class Chart {
 			me._drawDataset(metasets[i]);
 		}
 
-		plugins.notify(me, 'afterDatasetsDraw');
+		me._plugins.notify(me, 'afterDatasetsDraw');
 	}
 
 	/**
@@ -813,7 +818,7 @@ class Chart {
 			index: meta.index,
 		};
 
-		if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+		if (me._plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
 			return;
 		}
 
@@ -828,7 +833,7 @@ class Chart {
 
 		unclipArea(ctx);
 
-		plugins.notify(me, 'afterDatasetDraw', [args]);
+		me._plugins.notify(me, 'afterDatasetDraw', [args]);
 	}
 
 	/**
@@ -969,7 +974,7 @@ class Chart {
 			me.ctx = null;
 		}
 
-		plugins.notify(me, 'destroy');
+		me._plugins.notify(me, 'destroy');
 
 		delete Chart.instances[me.id];
 	}
@@ -1096,13 +1101,13 @@ class Chart {
 	_eventHandler(e, replay) {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
+		if (me._plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
 			return;
 		}
 
 		me._handleEvent(e, replay);
 
-		plugins.notify(me, 'afterEvent', [e, replay]);
+		me._plugins.notify(me, 'afterEvent', [e, replay]);
 
 		me.render();
 

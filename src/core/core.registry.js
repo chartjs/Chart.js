@@ -26,6 +26,10 @@ export class Registry {
 		this._registerEach(args);
 	}
 
+	remove(...args) {
+		this._unregisterEach(args);
+	}
+
 	/**
 	 * @param  {...typeof DatasetController} args
 	 */
@@ -93,7 +97,7 @@ export class Registry {
 		const me = this;
 		[...args].forEach(arg => {
 			const reg = typedRegistry || me._getRegistryForType(arg);
-			if (reg.isForType(arg)) {
+			if (reg.isForType(arg) || (reg === me.plugins && arg.id)) {
 				me._registerComponent(reg, arg);
 			} else {
 				// Handle loopable args
@@ -117,10 +121,47 @@ export class Registry {
 	/**
 	 * @private
 	 */
+	_unregisterEach(args, typedRegistry) {
+		const me = this;
+		[...args].forEach(arg => {
+			const reg = typedRegistry || me._getRegistryForType(arg);
+			if (reg.isForType(arg) || (reg === me.plugins && arg.id)) {
+				me._unregisterComponent(reg, arg);
+			} else {
+				// Handle loopable args
+				// Use case:
+				//  import * as plugins from './plugins';
+				//  Chart.register(plugins);
+				each(arg, item => {
+					// If there are mixed types in the loopable, make sure those are
+					// registered in correct registry
+					// Use case: (treemap exporting controller, elements etc)
+					//  import * as treemap from 'chartjs-chart-treemap';
+					//  Chart.register(treemap);
+
+					const itemReg = typedRegistry || me._getRegistryForType(item);
+					me._unregisterComponent(itemReg, item);
+				});
+			}
+		});
+	}
+
+	/**
+	 * @private
+	 */
 	_registerComponent(registry, component) {
 		call(component.beforeRegister, [], component);
 		registry.register(component);
 		call(component.afterRegister, [], component);
+	}
+
+	/**
+	 * @private
+	 */
+	_unregisterComponent(registry, component) {
+		call(component.beforeUnregister, [], component);
+		registry.unregister(component);
+		call(component.afterUnregister, [], component);
 	}
 
 	/**
