@@ -310,8 +310,6 @@ class Chart {
 	_initialize() {
 		const me = this;
 
-		me._plugins.update(me);
-
 		// Before init plugin notification
 		me._plugins.notify(me, 'beforeInit');
 
@@ -593,7 +591,7 @@ class Chart {
 
 		// plugins options references might have change, let's invalidate the cache
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
-		me._plugins.update(me);
+		me._plugins.invalidate();
 
 		if (me._plugins.notify(me, 'beforeUpdate') === false) {
 			return;

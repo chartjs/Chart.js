@@ -33,14 +33,13 @@ describe('Chart.plugins', function() {
 
 		it('should call plugin only once even if registered multiple times', function() {
 			var plugin = {id: 'test', hook: function() {}};
-			Chart.register([plugin, plugin]);
-
 			var chart = window.acquireChart({
 				plugins: [plugin, plugin]
 			});
 
 			spyOn(plugin, 'hook');
 
+			Chart.register([plugin, plugin]);
 			chart._plugins.notify(chart, 'hook');
 			expect(plugin.hook.calls.count()).toBe(1);
 			Chart.unregister(plugin);
@@ -81,7 +80,6 @@ describe('Chart.plugins', function() {
 				}
 			}];
 			Chart.register(plugins);
-			chart.update();
 
 			var ret = chart._plugins.notify(chart, 'hook');
 			expect(ret).toBeTruthy();
@@ -165,7 +163,6 @@ describe('Chart.plugins', function() {
 	describe('config.options.plugins', function() {
 		it('should call plugins with options at last argument', function() {
 			var plugin = {id: 'foo', hook: function() {}};
-			Chart.register(plugin);
 
 			var chart = window.acquireChart({
 				options: {
@@ -177,6 +174,7 @@ describe('Chart.plugins', function() {
 
 			spyOn(plugin, 'hook');
 
+			Chart.register(plugin);
 			chart._plugins.notify(chart, 'hook');
 			chart._plugins.notify(chart, 'hook', ['bla']);
 			chart._plugins.notify(chart, 'hook', ['bla', 42]);

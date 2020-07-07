@@ -9,10 +9,6 @@ import {mergeIf} from '../helpers/helpers.core';
  */
 
 export default class PluginService {
-	constructor() {
-		this._descriptors = [];
-	}
-
 	/**
 	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
 	 * This method immediately returns as soon as a plugin explicitly returns false. The
@@ -23,7 +19,7 @@ export default class PluginService {
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
 	notify(chart, hook, args) {
-		const descriptors = this._descriptors;
+		const descriptors = this._descriptors(chart);
 
 		for (let i = 0; i < descriptors.length; ++i) {
 			const descriptor = descriptors[i];
@@ -41,15 +37,27 @@ export default class PluginService {
 		return true;
 	}
 
+	invalidate() {
+		this._cache = undefined;
+	}
+
 	/**
 	 * @param {Chart} chart
+	 * @private
 	 */
-	update(chart) {
+	_descriptors(chart) {
+		if (this._cache) {
+			return this._cache;
+		}
+
 		const config = (chart && chart.config) || {};
 		const options = (config.options && config.options.plugins) || {};
 		const plugins = allPlugins(config);
+		const descriptors = createDescriptors(plugins, options);
 
-		this._descriptors = createDescriptors(plugins, options);
+		this._cache = descriptors;
+
+		return descriptors;
 	}
 }
 
