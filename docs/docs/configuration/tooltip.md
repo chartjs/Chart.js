@@ -63,7 +63,7 @@ Example:
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
  */
-const tooltipPlugin = Chart.registry.getPlugin('tooltop');
+const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 tooltipPlugin.positioners.custom = function(elements, eventPosition) {
     /** @type {Tooltip} */
     var tooltip = this;

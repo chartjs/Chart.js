@@ -44,7 +44,6 @@ describe('Chart.plugins', function() {
 			chart._plugins.notify(chart, 'hook');
 			expect(plugin.hook.calls.count()).toBe(1);
 			Chart.unregister(plugin);
-			console.warn(chart._plugins);
 		});
 
 		it('should call plugins in the correct order (global first)', function() {
