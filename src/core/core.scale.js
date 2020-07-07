@@ -938,9 +938,10 @@ export default class Scale extends Element {
 	 * Returns the location of the given data point. Value can either be an index or a numerical value
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param {*} value
+	 * @param {number} [index]
 	 * @return {number}
 	 */
-	getPixelForValue(value) { // eslint-disable-line no-unused-vars
+	getPixelForValue(value, index) { // eslint-disable-line no-unused-vars
 		return NaN;
 	}
 

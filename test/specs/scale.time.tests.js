@@ -712,144 +712,147 @@ describe('Time scale tests', function() {
 		});
 	});
 
-	describe('when scale type', function() {
-		describe('is "timeseries"', function() {
-			beforeEach(function() {
-				this.chart = window.acquireChart({
-					type: 'line',
-					data: {
-						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
-					},
-					options: {
-						scales: {
-							x: {
-								type: 'timeseries',
-								time: {
-									parser: 'YYYY'
+	[true, false].forEach(function(normalized) {
+		describe('when normalized is ' + normalized + ' and scale type', function() {
+			describe('is "timeseries"', function() {
+				beforeEach(function() {
+					this.chart = window.acquireChart({
+						type: 'line',
+						data: {
+							labels: ['2017', '2019', '2020', '2025', '2042'],
+							datasets: [{data: [0, 1, 2, 3, 4]}]
+						},
+						options: {
+							normalized,
+							scales: {
+								x: {
+									type: 'timeseries',
+									time: {
+										parser: 'YYYY'
+									},
+									ticks: {
+										source: 'labels'
+									}
 								},
-								ticks: {
-									source: 'labels'
+								y: {
+									display: false
 								}
-							},
-							y: {
-								display: false
 							}
 						}
-					}
+					});
+				});
+
+				it ('should space data out with the same gap, whatever their time values', function() {
+					var scale = this.chart.scales.x;
+					var start = scale.left;
+					var slice = scale.width / 4;
+
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 0)).toBeCloseToPixel(start);
+					expect(scale.getPixelForValue(moment('2019').valueOf(), 1)).toBeCloseToPixel(start + slice);
+					expect(scale.getPixelForValue(moment('2020').valueOf(), 2)).toBeCloseToPixel(start + slice * 2);
+					expect(scale.getPixelForValue(moment('2025').valueOf(), 3)).toBeCloseToPixel(start + slice * 3);
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * 4);
+				});
+				it ('should add a step before if scale.min is before the first data', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.x;
+
+					options.min = '2012';
+					chart.update();
+
+					var start = scale.left;
+					var slice = scale.width / 5;
+
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(start + slice);
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(start + slice * 5);
+				});
+				it ('should add a step after if scale.max is after the last data', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.x;
+
+					options.max = '2050';
+					chart.update();
+
+					var start = scale.left;
+					var slice = scale.width / 5;
+
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 0)).toBeCloseToPixel(start);
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * 4);
+				});
+				it ('should add steps before and after if scale.min/max are outside the data range', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.x;
+
+					options.min = '2012';
+					options.max = '2050';
+					chart.update();
+
+					var start = scale.left;
+					var slice = scale.width / 6;
+
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(start + slice);
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(start + slice * 5);
 				});
 			});
-
-			it ('should space data out with the same gap, whatever their time values', function() {
-				var scale = this.chart.scales.x;
-				var start = scale.left;
-				var slice = scale.width / 4;
-
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * 2);
-				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * 3);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 4);
-			});
-			it ('should add a step before if scale.min is before the first data', function() {
-				var chart = this.chart;
-				var scale = chart.scales.x;
-				var options = chart.options.scales.x;
-
-				options.min = '2012';
-				chart.update();
-
-				var start = scale.left;
-				var slice = scale.width / 5;
-
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 5);
-			});
-			it ('should add a step after if scale.max is after the last data', function() {
-				var chart = this.chart;
-				var scale = chart.scales.x;
-				var options = chart.options.scales.x;
-
-				options.max = '2050';
-				chart.update();
-
-				var start = scale.left;
-				var slice = scale.width / 5;
-
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 4);
-			});
-			it ('should add steps before and after if scale.min/max are outside the data range', function() {
-				var chart = this.chart;
-				var scale = chart.scales.x;
-				var options = chart.options.scales.x;
-
-				options.min = '2012';
-				options.max = '2050';
-				chart.update();
-
-				var start = scale.left;
-				var slice = scale.width / 6;
-
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice);
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * 5);
-			});
-		});
-		describe('is "time"', function() {
-			beforeEach(function() {
-				this.chart = window.acquireChart({
-					type: 'line',
-					data: {
-						labels: ['2017', '2019', '2020', '2025', '2042'],
-						datasets: [{data: [0, 1, 2, 3, 4, 5]}]
-					},
-					options: {
-						scales: {
-							x: {
-								type: 'time',
-								time: {
-									parser: 'YYYY'
+			describe('is "time"', function() {
+				beforeEach(function() {
+					this.chart = window.acquireChart({
+						type: 'line',
+						data: {
+							labels: ['2017', '2019', '2020', '2025', '2042'],
+							datasets: [{data: [0, 1, 2, 3, 4, 5]}]
+						},
+						options: {
+							scales: {
+								x: {
+									type: 'time',
+									time: {
+										parser: 'YYYY'
+									},
+									ticks: {
+										source: 'labels'
+									}
 								},
-								ticks: {
-									source: 'labels'
+								y: {
+									display: false
 								}
-							},
-							y: {
-								display: false
 							}
 						}
-					}
+					});
 				});
-			});
 
-			it ('should space data out with a gap relative to their time values', function() {
-				var scale = this.chart.scales.x;
-				var start = scale.left;
-				var slice = scale.width / (2042 - 2017);
+				it ('should space data out with a gap relative to their time values', function() {
+					var scale = this.chart.scales.x;
+					var start = scale.left;
+					var slice = scale.width / (2042 - 2017);
 
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start);
-				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2019 - 2017));
-				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2020 - 2017));
-				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2025 - 2017));
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2017));
-			});
-			it ('should take in account scale min and max if outside the ticks range', function() {
-				var chart = this.chart;
-				var scale = chart.scales.x;
-				var options = chart.options.scales.x;
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 0)).toBeCloseToPixel(start);
+					expect(scale.getPixelForValue(moment('2019').valueOf(), 1)).toBeCloseToPixel(start + slice * (2019 - 2017));
+					expect(scale.getPixelForValue(moment('2020').valueOf(), 2)).toBeCloseToPixel(start + slice * (2020 - 2017));
+					expect(scale.getPixelForValue(moment('2025').valueOf(), 3)).toBeCloseToPixel(start + slice * (2025 - 2017));
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * (2042 - 2017));
+				});
+				it ('should take in account scale min and max if outside the ticks range', function() {
+					var chart = this.chart;
+					var scale = chart.scales.x;
+					var options = chart.options.scales.x;
 
-				options.min = '2012';
-				options.max = '2050';
-				chart.update();
+					options.min = '2012';
+					options.max = '2050';
+					chart.update();
 
-				var start = scale.left;
-				var slice = scale.width / (2050 - 2012);
+					var start = scale.left;
+					var slice = scale.width / (2050 - 2012);
 
-				expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(start + slice * (2017 - 2012));
-				expect(scale.getPixelForValue(moment('2019').valueOf())).toBeCloseToPixel(start + slice * (2019 - 2012));
-				expect(scale.getPixelForValue(moment('2020').valueOf())).toBeCloseToPixel(start + slice * (2020 - 2012));
-				expect(scale.getPixelForValue(moment('2025').valueOf())).toBeCloseToPixel(start + slice * (2025 - 2012));
-				expect(scale.getPixelForValue(moment('2042').valueOf())).toBeCloseToPixel(start + slice * (2042 - 2012));
+					expect(scale.getPixelForValue(moment('2017').valueOf(), 0)).toBeCloseToPixel(start + slice * (2017 - 2012));
+					expect(scale.getPixelForValue(moment('2019').valueOf(), 1)).toBeCloseToPixel(start + slice * (2019 - 2012));
+					expect(scale.getPixelForValue(moment('2020').valueOf(), 2)).toBeCloseToPixel(start + slice * (2020 - 2012));
+					expect(scale.getPixelForValue(moment('2025').valueOf(), 3)).toBeCloseToPixel(start + slice * (2025 - 2012));
+					expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * (2042 - 2012));
+				});
 			});
 		});
 	});

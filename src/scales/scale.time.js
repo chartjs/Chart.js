@@ -217,13 +217,13 @@ export default class TimeScale extends Scale {
 		this._unit = 'day';
 		/** @type {Unit=} */
 		this._majorUnit = undefined;
-		/** @type {object} */
 		this._offsets = {};
+		this._normalized = false;
 	}
 
-	init(options) {
-		const time = options.time || (options.time = {});
-		const adapter = this._adapter = new adapters._date(options.adapters.date);
+	init(scaleOpts, opts) {
+		const time = scaleOpts.time || (scaleOpts.time = {});
+		const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
@@ -231,7 +231,9 @@ export default class TimeScale extends Scale {
 		// missing formats on update
 		mergeIf(time.displayFormats, adapter.formats());
 
-		super.init(options);
+		super.init(scaleOpts);
+
+		this._normalized = opts.normalized;
 	}
 
 	/**
@@ -574,13 +576,15 @@ export default class TimeScale extends Scale {
 
 		const metas = me.getMatchingVisibleMetas();
 
+		if (me._normalized && metas.length) {
+			return (me._cache.data = metas[0].controller.getAllParsedValues(me));
+		}
+
 		for (i = 0, ilen = metas.length; i < ilen; ++i) {
 			timestamps = timestamps.concat(metas[i].controller.getAllParsedValues(me));
 		}
 
-		// We can not assume data is in order or unique - not even for single dataset
-		// It seems to be somewhat faster to do sorting first
-		return (me._cache.data = _arrayUnique(timestamps.sort(sorter)));
+		return (me._cache.data = me.normalize(timestamps));
 	}
 
 	/**
@@ -600,8 +604,16 @@ export default class TimeScale extends Scale {
 			timestamps.push(parse(me, labels[i]));
 		}
 
-		// We could assume labels are in order and unique - but let's not
-		return (me._cache.labels = _arrayUnique(timestamps.sort(sorter)));
+		return (me._cache.labels = me._normalized ? timestamps : me.normalize(timestamps));
+	}
+
+	/**
+	 * @param {number[]} values
+	 * @protected
+	 */
+	normalize(values) {
+		// It seems to be somewhat faster to do sorting first
+		return _arrayUnique(values.sort(sorter));
 	}
 }
 

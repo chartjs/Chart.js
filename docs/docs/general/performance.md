@@ -4,6 +4,24 @@ title: Performance
 
 Chart.js charts are rendered on `canvas` elements, which makes rendering quite fast. For large datasets or performance sensitive applications, you may wish to consider the tips below.
 
+## Data structure and format
+
+### Parsing
+
+Provide prepared data in the internal format accepted by the dataset and scales and set `parsing: false`. See [Data structures](data-structures.md) for more information.
+
+### Data normalization
+
+Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the `normalized: true` option to let Chart.js know that you have done so. Even without this option, it can sometimes still be faster to provide sorted data.
+
+### Decimation
+
+Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.
+
+There are many approaches to data decimation and selection of an algorithm will depend on your data and the results you want to achieve. For instance, [min/max](https://digital.ni.com/public.nsf/allkb/F694FFEEA0ACF282862576020075F784) decimation will preserve peaks in your data but could require up to 4 points for each pixel. This type of decimation would work well for a very noisy signal where you need to see data peaks.
+
+Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
+
 ## Tick Calculation
 
 ### Rotation
@@ -30,10 +48,6 @@ new Chart(ctx, {
 });
 ```
 
-## Provide ordered data
-
-If the data is unordered, Chart.js needs to sort it. This can be slow in some cases, so its always a good idea to provide ordered data.
-
 ## Specify `min` and `max` for scales
 
 If you specify the `min` and `max`, the scale does not have to compute the range from the data.
@@ -59,19 +73,7 @@ new Chart(ctx, {
 });
 ```
 
-## Data structure and format
-
-Provide prepared data in the internal format accepted by the dataset and scales and set `parsing: false`. See [Data structures](data-structures.md) for more information.
-
-## Data Decimation
-
-Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.
-
-There are many approaches to data decimation and selection of an algorithm will depend on your data and the results you want to achieve. For instance, [min/max](https://digital.ni.com/public.nsf/allkb/F694FFEEA0ACF282862576020075F784) decimation will preserve peaks in your data but could require up to 4 points for each pixel. This type of decimation would work well for a very noisy signal where you need to see data peaks.
-
-Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
-
-## Render Chart.js in a web worker (Chrome only)
+## Parallel rendering with web workers (Chrome only)
 
 Chome (in version 69) added the ability to [transfer rendering control of a canvas](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) to a web worker. Web workers can use the [OffscreenCanvas API](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) to render from a web worker onto canvases in the DOM. Chart.js is a canvas-based library and supports rendering in a web worker - just pass an OffscreenCanvas into the Chart constructor instead of a Canvas element. Note that as of today, this API is only supported in Chrome.
 
@@ -220,7 +222,7 @@ new Chart(ctx, {
 });
 ```
 
-### When transpiling with Babel, cosider using `loose` mode
+## When transpiling with Babel, cosider using `loose` mode
 
 Babel 7.9 changed the way classes are constructed. It is slow, unless used with `loose` mode.
 [More information](https://github.com/babel/babel/issues/11356)

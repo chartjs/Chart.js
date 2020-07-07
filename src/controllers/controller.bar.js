@@ -355,7 +355,7 @@ export default class BarController extends DatasetController {
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis]));
+			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
 		}
 
 		// Note: a potential optimization would be to skip computing this
