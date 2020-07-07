@@ -22,7 +22,6 @@ describe('Chart.plugins', function() {
 			spyOn(plugin, 'hook');
 
 			Chart.register(plugin);
-			chart.update();
 			chart._plugins.notify(chart, 'hook', 42);
 			expect(plugin.hook.calls.count()).toBe(1);
 			expect(plugin.hook.calls.first().args[0]).toBe(chart);
