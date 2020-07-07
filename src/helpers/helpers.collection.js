@@ -1,4 +1,4 @@
-import {ucFirst} from './helpers.core';
+import {_capitalize} from './helpers.core';
 
 /**
  * Binary search
@@ -116,7 +116,7 @@ export function listenArrayEvents(array, listener) {
 	});
 
 	arrayEvents.forEach((key) => {
-		const method = '_onData' + ucFirst(key);
+		const method = '_onData' + _capitalize(key);
 		const base = array[key];
 
 		Object.defineProperty(array, key, {

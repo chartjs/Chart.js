@@ -2,7 +2,7 @@ import DatasetController from './core.datasetController';
 import Element from './core.element';
 import Scale from './core.scale';
 import TypedRegistry from './core.typedRegistry';
-import {each, callback as call, ucFirst} from '../helpers/helpers.core';
+import {each, callback as call, _capitalize} from '../helpers/helpers.core';
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -122,7 +122,7 @@ export class Registry {
 	 * @private
 	 */
 	_exec(method, registry, component) {
-		const camelMethod = ucFirst(method);
+		const camelMethod = _capitalize(method);
 		call(component['before' + camelMethod], [], component);
 		registry[method](component);
 		call(component['after' + camelMethod], [], component);
