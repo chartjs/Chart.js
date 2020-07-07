@@ -45,29 +45,11 @@ export default class PluginService {
 	 * @param {Chart} chart
 	 */
 	update(chart) {
-		const descriptors = [];
 		const config = (chart && chart.config) || {};
 		const options = (config.options && config.options.plugins) || {};
 		const plugins = allPlugins(config);
 
-		for (let i = 0; i < plugins.length; i++) {
-			const plugin = plugins[i];
-			const id = plugin.id;
-
-			let opts = options[id];
-			if (opts === false) {
-				continue;
-			}
-			if (opts === true) {
-				opts = {};
-			}
-			descriptors.push({
-				plugin,
-				options: mergeIf({}, [opts, defaults.plugins[id]])
-			});
-		}
-
-		this._descriptors = descriptors;
+		this._descriptors = createDescriptors(plugins, options);
 	}
 }
 
@@ -88,6 +70,29 @@ function allPlugins(config) {
 	}
 
 	return plugins;
+}
+
+function createDescriptors(plugins, options) {
+	const result = [];
+
+	for (let i = 0; i < plugins.length; i++) {
+		const plugin = plugins[i];
+		const id = plugin.id;
+
+		let opts = options[id];
+		if (opts === false) {
+			continue;
+		}
+		if (opts === true) {
+			opts = {};
+		}
+		result.push({
+			plugin,
+			options: mergeIf({}, [opts, defaults.plugins[id]])
+		});
+	}
+
+	return result;
 }
 
 /**

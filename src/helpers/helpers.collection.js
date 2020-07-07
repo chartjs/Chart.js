@@ -1,3 +1,5 @@
+import {ucFirst} from './helpers.core';
+
 /**
  * Binary search
  * @param {array} table - the table search. must be sorted!
@@ -114,7 +116,7 @@ export function listenArrayEvents(array, listener) {
 	});
 
 	arrayEvents.forEach((key) => {
-		const method = '_onData' + key.charAt(0).toUpperCase() + key.slice(1);
+		const method = '_onData' + ucFirst(key);
 		const base = array[key];
 
 		Object.defineProperty(array, key, {

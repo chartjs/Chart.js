@@ -276,3 +276,7 @@ export function resolveObjectKey(obj, key) {
 	}
 	return obj;
 }
+
+export function ucFirst(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
