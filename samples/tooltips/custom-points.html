@@ -41,16 +41,18 @@
 		<div class="chartjs-tooltip" id="tooltip-1"></div>
 	</div>
 	<script>
-		var customTooltips = function(tooltip) {
-			$(this._chart.canvas).css('cursor', 'pointer');
+		var customTooltips = function(context) {
+			var chart = context.chart;
+			$(chart.canvas).css('cursor', 'pointer');
 
-			var positionY = this._chart.canvas.offsetTop;
-			var positionX = this._chart.canvas.offsetLeft;
+			var positionY = chart.canvas.offsetTop;
+			var positionX = chart.canvas.offsetLeft;
 
 			$('.chartjs-tooltip').css({
 				opacity: 0,
 			});
 
+			var tooltip = context.tooltip;
 			if (!tooltip || !tooltip.opacity) {
 				return;
 			}
