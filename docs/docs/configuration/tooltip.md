@@ -291,8 +291,6 @@ The tooltip model contains parameters that can be used to render the tooltip.
     dataPoints: TooltipItem[],
 
     // Positioning
-    xPadding: number,
-    yPadding: number,
     xAlign: string,
     yAlign: string,
 
@@ -316,31 +314,14 @@ The tooltip model contains parameters that can be used to render the tooltip.
     beforeBody: string[],
     // line of text that appear after the body and before the footer
     afterBody: string[],
-    bodyFont: Font,
-    _bodyAlign: string,
-    bodySpacing: number,
 
     // Title
     // lines of text that form the title
     title: string[],
-    titleFont: Font,
-    _titleAlign: string,
-    titleSpacing: number,
-    titleMarginBottom: number,
 
     // Footer
     // lines of text that form the footer
     footer: string[],
-    footerFont: Font,
-    _footerAlign: string,
-    footerSpacing: number,
-    footerMarginTop: number,
-
-    // Appearance
-    caretSize: number,
-    caretPadding: number,
-    cornerRadius: number,
-    backgroundColor: Color,
 
     // colors to render for each item in body[]. This is the color of the squares in the tooltip
     labelColors: Color[],
@@ -348,9 +329,8 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // 0 opacity is a hidden tooltip
     opacity: number,
-    multiKeyBackground: Color,
-    displayColors: boolean,
-    borderColor: Color,
-    borderWidth: number
+
+    // tooltip options
+    options : Object
 }
 ```
