@@ -329,8 +329,8 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
     // 0 opacity is a hidden tooltip
     opacity: number,
-	
-	// tooltip options
-	options : Object
+
+    // tooltip options
+    options : Object
 }
 ```
