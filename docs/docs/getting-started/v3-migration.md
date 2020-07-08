@@ -188,6 +188,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `xLabel` and `yLabel` were removed. Please use `index` and `value`
 * The `filter` option will now be passed additional parameters when called and should have the method signature `function(tooltipItem, index, tooltipItems, data)`
 * The `custom` callback now takes a context object that has `tooltip` and `chart` properties
+* The tooltip model object removes all properties related to the tooltip options which is stored in the model into `options` property.  
 
 ## Developer migration
 
