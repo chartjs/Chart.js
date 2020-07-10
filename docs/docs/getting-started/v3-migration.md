@@ -256,14 +256,14 @@ The following properties and methods were removed:
 * `Chart.offsetX`
 * `Chart.offsetY`
 * `Chart.outerRadius` now lives on doughnut, pie, and polarArea controllers
-* `Chart.plugins`
+* `Chart.plugins` was replaced with `Chart.registry`. Plugin defaults are now in `Chart.defaults.plugins[id]`.
 * `Chart.PolarArea`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.prototype.generateLegend`
 * `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
 * `Chart.PluginBase`
 * `Chart.Radar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.radiusLength`
-* `Chart.scaleService`
+* `Chart.scaleService` was replaced with `Chart.registry`. Scale defaults are now in `Chart.defaults.scales[type]`.
 * `Chart.Scatter`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.types`
 * `Chart.Title` was moved to `Chart.plugins.title._element` and made private
@@ -432,7 +432,6 @@ The APIs listed in this section have changed in signature or behaviour from vers
 
 * `Scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
 * `Scale.getPixelForValue` now has only one parameter. For the `TimeScale` that parameter must be millis since the epoch
-* `ScaleService.registerScaleType` was renamed to `ScaleService.registerScale` and now takes a scale constructors which is expected to have `id` and `defaults` properties.
 
 ##### Ticks
 
