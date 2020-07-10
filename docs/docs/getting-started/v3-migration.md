@@ -199,6 +199,32 @@ Some of the biggest things that have changed:
   * `Element._model` and `Element._view` are no longer used and properties are now set directly on the elements. You will have to use the method `getProps` to access these properties inside most methods such as `inXRange`/`inYRange` and `getCenterPoint`. Please take a look at [the Chart.js-provided elements](https://github.com/chartjs/Chart.js/tree/master/src/elements) for examples.
   * When building the elements in a controller, it's now suggested to call `updateElement` to provide the element properties. There are also methods such as `getSharedOptions` and `includeOptions` that have been added to skip redundant computation. Please take a look at [the Chart.js-provided controllers](https://github.com/chartjs/Chart.js/tree/master/src/controllers) for examples.
 * Scales introduced a new parsing API. This API takes user data and converts it into a more standard format. E.g. it allows users to provide numeric data as a `string` and converts it to a `number` where necessary. Previously this was done on the fly as charts were rendered. Now it's done up front with the ability to skip it for better performance if users provide data in the correct format. If you're using standard data format like `x`/`y` you may not need to do anything. If you're using a custom data format you will have to override some of the parse methods in `core.datasetController.js`. An example can be found in [chartjs-chart-financial](https://github.com/chartjs/chartjs-chart-financial), which uses an `{o, h, l, c}` data format.
+* Chart.js 3 is tree shakeable. So when you use it as a module in a project, you need to import and register the controllers, elements, scales and plugins you want to use:
+
+```javascript
+import Chart, LineController, Line, Point, LinearScale, Title from `chart.js`
+
+Chart.register(LineController, Line, Point, LinearScale, Title);
+
+const chart = new Chart(ctx, {
+    type: 'line',
+    // data: ...
+    options: {
+        title: {
+            display: true,
+            text: 'Chart Title'
+        },
+        scales: {
+            x: {
+                type: 'linear'
+            },
+            y: {
+                type: 'linear'
+            }
+        }
+    }
+})
+```
 
 A few changes were made to controllers that are more straight-forward, but will affect all controllers:
 
@@ -230,12 +256,14 @@ The following properties and methods were removed:
 * `Chart.offsetX`
 * `Chart.offsetY`
 * `Chart.outerRadius` now lives on doughnut, pie, and polarArea controllers
+* `Chart.plugins`
 * `Chart.PolarArea`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.prototype.generateLegend`
 * `Chart.platform`. It only contained `disableCSSInjection`. CSS is never injected in v3.
 * `Chart.PluginBase`
 * `Chart.Radar`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.radiusLength`
+* `Chart.scaleService`
 * `Chart.Scatter`. New charts are created via `new Chart` and providing the appropriate `type` parameter
 * `Chart.types`
 * `Chart.Title` was moved to `Chart.plugins.title._element` and made private

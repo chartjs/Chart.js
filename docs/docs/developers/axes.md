@@ -11,6 +11,21 @@ class MyScale extends Chart.Scale{
 MyScale.id = 'myScale';
 MyScale.defaults = defaultConfigObject;
 
+// Or in classic style
+/*
+function MyScale() {
+  Chart.Scale.call(this, arguments);
+  // constructor stuff
+}
+
+MyScale.prototype.draw = function(ctx) {
+  Chart.Scale.prototype.draw.call(this, arguments);
+  // ...
+}
+MyScale.id = 'myScale';
+MyScale.defaults = defaultConfigObject;
+*/
+
 // MyScale is now derived from Chart.Scale
 ```
 
@@ -18,6 +33,11 @@ Once you have created your scale class, you need to register it with the global 
 
 ```javascript
 Chart.register(MyScale);
+
+// If the scale is created in classical way, the prototype can not be used to detect what
+// you are trying to register - so you need to be explicit:
+
+// Chart.registry.addScales(MyScale);
 ```
 
 To use the new scale, simply pass in the string key to the config when creating a chart.
