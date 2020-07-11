@@ -81,9 +81,9 @@
 				},
 				tooltips: {
 					callbacks: {
-						label: function(tooltipItem, data) {
-							var labelIndex = (tooltipItem.datasetIndex * 2) + tooltipItem.index;
-							return data.labels[labelIndex] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+						label: function(context) {
+							var labelIndex = (context.datasetIndex * 2) + context.dataIndex;
+							return context.chart.data.labels[labelIndex] + ': ' + context.dataset.data[context.dataIndex];
 						}
 					}
 				}
