@@ -1,8 +1,7 @@
 import Animations from '../core/core.animations';
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import plugins from '../core/core.plugins';
-import {valueOrDefault, each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
+import {valueOrDefault, each, noop, isNullOrUndef, isArray, _elementsEqual, merge} from '../helpers/helpers.core';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
 import {toFont} from '../helpers/helpers.options';
@@ -10,114 +9,6 @@ import {toFont} from '../helpers/helpers.options';
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
-
-defaults.set('tooltips', {
-	enabled: true,
-	custom: null,
-	mode: 'nearest',
-	position: 'average',
-	intersect: true,
-	backgroundColor: 'rgba(0,0,0,0.8)',
-	titleFont: {
-		style: 'bold',
-		color: '#fff',
-	},
-	titleSpacing: 2,
-	titleMarginBottom: 6,
-	titleAlign: 'left',
-	bodySpacing: 2,
-	bodyFont: {
-		color: '#fff',
-	},
-	bodyAlign: 'left',
-	footerSpacing: 2,
-	footerMarginTop: 6,
-	footerFont: {
-		color: '#fff',
-		style: 'bold',
-	},
-	footerAlign: 'left',
-	yPadding: 6,
-	xPadding: 6,
-	caretPadding: 2,
-	caretSize: 5,
-	cornerRadius: 6,
-	multiKeyBackground: '#fff',
-	displayColors: true,
-	borderColor: 'rgba(0,0,0,0)',
-	borderWidth: 0,
-	animation: {
-		duration: 400,
-		easing: 'easeOutQuart',
-		numbers: {
-			type: 'number',
-			properties: ['x', 'y', 'width', 'height', 'caretX', 'caretY'],
-		},
-		opacity: {
-			easing: 'linear',
-			duration: 200
-		}
-	},
-	callbacks: {
-		// Args are: (tooltipItems, data)
-		beforeTitle: noop,
-		title(tooltipItems, data) {
-			let title = '';
-			const labels = data.labels;
-			const labelCount = labels ? labels.length : 0;
-
-			if (tooltipItems.length > 0) {
-				const item = tooltipItems[0];
-				if (item.label) {
-					title = item.label;
-				} else if (labelCount > 0 && item.index < labelCount) {
-					title = labels[item.index];
-				}
-			}
-
-			return title;
-		},
-		afterTitle: noop,
-
-		// Args are: (tooltipItems, data)
-		beforeBody: noop,
-
-		// Args are: (tooltipItem, data)
-		beforeLabel: noop,
-		label(tooltipItem, data) {
-			let label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-			if (label) {
-				label += ': ';
-			}
-			const value = tooltipItem.value;
-			if (!isNullOrUndef(value)) {
-				label += value;
-			}
-			return label;
-		},
-		labelColor(tooltipItem, chart) {
-			const meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
-			const options = meta.controller.getStyle(tooltipItem.index);
-			return {
-				borderColor: options.borderColor,
-				backgroundColor: options.backgroundColor
-			};
-		},
-		labelTextColor() {
-			return this.options.bodyFont.color;
-		},
-		afterLabel: noop,
-
-		// Args are: (tooltipItems, data)
-		afterBody: noop,
-
-		// Args are: (tooltipItems, data)
-		beforeFooter: noop,
-		footer: noop,
-		afterFooter: noop
-	}
-});
 
 const positioners = {
 	/**
@@ -242,7 +133,7 @@ function createTooltipItem(chart, item) {
  */
 function resolveOptions(options) {
 
-	options = Object.assign({}, defaults.tooltips, options);
+	options = merge({}, [defaults.plugins.tooltip, options]);
 
 	options.bodyFont = toFont(options.bodyFont);
 	options.titleFont = toFont(options.titleFont);
@@ -1101,7 +992,7 @@ export default {
 			tooltip
 		};
 
-		if (plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
+		if (chart._plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
 			return;
 		}
 
@@ -1109,7 +1000,7 @@ export default {
 			tooltip.draw(chart.ctx);
 		}
 
-		plugins.notify(chart, 'afterTooltipDraw', [args]);
+		chart._plugins.notify(chart, 'afterTooltipDraw', [args]);
 	},
 
 	afterEvent(chart, e, replay) {
@@ -1117,6 +1008,114 @@ export default {
 			// If the event is replayed from `update`, we should evaluate with the final positions.
 			const useFinalPosition = replay;
 			chart.tooltip.handleEvent(e, useFinalPosition);
+		}
+	},
+
+	defaults: {
+		enabled: true,
+		custom: null,
+		mode: 'nearest',
+		position: 'average',
+		intersect: true,
+		backgroundColor: 'rgba(0,0,0,0.8)',
+		titleFont: {
+			style: 'bold',
+			color: '#fff',
+		},
+		titleSpacing: 2,
+		titleMarginBottom: 6,
+		titleAlign: 'left',
+		bodySpacing: 2,
+		bodyFont: {
+			color: '#fff',
+		},
+		bodyAlign: 'left',
+		footerSpacing: 2,
+		footerMarginTop: 6,
+		footerFont: {
+			color: '#fff',
+			style: 'bold',
+		},
+		footerAlign: 'left',
+		yPadding: 6,
+		xPadding: 6,
+		caretPadding: 2,
+		caretSize: 5,
+		cornerRadius: 6,
+		multiKeyBackground: '#fff',
+		displayColors: true,
+		borderColor: 'rgba(0,0,0,0)',
+		borderWidth: 0,
+		animation: {
+			duration: 400,
+			easing: 'easeOutQuart',
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'width', 'height', 'caretX', 'caretY'],
+			},
+			opacity: {
+				easing: 'linear',
+				duration: 200
+			}
+		},
+		callbacks: {
+			// Args are: (tooltipItems, data)
+			beforeTitle: noop,
+			title(tooltipItems, data) {
+				let title = '';
+				const labels = data.labels;
+				const labelCount = labels ? labels.length : 0;
+
+				if (tooltipItems.length > 0) {
+					const item = tooltipItems[0];
+					if (item.label) {
+						title = item.label;
+					} else if (labelCount > 0 && item.index < labelCount) {
+						title = labels[item.index];
+					}
+				}
+
+				return title;
+			},
+			afterTitle: noop,
+
+			// Args are: (tooltipItems, data)
+			beforeBody: noop,
+
+			// Args are: (tooltipItem, data)
+			beforeLabel: noop,
+			label(tooltipItem, data) {
+				let label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+				if (label) {
+					label += ': ';
+				}
+				const value = tooltipItem.value;
+				if (!isNullOrUndef(value)) {
+					label += value;
+				}
+				return label;
+			},
+			labelColor(tooltipItem, chart) {
+				const meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
+				const options = meta.controller.getStyle(tooltipItem.index);
+				return {
+					borderColor: options.borderColor,
+					backgroundColor: options.backgroundColor
+				};
+			},
+			labelTextColor() {
+				return this.options.bodyFont.color;
+			},
+			afterLabel: noop,
+
+			// Args are: (tooltipItems, data)
+			afterBody: noop,
+
+			// Args are: (tooltipItems, data)
+			beforeFooter: noop,
+			footer: noop,
+			afterFooter: noop
 		}
 	}
 };

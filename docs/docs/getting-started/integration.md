@@ -22,8 +22,13 @@ var myChart = new Chart(ctx, {...});
 
 ## Bundlers (Webpack, Rollup, etc.)
 
+Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
+
 ```javascript
-import Chart from 'chart.js';
+import Chart, LineController, Line, Point, LinearScale, CategoryScale, Title, Tooltip, Filler, Legend from 'chart.js';
+
+Chart.register(LineController, Line, Point, LinearScale, CategoryScale, Title, Tooltip, Filler, Legend);
+
 var myChart = new Chart(ctx, {...});
 ```
 

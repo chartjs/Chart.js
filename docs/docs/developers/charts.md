@@ -111,3 +111,41 @@ new Chart(ctx, {
     options: options
 });
 ```
+
+Same example in classic style
+
+```javascript
+function Custom() {
+  Chart.controllers.bubble.call(this, arguments);
+  // constructor stuff
+}
+
+Custom.prototype.draw = function(ctx) {
+    Chart.controllers.bubble.prototype.draw.call(this, arguments);
+
+    var meta = this.getMeta();
+    var pt0 = meta.data[0];
+    var radius = pt0.radius;
+
+    var ctx = this.chart.chart.ctx;
+    ctx.save();
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(pt0.x - radius, pt0.y - radius, 2 * radius, 2 * radius);
+    ctx.restore();}
+}
+
+Custom.id = 'derivedBubble';
+Custom.defaults = Chart.defaults.bubble;
+
+// Prototype chain can not be used to detect we are trying to register a controller, so we need
+// to be explicit
+Chart.registry.addControllers(Custom);
+
+// Now we can create and use our new chart type
+new Chart(ctx, {
+    type: 'derivedBubble',
+    data: data,
+    options: options
+});
+```

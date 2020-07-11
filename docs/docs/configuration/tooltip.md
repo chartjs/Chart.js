@@ -4,7 +4,7 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.tooltips`.
+The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -63,7 +63,7 @@ Example:
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
  */
-const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
+const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 tooltipPlugin.positioners.custom = function(elements, eventPosition) {
     /** @type {Tooltip} */
     var tooltip = this;
