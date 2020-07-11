@@ -12,6 +12,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * API documentation generated and verified by TypeDoc
 * No more CSS injection
 * Tons of bug fixes
+* Tree shaking
 
 ## End user migration
 
@@ -199,7 +200,7 @@ Some of the biggest things that have changed:
   * `Element._model` and `Element._view` are no longer used and properties are now set directly on the elements. You will have to use the method `getProps` to access these properties inside most methods such as `inXRange`/`inYRange` and `getCenterPoint`. Please take a look at [the Chart.js-provided elements](https://github.com/chartjs/Chart.js/tree/master/src/elements) for examples.
   * When building the elements in a controller, it's now suggested to call `updateElement` to provide the element properties. There are also methods such as `getSharedOptions` and `includeOptions` that have been added to skip redundant computation. Please take a look at [the Chart.js-provided controllers](https://github.com/chartjs/Chart.js/tree/master/src/controllers) for examples.
 * Scales introduced a new parsing API. This API takes user data and converts it into a more standard format. E.g. it allows users to provide numeric data as a `string` and converts it to a `number` where necessary. Previously this was done on the fly as charts were rendered. Now it's done up front with the ability to skip it for better performance if users provide data in the correct format. If you're using standard data format like `x`/`y` you may not need to do anything. If you're using a custom data format you will have to override some of the parse methods in `core.datasetController.js`. An example can be found in [chartjs-chart-financial](https://github.com/chartjs/chartjs-chart-financial), which uses an `{o, h, l, c}` data format.
-* Chart.js 3 is tree shakeable. So when you use it as a module in a project, you need to import and register the controllers, elements, scales and plugins you want to use:
+* Chart.js 3 is tree-shakeable. So when you use it as a module in a project, you need to import and register the controllers, elements, scales and plugins you want to use:
 
 ```javascript
 import Chart, LineController, Line, Point, LinearScale, Title from `chart.js`

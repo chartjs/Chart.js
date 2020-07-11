@@ -5,7 +5,7 @@ title: New Axes
 Axes in Chart.js can be individually extended. Axes should always derive from `Chart.Scale` but this is not a mandatory requirement.
 
 ```javascript
-class MyScale extends Chart.Scale{
+class MyScale extends Chart.Scale {
     /* extensions ... */
 }
 MyScale.id = 'myScale';
@@ -86,6 +86,7 @@ Scale instances are given the following properties during the fitting process.
 ```
 
 ## Scale Interface
+
 To work with Chart.js, custom scale types must implement the following interface.
 
 ```javascript
@@ -140,6 +141,7 @@ Optionally, the following methods may also be overwritten, but an implementation
 ```
 
 The Core.Scale base class also has some utility functions that you may find useful.
+
 ```javascript
 {
     // Returns true if the scale instance is horizontal
