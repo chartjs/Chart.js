@@ -1,5 +1,5 @@
 // Test the rectangle element
-const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
+const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 const Tooltip = tooltipPlugin._element;
 
 describe('Plugin.Tooltip', function() {
@@ -22,11 +22,11 @@ describe('Plugin.Tooltip', function() {
 				value: '20'
 			};
 
-			var label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem, data);
 			expect(label).toBe('20');
 
 			data.datasets[0].label = 'My dataset';
-			label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+			label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem, data);
 			expect(label).toBe('My dataset: 20');
 		});
 	});

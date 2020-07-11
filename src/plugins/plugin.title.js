@@ -4,19 +4,6 @@ import layouts from '../core/core.layouts';
 import {isArray, mergeIf} from '../helpers/helpers.core';
 import {toPadding, toFont} from '../helpers/helpers.options';
 
-defaults.set('title', {
-	align: 'center',
-	display: false,
-	font: {
-		style: 'bold',
-	},
-	fullWidth: true,
-	padding: 10,
-	position: 'top',
-	text: '',
-	weight: 2000         // by default greater than legend (1000) to be above
-});
-
 export class Title extends Element {
 	constructor(config) {
 		super();
@@ -257,7 +244,7 @@ export default {
 		const titleBlock = chart.titleBlock;
 
 		if (titleOpts) {
-			mergeIf(titleOpts, defaults.title);
+			mergeIf(titleOpts, defaults.plugins.title);
 
 			if (titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);
@@ -269,5 +256,18 @@ export default {
 			layouts.removeBox(chart, titleBlock);
 			delete chart.titleBlock;
 		}
+	},
+
+	defaults: {
+		align: 'center',
+		display: false,
+		font: {
+			style: 'bold',
+		},
+		fullWidth: true,
+		padding: 10,
+		position: 'top',
+		text: '',
+		weight: 2000         // by default greater than legend (1000) to be above
 	}
 };

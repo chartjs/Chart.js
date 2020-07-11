@@ -276,3 +276,10 @@ export function resolveObjectKey(obj, key) {
 	}
 	return obj;
 }
+
+/**
+ * @private
+ */
+export function _capitalize(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}

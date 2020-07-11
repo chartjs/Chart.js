@@ -19,13 +19,23 @@ import Interaction from './core/core.interaction';
 import layouts from './core/core.layouts';
 import * as platforms from './platform/index';
 import * as plugins from './plugins';
-import pluginsCore from './core/core.plugins';
 import registry from './core/core.registry';
 import Scale from './core/core.scale';
 import * as scales from './scales';
 import Ticks from './core/core.ticks';
+import {each} from './helpers/helpers.core';
 
-Chart.register = (...items) => registry.add(...items);
+// @ts-ignore
+const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
+
+Chart.register = (...items) => {
+	registry.add(...items);
+	invalidatePlugins();
+};
+Chart.unregister = (...items) => {
+	registry.remove(...items);
+	invalidatePlugins();
+};
 
 // Register built-ins
 Chart.register(controllers, scales, elements, plugins);
@@ -43,16 +53,9 @@ Chart.elements = elements;
 Chart.Interaction = Interaction;
 Chart.layouts = layouts;
 Chart.platforms = platforms;
-Chart.plugins = pluginsCore;
 Chart.registry = registry;
 Chart.Scale = Scale;
 Chart.Ticks = Ticks;
-
-for (const k in plugins) {
-	if (Object.prototype.hasOwnProperty.call(plugins, k)) {
-		Chart.plugins.register(plugins[k]);
-	}
-}
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore

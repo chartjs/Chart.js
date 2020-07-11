@@ -30,7 +30,7 @@
   "scripts": {
     "autobuild": "rollup -c -w",
     "build": "rollup -c",
-    "dev": "cross-env NODE_ENV=test karma start ---auto-watch --no-single-run --browsers chrome --grep",
+    "dev": "karma start ---auto-watch --no-single-run --browsers chrome --grep",
     "docs": "cd docs && npm install && npm run build && mkdir -p ../dist && cp -r build ../dist/docs",
     "lint-js": "eslint samples/**/*.html samples/**/*.js src/**/*.js test/**/*.js",
     "lint-tsc": "tsc",

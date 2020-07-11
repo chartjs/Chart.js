@@ -1,5 +1,5 @@
 import Animations from './core.animations';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
@@ -152,7 +152,7 @@ function optionKeys(optionNames) {
 }
 
 function optionKey(key, active) {
-	return active ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+	return active ? 'hover' + _capitalize(key) : key;
 }
 
 export default class DatasetController {

@@ -2,7 +2,7 @@ import DatasetController from './core.datasetController';
 import Element from './core.element';
 import Scale from './core.scale';
 import TypedRegistry from './core.typedRegistry';
-import {each, callback as call} from '../helpers/helpers.core';
+import {each, callback as call, _capitalize} from '../helpers/helpers.core';
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -23,35 +23,39 @@ export class Registry {
 	 * @param  {...any} args
 	 */
 	add(...args) {
-		this._registerEach(args);
+		this._each('register', args);
+	}
+
+	remove(...args) {
+		this._each('unregister', args);
 	}
 
 	/**
 	 * @param  {...typeof DatasetController} args
 	 */
 	addControllers(...args) {
-		this._registerEach(args, this.controllers);
+		this._each('register', args, this.controllers);
 	}
 
 	/**
 	 * @param  {...typeof Element} args
 	 */
 	addElements(...args) {
-		this._registerEach(args, this.elements);
+		this._each('register', args, this.elements);
 	}
 
 	/**
 	 * @param  {...any} args
 	 */
 	addPlugins(...args) {
-		this._registerEach(args, this.plugins);
+		this._each('register', args, this.plugins);
 	}
 
 	/**
 	 * @param  {...typeof Scale} args
 	 */
 	addScales(...args) {
-		this._registerEach(args, this.scales);
+		this._each('register', args, this.scales);
 	}
 
 	/**
@@ -89,12 +93,12 @@ export class Registry {
 	/**
 	 * @private
 	 */
-	_registerEach(args, typedRegistry) {
+	_each(method, args, typedRegistry) {
 		const me = this;
 		[...args].forEach(arg => {
 			const reg = typedRegistry || me._getRegistryForType(arg);
-			if (reg.isForType(arg)) {
-				me._registerComponent(reg, arg);
+			if (reg.isForType(arg) || (reg === me.plugins && arg.id)) {
+				me._exec(method, reg, arg);
 			} else {
 				// Handle loopable args
 				// Use case:
@@ -108,7 +112,7 @@ export class Registry {
 					//  Chart.register(treemap);
 
 					const itemReg = typedRegistry || me._getRegistryForType(item);
-					me._registerComponent(itemReg, item);
+					me._exec(method, itemReg, item);
 				});
 			}
 		});
@@ -117,10 +121,11 @@ export class Registry {
 	/**
 	 * @private
 	 */
-	_registerComponent(registry, component) {
-		call(component.beforeRegister, [], component);
-		registry.register(component);
-		call(component.afterRegister, [], component);
+	_exec(method, registry, component) {
+		const camelMethod = _capitalize(method);
+		call(component['before' + camelMethod], [], component);
+		registry[method](component);
+		call(component['after' + camelMethod], [], component);
 	}
 
 	/**
