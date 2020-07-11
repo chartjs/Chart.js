@@ -141,14 +141,11 @@ class TimeSeriesScale extends TimeScale {
 	}
 
 	/**
-	 * @param {number} pixel
-	 * @return {number}
+	 * @param {number} decimal
+	 * @return {number} Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 */
-	getValueForPixel(pixel) {
-		const me = this;
-		const offsets = me._offsets;
-		const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return interpolate(me._table, decimal * this._maxIndex, true);
+	getValueForDecimal(decimal) {
+		return interpolate(this._table, decimal * this._maxIndex, true);
 	}
 }
 

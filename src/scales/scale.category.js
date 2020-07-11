@@ -87,15 +87,13 @@ export default class CategoryScale extends Scale {
 		}
 	}
 
-	// Used to get data value locations. Value can either be an index or a numerical value
+	// Used to get data value locations. Value can either be an index or a label
 	getPixelForValue(value) {
-		const me = this;
-
 		if (typeof value !== 'number') {
-			value = me.parse(value);
+			value = this.parse(value);
 		}
 
-		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
+		return this.getPixelForDecimal(this.getDecimalForValue(value));
 	}
 
 	// Must override base implementation because it calls getPixelForValue
@@ -109,10 +107,28 @@ export default class CategoryScale extends Scale {
 		return me.getPixelForValue(ticks[index].value);
 	}
 
+	/**
+	 * @param {number} pixel
+	 * @return {number}
+	 */
 	getValueForPixel(pixel) {
-		const me = this;
-		const value = Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
-		return Math.min(Math.max(value, 0), me.ticks.length - 1);
+		return Math.round(this.getValueForDecimal(this.getDecimalForPixel(pixel)));
+	}
+
+	/**
+	 * @param {number} value
+	 * @return {number}
+	 */
+	getDecimalForValue(value) {
+		return (value - this._startValue) / this._valueRange;
+	}
+
+	/**
+	 * @param {number} decimal
+	 * @return {number}
+	 */
+	getValueForDecimal(decimal) {
+		return this._startValue + decimal * this._valueRange;
 	}
 
 	getBasePixel() {

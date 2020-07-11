@@ -220,6 +220,7 @@ export default class TimeScale extends Scale {
 		this._majorUnit = undefined;
 		this._offsets = {};
 		this._normalized = false;
+		this._valueRange = undefined;
 	}
 
 	init(scaleOpts, opts) {
@@ -333,6 +334,7 @@ export default class TimeScale extends Scale {
 		const ticks = _filterBetween(timestamps, min, max);
 
 		// PRIVATE
+		me._valueRange = max - min;
 		// determineUnitForFormatting relies on the number of ticks so we don't use it when
 		// autoSkip is enabled because we don't yet know what the final number of ticks will be
 		me._unit = timeOpts.unit || (tickOpts.autoSkip
@@ -487,8 +489,15 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
 	getDecimalForValue(value) {
-		const me = this;
-		return (value - me.min) / (me.max - me.min);
+		return (value - this.min) / this._valueRange;
+	}
+
+	/**
+	 * @param {number} decimal
+	 * @return {number} - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
+	 */
+	getValueForDecimal(decimal) {
+		return this.min + decimal * this._valueRange;
 	}
 
 	/**
@@ -496,10 +505,9 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
 	getPixelForValue(value) {
-		const me = this;
-		const offsets = me._offsets;
-		const pos = me.getDecimalForValue(value);
-		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
+		const offsets = this._offsets;
+		const pos = this.getDecimalForValue(value);
+		return this.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	}
 
 	/**
@@ -507,10 +515,9 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
 	getValueForPixel(pixel) {
-		const me = this;
-		const offsets = me._offsets;
-		const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return me.min + pos * (me.max - me.min);
+		const offsets = this._offsets;
+		const pos = this.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+		return this.getValueForDecimal(pos);
 	}
 
 	/**

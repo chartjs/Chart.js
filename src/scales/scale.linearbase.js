@@ -243,7 +243,27 @@ export default class LinearScaleBase extends Scale {
 		me._valueRange = end - start;
 	}
 
+	/**
+	 * @param {number} value
+	 * @return {string}
+	 */
 	getLabelForValue(value) {
 		return new Intl.NumberFormat(this.options.locale).format(value);
+	}
+
+	/**
+	 * @param {number} value
+	 * @return {number}
+	 */
+	getDecimalForValue(value) {
+		return (value - this._startValue) / this._valueRange;
+	}
+
+	/**
+	 * @param {number} decimal
+	 * @return {number}
+	 */
+	getValueForDecimal(decimal) {
+		return this._startValue + decimal * this._valueRange;
 	}
 }

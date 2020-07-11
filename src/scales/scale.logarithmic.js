@@ -164,20 +164,39 @@ export default class LogarithmicScale extends Scale {
 		me._valueRange = log10(me.max) - log10(start);
 	}
 
+	/**
+	 * @param {number} value
+	 * @return {number}
+	 */
 	getPixelForValue(value) {
-		const me = this;
 		if (value === undefined || value === 0) {
-			value = me.min;
+			value = this.min;
 		}
-		return me.getPixelForDecimal(value === me.min
-			? 0
-			: (log10(value) - me._startValue) / me._valueRange);
+		return this.getPixelForDecimal(this.getDecimalForValue(value));
 	}
 
+	/**
+	 * @param {number} pixel
+	 * @return {number}
+	 */
 	getValueForPixel(pixel) {
-		const me = this;
-		const decimal = me.getDecimalForPixel(pixel);
-		return Math.pow(10, me._startValue + decimal * me._valueRange);
+		return this.getValueForDecimal(this.getDecimalForPixel(pixel));
+	}
+
+	/**
+	 * @param {number} value
+	 * @return {number}
+	 */
+	getDecimalForValue(value) {
+		return value === this.min ? 0 : (log10(value) - this._startValue) / this._valueRange;
+	}
+
+	/**
+	 * @param {number} decimal
+	 * @return {number}
+	 */
+	getValueForDecimal(decimal) {
+		return Math.pow(10, this._startValue + decimal * this._valueRange);
 	}
 }
 
