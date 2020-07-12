@@ -129,7 +129,7 @@ var chart = new Chart(ctx, {
         tooltips: {
             callbacks: {
                 label: function(context) {
-                    var label = context.chart.data.datasets[context.datasetIndex].label || '';
+                    var label = context.dataset.label || '';
 
                     if (label) {
                         label += ': ';
