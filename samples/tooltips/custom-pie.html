@@ -43,8 +43,9 @@
 	</div>
 
 	<script>
-		Chart.defaults.plugins.tooltip.custom = function(tooltip) {
+		Chart.defaults.plugins.tooltip.custom = function(context) {
 			// Tooltip Element
+			var tooltip = context.tooltip;
 			var tooltipEl = document.getElementById('chartjs-tooltip');
 
 			// Hide if no tooltip
@@ -91,14 +92,15 @@
 				tableRoot.innerHTML = innerHtml;
 			}
 
-			var positionY = this._chart.canvas.offsetTop;
-			var positionX = this._chart.canvas.offsetLeft;
+			var chart = context.chart;
+			var positionY = chart.canvas.offsetTop;
+			var positionX = chart.canvas.offsetLeft;
 
 			// Display, position, and set styles for font
 			tooltipEl.style.opacity = 1;
 			tooltipEl.style.left = positionX + tooltip.caretX + 'px';
 			tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-			tooltipEl.style.font = tooltip.bodyFont.string;
+			tooltipEl.style.font = tooltip.options.bodyFont.string;
 			tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
 		};
 
