@@ -18,15 +18,16 @@ describe('Plugin.Tooltip', function() {
 			var tooltipItem = {
 				index: 1,
 				datasetIndex: 0,
+				dataset: data.datasets[0],
 				label: 'Point 2',
 				value: '20'
 			};
 
-			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem, data);
+			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
 			expect(label).toBe('20');
 
 			data.datasets[0].label = 'My dataset';
-			label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem, data);
+			label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
 			expect(label).toBe('My dataset: 20');
 		});
 	});
@@ -835,7 +836,7 @@ describe('Plugin.Tooltip', function() {
 
 				var tooltipItem = tooltip.dataPoints[0];
 
-				expect(tooltipItem.index).toBe(pointIndex);
+				expect(tooltipItem.dataIndex).toBe(pointIndex);
 				expect(tooltipItem.datasetIndex).toBe(datasetIndex);
 				expect(typeof tooltipItem.label).toBe('string');
 				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);

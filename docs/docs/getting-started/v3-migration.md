@@ -190,6 +190,8 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * The `filter` option will now be passed additional parameters when called and should have the method signature `function(tooltipItem, index, tooltipItems, data)`
 * The `custom` callback now takes a context object that has `tooltip` and `chart` properties
 * All properties of tooltip model related to the tooltip options have been moved to reside within the `options` property.
+* The callbacks no longer are given a `data` parameter. The tooltip item parameter contains the chart and dataset instead
+* The tooltip item's `index` parameter was renamed to `dataIndex`
 
 ## Developer migration
 
@@ -339,7 +341,7 @@ The following properties and methods were removed:
 * Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument in addition to implicitly via `this`
 * Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
-* The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `index` to get the element and any corresponding data from it
+* The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `dataIndex` to get the element and any corresponding data from it
 
 #### Removal of private APIs
 

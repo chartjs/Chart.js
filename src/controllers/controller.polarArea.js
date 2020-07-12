@@ -218,8 +218,8 @@ PolarAreaController.defaults = {
 			title() {
 				return '';
 			},
-			label(item, data) {
-				return data.labels[item.index] + ': ' + item.value;
+			label(context) {
+				return context.chart.data.labels[context.dataIndex] + ': ' + context.value;
 			}
 		}
 	}
