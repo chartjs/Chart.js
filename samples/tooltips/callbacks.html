@@ -63,11 +63,11 @@
 					mode: 'index',
 					callbacks: {
 						// Use the footer callback to display the sum of the items showing in the tooltip
-						footer: function(tooltipItems, data) {
+						footer: function(tooltipItems) {
 							var sum = 0;
 
 							tooltipItems.forEach(function(tooltipItem) {
-								sum += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+								sum += tooltipItem.dataset.data[tooltipItem.dataIndex];
 							});
 							return 'Sum: ' + sum;
 						},

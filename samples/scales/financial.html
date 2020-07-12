@@ -186,12 +186,12 @@
 					intersect: false,
 					mode: 'index',
 					callbacks: {
-						label: function(tooltipItem, myData) {
-							let label = myData.datasets[tooltipItem.datasetIndex].label || '';
+						label: function(context) {
+							let label = context.dataset.label || '';
 							if (label) {
 								label += ': ';
 							}
-							label += parseFloat(tooltipItem.value).toFixed(2);
+							label += parseFloat(context.value).toFixed(2);
 							return label;
 						}
 					}

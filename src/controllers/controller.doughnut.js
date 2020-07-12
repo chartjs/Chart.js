@@ -325,9 +325,9 @@ DoughnutController.defaults = {
 			title() {
 				return '';
 			},
-			label(tooltipItem, data) {
-				let dataLabel = data.labels[tooltipItem.index];
-				const value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+			label(tooltipItem) {
+				let dataLabel = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
+				const value = ': ' + tooltipItem.dataset.data[tooltipItem.dataIndex];
 
 				if (isArray(dataLabel)) {
 					// show value on first line of multiline label

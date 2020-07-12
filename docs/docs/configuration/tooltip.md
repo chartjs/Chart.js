@@ -99,7 +99,7 @@ Allows filtering of [tooltip items](#tooltip-item-interface). Must implement at 
 
 The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
 
-All functions are called with the same arguments: a [tooltip item](#tooltip-item-interface) and the `data` object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
+All functions are called with the same arguments: a [tooltip item context](#tooltip-item-interface). All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
@@ -128,14 +128,14 @@ var chart = new Chart(ctx, {
     options: {
         tooltips: {
             callbacks: {
-                label: function(tooltipItem, data) {
-                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                label: function(context) {
+                    var label = context.dataset.label || '';
 
                     if (label) {
                         label += ': ';
                     }
-                    if (!helpers.isNullOrUndef(tooltipItem.value)) {
-                        label += '$' + tooltipItem.value;
+                    if (!helpers.isNullOrUndef(context.value)) {
+                        label += '$' + context.value;
                     }
                     return label;
                 }
@@ -156,13 +156,13 @@ var chart = new Chart(ctx, {
     options: {
         tooltips: {
             callbacks: {
-                labelColor: function(tooltipItem, chart) {
+                labelColor: function(context) {
                     return {
                         borderColor: 'rgb(255, 0, 0)',
                         backgroundColor: 'rgb(255, 0, 0)'
                     };
                 },
-                labelTextColor: function(tooltipItem, chart) {
+                labelTextColor: function(context) {
                     return '#543453';
                 }
             }
@@ -172,23 +172,29 @@ var chart = new Chart(ctx, {
 ```
 
 
-### Tooltip Item Interface
+### Tooltip Item Context
 
 The tooltip items passed to the tooltip callbacks implement the following interface.
 
 ```javascript
 {
+    // The chart the tooltip is being shown on
+    chart: Chart
+
     // Label for the tooltip
     label: string,
 
     // Value for the tooltip
     value: string,
 
+    // The dataset the item comes from
+    dataset: object
+
     // Index of the dataset the item comes from
     datasetIndex: number,
 
     // Index of this data item in the dataset
-    index: number
+    dataIndex: number
 }
 ```
 

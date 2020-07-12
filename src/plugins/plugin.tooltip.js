@@ -117,12 +117,16 @@ function splitNewlines(str) {
  */
 function createTooltipItem(chart, item) {
 	const {datasetIndex, index} = item;
-	const {label, value} = chart.getDatasetMeta(datasetIndex).controller.getLabelAndValue(index);
+	const controller = chart.getDatasetMeta(datasetIndex).controller;
+	const dataset = controller.getDataset();
+	const {label, value} = controller.getLabelAndValue(index);
 
 	return {
+		chart,
 		label,
 		value,
-		index,
+		dataset,
+		dataIndex: index,
 		datasetIndex
 	};
 }
@@ -405,16 +409,14 @@ export class Tooltip extends Element {
 		return animations;
 	}
 
-	// Get the title
-	// Args are: (tooltipItem, data)
-	getTitle(tooltipitem, data) {
+	getTitle(context) {
 		const me = this;
 		const opts = me.options;
 		const callbacks = opts.callbacks;
 
-		const beforeTitle = callbacks.beforeTitle.apply(me, [tooltipitem, data]);
-		const title = callbacks.title.apply(me, [tooltipitem, data]);
-		const afterTitle = callbacks.afterTitle.apply(me, [tooltipitem, data]);
+		const beforeTitle = callbacks.beforeTitle.apply(me, [context]);
+		const title = callbacks.title.apply(me, [context]);
+		const afterTitle = callbacks.afterTitle.apply(me, [context]);
 
 		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeTitle));
@@ -424,26 +426,24 @@ export class Tooltip extends Element {
 		return lines;
 	}
 
-	// Args are: (tooltipItem, data)
-	getBeforeBody(tooltipitem, data) {
-		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, [tooltipitem, data]));
+	getBeforeBody(tooltipItems) {
+		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, [tooltipItems]));
 	}
 
-	// Args are: (tooltipItem, data)
-	getBody(tooltipItems, data) {
+	getBody(tooltipItems) {
 		const me = this;
 		const callbacks = me.options.callbacks;
 		const bodyItems = [];
 
-		each(tooltipItems, (tooltipItem) => {
+		each(tooltipItems, (context) => {
 			const bodyItem = {
 				before: [],
 				lines: [],
 				after: []
 			};
-			pushOrConcat(bodyItem.before, splitNewlines(callbacks.beforeLabel.call(me, tooltipItem, data)));
-			pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data));
-			pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, tooltipItem, data)));
+			pushOrConcat(bodyItem.before, splitNewlines(callbacks.beforeLabel.call(me, context)));
+			pushOrConcat(bodyItem.lines, callbacks.label.call(me, context));
+			pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, context)));
 
 			bodyItems.push(bodyItem);
 		});
@@ -451,20 +451,18 @@ export class Tooltip extends Element {
 		return bodyItems;
 	}
 
-	// Args are: (tooltipItem, data)
-	getAfterBody(tooltipitem, data) {
-		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, [tooltipitem, data]));
+	getAfterBody(tooltipItems) {
+		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, [tooltipItems]));
 	}
 
 	// Get the footer and beforeFooter and afterFooter lines
-	// Args are: (tooltipItem, data)
-	getFooter(tooltipitem, data) {
+	getFooter(tooltipItems) {
 		const me = this;
 		const callbacks = me.options.callbacks;
 
-		const beforeFooter = callbacks.beforeFooter.apply(me, [tooltipitem, data]);
-		const footer = callbacks.footer.apply(me, [tooltipitem, data]);
-		const afterFooter = callbacks.afterFooter.apply(me, [tooltipitem, data]);
+		const beforeFooter = callbacks.beforeFooter.apply(me, [tooltipItems]);
+		const footer = callbacks.footer.apply(me, [tooltipItems]);
+		const afterFooter = callbacks.afterFooter.apply(me, [tooltipItems]);
 
 		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeFooter));
@@ -502,9 +500,9 @@ export class Tooltip extends Element {
 		}
 
 		// Determine colors for boxes
-		each(tooltipItems, (tooltipItem) => {
-			labelColors.push(options.callbacks.labelColor.call(me, tooltipItem, me._chart));
-			labelTextColors.push(options.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
+		each(tooltipItems, (context) => {
+			labelColors.push(options.callbacks.labelColor.call(me, context));
+			labelTextColors.push(options.callbacks.labelTextColor.call(me, context));
 		});
 
 		me.labelColors = labelColors;
@@ -526,15 +524,14 @@ export class Tooltip extends Element {
 				};
 			}
 		} else {
-			const data = me._chart.data;
 			const position = positioners[options.position].call(me, active, me._eventPosition);
 			const tooltipItems = me._createItems();
 
-			me.title = me.getTitle(tooltipItems, data);
-			me.beforeBody = me.getBeforeBody(tooltipItems, data);
-			me.body = me.getBody(tooltipItems, data);
-			me.afterBody = me.getAfterBody(tooltipItems, data);
-			me.footer = me.getFooter(tooltipItems, data);
+			me.title = me.getTitle(tooltipItems);
+			me.beforeBody = me.getBeforeBody(tooltipItems);
+			me.body = me.getBody(tooltipItems);
+			me.afterBody = me.getAfterBody(tooltipItems);
+			me.footer = me.getFooter(tooltipItems);
 
 			const size = me._size = getTooltipSize(me);
 			const positionAndSize = Object.assign({}, position, size);
@@ -1061,21 +1058,19 @@ export default {
 		callbacks: {
 			// Args are: (tooltipItems, data)
 			beforeTitle: noop,
-			title(tooltipItems, data) {
-				let title = '';
-				const labels = data.labels;
-				const labelCount = labels ? labels.length : 0;
-
+			title(tooltipItems) {
 				if (tooltipItems.length > 0) {
 					const item = tooltipItems[0];
+					const labels = item.chart.data.labels;
+					const labelCount = labels ? labels.length : 0;
 					if (item.label) {
-						title = item.label;
-					} else if (labelCount > 0 && item.index < labelCount) {
-						title = labels[item.index];
+						return item.label;
+					} else if (labelCount > 0 && item.dataIndex < labelCount) {
+						return labels[item.dataIndex];
 					}
 				}
 
-				return title;
+				return '';
 			},
 			afterTitle: noop,
 
@@ -1084,8 +1079,8 @@ export default {
 
 			// Args are: (tooltipItem, data)
 			beforeLabel: noop,
-			label(tooltipItem, data) {
-				let label = data.datasets[tooltipItem.datasetIndex].label || '';
+			label(tooltipItem) {
+				let label = tooltipItem.dataset.label || '';
 
 				if (label) {
 					label += ': ';
@@ -1096,9 +1091,9 @@ export default {
 				}
 				return label;
 			},
-			labelColor(tooltipItem, chart) {
-				const meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
-				const options = meta.controller.getStyle(tooltipItem.index);
+			labelColor(tooltipItem) {
+				const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
+				const options = meta.controller.getStyle(tooltipItem.dataIndex);
 				return {
 					borderColor: options.borderColor,
 					backgroundColor: options.backgroundColor
