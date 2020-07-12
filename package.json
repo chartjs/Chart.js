@@ -42,6 +42,7 @@
     "@babel/core": "^7.10.2",
     "@babel/plugin-transform-object-assign": "^7.8.3",
     "@babel/preset-env": "^7.10.2",
+    "@kurkle/color": "^0.1.9",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-inject": "^4.0.2",
     "@rollup/plugin-json": "^4.1.0",
@@ -80,7 +81,5 @@
     "typescript": "^3.9.5",
     "yargs": "^15.3.1"
   },
-  "dependencies": {
-    "@kurkle/color": "^0.1.9"
-  }
+  "dependencies": {}
 }
