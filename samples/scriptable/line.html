@@ -40,7 +40,7 @@
 		}
 
 		function adjustRadiusBasedOnData(ctx) {
-			var v = ctx.dataset.data[ctx.dataIndex];
+			var v = ctx.dataPoint.y;
 			return v < 10 ? 5
 				: v < 25 ? 7
 				: v < 50 ? 9

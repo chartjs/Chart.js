@@ -30,7 +30,7 @@ ScatterController.defaults = {
 				return '';     // doesn't make sense for scatter since data are formatted as a point
 			},
 			label(item) {
-				return '(' + item.label + ', ' + item.value + ')';
+				return '(' + item.label + ', ' + item.formattedValue + ')';
 			}
 		}
 	}

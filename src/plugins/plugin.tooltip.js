@@ -124,7 +124,8 @@ function createTooltipItem(chart, item) {
 	return {
 		chart,
 		label,
-		value,
+		dataPoint: controller.getParsed(index),
+		formattedValue: value,
 		dataset,
 		dataIndex: index,
 		datasetIndex
@@ -1085,7 +1086,7 @@ export default {
 				if (label) {
 					label += ': ';
 				}
-				const value = tooltipItem.value;
+				const value = tooltipItem.formattedValue;
 				if (!isNullOrUndef(value)) {
 					label += value;
 				}

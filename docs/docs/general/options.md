@@ -41,6 +41,7 @@ The option context is used to give contextual information when resolving options
 The context object contains the following properties:
 
 - `chart`: the associated chart
+- `dataPoint`: the parsed data values for the given `dataIndex` and `datasetIndex`
 - `dataIndex`: index of the current data
 - `dataset`: dataset at index `datasetIndex`
 - `datasetIndex`: index of the current dataset

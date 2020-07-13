@@ -123,6 +123,7 @@ export default class PolarAreaController extends DatasetController {
 		// Scriptable options
 		const context = {
 			chart: me.chart,
+			dataPoint: this.getParsed(index),
 			dataIndex: index,
 			dataset,
 			datasetIndex: me.index
@@ -219,7 +220,7 @@ PolarAreaController.defaults = {
 				return '';
 			},
 			label(context) {
-				return context.chart.data.labels[context.dataIndex] + ': ' + context.value;
+				return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
 			}
 		}
 	}

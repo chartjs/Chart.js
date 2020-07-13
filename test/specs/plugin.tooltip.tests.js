@@ -20,7 +20,7 @@ describe('Plugin.Tooltip', function() {
 				datasetIndex: 0,
 				dataset: data.datasets[0],
 				label: 'Point 2',
-				value: '20'
+				formattedValue: '20'
 			};
 
 			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
@@ -840,8 +840,8 @@ describe('Plugin.Tooltip', function() {
 				expect(tooltipItem.datasetIndex).toBe(datasetIndex);
 				expect(typeof tooltipItem.label).toBe('string');
 				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
-				expect(typeof tooltipItem.value).toBe('string');
-				expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+				expect(typeof tooltipItem.formattedValue).toBe('string');
+				expect(tooltipItem.formattedValue).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
 
 				done();
 			});
