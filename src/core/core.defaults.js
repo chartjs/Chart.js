@@ -58,7 +58,7 @@ export class Defaults {
 		this.tooltips = undefined;
 		this.doughnut = undefined;
 		this._routes = {};
-		this.scales = undefined;
+		this.scales = {};
 		this.controllers = undefined;
 	}
 	/**
