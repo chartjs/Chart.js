@@ -194,7 +194,10 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     datasetIndex: number,
 
     // Index of this data item in the dataset
-    dataIndex: number
+    dataIndex: number,
+
+    // The parsed data
+    data: object[]
 }
 ```
 

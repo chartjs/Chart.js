@@ -127,7 +127,8 @@ function createTooltipItem(chart, item) {
 		value,
 		dataset,
 		dataIndex: index,
-		datasetIndex
+		datasetIndex,
+		data: controller.getData()
 	};
 }
 

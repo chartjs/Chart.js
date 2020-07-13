@@ -217,7 +217,14 @@ export default class DatasetController {
 	}
 
 	getMeta() {
-		return this.chart.getDatasetMeta(this.index);
+		return this._cachedMeta || this.chart.getDatasetMeta(this.index);
+	}
+
+	/**
+	 * Returns the parsed data used by this controller
+	 */
+	getData() {
+		return this._cachedMeta._parsed;
 	}
 
 	/**
@@ -684,6 +691,7 @@ export default class DatasetController {
 			dataIndex: index,
 			dataset: this.getDataset(),
 			datasetIndex: this.index,
+			data: this.getData(),
 			active
 		};
 	}
