@@ -20,7 +20,8 @@ ScatterController.defaults = {
 	},
 
 	datasets: {
-		showLine: false
+		showLine: false,
+		fill: false
 	},
 
 	tooltips: {

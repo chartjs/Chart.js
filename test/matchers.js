@@ -20,9 +20,10 @@ function canvasFromImageData(data) {
 	return canvas;
 }
 
-function buildPixelMatchPreview(actual, expected, diff, threshold, tolerance, count) {
+function buildPixelMatchPreview(actual, expected, diff, threshold, tolerance, count, description) {
 	var ratio = count / (actual.width * actual.height);
 	var wrapper = document.createElement('div');
+	wrapper.appendChild(document.createTextNode(description));
 
 	wrapper.style.cssText = 'display: flex; overflow-y: auto';
 
@@ -195,7 +196,7 @@ function toEqualImageData() {
 				ratio = count / (w * h);
 
 				if ((ratio > tolerance) || debug) {
-					message = buildPixelMatchPreview(idata, expected, ddata, threshold, tolerance, count);
+					message = buildPixelMatchPreview(idata, expected, ddata, threshold, tolerance, count, opts.description);
 				}
 			} else {
 				message = 'Input value is not a valid image source.';

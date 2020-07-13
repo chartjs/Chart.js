@@ -131,17 +131,13 @@ describe('Chart.controllers.radar', function() {
 		}));
 
 		[
-			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
-			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
-			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
-			{x: 256, y: 260, cppx: 256, cppy: 260, cpnx: 256, cpny: 260},
+			{x: 256, y: 260},
+			{x: 256, y: 260},
+			{x: 256, y: 260},
+			{x: 256, y: 260},
 		].forEach(function(expected, i) {
 			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i].controlPointPreviousX).toBeCloseToPixel(expected.cppx);
-			expect(meta.data[i].controlPointPreviousY).toBeCloseToPixel(expected.cppy);
-			expect(meta.data[i].controlPointNextX).toBeCloseToPixel(expected.cpnx);
-			expect(meta.data[i].controlPointNextY).toBeCloseToPixel(expected.cpny);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: Chart.defaults.color,
 				borderWidth: 1,

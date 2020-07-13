@@ -42,9 +42,10 @@ function specFromFixture(description, inputs) {
 	var input = inputs.js || inputs.json;
 	it(input, function(done) {
 		loadConfig(input, function(json) {
+			var descr = json.description || (json.description = description);
 			var chart = utils.acquireChart(json.config, json.options);
 			if (!inputs.png) {
-				fail('Missing PNG comparison file for ' + input);
+				fail(descr + '\r\nMissing PNG comparison file for ' + input);
 				done();
 			}
 

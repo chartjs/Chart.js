@@ -192,7 +192,6 @@ export default class Line extends Element {
 		this.options = undefined;
 		this._loop = undefined;
 		this._fullLoop = undefined;
-		this._controlPointsUpdated = undefined;
 		this._points = undefined;
 		this._segments = undefined;
 
@@ -203,9 +202,6 @@ export default class Line extends Element {
 
 	updateControlPoints(chartArea) {
 		const me = this;
-		if (me._controlPointsUpdated) {
-			return;
-		}
 		const options = me.options;
 		if (options.tension && !options.stepped) {
 			const loop = options.spanGaps ? me._loop : me._fullLoop;
@@ -323,19 +319,20 @@ export default class Line extends Element {
 	 * @param {CanvasRenderingContext2D} ctx
 	 */
 	draw(ctx) {
-		const me = this;
+		const options = this.options || {};
+		const points = this.points || [];
 
-		if (!me.points.length) {
+		if (!points.length || !options.borderWidth) {
 			return;
 		}
 
 		ctx.save();
 
-		setStyle(ctx, me.options);
+		setStyle(ctx, options);
 
 		ctx.beginPath();
 
-		if (me.path(ctx)) {
+		if (this.path(ctx)) {
 			ctx.closePath();
 		}
 
