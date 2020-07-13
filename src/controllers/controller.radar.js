@@ -23,19 +23,21 @@ export default class RadarController extends DatasetController {
 		const line = meta.dataset;
 		const points = meta.data || [];
 		const labels = meta.iScale.getLabels();
-		const properties = {
-			points,
-			_loop: true,
-			_fullLoop: labels.length === points.length,
-			options: me.resolveDatasetElementOptions()
-		};
 
-		me.updateElement(line, undefined, properties, mode);
+		// Update Line
+		if (mode !== 'resize') {
+			const properties = {
+				points,
+				_loop: true,
+				_fullLoop: labels.length === points.length,
+				options: me.resolveDatasetElementOptions()
+			};
+
+			me.updateElement(line, undefined, properties, mode);
+		}
 
 		// Update Points
 		me.updateElements(points, 0, mode);
-
-		line.updateControlPoints(me.chart.chartArea);
 	}
 
 	updateElements(points, start, mode) {
@@ -75,9 +77,14 @@ export default class RadarController extends DatasetController {
 		const config = me._config;
 		const options = me.chart.options;
 		const values = super.resolveDatasetElementOptions(active);
+		const showLine = valueOrDefault(config.showLine, options.showLines);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
+
+		if (!showLine) {
+			values.borderWidth = 0;
+		}
 
 		return values;
 	}
