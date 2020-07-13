@@ -25,6 +25,7 @@ export default class RadarController extends DatasetController {
 		const labels = meta.iScale.getLabels();
 
 		// Update Line
+		// In resize mode only point locations change, so no need to set the points or options.
 		if (mode !== 'resize') {
 			const properties = {
 				points,

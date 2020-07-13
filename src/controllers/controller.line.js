@@ -12,6 +12,7 @@ export default class LineController extends DatasetController {
 		const points = meta.data || [];
 
 		// Update Line
+		// In resize mode only point locations change, so no need to set the points or options.
 		if (mode !== 'resize') {
 			const properties = {
 				points,
