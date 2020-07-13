@@ -1,5 +1,4 @@
 import defaults from './core.defaults';
-import {valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @typedef {{id: string, defaults: any, defaultRoutes: any}} IChartComponent
@@ -13,15 +12,14 @@ export default class TypedRegistry {
 	}
 
 	isForType(type) {
-		return Object.prototype.isPrototypeOf.call(this.type, type);
+		return Object.prototype.isPrototypeOf.call(this.type.prototype, type.prototype);
 	}
 
 	/**
 	 * @param {IChartComponent} item
-	 * @param {string} [scopeOverride]
 	 * @returns {string} The scope where items defaults were registered to.
 	 */
-	register(item, scopeOverride) {
+	register(item) {
 		const proto = Object.getPrototypeOf(item);
 		let parentScope;
 
@@ -32,11 +30,11 @@ export default class TypedRegistry {
 
 		const items = this.items;
 		const id = item.id;
-		const baseScope = valueOrDefault(scopeOverride, this.scope);
+		const baseScope = this.scope;
 		const scope = baseScope ? baseScope + '.' + id : id;
 
 		if (!id) {
-			throw new Error('class does not have id: ' + Object.getPrototypeOf(item));
+			throw new Error('class does not have id: ' + item);
 		}
 
 		if (id in items) {
@@ -64,13 +62,14 @@ export default class TypedRegistry {
 	unregister(item) {
 		const items = this.items;
 		const id = item.id;
+		const scope = this.scope;
 
 		if (id in items) {
 			delete items[id];
 		}
 
-		if (id in defaults[this.scope]) {
-			delete defaults[this.scope][id];
+		if (scope && id in defaults[scope]) {
+			delete defaults[scope][id];
 		} else if (id in defaults) {
 			delete defaults[id];
 		}

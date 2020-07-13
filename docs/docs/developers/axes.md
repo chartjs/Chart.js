@@ -17,6 +17,8 @@ function MyScale() {
   Chart.Scale.call(this, arguments);
   // constructor stuff
 }
+MyScale.prototype = Object.create(Chart.Scale.prototype);
+MyScale.prototype.constructor = MyScale;
 
 MyScale.prototype.draw = function(ctx) {
   Chart.Scale.prototype.draw.call(this, arguments);
