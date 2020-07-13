@@ -620,18 +620,30 @@ export default class DatasetController {
 	update(mode) {} // eslint-disable-line no-unused-vars
 
 	draw() {
-		const ctx = this._ctx;
-		const meta = this._cachedMeta;
+		const me = this;
+		const ctx = me._ctx;
+		const chart = me.chart;
+		const meta = me._cachedMeta;
 		const elements = meta.data || [];
-		const ilen = elements.length;
-		let i = 0;
+		const area = chart.chartArea;
+		const active = [];
+		let i, ilen;
 
 		if (meta.dataset) {
-			meta.dataset.draw(ctx);
+			meta.dataset.draw(ctx, area);
 		}
 
-		for (; i < ilen; ++i) {
-			elements[i].draw(ctx);
+		for (i = 0, ilen = elements.length; i < ilen; ++i) {
+			const element = elements[i];
+			if (element.active) {
+				active.push(element);
+			} else {
+				element.draw(ctx, area);
+			}
+		}
+
+		for (i = 0, ilen = active.length; i < ilen; ++i) {
+			active[i].draw(ctx, area);
 		}
 	}
 
