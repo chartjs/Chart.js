@@ -624,7 +624,7 @@ export default class DatasetController {
 		const ctx = me._ctx;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
-		const elements = meta.data;
+		const elements = meta.data || [];
 		const area = chart.chartArea;
 		const active = [];
 		let i, ilen;
