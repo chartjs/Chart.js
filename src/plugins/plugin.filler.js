@@ -4,18 +4,11 @@
  * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
  */
 
-import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
-
-defaults.set('plugins', {
-	filler: {
-		propagate: true
-	}
-});
 
 function getLineByIndex(chart, index) {
 	const meta = chart.getDatasetMeta(index);
@@ -458,12 +451,16 @@ export default {
 		const {line, target, scale} = meta;
 		const lineOpts = line.options;
 		const fillOption = lineOpts.fill;
-		const color = lineOpts.backgroundColor || defaults.color;
+		const color = lineOpts.backgroundColor;
 		const {above = color, below = color} = fillOption || {};
 		if (target && line.points.length) {
 			clipArea(ctx, area);
 			doFill(ctx, {line, target, above, below, area, scale});
 			unclipArea(ctx);
 		}
+	},
+
+	defaults: {
+		propagate: true
 	}
 };

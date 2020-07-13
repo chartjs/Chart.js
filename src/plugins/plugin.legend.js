@@ -2,86 +2,13 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, mergeIf, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
+import {callback as call, merge, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
-
-defaults.set('legend', {
-	display: true,
-	position: 'top',
-	align: 'center',
-	fullWidth: true,
-	reverse: false,
-	weight: 1000,
-
-	// a callback that will handle
-	onClick(e, legendItem, legend) {
-		const index = legendItem.datasetIndex;
-		const ci = legend.chart;
-		if (ci.isDatasetVisible(index)) {
-			ci.hide(index);
-			legendItem.hidden = true;
-		} else {
-			ci.show(index);
-			legendItem.hidden = false;
-		}
-	},
-
-	onHover: null,
-	onLeave: null,
-
-	labels: {
-		boxWidth: 40,
-		padding: 10,
-		// Generates labels shown in the legend
-		// Valid properties to return:
-		// text : text to display
-		// fillStyle : fill of coloured box
-		// strokeStyle: stroke of coloured box
-		// hidden : if this legend item refers to a hidden item
-		// lineCap : cap style for line
-		// lineDash
-		// lineDashOffset :
-		// lineJoin :
-		// lineWidth :
-		generateLabels(chart) {
-			const datasets = chart.data.datasets;
-			const options = chart.options.legend || {};
-			const usePointStyle = options.labels && options.labels.usePointStyle;
-
-			return chart._getSortedDatasetMetas().map((meta) => {
-				const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-
-				return {
-					text: datasets[meta.index].label,
-					fillStyle: style.backgroundColor,
-					hidden: !meta.visible,
-					lineCap: style.borderCapStyle,
-					lineDash: style.borderDash,
-					lineDashOffset: style.borderDashOffset,
-					lineJoin: style.borderJoinStyle,
-					lineWidth: style.borderWidth,
-					strokeStyle: style.borderColor,
-					pointStyle: style.pointStyle,
-					rotation: style.rotation,
-
-					// Below is extra data used for toggling the datasets
-					datasetIndex: meta.index
-				};
-			}, this);
-		}
-	},
-
-	title: {
-		display: false,
-		position: 'center',
-		text: '',
-	}
-});
 
 /**
  * Helper function to get the box width based on the usePointStyle option
@@ -696,6 +623,10 @@ export class Legend extends Element {
 	}
 }
 
+function resolveOptions(options) {
+	return options !== false && merge({}, [defaults.plugins.legend, options]);
+}
+
 function createNewLegendAndAttach(chart, legendOpts) {
 	const legend = new Legend({
 		ctx: chart.ctx,
@@ -721,7 +652,7 @@ export default {
 	_element: Legend,
 
 	beforeInit(chart) {
-		const legendOpts = chart.options.legend;
+		const legendOpts = resolveOptions(chart.options.legend);
 
 		if (legendOpts) {
 			createNewLegendAndAttach(chart, legendOpts);
@@ -732,12 +663,10 @@ export default {
 	// This ensures that if the legend position changes (via an option update)
 	// the layout system respects the change. See https://github.com/chartjs/Chart.js/issues/7527
 	beforeUpdate(chart) {
-		const legendOpts = chart.options.legend;
+		const legendOpts = resolveOptions(chart.options.legend);
 		const legend = chart.legend;
 
 		if (legendOpts) {
-			mergeIf(legendOpts, defaults.legend);
-
 			if (legend) {
 				layouts.configure(chart, legend, legendOpts);
 				legend.options = legendOpts;
@@ -763,6 +692,79 @@ export default {
 		const legend = chart.legend;
 		if (legend) {
 			legend.handleEvent(e);
+		}
+	},
+
+	defaults: {
+		display: true,
+		position: 'top',
+		align: 'center',
+		fullWidth: true,
+		reverse: false,
+		weight: 1000,
+
+		// a callback that will handle
+		onClick(e, legendItem, legend) {
+			const index = legendItem.datasetIndex;
+			const ci = legend.chart;
+			if (ci.isDatasetVisible(index)) {
+				ci.hide(index);
+				legendItem.hidden = true;
+			} else {
+				ci.show(index);
+				legendItem.hidden = false;
+			}
+		},
+
+		onHover: null,
+		onLeave: null,
+
+		labels: {
+			boxWidth: 40,
+			padding: 10,
+			// Generates labels shown in the legend
+			// Valid properties to return:
+			// text : text to display
+			// fillStyle : fill of coloured box
+			// strokeStyle: stroke of coloured box
+			// hidden : if this legend item refers to a hidden item
+			// lineCap : cap style for line
+			// lineDash
+			// lineDashOffset :
+			// lineJoin :
+			// lineWidth :
+			generateLabels(chart) {
+				const datasets = chart.data.datasets;
+				const options = chart.options.legend || {};
+				const usePointStyle = options.labels && options.labels.usePointStyle;
+
+				return chart._getSortedDatasetMetas().map((meta) => {
+					const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+
+					return {
+						text: datasets[meta.index].label,
+						fillStyle: style.backgroundColor,
+						hidden: !meta.visible,
+						lineCap: style.borderCapStyle,
+						lineDash: style.borderDash,
+						lineDashOffset: style.borderDashOffset,
+						lineJoin: style.borderJoinStyle,
+						lineWidth: style.borderWidth,
+						strokeStyle: style.borderColor,
+						pointStyle: style.pointStyle,
+						rotation: style.rotation,
+
+						// Below is extra data used for toggling the datasets
+						datasetIndex: meta.index
+					};
+				}, this);
+			}
+		},
+
+		title: {
+			display: false,
+			position: 'center',
+			text: '',
 		}
 	}
 };

@@ -15,7 +15,6 @@ export class Title extends Element {
 		this.ctx = config.ctx;
 		this._margins = undefined;
 		this._padding = undefined;
-		this.legendHitBoxes = []; // Contains hit boxes for each dataset (in dataset order)
 		this.top = undefined;
 		this.bottom = undefined;
 		this.left = undefined;
