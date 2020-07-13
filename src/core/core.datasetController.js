@@ -624,17 +624,17 @@ export default class DatasetController {
 		const ctx = me._ctx;
 		const chart = me.chart;
 		const meta = me._cachedMeta;
-		const elements = meta.data || [];
+		const elements = meta.data;
 		const area = chart.chartArea;
 		const active = [];
-		let i, ilen, element;
+		let i, ilen;
 
 		if (meta.dataset) {
 			meta.dataset.draw(ctx, area);
 		}
 
 		for (i = 0, ilen = elements.length; i < ilen; ++i) {
-			element = elements[i];
+			const element = elements[i];
 			if (element.active) {
 				active.push(element);
 			} else {
