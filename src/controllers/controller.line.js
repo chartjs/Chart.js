@@ -35,12 +35,13 @@ export default class LineController extends DatasetController {
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
+		const data = me.getParsed();
 		let prevParsed;
 
 		for (let i = 0; i < points.length; ++i) {
 			const index = start + i;
 			const point = points[i];
-			const parsed = me.getParsed(index);
+			const parsed = data[index];
 			const x = xScale.getPixelForValue(parsed.x, index);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, index);
 			const properties = {

@@ -45,7 +45,7 @@ export default class BubbleController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {xScale, yScale} = meta;
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 		const x = xScale.getLabelForValue(parsed.x);
 		const y = yScale.getLabelForValue(parsed.y);
 		const r = parsed._custom;
@@ -71,11 +71,12 @@ export default class BubbleController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
+		const data = me.getParsed();
 
 		for (let i = 0; i < points.length; i++) {
 			const point = points[i];
 			const index = start + i;
-			const parsed = !reset && me.getParsed(index);
+			const parsed = !reset && data[index];
 			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
 			const properties = {
@@ -107,7 +108,7 @@ export default class BubbleController extends DatasetController {
 		const me = this;
 		const chart = me.chart;
 		const dataset = me.getDataset();
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 		let values = super.resolveDataElementOptions(index, mode);
 
 		// Scriptable options

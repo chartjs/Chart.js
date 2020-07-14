@@ -282,43 +282,44 @@ describe('Chart.DatasetController', function() {
 
 		var meta = chart.getDatasetMeta(0);
 		var controller = meta.controller;
+		var parsed = controller.getParsed();
 		var first, last;
 
-		first = controller.getParsed(0);
-		last = controller.getParsed(5);
+		first = parsed[0];
+		last = parsed[5];
 		data.push({x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8});
 		data.push({x: 9, y: 9});
 		expect(meta.data.length).toBe(10);
-		expect(controller.getParsed(0)).toBe(first);
-		expect(controller.getParsed(5)).toBe(last);
+		expect(parsed[0]).toBe(first);
+		expect(parsed[5]).toBe(last);
 
-		last = controller.getParsed(9);
+		last = parsed[9];
 		data.pop();
 		expect(meta.data.length).toBe(9);
-		expect(controller.getParsed(0)).toBe(first);
-		expect(controller.getParsed(9)).toBe(undefined);
-		expect(controller.getParsed(8)).toEqual({x: 8, y: 8});
+		expect(parsed[0]).toBe(first);
+		expect(parsed[9]).toBe(undefined);
+		expect(parsed[8]).toEqual({x: 8, y: 8});
 
-		last = controller.getParsed(8);
+		last = parsed[8];
 		data.shift();
 		data.shift();
 		data.shift();
 		expect(meta.data.length).toBe(6);
-		expect(controller.getParsed(5)).toBe(last);
+		expect(parsed[5]).toBe(last);
 
-		first = controller.getParsed(0);
-		last = controller.getParsed(5);
+		first = parsed[0];
+		last = parsed[5];
 		data.splice(1, 4, {x: 10, y: 10}, {x: 11, y: 11});
 		expect(meta.data.length).toBe(4);
-		expect(controller.getParsed(0)).toBe(first);
-		expect(controller.getParsed(3)).toBe(last);
-		expect(controller.getParsed(1)).toEqual({x: 10, y: 10});
+		expect(parsed[0]).toBe(first);
+		expect(parsed[3]).toBe(last);
+		expect(parsed[1]).toEqual({x: 10, y: 10});
 
 		data.unshift({x: 12, y: 12}, {x: 13, y: 13}, {x: 14, y: 14}, {x: 15, y: 15});
 		data.unshift({x: 16, y: 16}, {x: 17, y: 17});
 		expect(meta.data.length).toBe(10);
-		expect(controller.getParsed(6)).toBe(first);
-		expect(controller.getParsed(9)).toBe(last);
+		expect(parsed[6]).toBe(first);
+		expect(parsed[9]).toBe(last);
 	});
 
 	it('should re-synchronize metadata when the data object reference changes', function() {

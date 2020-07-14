@@ -205,7 +205,7 @@ export default class BarController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {iScale, vScale} = meta;
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 		const custom = parsed._custom;
 		const value = isFloatBar(custom)
 			? '[' + custom.start + ', ' + custom.end + ']'
@@ -263,7 +263,7 @@ export default class BarController extends DatasetController {
 
 			// all borders are drawn for floating bar
 			/* TODO: float bars border skipping magic
-			if (me.getParsed(i)._custom) {
+			if (me.getParsed()[index]._custom) {
 				model.borderSkipped = null;
 			}
 			*/
@@ -350,12 +350,13 @@ export default class BarController extends DatasetController {
 	_getRuler() {
 		const me = this;
 		const meta = me._cachedMeta;
+		const parsed = me.getParsed();
 		const iScale = meta.iScale;
 		const pixels = [];
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
+			pixels.push(iScale.getPixelForValue(parsed[i][iScale.axis], i));
 		}
 
 		// Note: a potential optimization would be to skip computing this
@@ -383,7 +384,7 @@ export default class BarController extends DatasetController {
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
 		const minBarLength = options.minBarLength;
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 		const custom = parsed._custom;
 		let value = parsed[vScale.axis];
 		let start = 0;
@@ -459,12 +460,13 @@ export default class BarController extends DatasetController {
 		const vScale = meta.vScale;
 		const rects = meta.data;
 		const ilen = rects.length;
+		const parsed = me.getParsed();
 		let i = 0;
 
 		clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(me.getParsed(i)[vScale.axis])) {
+			if (!isNaN(parsed[i][vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

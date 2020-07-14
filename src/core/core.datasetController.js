@@ -483,8 +483,8 @@ export default class DatasetController {
 	/**
 	 * @protected
 	 */
-	getParsed(index) {
-		return this._cachedMeta._parsed[index];
+	getParsed() {
+		return this._cachedMeta._parsed;
 	}
 
 	/**
@@ -594,7 +594,7 @@ export default class DatasetController {
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
 		const vScale = meta.vScale;
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 		return {
 			label: iScale ? '' + iScale.getLabelForValue(parsed[iScale.axis]) : '',
 			value: vScale ? '' + vScale.getLabelForValue(parsed[vScale.axis]) : ''

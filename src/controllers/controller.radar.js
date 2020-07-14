@@ -9,7 +9,7 @@ export default class RadarController extends DatasetController {
 	getLabelAndValue(index) {
 		const me = this;
 		const vScale = me._cachedMeta.vScale;
-		const parsed = me.getParsed(index);
+		const parsed = me.getParsed()[index];
 
 		return {
 			label: vScale.getLabels()[index],
