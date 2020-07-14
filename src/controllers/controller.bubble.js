@@ -113,6 +113,7 @@ export default class BubbleController extends DatasetController {
 		// Scriptable options
 		const context = {
 			chart,
+			dataPoint: parsed,
 			dataIndex: index,
 			dataset,
 			datasetIndex: me.index
