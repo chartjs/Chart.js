@@ -20,7 +20,7 @@ describe('Plugin.Tooltip', function() {
 				datasetIndex: 0,
 				dataset: data.datasets[0],
 				label: 'Point 2',
-				value: '20'
+				formattedValue: '20'
 			};
 
 			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
@@ -470,6 +470,47 @@ describe('Plugin.Tooltip', function() {
 		jasmine.triggerMouseEvent(chart, 'mousemove', point);
 	});
 
+
+	it('Should provide context object to user callbacks', function(done) {
+		const chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [{x: 1, y: 10}, {x: 2, y: 20}, {x: 3, y: 30}]
+				}]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'linear'
+					}
+				},
+				tooltips: {
+					mode: 'index',
+					callbacks: {
+						beforeLabel: function(ctx) {
+							return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		const meta = chart.getDatasetMeta(0);
+		const point = meta.data[1];
+
+		afterEvent(chart, 'mousemove', function() {
+			const tooltip = chart.tooltip;
+
+			expect(tooltip.body[0].before).toEqual(['2,20']);
+
+			done();
+		});
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
+	});
+
 	it('Should allow sorting items', function(done) {
 		var chart = window.acquireChart({
 			type: 'line',
@@ -840,8 +881,8 @@ describe('Plugin.Tooltip', function() {
 				expect(tooltipItem.datasetIndex).toBe(datasetIndex);
 				expect(typeof tooltipItem.label).toBe('string');
 				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
-				expect(typeof tooltipItem.value).toBe('string');
-				expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+				expect(typeof tooltipItem.formattedValue).toBe('string');
+				expect(tooltipItem.formattedValue).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
 
 				done();
 			});

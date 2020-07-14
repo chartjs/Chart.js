@@ -134,8 +134,8 @@ var chart = new Chart(ctx, {
                     if (label) {
                         label += ': ';
                     }
-                    if (!helpers.isNullOrUndef(context.value)) {
-                        label += '$' + context.value;
+                    if (!isNaN(context.dataPoint.y)) {
+                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.dataPoint.y);
                     }
                     return label;
                 }
@@ -184,8 +184,11 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     // Label for the tooltip
     label: string,
 
-    // Value for the tooltip
-    value: string,
+    // Parsed data values for the given `dataIndex` and `datasetIndex`
+    dataPoint: object,
+
+    // Formatted value for the tooltip
+    formattedValue: string,
 
     // The dataset the item comes from
     dataset: object

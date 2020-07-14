@@ -693,6 +693,7 @@ export default class DatasetController {
 	_getContext(index, active) {
 		return {
 			chart: this.chart,
+			dataPoint: this.getParsed(index),
 			dataIndex: index,
 			dataset: this.getDataset(),
 			datasetIndex: this.index,
