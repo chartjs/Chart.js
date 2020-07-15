@@ -102,6 +102,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `defaultFontStyle` was renamed to `font.style`
 * `defaultLineHeight` was renamed to `font.lineHeight`
 * Horizontal Bar default tooltip mode was changed from `'index'` to `'nearest'` to match vertical bar charts
+* `legend`, `title` and `tooltip` namespaces were moved from `Chart.defaults` to `Chart.defaults.plugins`.
 
 #### Scales
 
