@@ -133,7 +133,7 @@ The following options are used to configure the point labels that are shown on t
 | ---- | ---- | ------- | ------- | -----------
 | `display` | `boolean` | | `true` | if true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `font` | `Font` | Yes | `defaults.font` | See [Fonts](fonts.md)
+| `font` | `Font` | Yes | `defaults.font` | See [Fonts](../general/fonts.md)
 
 The scriptable context is the same as for the [Angle Line Options](#angle-line-options).
 
