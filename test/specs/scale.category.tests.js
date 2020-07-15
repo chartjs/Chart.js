@@ -1,11 +1,5 @@
-// Test the category scale
-
 function getLabels(scale) {
 	return scale.ticks.map(t => t.label);
-}
-
-function getValues(scale) {
-	return scale.ticks.map(t => t.value);
 }
 
 describe('Category scale tests', function() {
@@ -19,64 +13,58 @@ describe('Category scale tests', function() {
 
 	it('Should have the correct default config', function() {
 		var defaultConfig = Chart.defaults.scales.category;
-		expect(defaultConfig).toEqual({});
+		expect(defaultConfig).toEqual({
+			ticks: {
+				callback: Chart.registry.getScale('category').prototype.getLabelForValue
+			}
+		});
 	});
 
 
 	it('Should generate ticks from the data xLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			xLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.defaults.scales.category);
-		config.position = 'bottom';
-		var Constructor = Chart.registry.getScale('category');
-		var scale = new Constructor({
-			ctx: {},
-			chart: {
-				data: mockData
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				xLabels: labels,
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
-			id: scaleID
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+					}
+				}
+			}
 		});
 
-		scale.init(config);
-		scale.determineDataLimits();
-		scale.ticks = scale.buildTicks();
-		expect(getValues(scale)).toEqual(mockData.xLabels);
+		var scale = chart.scales.x;
+		expect(getLabels(scale)).toEqual(labels);
 	});
 
 	it('Should generate ticks from the data yLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			yLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.defaults.scales.category);
-		config.position = 'left'; // y axis
-		var Constructor = Chart.registry.getScale('category');
-		var scale = new Constructor({
-			ctx: {},
-			chart: {
-				data: mockData
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				yLabels: labels,
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
-			id: scaleID
+			options: {
+				scales: {
+					y: {
+						type: 'category'
+					}
+				}
+			}
 		});
 
-		scale.init(config);
-		scale.determineDataLimits();
-		scale.ticks = scale.buildTicks();
-		expect(getValues(scale)).toEqual(mockData.yLabels);
+		var scale = chart.scales.y;
+		expect(getLabels(scale)).toEqual(labels);
 	});
 
 	it('Should generate ticks from the axis labels', function() {
@@ -84,7 +72,9 @@ describe('Category scale tests', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
-				data: [10, 5, 0, 25, 78]
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
 			options: {
 				scales: {
