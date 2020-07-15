@@ -17,14 +17,14 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
 | `filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
 | `backgroundColor` | `Color` | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
-| `titleFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](fonts.md).
+| `titleFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](../general/fonts.md).
 | `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
 | `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
 | `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
-| `bodyFont` | `Font` | `{color: '#fff'}` | See [Fonts](fonts.md).
+| `bodyFont` | `Font` | `{color: '#fff'}` | See [Fonts](../general/fonts.md).
 | `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
 | `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
-| `footerFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](fonts.md).
+| `footerFont` | `Font` | `{style: 'bold', color: '#fff'}` | See [Fonts](../general/fonts.md).
 | `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
 | `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
