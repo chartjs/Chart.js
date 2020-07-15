@@ -47,7 +47,6 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 | `font` | `Font` | Yes | `defaults.font` | See [Fonts](../general/fonts.md)
 | `major` | `object` | | `{}` | [Major ticks configuration](#major-tick-configuration).
 | `padding` | `number` | | `0` | Sets the offset of the tick labels from the axis
-| `reverse` | `boolean` | | `false` | Reverses order of tick labels.
 | `z` | `number` | | `0` | z-index of tick layer. Useful when ticks are drawn on chart area. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
 The scriptable context is the same as for the [Grid Line Configuration](#grid-line-configuration).
@@ -59,4 +58,3 @@ The majorTick configuration is nested under the ticks configuration in the `majo
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `false` | If true, major ticks are generated. A major tick will affect autoskipping and `major` will be defined on ticks in the scriptable options context.
-
