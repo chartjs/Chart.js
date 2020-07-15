@@ -37,15 +37,15 @@ let chart = new Chart(ctx, {
 });
 ```
 
-## Tick Configuration Options
+## Configuration Options
 
-The category scale provides the following options for configuring tick marks. They are nested in the `ticks` sub object. These options extend the [common tick configuration](index.md#tick-configuration).
+These options extend the [common configuration for all cartesian axes](index.md#configuration-options).
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
+| Name | Type | Description
+| ---- | ---- | -----------
+| `min` | `string`\|`number` | | The minimum item to display. [more...](#min-max-configuration)
+| `max` | `string`\|`number` | | The maximum item to display. [more...](#min-max-configuration)
 | `labels` | `string[]` | - | An array of labels to display.
-| `min` | <code>string&#124;number</code> | | The minimum item to display. [more...](#min-max-configuration)
-| `max` | <code>string&#124;number</code> | | The maximum item to display. [more...](#min-max-configuration)
 
 ## Min Max Configuration
 

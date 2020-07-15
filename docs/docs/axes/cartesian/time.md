@@ -29,7 +29,7 @@ The following options are provided by the time scale. You may also set options p
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `boolean` | `false` | If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
-| `time.parser` | <code>string&#124;function</code> | | Custom parser for dates. [more...](#parser)
+| `time.parser` | `string`\|`function` | | Custom parser for dates. [more...](#parser)
 | `time.round` | `string` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `time.tooltipFormat` | `string` | | The format string to use for the tooltip.
 | `time.unit` | `string` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
@@ -85,7 +85,7 @@ You may specify a map of display formats with a key for each unit:
 
 The format string used as a value depends on the date adapter you chose to use.
 
-For example, to set the display format for the `quarter` unit to show the month and year, the following config might be passed to the chart constructor.   
+For example, to set the display format for the `quarter` unit to show the month and year, the following config might be passed to the chart constructor.
 
 ```javascript
 var chart = new Chart(ctx, {

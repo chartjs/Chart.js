@@ -18,6 +18,8 @@ All of the included cartesian axes support a number of common options. These opt
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `position` | `string` | | Position of the axis. [more...](#axis-position)
 | `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`. If not set, this is inferred from the first character of the ID which should be `'x'` or `'y'`.
+| `min` | `number` | | User defined minimum value for the scale, overrides minimum value from data.
+| `max` | `number` | | User defined maximum value for the scale, overrides maximum value from data.
 | `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
 | `scaleLabel` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)
@@ -45,8 +47,6 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `min` | `number` | | User defined minimum value for the scale, overrides minimum value from data.
-| `max` | `number` | | User defined maximum value for the scale, overrides maximum value from data.
 | `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
