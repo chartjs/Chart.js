@@ -53,11 +53,7 @@ export class Defaults {
 		this.showLines = true;
 		this.plugins = {};
 		this.scale = undefined;
-		this.legend = undefined;
-		this.title = undefined;
-		this.tooltips = undefined;
 		this.doughnut = undefined;
-		this._routes = {};
 		this.scales = {};
 		this.controllers = undefined;
 	}
