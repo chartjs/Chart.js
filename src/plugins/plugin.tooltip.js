@@ -112,11 +112,11 @@ function splitNewlines(str) {
 
 /**
  * Private helper to create a tooltip item model
- * @param item - the chart element (point, arc, bar) to create the tooltip item for
+ * @param item - {element, index, datasetIndex} to create the tooltip item for
  * @return new tooltip item
  */
 function createTooltipItem(chart, item) {
-	const {datasetIndex, index} = item;
+	const {element, datasetIndex, index} = item;
 	const controller = chart.getDatasetMeta(datasetIndex).controller;
 	const dataset = controller.getDataset();
 	const {label, value} = controller.getLabelAndValue(index);
@@ -128,7 +128,9 @@ function createTooltipItem(chart, item) {
 		formattedValue: value,
 		dataset,
 		dataIndex: index,
-		datasetIndex
+		datasetIndex,
+		x: element.x,
+		y: element.y
 	};
 }
 
@@ -403,7 +405,8 @@ export class Tooltip extends Element {
 		}
 
 		const chart = me._chart;
-		const opts = chart.options.animation && me.options.animation;
+		const options = me.options;
+		const opts = options.enabled && chart.options.animation && options.animation;
 		const animations = new Animations(me._chart, opts);
 		me._cachedAnimations = Object.freeze(animations);
 
