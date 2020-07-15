@@ -23,21 +23,9 @@ import registry from './core/core.registry';
 import Scale from './core/core.scale';
 import * as scales from './scales';
 import Ticks from './core/core.ticks';
-import {each} from './helpers/helpers.core';
-
-// @ts-ignore
-const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
-
-Chart.register = (...items) => {
-	registry.add(...items);
-	invalidatePlugins();
-};
-Chart.unregister = (...items) => {
-	registry.remove(...items);
-	invalidatePlugins();
-};
 
 // Register built-ins
+// @ts-ignore
 Chart.register(controllers, scales, elements, plugins);
 
 Chart.helpers = helpers;

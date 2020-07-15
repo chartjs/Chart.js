@@ -1181,4 +1181,16 @@ Chart.instances = {};
 
 Chart.registry = registry;
 
+// @ts-ignore
+const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
+
+Chart.register = (...items) => {
+	registry.add(...items);
+	invalidatePlugins();
+};
+Chart.unregister = (...items) => {
+	registry.remove(...items);
+	invalidatePlugins();
+};
+
 export default Chart;
