@@ -199,11 +199,8 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     // Index of this data item in the dataset
     dataIndex: number,
 
-    // X position of matching point
-    x: number,
-
-    // Y position of matching point
-    y: number
+    // The chart element (point, arc, bar, etc.) for this tooltip item
+    element: Element,
 }
 ```
 
@@ -277,8 +274,7 @@ var myPieChart = new Chart(ctx, {
                     tableRoot.innerHTML = innerHtml;
                 }
 
-                // `this` will be the overall tooltip
-                var position = this._chart.canvas.getBoundingClientRect();
+                var position = context.chart.canvas.getBoundingClientRect();
 
                 // Display, position, and set styles for font
                 tooltipEl.style.opacity = 1;
