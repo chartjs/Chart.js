@@ -50,6 +50,7 @@ export default class Animation {
 			const remain = me._duration - elapsed;
 			me._start = date;
 			me._duration = Math.floor(Math.max(remain, cfg.duration));
+			me._loop = !!cfg.loop;
 			me._to = resolve([cfg.to, to, currentValue, cfg.from]);
 			me._from = resolve([cfg.from, currentValue, to]);
 		}

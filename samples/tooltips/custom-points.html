@@ -59,14 +59,15 @@
 
 			if (tooltip.dataPoints.length > 0) {
 				tooltip.dataPoints.forEach(function(dataPoint) {
-					var content = [dataPoint.label, dataPoint.value].join(': ');
+					var content = [dataPoint.label, dataPoint.formattedValue].join(': ');
 					var $tooltip = $('#tooltip-' + dataPoint.datasetIndex);
+					var pos = dataPoint.element.tooltipPosition();
 
 					$tooltip.html(content);
 					$tooltip.css({
 						opacity: 1,
-						top: positionY + dataPoint.y + 'px',
-						left: positionX + dataPoint.x + 'px',
+						top: positionY + pos.y + 'px',
+						left: positionX + pos.x + 'px',
 					});
 				});
 			}
