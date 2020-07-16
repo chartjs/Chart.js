@@ -342,7 +342,7 @@ The following properties and methods were removed:
 * Legend `onClick`, `onHover`, and `onLeave` options now receive the legend as the 3rd argument in addition to implicitly via `this`
 * Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
-* The tooltip item's `x` and `y` attributes were removed. Use `datasetIndex` and `dataIndex` to get the element and any corresponding data from it
+* The tooltip item's `x` and `y` attributes were replaced by `element`. You can use `element.x` and `element.y` or `element.tooltipPosition()` instead.
 
 #### Removal of private APIs
 
