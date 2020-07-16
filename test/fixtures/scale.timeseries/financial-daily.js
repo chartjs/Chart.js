@@ -32,7 +32,10 @@ module.exports = {
 						autoSkip: true,
 						autoSkipPadding: 75,
 						maxRotation: 0,
-						sampleSize: 100
+						sampleSize: 100,
+						time: {
+							unit: 'month'
+						}
 					}
 				},
 				y: {
