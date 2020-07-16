@@ -118,7 +118,6 @@ function splitNewlines(str) {
 function createTooltipItem(chart, item) {
 	const {element, datasetIndex, index} = item;
 	const controller = chart.getDatasetMeta(datasetIndex).controller;
-	const dataset = controller.getDataset();
 	const {label, value} = controller.getLabelAndValue(index);
 
 	return {
@@ -126,11 +125,10 @@ function createTooltipItem(chart, item) {
 		label,
 		dataPoint: controller.getParsed(index),
 		formattedValue: value,
-		dataset,
+		dataset: controller.getDataset(),
 		dataIndex: index,
 		datasetIndex,
-		x: element.x,
-		y: element.y
+		element
 	};
 }
 
