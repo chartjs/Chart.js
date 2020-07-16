@@ -191,7 +191,7 @@ export default class BarController extends DatasetController {
 	updateRangeFromParsed(range, scale, parsed, stack) {
 		super.updateRangeFromParsed(range, scale, parsed, stack);
 		const custom = parsed._custom;
-		if (custom) {
+		if (custom && scale === this._cachedMeta.vScale) {
 			// float bar: only one end of the bar is considered by `super`
 			range.min = Math.min(range.min, custom.min);
 			range.max = Math.max(range.max, custom.max);
