@@ -34,9 +34,6 @@ module.exports = {
 						maxRotation: 0,
 						sampleSize: 100
 					},
-					time: {
-						unit: 'month'
-					},
 					// manually set major ticks so that test passes in all time zones with moment adapter
 					afterBuildTicks: function(scale) {
 						const major = [0, 12, 24];
