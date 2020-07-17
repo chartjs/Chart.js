@@ -39,7 +39,7 @@
 	</select>
 	<button id="update">update</button>
 	<script>
-		// Generate data between the stock market hours of 9:30am - 5pm.
+		// Generate data between the stock market hours of 9:30am - 4pm.
 		// This method is slow and unoptimized, but in real life we'd be fetching it from the server.
 		function generateData() {
 			const unit = document.getElementById('unit').value;
@@ -54,7 +54,7 @@
 
 
 			function after4pm(date) {
-				return date.hour > 16 || (date.hour === 16 && date.minute > 0);
+				return date.hour >= 16;
 			}
 
 			// Returns true if outside 9:30am-4pm on a weekday
@@ -191,7 +191,7 @@
 							if (label) {
 								label += ': ';
 							}
-							label += parseFloat(context.value).toFixed(2);
+							label += context.dataPoint.y.toFixed(2);
 							return label;
 						}
 					}
