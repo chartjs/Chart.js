@@ -61,9 +61,9 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
-| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
-| [`fill`](#line-styling) | <code>boolean&#124;string</code> | Yes | - | `true`
+| [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `true`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
 | [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
@@ -84,10 +84,10 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointHoverRadius`](#interactions) | `number` | Yes | Yes | `4`
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
-| [`pointStyle`](#point-styling) | <code>string&#124;Image</code> | Yes | Yes | `'circle'`
+| [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
 | [`showLine`](#line-styling) | `boolean` | - | - | `undefined`
-| [`spanGaps`](#line-styling) | <code>boolean&#124;number</code> | - | - | `undefined`
-| [`stepped`](#stepped) | <code>boolean&#124;string</code> | - | - | `false`
+| [`spanGaps`](#line-styling) | `boolean`\|`number` | - | - | `undefined`
+| [`stepped`](#stepped) | `boolean`\|`string` | - | - | `false`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 
@@ -180,7 +180,7 @@ The line chart defines the following configuration options. These options are me
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `showLines` | `boolean` | `true` | If false, the lines between points are not drawn.
-| `spanGaps` | `boolean` | `false` | If false, NaN data causes a break in the line.
+| `spanGaps` | `boolean`\|`number` | `false` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
 
 ## Default Options
 
