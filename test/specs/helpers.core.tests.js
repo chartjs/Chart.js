@@ -119,27 +119,6 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
-	describe('valueAtIndexOrDefault', function() {
-		it('should return the passed value if not an array', function() {
-			expect(helpers.valueAtIndexOrDefault(0, 0, 42)).toBe(0);
-			expect(helpers.valueAtIndexOrDefault('', 0, 42)).toBe('');
-			expect(helpers.valueAtIndexOrDefault(null, 0, 42)).toBe(null);
-			expect(helpers.valueAtIndexOrDefault(false, 0, 42)).toBe(false);
-			expect(helpers.valueAtIndexOrDefault(98, 0, 42)).toBe(98);
-		});
-		it('should return the value at index if defined', function() {
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 1, 42)).toBe(false);
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 2, 42)).toBe('foo');
-		});
-		it('should return the default value if the passed value is undefined', function() {
-			expect(helpers.valueAtIndexOrDefault(undefined, 0, 42)).toBe(42);
-		});
-		it('should return the default value if value at index is undefined', function() {
-			expect(helpers.valueAtIndexOrDefault([1, false, 'foo'], 3, 42)).toBe(42);
-			expect(helpers.valueAtIndexOrDefault([1, undefined, 'foo'], 1, 42)).toBe(42);
-		});
-	});
-
 	describe('callback', function() {
 		it('should return undefined if fn is not a function', function() {
 			expect(helpers.callback()).not.toBeDefined();
@@ -241,29 +220,6 @@ describe('Chart.helpers.core', function() {
 		});
 	});
 
-	describe('arrayEquals', function() {
-		it('should return false if arrays are not the same', function() {
-			expect(helpers.arrayEquals([], [42])).toBeFalsy();
-			expect(helpers.arrayEquals([42], ['42'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3, 4])).toBeFalsy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['bar', 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 'foo'])).toBeFalsy();
-			expect(helpers.arrayEquals([1, 2, [3, 4]], [1, 2, [3, 'foo']])).toBeFalsy();
-			expect(helpers.arrayEquals([{a: 42}], [{a: 42}])).toBeFalsy();
-		});
-		it('should return false if arrays are not the same', function() {
-			var o0 = {};
-			var o1 = {};
-			var o2 = {};
-
-			expect(helpers.arrayEquals([], [])).toBeTruthy();
-			expect(helpers.arrayEquals([1, 2, 3], [1, 2, 3])).toBeTruthy();
-			expect(helpers.arrayEquals(['foo', 'bar'], ['foo', 'bar'])).toBeTruthy();
-			expect(helpers.arrayEquals([true, false, true], [true, false, true])).toBeTruthy();
-			expect(helpers.arrayEquals([o0, o1, o2], [o0, o1, o2])).toBeTruthy();
-		});
-	});
-
 	describe('_elementsEqual', function() {
 		it('should return true if arrays are the same', function() {
 			expect(helpers._elementsEqual(
@@ -360,6 +316,27 @@ describe('Chart.helpers.core', function() {
 			expect(output.o).not.toBe(o0);
 			expect(output.o.a).not.toBe(a1);
 		});
+		it('should preserve prototype of objects', function() {
+			// https://github.com/chartjs/Chart.js/issues/7340
+			class MyConfigObject {
+				constructor(s) {
+					this._s = s;
+				}
+				func() {
+					return 10;
+				}
+			}
+			var original = new MyConfigObject('something');
+			var output = helpers.merge({}, {
+				plugins: [{
+					test: original
+				}]
+			});
+			var clone = output.plugins[0].test;
+			expect(clone).toBeInstanceOf(MyConfigObject);
+			expect(clone).toEqual(original);
+			expect(clone === original).toBeFalse();
+		});
 	});
 
 	describe('mergeIf', function() {
@@ -406,59 +383,6 @@ describe('Chart.helpers.core', function() {
 			expect(output.a).not.toBe(a0);
 			expect(output.o).not.toBe(o0);
 			expect(output.o.a).not.toBe(a1);
-		});
-	});
-
-	describe('extend', function() {
-		it('should merge object properties in target and return target', function() {
-			var target = {a: 'abc', b: 56};
-			var object = {b: 0, c: [2, 5, 6]};
-			var result = Object.assign(target, object);
-
-			expect(result).toBe(target);
-			expect(target).toEqual({a: 'abc', b: 0, c: [2, 5, 6]});
-		});
-		it('should merge multiple objects properties in target', function() {
-			var target = {a: 0, b: 1};
-			var o0 = {a: 2, c: 3, d: 4};
-			var o1 = {a: 5, c: 6};
-			var o2 = {a: 7, e: 8};
-
-			Object.assign(target, o0, o1, o2);
-
-			expect(target).toEqual({a: 7, b: 1, c: 6, d: 4, e: 8});
-		});
-		it('should not deeply merge object properties in target', function() {
-			var target = {a: {b: 0, c: 1}};
-			var object = {a: {b: 2, d: 3}};
-
-			Object.assign(target, object);
-
-			expect(target).toEqual({a: {b: 2, d: 3}});
-			expect(target.a).toBe(object.a);
-		});
-	});
-
-	describe('inherits', function() {
-		it('should return a derived class', function() {
-			var A = function() {};
-			A.prototype.p0 = 41;
-			A.prototype.p1 = function() {
-				return '42';
-			};
-
-			A.inherits = helpers.inherits;
-			var B = A.inherits({p0: 43, p2: [44]});
-			var C = A.inherits({p3: 45, p4: [46]});
-			var b = new B();
-
-			expect(b instanceof A).toBeTruthy();
-			expect(b instanceof B).toBeTruthy();
-			expect(b instanceof C).toBeFalsy();
-
-			expect(b.p0).toBe(43);
-			expect(b.p1()).toBe('42');
-			expect(b.p2).toEqual([44]);
 		});
 	});
 });

@@ -3,12 +3,22 @@
 
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
+const glob = require('glob');
+const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
-const resolve = require('@rollup/plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve').default;
 const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
+const inputESM = {
+	'dist/chart.esm': 'src/index.esm.js',
+};
+glob('src/helpers/helpers.*.js', (_er, files) => {
+	files.forEach(file => {
+		inputESM[file.replace(/src\/|helpers\.|\.js/g, '')] = file;
+	});
+});
 
 const banner = `/*!
  * Chart.js v${pkg.version}
@@ -19,11 +29,14 @@ const banner = `/*!
 
 module.exports = [
 	// UMD builds
-	// dist/Chart.min.js
-	// dist/Chart.js
+	// dist/chart.min.js
+	// dist/chart.js
 	{
 		input,
 		plugins: [
+			inject({
+				ResizeObserver: 'resize-observer-polyfill'
+			}),
 			json(),
 			resolve(),
 			babel(),
@@ -33,7 +46,7 @@ module.exports = [
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.js',
+			file: 'dist/chart.js',
 			banner,
 			format: 'umd',
 			indent: false,
@@ -42,6 +55,9 @@ module.exports = [
 	{
 		input,
 		plugins: [
+			inject({
+				ResizeObserver: 'resize-observer-polyfill'
+			}),
 			json(),
 			resolve(),
 			babel(),
@@ -53,50 +69,30 @@ module.exports = [
 		],
 		output: {
 			name: 'Chart',
-			file: 'dist/Chart.min.js',
+			file: 'dist/chart.min.js',
 			format: 'umd',
 			indent: false,
 		},
 	},
 
 	// ES6 builds
-	// dist/Chart.esm.min.js
-	// dist/Chart.esm.js
+	// dist/chart.esm.js
+	// helpers/*.js
 	{
-		input,
+		input: inputESM,
 		plugins: [
 			json(),
 			resolve(),
-			babel({envName: 'es6'}),
 			cleanup({
 				sourcemap: true
 			})
 		],
 		output: {
-			name: 'Chart',
-			file: 'dist/Chart.esm.js',
+			dir: './',
+			chunkFileNames: 'helpers/chunks/[name].js',
 			banner,
 			format: 'esm',
 			indent: false,
 		},
-	},
-	{
-		input,
-		plugins: [
-			json(),
-			resolve(),
-			babel({envName: 'es6'}),
-			terser({
-				output: {
-					preamble: banner
-				}
-			})
-		],
-		output: {
-			name: 'Chart',
-			file: 'dist/Chart.esm.min.js',
-			format: 'esm',
-			indent: false,
-		},
-	},
+	}
 ];

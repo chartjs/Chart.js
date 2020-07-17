@@ -1,4 +1,4 @@
-import Animator from './core.animator';
+import animator from './core.animator';
 import Animation from './core.animation';
 import defaults from './core.defaults';
 import {noop, isObject} from '../helpers/helpers.core';
@@ -147,6 +147,7 @@ export default class Animations {
 		const animations = [];
 		const running = target.$animations || (target.$animations = {});
 		const props = Object.keys(values);
+		const date = Date.now();
 		let i;
 
 		for (i = props.length - 1; i >= 0; --i) {
@@ -161,11 +162,17 @@ export default class Animations {
 			}
 			const value = values[prop];
 			let animation = running[prop];
-			if (animation) {
-				animation.cancel();
-			}
-
 			const cfg = animatedProps.get(prop);
+
+			if (animation) {
+				if (cfg && animation.active()) {
+					// There is an existing active animation, let's update that
+					animation.update(cfg, value, date);
+					continue;
+				} else {
+					animation.cancel();
+				}
+			}
 			if (!cfg || !cfg.duration) {
 				// not animated, set directly to new value
 				target[prop] = value;
@@ -199,7 +206,7 @@ export default class Animations {
 		const animations = this._createAnimations(target, values);
 
 		if (animations.length) {
-			Animator.add(this._chart, animations);
+			animator.add(this._chart, animations);
 			return true;
 		}
 	}

@@ -167,6 +167,43 @@ describe('Chart.DatasetController', function() {
 		expect(parsedYValues2).toEqual([0, 1, 2, 3, 0]); // label indices
 	});
 
+	it('should parse using provided keys', function() {
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [
+						{x: 1, data: {key: 'one', value: 20}},
+						{data: {key: 'two', value: 30}}
+					]
+				}]
+			},
+			options: {
+				parsing: {
+					xAxisKey: 'data.key',
+					yAxisKey: 'data.value'
+				},
+				scales: {
+					x: {
+						type: 'category',
+						labels: ['one', 'two']
+					},
+					y: {
+						type: 'linear'
+					},
+				}
+			}
+		});
+
+		const meta = chart.getDatasetMeta(0);
+		const parsedXValues = meta._parsed.map(p => p.x);
+		const parsedYValues = meta._parsed.map(p => p.y);
+
+		expect(meta.data.length).toBe(2);
+		expect(parsedXValues).toEqual([0, 1]); // label indices
+		expect(parsedYValues).toEqual([20, 30]);
+	});
+
 	it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
 		const data = [0, 1, 2, 3, 4, 5];
 		const chart = acquireChart({
@@ -343,6 +380,56 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data.length).toBe(42);
 	});
 
+	// https://github.com/chartjs/Chart.js/issues/7243
+	it('should re-synchronize metadata when data is moved and values are equal', function() {
+		var data = [10, 10, 10, 10, 10, 10];
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b', 'c', 'd', 'e', 'f'],
+				datasets: [{
+					data,
+					fill: true
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.data.length).toBe(6);
+		const firstX = meta.data[0].x;
+
+		data.push(data.shift());
+		chart.update();
+
+		expect(meta.data.length).toBe(6);
+		expect(meta.data[0].x).toEqual(firstX);
+	});
+
+	// https://github.com/chartjs/Chart.js/issues/7445
+	it('should re-synchronize metadata when data is objects and directly altered', function() {
+		var data = [{x: 'a', y: 1}, {x: 'b', y: 2}, {x: 'c', y: 3}];
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b', 'c'],
+				datasets: [{
+					data,
+					fill: true
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+
+		expect(meta.data.length).toBe(3);
+		const y3 = meta.data[2].y;
+
+		data[0].y = 3;
+		chart.update();
+		expect(meta.data[0].y).toEqual(y3);
+	});
+
 	it('should re-synchronize metadata when scaleID changes', function() {
 		var chart = acquireChart({
 			type: 'line',
@@ -475,5 +562,105 @@ describe('Chart.DatasetController', function() {
 		hooks.forEach(function(hook) {
 			expect(data1[hook]).toBe(Array.prototype[hook]);
 		});
+	});
+
+	it('should resolve data element options to the default color', function() {
+		var data0 = [0, 1, 2, 3, 4, 5];
+		var oldColor = Chart.defaults.color;
+		Chart.defaults.color = 'red';
+		var chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: data0
+				}]
+			}
+		});
+
+		var meta = chart.getDatasetMeta(0);
+		expect(meta.dataset.options.borderColor).toBe('red');
+		expect(meta.data[0].options.borderColor).toBe('red');
+
+		// Reset old shared state
+		Chart.defaults.color = oldColor;
+	});
+
+	describe('_resolveOptions', function() {
+		it('should resove names in array notation', function() {
+			Chart.defaults.elements.line.globalTest = 'global';
+
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1],
+						datasetTest: 'dataset'
+					}]
+				},
+				options: {
+					elements: {
+						line: {
+							elementTest: 'element'
+						}
+					}
+				}
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller._resolveOptions(
+				[
+					'datasetTest',
+					'elementTest',
+					'globalTest'
+				],
+				{type: 'line'})
+			).toEqual({
+				datasetTest: 'dataset',
+				elementTest: 'element',
+				globalTest: 'global'
+			});
+
+			// Remove test from global defaults
+			delete Chart.defaults.elements.line.globalTest;
+		});
+	});
+
+	it('should resove names in object notation', function() {
+		Chart.defaults.elements.line.global = 'global';
+
+		const chart = acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [1],
+					datasetTest: 'dataset'
+				}]
+			},
+			options: {
+				elements: {
+					line: {
+						element: 'element'
+					}
+				}
+			}
+		});
+
+		const controller = chart.getDatasetMeta(0).controller;
+
+		expect(controller._resolveOptions(
+			{
+				dataset: 'datasetTest',
+				element: 'elementTest',
+				global: 'globalTest'},
+			{type: 'line'})
+		).toEqual({
+			dataset: 'dataset',
+			element: 'element',
+			global: 'global'
+		});
+
+		// Remove test from global defaults
+		delete Chart.defaults.elements.line.global;
 	});
 });

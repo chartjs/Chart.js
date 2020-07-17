@@ -1,7 +1,15 @@
 import LineController from './controller.line';
-import defaults from '../core/core.defaults';
 
-defaults.set('scatter', {
+export default class ScatterController extends LineController {
+
+}
+
+ScatterController.id = 'scatter';
+
+/**
+ * @type {any}
+ */
+ScatterController.defaults = {
 	scales: {
 		x: {
 			type: 'linear'
@@ -12,7 +20,8 @@ defaults.set('scatter', {
 	},
 
 	datasets: {
-		showLine: false
+		showLine: false,
+		fill: false
 	},
 
 	tooltips: {
@@ -21,11 +30,8 @@ defaults.set('scatter', {
 				return '';     // doesn't make sense for scatter since data are formatted as a point
 			},
 			label(item) {
-				return '(' + item.label + ', ' + item.value + ')';
+				return '(' + item.label + ', ' + item.formattedValue + ')';
 			}
 		}
 	}
-});
-
-// Scatter charts use line controllers
-export default LineController;
+};

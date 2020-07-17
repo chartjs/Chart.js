@@ -1,17 +1,5 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {isObject} from '../helpers/helpers.core';
-
-const defaultColor = defaults.color;
-
-defaults.set('elements', {
-	rectangle: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
-		borderSkipped: 'bottom',
-		borderWidth: 0
-	}
-});
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
@@ -42,10 +30,6 @@ function getBarBounds(bar, useFinalPosition) {
 	return {left, top, right, bottom};
 }
 
-function swap(orig, v1, v2) {
-	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
-}
-
 function parseBorderSkipped(bar) {
 	let edge = bar.options.borderSkipped;
 	const res = {};
@@ -54,16 +38,30 @@ function parseBorderSkipped(bar) {
 		return res;
 	}
 
-	if (bar.horizontal) {
-		if (bar.base > bar.x) {
-			edge = swap(edge, 'left', 'right');
-		}
-	} else if (bar.base < bar.y) {
-		edge = swap(edge, 'bottom', 'top');
-	}
+	edge = bar.horizontal
+		? parseEdge(edge, 'left', 'right', bar.base > bar.x)
+		: parseEdge(edge, 'bottom', 'top', bar.base < bar.y);
 
 	res[edge] = true;
 	return res;
+}
+
+function parseEdge(edge, a, b, reverse) {
+	if (reverse) {
+		edge = swap(edge, a, b);
+		edge = startEnd(edge, b, a);
+	} else {
+		edge = startEnd(edge, a, b);
+	}
+	return edge;
+}
+
+function swap(orig, v1, v2) {
+	return orig === v1 ? v2 : orig === v2 ? v1 : orig;
+}
+
+function startEnd(v, start, end) {
+	return v === 'start' ? start : v === 'end' ? end : v;
 }
 
 function skipOrLimit(skip, value, min, max) {
@@ -126,8 +124,6 @@ function inRange(bar, x, y, useFinalPosition) {
 
 export default class Rectangle extends Element {
 
-	static _type = 'rectangle';
-
 	constructor(cfg) {
 		super();
 
@@ -176,7 +172,7 @@ export default class Rectangle extends Element {
 	}
 
 	getCenterPoint(useFinalPosition) {
-		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal', useFinalPosition]);
+		const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition);
 		return {
 			x: horizontal ? (x + base) / 2 : x,
 			y: horizontal ? y : (y + base) / 2
@@ -187,3 +183,21 @@ export default class Rectangle extends Element {
 		return axis === 'x' ? this.width / 2 : this.height / 2;
 	}
 }
+
+Rectangle.id = 'rectangle';
+
+/**
+ * @type {any}
+ */
+Rectangle.defaults = {
+	borderSkipped: 'start',
+	borderWidth: 0
+};
+
+/**
+ * @type {any}
+ */
+Rectangle.defaultRoutes = {
+	backgroundColor: 'color',
+	borderColor: 'color'
+};

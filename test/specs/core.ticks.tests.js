@@ -49,7 +49,7 @@ describe('Test tick generators', function() {
 		var yLabels = getLabels(chart.scales.y);
 
 		expect(xLabels).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
-		expect(yLabels).toEqual(['1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0']);
+		expect(yLabels).toEqual(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
 	});
 
 	it('Should generate logarithmic spaced ticks with correct precision', function() {

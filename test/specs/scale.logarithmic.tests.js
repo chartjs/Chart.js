@@ -3,49 +3,21 @@ function getLabels(scale) {
 }
 
 describe('Logarithmic Scale tests', function() {
-	it('should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('logarithmic');
+	it('should register', function() {
+		var Constructor = Chart.registry.getScale('logarithmic');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('logarithmic');
+		var defaultConfig = Chart.defaults.scales.logarithmic;
 		expect(defaultConfig).toEqual({
-			display: true,
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true,
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			reverse: false,
-			beginAtZero: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				lineWidth: 0,
-				strokeStyle: '',
+				callback: Chart.Ticks.formatters.logarithmic,
 				major: {
 					enabled: true
-				},
-			},
+				}
+			}
 		});
 
 		// Is this actually a function
@@ -679,7 +651,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(getLabels(chart.scales.y)).toEqual(['80', '70', '60', '50', '40', '30', '20', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']);
+		expect(getLabels(chart.scales.y)).toEqual(['', '', '', '50', '', '', '20', '10', '', '', '', '', '5', '', '', '2', '1']);
 	});
 
 	it('should build labels using the user supplied callback', function() {
@@ -828,14 +800,14 @@ describe('Logarithmic Scale tests', function() {
 		];
 		config.forEach(function(setup) {
 			var scaleConfig = {};
-			var type, chartStart, chartEnd;
+			var indexAxis, chartStart, chartEnd;
 
 			if (setup.axis === 'x') {
-				type = 'horizontalBar';
+				indexAxis = 'y';
 				chartStart = 'left';
 				chartEnd = 'right';
 			} else {
-				type = 'bar';
+				indexAxis = 'x';
 				chartStart = 'bottom';
 				chartEnd = 'top';
 			}
@@ -850,12 +822,13 @@ describe('Logarithmic Scale tests', function() {
 			describe(description, function() {
 				it('should define the correct axis limits', function() {
 					var chart = window.acquireChart({
-						type: type,
+						type: 'bar',
 						data: {
 							labels: ['category 1', 'category 2'],
 							datasets: setup.data || data,
 						},
 						options: {
+							indexAxis,
 							scales: scaleConfig
 						}
 					});
@@ -913,18 +886,6 @@ describe('Logarithmic Scale tests', function() {
 					],
 				},
 				type: 'bar',
-				firstTick: 1,
-				lastTick: 10,
-				describe: 'empty dataset with stack option, without min/max'
-			},
-			{
-				data: {
-					datasets: [
-						{data: [], stack: 'stack'},
-						{data: [], stack: 'stack'},
-					],
-				},
-				type: 'horizontalBar',
 				firstTick: 1,
 				lastTick: 10,
 				describe: 'empty dataset with stack option, without min/max'

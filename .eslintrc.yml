@@ -22,3 +22,5 @@ plugins: ['html']
 rules:
   class-methods-use-this: 0
   no-empty-function: 0
+  complexity: [1, 10]
+  max-statements: [1, 30]

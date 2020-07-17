@@ -75,7 +75,7 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.fontSize).toBe(defaults.fontSize);
+			expect(options.font.size).toBe(defaults.font.size);
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
 			expect(options.hover.onHover).toBe(callback);
@@ -163,7 +163,7 @@ describe('Chart', function() {
 					}
 				});
 			}
-			expect(createChart).toThrow(new Error('"area" is not a chart type.'));
+			expect(createChart).toThrow(new Error('"area" is not a registered controller.'));
 		});
 	});
 
@@ -175,7 +175,7 @@ describe('Chart', function() {
 				_jasmineCheckC: 'c0'
 			});
 
-			Chart.helpers.merge(Chart.scaleService.defaults.logarithmic, {
+			Chart.helpers.merge(Chart.defaults.scales.logarithmic, {
 				_jasmineCheckB: 'b1',
 				_jasmineCheckC: 'c1',
 			});
@@ -185,8 +185,8 @@ describe('Chart', function() {
 			delete Chart.defaults.scale._jasmineCheckA;
 			delete Chart.defaults.scale._jasmineCheckB;
 			delete Chart.defaults.scale._jasmineCheckC;
-			delete Chart.scaleService.defaults.logarithmic._jasmineCheckB;
-			delete Chart.scaleService.defaults.logarithmic._jasmineCheckC;
+			delete Chart.defaults.scales.logarithmic._jasmineCheckB;
+			delete Chart.defaults.scales.logarithmic._jasmineCheckC;
 		});
 
 		it('should default to "category" for x scales and "linear" for y scales', function() {
@@ -298,8 +298,8 @@ describe('Chart', function() {
 
 			expect(Chart.defaults.line._jasmineCheck).not.toBeDefined();
 			expect(Chart.defaults._jasmineCheck).not.toBeDefined();
-			expect(Chart.scaleService.defaults.linear._jasmineCheck).not.toBeDefined();
-			expect(Chart.scaleService.defaults.category._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.scales.linear._jasmineCheck).not.toBeDefined();
+			expect(Chart.defaults.scales.category._jasmineCheck).not.toBeDefined();
 		});
 	});
 
@@ -363,6 +363,59 @@ describe('Chart', function() {
 				wrapper.style.width = '150px';
 			});
 			wrapper.style.width = '455px';
+		});
+
+		it('should restore the original size when parent became invisible', function(done) {
+			var chart = acquireChart({
+				options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			}, {
+				canvas: {
+					style: ''
+				},
+				wrapper: {
+					style: 'width: 300px; height: 350px; position: relative'
+				}
+			});
+
+			waitForResize(chart, function() {
+				expect(chart).toBeChartOfSize({
+					dw: 300, dh: 350,
+					rw: 300, rh: 350,
+				});
+
+				var original = chart.resize;
+				chart.resize = function() {
+					fail('resize should not have been called');
+				};
+
+				var wrapper = chart.canvas.parentNode;
+				wrapper.style.display = 'none';
+
+				setTimeout(function() {
+					expect(wrapper.clientWidth).toEqual(0);
+					expect(wrapper.clientHeight).toEqual(0);
+
+					expect(chart).toBeChartOfSize({
+						dw: 300, dh: 350,
+						rw: 300, rh: 350,
+					});
+
+					chart.resize = original;
+
+					waitForResize(chart, function() {
+						expect(chart).toBeChartOfSize({
+							dw: 300, dh: 350,
+							rw: 300, rh: 350,
+						});
+
+						done();
+					});
+					wrapper.style.display = 'block';
+				}, 200);
+			});
 		});
 
 		it('should resize the canvas when parent is RTL and width changes', function(done) {
@@ -1124,12 +1177,12 @@ describe('Chart', function() {
 				// Check and see if tooltip was displayed
 				var tooltip = chart.tooltip;
 
-				expect(chart.lastActive[0].element).toEqual(point);
+				expect(chart._active[0].element).toEqual(point);
 				expect(tooltip._active[0].element).toEqual(point);
 
 				// Update and confirm tooltip is updated
 				chart.update();
-				expect(chart.lastActive[0].element).toEqual(point);
+				expect(chart._active[0].element).toEqual(point);
 				expect(tooltip._active[0].element).toEqual(point);
 
 				done();

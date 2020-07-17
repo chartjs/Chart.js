@@ -3,7 +3,7 @@ describe('Legend block tests', function() {
 	describe('auto', jasmine.fixture.specs('plugin.legend'));
 
 	it('should have the correct default config', function() {
-		expect(Chart.defaults.legend).toEqual({
+		expect(Chart.defaults.plugins.legend).toEqual({
 			display: true,
 			position: 'top',
 			align: 'center',
@@ -373,6 +373,37 @@ describe('Legend block tests', function() {
 		});
 	});
 
+	it('should draw items with a custom boxHeight', function() {
+		var chart = window.acquireChart(
+			{
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'dataset1',
+						data: []
+					}],
+					labels: []
+				},
+				options: {
+					legend: {
+						position: 'right',
+						labels: {
+							boxHeight: 40
+						}
+					}
+				}
+			},
+			{
+				canvas: {
+					width: 512,
+					height: 105
+				}
+			}
+		);
+		const hitBox = chart.legend.legendHitBoxes[0];
+		expect(hitBox.height).toBe(40);
+	});
+
 	it('should pick up the first item when the property is an array', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
@@ -597,7 +628,7 @@ describe('Legend block tests', function() {
 			chart.options.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
-			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.legend));
+			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.plugins.legend));
 		});
 	});
 

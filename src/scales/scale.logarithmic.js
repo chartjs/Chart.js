@@ -47,21 +47,7 @@ function generateTicks(generationOptions, dataRange) {
 	return ticks;
 }
 
-const defaultConfig = {
-	// label settings
-	ticks: {
-		callback: Ticks.formatters.numeric,
-		major: {
-			enabled: true
-		}
-	}
-};
-
 export default class LogarithmicScale extends Scale {
-
-	static id = 'logarithmic';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
 
 	constructor(cfg) {
 		super(cfg);
@@ -85,9 +71,7 @@ export default class LogarithmicScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me.getMinMax(true);
-		const min = minmax.min;
-		const max = minmax.max;
+		const {min, max} = me.getMinMax(true);
 
 		me.min = isFinite(min) ? Math.max(0, min) : null;
 		me.max = isFinite(max) ? Math.max(0, max) : null;
@@ -158,14 +142,6 @@ export default class LogarithmicScale extends Scale {
 		return value === undefined ? '0' : new Intl.NumberFormat(this.options.locale).format(value);
 	}
 
-	getPixelForTick(index) {
-		const ticks = this.ticks;
-		if (index < 0 || index > ticks.length - 1) {
-			return null;
-		}
-		return this.getPixelForValue(ticks[index].value);
-	}
-
 	/**
 	 * @protected
 	 */
@@ -195,3 +171,17 @@ export default class LogarithmicScale extends Scale {
 		return Math.pow(10, me._startValue + decimal * me._valueRange);
 	}
 }
+
+LogarithmicScale.id = 'logarithmic';
+
+/**
+ * @type {any}
+ */
+LogarithmicScale.defaults = {
+	ticks: {
+		callback: Ticks.formatters.logarithmic,
+		major: {
+			enabled: true
+		}
+	}
+};

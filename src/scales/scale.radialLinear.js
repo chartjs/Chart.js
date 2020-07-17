@@ -1,75 +1,22 @@
 import defaults from '../core/core.defaults';
-import helpers from '../helpers/index';
 import {_longestText} from '../helpers/helpers.canvas';
 import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
-
-const valueOrDefault = helpers.valueOrDefault;
-const valueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-const resolve = helpers.options.resolve;
-
-const defaultConfig = {
-	display: true,
-
-	// Boolean - Whether to animate scaling the chart from the centre
-	animate: true,
-	position: 'chartArea',
-
-	angleLines: {
-		display: true,
-		color: 'rgba(0,0,0,0.1)',
-		lineWidth: 1,
-		borderDash: [],
-		borderDashOffset: 0.0
-	},
-
-	gridLines: {
-		circular: false
-	},
-
-	// label settings
-	ticks: {
-		// Boolean - Show a backdrop to the scale label
-		showLabelBackdrop: true,
-
-		// String - The colour of the label backdrop
-		backdropColor: 'rgba(255,255,255,0.75)',
-
-		// Number - The backdrop padding above & below the label in pixels
-		backdropPaddingY: 2,
-
-		// Number - The backdrop padding to the side of the label in pixels
-		backdropPaddingX: 2,
-
-		callback: Ticks.formatters.numeric
-	},
-
-	pointLabels: {
-		// Boolean - if true, show point labels
-		display: true,
-
-		// Number - Point label font size in pixels
-		fontSize: 10,
-
-		// Function - Used to convert point labels
-		callback(label) {
-			return label;
-		}
-	}
-};
+import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
+import {toFont, resolve} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
 	const tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault(tickOpts.fontSize, defaults.fontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
 
 function measureLabelSize(ctx, lineHeight, label) {
-	if (helpers.isArray(label)) {
+	if (isArray(label)) {
 		return {
 			w: _longestText(ctx, ctx.font, label),
 			h: label.length * lineHeight
@@ -132,8 +79,6 @@ function fitWithPointLabels(scale) {
 	//
 	// https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
 
-	const plFont = helpers.options._parseFont(scale.options.pointLabels);
-
 	// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
 	// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
 	const furthestLimits = {
@@ -145,12 +90,20 @@ function fitWithPointLabels(scale) {
 	const furthestAngles = {};
 	let i, textSize, pointPosition;
 
-	scale.ctx.font = plFont.string;
 	scale._pointLabelSizes = [];
 
 	const valueCount = scale.chart.data.labels.length;
 	for (i = 0; i < valueCount; i++) {
 		pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
+
+		const context = {
+			chart: scale.chart,
+			scale,
+			index: i,
+			label: scale.pointLabels[i]
+		};
+		const plFont = toFont(resolve([scale.options.pointLabels.font], context, i));
+		scale.ctx.font = plFont.string;
 		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
 		scale._pointLabelSizes[i] = textSize;
 
@@ -198,7 +151,7 @@ function fillText(ctx, text, position, lineHeight) {
 	let y = position.y + lineHeight / 2;
 	let i, ilen;
 
-	if (helpers.isArray(text)) {
+	if (isArray(text)) {
 		for (i = 0, ilen = text.length; i < ilen; ++i) {
 			ctx.fillText(text[i], position.x, y);
 			y += lineHeight;
@@ -222,11 +175,9 @@ function drawPointLabels(scale) {
 	const pointLabelOpts = opts.pointLabels;
 	const tickBackdropHeight = getTickBackdropHeight(opts);
 	const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-	const plFont = helpers.options._parseFont(pointLabelOpts);
 
 	ctx.save();
 
-	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
 	for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
@@ -234,12 +185,17 @@ function drawPointLabels(scale) {
 		const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
 		const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
-		// Keep this in loop since we may support array properties here
-		const pointLabelFontColor = valueAtIndexOrDefault(pointLabelOpts.fontColor, i, defaults.fontColor);
-		ctx.fillStyle = pointLabelFontColor;
+		const context = {
+			chart: scale.chart,
+			scale,
+			index: i,
+			label: scale.pointLabels[i],
+		};
+		const plFont = toFont(resolve([pointLabelOpts.font], context, i));
+		ctx.font = plFont.string;
+		ctx.fillStyle = plFont.color;
 
-		const angleRadians = scale.getIndexAngle(i);
-		const angle = toDegrees(angleRadians);
+		const angle = toDegrees(scale.getIndexAngle(i));
 		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
 		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
@@ -251,8 +207,15 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	const ctx = scale.ctx;
 	const circular = gridLineOpts.circular;
 	const valueCount = scale.chart.data.labels.length;
-	const lineColor = valueAtIndexOrDefault(gridLineOpts.color, index - 1, undefined);
-	const lineWidth = valueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1, undefined);
+
+	const context = {
+		chart: scale.chart,
+		scale,
+		index,
+		tick: scale.ticks[index],
+	};
+	const lineColor = resolve([gridLineOpts.color], context, index - 1);
+	const lineWidth = resolve([gridLineOpts.lineWidth], context, index - 1);
 	let pointPosition;
 
 	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
@@ -263,8 +226,8 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	ctx.strokeStyle = lineColor;
 	ctx.lineWidth = lineWidth;
 	if (ctx.setLineDash) {
-		ctx.setLineDash(gridLineOpts.borderDash || []);
-		ctx.lineDashOffset = gridLineOpts.borderDashOffset || 0.0;
+		ctx.setLineDash(resolve([gridLineOpts.borderDash, []], context));
+		ctx.lineDashOffset = resolve([gridLineOpts.borderDashOffset], context, index - 1);
 	}
 
 	ctx.beginPath();
@@ -292,10 +255,6 @@ function numberOrZero(param) {
 
 export default class RadialLinearScale extends LinearScaleBase {
 
-	static id = 'radialLinear';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
-
 	constructor(cfg) {
 		super(cfg);
 
@@ -307,6 +266,11 @@ export default class RadialLinearScale extends LinearScaleBase {
 		this.drawingArea = undefined;
 		/** @type {string[]} */
 		this.pointLabels = [];
+	}
+
+	init(options) {
+		super.init(options);
+		this.axis = 'r';
 	}
 
 	setDimensions() {
@@ -323,12 +287,10 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 	determineDataLimits() {
 		const me = this;
-		const minmax = me.getMinMax(false);
-		const min = minmax.min;
-		const max = minmax.max;
+		const {min, max} = me.getMinMax(false);
 
-		me.min = helpers.isFinite(min) && !isNaN(min) ? min : 0;
-		me.max = helpers.isFinite(max) && !isNaN(max) ? max : 0;
+		me.min = isFinite(min) && !isNaN(min) ? min : 0;
+		me.max = isFinite(max) && !isNaN(max) ? max : 0;
 
 		// Common base implementation to handle min, max, beginAtZero
 		me.handleTickRangeOptions();
@@ -349,7 +311,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 		// Point labels
 		me.pointLabels = me.chart.data.labels.map((value, index) => {
-			const label = helpers.callback(me.options.pointLabels.callback, [value, index], me);
+			const label = callCallback(me.options.pointLabels.callback, [value, index], me);
 			return label || label === 0 ? label : '';
 		});
 	}
@@ -410,7 +372,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	getDistanceFromCenterForValue(value) {
 		const me = this;
 
-		if (helpers.isNullOrUndef(value)) {
+		if (isNullOrUndef(value)) {
 			return NaN;
 		}
 
@@ -420,6 +382,16 @@ export default class RadialLinearScale extends LinearScaleBase {
 			return (me.max - value) * scalingFactor;
 		}
 		return (value - me.min) * scalingFactor;
+	}
+
+	getValueForDistanceFromCenter(distance) {
+		if (isNullOrUndef(distance)) {
+			return NaN;
+		}
+
+		const me = this;
+		const scaledDistance = distance / (me.drawingArea / (me.max - me.min));
+		return me.options.reverse ? me.max - scaledDistance : me.min + scaledDistance;
 	}
 
 	getPointPosition(index, distanceFromCenter) {
@@ -449,8 +421,6 @@ export default class RadialLinearScale extends LinearScaleBase {
 		const opts = me.options;
 		const gridLineOpts = opts.gridLines;
 		const angleLineOpts = opts.angleLines;
-		const lineWidth = valueOrDefault(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
-		const lineColor = valueOrDefault(angleLineOpts.color, gridLineOpts.color);
 		let i, offset, position;
 
 		if (opts.pointLabels.display) {
@@ -466,16 +436,31 @@ export default class RadialLinearScale extends LinearScaleBase {
 			});
 		}
 
-		if (angleLineOpts.display && lineWidth && lineColor) {
+		if (angleLineOpts.display) {
 			ctx.save();
-			ctx.lineWidth = lineWidth;
-			ctx.strokeStyle = lineColor;
-			if (ctx.setLineDash) {
-				ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
-				ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
-			}
 
 			for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
+				const context = {
+					chart: me.chart,
+					scale: me,
+					index: i,
+					label: me.pointLabels[i],
+				};
+				const lineWidth = resolve([angleLineOpts.lineWidth, gridLineOpts.lineWidth], context, i);
+				const color = resolve([angleLineOpts.color, gridLineOpts.color], context, i);
+
+				if (!lineWidth || !color) {
+					continue;
+				}
+
+				ctx.lineWidth = lineWidth;
+				ctx.strokeStyle = color;
+
+				if (ctx.setLineDash) {
+					ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []], context));
+					ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0], context, i);
+				}
+
 				offset = me.getDistanceFromCenterForValue(opts.ticks.reverse ? me.min : me.max);
 				position = me.getPointPosition(i, offset);
 				ctx.beginPath();
@@ -502,27 +487,35 @@ export default class RadialLinearScale extends LinearScaleBase {
 		}
 
 		const startAngle = me.getIndexAngle(0);
-		const tickFont = helpers.options._parseFont(tickOpts);
-		const tickFontColor = valueOrDefault(tickOpts.fontColor, defaults.fontColor);
 		let offset, width;
 
 		ctx.save();
-		ctx.font = tickFont.string;
 		ctx.translate(me.xCenter, me.yCenter);
 		ctx.rotate(startAngle);
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
 		me.ticks.forEach((tick, index) => {
+			const context = {
+				chart: me.chart,
+				scale: me,
+				index,
+				tick,
+			};
+
 			if (index === 0 && !opts.reverse) {
 				return;
 			}
 
+			const tickFont = me._resolveTickFontOptions(index);
+			ctx.font = tickFont.string;
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
-			if (tickOpts.showLabelBackdrop) {
+			const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
+
+			if (showLabelBackdrop) {
 				width = ctx.measureText(tick.label).width;
-				ctx.fillStyle = tickOpts.backdropColor;
+				ctx.fillStyle = resolve([tickOpts.backdropColor], context, index);
 
 				ctx.fillRect(
 					-width / 2 - tickOpts.backdropPaddingX,
@@ -532,7 +525,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickFontColor;
+			ctx.fillStyle = tickFont.color;
 			ctx.fillText(tick.label, 0, -offset);
 		});
 
@@ -544,3 +537,60 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 */
 	drawTitle() {}
 }
+
+RadialLinearScale.id = 'radialLinear';
+
+/**
+ * @type {any}
+ */
+RadialLinearScale.defaults = {
+	display: true,
+
+	// Boolean - Whether to animate scaling the chart from the centre
+	animate: true,
+	position: 'chartArea',
+
+	angleLines: {
+		display: true,
+		color: 'rgba(0,0,0,0.1)',
+		lineWidth: 1,
+		borderDash: [],
+		borderDashOffset: 0.0
+	},
+
+	gridLines: {
+		circular: false
+	},
+
+	// label settings
+	ticks: {
+		// Boolean - Show a backdrop to the scale label
+		showLabelBackdrop: true,
+
+		// String - The colour of the label backdrop
+		backdropColor: 'rgba(255,255,255,0.75)',
+
+		// Number - The backdrop padding above & below the label in pixels
+		backdropPaddingY: 2,
+
+		// Number - The backdrop padding to the side of the label in pixels
+		backdropPaddingX: 2,
+
+		callback: Ticks.formatters.numeric
+	},
+
+	pointLabels: {
+		// Boolean - if true, show point labels
+		display: true,
+
+		// Number - Point label font size in pixels
+		font: {
+			size: 10
+		},
+
+		// Function - Used to convert point labels
+		callback(label) {
+			return label;
+		}
+	}
+};

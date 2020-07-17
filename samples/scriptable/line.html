@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Scriptable > Line | Chart.js sample</title>
 	<link rel="stylesheet" type="text/css" href="../style.css">
-	<script src="../../dist/Chart.min.js"></script>
+	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
 		}
 
 		function adjustRadiusBasedOnData(ctx) {
-			var v = ctx.dataset.data[ctx.dataIndex];
+			var v = ctx.dataPoint.y;
 			return v < 10 ? 5
 				: v < 25 ? 7
 				: v < 50 ? 9

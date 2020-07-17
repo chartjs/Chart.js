@@ -1,25 +1,7 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import {_isPointInArea, drawPoint} from '../helpers/helpers.canvas';
 
-const defaultColor = defaults.color;
-
-defaults.set('elements', {
-	point: {
-		backgroundColor: defaultColor,
-		borderColor: defaultColor,
-		borderWidth: 1,
-		hitRadius: 1,
-		hoverBorderWidth: 1,
-		hoverRadius: 4,
-		pointStyle: 'circle',
-		radius: 3
-	}
-});
-
 export default class Point extends Element {
-
-	static _type = 'point';
 
 	constructor(cfg) {
 		super();
@@ -86,3 +68,25 @@ export default class Point extends Element {
 		return options.radius + options.hitRadius;
 	}
 }
+
+Point.id = 'point';
+
+/**
+ * @type {any}
+ */
+Point.defaults = {
+	borderWidth: 1,
+	hitRadius: 1,
+	hoverBorderWidth: 1,
+	hoverRadius: 4,
+	pointStyle: 'circle',
+	radius: 3
+};
+
+/**
+ * @type {any}
+ */
+Point.defaultRoutes = {
+	backgroundColor: 'color',
+	borderColor: 'color'
+};

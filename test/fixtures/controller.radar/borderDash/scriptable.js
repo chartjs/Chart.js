@@ -25,7 +25,8 @@ module.exports = {
 					borderColor: '#00ff00',
 					borderDash: function(ctx) {
 						return ctx.datasetIndex === 0 ? [5] : [10];
-					}
+					},
+					fill: true,
 				},
 				point: {
 					radius: 10

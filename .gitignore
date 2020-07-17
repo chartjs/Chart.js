@@ -1,17 +1,29 @@
-/_book
+# Deployment
 /coverage
 /custom
 /dist
-/docs/index.md
 /gh-pages
-/jsdoc
-/node_modules
+/helpers
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Docs
+.docusaurus
+.cache-loader
+build/
+
+# Development
 .DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .idea
 .project
 .settings
 .vscode
-bower.json
 *.log
 *.swp
 *.stackdump

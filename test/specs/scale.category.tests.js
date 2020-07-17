@@ -1,119 +1,70 @@
-// Test the category scale
-
 function getLabels(scale) {
 	return scale.ticks.map(t => t.label);
-}
-
-function getValues(scale) {
-	return scale.ticks.map(t => t.value);
 }
 
 describe('Category scale tests', function() {
 	describe('auto', jasmine.fixture.specs('scale.category'));
 
-	it('Should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
+	it('Should register the constructor with the registry', function() {
+		var Constructor = Chart.registry.getScale('category');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('Should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('category');
+		var defaultConfig = Chart.defaults.scales.category;
 		expect(defaultConfig).toEqual({
-			display: true,
-			reverse: false,
-			beginAtZero: false,
-
-			gridLines: {
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true, // draw ticks extending towards the label
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
-			},
-			offset: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
 			ticks: {
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				major: {},
-				lineWidth: 0,
-				strokeStyle: '',
+				callback: Chart.registry.getScale('category').prototype.getLabelForValue
 			}
 		});
-
-		// Is this actually a function
-		expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
 	});
 
 
 	it('Should generate ticks from the data xLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			xLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.position = 'bottom';
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				xLabels: labels,
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
-			id: scaleID
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+					}
+				}
+			}
 		});
 
-		scale.determineDataLimits();
-		scale.ticks = scale.buildTicks();
-		expect(getValues(scale)).toEqual(mockData.xLabels);
+		var scale = chart.scales.x;
+		expect(getLabels(scale)).toEqual(labels);
 	});
 
 	it('Should generate ticks from the data yLabels', function() {
-		var scaleID = 'myScale';
-
-		var mockData = {
-			datasets: [{
-				yAxisID: scaleID,
-				data: [10, 5, 0, 25, 78]
-			}],
-			yLabels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
-		};
-
-		var config = Chart.helpers.clone(Chart.scaleService.getScaleDefaults('category'));
-		config.position = 'left'; // y axis
-		var Constructor = Chart.scaleService.getScaleConstructor('category');
-		var scale = new Constructor({
-			ctx: {},
-			options: config,
-			chart: {
-				data: mockData
+		var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				yLabels: labels,
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
-			id: scaleID
+			options: {
+				scales: {
+					y: {
+						type: 'category'
+					}
+				}
+			}
 		});
 
-		scale.determineDataLimits();
-		scale.ticks = scale.buildTicks();
-		expect(getValues(scale)).toEqual(mockData.yLabels);
+		var scale = chart.scales.y;
+		expect(getLabels(scale)).toEqual(labels);
 	});
 
 	it('Should generate ticks from the axis labels', function() {
@@ -121,7 +72,9 @@ describe('Category scale tests', function() {
 		var chart = window.acquireChart({
 			type: 'line',
 			data: {
-				data: [10, 5, 0, 25, 78]
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}]
 			},
 			options: {
 				scales: {
@@ -466,11 +419,9 @@ describe('Category scale tests', function() {
 
 	it('Should get the correct pixel for an object value in a horizontal bar chart', function() {
 		var chart = window.acquireChart({
-			type: 'horizontalBar',
+			type: 'bar',
 			data: {
 				datasets: [{
-					xAxisID: 'x',
-					yAxisID: 'y',
 					data: [
 						{x: 10, y: 0},
 						{x: 5, y: 1},
@@ -482,6 +433,7 @@ describe('Category scale tests', function() {
 				labels: [0, 1, 2, 3]
 			},
 			options: {
+				indexAxis: 'y',
 				scales: {
 					x: {
 						type: 'linear',

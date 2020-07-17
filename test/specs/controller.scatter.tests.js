@@ -1,4 +1,6 @@
 describe('Chart.controllers.scatter', function() {
+	describe('auto', jasmine.fixture.specs('controller.scatter'));
+
 	it('should be registered as dataset controller', function() {
 		expect(typeof Chart.controllers.scatter).toBe('function');
 	});
@@ -28,52 +30,5 @@ describe('Chart.controllers.scatter', function() {
 		});
 
 		jasmine.triggerMouseEvent(chart, 'mousemove', point);
-	});
-
-	describe('showLines option', function() {
-		it('should not draw a line if undefined', function() {
-			var chart = window.acquireChart({
-				type: 'scatter',
-				data: {
-					datasets: [{
-						data: [{x: 10, y: 15}],
-						label: 'dataset1'
-					}],
-				},
-				options: {}
-			});
-
-			var meta = chart.getDatasetMeta(0);
-			spyOn(meta.dataset, 'draw');
-			spyOn(meta.data[0], 'draw');
-
-			chart.update();
-
-			expect(meta.dataset.draw.calls.count()).toBe(0);
-			expect(meta.data[0].draw.calls.count()).toBe(1);
-		});
-
-		it('should draw a line if true', function() {
-			var chart = window.acquireChart({
-				type: 'scatter',
-				data: {
-					datasets: [{
-						data: [{x: 10, y: 15}],
-						showLine: true,
-						label: 'dataset1'
-					}],
-				},
-				options: {}
-			});
-
-			var meta = chart.getDatasetMeta(0);
-			spyOn(meta.dataset, 'draw');
-			spyOn(meta.data[0], 'draw');
-
-			chart.update();
-
-			expect(meta.dataset.draw.calls.count()).toBe(1);
-			expect(meta.data[0].draw.calls.count()).toBe(1);
-		});
 	});
 });
