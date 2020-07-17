@@ -409,7 +409,7 @@ export default class BarController extends DatasetController {
 		// So we don't try to draw so huge rectangles.
 		// https://github.com/chartjs/Chart.js/issues/5247
 		// TODO: use borderWidth instead (need to move the parsing from rectangle)
-		const base = _limitValue(vScale.getPixelForValue(start),
+		let base = _limitValue(vScale.getPixelForValue(start),
 			vScale._startPixel - 10,
 			vScale._endPixel + 10);
 
@@ -418,6 +418,9 @@ export default class BarController extends DatasetController {
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = size < 0 ? -minBarLength : minBarLength;
+			if (value === 0) {
+				base -= size / 2;
+			}
 			head = base + size;
 		}
 
