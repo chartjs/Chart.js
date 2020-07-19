@@ -292,7 +292,6 @@ export class Legend extends Element {
 		const opts = me.options;
 		const labelOpts = opts.labels;
 		const defaultColor = defaults.color;
-		const lineDefault = defaults.elements.line;
 		const legendHeight = me.height;
 		const columnHeights = me.columnHeights;
 		const legendWidth = me.width;
@@ -332,17 +331,17 @@ export class Legend extends Element {
 			// Set the ctx for the box
 			ctx.save();
 
-			const lineWidth = valueOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+			const lineWidth = valueOrDefault(legendItem.lineWidth, 1);
 			ctx.fillStyle = valueOrDefault(legendItem.fillStyle, defaultColor);
-			ctx.lineCap = valueOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
-			ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-			ctx.lineJoin = valueOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
+			ctx.lineCap = valueOrDefault(legendItem.lineCap, 'butt');
+			ctx.lineDashOffset = valueOrDefault(legendItem.lineDashOffset, 0);
+			ctx.lineJoin = valueOrDefault(legendItem.lineJoin, 'miter');
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, defaultColor);
 
 			if (ctx.setLineDash) {
 				// IE 9 and 10 do not support line dash
-				ctx.setLineDash(valueOrDefault(legendItem.lineDash, lineDefault.borderDash));
+				ctx.setLineDash(valueOrDefault(legendItem.lineDash, []));
 			}
 
 			if (labelOpts && labelOpts.usePointStyle) {
