@@ -6,7 +6,7 @@ describe('Chart namespace', function() {
 		it('should define "core" properties', function() {
 			expect(Chart instanceof Function).toBeTruthy();
 			expect(Chart.Animation instanceof Object).toBeTruthy();
-			expect(Chart.animationService instanceof Object).toBeTruthy();
+			expect(Chart.Animations instanceof Object).toBeTruthy();
 			expect(Chart.defaults instanceof Object).toBeTruthy();
 			expect(Chart.Element instanceof Object).toBeTruthy();
 			expect(Chart.Interaction instanceof Object).toBeTruthy();
