@@ -4,10 +4,12 @@ title: Getting Started
 
 Let's get started using Chart.js!
 
-First, we need to have a canvas in our page.
+First, we need to have a canvas in our page. It's recommended to give the chart its own container for [responsiveness](../general/responsive.md).
 
 ```html
-<canvas id="myChart"></canvas>
+<div>
+  <canvas id="myChart"></canvas>
+</div>
 ```
 
 Now that we have a canvas we can use, we need to include Chart.js in our page.
