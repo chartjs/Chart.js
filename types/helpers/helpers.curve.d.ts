@@ -1,5 +1,3 @@
-import { IPoint } from "..";
-
 export interface ISplinePoint {
   x: number;
   y: number;
@@ -12,7 +10,7 @@ export interface ISplinePoint {
 export function splineCurve(
   firstPoint: ISplinePoint & { skip?: boolean },
   middlePoint: ISplinePoint,
-  afterPoint: IPoint,
+  afterPoint: ISplinePoint,
   t: number
 ): {
   previous: ISplinePoint;

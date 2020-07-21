@@ -26,14 +26,14 @@ export declare type PointStyle =
   | HTMLCanvasElement;
 
 
-export interface IPointOptions {
+export interface IDrawPointOptions {
   pointStyle: PointStyle;
   rotation?: number;
   radius: number;
   borderWidth: number;
 }
 
-export function drawPoint(ctx: CanvasRenderingContext2D, options: IPointOptions, x: number, y: number): void;
+export function drawPoint(ctx: CanvasRenderingContext2D, options: IDrawPointOptions, x: number, y: number): void;
 
 export interface IFontSpec {
   size: number;
