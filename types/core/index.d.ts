@@ -1,4 +1,4 @@
-import { TimeUnit, IChartComponent, IChartArea, IPoint, IChartDataset, IChartConfiguration, IChartOptions, IChartData, IFontSpec, EasingFunction, ColorLike } from "./interfaces";
+import { TimeUnit, IChartComponent, IChartArea, IPoint, IChartDataset, IChartConfiguration, IChartOptions, IChartData, IFontSpec, EasingFunction, Color, Scriptable } from "./interfaces";
 import { IEvent, BasePlatform } from "../platform";
 import { IPlugin } from "../plugins";
 
@@ -102,15 +102,7 @@ export class Animations {
     update(target: any, values: any): undefined | boolean;
 }
 
-export interface IAnimationPropertySpec {
-    properties: string[];
-
-    /**
-     * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
-     */
-    type: 'color' | 'number' | 'boolean';
-    fn: <T>(from: T, to: T, factor: number) => T;
-
+export interface IAnimationCommonSpec {
     /**
      * The number of milliseconds an animation takes.
      * @default 1000
@@ -149,46 +141,47 @@ export interface IAnimationPropertySpec {
      */
     loop: boolean;
 
+}
+
+export interface IAnimationPropertySpec extends IAnimationCommonSpec {
+    properties: string[];
+
+    /**
+     * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
+     */
+    type: 'color' | 'number' | 'boolean';
+
+    fn: <T>(from: T, to: T, factor: number) => T;
+
     /**
      * Start value for the animation. Current value is used when undefined
      */
-    from: ColorLike | number | boolean;
+    from: Color | number | boolean;
     /**
      *
      */
-    to: ColorLike | number | boolean;
-
+    to: Color | number | boolean;
 }
 
-export interface IAnimationOptions {
-    duration: number;
-    easing: string; // TODO one of the helpers easing
 
-    colors: IAnimationPropertySpec,
-    numbers: IAnimationPropertySpec,
-
-    active: {
-        duration: number;
-    }
-    resize: {
-        duration: number;
-    }
-    show: {
-        colors:IAnimationPropertySpec,
-        visible: {
-            type: 'boolean',
-            duration: number;
-        }
-    },
-    hide: {
-        colors: IAnimationPropertySpec,
-        visible: {
-            type: 'boolean',
-            easing: string;
-        }
-    }
+export declare type IAnimationSpecContainer = IAnimationCommonSpec & {
+    [prop: string]: IAnimationPropertySpec;
 }
 
+export declare type IAnimationOptions = IAnimationSpecContainer & {
+    active: IAnimationSpecContainer;
+    hide: IAnimationSpecContainer;
+    reset: IAnimationSpecContainer;
+    resize: IAnimationSpecContainer;
+    show: IAnimationSpecContainer;
+}
+
+export interface IChartOptions {
+    animation: Scriptable<IAnimationOptions>;
+    dataset: {
+        animation: Scriptable<IAnimationOptions>;
+    }
+}
 
 export interface IChartMeta<E extends Element = Element, DSE extends Element = Element> {
     type: string;

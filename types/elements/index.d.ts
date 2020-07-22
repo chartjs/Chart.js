@@ -1,4 +1,4 @@
-import { IPoint, IChartComponent, IChartArea, ColorLike } from "../core/interfaces";
+import { IPoint, IChartComponent, IChartArea, Color } from "../core/interfaces";
 import { Element } from "../core";
 
 export interface IVisualElement {
@@ -12,8 +12,8 @@ export interface IVisualElement {
 
 export interface ICommonOptions {
   borderWidth: number;
-  borderColor: ColorLike;
-  backgroundColor: ColorLike;
+  borderColor: Color;
+  backgroundColor: Color;
 }
 
 export interface ISegment {

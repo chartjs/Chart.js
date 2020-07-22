@@ -1,23 +1,23 @@
 export function color(value: CanvasGradient): CanvasGradient;
 export function color(value: CanvasPattern): CanvasPattern;
 
-export interface Color {
+export interface ColorModel {
   rgbString(): string;
   hexString(): string;
   hslString(): string;
   rgb: { r: number; g: number; b: number; a: number };
   valid: boolean;
-  mix(color: Color, weight: number): this;
-  clone(): Color;
-  alpha(a: number): Color;
-  clearer(ration: number): Color;
-  greyscale(): Color;
-  opaquer(ratio: number): Color;
-  negate(): Color;
-  lighten(ratio: number): Color;
-  darken(ratio: number): Color;
-  saturate(ratio: number): Color;
-  desaturate(ratio: number): Color;
+  mix(color: ColorModel, weight: number): this;
+  clone(): ColorModel;
+  alpha(a: number): ColorModel;
+  clearer(ration: number): ColorModel;
+  greyscale(): ColorModel;
+  opaquer(ratio: number): ColorModel;
+  negate(): ColorModel;
+  lighten(ratio: number): ColorModel;
+  darken(ratio: number): ColorModel;
+  saturate(ratio: number): ColorModel;
+  desaturate(ratio: number): ColorModel;
   rotate(deg: number): this;
 }
 export function color(
@@ -26,7 +26,7 @@ export function color(
     | { r: number; g: number; b: number; a: number }
     | [number, number, number]
     | [number, number, number, number]
-): Color;
+): ColorModel;
 
 export function getHoverColor(value: CanvasGradient): CanvasGradient;
 export function getHoverColor(value: CanvasPattern): CanvasPattern;

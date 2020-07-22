@@ -2,7 +2,7 @@ import { InteractionMode, Element, Chart } from ".";
 import { IEvent } from "../platform";
 import { ITooltipOptions } from "../plugins";
 
-export type ColorLike = string | CanvasGradient| CanvasPattern;
+export type Color = string | CanvasGradient| CanvasPattern;
 
 export interface IPoint {
     x: number;
@@ -66,7 +66,8 @@ export interface IScriptableContext {
     active: boolean;
 }
 
-export declare type ScriptableAndArray<T> = T | readonly T[] | ((ctx: IScriptableContext) => T);
+export declare type Scriptable<T> = T | ((ctx: IScriptableContext) => T);
+export declare type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
 export declare type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
 
 export interface IHoverInteractionOptions {
@@ -141,7 +142,11 @@ export interface IChartOptions {
 
     tooltips: ITooltipOptions;
 
-    elements: {[key: string]: IElementOptions }
+    elements: {[key: string]: IElementOptions };
+
+    layout: {
+        padding: number | IChartArea;
+    }
 }
 
 export type EasingFunction = 'linear' | 'easeInQuad' | 'easeOutQuad' | 'easeInOutQuad' | 'easeInCubic' | 'easeOutCubic' | 'easeInOutCubic' |
@@ -154,7 +159,7 @@ export interface IFontSpec {
      * Default font color for all text.
      * @default '#666'
      */
-    color: ColorLike;
+    color: Color;
     /**
      * Default font family for all text, follows CSS font-family options.
      * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
