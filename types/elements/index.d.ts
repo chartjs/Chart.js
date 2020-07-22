@@ -1,5 +1,6 @@
 import { IPoint, IChartComponent, IChartArea, Color } from "../core/interfaces";
 import { Element } from "../core";
+import { PointStyle } from "../helpers";
 
 export interface IVisualElement {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -32,6 +33,14 @@ export interface IArcProps {
   circumference: number;
 }
 export interface IArcOptions extends ICommonOptions {
+  /**
+   * Arc angle to cover. - for polar only
+   * @default circumference / (arc count)
+   */
+  angle: number;
+  /**
+   * Arc stroke alignment.
+   */
   borderAlign: 'center' | 'inner';
 }
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
@@ -44,14 +53,51 @@ export interface Arc extends IChartComponent {
 }
 
 export interface ILineProps { }
+
 export interface ILineOptions extends ICommonOptions {
+  /**
+   * Line cap style. See MDN.
+   * @default 'butt'
+   */
   borderCapStyle: CanvasLineCap;
+  /**
+   * Line dash. See MDN.
+   * @default []
+   */
   borderDash: number[];
+  /**
+   * Line dash offset. See MDN.
+   * @default 0.0
+   */
   borderDashOffset: number;
+  /**
+   * Line join style. See MDN.
+   * @default 'miter'
+   */
   borderJoinStyle: CanvasLineJoin;
+  /**
+   * 	true to keep Bézier control inside the chart, false for no restriction.
+   * @default true
+   */
   capBezierPoints: boolean;
-  fill: boolean;
+  /**
+   * Interpolation mode to apply. See more...
+   * @default 'default'
+   */
+  cubicInterpolationMode: string;
+  /**
+   * 	How to fill the area under the line. See area charts.
+   */
+  fill: boolean | string;
+  /**
+   * Bézier curve tension (0 for no Bézier curves).
+   * @default 0.4 or 0 // TODO
+   */
   tension: number;
+  /**
+   * true to show the line as a stepped line (tension will be ignored).
+   * @default false
+   */
   stepped: 'before' | 'after' | 'middle' | boolean;
 }
 export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
@@ -76,23 +122,36 @@ export interface IPointProps {
   y: number;
 }
 export interface IPointOptions extends ICommonOptions {
+  /**
+   * Point radius
+   * @default 3
+   */
   radius: number;
+  /**
+   * Extra radius added to point radius for hit detection.
+   * @default 1
+   */
   hitRadius: number;
+  /**
+   * Point radius when hovered.
+   * @default 4
+   */
   hoverRadius: number;
+  /**
+   * Stroke width when hovered.
+   * @default 1
+   */
   hoverBorderWidth: number;
-  pointStyle:
-  | 'circle'
-  | 'cross'
-  | 'crossRot'
-  | 'dash'
-  | 'line'
-  | 'rect'
-  | 'rectRounded'
-  | 'rectRot'
-  | 'star'
-  | 'triangle'
-  | HTMLImageElement
-  | HTMLCanvasElement;
+  /**
+   * Point style
+   * @default 'circle;
+   */
+  pointStyle: PointStyle;
+  /**
+   * Point rotation (in degrees).
+   * @default 0
+   */
+  rotation: number;
 }
 export interface Point<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
   extends Element<T, O>,
@@ -113,6 +172,10 @@ export interface IRectangleProps {
   height: number;
 }
 export interface IRectangleOptions extends ICommonOptions {
+  /**
+   * 	Skipped (excluded) border: 'start', 'end', 'bottom', 'left', 'top' or 'right'.
+   * @default 'start'
+   */
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 }
 
