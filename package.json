@@ -31,7 +31,7 @@
     "autobuild": "rollup -c -w",
     "build": "rollup -c",
     "dev": "karma start ---auto-watch --no-single-run --browsers chrome --grep",
-    "docs": "cd docs && npm install && npm run build && mkdir -p ../dist && cp -r build ../dist/docs",
+    "docs": "cd docs && npm install && npm run build",
     "lint-js": "eslint samples/**/*.html samples/**/*.js src/**/*.js test/**/*.js",
     "lint-tsc": "tsc",
     "lint": "concurrently \"npm:lint-*\"",
