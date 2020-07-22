@@ -1,6 +1,6 @@
-import { TimeUnit, IChartComponent, IChartArea, IPoint, IChartDataset, IChartConfiguration, IChartOptions, IChartData } from "./interfaces";
-import { IEvent, BasePlatform } from "./platform";
-import { IPlugin } from "./plugins";
+import { TimeUnit, IChartComponent, IChartArea, IPoint, IChartDataset, IChartConfiguration, IChartOptions, IChartData, IFontSpec, EasingFunction, ColorLike } from "./interfaces";
+import { IEvent, BasePlatform } from "../platform";
+import { IPlugin } from "../plugins";
 
 export interface IDateAdapter {
 
@@ -102,21 +102,70 @@ export class Animations {
     update(target: any, values: any): undefined | boolean;
 }
 
+export interface IAnimationPropertySpec {
+    properties: string[];
+
+    /**
+     * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
+     */
+    type: 'color' | 'number' | 'boolean';
+    fn: <T>(from: T, to: T, factor: number) => T;
+
+    /**
+     * The number of milliseconds an animation takes.
+     * @default 1000
+     */
+    duration: number;
+    /**
+     * Easing function to use
+     * @default 'easeOutQuart'
+     */
+    easing: EasingFunction;
+
+    /**
+     * Running animation count + FPS display in upper left corner of the chart.
+     * @default false
+     */
+    debug: boolean;
+
+    /**
+     * Callback called on each step of an animation. more...
+     */
+    onProgress: (this: Chart, event: IAnimationEvent) => void;
+    /**
+     *Callback called when all animations are completed. more...
+     */
+    onComplete: (this: Chart, event: IAnimationEvent) => void;
+
+    /**
+     * Delay before starting the animations.
+     * @default 0
+     */
+    delay: number;
+
+    /**
+     * 	If set to true, the animations loop endlessly.
+     * @default false
+     */
+    loop: boolean;
+
+    /**
+     * Start value for the animation. Current value is used when undefined
+     */
+    from: ColorLike | number | boolean;
+    /**
+     *
+     */
+    to: ColorLike | number | boolean;
+
+}
+
 export interface IAnimationOptions {
     duration: number;
     easing: string; // TODO one of the helpers easing
 
-    onProgress: (this: Chart, event: IAnimationEvent) => void;
-    onComplete: (this: Chart, event: IAnimationEvent) => void;
-
-    colors: {
-        type: 'color',
-        properties: string[];
-    },
-    numbers: {
-        type: 'number',
-        properties: string[];
-    }
+    colors: IAnimationPropertySpec,
+    numbers: IAnimationPropertySpec,
 
     active: {
         duration: number;
@@ -125,22 +174,14 @@ export interface IAnimationOptions {
         duration: number;
     }
     show: {
-        colors: {
-            type: 'color';
-            properties: string[];
-            from: string;
-        },
+        colors:IAnimationPropertySpec,
         visible: {
             type: 'boolean',
             duration: number;
         }
     },
     hide: {
-        colors: {
-            type: 'color';
-            properties: string[];
-            to: string;
-        },
+        colors: IAnimationPropertySpec,
         visible: {
             type: 'boolean',
             easing: string;
@@ -318,26 +359,19 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
     protected getMinMax(scale: Scale, canStack?: boolean): { min: number; max: number };
 }
 
-export interface IDatasetControllerOptions {
-    datasetElementType?: string | null;
-    dataElementType?: string | null;
-    dataElementOptions: string[];
-    datasetElementOptions: string[] | { [key: string]: string };
+export interface IDatasetControllerChartComponent extends IChartComponent {
+    defaults:  {
+        datasetElementType?: string | null | false;
+        dataElementType?: string | null | false;
+        dataElementOptions: string[];
+        datasetElementOptions: string[] | { [key: string]: string };
+    }
 }
 
 export class Defaults {
     readonly color: string;
     readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
-    readonly font: {
-        color: string;
-        family: string;
-        size: number;
-        style: number;
-        lineHeight: number;
-        weight: null | number;
-        lineWidth: number;
-        strokeStyle?: string;
-    };
+    readonly font: IFontSpec;
     readonly hover: {
         onHover?: () => void;
         mode: InteractionMode | string;

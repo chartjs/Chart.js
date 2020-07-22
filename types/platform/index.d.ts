@@ -1,4 +1,4 @@
-import { Chart } from "./core";
+import { Chart } from "../core";
 
 export interface IEvent {
     type: 'contextmenu' | 'mouseenter' | 'mousedown' | 'mousemove' | 'mouseup' | 'mouseout' | 'click' | 'dblclick' | 'keydown' | 'keypress' | 'keyup' | 'resize';

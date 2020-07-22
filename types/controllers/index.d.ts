@@ -1,5 +1,23 @@
-import { IChartComponent } from "./interfaces";
-import { Chart, DatasetController } from "./core";
+import { IChartComponent } from "../core/interfaces";
+import { Chart, DatasetController } from "../core";
+import { ICategoryScaleOptions, ILinearScaleOptions } from "../scales";
+
+export interface IDatasetControllerOptions {
+
+    datasets: {
+
+    }
+}
+
+export interface IBarControllerDatasetOptions {
+    categoryPercentage: number;
+    barPercentage: number;
+}
+
+export interface IBarControllerScales {
+    _index_: ICategoryScaleOptions;
+    _value_: ILinearScaleOptions;
+}
 
 export interface BarController extends DatasetController { }
 export const BarController: IChartComponent & {
@@ -27,6 +45,20 @@ export const DoughnutController: IChartComponent & {
     prototype: DoughnutController;
     new(chart: Chart, datasetIndex: number): DoughnutController;
 };
+
+export interface ILineControllerDatasetOptions {
+    spanGap: boolean;
+    showLine: boolean;
+
+    pointRadius: number;
+}
+
+export interface ILineControllerOptions {
+    spanGaps: boolean;
+    showLines: boolean;
+
+    pointRadius: number;
+}
 
 export interface LineController extends DatasetController { }
 export const LineController: IChartComponent & {

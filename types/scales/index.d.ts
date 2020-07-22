@@ -1,5 +1,5 @@
-import { TimeUnit, IChartComponent } from "./interfaces";
-import { IScaleOptions, Scale } from "./core";
+import { TimeUnit, IChartComponent, IFontSpec } from "../core/interfaces";
+import { IScaleOptions, Scale } from "../core";
 
 export interface ICategoryScaleOptions extends IScaleOptions { }
 
@@ -8,6 +8,24 @@ export const CategoryScale: IChartComponent & {
   prototype: CategoryScale;
   new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(): CategoryScale<O>;
 };
+
+export type ILinearBaseScaleOptions = IScaleOptions & {
+  min?: number;
+  max?: number;
+
+  locale: string;
+
+  ticks: {
+    suggestedMin?: number;
+    suggestedMax?: number;
+    precision: number;
+    fixedStepSize: number;
+    maxTicksLimit: number;
+  }
+}
+
+export interface ILinearScaleOptions extends IScaleOptions { }
+
 export interface LinearScale extends Scale { }
 export const LinearScale: IChartComponent & {
   prototype: LinearScale;
@@ -43,9 +61,7 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
 
   pointLabels: {
     display: boolean;
-    font: {
-      size: number;
-    }
+    font: Partial<IFontSpec>;
 
     callback: (label: string) => string;
   }

@@ -1,5 +1,8 @@
-import { IEvent } from './platform';
-import { Chart, IChartMeta } from './core';
+import { IEvent } from '../platform';
+import { Chart, IChartMeta, LayoutPosition, InteractionMode, IAnimationPropertySpec, Element } from '../core';
+import { IFontSpec, TextAlign, EasingFunction, ColorLike } from '../core/interfaces';
+import { number, string } from 'yargs';
+import { PointStyle } from '../helpers/helpers.canvas';
 
 export interface IPlugin<O = {}> {
     id: string;
@@ -212,8 +215,69 @@ export interface IPlugin<O = {}> {
 }
 
 export const Filler: IPlugin;
+
+export interface IFillerOptions {
+    propagate: boolean;
+}
+
 export const Legend: IPlugin;
+
+export interface ILegendItem {
+    lineWidth: number;
+    fillStyle: string;
+    lineCap: CanvasLineCap;
+    lineDashOffset: number;
+    lineDash: number[];
+    lineJoin: CanvasLineJoin;
+    strokeStyle: string;
+
+    pointStyle: PointStyle;
+    rotation: number;
+    text: string;
+    hidden: boolean;
+}
+
+export class LegendObject extends Element {
+
+}
+
+export interface ILegendOptions {
+    display: boolean;
+    position: LayoutPosition;
+    align: TextAlign,
+    fullWidth: boolean;
+    reverse: boolean;
+    weight: number;
+
+    onClick(this: LegendObject, e: IEvent, legendItem: ILegendItem, legend: LegendObject): void;
+    onHover(this: LegendObject, e: IEvent, legendItem: ILegendItem, legend: LegendObject): void;
+    onLeave(this: LegendObject, e: IEvent, legendItem: ILegendItem, legend: LegendObject): void;
+
+    labels: {
+        boxWidth: number;
+        padding: number;
+        generateLabels(chart: Chart): ILegendItem[];
+    },
+
+    title: {
+        display: boolean,
+        position: 'center' | 'start' | 'end',
+        text: string;
+    }
+}
+
 export const Title: IPlugin;
+
+export interface ITitleOptions {
+    align: 'center',
+    display: boolean;
+    font: Partial<IFontSpec>;
+    fullWidth: boolean;
+    padding: number;
+    position: LayoutPosition;
+    text: string;
+    weight: number;
+}
 
 export class TooltipObject {
 
@@ -223,7 +287,62 @@ export const Tooltip: IPlugin & {
     readonly positioners: { [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number } };
 };
 
+export interface ITooltipOptions {
+    enabled: boolean,
+    custom(tooltip: TooltipObject, args: {chart: Chart, tooltip: TooltipObject}): void;
+    mode: InteractionMode,
+    position: 'average' | 'nearest',
+    intersect: boolean;
+    backgroundColor: ColorLike;
+    titleFont: Partial<IFontSpec>;
+    titleSpacing: number;
+    titleMarginBottom: number;
+    titleAlign: TextAlign;
+    bodySpacing: number;
+    bodyFont: Partial<IFontSpec>;
+    bodyAlign: TextAlign;
+    footerSpacing:number;
+    footerMarginTop: number;
+    footerFont: Partial<IFontSpec>;
+    footerAlign: TextAlign;
+    yPadding: number;
+    xPadding: number;
+    caretPadding:  number;
+    caretSize:  number;
+    cornerRadius:  number;
+    multiKeyBackground: ColorLike;
+    displayColors: boolean;
+    borderColor: ColorLike;
+    borderWidth: number;
+    animation: {
+        duration: number,
+        easing: EasingFunction,
+        numbers: IAnimationPropertySpec;
+        opacity: {
+            easing: 'linear',
+            duration: 200
+        }
+    },
+    callbacks: {
+        beforeTitle(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+        title(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+        afterTitle(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
 
+        beforeBody(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+        afterBody(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+
+        beforeLabel(this: TooltipObject, tooltipItem: ITooltipItem): string;
+        label(this: TooltipObject, tooltipItem: ITooltipItem): string;
+        afterLabel(this: TooltipObject, tooltipItem: ITooltipItem): string;
+
+        labelColor(this: TooltipObject, tooltipItem: ITooltipItem): {borderColor: ColorLike, backgroundColor: ColorLike};
+        labelTextColor(this: TooltipObject, tooltipItem: ITooltipItem): ColorLike;
+
+        beforeFooter(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+        footer(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+        afterFooter(this: TooltipObject, tooltipItems: ITooltipItem[]): string;
+    }
+}
 
 export interface ITooltipItem {
     chart: Chart;

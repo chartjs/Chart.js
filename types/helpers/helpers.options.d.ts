@@ -1,12 +1,6 @@
-export interface IFullFontSpec {
-  color: string;
-  family: string;
-  lineHeight: number;
-  lineWidth: number;
-  size: number;
-  style: string;
-  weight: string | null;
-  strokeStyle: string | null;
+import {IFontSpec} from '../interfaces';
+
+export interface IFontCanvasSpec extends IFontSpec {
   string: string;
 }
 /**
@@ -14,7 +8,7 @@ export interface IFullFontSpec {
  * @param {object} options - A object that contains font options to be parsed.
  * @return {object} The font object.
  */
-export function toFont(options: Partial<Omit<IFullFontSpec, 'string'>>): IFullFontSpec;
+export function toFont(options: Partial<IFontSpec>): IFontCanvasSpec;
 
 /**
  * Converts the given line height `value` in pixels for a specific font `size`.

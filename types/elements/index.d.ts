@@ -1,5 +1,5 @@
-import { IPoint, IChartComponent, IChartArea } from "./interfaces";
-import { Element } from "./core";
+import { IPoint, IChartComponent, IChartArea, ColorLike } from "../core/interfaces";
+import { Element } from "../core";
 
 export interface IVisualElement {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -12,8 +12,8 @@ export interface IVisualElement {
 
 export interface ICommonOptions {
   borderWidth: number;
-  borderColor: string;
-  backgroundColor: string;
+  borderColor: ColorLike;
+  backgroundColor: ColorLike;
 }
 
 export interface ISegment {

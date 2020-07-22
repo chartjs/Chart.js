@@ -35,7 +35,7 @@ export interface IDrawPointOptions {
 
 export function drawPoint(ctx: CanvasRenderingContext2D, options: IDrawPointOptions, x: number, y: number): void;
 
-export interface IFontSpec {
+export interface ICanvasFontSpec {
   size: number;
   family: string;
   style?: string;
@@ -46,4 +46,4 @@ export interface IFontSpec {
  * @param font a font object
  * @return The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  */
-export function toFontString(font: IFontSpec): string | null;
+export function toFontString(font: ICanvasFontSpec): string | null;
