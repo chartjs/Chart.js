@@ -3,7 +3,6 @@ import { IEvent, BasePlatform } from "../platform";
 import { IPlugin } from "../plugins";
 
 export interface IDateAdapter {
-
     /**
        * Returns a map of time formats for the supported formatting units defined
        * in Unit as well as 'datetime' representing a detailed date/time string.
@@ -121,15 +120,6 @@ export interface IAnimationCommonSpec {
     debug: boolean;
 
     /**
-     * Callback called on each step of an animation. more...
-     */
-    onProgress: (this: Chart, event: IAnimationEvent) => void;
-    /**
-     *Callback called when all animations are completed. more...
-     */
-    onComplete: (this: Chart, event: IAnimationEvent) => void;
-
-    /**
      * Delay before starting the animations.
      * @default 0
      */
@@ -169,6 +159,15 @@ export declare type IAnimationSpecContainer = IAnimationCommonSpec & {
 }
 
 export declare type IAnimationOptions = IAnimationSpecContainer & {
+    /**
+     * Callback called on each step of an animation. more...
+     */
+    onProgress: (this: Chart, event: IAnimationEvent) => void;
+    /**
+     *Callback called when all animations are completed. more...
+     */
+    onComplete: (this: Chart, event: IAnimationEvent) => void;
+
     active: IAnimationSpecContainer;
     hide: IAnimationSpecContainer;
     reset: IAnimationSpecContainer;
