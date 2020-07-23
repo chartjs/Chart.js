@@ -8,6 +8,7 @@ import {
   IChartConfiguration,
   IChartData,
   IChartDataset,
+  IChartOptions,
   IFontSpec,
   IPoint,
   Scriptable,
@@ -184,7 +185,7 @@ export type IAnimationOptions = IAnimationSpecContainer & {
   show: IAnimationSpecContainer;
 };
 
-export interface IChartOptions {
+export interface IChartAnimationOptions {
   animation: Scriptable<IAnimationOptions>;
   dataset: {
     animation: Scriptable<IAnimationOptions>;
