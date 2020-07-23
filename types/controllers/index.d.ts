@@ -1,8 +1,7 @@
-import { IChartComponent, Color, ScriptableAndArray, ScriptableOptions, IChartArea } from "../core/interfaces";
+import { IChartComponent, Color, ScriptableAndArray, ScriptableOptions, IChartArea, ScriptableAndArrayOptions } from "../core/interfaces";
 import { Chart, DatasetController } from "../core";
 import { ICategoryScaleOptions, ILinearScaleOptions } from "../scales";
-import { PointStyle } from "../helpers";
-import { ILineOptions, IRectangleOptions } from '../elements';
+import { ILineOptions, IRectangleOptions, ICommonHoverOptions, IPointOptions, IHoverPointOptions, IArcOptions, IArcHoverOptions, ILineHoverOptions, IPointPrefixedHoverOptions, IPointPrefixedOptions } from '../elements';
 
 
 export interface IControllerDatasetOptions {
@@ -20,19 +19,7 @@ export interface IControllerDatasetOptions {
     order: number;
 }
 
-export interface IBarControllerDatasetOptions extends IControllerDatasetOptions, ScriptableAndArray<IRectangleOptions> {
-    /**
-     * The bar background color when hovered.
-     */
-    hoverBackgroundColor: ScriptableAndArray<Color>;
-    /**
-     * The bar border color when hovered.
-     */
-    hoverBorderColor: ScriptableAndArray<Color>;
-    /**
-     * The bar border width when hovered (in pixels).
-     */
-    hoverBorderWidth: ScriptableAndArray<number>;
+export interface IBarControllerDatasetOptions extends IControllerDatasetOptions, ScriptableAndArrayOptions<IRectangleOptions>, ScriptableAndArrayOptions<ICommonHoverOptions> {
     /**
      * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.
      * @default 'x'
@@ -90,80 +77,34 @@ export const BarController: IChartComponent & {
     new(chart: Chart, datasetIndex: number): BarController;
 };
 
+export interface IBubbleControllerDatasetOptions extends IControllerDatasetOptions, ScriptableAndArrayOptions<IPointOptions>, ScriptableAndArrayOptions<IHoverPointOptions> {
+
+}
+
+export interface IBubbleDataPoint {
+    /**
+     * X Value
+     */
+    x: number;
+
+    /**
+     * Y Value
+     */
+    y: number;
+
+    /**
+     * Bubble radius in pixels (not scaled).
+     */
+    r: number;
+}
+
 export interface BubbleController extends DatasetController { }
 export const BubbleController: IChartComponent & {
     prototype: BubbleController;
     new(chart: Chart, datasetIndex: number): BubbleController;
 };
 
-export interface DoughnutController extends DatasetController {
-    readonly innerRadius: number;
-    readonly outerRadius: number;
-    readonly offsetX: number;
-    readonly offsetY: number;
-
-    getRingIndex(datasetIndex): number;
-    calculateTotal(): number;
-    calculateCircumference(value: number): number;
-}
-export const DoughnutController: IChartComponent & {
-    prototype: DoughnutController;
-    new(chart: Chart, datasetIndex: number): DoughnutController;
-};
-
-export interface IPointControllerOptions {
-    /**
-     * The fill color for points.
-     */
-    pointBackgroundColor: ScriptableAndArray<Color>;
-    /**
-     * The border color for points.
-     */
-    pointBorderColor: ScriptableAndArray<Color>;
-    /**
-     * The width of the point border in pixels.
-     */
-    pointBorderWidth: ScriptableAndArray<number>;
-    /**
-     * The pixel size of the non-displayed point that reacts to mouse events.
-     */
-    pointHitRadius: ScriptableAndArray<number>;
-    /**
-     * The radius of the point shape. If set to 0, the point is not rendered.
-     */
-    pointRadius: ScriptableAndArray<number>;
-    /**
-     * The rotation of the point in degrees.
-     */
-    pointRotation: ScriptableAndArray<number>;
-    /**
-     * Style of the point. more...
-     */
-    pointStyle: ScriptableAndArray<PointStyle>;
-    /**
-     * Point background color when hovered.
-     */
-    pointHoverBackgroundColor: ScriptableAndArray<Color>;
-    /**
-     * Point border color when hovered.
-     */
-    pointHoverBorderColor: ScriptableAndArray<Color>;
-    /**
-     * Border width of point when hovered.
-     */
-    pointHoverBorderWidth: ScriptableAndArray<number>;
-    /**
-     * The radius of the point when hovered.
-     */
-    pointHoverRadius: ScriptableAndArray<number>;
-}
-
-export interface ILineControllerDatasetOrGeneralOptions extends IPointControllerOptions {
-
-}
-
-
-export interface ILineControllerDatasetOptions extends IControllerDatasetOptions, ILineControllerDatasetOrGeneralOptions, ScriptableOptions<ILineOptions> {
+export interface ILineControllerDatasetOptions extends IControllerDatasetOptions, ScriptableAndArrayOptions<IPointPrefixedOptions>, ScriptableAndArrayOptions<IPointPrefixedHoverOptions>, ScriptableOptions<ILineOptions> {
     /**
      * The ID of the x axis to plot this dataset on.
      */
@@ -173,11 +114,16 @@ export interface ILineControllerDatasetOptions extends IControllerDatasetOptions
      */
     yAxisID: string;
 
-    spanGap: boolean;
+    /**
+     * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
+     * @default false
+     */
+    spanGaps: boolean | number;
+
     showLine: boolean;
 }
 
-export interface ILineControllerOptions extends ILineControllerDatasetOrGeneralOptions{
+export interface ILineControllerOptions {
     /**
      * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
      * @default false
@@ -195,6 +141,123 @@ export const LineController: IChartComponent & {
     prototype: LineController;
     new(chart: Chart, datasetIndex: number): LineController;
 };
+
+export type IScatterControllerDatasetOptions = ILineControllerDatasetOptions;
+export type IScatterControllerOptions = ILineControllerOptions;
+
+export interface IScatterDataPoint {
+    x: number;
+    y: number;
+}
+
+export interface IScatterControllerScales {
+    x: ILinearScaleOptions;
+    y: ILinearScaleOptions;
+}
+
+export interface ScatterController extends LineController { }
+export const ScatterController: IChartComponent & {
+    prototype: ScatterController;
+    new(chart: Chart, datasetIndex: number): ScatterController;
+};
+
+
+
+export interface IDoughnutControllerDatasetOptions extends IControllerDatasetOptions, ScriptableAndArrayOptions<IArcOptions>, ScriptableAndArrayOptions<IArcHoverOptions> {
+    /**
+     * The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
+     * @default 1
+     */
+    weight: number;
+}
+
+export interface IDoughnutControllerOptions {
+    /**
+     * The percentage of the chart that is cut out of the middle. (50 - for doughnut, 0 - for pie)
+     * @default 50
+     */
+    cutoutPercentage: number;
+
+    /**
+     * Starting angle to draw arcs from.
+     * @default -0.5 * Math.PI
+     */
+    rotation: number;
+
+    /**
+     * Sweep to allow arcs to cover.
+     * @default 2 * Math.PI
+     */
+    circumference: number;
+}
+
+export interface IDoughnutAnimationOptions {
+    /**
+     * 	If true, the chart will animate in with a rotation animation. This property is in the options.animation object.
+     * @default true
+     */
+    animateRotate: boolean;
+
+    /**
+     * If true, will animate scaling the chart from the center outwards.
+     * @default false
+     */
+    animateScale: boolean;
+}
+
+export type IDoughnutLabel = string;
+export type IDoughnutDataPoint = number;
+
+export interface DoughnutController extends DatasetController {
+    readonly innerRadius: number;
+    readonly outerRadius: number;
+    readonly offsetX: number;
+    readonly offsetY: number;
+
+    getRingIndex(datasetIndex): number;
+    calculateTotal(): number;
+    calculateCircumference(value: number): number;
+}
+
+export const DoughnutController: IChartComponent & {
+    prototype: DoughnutController;
+    new(chart: Chart, datasetIndex: number): DoughnutController;
+};
+
+export type IPieControllerDatasetOptions = IDoughnutControllerDatasetOptions;
+export type IPieControllerOptions = IDoughnutControllerOptions;
+export type IPieAnimationOptions = IDoughnutAnimationOptions;
+
+export type IPieLabel = IDoughnutLabel;
+export type IPieDataPoint = IDoughnutDataPoint;
+
+export interface PieController extends DoughnutController { }
+export const PieController: IChartComponent & {
+    prototype: PieController;
+    new(chart: Chart, datasetIndex: number): PieController;
+};
+
+
+export interface IPolarAreaControllerDatasetOptions extends IDoughnutControllerDatasetOptions {
+    /**
+     * Arc angle to cover. - for polar only
+     * @default circumference / (arc count)
+     */
+    angle: number;
+}
+
+export interface IPolarAreaControllerOptions {
+    /**
+     * Starting angle to draw arcs for the first item in a dataset. In degrees, 0 is at top.
+     * @default 0
+     */
+    startAngle: number;
+
+    // TODO default scale: radialLinear
+}
+
+export type IPolarAreaAnimationOptions = IDoughnutAnimationOptions;
+
 export interface PolarAreaController extends DoughnutController {
     countVisibleElements(): number;
 }
@@ -203,20 +266,31 @@ export const PolarAreaController: IChartComponent & {
     new(chart: Chart, datasetIndex: number): PolarAreaController;
 };
 
-export interface PieController extends DoughnutController { }
-export const PieController: IChartComponent & {
-    prototype: PieController;
-    new(chart: Chart, datasetIndex: number): PieController;
-};
+export interface IRadarControllerDatasetOptions extends IControllerDatasetOptions, ScriptableOptions<IPointPrefixedOptions>, ScriptableOptions<IPointPrefixedHoverOptions>, ScriptableOptions<ILineOptions>, ScriptableOptions<ILineHoverOptions> {
+    /**
+     * The ID of the x axis to plot this dataset on.
+     */
+    xAxisID: string;
+    /**
+     * The ID of the y axis to plot this dataset on.
+     */
+    yAxisID: string;
+
+    /**
+     * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
+     */
+    spanGaps: boolean | number;
+
+    /**
+     * If false, the line is not drawn for this dataset.
+     */
+    showLine: boolean;
+}
+
+export type IRadarControllerOptions = ILineControllerOptions;
 
 export interface RadarController extends DatasetController { }
 export const RadarController: IChartComponent & {
     prototype: RadarController;
     new(chart: Chart, datasetIndex: number): RadarController;
 };
-export interface ScatterController extends LineController { }
-export const ScatterController: IChartComponent & {
-    prototype: ScatterController;
-    new(chart: Chart, datasetIndex: number): ScatterController;
-};
-

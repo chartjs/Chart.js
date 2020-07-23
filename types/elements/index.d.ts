@@ -38,16 +38,16 @@ export interface IArcProps {
   outerRadius: number;
   circumference: number;
 }
+
 export interface IArcOptions extends ICommonOptions {
-  /**
-   * Arc angle to cover. - for polar only
-   * @default circumference / (arc count)
-   */
-  angle: number;
   /**
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
+}
+
+export interface IArcHoverOptions extends ICommonHoverOptions {
+
 }
 
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
@@ -107,6 +107,14 @@ export interface ILineOptions extends ICommonOptions {
    */
   stepped: 'before' | 'after' | 'middle' | boolean;
 }
+
+export interface ILineHoverOptions extends ICommonHoverOptions {
+  hoverBorderCapStyle: CanvasLineCap;
+  hoverBorderDash: number[];
+  hoverBorderDashOffset: number;
+  hoverBorderJoinStyle: CanvasLineJoin;
+}
+
 export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
   extends Element<T, O>,
   IVisualElement {
@@ -119,6 +127,7 @@ export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions 
   pathSegment(ctx: CanvasRenderingContext2D, segment: ISegment, params: any): undefined | boolean;
   path(ctx: CanvasRenderingContext2D): boolean;
 }
+
 export interface Line extends IChartComponent {
   prototype: Line;
   new(cfg: any): Line;
@@ -128,6 +137,7 @@ export interface IPointProps {
   x: number;
   y: number;
 }
+
 export interface IPointOptions extends ICommonOptions {
   /**
    * Point radius
@@ -140,16 +150,6 @@ export interface IPointOptions extends ICommonOptions {
    */
   hitRadius: number;
   /**
-   * Point radius when hovered.
-   * @default 4
-   */
-  hoverRadius: number;
-  /**
-   * Stroke width when hovered.
-   * @default 1
-   */
-  hoverBorderWidth: number;
-  /**
    * Point style
    * @default 'circle;
    */
@@ -160,11 +160,71 @@ export interface IPointOptions extends ICommonOptions {
    */
   rotation: number;
 }
+
+export interface IHoverPointOptions extends ICommonHoverOptions {
+  /**
+   * Point radius when hovered.
+   * @default 4
+   */
+  hoverRadius: number;
+}
+
+export interface IPointPrefixedOptions {
+  /**
+   * The fill color for points.
+   */
+  pointBackgroundColor: Color;
+  /**
+   * The border color for points.
+   */
+  pointBorderColor: Color;
+  /**
+   * The width of the point border in pixels.
+   */
+  pointBorderWidth: number;
+  /**
+   * The pixel size of the non-displayed point that reacts to mouse events.
+   */
+  pointHitRadius: number;
+  /**
+   * The radius of the point shape. If set to 0, the point is not rendered.
+   */
+  pointRadius: number;
+  /**
+   * The rotation of the point in degrees.
+   */
+  pointRotation: number;
+  /**
+   * Style of the point. more...
+   */
+  pointStyle: PointStyle;
+}
+
+export interface IPointPrefixedHoverOptions {
+  /**
+   * Point background color when hovered.
+   */
+  pointHoverBackgroundColor: Color;
+  /**
+   * Point border color when hovered.
+   */
+  pointHoverBorderColor: Color;
+  /**
+   * Border width of point when hovered.
+   */
+  pointHoverBorderWidth: number;
+  /**
+   * The radius of the point when hovered.
+   */
+  pointHoverRadius: number;
+}
+
 export interface Point<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
   extends Element<T, O>,
   IVisualElement {
   readonly skip: boolean;
 }
+
 export interface Point extends IChartComponent {
   prototype: Point;
   new(cfg: any): Point;
@@ -178,6 +238,7 @@ export interface IRectangleProps {
   width: number;
   height: number;
 }
+
 export interface IRectangleOptions extends ICommonOptions {
   /**
    * 	Skipped (excluded) border: 'start', 'end', 'bottom', 'left', 'top' or 'right'.

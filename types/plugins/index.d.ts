@@ -220,6 +220,37 @@ export interface IFillerOptions {
     propagate: boolean;
 }
 
+export type FillTarget = number | string | 'start' | 'end' | 'origin' | false;
+
+export interface IFillTarget {
+    /**
+     * The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries.
+     */
+    target: FillTarget;
+    /**
+     * If no color is set, the default color will be the background color of the chart.
+     */
+    above: Color;
+    /**
+     * Same as the above.
+     */
+    below: Color;
+}
+
+export interface ILineControllerDatasetOptions {
+    /**
+     * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
+     */
+    fill: FillTarget | IFillTarget;
+}
+
+export interface IRadarControllerDatasetOptions {
+    /**
+     * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
+     */
+    fill: FillTarget | IFillTarget;
+}
+
 export const Legend: IPlugin;
 
 export interface ILegendItem {
