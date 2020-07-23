@@ -1,6 +1,6 @@
-import { IPoint, IChartComponent, IChartArea, Color } from "../core/interfaces";
-import { Element } from "../core";
-import { PointStyle } from "../helpers";
+import { Element } from '../core';
+import { Color, IChartArea, IChartComponent, IPoint } from '../core/interfaces';
+import { PointStyle } from '../helpers';
 
 export interface IVisualElement {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -46,20 +46,18 @@ export interface IArcOptions extends ICommonOptions {
   borderAlign: 'center' | 'inner';
 }
 
-export interface IArcHoverOptions extends ICommonHoverOptions {
-
-}
+export interface IArcHoverOptions extends ICommonHoverOptions {}
 
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
   extends Element<T, O>,
-  IVisualElement { }
+    IVisualElement {}
 
 export interface Arc extends IChartComponent {
   prototype: Arc;
-  new(cfg: any): Arc;
+  new (cfg: any): Arc;
 }
 
-export interface ILineProps { }
+export interface ILineProps {}
 
 export interface ILineOptions extends ICommonOptions {
   /**
@@ -117,7 +115,7 @@ export interface ILineHoverOptions extends ICommonHoverOptions {
 
 export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
   extends Element<T, O>,
-  IVisualElement {
+    IVisualElement {
   updateControlPoints(chartArea: IChartArea): void;
   points: IPoint[];
   readonly segments: ISegment[];
@@ -130,7 +128,7 @@ export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions 
 
 export interface Line extends IChartComponent {
   prototype: Line;
-  new(cfg: any): Line;
+  new (cfg: any): Line;
 }
 
 export interface IPointProps {
@@ -221,13 +219,13 @@ export interface IPointPrefixedHoverOptions {
 
 export interface Point<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
   extends Element<T, O>,
-  IVisualElement {
+    IVisualElement {
   readonly skip: boolean;
 }
 
 export interface Point extends IChartComponent {
   prototype: Point;
-  new(cfg: any): Point;
+  new (cfg: any): Point;
 }
 
 export interface IRectangleProps {
@@ -247,11 +245,12 @@ export interface IRectangleOptions extends ICommonOptions {
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 }
 
-export interface Rectangle<T extends IRectangleProps = IRectangleProps, O extends IRectangleOptions = IRectangleOptions>
-  extends Element<T, O>,
-  IVisualElement { }
+export interface Rectangle<
+  T extends IRectangleProps = IRectangleProps,
+  O extends IRectangleOptions = IRectangleOptions
+> extends Element<T, O>, IVisualElement {}
 
 export const Rectangle: IChartComponent & {
   prototype: Rectangle;
-  new(cfg: any): Rectangle;
+  new (cfg: any): Rectangle;
 };

@@ -1,4 +1,4 @@
-import { Chart } from "..";
+import { Chart } from '..';
 
 export function getMaximumHeight(node: HTMLElement): number;
 export function getMaximumWidth(node: HTMLElement): number;

@@ -25,7 +25,6 @@ export type PointStyle =
   | HTMLImageElement
   | HTMLCanvasElement;
 
-
 export interface IDrawPointOptions {
   pointStyle: PointStyle;
   rotation?: number;

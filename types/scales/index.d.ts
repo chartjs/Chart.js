@@ -1,5 +1,5 @@
-import { TimeUnit, IChartComponent, IFontSpec, Scriptable, Color, ScriptableAndArray } from "../core/interfaces";
-import { IScaleOptions, Scale, Chart, ITick } from "../core";
+import { Chart, IScaleOptions, ITick, Scale } from '../core';
+import { Color, IChartComponent, IFontSpec, TimeUnit } from '../core/interfaces';
 
 export interface IScriptAbleScaleContext {
   chart: Chart;
@@ -9,7 +9,6 @@ export interface IScriptAbleScaleContext {
 }
 
 export type ScriptAbleScale<T> = T | ((ctx: IScriptAbleScaleContext) => T);
-
 
 export interface IGridLineOptions {
   /**
@@ -29,7 +28,7 @@ export interface IGridLineOptions {
   /**
    * @default []
    */
-  borderDash: number[],
+  borderDash: number[];
   /**
    * @default 0
    */
@@ -123,73 +122,72 @@ export interface ICartesianScaleOptions extends IScaleOptions {
   gridLines: IGridLineOptions;
 
   scaleLabel: {
-      display: boolean;
-      labelString: string;
-      padding: {
-          top: number;
-          bottom: number;
-      }
-  }
+    display: boolean;
+    labelString: string;
+    padding: {
+      top: number;
+      bottom: number;
+    };
+  };
 
   ticks: ITickOptions & {
-      /**
-       * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
-       * @default ticks.length
-       */
-      sampleSize: number;
-      /**
-       * 	If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
-       * @default true
-       */
-      autoSkip: boolean;
-      /**
-       * Padding between the ticks on the horizontal axis when autoSkip is enabled.
-       * @default 0
-       */
-      autoSkipPadding: number;
-      /**
-       * Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
-       * @default 0
-       */
-      labelOffset: number;
+    /**
+     * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+     * @default ticks.length
+     */
+    sampleSize: number;
+    /**
+     * 	If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+     * @default true
+     */
+    autoSkip: boolean;
+    /**
+     * Padding between the ticks on the horizontal axis when autoSkip is enabled.
+     * @default 0
+     */
+    autoSkipPadding: number;
+    /**
+     * Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+     * @default 0
+     */
+    labelOffset: number;
 
-      /**
-       * Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
-       * @default 0
-       */
-      minRotation: number;
-      /**
-       * Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
-       * @default 50
-       */
-      maxRotation: number;
-      /**
-       * Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
-       * @default false
-       */
-      mirror: boolean;
-      /**
-       * 	Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
-       * @default 0
-       */
-      padding: number;
-  }
+    /**
+     * Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+     * @default 0
+     */
+    minRotation: number;
+    /**
+     * Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+     * @default 50
+     */
+    maxRotation: number;
+    /**
+     * Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+     * @default false
+     */
+    mirror: boolean;
+    /**
+     * 	Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+     * @default 0
+     */
+    padding: number;
+  };
 }
 
 export type ICategoryScaleOptions = ICartesianScaleOptions & {
   min: string | number;
   max: string | number;
   labels: string[];
-}
+};
 
-export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> { }
+export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> {}
 export const CategoryScale: IChartComponent & {
   prototype: CategoryScale;
   new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(): CategoryScale<O>;
 };
 
 export type ILinearScaleOptions = IScaleOptions & {
-
   stacked?: boolean;
 
   /**
@@ -230,18 +228,16 @@ export type ILinearScaleOptions = IScaleOptions & {
      * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#step-size
      */
     stepSize: number;
-  }
-}
-
-export interface LinearScale extends Scale { }
-export const LinearScale: IChartComponent & {
-  prototype: LinearScale;
-  new(): LinearScale;
+  };
 };
 
+export interface LinearScale extends Scale {}
+export const LinearScale: IChartComponent & {
+  prototype: LinearScale;
+  new (): LinearScale;
+};
 
 export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
-
   stacked?: boolean;
 
   ticks: {
@@ -249,13 +245,13 @@ export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
      * The Intl.NumberFormat options used by the default label formatter
      */
     format: Intl.NumberFormatOptions;
-  }
-}
+  };
+};
 
-export interface LogarithmicScale extends Scale { }
+export interface LogarithmicScale extends Scale {}
 export const LogarithmicScale: IChartComponent & {
   prototype: LogarithmicScale;
-  new(): LogarithmicScale;
+  new (): LogarithmicScale;
 };
 
 export type ITimeScaleOptions = ICartesianScaleOptions & {
@@ -273,7 +269,7 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
    * options for creating a new adapter instance
    */
   adapters: {
-    date: any
+    date: any;
   };
 
   time: {
@@ -297,7 +293,7 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
      */
     displayFormats: {
       [key: string]: string;
-    }
+    };
     /**
      * If defined, will force the unit to be a certain type. See Time Units section below for details.
      * @default false
@@ -328,8 +324,8 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
      * @see https://www.chartjs.org/docs/next/axes/cartesian/time#ticks-source
      */
     source: 'labels' | 'auto' | 'data';
-  }
-}
+  };
+};
 
 export interface TimeScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends Scale<O> {
   getDataTimestamps(): number[];
@@ -342,7 +338,7 @@ export const TimeScale: IChartComponent & {
   new <O extends ITimeScaleOptions = ITimeScaleOptions>(): TimeScale<O>;
 };
 
-export interface TimeSeriesScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends TimeScale<O> { }
+export interface TimeSeriesScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends TimeScale<O> {}
 export const TimeSeriesScale: IChartComponent & {
   prototype: TimeSeriesScale;
   new <O extends ITimeScaleOptions = ITimeScaleOptions>(): TimeSeriesScale<O>;
@@ -377,7 +373,7 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
      * @default 0
      */
     borderDashOffset: ScriptAbleScale<number>;
-  }
+  };
 
   /**
    * if true, scale will include 0 if it is not already included.
@@ -412,7 +408,7 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
      * @default true
      */
     callback: (label: string) => string;
-  }
+  };
 
   /**
    * Adjustment used when calculating the maximum data value. more...
@@ -466,17 +462,17 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
      * @default true
      */
     showLabelBackdrop: ScriptAbleScale<boolean>;
-  }
-}
+  };
+};
 
 export interface RadialLinearScale<O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions> extends Scale<O> {
   setCenterPoint(leftMovement: number, rightMovement: number, topMovement: number, bottomMovement: number): void;
   getIndexAngle(index: number): number;
   getDistanceFromCenterForValue(value: number): number;
   getValueForDistanceFromCenter(distance: number): number;
-  getPointPosition(index: number, distanceFromCenter: number): { x: number, y: number, angle: number };
-  getPointPositionForValue(index: number, value: number): { x: number, y: number, angle: number };
-  getBasePosition(index: number): { x: number, y: number, angle: number };
+  getPointPosition(index: number, distanceFromCenter: number): { x: number; y: number; angle: number };
+  getPointPositionForValue(index: number, value: number): { x: number; y: number; angle: number };
+  getBasePosition(index: number): { x: number; y: number; angle: number };
 }
 export const RadialLinearScale: IChartComponent & {
   prototype: RadialLinearScale;

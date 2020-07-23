@@ -66,7 +66,12 @@ export function callback<T extends (this: TA, ...args: any[]) => R, TA, R>(
  * @param [thisArg] - The value of `this` provided for the call to `fn`.
  * @param [reverse] - If true, iterates backward on the loopable.
  */
-export function each<T, TA>(loopable: T[], fn: (this: TA, v: T, i: number) => void, thisArg?: TA, reverse?: boolean): void;
+export function each<T, TA>(
+  loopable: T[],
+  fn: (this: TA, v: T, i: number) => void,
+  thisArg?: TA,
+  reverse?: boolean
+): void;
 /**
  * Note(SB) for performance sake, this method should only be used when loopable type
  * is unknown or in none intensive code (not called often and small loopable). Else
@@ -106,7 +111,11 @@ export function merge<T, S1>(target: T, source: S1, options?: IMergeOptions): T 
 export function merge<T, S1>(target: T, source: [S1], options?: IMergeOptions): T & S1;
 export function merge<T, S1, S2>(target: T, source: [S1, S2], options?: IMergeOptions): T & S1 & S2;
 export function merge<T, S1, S2, S3>(target: T, source: [S1, S2, S3], options?: IMergeOptions): T & S1 & S2 & S3;
-export function merge<T, S1, S2, S3, S4>(target: T, source: [S1, S2, S3, S4], options?: IMergeOptions): T & S1 & S2 & S3 & S4;
+export function merge<T, S1, S2, S3, S4>(
+  target: T,
+  source: [S1, S2, S3, S4],
+  options?: IMergeOptions
+): T & S1 & S2 & S3 & S4;
 export function merge<T>(target: T, source: any[], options?: IMergeOptions): any;
 
 /**
@@ -123,6 +132,5 @@ export function mergeIf<T, S1, S2>(target: T, source: [S1, S2]): T & S1 & S2;
 export function mergeIf<T, S1, S2, S3>(target: T, source: [S1, S2, S3]): T & S1 & S2 & S3;
 export function mergeIf<T, S1, S2, S3, S4>(target: T, source: [S1, S2, S3, S4]): T & S1 & S2 & S3 & S4;
 export function mergeIf<T>(target: T, source: any[]): any;
-
 
 export function resolveObjectKey(obj: any, key: string): any;

@@ -1,4 +1,3 @@
-
 export interface IArrayListener<T> {
   _onDataPush?(...item: T[]): void;
   _onDataPop?(): void;
