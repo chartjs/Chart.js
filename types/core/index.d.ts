@@ -69,7 +69,7 @@ export const DateAdapter: {
 }
 
 export const _adapters: {
-    _data: DateAdapter;
+    _date: DateAdapter;
 };
 
 
