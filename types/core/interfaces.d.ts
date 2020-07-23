@@ -67,6 +67,7 @@ export interface IScriptableContext {
 }
 
 export declare type Scriptable<T> = T | ((ctx: IScriptableContext) => T);
+export declare type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
 export declare type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
 export declare type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
 

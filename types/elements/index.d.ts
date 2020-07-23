@@ -17,6 +17,12 @@ export interface ICommonOptions {
   backgroundColor: Color;
 }
 
+export interface ICommonHoverOptions {
+  hoverBorderWidth: number;
+  hoverBorderColor: Color;
+  hoverBackgroundColor: Color;
+}
+
 export interface ISegment {
   start: number;
   end: number;
@@ -43,6 +49,7 @@ export interface IArcOptions extends ICommonOptions {
    */
   borderAlign: 'center' | 'inner';
 }
+
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
   extends Element<T, O>,
   IVisualElement { }
@@ -84,7 +91,7 @@ export interface ILineOptions extends ICommonOptions {
    * Interpolation mode to apply. See more...
    * @default 'default'
    */
-  cubicInterpolationMode: string;
+  cubicInterpolationMode: 'default' | 'monotone';
   /**
    * 	How to fill the area under the line. See area charts.
    */

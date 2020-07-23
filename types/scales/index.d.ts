@@ -13,6 +13,8 @@ export type ILinearBaseScaleOptions = IScaleOptions & {
   min?: number;
   max?: number;
 
+  stacked?: boolean;
+
   locale: string;
 
   ticks: {
