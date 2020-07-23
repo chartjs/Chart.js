@@ -1,4 +1,4 @@
-export declare type EasingFunctionSignature = (t: number) => number;
+export type EasingFunctionSignature = (t: number) => number;
 
 export const easing: {
   linear: EasingFunctionSignature;

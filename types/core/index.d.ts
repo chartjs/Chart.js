@@ -154,11 +154,11 @@ export interface IAnimationPropertySpec extends IAnimationCommonSpec {
 }
 
 
-export declare type IAnimationSpecContainer = IAnimationCommonSpec & {
+export type IAnimationSpecContainer = IAnimationCommonSpec & {
     [prop: string]: IAnimationPropertySpec;
 }
 
-export declare type IAnimationOptions = IAnimationSpecContainer & {
+export type IAnimationOptions = IAnimationSpecContainer & {
     /**
      * Callback called on each step of an animation. more...
      */
@@ -286,8 +286,7 @@ export class Chart {
     static unregister(...items: IChartComponentLike[]): void;
 }
 
-
-export declare type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | undefined;
+export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | undefined;
 
 export class DatasetController<E extends Element = Element, DSE extends Element = Element> {
     constructor(chart: Chart, datasetIndex: number);
@@ -442,7 +441,7 @@ export interface InteractionItem {
     index: number;
 }
 
-export declare type InteractionModeFunction = (chart: Chart, e: IEvent, options: IInteractionOptions, useFinalPosition?: boolean) => InteractionItem[];
+export type InteractionModeFunction = (chart: Chart, e: IEvent, options: IInteractionOptions, useFinalPosition?: boolean) => InteractionItem[];
 
 export interface IInteractionMode {
     /**
@@ -475,13 +474,13 @@ export interface IInteractionMode {
     y: InteractionModeFunction;
 }
 
-export declare type InteractionMode = keyof IInteractionMode;
+export type InteractionMode = keyof IInteractionMode;
 
 export const Interaction: {
     modes: IInteractionMode;
 };
 
-export declare type LayoutPosition = 'left' | 'top' | 'right' | 'chartArea';
+export type LayoutPosition = 'left' | 'top' | 'right' | 'chartArea';
 
 export interface ILayoutItem {
     /**

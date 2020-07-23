@@ -11,7 +11,7 @@ export function clipArea(
 
 export function unclipArea(ctx: CanvasRenderingContext2D): void;
 
-export declare type PointStyle =
+export type PointStyle =
   | 'circle'
   | 'cross'
   | 'crossRot'

@@ -20,7 +20,7 @@ export interface IChartComponent {
     afterUnregister?(): void;
 }
 
-export declare type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 export interface IChartArea {
     top: number;
@@ -66,10 +66,10 @@ export interface IScriptableContext {
     active: boolean;
 }
 
-export declare type Scriptable<T> = T | ((ctx: IScriptableContext) => T);
-export declare type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
-export declare type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
-export declare type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
+export type Scriptable<T> = T | ((ctx: IScriptableContext) => T);
+export type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
+export type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
+export type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
 
 export interface IHoverInteractionOptions {
     /**
@@ -196,4 +196,4 @@ export interface IFontSpec {
     strokeStyle: string | null;
 }
 
-export declare type TextAlign = 'left' | 'center' | 'right';
+export type TextAlign = 'left' | 'center' | 'right';
