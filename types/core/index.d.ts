@@ -629,51 +629,77 @@ export interface ITick {
 }
 
 export interface IScaleOptions {
-    position: string;
-    display: boolean;
-    offset: boolean;
+    /**
+     * Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.
+     * @default true
+     */
+    display: boolean | 'auto';
+    /**
+     * Reverse the scale.
+     * @default false
+     */
     reverse: boolean;
-    beginAtZero: boolean;
-
-    gridLines: {
-        display: boolean;
-        color: string;
-        lineWidth: number;
-        drawBorder: boolean;
-        drawOnChartArea: boolean;
-        drawTicks: boolean;
-        tickMarkLength: number;
-        offsetGridLines: boolean;
-        borderDash: number[],
-        borderDashOffset: number;
-    };
-
-    scaleLabel: {
-        display: boolean;
-        labelString: string;
-        padding: {
-            top: number;
-            bottom: number;
-        }
-    }
-
-    ticks: {
-        minRotation: number;
-        maxRotation: number;
-        mirror: boolean;
-        lineWidth: number;
-        strokeStyle: string;
-        padding: number;
-        display: boolean;
-        autoSkip: boolean;
-        autoSkipPadding: number;
-        labelOffset: number;
-        callback: (tickValue: any, index: number, ticks: ITick[]) => string;
-        minor: {};
-        major: {
-            enabled: boolean;
-        };
-    }
+    /**
+     * The weight used to sort the axis. Higher weights are further away from the chart area.
+     * @default true
+     */
+    weight: number;
+    /**
+     * Callback called before the update process starts.
+     */
+    beforeUpdate(axis: Scale): void;
+    /**
+     * Callback that runs before dimensions are set.
+     */
+    beforeSetDimensions(axis: Scale): void;
+    /**
+     * Callback that runs after dimensions are set.
+     */
+    afterSetDimensions(axis: Scale): void;
+    /**
+     * Callback that runs before data limits are determined.
+     */
+    beforeDataLimits(axis: Scale): void;
+    /**
+     * Callback that runs after data limits are determined.
+     */
+    afterDataLimits(axis: Scale): void;
+    /**
+     * Callback that runs before ticks are created.
+     */
+    beforeBuildTicks(axis: Scale): void;
+    /**
+     * Callback that runs after ticks are created. Useful for filtering ticks.
+     */
+    afterBuildTicks(axis: Scale): void;
+    /**
+     * Callback that runs before ticks are converted into strings.
+     */
+    beforeTickToLabelConversion(axis: Scale): void;
+    /**
+     * Callback that runs after ticks are converted into strings.
+     */
+    afterTickToLabelConversion(axis: Scale): void;
+    /**
+     * Callback that runs before tick rotation is determined.
+     */
+    beforeCalculateTickRotation(axis: Scale): void;
+    /**
+     * Callback that runs after tick rotation is determined.
+     */
+    afterCalculateTickRotation(axis: Scale): void;
+    /**
+     * Callback that runs before the scale fits to the canvas.
+     */
+    beforeFit(axis: Scale): void;
+    /**
+     * Callback that runs after the scale fits to the canvas.
+     */
+    afterFit(axis: Scale): void;
+    /**
+     * Callback that runs at the end of the update process.
+     */
+    afterUpdate(axis: Scale): void;
 }
 
 
