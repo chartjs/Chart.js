@@ -1,6 +1,6 @@
 import { IFontSpec } from '../core/interfaces';
 
-export interface IFontCanvasSpec extends IFontSpec {
+export interface ICanvasFontSpec extends IFontSpec {
   string: string;
 }
 /**
@@ -8,7 +8,7 @@ export interface IFontCanvasSpec extends IFontSpec {
  * @param {object} options - A object that contains font options to be parsed.
  * @return {object} The font object.
  */
-export function toFont(options: Partial<IFontSpec>): IFontCanvasSpec;
+export function toFont(options: Partial<IFontSpec>): ICanvasFontSpec;
 
 /**
  * Converts the given line height `value` in pixels for a specific font `size`.
