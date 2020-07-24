@@ -8,6 +8,7 @@
   "unpkg": "dist/chart.min.js",
   "main": "dist/chart.js",
   "module": "dist/chart.esm.js",
+  "types": "types/index.d.ts",
   "keywords": [
     "canvas",
     "charts",
@@ -24,6 +25,7 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "files": [
+    "types",
     "dist/*.js",
     "helpers/**/*.js"
   ],
