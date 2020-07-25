@@ -289,17 +289,19 @@ export interface Chart<
   updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
 }
 
+export declare type ChartItem =
+  | string
+  | CanvasRenderingContext2D
+  | OffscreenCanvasRenderingContext2D
+  | HTMLCanvasElement
+  | OffscreenCanvas
+  | { canvas: HTMLCanvasElement | OffscreenCanvas }
+  | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>;
+
 export const Chart: {
   prototype: Chart;
   new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
-    item:
-      | string
-      | CanvasRenderingContext2D
-      | OffscreenCanvasRenderingContext2D
-      | HTMLCanvasElement
-      | OffscreenCanvas
-      | { canvas: HTMLCanvasElement | OffscreenCanvas }
-      | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>,
+    item: ChartItem,
     config: C
   ): Chart<T, L, C>;
 
@@ -383,8 +385,8 @@ export interface IDatasetControllerChartComponent extends IChartComponent {
   defaults: {
     datasetElementType?: string | null | false;
     dataElementType?: string | null | false;
-    dataElementOptions: string[];
-    datasetElementOptions: string[] | { [key: string]: string };
+    dataElementOptions?: string[];
+    datasetElementOptions?: string[] | { [key: string]: string };
   };
 }
 

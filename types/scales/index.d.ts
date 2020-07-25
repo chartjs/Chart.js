@@ -116,6 +116,7 @@ export interface ICartesianScaleOptions extends IScaleOptions {
   scaleLabel: {
     display: boolean;
     labelString: string;
+    font: IFontSpec;
     padding: {
       top: number;
       bottom: number;
