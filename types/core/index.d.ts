@@ -10,7 +10,7 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartData, IChartOptions, IChartConfiguration, ConfigurationOptions, ConfigurationData } from '../interfaces';
+import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData } from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -232,7 +232,11 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>> {
+export interface Chart<
+  T = number,
+  L = string,
+  C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>
+> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
@@ -287,13 +291,17 @@ export interface Chart<T = number, L = string, C extends IChartConfiguration<str
 
 export const Chart: {
   prototype: Chart;
-  new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(item: string
-    | CanvasRenderingContext2D
-    | OffscreenCanvasRenderingContext2D
-    | HTMLCanvasElement
-    | OffscreenCanvas
-    | {canvas: HTMLCanvasElement | OffscreenCanvas}
-    | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>, config: C): Chart<T, L, C>;
+  new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
+    item:
+      | string
+      | CanvasRenderingContext2D
+      | OffscreenCanvasRenderingContext2D
+      | HTMLCanvasElement
+      | OffscreenCanvas
+      | { canvas: HTMLCanvasElement | OffscreenCanvas }
+      | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>,
+    config: C
+  ): Chart<T, L, C>;
 
   readonly version: string;
   readonly instances: { [key: string]: Chart };
@@ -621,7 +629,6 @@ export interface PluginService {
   notify(chart: Chart, hook: string, args: any[]): boolean;
   invalidate(): void;
 }
-
 
 export interface IPlugin<O = {}> {
   id: string;
@@ -1081,5 +1088,3 @@ export interface TypedRegistry<T> {
   get(id: string): T | undefined;
   unregister(item: IChartComponent): void;
 }
-
-

@@ -1,7 +1,6 @@
 import { Chart } from '../core';
 import { IEvent } from '../core/interfaces';
 
-
 export class BasePlatform {
   /**
    * Called at chart construction time, returns a context2d instance implementing

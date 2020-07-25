@@ -471,7 +471,6 @@ export const RadialLinearScale: IChartComponent & {
   new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(): RadialLinearScale<O>;
 };
 
-
 export interface ILinearScaleType extends DeepPartial<ILinearScaleOptions> {
   type: 'linear';
 }
@@ -493,6 +492,12 @@ export interface ITimeSeriesScaleType extends DeepPartial<ITimeScaleOptions> {
 
 export interface IScaleChartOptions {
   scales: {
-    [key: string]: ILinearScaleType | ILogarithmicScaleType | ICategoryScaleType | IRadialLinearScaleType | ITimeScaleType | ITimeSeriesScaleType
-  }
+    [key: string]:
+      | ILinearScaleType
+      | ILogarithmicScaleType
+      | ICategoryScaleType
+      | IRadialLinearScaleType
+      | ITimeScaleType
+      | ITimeSeriesScaleType;
+  };
 }

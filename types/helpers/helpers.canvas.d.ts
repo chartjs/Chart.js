@@ -1,4 +1,4 @@
-import { PointStyle } from "../elements";
+import { PointStyle } from '../elements';
 
 /**
  * Clears the entire canvas associated to the given `chart`.
@@ -27,4 +27,4 @@ export function drawPoint(ctx: CanvasRenderingContext2D, options: IDrawPointOpti
  * @param font a font object
  * @return The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  */
-export function toFontString(font: {size: number; family: string; style?: string; weight?: string;}): string | null;
+export function toFontString(font: { size: number; family: string; style?: string; weight?: string }): string | null;

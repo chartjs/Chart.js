@@ -1,5 +1,4 @@
-import {Chart} from '../..';
-import { IBarControllerConfiguration } from '../../types/interfaces';
+import {Chart, IBarControllerConfiguration} from '../..';
 
 const bar = new Chart(document.createElement('canvas'), {
     type: 'bar',

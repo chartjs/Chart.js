@@ -3,7 +3,6 @@ import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent } from '../
 import { PointStyle } from '../elements';
 import { IChartData } from '../interfaces';
 
-
 export const Filler: IPlugin;
 
 export interface IFillerOptions {
@@ -251,23 +250,23 @@ export const Tooltip: IPlugin & {
 };
 
 export interface ITooltipCallbacks {
-    beforeTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-    title(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-    afterTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  beforeTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  title(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  afterTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
 
-    beforeBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-    afterBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  beforeBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  afterBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
 
-    beforeLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
-    label(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
-    afterLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
+  beforeLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
+  label(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
+  afterLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
 
-    labelColor(this: TooltipModel, tooltipItem: ITooltipItem): { borderColor: Color; backgroundColor: Color };
-    labelTextColor(this: TooltipModel, tooltipItem: ITooltipItem): Color;
+  labelColor(this: TooltipModel, tooltipItem: ITooltipItem): { borderColor: Color; backgroundColor: Color };
+  labelTextColor(this: TooltipModel, tooltipItem: ITooltipItem): Color;
 
-    beforeFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-    footer(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-    afterFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  beforeFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  footer(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  afterFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
 }
 
 export interface ITooltipPlugin<O = {}> {

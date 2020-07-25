@@ -145,7 +145,6 @@ export type PointStyle =
   | HTMLImageElement
   | HTMLCanvasElement;
 
-
 export interface IPointOptions extends ICommonOptions {
   /**
    * Point radius
@@ -273,5 +272,5 @@ export interface IElementChartOptions {
     rectangle: IRectangleOptions & IRectangleHoverOptions;
     line: ILineOptions & ILineHoverOptions;
     point: IPointOptions & IPointHoverOptions;
-  }
+  };
 }
