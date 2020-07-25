@@ -1,4 +1,5 @@
 import { Chart, Element, InteractionMode } from '.';
+import { IChartDataset } from '../interfaces';
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
@@ -53,32 +54,6 @@ export interface IPadding {
   bottom: number;
 }
 
-export interface IChartDataset {
-  // TODO
-}
-
-export interface IChartConfiguration {
-  type: string;
-  data: IChartData;
-  options: IChartOptions;
-}
-
-export interface IChartDataset {
-  // dataset options
-  data: number[] | { [index: string]: any };
-
-  parsing?:
-    | {
-        [key: string]: string;
-      }
-    | false;
-}
-
-export interface IChartData {
-  // TODO
-  datasets: IChartDataset[];
-}
-
 export interface IScriptableContext {
   chart: Chart;
   dataPoint: any;
@@ -115,7 +90,7 @@ export interface IElementOptions {
   // TODO
 }
 
-export interface IChartOptions {
+export interface ICoreChartOptions {
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true

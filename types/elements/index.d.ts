@@ -90,10 +90,6 @@ export interface ILineOptions extends ICommonOptions {
    */
   cubicInterpolationMode: 'default' | 'monotone';
   /**
-   * 	How to fill the area under the line. See area charts.
-   */
-  fill: boolean | string;
-  /**
    * Bézier curve tension (0 for no Bézier curves).
    * @default 0.4 or 0 // TODO
    */
@@ -173,7 +169,7 @@ export interface IPointOptions extends ICommonOptions {
   rotation: number;
 }
 
-export interface IHoverPointOptions extends ICommonHoverOptions {
+export interface IPointHoverOptions extends ICommonHoverOptions {
   /**
    * Point radius when hovered.
    * @default 4
@@ -259,6 +255,8 @@ export interface IRectangleOptions extends ICommonOptions {
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 }
 
+export interface IRectangleHoverOptions extends ICommonHoverOptions {}
+
 export interface Rectangle<
   T extends IRectangleProps = IRectangleProps,
   O extends IRectangleOptions = IRectangleOptions
@@ -268,3 +266,12 @@ export const Rectangle: IChartComponent & {
   prototype: Rectangle;
   new (cfg: any): Rectangle;
 };
+
+export interface IElementChartOptions {
+  elements: {
+    arc: IArcOptions & IArcHoverOptions;
+    rectangle: IRectangleOptions & IRectangleHoverOptions;
+    line: ILineOptions & ILineHoverOptions;
+    point: IPointOptions & IPointHoverOptions;
+  }
+}

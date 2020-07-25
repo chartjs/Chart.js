@@ -4,14 +4,13 @@ import {
   EasingFunction,
   IChartArea,
   IChartComponent,
-  IChartConfiguration,
-  IChartDataset,
   IFontSpec,
   IPoint,
   Scriptable,
   TimeUnit,
   IEvent,
 } from './interfaces';
+import { IChartDataset, IChartData, IChartOptions, IChartConfiguration, ConfigurationOptions, ConfigurationData } from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -185,7 +184,7 @@ export type IAnimationOptions = IAnimationSpecContainer & {
 
 export interface IChartAnimationOptions {
   animation: Scriptable<IAnimationOptions>;
-  dataset: {
+  datasets: {
     animation: Scriptable<IAnimationOptions>;
   };
 }
@@ -233,20 +232,20 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<T = number, L = string, DS = any, O = any, C = any> {
+export interface Chart<T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: IChartConfiguration;
+  readonly config: C;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
-  readonly options: O;
+  readonly options: ConfigurationOptions<C>;
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
-  readonly data: { labels: L[], datasets: DS[]};
+  readonly data: ConfigurationData<C>;
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
@@ -285,15 +284,16 @@ export interface Chart<T = number, L = string, DS = any, O = any, C = any> {
   unbindEvents(): void;
   updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
 }
+
 export const Chart: {
   prototype: Chart;
-  new <T = number, L = string, DS = any, O = any, C = any>(item: string
+  new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(item: string
     | CanvasRenderingContext2D
     | OffscreenCanvasRenderingContext2D
     | HTMLCanvasElement
     | OffscreenCanvas
     | {canvas: HTMLCanvasElement | OffscreenCanvas}
-    | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>, config: C): Chart<T, L, DS, O, C>;
+    | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>, config: C): Chart<T, L, C>;
 
   readonly version: string;
   readonly instances: { [key: string]: Chart };

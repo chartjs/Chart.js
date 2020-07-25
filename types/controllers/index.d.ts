@@ -4,7 +4,7 @@ import {
   IArcHoverOptions,
   IArcOptions,
   ICommonHoverOptions,
-  IHoverPointOptions,
+  IPointHoverOptions,
   ILineHoverOptions,
   ILineOptions,
   IPointOptions,
@@ -12,7 +12,7 @@ import {
   IPointPrefixedOptions,
   IRectangleOptions,
 } from '../elements';
-import { ICategoryScaleOptions, ILinearScaleOptions } from '../scales';
+import { ICategoryScaleType, ILinearScaleType, IRadialLinearScaleType } from '../scales';
 
 export interface IControllerDatasetOptions {
   /**
@@ -79,9 +79,11 @@ export interface IBarControllerDatasetOptions
   stack: string;
 }
 
-export interface IBarControllerScales {
-  _index_: ICategoryScaleOptions;
-  _value_: ILinearScaleOptions;
+export interface IBarControllerChartOptions {
+  scales: {
+    _index_: ICategoryScaleType;
+    _value_: ILinearScaleType;
+  }
 }
 
 
@@ -94,7 +96,7 @@ export const BarController: IChartComponent & {
 export interface IBubbleControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IPointOptions>,
-    ScriptableAndArrayOptions<IHoverPointOptions> {
+    ScriptableAndArrayOptions<IPointHoverOptions> {
   }
 
 export interface IBubbleDataPoint {
@@ -143,7 +145,7 @@ export interface ILineControllerDatasetOptions
   showLine: boolean;
 }
 
-export interface ILineControllerOptions {
+export interface ILineControllerChartOptions {
   /**
    * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
    * @default false
@@ -163,16 +165,17 @@ export const LineController: IChartComponent & {
 };
 
 export type IScatterControllerDatasetOptions = ILineControllerDatasetOptions;
-export type IScatterControllerOptions = ILineControllerOptions;
 
 export interface IScatterDataPoint {
   x: number;
   y: number;
 }
 
-export interface IScatterControllerScales {
-  x: ILinearScaleOptions;
-  y: ILinearScaleOptions;
+export interface IScatterControllerChartOptions extends ILineControllerChartOptions {
+  scales: {
+    x: ILinearScaleType;
+    y: ILinearScaleType;
+  }
 }
 
 export interface ScatterController extends LineController {}
@@ -192,7 +195,7 @@ export interface IDoughnutControllerDatasetOptions
   weight: number;
 }
 
-export interface IDoughnutControllerOptions {
+export interface IDoughnutControllerChartOptions {
   /**
    * The percentage of the chart that is cut out of the middle. (50 - for doughnut, 0 - for pie)
    * @default 50
@@ -226,7 +229,6 @@ export interface IDoughnutAnimationOptions {
   animateScale: boolean;
 }
 
-export type IDoughnutLabel = string;
 export type IDoughnutDataPoint = number;
 
 export interface DoughnutController extends DatasetController {
@@ -246,10 +248,9 @@ export const DoughnutController: IChartComponent & {
 };
 
 export type IPieControllerDatasetOptions = IDoughnutControllerDatasetOptions;
-export type IPieControllerOptions = IDoughnutControllerOptions;
+export type IPieControllerChartOptions = IDoughnutControllerChartOptions;
 export type IPieAnimationOptions = IDoughnutAnimationOptions;
 
-export type IPieLabel = IDoughnutLabel;
 export type IPieDataPoint = IDoughnutDataPoint;
 
 export interface PieController extends DoughnutController {}
@@ -266,14 +267,16 @@ export interface IPolarAreaControllerDatasetOptions extends IDoughnutControllerD
   angle: number;
 }
 
-export interface IPolarAreaControllerOptions {
+export interface IPolarAreaControllerChartOptions {
   /**
    * Starting angle to draw arcs for the first item in a dataset. In degrees, 0 is at top.
    * @default 0
    */
   startAngle: number;
 
-  // TODO default scale: radialLinear
+  scales: {
+    r: IRadialLinearScaleType
+  }
 }
 
 export type IPolarAreaAnimationOptions = IDoughnutAnimationOptions;
@@ -312,7 +315,7 @@ export interface IRadarControllerDatasetOptions
   showLine: boolean;
 }
 
-export type IRadarControllerOptions = ILineControllerOptions;
+export type IRadarControllerChartOptions = ILineControllerChartOptions;
 
 export interface RadarController extends DatasetController {}
 export const RadarController: IChartComponent & {
