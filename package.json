@@ -83,7 +83,5 @@
     "typescript": "^3.9.5",
     "yargs": "^15.3.1"
   },
-  "dependencies": {
-    "ts-essentials": "^7.0.0"
-  }
+  "dependencies": {}
 }
