@@ -1,6 +1,5 @@
 import { Element } from '../core';
 import { Color, IChartArea, IChartComponent, IPoint } from '../core/interfaces';
-import { PointStyle } from '../helpers';
 
 export interface IVisualElement {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -135,6 +134,21 @@ export interface IPointProps {
   x: number;
   y: number;
 }
+
+export type PointStyle =
+  | 'circle'
+  | 'cross'
+  | 'crossRot'
+  | 'dash'
+  | 'line'
+  | 'rect'
+  | 'rectRounded'
+  | 'rectRot'
+  | 'star'
+  | 'triangle'
+  | HTMLImageElement
+  | HTMLCanvasElement;
+
 
 export interface IPointOptions extends ICommonOptions {
   /**

@@ -1,18 +1,16 @@
-import { BasePlatform, IEvent } from '../platform';
-import { IPlugin } from '../plugins';
+import { BasePlatform } from '../platform';
 import {
   Color,
   EasingFunction,
   IChartArea,
   IChartComponent,
   IChartConfiguration,
-  IChartData,
   IChartDataset,
-  IChartOptions,
   IFontSpec,
   IPoint,
   Scriptable,
   TimeUnit,
+  IEvent,
 } from './interfaces';
 
 export interface IDateAdapter {
@@ -227,15 +225,15 @@ export interface IChartMeta<E extends Element = Element, DSE extends Element = E
   _parsed: any[];
 }
 
-export type ContextType =
-  | string
-  | CanvasRenderingContext2D
-  | HTMLCanvasElement
-  | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
+export interface IParsingOptions {
+  parsing:
+    | {
+        [key: string]: string;
+      }
+    | false;
+}
 
-export class Chart {
-  constructor(item: ContextType, config: IChartConfiguration);
-
+export interface Chart<T = number, L = string, DS = any, O = any, C = any> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
@@ -244,11 +242,11 @@ export class Chart {
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
-  readonly options: IChartOptions;
+  readonly options: O;
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
-  readonly data: IChartData;
+  readonly data: { labels: L[], datasets: DS[]};
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
@@ -286,13 +284,23 @@ export class Chart {
   bindEvents(): void;
   unbindEvents(): void;
   updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
-
-  static version: string;
-  static instances: { [key: string]: Chart };
-  static registry: Registry;
-  static register(...items: IChartComponentLike[]): void;
-  static unregister(...items: IChartComponentLike[]): void;
 }
+export const Chart: {
+  prototype: Chart;
+  new <T = number, L = string, DS = any, O = any, C = any>(item: string
+    | CanvasRenderingContext2D
+    | OffscreenCanvasRenderingContext2D
+    | HTMLCanvasElement
+    | OffscreenCanvas
+    | {canvas: HTMLCanvasElement | OffscreenCanvas}
+    | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>, config: C): Chart<T, L, DS, O, C>;
+
+  readonly version: string;
+  readonly instances: { [key: string]: Chart };
+  readonly registry: Registry;
+  register(...items: IChartComponentLike[]): void;
+  unregister(...items: IChartComponentLike[]): void;
+};
 
 export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | undefined;
 
@@ -372,7 +380,7 @@ export interface IDatasetControllerChartComponent extends IChartComponent {
   };
 }
 
-export class Defaults {
+export interface Defaults {
   readonly color: string;
   readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
   readonly font: IFontSpec;
@@ -416,7 +424,7 @@ export class Defaults {
 
 export const defaults: Defaults;
 
-export class Element<T = {}, O = {}> {
+export interface Element<T = {}, O = {}> {
   readonly x: number;
   readonly y: number;
   readonly active: boolean;
@@ -440,6 +448,10 @@ export class Element<T = {}, O = {}> {
   ): Pick<T, P | P2 | P3 | P4 | P5>;
   getProps(props: (keyof T)[], final?: boolean): T;
 }
+export const Element: {
+  prototype: Element;
+  new <T = {}, O = {}>(): Element<T, O>;
+};
 
 export interface IInteractionOptions {
   axis?: string;
@@ -596,7 +608,7 @@ export const layouts: {
   update(chart: Chart, width: number, height: number): void;
 };
 
-export class PluginService {
+export interface PluginService {
   /**
    * Calls enabled plugins for `chart` on the specified hook and with the given args.
    * This method immediately returns as soon as a plugin explicitly returns false. The
@@ -610,13 +622,205 @@ export class PluginService {
   invalidate(): void;
 }
 
+
+export interface IPlugin<O = {}> {
+  id: string;
+
+  /**
+   * @desc Called before initializing `chart`.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  beforeInit?(chart: Chart, options: O): void;
+  /**
+   * @desc Called after `chart` has been initialized and before the first update.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterInit?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before updating `chart`. If any plugin returns `false`, the update
+   * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart update.
+   */
+  beforeUpdate?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after `chart` has been updated and before rendering. Note that this
+   * hook will not be called if the chart update has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterUpdate?(chart: Chart, options: O): void;
+  /**
+   * @desc Called during chart reset
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @since version 3.0.0
+   */
+  reset?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
+   * the datasets update is cancelled until another `update` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} false to cancel the datasets update.
+   * @since version 2.1.5
+   */
+  beforeDatasetsUpdate?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` datasets have been updated. Note that this hook
+   * will not be called if the datasets update has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @since version 2.1.5
+   */
+  afterDatasetsUpdate?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
+   * returns `false`, the datasets update is cancelled until another `update` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {number} args.index - The dataset index.
+   * @param {object} args.meta - The dataset metadata.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart datasets drawing.
+   */
+  beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` datasets at the given `args.index` has been updated. Note
+   * that this hook will not be called if the datasets update has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {number} args.index - The dataset index.
+   * @param {object} args.meta - The dataset metadata.
+   * @param {object} options - The plugin options.
+   */
+  afterDatasetUpdate?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): void;
+  /**
+   * @desc Called before laying out `chart`. If any plugin returns `false`,
+   * the layout update is cancelled until another `update` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart layout.
+   */
+  beforeLayout?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` has been laid out. Note that this hook will not
+   * be called if the layout update has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterLayout?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before rendering `chart`. If any plugin returns `false`,
+   * the rendering is cancelled until another `render` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart rendering.
+   */
+  beforeRender?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` has been fully rendered (and animation completed). Note
+   * that this hook will not be called if the rendering has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterRender?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
+   * the frame drawing is cancelled untilanother `render` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart drawing.
+   */
+  beforeDraw?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` has been drawn. Note that this hook will not be called
+   * if the drawing has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterDraw?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
+   * the datasets drawing is cancelled until another `render` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart datasets drawing.
+   */
+  beforeDatasetsDraw?(chart: Chart, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` datasets have been drawn. Note that this hook
+   * will not be called if the datasets drawing has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  afterDatasetsDraw?(chart: Chart, options: O): void;
+  /**
+   * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
+   * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
+   * is cancelled until another `render` is triggered.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {number} args.index - The dataset index.
+   * @param {object} args.meta - The dataset metadata.
+   * @param {object} options - The plugin options.
+   * @returns {boolean} `false` to cancel the chart datasets drawing.
+   */
+  beforeDatasetDraw?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): boolean | void;
+  /**
+   * @desc Called after the `chart` datasets at the given `args.index` have been drawn
+   * (datasets are drawn in the reverse order). Note that this hook will not be called
+   * if the datasets drawing has been previously cancelled.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {number} args.index - The dataset index.
+   * @param {object} args.meta - The dataset metadata.
+   * @param {object} options - The plugin options.
+   */
+  afterDatasetDraw?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): void;
+  /**
+   * @desc Called before processing the specified `event`. If any plugin returns `false`,
+   * the event will be discarded.
+   * @param {Chart} chart - The chart instance.
+   * @param {IEvent} event - The event object.
+   * @param {object} options - The plugin options.
+   * @param {boolean} replay - True if this event is replayed from `Chart.update`
+   */
+  beforeEvent?(chart: Chart, event: IEvent, options: O, replay: boolean): void;
+  /**
+   * @desc Called after the `event` has been consumed. Note that this hook
+   * will not be called if the `event` has been previously discarded.
+   * @param {Chart} chart - The chart instance.
+   * @param {IEvent} event - The event object.
+   * @param {object} options - The plugin options.
+   * @param {boolean} replay - True if this event is replayed from `Chart.update`
+   */
+  afterEvent?(chart: Chart, event: IEvent, options: O, replay: boolean): void;
+  /**
+   * @desc Called after the chart as been resized.
+   * @param {Chart} chart - The chart instance.
+   * @param {number} size - The new canvas display size (eq. canvas.style width & height).
+   * @param {object} options - The plugin options.
+   */
+  resize?(chart: Chart, size: number, options: O): void;
+  /**
+   * Called after the chart as been destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} options - The plugin options.
+   */
+  destroy?(chart: Chart, options: O): void;
+}
+
 declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
 
 /**
  * Please use the module's default export which provides a singleton instance
  * Note: class is exported for typedoc
  */
-export class Registry {
+export interface Registry {
   readonly controllers: TypedRegistry<DatasetController>;
   readonly elements: TypedRegistry<Element>;
   readonly plugins: TypedRegistry<IPlugin>;
@@ -831,6 +1035,16 @@ export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<
   isHorizontal(): boolean;
   isFullWidth(): boolean;
 }
+
+export interface IScriptAbleScaleContext {
+  chart: Chart;
+  scale: Scale;
+  index: number;
+  tick: ITick;
+}
+
+export type ScriptAbleScale<T> = T | ((ctx: IScriptAbleScaleContext) => T);
+
 export const Ticks: {
   formatters: {
     /**
@@ -858,7 +1072,7 @@ export const Ticks: {
   };
 };
 
-export class TypedRegistry<T> {
+export interface TypedRegistry<T> {
   /**
    * @param {IChartComponent} item
    * @returns {string} The scope where items defaults were registered to.
@@ -867,3 +1081,5 @@ export class TypedRegistry<T> {
   get(id: string): T | undefined;
   unregister(item: IChartComponent): void;
 }
+
+

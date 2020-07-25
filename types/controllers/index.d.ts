@@ -84,6 +84,7 @@ export interface IBarControllerScales {
   _value_: ILinearScaleOptions;
 }
 
+
 export interface BarController extends DatasetController {}
 export const BarController: IChartComponent & {
   prototype: BarController;
@@ -93,7 +94,8 @@ export const BarController: IChartComponent & {
 export interface IBubbleControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IPointOptions>,
-    ScriptableAndArrayOptions<IHoverPointOptions> {}
+    ScriptableAndArrayOptions<IHoverPointOptions> {
+  }
 
 export interface IBubbleDataPoint {
   /**

@@ -1,8 +1,25 @@
 import { Chart, Element, InteractionMode } from '.';
-import { IEvent } from '../platform';
-import { ITooltipOptions } from '../plugins';
 
 export type Color = string | CanvasGradient | CanvasPattern;
+
+export interface IEvent {
+  type:
+    | 'contextmenu'
+    | 'mouseenter'
+    | 'mousedown'
+    | 'mousemove'
+    | 'mouseup'
+    | 'mouseout'
+    | 'click'
+    | 'dblclick'
+    | 'keydown'
+    | 'keypress'
+    | 'keyup'
+    | 'resize';
+  native?: Event | null;
+  x: number | null;
+  y: number | null;
+}
 
 export interface IPoint {
   x: number;
@@ -23,6 +40,13 @@ export interface IChartComponent {
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 export interface IChartArea {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+}
+
+export interface IPadding {
   top: number;
   left: number;
   right: number;
@@ -53,12 +77,6 @@ export interface IChartDataset {
 export interface IChartData {
   // TODO
   datasets: IChartDataset[];
-
-  parsing:
-    | {
-        [key: string]: string;
-      }
-    | false;
 }
 
 export interface IScriptableContext {
@@ -142,8 +160,6 @@ export interface IChartOptions {
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
   onClick(event: IEvent, elements: Element[]): void;
-
-  tooltips: ITooltipOptions;
 
   elements: { [key: string]: IElementOptions };
 

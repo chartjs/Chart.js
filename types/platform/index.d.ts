@@ -1,23 +1,6 @@
 import { Chart } from '../core';
+import { IEvent } from '../core/interfaces';
 
-export interface IEvent {
-  type:
-    | 'contextmenu'
-    | 'mouseenter'
-    | 'mousedown'
-    | 'mousemove'
-    | 'mouseup'
-    | 'mouseout'
-    | 'click'
-    | 'dblclick'
-    | 'keydown'
-    | 'keypress'
-    | 'keyup'
-    | 'resize';
-  native?: Event | null;
-  x: number | null;
-  y: number | null;
-}
 
 export class BasePlatform {
   /**

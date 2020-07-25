@@ -1,14 +1,6 @@
-import { Chart, IScaleOptions, ITick, Scale } from '../core';
+import { ScriptAbleScale, IScaleOptions, ITick, Scale } from '../core';
 import { Color, IChartComponent, IFontSpec, TimeUnit } from '../core/interfaces';
-
-export interface IScriptAbleScaleContext {
-  chart: Chart;
-  scale: Scale;
-  index: number;
-  tick: ITick;
-}
-
-export type ScriptAbleScale<T> = T | ((ctx: IScriptAbleScaleContext) => T);
+import { DeepPartial } from '../interfaces';
 
 export interface IGridLineOptions {
   /**
@@ -478,3 +470,29 @@ export const RadialLinearScale: IChartComponent & {
   prototype: RadialLinearScale;
   new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(): RadialLinearScale<O>;
 };
+
+
+export interface ILinearScaleType extends DeepPartial<ILinearScaleOptions> {
+  type: 'linear';
+}
+export interface ILogarithmicScaleType extends DeepPartial<ILogarithmicScaleOptions> {
+  type: 'logarithmic';
+}
+export interface ICategoryScaleType extends DeepPartial<ICategoryScaleOptions> {
+  type: 'category';
+}
+export interface IRadialLinearScaleType extends DeepPartial<IRadialLinearScaleOptions> {
+  type: 'radialLinear';
+}
+export interface ITimeScaleType extends DeepPartial<ITimeScaleOptions> {
+  type: 'time';
+}
+export interface ITimeSeriesScaleType extends DeepPartial<ITimeScaleOptions> {
+  type: 'timeseries';
+}
+
+export interface IScaleChartOptions {
+  scales: {
+    [key: string]: ILinearScaleType | ILogarithmicScaleType | ICategoryScaleType | IRadialLinearScaleType | ITimeScaleType | ITimeSeriesScaleType
+  }
+}

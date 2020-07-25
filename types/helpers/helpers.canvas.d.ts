@@ -1,3 +1,5 @@
+import { PointStyle } from "../elements";
+
 /**
  * Clears the entire canvas associated to the given `chart`.
  * @param {Chart} chart - The chart for which to clear the canvas.
@@ -10,20 +12,6 @@ export function clipArea(
 ): void;
 
 export function unclipArea(ctx: CanvasRenderingContext2D): void;
-
-export type PointStyle =
-  | 'circle'
-  | 'cross'
-  | 'crossRot'
-  | 'dash'
-  | 'line'
-  | 'rect'
-  | 'rectRounded'
-  | 'rectRot'
-  | 'star'
-  | 'triangle'
-  | HTMLImageElement
-  | HTMLCanvasElement;
 
 export interface IDrawPointOptions {
   pointStyle: PointStyle;
