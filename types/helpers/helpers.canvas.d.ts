@@ -1,4 +1,5 @@
 import { PointStyle } from '../elements';
+import { IChartArea } from '../core/interfaces';
 
 /**
  * Clears the entire canvas associated to the given `chart`.
@@ -6,10 +7,7 @@ import { PointStyle } from '../elements';
  */
 export function clear(chart: { ctx: CanvasRenderingContext2D }): void;
 
-export function clipArea(
-  ctx: CanvasRenderingContext2D,
-  area: { left: number; top: number; right: number; bottom: number }
-): void;
+export function clipArea(ctx: CanvasRenderingContext2D, area: IChartArea): void;
 
 export function unclipArea(ctx: CanvasRenderingContext2D): void;
 

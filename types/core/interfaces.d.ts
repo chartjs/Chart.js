@@ -17,7 +17,7 @@ export interface IEvent {
     | 'keypress'
     | 'keyup'
     | 'resize';
-  native?: Event | null;
+  native: Event | null;
   x: number | null;
   y: number | null;
 }

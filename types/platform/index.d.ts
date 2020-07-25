@@ -8,7 +8,10 @@ export class BasePlatform {
    * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
    * @param options - The chart options
    */
-  acquireContext(canvas: HTMLCanvasElement, options?: CanvasRenderingContext2DSettings): void;
+  acquireContext(
+    canvas: HTMLCanvasElement,
+    options?: CanvasRenderingContext2DSettings
+  ): CanvasRenderingContext2D | null;
   /**
    * Called at chart destruction time, releases any resources associated to the context
    * previously returned by the acquireContext() method.

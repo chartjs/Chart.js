@@ -15,27 +15,27 @@ export function uid(): number;
  * @returns {boolean}
  * @since 2.7.0
  */
-export function isNullOrUndef(value?: any): boolean;
+export function isNullOrUndef(value?: any): value is undefined;
 /**
  * Returns true if `value` is an array (including typed arrays), else returns false.
  * @param {*} value - The value to test.
  * @returns {boolean}
  * @function
  */
-export function isArray(value: any): boolean;
+export function isArray<T = any>(value: any): value is ArrayLike<T>;
 /**
  * Returns true if `value` is an object (excluding null), else returns false.
  * @param {*} value - The value to test.
  * @returns {boolean}
  * @since 2.7.0
  */
-export function isObject(value: any): boolean;
+export function isObject(value: any): value is object;
 /**
  * Returns true if `value` is a finite number, else returns false
  * @param {*} value  - The value to test.
  * @returns {boolean}
  */
-export function isFinite(value: any): boolean;
+export function isFinite(value: any): value is number;
 /**
  * Returns `value` if defined, else returns `defaultValue`.
  * @param {*} value - The value to return if defined.
