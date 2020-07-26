@@ -8,26 +8,27 @@ Developer features allow extending and enhancing Chart.js in many different ways
 
 Latest documentation and samples, including unreleased features, are available at:
 
- - https://www.chartjs.org/docs/master/
- - https://www.chartjs.org/samples/master/
+- https://www.chartjs.org/docs/master/
+- https://www.chartjs.org/samples/master/
 
 ## Development releases
 
 Latest builds are available for testing at:
 
- - https://www.chartjs.org/dist/master/Chart.js
- - https://www.chartjs.org/dist/master/Chart.min.js
+- https://www.chartjs.org/dist/master/chart.js
+- https://www.chartjs.org/dist/master/chart.min.js
 
 **WARNING: Development builds MUST not be used for production purposes or as replacement for CDN.**
 
 ## Browser support
 
 Chart.js offers support for the following browsers:
-* Chrome 50+
-* Firefox 45+
-* Internet Explorer 11
-* Edge 14+
-* Safari 9+
+
+- Chrome 50+
+- Firefox 45+
+- Internet Explorer 11
+- Edge 14+
+- Safari 9+
 
 Browser support for the canvas element is available in all modern & major mobile browsers. [CanIUse](https://caniuse.com/#feat=canvas)
 
