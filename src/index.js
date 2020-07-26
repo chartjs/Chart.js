@@ -41,7 +41,6 @@ Chart.elements = elements;
 Chart.Interaction = Interaction;
 Chart.layouts = layouts;
 Chart.platforms = platforms;
-Chart.registry = registry;
 Chart.Scale = Scale;
 Chart.Ticks = Ticks;
 
