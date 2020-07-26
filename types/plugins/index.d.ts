@@ -300,7 +300,7 @@ export interface ITooltipOptions {
   /**
    * 	See custom tooltip section.
    */
-  custom(tooltip: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
+  custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
   /**
    * Sets which elements appear in the tooltip. more....
    */
