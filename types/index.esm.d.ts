@@ -6,5 +6,3 @@ export * from './platform';
 export * from './plugins';
 export * from './scales';
 export * from './interfaces';
-
-export * from './helpers';

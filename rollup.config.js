@@ -3,6 +3,7 @@
 
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
+const dts = require('rollup-plugin-dts').default;
 const glob = require('glob');
 const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
@@ -14,9 +15,13 @@ const input = 'src/index.js';
 const inputESM = {
 	'dist/chart.esm': 'src/index.esm.js',
 };
+const inputESMTypings = {};
 glob('src/helpers/helpers.*.js', (_er, files) => {
 	files.forEach(file => {
 		inputESM[file.replace(/src\/|helpers\.|\.js/g, '')] = file;
+	});
+	Object.keys(inputESM).forEach((key) => {
+		inputESMTypings[key.replace('src', 'types')] = inputESM[key].replace('src', 'types').replace(/\.js$/, '.d.ts');
 	});
 });
 
@@ -90,6 +95,22 @@ module.exports = [
 		output: {
 			dir: './',
 			chunkFileNames: 'helpers/chunks/[name].js',
+			banner,
+			format: 'esm',
+			indent: false,
+		},
+	},
+	// ES6 Typings builds
+	// dist/chart.esm.d.ts
+	// helpers/*.d.ts
+	{
+		input: inputESMTypings,
+		plugins: [
+			dts()
+		],
+		output: {
+			dir: './',
+			chunkFileNames: 'helpers/chunks/[name].ts',
 			banner,
 			format: 'esm',
 			indent: false,
