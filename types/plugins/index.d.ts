@@ -191,6 +191,10 @@ export interface ILegendOptions {
   };
 }
 
+export interface ILegendChartOptions {
+  legend: ILegendOptions;
+}
+
 export const Title: IPlugin;
 
 export interface ITitleOptions {
@@ -219,6 +223,10 @@ export interface ITitleOptions {
    * 	Title text to display. If specified as an array, text is rendered on multiple lines.
    */
   text: string | string[];
+}
+
+export interface ITitleChartOptions {
+  title: ITitleOptions;
 }
 
 export interface TooltipModel {

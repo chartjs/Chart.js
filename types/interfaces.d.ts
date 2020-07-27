@@ -22,7 +22,12 @@ import {
 } from './controllers';
 import { ICoreChartOptions } from './core/interfaces';
 import { IElementChartOptions } from './elements';
-import { ITooltipChartOptions, IFillerControllerDatasetOptions } from './plugins';
+import {
+  ITooltipChartOptions,
+  IFillerControllerDatasetOptions,
+  ILegendChartOptions,
+  ITitleChartOptions,
+} from './plugins';
 import { IChartAnimationOptions, IParsingOptions } from './core';
 import { IScaleChartOptions } from './scales';
 
@@ -55,7 +60,14 @@ export interface IChartData<T = number, L = string, DS extends IChartDataset<T> 
 }
 
 export type IChartOptions<O = {}> = DeepPartial<
-  ICoreChartOptions & ITooltipChartOptions & IChartAnimationOptions & IScaleChartOptions & IElementChartOptions & O
+  ICoreChartOptions &
+    ITooltipChartOptions &
+    ILegendChartOptions &
+    ITitleChartOptions &
+    IChartAnimationOptions &
+    IScaleChartOptions &
+    IElementChartOptions &
+    O
 >;
 
 export interface IChartConfiguration<
