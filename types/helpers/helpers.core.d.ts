@@ -1,7 +1,7 @@
 /**
  * An empty function that can be used, for example, for optional callback.
  */
-export function noop(): any;
+export function noop(): void;
 
 /**
  * Returns a unique id, sequentially generated from a global variable.
@@ -15,7 +15,7 @@ export function uid(): number;
  * @returns {boolean}
  * @since 2.7.0
  */
-export function isNullOrUndef(value?: any): value is undefined;
+export function isNullOrUndef(value: any): value is null | undefined;
 /**
  * Returns true if `value` is an array (including typed arrays), else returns false.
  * @param {*} value - The value to test.
