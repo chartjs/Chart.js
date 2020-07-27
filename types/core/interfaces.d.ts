@@ -92,6 +92,16 @@ export interface IElementOptions {
 
 export interface ICoreChartOptions {
   /**
+   * base color
+   * @see Defaults.color
+   */
+  color: string;
+  /**
+   * base font
+   * @see Defaults.font
+   */
+  font: IFontSpec;
+  /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
    */

@@ -402,7 +402,6 @@ export interface Defaults {
   readonly maintainAspectRatio: boolean;
   readonly onClick?: () => void;
   readonly responsive: boolean;
-  readonly showLines: boolean;
 
   readonly plugins: { [key: string]: any };
   readonly scale?: IScaleOptions;
