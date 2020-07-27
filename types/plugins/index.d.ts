@@ -36,37 +36,63 @@ export interface IFillerControllerDatasetOptions {
 export const Legend: IPlugin;
 
 export interface ILegendItem {
-  // Label that will be displayed
+  /**
+   * Label that will be displayed
+   */
   text: string;
 
-  // Fill style of the legend box
+  /**
+   * Fill style of the legend box
+   */
   fillStyle: CanvasLineCap;
 
-  // If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
+  /**
+   * If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
+   */
   hidden: boolean;
 
-  // For box border. See https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
+  /**
+   * For box border.
+   * @see https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
+   */
   lineCap: CanvasLineCap;
 
-  // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+  /**
+   * For box border.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+   */
   lineDash: number[];
 
-  // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+  /**
+   * For box border.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+   */
   lineDashOffset: number;
 
-  // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+  /**
+   * For box border.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+   */
   lineJoin: CanvasLineJoin;
 
-  // Width of box border
+  /**
+   * Width of box border
+   */
   lineWidth: number;
 
-  // Stroke style of the legend box
+  /**
+   * Stroke style of the legend box
+   */
   strokeStyle: Color;
 
-  // Point style of the legend box (only used if usePointStyle is true)
+  /**
+   * Point style of the legend box (only used if usePointStyle is true)
+   */
   pointStyle: PointStyle;
 
-  // Rotation of the point in degrees (only used if usePointStyle is true)
+  /**
+   * Rotation of the point in degrees (only used if usePointStyle is true)
+   */
   rotation: number;
 }
 
@@ -74,17 +100,17 @@ export interface LegendElement extends Element {}
 
 export interface ILegendOptions {
   /**
-   * 	Is the legend shown?
+   * Is the legend shown?
    * @default true
    */
   display: boolean;
   /**
-   * Position of the legend. more...
+   * Position of the legend.
    * @default 'top'
    */
   position: LayoutPosition;
   /**
-   * Alignment of the legend. more...
+   * Alignment of the legend.
    * @default 'center'
    */
   align: TextAlign;
@@ -302,7 +328,7 @@ export interface ITooltipOptions {
    */
   custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
   /**
-   * Sets which elements appear in the tooltip. more....
+   * Sets which elements appear in the tooltip..
    */
   mode: InteractionMode;
   /**
@@ -342,7 +368,7 @@ export interface ITooltipOptions {
    */
   titleMarginBottom: number;
   /**
-   * Horizontal alignment of the title text lines. more...
+   * Horizontal alignment of the title text lines.
    * @default 'left'
    */
   titleAlign: TextAlign;
@@ -357,7 +383,7 @@ export interface ITooltipOptions {
    */
   bodyFont: IFontSpec;
   /**
-   * Horizontal alignment of the body text lines. more...
+   * Horizontal alignment of the body text lines.
    * @default 'left'
    */
   bodyAlign: TextAlign;
@@ -377,7 +403,7 @@ export interface ITooltipOptions {
    */
   footerFont: IFontSpec;
   /**
-   * Horizontal alignment of the footer text lines. more...
+   * Horizontal alignment of the footer text lines.
    * @default 'left'
    */
   footerAlign: TextAlign;

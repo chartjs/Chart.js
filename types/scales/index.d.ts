@@ -87,7 +87,7 @@ export interface ITickOptions {
 
 export interface ICartesianScaleOptions extends IScaleOptions {
   /**
-   * Position of the axis. more...
+   * Position of the axis.
    */
   position: 'left' | 'top' | 'right' | 'bottom' | 'center' | { [scale: string]: number };
   /**
@@ -377,11 +377,11 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
   gridLines: IGridLineOptions;
 
   /**
-   * User defined minimum number for the scale, overrides minimum value from data. more...
+   * User defined minimum number for the scale, overrides minimum value from data.
    */
   min: number;
   /**
-   * User defined maximum number for the scale, overrides maximum value from data. more...
+   * User defined maximum number for the scale, overrides maximum value from data.
    */
   max: number;
 
@@ -404,11 +404,11 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
   };
 
   /**
-   * Adjustment used when calculating the maximum data value. more...
+   * Adjustment used when calculating the maximum data value.
    */
   suggestedMax: number;
   /**
-   * Adjustment used when calculating the minimum data value. more...
+   * Adjustment used when calculating the minimum data value.
    */
   suggestedMin: number;
 
@@ -446,7 +446,7 @@ export type IRadialLinearScaleOptions = IScaleOptions & {
     precision: number;
 
     /**
-     * User defined fixed step size for the scale. more...
+     * User defined fixed step size for the scale.
      */
     stepSize: number;
 

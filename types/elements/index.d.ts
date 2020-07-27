@@ -85,7 +85,7 @@ export interface ILineOptions extends ICommonOptions {
    */
   capBezierPoints: boolean;
   /**
-   * Interpolation mode to apply. See more...
+   * Interpolation mode to apply. See
    * @default 'default'
    */
   cubicInterpolationMode: 'default' | 'monotone';
@@ -202,7 +202,7 @@ export interface IPointPrefixedOptions {
    */
   pointRotation: number;
   /**
-   * Style of the point. more...
+   * Style of the point.
    */
   pointStyle: PointStyle;
 }

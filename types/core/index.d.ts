@@ -167,11 +167,11 @@ export type IAnimationSpecContainer = IAnimationCommonSpec & {
 
 export type IAnimationOptions = IAnimationSpecContainer & {
   /**
-   * Callback called on each step of an animation. more...
+   * Callback called on each step of an animation.
    */
   onProgress: (this: Chart, event: IAnimationEvent) => void;
   /**
-   *Callback called when all animations are completed. more...
+   *Callback called when all animations are completed.
    */
   onComplete: (this: Chart, event: IAnimationEvent) => void;
 

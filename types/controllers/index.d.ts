@@ -48,18 +48,18 @@ export interface IBarControllerDatasetOptions
   yAxisID: string;
 
   /**
-   * Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other. more...
+   * Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other.
    * @default 0.9
    */
   barPercentage: number;
   /**
-   * Percent (0-1) of the available width each category should be within the sample width. more...
+   * Percent (0-1) of the available width each category should be within the sample width.
    * @default 0.8
    */
   categoryPercentage: number;
 
   /**
-   * Manually set width of each bar in pixels. If set to 'flex', it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. more...
+   * Manually set width of each bar in pixels. If set to 'flex', it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval.
    */
   barThickness: number | 'flex';
 
