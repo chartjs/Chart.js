@@ -15,6 +15,6 @@ export function listenArrayEvents<T>(array: T[], listener: IArrayListener<T>): v
 
 /**
  * Removes the given array event listener and cleanup extra attached properties (such as
- * the _chartjs stub and overridden methods) if array doesn't have anysteners.
+ * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
  */
 export function unlistenArrayEvents<T>(array: T[], listener: IArrayListener<T>): void;

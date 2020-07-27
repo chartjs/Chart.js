@@ -328,7 +328,7 @@ export interface ITooltipOptions {
    */
   custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
   /**
-   * Sets which elements appear in the tooltip..
+   * Sets which elements appear in the tooltip.
    */
   mode: InteractionMode;
   /**
