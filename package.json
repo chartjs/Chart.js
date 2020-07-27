@@ -25,9 +25,10 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "files": [
-    "types",
     "dist/*.js",
-    "helpers/**/*.js"
+    "dist/*.d.ts",
+    "helpers/**/*.js",
+    "helpers/**/*.d.ts"
   ],
   "scripts": {
     "autobuild": "rollup -c -w",
