@@ -55,7 +55,7 @@ Global line options: `Chart.defaults.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `tension` | `number` | `0.4` | Bézier curve tension (`0` for no Bézier curves).
+| `tension` | `number` | `0` | Bézier curve tension (`0` for no Bézier curves).
 | `backgroundColor` | `Color` | `Chart.defaults.color` | Line fill color.
 | `borderWidth` | `number` | `3` | Line stroke width.
 | `borderColor` | `Color` | `Chart.defaults.color` | Line stroke color.
