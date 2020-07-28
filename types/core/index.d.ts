@@ -312,7 +312,7 @@ export const Chart: {
   unregister(...items: IChartComponentLike[]): void;
 };
 
-export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | undefined;
+export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | 'active' | undefined;
 
 export class DatasetController<E extends Element = Element, DSE extends Element = Element> {
   constructor(chart: Chart, datasetIndex: number);
@@ -1043,6 +1043,10 @@ export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<
   isHorizontal(): boolean;
   isFullWidth(): boolean;
 }
+export const Scale: {
+  prototype: Scale;
+  new <O extends IScaleOptions = IScaleOptions>(cfg: any): Scale<O>;
+};
 
 export interface IScriptAbleScaleContext {
   chart: Chart;
