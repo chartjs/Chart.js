@@ -142,3 +142,6 @@ export type ConfigurationOptions<O> = O extends IChartConfiguration<unknown, unk
 export type ConfigurationData<O> = O extends IChartConfiguration<unknown, infer T, infer L, infer DS, unknown>
   ? IChartData<T, L, DS>
   : never;
+export type ConfigurationDataset<O> = O extends IChartConfiguration<unknown, unknown, unknown, infer DS, unknown>
+  ? DS
+  : never;
