@@ -51,10 +51,10 @@ export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IA
   extends Element<T, O>,
     IVisualElement {}
 
-export interface Arc extends IChartComponent {
+export const Arc: IChartComponent & {
   prototype: Arc;
   new (cfg: any): Arc;
-}
+};
 
 export interface ILineProps {}
 
@@ -121,10 +121,10 @@ export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions 
   path(ctx: CanvasRenderingContext2D): boolean;
 }
 
-export interface Line extends IChartComponent {
+export const Line: IChartComponent & {
   prototype: Line;
   new (cfg: any): Line;
-}
+};
 
 export interface IPointProps {
   x: number;
@@ -232,10 +232,10 @@ export interface Point<T extends IPointProps = IPointProps, O extends IPointOpti
   readonly skip: boolean;
 }
 
-export interface Point extends IChartComponent {
+export const Point: IChartComponent & {
   prototype: Point;
   new (cfg: any): Point;
-}
+};
 
 export interface IRectangleProps {
   x: number;
