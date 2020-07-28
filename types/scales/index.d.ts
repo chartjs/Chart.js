@@ -177,7 +177,7 @@ export type ICategoryScaleOptions = ICartesianScaleOptions & {
 export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> {}
 export const CategoryScale: IChartComponent & {
   prototype: CategoryScale;
-  new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(): CategoryScale<O>;
+  new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(cfg: any): CategoryScale<O>;
 };
 
 export type ILinearScaleOptions = IScaleOptions & {
@@ -224,10 +224,10 @@ export type ILinearScaleOptions = IScaleOptions & {
   };
 };
 
-export interface LinearScale extends Scale {}
+export interface LinearScale<O extends ILinearScaleOptions = ILinearScaleOptions> extends Scale<O> {}
 export const LinearScale: IChartComponent & {
   prototype: LinearScale;
-  new (): LinearScale;
+  new <O extends ILinearScaleOptions = ILinearScaleOptions>(cfg: any): LinearScale<O>;
 };
 
 export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
@@ -241,10 +241,10 @@ export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
   };
 };
 
-export interface LogarithmicScale extends Scale {}
+export interface LogarithmicScale<O extends ILogarithmicScaleOptions = ILogarithmicScaleOptions> extends Scale<O> {}
 export const LogarithmicScale: IChartComponent & {
   prototype: LogarithmicScale;
-  new (): LogarithmicScale;
+  new <O extends ILogarithmicScaleOptions = ILogarithmicScaleOptions>(cfg: any): LogarithmicScale<O>;
 };
 
 export type ITimeScaleOptions = ICartesianScaleOptions & {
@@ -328,13 +328,13 @@ export interface TimeScale<O extends ITimeScaleOptions = ITimeScaleOptions> exte
 
 export const TimeScale: IChartComponent & {
   prototype: TimeScale;
-  new <O extends ITimeScaleOptions = ITimeScaleOptions>(): TimeScale<O>;
+  new <O extends ITimeScaleOptions = ITimeScaleOptions>(cfg: any): TimeScale<O>;
 };
 
 export interface TimeSeriesScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends TimeScale<O> {}
 export const TimeSeriesScale: IChartComponent & {
   prototype: TimeSeriesScale;
-  new <O extends ITimeScaleOptions = ITimeScaleOptions>(): TimeSeriesScale<O>;
+  new <O extends ITimeScaleOptions = ITimeScaleOptions>(cfg: any): TimeSeriesScale<O>;
 };
 
 export type IRadialLinearScaleOptions = IScaleOptions & {
@@ -469,7 +469,7 @@ export interface RadialLinearScale<O extends IRadialLinearScaleOptions = IRadial
 }
 export const RadialLinearScale: IChartComponent & {
   prototype: RadialLinearScale;
-  new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(): RadialLinearScale<O>;
+  new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(cfg: any): RadialLinearScale<O>;
 };
 
 export interface ILinearScaleType extends DeepPartial<ILinearScaleOptions> {
@@ -493,12 +493,6 @@ export interface ITimeSeriesScaleType extends DeepPartial<ITimeScaleOptions> {
 
 export interface IScaleChartOptions {
   scales: {
-    [key: string]:
-      | ILinearScaleType
-      | ILogarithmicScaleType
-      | ICategoryScaleType
-      | IRadialLinearScaleType
-      | ITimeScaleType
-      | ITimeSeriesScaleType;
+    [key: string]: { type: string } & DeepPartial<IScaleOptions>;
   };
 }
