@@ -1,35 +1,5 @@
+import { EasingFunction } from '../core/interfaces';
+
 export type EasingFunctionSignature = (t: number) => number;
 
-export const easing: {
-  linear: EasingFunctionSignature;
-  easeInQuad: EasingFunctionSignature;
-  easeOutQuad: EasingFunctionSignature;
-  easeInOutQuad: EasingFunctionSignature;
-  easeInCubic: EasingFunctionSignature;
-  easeOutCubic: EasingFunctionSignature;
-  easeInOutCubic: EasingFunctionSignature;
-  easeInQuart: EasingFunctionSignature;
-  easeOutQuart: EasingFunctionSignature;
-  easeInOutQuart: EasingFunctionSignature;
-  easeInQuint: EasingFunctionSignature;
-  easeOutQuint: EasingFunctionSignature;
-  easeInOutQuint: EasingFunctionSignature;
-  easeInSine: EasingFunctionSignature;
-  easeOutSine: EasingFunctionSignature;
-  easeInOutSine: EasingFunctionSignature;
-  easeInExpo: EasingFunctionSignature;
-  easeOutExpo: EasingFunctionSignature;
-  easeInOutExpo: EasingFunctionSignature;
-  easeInCirc: EasingFunctionSignature;
-  easeOutCirc: EasingFunctionSignature;
-  easeInOutCirc: EasingFunctionSignature;
-  easeInElastic: EasingFunctionSignature;
-  easeOutElastic: EasingFunctionSignature;
-  easeInOutElastic: EasingFunctionSignature;
-  easeInBack: EasingFunctionSignature;
-  easeOutBack: EasingFunctionSignature;
-  easeInOutBack: EasingFunctionSignature;
-  easeInBounce: EasingFunctionSignature;
-  easeOutBounce: EasingFunctionSignature;
-  easeInOutBounce: EasingFunctionSignature;
-};
+export const easing: Record<EasingFunction, EasingFunctionSignature>;
