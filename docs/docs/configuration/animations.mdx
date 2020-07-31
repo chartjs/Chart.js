@@ -139,7 +139,7 @@ A mode option is defined by the same options of the main [animation configuratio
 | `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
 | | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
 | `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
-| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false very at late phase of animation
+| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
 
 ## Animation property configuration
 
@@ -150,7 +150,7 @@ A property option is defined by the same options of the main [animation configur
 | ---- | ---- | ------- | -----------
 | `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
 | `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
-| `to`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | End value for the animation. Current value is used when `undefined`
+| `to`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | End value for the animation. Updated value is used when `undefined`
 
 ## Animation properties collection configuration
 
@@ -173,7 +173,7 @@ A properties collection option is defined by the same options of the [animation 
 
 Direct property configuration overrides configuration of same property in a collection.
 
-To enable a custom collection, the default one of the same type must be disabled.
+From collections, a property gets its configuration from first one that has its name in properties.
 
 :::note
 These default collections are overridden by most dataset controllers.
@@ -181,12 +181,13 @@ These default collections are overridden by most dataset controllers.
 
 ## Disabling animation
 
-To disable an animation configuration, the animation node must be set to `false`.
+To disable an animation configuration, the animation node must be set to `false`, with the exception for animation modes which can be disable setting the `duration` to `0`. 
 
 ```javascript
 chart.options.animation = false; // disables the whole animation
-chart.options.animation.active = false; // disables the animation for 'active' mode
-chart.options.animation.colors = false; // disables the collection of colors properties
+chart.options.animation.active.duration = 0; // disables the animation for 'active' mode
+chart.options.animation.colors = false; // disables animation defined by the collection of 'colors' properties
+chart.options.animation.x = false; // disables animation defined by the 'x' property 
 ```
 
 ## Easing
