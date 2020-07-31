@@ -956,14 +956,6 @@ export class Tooltip extends Element {
 	}
 }
 
-const defaultRoutes = {};
-Object.keys(defaults.font).forEach(key => {
-	defaultRoutes['titleFont.' + key] = 'defaults.font.' + key;
-	defaultRoutes['bodyFont.' + key] = 'defaults.font.' + key;
-	defaultRoutes['footerFont.' + key] = 'defaults.font.' + key;
-});
-
-
 /**
  * @namespace Chart.Tooltip.positioners
  */
@@ -1125,6 +1117,4 @@ export default {
 			afterFooter: noop
 		}
 	},
-
-	defaultRoutes
 };
