@@ -142,12 +142,12 @@ function getTickMarkLength(options) {
 /**
  * @param {object} options
  */
-function getScaleLabelHeight(options) {
+function getScaleLabelHeight(options, fallback) {
 	if (!options.display) {
 		return 0;
 	}
 
-	const font = toFont(options.font);
+	const font = toFont(options.font, fallback);
 	const padding = toPadding(options.padding);
 
 	return font.lineHeight + padding.height;
@@ -673,7 +673,7 @@ export default class Scale extends Element {
 		if (maxLabelWidth + 6 > tickWidth) {
 			tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
 			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
-				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
+				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel, me.chart.options.font);
 			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
 			labelRotation = toDegrees(Math.min(
 				Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
@@ -709,19 +709,20 @@ export default class Scale extends Element {
 		const display = me._isVisible();
 		const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
 		const isHorizontal = me.isHorizontal();
+		const scaleLabelHeight = display && getScaleLabelHeight(scaleLabelOpts, chart.options.font);
 
 		// Width
 		if (isHorizontal) {
 			minSize.width = me.maxWidth;
 		} else if (display) {
-			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+			minSize.width = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
 		}
 
 		// height
 		if (!isHorizontal) {
 			minSize.height = me.maxHeight; // fill all the height
 		} else if (display) {
-			minSize.height = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+			minSize.height = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
@@ -1460,7 +1461,7 @@ export default class Scale extends Element {
 			return;
 		}
 
-		const scaleLabelFont = toFont(scaleLabel.font);
+		const scaleLabelFont = toFont(scaleLabel.font, me.chart.options.font);
 		const scaleLabelPadding = toPadding(scaleLabel.padding);
 		const halfLineHeight = scaleLabelFont.lineHeight / 2;
 		const scaleLabelAlign = scaleLabel.align;
@@ -1594,15 +1595,16 @@ export default class Scale extends Element {
  	 */
 	_resolveTickFontOptions(index) {
 		const me = this;
+		const chart = me.chart;
 		const options = me.options.ticks;
 		const ticks = me.ticks || [];
 		const context = {
-			chart: me.chart,
+			chart,
 			scale: me,
 			tick: ticks[index],
 			index
 		};
-		return toFont(resolve([options.font], context));
+		return toFont(resolve([options.font], context), chart.options.font);
 	}
 }
 
