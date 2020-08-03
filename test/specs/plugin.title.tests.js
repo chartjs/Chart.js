@@ -19,7 +19,9 @@ describe('Title block tests', function() {
 	});
 
 	it('should update correctly', function() {
-		var chart = {};
+		var chart = {
+			options: Chart.helpers.clone(Chart.defaults)
+		};
 
 		var options = Chart.helpers.clone(Chart.defaults.plugins.title);
 		options.text = 'My title';
@@ -44,7 +46,9 @@ describe('Title block tests', function() {
 	});
 
 	it('should update correctly when vertical', function() {
-		var chart = {};
+		var chart = {
+			options: Chart.helpers.clone(Chart.defaults)
+		};
 
 		var options = Chart.helpers.clone(Chart.defaults.plugins.title);
 		options.text = 'My title';
@@ -70,7 +74,9 @@ describe('Title block tests', function() {
 	});
 
 	it('should have the correct size when there are multiple lines of text', function() {
-		var chart = {};
+		var chart = {
+			options: Chart.helpers.clone(Chart.defaults)
+		};
 
 		var options = Chart.helpers.clone(Chart.defaults.plugins.title);
 		options.text = ['line1', 'line2'];
@@ -90,7 +96,9 @@ describe('Title block tests', function() {
 	});
 
 	it('should draw correctly horizontally', function() {
-		var chart = {};
+		var chart = {
+			options: Chart.helpers.clone(Chart.defaults)
+		};
 		var context = window.createMockContext();
 
 		var options = Chart.helpers.clone(Chart.defaults.plugins.title);
@@ -142,7 +150,9 @@ describe('Title block tests', function() {
 	});
 
 	it ('should draw correctly vertically', function() {
-		var chart = {};
+		var chart = {
+			options: Chart.helpers.clone(Chart.defaults)
+		};
 		var context = window.createMockContext();
 
 		var options = Chart.helpers.clone(Chart.defaults.plugins.title);
