@@ -2,6 +2,7 @@
 
 import * as coreHelpers from './helpers.core';
 import * as canvas from './helpers.canvas';
+import * as collection from './helpers.collection';
 import * as curve from './helpers.curve';
 import * as dom from './helpers.dom';
 import effects from './helpers.easing';
@@ -15,6 +16,7 @@ import {requestAnimFrame, fontString} from './helpers.extras';
 export default {
 	...coreHelpers,
 	canvas,
+	collection,
 	curve,
 	dom,
 	easing: {effects},

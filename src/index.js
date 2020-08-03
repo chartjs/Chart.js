@@ -9,7 +9,7 @@ import helpers from './helpers/index';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import animator from './core/core.animator';
-import animationService from './core/core.animations';
+import Animations from './core/core.animations';
 import * as controllers from './controllers';
 import DatasetController from './core/core.datasetController';
 import Element from './core/core.element';
@@ -30,8 +30,8 @@ Chart.register(controllers, scales, elements, plugins);
 Chart.helpers = helpers;
 Chart._adapters = _adapters;
 Chart.Animation = Animation;
+Chart.Animations = Animations;
 Chart.animator = animator;
-Chart.animationService = animationService;
 Chart.controllers = registry.controllers.items;
 Chart.DatasetController = DatasetController;
 Chart.Element = Element;
@@ -39,9 +39,12 @@ Chart.elements = elements;
 Chart.Interaction = Interaction;
 Chart.layouts = layouts;
 Chart.platforms = platforms;
-Chart.registry = registry;
 Chart.Scale = Scale;
 Chart.Ticks = Ticks;
+
+// Compatibility with ESM extensions
+Object.assign(Chart, controllers, scales, elements, plugins, platforms);
+Chart.Chart = Chart;
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore

@@ -245,6 +245,7 @@ The following properties and methods were removed:
 
 #### Chart
 
+* `Chart.animationService`
 * `Chart.active`
 * `Chart.borderWidth`
 * `Chart.chart.chart`
