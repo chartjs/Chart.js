@@ -1170,16 +1170,11 @@ class Chart {
 	}
 }
 
-Chart.version = version;
-
-/**
- * NOTE(SB) We actually don't use this container anymore but we need to keep it
- * for backward compatibility. Though, it can still be useful for plugins that
- * would need to work on multiple charts?!
- */
+// These are available to both, UMD and ESM packages
+Chart.defaults = defaults;
 Chart.instances = {};
-
 Chart.registry = registry;
+Chart.version = version;
 
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
