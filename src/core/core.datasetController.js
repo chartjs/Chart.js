@@ -714,7 +714,7 @@ export default class DatasetController {
 
 	/**
 	 * @param {number} index
-	 * @param {string} mode
+	 * @param {string} [mode]
 	 * @protected
 	 */
 	resolveDataElementOptions(index, mode) {

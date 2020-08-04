@@ -148,9 +148,7 @@ PolarAreaController.defaults = {
 		'borderColor',
 		'borderWidth',
 		'borderAlign',
-		'hoverBackgroundColor',
-		'hoverBorderColor',
-		'hoverBorderWidth'
+		'offset'
 	],
 
 	animation: {
