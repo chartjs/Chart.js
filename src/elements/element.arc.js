@@ -60,7 +60,7 @@ function drawFullCircleBorders(ctx, element, inner) {
 		element.endAngle = element.startAngle + TAU;
 		clipArc(ctx, element);
 		element.endAngle = endAngle;
-		if (element.endAngle === element.startAngle && element.fullCircles) {
+		if (element.endAngle === element.startAngle) {
 			element.endAngle += TAU;
 			element.fullCircles--;
 		}
@@ -84,6 +84,10 @@ function drawBorder(ctx, element) {
 	const outerRadius = element.outerRadius;
 	const innerRadius = element.innerRadius + pixelMargin;
 	const inner = options.borderAlign === 'inner';
+
+	if (!options.borderWidth) {
+		return;
+	}
 
 	if (inner) {
 		ctx.lineWidth = options.borderWidth * 2;
@@ -188,22 +192,16 @@ export default class Arc extends Element {
 
 		ctx.save();
 
-		if (offset) {
-			const {startAngle, endAngle} = me.getProps(['startAngle', 'endAngle'], true);
-			if (startAngle !== endAngle) {
-				const halfAngle = (me.startAngle + me.endAngle) / 2;
-				ctx.translate(Math.cos(halfAngle) * offset, Math.sin(halfAngle) * offset);
-			}
+		if (offset && me.circumference < TAU) {
+			const halfAngle = (me.startAngle + me.endAngle) / 2;
+			ctx.translate(Math.cos(halfAngle) * offset, Math.sin(halfAngle) * offset);
 		}
 
 		ctx.fillStyle = options.backgroundColor;
 		ctx.strokeStyle = options.borderColor;
 
 		drawArc(ctx, me);
-
-		if (options.borderWidth) {
-			drawBorder(ctx, me);
-		}
+		drawBorder(ctx, me);
 
 		ctx.restore();
 	}

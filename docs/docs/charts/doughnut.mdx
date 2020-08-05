@@ -10,10 +10,22 @@ Pie and doughnut charts are effectively the same class in Chart.js, but have one
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+    defaultValue='doughnut'
+    values={[
+        {label: 'Doughnut', value: 'doughnut' },
+        {label: 'Pie', value: 'pie' },
+    ]}
+>
+<TabItem value="doughnut">
 
 ```jsx live
 function example() {
+  const canvas = useRef(null);
   useEffect(() => {
     const cfg = {
       type: 'doughnut',
@@ -30,16 +42,53 @@ function example() {
             'rgb(255, 99, 132)',
             'rgb(54, 162, 235)',
             'rgb(255, 205, 86)'
-		  ],
-		  hoverOffset: 4
+          ],
+          hoverOffset: 4
         }]
       }
     };
-    new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
+    new Chart(canvas.current.getContext('2d'), cfg);
   });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
+  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
 }
 ```
+
+</TabItem>
+
+<TabItem value="pie">
+
+```jsx live
+function example() {
+  const canvas = useRef(null);
+  useEffect(() => {
+    const cfg = {
+      type: 'pie',
+      data: {
+        labels: [
+          'Red',
+          'Blue',
+          'Yellow'
+        ],
+        datasets: [{
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+          hoverOffset: 4
+        }]
+      }
+    };
+    new Chart(canvas.current.getContext('2d'), cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+</Tabs>
 
 ## Dataset Properties
 
@@ -56,7 +105,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
-| [`hoveroffset`](#interactions) | `number` | Yes | Yes | `0`
+| [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
 | [`weight`](#styling) | `number` | - | - | `1`
 
