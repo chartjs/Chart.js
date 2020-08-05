@@ -89,9 +89,9 @@ export default class DoughnutController extends DatasetController {
 		const cutout = options.cutoutPercentage / 100 || 0;
 		const chartWeight = me._getRingWeight(me.index);
 		const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(options.rotation, options.circumference, cutout);
-		const borderWidth = me.getMaxBorderWidth();
-		const maxWidth = (chartArea.right - chartArea.left - borderWidth) / ratioX;
-		const maxHeight = (chartArea.bottom - chartArea.top - borderWidth) / ratioY;
+		const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
+		const maxWidth = (chartArea.right - chartArea.left - spacing) / ratioX;
+		const maxHeight = (chartArea.bottom - chartArea.top - spacing) / ratioY;
 		const outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
 		const innerRadius = Math.max(outerRadius * cutout, 0);
 		const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
@@ -219,6 +219,16 @@ export default class DoughnutController extends DatasetController {
 		return max;
 	}
 
+	getMaxOffset(arcs) {
+		let max = 0;
+
+		for (let i = 0, ilen = arcs.length; i < ilen; ++i) {
+			const options = this.resolveDataElementOptions(i);
+			max = Math.max(max, options.offset || 0, options.hoverOffset || 0);
+		}
+		return max;
+	}
+
 	/**
 	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
 	 * @private
@@ -264,14 +274,12 @@ DoughnutController.defaults = {
 		'borderColor',
 		'borderWidth',
 		'borderAlign',
-		'hoverBackgroundColor',
-		'hoverBorderColor',
-		'hoverBorderWidth',
+		'offset'
 	],
 	animation: {
 		numbers: {
 			type: 'number',
-			properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y']
+			properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
 		},
 		// Boolean - Whether we animate the rotation of the Doughnut
 		animateRotate: true,
