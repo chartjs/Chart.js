@@ -35,7 +35,6 @@ function parseFillOption(line) {
 	return fill;
 }
 
-// @todo if (fill[0] === '#')
 function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
 	let target = parseFloat(fill);
@@ -52,7 +51,7 @@ function decodeFill(line, index, count) {
 		return target;
 	}
 
-	return ['origin', 'start', 'end'].indexOf(fill) >= 0 ? fill : false;
+	return ['origin', 'start', 'end', 'stack'].indexOf(fill) >= 0 && fill;
 }
 
 function computeLinearBoundary(source) {
@@ -163,11 +162,90 @@ function pointsFromSegments(boundary, line) {
 	return points;
 }
 
+function buildStackLine(source) {
+	const {chart, scale, index, line} = source;
+	const below = getLinesBelow(chart, index);
+	const points = [];
+	const segments = line.segments;
+	const sourcePoints = line.points;
+	const startPoints = [];
+	sourcePoints.forEach(point => startPoints.push({x: point.x, y: scale.bottom, _prop: 'x', _ref: point}));
+	below.push(new Line({points: startPoints, options: {}}));
+
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		for (let j = segment.start; j <= segment.end; j++) {
+			const firstOrLast = j === segment.start || j === segment.end;
+			addPointsBelow(points, sourcePoints[j], below, firstOrLast);
+		}
+	}
+	return new Line({points, options: {}, _refPoints: true});
+}
+
+function getLinesBelow(chart, index) {
+	const below = [];
+	const metas = chart.getSortedVisibleDatasetMetas();
+	for (let i = 0; i < metas.length; i++) {
+		const meta = metas[i];
+		if (meta.index === index) {
+			break;
+		}
+		if (meta.type === 'line') {
+			below.unshift(meta.dataset);
+		}
+	}
+	return below;
+}
+
+function addPointsBelow(points, sourcePoint, below, sourceFirstOrLast) {
+	const postponed = [];
+	for (let j = 0; j < below.length; j++) {
+		const line = below[j];
+		const {first, last, point} = findPoint(line, sourcePoint, 'x');
+
+		if (!point) {
+			continue;
+		}
+		if (j < below.length - 1 && first) {
+			postponed.unshift(point);
+		} else {
+			points.push(point);
+		}
+		if (sourceFirstOrLast || (!first && !last)) {
+			break;
+		}
+	}
+	points.push(...postponed);
+}
+
+function findPoint(line, sourcePoint, property) {
+	const segments = line.segments;
+	const linePoints = line.points;
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		for (let j = segment.start; j <= segment.end; j++) {
+			const point = linePoints[j];
+			if (sourcePoint[property] === point[property]) {
+				return {
+					first: j === segment.start,
+					last: j === segment.end,
+					point
+				};
+			}
+		}
+	}
+	return {};
+}
+
 function getTarget(source) {
 	const {chart, fill, line} = source;
 
 	if (isFinite(fill)) {
 		return getLineByIndex(chart, fill);
+	}
+
+	if (fill === 'stack') {
+		return buildStackLine(source);
 	}
 
 	const boundary = computeBoundary(source);
@@ -402,6 +480,7 @@ export default {
 			if (line && line.options && line instanceof Line) {
 				source = {
 					visible: chart.isDatasetVisible(i),
+					index: i,
 					fill: decodeFill(line, i, count),
 					chart,
 					scale: meta.vScale,
