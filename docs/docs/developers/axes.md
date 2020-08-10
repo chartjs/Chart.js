@@ -31,12 +31,12 @@ MyScale.defaults = defaultConfigObject;
 // MyScale is now derived from Chart.Scale
 ```
 
-Once you have created your scale class, you need to register it with the global chart object so that it can be used. A default config for the scale may be provided when registering the constructor. The first parameter to the register function is a string key that is used later to identify which scale type to use for a chart.
+Once you have created your scale class, you need to register it with the global chart object so that it can be used.
 
 ```javascript
 Chart.register(MyScale);
 
-// If the scale is created in classical way, the prototype can not be used to detect what
+// If the new scale is not extending Chart.Scale, the prototype can not be used to detect what
 // you are trying to register - so you need to be explicit:
 
 // Chart.registry.addScales(MyScale);

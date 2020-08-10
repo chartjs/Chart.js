@@ -2,14 +2,14 @@
 title: New Charts
 ---
 
-Chart.js 2.0 introduces the concept of controllers for each dataset. Like scales, new controllers can be written as needed.
+Chart.js 2.0 introduced the concept of controllers for each dataset. Like scales, new controllers can be written as needed.
 
 ```javascript
 class MyType extends Chart.DatasetController {
 
 }
 
-Chart.controllers.MyType = MyType;
+Chart.register(MyType);
 
 // Now we can create a new instance of our chart, using the Chart.js API
 new Chart(ctx, {
@@ -66,17 +66,22 @@ Extending or replacing an existing controller type is easy. Simply replace the c
 
 The built in controller types are:
 
-* `Chart.controllers.line`
-* `Chart.controllers.bar`
-* `Chart.controllers.radar`
-* `Chart.controllers.doughnut`
-* `Chart.controllers.polarArea`
-* `Chart.controllers.bubble`
+* `BarController`
+* `BubbleController`
+* `DoughnutController`
+* `LineController`
+* `PieController`
+* `PolarAreaController`
+* `RadarController`
+* `ScatterController`
+
+These controllers are also available in the UMD package, directly under `Chart`. Eg: `Chart.BarController`.
 
 For example, to derive a new chart type that extends from a bubble chart, you would do the following.
 
 ```javascript
-class Custom extends Chart.controllers.bubble {
+import {BubbleController} from 'chart.js';
+class Custom extends BubbleController {
     draw() {
         // Call super method first
         super.draw(arguments);
@@ -95,7 +100,7 @@ class Custom extends Chart.controllers.bubble {
     }
 });
 Custom.id = 'derivedBubble';
-Custom.defaults = Chart.defaults.bubble;
+Custom.defaults = BubbleController.defaults;
 
 // Stores the controller so that the chart initialization routine can look it up
 Chart.register(Custom);
@@ -112,14 +117,14 @@ Same example in classic style
 
 ```javascript
 function Custom() {
-  Chart.controllers.bubble.apply(this, arguments);
+  Chart.BubbleController.apply(this, arguments);
   // constructor stuff
 }
-Custom.prototype = Object.create(Chart.controllers.bubble.prototype);
+Custom.prototype = Object.create(Chart.BubbleController.prototype);
 Custom.prototype.constructor = Custom;
 
 Custom.prototype.draw = function(ctx) {
-    Chart.controllers.bubble.prototype.draw.apply(this, arguments);
+    Chart.BubbleController.prototype.draw.apply(this, arguments);
 
     var meta = this.getMeta();
     var pt0 = meta.data[0];

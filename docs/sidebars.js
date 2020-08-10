@@ -70,7 +70,8 @@ module.exports = {
 			'developers/plugins',
 			'developers/charts',
 			'developers/axes',
-			'developers/contributing'
+			'developers/contributing',
+			'developers/publishing'
 		],
 		'Additional Notes': [
 			'notes/comparison',

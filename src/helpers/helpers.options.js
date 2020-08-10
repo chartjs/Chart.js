@@ -67,27 +67,29 @@ export function toPadding(value) {
 /**
  * Parses font options and returns the font object.
  * @param {object} options - A object that contains font options to be parsed.
+ * @param {object} [fallback] - A object that contains fallback font options.
  * @return {object} The font object.
  * @private
  */
-export function toFont(options) {
-	const defaultFont = defaults.font;
+export function toFont(options, fallback) {
 	options = options || {};
-	let size = valueOrDefault(options.size, defaultFont.size);
+	fallback = fallback || defaults.font;
+
+	let size = valueOrDefault(options.size, fallback.size);
 
 	if (typeof size === 'string') {
 		size = parseInt(size, 10);
 	}
 
 	const font = {
-		color: valueOrDefault(options.color, defaultFont.color),
-		family: valueOrDefault(options.family, defaultFont.family),
-		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaultFont.lineHeight), size),
-		lineWidth: valueOrDefault(options.lineWidth, defaultFont.lineWidth),
+		color: valueOrDefault(options.color, fallback.color),
+		family: valueOrDefault(options.family, fallback.family),
+		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, fallback.lineHeight), size),
+		lineWidth: valueOrDefault(options.lineWidth, fallback.lineWidth),
 		size,
-		style: valueOrDefault(options.style, defaultFont.style),
-		weight: valueOrDefault(options.weight, defaultFont.weight),
-		strokeStyle: valueOrDefault(options.strokeStyle, defaultFont.strokeStyle),
+		style: valueOrDefault(options.style, fallback.style),
+		weight: valueOrDefault(options.weight, fallback.weight),
+		strokeStyle: valueOrDefault(options.strokeStyle, fallback.strokeStyle),
 		string: ''
 	};
 

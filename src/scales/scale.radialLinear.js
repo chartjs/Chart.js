@@ -102,7 +102,7 @@ function fitWithPointLabels(scale) {
 			index: i,
 			label: scale.pointLabels[i]
 		};
-		const plFont = toFont(resolve([scale.options.pointLabels.font], context, i));
+		const plFont = toFont(resolve([scale.options.pointLabels.font], context, i), scale.chart.options.font);
 		scale.ctx.font = plFont.string;
 		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
 		scale._pointLabelSizes[i] = textSize;
@@ -191,7 +191,7 @@ function drawPointLabels(scale) {
 			index: i,
 			label: scale.pointLabels[i],
 		};
-		const plFont = toFont(resolve([pointLabelOpts.font], context, i));
+		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
 		ctx.font = plFont.string;
 		ctx.fillStyle = plFont.color;
 

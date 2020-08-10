@@ -135,14 +135,15 @@ function createTooltipItem(chart, item) {
 /**
  * Helper to get the reset model for the tooltip
  * @param options {object} the tooltip options
+ * @param fallbackFont {object} the fallback font options
  */
-function resolveOptions(options) {
+function resolveOptions(options, fallbackFont) {
 
 	options = merge({}, [defaults.plugins.tooltip, options]);
 
-	options.bodyFont = toFont(options.bodyFont);
-	options.titleFont = toFont(options.titleFont);
-	options.footerFont = toFont(options.footerFont);
+	options.bodyFont = toFont(options.bodyFont, fallbackFont);
+	options.titleFont = toFont(options.titleFont, fallbackFont);
+	options.footerFont = toFont(options.footerFont, fallbackFont);
 
 	options.boxHeight = valueOrDefault(options.boxHeight, options.bodyFont.size);
 	options.boxWidth = valueOrDefault(options.boxWidth, options.bodyFont.size);
@@ -388,7 +389,8 @@ export class Tooltip extends Element {
 
 	initialize() {
 		const me = this;
-		me.options = resolveOptions(me._chart.options.tooltips);
+		const chartOpts = me._chart.options;
+		me.options = resolveOptions(chartOpts.tooltips, chartOpts.font);
 	}
 
 	/**
@@ -1114,5 +1116,5 @@ export default {
 			footer: noop,
 			afterFooter: noop
 		}
-	}
+	},
 };
