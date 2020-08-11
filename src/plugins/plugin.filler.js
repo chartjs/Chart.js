@@ -237,16 +237,16 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
 		if (!point) {
 			continue;
 		}
-		if (first && j < linesBelow.length - 1) {
+		if (first) {
 			// First point of an segment -> need to add another point before this,
 			// from next line below.
 			postponed.unshift(point);
 		} else {
 			points.push(point);
-		}
-		if (!first && !last) {
-			// If not first or last point of a segment, no need to add more points.
-			break;
+			if (!last) {
+				// In the middle of an segment, no need to add more points.
+				break;
+			}
 		}
 	}
 	points.push(...postponed);
