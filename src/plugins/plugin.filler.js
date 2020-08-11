@@ -234,7 +234,7 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
 		const line = linesBelow[j];
 		const {first, last, point} = findPoint(line, sourcePoint, 'x');
 
-		if (!point) {
+		if (!point || (first && last)) {
 			continue;
 		}
 		if (first) {
