@@ -175,8 +175,7 @@ function buildStackLine(source) {
 	for (let i = 0; i < segments.length; i++) {
 		const segment = segments[i];
 		for (let j = segment.start; j <= segment.end; j++) {
-			const firstOrLast = j === segment.start || j === segment.end;
-			addPointsBelow(points, sourcePoints[j], below, firstOrLast);
+			addPointsBelow(points, sourcePoints[j], below);
 		}
 	}
 	return new Line({points, options: {}, _refPoints: true});
@@ -197,7 +196,7 @@ function getLinesBelow(chart, index) {
 	return below;
 }
 
-function addPointsBelow(points, sourcePoint, below, sourceFirstOrLast) {
+function addPointsBelow(points, sourcePoint, below) {
 	const postponed = [];
 	for (let j = 0; j < below.length; j++) {
 		const line = below[j];
@@ -211,7 +210,7 @@ function addPointsBelow(points, sourcePoint, below, sourceFirstOrLast) {
 		} else {
 			points.push(point);
 		}
-		if (sourceFirstOrLast || (!first && !last)) {
+		if (!first && !last) {
 			break;
 		}
 	}
