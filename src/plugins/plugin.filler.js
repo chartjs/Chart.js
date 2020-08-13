@@ -10,12 +10,25 @@ import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
+/**
+ * @typedef { import('../core/core.controller').default } Chart
+ * @typedef { import('../core/core.scale').default } Scale
+ * @typedef { import("../elements/element.point").default } Point
+ */
+
+/**
+ * @param {Chart} chart
+ * @param {number} index
+ */
 function getLineByIndex(chart, index) {
 	const meta = chart.getDatasetMeta(index);
 	const visible = meta && chart.isDatasetVisible(index);
 	return visible ? meta.dataset : null;
 }
 
+/**
+ * @param {Line} line
+ */
 function parseFillOption(line) {
 	const options = line.options;
 	const fillOption = options.fill;
@@ -35,7 +48,11 @@ function parseFillOption(line) {
 	return fill;
 }
 
-// @todo if (fill[0] === '#')
+/**
+ * @param {Line} line
+ * @param {number} index
+ * @param {number} count
+ */
 function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
 	let target = parseFloat(fill);
@@ -52,7 +69,7 @@ function decodeFill(line, index, count) {
 		return target;
 	}
 
-	return ['origin', 'start', 'end'].indexOf(fill) >= 0 ? fill : false;
+	return ['origin', 'start', 'end', 'stack'].indexOf(fill) >= 0 && fill;
 }
 
 function computeLinearBoundary(source) {
@@ -163,6 +180,103 @@ function pointsFromSegments(boundary, line) {
 	return points;
 }
 
+/**
+ * @param {{ chart: Chart; scale: Scale; index: number; line: Line; }} source
+ * @return {Line}
+ */
+function buildStackLine(source) {
+	const {chart, scale, index, line} = source;
+	const linesBelow = getLinesBelow(chart, index);
+	const points = [];
+	const segments = line.segments;
+	const sourcePoints = line.points;
+	const startPoints = [];
+	sourcePoints.forEach(point => startPoints.push({x: point.x, y: scale.bottom, _prop: 'x', _ref: point}));
+	linesBelow.push(new Line({points: startPoints, options: {}}));
+
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		for (let j = segment.start; j <= segment.end; j++) {
+			addPointsBelow(points, sourcePoints[j], linesBelow);
+		}
+	}
+	return new Line({points, options: {}, _refPoints: true});
+}
+
+/**
+ * @param {Chart} chart
+ * @param {number} index
+ * @return {Line[]}
+ */
+function getLinesBelow(chart, index) {
+	const below = [];
+	const metas = chart.getSortedVisibleDatasetMetas();
+	for (let i = 0; i < metas.length; i++) {
+		const meta = metas[i];
+		if (meta.index === index) {
+			break;
+		}
+		if (meta.type === 'line') {
+			below.unshift(meta.dataset);
+		}
+	}
+	return below;
+}
+
+/**
+ * @param {Point[]} points
+ * @param {Point} sourcePoint
+ * @param {Line[]} linesBelow
+ */
+function addPointsBelow(points, sourcePoint, linesBelow) {
+	const postponed = [];
+	for (let j = 0; j < linesBelow.length; j++) {
+		const line = linesBelow[j];
+		const {first, last, point} = findPoint(line, sourcePoint, 'x');
+
+		if (!point || (first && last)) {
+			continue;
+		}
+		if (first) {
+			// First point of an segment -> need to add another point before this,
+			// from next line below.
+			postponed.unshift(point);
+		} else {
+			points.push(point);
+			if (!last) {
+				// In the middle of an segment, no need to add more points.
+				break;
+			}
+		}
+	}
+	points.push(...postponed);
+}
+
+/**
+ * @param {Line} line
+ * @param {Point} sourcePoint
+ * @param {string} property
+ * @returns {{point?: Point, first?: boolean, last?: boolean}}
+ */
+function findPoint(line, sourcePoint, property) {
+	const segments = line.segments;
+	const linePoints = line.points;
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		for (let j = segment.start; j <= segment.end; j++) {
+			const point = linePoints[j];
+			if (sourcePoint[property] === point[property]) {
+				return {
+					first: j === segment.start,
+					last: j === segment.end,
+					point
+				};
+			}
+		}
+	}
+	return {};
+}
+
 function getTarget(source) {
 	const {chart, fill, line} = source;
 
@@ -170,14 +284,28 @@ function getTarget(source) {
 		return getLineByIndex(chart, fill);
 	}
 
+	if (fill === 'stack') {
+		return buildStackLine(source);
+	}
+
 	const boundary = computeBoundary(source);
-	let points = [];
-	let _loop = false;
-	let _refPoints = false;
 
 	if (boundary instanceof simpleArc) {
 		return boundary;
 	}
+
+	return createBoundaryLine(boundary, line);
+}
+
+/**
+ * @param {Point[] | { x: number; y: number; }} boundary
+ * @param {Line} line
+ * @return {Line?}
+ */
+function createBoundaryLine(boundary, line) {
+	let points = [];
+	let _loop = false;
+	let _refPoints = false;
 
 	if (isArray(boundary)) {
 		_loop = true;
@@ -187,6 +315,7 @@ function getTarget(source) {
 		points = pointsFromSegments(boundary, line);
 		_refPoints = true;
 	}
+
 	return points.length ? new Line({
 		points,
 		options: {tension: 0},
@@ -402,6 +531,7 @@ export default {
 			if (line && line.options && line instanceof Line) {
 				source = {
 					visible: chart.isDatasetVisible(i),
+					index: i,
 					fill: decodeFill(line, i, count),
 					chart,
 					scale: meta.vScale,
