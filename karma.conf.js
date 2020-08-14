@@ -3,7 +3,6 @@
 const commonjs = require('@rollup/plugin-commonjs');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
-const webWorkerLoader = require('rollup-plugin-web-worker-loader');
 const builds = require('./rollup.config');
 const yargs = require('yargs');
 
@@ -65,13 +64,13 @@ module.exports = function(karma) {
 			{pattern: 'test/fixtures/**/*.png', included: false},
 			'node_modules/moment/min/moment.min.js',
 			{pattern: 'test/index.js', watched: false},
+			{pattern: 'test/BasicChartWebWorker.js', included: false},
 			{pattern: 'src/index.js', watched: false},
 			'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js',
 			{pattern: specPattern, watched: false}
 		],
 
 		preprocessors: {
-			[specPattern]: ['rollup'],
 			'test/index.js': ['rollup'],
 			'src/index.js': ['sources']
 		},
@@ -81,7 +80,6 @@ module.exports = function(karma) {
 				json(),
 				resolve(),
 				commonjs({exclude: ['src/**', 'test/**']}),
-				webWorkerLoader()
 			],
 			output: {
 				name: 'test',

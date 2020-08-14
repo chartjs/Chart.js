@@ -1,4 +1,4 @@
-import {_filterBetween, _lookup, _lookupByKey, _rlookupByKey} from '../../src/helpers/helpers.collection';
+const {_filterBetween, _lookup, _lookupByKey, _rlookupByKey} = Chart.helpers.collection;
 
 describe('helpers.collection', function() {
 	it('Should do binary search', function() {
