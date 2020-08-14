@@ -1,6 +1,4 @@
-'use strict';
-
-import * as math from '../../src/helpers/helpers.math';
+const math = Chart.helpers.math;
 
 describe('Chart.helpers.math', function() {
 	var factorize = math._factorize;

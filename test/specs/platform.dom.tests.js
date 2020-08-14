@@ -1,4 +1,4 @@
-import {DomPlatform} from '../../src/platform';
+const DomPlatform = Chart.platforms.DomPlatform;
 
 describe('Platform.dom', function() {
 

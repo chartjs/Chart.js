@@ -5,7 +5,8 @@
 // Receives messages with data of type: { type: 'initialize', canvas: OffscreenCanvas }
 // Sends messages with data of types: { type: 'success' } | { type: 'error', errorMessage: string }
 
-import Chart from '../src';
+// eslint-disable-next-line no-undef
+importScripts('../src/chart.js');
 
 onmessage = function(event) {
 	try {

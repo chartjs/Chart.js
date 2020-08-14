@@ -1,5 +1,3 @@
-import BasicChartWebWorker from 'web-worker:../BasicChartWebWorker'; // eslint-disable-line import/no-unresolved
-
 describe('Platform.basic', function() {
 
 	it('should automatically choose the BasicPlatform for offscreen canvas', function() {
@@ -17,7 +15,7 @@ describe('Platform.basic', function() {
 		}
 		const offscreenCanvas = canvas.transferControlToOffscreen();
 
-		const worker = new BasicChartWebWorker();
+		const worker = new Worker('base/test/BasicChartWebWorker.js');
 		worker.onmessage = (event) => {
 			worker.terminate();
 			const {type, errorMessage} = event.data;

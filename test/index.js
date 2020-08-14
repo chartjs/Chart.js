@@ -1,5 +1,3 @@
-'use strict';
-
 import fixture from './fixture';
 import Context from './context';
 import matchers from './matchers';
