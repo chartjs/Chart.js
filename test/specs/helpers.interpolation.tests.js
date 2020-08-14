@@ -1,4 +1,4 @@
-import {_pointInLine, _steppedInterpolation, _bezierInterpolation} from '../../src/helpers/helpers.interpolation';
+const {_pointInLine, _steppedInterpolation, _bezierInterpolation} = Chart.helpers.interpolation;
 
 describe('helpers.interpolation', function() {
 	it('Should interpolate a point in line', function() {
