@@ -194,6 +194,7 @@ export default class Line extends Element {
 		this._fullLoop = undefined;
 		this._points = undefined;
 		this._segments = undefined;
+		this._pointsUpdated = false;
 
 		if (cfg) {
 			Object.assign(this, cfg);
@@ -203,9 +204,10 @@ export default class Line extends Element {
 	updateControlPoints(chartArea) {
 		const me = this;
 		const options = me.options;
-		if (options.tension && !options.stepped) {
+		if (options.tension && !options.stepped && !me._pointsUpdated) {
 			const loop = options.spanGaps ? me._loop : me._fullLoop;
 			_updateBezierControlPoints(me._points, options, chartArea, loop);
+			me._pointsUpdated = true;
 		}
 	}
 
@@ -338,6 +340,8 @@ export default class Line extends Element {
 
 		ctx.stroke();
 		ctx.restore();
+
+		this._pointsUpdated = false;
 	}
 }
 
