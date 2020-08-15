@@ -103,6 +103,11 @@ export default class LineController extends DatasetController {
 		const lastPoint = data[data.length - 1].size();
 		return Math.max(border, firstPoint, lastPoint) / 2;
 	}
+
+	draw() {
+		this._cachedMeta.dataset.updateControlPoints(this.chart.chartArea);
+		super.draw();
+	}
 }
 
 LineController.id = 'line';
