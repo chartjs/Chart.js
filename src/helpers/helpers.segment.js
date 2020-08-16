@@ -78,12 +78,18 @@ export function _boundSegment(segment, points, bounds) {
 	const count = points.length;
 	const {compare, between, normalize} = propertyFn(property);
 	const {start, end, loop} = getSegment(segment, points, bounds);
+
 	const result = [];
 	let inside = false;
 	let subStart = null;
-	let i, value, point, prev;
+	let value, point, prevValue;
 
-	for (i = start; i <= end; ++i) {
+	const startIsBefore = () => between(startBound, prevValue, value) && compare(startBound, prevValue) !== 0;
+	const endIsBefore = () => compare(endBound, value) === 0 || between(endBound, prevValue, value);
+	const shouldStart = () => inside || startIsBefore();
+	const shouldStop = () => !inside || endIsBefore();
+
+	for (let i = start, prev = start; i <= end; ++i) {
 		point = points[i % count];
 
 		if (point.skip) {
@@ -93,15 +99,16 @@ export function _boundSegment(segment, points, bounds) {
 		value = normalize(point[property]);
 		inside = between(value, startBound, endBound);
 
-		if (subStart === null && inside) {
-			subStart = i > start && compare(value, startBound) > 0 ? prev : i;
+		if (subStart === null && shouldStart()) {
+			subStart = compare(value, startBound) === 0 ? i : prev;
 		}
 
-		if (subStart !== null && (!inside || compare(value, endBound) === 0)) {
+		if (subStart !== null && shouldStop()) {
 			result.push(makeSubSegment(subStart, i, loop, count));
 			subStart = null;
 		}
 		prev = i;
+		prevValue = value;
 	}
 
 	if (subStart !== null) {
@@ -110,6 +117,7 @@ export function _boundSegment(segment, points, bounds) {
 
 	return result;
 }
+
 
 /**
  * Returns the segments of the line that are inside given bounds

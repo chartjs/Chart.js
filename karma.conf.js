@@ -67,7 +67,7 @@ module.exports = function(karma) {
 			{pattern: 'test/BasicChartWebWorker.js', included: false},
 			{pattern: 'src/index.js', watched: false},
 			'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js',
-			{pattern: specPattern, watched: false}
+			{pattern: specPattern}
 		],
 
 		preprocessors: {
