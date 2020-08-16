@@ -201,6 +201,8 @@ function buildStackLine(source) {
 	return new Line({points, options: {}});
 }
 
+const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidden;
+
 /**
  * @param {Chart} chart
  * @param {number} index
@@ -209,7 +211,6 @@ function buildStackLine(source) {
 function getLinesBelow(chart, index) {
 	const below = [];
 	const metas = chart.getSortedVisibleDatasetMetas();
-	const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidden;
 
 	for (let i = 0; i < metas.length; i++) {
 		const meta = metas[i];
