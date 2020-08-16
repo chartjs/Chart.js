@@ -186,13 +186,11 @@ function pointsFromSegments(boundary, line) {
  */
 function buildStackLine(source) {
 	const {chart, scale, index, line} = source;
-	const linesBelow = getLinesBelow(chart, index);
 	const points = [];
 	const segments = line.segments;
 	const sourcePoints = line.points;
-	const startPoints = [];
-	sourcePoints.forEach(point => startPoints.push({x: point.x, y: scale.bottom, _prop: 'x', _ref: point}));
-	linesBelow.push(new Line({points: startPoints, options: {}}));
+	const linesBelow = getLinesBelow(chart, index);
+	linesBelow.push(createBoundaryLine({x: null, y: scale.bottom}, line));
 
 	for (let i = 0; i < segments.length; i++) {
 		const segment = segments[i];
@@ -200,7 +198,7 @@ function buildStackLine(source) {
 			addPointsBelow(points, sourcePoints[j], linesBelow);
 		}
 	}
-	return new Line({points, options: {}, _refPoints: true});
+	return new Line({points, options: {}});
 }
 
 /**
@@ -216,7 +214,7 @@ function getLinesBelow(chart, index) {
 		if (meta.index === index) {
 			break;
 		}
-		if (meta.type === 'line') {
+		if (meta.type === 'line' && !meta.hidden) {
 			below.unshift(meta.dataset);
 		}
 	}
@@ -259,22 +257,27 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
  * @returns {{point?: Point, first?: boolean, last?: boolean}}
  */
 function findPoint(line, sourcePoint, property) {
+	const point = line.interpolate(sourcePoint, property);
+	if (!point) {
+		return {};
+	}
+
+	const pointValue = point[property];
 	const segments = line.segments;
 	const linePoints = line.points;
+	let first = false;
+	let last = false;
 	for (let i = 0; i < segments.length; i++) {
 		const segment = segments[i];
-		for (let j = segment.start; j <= segment.end; j++) {
-			const point = linePoints[j];
-			if (sourcePoint[property] === point[property]) {
-				return {
-					first: j === segment.start,
-					last: j === segment.end,
-					point
-				};
-			}
+		const firstValue = linePoints[segment.start][property];
+		const lastValue = linePoints[segment.end][property];
+		if (pointValue >= firstValue && pointValue <= lastValue) {
+			first = pointValue === firstValue;
+			last = pointValue === lastValue;
+			break;
 		}
 	}
-	return {};
+	return {first, last, point};
 }
 
 function getTarget(source) {
@@ -464,7 +467,7 @@ function interpolatedLineTo(ctx, target, point, property) {
 
 function _fill(ctx, cfg) {
 	const {line, target, property, color, scale} = cfg;
-	const segments = _segments(cfg.line, cfg.target, property);
+	const segments = _segments(line, target, property);
 
 	ctx.fillStyle = color;
 	for (let i = 0, ilen = segments.length; i < ilen; ++i) {
@@ -535,8 +538,7 @@ export default {
 					fill: decodeFill(line, i, count),
 					chart,
 					scale: meta.vScale,
-					line,
-					target: undefined
+					line
 				};
 			}
 
@@ -551,7 +553,6 @@ export default {
 			}
 
 			source.fill = resolveTarget(sources, i, propagate);
-			source.target = source.fill !== false && getTarget(source);
 		}
 	},
 
@@ -572,13 +573,14 @@ export default {
 	beforeDatasetDraw(chart, args) {
 		const area = chart.chartArea;
 		const ctx = chart.ctx;
-		const meta = args.meta.$filler;
+		const source = args.meta.$filler;
 
-		if (!meta || meta.fill === false) {
+		if (!source || source.fill === false) {
 			return;
 		}
 
-		const {line, target, scale} = meta;
+		const target = getTarget(source);
+		const {line, scale} = source;
 		const lineOpts = line.options;
 		const fillOption = lineOpts.fill;
 		const color = lineOpts.backgroundColor;
