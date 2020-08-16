@@ -209,7 +209,7 @@ function buildStackLine(source) {
 function getLinesBelow(chart, index) {
 	const below = [];
 	const metas = chart.getSortedVisibleDatasetMetas();
-	const isLineAndNotInHideAnimation = meta => meta.type === 'line' && !meta.hidden;
+	const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidden;
 
 	for (let i = 0; i < metas.length; i++) {
 		const meta = metas[i];
