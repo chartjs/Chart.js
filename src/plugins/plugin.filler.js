@@ -209,12 +209,14 @@ function buildStackLine(source) {
 function getLinesBelow(chart, index) {
 	const below = [];
 	const metas = chart.getSortedVisibleDatasetMetas();
+	const isLineAndNotInHideAnimation = meta => meta.type === 'line' && !meta.hidden;
+
 	for (let i = 0; i < metas.length; i++) {
 		const meta = metas[i];
 		if (meta.index === index) {
 			break;
 		}
-		if (meta.type === 'line' && !meta.hidden) {
+		if (isLineAndNotInHideAnimation(meta)) {
 			below.unshift(meta.dataset);
 		}
 	}
