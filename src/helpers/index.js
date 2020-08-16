@@ -10,6 +10,7 @@ import * as interpolation from './helpers.interpolation';
 import * as options from './helpers.options';
 import * as math from './helpers.math';
 import * as rtl from './helpers.rtl';
+import * as segment from './helpers.segment';
 
 import {color, getHoverColor} from './helpers.color';
 import {requestAnimFrame, fontString} from './helpers.extras';
@@ -25,6 +26,7 @@ export default {
 	options,
 	math,
 	rtl,
+	segment,
 
 	requestAnimFrame,
 	// -- Canvas methods
