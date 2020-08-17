@@ -64,7 +64,7 @@ describe('Chart.registry', function() {
 		expect(Chart.defaults.elements.myElement).not.toBeDefined();
 	});
 
-	it('should handle a classig plugin', function() {
+	it('should handle a classic plugin', function() {
 		const CustomPlugin = {
 			id: 'customPlugin',
 			defaults: {
@@ -171,5 +171,170 @@ describe('Chart.registry', function() {
 		expect(function() {
 			Chart.register(FaultyPlugin);
 		}).toThrow(new Error('class does not have id: class FaultyPlugin {}'));
+	});
+
+	it('should not fail when unregistering an object that is not registered', function() {
+		expect(function() {
+			Chart.unregister({id: 'foo'});
+		}).not.toThrow();
+	});
+
+	describe('Should allow registering explicitly', function() {
+		class customExtension {}
+		customExtension.id = 'custom';
+		customExtension.defaults = {
+			prop: true
+		};
+
+		it('as controller', function() {
+			Chart.registry.addControllers(customExtension);
+
+			expect(Chart.registry.getController('custom')).toEqual(customExtension);
+			expect(Chart.defaults.custom).toEqual(customExtension.defaults);
+
+			Chart.registry.removeControllers(customExtension);
+
+			expect(function() {
+				Chart.registry.getController('custom');
+			}).toThrow(new Error('"custom" is not a registered controller.'));
+			expect(Chart.defaults.custom).not.toBeDefined();
+		});
+
+		it('as scale', function() {
+			Chart.registry.addScales(customExtension);
+
+			expect(Chart.registry.getScale('custom')).toEqual(customExtension);
+			expect(Chart.defaults.scales.custom).toEqual(customExtension.defaults);
+
+			Chart.registry.removeScales(customExtension);
+
+			expect(function() {
+				Chart.registry.getScale('custom');
+			}).toThrow(new Error('"custom" is not a registered scale.'));
+			expect(Chart.defaults.scales.custom).not.toBeDefined();
+		});
+
+		it('as element', function() {
+			Chart.registry.addElements(customExtension);
+
+			expect(Chart.registry.getElement('custom')).toEqual(customExtension);
+			expect(Chart.defaults.elements.custom).toEqual(customExtension.defaults);
+
+			Chart.registry.removeElements(customExtension);
+
+			expect(function() {
+				Chart.registry.getElement('custom');
+			}).toThrow(new Error('"custom" is not a registered element.'));
+			expect(Chart.defaults.elements.custom).not.toBeDefined();
+		});
+
+		it('as plugin', function() {
+			Chart.registry.addPlugins(customExtension);
+
+			expect(Chart.registry.getPlugin('custom')).toEqual(customExtension);
+			expect(Chart.defaults.plugins.custom).toEqual(customExtension.defaults);
+
+			Chart.registry.removePlugins(customExtension);
+
+			expect(function() {
+				Chart.registry.getPlugin('custom');
+			}).toThrow(new Error('"custom" is not a registered plugin.'));
+			expect(Chart.defaults.plugins.custom).not.toBeDefined();
+		});
+	});
+
+	it('should fire before/after callbacks', function() {
+		let beforeRegisterCount = 0;
+		let afterRegisterCount = 0;
+		let beforeUnregisterCount = 0;
+		let afterUnregisterCount = 0;
+		class custom {}
+		custom.id = 'custom';
+		custom.beforeRegister = () => beforeRegisterCount++;
+		custom.afterRegister = () => afterRegisterCount++;
+		custom.beforeUnregister = () => beforeUnregisterCount++;
+		custom.afterUnregister = () => afterUnregisterCount++;
+
+		Chart.registry.addControllers(custom);
+		expect(beforeRegisterCount).withContext('beforeRegister').toBe(1);
+		expect(afterRegisterCount).withContext('afterRegister').toBe(1);
+		Chart.registry.removeControllers(custom);
+		expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(1);
+		expect(afterUnregisterCount).withContext('afterUnregister').toBe(1);
+
+		Chart.registry.addScales(custom);
+		expect(beforeRegisterCount).withContext('beforeRegister').toBe(2);
+		expect(afterRegisterCount).withContext('afterRegister').toBe(2);
+		Chart.registry.removeScales(custom);
+		expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(2);
+		expect(afterUnregisterCount).withContext('afterUnregister').toBe(2);
+
+		Chart.registry.addElements(custom);
+		expect(beforeRegisterCount).withContext('beforeRegister').toBe(3);
+		expect(afterRegisterCount).withContext('afterRegister').toBe(3);
+		Chart.registry.removeElements(custom);
+		expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(3);
+		expect(afterUnregisterCount).withContext('afterUnregister').toBe(3);
+
+		Chart.register(custom);
+		expect(beforeRegisterCount).withContext('beforeRegister').toBe(4);
+		expect(afterRegisterCount).withContext('afterRegister').toBe(4);
+		Chart.unregister(custom);
+		expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(4);
+		expect(afterUnregisterCount).withContext('afterUnregister').toBe(4);
+	});
+
+	it('should not register anything that would collide with existing defaults', function() {
+		class testController extends Chart.DatasetController {}
+		testController.id = 'events';
+		expect(function() {
+			Chart.register(testController);
+		}).toThrow(new Error('Can not register "events", because "defaults.events" would collide with existing defaults'));
+	});
+
+	describe('should handle multiple items', function() {
+		class test1 extends Chart.DatasetController {}
+		test1.id = 'test1';
+		class test2 extends Chart.Scale {}
+		test2.id = 'test2';
+
+		it('separately', function() {
+			Chart.register(test1, test2);
+			expect(Chart.registry.getController('test1')).toEqual(test1);
+			expect(Chart.registry.getScale('test2')).toEqual(test2);
+			Chart.unregister(test1, test2);
+			expect(function() {
+				Chart.registry.getController('test1');
+			}).toThrow();
+			expect(function() {
+				Chart.registry.getScale('test2');
+			}).toThrow();
+		});
+
+		it('as array', function() {
+			Chart.register([test1, test2]);
+			expect(Chart.registry.getController('test1')).toEqual(test1);
+			expect(Chart.registry.getScale('test2')).toEqual(test2);
+			Chart.unregister([test1, test2]);
+			expect(function() {
+				Chart.registry.getController('test1');
+			}).toThrow();
+			expect(function() {
+				Chart.registry.getScale('test2');
+			}).toThrow();
+		});
+
+		it('as object', function() {
+			Chart.register({test1, test2});
+			expect(Chart.registry.getController('test1')).toEqual(test1);
+			expect(Chart.registry.getScale('test2')).toEqual(test2);
+			Chart.unregister({test1, test2});
+			expect(function() {
+				Chart.registry.getController('test1');
+			}).toThrow();
+			expect(function() {
+				Chart.registry.getScale('test2');
+			}).toThrow();
+		});
 	});
 });
