@@ -37,4 +37,12 @@ describe('Chart.animator', function() {
 			},
 		});
 	});
+
+	it('should not fail when adding no items', function() {
+		const chart = {};
+		Chart.animator.add(chart, undefined);
+		Chart.animator.add(chart, []);
+		Chart.animator.start(chart);
+		expect(Chart.animator.running(chart)).toBeFalse();
+	});
 });
