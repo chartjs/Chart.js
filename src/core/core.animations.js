@@ -105,7 +105,9 @@ export default class Animations {
 					animatedProps.set(prop, Object.assign({}, animDefaults, cfg));
 				} else if (prop === key) {
 					// Single property targetting config wins over multi-targetting.
-					animatedProps.set(prop, Object.assign({}, animatedProps.get(prop), cfg));
+					// eslint-disable-next-line no-unused-vars
+					const {properties, ...inherited} = animatedProps.get(prop);
+					animatedProps.set(prop, Object.assign({}, inherited, cfg));
 				}
 			});
 		});
