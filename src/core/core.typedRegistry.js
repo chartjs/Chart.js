@@ -42,6 +42,10 @@ export default class TypedRegistry {
 			return scope;
 		}
 
+		if (Object.keys(defaults.get(scope)).length) {
+			throw new Error('Can not register "' + id + '", because "defaults.' + scope + '" would collide with existing defaults');
+		}
+
 		items[id] = item;
 		registerDefaults(item, scope, parentScope);
 
