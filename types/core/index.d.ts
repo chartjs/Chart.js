@@ -356,7 +356,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * @protected
    */
 
-  protected updateElement(element, index, properties, mode: UpdateMode): void;
+  protected updateElement(element: E | DSE, index: number | undefined, properties: any, mode: UpdateMode): void;
   /**
    * Utility to animate the shared options, that are potentially affecting multiple elements.
    * @protected
