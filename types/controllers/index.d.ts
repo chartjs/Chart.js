@@ -237,7 +237,7 @@ export interface DoughnutController extends DatasetController {
   readonly offsetX: number;
   readonly offsetY: number;
 
-  getRingIndex(datasetIndex): number;
+  getRingIndex(datasetIndex: number): number;
   calculateTotal(): number;
   calculateCircumference(value: number): number;
 }

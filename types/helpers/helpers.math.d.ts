@@ -11,6 +11,6 @@ export function toDegrees(radians: number): number;
 export function getAngleFromPoint(
   centrePoint: { x: number; y: number },
   anglePoint: { x: number; y: number }
-): { angle; number; distance: number };
+): { angle: number; distance: number };
 
 export function distanceBetweenPoints(pt1: { x: number; y: number }, pt2: { x: number; y: number }): number;
