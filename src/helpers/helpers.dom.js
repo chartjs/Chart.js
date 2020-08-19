@@ -176,3 +176,42 @@ export function retinaScale(chart, forceRatio) {
 		canvas.style.width = width + 'px';
 	}
 }
+
+/**
+ * Detects support for options object argument in addEventListener.
+ * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
+ * @private
+ */
+export const supportsEventListenerOptions = (function() {
+	let passiveSupported = false;
+	try {
+		const options = {
+			get passive() { // This function will be called when the browser attempts to access the passive property.
+				passiveSupported = true;
+				return false;
+			}
+		};
+		// @ts-ignore
+		window.addEventListener('test', null, options);
+		// @ts-ignore
+		window.removeEventListener('test', null, options);
+	} catch (e) {
+		// continue regardless of error
+	}
+	return passiveSupported;
+}());
+
+/**
+ * The "used" size is the final value of a dimension property after all calculations have
+ * been performed. This method uses the computed style of `element` but returns undefined
+ * if the computed style is not expressed in pixels. That can happen in some cases where
+ * `element` has a size relative to its parent and this last one is not yet displayed,
+ * for example because of `display: none` on a parent node.
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+ * @returns {number=} Size in pixels or undefined if unknown.
+ */
+export function readUsedSize(element, property) {
+	const value = getStyle(element, property);
+	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
+	return matches ? +matches[1] : undefined;
+}

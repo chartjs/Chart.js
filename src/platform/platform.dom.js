@@ -3,8 +3,8 @@
  */
 
 import BasePlatform from './platform.base';
-import {_getParentNode, getStyle, getRelativePosition} from '../helpers/helpers.dom';
-import {requestAnimFrame} from '../helpers/helpers.extras';
+import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize} from '../helpers/helpers.dom';
+import {throttled} from '../helpers/helpers.extras';
 import {isNullOrUndef} from '../helpers/helpers.core';
 
 /**
@@ -30,21 +30,7 @@ const EVENT_TYPES = {
 	pointerout: 'mouseout'
 };
 
-/**
- * The "used" size is the final value of a dimension property after all calculations have
- * been performed. This method uses the computed style of `element` but returns undefined
- * if the computed style is not expressed in pixels. That can happen in some cases where
- * `element` has a size relative to its parent and this last one is not yet displayed,
- * for example because of `display: none` on a parent node.
- * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
- * @returns {number=} Size in pixels or undefined if unknown.
- */
-function readUsedSize(element, property) {
-	const value = getStyle(element, property);
-	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
-	return matches ? +matches[1] : undefined;
-}
-
+const isNullOrEmpty = value => value === null || value === '';
 /**
  * Initializes the canvas style and render size without modifying the canvas display size,
  * since responsiveness is handled by the controller.resize() method. The config is used
@@ -80,14 +66,14 @@ function initCanvas(canvas, config) {
 	// Include possible borders in the size
 	style.boxSizing = style.boxSizing || 'border-box';
 
-	if (renderWidth === null || renderWidth === '') {
+	if (isNullOrEmpty(renderWidth)) {
 		const displayWidth = readUsedSize(canvas, 'width');
 		if (displayWidth !== undefined) {
 			canvas.width = displayWidth;
 		}
 	}
 
-	if (renderHeight === null || renderHeight === '') {
+	if (isNullOrEmpty(renderHeight)) {
 		if (canvas.style.height === '') {
 			// If no explicit render height and style height, let's apply the aspect ratio,
 			// which one can be specified by the user but also by charts as default option
@@ -103,30 +89,6 @@ function initCanvas(canvas, config) {
 
 	return canvas;
 }
-
-/**
- * Detects support for options object argument in addEventListener.
- * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
- * @private
- */
-const supportsEventListenerOptions = (function() {
-	let passiveSupported = false;
-	try {
-		const options = {
-			get passive() { // This function will be called when the browser attempts to access the passive property.
-				passiveSupported = true;
-				return false;
-			}
-		};
-		// @ts-ignore
-		window.addEventListener('test', null, options);
-		// @ts-ignore
-		window.removeEventListener('test', null, options);
-	} catch (e) {
-		// continue regardless of error
-	}
-	return passiveSupported;
-}());
 
 // Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
 // https://github.com/chartjs/Chart.js/issues/4287
@@ -154,23 +116,6 @@ function fromNativeEvent(event, chart) {
 	const type = EVENT_TYPES[event.type] || event.type;
 	const pos = getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
-}
-
-function throttled(fn, thisArg) {
-	let ticking = false;
-	let args = [];
-
-	return function(...rest) {
-		args = Array.prototype.slice.call(rest);
-
-		if (!ticking) {
-			ticking = true;
-			requestAnimFrame.call(window, () => {
-				ticking = false;
-				fn.apply(thisArg, args);
-			});
-		}
-	};
 }
 
 function createAttachObserver(chart, type, listener) {
