@@ -136,8 +136,8 @@ function addListener(node, type, listener) {
 	node.addEventListener(type, listener, eventListenerOptions);
 }
 
-function removeListener(node, type, listener) {
-	node.removeEventListener(type, listener, eventListenerOptions);
+function removeListener(chart, type, listener) {
+	chart.canvas.removeEventListener(type, listener, eventListenerOptions);
 }
 
 function createEvent(type, chart, x, y, nativeEvent) {
@@ -212,6 +212,36 @@ function createDetachObserver(chart, type, listener) {
 	return observer;
 }
 
+const drpListeningCharts = new Map();
+let oldDevicePixelRatio = 0;
+
+function onWindowResize() {
+	const dpr = window.devicePixelRatio;
+	if (dpr === oldDevicePixelRatio) {
+		return;
+	}
+	oldDevicePixelRatio = dpr;
+	drpListeningCharts.forEach((resize, chart) => {
+		if (chart.currentDevicePixelRatio !== dpr) {
+			resize();
+		}
+	});
+}
+
+function listenDevicePixelRatioChanges(chart, resize) {
+	if (!drpListeningCharts.size) {
+		window.addEventListener('resize', onWindowResize);
+	}
+	drpListeningCharts.set(chart, resize);
+}
+
+function unlistenDevicePixelRatioChanges(chart) {
+	drpListeningCharts.delete(chart);
+	if (!drpListeningCharts.size) {
+		window.removeEventListener('resize', onWindowResize);
+	}
+}
+
 function createResizeObserver(chart, type, listener) {
 	const canvas = chart.canvas;
 	const container = canvas && _getParentNode(canvas);
@@ -247,12 +277,17 @@ function createResizeObserver(chart, type, listener) {
 		resize(width, height);
 	});
 	observer.observe(container);
+	listenDevicePixelRatioChanges(chart, resize);
+
 	return observer;
 }
 
-function releaseObserver(canvas, type, observer) {
+function releaseObserver(chart, type, observer) {
 	if (observer) {
 		observer.disconnect();
+	}
+	if (type === 'resize') {
+		unlistenDevicePixelRatioChanges(chart);
 	}
 }
 
@@ -367,7 +402,6 @@ export default class DomPlatform extends BasePlatform {
 	 * @param {string} type
 	 */
 	removeEventListener(chart, type) {
-		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
 		const proxy = proxies[type];
 
@@ -381,7 +415,7 @@ export default class DomPlatform extends BasePlatform {
 			resize: releaseObserver
 		};
 		const handler = handlers[type] || removeListener;
-		handler(canvas, type, proxy);
+		handler(chart, type, proxy);
 		proxies[type] = undefined;
 	}
 
