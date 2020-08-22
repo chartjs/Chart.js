@@ -128,6 +128,19 @@ canvas.onclick = function(evt) {
 
 This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
 
+## .getElementsAtXAxis(e)
+
+Returns all elements at the data index the event point is located at. This is similar to `getElementsAtEvent(event)`, but the event point does not have to intersect one of the elements.
+
+Calling `getElementsAtXAxis(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
+
+```javascript
+canvas.onclick = function(evt) {
+    var activePoints = myLineChart.getElementsAtXAxis(evt);
+    // => activePoints is an array of points on the canvas that are at the same X axis as the click event.
+};
+```
+
 ## .getDatasetAtEvent(e)
 
 Looks for the element under the event point, then returns all elements from that dataset. This is used internally for 'dataset' mode highlighting.
