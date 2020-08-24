@@ -317,6 +317,7 @@ module.exports = DatasetController.extend({
 	},
 
 	draw: function() {
+		//test
 		var me = this;
 		var chart = me.chart;
 		var meta = me.getMeta();
