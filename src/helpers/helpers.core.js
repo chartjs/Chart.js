@@ -149,21 +149,22 @@ export function _elementsEqual(a0, a1) {
 /**
  * Returns a deep copy of `source` without keeping references on objects and arrays.
  * @param {*} source - The value to clone.
+ * @param {boolean} [discardPrototype] - discard object prototype
  * @returns {*}
  */
-export function clone(source) {
+export function clone(source, discardPrototype) {
 	if (isArray(source)) {
-		return source.map(clone);
+		return source.map(itm => clone(itm, discardPrototype));
 	}
 
 	if (isObject(source)) {
-		const target = Object.create(source);
+		const target = discardPrototype ? {} : Object.create(source);
 		const keys = Object.keys(source);
 		const klen = keys.length;
 		let k = 0;
 
 		for (; k < klen; ++k) {
-			target[keys[k]] = clone(source[keys[k]]);
+			target[keys[k]] = clone(source[keys[k]], discardPrototype);
 		}
 
 		return target;
@@ -185,7 +186,7 @@ export function _merger(key, target, source, options) {
 		// eslint-disable-next-line no-use-before-define
 		merge(tval, sval, options);
 	} else {
-		target[key] = clone(sval);
+		target[key] = clone(sval, options && options.discardPrototype);
 	}
 }
 
@@ -196,6 +197,7 @@ export function _merger(key, target, source, options) {
  * @param {object|object[]} source - Object(s) to merge into `target`.
  * @param {object} [options] - Merging options:
  * @param {function} [options.merger] - The merge method (key, target, source, options)
+ * @param {boolean} [options.discardPrototype] - Discard object prototype when cloning
  * @returns {object} The `target` object.
  */
 export function merge(target, source, options) {

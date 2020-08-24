@@ -100,6 +100,20 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
+function applyDefaults(config, options) {
+	const scaleConfig = mergeScaleConfig(config, options);
+
+	options = config.options = mergeConfig(
+		defaults,
+		defaults[config.type],
+		options || {});
+
+	options.scales = scaleConfig;
+	options.title = (options.title !== false) && merge({}, [defaults.plugins.title, options.title], {discardPrototype: true});
+	options.tooltips = (options.tooltips !== false) && merge({}, [defaults.plugins.tooltip, options.tooltips], {discardPrototype: true});
+	return options;
+}
+
 function initConfig(config) {
 	config = config || {};
 
@@ -109,17 +123,7 @@ function initConfig(config) {
 	data.datasets = data.datasets || [];
 	data.labels = data.labels || [];
 
-	const scaleConfig = mergeScaleConfig(config, config.options);
-
-	const options = config.options = mergeConfig(
-		defaults,
-		defaults[config.type],
-		config.options || {});
-
-	options.scales = scaleConfig;
-
-	options.title = (options.title !== false) && merge({}, [defaults.plugins.title, options.title]);
-	options.tooltips = (options.tooltips !== false) && merge({}, [defaults.plugins.tooltip, options.tooltips]);
+	applyDefaults(config, config.options);
 
 	return config;
 }
@@ -129,22 +133,14 @@ function isAnimationDisabled(config) {
 }
 
 function updateConfig(chart) {
-	let newOptions = chart.options;
+	const config = chart.config;
+	const newOptions = chart.options;
 
 	each(chart.scales, (scale) => {
 		layouts.removeBox(chart, scale);
 	});
 
-	const scaleConfig = mergeScaleConfig(chart.config, newOptions);
-
-	newOptions = mergeConfig(
-		defaults,
-		defaults[chart.config.type],
-		newOptions);
-
-	chart.options = chart.config.options = newOptions;
-	chart.options.scales = scaleConfig;
-
+	chart.options = applyDefaults(config, newOptions);
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
 }
 
