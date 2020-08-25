@@ -243,6 +243,7 @@ export default class BarController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(mode, rectangles[start], firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
+		const updatedColor = me.updatedColor(rectangles, firstOpts);
 
 		let i;
 
@@ -267,7 +268,7 @@ export default class BarController extends DatasetController {
 				model.borderSkipped = null;
 			}
 			*/
-			if (includeOptions) {
+			if (includeOptions || updatedColor) {
 				properties.options = options;
 			}
 			me.updateElement(rectangles[i], index, properties, mode);

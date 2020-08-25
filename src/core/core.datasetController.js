@@ -846,6 +846,27 @@ export default class DatasetController {
 	}
 
 	/**
+	 * Utility for determining if `color` was updated, therefore the chart must be updated
+	 * @protected
+	 */
+	updatedColor(rectangles, firstOpts) {
+
+		if(!rectangles) {
+			return false;
+		}
+
+		const colorChanged = !!rectangles.filter(rect => {
+			if(rect.options) {
+				return rect.options.backgroundColor !== firstOpts.backgroundColor
+			} else {
+				return false;
+			}
+		}).length;
+
+		return colorChanged;
+	}
+
+	/**
 	 * Utility to animate the shared options, that are potentially affecting multiple elements.
 	 * @protected
 	 */
