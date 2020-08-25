@@ -5,6 +5,11 @@ import {resolve} from '../helpers/helpers.options';
 
 export default class LineController extends DatasetController {
 
+	initialize() {
+		this.enableOptionSharing = true;
+		super.initialize();
+	}
+
 	update(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
@@ -31,7 +36,7 @@ export default class LineController extends DatasetController {
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
@@ -51,7 +56,7 @@ export default class LineController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			}
 
 			me.updateElement(point, index, properties, mode);
@@ -59,7 +64,7 @@ export default class LineController extends DatasetController {
 			prevParsed = parsed;
 		}
 
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	/**

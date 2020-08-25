@@ -43,4 +43,40 @@ describe('Chart.animations', function() {
 			options: undefined
 		})).toBeUndefined();
 	});
+
+	it('should assign shared options to target after animations complete', function(done) {
+		const chart = {
+			draw: function() {},
+			options: {
+				animation: {
+					debug: false
+				}
+			}
+		};
+		const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
+
+		const target = {
+			value: 1,
+			options: {
+				option: 2
+			}
+		};
+		const sharedOpts = {option: 10, $shared: true};
+
+		expect(anims.update(target, {
+			options: sharedOpts
+		})).toBeTrue();
+
+		expect(target.options !== sharedOpts).toBeTrue();
+
+		Chart.animator.start(chart);
+
+		setTimeout(function() {
+			expect(Chart.animator.running(chart)).toBeFalse();
+			expect(target.options === sharedOpts).toBeTrue();
+
+			Chart.animator.remove(chart);
+			done();
+		}, 300);
+	});
 });

@@ -57,10 +57,10 @@ defaults.set('animation', {
 function copyOptions(target, values) {
 	const oldOpts = target.options;
 	const newOpts = values.options;
-	if (!oldOpts || !newOpts || newOpts.$shared) {
+	if (!oldOpts || !newOpts) {
 		return;
 	}
-	if (oldOpts.$shared) {
+	if (oldOpts.$shared && !newOpts.$shared) {
 		target.options = Object.assign({}, oldOpts, newOpts, {$shared: false});
 	} else {
 		Object.assign(oldOpts, newOpts);
@@ -117,8 +117,6 @@ export default class Animations {
 	 * Utility to handle animation of `options`.
 	 * This should not be called, when animating $shared options to $shared new options.
 	 * @private
-	 * @todo if new options are $shared, target.options should be replaced with those new shared
-	 *  options after all animations have completed
 	 */
 	_animateOptions(target, values) {
 		const newOptions = values.options;
@@ -129,12 +127,20 @@ export default class Animations {
 		}
 		let options = target.options;
 		if (options) {
-			if (options.$shared) {
-				// If the current / old options are $shared, meaning other elements are
-				// using the same options, we need to clone to become unique.
+			if (options.$shared && !newOptions.$shared) {
+				// Going from shared options to distinct one:
+				// Create new options object containing the old shared values and start updating that.
 				target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});
 			}
 			animations = this._createAnimations(options, newOptions);
+			if (newOptions.$shared && !options.$shared) {
+				// Going from distinct options to shared options:
+				// After all animations are done, assing the shared options object to the element
+				// So any new updates to the shared options are observed
+				awaitAll(target.$animations, newOptions).then(() => {
+					target.options = newOptions;
+				});
+			}
 		} else {
 			target.options = newOptions;
 		}
@@ -214,3 +220,15 @@ export default class Animations {
 	}
 }
 
+function awaitAll(animations, properties) {
+	const running = [];
+	const keys = Object.keys(properties);
+	for (let i = 0; i < keys.length; i++) {
+		const anim = animations[keys[i]];
+		if (anim && anim.active()) {
+			running.push(anim.wait());
+		}
+	}
+	// @ts-ignore
+	return Promise.allSettled(running);
+}

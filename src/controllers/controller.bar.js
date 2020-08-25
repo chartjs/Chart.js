@@ -219,6 +219,7 @@ export default class BarController extends DatasetController {
 
 	initialize() {
 		const me = this;
+		me.enableOptionSharing = true;
 
 		super.initialize();
 
@@ -241,14 +242,14 @@ export default class BarController extends DatasetController {
 		const horizontal = vscale.isHorizontal();
 		const ruler = me._getRuler();
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, rectangles[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		let i;
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-		for (i = 0; i < rectangles.length; i++) {
+		for (let i = 0; i < rectangles.length; i++) {
 			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
+			const options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			const vpixels = me._calculateBarValuePixels(index, options);
 			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 
@@ -261,19 +262,11 @@ export default class BarController extends DatasetController {
 				width: horizontal ? undefined : ipixels.size
 			};
 
-			// all borders are drawn for floating bar
-			/* TODO: float bars border skipping magic
-			if (me.getParsed(i)._custom) {
-				model.borderSkipped = null;
-			}
-			*/
 			if (includeOptions) {
 				properties.options = options;
 			}
 			me.updateElement(rectangles[i], index, properties, mode);
 		}
-
-		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**

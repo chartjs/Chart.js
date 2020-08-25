@@ -345,7 +345,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * Utility for checking if the options are shared and should be animated separately.
    * @protected
    */
-  protected getSharedOptions(mode: UpdateMode, el: E, options: any): undefined | { target: any; options: any };
+  protected getSharedOptions(options: any): undefined | { any };
   /**
    * Utility for determining if `options` should be included in the updated properties
    * @protected
@@ -362,7 +362,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * @protected
    */
 
-  protected updateSharedOptions(sharedOptions: any, mode: UpdateMode): void;
+  protected updateSharedOptions(sharedOptions: any, mode: UpdateMode, newOptions: any): void;
   removeHoverStyle(element: E, datasetIndex: number, index: number): void;
   setHoverStyle(element: E, datasetIndex: number, index: number): void;
 
