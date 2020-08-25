@@ -115,35 +115,25 @@ export default class Animations {
 
 	/**
 	 * Utility to handle animation of `options`.
-	 * This should not be called, when animating $shared options to $shared new options.
 	 * @private
 	 */
 	_animateOptions(target, values) {
 		const newOptions = values.options;
-		let animations = [];
+		const options = resolveTargetOptions(target, newOptions);
+		if (!options) {
+			return [];
+		}
 
-		if (!newOptions) {
-			return animations;
+		const animations = this._createAnimations(options, newOptions);
+		if (newOptions.$shared && !options.$shared) {
+			// Going from distinct options to shared options:
+			// After all animations are done, assing the shared options object to the element
+			// So any new updates to the shared options are observed
+			awaitAll(target.$animations, newOptions).then(() => {
+				target.options = newOptions;
+			});
 		}
-		let options = target.options;
-		if (options) {
-			if (options.$shared && !newOptions.$shared) {
-				// Going from shared options to distinct one:
-				// Create new options object containing the old shared values and start updating that.
-				target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});
-			}
-			animations = this._createAnimations(options, newOptions);
-			if (newOptions.$shared && !options.$shared) {
-				// Going from distinct options to shared options:
-				// After all animations are done, assing the shared options object to the element
-				// So any new updates to the shared options are observed
-				awaitAll(target.$animations, newOptions).then(() => {
-					target.options = newOptions;
-				});
-			}
-		} else {
-			target.options = newOptions;
-		}
+
 		return animations;
 	}
 
@@ -231,4 +221,21 @@ function awaitAll(animations, properties) {
 	}
 	// @ts-ignore
 	return Promise.allSettled(running);
+}
+
+function resolveTargetOptions(target, newOptions) {
+	if (!newOptions) {
+		return;
+	}
+	let options = target.options;
+	if (!options) {
+		target.options = newOptions;
+		return;
+	}
+	if (options.$shared && !newOptions.$shared) {
+		// Going from shared options to distinct one:
+		// Create new options object containing the old shared values and start updating that.
+		target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});
+	}
+	return options;
 }

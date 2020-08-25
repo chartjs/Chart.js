@@ -63,7 +63,7 @@ export default class Animation {
 			// update current evaluated value, for smoother animations
 			me.tick(Date.now());
 			me._active = false;
-			me._reject();
+			me._notify(false);
 		}
 	}
 
@@ -81,7 +81,7 @@ export default class Animation {
 
 		if (!me._active) {
 			me._target[prop] = to;
-			me._resolve();
+			me._notify(true);
 			return;
 		}
 
@@ -104,17 +104,11 @@ export default class Animation {
 		});
 	}
 
-	_resolve() {
+	_notify(resolved) {
+		const method = resolved ? 'res' : 'rej';
 		const promises = this._promises || [];
 		for (let i = 0; i < promises.length; i++) {
-			promises[i].res();
-		}
-	}
-
-	_reject() {
-		const promises = this._promises || [];
-		for (let i = 0; i < promises.length; i++) {
-			promises[i].rej();
+			promises[i][method]();
 		}
 	}
 }
