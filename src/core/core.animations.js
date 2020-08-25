@@ -220,7 +220,7 @@ function awaitAll(animations, properties) {
 		}
 	}
 	// @ts-ignore
-	return Promise.allSettled(running);
+	return Promise.all(running);
 }
 
 function resolveTargetOptions(target, newOptions) {
