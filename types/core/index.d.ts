@@ -320,6 +320,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
   readonly chart: Chart;
   readonly index: number;
   readonly _cachedMeta: IChartMeta<E, DSE>;
+  enableOptionSharing: boolean;
 
   linkScales(): void;
   getAllParsedValues(scale: Scale): number[];
