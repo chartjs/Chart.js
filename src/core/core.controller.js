@@ -608,11 +608,9 @@ class Chart {
 		me._updateLayout();
 
 		// Can only reset the new controllers after the scales have been updated
-		if (me.options.animation) {
-			each(newControllers, (controller) => {
-				controller.reset();
-			});
-		}
+		each(newControllers, (controller) => {
+			controller.reset();
+		});
 
 		me._updateDatasets(mode);
 
