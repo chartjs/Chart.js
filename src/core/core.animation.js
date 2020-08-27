@@ -36,6 +36,7 @@ export default class Animation {
 		this._prop = prop;
 		this._from = from;
 		this._to = to;
+		this._promises = undefined;
 	}
 
 	active() {
@@ -62,6 +63,7 @@ export default class Animation {
 			// update current evaluated value, for smoother animations
 			me.tick(Date.now());
 			me._active = false;
+			me._notify(false);
 		}
 	}
 
@@ -79,6 +81,7 @@ export default class Animation {
 
 		if (!me._active) {
 			me._target[prop] = to;
+			me._notify(true);
 			return;
 		}
 
@@ -92,5 +95,20 @@ export default class Animation {
 		factor = me._easing(Math.min(1, Math.max(0, factor)));
 
 		me._target[prop] = me._fn(from, to, factor);
+	}
+
+	wait() {
+		const promises = this._promises || (this._promises = []);
+		return new Promise((res, rej) => {
+			promises.push({res, rej});
+		});
+	}
+
+	_notify(resolved) {
+		const method = resolved ? 'res' : 'rej';
+		const promises = this._promises || [];
+		for (let i = 0; i < promises.length; i++) {
+			promises[i][method]();
+		}
 	}
 }

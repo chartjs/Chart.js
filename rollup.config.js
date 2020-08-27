@@ -40,7 +40,8 @@ module.exports = [
 		input,
 		plugins: [
 			inject({
-				ResizeObserver: 'resize-observer-polyfill'
+				ResizeObserver: 'resize-observer-polyfill',
+				Promise: 'promise-polyfill'
 			}),
 			json(),
 			resolve(),
@@ -61,7 +62,8 @@ module.exports = [
 		input,
 		plugins: [
 			inject({
-				ResizeObserver: 'resize-observer-polyfill'
+				ResizeObserver: 'resize-observer-polyfill',
+				Promise: 'promise-polyfill'
 			}),
 			json(),
 			resolve(),

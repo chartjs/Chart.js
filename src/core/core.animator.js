@@ -1,6 +1,7 @@
 import {requestAnimFrame} from '../helpers/helpers.extras';
 
 /**
+ * @typedef { import("./core.animation").default } Animation
  * @typedef { import("./core.controller").default } Chart
  */
 

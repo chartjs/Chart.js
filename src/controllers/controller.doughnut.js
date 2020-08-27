@@ -44,6 +44,7 @@ export default class DoughnutController extends DatasetController {
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
+		this.enableOptionSharing = true;
 		this.innerRadius = undefined;
 		this.outerRadius = undefined;
 		this.offsetX = undefined;
@@ -129,7 +130,7 @@ export default class DoughnutController extends DatasetController {
 		const innerRadius = animateScale ? 0 : me.innerRadius;
 		const outerRadius = animateScale ? 0 : me.outerRadius;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, arcs[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		let startAngle = opts.rotation;
 		let i;
@@ -152,13 +153,13 @@ export default class DoughnutController extends DatasetController {
 				innerRadius
 			};
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			}
 			startAngle += circumference;
 
 			me.updateElement(arc, index, properties, mode);
 		}
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	calculateTotal() {
