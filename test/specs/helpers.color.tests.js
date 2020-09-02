@@ -1,4 +1,4 @@
-import {color, getHoverColor} from '../../src/helpers/helpers.color';
+const {color, getHoverColor} = Chart.helpers;
 
 describe('Color helper', function() {
 	function isColorInstance(obj) {

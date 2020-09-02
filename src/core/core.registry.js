@@ -91,13 +91,41 @@ export class Registry {
 	}
 
 	/**
+	 * @param  {...typeof DatasetController} args
+	 */
+	removeControllers(...args) {
+		this._each('unregister', args, this.controllers);
+	}
+
+	/**
+	 * @param  {...typeof Element} args
+	 */
+	removeElements(...args) {
+		this._each('unregister', args, this.elements);
+	}
+
+	/**
+	 * @param  {...any} args
+	 */
+	removePlugins(...args) {
+		this._each('unregister', args, this.plugins);
+	}
+
+	/**
+	 * @param  {...typeof Scale} args
+	 */
+	removeScales(...args) {
+		this._each('unregister', args, this.scales);
+	}
+
+	/**
 	 * @private
 	 */
 	_each(method, args, typedRegistry) {
 		const me = this;
 		[...args].forEach(arg => {
 			const reg = typedRegistry || me._getRegistryForType(arg);
-			if (reg.isForType(arg) || (reg === me.plugins && arg.id)) {
+			if (typedRegistry || reg.isForType(arg) || (reg === me.plugins && arg.id)) {
 				me._exec(method, reg, arg);
 			} else {
 				// Handle loopable args

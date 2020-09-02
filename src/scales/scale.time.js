@@ -135,17 +135,18 @@ function determineMajorUnit(unit) {
 }
 
 /**
- * @param {number[]} timestamps
  * @param {object} ticks
  * @param {number} time
+ * @param {number[]} [timestamps] - if defined, snap to these timestamps
  */
-function addTick(timestamps, ticks, time) {
-	if (!timestamps.length) {
-		return;
+function addTick(ticks, time, timestamps) {
+	if (!timestamps) {
+		ticks[time] = true;
+	} else if (timestamps.length) {
+		const {lo, hi} = _lookup(timestamps, time);
+		const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
+		ticks[timestamp] = true;
 	}
-	const {lo, hi} = _lookup(timestamps, time);
-	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
-	ticks[timestamp] = true;
 }
 
 /**
@@ -416,28 +417,17 @@ export default class TimeScale extends Scale {
 			throw new Error(min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor);
 		}
 
-		if (me.options.ticks.source === 'data') {
-			// need to make sure ticks are in data in this case
-			const timestamps = me.getDataTimestamps();
-
-			for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-				addTick(timestamps, ticks, time);
-			}
-
-			if (time === max || options.bounds === 'ticks') {
-				addTick(timestamps, ticks, time);
-			}
-		} else {
-			for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-				ticks[time] = true;
-			}
-
-			if (time === max || options.bounds === 'ticks') {
-				ticks[time] = true;
-			}
+		const timestamps = options.ticks.source === 'data' && me.getDataTimestamps();
+		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+			addTick(ticks, time, timestamps);
 		}
 
-		return Object.keys(ticks).map(x => +x);
+		if (time === max || options.bounds === 'ticks') {
+			addTick(ticks, time, timestamps);
+		}
+
+		// @ts-ignore
+		return Object.keys(ticks).sort((a, b) => a - b).map(x => +x);
 	}
 
 	/**

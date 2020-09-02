@@ -320,6 +320,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
   readonly chart: Chart;
   readonly index: number;
   readonly _cachedMeta: IChartMeta<E, DSE>;
+  enableOptionSharing: boolean;
 
   linkScales(): void;
   getAllParsedValues(scale: Scale): number[];
@@ -345,7 +346,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * Utility for checking if the options are shared and should be animated separately.
    * @protected
    */
-  protected getSharedOptions(mode: UpdateMode, el: E, options: any): undefined | { target: any; options: any };
+  protected getSharedOptions(options: any): undefined | { any };
   /**
    * Utility for determining if `options` should be included in the updated properties
    * @protected
@@ -356,13 +357,13 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * @protected
    */
 
-  protected updateElement(element, index, properties, mode: UpdateMode): void;
+  protected updateElement(element: E | DSE, index: number | undefined, properties: any, mode: UpdateMode): void;
   /**
    * Utility to animate the shared options, that are potentially affecting multiple elements.
    * @protected
    */
 
-  protected updateSharedOptions(sharedOptions: any, mode: UpdateMode): void;
+  protected updateSharedOptions(sharedOptions: any, mode: UpdateMode, newOptions: any): void;
   removeHoverStyle(element: E, datasetIndex: number, index: number): void;
   setHoverStyle(element: E, datasetIndex: number, index: number): void;
 

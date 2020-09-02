@@ -155,6 +155,10 @@ function optionKey(key, active) {
 	return active ? 'hover' + _capitalize(key) : key;
 }
 
+function isDirectUpdateMode(mode) {
+	return mode === 'reset' || mode === 'none';
+}
+
 export default class DatasetController {
 
 	/**
@@ -174,6 +178,8 @@ export default class DatasetController {
 		this._parsing = false;
 		this._data = undefined;
 		this._objectData = undefined;
+		this._sharedOptions = undefined;
+		this.enableOptionSharing = false;
 
 		this.initialize();
 	}
@@ -610,7 +616,7 @@ export default class DatasetController {
 		me.configure();
 		me._cachedAnimations = {};
 		me._cachedDataOpts = {};
-		me.update(mode);
+		me.update(mode || 'default');
 		meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
 	}
 
@@ -684,6 +690,7 @@ export default class DatasetController {
 		if (active) {
 			me._addAutomaticHoverColors(index, options);
 		}
+
 		return options;
 	}
 
@@ -718,9 +725,11 @@ export default class DatasetController {
 	 * @protected
 	 */
 	resolveDataElementOptions(index, mode) {
+		mode = mode || 'default';
 		const me = this;
 		const active = mode === 'active';
 		const cached = me._cachedDataOpts;
+		const sharing = me.enableOptionSharing;
 		if (cached[mode]) {
 			return cached[mode];
 		}
@@ -736,12 +745,12 @@ export default class DatasetController {
 		if (info.cacheable) {
 			// `$shared` indicades this set of options can be shared between multiple elements.
 			// Sharing is used to reduce number of properties to change during animation.
-			values.$shared = true;
+			values.$shared = sharing;
 
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
-			cached[mode] = values;
+			cached[mode] = sharing ? Object.freeze(values) : values;
 		}
 
 		return values;
@@ -809,17 +818,14 @@ export default class DatasetController {
 	}
 
 	/**
-	 * Utility for checking if the options are shared and should be animated separately.
+	 * Utility for getting the options object shared between elements
 	 * @protected
 	 */
-	getSharedOptions(mode, el, options) {
-		if (!mode) {
-			// store element option sharing status for usage in interactions
-			this._sharedOptions = options && options.$shared;
+	getSharedOptions(options) {
+		if (!options.$shared) {
+			return;
 		}
-		if (mode !== 'reset' && options && options.$shared && el && el.options && el.options.$shared) {
-			return {target: el.options, options};
-		}
+		return this._sharedOptions || (this._sharedOptions = Object.assign({}, options));
 	}
 
 	/**
@@ -827,10 +833,7 @@ export default class DatasetController {
 	 * @protected
 	 */
 	includeOptions(mode, sharedOptions) {
-		if (mode === 'hide' || mode === 'show') {
-			return true;
-		}
-		return mode !== 'resize' && !sharedOptions;
+		return !sharedOptions || isDirectUpdateMode(mode);
 	}
 
 	/**
@@ -838,7 +841,7 @@ export default class DatasetController {
 	 * @protected
 	 */
 	updateElement(element, index, properties, mode) {
-		if (mode === 'reset' || mode === 'none') {
+		if (isDirectUpdateMode(mode)) {
 			Object.assign(element, properties);
 		} else {
 			this._resolveAnimations(index, mode).update(element, properties);
@@ -849,9 +852,9 @@ export default class DatasetController {
 	 * Utility to animate the shared options, that are potentially affecting multiple elements.
 	 * @protected
 	 */
-	updateSharedOptions(sharedOptions, mode) {
+	updateSharedOptions(sharedOptions, mode, newOptions) {
 		if (sharedOptions) {
-			this._resolveAnimations(undefined, mode).update(sharedOptions.target, sharedOptions.options);
+			this._resolveAnimations(undefined, mode).update({options: sharedOptions}, {options: newOptions});
 		}
 	}
 
@@ -860,7 +863,8 @@ export default class DatasetController {
 	 */
 	_setStyle(element, index, mode, active) {
 		element.active = active;
-		this._resolveAnimations(index, mode, active).update(element, {options: this.getStyle(index, active)});
+		const options = this.getStyle(index, active);
+		this._resolveAnimations(index, mode, active).update(element, {options: this.getSharedOptions(options) || options});
 	}
 
 	removeHoverStyle(element, datasetIndex, index) {

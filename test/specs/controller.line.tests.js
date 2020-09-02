@@ -79,6 +79,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(0);
+		spyOn(meta.dataset, 'updateControlPoints');
 		spyOn(meta.dataset, 'draw');
 		spyOn(meta.data[0], 'draw');
 		spyOn(meta.data[1], 'draw');
@@ -87,6 +88,8 @@ describe('Chart.controllers.line', function() {
 
 		chart.update();
 
+		expect(meta.dataset.updateControlPoints.calls.count()).toBeGreaterThanOrEqual(1);
+		expect(meta.dataset.draw.calls.count()).toBe(1);
 		expect(meta.data[0].draw.calls.count()).toBe(1);
 		expect(meta.data[1].draw.calls.count()).toBe(1);
 		expect(meta.data[2].draw.calls.count()).toBe(1);

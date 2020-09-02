@@ -3,6 +3,10 @@ import {resolve} from '../helpers/helpers.options';
 import {resolveObjectKey} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
+	initialize() {
+		this.enableOptionSharing = true;
+		super.initialize();
+	}
 
 	/**
 	 * Parse array of objects
@@ -69,7 +73,7 @@ export default class BubbleController extends DatasetController {
 		const reset = mode === 'reset';
 		const {xScale, yScale} = me._cachedMeta;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
 		for (let i = 0; i < points.length; i++) {
@@ -95,7 +99,7 @@ export default class BubbleController extends DatasetController {
 			me.updateElement(point, index, properties, mode);
 		}
 
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	/**
