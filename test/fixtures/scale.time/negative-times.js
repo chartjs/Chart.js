@@ -1,5 +1,4 @@
 module.exports = {
-	threshold: 0.01,
 	config: {
 		type: 'line',
 		data: {
@@ -16,6 +15,9 @@ module.exports = {
 					type: 'time',
 					time: {
 						unit: 'day'
+					},
+					ticks: {
+						display: false
 					}
 				},
 				y: {
@@ -28,7 +30,6 @@ module.exports = {
 		}
 	},
 	options: {
-		spriteText: true,
 		canvas: {width: 1000, height: 200}
 	}
 };
