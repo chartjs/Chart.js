@@ -346,7 +346,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * Utility for checking if the options are shared and should be animated separately.
    * @protected
    */
-  protected getSharedOptions(options: any): undefined | { any };
+  protected getSharedOptions(options: any): undefined | any;
   /**
    * Utility for determining if `options` should be included in the updated properties
    * @protected
@@ -823,7 +823,7 @@ export interface IPlugin<O = {}> {
   destroy?(chart: Chart, options: O): void;
 }
 
-declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
+export declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
 
 /**
  * Please use the module's default export which provides a singleton instance
