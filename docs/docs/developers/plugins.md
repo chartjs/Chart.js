@@ -43,7 +43,7 @@ However, this approach is not ideal when the customization needs to apply to man
 Plugins can be registered globally to be applied on all charts (a.k.a. *global plugins*):
 
 ```javascript
-Chart.plugins.register({
+Chart.register({
     // plugin implementation
 });
 ```
@@ -92,7 +92,7 @@ var chart = new Chart(ctx, {
 To disable a global plugin for a specific chart instance, the plugin options must be set to `false`:
 
 ```javascript
-Chart.plugins.register({
+Chart.register({
     id: 'p1',
     // ...
 });
@@ -106,6 +106,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
- ## Plugin Core API
+## Plugin Core API
 
 Read more about the [existing plugin extension hooks](../jsdoc/IPlugin.html).
