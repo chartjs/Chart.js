@@ -177,18 +177,18 @@ function compare2Level(l1, l2) {
 	};
 }
 
-function onAnimationsComplete(ctx) {
-	const chart = ctx.chart;
+function onAnimationsComplete(context) {
+	const chart = context.chart;
 	const animationOptions = chart.options.animation;
 
 	chart._plugins.notify(chart, 'afterRender');
-	callCallback(animationOptions && animationOptions.onComplete, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onComplete, [context], chart);
 }
 
-function onAnimationProgress(ctx) {
-	const chart = ctx.chart;
+function onAnimationProgress(context) {
+	const chart = context.chart;
 	const animationOptions = chart.options.animation;
-	callCallback(animationOptions && animationOptions.onProgress, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onProgress, [context], chart);
 }
 
 function isDomSupported() {
@@ -701,14 +701,9 @@ class Chart {
 
 	render() {
 		const me = this;
-		const animationOptions = me.options.animation;
 		if (me._plugins.notify(me, 'beforeRender') === false) {
 			return;
 		}
-		const onComplete = function() {
-			me._plugins.notify(me, 'afterRender');
-			callCallback(animationOptions && animationOptions.onComplete, [], me);
-		};
 
 		if (animator.has(me)) {
 			if (me.attached && !animator.running(me)) {
@@ -716,7 +711,7 @@ class Chart {
 			}
 		} else {
 			me.draw();
-			onComplete();
+			onAnimationsComplete({chart: me});
 		}
 	}
 
