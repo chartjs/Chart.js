@@ -637,12 +637,15 @@ describe('Chart', function() {
 				dw: 0, dh: 0,
 				rw: 0, rh: 0,
 			});
+			expect(chart.chartArea).toBeUndefined();
 
 			waitForResize(chart, function() {
 				expect(chart).toBeChartOfSize({
 					dw: 455, dh: 355,
 					rw: 455, rh: 355,
 				});
+
+				expect(chart.chartArea).not.toBeUndefined();
 
 				body.removeChild(wrapper);
 				chart.destroy();
