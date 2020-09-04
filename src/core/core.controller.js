@@ -1015,8 +1015,8 @@ class Chart {
 			const attached = () => {
 				_remove('attach', attached);
 
-				me.resize();
 				me.attached = true;
+				me.resize();
 
 				_add('resize', listener);
 				_add('detach', detached);
