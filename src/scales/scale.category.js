@@ -1,18 +1,10 @@
 import Scale from '../core/core.scale';
 
-const defaultConfig = {
-};
-
 export default class CategoryScale extends Scale {
-
-	static id = 'category';
-	// INTERNAL: static default options, registered in src/index.js
-	static defaults = defaultConfig;
 
 	constructor(cfg) {
 		super(cfg);
 
-		this._numLabels = 0;
 		/** @type {number} */
 		this._startValue = undefined;
 		this._valueRange = 0;
@@ -41,16 +33,19 @@ export default class CategoryScale extends Scale {
 		const min = me.min;
 		const max = me.max;
 		const offset = me.options.offset;
+		const ticks = [];
 		let labels = me.getLabels();
 
 		// If we are viewing some subset of labels, slice the original array
 		labels = (min === 0 && max === labels.length - 1) ? labels : labels.slice(min, max + 1);
 
-		me._numLabels = labels.length;
 		me._valueRange = Math.max(labels.length - (offset ? 0 : 1), 1);
 		me._startValue = me.min - (offset ? 0.5 : 0);
 
-		return labels.map((l) => ({value: l}));
+		for (let value = min; value <= max; value++) {
+			ticks.push({value});
+		}
+		return ticks;
 	}
 
 	getLabelForValue(value) {
@@ -88,13 +83,15 @@ export default class CategoryScale extends Scale {
 		return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
 	}
 
+	// Must override base implementation becuase it calls getPixelForValue
+	// and category scale can have duplicate values
 	getPixelForTick(index) {
 		const me = this;
 		const ticks = me.ticks;
 		if (index < 0 || index > ticks.length - 1) {
 			return null;
 		}
-		return me.getPixelForValue(index * me._numLabels / ticks.length + me.min);
+		return me.getPixelForValue(ticks[index].value);
 	}
 
 	getValueForPixel(pixel) {
@@ -107,3 +104,14 @@ export default class CategoryScale extends Scale {
 		return this.bottom;
 	}
 }
+
+CategoryScale.id = 'category';
+
+/**
+ * @type {any}
+ */
+CategoryScale.defaults = {
+	ticks: {
+		callback: CategoryScale.prototype.getLabelForValue
+	}
+};

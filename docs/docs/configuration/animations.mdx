@@ -1,0 +1,272 @@
+---
+title: Animations
+---
+
+Chart.js animates charts out of the box. A number of options are provided to configure how the animation looks and how long it takes.
+
+import { useEffect } from 'react';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+    defaultValue='tension'
+    values={[
+        {label: 'Looping tension [property]', value: 'tension' },
+        {label: 'Hide and show [mode]', value: 'hideshow' },
+    ]}
+>
+<TabItem value="tension">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a0').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Looping tension',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+              tension: {
+                  duration: 1000,
+                  easing: 'linear',
+                  from: 1,
+                  to: 0,
+                  loop: true
+              }
+          },
+          scales: {
+            y: { // defining min and max so hiding the dataset does not change scale range
+              min: 0,
+              max: 100
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a0" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+
+<TabItem value="hideshow">
+
+```jsx live
+function example() {
+  useEffect(() => {
+    const ctx = document.getElementById('chartjs-a1').getContext('2d');
+    const cfg = {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'Try hiding me',
+          data: [65, 59, 80, 81, 26, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      },
+      options: {
+          animation: {
+            show: {
+                x: {
+                    from: 0
+                },
+                y: {
+                    from: 0
+                }
+            },
+            hide: {
+                x: {
+                    to: 0
+                },
+                y: {
+                    to: 0
+                }
+            }
+          }
+      }
+    };
+    new Chart(ctx, cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-a1" className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Animation Configuration
+
+The following animation options are available. The global options are defined in `Chart.defaults.animation`.
+The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `duration` | `number` | `1000` | The number of milliseconds an animation takes.
+| `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
+| `delay` | `number` | `undefined` | Delay before starting the animations.
+| `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
+| [[mode]](#animation-mode-configuration) | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above. 
+| [[property]](#animation-property-configuration) | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
+| [[collection]](#animation-properties-collection-configuration) | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
+
+These defaults can be overridden in `options.animation` or `dataset.animation` and `tooltip.animation`. These keys are also [Scriptable](../general/options.md#scriptable-options)
+
+## Animation mode configuration
+
+Mode option configures how an update mode animates the chart. 
+The cores modes are `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. 
+A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode).
+A mode option is defined by the same options of the main [animation configuration](#animation-configuration).
+
+### Default modes
+
+| Mode | Option | Value | Description
+| -----| ------ | ----- | -----
+| `'active'` | duration | 400 | Override default duration to 400ms for hover animations
+| `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
+| `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
+| | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
+| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
+
+## Animation property configuration
+
+Property option configures which element property to use to animate the chart and its starting and ending values.
+A property option is defined by the same options of the main [animation configuration](#animation-configuration), adding the following ones:
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
+| `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `to`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | End value for the animation. Updated value is used when `undefined`
+
+## Animation properties collection configuration
+
+Properties collection option configures which set of element properties to use to animate the chart.
+Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
+A properties collection option is defined by the same options of the [animation property configuration](#animation-property-configuration), adding the following one:
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `properties` | `string[]` | `undefined` | Set of properties to use to animate the chart.
+
+### Default collections
+
+| Name | Option | Value
+| ---- | ------ | -----
+| `numbers` | `type` | `'number'`
+| | `properties` | `['x', 'y', 'borderWidth', 'radius', 'tension']`
+| `colors` | `type` | `'color'`
+| | `properties` | `['borderColor', 'backgroundColor']`
+
+Direct property configuration overrides configuration of same property in a collection.
+
+From collections, a property gets its configuration from first one that has its name in properties.
+
+:::note
+These default collections are overridden by most dataset controllers.
+:::
+
+## Disabling animation
+
+To disable an animation configuration, the animation node must be set to `false`, with the exception for animation modes which can be disable setting the `duration` to `0`. 
+
+```javascript
+chart.options.animation = false; // disables the whole animation
+chart.options.animation.active.duration = 0; // disables the animation for 'active' mode
+chart.options.animation.colors = false; // disables animation defined by the collection of 'colors' properties
+chart.options.animation.x = false; // disables animation defined by the 'x' property 
+```
+
+## Easing
+
+Available options are:
+
+* `'linear'`
+* `'easeInQuad'`
+* `'easeOutQuad'`
+* `'easeInOutQuad'`
+* `'easeInCubic'`
+* `'easeOutCubic'`
+* `'easeInOutCubic'`
+* `'easeInQuart'`
+* `'easeOutQuart'`
+* `'easeInOutQuart'`
+* `'easeInQuint'`
+* `'easeOutQuint'`
+* `'easeInOutQuint'`
+* `'easeInSine'`
+* `'easeOutSine'`
+* `'easeInOutSine'`
+* `'easeInExpo'`
+* `'easeOutExpo'`
+* `'easeInOutExpo'`
+* `'easeInCirc'`
+* `'easeOutCirc'`
+* `'easeInOutCirc'`
+* `'easeInElastic'`
+* `'easeOutElastic'`
+* `'easeInOutElastic'`
+* `'easeInBack'`
+* `'easeOutBack'`
+* `'easeInOutBack'`
+* `'easeInBounce'`
+* `'easeOutBounce'`
+* `'easeInOutBounce'`
+
+See [Robert Penner's easing equations](http://robertpenner.com/easing/).
+
+## Animation Callbacks
+
+The animation configuration enables the callbacks which  are useful for synchronizing an external draw to the chart animation.
+The callbacks can be set only at main [animation configuration](#animation-configuration).
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `onProgress` | `function` | `null` | Callback called on each step of an animation.
+| `onComplete` | `function` | `null` | Callback called when all animations are completed.
+
+The callback is passed following object:
+
+```javascript
+{
+    // Chart object
+    chart: Chart,
+
+    // Number of animations still in progress
+    currentStep: number,
+
+    // Total number of animations at the start of current animation
+    numSteps: number,
+}
+```
+
+The following example fills a progress bar during the chart animation.
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        animation: {
+            onProgress: function(animation) {
+                progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+            }
+        }
+    }
+});
+```
+
+Another example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/advanced/progress-bar.html): this sample displays a progress bar showing how far along the animation is.

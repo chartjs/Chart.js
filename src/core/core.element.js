@@ -1,9 +1,6 @@
-import {inherits} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 
 export default class Element {
-
-	static extend = inherits;
 
 	constructor() {
 		this.x = undefined;
@@ -45,3 +42,13 @@ export default class Element {
 		return ret;
 	}
 }
+
+/**
+ * @type any
+ */
+Element.defaults = {};
+
+/**
+ * @type any
+ */
+Element.defaultRoutes = undefined;

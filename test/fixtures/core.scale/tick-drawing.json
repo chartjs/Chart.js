@@ -1,6 +1,6 @@
 {
     "config": {
-        "type": "horizontalBar",
+        "type": "bar",
         "data": {
             "labels": ["January", "February", "March", "April", "May", "June", "July"],
 			"datasets": []
@@ -8,6 +8,7 @@
         "options": {
             "legend": false,
             "title": false,
+            "indexAxis": "y",
             "scales": {
                 "x": {
                     "type": "category",

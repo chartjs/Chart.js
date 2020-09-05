@@ -1,6 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Arc} from '../elements/index';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
 
 /**
@@ -10,82 +8,6 @@ import {isArray, valueOrDefault} from '../helpers/helpers.core';
 const PI = Math.PI;
 const DOUBLE_PI = PI * 2;
 const HALF_PI = PI / 2;
-
-defaults.set('doughnut', {
-	animation: {
-		numbers: {
-			type: 'number',
-			properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y']
-		},
-		// Boolean - Whether we animate the rotation of the Doughnut
-		animateRotate: true,
-		// Boolean - Whether we animate scaling the Doughnut from the centre
-		animateScale: false
-	},
-	legend: {
-		labels: {
-			generateLabels(chart) {
-				const data = chart.data;
-				if (data.labels.length && data.datasets.length) {
-					return data.labels.map((label, i) => {
-						const meta = chart.getDatasetMeta(0);
-						const style = meta.controller.getStyle(i);
-
-						return {
-							text: label,
-							fillStyle: style.backgroundColor,
-							strokeStyle: style.borderColor,
-							lineWidth: style.borderWidth,
-							hidden: !chart.getDataVisibility(i),
-
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
-				}
-				return [];
-			}
-		},
-
-		onClick(e, legendItem) {
-			this.chart.toggleDataVisibility(legendItem.index);
-			this.chart.update();
-		}
-	},
-
-	// The percentage of the chart that we cut out of the middle.
-	cutoutPercentage: 50,
-
-	// The rotation of the chart, where the first data arc begins.
-	rotation: -HALF_PI,
-
-	// The total circumference of the chart.
-	circumference: DOUBLE_PI,
-
-	// Need to override these to give a nice default
-	tooltips: {
-		callbacks: {
-			title() {
-				return '';
-			},
-			label(tooltipItem, data) {
-				let dataLabel = data.labels[tooltipItem.index];
-				const value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-				if (isArray(dataLabel)) {
-					// show value on first line of multiline label
-					// need to clone because we are changing the value
-					dataLabel = dataLabel.slice();
-					dataLabel[0] += value;
-				} else {
-					dataLabel += value;
-				}
-
-				return dataLabel;
-			}
-		}
-	}
-});
 
 function getRatioAndOffset(rotation, circumference, cutout) {
 	let ratioX = 1;
@@ -122,6 +44,7 @@ export default class DoughnutController extends DatasetController {
 	constructor(chart, datasetIndex) {
 		super(chart, datasetIndex);
 
+		this.enableOptionSharing = true;
 		this.innerRadius = undefined;
 		this.outerRadius = undefined;
 		this.offsetX = undefined;
@@ -167,9 +90,9 @@ export default class DoughnutController extends DatasetController {
 		const cutout = options.cutoutPercentage / 100 || 0;
 		const chartWeight = me._getRingWeight(me.index);
 		const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(options.rotation, options.circumference, cutout);
-		const borderWidth = me.getMaxBorderWidth();
-		const maxWidth = (chartArea.right - chartArea.left - borderWidth) / ratioX;
-		const maxHeight = (chartArea.bottom - chartArea.top - borderWidth) / ratioY;
+		const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
+		const maxWidth = (chartArea.right - chartArea.left - spacing) / ratioX;
+		const maxHeight = (chartArea.bottom - chartArea.top - spacing) / ratioY;
 		const outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
 		const innerRadius = Math.max(outerRadius * cutout, 0);
 		const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
@@ -207,7 +130,7 @@ export default class DoughnutController extends DatasetController {
 		const innerRadius = animateScale ? 0 : me.innerRadius;
 		const outerRadius = animateScale ? 0 : me.outerRadius;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, arcs[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		let startAngle = opts.rotation;
 		let i;
@@ -230,13 +153,13 @@ export default class DoughnutController extends DatasetController {
 				innerRadius
 			};
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			}
 			startAngle += circumference;
 
 			me.updateElement(arc, index, properties, mode);
 		}
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	calculateTotal() {
@@ -261,6 +184,18 @@ export default class DoughnutController extends DatasetController {
 			return DOUBLE_PI * (Math.abs(value) / total);
 		}
 		return 0;
+	}
+
+	getLabelAndValue(index) {
+		const me = this;
+		const meta = me._cachedMeta;
+		const chart = me.chart;
+		const labels = chart.data.labels || [];
+
+		return {
+			label: labels[index] || '',
+			value: meta._parsed[index],
+		};
 	}
 
 	getMaxBorderWidth(arcs) {
@@ -297,6 +232,16 @@ export default class DoughnutController extends DatasetController {
 		return max;
 	}
 
+	getMaxOffset(arcs) {
+		let max = 0;
+
+		for (let i = 0, ilen = arcs.length; i < ilen; ++i) {
+			const options = this.resolveDataElementOptions(i);
+			max = Math.max(max, options.offset || 0, options.hoverOffset || 0);
+		}
+		return max;
+	}
+
 	/**
 	 * Get radius length offset of the dataset in relation to the visible datasets weights. This allows determining the inner and outer radius correctly
 	 * @private
@@ -329,14 +274,93 @@ export default class DoughnutController extends DatasetController {
 	}
 }
 
-DoughnutController.prototype.dataElementType = Arc;
+DoughnutController.id = 'doughnut';
 
-DoughnutController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'borderAlign',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth',
-];
+/**
+ * @type {any}
+ */
+DoughnutController.defaults = {
+	datasetElementType: false,
+	dataElementType: 'arc',
+	dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'offset'
+	],
+	animation: {
+		numbers: {
+			type: 'number',
+			properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
+		},
+		// Boolean - Whether we animate the rotation of the Doughnut
+		animateRotate: true,
+		// Boolean - Whether we animate scaling the Doughnut from the centre
+		animateScale: false
+	},
+	aspectRatio: 1,
+	legend: {
+		labels: {
+			generateLabels(chart) {
+				const data = chart.data;
+				if (data.labels.length && data.datasets.length) {
+					return data.labels.map((label, i) => {
+						const meta = chart.getDatasetMeta(0);
+						const style = meta.controller.getStyle(i);
+
+						return {
+							text: label,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: !chart.getDataVisibility(i),
+
+							// Extra data used for toggling the correct item
+							index: i
+						};
+					});
+				}
+				return [];
+			}
+		},
+
+		onClick(e, legendItem, legend) {
+			legend.chart.toggleDataVisibility(legendItem.index);
+			legend.chart.update();
+		}
+	},
+
+	// The percentage of the chart that we cut out of the middle.
+	cutoutPercentage: 50,
+
+	// The rotation of the chart, where the first data arc begins.
+	rotation: -HALF_PI,
+
+	// The total circumference of the chart.
+	circumference: DOUBLE_PI,
+
+	// Need to override these to give a nice default
+	tooltips: {
+		callbacks: {
+			title() {
+				return '';
+			},
+			label(tooltipItem) {
+				let dataLabel = tooltipItem.label;
+				const value = ': ' + tooltipItem.formattedValue;
+
+				if (isArray(dataLabel)) {
+					// show value on first line of multiline label
+					// need to clone because we are changing the value
+					dataLabel = dataLabel.slice();
+					dataLabel[0] += value;
+				} else {
+					dataLabel += value;
+				}
+
+				return dataLabel;
+			}
+		}
+	}
+};

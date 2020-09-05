@@ -30,14 +30,20 @@ module.exports = {
 					t: newDateFromRef(9),
 					y: 5
 				}],
-				fill: false
+				fill: false,
+				parsing: {
+					xAxisKey: 't'
+				}
 			}],
 		},
 		options: {
 			scales: {
 				x: {
 					type: 'time',
-					position: 'bottom'
+					position: 'bottom',
+					ticks: {
+						maxRotation: 0
+					}
 				},
 				y: {
 					display: false

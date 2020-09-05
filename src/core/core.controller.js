@@ -1,13 +1,14 @@
-import Animator from './core.animator';
-import controllers from '../controllers/index';
+/* eslint-disable import/no-namespace, import/namespace */
+import animator from './core.animator';
 import defaults from './core.defaults';
-import helpers from '../helpers/index';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform} from '../platform/platforms';
-import plugins from './core.plugins';
-import scaleService from './core.scaleService';
-import {getMaximumWidth, getMaximumHeight} from '../helpers/helpers.dom';
+import {BasicPlatform, DomPlatform} from '../platform';
+import PluginService from './core.plugins';
+import registry from './core.registry';
+import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
+import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
+import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
 
@@ -15,47 +16,70 @@ import {version} from '../../package.json';
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
 
-const valueOrDefault = helpers.valueOrDefault;
+
+function getIndexAxis(type, options) {
+	const typeDefaults = defaults[type] || {};
+	const datasetDefaults = typeDefaults.datasets || {};
+	const typeOptions = options[type] || {};
+	const datasetOptions = typeOptions.datasets || {};
+	return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
+}
+
+function getAxisFromDefaultScaleID(id, indexAxis) {
+	let axis = id;
+	if (id === '_index_') {
+		axis = indexAxis;
+	} else if (id === '_value_') {
+		axis = indexAxis === 'x' ? 'y' : 'x';
+	}
+	return axis;
+}
+
+function getDefaultScaleIDFromAxis(axis, indexAxis) {
+	return axis === indexAxis ? '_index_' : '_value_';
+}
 
 function mergeScaleConfig(config, options) {
 	options = options || {};
 	const chartDefaults = defaults[config.type] || {scales: {}};
 	const configScales = options.scales || {};
+	const chartIndexAxis = getIndexAxis(config.type, options);
 	const firstIDs = {};
 	const scales = {};
 
 	// First figure out first scale id's per axis.
-	// Note: for now, axis is determined from first letter of scale id!
 	Object.keys(configScales).forEach(id => {
-		const axis = id[0];
+		const scaleConf = configScales[id];
+		const axis = determineAxis(id, scaleConf);
+		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = helpers.mergeIf({}, [configScales[id], chartDefaults.scales[axis]]);
+		scales[id] = mergeIf({axis}, [scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
 	});
 
 	// Backward compatibility
 	if (options.scale) {
-		scales[options.scale.id || 'r'] = helpers.mergeIf({}, [options.scale, chartDefaults.scales.r]);
+		scales[options.scale.id || 'r'] = mergeIf({axis: 'r'}, [options.scale, chartDefaults.scales.r]);
 		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
-		const datasetDefaults = defaults[dataset.type || config.type] || {scales: {}};
+		const type = dataset.type || config.type;
+		const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
+		const datasetDefaults = defaults[type] || {};
 		const defaultScaleOptions = datasetDefaults.scales || {};
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
-			const id = dataset[defaultID + 'AxisID'] || firstIDs[defaultID] || defaultID;
+			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
+			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
 			scales[id] = scales[id] || {};
-			helpers.mergeIf(scales[id], [
-				configScales[id],
-				defaultScaleOptions[defaultID]
-			]);
+			mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
 		});
 	});
 
 	// apply scale defaults, if not overridden by dataset defaults
 	Object.keys(scales).forEach(key => {
 		const scale = scales[key];
-		helpers.mergeIf(scale, scaleService.getScaleDefaults(scale.type));
+		mergeIf(scale, [defaults.scales[scale.type], defaults.scale]);
 	});
 
 	return scales;
@@ -67,10 +91,10 @@ function mergeScaleConfig(config, options) {
  * a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeConfig(...args/* config objects ... */) {
-	return helpers.merge({}, args, {
+	return merge({}, args, {
 		merger(key, target, source, options) {
 			if (key !== 'scales' && key !== 'scale') {
-				helpers._merger(key, target, source, options);
+				_merger(key, target, source, options);
 			}
 		}
 	});
@@ -87,12 +111,15 @@ function initConfig(config) {
 
 	const scaleConfig = mergeScaleConfig(config, config.options);
 
-	config.options = mergeConfig(
+	const options = config.options = mergeConfig(
 		defaults,
 		defaults[config.type],
 		config.options || {});
 
-	config.options.scales = scaleConfig;
+	options.scales = scaleConfig;
+
+	options.title = (options.title !== false) && merge({}, [defaults.plugins.title, options.title]);
+	options.tooltips = (options.tooltips !== false) && merge({}, [defaults.plugins.tooltip, options.tooltips]);
 
 	return config;
 }
@@ -104,7 +131,7 @@ function isAnimationDisabled(config) {
 function updateConfig(chart) {
 	let newOptions = chart.options;
 
-	helpers.each(chart.scales, (scale) => {
+	each(chart.scales, (scale) => {
 		layouts.removeBox(chart, scale);
 	});
 
@@ -119,13 +146,27 @@ function updateConfig(chart) {
 	chart.options.scales = scaleConfig;
 
 	chart._animationsDisabled = isAnimationDisabled(newOptions);
-	chart.ensureScalesHaveIDs();
-	chart.buildOrUpdateScales();
 }
 
-const KNOWN_POSITIONS = new Set(['top', 'bottom', 'left', 'right', 'chartArea']);
+const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
-	return position === 'top' || position === 'bottom' || (!KNOWN_POSITIONS.has(position) && axis === 'x');
+	return position === 'top' || position === 'bottom' || (KNOWN_POSITIONS.indexOf(position) === -1 && axis === 'x');
+}
+
+function axisFromPosition(position) {
+	if (position === 'top' || position === 'bottom') {
+		return 'x';
+	}
+	if (position === 'left' || position === 'right') {
+		return 'y';
+	}
+}
+
+function determineAxis(id, scaleOptions) {
+	if (id === 'x' || id === 'y' || id === 'r') {
+		return id;
+	}
+	return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
 }
 
 function compare2Level(l1, l2) {
@@ -136,18 +177,18 @@ function compare2Level(l1, l2) {
 	};
 }
 
-function onAnimationsComplete(ctx) {
-	const chart = ctx.chart;
+function onAnimationsComplete(context) {
+	const chart = context.chart;
 	const animationOptions = chart.options.animation;
 
-	plugins.notify(chart, 'afterRender');
-	helpers.callback(animationOptions && animationOptions.onComplete, [ctx], chart);
+	chart._plugins.notify(chart, 'afterRender');
+	callCallback(animationOptions && animationOptions.onComplete, [context], chart);
 }
 
-function onAnimationProgress(ctx) {
-	const chart = ctx.chart;
+function onAnimationProgress(context) {
+	const chart = context.chart;
 	const animationOptions = chart.options.animation;
-	helpers.callback(animationOptions && animationOptions.onProgress, [ctx], chart);
+	callCallback(animationOptions && animationOptions.onProgress, [context], chart);
 }
 
 function isDomSupported() {
@@ -173,17 +214,25 @@ function getCanvas(item) {
 	return item;
 }
 
-export default class Chart {
+function computeNewSize(canvas, width, height, aspectRatio) {
+	if (width === undefined || height === undefined) {
+		width = getMaximumWidth(canvas);
+		height = getMaximumHeight(canvas);
+	}
+	// the canvas render width and height will be casted to integers so make sure that
+	// the canvas display style uses the same integer values to avoid blurring effect.
 
-	static version = version;
+	// Minimum values set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
+	width = Math.max(0, Math.floor(width));
+	return {
+		width,
+		height: Math.max(0, Math.floor(aspectRatio ? width / aspectRatio : height))
+	};
+}
 
-	/**
-	 * NOTE(SB) We actually don't use this container anymore but we need to keep it
-	 * for backward compatibility. Though, it can still be useful for plugins that
-	 * would need to work on multiple charts?!
-	 */
-	static instances = {};
+class Chart {
 
+	// eslint-disable-next-line max-statements
 	constructor(item, config) {
 		const me = this;
 
@@ -196,7 +245,7 @@ export default class Chart {
 		const height = canvas && canvas.height;
 		const width = canvas && canvas.width;
 
-		this.id = helpers.uid();
+		this.id = uid();
 		this.ctx = context;
 		this.canvas = canvas;
 		this.config = config;
@@ -211,18 +260,18 @@ export default class Chart {
 		this.currentDevicePixelRatio = undefined;
 		this.chartArea = undefined;
 		this.data = undefined;
-		this.active = undefined;
-		this.lastActive = [];
+		this._active = [];
 		this._lastEvent = undefined;
-		/** @type {{resize?: function}} */
+		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
 		this._sortedMetasets = [];
 		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
-		this.$plugins = undefined;
+		this._plugins = new PluginService();
 		this.$proxies = {};
 		this._hiddenIndices = {};
+		this.attached = false;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -246,11 +295,13 @@ export default class Chart {
 			return;
 		}
 
-		Animator.listen(me, 'complete', onAnimationsComplete);
-		Animator.listen(me, 'progress', onAnimationProgress);
+		animator.listen(me, 'complete', onAnimationsComplete);
+		animator.listen(me, 'progress', onAnimationProgress);
 
 		me._initialize();
-		me.update();
+		if (me.attached) {
+			me.update();
+		}
 	}
 
 	/**
@@ -260,19 +311,19 @@ export default class Chart {
 		const me = this;
 
 		// Before init plugin notification
-		plugins.notify(me, 'beforeInit');
+		me._plugins.notify(me, 'beforeInit');
 
 		if (me.options.responsive) {
 			// Initial resize before chart draws (must be silent to preserve initial animations).
 			me.resize(true);
 		} else {
-			helpers.dom.retinaScale(me, me.options.devicePixelRatio);
+			retinaScale(me, me.options.devicePixelRatio);
 		}
 
 		me.bindEvents();
 
 		// After init plugin notification
-		plugins.notify(me, 'afterInit');
+		me._plugins.notify(me, 'afterInit');
 
 		return me;
 	}
@@ -290,12 +341,12 @@ export default class Chart {
 	}
 
 	clear() {
-		helpers.canvas.clear(this);
+		canvasClear(this);
 		return this;
 	}
 
 	stop() {
-		Animator.stop(this);
+		animator.stop(this);
 		return this;
 	}
 
@@ -304,46 +355,33 @@ export default class Chart {
 		const options = me.options;
 		const canvas = me.canvas;
 		const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
-
-		if (width === undefined || height === undefined) {
-			width = getMaximumWidth(canvas);
-			height = getMaximumHeight(canvas);
-		}
-		// the canvas render width and height will be casted to integers so make sure that
-		// the canvas display style uses the same integer values to avoid blurring effect.
-
-		// Set to 0 instead of canvas.size because the size defaults to 300x150 if the element is collapsed
-		const newWidth = Math.max(0, Math.floor(width));
-		const newHeight = Math.max(0, Math.floor(aspectRatio ? newWidth / aspectRatio : height));
+		const newSize = computeNewSize(canvas, width, height, aspectRatio);
 
 		// detect devicePixelRation changes
 		const oldRatio = me.currentDevicePixelRatio;
 		const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
 
-		if (me.width === newWidth && me.height === newHeight && oldRatio === newRatio) {
+		if (me.width === newSize.width && me.height === newSize.height && oldRatio === newRatio) {
 			return;
 		}
 
-		canvas.width = me.width = newWidth;
-		canvas.height = me.height = newHeight;
+		canvas.width = me.width = newSize.width;
+		canvas.height = me.height = newSize.height;
 		if (canvas.style) {
-			canvas.style.width = newWidth + 'px';
-			canvas.style.height = newHeight + 'px';
+			canvas.style.width = newSize.width + 'px';
+			canvas.style.height = newSize.height + 'px';
 		}
 
-		helpers.dom.retinaScale(me, newRatio);
+		retinaScale(me, newRatio);
 
 		if (!silent) {
-			// Notify any plugins about the resize
-			const newSize = {width: newWidth, height: newHeight};
-			plugins.notify(me, 'resize', [newSize]);
+			me._plugins.notify(me, 'resize', [newSize]);
 
-			// Notify of resize
-			if (options.onResize) {
-				options.onResize(me, newSize);
+			callCallback(options.onResize, [newSize], me);
+
+			if (me.attached) {
+				me.update('resize');
 			}
-
-			me.update('resize');
 		}
 	}
 
@@ -352,7 +390,7 @@ export default class Chart {
 		const scalesOptions = options.scales || {};
 		const scaleOptions = options.scale;
 
-		helpers.each(scalesOptions, (axisOptions, axisID) => {
+		each(scalesOptions, (axisOptions, axisID) => {
 			axisOptions.id = axisID;
 		});
 
@@ -377,12 +415,13 @@ export default class Chart {
 
 		if (scaleOpts) {
 			items = items.concat(
-				Object.keys(scaleOpts).map((axisID) => {
-					const axisOptions = scaleOpts[axisID];
-					const isRadial = axisID.charAt(0).toLowerCase() === 'r';
-					const isHorizontal = axisID.charAt(0).toLowerCase() === 'x';
+				Object.keys(scaleOpts).map((id) => {
+					const scaleOptions = scaleOpts[id];
+					const axis = determineAxis(id, scaleOptions);
+					const isRadial = axis === 'r';
+					const isHorizontal = axis === 'x';
 					return {
-						options: axisOptions,
+						options: scaleOptions,
 						dposition: isRadial ? 'chartArea' : isHorizontal ? 'bottom' : 'left',
 						dtype: isRadial ? 'radialLinear' : isHorizontal ? 'category' : 'linear'
 					};
@@ -390,12 +429,13 @@ export default class Chart {
 			);
 		}
 
-		helpers.each(items, (item) => {
+		each(items, (item) => {
 			const scaleOptions = item.options;
 			const id = scaleOptions.id;
+			const axis = determineAxis(id, scaleOptions);
 			const scaleType = valueOrDefault(scaleOptions.type, item.dtype);
 
-			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, scaleOptions.axis || id[0]) !== positionIsHorizontal(item.dposition)) {
+			if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, axis) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
 			}
 
@@ -403,29 +443,18 @@ export default class Chart {
 			let scale = null;
 			if (id in scales && scales[id].type === scaleType) {
 				scale = scales[id];
-				scale.options = scaleOptions;
-				scale.ctx = me.ctx;
-				scale.chart = me;
 			} else {
-				const scaleClass = scaleService.getScaleConstructor(scaleType);
-				if (!scaleClass) {
-					return;
-				}
+				const scaleClass = registry.getScale(scaleType);
 				scale = new scaleClass({
 					id,
 					type: scaleType,
-					options: scaleOptions,
 					ctx: me.ctx,
 					chart: me
 				});
 				scales[scale.id] = scale;
 			}
 
-			scale.axis = scale.options.position === 'chartArea' ? 'r' : scale.isHorizontal() ? 'x' : 'y';
-
-			// parse min/max value, so we can properly determine min/max for other scales
-			scale._userMin = scale.parse(scale.options.min);
-			scale._userMax = scale.parse(scale.options.max);
+			scale.init(scaleOptions, options);
 
 			// TODO(SB): I think we should be able to remove this custom case (options.scale)
 			// and consider it as a regular scale part of the "scales"" map only! This would
@@ -435,7 +464,7 @@ export default class Chart {
 			}
 		});
 		// clear up discarded scales
-		helpers.each(updated, (hasUpdated, id) => {
+		each(updated, (hasUpdated, id) => {
 			if (!hasUpdated) {
 				delete scales[id];
 			}
@@ -443,7 +472,13 @@ export default class Chart {
 
 		me.scales = scales;
 
-		scaleService.addScalesToLayout(this);
+		each(scales, (scale) => {
+			// Set ILayoutItem parameters for backwards compatibility
+			scale.fullWidth = scale.options.fullWidth;
+			scale.position = scale.options.position;
+			scale.weight = scale.options.weight;
+			layouts.addBox(me, scale);
+		});
 	}
 
 	/**
@@ -497,6 +532,7 @@ export default class Chart {
 				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
+			meta.indexAxis = dataset.indexAxis || getIndexAxis(type, me.options);
 			meta.order = dataset.order || 0;
 			me._updateMetasetIndex(meta, i);
 			meta.label = '' + dataset.label;
@@ -506,11 +542,14 @@ export default class Chart {
 				meta.controller.updateIndex(i);
 				meta.controller.linkScales();
 			} else {
-				const ControllerClass = controllers[meta.type];
-				if (ControllerClass === undefined) {
-					throw new Error('"' + meta.type + '" is not a chart type.');
-				}
-
+				const controllerDefaults = defaults[type];
+				const ControllerClass = registry.getController(type);
+				Object.assign(ControllerClass.prototype, {
+					dataElementType: registry.getElement(controllerDefaults.dataElementType),
+					datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
+					dataElementOptions: controllerDefaults.dataElementOptions,
+					datasetElementOptions: controllerDefaults.datasetElementOptions
+				});
 				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);
 			}
@@ -526,7 +565,7 @@ export default class Chart {
 	 */
 	_resetElements() {
 		const me = this;
-		helpers.each(me.data.datasets, (dataset, datasetIndex) => {
+		each(me.data.datasets, (dataset, datasetIndex) => {
 			me.getDatasetMeta(datasetIndex).controller.reset();
 		}, me);
 	}
@@ -536,7 +575,7 @@ export default class Chart {
 	*/
 	reset() {
 		this._resetElements();
-		plugins.notify(this, 'reset');
+		this._plugins.notify(this, 'reset');
 	}
 
 	update(mode) {
@@ -547,11 +586,14 @@ export default class Chart {
 
 		updateConfig(me);
 
+		me.ensureScalesHaveIDs();
+		me.buildOrUpdateScales();
+
 		// plugins options references might have change, let's invalidate the cache
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
-		plugins.invalidate(me);
+		me._plugins.invalidate();
 
-		if (plugins.notify(me, 'beforeUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeUpdate') === false) {
 			return;
 		}
 
@@ -566,16 +608,14 @@ export default class Chart {
 		me._updateLayout();
 
 		// Can only reset the new controllers after the scales have been updated
-		if (me.options.animation) {
-			helpers.each(newControllers, (controller) => {
-				controller.reset();
-			});
-		}
+		each(newControllers, (controller) => {
+			controller.reset();
+		});
 
 		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		plugins.notify(me, 'afterUpdate');
+		me._plugins.notify(me, 'afterUpdate');
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
@@ -597,14 +637,14 @@ export default class Chart {
 	_updateLayout() {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeLayout') === false) {
+		if (me._plugins.notify(me, 'beforeLayout') === false) {
 			return;
 		}
 
 		layouts.update(me, me.width, me.height);
 
 		me._layers = [];
-		helpers.each(me.boxes, (box) => {
+		each(me.boxes, (box) => {
 			// configure is called twice, once in core.scale.update and once here.
 			// Here the boxes are fully updated and at their final positions.
 			if (box.configure) {
@@ -617,7 +657,7 @@ export default class Chart {
 			item._idx = index;
 		});
 
-		plugins.notify(me, 'afterLayout');
+		me._plugins.notify(me, 'afterLayout');
 	}
 
 	/**
@@ -629,7 +669,7 @@ export default class Chart {
 		const me = this;
 		const isFunction = typeof mode === 'function';
 
-		if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeDatasetsUpdate') === false) {
 			return;
 		}
 
@@ -637,7 +677,7 @@ export default class Chart {
 			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
-		plugins.notify(me, 'afterDatasetsUpdate');
+		me._plugins.notify(me, 'afterDatasetsUpdate');
 	}
 
 	/**
@@ -650,33 +690,28 @@ export default class Chart {
 		const meta = me.getDatasetMeta(index);
 		const args = {meta, index, mode};
 
-		if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+		if (me._plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
 			return;
 		}
 
 		meta.controller._update(mode);
 
-		plugins.notify(me, 'afterDatasetUpdate', [args]);
+		me._plugins.notify(me, 'afterDatasetUpdate', [args]);
 	}
 
 	render() {
 		const me = this;
-		const animationOptions = me.options.animation;
-		if (plugins.notify(me, 'beforeRender') === false) {
+		if (me._plugins.notify(me, 'beforeRender') === false) {
 			return;
 		}
-		const onComplete = function() {
-			plugins.notify(me, 'afterRender');
-			helpers.callback(animationOptions && animationOptions.onComplete, [], me);
-		};
 
-		if (Animator.has(me)) {
-			if (!Animator.running(me)) {
-				Animator.start(me);
+		if (animator.has(me)) {
+			if (me.attached && !animator.running(me)) {
+				animator.start(me);
 			}
 		} else {
 			me.draw();
-			onComplete();
+			onAnimationsComplete({chart: me});
 		}
 	}
 
@@ -690,7 +725,7 @@ export default class Chart {
 			return;
 		}
 
-		if (plugins.notify(me, 'beforeDraw') === false) {
+		if (me._plugins.notify(me, 'beforeDraw') === false) {
 			return;
 		}
 
@@ -709,7 +744,7 @@ export default class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		plugins.notify(me, 'afterDraw');
+		me._plugins.notify(me, 'afterDraw');
 	}
 
 	/**
@@ -747,7 +782,7 @@ export default class Chart {
 	_drawDatasets() {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeDatasetsDraw') === false) {
+		if (me._plugins.notify(me, 'beforeDatasetsDraw') === false) {
 			return;
 		}
 
@@ -756,7 +791,7 @@ export default class Chart {
 			me._drawDataset(metasets[i]);
 		}
 
-		plugins.notify(me, 'afterDatasetsDraw');
+		me._plugins.notify(me, 'afterDatasetsDraw');
 	}
 
 	/**
@@ -774,11 +809,11 @@ export default class Chart {
 			index: meta.index,
 		};
 
-		if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+		if (me._plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
 			return;
 		}
 
-		helpers.canvas.clipArea(ctx, {
+		clipArea(ctx, {
 			left: clip.left === false ? 0 : area.left - clip.left,
 			right: clip.right === false ? me.width : area.right + clip.right,
 			top: clip.top === false ? 0 : area.top - clip.top,
@@ -787,9 +822,9 @@ export default class Chart {
 
 		meta.controller.draw();
 
-		helpers.canvas.unclipArea(ctx);
+		unclipArea(ctx);
 
-		plugins.notify(me, 'afterDatasetDraw', [args]);
+		me._plugins.notify(me, 'afterDatasetDraw', [args]);
 	}
 
 	/**
@@ -915,7 +950,7 @@ export default class Chart {
 		let i, ilen;
 
 		me.stop();
-		Animator.remove(me);
+		animator.remove(me);
 
 		// dataset controllers need to cleanup associated data
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
@@ -924,13 +959,13 @@ export default class Chart {
 
 		if (canvas) {
 			me.unbindEvents();
-			helpers.canvas.clear(me);
+			canvasClear(me);
 			me.platform.releaseContext(me.ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}
 
-		plugins.notify(me, 'destroy');
+		me._plugins.notify(me, 'destroy');
 
 		delete Chart.instances[me.id];
 	}
@@ -945,24 +980,57 @@ export default class Chart {
 	bindEvents() {
 		const me = this;
 		const listeners = me._listeners;
+		const platform = me.platform;
+
+		const _add = (type, listener) => {
+			platform.addEventListener(me, type, listener);
+			listeners[type] = listener;
+		};
+		const _remove = (type, listener) => {
+			if (listeners[type]) {
+				platform.removeEventListener(me, type, listener);
+				delete listeners[type];
+			}
+		};
+
 		let listener = function(e) {
 			me._eventHandler(e);
 		};
 
-		helpers.each(me.options.events, (type) => {
-			me.platform.addEventListener(me, type, listener);
-			listeners[type] = listener;
-		});
+		each(me.options.events, (type) => _add(type, listener));
 
 		if (me.options.responsive) {
-			listener = function(width, height) {
+			listener = (width, height) => {
 				if (me.canvas) {
 					me.resize(false, width, height);
 				}
 			};
 
-			me.platform.addEventListener(me, 'resize', listener);
-			listeners.resize = listener;
+			let detached; // eslint-disable-line prefer-const
+			const attached = () => {
+				_remove('attach', attached);
+
+				me.attached = true;
+				me.resize();
+
+				_add('resize', listener);
+				_add('detach', detached);
+			};
+
+			detached = () => {
+				me.attached = false;
+
+				_remove('resize', listener);
+				_add('attach', attached);
+			};
+
+			if (platform.isAttached(me.canvas)) {
+				attached();
+			} else {
+				detached();
+			}
+		} else {
+			me.attached = true;
 		}
 	}
 
@@ -977,7 +1045,7 @@ export default class Chart {
 		}
 
 		delete me._listeners;
-		helpers.each(listeners, (listener, type) => {
+		each(listeners, (listener, type) => {
 			me.platform.removeEventListener(me, type, listener);
 		});
 	}
@@ -1002,19 +1070,19 @@ export default class Chart {
 	/**
 	 * @private
 	 */
-	_updateHoverStyles() {
+	_updateHoverStyles(active, lastActive) {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;
 
 		// Remove styling for last active (even if it may still be active)
-		if (me.lastActive.length) {
-			me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
+		if (lastActive.length) {
+			me.updateHoverStyle(lastActive, hoverOptions.mode, false);
 		}
 
 		// Built-in hover styling
-		if (me.active.length && hoverOptions.mode) {
-			me.updateHoverStyle(me.active, hoverOptions.mode, true);
+		if (active.length && hoverOptions.mode) {
+			me.updateHoverStyle(active, hoverOptions.mode, true);
 		}
 	}
 
@@ -1024,13 +1092,13 @@ export default class Chart {
 	_eventHandler(e, replay) {
 		const me = this;
 
-		if (plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
+		if (me._plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
 			return;
 		}
 
 		me._handleEvent(e, replay);
 
-		plugins.notify(me, 'afterEvent', [e, replay]);
+		me._plugins.notify(me, 'afterEvent', [e, replay]);
 
 		me.render();
 
@@ -1046,6 +1114,7 @@ export default class Chart {
 	 */
 	_handleEvent(e, replay) {
 		const me = this;
+		const lastActive = me._active || [];
 		const options = me.options;
 		const hoverOptions = options.hover;
 
@@ -1064,36 +1133,52 @@ export default class Chart {
 		// - it would be expensive.
 		const useFinalPosition = replay;
 
+		let active = [];
 		let changed = false;
 
 		// Find Active Elements for hover and tooltips
 		if (e.type === 'mouseout') {
-			me.active = [];
 			me._lastEvent = null;
 		} else {
-			me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
+			active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
 			me._lastEvent = e.type === 'click' ? me._lastEvent : e;
 		}
 
 		// Invoke onHover hook
-		// Need to call with native event here to not break backwards compatibility
-		helpers.callback(options.onHover || options.hover.onHover, [e.native, me.active], me);
+		callCallback(options.onHover || options.hover.onHover, [e, active, me], me);
 
 		if (e.type === 'mouseup' || e.type === 'click') {
-			if (options.onClick && helpers.canvas._isPointInArea(e, me.chartArea)) {
-				// Use e.native here for backwards compatibility
-				options.onClick.call(me, e.native, me.active);
+			if (_isPointInArea(e, me.chartArea)) {
+				callCallback(options.onClick, [e, active, me], me);
 			}
 		}
 
-		changed = !helpers._elementsEqual(me.active, me.lastActive);
+		changed = !_elementsEqual(active, lastActive);
 		if (changed || replay) {
-			me._updateHoverStyles();
+			me._active = active;
+			me._updateHoverStyles(active, lastActive);
 		}
-
-		// Remember Last Actives
-		me.lastActive = me.active;
 
 		return changed;
 	}
 }
+
+// These are available to both, UMD and ESM packages
+Chart.defaults = defaults;
+Chart.instances = {};
+Chart.registry = registry;
+Chart.version = version;
+
+// @ts-ignore
+const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
+
+Chart.register = (...items) => {
+	registry.add(...items);
+	invalidatePlugins();
+};
+Chart.unregister = (...items) => {
+	registry.remove(...items);
+	invalidatePlugins();
+};
+
+export default Chart;

@@ -3,7 +3,7 @@ import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
 import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
-import {_parseFont, resolve, toPadding} from '../helpers/helpers.options';
+import {toFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
 /**
@@ -142,12 +142,12 @@ function getTickMarkLength(options) {
 /**
  * @param {object} options
  */
-function getScaleLabelHeight(options) {
+function getScaleLabelHeight(options, fallback) {
 	if (!options.display) {
 		return 0;
 	}
 
-	const font = _parseFont(options);
+	const font = toFont(options.font, fallback);
 	const padding = toPadding(options.padding);
 
 	return font.lineHeight + padding.height;
@@ -175,10 +175,9 @@ function getEvenSpacing(arr) {
 /**
  * @param {number[]} majorIndices
  * @param {Tick[]} ticks
- * @param {number} axisLength
  * @param {number} ticksLimit
  */
-function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+function calculateSpacing(majorIndices, ticks, ticksLimit) {
 	const evenMajorSpacing = getEvenSpacing(majorIndices);
 	const spacing = ticks.length / ticksLimit;
 
@@ -279,7 +278,7 @@ export default class Scale extends Element {
 		/** @type {string} */
 		this.type = cfg.type;
 		/** @type {object} */
-		this.options = cfg.options;
+		this.options = undefined;
 		/** @type {CanvasRenderingContext2D} */
 		this.ctx = cfg.ctx;
 		/** @type {Chart} */
@@ -346,28 +345,28 @@ export default class Scale extends Element {
 	}
 
 	/**
+	 * @param {object} options
+	 * @since 3.0
+	 */
+	init(options) {
+		const me = this;
+		me.options = options;
+
+		me.axis = me.isHorizontal() ? 'x' : 'y';
+
+		// parse min/max value, so we can properly determine min/max for other scales
+		me._userMin = me.parse(options.min);
+		me._userMax = me.parse(options.max);
+	}
+
+	/**
 	 * Parse a supported input value to internal representation.
 	 * @param {*} raw
-	 * @param {number} index
+	 * @param {number} [index]
 	 * @since 3.0
 	 */
 	parse(raw, index) { // eslint-disable-line no-unused-vars
 		return raw;
-	}
-
-	/**
-	 * Parse an object for axis to internal representation.
-	 * @param {object} obj
-	 * @param {string} axis
-	 * @param {number} index
-	 * @since 3.0
-	 * @protected
-	 */
-	parseObject(obj, axis, index) {
-		if (obj[axis] !== undefined) {
-			return this.parse(obj[axis], index);
-		}
-		return null;
 	}
 
 	/**
@@ -397,7 +396,7 @@ export default class Scale extends Element {
 		const me = this;
 		// eslint-disable-next-line prefer-const
 		let {min, max, minDefined, maxDefined} = me.getUserBounds();
-		let minmax;
+		let range;
 
 		if (minDefined && maxDefined) {
 			return {min, max};
@@ -405,12 +404,12 @@ export default class Scale extends Element {
 
 		const metas = me.getMatchingVisibleMetas();
 		for (let i = 0, ilen = metas.length; i < ilen; ++i) {
-			minmax = metas[i].controller.getMinMax(me, canStack);
+			range = metas[i].controller.getMinMax(me, canStack);
 			if (!minDefined) {
-				min = Math.min(min, minmax.min);
+				min = Math.min(min, range.min);
 			}
 			if (!maxDefined) {
-				max = Math.max(max, minmax.max);
+				max = Math.max(max, range.max);
 			}
 		}
 
@@ -674,7 +673,7 @@ export default class Scale extends Element {
 		if (maxLabelWidth + 6 > tickWidth) {
 			tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
 			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
-				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
+				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel, me.chart.options.font);
 			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
 			labelRotation = toDegrees(Math.min(
 				Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
@@ -710,19 +709,20 @@ export default class Scale extends Element {
 		const display = me._isVisible();
 		const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
 		const isHorizontal = me.isHorizontal();
+		const scaleLabelHeight = display && getScaleLabelHeight(scaleLabelOpts, chart.options.font);
 
 		// Width
 		if (isHorizontal) {
 			minSize.width = me.maxWidth;
 		} else if (display) {
-			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+			minSize.width = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
 		}
 
 		// height
 		if (!isHorizontal) {
 			minSize.height = me.maxHeight; // fill all the height
 		} else if (display) {
-			minSize.height = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
+			minSize.height = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
@@ -780,8 +780,8 @@ export default class Scale extends Element {
 
 				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
 
-				me.paddingTop = firstLabelSize.height / 2;
-				me.paddingBottom = lastLabelSize.height / 2;
+				me.paddingTop = lastLabelSize.height / 2;
+				me.paddingBottom = firstLabelSize.height / 2;
 			}
 		}
 
@@ -939,9 +939,10 @@ export default class Scale extends Element {
 	 * Returns the location of the given data point. Value can either be an index or a numerical value
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param {*} value
+	 * @param {number} [index]
 	 * @return {number}
 	 */
-	getPixelForValue(value) { // eslint-disable-line no-unused-vars
+	getPixelForValue(value, index) { // eslint-disable-line no-unused-vars
 		return NaN;
 	}
 
@@ -960,14 +961,11 @@ export default class Scale extends Element {
 	 * @return {number}
 	 */
 	getPixelForTick(index) {
-		const me = this;
-		const offset = me.options.offset;
-		const numTicks = me.ticks.length;
-		const tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
-
-		return index < 0 || index > numTicks - 1
-			? null
-			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
+		const ticks = this.ticks;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index].value);
 	}
 
 	/**
@@ -1024,8 +1022,7 @@ export default class Scale extends Element {
 	_autoSkip(ticks) {
 		const me = this;
 		const tickOpts = me.options.ticks;
-		const axisLength = me._length;
-		const ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize();
+		const ticksLimit = tickOpts.maxTicksLimit || me._length / me._tickSize();
 		const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
 		const numMajorIndices = majorIndices.length;
 		const first = majorIndices[0];
@@ -1038,7 +1035,7 @@ export default class Scale extends Element {
 			return newTicks;
 		}
 
-		const spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
+		const spacing = calculateSpacing(majorIndices, ticks, ticksLimit);
 
 		if (numMajorIndices > 0) {
 			let i, ilen;
@@ -1109,8 +1106,10 @@ export default class Scale extends Element {
 		const items = [];
 
 		let context = {
+			chart,
 			scale: me,
 			tick: ticks[0],
+			index: 0,
 		};
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const axisHalfWidth = axisWidth / 2;
@@ -1177,8 +1176,10 @@ export default class Scale extends Element {
 			const tick = ticks[i] || {};
 
 			context = {
+				chart,
 				scale: me,
 				tick,
+				index: i,
 			};
 
 			const lineWidth = resolve([gridLines.lineWidth], context, i);
@@ -1318,8 +1319,10 @@ export default class Scale extends Element {
 		const ctx = me.ctx;
 		const chart = me.chart;
 		let context = {
+			chart,
 			scale: me,
 			tick: me.ticks[0],
+			index: 0,
 		};
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
@@ -1362,8 +1365,10 @@ export default class Scale extends Element {
 			// Draw the line at the edge of the axis
 			const firstLineWidth = axisWidth;
 			context = {
+				chart,
 				scale: me,
 				tick: me.ticks[me._ticksLength - 1],
+				index: me._ticksLength - 1,
 			};
 			const lastLineWidth = resolve([gridLines.lineWidth, 1], context, me._ticksLength - 1);
 			const borderValue = me._borderValue;
@@ -1456,8 +1461,7 @@ export default class Scale extends Element {
 			return;
 		}
 
-		const scaleLabelFontColor = valueOrDefault(scaleLabel.fontColor, defaults.fontColor);
-		const scaleLabelFont = _parseFont(scaleLabel);
+		const scaleLabelFont = toFont(scaleLabel.font, me.chart.options.font);
 		const scaleLabelPadding = toPadding(scaleLabel.padding);
 		const halfLineHeight = scaleLabelFont.lineHeight / 2;
 		const scaleLabelAlign = scaleLabel.align;
@@ -1511,7 +1515,7 @@ export default class Scale extends Element {
 		ctx.rotate(rotation);
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
-		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
+		ctx.fillStyle = scaleLabelFont.color;
 		ctx.font = scaleLabelFont.string;
 		ctx.fillText(scaleLabel.labelString, 0, 0);
 		ctx.restore();
@@ -1587,27 +1591,20 @@ export default class Scale extends Element {
 	/**
 	 * @param {number} index
 	 * @return {object}
-	 * @private
+	 * @protected
  	 */
 	_resolveTickFontOptions(index) {
 		const me = this;
+		const chart = me.chart;
 		const options = me.options.ticks;
+		const ticks = me.ticks || [];
 		const context = {
-			chart: me.chart,
+			chart,
 			scale: me,
-			tick: me.ticks[index],
+			tick: ticks[index],
 			index
 		};
-		return Object.assign(_parseFont({
-			fontFamily: resolve([options.fontFamily], context),
-			fontSize: resolve([options.fontSize], context),
-			fontStyle: resolve([options.fontStyle], context),
-			lineHeight: resolve([options.lineHeight], context)
-		}), {
-			color: resolve([options.fontColor, defaults.fontColor], context),
-			lineWidth: resolve([options.lineWidth], context),
-			strokeStyle: resolve([options.strokeStyle], context)
-		});
+		return toFont(resolve([options.font], context), chart.options.font);
 	}
 }
 

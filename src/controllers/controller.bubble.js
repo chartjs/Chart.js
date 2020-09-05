@@ -1,34 +1,12 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Point} from '../elements/index';
 import {resolve} from '../helpers/helpers.options';
-
-defaults.set('bubble', {
-	animation: {
-		numbers: {
-			properties: ['x', 'y', 'borderWidth', 'radius']
-		}
-	},
-	scales: {
-		x: {
-			type: 'linear'
-		},
-		y: {
-			type: 'linear'
-		}
-	},
-
-	tooltips: {
-		callbacks: {
-			title() {
-				// Title doesn't make sense for scatter since we format the data as a point
-				return '';
-			}
-		}
-	}
-});
+import {resolveObjectKey} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
+	initialize() {
+		this.enableOptionSharing = true;
+		super.initialize();
+	}
 
 	/**
 	 * Parse array of objects
@@ -36,13 +14,14 @@ export default class BubbleController extends DatasetController {
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {xScale, yScale} = meta;
+		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
 		const parsed = [];
 		let i, ilen, item;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
-				x: xScale.parseObject(item, 'x', i),
-				y: yScale.parseObject(item, 'y', i),
+				x: xScale.parse(resolveObjectKey(item, xAxisKey), i),
+				y: yScale.parse(resolveObjectKey(item, yAxisKey), i),
 				_custom: item && item.r && +item.r
 			});
 		}
@@ -94,7 +73,7 @@ export default class BubbleController extends DatasetController {
 		const reset = mode === 'reset';
 		const {xScale, yScale} = me._cachedMeta;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
 		for (let i = 0; i < points.length; i++) {
@@ -110,7 +89,7 @@ export default class BubbleController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(i, mode);
+				properties.options = me.resolveDataElementOptions(index, mode);
 
 				if (reset) {
 					properties.options.radius = 0;
@@ -120,7 +99,7 @@ export default class BubbleController extends DatasetController {
 			me.updateElement(point, index, properties, mode);
 		}
 
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	/**
@@ -138,6 +117,7 @@ export default class BubbleController extends DatasetController {
 		// Scriptable options
 		const context = {
 			chart,
+			dataPoint: parsed,
 			dataIndex: index,
 			dataset,
 			datasetIndex: me.index
@@ -163,14 +143,42 @@ export default class BubbleController extends DatasetController {
 	}
 }
 
-BubbleController.prototype.dataElementType = Point;
+BubbleController.id = 'bubble';
 
-BubbleController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderWidth',
-	'hitRadius',
-	'radius',
-	'pointStyle',
-	'rotation'
-];
+/**
+ * @type {any}
+ */
+BubbleController.defaults = {
+	datasetElementType: false,
+	dataElementType: 'point',
+	dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hitRadius',
+		'radius',
+		'pointStyle',
+		'rotation'
+	],
+	animation: {
+		numbers: {
+			properties: ['x', 'y', 'borderWidth', 'radius']
+		}
+	},
+	scales: {
+		x: {
+			type: 'linear'
+		},
+		y: {
+			type: 'linear'
+		}
+	},
+	tooltips: {
+		callbacks: {
+			title() {
+				// Title doesn't make sense for scatter since we format the data as a point
+				return '';
+			}
+		}
+	}
+};

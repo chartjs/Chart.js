@@ -80,25 +80,32 @@ function getConstraintHeight(domNode) {
 function _calculatePadding(container, padding, parentDimension) {
 	padding = getStyle(container, padding);
 
+	// If the padding is not set at all and the node is not in the DOM, this can be an empty string
+	// In that case, we need to handle it as no padding
+	if (padding === '') {
+		return 0;
+	}
+
 	return padding.indexOf('%') > -1 ? parentDimension * parseInt(padding, 10) / 100 : parseInt(padding, 10);
 }
 
 export function getRelativePosition(evt, chart) {
-	let mouseX, mouseY;
 	const e = evt.originalEvent || evt;
-	const canvasElement = evt.target || evt.srcElement;
-	const boundingRect = canvasElement.getBoundingClientRect();
-
 	const touches = e.touches;
-	if (touches && touches.length > 0) {
-		mouseX = touches[0].clientX;
-		mouseY = touches[0].clientY;
+	const source = touches && touches.length ? touches[0] : e;
+	const clientX = source.clientX;
+	const clientY = source.clientY;
 
-	} else {
-		mouseX = e.clientX;
-		mouseY = e.clientY;
+	const x = source.offsetX || source.layerX || clientX;
+	const y = source.offsetY || source.layerY || clientY;
+
+	if (x !== clientX && y !== clientY) {
+		return {x, y};
 	}
 
+	const canvasElement = chart.canvas;
+	const devicePixelRatio = chart.currentDevicePixelRatio;
+	const boundingRect = canvasElement.getBoundingClientRect();
 	// Scale mouse coordinates into canvas coordinates
 	// by following the pattern laid out by 'jerryj' in the comments of
 	// https://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
@@ -111,22 +118,20 @@ export function getRelativePosition(evt, chart) {
 
 	// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
 	// the backend model is in unscaled coordinates. Since we are going to deal with our model coordinates, we go back here
-	mouseX = Math.round((mouseX - boundingRect.left - paddingLeft) / (width) * canvasElement.width / chart.currentDevicePixelRatio);
-	mouseY = Math.round((mouseY - boundingRect.top - paddingTop) / (height) * canvasElement.height / chart.currentDevicePixelRatio);
-
 	return {
-		x: mouseX,
-		y: mouseY
+		x: Math.round((x - boundingRect.left - paddingLeft) / (width) * canvasElement.width / devicePixelRatio),
+		y: Math.round((y - boundingRect.top - paddingTop) / (height) * canvasElement.height / devicePixelRatio)
 	};
+}
+
+function fallbackIfNotValid(measure, fallback) {
+	return typeof measure === 'number' ? measure : fallback;
 }
 
 export function getMaximumWidth(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientWidth === 'number') {
-			return domNode.clientWidth;
-		}
-		return domNode.width;
+		return fallbackIfNotValid(domNode.clientWidth, domNode.width);
 	}
 
 	const clientWidth = container.clientWidth;
@@ -141,10 +146,7 @@ export function getMaximumWidth(domNode) {
 export function getMaximumHeight(domNode) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		if (typeof domNode.clientHeight === 'number') {
-			return domNode.clientHeight;
-		}
-		return domNode.height;
+		return fallbackIfNotValid(domNode.clientHeight, domNode.height);
 	}
 
 	const clientHeight = container.clientHeight;
@@ -171,4 +173,43 @@ export function retinaScale(chart, forceRatio) {
 		canvas.style.height = height + 'px';
 		canvas.style.width = width + 'px';
 	}
+}
+
+/**
+ * Detects support for options object argument in addEventListener.
+ * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
+ * @private
+ */
+export const supportsEventListenerOptions = (function() {
+	let passiveSupported = false;
+	try {
+		const options = {
+			get passive() { // This function will be called when the browser attempts to access the passive property.
+				passiveSupported = true;
+				return false;
+			}
+		};
+		// @ts-ignore
+		window.addEventListener('test', null, options);
+		// @ts-ignore
+		window.removeEventListener('test', null, options);
+	} catch (e) {
+		// continue regardless of error
+	}
+	return passiveSupported;
+}());
+
+/**
+ * The "used" size is the final value of a dimension property after all calculations have
+ * been performed. This method uses the computed style of `element` but returns undefined
+ * if the computed style is not expressed in pixels. That can happen in some cases where
+ * `element` has a size relative to its parent and this last one is not yet displayed,
+ * for example because of `display: none` on a parent node.
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+ * @returns {number=} Size in pixels or undefined if unknown.
+ */
+export function readUsedSize(element, property) {
+	const value = getStyle(element, property);
+	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
+	return matches ? +matches[1] : undefined;
 }

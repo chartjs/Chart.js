@@ -1,34 +1,13 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Line, Point} from '../elements/index';
 import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 
-defaults.set('line', {
-	showLines: true,
-	spanGaps: false,
-
-	hover: {
-		mode: 'index'
-	},
-
-	scales: {
-		x: {
-			type: 'category',
-		},
-		y: {
-			type: 'linear',
-		},
-	}
-});
-
 export default class LineController extends DatasetController {
 
-	constructor(chart, datasetIndex) {
-		super(chart, datasetIndex);
-
-		this._showLine = false;
+	initialize() {
+		this.enableOptionSharing = true;
+		super.initialize();
 	}
 
 	update(mode) {
@@ -36,12 +15,10 @@ export default class LineController extends DatasetController {
 		const meta = me._cachedMeta;
 		const line = meta.dataset;
 		const points = meta.data || [];
-		const options = me.chart.options;
-		const config = me._config;
-		const showLine = me._showLine = valueOrDefault(config.showLine, options.showLines);
 
 		// Update Line
-		if (showLine && mode !== 'resize') {
+		// In resize mode only point locations change, so no need to set the points or options.
+		if (mode !== 'resize') {
 			const properties = {
 				points,
 				options: me.resolveDatasetElementOptions()
@@ -59,7 +36,7 @@ export default class LineController extends DatasetController {
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, points[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
@@ -69,8 +46,8 @@ export default class LineController extends DatasetController {
 			const index = start + i;
 			const point = points[i];
 			const parsed = me.getParsed(index);
-			const x = xScale.getPixelForValue(parsed.x);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y);
+			const x = xScale.getPixelForValue(parsed.x, index);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, index);
 			const properties = {
 				x,
 				y,
@@ -79,7 +56,7 @@ export default class LineController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			}
 
 			me.updateElement(point, index, properties, mode);
@@ -87,10 +64,11 @@ export default class LineController extends DatasetController {
 			prevParsed = parsed;
 		}
 
-		me.updateSharedOptions(sharedOptions, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}
 
 	/**
+	 * @param {boolean} [active]
 	 * @protected
 	 */
 	resolveDatasetElementOptions(active) {
@@ -99,6 +77,7 @@ export default class LineController extends DatasetController {
 		const options = me.chart.options;
 		const lineOptions = options.elements.line;
 		const values = super.resolveDatasetElementOptions(active);
+		const showLine = valueOrDefault(config.showLine, options.showLines);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
@@ -106,6 +85,10 @@ export default class LineController extends DatasetController {
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
 		values.stepped = resolve([config.stepped, lineOptions.stepped]);
+
+		if (!showLine) {
+			values.borderWidth = 0;
+		}
 
 		return values;
 	}
@@ -116,7 +99,7 @@ export default class LineController extends DatasetController {
 	getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
-		const border = me._showLine && meta.dataset.options.borderWidth || 0;
+		const border = meta.dataset.options.borderWidth || 0;
 		const data = meta.data || [];
 		if (!data.length) {
 			return border;
@@ -127,64 +110,60 @@ export default class LineController extends DatasetController {
 	}
 
 	draw() {
-		const me = this;
-		const ctx = me._ctx;
-		const chart = me.chart;
-		const meta = me._cachedMeta;
-		const points = meta.data || [];
-		const area = chart.chartArea;
-		const active = [];
-		let ilen = points.length;
-		let i, point;
-
-		if (me._showLine) {
-			meta.dataset.draw(ctx, area);
-		}
-
-
-		// Draw the points
-		for (i = 0; i < ilen; ++i) {
-			point = points[i];
-			if (point.active) {
-				active.push(point);
-			} else {
-				point.draw(ctx, area);
-			}
-		}
-		for (i = 0, ilen = active.length; i < ilen; ++i) {
-			active[i].draw(ctx, area);
-		}
+		this._cachedMeta.dataset.updateControlPoints(this.chart.chartArea);
+		super.draw();
 	}
 }
 
-LineController.prototype.datasetElementType = Line;
+LineController.id = 'line';
 
-LineController.prototype.dataElementType = Point;
+/**
+ * @type {any}
+ */
+LineController.defaults = {
+	datasetElementType: 'line',
+	datasetElementOptions: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'capBezierPoints',
+		'cubicInterpolationMode',
+		'fill'
+	],
 
-LineController.prototype.datasetElementOptions = [
-	'backgroundColor',
-	'borderCapStyle',
-	'borderColor',
-	'borderDash',
-	'borderDashOffset',
-	'borderJoinStyle',
-	'borderWidth',
-	'capBezierPoints',
-	'cubicInterpolationMode',
-	'fill'
-];
+	dataElementType: 'point',
+	dataElementOptions: {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverHitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	},
 
-LineController.prototype.dataElementOptions = {
-	backgroundColor: 'pointBackgroundColor',
-	borderColor: 'pointBorderColor',
-	borderWidth: 'pointBorderWidth',
-	hitRadius: 'pointHitRadius',
-	hoverHitRadius: 'pointHitRadius',
-	hoverBackgroundColor: 'pointHoverBackgroundColor',
-	hoverBorderColor: 'pointHoverBorderColor',
-	hoverBorderWidth: 'pointHoverBorderWidth',
-	hoverRadius: 'pointHoverRadius',
-	pointStyle: 'pointStyle',
-	radius: 'pointRadius',
-	rotation: 'pointRotation'
+	showLines: true,
+	spanGaps: false,
+
+	hover: {
+		mode: 'index'
+	},
+
+	scales: {
+		_index_: {
+			type: 'category',
+		},
+		_value_: {
+			type: 'linear',
+		},
+	}
 };

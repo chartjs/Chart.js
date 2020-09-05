@@ -79,6 +79,7 @@ describe('Chart.controllers.line', function() {
 		});
 
 		var meta = chart.getDatasetMeta(0);
+		spyOn(meta.dataset, 'updateControlPoints');
 		spyOn(meta.dataset, 'draw');
 		spyOn(meta.data[0], 'draw');
 		spyOn(meta.data[1], 'draw');
@@ -87,69 +88,8 @@ describe('Chart.controllers.line', function() {
 
 		chart.update();
 
-		expect(meta.data[0].draw.calls.count()).toBe(1);
-		expect(meta.data[1].draw.calls.count()).toBe(1);
-		expect(meta.data[2].draw.calls.count()).toBe(1);
-		expect(meta.data[3].draw.calls.count()).toBe(1);
-	});
-
-	it('should draw all elements except lines', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4],
-					label: 'dataset1'
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-			options: {
-				showLines: false
-			}
-		});
-
-		var meta = chart.getDatasetMeta(0);
-		spyOn(meta.dataset, 'draw');
-		spyOn(meta.data[0], 'draw');
-		spyOn(meta.data[1], 'draw');
-		spyOn(meta.data[2], 'draw');
-		spyOn(meta.data[3], 'draw');
-
-		chart.update();
-
-		expect(meta.dataset.draw.calls.count()).toBe(0);
-		expect(meta.data[0].draw.calls.count()).toBe(1);
-		expect(meta.data[1].draw.calls.count()).toBe(1);
-		expect(meta.data[2].draw.calls.count()).toBe(1);
-		expect(meta.data[3].draw.calls.count()).toBe(1);
-	});
-
-	it('should draw all elements except lines turned off per dataset', function() {
-		var chart = window.acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					data: [10, 15, 0, -4],
-					label: 'dataset1',
-					showLine: false
-				}],
-				labels: ['label1', 'label2', 'label3', 'label4']
-			},
-			options: {
-				showLines: true
-			}
-		});
-
-		var meta = chart.getDatasetMeta(0);
-		spyOn(meta.dataset, 'draw');
-		spyOn(meta.data[0], 'draw');
-		spyOn(meta.data[1], 'draw');
-		spyOn(meta.data[2], 'draw');
-		spyOn(meta.data[3], 'draw');
-
-		chart.update();
-
-		expect(meta.dataset.draw.calls.count()).toBe(0);
+		expect(meta.dataset.updateControlPoints.calls.count()).toBeGreaterThanOrEqual(1);
+		expect(meta.dataset.draw.calls.count()).toBe(1);
 		expect(meta.data[0].draw.calls.count()).toBe(1);
 		expect(meta.data[1].draw.calls.count()).toBe(1);
 		expect(meta.data[2].draw.calls.count()).toBe(1);

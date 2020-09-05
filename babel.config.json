@@ -1,29 +1,15 @@
 {
   "presets": [
-    "@babel/preset-env"
+    [
+		"@babel/preset-env", {
+			"loose": true
+		}
+	]
   ],
   "plugins": [
-    "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-object-assign"
   ],
   "env": {
-    "es6": {
-      "presets": [
-        [
-          "@babel/preset-env",
-          {
-            "targets": {
-              "esmodules": true
-            },
-            "modules": false,
-            "useBuiltIns": false
-          }
-        ]
-      ],
-      "plugins": [
-        "@babel/plugin-proposal-class-properties"
-      ]
-    },
     "test": {
       "plugins": [
         "istanbul"

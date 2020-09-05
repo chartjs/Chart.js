@@ -3,7 +3,7 @@
 
 <head>
 	<title>Multi Series Pie Chart</title>
-	<script src="../../dist/Chart.js"></script>
+	<script src="../../dist/chart.js"></script>
 	<script src="../utils.js"></script>
 </head>
 
@@ -71,19 +71,19 @@
 							return labels;
 						}
 					},
-					onClick: function(mouseEvent, legendItem) {
+					onClick: function(mouseEvent, legendItem, legend) {
 						// toggle the visibility of the dataset from what it currently is
-						this.chart.getDatasetMeta(
+						legend.chart.getDatasetMeta(
 							legendItem.datasetIndex
-						).hidden = this.chart.isDatasetVisible(legendItem.datasetIndex);
-						this.chart.update();
+						).hidden = legend.chart.isDatasetVisible(legendItem.datasetIndex);
+						legend.chart.update();
 					}
 				},
 				tooltips: {
 					callbacks: {
-						label: function(tooltipItem, data) {
-							var labelIndex = (tooltipItem.datasetIndex * 2) + tooltipItem.index;
-							return data.labels[labelIndex] + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+						label: function(context) {
+							var labelIndex = (context.datasetIndex * 2) + context.dataIndex;
+							return context.chart.data.labels[labelIndex] + ': ' + context.dataset.data[context.dataIndex];
 						}
 					}
 				}

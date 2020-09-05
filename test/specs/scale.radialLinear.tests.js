@@ -6,15 +6,19 @@ function getLabels(scale) {
 describe('Test the radial linear scale', function() {
 	describe('auto', jasmine.fixture.specs('scale.radialLinear'));
 
-	it('Should register the constructor with the scale service', function() {
-		var Constructor = Chart.scaleService.getScaleConstructor('radialLinear');
+	it('Should register the constructor with the registry', function() {
+		var Constructor = Chart.registry.getScale('radialLinear');
 		expect(Constructor).not.toBe(undefined);
 		expect(typeof Constructor).toBe('function');
 	});
 
 	it('Should have the correct default config', function() {
-		var defaultConfig = Chart.scaleService.getScaleDefaults('radialLinear');
+		var defaultConfig = Chart.defaults.scales.radialLinear;
 		expect(defaultConfig).toEqual({
+			display: true,
+			animate: true,
+			position: 'chartArea',
+
 			angleLines: {
 				display: true,
 				color: 'rgba(0,0,0,0.1)',
@@ -22,50 +26,26 @@ describe('Test the radial linear scale', function() {
 				borderDash: [],
 				borderDashOffset: 0.0
 			},
-			animate: true,
-			display: true,
+
 			gridLines: {
-				circular: false,
-				color: 'rgba(0,0,0,0.1)',
-				drawBorder: true,
-				drawOnChartArea: true,
-				drawTicks: true,
-				tickMarkLength: 10,
-				lineWidth: 1,
-				offsetGridLines: false,
-				display: true,
-				borderDash: [],
-				borderDashOffset: 0.0
+				circular: false
 			},
-			pointLabels: {
-				display: true,
-				fontSize: 10,
-				callback: defaultConfig.pointLabels.callback, // make this nicer, then check explicitly below
-			},
-			position: 'chartArea',
-			offset: false,
-			reverse: false,
-			beginAtZero: false,
-			scaleLabel: Chart.defaults.scale.scaleLabel,
+
 			ticks: {
+				showLabelBackdrop: true,
 				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,
 				backdropPaddingX: 2,
-				minRotation: 0,
-				maxRotation: 50,
-				mirror: false,
-				padding: 0,
-				showLabelBackdrop: true,
-				display: true,
-				callback: defaultConfig.ticks.callback, // make this nicer, then check explicitly below
-				autoSkip: true,
-				autoSkipPadding: 0,
-				labelOffset: 0,
-				minor: {},
-				major: {},
-				lineWidth: 0,
-				strokeStyle: '',
+				callback: defaultConfig.ticks.callback
 			},
+
+			pointLabels: {
+				display: true,
+				font: {
+					size: 10
+				},
+				callback: defaultConfig.pointLabels.callback
+			}
 		});
 
 		// Is this actually a function
@@ -449,6 +429,39 @@ describe('Test the radial linear scale', function() {
 
 		expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.min)).toBe(227);
 		expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.max)).toBe(0);
+	});
+
+	it('should get the correct value for a distance from the center point', function() {
+		var chart = window.acquireChart({
+			type: 'radar',
+			data: {
+				datasets: [{
+					data: [10, 5, 0, 25, 78]
+				}],
+				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+			},
+			options: {
+				scale: {
+					pointLabels: {
+						callback: function(value, index) {
+							return index.toString();
+						}
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.min);
+		expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.max);
+
+		var dist = chart.scales.r.getDistanceFromCenterForValue(5);
+		expect(chart.scales.r.getValueForDistanceFromCenter(dist)).toBe(5);
+
+		chart.scales.r.options.reverse = true;
+		chart.update();
+
+		expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.max);
+		expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.min);
 	});
 
 	it('should correctly get angles for all points', function() {

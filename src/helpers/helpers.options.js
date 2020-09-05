@@ -1,22 +1,6 @@
 import defaults from '../core/core.defaults';
-import {isNullOrUndef, isArray, isObject, valueOrDefault} from './helpers.core';
-
-/**
- * Converts the given font object into a CSS font string.
- * @param {object} font - A font object.
- * @return {string|null} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
- * @private
- */
-function toFontString(font) {
-	if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
-		return null;
-	}
-
-	return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
-		+ font.size + 'px '
-		+ font.family;
-}
+import {isArray, isObject, valueOrDefault} from './helpers.core';
+import {toFontString} from './helpers.canvas';
 
 /**
  * @alias Chart.helpers.options
@@ -83,23 +67,29 @@ export function toPadding(value) {
 /**
  * Parses font options and returns the font object.
  * @param {object} options - A object that contains font options to be parsed.
+ * @param {object} [fallback] - A object that contains fallback font options.
  * @return {object} The font object.
- * @todo Support font.* options and renamed to toFont().
  * @private
  */
-export function _parseFont(options) {
-	let size = valueOrDefault(options.fontSize, defaults.fontSize);
+export function toFont(options, fallback) {
+	options = options || {};
+	fallback = fallback || defaults.font;
+
+	let size = valueOrDefault(options.size, fallback.size);
 
 	if (typeof size === 'string') {
 		size = parseInt(size, 10);
 	}
 
 	const font = {
-		family: valueOrDefault(options.fontFamily, defaults.fontFamily),
-		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, defaults.lineHeight), size),
+		color: valueOrDefault(options.color, fallback.color),
+		family: valueOrDefault(options.family, fallback.family),
+		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, fallback.lineHeight), size),
+		lineWidth: valueOrDefault(options.lineWidth, fallback.lineWidth),
 		size,
-		style: valueOrDefault(options.fontStyle, defaults.fontStyle),
-		weight: null,
+		style: valueOrDefault(options.style, fallback.style),
+		weight: valueOrDefault(options.weight, fallback.weight),
+		strokeStyle: valueOrDefault(options.strokeStyle, fallback.strokeStyle),
 		string: ''
 	};
 
@@ -132,7 +122,7 @@ export function resolve(inputs, context, index, info) {
 			cacheable = false;
 		}
 		if (index !== undefined && isArray(value)) {
-			value = value[index];
+			value = value[index % value.length];
 			cacheable = false;
 		}
 		if (value !== undefined) {

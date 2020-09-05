@@ -1,40 +1,7 @@
 import DatasetController from '../core/core.datasetController';
-import defaults from '../core/core.defaults';
-import {Rectangle} from '../elements/index';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {isArray, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import {isArray, isNullOrUndef, valueOrDefault, resolveObjectKey} from '../helpers/helpers.core';
 import {_limitValue, sign} from '../helpers/helpers.math';
-
-defaults.set('bar', {
-	hover: {
-		mode: 'index'
-	},
-
-	datasets: {
-		categoryPercentage: 0.8,
-		barPercentage: 0.9,
-		animation: {
-			numbers: {
-				type: 'number',
-				properties: ['x', 'y', 'base', 'width', 'height']
-			}
-		}
-	},
-
-	scales: {
-		x: {
-			type: 'category',
-			offset: true,
-			gridLines: {
-				offsetGridLines: true
-			}
-		},
-		y: {
-			type: 'linear',
-			beginAtZero: true,
-		}
-	}
-});
 
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
@@ -66,14 +33,10 @@ function computeMinSampleSize(scale, pixels) {
 function computeFitCategoryTraits(index, ruler, options) {
 	const thickness = options.barThickness;
 	const count = ruler.stackCount;
-	const curr = ruler.pixels[index];
-	const min = isNullOrUndef(thickness)
-		? computeMinSampleSize(ruler.scale, ruler.pixels)
-		: -1;
 	let size, ratio;
 
 	if (isNullOrUndef(thickness)) {
-		size = min * options.categoryPercentage;
+		size = ruler.min * options.categoryPercentage;
 		ratio = options.barPercentage;
 	} else {
 		// When bar thickness is enforced, category and bar percentages are ignored.
@@ -86,7 +49,7 @@ function computeFitCategoryTraits(index, ruler, options) {
 	return {
 		chunk: size / count,
 		ratio,
-		start: curr - (size / 2)
+		start: ruler.pixels[index] - (size / 2)
 	};
 }
 
@@ -124,9 +87,9 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	};
 }
 
-function parseFloatBar(arr, item, vScale, i) {
-	const startValue = vScale.parse(arr[0], i);
-	const endValue = vScale.parse(arr[1], i);
+function parseFloatBar(entry, item, vScale, i) {
+	const startValue = vScale.parse(entry[0], i);
+	const endValue = vScale.parse(entry[1], i);
 	const min = Math.min(startValue, endValue);
 	const max = Math.max(startValue, endValue);
 	let barStart = min;
@@ -151,6 +114,15 @@ function parseFloatBar(arr, item, vScale, i) {
 	};
 }
 
+function parseValue(entry, item, vScale, i) {
+	if (isArray(entry)) {
+		parseFloatBar(entry, item, vScale, i);
+	} else {
+		item[vScale.axis] = vScale.parse(entry, i);
+	}
+	return item;
+}
+
 function parseArrayOrPrimitive(meta, data, start, count) {
 	const iScale = meta.iScale;
 	const vScale = meta.vScale;
@@ -163,14 +135,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 		entry = data[i];
 		item = {};
 		item[iScale.axis] = singleScale || iScale.parse(labels[i], i);
-
-		if (isArray(entry)) {
-			parseFloatBar(entry, item, vScale, i);
-		} else {
-			item[vScale.axis] = vScale.parse(entry, i);
-		}
-
-		parsed.push(item);
+		parsed.push(parseValue(entry, item, vScale, i));
 	}
 	return parsed;
 }
@@ -206,22 +171,31 @@ export default class BarController extends DatasetController {
 	 */
 	parseObjectData(meta, data, start, count) {
 		const {iScale, vScale} = meta;
-		const vProp = vScale.axis;
+		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
+		const iAxisKey = iScale.axis === 'x' ? xAxisKey : yAxisKey;
+		const vAxisKey = vScale.axis === 'x' ? xAxisKey : yAxisKey;
 		const parsed = [];
-		let i, ilen, item, obj, value;
+		let i, ilen, item, obj;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
-			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
-			value = obj[vProp];
-			if (isArray(value)) {
-				parseFloatBar(value, item, vScale, i);
-			} else {
-				item[vScale.axis] = vScale.parseObject(obj, vProp, i);
-			}
-			parsed.push(item);
+			item[iScale.axis] = iScale.parse(resolveObjectKey(obj, iAxisKey), i);
+			parsed.push(parseValue(resolveObjectKey(obj, vAxisKey), item, vScale, i));
 		}
 		return parsed;
+	}
+
+	/**
+	 * @protected
+	 */
+	updateRangeFromParsed(range, scale, parsed, stack) {
+		super.updateRangeFromParsed(range, scale, parsed, stack);
+		const custom = parsed._custom;
+		if (custom && scale === this._cachedMeta.vScale) {
+			// float bar: only one end of the bar is considered by `super`
+			range.min = Math.min(range.min, custom.min);
+			range.max = Math.max(range.max, custom.max);
+		}
 	}
 
 	/**
@@ -245,12 +219,12 @@ export default class BarController extends DatasetController {
 
 	initialize() {
 		const me = this;
+		me.enableOptionSharing = true;
 
 		super.initialize();
 
 		const meta = me._cachedMeta;
 		meta.stack = me.getDataset().stack;
-		meta.bar = true;
 	}
 
 	update(mode) {
@@ -268,14 +242,14 @@ export default class BarController extends DatasetController {
 		const horizontal = vscale.isHorizontal();
 		const ruler = me._getRuler();
 		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(mode, rectangles[start], firstOpts);
+		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		let i;
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-		for (i = 0; i < rectangles.length; i++) {
+		for (let i = 0; i < rectangles.length; i++) {
 			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
+			const options = sharedOptions || me.resolveDataElementOptions(index, mode);
 			const vpixels = me._calculateBarValuePixels(index, options);
 			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 
@@ -288,19 +262,11 @@ export default class BarController extends DatasetController {
 				width: horizontal ? undefined : ipixels.size
 			};
 
-			// all borders are drawn for floating bar
-			/* TODO: float bars border skipping magic
-			if (me.getParsed(i)._custom) {
-				model.borderSkipped = null;
-			}
-			*/
 			if (includeOptions) {
 				properties.options = options;
 			}
 			me.updateElement(rectangles[i], index, properties, mode);
 		}
-
-		me.updateSharedOptions(sharedOptions, mode);
 	}
 
 	/**
@@ -382,10 +348,17 @@ export default class BarController extends DatasetController {
 		let i, ilen;
 
 		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis]));
+			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
 		}
 
+		// Note: a potential optimization would be to skip computing this
+		// only if the barThickness option is defined
+		// Since a scriptable option may return null or undefined that
+		// means the option would have to be of type number
+		const min = computeMinSampleSize(iScale, pixels);
+
 		return {
+			min,
 			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
@@ -429,7 +402,7 @@ export default class BarController extends DatasetController {
 		// So we don't try to draw so huge rectangles.
 		// https://github.com/chartjs/Chart.js/issues/5247
 		// TODO: use borderWidth instead (need to move the parsing from rectangle)
-		const base = _limitValue(vScale.getPixelForValue(start),
+		let base = _limitValue(vScale.getPixelForValue(start),
 			vScale._startPixel - 10,
 			vScale._endPixel + 10);
 
@@ -438,6 +411,9 @@ export default class BarController extends DatasetController {
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = size < 0 ? -minBarLength : minBarLength;
+			if (value === 0) {
+				base -= size / 2;
+			}
 			head = base + size;
 		}
 
@@ -494,16 +470,51 @@ export default class BarController extends DatasetController {
 
 }
 
-BarController.prototype.dataElementType = Rectangle;
+BarController.id = 'bar';
 
-BarController.prototype.dataElementOptions = [
-	'backgroundColor',
-	'borderColor',
-	'borderSkipped',
-	'borderWidth',
-	'barPercentage',
-	'barThickness',
-	'categoryPercentage',
-	'maxBarThickness',
-	'minBarLength'
-];
+/**
+ * @type {any}
+ */
+BarController.defaults = {
+	datasetElementType: false,
+	dataElementType: 'rectangle',
+	dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderSkipped',
+		'borderWidth',
+		'barPercentage',
+		'barThickness',
+		'categoryPercentage',
+		'maxBarThickness',
+		'minBarLength'
+	],
+	hover: {
+		mode: 'index'
+	},
+
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height']
+			}
+		}
+	},
+
+	scales: {
+		_index_: {
+			type: 'category',
+			offset: true,
+			gridLines: {
+				offsetGridLines: true
+			}
+		},
+		_value_: {
+			type: 'linear',
+			beginAtZero: true,
+		}
+	}
+};

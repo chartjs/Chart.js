@@ -4,25 +4,31 @@
  * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
  */
 
-import defaults from '../core/core.defaults';
 import Line from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
 import {_normalizeAngle} from '../helpers/helpers.math';
 
-defaults.set('plugins', {
-	filler: {
-		propagate: true
-	}
-});
+/**
+ * @typedef { import('../core/core.controller').default } Chart
+ * @typedef { import('../core/core.scale').default } Scale
+ * @typedef { import("../elements/element.point").default } Point
+ */
 
+/**
+ * @param {Chart} chart
+ * @param {number} index
+ */
 function getLineByIndex(chart, index) {
 	const meta = chart.getDatasetMeta(index);
 	const visible = meta && chart.isDatasetVisible(index);
 	return visible ? meta.dataset : null;
 }
 
+/**
+ * @param {Line} line
+ */
 function parseFillOption(line) {
 	const options = line.options;
 	const fillOption = options.fill;
@@ -42,7 +48,11 @@ function parseFillOption(line) {
 	return fill;
 }
 
-// @todo if (fill[0] === '#')
+/**
+ * @param {Line} line
+ * @param {number} index
+ * @param {number} count
+ */
 function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
 	let target = parseFloat(fill);
@@ -59,7 +69,7 @@ function decodeFill(line, index, count) {
 		return target;
 	}
 
-	return ['origin', 'start', 'end'].indexOf(fill) >= 0 ? fill : false;
+	return ['origin', 'start', 'end', 'stack'].indexOf(fill) >= 0 && fill;
 }
 
 function computeLinearBoundary(source) {
@@ -160,14 +170,117 @@ function pointsFromSegments(boundary, line) {
 		const first = linePoints[segment.start];
 		const last = linePoints[segment.end];
 		if (y !== null) {
-			points.push({x: first.x, y, _prop: 'x', _ref: first});
-			points.push({x: last.x, y, _prop: 'x', _ref: last});
+			points.push({x: first.x, y});
+			points.push({x: last.x, y});
 		} else if (x !== null) {
-			points.push({x, y: first.y, _prop: 'y', _ref: first});
-			points.push({x, y: last.y, _prop: 'y', _ref: last});
+			points.push({x, y: first.y});
+			points.push({x, y: last.y});
 		}
 	});
 	return points;
+}
+
+/**
+ * @param {{ chart: Chart; scale: Scale; index: number; line: Line; }} source
+ * @return {Line}
+ */
+function buildStackLine(source) {
+	const {chart, scale, index, line} = source;
+	const points = [];
+	const segments = line.segments;
+	const sourcePoints = line.points;
+	const linesBelow = getLinesBelow(chart, index);
+	linesBelow.push(createBoundaryLine({x: null, y: scale.bottom}, line));
+
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		for (let j = segment.start; j <= segment.end; j++) {
+			addPointsBelow(points, sourcePoints[j], linesBelow);
+		}
+	}
+	return new Line({points, options: {}});
+}
+
+const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidden;
+
+/**
+ * @param {Chart} chart
+ * @param {number} index
+ * @return {Line[]}
+ */
+function getLinesBelow(chart, index) {
+	const below = [];
+	const metas = chart.getSortedVisibleDatasetMetas();
+
+	for (let i = 0; i < metas.length; i++) {
+		const meta = metas[i];
+		if (meta.index === index) {
+			break;
+		}
+		if (isLineAndNotInHideAnimation(meta)) {
+			below.unshift(meta.dataset);
+		}
+	}
+	return below;
+}
+
+/**
+ * @param {Point[]} points
+ * @param {Point} sourcePoint
+ * @param {Line[]} linesBelow
+ */
+function addPointsBelow(points, sourcePoint, linesBelow) {
+	const postponed = [];
+	for (let j = 0; j < linesBelow.length; j++) {
+		const line = linesBelow[j];
+		const {first, last, point} = findPoint(line, sourcePoint, 'x');
+
+		if (!point || (first && last)) {
+			continue;
+		}
+		if (first) {
+			// First point of an segment -> need to add another point before this,
+			// from next line below.
+			postponed.unshift(point);
+		} else {
+			points.push(point);
+			if (!last) {
+				// In the middle of an segment, no need to add more points.
+				break;
+			}
+		}
+	}
+	points.push(...postponed);
+}
+
+/**
+ * @param {Line} line
+ * @param {Point} sourcePoint
+ * @param {string} property
+ * @returns {{point?: Point, first?: boolean, last?: boolean}}
+ */
+function findPoint(line, sourcePoint, property) {
+	const point = line.interpolate(sourcePoint, property);
+	if (!point) {
+		return {};
+	}
+
+	const pointValue = point[property];
+	const segments = line.segments;
+	const linePoints = line.points;
+	let first = false;
+	let last = false;
+	for (let i = 0; i < segments.length; i++) {
+		const segment = segments[i];
+		const firstValue = linePoints[segment.start][property];
+		const lastValue = linePoints[segment.end][property];
+		if (pointValue >= firstValue && pointValue <= lastValue) {
+			first = pointValue === firstValue;
+			last = pointValue === lastValue;
+			break;
+		}
+	}
+	return {first, last, point};
 }
 
 function getTarget(source) {
@@ -177,14 +290,27 @@ function getTarget(source) {
 		return getLineByIndex(chart, fill);
 	}
 
+	if (fill === 'stack') {
+		return buildStackLine(source);
+	}
+
 	const boundary = computeBoundary(source);
-	let points = [];
-	let _loop = false;
-	let _refPoints = false;
 
 	if (boundary instanceof simpleArc) {
 		return boundary;
 	}
+
+	return createBoundaryLine(boundary, line);
+}
+
+/**
+ * @param {Point[] | { x: number; y: number; }} boundary
+ * @param {Line} line
+ * @return {Line?}
+ */
+function createBoundaryLine(boundary, line) {
+	let points = [];
+	let _loop = false;
 
 	if (isArray(boundary)) {
 		_loop = true;
@@ -192,14 +318,13 @@ function getTarget(source) {
 		points = boundary;
 	} else {
 		points = pointsFromSegments(boundary, line);
-		_refPoints = true;
 	}
+
 	return points.length ? new Line({
 		points,
 		options: {tension: 0},
 		_loop,
-		_fullLoop: _loop,
-		_refPoints
+		_fullLoop: _loop
 	}) : null;
 }
 
@@ -270,17 +395,6 @@ function _segments(line, target, property) {
 	const tpoints = target.points;
 	const parts = [];
 
-	if (target._refPoints) {
-		// Update properties from reference points. (In case those points are animating)
-		for (let i = 0, ilen = tpoints.length; i < ilen; ++i) {
-			const point = tpoints[i];
-			const prop = point._prop;
-			if (prop) {
-				point[prop] = point._ref[prop];
-			}
-		}
-	}
-
 	for (let i = 0; i < segments.length; i++) {
 		const segment = segments[i];
 		const bounds = getBounds(property, points[segment.start], points[segment.end], segment.loop);
@@ -342,7 +456,7 @@ function interpolatedLineTo(ctx, target, point, property) {
 
 function _fill(ctx, cfg) {
 	const {line, target, property, color, scale} = cfg;
-	const segments = _segments(cfg.line, cfg.target, property);
+	const segments = _segments(line, target, property);
 
 	ctx.fillStyle = color;
 	for (let i = 0, ilen = segments.length; i < ilen; ++i) {
@@ -409,11 +523,11 @@ export default {
 			if (line && line.options && line instanceof Line) {
 				source = {
 					visible: chart.isDatasetVisible(i),
+					index: i,
 					fill: decodeFill(line, i, count),
 					chart,
 					scale: meta.vScale,
-					line,
-					target: undefined
+					line
 				};
 			}
 
@@ -428,7 +542,6 @@ export default {
 			}
 
 			source.fill = resolveTarget(sources, i, propagate);
-			source.target = source.fill !== false && getTarget(source);
 		}
 	},
 
@@ -449,21 +562,26 @@ export default {
 	beforeDatasetDraw(chart, args) {
 		const area = chart.chartArea;
 		const ctx = chart.ctx;
-		const meta = args.meta.$filler;
+		const source = args.meta.$filler;
 
-		if (!meta || meta.fill === false) {
+		if (!source || source.fill === false) {
 			return;
 		}
 
-		const {line, target, scale} = meta;
+		const target = getTarget(source);
+		const {line, scale} = source;
 		const lineOpts = line.options;
 		const fillOption = lineOpts.fill;
-		const color = lineOpts.backgroundColor || defaults.color;
+		const color = lineOpts.backgroundColor;
 		const {above = color, below = color} = fillOption || {};
 		if (target && line.points.length) {
 			clipArea(ctx, area);
 			doFill(ctx, {line, target, above, below, area, scale});
 			unclipArea(ctx);
 		}
+	},
+
+	defaults: {
+		propagate: true
 	}
 };

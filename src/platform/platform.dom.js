@@ -2,9 +2,10 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
-import helpers from '../helpers/index';
 import BasePlatform from './platform.base';
-import {_getParentNode} from '../helpers/helpers.dom';
+import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize} from '../helpers/helpers.dom';
+import {throttled} from '../helpers/helpers.extras';
+import {isNullOrUndef} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -29,21 +30,7 @@ const EVENT_TYPES = {
 	pointerout: 'mouseout'
 };
 
-/**
- * The "used" size is the final value of a dimension property after all calculations have
- * been performed. This method uses the computed style of `element` but returns undefined
- * if the computed style is not expressed in pixels. That can happen in some cases where
- * `element` has a size relative to its parent and this last one is not yet displayed,
- * for example because of `display: none` on a parent node.
- * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
- * @returns {number=} Size in pixels or undefined if unknown.
- */
-function readUsedSize(element, property) {
-	const value = helpers.dom.getStyle(element, property);
-	const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
-	return matches ? +matches[1] : undefined;
-}
-
+const isNullOrEmpty = value => value === null || value === '';
 /**
  * Initializes the canvas style and render size without modifying the canvas display size,
  * since responsiveness is handled by the controller.resize() method. The config is used
@@ -79,14 +66,14 @@ function initCanvas(canvas, config) {
 	// Include possible borders in the size
 	style.boxSizing = style.boxSizing || 'border-box';
 
-	if (renderWidth === null || renderWidth === '') {
+	if (isNullOrEmpty(renderWidth)) {
 		const displayWidth = readUsedSize(canvas, 'width');
 		if (displayWidth !== undefined) {
 			canvas.width = displayWidth;
 		}
 	}
 
-	if (renderHeight === null || renderHeight === '') {
+	if (isNullOrEmpty(renderHeight)) {
 		if (canvas.style.height === '') {
 			// If no explicit render height and style height, let's apply the aspect ratio,
 			// which one can be specified by the user but also by charts as default option
@@ -103,30 +90,6 @@ function initCanvas(canvas, config) {
 	return canvas;
 }
 
-/**
- * Detects support for options object argument in addEventListener.
- * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
- * @private
- */
-const supportsEventListenerOptions = (function() {
-	let passiveSupported = false;
-	try {
-		const options = {
-			get passive() { // This function will be called when the browser attempts to access the passive property.
-				passiveSupported = true;
-				return false;
-			}
-		};
-		// @ts-ignore
-		window.addEventListener('test', null, options);
-		// @ts-ignore
-		window.removeEventListener('test', null, options);
-	} catch (e) {
-		// continue regardless of error
-	}
-	return passiveSupported;
-}());
-
 // Default passive to true as expected by Chrome for 'touchstart' and 'touchend' events.
 // https://github.com/chartjs/Chart.js/issues/4287
 const eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
@@ -135,8 +98,8 @@ function addListener(node, type, listener) {
 	node.addEventListener(type, listener, eventListenerOptions);
 }
 
-function removeListener(node, type, listener) {
-	node.removeEventListener(type, listener, eventListenerOptions);
+function removeListener(chart, type, listener) {
+	chart.canvas.removeEventListener(type, listener, eventListenerOptions);
 }
 
 function createEvent(type, chart, x, y, nativeEvent) {
@@ -151,72 +114,21 @@ function createEvent(type, chart, x, y, nativeEvent) {
 
 function fromNativeEvent(event, chart) {
 	const type = EVENT_TYPES[event.type] || event.type;
-	const pos = helpers.dom.getRelativePosition(event, chart);
+	const pos = getRelativePosition(event, chart);
 	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
-function throttled(fn, thisArg) {
-	let ticking = false;
-	let args = [];
-
-	return function(...rest) {
-		args = Array.prototype.slice.call(rest);
-
-		if (!ticking) {
-			ticking = true;
-			helpers.requestAnimFrame.call(window, () => {
-				ticking = false;
-				fn.apply(thisArg, args);
-			});
-		}
-	};
-}
-
-/**
- * Watch for resize of `element`.
- * Calling `fn` is limited to once per animation frame
- * @param {Element} element - The element to monitor
- * @param {function} fn - Callback function to call when resized
- */
-function watchForResize(element, fn) {
-	const resize = throttled((width, height) => {
-		const w = element.clientWidth;
-		fn(width, height);
-		if (w < element.clientWidth) {
-			// If the container size shrank during chart resize, let's assume
-			// scrollbar appeared. So we resize again with the scrollbar visible -
-			// effectively making chart smaller and the scrollbar hidden again.
-			// Because we are inside `throttled`, and currently `ticking`, scroll
-			// events are ignored during this whole 2 resize process.
-			// If we assumed wrong and something else happened, we are resizing
-			// twice in a frame (potential performance issue)
-			fn();
-		}
-	}, window);
-
-	// @ts-ignore until https://github.com/Microsoft/TypeScript/issues/28502 implemented
-	const observer = new ResizeObserver(entries => {
-		const entry = entries[0];
-		resize(entry.contentRect.width, entry.contentRect.height);
-	});
-	observer.observe(element);
-	return observer;
-}
-
-/**
- * Detect attachment of `element` or its direct `parent` to DOM
- * @param {Element} element - The element to watch for
- * @param {function} fn - Callback function to call when attachment is detected
- * @return {MutationObserver}
- */
-function watchForAttachment(element, fn) {
+function createAttachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	const element = container || canvas;
 	const observer = new MutationObserver(entries => {
 		const parent = _getParentNode(element);
 		entries.forEach(entry => {
 			for (let i = 0; i < entry.addedNodes.length; i++) {
 				const added = entry.addedNodes[i];
 				if (added === element || added === parent) {
-					fn(entry.target);
+					listener(entry.target);
 				}
 			}
 		});
@@ -225,79 +137,119 @@ function watchForAttachment(element, fn) {
 	return observer;
 }
 
-/**
- * Watch for detachment of `element` from its direct `parent`.
- * @param {Element} element - The element to watch
- * @param {function} fn - Callback function to call when detached.
- * @return {MutationObserver=}
- */
-function watchForDetachment(element, fn) {
-	const parent = _getParentNode(element);
-	if (!parent) {
+function createDetachObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	if (!container) {
 		return;
 	}
 	const observer = new MutationObserver(entries => {
 		entries.forEach(entry => {
 			for (let i = 0; i < entry.removedNodes.length; i++) {
-				if (entry.removedNodes[i] === element) {
-					fn();
+				if (entry.removedNodes[i] === canvas) {
+					listener();
 					break;
 				}
 			}
 		});
 	});
-	observer.observe(parent, {childList: true});
+	observer.observe(container, {childList: true});
 	return observer;
 }
 
-/**
- * @param {{ [x: string]: any; resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- * @param {string} type
- */
-function removeObserver(proxies, type) {
-	const observer = proxies[type];
+const drpListeningCharts = new Map();
+let oldDevicePixelRatio = 0;
+
+function onWindowResize() {
+	const dpr = window.devicePixelRatio;
+	if (dpr === oldDevicePixelRatio) {
+		return;
+	}
+	oldDevicePixelRatio = dpr;
+	drpListeningCharts.forEach((resize, chart) => {
+		if (chart.currentDevicePixelRatio !== dpr) {
+			resize();
+		}
+	});
+}
+
+function listenDevicePixelRatioChanges(chart, resize) {
+	if (!drpListeningCharts.size) {
+		window.addEventListener('resize', onWindowResize);
+	}
+	drpListeningCharts.set(chart, resize);
+}
+
+function unlistenDevicePixelRatioChanges(chart) {
+	drpListeningCharts.delete(chart);
+	if (!drpListeningCharts.size) {
+		window.removeEventListener('resize', onWindowResize);
+	}
+}
+
+function createResizeObserver(chart, type, listener) {
+	const canvas = chart.canvas;
+	const container = canvas && _getParentNode(canvas);
+	if (!container) {
+		return;
+	}
+	const resize = throttled((width, height) => {
+		const w = container.clientWidth;
+		listener(width, height);
+		if (w < container.clientWidth) {
+			// If the container size shrank during chart resize, let's assume
+			// scrollbar appeared. So we resize again with the scrollbar visible -
+			// effectively making chart smaller and the scrollbar hidden again.
+			// Because we are inside `throttled`, and currently `ticking`, scroll
+			// events are ignored during this whole 2 resize process.
+			// If we assumed wrong and something else happened, we are resizing
+			// twice in a frame (potential performance issue)
+			listener();
+		}
+	}, window);
+
+	// @ts-ignore until https://github.com/microsoft/TypeScript/issues/37861 implemented
+	const observer = new ResizeObserver(entries => {
+		const entry = entries[0];
+		const width = entry.contentRect.width;
+		const height = entry.contentRect.height;
+		// When its container's display is set to 'none' the callback will be called with a
+		// size of (0, 0), which will cause the chart to lost its original height, so skip
+		// resizing in such case.
+		if (width === 0 && height === 0) {
+			return;
+		}
+		resize(width, height);
+	});
+	observer.observe(container);
+	listenDevicePixelRatioChanges(chart, resize);
+
+	return observer;
+}
+
+function releaseObserver(chart, type, observer) {
 	if (observer) {
 		observer.disconnect();
-		proxies[type] = undefined;
+	}
+	if (type === 'resize') {
+		unlistenDevicePixelRatioChanges(chart);
 	}
 }
 
-/**
- * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- */
-function unlistenForResize(proxies) {
-	removeObserver(proxies, 'attach');
-	removeObserver(proxies, 'detach');
-	removeObserver(proxies, 'resize');
-}
+function createProxyAndListen(chart, type, listener) {
+	const canvas = chart.canvas;
+	const proxy = throttled((event) => {
+		// This case can occur if the chart is destroyed while waiting
+		// for the throttled function to occur. We prevent crashes by checking
+		// for a destroyed chart
+		if (chart.ctx !== null) {
+			listener(fromNativeEvent(event, chart));
+		}
+	}, chart);
 
-/**
- * @param {HTMLCanvasElement} canvas
- * @param {{ resize?: any; detach?: MutationObserver; attach?: MutationObserver; }} proxies
- * @param {function} listener
- */
-function listenForResize(canvas, proxies, listener) {
-	// Helper for recursing when canvas is detached from it's parent
-	const detached = () => listenForResize(canvas, proxies, listener);
+	addListener(canvas, type, proxy);
 
-	// First make sure all observers are removed
-	unlistenForResize(proxies);
-	// Then check if we are attached
-	const container = _getParentNode(canvas);
-	if (container) {
-		// The canvas is attached (or was immediately re-attached when called through `detached`)
-		proxies.resize = watchForResize(container, listener);
-		proxies.detach = watchForDetachment(canvas, detached);
-	} else {
-		// The canvas is detached
-		proxies.attach = watchForAttachment(canvas, () => {
-			// The canvas was attached.
-			removeObserver(proxies, 'attach');
-			const parent = _getParentNode(canvas);
-			proxies.resize = watchForResize(parent, listener);
-			proxies.detach = watchForDetachment(canvas, detached);
-		});
-	}
+	return proxy;
 }
 
 /**
@@ -346,7 +298,7 @@ export default class DomPlatform extends BasePlatform {
 		const initial = canvas[EXPANDO_KEY].initial;
 		['height', 'width'].forEach((prop) => {
 			const value = initial[prop];
-			if (helpers.isNullOrUndef(value)) {
+			if (isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
 			} else {
 				canvas.setAttribute(prop, value);
@@ -379,17 +331,14 @@ export default class DomPlatform extends BasePlatform {
 		// Can have only one listener per type, so make sure previous is removed
 		this.removeEventListener(chart, type);
 
-		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
-		if (type === 'resize') {
-			return listenForResize(canvas, proxies, listener);
-		}
-
-		const proxy = proxies[type] = throttled((event) => {
-			listener(fromNativeEvent(event, chart));
-		}, chart);
-
-		addListener(canvas, type, proxy);
+		const handlers = {
+			attach: createAttachObserver,
+			detach: createDetachObserver,
+			resize: createResizeObserver
+		};
+		const handler = handlers[type] || createProxyAndListen;
+		proxies[type] = handler(chart, type, listener);
 	}
 
 
@@ -398,23 +347,33 @@ export default class DomPlatform extends BasePlatform {
 	 * @param {string} type
 	 */
 	removeEventListener(chart, type) {
-		const canvas = chart.canvas;
 		const proxies = chart.$proxies || (chart.$proxies = {});
-
-		if (type === 'resize') {
-			return unlistenForResize(proxies);
-		}
-
 		const proxy = proxies[type];
+
 		if (!proxy) {
 			return;
 		}
 
-		removeListener(canvas, type, proxy);
+		const handlers = {
+			attach: releaseObserver,
+			detach: releaseObserver,
+			resize: releaseObserver
+		};
+		const handler = handlers[type] || removeListener;
+		handler(chart, type, proxy);
 		proxies[type] = undefined;
 	}
 
 	getDevicePixelRatio() {
 		return window.devicePixelRatio;
+	}
+
+
+	/**
+	 * @param {HTMLCanvasElement} canvas
+	 */
+	isAttached(canvas) {
+		const container = _getParentNode(canvas);
+		return !!(container && _getParentNode(container));
 	}
 }

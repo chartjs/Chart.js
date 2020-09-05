@@ -1,8 +1,8 @@
 // Test the rectangle element
-const tooltipPlugin = Chart.plugins.getAll().find(p => p.id === 'tooltip');
+const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 const Tooltip = tooltipPlugin._element;
 
-describe('Core.Tooltip', function() {
+describe('Plugin.Tooltip', function() {
 	describe('auto', jasmine.fixture.specs('core.tooltip'));
 
 	describe('config', function() {
@@ -18,15 +18,16 @@ describe('Core.Tooltip', function() {
 			var tooltipItem = {
 				index: 1,
 				datasetIndex: 0,
+				dataset: data.datasets[0],
 				label: 'Point 2',
-				value: '20'
+				formattedValue: '20'
 			};
 
-			var label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+			var label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
 			expect(label).toBe('20');
 
 			data.datasets[0].label = 'My dataset';
-			label = Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+			label = Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem);
 			expect(label).toBe('My dataset: 20');
 		});
 	});
@@ -75,33 +76,39 @@ describe('Core.Tooltip', function() {
 				expect(tooltip.xAlign).toEqual('left');
 				expect(tooltip.yAlign).toEqual('center');
 
-				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Body
-					bodyFontColor: '#fff',
-					bodyFontFamily: defaults.fontFamily,
-					bodyFontStyle: defaults.fontStyle,
-					bodyAlign: 'left',
-					bodyFontSize: defaults.fontSize,
-					bodySpacing: 2,
+				expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: defaults.font.style,
+					size: defaults.font.size,
 				}));
 
 				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Title
-					titleFontColor: '#fff',
-					titleFontFamily: defaults.fontFamily,
-					titleFontStyle: 'bold',
-					titleFontSize: defaults.fontSize,
+					bodyAlign: 'left',
+					bodySpacing: 2,
+				}));
+
+				expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: 'bold',
+					size: defaults.font.size,
+				}));
+
+				expect(tooltip.options).toEqual(jasmine.objectContaining({
 					titleAlign: 'left',
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 				}));
 
+				expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+					color: '#fff',
+					family: defaults.font.family,
+					style: 'bold',
+					size: defaults.font.size,
+				}));
+
 				expect(tooltip.options).toEqual(jasmine.objectContaining({
-					// Footer
-					footerFontColor: '#fff',
-					footerFontFamily: defaults.fontFamily,
-					footerFontStyle: 'bold',
-					footerFontSize: defaults.fontSize,
 					footerAlign: 'left',
 					footerSpacing: 2,
 					footerMarginTop: 6,
@@ -233,33 +240,39 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('left');
 			expect(tooltip.yAlign).toEqual('center');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -275,25 +288,22 @@ describe('Core.Tooltip', function() {
 				displayColors: true
 			}));
 
-			expect(tooltip).toEqual(jasmine.objectContaining({
-				opacity: 1,
+			expect(tooltip.opacity).toEqual(1);
+			expect(tooltip.title).toEqual(['Point 2']);
+			expect(tooltip.beforeBody).toEqual([]);
+			expect(tooltip.body).toEqual([{
+				before: [],
+				lines: ['Dataset 1: 20'],
+				after: []
+			}]);
+			expect(tooltip.afterBody).toEqual([]);
+			expect(tooltip.footer).toEqual([]);
+			expect(tooltip.labelTextColors).toEqual(['#fff']);
 
-				// Text
-				title: ['Point 2'],
-				beforeBody: [],
-				body: [{
-					before: [],
-					lines: ['Dataset 1: 20'],
-					after: []
-				}],
-				afterBody: [],
-				footer: [],
-				labelTextColors: ['#fff'],
-				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
-				}]
-			}));
+			expect(tooltip.labelColors).toEqual([{
+				borderColor: defaults.color,
+				backgroundColor: defaults.color
+			}]);
 
 			expect(tooltip.x).toBeCloseToPixel(267);
 			expect(tooltip.y).toBeCloseToPixel(312);
@@ -379,33 +389,38 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('center');
 			expect(tooltip.yAlign).toEqual('top');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
-				titleAlign: 'left',
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -449,6 +464,47 @@ describe('Core.Tooltip', function() {
 
 			expect(tooltip.x).toBeCloseToPixel(214);
 			expect(tooltip.y).toBeCloseToPixel(190);
+
+			done();
+		});
+		jasmine.triggerMouseEvent(chart, 'mousemove', point);
+	});
+
+
+	it('Should provide context object to user callbacks', function(done) {
+		const chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [{x: 1, y: 10}, {x: 2, y: 20}, {x: 3, y: 30}]
+				}]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'linear'
+					}
+				},
+				tooltips: {
+					mode: 'index',
+					callbacks: {
+						beforeLabel: function(ctx) {
+							return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		const meta = chart.getDatasetMeta(0);
+		const point = meta.data[1];
+
+		afterEvent(chart, 'mousemove', function() {
+			const tooltip = chart.tooltip;
+
+			expect(tooltip.body[0].before).toEqual(['2,20']);
 
 			done();
 		});
@@ -692,7 +748,7 @@ describe('Core.Tooltip', function() {
 			options: {
 				tooltips: {
 					mode: 'index',
-					filter: function(tooltipItem, data) {
+					filter: function(tooltipItem, index, tooltipItems, data) {
 						// For testing purposes remove the first dataset that has a tooltipHidden property
 						return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
 					}
@@ -780,7 +836,7 @@ describe('Core.Tooltip', function() {
 		jasmine.triggerMouseEvent(chart, 'mousemove', point0);
 	});
 
-	['line', 'bar', 'horizontalBar'].forEach(function(type) {
+	['line', 'bar'].forEach(function(type) {
 		it('Should have dataPoints in a ' + type + ' chart', function(done) {
 			var chart = window.acquireChart({
 				type: type,
@@ -821,12 +877,12 @@ describe('Core.Tooltip', function() {
 
 				var tooltipItem = tooltip.dataPoints[0];
 
-				expect(tooltipItem.index).toBe(pointIndex);
+				expect(tooltipItem.dataIndex).toBe(pointIndex);
 				expect(tooltipItem.datasetIndex).toBe(datasetIndex);
 				expect(typeof tooltipItem.label).toBe('string');
 				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
-				expect(typeof tooltipItem.value).toBe('string');
-				expect(tooltipItem.value).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+				expect(typeof tooltipItem.formattedValue).toBe('string');
+				expect(tooltipItem.formattedValue).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
 
 				done();
 			});
@@ -870,7 +926,7 @@ describe('Core.Tooltip', function() {
 		var firstPoint = meta.data[1];
 
 		var tooltip = chart.tooltip;
-		spyOn(tooltip, 'update');
+		spyOn(tooltip, 'update').and.callThrough();
 
 		afterEvent(chart, 'mousemove', function() {
 			expect(tooltip.update).toHaveBeenCalledWith(true);
@@ -885,6 +941,74 @@ describe('Core.Tooltip', function() {
 			});
 			// Second dispatch change event (same event), should not update tooltip
 			jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+		});
+		// First dispatch change event, should update tooltip
+		jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+	});
+
+	it('Should update if active elements are the same, but the position has changed', function(done) {
+		const chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Dataset 1',
+					data: [10, 20, 30],
+					pointHoverBorderColor: 'rgb(255, 0, 0)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+				}, {
+					label: 'Dataset 2',
+					data: [40, 40, 40],
+					pointHoverBorderColor: 'rgb(0, 0, 255)',
+					pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+				}],
+				labels: ['Point 1', 'Point 2', 'Point 3']
+			},
+			options: {
+				scales: {
+					x: {
+						stacked: true,
+					},
+					y: {
+						stacked: true
+					}
+				},
+				tooltips: {
+					mode: 'nearest',
+					position: 'nearest',
+					intersect: true,
+					callbacks: {
+						title: function() {
+							return 'registering callback...';
+						}
+					}
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		const meta = chart.getDatasetMeta(0);
+		const firstPoint = meta.data[1];
+
+		const meta2 = chart.getDatasetMeta(1);
+		const secondPoint = meta2.data[1];
+
+		const tooltip = chart.tooltip;
+		spyOn(tooltip, 'update');
+
+		afterEvent(chart, 'mousemove', function() {
+			expect(tooltip.update).toHaveBeenCalledWith(true);
+
+			// Reset calls
+			tooltip.update.calls.reset();
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(tooltip.update).toHaveBeenCalledWith(true);
+
+				done();
+			});
+			// Second dispatch change event (same event), should update tooltip
+			// because position mode is 'nearest'
+			jasmine.triggerMouseEvent(chart, 'mousemove', secondPoint);
 		});
 		// First dispatch change event, should update tooltip
 		jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
@@ -931,7 +1055,7 @@ describe('Core.Tooltip', function() {
 			var fn = tooltipPlugin.positioners.test;
 
 			afterEvent(chart, 'mousemove', function() {
-				expect(fn.calls.count()).toBe(1);
+				expect(fn.calls.count()).toBe(2);
 				expect(fn.calls.first().args[0] instanceof Array).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
 				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
@@ -981,7 +1105,7 @@ describe('Core.Tooltip', function() {
 			var tooltipPosition = meta.data[slice].tooltipPosition();
 
 			function recursive(left) {
-				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'l';
+				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'XX';
 				chart.update();
 
 				afterEvent(chart, 'mouseout', function() {
@@ -1011,7 +1135,7 @@ describe('Core.Tooltip', function() {
 
 		// Trigger an event over top of the slice
 		for (var slice = 0; slice < 2; slice++) {
-			testSlice(slice, 70);
+			testSlice(slice, 20);
 		}
 	});
 
@@ -1091,33 +1215,39 @@ describe('Core.Tooltip', function() {
 			expect(tooltip.xAlign).toEqual('center');
 			expect(tooltip.yAlign).toEqual('top');
 
-			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Body
-				bodyFontColor: '#fff',
-				bodyFontFamily: defaults.fontFamily,
-				bodyFontStyle: defaults.fontStyle,
-				bodyAlign: 'left',
-				bodyFontSize: defaults.fontSize,
-				bodySpacing: 2,
+			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: defaults.font.style,
+				size: defaults.font.size,
 			}));
 
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Title
-				titleFontColor: '#fff',
-				titleFontFamily: defaults.fontFamily,
-				titleFontStyle: 'bold',
-				titleFontSize: defaults.fontSize,
+				bodyAlign: 'left',
+				bodySpacing: 2,
+			}));
+
+			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
+			expect(tooltip.options).toEqual(jasmine.objectContaining({
 				titleAlign: 'left',
 				titleSpacing: 2,
 				titleMarginBottom: 6,
 			}));
 
+			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+				color: '#fff',
+				family: defaults.font.family,
+				style: 'bold',
+				size: defaults.font.size,
+			}));
+
 			expect(tooltip.options).toEqual(jasmine.objectContaining({
-				// Footer
-				footerFontColor: '#fff',
-				footerFontFamily: defaults.fontFamily,
-				footerFontStyle: 'bold',
-				footerFontSize: defaults.fontSize,
 				footerAlign: 'left',
 				footerSpacing: 2,
 				footerMarginTop: 6,
@@ -1182,27 +1312,33 @@ describe('Core.Tooltip', function() {
 					yPadding: 5,
 
 					// Body
-					bodyFontColor: '#fff',
-					bodyFontFamily: defaults.fontFamily,
-					bodyFontStyle: defaults.fontStyle,
+					bodyFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: defaults.font.style,
+						size: defaults.font.size,
+					},
 					bodyAlign: body,
-					bodyFontSize: defaults.fontSize,
 					bodySpacing: 2,
 
 					// Title
-					titleFontColor: '#fff',
-					titleFontFamily: defaults.fontFamily,
-					titleFontStyle: 'bold',
-					titleFontSize: defaults.fontSize,
+					titleFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: 'bold',
+						size: defaults.font.size,
+					},
 					titleAlign: title,
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 
 					// Footer
-					footerFontColor: '#fff',
-					footerFontFamily: defaults.fontFamily,
-					footerFontStyle: 'bold',
-					footerFontSize: defaults.fontSize,
+					footerFont: {
+						color: '#fff',
+						family: defaults.font.family,
+						style: 'bold',
+						size: defaults.font.size,
+					},
 					footerAlign: footer,
 					footerSpacing: 2,
 					footerMarginTop: 6,

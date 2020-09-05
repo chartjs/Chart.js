@@ -3,7 +3,7 @@
 
 <head>
 	<title>Horizontal Bar Chart</title>
-	<script src="../../../dist/Chart.min.js"></script>
+	<script src="../../../dist/chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
 	canvas {
@@ -62,9 +62,10 @@
 		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myHorizontalBar = new Chart(ctx, {
-				type: 'horizontalBar',
+				type: 'bar',
 				data: horizontalBarChartData,
 				options: {
+					indexAxis: 'y',
 					// Elements options apply to all of the options unless overridden in a dataset
 					// In this case, we are setting the border of each horizontal bar to be 2px wide
 					elements: {

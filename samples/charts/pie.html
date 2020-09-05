@@ -3,7 +3,7 @@
 
 <head>
 	<title>Pie Chart</title>
-	<script src="../../dist/Chart.min.js"></script>
+	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 </head>
 
@@ -75,7 +75,7 @@
 				label: 'New dataset ' + config.data.datasets.length,
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for (var index = 0; index < 10; ++index) {
 				newDataset.data.push(randomScalingFactor());
 
 				var colorName = colorNames[index % colorNames.length];

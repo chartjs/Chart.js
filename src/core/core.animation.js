@@ -1,6 +1,6 @@
-import helpers from '../helpers/index';
 import effects from '../helpers/helpers.easing';
 import {resolve} from '../helpers/helpers.options';
+import {color as helpersColor} from '../helpers/helpers.color';
 
 const transparent = 'transparent';
 const interpolators = {
@@ -8,8 +8,8 @@ const interpolators = {
 		return factor > 0.5 ? to : from;
 	},
 	color(from, to, factor) {
-		const c0 = helpers.color(from || transparent);
-		const c1 = c0.valid && helpers.color(to || transparent);
+		const c0 = helpersColor(from || transparent);
+		const c1 = c0.valid && helpersColor(to || transparent);
 		return c1 && c1.valid
 			? c1.mix(c0, factor).hexString()
 			: to;
@@ -36,6 +36,7 @@ export default class Animation {
 		this._prop = prop;
 		this._from = from;
 		this._to = to;
+		this._promises = undefined;
 	}
 
 	active() {
@@ -50,6 +51,7 @@ export default class Animation {
 			const remain = me._duration - elapsed;
 			me._start = date;
 			me._duration = Math.floor(Math.max(remain, cfg.duration));
+			me._loop = !!cfg.loop;
 			me._to = resolve([cfg.to, to, currentValue, cfg.from]);
 			me._from = resolve([cfg.from, currentValue, to]);
 		}
@@ -61,6 +63,7 @@ export default class Animation {
 			// update current evaluated value, for smoother animations
 			me.tick(Date.now());
 			me._active = false;
+			me._notify(false);
 		}
 	}
 
@@ -78,6 +81,7 @@ export default class Animation {
 
 		if (!me._active) {
 			me._target[prop] = to;
+			me._notify(true);
 			return;
 		}
 
@@ -91,5 +95,20 @@ export default class Animation {
 		factor = me._easing(Math.min(1, Math.max(0, factor)));
 
 		me._target[prop] = me._fn(from, to, factor);
+	}
+
+	wait() {
+		const promises = this._promises || (this._promises = []);
+		return new Promise((res, rej) => {
+			promises.push({res, rej});
+		});
+	}
+
+	_notify(resolved) {
+		const method = resolved ? 'res' : 'rej';
+		const promises = this._promises || [];
+		for (let i = 0; i < promises.length; i++) {
+			promises[i][method]();
+		}
 	}
 }
