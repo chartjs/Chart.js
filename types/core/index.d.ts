@@ -233,7 +233,7 @@ export interface IParsingOptions {
 }
 
 export interface Chart<
-  T = number,
+  T = unknown,
   L = string,
   C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>
 > {
@@ -245,7 +245,6 @@ export interface Chart<
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
-  readonly options: ConfigurationOptions<C>;
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
@@ -253,6 +252,8 @@ export interface Chart<
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
+
+  options: ConfigurationOptions<C>;
 
   clear(): this;
   stop(): this;
@@ -300,7 +301,7 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
+  new <T = unknown, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
     item: ChartItem,
     config: C
   ): Chart<T, L, C>;

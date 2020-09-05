@@ -1,7 +1,7 @@
 import { Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
 import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent } from '../core/interfaces';
 import { PointStyle } from '../elements';
-import { IChartData } from '../interfaces';
+import { IChartData, IChartDataset } from '../interfaces';
 
 export const Filler: IPlugin;
 
@@ -514,7 +514,7 @@ export interface ITooltipItem {
   /**
    * The dataset the item comes from
    */
-  dataset: object;
+  dataset: IChartDataset;
 
   /**
    * Index of the dataset the item comes from
