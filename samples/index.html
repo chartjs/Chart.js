@@ -19,6 +19,7 @@
 				<a class="btn btn-chartjs" href="https://www.chartjs.org">Website</a>
 				<a class="btn btn-docs" href="https://www.chartjs.org/docs">Documentation</a>
 				<a class="btn btn-gh" href="https://github.com/chartjs/Chart.js">GitHub</a>
+                <a class="btn" href="Javascript:void(0)" id="open_all_in_tabs_btn">open all samples in tabs</a>
 			</div>
 		</div>
 
@@ -53,6 +54,24 @@
 
 			categories.appendChild(category);
 		});
+        document.querySelector("#open_all_in_tabs_btn").addEventListener("click", function() {
+            let destructor = function(ev) {
+                ev.target.parentNode.removeChild(ev.target);
+            };
+            let all = document.querySelectorAll("#categories a");
+            for (let i = 0; i < all.length; ++i) {
+                let ele = all[i];
+                let clone = document.createElement("a");
+                clone.textContent = ele.textContent;
+                clone.href = ele.href;
+                clone.addEventListener("click", destructor);
+                document.body.insertBefore(clone, document.body.firstChild);
+            }
+            let explanation = document.createElement("span");
+            explanation.textContent = "usage: hold down ctrl and left-click here, until stuff stops happening";
+            explanation.addEventListener("click", destructor);
+            document.body.insertBefore(explanation, document.body.firstChild);
+        });
 	</script>
 </body>
 </html>
