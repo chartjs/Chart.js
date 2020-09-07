@@ -400,17 +400,18 @@ export default class TimeScale extends Scale {
 		const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, me._getLabelCapacity(min));
 		const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 		const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
+		const hasWeekday = isNumber(weekday) || weekday === true;
 		const ticks = {};
 		let first = min;
 		let time;
 
 		// For 'week' unit, handle the first day of week option
-		if (weekday) {
+		if (hasWeekday) {
 			first = +adapter.startOf(first, 'isoWeek', weekday);
 		}
 
 		// Align first ticks on unit
-		first = +adapter.startOf(first, weekday ? 'day' : minor);
+		first = +adapter.startOf(first, hasWeekday ? 'day' : minor);
 
 		// Prevent browser from freezing in case user options request millions of milliseconds
 		if (adapter.diff(max, min, minor) > 100000 * stepSize) {
