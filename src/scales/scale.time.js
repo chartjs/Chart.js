@@ -1,6 +1,6 @@
 import adapters from '../core/core.adapters';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians} from '../helpers/helpers.math';
+import {toRadians, isNumber} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
 
@@ -71,7 +71,7 @@ function parse(scale, input) {
 	}
 
 	if (round) {
-		value = round === 'week' && isoWeekday
+		value = round === 'week' && (isNumber(isoWeekday) || isoWeekday === true)
 			? scale._adapter.startOf(value, 'isoWeek', isoWeekday)
 			: scale._adapter.startOf(value, round);
 	}
