@@ -252,8 +252,8 @@ export interface Chart<
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
-  options: ConfigurationOptions<C>;
   data: ConfigurationData<C>;
+  options: ConfigurationOptions<C>;
 
   clear(): this;
   stop(): this;
