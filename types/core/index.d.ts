@@ -248,12 +248,12 @@ export interface Chart<
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
-  readonly data: ConfigurationData<C>;
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
   options: ConfigurationOptions<C>;
+  data: ConfigurationData<C>;
 
   clear(): this;
   stop(): this;
