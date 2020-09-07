@@ -263,7 +263,7 @@ export interface Chart<
   buildOrUpdateScales(): void;
   buildOrUpdateControllers(): void;
   reset(): void;
-  update(mode?: string): void;
+  update(mode?: UpdateMode): void;
   render(): void;
   draw(): void;
 
