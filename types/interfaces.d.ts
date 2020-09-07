@@ -75,13 +75,13 @@ export type IChartOptions<O = {}> = DeepPartial<
  * Well-known chart types
  */
 export type IChartKnownTypes =
-	| 'line'
 	| 'bar'
-	| 'radar'
+	| 'bubble'
 	| 'doughnut'
+	| 'line'
 	| 'pie'
 	| 'polarArea'
-	| 'bubble'
+	| 'radar'
 	| 'scatter';
 
 export type IChartTypes = IChartKnownTypes | string;
