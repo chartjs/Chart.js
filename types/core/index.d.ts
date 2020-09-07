@@ -233,7 +233,7 @@ export interface IParsingOptions {
 }
 
 export interface Chart<
-  T = number,
+  T = unknown,
   L = string,
   C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>
 > {
@@ -245,7 +245,6 @@ export interface Chart<
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
-  readonly options: ConfigurationOptions<C>;
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
@@ -253,6 +252,8 @@ export interface Chart<
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
+
+  options: ConfigurationOptions<C>;
 
   clear(): this;
   stop(): this;
@@ -300,7 +301,7 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <T = number, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
+  new <T = unknown, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
     item: ChartItem,
     config: C
   ): Chart<T, L, C>;
@@ -346,7 +347,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
    * Utility for checking if the options are shared and should be animated separately.
    * @protected
    */
-  protected getSharedOptions(options: any): undefined | { any };
+  protected getSharedOptions(options: any): undefined | any;
   /**
    * Utility for determining if `options` should be included in the updated properties
    * @protected
@@ -823,7 +824,7 @@ export interface IPlugin<O = {}> {
   destroy?(chart: Chart, options: O): void;
 }
 
-declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
+export declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
 
 /**
  * Please use the module's default export which provides a singleton instance

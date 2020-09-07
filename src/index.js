@@ -1,4 +1,5 @@
 /* eslint-disable import/no-namespace, import/namespace */
+// @ts-nocheck
 
 /**
  * @namespace Chart
@@ -24,7 +25,6 @@ import * as scales from './scales';
 import Ticks from './core/core.ticks';
 
 // Register built-ins
-// @ts-ignore
 Chart.register(controllers, scales, elements, plugins);
 
 Chart.helpers = helpers;
@@ -47,7 +47,6 @@ Object.assign(Chart, controllers, scales, elements, plugins, platforms);
 Chart.Chart = Chart;
 
 if (typeof window !== 'undefined') {
-	// @ts-ignore
 	window.Chart = Chart;
 }
 

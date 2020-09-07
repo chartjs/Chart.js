@@ -37,7 +37,7 @@ export type DeepPartial<T> = T extends {}
     }
   : T;
 
-export type IChartDataset<T = number, O = {}> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
+export type IChartDataset<T = unknown, O = {}> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
   data: T[];
 };
 
@@ -53,7 +53,7 @@ export type IDoughnutControllerDataset<T = IDoughnutDataPoint> = IChartDataset<T
 export type IPolarAreaControllerDataset<T = number> = IChartDataset<T, IPolarAreaControllerDatasetOptions>;
 export type IRadarControllerDataset<T = number> = IChartDataset<T, IRadarControllerDatasetOptions>;
 
-export interface IChartData<T = number, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
+export interface IChartData<T = unknown, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
   extends DeepPartial<IParsingOptions> {
   labels: L[];
   datasets: DS[];
@@ -61,6 +61,7 @@ export interface IChartData<T = number, L = string, DS extends IChartDataset<T> 
 
 export type IChartOptions<O = {}> = DeepPartial<
   ICoreChartOptions &
+    IParsingOptions &
     ITooltipChartOptions &
     ILegendChartOptions &
     ITitleChartOptions &
@@ -72,7 +73,7 @@ export type IChartOptions<O = {}> = DeepPartial<
 
 export interface IChartConfiguration<
   TYPE = string,
-  T = number,
+  T = unknown,
   L = string,
   DS extends IChartDataset<T> = IChartDataset<T>,
   O = {}

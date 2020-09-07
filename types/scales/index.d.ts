@@ -180,7 +180,7 @@ export const CategoryScale: IChartComponent & {
   new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(cfg: any): CategoryScale<O>;
 };
 
-export type ILinearScaleOptions = IScaleOptions & {
+export type ILinearScaleOptions = ICartesianScaleOptions & {
   stacked?: boolean;
 
   /**
@@ -281,12 +281,16 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
      */
     isoWeekday: false | string;
     /**
-     * 	Sets how different time units are displayed.
+     * Sets how different time units are displayed.
      * @see https://www.chartjs.org/docs/next/axes/cartesian/time#display-formats
      */
     displayFormats: {
       [key: string]: string;
     };
+    /**
+     * The format string to use for the tooltip.
+     */
+    tooltipFormat: string;
     /**
      * If defined, will force the unit to be a certain type. See Time Units section below for details.
      * @default false
