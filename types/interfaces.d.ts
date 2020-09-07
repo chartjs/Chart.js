@@ -28,7 +28,7 @@ import {
   ILegendChartOptions,
   ITitleChartOptions,
 } from './plugins';
-import { IChartAnimationOptions, IParsingOptions } from './core';
+import { IChartAnimationOptions, IParsingOptions, IPlugin } from './core';
 import { IScaleChartOptions } from './scales';
 
 export type DeepPartial<T> = T extends {}
@@ -81,6 +81,7 @@ export interface IChartConfiguration<
   type: TYPE;
   data: IChartData<T, L, DS>;
   options?: IChartOptions<O>;
+  plugins?: IPlugin[];
 }
 
 export type IBarControllerConfiguration<T = number, L = string> = IChartConfiguration<
