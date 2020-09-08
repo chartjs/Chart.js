@@ -313,7 +313,17 @@ export const Chart: {
   unregister(...items: IChartComponentLike[]): void;
 };
 
-export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | 'active' | undefined;
+export enum UpdateModeEnum {
+  resize = 'resize',
+  reset = 'reset',
+  none = 'none',
+  hide = 'hide',
+  show = 'show',
+  normal = 'normal',
+  active = 'active'
+}
+
+export type UpdateMode = keyof typeof UpdateModeEnum;
 
 export class DatasetController<E extends Element = Element, DSE extends Element = Element> {
   constructor(chart: Chart, datasetIndex: number);
