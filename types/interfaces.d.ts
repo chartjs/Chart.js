@@ -71,18 +71,18 @@ export type IChartOptions<O = {}> = DeepPartial<
     O
 >;
 
-/**
- * Well-known chart types
- */
-export type IChartType =
-  | 'bar'
-  | 'bubble'
-  | 'doughnut'
-  | 'line'
-  | 'pie'
-  | 'polarArea'
-  | 'radar'
-  | 'scatter';
+export enum ChartTypeEnum {
+  bar = 'bar',
+  bubble = 'bubble',
+  doughnut = 'doughnut',
+  line = 'line',
+  pie = 'pie',
+  polarArea = 'polarArea',
+  radar = 'radar',
+  scatter = 'scatter',
+}
+
+export type IChartType = keyof typeof ChartTypeEnum;
 
 export interface IChartConfiguration<
   TYPE extends IChartType = IChartType,
