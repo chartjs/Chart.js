@@ -276,10 +276,11 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
      */
     round: false | TimeUnit;
     /**
-     * If true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
+     * If boolean and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday. 
+     * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
      * @default false
      */
-    isoWeekday: false | string;
+    isoWeekday: false | number;
     /**
      * Sets how different time units are displayed.
      * @see https://www.chartjs.org/docs/next/axes/cartesian/time#display-formats
