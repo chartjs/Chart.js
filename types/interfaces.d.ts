@@ -74,7 +74,7 @@ export type IChartOptions<O = {}> = DeepPartial<
 /**
  * Well-known chart types
  */
-export type IChartKnownTypes =
+export type IChartTypes =
 	| 'bar'
 	| 'bubble'
 	| 'doughnut'
@@ -84,10 +84,8 @@ export type IChartKnownTypes =
 	| 'radar'
 	| 'scatter';
 
-export type IChartTypes = IChartKnownTypes | string;
-
 export interface IChartConfiguration<
-  TYPE extends IChartTypes = string,
+  TYPE = IChartTypes,
   T = unknown,
   L = string,
   DS extends IChartDataset<T> = IChartDataset<T>,
