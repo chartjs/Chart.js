@@ -74,7 +74,7 @@ export type IChartOptions<O = {}> = DeepPartial<
 /**
  * Well-known chart types
  */
-export type IChartTypes =
+export type IChartType =
 	| 'bar'
 	| 'bubble'
 	| 'doughnut'
@@ -85,7 +85,7 @@ export type IChartTypes =
 	| 'scatter';
 
 export interface IChartConfiguration<
-  TYPE = IChartTypes,
+  TYPE = IChartType,
   T = unknown,
   L = string,
   DS extends IChartDataset<T> = IChartDataset<T>,
@@ -153,10 +153,10 @@ export type IRadarControllerConfiguration<T = number, L = string> = IChartConfig
   IRadarControllerChartOptions
 >;
 
-export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartTypes, unknown, unknown, infer O> ? O : never;
-export type ConfigurationData<O> = O extends IChartConfiguration<IChartTypes, infer T, infer L, infer DS, unknown>
+export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer O> ? O : never;
+export type ConfigurationData<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, unknown>
   ? IChartData<T, L, DS>
   : never;
-export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartTypes, unknown, unknown, infer DS, unknown>
+export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer DS, unknown>
   ? DS
   : never;

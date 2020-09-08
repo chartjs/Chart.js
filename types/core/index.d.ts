@@ -10,7 +10,7 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData } from '../interfaces';
+import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData, IChartType } from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -235,7 +235,7 @@ export interface IParsingOptions {
 export interface Chart<
   T = unknown,
   L = string,
-  C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>
+  C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>
 > {
   readonly platform: BasePlatform;
   readonly id: string;
@@ -301,7 +301,7 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <T = unknown, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
+  new <T = unknown, L = string, C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>>(
     item: ChartItem,
     config: C
   ): Chart<T, L, C>;
