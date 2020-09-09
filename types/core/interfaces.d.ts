@@ -1,4 +1,4 @@
-import { Chart, Element, InteractionMode } from '.';
+import { ChartInstance, Element, InteractionMode } from '.';
 import { IChartDataset } from '../interfaces';
 
 export type Color = string | CanvasGradient | CanvasPattern;
@@ -55,7 +55,7 @@ export interface IPadding {
 }
 
 export interface IScriptableContext {
-  chart: Chart;
+  chart: ChartInstance;
   dataPoint: any;
   dataIndex: number;
   dataset: IChartDataset;
@@ -121,7 +121,7 @@ export interface ICoreChartOptions {
   /**
    * Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
    */
-  onResize(chart: Chart, size: { width: number; height: number }): void;
+  onResize(chart: ChartInstance, size: { width: number; height: number }): void;
 
   /**
    * Override the window's default devicePixelRatio.

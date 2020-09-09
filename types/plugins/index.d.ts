@@ -1,4 +1,4 @@
-import { Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
+import { ChartInstance, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
 import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent, IHoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { IChartData, IChartDataset } from '../interfaces';
@@ -158,7 +158,7 @@ export interface ILegendOptions {
     /**
      * Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See Legend Item for details.
      */
-    generateLabels(chart: Chart): ILegendItem[];
+    generateLabels(chart: ChartInstance): ILegendItem[];
 
     /**
      * Filters legend items out of the legend. Receives 2 parameters, a Legend Item and the chart data
@@ -307,22 +307,22 @@ export interface ITooltipPlugin<O = {}> {
   /**
    * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
    * the tooltip drawing is cancelled until another `render` is triggered.
-   * @param {Chart} chart - The chart instance.
+   * @param {ChartInstance} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {Tooltip} args.tooltip - The tooltip.
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart tooltip drawing.
    */
-  beforeTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): boolean | void;
+  beforeTooltipDraw?(chart: ChartInstance, args: { tooltip: TooltipModel }, options: O): boolean | void;
   /**
    * @desc Called after drawing the `tooltip`. Note that this hook will not
    * be called if the tooltip drawing has been previously cancelled.
-   * @param {Chart} chart - The chart instance.
+   * @param {ChartInstance} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {Tooltip} args.tooltip - The tooltip.
    * @param {object} options - The plugin options.
    */
-  afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
+  afterTooltipDraw?(chart: ChartInstance, args: { tooltip: TooltipModel }, options: O): void;
 }
 
 export interface ITooltipOptions extends IHoverInteractionOptions {
@@ -334,7 +334,7 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
   /**
    * 	See custom tooltip section.
    */
-  custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
+  custom(this: TooltipModel, args: { chart: ChartInstance; tooltip: TooltipModel }): void;
   /**
    * The mode for positioning the tooltip
    */
@@ -486,7 +486,7 @@ export interface ITooltipItem {
   /**
    * The chart the tooltip is being shown on
    */
-  chart: Chart;
+  chart: ChartInstance;
 
   /**
    * Label for the tooltip

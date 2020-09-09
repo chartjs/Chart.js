@@ -1,4 +1,4 @@
-import { Chart, DatasetController } from '../core';
+import { ChartInstance, DatasetController } from '../core';
 import { IChartArea, IChartComponent, ScriptableAndArrayOptions, ScriptableOptions } from '../core/interfaces';
 import {
   IArcHoverOptions,
@@ -89,7 +89,7 @@ export interface IBarControllerChartOptions {
 export interface BarController extends DatasetController {}
 export const BarController: IChartComponent & {
   prototype: BarController;
-  new (chart: Chart, datasetIndex: number): BarController;
+  new (chart: ChartInstance, datasetIndex: number): BarController;
 };
 
 export interface IBubbleControllerDatasetOptions
@@ -117,7 +117,7 @@ export interface IBubbleDataPoint {
 export interface BubbleController extends DatasetController {}
 export const BubbleController: IChartComponent & {
   prototype: BubbleController;
-  new (chart: Chart, datasetIndex: number): BubbleController;
+  new (chart: ChartInstance, datasetIndex: number): BubbleController;
 };
 
 export interface ILineControllerDatasetOptions
@@ -159,7 +159,7 @@ export interface ILineControllerChartOptions {
 export interface LineController extends DatasetController {}
 export const LineController: IChartComponent & {
   prototype: LineController;
-  new (chart: Chart, datasetIndex: number): LineController;
+  new (chart: ChartInstance, datasetIndex: number): LineController;
 };
 
 export type IScatterControllerDatasetOptions = ILineControllerDatasetOptions;
@@ -179,7 +179,7 @@ export interface IScatterControllerChartOptions extends ILineControllerChartOpti
 export interface ScatterController extends LineController {}
 export const ScatterController: IChartComponent & {
   prototype: ScatterController;
-  new (chart: Chart, datasetIndex: number): ScatterController;
+  new (chart: ChartInstance, datasetIndex: number): ScatterController;
 };
 
 export interface IDoughnutControllerDatasetOptions
@@ -244,7 +244,7 @@ export interface DoughnutController extends DatasetController {
 
 export const DoughnutController: IChartComponent & {
   prototype: DoughnutController;
-  new (chart: Chart, datasetIndex: number): DoughnutController;
+  new (chart: ChartInstance, datasetIndex: number): DoughnutController;
 };
 
 export type IPieControllerDatasetOptions = IDoughnutControllerDatasetOptions;
@@ -256,7 +256,7 @@ export type IPieDataPoint = IDoughnutDataPoint;
 export interface PieController extends DoughnutController {}
 export const PieController: IChartComponent & {
   prototype: PieController;
-  new (chart: Chart, datasetIndex: number): PieController;
+  new (chart: ChartInstance, datasetIndex: number): PieController;
 };
 
 export interface IPolarAreaControllerDatasetOptions extends IDoughnutControllerDatasetOptions {
@@ -288,7 +288,7 @@ export interface PolarAreaController extends DoughnutController {
 }
 export const PolarAreaController: IChartComponent & {
   prototype: PolarAreaController;
-  new (chart: Chart, datasetIndex: number): PolarAreaController;
+  new (chart: ChartInstance, datasetIndex: number): PolarAreaController;
 };
 
 export interface IRadarControllerDatasetOptions
@@ -322,5 +322,5 @@ export type IRadarControllerChartOptions = ILineControllerChartOptions;
 export interface RadarController extends DatasetController {}
 export const RadarController: IChartComponent & {
   prototype: RadarController;
-  new (chart: Chart, datasetIndex: number): RadarController;
+  new (chart: ChartInstance, datasetIndex: number): RadarController;
 };

@@ -3,7 +3,7 @@ import { IChartArea } from '../core/interfaces';
 
 /**
  * Clears the entire canvas associated to the given `chart`.
- * @param {Chart} chart - The chart for which to clear the canvas.
+ * @param {ChartInstance} chart - The chart for which to clear the canvas.
  */
 export function clear(chart: { ctx: CanvasRenderingContext2D }): void;
 
