@@ -10,7 +10,7 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData } from '../interfaces';
+import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData, IChartType } from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -235,7 +235,7 @@ export interface IParsingOptions {
 export interface Chart<
   T = unknown,
   L = string,
-  C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>
+  C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>
 > {
   readonly platform: BasePlatform;
   readonly id: string;
@@ -248,11 +248,11 @@ export interface Chart<
   readonly boxes: ILayoutItem[];
   readonly currentDevicePixelRatio: number;
   readonly chartArea: IChartArea;
-  readonly data: ConfigurationData<C>;
   readonly scales: { [key: string]: Scale };
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
+  data: ConfigurationData<C>;
   options: ConfigurationOptions<C>;
 
   clear(): this;
@@ -263,7 +263,7 @@ export interface Chart<
   buildOrUpdateScales(): void;
   buildOrUpdateControllers(): void;
   reset(): void;
-  update(mode?: string): void;
+  update(mode?: UpdateMode): void;
   render(): void;
   draw(): void;
 
@@ -301,7 +301,7 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <T = unknown, L = string, C extends IChartConfiguration<string, T, L> = IChartConfiguration<string, T, L>>(
+  new <T = unknown, L = string, C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>>(
     item: ChartItem,
     config: C
   ): Chart<T, L, C>;
@@ -313,7 +313,17 @@ export const Chart: {
   unregister(...items: IChartComponentLike[]): void;
 };
 
-export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'normal' | 'active' | undefined;
+export enum UpdateModeEnum {
+  resize = 'resize',
+  reset = 'reset',
+  none = 'none',
+  hide = 'hide',
+  show = 'show',
+  normal = 'normal',
+  active = 'active'
+}
+
+export type UpdateMode = keyof typeof UpdateModeEnum;
 
 export class DatasetController<E extends Element = Element, DSE extends Element = Element> {
   constructor(chart: Chart, datasetIndex: number);
