@@ -28,7 +28,7 @@ import {
   ILegendChartOptions,
   ITitleChartOptions,
 } from './plugins';
-import { IChartAnimationOptions, IParsingOptions } from './core';
+import { IChartAnimationOptions, IParsingOptions, IPlugin } from './core';
 import { IScaleChartOptions } from './scales';
 
 export type DeepPartial<T> = T extends {}
@@ -37,7 +37,7 @@ export type DeepPartial<T> = T extends {}
     }
   : T;
 
-export type IChartDataset<T = number, O = {}> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
+export type IChartDataset<T = unknown, O = {}> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
   data: T[];
 };
 
@@ -53,7 +53,7 @@ export type IDoughnutControllerDataset<T = IDoughnutDataPoint> = IChartDataset<T
 export type IPolarAreaControllerDataset<T = number> = IChartDataset<T, IPolarAreaControllerDatasetOptions>;
 export type IRadarControllerDataset<T = number> = IChartDataset<T, IRadarControllerDatasetOptions>;
 
-export interface IChartData<T = number, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
+export interface IChartData<T = unknown, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
   extends DeepPartial<IParsingOptions> {
   labels: L[];
   datasets: DS[];
@@ -61,6 +61,7 @@ export interface IChartData<T = number, L = string, DS extends IChartDataset<T> 
 
 export type IChartOptions<O = {}> = DeepPartial<
   ICoreChartOptions &
+    IParsingOptions &
     ITooltipChartOptions &
     ILegendChartOptions &
     ITitleChartOptions &
@@ -70,9 +71,22 @@ export type IChartOptions<O = {}> = DeepPartial<
     O
 >;
 
+export enum ChartTypeEnum {
+  bar = 'bar',
+  bubble = 'bubble',
+  doughnut = 'doughnut',
+  line = 'line',
+  pie = 'pie',
+  polarArea = 'polarArea',
+  radar = 'radar',
+  scatter = 'scatter',
+}
+
+export type IChartType = keyof typeof ChartTypeEnum;
+
 export interface IChartConfiguration<
-  TYPE = string,
-  T = number,
+  TYPE extends IChartType = IChartType,
+  T = unknown,
   L = string,
   DS extends IChartDataset<T> = IChartDataset<T>,
   O = {}
@@ -80,6 +94,7 @@ export interface IChartConfiguration<
   type: TYPE;
   data: IChartData<T, L, DS>;
   options?: IChartOptions<O>;
+  plugins?: IPlugin[];
 }
 
 export type IBarControllerConfiguration<T = number, L = string> = IChartConfiguration<
@@ -138,10 +153,10 @@ export type IRadarControllerConfiguration<T = number, L = string> = IChartConfig
   IRadarControllerChartOptions
 >;
 
-export type ConfigurationOptions<O> = O extends IChartConfiguration<unknown, unknown, unknown, infer O> ? O : never;
-export type ConfigurationData<O> = O extends IChartConfiguration<unknown, infer T, infer L, infer DS, unknown>
+export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer O> ? O : never;
+export type ConfigurationData<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, unknown>
   ? IChartData<T, L, DS>
   : never;
-export type ConfigurationDataset<O> = O extends IChartConfiguration<unknown, unknown, unknown, infer DS, unknown>
+export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer DS, unknown>
   ? DS
   : never;

@@ -1,7 +1,7 @@
 import { Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
-import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent } from '../core/interfaces';
+import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent, IHoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
-import { IChartData } from '../interfaces';
+import { IChartData, IChartDataset } from '../interfaces';
 
 export const Filler: IPlugin;
 
@@ -325,7 +325,7 @@ export interface ITooltipPlugin<O = {}> {
   afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
 }
 
-export interface ITooltipOptions {
+export interface ITooltipOptions extends IHoverInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
@@ -336,17 +336,9 @@ export interface ITooltipOptions {
    */
   custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
   /**
-   * Sets which elements appear in the tooltip.
-   */
-  mode: InteractionMode;
-  /**
    * The mode for positioning the tooltip
    */
   position: 'average' | 'nearest';
-  /**
-   * If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
-   */
-  intersect: boolean;
 
   /**
    * Sort tooltip items.
@@ -514,7 +506,7 @@ export interface ITooltipItem {
   /**
    * The dataset the item comes from
    */
-  dataset: object;
+  dataset: IChartDataset;
 
   /**
    * Index of the dataset the item comes from
