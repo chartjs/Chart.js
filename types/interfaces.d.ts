@@ -37,40 +37,6 @@ export type DeepPartial<T> = T extends {}
     }
   : T;
 
-export type IChartDataset<T = unknown, O = {}> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
-  data: T[];
-};
-
-export type IBarControllerDataset<T = number> = IChartDataset<T, IBarControllerDatasetOptions>;
-export type ILineControllerDataset<T = IScatterDataPoint> = IChartDataset<
-  T,
-  ILineControllerDatasetOptions & IFillerControllerDatasetOptions
->;
-export type IScatterControllerDataset<T = IScatterDataPoint> = IChartDataset<T, IScatterControllerDatasetOptions>;
-export type IBubbleControllerDataset<T = IBubbleDataPoint> = IChartDataset<T, IBubbleControllerDatasetOptions>;
-export type IPieControllerDataset<T = IPieDataPoint> = IChartDataset<T, IPieControllerDatasetOptions>;
-export type IDoughnutControllerDataset<T = IDoughnutDataPoint> = IChartDataset<T, IDoughnutControllerDatasetOptions>;
-export type IPolarAreaControllerDataset<T = number> = IChartDataset<T, IPolarAreaControllerDatasetOptions>;
-export type IRadarControllerDataset<T = number> = IChartDataset<T, IRadarControllerDatasetOptions>;
-
-export interface IChartData<T = unknown, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
-{
-  labels: L[];
-  datasets: DS[];
-}
-
-export type IChartOptions<O = {}> = DeepPartial<
-  ICoreChartOptions &
-    IParsingOptions &
-    ITooltipChartOptions &
-    ILegendChartOptions &
-    ITitleChartOptions &
-    IChartAnimationOptions &
-    IScaleChartOptions &
-    IElementChartOptions &
-    O
->;
-
 export enum ChartTypeEnum {
   bar = 'bar',
   bubble = 'bubble',
@@ -84,79 +50,77 @@ export enum ChartTypeEnum {
 
 export type IChartType = keyof typeof ChartTypeEnum;
 
+export type IChartDatasetBase<T, O> = DeepPartial<IControllerDatasetOptions & IParsingOptions & O> & {
+  data: T[];
+};
+
+export type IBarControllerDataset<T = number> = IChartDatasetBase<T, IBarControllerDatasetOptions>;
+export type ILineControllerDataset<T = IScatterDataPoint> = IChartDatasetBase<
+  T,
+  ILineControllerDatasetOptions & IFillerControllerDatasetOptions
+>;
+export type IScatterControllerDataset<T = IScatterDataPoint> = IChartDatasetBase<T, IScatterControllerDatasetOptions>;
+export type IBubbleControllerDataset<T = IBubbleDataPoint> = IChartDatasetBase<T, IBubbleControllerDatasetOptions>;
+export type IPieControllerDataset<T = IPieDataPoint> = IChartDatasetBase<T, IPieControllerDatasetOptions>;
+export type IDoughnutControllerDataset<T = IDoughnutDataPoint> = IChartDatasetBase<T, IDoughnutControllerDatasetOptions>;
+export type IPolarAreaControllerDataset<T = number> = IChartDatasetBase<T, IPolarAreaControllerDatasetOptions>;
+export type IRadarControllerDataset<T = number> = IChartDatasetBase<T, IRadarControllerDatasetOptions>;
+
+export interface IChartDatasetRegistry<T> {
+  bar: IBarControllerDataset<T>;
+  line: ILineControllerDataset<T>;
+  scatter: IScatterControllerDataset<T>;
+  bubble: IBubbleControllerDataset<T>;
+  pie: IPieControllerDataset<T>;
+  doughnut: IDoughnutControllerDataset<T>;
+  polarArea: IPolarAreaControllerDataset<T>;
+  radar: IRadarControllerDataset<T>;
+}
+
+export type IChartDataset<T = unknown> = IChartDatasetRegistry<T>[keyof IChartDatasetRegistry<T>]
+
+export interface IChartData<
+  TYPE extends IChartType = IChartType,
+  T = unknown,
+  L = string
+> {
+  labels: L[];
+  // "data" property must be repeated here in order to help the compiler to infer the actual type of T
+  datasets: ({ data: T[] } & IChartDatasetRegistry<T>[TYPE])[];
+}
+
+export type IChartOptionsBase<O> = DeepPartial<
+  ICoreChartOptions &
+    IParsingOptions &
+    ITooltipChartOptions &
+    ILegendChartOptions &
+    ITitleChartOptions &
+    IChartAnimationOptions &
+    IScaleChartOptions &
+    IElementChartOptions &
+    O
+>;
+
+export interface IChartOptionsRegistry {
+  bar: IChartOptionsBase<IBarControllerChartOptions>;
+  line: IChartOptionsBase<ILineControllerChartOptions>;
+  scatter: IChartOptionsBase<IScatterControllerChartOptions>;
+  bubble: IChartOptionsBase<{}>;
+  pie: IChartOptionsBase<IPieControllerChartOptions>;
+  doughnut: IChartOptionsBase<IDoughnutControllerChartOptions>;
+  polarArea: IChartOptionsBase<IPolarAreaControllerChartOptions>;
+  radar: IChartOptionsBase<IRadarControllerChartOptions>;
+}
+
+export type IChartOptions = IChartOptionsRegistry[keyof IChartOptionsRegistry]
+
 export interface IChartConfiguration<
   TYPE extends IChartType = IChartType,
   T = unknown,
-  L = string,
-  DS extends IChartDataset<T> = IChartDataset<T>,
-  O = {}
+  L = string
 > {
   type: TYPE;
-  data: IChartData<T, L, DS>;
-  options?: IChartOptions<O>;
+  data: IChartData<TYPE, T, L>;
+  options?: IChartOptionsRegistry[TYPE];
   plugins?: IPlugin[];
 }
-
-export type IBarControllerConfiguration<T = number, L = string> = IChartConfiguration<
-  'bar',
-  T,
-  L,
-  IBarControllerDataset<T>,
-  IBarControllerChartOptions
->;
-export type ILineControllerConfiguration<T = IScatterDataPoint, L = string> = IChartConfiguration<
-  'line',
-  T,
-  L,
-  ILineControllerDataset<T>,
-  ILineControllerChartOptions
->;
-export type IScatterControllerConfiguration<T = IScatterDataPoint, L = string> = IChartConfiguration<
-  'scatter',
-  T,
-  L,
-  IScatterControllerDataset<T>,
-  IScatterControllerChartOptions
->;
-export type IBubbleControllerConfiguration<T = IBubbleDataPoint, L = string> = IChartConfiguration<
-  'bubble',
-  T,
-  L,
-  IBubbleControllerDataset<T>
->;
-export type IPieControllerConfiguration<T = IPieDataPoint, L = string> = IChartConfiguration<
-  'pie',
-  T,
-  L,
-  IPieControllerDataset<T>,
-  IPieControllerChartOptions
->;
-export type IDoughnutControllerConfiguration<T = IDoughnutDataPoint, L = string> = IChartConfiguration<
-  'doughnut',
-  T,
-  L,
-  IDoughnutControllerDataset<T>,
-  IDoughnutControllerChartOptions
->;
-export type IPolarAreaControllerConfiguration<T = number, L = string> = IChartConfiguration<
-  'polarArea',
-  T,
-  L,
-  IPolarAreaControllerDataset<T>,
-  IPolarAreaControllerChartOptions
->;
-export type IRadarControllerConfiguration<T = number, L = string> = IChartConfiguration<
-  'radar',
-  T,
-  L,
-  IRadarControllerDataset<T>,
-  IRadarControllerChartOptions
->;
-
-export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O> ? O : never;
-export type ConfigurationData<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O>
-  ? IChartData<T, L, DS>
-  : never;
-export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O>
-  ? DS
-  : never;
