@@ -153,10 +153,10 @@ export type IRadarControllerConfiguration<T = number, L = string> = IChartConfig
   IRadarControllerChartOptions
 >;
 
-export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer O> ? O : never;
-export type ConfigurationData<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, unknown>
+export type ConfigurationOptions<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O> ? O : never;
+export type ConfigurationData<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O>
   ? IChartData<T, L, DS>
   : never;
-export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartType, unknown, unknown, infer DS, unknown>
+export type ConfigurationDataset<O> = O extends IChartConfiguration<IChartType, infer T, infer L, infer DS, infer O>
   ? DS
   : never;
