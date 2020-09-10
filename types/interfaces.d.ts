@@ -54,7 +54,7 @@ export type IPolarAreaControllerDataset<T = number> = IChartDataset<T, IPolarAre
 export type IRadarControllerDataset<T = number> = IChartDataset<T, IRadarControllerDatasetOptions>;
 
 export interface IChartData<T = unknown, L = string, DS extends IChartDataset<T> = IChartDataset<T>>
-  extends DeepPartial<IParsingOptions> {
+{
   labels: L[];
   datasets: DS[];
 }
