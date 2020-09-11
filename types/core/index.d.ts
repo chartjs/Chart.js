@@ -232,12 +232,12 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<TYPE extends IChartType = IChartType, T = unknown, L = string> {
+export interface Chart<TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: IChartConfiguration<TYPE, T, L>
+  readonly config: IChartConfiguration<TYPE, DATA, LABEL>
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -248,8 +248,8 @@ export interface Chart<TYPE extends IChartType = IChartType, T = unknown, L = st
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
-  data: IChartConfiguration<TYPE, T, L>['data'];
-  options: IChartConfiguration<TYPE, T, L>['options'];
+  data: IChartConfiguration<TYPE, DATA, LABEL>['data'];
+  options: IChartConfiguration<TYPE, DATA, LABEL>['options'];
 
   clear(): this;
   stop(): this;
@@ -297,10 +297,10 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <TYPE extends IChartType = IChartType, T = unknown, L = string>(
+  new <TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string>(
     item: ChartItem,
-    config: IChartConfiguration<TYPE, T, L>
-  ): Chart<TYPE, T, L>;
+    config: IChartConfiguration<TYPE, DATA, LABEL>
+  ): Chart<TYPE, DATA, LABEL>;
 
   readonly version: string;
   readonly instances: { [key: string]: Chart };
