@@ -10,7 +10,7 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData, IChartType } from '../interfaces';
+import { IChartDataset, IChartConfiguration, IChartType } from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -232,16 +232,12 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<
-  T = unknown,
-  L = string,
-  C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>
-> {
+export interface Chart<TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: C;
+  readonly config: IChartConfiguration<TYPE, DATA, LABEL>
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -252,8 +248,8 @@ export interface Chart<
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
-  data: ConfigurationData<C>;
-  options: ConfigurationOptions<C>;
+  data: IChartConfiguration<TYPE, DATA, LABEL>['data'];
+  options: IChartConfiguration<TYPE, DATA, LABEL>['options'];
 
   clear(): this;
   stop(): this;
@@ -301,10 +297,10 @@ export declare type ChartItem =
 
 export const Chart: {
   prototype: Chart;
-  new <T = unknown, L = string, C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>>(
+  new <TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string>(
     item: ChartItem,
-    config: C
-  ): Chart<T, L, C>;
+    config: IChartConfiguration<TYPE, DATA, LABEL>
+  ): Chart<TYPE, DATA, LABEL>;
 
   readonly version: string;
   readonly instances: { [key: string]: Chart };
