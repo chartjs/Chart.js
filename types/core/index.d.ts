@@ -232,7 +232,7 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string> {
+export declare class Chart<TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
@@ -250,6 +250,8 @@ export interface Chart<TYPE extends IChartType = IChartType, DATA extends unknow
 
   data: IChartConfiguration<TYPE, DATA, LABEL>['data'];
   options: IChartConfiguration<TYPE, DATA, LABEL>['options'];
+
+  constructor(item: ChartItem, config: IChartConfiguration<TYPE, DATA, LABEL>);
 
   clear(): this;
   stop(): this;
@@ -284,6 +286,12 @@ export interface Chart<TYPE extends IChartType = IChartType, DATA extends unknow
   bindEvents(): void;
   unbindEvents(): void;
   updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
+
+  static readonly version: string;
+  static readonly instances: { [key: string]: Chart };
+  static readonly registry: Registry;
+  static register(...items: IChartComponentLike[]): void;
+  static unregister(...items: IChartComponentLike[]): void;
 }
 
 export declare type ChartItem =
@@ -294,20 +302,6 @@ export declare type ChartItem =
   | OffscreenCanvas
   | { canvas: HTMLCanvasElement | OffscreenCanvas }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>;
-
-export const Chart: {
-  prototype: Chart;
-  new <TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string>(
-    item: ChartItem,
-    config: IChartConfiguration<TYPE, DATA, LABEL>
-  ): Chart<TYPE, DATA, LABEL>;
-
-  readonly version: string;
-  readonly instances: { [key: string]: Chart };
-  readonly registry: Registry;
-  register(...items: IChartComponentLike[]): void;
-  unregister(...items: IChartComponentLike[]): void;
-};
 
 export enum UpdateModeEnum {
   resize = 'resize',
