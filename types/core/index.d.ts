@@ -10,7 +10,15 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartConfiguration, IChartType } from '../interfaces';
+import {
+  DefaultDataPoint,
+  IChartConfiguration,
+  IChartData,
+  IChartDataset,
+  IChartOptions,
+  IChartType,
+  IScaleOptions
+} from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -232,7 +240,11 @@ export interface IParsingOptions {
     | false;
 }
 
-export declare class Chart<TYPE extends IChartType = IChartType, DATA extends unknown[] = unknown[], LABEL = string> {
+export declare class Chart<
+  TYPE extends IChartType = IChartType,
+  DATA extends unknown[] = DefaultDataPoint<TYPE>,
+  LABEL = string
+> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
@@ -248,8 +260,8 @@ export declare class Chart<TYPE extends IChartType = IChartType, DATA extends un
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
-  data: IChartConfiguration<TYPE, DATA, LABEL>['data'];
-  options: IChartConfiguration<TYPE, DATA, LABEL>['options'];
+  data: IChartData<TYPE, DATA, LABEL>;
+  options: IChartOptions<TYPE>;
 
   constructor(item: ChartItem, config: IChartConfiguration<TYPE, DATA, LABEL>);
 
@@ -858,7 +870,7 @@ export interface ITick {
   major?: boolean;
 }
 
-export interface IScaleOptions {
+export interface ICoreScaleOptions {
   /**
    * Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.
    * @default true
@@ -932,7 +944,7 @@ export interface IScaleOptions {
   afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<{}, O>, IChartArea {
+export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends Element<{}, O>, IChartArea {
   readonly id: string;
   readonly type: string;
   readonly ctx: CanvasRenderingContext2D;
@@ -1047,7 +1059,7 @@ export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<
 }
 export const Scale: {
   prototype: Scale;
-  new <O extends IScaleOptions = IScaleOptions>(cfg: any): Scale<O>;
+  new <O extends ICoreScaleOptions = ICoreScaleOptions>(cfg: any): Scale<O>;
 };
 
 export interface IScriptAbleScaleContext {
