@@ -94,6 +94,7 @@ export function getRelativePosition(evt, chart) {
 	const touches = e.touches;
 	const source = touches && touches.length ? touches[0] : e;
 	const {offsetX, offsetY, layerX, layerY, target} = source;
+
 	if (offsetX > 0 || offsetY > 0) {
 		return {
 			x: offsetX,
@@ -108,8 +109,11 @@ export function getRelativePosition(evt, chart) {
 		};
 	}
 
-	const x = source.clientX;
-	const y = source.clientY;
+	return calculateRelativePositionFromClientXY(source, chart);
+}
+
+function calculateRelativePositionFromClientXY(source, chart) {
+	const {x, y} = source;
 
 	const canvasElement = chart.canvas;
 	const devicePixelRatio = chart.currentDevicePixelRatio;
