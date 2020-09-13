@@ -205,19 +205,6 @@ function getCanvas(item) {
 	} else if (Array.isArray(item) && item.length) {
 		// Support for array based queries (such as jQuery)
 		item = item[0];
-	} else {
-		// No dom element was found
-		throw new Error(
-			`No DOM element was found when trying to setup Chartjs canvas.
-
-Tips:
-
-- Check if the dom element requested is indeed present in the html file.
-
-- Check if the .js file where you are defining your chart is executing after the definition of the canvas in the html file.
-
-			`
-		);
 	}
 
 	if (item && item.canvas) {
@@ -304,7 +291,7 @@ class Chart {
 			// the chart initialization but after setting basic chart / controller properties that
 			// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
 			// https://github.com/chartjs/Chart.js/issues/2807
-			console.error("Failed to create chart: can't acquire context from the given item");
+			console.error("Failed to create chart: can't acquire context from the given item \n\n Tips: \n\n-Check if the dom element requested is indeed present in the html file. \n\n-Check if the .js file where you are defining your chart is executing after the definition of the canvas in the html file.\n");
 			return;
 		}
 
