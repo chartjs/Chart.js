@@ -113,7 +113,7 @@ export function getRelativePosition(evt, chart) {
 }
 
 function calculateRelativePositionFromClientXY(source, chart) {
-	const {x, y} = source;
+	const {clientX: x, clientY: y} = source;
 
 	const canvasElement = chart.canvas;
 	const devicePixelRatio = chart.currentDevicePixelRatio;
