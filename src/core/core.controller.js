@@ -202,9 +202,22 @@ function isDomSupported() {
 function getCanvas(item) {
 	if (isDomSupported() && typeof item === 'string') {
 		item = document.getElementById(item);
-	} else if (item.length) {
+	} else if (Array.isArray(item) && item.length) {
 		// Support for array based queries (such as jQuery)
 		item = item[0];
+	} else {
+		// No dom element was found
+		throw new Error(
+			`No DOM element was found when trying to setup Chartjs canvas.
+
+Tips:
+
+- Check if the dom element requested is indeed present in the html file.
+
+- Check if the .js file where you are defining your chart is executing after the definition of the canvas in the html file.
+
+			`
+		);
 	}
 
 	if (item && item.canvas) {
