@@ -1,6 +1,5 @@
-import { ScriptAbleScale, IScaleOptions, ITick, Scale } from '../core';
+import { ScriptAbleScale, ICoreScaleOptions, ITick, Scale } from '../core';
 import { Color, IChartComponent, IFontSpec, TimeUnit } from '../core/interfaces';
-import { DeepPartial } from '../interfaces';
 
 export interface IGridLineOptions {
   /**
@@ -85,7 +84,7 @@ export interface ITickOptions {
   };
 }
 
-export interface ICartesianScaleOptions extends IScaleOptions {
+export interface ICartesianScaleOptions extends ICoreScaleOptions {
   /**
    * Position of the axis.
    */
@@ -276,7 +275,7 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
      */
     round: false | TimeUnit;
     /**
-     * If boolean and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday. 
+     * If boolean and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
      * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
      * @default false
      */
@@ -342,7 +341,7 @@ export const TimeSeriesScale: IChartComponent & {
   new <O extends ITimeScaleOptions = ITimeScaleOptions>(cfg: any): TimeSeriesScale<O>;
 };
 
-export type IRadialLinearScaleOptions = IScaleOptions & {
+export type IRadialLinearScaleOptions = ICoreScaleOptions & {
   animate: boolean;
 
   angleLines: {
@@ -476,28 +475,3 @@ export const RadialLinearScale: IChartComponent & {
   prototype: RadialLinearScale;
   new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(cfg: any): RadialLinearScale<O>;
 };
-
-export interface ILinearScaleType extends DeepPartial<ILinearScaleOptions> {
-  type: 'linear';
-}
-export interface ILogarithmicScaleType extends DeepPartial<ILogarithmicScaleOptions> {
-  type: 'logarithmic';
-}
-export interface ICategoryScaleType extends DeepPartial<ICategoryScaleOptions> {
-  type: 'category';
-}
-export interface IRadialLinearScaleType extends DeepPartial<IRadialLinearScaleOptions> {
-  type: 'radialLinear';
-}
-export interface ITimeScaleType extends DeepPartial<ITimeScaleOptions> {
-  type: 'time';
-}
-export interface ITimeSeriesScaleType extends DeepPartial<ITimeScaleOptions> {
-  type: 'timeseries';
-}
-
-export interface IScaleChartOptions {
-  scales: {
-    [key: string]: { type: string } & DeepPartial<IScaleOptions>;
-  };
-}

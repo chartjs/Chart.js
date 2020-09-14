@@ -158,25 +158,20 @@ If you want your new chart type to be statically typed, you must provide a `.d.t
 There are three main declarations that can be augmented when adding a new chart type:
 
 * `ChartTypeEnum` enumeration must contain an entry for the new type.
-* `IChartDatasetRegistry` must contains the dataset options for the new type, either by extending `IChartDatasetBase` or an existing entry in `IChartDatasetRegistry`.
-* `IChartOptionsRegistry` must contains the chart options for the new type, either by extending `IChartOptionsBase` or an existing entry in `IChartOptionsRegistry`.
+* `IChartTypeRegistry` must contains the declarations for the new type, either by extending an existing entry in `IChartTypeRegistry` or by creating a new one.
 
 For example, to provide typings for a new chart type that extends from a bubble chart, you would add a `.d.ts` containing:
 
 ```javascript
-import { IChartDatasetRegistry, IChartOptionsRegistry } from 'chart.js'
+import { IChartTypeRegistry } from 'chart.js'
 
 declare module 'chart.js' {
     enum ChartTypeEnum {
         derivedBubble = 'derivedBubble'
     }
 
-    interface IChartDatasetRegistry<DATA extends unknown[]> {
-        derivedBubble: IChartDatasetRegistry<DATA>['bubble']
-    }
-
-    interface IChartOptionsRegistry {
-        derivedBubble: IChartOptionsRegistry['bubble']
+    interface IChartTypeRegistry {
+        derivedBubble: IChartTypeRegistry['bubble']
     }
 }
 ```
