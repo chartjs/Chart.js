@@ -7,7 +7,7 @@ import {BasicPlatform, DomPlatform} from '../platform';
 import PluginService from './core.plugins';
 import registry from './core.registry';
 import {getMaximumWidth, getMaximumHeight, retinaScale} from '../helpers/helpers.dom';
-import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isArray} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -202,7 +202,7 @@ function isDomSupported() {
 function getCanvas(item) {
 	if (isDomSupported() && typeof item === 'string') {
 		item = document.getElementById(item);
-	} else if (isArray(item) && item.length) {
+	} else if (item && item.length) {
 		// Support for array based queries (such as jQuery)
 		item = item[0];
 	}
