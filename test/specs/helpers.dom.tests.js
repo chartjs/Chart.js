@@ -263,33 +263,7 @@ describe('DOM helpers tests', function() {
 			expect(helpers.getRelativePosition(event, chart)).toEqual({x: 0, y: 10});
 		});
 
-		it('should use layerX/Y - target offsets when available', function() {
-			const chart = undefined;
-
-			const event1 = {
-				layerX: 0,
-				layerY: 10,
-				target: {
-					offsetLeft: 0,
-					offsetTop: 5
-				}
-			};
-			expect(helpers.getRelativePosition(event1, chart)).toEqual({x: 0, y: 5});
-
-			const event2 = {
-				offsetX: 0,
-				offsetY: 0,
-				layerX: 10,
-				layerY: 10,
-				target: {
-					offsetLeft: 0,
-					offsetTop: 5
-				}
-			};
-			expect(helpers.getRelativePosition(event2, chart)).toEqual({x: 10, y: 5});
-		});
-
-		it('should calculate from clientX/Y if offset/layer coords are not available', function() {
+		it('should calculate from clientX/Y as fallback', function() {
 			const chart = window.acquireChart({}, {
 				canvas: {
 					height: 200,
