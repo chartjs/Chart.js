@@ -115,7 +115,8 @@ function boundingRects(bar) {
 function inRange(bar, x, y, useFinalPosition) {
 	const skipX = x === null;
 	const skipY = y === null;
-	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar, useFinalPosition);
+	const skipBoth = skipX && skipY;
+	const bounds = bar && !skipBoth && getBarBounds(bar, useFinalPosition);
 
 	return bounds
 		&& (skipX || x >= bounds.left && x <= bounds.right)
