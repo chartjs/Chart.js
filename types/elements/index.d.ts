@@ -91,7 +91,7 @@ export interface ILineOptions extends ICommonOptions {
   cubicInterpolationMode: 'default' | 'monotone';
   /**
    * Bézier curve tension (0 for no Bézier curves).
-   * @default 0.4 or 0 // TODO
+   * @default 0
    */
   tension: number;
   /**
