@@ -180,6 +180,31 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
 	return items;
 }
 
+function getAxisItems(chart, e, options, useFinalPosition) {
+	const position = getRelativePosition(e, chart);
+	const items = [];
+	const axis = options.axis;
+	const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
+	let intersectsItem = false;
+
+	evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
+		if (element[rangeMethod](position[axis], useFinalPosition)) {
+			items.push({element, datasetIndex, index});
+		}
+
+		if (element.inRange(position.x, position.y, useFinalPosition)) {
+			intersectsItem = true;
+		}
+	});
+
+	// If we want to trigger on an intersect and we don't have any items
+	// that intersect the position, return nothing
+	if (options.intersect && !intersectsItem) {
+		return [];
+	}
+	return items;
+}
+
 /**
  * Contains interaction related functions
  * @namespace Chart.Interaction
@@ -294,26 +319,8 @@ export default {
 		 * @return {InteractionItem[]} - items that are found
 		 */
 		x(chart, e, options, useFinalPosition) {
-			const position = getRelativePosition(e, chart);
-			const items = [];
-			let intersectsItem = false;
-
-			evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
-				if (element.inXRange(position.x, useFinalPosition)) {
-					items.push({element, datasetIndex, index});
-				}
-
-				if (element.inRange(position.x, position.y, useFinalPosition)) {
-					intersectsItem = true;
-				}
-			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				return [];
-			}
-			return items;
+			options.axis = 'x';
+			return getAxisItems(chart, e, options, useFinalPosition);
 		},
 
 		/**
@@ -326,26 +333,8 @@ export default {
 		 * @return {InteractionItem[]} - items that are found
 		 */
 		y(chart, e, options, useFinalPosition) {
-			const position = getRelativePosition(e, chart);
-			const items = [];
-			let intersectsItem = false;
-
-			evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
-				if (element.inYRange(position.y, useFinalPosition)) {
-					items.push({element, datasetIndex, index});
-				}
-
-				if (element.inRange(position.x, position.y, useFinalPosition)) {
-					intersectsItem = true;
-				}
-			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				return [];
-			}
-			return items;
+			options.axis = 'y';
+			return getAxisItems(chart, e, options, useFinalPosition);
 		}
 	}
 };
