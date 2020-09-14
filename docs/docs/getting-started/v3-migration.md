@@ -461,7 +461,7 @@ The APIs listed in this section have changed in signature or behaviour from vers
 
 ##### Dataset Controllers
 
-* `updateElement` was replaced with `updateElements` now taking the elements to update, the `start` index, and `mode`
+* `updateElement` was replaced with `updateElements` now taking the elements to update, the `start` index, `count`, and `mode`
 * `setHoverStyle` and `removeHoverStyle` now additionally take the `datasetIndex` and `index`
 
 #### Interactions

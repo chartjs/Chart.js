@@ -28,10 +28,10 @@ export default class LineController extends DatasetController {
 		}
 
 		// Update Points
-		me.updateElements(points, 0, mode);
+		me.updateElements(points, 0, points.length, mode);
 	}
 
-	updateElements(points, start, mode) {
+	updateElements(points, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
@@ -40,14 +40,13 @@ export default class LineController extends DatasetController {
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
-		let prevParsed;
+		let prevParsed = start > 0 && me.getParsed(start - 1);
 
-		for (let i = 0; i < points.length; ++i) {
-			const index = start + i;
+		for (let i = start; i < start + count; ++i) {
 			const point = points[i];
-			const parsed = me.getParsed(index);
-			const x = xScale.getPixelForValue(parsed.x, index);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, index);
+			const parsed = me.getParsed(i);
+			const x = xScale.getPixelForValue(parsed.x, i);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
 			const properties = {
 				x,
 				y,
@@ -56,10 +55,10 @@ export default class LineController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 
-			me.updateElement(point, index, properties, mode);
+			me.updateElement(point, i, properties, mode);
 
 			prevParsed = parsed;
 		}

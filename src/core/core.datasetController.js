@@ -936,10 +936,10 @@ export default class DatasetController {
 		}
 		me.parse(start, count);
 
-		me.updateElements(elements, start, 'reset');
+		me.updateElements(data, start, count, 'reset');
 	}
 
-	updateElements(element, start, mode) {} // eslint-disable-line no-unused-vars
+	updateElements(element, start, count, mode) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * @private

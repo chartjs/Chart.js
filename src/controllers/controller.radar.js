@@ -38,21 +38,19 @@ export default class RadarController extends DatasetController {
 		}
 
 		// Update Points
-		me.updateElements(points, 0, mode);
+		me.updateElements(points, 0, points.length, mode);
 	}
 
-	updateElements(points, start, mode) {
+	updateElements(points, start, count, mode) {
 		const me = this;
 		const dataset = me.getDataset();
 		const scale = me._cachedMeta.rScale;
 		const reset = mode === 'reset';
-		let i;
 
-		for (i = 0; i < points.length; i++) {
+		for (let i = start; i < start + count; i++) {
 			const point = points[i];
-			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
-			const pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
+			const options = me.resolveDataElementOptions(i, mode);
+			const pointPosition = scale.getPointPositionForValue(i, dataset.data[i]);
 
 			const x = reset ? scale.xCenter : pointPosition.x;
 			const y = reset ? scale.yCenter : pointPosition.y;
@@ -65,7 +63,7 @@ export default class RadarController extends DatasetController {
 				options
 			};
 
-			me.updateElement(point, index, properties, mode);
+			me.updateElement(point, i, properties, mode);
 		}
 	}
 
