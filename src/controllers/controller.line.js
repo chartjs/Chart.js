@@ -2,6 +2,7 @@ import DatasetController from '../core/core.datasetController';
 import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
+import {_lookupByKey} from '../helpers/helpers.collection';
 
 export default class LineController extends DatasetController {
 
@@ -13,8 +14,8 @@ export default class LineController extends DatasetController {
 	update(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const line = meta.dataset;
-		const points = meta.data || [];
+		const {dataset: line, data: points = [], iScale, _sorted, _parsed} = meta;
+		const pointCount = points.length;
 
 		// Update Line
 		// In resize mode only point locations change, so no need to set the points or options.
@@ -27,8 +28,19 @@ export default class LineController extends DatasetController {
 			me.updateElement(line, undefined, properties, mode);
 		}
 
+		let start = 0;
+		let count = pointCount;
+
+		if (_sorted) {
+			const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+			start = minDefined ? Math.max(0, _lookupByKey(_parsed, iScale.axis, min).lo) : 0;
+			count = (maxDefined ? Math.min(pointCount, _lookupByKey(_parsed, iScale.axis, max).hi + 1) : pointCount) - start;
+		}
+		me._drawStart = start;
+		me._drawCount = count;
+
 		// Update Points
-		me.updateElements(points, 0, points.length, mode);
+		me.updateElements(points, start, count, mode);
 	}
 
 	updateElements(points, start, count, mode) {
