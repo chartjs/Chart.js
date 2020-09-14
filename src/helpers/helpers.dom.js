@@ -64,16 +64,6 @@ export function getStyle(el, property) {
 		document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
 }
 
-/** @return {number=} number or undefined if no constraint */
-function getConstraintWidth(domNode) {
-	return getConstraintDimension(domNode, 'max-width', 'clientWidth');
-}
-
-/** @return {number=} number or undefined if no constraint */
-function getConstraintHeight(domNode) {
-	return getConstraintDimension(domNode, 'max-height', 'clientHeight');
-}
-
 /**
  * @private
  */
@@ -133,35 +123,22 @@ function fallbackIfNotValid(measure, fallback) {
 	return typeof measure === 'number' ? measure : fallback;
 }
 
-export function getMaximumWidth(domNode) {
+function getMax(domNode, prop, fallback, paddings) {
 	const container = _getParentNode(domNode);
 	if (!container) {
-		return fallbackIfNotValid(domNode.clientWidth, domNode.width);
+		return fallbackIfNotValid(domNode[prop], domNode[fallback]);
 	}
 
-	const clientWidth = container.clientWidth;
-	const paddingLeft = _calculatePadding(container, 'padding-left', clientWidth);
-	const paddingRight = _calculatePadding(container, 'padding-right', clientWidth);
+	const value = container[prop];
+	const padding = paddings.reduce((acc, cur) => acc + _calculatePadding(container, 'padding-' + cur, value), 0);
 
-	const w = clientWidth - paddingLeft - paddingRight;
-	const cw = getConstraintWidth(domNode);
-	return isNaN(cw) ? w : Math.min(w, cw);
+	const v = value - padding;
+	const cv = getConstraintDimension(domNode, 'max-' + fallback, prop);
+	return isNaN(cv) ? v : Math.min(v, cv);
 }
 
-export function getMaximumHeight(domNode) {
-	const container = _getParentNode(domNode);
-	if (!container) {
-		return fallbackIfNotValid(domNode.clientHeight, domNode.height);
-	}
-
-	const clientHeight = container.clientHeight;
-	const paddingTop = _calculatePadding(container, 'padding-top', clientHeight);
-	const paddingBottom = _calculatePadding(container, 'padding-bottom', clientHeight);
-
-	const h = clientHeight - paddingTop - paddingBottom;
-	const ch = getConstraintHeight(domNode);
-	return isNaN(ch) ? h : Math.min(h, ch);
-}
+export const getMaximumWidth = (domNode) => getMax(domNode, 'clientWidth', 'width', ['left', 'right']);
+export const getMaximumHeight = (domNode) => getMax(domNode, 'clientHeight', 'height', ['top', 'bottom']);
 
 export function retinaScale(chart, forceRatio) {
 	const pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;

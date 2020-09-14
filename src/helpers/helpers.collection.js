@@ -4,16 +4,18 @@ import {_capitalize} from './helpers.core';
  * Binary search
  * @param {array} table - the table search. must be sorted!
  * @param {number} value - value to find
+ * @param {function} [cmp]
  * @private
  */
-export function _lookup(table, value) {
+export function _lookup(table, value, cmp) {
+	cmp = cmp || ((index) => table[index] < value);
 	let hi = table.length - 1;
 	let lo = 0;
 	let mid;
 
 	while (hi - lo > 1) {
 		mid = (lo + hi) >> 1;
-		if (table[mid] < value) {
+		if (cmp(mid)) {
 			lo = mid;
 		} else {
 			hi = mid;
@@ -30,22 +32,8 @@ export function _lookup(table, value) {
  * @param {number} value - value to find
  * @private
  */
-export function _lookupByKey(table, key, value) {
-	let hi = table.length - 1;
-	let lo = 0;
-	let mid;
-
-	while (hi - lo > 1) {
-		mid = (lo + hi) >> 1;
-		if (table[mid][key] < value) {
-			lo = mid;
-		} else {
-			hi = mid;
-		}
-	}
-
-	return {lo, hi};
-}
+export const _lookupByKey = (table, key, value) =>
+	_lookup(table, value, index => table[index][key] < value);
 
 /**
  * Reverse binary search
@@ -54,22 +42,8 @@ export function _lookupByKey(table, key, value) {
  * @param {number} value - value to find
  * @private
  */
-export function _rlookupByKey(table, key, value) {
-	let hi = table.length - 1;
-	let lo = 0;
-	let mid;
-
-	while (hi - lo > 1) {
-		mid = (lo + hi) >> 1;
-		if (table[mid][key] < value) {
-			hi = mid;
-		} else {
-			lo = mid;
-		}
-	}
-
-	return {lo, hi};
-}
+export const _rlookupByKey = (table, key, value) =>
+	_lookup(table, value, index => table[index][key] >= value);
 
 /**
  * Return subset of `values` between `min` and `max` inclusive.
