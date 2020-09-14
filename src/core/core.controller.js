@@ -993,7 +993,9 @@ class Chart {
 			}
 		};
 
-		let listener = function(e) {
+		let listener = function(e, x, y) {
+			e.offsetX = x;
+			e.offsetY = y;
 			me._eventHandler(e);
 		};
 

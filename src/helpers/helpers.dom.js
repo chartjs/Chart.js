@@ -93,19 +93,12 @@ export function getRelativePosition(evt, chart) {
 	const e = evt.originalEvent || evt;
 	const touches = e.touches;
 	const source = touches && touches.length ? touches[0] : e;
-	const {offsetX, offsetY, layerX, layerY, target} = source;
+	const {offsetX, offsetY} = source;
 
 	if (offsetX > 0 || offsetY > 0) {
 		return {
 			x: offsetX,
 			y: offsetY
-		};
-	}
-
-	if (layerX > 0 || layerY > 0) {
-		return {
-			x: layerX - target.offsetLeft,
-			y: layerY - target.offsetTop
 		};
 	}
 

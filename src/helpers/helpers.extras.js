@@ -19,13 +19,15 @@ export const requestAnimFrame = (function() {
  * Latest argments are used on the actual call
  * @param {function} fn
  * @param {*} thisArg
+ * @param {function} [updateFn]
  */
-export function throttled(fn, thisArg) {
+export function throttled(fn, thisArg, updateFn) {
+	const updateArgs = updateFn || ((args) => Array.prototype.slice.call(args));
 	let ticking = false;
 	let args = [];
 
 	return function(...rest) {
-		args = Array.prototype.slice.call(rest);
+		args = updateArgs(rest);
 
 		if (!ticking) {
 			ticking = true;
