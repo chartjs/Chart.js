@@ -202,7 +202,7 @@ function isDomSupported() {
 function getCanvas(item) {
 	if (isDomSupported() && typeof item === 'string') {
 		item = document.getElementById(item);
-	} else if (item.length) {
+	} else if (item && item.length) {
 		// Support for array based queries (such as jQuery)
 		item = item[0];
 	}
