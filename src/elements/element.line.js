@@ -33,6 +33,20 @@ function getLineMethod(options) {
 	return lineTo;
 }
 
+function pathVars(points, segment, params) {
+	params = params || {};
+	const count = points.length;
+	const start = Math.max(params.start || 0, segment.start);
+	const end = Math.min(params.end || count - 1, segment.end);
+
+	return {
+		count,
+		start,
+		loop: segment.loop,
+		ilen: end < start ? count + end - start : end - start
+	};
+}
+
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
@@ -43,17 +57,17 @@ function getLineMethod(options) {
  * @param {number} segment.end - end index of the segment, referring the points array
  * @param {boolean} segment.loop - indicates that the segment is a loop
  * @param {object} params
- * @param {object} params.move - move to starting point (vs line to it)
- * @param {object} params.reverse - path the segment from end to start
+ * @param {boolean} params.move - move to starting point (vs line to it)
+ * @param {boolean} params.reverse - path the segment from end to start
+ * @param {number} params.start - limit segment to points starting from `start` index
+ * @param {number} params.end - limit segment to points ending at `start` + `count` index
  */
 function pathSegment(ctx, line, segment, params) {
-	const {start, end, loop} = segment;
 	const {points, options} = line;
+	const {count, start, loop, ilen} = pathVars(points, segment, params);
 	const lineMethod = getLineMethod(options);
-	const count = points.length;
 	// eslint-disable-next-line prefer-const
 	let {move = true, reverse} = params || {};
-	const ilen = end < start ? count + end - start : end - start;
 	let i, point, prev;
 
 	for (i = 0; i <= ilen; ++i) {
@@ -90,15 +104,15 @@ function pathSegment(ctx, line, segment, params) {
  * @param {number} segment.end - end index of the segment, referring the points array
  * @param {boolean} segment.loop - indicates that the segment is a loop
  * @param {object} params
- * @param {object} params.move - move to starting point (vs line to it)
- * @param {object} params.reverse - path the segment from end to start
+ * @param {boolean} params.move - move to starting point (vs line to it)
+ * @param {boolean} params.reverse - path the segment from end to start
+ * @param {number} params.start - limit segment to points starting from `start` index
+ * @param {number} params.end - limit segment to points ending at `start` + `count` index
  */
 function fastPathSegment(ctx, line, segment, params) {
 	const points = line.points;
-	const count = points.length;
-	const {start, end} = segment;
+	const {count, start, ilen} = pathVars(points, segment, params);
 	const {move = true, reverse} = params || {};
-	const ilen = end < start ? count + end - start : end - start;
 	let avgX = 0;
 	let countX = 0;
 	let i, point, prevX, minY, maxY, lastY;
@@ -290,8 +304,10 @@ export default class Line extends Element {
  	 * @param {number} segment.end - end index of the segment, referring the points array
  	 * @param {boolean} segment.loop - indicates that the segment is a loop
 	 * @param {object} params
-	 * @param {object} params.move - move to starting point (vs line to it)
-	 * @param {object} params.reverse - path the segment from end to start
+	 * @param {boolean} params.move - move to starting point (vs line to it)
+	 * @param {boolean} params.reverse - path the segment from end to start
+	 * @param {number} params.start - limit segment to points starting from `start` index
+	 * @param {number} params.end - limit segment to points ending at `start` + `count` index
 	 * @returns {undefined|boolean} - true if the segment is a full loop (path should be closed)
 	 */
 	pathSegment(ctx, segment, params) {
@@ -302,16 +318,22 @@ export default class Line extends Element {
 	/**
 	 * Append all segments of this line to current path.
 	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number} [start]
+	 * @param {number} [count]
 	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
 	 */
-	path(ctx) {
+	path(ctx, start, count) {
 		const me = this;
 		const segments = me.segments;
 		const ilen = segments.length;
 		const segmentMethod = _getSegmentMethod(me);
 		let loop = me._loop;
+
+		start = start || 0;
+		count = count || (me.points.length - start);
+
 		for (let i = 0; i < ilen; ++i) {
-			loop &= segmentMethod(ctx, me, segments[i]);
+			loop &= segmentMethod(ctx, me, segments[i], {start, end: start + count - 1});
 		}
 		return !!loop;
 	}
@@ -319,8 +341,11 @@ export default class Line extends Element {
 	/**
 	 * Draw
 	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {object} chartArea
+	 * @param {number} [start]
+	 * @param {number} [count]
 	 */
-	draw(ctx) {
+	draw(ctx, chartArea, start, count) {
 		const options = this.options || {};
 		const points = this.points || [];
 
@@ -334,7 +359,7 @@ export default class Line extends Element {
 
 		ctx.beginPath();
 
-		if (this.path(ctx)) {
+		if (this.path(ctx, start, count)) {
 			ctx.closePath();
 		}
 

@@ -104,7 +104,7 @@ export default class DoughnutController extends DatasetController {
 		me.outerRadius = outerRadius - radiusLength * me._getRingWeightOffset(me.index);
 		me.innerRadius = Math.max(me.outerRadius - radiusLength * chartWeight, 0);
 
-		me.updateElements(arcs, 0, mode);
+		me.updateElements(arcs, 0, arcs.length, mode);
 	}
 
 	/**
@@ -117,7 +117,7 @@ export default class DoughnutController extends DatasetController {
 		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI) : 0;
 	}
 
-	updateElements(arcs, start, mode) {
+	updateElements(arcs, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const chart = me.chart;
@@ -139,9 +139,8 @@ export default class DoughnutController extends DatasetController {
 			startAngle += me._circumference(i, reset);
 		}
 
-		for (i = 0; i < arcs.length; ++i) {
-			const index = start + i;
-			const circumference = me._circumference(index, reset);
+		for (i = start; i < start + count; ++i) {
+			const circumference = me._circumference(i, reset);
 			const arc = arcs[i];
 			const properties = {
 				x: centerX + me.offsetX,
@@ -153,11 +152,11 @@ export default class DoughnutController extends DatasetController {
 				innerRadius
 			};
 			if (includeOptions) {
-				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 			startAngle += circumference;
 
-			me.updateElement(arc, index, properties, mode);
+			me.updateElement(arc, i, properties, mode);
 		}
 		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 	}

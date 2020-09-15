@@ -65,10 +65,10 @@ export default class BubbleController extends DatasetController {
 		const points = me._cachedMeta.data;
 
 		// Update Points
-		me.updateElements(points, 0, mode);
+		me.updateElements(points, 0, points.length, mode);
 	}
 
-	updateElements(points, start, mode) {
+	updateElements(points, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale} = me._cachedMeta;
@@ -76,10 +76,9 @@ export default class BubbleController extends DatasetController {
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = 0; i < points.length; i++) {
+		for (let i = start; i < start + count; i++) {
 			const point = points[i];
-			const index = start + i;
-			const parsed = !reset && me.getParsed(index);
+			const parsed = !reset && me.getParsed(i);
 			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
 			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
 			const properties = {
@@ -89,14 +88,14 @@ export default class BubbleController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = me.resolveDataElementOptions(index, mode);
+				properties.options = me.resolveDataElementOptions(i, mode);
 
 				if (reset) {
 					properties.options.radius = 0;
 				}
 			}
 
-			me.updateElement(point, index, properties, mode);
+			me.updateElement(point, i, properties, mode);
 		}
 
 		me.updateSharedOptions(sharedOptions, mode, firstOpts);

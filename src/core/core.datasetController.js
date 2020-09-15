@@ -179,6 +179,8 @@ export default class DatasetController {
 		this._data = undefined;
 		this._objectData = undefined;
 		this._sharedOptions = undefined;
+		this._drawStart = undefined;
+		this._drawCount = undefined;
 		this.enableOptionSharing = false;
 
 		this.initialize();
@@ -380,11 +382,11 @@ export default class DatasetController {
 				parsed = me.parsePrimitiveData(meta, data, start, count);
 			}
 
-
+			const isNotInOrderComparedToPrev = () => isNaN(cur[iAxis]) || (prev && cur[iAxis] < prev[iAxis]);
 			for (i = 0; i < count; ++i) {
 				meta._parsed[i + start] = cur = parsed[i];
 				if (sorted) {
-					if (prev && cur[iAxis] < prev[iAxis]) {
+					if (isNotInOrderComparedToPrev()) {
 						sorted = false;
 					}
 					prev = cur;
@@ -544,7 +546,7 @@ export default class DatasetController {
 			parsed = _parsed[i];
 			value = parsed[scale.axis];
 			otherValue = parsed[otherScale.axis];
-			return (isNaN(value) || otherMin > otherValue || otherMax < otherValue);
+			return (isNaN(value) || isNaN(otherValue) || otherMin > otherValue || otherMax < otherValue);
 		}
 
 		for (i = 0; i < ilen; ++i) {
@@ -633,13 +635,15 @@ export default class DatasetController {
 		const elements = meta.data || [];
 		const area = chart.chartArea;
 		const active = [];
-		let i, ilen;
+		const start = me._drawStart || 0;
+		const count = me._drawCount || (elements.length - start);
+		let i;
 
 		if (meta.dataset) {
-			meta.dataset.draw(ctx, area);
+			meta.dataset.draw(ctx, area, start, count);
 		}
 
-		for (i = 0, ilen = elements.length; i < ilen; ++i) {
+		for (i = start; i < start + count; ++i) {
 			const element = elements[i];
 			if (element.active) {
 				active.push(element);
@@ -648,7 +652,7 @@ export default class DatasetController {
 			}
 		}
 
-		for (i = 0, ilen = active.length; i < ilen; ++i) {
+		for (i = 0; i < active.length; ++i) {
 			active[i].draw(ctx, area);
 		}
 	}
@@ -936,10 +940,10 @@ export default class DatasetController {
 		}
 		me.parse(start, count);
 
-		me.updateElements(elements, start, 'reset');
+		me.updateElements(data, start, count, 'reset');
 	}
 
-	updateElements(element, start, mode) {} // eslint-disable-line no-unused-vars
+	updateElements(element, start, count, mode) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * @private

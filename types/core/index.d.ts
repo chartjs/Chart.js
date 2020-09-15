@@ -338,7 +338,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
   linkScales(): void;
   getAllParsedValues(scale: Scale): number[];
   protected getLabelAndValue(index: number): { label: string; value: string };
-  updateElements(elements: E[], start: number, mode: UpdateMode): void;
+  updateElements(elements: E[], start: number, count: number, mode: UpdateMode): void;
   update(mode: UpdateMode): void;
   updateIndex(datasetIndex: number): void;
   protected getMaxOverflow(): boolean | number;
