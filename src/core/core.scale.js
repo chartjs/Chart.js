@@ -2,7 +2,7 @@ import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
 import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize, toDegrees, toRadians} from '../helpers/helpers.math';
+import {_factorize, toDegrees, toRadians, _int32Range} from '../helpers/helpers.math';
 import {toFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
@@ -981,7 +981,7 @@ export default class Scale extends Element {
 			decimal = 1 - decimal;
 		}
 
-		return me._startPixel + decimal * me._length;
+		return _int32Range(me._startPixel + decimal * me._length);
 	}
 
 	/**
