@@ -17,7 +17,7 @@ export default class BubbleController extends DatasetController {
 		const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
 		const parsed = [];
 		let i, ilen, item;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
+		for(i = start, ilen = start + count; i < ilen; ++i) {
 			item = data[i];
 			parsed.push({
 				x: xScale.parse(resolveObjectKey(item, xAxisKey), i),
@@ -36,7 +36,7 @@ export default class BubbleController extends DatasetController {
 		const meta = me._cachedMeta;
 		let i = (meta.data || []).length - 1;
 		let max = 0;
-		for (; i >= 0; --i) {
+		for(; i >= 0; --i) {
 			max = Math.max(max, me.getStyle(i, true).radius);
 		}
 		return max > 0 && max;
@@ -56,7 +56,7 @@ export default class BubbleController extends DatasetController {
 
 		return {
 			label: meta.label,
-			value: '(' + x + ', ' + y + (r ? ', ' + r : '') + ')'
+			value: `(${x}, ${y}${r ? `, ${r}` : ''})`
 		};
 	}
 
@@ -76,7 +76,7 @@ export default class BubbleController extends DatasetController {
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = start; i < start + count; i++) {
+		for(let i = start; i < start + count; i++) {
 			const point = points[i];
 			const parsed = !reset && me.getParsed(i);
 			const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
@@ -87,10 +87,10 @@ export default class BubbleController extends DatasetController {
 				skip: isNaN(x) || isNaN(y)
 			};
 
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = me.resolveDataElementOptions(i, mode);
 
-				if (reset) {
+				if(reset) {
 					properties.options.radius = 0;
 				}
 			}
@@ -123,13 +123,13 @@ export default class BubbleController extends DatasetController {
 		};
 
 		// In case values were cached (and thus frozen), we need to clone the values
-		if (values.$shared) {
+		if(values.$shared) {
 			values = Object.assign({}, values, {$shared: false});
 		}
 
 
 		// Custom radius resolution
-		if (mode !== 'active') {
+		if(mode !== 'active') {
 			values.radius = 0;
 		}
 		values.radius += resolve([

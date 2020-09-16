@@ -1293,12 +1293,12 @@ describe('Chart.controllers.bar', function() {
 			var stacked = xScale.options.stacked;
 
 			var totalBarWidth = 0;
-			for (var i = 0; i < chart.data.datasets.length; i++) {
+			for(var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
-				for (var j = xScale.min; j <= xScale.max; j++) {
+				for(var j = xScale.min; j <= xScale.max; j++) {
 					totalBarWidth += bars[j].width;
 				}
-				if (stacked) {
+				if(stacked) {
 					break;
 				}
 			}
@@ -1367,12 +1367,12 @@ describe('Chart.controllers.bar', function() {
 			var stacked = yScale.options.stacked;
 
 			var totalBarHeight = 0;
-			for (var i = 0; i < chart.data.datasets.length; i++) {
+			for(var i = 0; i < chart.data.datasets.length; i++) {
 				var bars = chart.getDatasetMeta(i).data;
-				for (var j = yScale.min; j <= yScale.max; j++) {
+				for(var j = yScale.min; j <= yScale.max; j++) {
 					totalBarHeight += bars[j].height;
 				}
-				if (stacked) {
+				if(stacked) {
 					break;
 				}
 			}
@@ -1421,7 +1421,7 @@ describe('Chart.controllers.bar', function() {
 
 	describe('Bar thickness with a category scale', function() {
 		[undefined, 20].forEach(function(barThickness) {
-			describe('When barThickness is ' + barThickness, function() {
+			describe(`When barThickness is ${barThickness}`, function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
 						type: 'bar',
@@ -1458,7 +1458,7 @@ describe('Chart.controllers.bar', function() {
 					var chart = this.chart;
 					var expected, i, ilen, meta;
 
-					if (barThickness) {
+					if(barThickness) {
 						expected = barThickness;
 					} else {
 						var scale = chart.scales.x;
@@ -1470,7 +1470,7 @@ describe('Chart.controllers.bar', function() {
 						expected = tickInterval * categoryPercentage / 2 * barPercentage;
 					}
 
-					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+					for(i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 						meta = chart.getDatasetMeta(i);
 						expect(meta.data[0].width).toBeCloseToPixel(expected);
 						expect(meta.data[1].width).toBeCloseToPixel(expected);
@@ -1485,7 +1485,7 @@ describe('Chart.controllers.bar', function() {
 					chart.data.datasets[1].maxBarThickness = 10;
 					chart.update();
 
-					for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+					for(i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
 						meta = chart.getDatasetMeta(i);
 						expect(meta.data[0].width).toBeCloseToPixel(10);
 						expect(meta.data[1].width).toBeCloseToPixel(10);

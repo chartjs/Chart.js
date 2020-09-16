@@ -22,14 +22,14 @@ const TWO_THIRDS_PI = PI * 2 / 3;
  * @private
  */
 export function toFontString(font) {
-	if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
+	if(!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
 		return null;
 	}
 
-	return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
-		+ font.size + 'px '
-		+ font.family;
+	return `${(font.style ? `${font.style} ` : '')
+	+ (font.weight ? `${font.weight} ` : '')
+	+ font.size}px ${
+		font.family}`;
 }
 
 /**
@@ -37,11 +37,11 @@ export function toFontString(font) {
  */
 export function _measureText(ctx, data, gc, longest, string) {
 	let textWidth = data[string];
-	if (!textWidth) {
+	if(!textWidth) {
 		textWidth = data[string] = ctx.measureText(string).width;
 		gc.push(string);
 	}
-	if (textWidth > longest) {
+	if(textWidth > longest) {
 		longest = textWidth;
 	}
 	return longest;
@@ -55,7 +55,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 	let data = cache.data = cache.data || {};
 	let gc = cache.garbageCollect = cache.garbageCollect || [];
 
-	if (cache.font !== font) {
+	if(cache.font !== font) {
 		data = cache.data = {};
 		gc = cache.garbageCollect = [];
 		cache.font = font;
@@ -66,20 +66,24 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 	ctx.font = font;
 	let longest = 0;
 	const ilen = arrayOfThings.length;
-	let i, j, jlen, thing, nestedThing;
-	for (i = 0; i < ilen; i++) {
+	let i,
+		j,
+		jlen,
+		thing,
+		nestedThing;
+	for(i = 0; i < ilen; i++) {
 		thing = arrayOfThings[i];
 
 		// Undefined strings and arrays should not be measured
-		if (thing !== undefined && thing !== null && isArray(thing) !== true) {
+		if(thing !== undefined && thing !== null && isArray(thing) !== true) {
 			longest = _measureText(ctx, data, gc, longest, thing);
-		} else if (isArray(thing)) {
+		} else if(isArray(thing)) {
 			// if it is an array lets measure each element
 			// to do maybe simplify this function a bit so we can do this more recursively?
-			for (j = 0, jlen = thing.length; j < jlen; j++) {
+			for(j = 0, jlen = thing.length; j < jlen; j++) {
 				nestedThing = thing[j];
 				// Undefined strings and arrays should not be measured
-				if (nestedThing !== undefined && nestedThing !== null && !isArray(nestedThing)) {
+				if(nestedThing !== undefined && nestedThing !== null && !isArray(nestedThing)) {
 					longest = _measureText(ctx, data, gc, longest, nestedThing);
 				}
 			}
@@ -89,9 +93,9 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 	ctx.restore();
 
 	const gcLen = gc.length / 2;
-	if (gcLen > arrayOfThings.length) {
-		for (i = 0; i < gcLen; i++) {
-			delete data[gc[i]];
+	if(gcLen > arrayOfThings.length) {
+		for(i = 0; i < gcLen; i++) {
+			Reflect.deleteProperty(data, gc[i]);
 		}
 		gc.splice(0, gcLen);
 	}
@@ -121,15 +125,19 @@ export function clear(chart) {
 }
 
 export function drawPoint(ctx, options, x, y) {
-	let type, xOffset, yOffset, size, cornerRadius;
+	let type,
+		xOffset,
+		yOffset,
+		size,
+		cornerRadius;
 	const style = options.pointStyle;
 	const rotation = options.rotation;
 	const radius = options.radius;
 	let rad = (rotation || 0) * RAD_PER_DEG;
 
-	if (style && typeof style === 'object') {
+	if(style && typeof style === 'object') {
 		type = style.toString();
-		if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
+		if(type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
 			ctx.save();
 			ctx.translate(x, y);
 			ctx.rotate(rad);
@@ -139,7 +147,7 @@ export function drawPoint(ctx, options, x, y) {
 		}
 	}
 
-	if (isNaN(radius) || radius <= 0) {
+	if(isNaN(radius) || radius <= 0) {
 		return;
 	}
 
@@ -178,7 +186,7 @@ export function drawPoint(ctx, options, x, y) {
 		ctx.closePath();
 		break;
 	case 'rect':
-		if (!rotation) {
+		if(!rotation) {
 			size = Math.SQRT1_2 * radius;
 			ctx.rect(x - size, y - size, 2 * size, 2 * size);
 			break;
@@ -233,7 +241,7 @@ export function drawPoint(ctx, options, x, y) {
 	}
 
 	ctx.fill();
-	if (options.borderWidth > 0) {
+	if(options.borderWidth > 0) {
 		ctx.stroke();
 	}
 }
@@ -267,14 +275,14 @@ export function unclipArea(ctx) {
  * @private
  */
 export function _steppedLineTo(ctx, previous, target, flip, mode) {
-	if (!previous) {
+	if(!previous) {
 		return ctx.lineTo(target.x, target.y);
 	}
-	if (mode === 'middle') {
+	if(mode === 'middle') {
 		const midpoint = (previous.x + target.x) / 2.0;
 		ctx.lineTo(midpoint, previous.y);
 		ctx.lineTo(midpoint, target.y);
-	} else if (mode === 'after' !== !!flip) {
+	} else if(mode === 'after' !== !!flip) {
 		ctx.lineTo(previous.x, target.y);
 	} else {
 		ctx.lineTo(target.x, previous.y);
@@ -286,7 +294,7 @@ export function _steppedLineTo(ctx, previous, target, flip, mode) {
  * @private
  */
 export function _bezierCurveTo(ctx, previous, target, flip) {
-	if (!previous) {
+	if(!previous) {
 		return ctx.lineTo(target.x, target.y);
 	}
 	ctx.bezierCurveTo(

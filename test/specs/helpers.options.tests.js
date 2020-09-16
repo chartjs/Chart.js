@@ -127,8 +127,8 @@ describe('Chart.helpers.options', function() {
 		it('should return null as a font string if size or family are missing', function() {
 			const fontFamily = Chart.defaults.font.family;
 			const fontSize = Chart.defaults.font.size;
-			delete Chart.defaults.font.family;
-			delete Chart.defaults.font.size;
+			Reflect.deleteProperty(Chart.defaults.font, 'family');
+			Reflect.deleteProperty(Chart.defaults.font, 'size');
 
 			expect(toFont({
 				style: 'italic',
@@ -144,7 +144,7 @@ describe('Chart.helpers.options', function() {
 		});
 		it('font.style should be optional for font strings', function() {
 			const fontStyle = Chart.defaults.font.style;
-			delete Chart.defaults.font.style;
+			Reflect.deleteProperty(Chart.defaults.font, 'style');
 
 			expect(toFont({
 				size: 12,

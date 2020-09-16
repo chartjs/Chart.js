@@ -12,9 +12,9 @@ function drawFPS(chart, count, date, lastDate) {
 	ctx.clearRect(0, 0, 50, 24);
 	ctx.fillStyle = 'black';
 	ctx.textAlign = 'right';
-	if (count) {
+	if(count) {
 		ctx.fillText(count, 50, 8);
-		ctx.fillText(fps + ' fps', 50, 18);
+		ctx.fillText(`${fps} fps`, 50, 18);
 	}
 	ctx.restore();
 }
@@ -51,19 +51,19 @@ export class Animator {
 	_refresh() {
 		const me = this;
 
-		if (me._request) {
+		if(me._request) {
 			return;
 		}
 		me._running = true;
 
-		me._request = requestAnimFrame.call(window, () => {
+		me._request = Reflect.apply(requestAnimFrame, window, [() => {
 			me._update();
 			me._request = null;
 
-			if (me._running) {
+			if(me._running) {
 				me._refresh();
 			}
-		});
+		}]);
 	}
 
 	/**
@@ -75,7 +75,7 @@ export class Animator {
 		let remaining = 0;
 
 		me._charts.forEach((anims, chart) => {
-			if (!anims.running || !anims.items.length) {
+			if(!anims.running || !anims.items.length) {
 				return;
 			}
 			const items = anims.items;
@@ -83,10 +83,10 @@ export class Animator {
 			let draw = false;
 			let item;
 
-			for (; i >= 0; --i) {
+			for(; i >= 0; --i) {
 				item = items[i];
 
-				if (item._active) {
+				if(item._active) {
 					item.tick(date);
 					draw = true;
 				} else {
@@ -97,16 +97,16 @@ export class Animator {
 				}
 			}
 
-			if (draw) {
+			if(draw) {
 				chart.draw();
 				me._notify(chart, anims, date, 'progress');
 			}
 
-			if (chart.options.animation.debug) {
+			if(chart.options.animation.debug) {
 				drawFPS(chart, items.length, date, me._lastDate);
 			}
 
-			if (!items.length) {
+			if(!items.length) {
 				anims.running = false;
 				me._notify(chart, anims, date, 'complete');
 			}
@@ -116,7 +116,7 @@ export class Animator {
 
 		me._lastDate = date;
 
-		if (remaining === 0) {
+		if(remaining === 0) {
 			me._running = false;
 		}
 	}
@@ -127,7 +127,7 @@ export class Animator {
 	_getAnims(chart) {
 		const charts = this._charts;
 		let anims = charts.get(chart);
-		if (!anims) {
+		if(!anims) {
 			anims = {
 				running: false,
 				items: [],
@@ -156,7 +156,7 @@ export class Animator {
 	 * @param {Animation[]} items - animations
 	 */
 	add(chart, items) {
-		if (!items || !items.length) {
+		if(!items || !items.length) {
 			return;
 		}
 		this._getAnims(chart).items.push(...items);
@@ -176,7 +176,7 @@ export class Animator {
 	 */
 	start(chart) {
 		const anims = this._charts.get(chart);
-		if (!anims) {
+		if(!anims) {
 			return;
 		}
 		anims.running = true;
@@ -186,11 +186,11 @@ export class Animator {
 	}
 
 	running(chart) {
-		if (!this._running) {
+		if(!this._running) {
 			return false;
 		}
 		const anims = this._charts.get(chart);
-		if (!anims || !anims.running || !anims.items.length) {
+		if(!anims || !anims.running || !anims.items.length) {
 			return false;
 		}
 		return true;
@@ -202,13 +202,13 @@ export class Animator {
 	 */
 	stop(chart) {
 		const anims = this._charts.get(chart);
-		if (!anims || !anims.items.length) {
+		if(!anims || !anims.items.length) {
 			return;
 		}
 		const items = anims.items;
 		let i = items.length - 1;
 
-		for (; i >= 0; --i) {
+		for(; i >= 0; --i) {
 			items[i].cancel();
 		}
 		anims.items = [];

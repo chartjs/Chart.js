@@ -31,7 +31,7 @@ export default class Element {
 	getProps(props, final) {
 		const me = this;
 		const anims = this.$animations;
-		if (!final || !anims) {
+		if(!final || !anims) {
 			// let's not create an object, if not needed
 			return me;
 		}

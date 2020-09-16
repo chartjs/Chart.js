@@ -1,12 +1,12 @@
 export function fontString(pixelSize, fontStyle, fontFamily) {
-	return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
+	return `${fontStyle} ${pixelSize}px ${fontFamily}`;
 }
 
 /**
 * Request animation polyfill
 */
 export const requestAnimFrame = (function() {
-	if (typeof window === 'undefined') {
+	if(typeof window === 'undefined') {
 		return function(callback) {
 			return callback();
 		};
@@ -22,19 +22,19 @@ export const requestAnimFrame = (function() {
  * @param {function} [updateFn]
  */
 export function throttled(fn, thisArg, updateFn) {
-	const updateArgs = updateFn || ((args) => Array.prototype.slice.call(args));
+	const updateArgs = updateFn || ((args) => Reflect.apply(Array.prototype.slice, args, []));
 	let ticking = false;
 	let args = [];
 
 	return function(...rest) {
 		args = updateArgs(rest);
 
-		if (!ticking) {
+		if(!ticking) {
 			ticking = true;
-			requestAnimFrame.call(window, () => {
+			Reflect.apply(requestAnimFrame, window, [() => {
 				ticking = false;
-				fn.apply(thisArg, args);
-			});
+				Reflect.apply(fn, thisArg, args);
+			}]);
 		}
 	};
 }

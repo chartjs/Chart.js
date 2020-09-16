@@ -11,7 +11,7 @@ function isConstrainedValue(value) {
  */
 export function _getParentNode(domNode) {
 	let parent = domNode.parentNode;
-	if (parent && parent.toString() === '[object ShadowRoot]') {
+	if(parent && parent.toString() === '[object ShadowRoot]') {
 		parent = parent.host;
 	}
 	return parent;
@@ -20,10 +20,10 @@ export function _getParentNode(domNode) {
 // Private helper function to convert max-width/max-height values that may be percentages into a number
 function parseMaxStyle(styleValue, node, parentProperty) {
 	let valueInPixels;
-	if (typeof styleValue === 'string') {
+	if(typeof styleValue === 'string') {
 		valueInPixels = parseInt(styleValue, 10);
 
-		if (styleValue.indexOf('%') !== -1) {
+		if(styleValue.indexOf('%') !== -1) {
 			// percentage * size in dimension
 			valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
 		}
@@ -51,7 +51,7 @@ function getConstraintDimension(domNode, maxStyle, percentageProperty) {
 	const hasCContainer = isConstrainedValue(constrainedContainer);
 	const infinity = Number.POSITIVE_INFINITY;
 
-	if (hasCNode || hasCContainer) {
+	if(hasCNode || hasCContainer) {
 		return Math.min(
 			hasCNode ? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
 			hasCContainer ? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
@@ -72,7 +72,7 @@ function _calculatePadding(container, padding, parentDimension) {
 
 	// If the padding is not set at all and the node is not in the DOM, this can be an empty string
 	// In that case, we need to handle it as no padding
-	if (padding === '') {
+	if(padding === '') {
 		return 0;
 	}
 
@@ -85,7 +85,7 @@ export function getRelativePosition(evt, chart) {
 	const source = touches && touches.length ? touches[0] : e;
 	const {offsetX, offsetY} = source;
 
-	if (offsetX > 0 || offsetY > 0) {
+	if(offsetX > 0 || offsetY > 0) {
 		return {
 			x: offsetX,
 			y: offsetY
@@ -125,15 +125,15 @@ function fallbackIfNotValid(measure, fallback) {
 
 function getMax(domNode, prop, fallback, paddings) {
 	const container = _getParentNode(domNode);
-	if (!container) {
+	if(!container) {
 		return fallbackIfNotValid(domNode[prop], domNode[fallback]);
 	}
 
 	const value = container[prop];
-	const padding = paddings.reduce((acc, cur) => acc + _calculatePadding(container, 'padding-' + cur, value), 0);
+	const padding = paddings.reduce((acc, cur) => acc + _calculatePadding(container, `padding-${cur}`, value), 0);
 
 	const v = value - padding;
-	const cv = getConstraintDimension(domNode, 'max-' + fallback, prop);
+	const cv = getConstraintDimension(domNode, `max-${fallback}`, prop);
 	return isNaN(cv) ? v : Math.min(v, cv);
 }
 
@@ -151,9 +151,9 @@ export function retinaScale(chart, forceRatio) {
 	// If no style has been set on the canvas, the render size is used as display size,
 	// making the chart visually bigger, so let's enforce it to the "correct" values.
 	// See https://github.com/chartjs/Chart.js/issues/3575
-	if (canvas.style && !canvas.style.height && !canvas.style.width) {
-		canvas.style.height = height + 'px';
-		canvas.style.width = width + 'px';
+	if(canvas.style && !canvas.style.height && !canvas.style.width) {
+		canvas.style.height = `${height}px`;
+		canvas.style.width = `${width}px`;
 	}
 }
 
@@ -175,7 +175,7 @@ export const supportsEventListenerOptions = (function() {
 		window.addEventListener('test', null, options);
 		// @ts-ignore
 		window.removeEventListener('test', null, options);
-	} catch (e) {
+	} catch(e) {
 		// continue regardless of error
 	}
 	return passiveSupported;

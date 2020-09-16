@@ -57,22 +57,22 @@ defaults.set('animation', {
 function copyOptions(target, values) {
 	const oldOpts = target.options;
 	const newOpts = values.options;
-	if (!oldOpts || !newOpts) {
+	if(!oldOpts || !newOpts) {
 		return;
 	}
-	if (oldOpts.$shared && !newOpts.$shared) {
+	if(oldOpts.$shared && !newOpts.$shared) {
 		target.options = Object.assign({}, oldOpts, newOpts, {$shared: false});
 	} else {
 		Object.assign(oldOpts, newOpts);
 	}
-	delete values.options;
+	Reflect.deleteProperty(values, 'options');
 }
 
 function extensibleConfig(animations) {
 	const result = {};
 	Object.keys(animations).forEach(key => {
 		const value = animations[key];
-		if (!isObject(value)) {
+		if(!isObject(value)) {
 			result[key] = value;
 		}
 	});
@@ -87,7 +87,7 @@ export default class Animations {
 	}
 
 	configure(animations) {
-		if (!isObject(animations)) {
+		if(!isObject(animations)) {
 			return;
 		}
 
@@ -96,14 +96,14 @@ export default class Animations {
 
 		Object.keys(animations).forEach(key => {
 			const cfg = animations[key];
-			if (!isObject(cfg)) {
+			if(!isObject(cfg)) {
 				return;
 			}
 			(cfg.properties || [key]).forEach((prop) => {
 				// Can have only one config per animation.
-				if (!animatedProps.has(prop)) {
+				if(!animatedProps.has(prop)) {
 					animatedProps.set(prop, Object.assign({}, animDefaults, cfg));
-				} else if (prop === key) {
+				} else if(prop === key) {
 					// Single property targetting config wins over multi-targetting.
 					// eslint-disable-next-line no-unused-vars
 					const {properties, ...inherited} = animatedProps.get(prop);
@@ -120,12 +120,12 @@ export default class Animations {
 	_animateOptions(target, values) {
 		const newOptions = values.options;
 		const options = resolveTargetOptions(target, newOptions);
-		if (!options) {
+		if(!options) {
 			return [];
 		}
 
 		const animations = this._createAnimations(options, newOptions);
-		if (newOptions.$shared && !options.$shared) {
+		if(newOptions.$shared && !options.$shared) {
 			// Going from distinct options to shared options:
 			// After all animations are done, assing the shared options object to the element
 			// So any new updates to the shared options are observed
@@ -148,13 +148,13 @@ export default class Animations {
 		const date = Date.now();
 		let i;
 
-		for (i = props.length - 1; i >= 0; --i) {
+		for(i = props.length - 1; i >= 0; --i) {
 			const prop = props[i];
-			if (prop.charAt(0) === '$') {
+			if(prop.charAt(0) === '$') {
 				continue;
 			}
 
-			if (prop === 'options') {
+			if(prop === 'options') {
 				animations.push(...this._animateOptions(target, values));
 				continue;
 			}
@@ -162,8 +162,8 @@ export default class Animations {
 			let animation = running[prop];
 			const cfg = animatedProps.get(prop);
 
-			if (animation) {
-				if (cfg && animation.active()) {
+			if(animation) {
+				if(cfg && animation.active()) {
 					// There is an existing active animation, let's update that
 					animation.update(cfg, value, date);
 					continue;
@@ -171,7 +171,7 @@ export default class Animations {
 					animation.cancel();
 				}
 			}
-			if (!cfg || !cfg.duration) {
+			if(!cfg || !cfg.duration) {
 				// not animated, set directly to new value
 				target[prop] = value;
 				continue;
@@ -191,7 +191,7 @@ export default class Animations {
 	 * @returns {boolean|undefined} - `true` if animations were started
 	 **/
 	update(target, values) {
-		if (this._properties.size === 0) {
+		if(this._properties.size === 0) {
 			// Nothing is animated, just apply the new values.
 			// Options can be shared, need to account for that.
 			copyOptions(target, values);
@@ -203,7 +203,7 @@ export default class Animations {
 
 		const animations = this._createAnimations(target, values);
 
-		if (animations.length) {
+		if(animations.length) {
 			animator.add(this._chart, animations);
 			return true;
 		}
@@ -213,9 +213,9 @@ export default class Animations {
 function awaitAll(animations, properties) {
 	const running = [];
 	const keys = Object.keys(properties);
-	for (let i = 0; i < keys.length; i++) {
+	for(let i = 0; i < keys.length; i++) {
 		const anim = animations[keys[i]];
-		if (anim && anim.active()) {
+		if(anim && anim.active()) {
 			running.push(anim.wait());
 		}
 	}
@@ -224,15 +224,15 @@ function awaitAll(animations, properties) {
 }
 
 function resolveTargetOptions(target, newOptions) {
-	if (!newOptions) {
+	if(!newOptions) {
 		return;
 	}
 	let options = target.options;
-	if (!options) {
+	if(!options) {
 		target.options = newOptions;
 		return;
 	}
-	if (options.$shared && !newOptions.$shared) {
+	if(options.$shared && !newOptions.$shared) {
 		// Going from shared options to distinct one:
 		// Create new options object containing the old shared values and start updating that.
 		target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});

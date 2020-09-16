@@ -182,11 +182,11 @@ describe('Chart', function() {
 		});
 
 		afterEach(function() {
-			delete Chart.defaults.scale._jasmineCheckA;
-			delete Chart.defaults.scale._jasmineCheckB;
-			delete Chart.defaults.scale._jasmineCheckC;
-			delete Chart.defaults.scales.logarithmic._jasmineCheckB;
-			delete Chart.defaults.scales.logarithmic._jasmineCheckC;
+			Reflect.deleteProperty(Chart.defaults.scale, '_jasmineCheckA');
+			Reflect.deleteProperty(Chart.defaults.scale, '_jasmineCheckB');
+			Reflect.deleteProperty(Chart.defaults.scale, '_jasmineCheckC');
+			Reflect.deleteProperty(Chart.defaults.scales.logarithmic, '_jasmineCheckB');
+			Reflect.deleteProperty(Chart.defaults.scales.logarithmic, '_jasmineCheckC');
 		});
 
 		it('should default to "category" for x scales and "linear" for y scales', function() {
@@ -1312,10 +1312,10 @@ describe('Chart', function() {
 			var sequence = [];
 			var plugin = this.plugin = {
 				beforeDatasetDraw: function(chart, args) {
-					sequence.push('before-' + args.index);
+					sequence.push(`before-${args.index}`);
 				},
 				afterDatasetDraw: function(chart, args) {
-					sequence.push('after-' + args.index);
+					sequence.push(`after-${args.index}`);
 				}
 			};
 
@@ -1349,7 +1349,7 @@ describe('Chart', function() {
 		afterEach(function() {
 			const metasets = this.chart._metasets;
 			expect(metasets.length).toEqual(this.chart.data.datasets.length);
-			for (let i = 0; i < metasets.length; i++) {
+			for(let i = 0; i < metasets.length; i++) {
 				expect(metasets[i].index).toEqual(i);
 				expect(metasets[i]._dataset).toEqual(this.chart.data.datasets[i]);
 			}

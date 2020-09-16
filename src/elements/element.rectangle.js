@@ -13,7 +13,7 @@ function getBarBounds(bar, useFinalPosition) {
 
 	let left, right, top, bottom, half;
 
-	if (bar.horizontal) {
+	if(bar.horizontal) {
 		half = height / 2;
 		left = Math.min(x, base);
 		right = Math.max(x, base);
@@ -34,7 +34,7 @@ function parseBorderSkipped(bar) {
 	let edge = bar.options.borderSkipped;
 	const res = {};
 
-	if (!edge) {
+	if(!edge) {
 		return res;
 	}
 
@@ -47,7 +47,7 @@ function parseBorderSkipped(bar) {
 }
 
 function parseEdge(edge, a, b, reverse) {
-	if (reverse) {
+	if(reverse) {
 		edge = swap(edge, a, b);
 		edge = startEnd(edge, b, a);
 	} else {
@@ -125,7 +125,7 @@ export default class Rectangle extends Element {
 		this.width = undefined;
 		this.height = undefined;
 
-		if (cfg) {
+		if(cfg) {
 			Object.assign(this, cfg);
 		}
 	}
@@ -136,7 +136,7 @@ export default class Rectangle extends Element {
 
 		ctx.save();
 
-		if (outer.w !== inner.w || outer.h !== inner.h) {
+		if(outer.w !== inner.w || outer.h !== inner.h) {
 			ctx.beginPath();
 			ctx.rect(outer.x, outer.y, outer.w, outer.h);
 			ctx.clip();

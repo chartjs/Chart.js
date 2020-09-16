@@ -66,22 +66,22 @@ function initCanvas(canvas, config) {
 	// Include possible borders in the size
 	style.boxSizing = style.boxSizing || 'border-box';
 
-	if (isNullOrEmpty(renderWidth)) {
+	if(isNullOrEmpty(renderWidth)) {
 		const displayWidth = readUsedSize(canvas, 'width');
-		if (displayWidth !== undefined) {
+		if(displayWidth !== undefined) {
 			canvas.width = displayWidth;
 		}
 	}
 
-	if (isNullOrEmpty(renderHeight)) {
-		if (canvas.style.height === '') {
+	if(isNullOrEmpty(renderHeight)) {
+		if(canvas.style.height === '') {
 			// If no explicit render height and style height, let's apply the aspect ratio,
 			// which one can be specified by the user but also by charts as default option
 			// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
 			canvas.height = canvas.width / (config.options.aspectRatio || 2);
 		} else {
 			const displayHeight = readUsedSize(canvas, 'height');
-			if (displayHeight !== undefined) {
+			if(displayHeight !== undefined) {
 				canvas.height = displayHeight;
 			}
 		}
@@ -125,9 +125,9 @@ function createAttachObserver(chart, type, listener) {
 	const observer = new MutationObserver(entries => {
 		const parent = _getParentNode(element);
 		entries.forEach(entry => {
-			for (let i = 0; i < entry.addedNodes.length; i++) {
+			for(let i = 0; i < entry.addedNodes.length; i++) {
 				const added = entry.addedNodes[i];
-				if (added === element || added === parent) {
+				if(added === element || added === parent) {
 					listener(entry.target);
 				}
 			}
@@ -140,13 +140,13 @@ function createAttachObserver(chart, type, listener) {
 function createDetachObserver(chart, type, listener) {
 	const canvas = chart.canvas;
 	const container = canvas && _getParentNode(canvas);
-	if (!container) {
+	if(!container) {
 		return;
 	}
 	const observer = new MutationObserver(entries => {
 		entries.forEach(entry => {
-			for (let i = 0; i < entry.removedNodes.length; i++) {
-				if (entry.removedNodes[i] === canvas) {
+			for(let i = 0; i < entry.removedNodes.length; i++) {
+				if(entry.removedNodes[i] === canvas) {
 					listener();
 					break;
 				}
@@ -162,19 +162,19 @@ let oldDevicePixelRatio = 0;
 
 function onWindowResize() {
 	const dpr = window.devicePixelRatio;
-	if (dpr === oldDevicePixelRatio) {
+	if(dpr === oldDevicePixelRatio) {
 		return;
 	}
 	oldDevicePixelRatio = dpr;
 	drpListeningCharts.forEach((resize, chart) => {
-		if (chart.currentDevicePixelRatio !== dpr) {
+		if(chart.currentDevicePixelRatio !== dpr) {
 			resize();
 		}
 	});
 }
 
 function listenDevicePixelRatioChanges(chart, resize) {
-	if (!drpListeningCharts.size) {
+	if(!drpListeningCharts.size) {
 		window.addEventListener('resize', onWindowResize);
 	}
 	drpListeningCharts.set(chart, resize);
@@ -182,7 +182,7 @@ function listenDevicePixelRatioChanges(chart, resize) {
 
 function unlistenDevicePixelRatioChanges(chart) {
 	drpListeningCharts.delete(chart);
-	if (!drpListeningCharts.size) {
+	if(!drpListeningCharts.size) {
 		window.removeEventListener('resize', onWindowResize);
 	}
 }
@@ -190,13 +190,13 @@ function unlistenDevicePixelRatioChanges(chart) {
 function createResizeObserver(chart, type, listener) {
 	const canvas = chart.canvas;
 	const container = canvas && _getParentNode(canvas);
-	if (!container) {
+	if(!container) {
 		return;
 	}
 	const resize = throttled((width, height) => {
 		const w = container.clientWidth;
 		listener(width, height);
-		if (w < container.clientWidth) {
+		if(w < container.clientWidth) {
 			// If the container size shrank during chart resize, let's assume
 			// scrollbar appeared. So we resize again with the scrollbar visible -
 			// effectively making chart smaller and the scrollbar hidden again.
@@ -216,7 +216,7 @@ function createResizeObserver(chart, type, listener) {
 		// When its container's display is set to 'none' the callback will be called with a
 		// size of (0, 0), which will cause the chart to lost its original height, so skip
 		// resizing in such case.
-		if (width === 0 && height === 0) {
+		if(width === 0 && height === 0) {
 			return;
 		}
 		resize(width, height);
@@ -228,10 +228,10 @@ function createResizeObserver(chart, type, listener) {
 }
 
 function releaseObserver(chart, type, observer) {
-	if (observer) {
+	if(observer) {
 		observer.disconnect();
 	}
-	if (type === 'resize') {
+	if(type === 'resize') {
 		unlistenDevicePixelRatioChanges(chart);
 	}
 }
@@ -242,7 +242,7 @@ function createProxyAndListen(chart, type, listener) {
 		// This case can occur if the chart is destroyed while waiting
 		// for the throttled function to occur. We prevent crashes by checking
 		// for a destroyed chart
-		if (chart.ctx !== null) {
+		if(chart.ctx !== null) {
 			listener(fromNativeEvent(event, chart));
 		}
 	}, chart, (args) => {
@@ -279,7 +279,7 @@ export default class DomPlatform extends BasePlatform {
 		// https://github.com/chartjs/Chart.js/issues/3887
 		// https://github.com/chartjs/Chart.js/issues/4102
 		// https://github.com/chartjs/Chart.js/issues/4152
-		if (context && context.canvas === canvas) {
+		if(context && context.canvas === canvas) {
 			// Load platform resources on first chart creation, to make it possible to
 			// import the library before setting platform options.
 			initCanvas(canvas, config);
@@ -294,14 +294,14 @@ export default class DomPlatform extends BasePlatform {
 	 */
 	releaseContext(context) {
 		const canvas = context.canvas;
-		if (!canvas[EXPANDO_KEY]) {
+		if(!canvas[EXPANDO_KEY]) {
 			return false;
 		}
 
 		const initial = canvas[EXPANDO_KEY].initial;
 		['height', 'width'].forEach((prop) => {
 			const value = initial[prop];
-			if (isNullOrUndef(value)) {
+			if(isNullOrUndef(value)) {
 				canvas.removeAttribute(prop);
 			} else {
 				canvas.setAttribute(prop, value);
@@ -320,7 +320,7 @@ export default class DomPlatform extends BasePlatform {
 		// eslint-disable-next-line no-self-assign
 		canvas.width = canvas.width;
 
-		delete canvas[EXPANDO_KEY];
+		Reflect.deleteProperty(canvas, EXPANDO_KEY);
 		return true;
 	}
 
@@ -353,7 +353,7 @@ export default class DomPlatform extends BasePlatform {
 		const proxies = chart.$proxies || (chart.$proxies = {});
 		const proxy = proxies[type];
 
-		if (!proxy) {
+		if(!proxy) {
 			return;
 		}
 

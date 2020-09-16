@@ -10,7 +10,7 @@ export default class Point extends Element {
 		this.skip = undefined;
 		this.stop = undefined;
 
-		if (cfg) {
+		if(cfg) {
 			Object.assign(this, cfg);
 		}
 	}
@@ -50,12 +50,12 @@ export default class Point extends Element {
 		const me = this;
 		const options = me.options;
 
-		if (me.skip || options.radius <= 0) {
+		if(me.skip || options.radius <= 0) {
 			return;
 		}
 
 		// Clipping for Points.
-		if (chartArea === undefined || _isPointInArea(me, chartArea)) {
+		if(chartArea === undefined || _isPointInArea(me, chartArea)) {
 			ctx.strokeStyle = options.borderColor;
 			ctx.lineWidth = options.borderWidth;
 			ctx.fillStyle = options.backgroundColor;

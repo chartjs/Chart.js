@@ -70,7 +70,7 @@ export class Title extends Element {
 	setDimensions() {
 		const me = this;
 		// Set the unconstrained dimension before label rotation
-		if (me.isHorizontal()) {
+		if(me.isHorizontal()) {
 			// Reset position before calculating rotation
 			me.width = me.maxWidth;
 			me.left = 0;
@@ -100,7 +100,7 @@ export class Title extends Element {
 		const minSize = {};
 		const isHorizontal = me.isHorizontal();
 
-		if (!opts.display) {
+		if(!opts.display) {
 			me.width = minSize.width = me.height = minSize.height = 0;
 			return;
 		}
@@ -126,7 +126,7 @@ export class Title extends Element {
 		const ctx = me.ctx;
 		const opts = me.options;
 
-		if (!opts.display) {
+		if(!opts.display) {
 			return;
 		}
 
@@ -142,7 +142,7 @@ export class Title extends Element {
 		let align;
 
 		// Horizontal
-		if (me.isHorizontal()) {
+		if(me.isHorizontal()) {
 			switch (opts.align) {
 			case 'start':
 				titleX = left;
@@ -192,9 +192,9 @@ export class Title extends Element {
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
-		if (isArray(text)) {
+		if(isArray(text)) {
 			let y = 0;
-			for (let i = 0; i < text.length; ++i) {
+			for(let i = 0; i < text.length; ++i) {
 				ctx.fillText(text[i], 0, y, maxWidth);
 				y += lineHeight;
 			}
@@ -233,7 +233,7 @@ export default {
 	beforeInit(chart) {
 		const titleOpts = chart.options.title;
 
-		if (titleOpts) {
+		if(titleOpts) {
 			createNewTitleBlockAndAttach(chart, titleOpts);
 		}
 	},
@@ -242,18 +242,18 @@ export default {
 		const titleOpts = chart.options.title;
 		const titleBlock = chart.titleBlock;
 
-		if (titleOpts) {
+		if(titleOpts) {
 			mergeIf(titleOpts, defaults.plugins.title);
 
-			if (titleBlock) {
+			if(titleBlock) {
 				layouts.configure(chart, titleBlock, titleOpts);
 				titleBlock.options = titleOpts;
 			} else {
 				createNewTitleBlockAndAttach(chart, titleOpts);
 			}
-		} else if (titleBlock) {
+		} else if(titleBlock) {
 			layouts.removeBox(chart, titleBlock);
-			delete chart.titleBlock;
+			Reflect.deleteProperty(chart, 'titleBlock');
 		}
 	},
 

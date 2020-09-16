@@ -491,14 +491,14 @@ describe('Test the radial linear scale', function() {
 
 		var slice = 72; // (360 / 5)
 
-		for (var i = 0; i < 5; i++) {
+		for(var i = 0; i < 5; i++) {
 			expect(radToNearestDegree(chart.scales.r.getIndexAngle(i))).toBe(15 + (slice * i));
 		}
 
 		chart.options.startAngle = 0;
 		chart.update();
 
-		for (var x = 0; x < 5; x++) {
+		for(var x = 0; x < 5; x++) {
 			expect(radToNearestDegree(chart.scales.r.getIndexAngle(x))).toBe((slice * x));
 		}
 	});
@@ -550,7 +550,7 @@ describe('Test the radial linear scale', function() {
 			scale.ctx.getCalls().filter(function(x) {
 				return x.name === 'setTextAlign';
 			}).forEach(function(x, i) {
-				expect(x.args[0]).withContext('startAngle: ' + expected.startAngle + ', tick: ' + i).toBe(expected.textAlign[i]);
+				expect(x.args[0]).withContext(`startAngle: ${expected.startAngle}, tick: ${i}`).toBe(expected.textAlign[i]);
 			});
 
 			scale.ctx.getCalls().filter(function(x) {

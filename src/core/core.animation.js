@@ -45,7 +45,7 @@ export default class Animation {
 
 	update(cfg, to, date) {
 		const me = this;
-		if (me._active) {
+		if(me._active) {
 			const currentValue = me._target[me._prop];
 			const elapsed = date - me._start;
 			const remain = me._duration - elapsed;
@@ -59,7 +59,7 @@ export default class Animation {
 
 	cancel() {
 		const me = this;
-		if (me._active) {
+		if(me._active) {
 			// update current evaluated value, for smoother animations
 			me.tick(Date.now());
 			me._active = false;
@@ -79,13 +79,13 @@ export default class Animation {
 
 		me._active = from !== to && (loop || (elapsed < duration));
 
-		if (!me._active) {
+		if(!me._active) {
 			me._target[prop] = to;
 			me._notify(true);
 			return;
 		}
 
-		if (elapsed < 0) {
+		if(elapsed < 0) {
 			me._target[prop] = from;
 			return;
 		}
@@ -107,7 +107,7 @@ export default class Animation {
 	_notify(resolved) {
 		const method = resolved ? 'res' : 'rej';
 		const promises = this._promises || [];
-		for (let i = 0; i < promises.length; i++) {
+		for(let i = 0; i < promises.length; i++) {
 			promises[i][method]();
 		}
 	}

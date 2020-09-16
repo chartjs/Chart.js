@@ -18,13 +18,13 @@ export function _factorize(value) {
 	const sqrt = Math.sqrt(value);
 	let i;
 
-	for (i = 1; i < sqrt; i++) {
-		if (value % i === 0) {
+	for(i = 1; i < sqrt; i++) {
+		if(value % i === 0) {
 			result.push(i);
 			result.push(value / i);
 		}
 	}
-	if (sqrt === (sqrt | 0)) { // if value is a square number
+	if(sqrt === (sqrt | 0)) { // if value is a square number
 		result.push(sqrt);
 	}
 
@@ -61,9 +61,9 @@ export function almostWhole(x, epsilon) {
 export function _setMinAndMaxByKey(array, target, property) {
 	let i, ilen, value;
 
-	for (i = 0, ilen = array.length; i < ilen; i++) {
+	for(i = 0, ilen = array.length; i < ilen; i++) {
 		value = array[i][property];
-		if (!isNaN(value)) {
+		if(!isNaN(value)) {
 			target.min = Math.min(target.min, value);
 			target.max = Math.max(target.max, value);
 		}
@@ -76,7 +76,7 @@ export const sign = Math.sign ?
 	} :
 	function(x) {
 		x = +x; // convert to a number
-		if (x === 0 || isNaN(x)) {
+		if(x === 0 || isNaN(x)) {
 			return x;
 		}
 		return x > 0 ? 1 : -1;
@@ -98,12 +98,12 @@ export function toDegrees(radians) {
  * @private
  */
 export function _decimalPlaces(x) {
-	if (!isFiniteNumber(x)) {
+	if(!isFiniteNumber(x)) {
 		return;
 	}
 	let e = 1;
 	let p = 0;
-	while (Math.round(x * e) / e !== x) {
+	while(Math.round(x * e) / e !== x) {
 		e *= 10;
 		p++;
 	}
@@ -118,7 +118,7 @@ export function getAngleFromPoint(centrePoint, anglePoint) {
 
 	let angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
-	if (angle < (-0.5 * PI)) {
+	if(angle < (-0.5 * PI)) {
 		angle += TAU; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
 	}
 

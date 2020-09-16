@@ -137,14 +137,14 @@
 			var colorName = colorNames[bubbleChartData.datasets.length % colorNames.length];
 			var dsColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'My added dataset ' + addedCount,
+				label: `My added dataset ${addedCount}`,
 				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
 				borderColor: dsColor,
 				borderWidth: 1,
 				data: []
 			};
 
-			for (var index = 0; index < DEFAULT_DATASET_SIZE; ++index) {
+			for(var index = 0; index < DEFAULT_DATASET_SIZE; ++index) {
 				newDataset.data.push({
 					x: randomScalingFactor(),
 					y: randomScalingFactor(),
@@ -157,8 +157,8 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (bubbleChartData.datasets.length > 0) {
-				for (var index = 0; index < bubbleChartData.datasets.length; ++index) {
+			if(bubbleChartData.datasets.length > 0) {
+				for(var index = 0; index < bubbleChartData.datasets.length; ++index) {
 					bubbleChartData.datasets[index].data.push({
 						x: randomScalingFactor(),
 						y: randomScalingFactor(),

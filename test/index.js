@@ -16,7 +16,7 @@ import utils from './utils';
 
 	function releaseChart(chart) {
 		utils.releaseChart.apply(utils, arguments);
-		delete charts[chart.id];
+		Reflect.deleteProperty(charts, chart.id);
 	}
 
 	function createMockContext() {

@@ -95,7 +95,7 @@ export function spritingOff(ctx) {
 	if (ctx && ctx._fillText) {
 		ctx.fillText = ctx._fillText;
 		ctx.measureText = ctx._measureText;
-		delete ctx._fillText;
-		delete ctx._measureText;
+		Reflect.deleteProperty(ctx, '_fillText');
+		Reflect.deleteProperty(ctx, '_measureText');
 	}
 }

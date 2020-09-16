@@ -11,7 +11,7 @@ describe('Chart.helpers.core', function() {
 		});
 		it('should returns "undefined"', function() {
 			expect(helpers.noop(42)).not.toBeDefined();
-			expect(helpers.noop.call(this, 42)).not.toBeDefined();
+			expect(Reflect.apply(helpers.noop, this, [42])).not.toBeDefined();
 		});
 	});
 

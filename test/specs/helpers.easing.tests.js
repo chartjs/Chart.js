@@ -45,7 +45,7 @@ describe('Chart.helpers.easing', function() {
 			var values = [];
 			var i;
 
-			for (i = 0; i <= count; ++i) {
+			for(i = 0; i <= count; ++i) {
 				values.push(Math.round(accuracy * fn(i / count)) / accuracy);
 			}
 
@@ -53,7 +53,7 @@ describe('Chart.helpers.easing', function() {
 		}
 
 		Object.keys(easing.effects).forEach(function(method) {
-			it ('"' + method + '" should return expected values', function() {
+			it (`"${method}" should return expected values`, function() {
 				expect(generate(method)).toEqual(expected[method]);
 			});
 		});

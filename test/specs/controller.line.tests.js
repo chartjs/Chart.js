@@ -504,7 +504,7 @@ describe('Chart.controllers.line', function() {
 
 		afterEach(function() {
 			Chart.defaults.line.datasets = this._defaults;
-			delete this._defaults;
+			Reflect.deleteProperty(this, '_defaults');
 		});
 
 		it('should utilize the dataset global default options', function() {

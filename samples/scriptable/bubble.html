@@ -41,14 +41,14 @@
 			var b = channelValue(x, y, [0, 150, 150, 250]);
 			var a = opaque ? 1 : 0.5 * value.v / 1000;
 
-			return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+			return `rgba(${r},${g},${b},${a})`;
 		}
 
 		function generateData() {
 			var data = [];
 			var i;
 
-			for (i = 0; i < DATA_COUNT; ++i) {
+			for(i = 0; i < DATA_COUNT; ++i) {
 				data.push({
 					x: utils.rand(MIN_XY, MAX_XY),
 					y: utils.rand(MIN_XY, MAX_XY),

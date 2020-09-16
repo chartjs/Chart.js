@@ -31,7 +31,7 @@ describe('DOM helpers tests', function() {
 
 		document.body.appendChild(div);
 
-		if (!div.attachShadow) {
+		if(!div.attachShadow) {
 			// Shadow DOM is not natively supported
 			return;
 		}

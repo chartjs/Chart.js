@@ -6,11 +6,11 @@ import {merge, valueOrDefault} from '../helpers/helpers.core';
  * @return {object}
  */
 function getScope(node, key) {
-	if (!key) {
+	if(!key) {
 		return node;
 	}
 	const keys = key.split('.');
-	for (let i = 0, n = keys.length; i < n; ++i) {
+	for(let i = 0, n = keys.length; i < n; ++i) {
 		const k = keys[i];
 		node = node[k] || (node[k] = {});
 	}
@@ -89,7 +89,7 @@ export class Defaults {
 	route(scope, name, targetScope, targetName) {
 		const scopeObject = getScope(this, scope);
 		const targetScopeObject = getScope(this, targetScope);
-		const privateName = '_' + name;
+		const privateName = `_${name}`;
 
 		Object.defineProperties(scopeObject, {
 			// A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)

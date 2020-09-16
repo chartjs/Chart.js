@@ -58,21 +58,21 @@ export default class PolarAreaController extends DatasetController {
 
 		me._cachedMeta.count = me.countVisibleElements();
 
-		for (i = 0; i < start; ++i) {
+		for(i = 0; i < start; ++i) {
 			angle += me._computeAngle(i);
 		}
-		for (i = start; i < start + count; i++) {
+		for(i = start; i < start + count; i++) {
 			const arc = arcs[i];
 			let startAngle = angle;
 			let endAngle = angle + me._computeAngle(i);
 			let outerRadius = this.chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
 			angle = endAngle;
 
-			if (reset) {
-				if (animationOpts.animateScale) {
+			if(reset) {
+				if(animationOpts.animateScale) {
 					outerRadius = 0;
 				}
-				if (animationOpts.animateRotate) {
+				if(animationOpts.animateRotate) {
 					startAngle = datasetStartAngle;
 					endAngle = datasetStartAngle;
 				}
@@ -98,7 +98,7 @@ export default class PolarAreaController extends DatasetController {
 		let count = 0;
 
 		meta.data.forEach((element, index) => {
-			if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
+			if(!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
 				count++;
 			}
 		});
@@ -115,7 +115,7 @@ export default class PolarAreaController extends DatasetController {
 		const count = meta.count;
 		const dataset = me.getDataset();
 
-		if (isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
+		if(isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
 			return 0;
 		}
 
@@ -183,7 +183,7 @@ PolarAreaController.defaults = {
 		labels: {
 			generateLabels(chart) {
 				const data = chart.data;
-				if (data.labels.length && data.datasets.length) {
+				if(data.labels.length && data.datasets.length) {
 					return data.labels.map((label, i) => {
 						const meta = chart.getDatasetMeta(0);
 						const style = meta.controller.getStyle(i);
@@ -217,7 +217,7 @@ PolarAreaController.defaults = {
 				return '';
 			},
 			label(context) {
-				return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
+				return `${context.chart.data.labels[context.dataIndex]}: ${context.formattedValue}`;
 			}
 		}
 	}

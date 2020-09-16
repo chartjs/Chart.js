@@ -7,7 +7,7 @@ const getRightToLeftAdapter = function(rectX, width) {
 			width = w;
 		},
 		textAlign(align) {
-			if (align === 'center') {
+			if(align === 'center') {
 				return align;
 			}
 			return align === 'right' ? 'left' : 'right';
@@ -46,7 +46,7 @@ export function getRtlAdapter(rtl, rectX, width) {
 
 export function overrideTextDirection(ctx, direction) {
 	let style, original;
-	if (direction === 'ltr' || direction === 'rtl') {
+	if(direction === 'ltr' || direction === 'rtl') {
 		style = ctx.canvas.style;
 		original = [
 			style.getPropertyValue('direction'),
@@ -59,8 +59,8 @@ export function overrideTextDirection(ctx, direction) {
 }
 
 export function restoreTextDirection(ctx, original) {
-	if (original !== undefined) {
-		delete ctx.prevTextDirection;
+	if(original !== undefined) {
+		Reflect.deleteProperty(ctx, 'prevTextDirection');
 		ctx.canvas.style.setProperty('direction', original[0], original[1]);
 	}
 }

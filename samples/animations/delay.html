@@ -69,7 +69,7 @@
 				data: barChartData,
 				options: {
 					animation: (context) => {
-						if (context.active) {
+						if(context.active) {
 							return {
 								duration: 400
 							};
@@ -77,7 +77,7 @@
 						var delay = 0;
 						var dsIndex = context.datasetIndex;
 						var index = context.dataIndex;
-						if (!started[index + dsIndex * 1000]) {
+						if(!started[index + dsIndex * 1000]) {
 							delay = index * 300 + dsIndex * 100;
 							started[index + dsIndex * 1000] = true;
 						}

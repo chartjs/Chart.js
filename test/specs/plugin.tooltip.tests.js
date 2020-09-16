@@ -490,7 +490,7 @@ describe('Plugin.Tooltip', function() {
 					mode: 'index',
 					callbacks: {
 						beforeLabel: function(ctx) {
-							return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+							return `${ctx.dataPoint.x},${ctx.dataPoint.y}`;
 						}
 					}
 				}
@@ -837,7 +837,7 @@ describe('Plugin.Tooltip', function() {
 	});
 
 	['line', 'bar'].forEach(function(type) {
-		it('Should have dataPoints in a ' + type + ' chart', function(done) {
+		it(`Should have dataPoints in a ${type} chart`, function(done) {
 			var chart = window.acquireChart({
 				type: type,
 				data: {
@@ -882,7 +882,7 @@ describe('Plugin.Tooltip', function() {
 				expect(typeof tooltipItem.label).toBe('string');
 				expect(tooltipItem.label).toBe(chart.data.labels[pointIndex]);
 				expect(typeof tooltipItem.formattedValue).toBe('string');
-				expect(tooltipItem.formattedValue).toBe('' + chart.data.datasets[datasetIndex].data[pointIndex]);
+				expect(tooltipItem.formattedValue).toBe(`${chart.data.datasets[datasetIndex].data[pointIndex]}`);
 
 				done();
 			});
@@ -1057,8 +1057,8 @@ describe('Plugin.Tooltip', function() {
 			afterEvent(chart, 'mousemove', function() {
 				expect(fn.calls.count()).toBe(2);
 				expect(fn.calls.first().args[0] instanceof Array).toBe(true);
-				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
-				expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
+				expect(Reflect.apply(Object.prototype.hasOwnProperty, fn.calls.first().args[1], ['x'])).toBe(true);
+				expect(Reflect.apply(Object.prototype.hasOwnProperty, fn.calls.first().args[1], ['y'])).toBe(true);
 				expect(fn.calls.first().object instanceof Tooltip).toBe(true);
 
 				done();
@@ -1105,7 +1105,7 @@ describe('Plugin.Tooltip', function() {
 			var tooltipPosition = meta.data[slice].tooltipPosition();
 
 			function recursive(left) {
-				chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'XX';
+				chart.config.data.labels[slice] = `${chart.config.data.labels[slice]}XX`;
 				chart.update();
 
 				afterEvent(chart, 'mouseout', function() {
@@ -1113,12 +1113,12 @@ describe('Plugin.Tooltip', function() {
 						var tooltip = chart.tooltip;
 						expect(tooltip.dataPoints.length).toBe(1);
 						expect(tooltip.x).toBeGreaterThanOrEqual(0);
-						if (tooltip.width <= chart.width) {
+						if(tooltip.width <= chart.width) {
 							expect(tooltip.x + tooltip.width).toBeLessThanOrEqual(chart.width);
 						}
 						expect(tooltip.caretX).toBeCloseToPixel(tooltipPosition.x);
 						// if tooltip is longer than chart area then all tests done
-						if (tooltip.width > chart.width || left === 0) {
+						if(tooltip.width > chart.width || left === 0) {
 							done(left === 0 && new Error('max iterations reached'));
 						} else {
 							recursive(left - 1);
@@ -1134,7 +1134,7 @@ describe('Plugin.Tooltip', function() {
 		}
 
 		// Trigger an event over top of the slice
-		for (var slice = 0; slice < 2; slice++) {
+		for(var slice = 0; slice < 2; slice++) {
 			testSlice(slice, 20);
 		}
 	});

@@ -12,7 +12,7 @@ export default class CategoryScale extends Scale {
 
 	parse(raw, index) {
 		const labels = this.getLabels();
-		if (labels[index] === raw) {
+		if(labels[index] === raw) {
 			return index;
 		}
 		const first = labels.indexOf(raw);
@@ -42,7 +42,7 @@ export default class CategoryScale extends Scale {
 		me._valueRange = Math.max(labels.length - (offset ? 0 : 1), 1);
 		me._startValue = me.min - (offset ? 0.5 : 0);
 
-		for (let value = min; value <= max; value++) {
+		for(let value = min; value <= max; value++) {
 			ticks.push({value});
 		}
 		return ticks;
@@ -52,7 +52,7 @@ export default class CategoryScale extends Scale {
 		const me = this;
 		const labels = me.getLabels();
 
-		if (value >= 0 && value < labels.length) {
+		if(value >= 0 && value < labels.length) {
 			return labels[value];
 		}
 		return value;
@@ -66,7 +66,7 @@ export default class CategoryScale extends Scale {
 
 		super.configure();
 
-		if (!me.isHorizontal()) {
+		if(!me.isHorizontal()) {
 			// For backward compatibility, vertical category scale reverse is inverted.
 			me._reversePixels = !me._reversePixels;
 		}
@@ -76,7 +76,7 @@ export default class CategoryScale extends Scale {
 	getPixelForValue(value) {
 		const me = this;
 
-		if (typeof value !== 'number') {
+		if(typeof value !== 'number') {
 			value = me.parse(value);
 		}
 
@@ -88,7 +88,7 @@ export default class CategoryScale extends Scale {
 	getPixelForTick(index) {
 		const me = this;
 		const ticks = me.ticks;
-		if (index < 0 || index > ticks.length - 1) {
+		if(index < 0 || index > ticks.length - 1) {
 			return null;
 		}
 		return me.getPixelForValue(ticks[index].value);

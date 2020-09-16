@@ -15,7 +15,7 @@ function getRatioAndOffset(rotation, circumference, cutout) {
 	let offsetX = 0;
 	let offsetY = 0;
 	// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
-	if (circumference < DOUBLE_PI) {
+	if(circumference < DOUBLE_PI) {
 		let startAngle = rotation % DOUBLE_PI;
 		startAngle += startAngle >= PI ? -DOUBLE_PI : startAngle < -PI ? DOUBLE_PI : 0;
 		const endAngle = startAngle + circumference;
@@ -60,7 +60,7 @@ export default class DoughnutController extends DatasetController {
 		const data = this.getDataset().data;
 		const meta = this._cachedMeta;
 		let i, ilen;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
+		for(i = start, ilen = start + count; i < ilen; ++i) {
 			meta._parsed[i] = +data[i];
 		}
 	}
@@ -69,8 +69,8 @@ export default class DoughnutController extends DatasetController {
 	getRingIndex(datasetIndex) {
 		let ringIndex = 0;
 
-		for (let j = 0; j < datasetIndex; ++j) {
-			if (this.chart.isDatasetVisible(j)) {
+		for(let j = 0; j < datasetIndex; ++j) {
+			if(this.chart.isDatasetVisible(j)) {
 				++ringIndex;
 			}
 		}
@@ -135,11 +135,11 @@ export default class DoughnutController extends DatasetController {
 		let startAngle = opts.rotation;
 		let i;
 
-		for (i = 0; i < start; ++i) {
+		for(i = 0; i < start; ++i) {
 			startAngle += me._circumference(i, reset);
 		}
 
-		for (i = start; i < start + count; ++i) {
+		for(i = start; i < start + count; ++i) {
 			const circumference = me._circumference(i, reset);
 			const arc = arcs[i];
 			const properties = {
@@ -151,7 +151,7 @@ export default class DoughnutController extends DatasetController {
 				outerRadius,
 				innerRadius
 			};
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 			startAngle += circumference;
@@ -167,9 +167,9 @@ export default class DoughnutController extends DatasetController {
 		let total = 0;
 		let i;
 
-		for (i = 0; i < metaData.length; i++) {
+		for(i = 0; i < metaData.length; i++) {
 			const value = meta._parsed[i];
-			if (!isNaN(value) && this.chart.getDataVisibility(i)) {
+			if(!isNaN(value) && this.chart.getDataVisibility(i)) {
 				total += Math.abs(value);
 			}
 		}
@@ -179,7 +179,7 @@ export default class DoughnutController extends DatasetController {
 
 	calculateCircumference(value) {
 		const total = this._cachedMeta.total;
-		if (total > 0 && !isNaN(value)) {
+		if(total > 0 && !isNaN(value)) {
 			return DOUBLE_PI * (Math.abs(value) / total);
 		}
 		return 0;
@@ -203,14 +203,14 @@ export default class DoughnutController extends DatasetController {
 		const chart = me.chart;
 		let i, ilen, meta, controller, options;
 
-		if (!arcs) {
+		if(!arcs) {
 			// Find the outmost visible dataset
-			for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-				if (chart.isDatasetVisible(i)) {
+			for(i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+				if(chart.isDatasetVisible(i)) {
 					meta = chart.getDatasetMeta(i);
 					arcs = meta.data;
 					controller = meta.controller;
-					if (controller !== me) {
+					if(controller !== me) {
 						controller.configure();
 					}
 					break;
@@ -218,13 +218,13 @@ export default class DoughnutController extends DatasetController {
 			}
 		}
 
-		if (!arcs) {
+		if(!arcs) {
 			return 0;
 		}
 
-		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
+		for(i = 0, ilen = arcs.length; i < ilen; ++i) {
 			options = controller.resolveDataElementOptions(i);
-			if (options.borderAlign !== 'inner') {
+			if(options.borderAlign !== 'inner') {
 				max = Math.max(max, options.borderWidth || 0, options.hoverBorderWidth || 0);
 			}
 		}
@@ -234,7 +234,7 @@ export default class DoughnutController extends DatasetController {
 	getMaxOffset(arcs) {
 		let max = 0;
 
-		for (let i = 0, ilen = arcs.length; i < ilen; ++i) {
+		for(let i = 0, ilen = arcs.length; i < ilen; ++i) {
 			const options = this.resolveDataElementOptions(i);
 			max = Math.max(max, options.offset || 0, options.hoverOffset || 0);
 		}
@@ -248,8 +248,8 @@ export default class DoughnutController extends DatasetController {
 	_getRingWeightOffset(datasetIndex) {
 		let ringWeightOffset = 0;
 
-		for (let i = 0; i < datasetIndex; ++i) {
-			if (this.chart.isDatasetVisible(i)) {
+		for(let i = 0; i < datasetIndex; ++i) {
+			if(this.chart.isDatasetVisible(i)) {
 				ringWeightOffset += this._getRingWeight(i);
 			}
 		}
@@ -303,7 +303,7 @@ DoughnutController.defaults = {
 		labels: {
 			generateLabels(chart) {
 				const data = chart.data;
-				if (data.labels.length && data.datasets.length) {
+				if(data.labels.length && data.datasets.length) {
 					return data.labels.map((label, i) => {
 						const meta = chart.getDatasetMeta(0);
 						const style = meta.controller.getStyle(i);
@@ -347,9 +347,9 @@ DoughnutController.defaults = {
 			},
 			label(tooltipItem) {
 				let dataLabel = tooltipItem.label;
-				const value = ': ' + tooltipItem.formattedValue;
+				const value = `: ${tooltipItem.formattedValue}`;
 
-				if (isArray(dataLabel)) {
+				if(isArray(dataLabel)) {
 					// show value on first line of multiline label
 					// need to clone because we are changing the value
 					dataLabel = dataLabel.slice();

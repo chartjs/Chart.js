@@ -13,9 +13,9 @@ export function _lookup(table, value, cmp) {
 	let lo = 0;
 	let mid;
 
-	while (hi - lo > 1) {
+	while(hi - lo > 1) {
 		mid = (lo + hi) >> 1;
-		if (cmp(mid)) {
+		if(cmp(mid)) {
 			lo = mid;
 		} else {
 			hi = mid;
@@ -56,10 +56,10 @@ export function _filterBetween(values, min, max) {
 	let start = 0;
 	let end = values.length;
 
-	while (start < end && values[start] < min) {
+	while(start < end && values[start] < min) {
 		start++;
 	}
-	while (end > start && values[end - 1] > max) {
+	while(end > start && values[end - 1] > max) {
 		end--;
 	}
 
@@ -76,12 +76,12 @@ const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
  * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
  */
 export function listenArrayEvents(array, listener) {
-	if (array._chartjs) {
+	if(array._chartjs) {
 		array._chartjs.listeners.push(listener);
 		return;
 	}
 
-	Object.defineProperty(array, '_chartjs', {
+	Reflect.defineProperty(array, '_chartjs', {
 		configurable: true,
 		enumerable: false,
 		value: {
@@ -90,17 +90,17 @@ export function listenArrayEvents(array, listener) {
 	});
 
 	arrayEvents.forEach((key) => {
-		const method = '_onData' + _capitalize(key);
+		const method = `_onData${_capitalize(key)}`;
 		const base = array[key];
 
-		Object.defineProperty(array, key, {
+		Reflect.defineProperty(array, key, {
 			configurable: true,
 			enumerable: false,
 			value(...args) {
-				const res = base.apply(this, args);
+				const res = Reflect.apply(base, this, args);
 
 				array._chartjs.listeners.forEach((object) => {
-					if (typeof object[method] === 'function') {
+					if(typeof object[method] === 'function') {
 						object[method](...args);
 					}
 				});
@@ -118,25 +118,25 @@ export function listenArrayEvents(array, listener) {
  */
 export function unlistenArrayEvents(array, listener) {
 	const stub = array._chartjs;
-	if (!stub) {
+	if(!stub) {
 		return;
 	}
 
 	const listeners = stub.listeners;
 	const index = listeners.indexOf(listener);
-	if (index !== -1) {
+	if(index !== -1) {
 		listeners.splice(index, 1);
 	}
 
-	if (listeners.length > 0) {
+	if(listeners.length > 0) {
 		return;
 	}
 
 	arrayEvents.forEach((key) => {
-		delete array[key];
+		Reflect.deleteProperty(array, key);
 	});
 
-	delete array._chartjs;
+	Reflect.deleteProperty(array, '_chartjs');
 }
 
 /**
@@ -146,11 +146,11 @@ export function _arrayUnique(items) {
 	const set = new Set();
 	let i, ilen;
 
-	for (i = 0, ilen = items.length; i < ilen; ++i) {
+	for(i = 0, ilen = items.length; i < ilen; ++i) {
 		set.add(items[i]);
 	}
 
-	if (set.size === ilen) {
+	if(set.size === ilen) {
 		return items;
 	}
 

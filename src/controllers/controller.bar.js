@@ -11,11 +11,11 @@ function computeMinSampleSize(scale, pixels) {
 	let min = scale._length;
 	let prev, curr, i, ilen;
 
-	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+	for(i = 1, ilen = pixels.length; i < ilen; ++i) {
 		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
-	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+	for(i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
 		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
@@ -35,7 +35,7 @@ function computeFitCategoryTraits(index, ruler, options) {
 	const count = ruler.stackCount;
 	let size, ratio;
 
-	if (isNullOrUndef(thickness)) {
+	if(isNullOrUndef(thickness)) {
 		size = ruler.min * options.categoryPercentage;
 		ratio = options.barPercentage;
 	} else {
@@ -66,13 +66,13 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	let next = index < pixels.length - 1 ? pixels[index + 1] : null;
 	const percent = options.categoryPercentage;
 
-	if (prev === null) {
+	if(prev === null) {
 		// first data: its size is double based on the next point or,
 		// if it's also the last data, we use the scale size.
 		prev = curr - (next === null ? ruler.end - ruler.start : next - curr);
 	}
 
-	if (next === null) {
+	if(next === null) {
 		// last data: its size is also double based on the previous point.
 		next = curr + curr - prev;
 	}
@@ -95,7 +95,7 @@ function parseFloatBar(entry, item, vScale, i) {
 	let barStart = min;
 	let barEnd = max;
 
-	if (Math.abs(min) > Math.abs(max)) {
+	if(Math.abs(min) > Math.abs(max)) {
 		barStart = max;
 		barEnd = min;
 	}
@@ -115,7 +115,7 @@ function parseFloatBar(entry, item, vScale, i) {
 }
 
 function parseValue(entry, item, vScale, i) {
-	if (isArray(entry)) {
+	if(isArray(entry)) {
 		parseFloatBar(entry, item, vScale, i);
 	} else {
 		item[vScale.axis] = vScale.parse(entry, i);
@@ -131,7 +131,7 @@ function parseArrayOrPrimitive(meta, data, start, count) {
 	const parsed = [];
 	let i, ilen, item, entry;
 
-	for (i = start, ilen = start + count; i < ilen; ++i) {
+	for(i = start, ilen = start + count; i < ilen; ++i) {
 		entry = data[i];
 		item = {};
 		item[iScale.axis] = singleScale || iScale.parse(labels[i], i);
@@ -176,7 +176,7 @@ export default class BarController extends DatasetController {
 		const vAxisKey = vScale.axis === 'x' ? xAxisKey : yAxisKey;
 		const parsed = [];
 		let i, ilen, item, obj;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
+		for(i = start, ilen = start + count; i < ilen; ++i) {
 			obj = data[i];
 			item = {};
 			item[iScale.axis] = iScale.parse(resolveObjectKey(obj, iAxisKey), i);
@@ -191,7 +191,7 @@ export default class BarController extends DatasetController {
 	updateRangeFromParsed(range, scale, parsed, stack) {
 		super.updateRangeFromParsed(range, scale, parsed, stack);
 		const custom = parsed._custom;
-		if (custom && scale === this._cachedMeta.vScale) {
+		if(custom && scale === this._cachedMeta.vScale) {
 			// float bar: only one end of the bar is considered by `super`
 			range.min = Math.min(range.min, custom.min);
 			range.max = Math.max(range.max, custom.max);
@@ -208,11 +208,11 @@ export default class BarController extends DatasetController {
 		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
 		const value = isFloatBar(custom)
-			? '[' + custom.start + ', ' + custom.end + ']'
-			: '' + vScale.getLabelForValue(parsed[vScale.axis]);
+			? `[${custom.start}, ${custom.end}]`
+			: `${vScale.getLabelForValue(parsed[vScale.axis])}`;
 
 		return {
-			label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
+			label: `${iScale.getLabelForValue(parsed[iScale.axis])}`,
 			value
 		};
 	}
@@ -247,7 +247,7 @@ export default class BarController extends DatasetController {
 
 		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-		for (let i = start; i < start + count; i++) {
+		for(let i = start; i < start + count; i++) {
 			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			const vpixels = me._calculateBarValuePixels(i, options);
 			const ipixels = me._calculateBarIndexPixels(i, ruler, options);
@@ -261,7 +261,7 @@ export default class BarController extends DatasetController {
 				width: horizontal ? undefined : ipixels.size
 			};
 
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = options;
 			}
 			me.updateElement(rectangles[i], i, properties, mode);
@@ -284,18 +284,18 @@ export default class BarController extends DatasetController {
 		const stacks = [];
 		let i, item;
 
-		for (i = 0; i < ilen; ++i) {
+		for(i = 0; i < ilen; ++i) {
 			item = metasets[i];
 			// stacked   | meta.stack
 			//           | found | not found | undefined
 			// false     |   x   |     x     |     x
 			// true      |       |     x     |
 			// undefined |       |     x     |     x
-			if (stacked === false || stacks.indexOf(item.stack) === -1 ||
+			if(stacked === false || stacks.indexOf(item.stack) === -1 ||
 				(stacked === undefined && item.stack === undefined)) {
 				stacks.push(item.stack);
 			}
-			if (item.index === last) {
+			if(item.index === last) {
 				break;
 			}
 		}
@@ -303,7 +303,7 @@ export default class BarController extends DatasetController {
 		// No stacks? that means there is no visible data. Let's still initialize an `undefined`
 		// stack where possible invisible bars will be located.
 		// https://github.com/chartjs/Chart.js/issues/6368
-		if (!stacks.length) {
+		if(!stacks.length) {
 			stacks.push(undefined);
 		}
 
@@ -346,7 +346,7 @@ export default class BarController extends DatasetController {
 		const pixels = [];
 		let i, ilen;
 
-		for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
+		for(i = 0, ilen = meta.data.length; i < ilen; ++i) {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
 		}
 
@@ -382,16 +382,16 @@ export default class BarController extends DatasetController {
 		let length = meta._stacked ? me.applyStack(vScale, parsed) : value;
 		let head, size;
 
-		if (length !== value) {
+		if(length !== value) {
 			start = length - value;
 			length = value;
 		}
 
-		if (isFloatBar(custom)) {
+		if(isFloatBar(custom)) {
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
-			if (value !== 0 && sign(value) !== sign(custom.barEnd)) {
+			if(value !== 0 && sign(value) !== sign(custom.barEnd)) {
 				start = 0;
 			}
 			start += value;
@@ -408,9 +408,9 @@ export default class BarController extends DatasetController {
 		head = vScale.getPixelForValue(start + length);
 		size = head - base;
 
-		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
+		if(minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = size < 0 ? -minBarLength : minBarLength;
-			if (value === 0) {
+			if(value === 0) {
 				base -= size / 2;
 			}
 			head = base + size;
@@ -458,8 +458,8 @@ export default class BarController extends DatasetController {
 
 		clipArea(chart.ctx, chart.chartArea);
 
-		for (; i < ilen; ++i) {
-			if (!isNaN(me.getParsed(i)[vScale.axis])) {
+		for(; i < ilen; ++i) {
+			if(!isNaN(me.getParsed(i)[vScale.axis])) {
 				rects[i].draw(me._ctx);
 			}
 		}

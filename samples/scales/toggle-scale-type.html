@@ -64,7 +64,7 @@
 				responsive: true,
 				title: {
 					display: true,
-					text: 'Chart.js Line Chart - ' + type
+					text: `Chart.js Line Chart - ${type}`
 				},
 				scales: {
 					x: {
@@ -85,7 +85,7 @@
 
 		document.getElementById('toggleScale').addEventListener('click', function() {
 			type = type === 'linear' ? 'logarithmic' : 'linear';
-			window.myLine.options.title.text = 'Chart.js Line Chart - ' + type;
+			window.myLine.options.title.text = `Chart.js Line Chart - ${type}`;
 			window.myLine.options.scales.y = {
 				display: true,
 				type: type

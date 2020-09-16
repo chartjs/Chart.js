@@ -18,7 +18,7 @@ const positioners = {
 	 * @returns {object} tooltip position
 	 */
 	average(items) {
-		if (!items.length) {
+		if(!items.length) {
 			return false;
 		}
 
@@ -27,9 +27,9 @@ const positioners = {
 		let y = 0;
 		let count = 0;
 
-		for (i = 0, len = items.length; i < len; ++i) {
+		for(i = 0, len = items.length; i < len; ++i) {
 			const el = items[i].element;
-			if (el && el.hasValue()) {
+			if(el && el.hasValue()) {
 				const pos = el.tooltipPosition();
 				x += pos.x;
 				y += pos.y;
@@ -56,20 +56,20 @@ const positioners = {
 		let minDistance = Number.POSITIVE_INFINITY;
 		let i, len, nearestElement;
 
-		for (i = 0, len = items.length; i < len; ++i) {
+		for(i = 0, len = items.length; i < len; ++i) {
 			const el = items[i].element;
-			if (el && el.hasValue()) {
+			if(el && el.hasValue()) {
 				const center = el.getCenterPoint();
 				const d = distanceBetweenPoints(eventPosition, center);
 
-				if (d < minDistance) {
+				if(d < minDistance) {
 					minDistance = d;
 					nearestElement = el;
 				}
 			}
 		}
 
-		if (nearestElement) {
+		if(nearestElement) {
 			const tp = nearestElement.tooltipPosition();
 			x = tp.x;
 			y = tp.y;
@@ -84,10 +84,10 @@ const positioners = {
 
 // Helper to push or concat based on if the 2nd parameter is an array or not
 function pushOrConcat(base, toPush) {
-	if (toPush) {
-		if (isArray(toPush)) {
+	if(toPush) {
+		if(isArray(toPush)) {
 			// base = base.concat(toPush);
-			Array.prototype.push.apply(base, toPush);
+			Reflect.apply(Array.prototype.push, base, toPush);
 		} else {
 			base.push(toPush);
 		}
@@ -103,7 +103,7 @@ function pushOrConcat(base, toPush) {
  * @function
  */
 function splitNewlines(str) {
-	if ((typeof str === 'string' || str instanceof String) && str.indexOf('\n') > -1) {
+	if((typeof str === 'string' || str instanceof String) && str.indexOf('\n') > -1) {
 		return str.split('\n');
 	}
 	return str;
@@ -169,19 +169,19 @@ function getTooltipSize(tooltip) {
 	let combinedBodyLength = body.reduce((count, bodyItem) => count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length, 0);
 	combinedBodyLength += tooltip.beforeBody.length + tooltip.afterBody.length;
 
-	if (titleLineCount) {
+	if(titleLineCount) {
 		height += titleLineCount * titleFont.size
 			+ (titleLineCount - 1) * options.titleSpacing
 			+ options.titleMarginBottom;
 	}
-	if (combinedBodyLength) {
+	if(combinedBodyLength) {
 		// Body lines may include some extra height depending on boxHeight
 		const bodyLineHeight = options.displayColors ? Math.max(boxHeight, bodyFont.size) : bodyFont.size;
 		height += bodyLineItemCount * bodyLineHeight
 			+ (combinedBodyLength - bodyLineItemCount) * bodyFont.size
 			+ (combinedBodyLength - 1) * options.bodySpacing;
 	}
-	if (footerLineCount) {
+	if(footerLineCount) {
 		height += options.footerMarginTop
 			+ footerLineCount * footerFont.size
 			+ (footerLineCount - 1) * options.footerSpacing;
@@ -234,9 +234,9 @@ function determineAlignment(chart, options, size) {
 	let xAlign = 'center';
 	let yAlign = 'center';
 
-	if (y < height) {
+	if(y < height) {
 		yAlign = 'top';
-	} else if (y > (chart.height - height)) {
+	} else if(y > (chart.height - height)) {
 		yAlign = 'bottom';
 	}
 
@@ -244,7 +244,7 @@ function determineAlignment(chart, options, size) {
 	const midX = (chartArea.left + chartArea.right) / 2;
 	const midY = (chartArea.top + chartArea.bottom) / 2;
 
-	if (yAlign === 'center') {
+	if(yAlign === 'center') {
 		lf = (value) => value <= midX;
 		rf = (value) => value > midX;
 	} else {
@@ -256,21 +256,21 @@ function determineAlignment(chart, options, size) {
 	const olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
 	const orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
 	// function to get the y alignment if the tooltip goes outside of the left or right edges
-	const yf = (value) => value <= midY ? 'top' : 'bottom';
+	const yf = (value) => (value <= midY ? 'top' : 'bottom');
 
-	if (lf(x)) {
+	if(lf(x)) {
 		xAlign = 'left';
 
 		// Is tooltip too wide and goes over the right side of the chart.?
-		if (olf(x)) {
+		if(olf(x)) {
 			xAlign = 'center';
 			yAlign = yf(y);
 		}
-	} else if (rf(x)) {
+	} else if(rf(x)) {
 		xAlign = 'right';
 
 		// Is tooltip too wide and goes outside left edge of canvas?
-		if (orf(x)) {
+		if(orf(x)) {
 			xAlign = 'center';
 			yAlign = yf(y);
 		}
@@ -285,14 +285,14 @@ function determineAlignment(chart, options, size) {
 function alignX(size, xAlign, chartWidth) {
 	// eslint-disable-next-line prefer-const
 	let {x, width} = size;
-	if (xAlign === 'right') {
+	if(xAlign === 'right') {
 		x -= width;
-	} else if (xAlign === 'center') {
+	} else if(xAlign === 'center') {
 		x -= (width / 2);
-		if (x + width > chartWidth) {
+		if(x + width > chartWidth) {
 			x = chartWidth - width;
 		}
-		if (x < 0) {
+		if(x < 0) {
 			x = 0;
 		}
 	}
@@ -302,9 +302,9 @@ function alignX(size, xAlign, chartWidth) {
 function alignY(size, yAlign, paddingAndSize) {
 	// eslint-disable-next-line prefer-const
 	let {y, height} = size;
-	if (yAlign === 'top') {
+	if(yAlign === 'top') {
 		y += paddingAndSize;
-	} else if (yAlign === 'bottom') {
+	} else if(yAlign === 'bottom') {
 		y -= height + paddingAndSize;
 	} else {
 		y -= (height / 2);
@@ -324,15 +324,15 @@ function getBackgroundPoint(options, size, alignment, chart) {
 	let x = alignX(size, xAlign, chart.width);
 	const y = alignY(size, yAlign, paddingAndSize);
 
-	if (yAlign === 'center') {
-		if (xAlign === 'left') {
+	if(yAlign === 'center') {
+		if(xAlign === 'left') {
 			x += paddingAndSize;
-		} else if (xAlign === 'right') {
+		} else if(xAlign === 'right') {
 			x -= paddingAndSize;
 		}
-	} else if (xAlign === 'left') {
+	} else if(xAlign === 'left') {
 		x -= radiusAndPadding;
-	} else if (xAlign === 'right') {
+	} else if(xAlign === 'right') {
 		x += radiusAndPadding;
 	}
 
@@ -400,7 +400,7 @@ export class Tooltip extends Element {
 		const me = this;
 		const cached = me._cachedAnimations;
 
-		if (cached) {
+		if(cached) {
 			return cached;
 		}
 
@@ -418,9 +418,9 @@ export class Tooltip extends Element {
 		const opts = me.options;
 		const callbacks = opts.callbacks;
 
-		const beforeTitle = callbacks.beforeTitle.apply(me, [context]);
-		const title = callbacks.title.apply(me, [context]);
-		const afterTitle = callbacks.afterTitle.apply(me, [context]);
+		const beforeTitle = Reflect.apply(callbacks.beforeTitle, me, [context]);
+		const title = Reflect.apply(callbacks.title, me, [context]);
+		const afterTitle = Reflect.apply(callbacks.afterTitle, me, [context]);
 
 		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeTitle));
@@ -431,7 +431,7 @@ export class Tooltip extends Element {
 	}
 
 	getBeforeBody(tooltipItems) {
-		return getBeforeAfterBodyLines(this.options.callbacks.beforeBody.apply(this, [tooltipItems]));
+		return getBeforeAfterBodyLines(Reflect.apply(this.options.callbacks.beforeBody, this, [tooltipItems]));
 	}
 
 	getBody(tooltipItems) {
@@ -445,9 +445,9 @@ export class Tooltip extends Element {
 				lines: [],
 				after: []
 			};
-			pushOrConcat(bodyItem.before, splitNewlines(callbacks.beforeLabel.call(me, context)));
-			pushOrConcat(bodyItem.lines, callbacks.label.call(me, context));
-			pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, context)));
+			pushOrConcat(bodyItem.before, splitNewlines(Reflect.apply(callbacks.beforeLabel, me, [context])));
+			pushOrConcat(bodyItem.lines, Reflect.apply(callbacks.label, me, [context]));
+			pushOrConcat(bodyItem.after, splitNewlines(Reflect.apply(callbacks.afterLabel, me, [context])));
 
 			bodyItems.push(bodyItem);
 		});
@@ -456,7 +456,7 @@ export class Tooltip extends Element {
 	}
 
 	getAfterBody(tooltipItems) {
-		return getBeforeAfterBodyLines(this.options.callbacks.afterBody.apply(this, [tooltipItems]));
+		return getBeforeAfterBodyLines(Reflect.apply(this.options.callbacks.afterBody, this, [tooltipItems]));
 	}
 
 	// Get the footer and beforeFooter and afterFooter lines
@@ -464,9 +464,9 @@ export class Tooltip extends Element {
 		const me = this;
 		const callbacks = me.options.callbacks;
 
-		const beforeFooter = callbacks.beforeFooter.apply(me, [tooltipItems]);
-		const footer = callbacks.footer.apply(me, [tooltipItems]);
-		const afterFooter = callbacks.afterFooter.apply(me, [tooltipItems]);
+		const beforeFooter = Reflect.apply(callbacks.beforeFooter, me, [tooltipItems]);
+		const footer = Reflect.apply(callbacks.footer, me, [tooltipItems]);
+		const afterFooter = Reflect.apply(callbacks.afterFooter, me, [tooltipItems]);
 
 		let lines = [];
 		lines = pushOrConcat(lines, splitNewlines(beforeFooter));
@@ -489,24 +489,24 @@ export class Tooltip extends Element {
 		let tooltipItems = [];
 		let i, len;
 
-		for (i = 0, len = active.length; i < len; ++i) {
+		for(i = 0, len = active.length; i < len; ++i) {
 			tooltipItems.push(createTooltipItem(me._chart, active[i]));
 		}
 
 		// If the user provided a filter function, use it to modify the tooltip items
-		if (options.filter) {
+		if(options.filter) {
 			tooltipItems = tooltipItems.filter((element, index, array) => options.filter(element, index, array, data));
 		}
 
 		// If the user provided a sorting function, use it to modify the tooltip items
-		if (options.itemSort) {
+		if(options.itemSort) {
 			tooltipItems = tooltipItems.sort((a, b) => options.itemSort(a, b, data));
 		}
 
 		// Determine colors for boxes
 		each(tooltipItems, (context) => {
-			labelColors.push(options.callbacks.labelColor.call(me, context));
-			labelTextColors.push(options.callbacks.labelTextColor.call(me, context));
+			labelColors.push(Reflect.apply(options.callbacks.labelColor, me, [context]));
+			labelTextColors.push(Reflect.apply(options.callbacks.labelTextColor, me, [context]));
 		});
 
 		me.labelColors = labelColors;
@@ -521,14 +521,14 @@ export class Tooltip extends Element {
 		const active = me._active;
 		let properties;
 
-		if (!active.length) {
-			if (me.opacity !== 0) {
+		if(!active.length) {
+			if(me.opacity !== 0) {
 				properties = {
 					opacity: 0
 				};
 			}
 		} else {
-			const position = positioners[options.position].call(me, active, me._eventPosition);
+			const position = Reflect.apply(positioners[options.position], me, [active, me._eventPosition]);
 			const tooltipItems = me._createItems();
 
 			me.title = me.getTitle(tooltipItems);
@@ -556,12 +556,12 @@ export class Tooltip extends Element {
 			};
 		}
 
-		if (properties) {
+		if(properties) {
 			me._resolveAnimations().update(me, properties);
 		}
 
-		if (changed && options.custom) {
-			options.custom.call(me, {chart: me._chart, tooltip: me});
+		if(changed && options.custom) {
+			Reflect.apply(options.custom, me, [{chart: me._chart, tooltip: me}]);
 		}
 	}
 
@@ -580,10 +580,10 @@ export class Tooltip extends Element {
 		const {width, height} = size;
 		let x1, x2, x3, y1, y2, y3;
 
-		if (yAlign === 'center') {
+		if(yAlign === 'center') {
 			y2 = ptY + (height / 2);
 
-			if (xAlign === 'left') {
+			if(xAlign === 'left') {
 				x1 = ptX;
 				x2 = x1 - caretSize;
 
@@ -601,15 +601,15 @@ export class Tooltip extends Element {
 
 			x3 = x1;
 		} else {
-			if (xAlign === 'left') {
+			if(xAlign === 'left') {
 				x2 = ptX + cornerRadius + (caretSize);
-			} else if (xAlign === 'right') {
+			} else if(xAlign === 'right') {
 				x2 = ptX + width - cornerRadius - caretSize;
 			} else {
 				x2 = this.caretX;
 			}
 
-			if (yAlign === 'top') {
+			if(yAlign === 'top') {
 				y1 = ptY;
 				y2 = y1 - caretSize;
 
@@ -636,7 +636,7 @@ export class Tooltip extends Element {
 		const length = title.length;
 		let titleFont, titleSpacing, i;
 
-		if (length) {
+		if(length) {
 			const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
 
 			pt.x = getAlignedX(me, options.titleAlign);
@@ -650,11 +650,11 @@ export class Tooltip extends Element {
 			ctx.fillStyle = options.titleFont.color;
 			ctx.font = titleFont.string;
 
-			for (i = 0; i < length; ++i) {
+			for(i = 0; i < length; ++i) {
 				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFont.size / 2);
 				pt.y += titleFont.size + titleSpacing; // Line Height and spacing
 
-				if (i + 1 === length) {
+				if(i + 1 === length) {
 					pt.y += options.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
 				}
 			}
@@ -723,7 +723,7 @@ export class Tooltip extends Element {
 			: 0;
 
 		// Draw body lines now
-		for (i = 0, ilen = body.length; i < ilen; ++i) {
+		for(i = 0, ilen = body.length; i < ilen; ++i) {
 			bodyItem = body[i];
 			textColor = me.labelTextColors[i];
 
@@ -732,12 +732,12 @@ export class Tooltip extends Element {
 
 			lines = bodyItem.lines;
 			// Draw Legend-like boxes if needed
-			if (displayColors && lines.length) {
+			if(displayColors && lines.length) {
 				me._drawColorBox(ctx, pt, i, rtlHelper);
 				bodyLineHeight = Math.max(bodyFont.size, boxHeight);
 			}
 
-			for (j = 0, jlen = lines.length; j < jlen; ++j) {
+			for(j = 0, jlen = lines.length; j < jlen; ++j) {
 				fillLineOfText(lines[j]);
 				// Reset for any lines that don't include colorbox
 				bodyLineHeight = bodyFont.size;
@@ -762,7 +762,7 @@ export class Tooltip extends Element {
 		const length = footer.length;
 		let footerFont, i;
 
-		if (length) {
+		if(length) {
 			const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
 
 			pt.x = getAlignedX(me, options.footerAlign);
@@ -776,7 +776,7 @@ export class Tooltip extends Element {
 			ctx.fillStyle = options.footerFont.color;
 			ctx.font = footerFont.string;
 
-			for (i = 0; i < length; ++i) {
+			for(i = 0; i < length; ++i) {
 				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFont.size / 2);
 				pt.y += footerFont.size + options.footerSpacing;
 			}
@@ -795,22 +795,22 @@ export class Tooltip extends Element {
 
 		ctx.beginPath();
 		ctx.moveTo(x + radius, y);
-		if (yAlign === 'top') {
+		if(yAlign === 'top') {
 			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + width - radius, y);
 		ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-		if (yAlign === 'center' && xAlign === 'right') {
+		if(yAlign === 'center' && xAlign === 'right') {
 			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + width, y + height - radius);
 		ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-		if (yAlign === 'bottom') {
+		if(yAlign === 'bottom') {
 			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x + radius, y + height);
 		ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-		if (yAlign === 'center' && xAlign === 'left') {
+		if(yAlign === 'center' && xAlign === 'left') {
 			this.drawCaret(pt, ctx, tooltipSize);
 		}
 		ctx.lineTo(x, y + radius);
@@ -819,7 +819,7 @@ export class Tooltip extends Element {
 
 		ctx.fill();
 
-		if (options.borderWidth > 0) {
+		if(options.borderWidth > 0) {
 			ctx.stroke();
 		}
 	}
@@ -835,16 +835,16 @@ export class Tooltip extends Element {
 		const anims = me.$animations;
 		const animX = anims && anims.x;
 		const animY = anims && anims.y;
-		if (animX || animY) {
-			const position = positioners[options.position].call(me, me._active, me._eventPosition);
-			if (!position) {
+		if(animX || animY) {
+			const position = Reflect.apply(positioners[options.position], me, [me._active, me._eventPosition]);
+			if(!position) {
 				return;
 			}
 			const size = me._size = getTooltipSize(me);
 			const positionAndSize = Object.assign({}, position, me._size);
 			const alignment = determineAlignment(chart, options, positionAndSize);
 			const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
-			if (animX._to !== point.x || animY._to !== point.y) {
+			if(animX._to !== point.x || animY._to !== point.y) {
 				me.xAlign = alignment.xAlign;
 				me.yAlign = alignment.yAlign;
 				me.width = size.width;
@@ -861,7 +861,7 @@ export class Tooltip extends Element {
 		const options = me.options;
 		let opacity = me.opacity;
 
-		if (!opacity) {
+		if(!opacity) {
 			return;
 		}
 
@@ -882,7 +882,7 @@ export class Tooltip extends Element {
 		// Truthy/falsey value for empty tooltip
 		const hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
 
-		if (options.enabled && hasTooltipContent) {
+		if(options.enabled && hasTooltipContent) {
 			ctx.save();
 			ctx.globalAlpha = opacity;
 
@@ -922,9 +922,9 @@ export class Tooltip extends Element {
 		let active = [];
 
 		// Find Active Elements for tooltips
-		if (e.type !== 'mouseout') {
+		if(e.type !== 'mouseout') {
 			active = me._chart.getElementsAtEventForMode(e, options.mode, options, replay);
-			if (options.reverse) {
+			if(options.reverse) {
 				active.reverse();
 			}
 		}
@@ -932,17 +932,17 @@ export class Tooltip extends Element {
 		// When there are multiple items shown, but the tooltip position is nearest mode
 		// an update may need to be made because our position may have changed even though
 		// the items are the same as before.
-		const position = positioners[options.position].call(me, active, e);
+		const position = Reflect.apply(positioners[options.position], me, [active, e]);
 		const positionChanged = this.caretX !== position.x || this.caretY !== position.y;
 
 		// Remember Last Actives
 		changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
 
 		// Only handle target event on tooltip change
-		if (changed) {
+		if(changed) {
 			me._active = active;
 
-			if (options.enabled || options.custom) {
+			if(options.enabled || options.custom) {
 				me._eventPosition = {
 					x: e.x,
 					y: e.y
@@ -969,19 +969,19 @@ export default {
 	afterInit(chart) {
 		const tooltipOpts = chart.options.tooltips;
 
-		if (tooltipOpts) {
+		if(tooltipOpts) {
 			chart.tooltip = new Tooltip({_chart: chart});
 		}
 	},
 
 	beforeUpdate(chart) {
-		if (chart.tooltip) {
+		if(chart.tooltip) {
 			chart.tooltip.initialize();
 		}
 	},
 
 	reset(chart) {
-		if (chart.tooltip) {
+		if(chart.tooltip) {
 			chart.tooltip.initialize();
 		}
 	},
@@ -993,11 +993,11 @@ export default {
 			tooltip
 		};
 
-		if (chart._plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
+		if(chart._plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
 			return;
 		}
 
-		if (tooltip) {
+		if(tooltip) {
 			tooltip.draw(chart.ctx);
 		}
 
@@ -1005,7 +1005,7 @@ export default {
 	},
 
 	afterEvent(chart, e, replay) {
-		if (chart.tooltip) {
+		if(chart.tooltip) {
 			// If the event is replayed from `update`, we should evaluate with the final positions.
 			const useFinalPosition = replay;
 			chart.tooltip.handleEvent(e, useFinalPosition);
@@ -1063,13 +1063,13 @@ export default {
 			// Args are: (tooltipItems, data)
 			beforeTitle: noop,
 			title(tooltipItems) {
-				if (tooltipItems.length > 0) {
+				if(tooltipItems.length > 0) {
 					const item = tooltipItems[0];
 					const labels = item.chart.data.labels;
 					const labelCount = labels ? labels.length : 0;
-					if (item.label) {
+					if(item.label) {
 						return item.label;
-					} else if (labelCount > 0 && item.dataIndex < labelCount) {
+					} else if(labelCount > 0 && item.dataIndex < labelCount) {
 						return labels[item.dataIndex];
 					}
 				}
@@ -1086,11 +1086,11 @@ export default {
 			label(tooltipItem) {
 				let label = tooltipItem.dataset.label || '';
 
-				if (label) {
+				if(label) {
 					label += ': ';
 				}
 				const value = tooltipItem.formattedValue;
-				if (!isNullOrUndef(value)) {
+				if(!isNullOrUndef(value)) {
 					label += value;
 				}
 				return label;

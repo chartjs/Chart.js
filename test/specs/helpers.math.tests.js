@@ -20,7 +20,7 @@ describe('Chart.helpers.math', function() {
 
 		// Check all allowed powers of 10, which should return integer values
 		var maxPowerOf10 = Math.floor(math.log10(Number.MAX_VALUE));
-		for (var i = 0; i < maxPowerOf10; i += 1) {
+		for(var i = 0; i < maxPowerOf10; i += 1) {
 			expect(math.log10(Math.pow(10, i))).toBe(i);
 		}
 	});

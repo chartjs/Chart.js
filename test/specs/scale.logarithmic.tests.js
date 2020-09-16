@@ -15,9 +15,9 @@ describe('Logarithmic Scale tests', function() {
 			ticks: {
 				callback: Chart.Ticks.formatters.logarithmic,
 				major: {
-					enabled: true
-				}
-			}
+					enabled: true,
+				},
+			},
 		});
 
 		// Is this actually a function
@@ -33,39 +33,39 @@ describe('Logarithmic Scale tests', function() {
 					data: [42, 1000, 64, 100],
 				}, {
 					yAxisID: 'y1',
-					data: [10, 5, 5000, 78, 450]
+					data: [10, 5, 5000, 78, 450],
 				}, {
 					yAxisID: 'y1',
-					data: [150]
+					data: [150],
 				}, {
 					yAxisID: 'y2',
-					data: [20, 0, 150, 1800, 3040]
+					data: [20, 0, 150, 1800, 3040],
 				}, {
 					yAxisID: 'y3',
-					data: [67, 0.0004, 0, 820, 0.001]
+					data: [67, 0.0004, 0, 820, 0.001],
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e']
+				labels: ['a', 'b', 'c', 'd', 'e'],
 			},
 			options: {
 				scales: {
 					y: {
 						id: 'y',
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y1: {
 						type: 'logarithmic',
-						position: 'right'
+						position: 'right',
 					},
 					y2: {
 						type: 'logarithmic',
-						position: 'right'
+						position: 'right',
 					},
 					y3: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y).not.toEqual(undefined); // must construct
@@ -94,38 +94,38 @@ describe('Logarithmic Scale tests', function() {
 					data: ['42', '1000', '64', '100'],
 				}, {
 					yAxisID: 'y1',
-					data: ['10', '5', '5000', '78', '450']
+					data: ['10', '5', '5000', '78', '450'],
 				}, {
 					yAxisID: 'y1',
-					data: ['150']
+					data: ['150'],
 				}, {
 					yAxisID: 'y2',
-					data: ['20', '0', '150', '1800', '3040']
+					data: ['20', '0', '150', '1800', '3040'],
 				}, {
 					yAxisID: 'y3',
-					data: ['67', '0.0004', '0', '820', '0.001']
+					data: ['67', '0.0004', '0', '820', '0.001'],
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e']
+				labels: ['a', 'b', 'c', 'd', 'e'],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y2: {
 						position: 'right',
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y3: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y).not.toEqual(undefined); // must construct
@@ -151,39 +151,39 @@ describe('Logarithmic Scale tests', function() {
 			data: {
 				datasets: [{
 					yAxisID: 'y1',
-					data: [10, 5, 5000, 78, 450]
+					data: [10, 5, 5000, 78, 450],
 				}, {
 					yAxisID: 'y',
 					data: [42, 1000, 64, 100],
 				}, {
 					yAxisID: 'y1',
 					data: [50000],
-					hidden: true
+					hidden: true,
 				}, {
 					yAxisID: 'y2',
-					data: [20, 0, 7400, 14, 291]
+					data: [20, 0, 7400, 14, 291],
 				}, {
 					yAxisID: 'y2',
 					data: [6, 0.0007, 9, 890, 60000],
-					hidden: true
+					hidden: true,
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e']
+				labels: ['a', 'b', 'c', 'd', 'e'],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y2: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y1).not.toEqual(undefined); // must construct
@@ -201,30 +201,30 @@ describe('Logarithmic Scale tests', function() {
 			data: {
 				datasets: [{
 					yAxisID: 'y',
-					data: [undefined, 10, null, 5, 5000, NaN, 78, 450]
+					data: [undefined, 10, null, 5, 5000, NaN, 78, 450],
 				}, {
 					yAxisID: 'y',
-					data: [undefined, 28, null, 1000, 500, NaN, 50, 42, Infinity, -Infinity]
+					data: [undefined, 28, null, 1000, 500, NaN, 50, 42, Infinity, -Infinity],
 				}, {
 					yAxisID: 'y1',
-					data: [undefined, 30, null, 9400, 0, NaN, 54, 836]
+					data: [undefined, 30, null, 9400, 0, NaN, 54, 836],
 				}, {
 					yAxisID: 'y1',
-					data: [undefined, 0, null, 800, 9, NaN, 894, 21]
+					data: [undefined, 0, null, 800, 9, NaN, 894, 21],
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y).not.toEqual(undefined); // must construct
@@ -252,21 +252,21 @@ describe('Logarithmic Scale tests', function() {
 						{x: 10, y: 100},
 						{x: 2, y: 6},
 						{x: 65, y: 121},
-						{x: 99, y: 7}
-					]
-				}]
+						{x: 99, y: 7},
+					],
+				}],
 			},
 			options: {
 				scales: {
 					x: {
 						type: 'logarithmic',
-						position: 'bottom'
+						position: 'bottom',
 					},
 					y: {
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.x.min).toBe(1);
@@ -285,21 +285,21 @@ describe('Logarithmic Scale tests', function() {
 						{x: 7, y: 950},
 						{x: 289, y: 0},
 						{x: 0, y: 8},
-						{x: 23, y: 0.04}
-					]
-				}]
+						{x: 23, y: 0.04},
+					],
+				}],
 			},
 			options: {
 				scales: {
 					x: {
 						type: 'logarithmic',
-						position: 'bottom'
+						position: 'bottom',
 					},
 					y: {
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.x.min).toBe(1);
@@ -316,33 +316,33 @@ describe('Logarithmic Scale tests', function() {
 				datasets: [{
 					type: 'bar',
 					yAxisID: 'y',
-					data: [10, 5, 1, 5, 78, 100]
+					data: [10, 5, 1, 5, 78, 100],
 				}, {
 					yAxisID: 'y1',
 					data: [0, 1000],
 				}, {
 					type: 'bar',
 					yAxisID: 'y',
-					data: [150, 10, 10, 100, 10, 9]
+					data: [150, 10, 10, 100, 10, 9],
 				}, {
 					type: 'line',
 					yAxisID: 'y',
-					data: [100, 100, 100, 100, 100, 100]
+					data: [100, 100, 100, 100, 100, 100],
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f'],
 			},
 			options: {
 				scales: {
 					y: {
 						type: 'logarithmic',
-						stacked: true
+						stacked: true,
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y.min).toBe(1);
@@ -356,35 +356,35 @@ describe('Logarithmic Scale tests', function() {
 				datasets: [{
 					yAxisID: 'y',
 					data: [10, 5, 1, 5, 78, 100],
-					type: 'bar'
+					type: 'bar',
 				}, {
 					yAxisID: 'y1',
 					data: [0, 1000],
-					type: 'bar'
+					type: 'bar',
 				}, {
 					yAxisID: 'y',
 					data: [150, 10, 10, 100, 10, 9],
-					type: 'bar'
+					type: 'bar',
 				}, {
 					yAxisID: 'y',
 					data: [10000, 10000, 10000, 10000, 10000, 10000],
 					hidden: true,
-					type: 'bar'
+					type: 'bar',
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f'],
 			},
 			options: {
 				scales: {
 					y: {
 						type: 'logarithmic',
-						stacked: true
+						stacked: true,
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y.min).toBe(1);
@@ -396,17 +396,17 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: []
+					data: [],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y.min).toBe(1);
@@ -424,9 +424,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [1, 1, 1, 2, 1, 0]
+					data: [1, 1, 1, 2, 1, 0],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -437,11 +437,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var yScale = chart.scales.y;
@@ -457,9 +457,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [1, 1, 1, 2, 1, 0]
+					data: [1, 1, 1, 2, 1, 0],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -470,11 +470,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var y = chart.scales.y;
@@ -487,9 +487,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [1, 1, 1, 2, 1, 0]
+					data: [1, 1, 1, 2, 1, 0],
 				}],
-				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+				labels: ['a', 'b', 'c', 'd', 'e', 'f'],
 			},
 			options: {
 				scales: {
@@ -500,11 +500,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var y = chart.scales.y;
@@ -517,9 +517,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 78]
+					data: [10, 5, 1, 25, 78],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -528,11 +528,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		// Counts down because the lines are drawn top to bottom
@@ -547,9 +547,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [11, 0.8, 0, 28, 7]
+					data: [11, 0.8, 0, 28, 7],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -558,11 +558,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var scale = chart.scales.y;
@@ -578,9 +578,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'line',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 78]
+					data: [10, 5, 1, 25, 78],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -590,11 +590,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var scale = chart.scales.y;
@@ -608,9 +608,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'line',
 			data: {
 				datasets: [{
-					data: [21, 9, 0, 10, 25]
+					data: [21, 9, 0, 10, 25],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -620,11 +620,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value) {
 								return value;
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		var scale = chart.scales.y;
@@ -638,17 +638,17 @@ describe('Logarithmic Scale tests', function() {
 			type: 'line',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 0, 78]
+					data: [10, 5, 1, 25, 0, 78],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(getLabels(chart.scales.y)).toEqual(['', '', '', '50', '', '', '20', '10', '', '', '', '', '5', '', '', '2', '1']);
@@ -659,9 +659,9 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 78]
+					data: [10, 5, 1, 25, 78],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
@@ -670,11 +670,11 @@ describe('Logarithmic Scale tests', function() {
 						ticks: {
 							callback: function(value, index) {
 								return index.toString();
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		// Just the index
@@ -687,27 +687,27 @@ describe('Logarithmic Scale tests', function() {
 			data: {
 				datasets: [{
 					yAxisID: 'y',
-					data: [10, 5, 5000, 78, 450]
+					data: [10, 5, 5000, 78, 450],
 				}, {
 					yAxisID: 'y1',
 					data: [1, 1000, 10, 100],
 				}, {
 					yAxisID: 'y',
-					data: [150]
+					data: [150],
 				}],
-				labels: []
+				labels: [],
 			},
 			options: {
 				scales: {
 					y: {
-						type: 'logarithmic'
+						type: 'logarithmic',
 					},
 					y1: {
 						position: 'right',
-						type: 'logarithmic'
-					}
-				}
-			}
+						type: 'logarithmic',
+					},
+				},
+			},
 		});
 
 		expect(chart.scales.y.getLabelForValue(150)).toBe('150');
@@ -717,92 +717,94 @@ describe('Logarithmic Scale tests', function() {
 		var data = [
 			{
 				data: [1, 39],
-				stack: 'stack'
+				stack: 'stack',
 			},
 			{
 				data: [1, 39],
-				stack: 'stack'
+				stack: 'stack',
 			},
 		];
 		var dataWithEmptyStacks = [
 			{
-				data: []
+				data: [],
 			},
 			{
-				data: []
-			}
+				data: [],
+			},
 		].concat(data);
 		var config = [
 			{
 				axis: 'y',
 				firstTick: 1, // start of the axis (minimum)
-				describe: 'all stacks are defined'
+				describe: 'all stacks are defined',
 			},
 			{
 				axis: 'y',
 				data: dataWithEmptyStacks,
 				firstTick: 1,
-				describe: 'not all stacks are defined'
+				describe: 'not all stacks are defined',
 			},
 			{
 				axis: 'y',
 				scale: {
 					y: {
-						min: 0
-					}
+						min: 0,
+					},
 				},
 				firstTick: 1,
-				describe: 'all stacks are defined and min: 0'
+				describe: 'all stacks are defined and min: 0',
 			},
 			{
 				axis: 'y',
 				data: dataWithEmptyStacks,
 				scale: {
 					y: {
-						min: 0
-					}
+						min: 0,
+					},
 				},
 				firstTick: 1,
-				describe: 'not stacks are defined and min: 0'
+				describe: 'not stacks are defined and min: 0',
 			},
 			{
 				axis: 'x',
 				firstTick: 1,
-				describe: 'all stacks are defined'
+				describe: 'all stacks are defined',
 			},
 			{
 				axis: 'x',
 				data: dataWithEmptyStacks,
 				firstTick: 1,
-				describe: 'not all stacks are defined'
+				describe: 'not all stacks are defined',
 			},
 			{
 				axis: 'x',
 				scale: {
 					x: {
-						min: 0
-					}
+						min: 0,
+					},
 				},
 				firstTick: 1,
-				describe: 'all stacks are defined and min: 0'
+				describe: 'all stacks are defined and min: 0',
 			},
 			{
 				axis: 'x',
 				data: dataWithEmptyStacks,
 				scale: {
 					x: {
-						min: 0
-					}
+						min: 0,
+					},
 				},
 				firstTick: 1,
-				describe: 'not all stacks are defined and min: 0'
+				describe: 'not all stacks are defined and min: 0',
 			},
 		];
 		config.forEach(function(setup) {
 			var scaleConfig = {};
-			var indexAxis, chartStart, chartEnd;
+			var indexAxis,
+				chartStart,
+				chartEnd;
 
-			if (setup.axis === 'x') {
+			if(setup.axis === 'x') {
 				indexAxis = 'y';
 				chartStart = 'left';
 				chartEnd = 'right';
@@ -812,13 +814,13 @@ describe('Logarithmic Scale tests', function() {
 				chartEnd = 'top';
 			}
 			scaleConfig[setup.axis] = {
-				type: 'logarithmic'
+				type: 'logarithmic',
 			};
 			Object.assign(scaleConfig, setup.scale);
 			scaleConfig[setup.axis].type = 'logarithmic';
 
-			var description = 'dataset has stack option and ' + setup.describe
-				+ ' and axis is "' + setup.axis + '";';
+			var description = `dataset has stack option and ${setup.describe
+			} and axis is "${setup.axis}";`;
 			describe(description, function() {
 				it('should define the correct axis limits', function() {
 					var chart = window.acquireChart({
@@ -829,8 +831,8 @@ describe('Logarithmic Scale tests', function() {
 						},
 						options: {
 							indexAxis,
-							scales: scaleConfig
-						}
+							scales: scaleConfig,
+						},
 					});
 
 					var axisID = setup.axis;
@@ -869,14 +871,14 @@ describe('Logarithmic Scale tests', function() {
 				dataset: [],
 				firstTick: 1, // value of the first tick
 				lastTick: 10, // value of the last tick
-				describe: 'empty dataset, without min/max'
+				describe: 'empty dataset, without min/max',
 			},
 			{
 				dataset: [],
 				scale: {stacked: true},
 				firstTick: 1,
 				lastTick: 10,
-				describe: 'empty dataset, without min/max, with stacked: true'
+				describe: 'empty dataset, without min/max, with stacked: true',
 			},
 			{
 				data: {
@@ -888,34 +890,34 @@ describe('Logarithmic Scale tests', function() {
 				type: 'bar',
 				firstTick: 1,
 				lastTick: 10,
-				describe: 'empty dataset with stack option, without min/max'
+				describe: 'empty dataset with stack option, without min/max',
 			},
 			{
 				dataset: [],
 				scale: {min: 1},
 				firstTick: 1,
 				lastTick: 10,
-				describe: 'empty dataset, min: 1, without max'
+				describe: 'empty dataset, min: 1, without max',
 			},
 			{
 				dataset: [],
 				scale: {max: 80},
 				firstTick: 1,
 				lastTick: 80,
-				describe: 'empty dataset, max: 80, without min'
+				describe: 'empty dataset, max: 80, without min',
 			},
 			{
 				dataset: [],
 				scale: {max: 0.8},
 				firstTick: 0.01,
 				lastTick: 0.8,
-				describe: 'empty dataset, max: 0.8, without min'
+				describe: 'empty dataset, max: 0.8, without min',
 			},
 			{
 				dataset: [{x: 10, y: 10}, {x: 5, y: 5}, {x: 1, y: 1}, {x: 25, y: 25}, {x: 78, y: 78}],
 				firstTick: 1,
 				lastTick: 80,
-				describe: 'dataset min point {x: 1, y: 1}, max point {x:78, y:78}'
+				describe: 'dataset min point {x: 1, y: 1}, max point {x:78, y:78}',
 			},
 		];
 		config.forEach(function(setup) {
@@ -923,29 +925,29 @@ describe('Logarithmic Scale tests', function() {
 				{
 					id: 'x', // horizontal scale
 					start: 'left',
-					end: 'right'
+					end: 'right',
 				},
 				{
 					id: 'y', // vertical scale
 					start: 'bottom',
-					end: 'top'
-				}
+					end: 'top',
+				},
 			];
 			axes.forEach(function(axis) {
-				var expectation = 'min = ' + setup.firstTick + ', max = ' + setup.lastTick;
-				describe(setup.describe + ' and axis is "' + axis.id + '"; expect: ' + expectation + ';', function() {
+				var expectation = `min = ${setup.firstTick}, max = ${setup.lastTick}`;
+				describe(`${setup.describe} and axis is "${axis.id}"; expect: ${expectation};`, function() {
 					beforeEach(function() {
 						var xConfig = {
 							type: 'logarithmic',
-							position: 'bottom'
+							position: 'bottom',
 						};
 						var yConfig = {
 							type: 'logarithmic',
-							position: 'left'
+							position: 'left',
 						};
 						var data = setup.data || {
 							datasets: [{
-								data: setup.dataset
+								data: setup.dataset,
 							}],
 						};
 						Object.assign(xConfig, setup.scale);
@@ -957,9 +959,9 @@ describe('Logarithmic Scale tests', function() {
 							options: {
 								scales: {
 									x: xConfig,
-									y: yConfig
-								}
-							}
+									y: yConfig,
+								},
+							},
 						});
 					});
 
@@ -1003,41 +1005,41 @@ describe('Logarithmic Scale tests', function() {
 				dataset: [],
 				scale: {min: 0},
 				lastTick: 10, // value of the last tick
-				describe: 'empty dataset, min: 0, without max'
+				describe: 'empty dataset, min: 0, without max',
 			},
 			{
 				dataset: [],
 				scale: {min: 0, max: 80},
 				lastTick: 80,
-				describe: 'empty dataset, min: 0, max: 80'
+				describe: 'empty dataset, min: 0, max: 80',
 			},
 			{
 				dataset: [],
 				scale: {min: 0, max: 0.8},
 				lastTick: 0.8,
-				describe: 'empty dataset, min: 0, max: 0.8'
+				describe: 'empty dataset, min: 0, max: 0.8',
 			},
 			{
 				dataset: [{x: 0, y: 0}, {x: 10, y: 10}, {x: 1.2, y: 1.2}, {x: 25, y: 25}, {x: 78, y: 78}],
 				lastTick: 80,
-				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}'
+				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}',
 			},
 			{
 				dataset: [{x: 0, y: 0}, {x: 10, y: 10}, {x: 6.3, y: 6.3}, {x: 25, y: 25}, {x: 78, y: 78}],
 				lastTick: 80,
-				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}'
+				describe: 'dataset min point {x: 0, y: 0}, max point {x:78, y:78}',
 			},
 			{
 				dataset: [{x: 10, y: 10}, {x: 1.2, y: 1.2}, {x: 25, y: 25}, {x: 78, y: 78}],
 				scale: {min: 0},
 				lastTick: 80,
-				describe: 'dataset min point {x: 1.2, y: 1.2}, max point {x:78, y:78}, min: 0'
+				describe: 'dataset min point {x: 1.2, y: 1.2}, max point {x:78, y:78}, min: 0',
 			},
 			{
 				dataset: [{x: 10, y: 10}, {x: 6.3, y: 6.3}, {x: 25, y: 25}, {x: 78, y: 78}],
 				scale: {min: 0},
 				lastTick: 80,
-				describe: 'dataset min point {x: 6.3, y: 6.3}, max point {x:78, y:78}, min: 0'
+				describe: 'dataset min point {x: 6.3, y: 6.3}, max point {x:78, y:78}, min: 0',
 			},
 		];
 		config.forEach(function(setup) {
@@ -1045,29 +1047,29 @@ describe('Logarithmic Scale tests', function() {
 				{
 					id: 'x', // horizontal scale
 					start: 'left',
-					end: 'right'
+					end: 'right',
 				},
 				{
 					id: 'y', // vertical scale
 					start: 'bottom',
-					end: 'top'
-				}
+					end: 'top',
+				},
 			];
 			axes.forEach(function(axis) {
-				var expectation = 'min = 0, max = ' + setup.lastTick;
-				describe(setup.describe + ' and axis is "' + axis.id + '"; expect: ' + expectation + ';', function() {
+				var expectation = `min = 0, max = ${setup.lastTick}`;
+				describe(`${setup.describe} and axis is "${axis.id}"; expect: ${expectation};`, function() {
 					beforeEach(function() {
 						var xConfig = {
 							type: 'logarithmic',
-							position: 'bottom'
+							position: 'bottom',
 						};
 						var yConfig = {
 							type: 'logarithmic',
-							position: 'left'
+							position: 'left',
 						};
 						var data = setup.data || {
 							datasets: [{
-								data: setup.dataset
+								data: setup.dataset,
 							}],
 						};
 						Object.assign(xConfig, setup.scale);
@@ -1079,9 +1081,9 @@ describe('Logarithmic Scale tests', function() {
 							options: {
 								scales: {
 									x: xConfig,
-									y: yConfig
-								}
-							}
+									y: yConfig,
+								},
+							},
 						});
 					});
 

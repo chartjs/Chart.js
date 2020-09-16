@@ -50,7 +50,7 @@
 		var config;
 
 		function log(text) {
-			logElement.innerText += logEntry + '. ' + text + '\n';
+			logElement.innerText += `${logEntry}. ${text}\n`;
 			logElement.scrollTop = logElement.scrollHeight;
 			logEntry++;
 		}
@@ -85,13 +85,13 @@
 			options: {
 				legend: {
 					onHover: function(event, legendItem) {
-						log('onHover: ' + legendItem.text);
+						log(`onHover: ${legendItem.text}`);
 					},
 					onLeave: function(event, legendItem) {
-						log('onLeave: ' + legendItem.text);
+						log(`onLeave: ${legendItem.text}`);
 					},
 					onClick: function(event, legendItem) {
-						log('onClick:' + legendItem.text);
+						log(`onClick:${legendItem.text}`);
 					}
 				},
 				title: {

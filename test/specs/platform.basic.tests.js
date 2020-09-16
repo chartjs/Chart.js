@@ -10,7 +10,7 @@ describe('Platform.basic', function() {
 
 	it('supports choosing the BasicPlatform in a web worker', function(done) {
 		const canvas = document.createElement('canvas');
-		if (!canvas.transferControlToOffscreen) {
+		if(!canvas.transferControlToOffscreen) {
 			pending();
 		}
 		const offscreenCanvas = canvas.transferControlToOffscreen();
@@ -19,13 +19,13 @@ describe('Platform.basic', function() {
 		worker.onmessage = (event) => {
 			worker.terminate();
 			const {type, errorMessage} = event.data;
-			if (type === 'error') {
+			if(type === 'error') {
 				done.fail(errorMessage);
-			} else if (type === 'success') {
+			} else if(type === 'success') {
 				expect(type).toEqual('success');
 				done();
 			} else {
-				done.fail('invalid message type sent by worker: ' + type);
+				done.fail(`invalid message type sent by worker: ${type}`);
 			}
 		};
 

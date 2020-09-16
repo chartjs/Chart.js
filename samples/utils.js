@@ -73,9 +73,9 @@ window.chartColors = {
 			var data = [];
 			var i, value;
 
-			for (i = 0; i < cfg.count; ++i) {
+			for(i = 0; i < cfg.count; ++i) {
 				value = (cfg.from[i] || 0) + this.rand(cfg.min, cfg.max);
-				if (this.rand() <= cfg.continuity) {
+				if(this.rand() <= cfg.continuity) {
 					data.push(Math.round(dfactor * value) / dfactor);
 				} else {
 					data.push(null);
@@ -97,7 +97,7 @@ window.chartColors = {
 			var values = [];
 			var i;
 
-			for (i = min; i < max; i += step) {
+			for(i = min; i < max; i += step) {
 				values.push(prefix + Math.round(dfactor * i) / dfactor);
 			}
 
@@ -111,7 +111,7 @@ window.chartColors = {
 			var values = [];
 			var i, value;
 
-			for (i = 0; i < count; ++i) {
+			for(i = 0; i < count; ++i) {
 				value = MONTHS[Math.ceil(i) % 12];
 				values.push(value.substring(0, section));
 			}

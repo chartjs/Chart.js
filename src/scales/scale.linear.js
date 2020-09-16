@@ -13,7 +13,7 @@ export default class LinearScale extends LinearScaleBase {
 		me.max = isFinite(max) ? max : valueOrDefault(options.suggestedMax, 1);
 
 		// Backward compatible inconsistent min for stacked
-		if (options.stacked && min > 0) {
+		if(options.stacked && min > 0) {
 			me.min = 0;
 		}
 
@@ -28,7 +28,7 @@ export default class LinearScale extends LinearScaleBase {
 	computeTickLimit() {
 		const me = this;
 
-		if (me.isHorizontal()) {
+		if(me.isHorizontal()) {
 			return Math.ceil(me.width / 40);
 		}
 		const tickFont = me._resolveTickFontOptions(0);

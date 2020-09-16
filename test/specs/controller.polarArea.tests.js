@@ -128,7 +128,7 @@ describe('Chart.controllers.polarArea', function() {
 
 		chart.update();
 
-		for (var i = 0; i < 4; ++i) {
+		for(var i = 0; i < 4; ++i) {
 			expect(meta.data[i].options.backgroundColor).toBe('rgb(128, 129, 130)');
 			expect(meta.data[i].options.borderColor).toBe('rgb(56, 57, 58)');
 			expect(meta.data[i].options.borderWidth).toBe(1.123);

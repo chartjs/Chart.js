@@ -12,7 +12,7 @@ export default class TypedRegistry {
 	}
 
 	isForType(type) {
-		return Object.prototype.isPrototypeOf.call(this.type.prototype, type.prototype);
+		return Reflect.apply(Object.prototype.isPrototypeOf, this.type.prototype, [type.prototype]);
 	}
 
 	/**
@@ -23,7 +23,7 @@ export default class TypedRegistry {
 		const proto = Object.getPrototypeOf(item);
 		let parentScope;
 
-		if (isIChartComponent(proto)) {
+		if(isIChartComponent(proto)) {
 			// Make sure the parent is registered and note the scope where its defaults are.
 			parentScope = this.register(proto);
 		}
@@ -31,19 +31,19 @@ export default class TypedRegistry {
 		const items = this.items;
 		const id = item.id;
 		const baseScope = this.scope;
-		const scope = baseScope ? baseScope + '.' + id : id;
+		const scope = baseScope ? `${baseScope}.${id}` : id;
 
-		if (!id) {
-			throw new Error('class does not have id: ' + item);
+		if(!id) {
+			throw new Error(`class does not have id: ${item}`);
 		}
 
-		if (id in items) {
+		if(id in items) {
 			// already registered
 			return scope;
 		}
 
-		if (Object.keys(defaults.get(scope)).length) {
-			throw new Error('Can not register "' + id + '", because "defaults.' + scope + '" would collide with existing defaults');
+		if(Object.keys(defaults.get(scope)).length) {
+			throw new Error(`Can not register "${id}", because "defaults.${scope}" would collide with existing defaults`);
 		}
 
 		items[id] = item;
@@ -68,14 +68,14 @@ export default class TypedRegistry {
 		const id = item.id;
 		const scope = this.scope;
 
-		if (id in items) {
-			delete items[id];
+		if(id in items) {
+			Reflect.deleteProperty(items, id);
 		}
 
-		if (scope && id in defaults[scope]) {
-			delete defaults[scope][id];
-		} else if (id in defaults) {
-			delete defaults[id];
+		if(scope && id in defaults[scope]) {
+			Reflect.deleteProperty(defaults[scope], id);
+		} else if(id in defaults) {
+			Reflect.deleteProperty(defaults, id);
 		}
 	}
 }
@@ -88,7 +88,7 @@ function registerDefaults(item, scope, parentScope) {
 
 	defaults.set(scope, itemDefaults);
 
-	if (item.defaultRoutes) {
+	if(item.defaultRoutes) {
 		routeDefaults(scope, item.defaultRoutes);
 	}
 }

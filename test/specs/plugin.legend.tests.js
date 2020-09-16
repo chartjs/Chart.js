@@ -343,7 +343,7 @@ describe('Legend block tests', function() {
 				data: {
 					datasets: [1, 2, 3].map(function(n) {
 						return {
-							label: 'dataset' + n,
+							label: `dataset${n}`,
 							data: []
 						};
 					}),

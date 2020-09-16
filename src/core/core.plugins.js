@@ -21,14 +21,14 @@ export default class PluginService {
 	notify(chart, hook, args) {
 		const descriptors = this._descriptors(chart);
 
-		for (let i = 0; i < descriptors.length; ++i) {
+		for(let i = 0; i < descriptors.length; ++i) {
 			const descriptor = descriptors[i];
 			const plugin = descriptor.plugin;
 			const method = plugin[hook];
-			if (typeof method === 'function') {
+			if(typeof method === 'function') {
 				const params = [chart].concat(args || []);
 				params.push(descriptor.options);
-				if (method.apply(plugin, params) === false) {
+				if(Reflect.apply(method, plugin, params) === false) {
 					return false;
 				}
 			}
@@ -46,7 +46,7 @@ export default class PluginService {
 	 * @private
 	 */
 	_descriptors(chart) {
-		if (this._cache) {
+		if(this._cache) {
 			return this._cache;
 		}
 
@@ -64,15 +64,15 @@ export default class PluginService {
 function allPlugins(config) {
 	const plugins = [];
 	const keys = Object.keys(registry.plugins.items);
-	for (let i = 0; i < keys.length; i++) {
+	for(let i = 0; i < keys.length; i++) {
 		plugins.push(registry.getPlugin(keys[i]));
 	}
 
 	const local = config.plugins || [];
-	for (let i = 0; i < local.length; i++) {
+	for(let i = 0; i < local.length; i++) {
 		const plugin = local[i];
 
-		if (plugins.indexOf(plugin) === -1) {
+		if(plugins.indexOf(plugin) === -1) {
 			plugins.push(plugin);
 		}
 	}
@@ -83,15 +83,15 @@ function allPlugins(config) {
 function createDescriptors(plugins, options) {
 	const result = [];
 
-	for (let i = 0; i < plugins.length; i++) {
+	for(let i = 0; i < plugins.length; i++) {
 		const plugin = plugins[i];
 		const id = plugin.id;
 
 		let opts = options[id];
-		if (opts === false) {
+		if(opts === false) {
 			continue;
 		}
-		if (opts === true) {
+		if(opts === true) {
 			opts = {};
 		}
 		result.push({

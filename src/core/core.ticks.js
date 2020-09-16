@@ -14,7 +14,7 @@ const formatters = {
 	 * @return {string|string[]} the label to display
 	 */
 	values(value) {
-		return isArray(value) ? value : '' + value;
+		return isArray(value) ? value : `${value}`;
 	},
 
 	/**
@@ -26,7 +26,7 @@ const formatters = {
 	 * @return {string} string representation of the tickValue parameter
 	 */
 	numeric(tickValue, index, ticks) {
-		if (tickValue === 0) {
+		if(tickValue === 0) {
 			return '0'; // never show decimal places for 0
 		}
 
@@ -35,7 +35,7 @@ const formatters = {
 		// all ticks are small or there huge numbers; use scientific notation
 		const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
 		let notation;
-		if (maxTick < 1e-4 || maxTick > 1e+15) {
+		if(maxTick < 1e-4 || maxTick > 1e+15) {
 			notation = 'scientific';
 		}
 
@@ -44,7 +44,7 @@ const formatters = {
 		let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
 		// If we have a number like 2.5 as the delta, figure out how many decimal places we need
-		if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
+		if(Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
 			// not an integer
 			delta = tickValue - Math.floor(tickValue);
 		}
@@ -57,7 +57,7 @@ const formatters = {
 
 		const cacheKey = locale + JSON.stringify(options);
 		let formatter = intlCache.get(cacheKey);
-		if (!formatter) {
+		if(!formatter) {
 			formatter = new Intl.NumberFormat(locale, options);
 			intlCache.set(cacheKey, formatter);
 		}
@@ -75,12 +75,12 @@ const formatters = {
  * @return {string} string representation of the tickValue parameter
  */
 formatters.logarithmic = function(tickValue, index, ticks) {
-	if (tickValue === 0) {
+	if(tickValue === 0) {
 		return '0';
 	}
 	const remain = tickValue / (Math.pow(10, Math.floor(log10(tickValue))));
-	if (remain === 1 || remain === 2 || remain === 5) {
-		return formatters.numeric.call(this, tickValue, index, ticks);
+	if(remain === 1 || remain === 2 || remain === 5) {
+		return Reflect.apply(formatters.numeric, this, [tickValue, index, ticks]);
 	}
 	return '';
 };

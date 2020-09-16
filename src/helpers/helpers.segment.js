@@ -6,7 +6,7 @@ import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
  */
 
 function propertyFn(property) {
-	if (property === 'angle') {
+	if(property === 'angle') {
 		return {
 			between: _angleBetween,
 			compare: _angleDiff,
@@ -36,11 +36,11 @@ function getSegment(segment, points, bounds) {
 	let {start, end, loop} = segment;
 	let i, ilen;
 
-	if (loop) {
+	if(loop) {
 		start += count;
 		end += count;
-		for (i = 0, ilen = count; i < ilen; ++i) {
-			if (!between(normalize(points[start % count][property]), startBound, endBound)) {
+		for(i = 0, ilen = count; i < ilen; ++i) {
+			if(!between(normalize(points[start % count][property]), startBound, endBound)) {
 				break;
 			}
 			start--;
@@ -50,7 +50,7 @@ function getSegment(segment, points, bounds) {
 		end %= count;
 	}
 
-	if (end < start) {
+	if(end < start) {
 		end += count;
 	}
 	return {start, end, loop};
@@ -70,7 +70,7 @@ function getSegment(segment, points, bounds) {
  * @private
  **/
 export function _boundSegment(segment, points, bounds) {
-	if (!bounds) {
+	if(!bounds) {
 		return [segment];
 	}
 
@@ -89,21 +89,21 @@ export function _boundSegment(segment, points, bounds) {
 	const shouldStart = () => inside || startIsBefore();
 	const shouldStop = () => !inside || endIsBefore();
 
-	for (let i = start, prev = start; i <= end; ++i) {
+	for(let i = start, prev = start; i <= end; ++i) {
 		point = points[i % count];
 
-		if (point.skip) {
+		if(point.skip) {
 			continue;
 		}
 
 		value = normalize(point[property]);
 		inside = between(value, startBound, endBound);
 
-		if (subStart === null && shouldStart()) {
+		if(subStart === null && shouldStart()) {
 			subStart = compare(value, startBound) === 0 ? i : prev;
 		}
 
-		if (subStart !== null && shouldStop()) {
+		if(subStart !== null && shouldStop()) {
 			result.push(makeSubSegment(subStart, i, loop, count));
 			subStart = null;
 		}
@@ -111,7 +111,7 @@ export function _boundSegment(segment, points, bounds) {
 		prevValue = value;
 	}
 
-	if (subStart !== null) {
+	if(subStart !== null) {
 		result.push(makeSubSegment(subStart, end, loop, count));
 	}
 
@@ -132,9 +132,9 @@ export function _boundSegments(line, bounds) {
 	const result = [];
 	const segments = line.segments;
 
-	for (let i = 0; i < segments.length; i++) {
+	for(let i = 0; i < segments.length; i++) {
 		const sub = _boundSegment(segments[i], line.points, bounds);
-		if (sub.length) {
+		if(sub.length) {
 			result.push(...sub);
 		}
 	}
@@ -148,27 +148,27 @@ function findStartAndEnd(points, count, loop, spanGaps) {
 	let start = 0;
 	let end = count - 1;
 
-	if (loop && !spanGaps) {
+	if(loop && !spanGaps) {
 		// loop and not spaning gaps, first find a gap to start from
-		while (start < count && !points[start].skip) {
+		while(start < count && !points[start].skip) {
 			start++;
 		}
 	}
 
 	// find first non skipped point (after the first gap possibly)
-	while (start < count && points[start].skip) {
+	while(start < count && points[start].skip) {
 		start++;
 	}
 
 	// if we looped to count, start needs to be 0
 	start %= count;
 
-	if (loop) {
+	if(loop) {
 		// loop will go past count, if start > 0
 		end += start;
 	}
 
-	while (end > start && points[end % count].skip) {
+	while(end > start && points[end % count].skip) {
 		end--;
 	}
 
@@ -192,10 +192,10 @@ function solidSegments(points, start, max, loop) {
 	let prev = points[start];
 	let end;
 
-	for (end = start + 1; end <= max; ++end) {
+	for(end = start + 1; end <= max; ++end) {
 		const cur = points[end % count];
-		if (cur.skip || cur.stop) {
-			if (!prev.skip) {
+		if(cur.skip || cur.stop) {
+			if(!prev.skip) {
 				loop = false;
 				result.push({start: start % count, end: (end - 1) % count, loop});
 				// @ts-ignore
@@ -203,14 +203,14 @@ function solidSegments(points, start, max, loop) {
 			}
 		} else {
 			last = end;
-			if (prev.skip) {
+			if(prev.skip) {
 				start = end;
 			}
 		}
 		prev = cur;
 	}
 
-	if (last !== null) {
+	if(last !== null) {
 		result.push({start: start % count, end: last % count, loop});
 	}
 
@@ -228,14 +228,14 @@ export function _computeSegments(line) {
 	const spanGaps = line.options.spanGaps;
 	const count = points.length;
 
-	if (!count) {
+	if(!count) {
 		return [];
 	}
 
 	const loop = !!line._loop;
 	const {start, end} = findStartAndEnd(points, count, loop, spanGaps);
 
-	if (spanGaps === true) {
+	if(spanGaps === true) {
 		return [{start, end, loop}];
 	}
 

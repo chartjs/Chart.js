@@ -122,7 +122,7 @@ describe('Core.scale', function() {
 	}];
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for gridLine(s) for the horizontal scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it(`should get the correct pixels for gridLine(s) for the horizontal scale when offsetGridLines is ${test.offsetGridLines} and offset is ${test.offset}`, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {
@@ -166,7 +166,7 @@ describe('Core.scale', function() {
 	});
 
 	gridLineTests.forEach(function(test) {
-		it('should get the correct pixels for gridLine(s) for the vertical scale when offsetGridLines is ' + test.offsetGridLines + ' and offset is ' + test.offset, function() {
+		it(`should get the correct pixels for gridLine(s) for the vertical scale when offsetGridLines is ${test.offsetGridLines} and offset is ${test.offset}`, function() {
 			var chart = window.acquireChart({
 				type: 'line',
 				data: {

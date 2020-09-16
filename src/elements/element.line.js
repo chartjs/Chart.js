@@ -22,11 +22,11 @@ function lineTo(ctx, previous, target) {
 }
 
 function getLineMethod(options) {
-	if (options.stepped) {
+	if(options.stepped) {
 		return _steppedLineTo;
 	}
 
-	if (options.tension) {
+	if(options.tension) {
 		return _bezierCurveTo;
 	}
 
@@ -70,13 +70,13 @@ function pathSegment(ctx, line, segment, params) {
 	let {move = true, reverse} = params || {};
 	let i, point, prev;
 
-	for (i = 0; i <= ilen; ++i) {
+	for(i = 0; i <= ilen; ++i) {
 		point = points[(start + (reverse ? ilen - i : i)) % count];
 
-		if (point.skip) {
+		if(point.skip) {
 			// If there is a skipped point inside a segment, spanGaps must be true
 			continue;
-		} else if (move) {
+		} else if(move) {
 			ctx.moveTo(point.x, point.y);
 			move = false;
 		} else {
@@ -86,7 +86,7 @@ function pathSegment(ctx, line, segment, params) {
 		prev = point;
 	}
 
-	if (loop) {
+	if(loop) {
 		point = points[(start + (reverse ? ilen : 0)) % count];
 		lineMethod(ctx, prev, point, reverse, options.stepped);
 	}
@@ -119,7 +119,7 @@ function fastPathSegment(ctx, line, segment, params) {
 
 	const pointIndex = (index) => (start + (reverse ? ilen - index : index)) % count;
 	const drawX = () => {
-		if (minY !== maxY) {
+		if(minY !== maxY) {
 			// Draw line to maxY and minY, using the average x-coordinate
 			ctx.lineTo(avgX, maxY);
 			ctx.lineTo(avgX, minY);
@@ -129,15 +129,15 @@ function fastPathSegment(ctx, line, segment, params) {
 		}
 	};
 
-	if (move) {
+	if(move) {
 		point = points[pointIndex(0)];
 		ctx.moveTo(point.x, point.y);
 	}
 
-	for (i = 0; i <= ilen; ++i) {
+	for(i = 0; i <= ilen; ++i) {
 		point = points[pointIndex(i)];
 
-		if (point.skip) {
+		if(point.skip) {
 			// If there is a skipped point inside a segment, spanGaps must be true
 			continue;
 		}
@@ -146,11 +146,11 @@ function fastPathSegment(ctx, line, segment, params) {
 		const y = point.y;
 		const truncX = x | 0; // truncated x-coordinate
 
-		if (truncX === prevX) {
+		if(truncX === prevX) {
 			// Determine `minY` / `maxY` and `avgX` while we stay within same x-position
-			if (y < minY) {
+			if(y < minY) {
 				minY = y;
-			} else if (y > maxY) {
+			} else if(y > maxY) {
 				maxY = y;
 			}
 			// For first point in group, countX is `0`, so average will be `x` / 1.
@@ -187,11 +187,11 @@ function _getSegmentMethod(line) {
  * @private
  */
 function _getInterpolationMethod(options) {
-	if (options.stepped) {
+	if(options.stepped) {
 		return _steppedInterpolation;
 	}
 
-	if (options.tension) {
+	if(options.tension) {
 		return _bezierInterpolation;
 	}
 
@@ -210,7 +210,7 @@ export default class Line extends Element {
 		this._segments = undefined;
 		this._pointsUpdated = false;
 
-		if (cfg) {
+		if(cfg) {
 			Object.assign(this, cfg);
 		}
 	}
@@ -218,7 +218,7 @@ export default class Line extends Element {
 	updateControlPoints(chartArea) {
 		const me = this;
 		const options = me.options;
-		if (options.tension && !options.stepped && !me._pointsUpdated) {
+		if(options.tension && !options.stepped && !me._pointsUpdated) {
 			const loop = options.spanGaps ? me._loop : me._fullLoop;
 			_updateBezierControlPoints(me._points, options, chartArea, loop);
 			me._pointsUpdated = true;
@@ -227,7 +227,7 @@ export default class Line extends Element {
 
 	set points(points) {
 		this._points = points;
-		delete this._segments;
+		Reflect.deleteProperty(this, '_segments');
 	}
 
 	get points() {
@@ -273,18 +273,18 @@ export default class Line extends Element {
 		const points = me.points;
 		const segments = _boundSegments(me, {property, start: value, end: value});
 
-		if (!segments.length) {
+		if(!segments.length) {
 			return;
 		}
 
 		const result = [];
 		const _interpolate = _getInterpolationMethod(options);
 		let i, ilen;
-		for (i = 0, ilen = segments.length; i < ilen; ++i) {
+		for(i = 0, ilen = segments.length; i < ilen; ++i) {
 			const {start, end} = segments[i];
 			const p1 = points[start];
 			const p2 = points[end];
-			if (p1 === p2) {
+			if(p1 === p2) {
 				result.push(p1);
 				continue;
 			}
@@ -332,7 +332,7 @@ export default class Line extends Element {
 		start = start || 0;
 		count = count || (me.points.length - start);
 
-		for (let i = 0; i < ilen; ++i) {
+		for(let i = 0; i < ilen; ++i) {
 			loop &= segmentMethod(ctx, me, segments[i], {start, end: start + count - 1});
 		}
 		return !!loop;
@@ -349,7 +349,7 @@ export default class Line extends Element {
 		const options = this.options || {};
 		const points = this.points || [];
 
-		if (!points.length || !options.borderWidth) {
+		if(!points.length || !options.borderWidth) {
 			return;
 		}
 
@@ -359,7 +359,7 @@ export default class Line extends Element {
 
 		ctx.beginPath();
 
-		if (this.path(ctx, start, count)) {
+		if(this.path(ctx, start, count)) {
 			ctx.closePath();
 		}
 

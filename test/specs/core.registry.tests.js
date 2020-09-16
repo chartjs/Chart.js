@@ -1,7 +1,7 @@
 describe('Chart.registry', function() {
 	it('should handle a classic controller extension', function() {
 		function CustomController() {
-			Chart.controllers.line.apply(this, arguments);
+			Reflect.apply(Chart.controllers.line, this, arguments);
 		}
 		CustomController.prototype = Object.create(Chart.controllers.line.prototype);
 		CustomController.prototype.constructor = CustomController;
@@ -18,7 +18,7 @@ describe('Chart.registry', function() {
 
 	it('should handle a classic scale extension', function() {
 		function CustomScale() {
-			Chart.Scale.apply(this, arguments);
+			Reflect.apply(Chart.Scale, this, arguments);
 		}
 		CustomScale.prototype = Object.create(Chart.Scale.prototype);
 		CustomScale.prototype.constructor = CustomScale;
@@ -42,7 +42,7 @@ describe('Chart.registry', function() {
 
 	it('should handle a classic element extension', function() {
 		function CustomElement() {
-			Chart.Element.apply(this, arguments);
+			Reflect.apply(Chart.Element, this, arguments);
 		}
 		CustomElement.prototype = Object.create(Chart.Element.prototype);
 		CustomElement.prototype.constructor = CustomElement;

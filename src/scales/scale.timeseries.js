@@ -14,7 +14,7 @@ function interpolate(table, val, reverse) {
 	let prevSource, nextSource, prevTarget, nextTarget;
 
 	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	if (reverse) {
+	if(reverse) {
 		prevSource = Math.floor(val);
 		nextSource = Math.ceil(val);
 		prevTarget = table[prevSource];
@@ -70,7 +70,7 @@ class TimeSeriesScale extends TimeScale {
 	buildLookupTable(timestamps) {
 		const me = this;
 		const {min, max} = me;
-		if (!timestamps.length) {
+		if(!timestamps.length) {
 			return [
 				{time: min, pos: 0},
 				{time: max, pos: 1}
@@ -80,9 +80,9 @@ class TimeSeriesScale extends TimeScale {
 		const items = [min];
 		let i, ilen, curr;
 
-		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+		for(i = 0, ilen = timestamps.length; i < ilen; ++i) {
 			curr = timestamps[i];
-			if (curr > min && curr < max) {
+			if(curr > min && curr < max) {
 				items.push(curr);
 			}
 		}
@@ -101,13 +101,13 @@ class TimeSeriesScale extends TimeScale {
 		const me = this;
 		let timestamps = me._cache.all || [];
 
-		if (timestamps.length) {
+		if(timestamps.length) {
 			return timestamps;
 		}
 
 		const data = me.getDataTimestamps();
 		const label = me.getLabelTimestamps();
-		if (data.length && label.length) {
+		if(data.length && label.length) {
 			// If combining labels and data (data might not contain all labels),
 			// we need to recheck uniqueness and sort
 			timestamps = me.normalize(data.concat(label));

@@ -11,11 +11,11 @@ function niceNum(range) {
 	const fraction = range / Math.pow(10, exponent);
 	let niceFraction;
 
-	if (fraction <= 1.0) {
+	if(fraction <= 1.0) {
 		niceFraction = 1;
-	} else if (fraction <= 2) {
+	} else if(fraction <= 2) {
 		niceFraction = 2;
-	} else if (fraction <= 5) {
+	} else if(fraction <= 5) {
 		niceFraction = 5;
 	} else {
 		niceFraction = 10;
@@ -46,17 +46,17 @@ function generateTicks(generationOptions, dataRange) {
 
 	// Beyond MIN_SPACING floating point numbers being to lose precision
 	// such that we can't do the math necessary to generate ticks
-	if (spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
+	if(spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
 		return [{value: rmin}, {value: rmax}];
 	}
 
 	numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
-	if (numSpaces > maxNumSpaces) {
+	if(numSpaces > maxNumSpaces) {
 		// If the calculated num of spaces exceeds maxNumSpaces, recalculate it
 		spacing = niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
-	if (stepSize || isNullOrUndef(precision)) {
+	if(stepSize || isNullOrUndef(precision)) {
 		// If a precision is not specified, calculate factor based on spacing
 		factor = Math.pow(10, _decimalPlaces(spacing));
 	} else {
@@ -69,9 +69,9 @@ function generateTicks(generationOptions, dataRange) {
 	niceMax = Math.ceil(rmax / spacing) * spacing;
 
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
-	if (stepSize && !isNullOrUndef(min) && !isNullOrUndef(max)) {
+	if(stepSize && !isNullOrUndef(min) && !isNullOrUndef(max)) {
 		// If very close to our whole number, use it.
-		if (almostWhole((max - min) / stepSize, spacing / 1000)) {
+		if(almostWhole((max - min) / stepSize, spacing / 1000)) {
 			niceMin = min;
 			niceMax = max;
 		}
@@ -79,7 +79,7 @@ function generateTicks(generationOptions, dataRange) {
 
 	numSpaces = (niceMax - niceMin) / spacing;
 	// If very close to our rounded value, use it.
-	if (almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+	if(almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
 		numSpaces = Math.round(numSpaces);
 	} else {
 		numSpaces = Math.ceil(numSpaces);
@@ -88,7 +88,7 @@ function generateTicks(generationOptions, dataRange) {
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
 	ticks.push({value: isNullOrUndef(min) ? niceMin : min});
-	for (let j = 1; j < numSpaces; ++j) {
+	for(let j = 1; j < numSpaces; ++j) {
 		ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
 	}
 	ticks.push({value: isNullOrUndef(max) ? niceMax : max});
@@ -113,10 +113,10 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	parse(raw, index) { // eslint-disable-line no-unused-vars
-		if (isNullOrUndef(raw)) {
+		if(isNullOrUndef(raw)) {
 			return NaN;
 		}
-		if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(+raw)) {
+		if((typeof raw === 'number' || raw instanceof Number) && !isFinite(+raw)) {
 			return NaN;
 		}
 
@@ -130,14 +130,14 @@ export default class LinearScaleBase extends Scale {
 		// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
 		// do nothing since that would make the chart weird. If the user really wants a weird chart
 		// axis, they can manually override it
-		if (opts.beginAtZero) {
+		if(opts.beginAtZero) {
 			const minSign = sign(me.min);
 			const maxSign = sign(me.max);
 
-			if (minSign < 0 && maxSign < 0) {
+			if(minSign < 0 && maxSign < 0) {
 				// move the top up to 0
 				me.max = 0;
-			} else if (minSign > 0 && maxSign > 0) {
+			} else if(minSign > 0 && maxSign > 0) {
 				// move the bottom down to 0
 				me.min = 0;
 			}
@@ -146,33 +146,33 @@ export default class LinearScaleBase extends Scale {
 		const setMin = opts.min !== undefined || opts.suggestedMin !== undefined;
 		const setMax = opts.max !== undefined || opts.suggestedMax !== undefined;
 
-		if (opts.min !== undefined) {
+		if(opts.min !== undefined) {
 			me.min = opts.min;
-		} else if (opts.suggestedMin !== undefined) {
-			if (me.min === null) {
+		} else if(opts.suggestedMin !== undefined) {
+			if(me.min === null) {
 				me.min = opts.suggestedMin;
 			} else {
 				me.min = Math.min(me.min, opts.suggestedMin);
 			}
 		}
 
-		if (opts.max !== undefined) {
+		if(opts.max !== undefined) {
 			me.max = opts.max;
-		} else if (opts.suggestedMax !== undefined) {
-			if (me.max === null) {
+		} else if(opts.suggestedMax !== undefined) {
+			if(me.max === null) {
 				me.max = opts.suggestedMax;
 			} else {
 				me.max = Math.max(me.max, opts.suggestedMax);
 			}
 		}
 
-		if (setMin !== setMax) {
+		if(setMin !== setMax) {
 			// We set the min or the max but not both.
 			// So ensure that our range is good
 			// Inverted or 0 length range can happen when
 			// min is set, and no datasets are visible
-			if (me.min >= me.max) {
-				if (setMin) {
+			if(me.min >= me.max) {
+				if(setMin) {
 					me.max = me.min + 1;
 				} else {
 					me.min = me.max - 1;
@@ -180,10 +180,10 @@ export default class LinearScaleBase extends Scale {
 			}
 		}
 
-		if (me.min === me.max) {
+		if(me.min === me.max) {
 			me.max++;
 
-			if (!opts.beginAtZero) {
+			if(!opts.beginAtZero) {
 				me.min--;
 			}
 		}
@@ -196,14 +196,14 @@ export default class LinearScaleBase extends Scale {
 		let {maxTicksLimit, stepSize} = tickOpts;
 		let maxTicks;
 
-		if (stepSize) {
+		if(stepSize) {
 			maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
 		} else {
 			maxTicks = me.computeTickLimit();
 			maxTicksLimit = maxTicksLimit || 11;
 		}
 
-		if (maxTicksLimit) {
+		if(maxTicksLimit) {
 			maxTicks = Math.min(maxTicksLimit, maxTicks);
 		}
 
@@ -242,7 +242,7 @@ export default class LinearScaleBase extends Scale {
 		// range of the scale
 		_setMinAndMaxByKey(ticks, me, 'value');
 
-		if (opts.reverse) {
+		if(opts.reverse) {
 			ticks.reverse();
 
 			me.start = me.max;
@@ -266,7 +266,7 @@ export default class LinearScaleBase extends Scale {
 
 		super.configure();
 
-		if (me.options.offset && ticks.length) {
+		if(me.options.offset && ticks.length) {
 			const offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;
 			start -= offset;
 			end += offset;

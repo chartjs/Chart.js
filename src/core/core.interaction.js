@@ -16,7 +16,7 @@ import {getRelativePosition as helpersGetRelativePosition} from '../helpers/help
  * @returns {object} the event position
  */
 function getRelativePosition(e, chart) {
-	if ('native' in e) {
+	if('native' in e) {
 		return {
 			x: e.x,
 			y: e.y
@@ -35,11 +35,11 @@ function evaluateAllVisibleItems(chart, handler) {
 	const metasets = chart.getSortedVisibleDatasetMetas();
 	let index, data, element;
 
-	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
+	for(let i = 0, ilen = metasets.length; i < ilen; ++i) {
 		({index, data} = metasets[i]);
-		for (let j = 0, jlen = data.length; j < jlen; ++j) {
+		for(let j = 0, jlen = data.length; j < jlen; ++j) {
 			element = data[j];
-			if (!element.skip) {
+			if(!element.skip) {
 				handler(element, index, j);
 			}
 		}
@@ -57,17 +57,17 @@ function evaluateAllVisibleItems(chart, handler) {
 function binarySearch(metaset, axis, value, intersect) {
 	const {controller, data, _sorted} = metaset;
 	const iScale = controller._cachedMeta.iScale;
-	if (iScale && axis === iScale.axis && _sorted && data.length) {
+	if(iScale && axis === iScale.axis && _sorted && data.length) {
 		const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
-		if (!intersect) {
+		if(!intersect) {
 			return lookupMethod(data, axis, value);
-		} else if (controller._sharedOptions) {
+		} else if(controller._sharedOptions) {
 			// _sharedOptions indicates that each element has equal options -> equal proportions
 			// So we can do a ranged binary search based on the range of first element and
 			// be confident to get the full range of indices that can intersect with the value.
 			const el = data[0];
 			const range = typeof el.getRange === 'function' && el.getRange(axis);
-			if (range) {
+			if(range) {
 				const start = lookupMethod(data, axis, value - range);
 				const end = lookupMethod(data, axis, value + range);
 				return {lo: start.lo, hi: end.hi};
@@ -89,12 +89,12 @@ function binarySearch(metaset, axis, value, intersect) {
 function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 	const metasets = chart.getSortedVisibleDatasetMetas();
 	const value = position[axis];
-	for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
+	for(let i = 0, ilen = metasets.length; i < ilen; ++i) {
 		const {index, data} = metasets[i];
 		const {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
-		for (let j = lo; j <= hi; ++j) {
+		for(let j = lo; j <= hi; ++j) {
 			const element = data[j];
-			if (!element.skip) {
+			if(!element.skip) {
 				handler(element, index, j);
 			}
 		}
@@ -128,12 +128,12 @@ function getDistanceMetricForAxis(axis) {
 function getIntersectItems(chart, position, axis, useFinalPosition) {
 	const items = [];
 
-	if (!_isPointInArea(position, chart.chartArea)) {
+	if(!_isPointInArea(position, chart.chartArea)) {
 		return items;
 	}
 
 	const evaluationFunc = function(element, datasetIndex, index) {
-		if (element.inRange(position.x, position.y, useFinalPosition)) {
+		if(element.inRange(position.x, position.y, useFinalPosition)) {
 			items.push({element, datasetIndex, index});
 		}
 	};
@@ -156,21 +156,21 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
 	let minDistance = Number.POSITIVE_INFINITY;
 	let items = [];
 
-	if (!_isPointInArea(position, chart.chartArea)) {
+	if(!_isPointInArea(position, chart.chartArea)) {
 		return items;
 	}
 
 	const evaluationFunc = function(element, datasetIndex, index) {
-		if (intersect && !element.inRange(position.x, position.y, useFinalPosition)) {
+		if(intersect && !element.inRange(position.x, position.y, useFinalPosition)) {
 			return;
 		}
 
 		const center = element.getCenterPoint(useFinalPosition);
 		const distance = distanceMetric(position, center);
-		if (distance < minDistance) {
+		if(distance < minDistance) {
 			items = [{element, datasetIndex, index}];
 			minDistance = distance;
-		} else if (distance === minDistance) {
+		} else if(distance === minDistance) {
 			// Can have multiple items at the same distance in which case we sort by size
 			items.push({element, datasetIndex, index});
 		}
@@ -188,18 +188,18 @@ function getAxisItems(chart, e, options, useFinalPosition) {
 	let intersectsItem = false;
 
 	evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
-		if (element[rangeMethod](position[axis], useFinalPosition)) {
+		if(element[rangeMethod](position[axis], useFinalPosition)) {
 			items.push({element, datasetIndex, index});
 		}
 
-		if (element.inRange(position.x, position.y, useFinalPosition)) {
+		if(element.inRange(position.x, position.y, useFinalPosition)) {
 			intersectsItem = true;
 		}
 	});
 
 	// If we want to trigger on an intersect and we don't have any items
 	// that intersect the position, return nothing
-	if (options.intersect && !intersectsItem) {
+	if(options.intersect && !intersectsItem) {
 		return [];
 	}
 	return items;
@@ -232,7 +232,7 @@ export default {
 				: getNearestItems(chart, position, axis, false, useFinalPosition);
 			const elements = [];
 
-			if (!items.length) {
+			if(!items.length) {
 				return [];
 			}
 
@@ -241,7 +241,7 @@ export default {
 				const element = meta.data[index];
 
 				// don't count items that are skipped (null data)
-				if (element && !element.skip) {
+				if(element && !element.skip) {
 					elements.push({element, datasetIndex: meta.index, index});
 				}
 			});
@@ -266,11 +266,11 @@ export default {
 				? getIntersectItems(chart, position, axis, useFinalPosition) :
 				getNearestItems(chart, position, axis, false, useFinalPosition);
 
-			if (items.length > 0) {
+			if(items.length > 0) {
 				const datasetIndex = items[0].datasetIndex;
 				const data = chart.getDatasetMeta(datasetIndex).data;
 				items = [];
-				for (let i = 0; i < data.length; ++i) {
+				for(let i = 0; i < data.length; ++i) {
 					items.push({element: data[i], datasetIndex, index: i});
 				}
 			}

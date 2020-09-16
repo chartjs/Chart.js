@@ -22,7 +22,7 @@ export default class LineController extends DatasetController {
 
 		// Update Line
 		// In resize mode only point locations change, so no need to set the points or options.
-		if (mode !== 'resize') {
+		if(mode !== 'resize') {
 			const properties = {
 				points,
 				options: me.resolveDatasetElementOptions()
@@ -46,7 +46,7 @@ export default class LineController extends DatasetController {
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
 		let prevParsed = start > 0 && me.getParsed(start - 1);
 
-		for (let i = start; i < start + count; ++i) {
+		for(let i = start; i < start + count; ++i) {
 			const point = points[i];
 			const parsed = me.getParsed(i);
 			const x = xScale.getPixelForValue(parsed.x, i);
@@ -58,7 +58,7 @@ export default class LineController extends DatasetController {
 				stop: i > 0 && (parsed.x - prevParsed.x) > maxGapLength
 			};
 
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 
@@ -89,7 +89,7 @@ export default class LineController extends DatasetController {
 		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
 		values.stepped = resolve([config.stepped, lineOptions.stepped]);
 
-		if (!showLine) {
+		if(!showLine) {
 			values.borderWidth = 0;
 		}
 
@@ -104,7 +104,7 @@ export default class LineController extends DatasetController {
 		const meta = me._cachedMeta;
 		const border = meta.dataset.options.borderWidth || 0;
 		const data = meta.data || [];
-		if (!data.length) {
+		if(!data.length) {
 			return border;
 		}
 		const firstPoint = data[0].size();
@@ -177,7 +177,7 @@ function getStartAndCountOfVisiblePoints(meta, points) {
 	let start = 0;
 	let count = pointCount;
 
-	if (meta._sorted) {
+	if(meta._sorted) {
 		const {iScale, _parsed} = meta;
 		const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
 		start = minDefined ? Math.max(0, _lookupByKey(_parsed, iScale.axis, min).lo) : 0;

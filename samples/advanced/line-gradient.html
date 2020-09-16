@@ -34,14 +34,14 @@
 					borderColor: function(context) {
 						var chartArea = context.chart.chartArea;
 
-						if (!chartArea) {
+						if(!chartArea) {
 							// This case happens on initial chart load
 							return null;
 						}
 
 						var chartWidth = chartArea.right - chartArea.left;
 						var chartHeight = chartArea.bottom - chartArea.top;
-						if (gradient === null || width !== chartWidth || height !== chartHeight) {
+						if(gradient === null || width !== chartWidth || height !== chartHeight) {
 							// Create the gradient because this is either the first render
 							// or the size of the chart has changed
 							width = chartWidth;

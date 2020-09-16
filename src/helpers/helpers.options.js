@@ -15,8 +15,8 @@ import {toFontString} from './helpers.canvas';
  * @since 2.7.0
  */
 export function toLineHeight(value, size) {
-	const matches = ('' + value).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
-	if (!matches || matches[1] === 'normal') {
+	const matches = (`${value}`).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
+	if(!matches || matches[1] === 'normal') {
 		return size * 1.2;
 	}
 
@@ -47,7 +47,7 @@ const numberOrZero = v => +v || 0;
 export function toTRBL(value) {
 	let t, r, b, l;
 
-	if (isObject(value)) {
+	if(isObject(value)) {
 		t = numberOrZero(value.top);
 		r = numberOrZero(value.right);
 		b = numberOrZero(value.bottom);
@@ -93,7 +93,7 @@ export function toFont(options, fallback) {
 
 	let size = valueOrDefault(options.size, fallback.size);
 
-	if (typeof size === 'string') {
+	if(typeof size === 'string') {
 		size = parseInt(size, 10);
 	}
 
@@ -128,21 +128,21 @@ export function resolve(inputs, context, index, info) {
 	let cacheable = true;
 	let i, ilen, value;
 
-	for (i = 0, ilen = inputs.length; i < ilen; ++i) {
+	for(i = 0, ilen = inputs.length; i < ilen; ++i) {
 		value = inputs[i];
-		if (value === undefined) {
+		if(value === undefined) {
 			continue;
 		}
-		if (context !== undefined && typeof value === 'function') {
+		if(context !== undefined && typeof value === 'function') {
 			value = value(context);
 			cacheable = false;
 		}
-		if (index !== undefined && isArray(value)) {
+		if(index !== undefined && isArray(value)) {
 			value = value[index % value.length];
 			cacheable = false;
 		}
-		if (value !== undefined) {
-			if (info && !cacheable) {
+		if(value !== undefined) {
+			if(info && !cacheable) {
 				info.cacheable = false;
 			}
 			return value;

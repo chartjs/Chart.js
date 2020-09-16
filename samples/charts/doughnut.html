@@ -93,10 +93,10 @@
 			var newDataset = {
 				backgroundColor: [],
 				data: [],
-				label: 'New dataset ' + config.data.datasets.length,
+				label: `New dataset ${config.data.datasets.length}`,
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for(var index = 0; index < config.data.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 
 				var colorName = colorNames[index % colorNames.length];
@@ -109,8 +109,8 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
-				config.data.labels.push('data #' + config.data.labels.length);
+			if(config.data.datasets.length > 0) {
+				config.data.labels.push(`data #${config.data.labels.length}`);
 
 				var colorName = colorNames[config.data.datasets[0].data.length % colorNames.length];
 				var newColor = window.chartColors[colorName];
@@ -141,7 +141,7 @@
 		});
 
 		document.getElementById('changeCircleSize').addEventListener('click', function() {
-			if (window.myDoughnut.options.circumference === Math.PI) {
+			if(window.myDoughnut.options.circumference === Math.PI) {
 				window.myDoughnut.options.circumference = 2 * Math.PI;
 				window.myDoughnut.options.rotation = -Math.PI / 2;
 			} else {

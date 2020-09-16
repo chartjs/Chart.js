@@ -11,7 +11,7 @@ function clipArc(ctx, element) {
 	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
 	ctx.beginPath();
 	ctx.arc(x, y, outerRadius, startAngle - angleMargin, endAngle + angleMargin);
-	if (innerRadius > pixelMargin) {
+	if(innerRadius > pixelMargin) {
 		angleMargin = pixelMargin / innerRadius;
 		ctx.arc(x, y, innerRadius, endAngle + angleMargin, startAngle - angleMargin, true);
 	} else {
@@ -34,12 +34,12 @@ function pathArc(ctx, element) {
 }
 
 function drawArc(ctx, element) {
-	if (element.fullCircles) {
+	if(element.fullCircles) {
 		element.endAngle = element.startAngle + TAU;
 
 		pathArc(ctx, element);
 
-		for (let i = 0; i < element.fullCircles; ++i) {
+		for(let i = 0; i < element.fullCircles; ++i) {
 			ctx.fill();
 		}
 		element.endAngle = element.startAngle + element.circumference % TAU;
@@ -56,11 +56,11 @@ function drawFullCircleBorders(ctx, element, inner) {
 
 	let i;
 
-	if (inner) {
+	if(inner) {
 		element.endAngle = element.startAngle + TAU;
 		clipArc(ctx, element);
 		element.endAngle = endAngle;
-		if (element.endAngle === element.startAngle) {
+		if(element.endAngle === element.startAngle) {
 			element.endAngle += TAU;
 			element.fullCircles--;
 		}
@@ -68,13 +68,13 @@ function drawFullCircleBorders(ctx, element, inner) {
 
 	ctx.beginPath();
 	ctx.arc(x, y, innerRadius, startAngle + TAU, startAngle, true);
-	for (i = 0; i < element.fullCircles; ++i) {
+	for(i = 0; i < element.fullCircles; ++i) {
 		ctx.stroke();
 	}
 
 	ctx.beginPath();
 	ctx.arc(x, y, outerRadius, startAngle, startAngle + TAU);
-	for (i = 0; i < element.fullCircles; ++i) {
+	for(i = 0; i < element.fullCircles; ++i) {
 		ctx.stroke();
 	}
 }
@@ -85,11 +85,11 @@ function drawBorder(ctx, element) {
 	const innerRadius = element.innerRadius + pixelMargin;
 	const inner = options.borderAlign === 'inner';
 
-	if (!options.borderWidth) {
+	if(!options.borderWidth) {
 		return;
 	}
 
-	if (inner) {
+	if(inner) {
 		ctx.lineWidth = options.borderWidth * 2;
 		ctx.lineJoin = 'round';
 	} else {
@@ -97,11 +97,11 @@ function drawBorder(ctx, element) {
 		ctx.lineJoin = 'bevel';
 	}
 
-	if (element.fullCircles) {
+	if(element.fullCircles) {
 		drawFullCircleBorders(ctx, element, inner);
 	}
 
-	if (inner) {
+	if(inner) {
 		clipArc(ctx, element);
 	}
 
@@ -126,7 +126,7 @@ export default class Arc extends Element {
 		this.pixelMargin = 0;
 		this.fullCircles = 0;
 
-		if (cfg) {
+		if(cfg) {
 			Object.assign(this, cfg);
 		}
 	}
@@ -186,13 +186,13 @@ export default class Arc extends Element {
 		me.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
 		me.fullCircles = Math.floor(me.circumference / TAU);
 
-		if (me.circumference === 0) {
+		if(me.circumference === 0) {
 			return;
 		}
 
 		ctx.save();
 
-		if (offset && me.circumference < TAU) {
+		if(offset && me.circumference < TAU) {
 			const halfAngle = (me.startAngle + me.endAngle) / 2;
 			ctx.translate(Math.cos(halfAngle) * offset, Math.sin(halfAngle) * offset);
 		}

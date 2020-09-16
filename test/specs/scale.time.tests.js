@@ -83,7 +83,7 @@ describe('Time scale tests', function() {
 	it('should correctly determine the unit', function() {
 		var date = moment('Jan 01 1990', 'MMM DD YYYY');
 		var data = [];
-		for (var i = 0; i < 60; i++) {
+		for(var i = 0; i < 60; i++) {
 			data.push({x: date.valueOf(), y: Math.random()});
 			date = date.clone().add(1, 'month');
 		}
@@ -290,10 +290,10 @@ describe('Time scale tests', function() {
 			// we use a threshold of 1 day so that we still match these values
 			var pixelsPerTick = scale.width / (ticks.length - 1);
 
-			for (var i = 0; i < ticks.length - 1; i++) {
+			for(var i = 0; i < ticks.length - 1; i++) {
 				var offset = pixelsPerTick * i;
 				expect(scale.getValueForPixel(scale.left + offset)).toBeCloseToTime({
-					value: moment(ticks[i].label + '-01-01'),
+					value: moment(`${ticks[i].label}-01-01`),
 					unit: 'day',
 					threshold: 1,
 				});
@@ -354,7 +354,7 @@ describe('Time scale tests', function() {
 							},
 							ticks: {
 								callback: function(value) {
-									return '<' + value + '>';
+									return `<${value}>`;
 								}
 							}
 						}
@@ -375,7 +375,7 @@ describe('Time scale tests', function() {
 		it('should update ticks.callback correctly', function() {
 			var chart = this.chart;
 			chart.options.scales.x.ticks.callback = function(value) {
-				return '{' + value + '}';
+				return `{${value}}`;
 			};
 			chart.update();
 
@@ -713,7 +713,7 @@ describe('Time scale tests', function() {
 	});
 
 	[true, false].forEach(function(normalized) {
-		describe('when normalized is ' + normalized + ' and scale type', function() {
+		describe(`when normalized is ${normalized} and scale type`, function() {
 			describe('is "timeseries"', function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
@@ -935,7 +935,7 @@ describe('Time scale tests', function() {
 	describe('when min and/or max are defined', function() {
 		['auto', 'data', 'labels'].forEach(function(source) {
 			['data', 'ticks'].forEach(function(bounds) {
-				describe('and ticks.source is "' + source + '" and bounds "' + bounds + '"', function() {
+				describe(`and ticks.source is "${source}" and bounds "${bounds}"`, function() {
 					beforeEach(function() {
 						this.chart = window.acquireChart({
 							type: 'line',
@@ -1015,7 +1015,7 @@ describe('Time scale tests', function() {
 
 	['auto', 'data', 'labels'].forEach(function(source) {
 		['timeseries', 'time'].forEach(function(type) {
-			describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
+			describe(`when ticks.source is "${source}" and scale type is "${type}"`, function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
 						type: 'line',
@@ -1116,7 +1116,7 @@ describe('Time scale tests', function() {
 
 	['data', 'labels'].forEach(function(source) {
 		['timeseries', 'time'].forEach(function(type) {
-			describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
+			describe(`when ticks.source is "${source}" and scale type is "${type}"`, function() {
 				beforeEach(function() {
 					this.chart = window.acquireChart({
 						type: 'line',

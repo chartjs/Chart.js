@@ -94,8 +94,8 @@
 
 		var colorNames = Object.keys(window.chartColors);
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
-				config.data.labels.push('data #' + config.data.labels.length);
+			if(config.data.datasets.length > 0) {
+				config.data.labels.push(`data #${config.data.labels.length}`);
 				config.data.datasets.forEach(function(dataset) {
 					var colorName = colorNames[config.data.labels.length % colorNames.length];
 					dataset.backgroundColor.push(window.chartColors[colorName]);

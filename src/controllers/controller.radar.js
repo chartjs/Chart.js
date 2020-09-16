@@ -13,7 +13,7 @@ export default class RadarController extends DatasetController {
 
 		return {
 			label: vScale.getLabels()[index],
-			value: '' + vScale.getLabelForValue(parsed[vScale.axis])
+			value: `${vScale.getLabelForValue(parsed[vScale.axis])}`
 		};
 	}
 
@@ -26,7 +26,7 @@ export default class RadarController extends DatasetController {
 
 		// Update Line
 		// In resize mode only point locations change, so no need to set the points or options.
-		if (mode !== 'resize') {
+		if(mode !== 'resize') {
 			const properties = {
 				points,
 				_loop: true,
@@ -47,7 +47,7 @@ export default class RadarController extends DatasetController {
 		const scale = me._cachedMeta.rScale;
 		const reset = mode === 'reset';
 
-		for (let i = start; i < start + count; i++) {
+		for(let i = start; i < start + count; i++) {
 			const point = points[i];
 			const options = me.resolveDataElementOptions(i, mode);
 			const pointPosition = scale.getPointPositionForValue(i, dataset.data[i]);
@@ -81,7 +81,7 @@ export default class RadarController extends DatasetController {
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);
 
-		if (!showLine) {
+		if(!showLine) {
 			values.borderWidth = 0;
 		}
 

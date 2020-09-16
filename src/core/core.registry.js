@@ -125,7 +125,7 @@ export class Registry {
 		const me = this;
 		[...args].forEach(arg => {
 			const reg = typedRegistry || me._getRegistryForType(arg);
-			if (typedRegistry || reg.isForType(arg) || (reg === me.plugins && arg.id)) {
+			if(typedRegistry || reg.isForType(arg) || (reg === me.plugins && arg.id)) {
 				me._exec(method, reg, arg);
 			} else {
 				// Handle loopable args
@@ -151,18 +151,18 @@ export class Registry {
 	 */
 	_exec(method, registry, component) {
 		const camelMethod = _capitalize(method);
-		call(component['before' + camelMethod], [], component);
+		call(component[`before${camelMethod}`], [], component);
 		registry[method](component);
-		call(component['after' + camelMethod], [], component);
+		call(component[`after${camelMethod}`], [], component);
 	}
 
 	/**
 	 * @private
 	 */
 	_getRegistryForType(type) {
-		for (let i = 0; i < this._typedRegistries.length; i++) {
+		for(let i = 0; i < this._typedRegistries.length; i++) {
 			const reg = this._typedRegistries[i];
-			if (reg.isForType(type)) {
+			if(reg.isForType(type)) {
 				return reg;
 			}
 		}
@@ -175,8 +175,8 @@ export class Registry {
 	 */
 	_get(id, typedRegistry, type) {
 		const item = typedRegistry.get(id);
-		if (item === undefined) {
-			throw new Error('"' + id + '" is not a registered ' + type + '.');
+		if(item === undefined) {
+			throw new Error(`"${id}" is not a registered ${type}.`);
 		}
 		return item;
 	}

@@ -30,7 +30,7 @@ function wrapBoxes(boxes) {
 	const layoutBoxes = [];
 	let i, ilen, box;
 
-	for (i = 0, ilen = (boxes || []).length; i < ilen; ++i) {
+	for(i = 0, ilen = (boxes || []).length; i < ilen; ++i) {
 		box = boxes[i];
 		layoutBoxes.push({
 			index: i,
@@ -45,7 +45,7 @@ function wrapBoxes(boxes) {
 
 function setLayoutDims(layouts, params) {
 	let i, ilen, layout;
-	for (i = 0, ilen = layouts.length; i < ilen; ++i) {
+	for(i = 0, ilen = layouts.length; i < ilen; ++i) {
 		layout = layouts[i];
 		// store width used instead of chartArea.w in fitBoxes
 		layout.width = layout.horizontal
@@ -82,14 +82,14 @@ function updateDims(chartArea, params, layout) {
 	const box = layout.box;
 	const maxPadding = chartArea.maxPadding;
 
-	if (layout.size) {
+	if(layout.size) {
 		// this layout was already counted for, lets first reduce old size
 		chartArea[layout.pos] -= layout.size;
 	}
 	layout.size = layout.horizontal ? box.height : box.width;
 	chartArea[layout.pos] += layout.size;
 
-	if (box.getPadding) {
+	if(box.getPadding) {
 		const boxPadding = box.getPadding();
 		maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
 		maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
@@ -100,7 +100,7 @@ function updateDims(chartArea, params, layout) {
 	const newWidth = params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right');
 	const newHeight = params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom');
 
-	if (newWidth !== chartArea.w || newHeight !== chartArea.h) {
+	if(newWidth !== chartArea.w || newHeight !== chartArea.h) {
 		chartArea.w = newWidth;
 		chartArea.h = newHeight;
 
@@ -143,7 +143,7 @@ function fitBoxes(boxes, chartArea, params) {
 	const refitBoxes = [];
 	let i, ilen, layout, box, refit, changed;
 
-	for (i = 0, ilen = boxes.length; i < ilen; ++i) {
+	for(i = 0, ilen = boxes.length; i < ilen; ++i) {
 		layout = boxes[i];
 		box = layout.box;
 
@@ -152,15 +152,15 @@ function fitBoxes(boxes, chartArea, params) {
 			layout.height || chartArea.h,
 			getMargins(layout.horizontal, chartArea)
 		);
-		if (updateDims(chartArea, params, layout)) {
+		if(updateDims(chartArea, params, layout)) {
 			changed = true;
-			if (refitBoxes.length) {
+			if(refitBoxes.length) {
 				// Dimensions changed and there were non full width boxes before this
 				// -> we have to refit those
 				refit = true;
 			}
 		}
-		if (!box.fullWidth) { // fullWidth boxes don't need to be re-fitted in any case
+		if(!box.fullWidth) { // fullWidth boxes don't need to be re-fitted in any case
 			refitBoxes.push(layout);
 		}
 	}
@@ -174,10 +174,10 @@ function placeBoxes(boxes, chartArea, params) {
 	let y = chartArea.y;
 	let i, ilen, layout, box;
 
-	for (i = 0, ilen = boxes.length; i < ilen; ++i) {
+	for(i = 0, ilen = boxes.length; i < ilen; ++i) {
 		layout = boxes[i];
 		box = layout.box;
-		if (layout.horizontal) {
+		if(layout.horizontal) {
 			box.left = box.fullWidth ? userPadding.left : chartArea.left;
 			box.right = box.fullWidth ? params.outerWidth - userPadding.right : chartArea.left + chartArea.w;
 			box.top = y;
@@ -238,7 +238,7 @@ export default {
 	 * @param {ILayoutItem} item - the item to add to be laid out
 	 */
 	addBox(chart, item) {
-		if (!chart.boxes) {
+		if(!chart.boxes) {
 			chart.boxes = [];
 		}
 
@@ -266,7 +266,7 @@ export default {
 	 */
 	removeBox(chart, layoutItem) {
 		const index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
-		if (index !== -1) {
+		if(index !== -1) {
 			chart.boxes.splice(index, 1);
 		}
 	},
@@ -283,9 +283,9 @@ export default {
 		let i = 0;
 		let prop;
 
-		for (; i < ilen; ++i) {
+		for(; i < ilen; ++i) {
 			prop = props[i];
-			if (Object.prototype.hasOwnProperty.call(options, prop)) {
+			if(Reflect.apply(Object.prototype.hasOwnProperty, options, [prop])) {
 				item[prop] = options[prop];
 			}
 		}
@@ -299,7 +299,7 @@ export default {
 	 * @param {number} height - the height to fit into
 	 */
 	update(chart, width, height) {
-		if (!chart) {
+		if(!chart) {
 			return;
 		}
 
@@ -361,7 +361,7 @@ export default {
 		fitBoxes(verticalBoxes, chartArea, params);
 
 		// Then fit horizontal boxes
-		if (fitBoxes(horizontalBoxes, chartArea, params)) {
+		if(fitBoxes(horizontalBoxes, chartArea, params)) {
 			// if the area changed, re-fit vertical boxes
 			fitBoxes(verticalBoxes, chartArea, params);
 		}
