@@ -9,13 +9,13 @@ import utils from './utils';
 	var charts = {};
 
 	function acquireChart() {
-		var chart = utils.acquireChart.apply(utils, arguments);
+		var chart = Reflect.apply(utils.acquireChart, utils, arguments);
 		charts[chart.id] = chart;
 		return chart;
 	}
 
 	function releaseChart(chart) {
-		utils.releaseChart.apply(utils, arguments);
+		Reflect.apply(utils.releaseChart, utils, arguments);
 		Reflect.deleteProperty(charts, chart.id);
 	}
 
@@ -55,7 +55,7 @@ import utils from './utils';
 		// Auto releasing acquired charts
 		Object.keys(charts).forEach(function(id) {
 			var chart = charts[id];
-			if (!(chart.$test || {}).persistent) {
+			if(!(chart.$test || {}).persistent) {
 				releaseChart(chart);
 			}
 		});

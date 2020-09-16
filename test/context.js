@@ -116,7 +116,7 @@ Context.prototype._initMethods = function() {
 	Object.keys(methods).forEach(function(name) {
 		me[name] = function() {
 			me.record(name, arguments);
-			return methods[name].apply(me, arguments);
+			return Reflect.apply(methods[name], me, arguments);
 		};
 	});
 };
@@ -124,7 +124,7 @@ Context.prototype._initMethods = function() {
 Context.prototype.record = function(methodName, args) {
 	this._calls.push({
 		name: methodName,
-		args: Array.prototype.slice.call(args)
+		args: Reflect.apply(Array.prototype.slice, args, [])
 	});
 };
 

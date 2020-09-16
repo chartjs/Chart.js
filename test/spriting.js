@@ -44,8 +44,8 @@ function getChar(asciiCode) {
 
 function measureText(text) {
 	let width = 0;
-	if (text && text.charCodeAt) {
-		for (let i = 0; i < text.length; ++i) {
+	if(text && text.charCodeAt) {
+		for(let i = 0; i < text.length; ++i) {
 			width += fontWidth[Math.min(223, text.charCodeAt(i) - startIndex)];
 		}
 	}
@@ -53,9 +53,9 @@ function measureText(text) {
 }
 
 function spriteWrite(text, x, y) {
-	if (text && text.charCodeAt) {
+	if(text && text.charCodeAt) {
 		const align = this.textAlign;
-		if (align === 'center' || align === 'right') {
+		if(align === 'center' || align === 'right') {
 			const w = measureText(text).width;
 			x -= align === 'center' ? w / 2 : w;
 		}
@@ -73,7 +73,7 @@ function spriteWrite(text, x, y) {
 		default:
 			break;
 		}
-		for (let i = 0; i < text.length; ++i) {
+		for(let i = 0; i < text.length; ++i) {
 			const {sx, sy, w, h} = getChar(text.charCodeAt(i));
 			this.drawImage(characters, sx, sy, w, h, x, y, w, h);
 			x += w;
@@ -82,7 +82,7 @@ function spriteWrite(text, x, y) {
 }
 
 export function spritingOn(ctx) {
-	if (ctx && !ctx._fillText) {
+	if(ctx && !ctx._fillText) {
 		ctx._fillText = ctx.fillText;
 		ctx._measureText = ctx.measureText;
 
@@ -92,7 +92,7 @@ export function spritingOn(ctx) {
 }
 
 export function spritingOff(ctx) {
-	if (ctx && ctx._fillText) {
+	if(ctx && ctx._fillText) {
 		ctx.fillText = ctx._fillText;
 		ctx.measureText = ctx._measureText;
 		Reflect.deleteProperty(ctx, '_fillText');

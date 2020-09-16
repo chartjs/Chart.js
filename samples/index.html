@@ -30,15 +30,15 @@
 			var el = document.createElement('div');
 			el.className = 'samples-category';
 			el.innerHTML =
-				'<div class="title">' + item.title + '</div>' +
-				'<div class="items"></div>';
+				`<div class="title">${item.title}</div>` +
+		'<div class="items"></div>';
 			return el;
 		}
 
 		function createEntry(item) {
 			var el = document.createElement('div');
 			el.className = 'samples-entry';
-			el.innerHTML = '<a class="title" href="' + item.path + '">' + item.title + '</a>';
+			el.innerHTML = `<a class="title" href="${item.path}">${item.title}</a>`;
 			return el;
 		}
 

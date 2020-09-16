@@ -1,16 +1,16 @@
 const data1 = [];
 const data2 = [];
 const data3 = [];
-for (let i = 0; i < 200; i++) {
+for(let i = 0; i < 200; i++) {
 	const a = i / Math.PI / 10;
 
 	data1.push({x: i, y: i < 86 || i > 104 && i < 178 ? Math.sin(a) : NaN});
 
-	if (i % 10 === 0) {
+	if(i % 10 === 0) {
 		data2.push({x: i, y: Math.cos(a)});
 	}
 
-	if (i % 15 === 0) {
+	if(i % 15 === 0) {
 		data3.push({x: i, y: Math.cos(a + Math.PI / 2)});
 	}
 }

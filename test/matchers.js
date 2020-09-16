@@ -31,15 +31,15 @@ function buildPixelMatchPreview(actual, expected, diff, threshold, tolerance, co
 		{data: actual, label: 'Actual'},
 		{data: expected, label: 'Expected'},
 		{data: diff, label:
-			'diff: ' + count + 'px ' +
-			'(' + toPercent(ratio) + '%)<br/>' +
-			'thr: ' + toPercent(threshold) + '%, ' +
-			'tol: ' + toPercent(tolerance) + '%'
+			`diff: ${count}px ` +
+			`(${toPercent(ratio)}%)<br/>` +
+			`thr: ${toPercent(threshold)}%, ` +
+			`tol: ${toPercent(tolerance)}%`
 		}
 	].forEach(function(values) {
 		var item = document.createElement('div');
 		item.style.cssText = 'text-align: center; font: 12px monospace; line-height: 1.4; margin: 8px';
-		item.innerHTML = '<div style="margin: 8px; height: 32px">' + values.label + '</div>';
+		item.innerHTML = `<div style="margin: 8px; height: 32px">${values.label}</div>`;
 		item.appendChild(canvasFromImageData(values.data));
 		wrapper.appendChild(item);
 	});
@@ -57,7 +57,7 @@ function toBeCloseToPixel() {
 		compare: function(actual, expected) {
 			var result = false;
 
-			if (!isNaN(actual) && !isNaN(expected)) {
+			if(!isNaN(actual) && !isNaN(expected)) {
 				var diff = Math.abs(actual - expected);
 				var A = Math.abs(actual);
 				var B = Math.abs(expected);
@@ -87,8 +87,8 @@ function toEqualOneOf() {
 	return {
 		compare: function(actual, expecteds) {
 			var result = false;
-			for (var i = 0, l = expecteds.length; i < l; i++) {
-				if (actual === expecteds[i]) {
+			for(var i = 0, l = expecteds.length; i < l; i++) {
+				if(actual === expecteds[i]) {
 					result = true;
 					break;
 				}
@@ -105,20 +105,20 @@ function toBeValidChart() {
 		compare: function(actual) {
 			var message = null;
 
-			if (!(actual instanceof Chart)) {
-				message = 'Expected ' + actual + ' to be an instance of Chart';
-			} else if (Object.prototype.toString.call(actual.canvas) !== '[object HTMLCanvasElement]') {
+			if(!(actual instanceof Chart)) {
+				message = `Expected ${actual} to be an instance of Chart`;
+			} else if(Reflect.apply(Object.prototype.toString, actual.canvas, []) !== '[object HTMLCanvasElement]') {
 				message = 'Expected canvas to be an instance of HTMLCanvasElement';
-			} else if (Object.prototype.toString.call(actual.ctx) !== '[object CanvasRenderingContext2D]') {
+			} else if(Reflect.apply(Object.prototype.toString, actual.ctx, []) !== '[object CanvasRenderingContext2D]') {
 				message = 'Expected context to be an instance of CanvasRenderingContext2D';
-			} else if (typeof actual.height !== 'number' || !isFinite(actual.height)) {
+			} else if(typeof actual.height !== 'number' || !isFinite(actual.height)) {
 				message = 'Expected height to be a strict finite number';
-			} else if (typeof actual.width !== 'number' || !isFinite(actual.width)) {
+			} else if(typeof actual.width !== 'number' || !isFinite(actual.width)) {
 				message = 'Expected width to be a strict finite number';
 			}
 
 			return {
-				message: message ? message : 'Expected ' + actual + ' to be valid chart',
+				message: message ? message : `Expected ${actual} to be valid chart`,
 				pass: !message
 			};
 		}
@@ -129,7 +129,7 @@ function toBeChartOfSize() {
 	return {
 		compare: function(actual, expected) {
 			var res = toBeValidChart().compare(actual);
-			if (!res.pass) {
+			if(!res.pass) {
 				return res;
 			}
 
@@ -145,25 +145,25 @@ function toBeChartOfSize() {
 			var orw = rw / pixelRatio;
 
 			// sanity checks
-			if (actual.height !== orh) {
-				message = 'Expected chart height ' + actual.height + ' to be equal to original render height ' + orh;
-			} else if (actual.width !== orw) {
-				message = 'Expected chart width ' + actual.width + ' to be equal to original render width ' + orw;
+			if(actual.height !== orh) {
+				message = `Expected chart height ${actual.height} to be equal to original render height ${orh}`;
+			} else if(actual.width !== orw) {
+				message = `Expected chart width ${actual.width} to be equal to original render width ${orw}`;
 			}
 
 			// validity checks
-			if (dh !== expected.dh) {
-				message = 'Expected display height ' + dh + ' to be equal to ' + expected.dh;
-			} else if (dw !== expected.dw) {
-				message = 'Expected display width ' + dw + ' to be equal to ' + expected.dw;
-			} else if (rh !== expected.rh) {
-				message = 'Expected render height ' + rh + ' to be equal to ' + expected.rh;
-			} else if (rw !== expected.rw) {
-				message = 'Expected render width ' + rw + ' to be equal to ' + expected.rw;
+			if(dh !== expected.dh) {
+				message = `Expected display height ${dh} to be equal to ${expected.dh}`;
+			} else if(dw !== expected.dw) {
+				message = `Expected display width ${dw} to be equal to ${expected.dw}`;
+			} else if(rh !== expected.rh) {
+				message = `Expected render height ${rh} to be equal to ${expected.rh}`;
+			} else if(rw !== expected.rw) {
+				message = `Expected render width ${rw} to be equal to ${expected.rw}`;
 			}
 
 			return {
-				message: message ? message : 'Expected ' + actual + ' to be a chart of size ' + expected,
+				message: message ? message : `Expected ${actual} to be a chart of size ${expected}`,
 				pass: !message
 			};
 		}
@@ -179,15 +179,15 @@ function toEqualImageData() {
 			var threshold = opts.threshold === undefined ? 0.1 : opts.threshold;
 			var ctx, idata, ddata, w, h, count, ratio;
 
-			if (actual instanceof Chart) {
+			if(actual instanceof Chart) {
 				ctx = actual.ctx;
-			} else if (actual instanceof HTMLCanvasElement) {
+			} else if(actual instanceof HTMLCanvasElement) {
 				ctx = actual.getContext('2d');
-			} else if (actual instanceof CanvasRenderingContext2D) {
+			} else if(actual instanceof CanvasRenderingContext2D) {
 				ctx = actual;
 			}
 
-			if (ctx) {
+			if(ctx) {
 				h = expected.height;
 				w = expected.width;
 				idata = ctx.getImageData(0, 0, w, h);
@@ -195,7 +195,7 @@ function toEqualImageData() {
 				count = pixelmatch(idata.data, expected.data, ddata.data, w, h, {threshold: threshold});
 				ratio = count / (w * h);
 
-				if ((ratio > tolerance) || debug) {
+				if((ratio > tolerance) || debug) {
 					message = buildPixelMatchPreview(idata, expected, ddata, threshold, tolerance, count, opts.description);
 				}
 			} else {

@@ -42,14 +42,14 @@ function acquireChart(config, options) {
 	options.canvas = options.canvas || {height: 512, width: 512};
 	options.wrapper = options.wrapper || {class: 'chartjs-wrapper'};
 
-	for (key in options.canvas) {
-		if (Object.prototype.hasOwnProperty.call(options.canvas, key)) {
+	for(key in options.canvas) {
+		if(Reflect.apply(Object.prototype.hasOwnProperty, options.canvas, [key])) {
 			canvas.setAttribute(key, options.canvas[key]);
 		}
 	}
 
-	for (key in options.wrapper) {
-		if (Object.prototype.hasOwnProperty.call(options.wrapper, key)) {
+	for(key in options.wrapper) {
+		if(Reflect.apply(Object.prototype.hasOwnProperty, options.wrapper, [key])) {
 			wrapper.setAttribute(key, options.wrapper[key]);
 		}
 	}
@@ -66,8 +66,8 @@ function acquireChart(config, options) {
 
 	try {
 		var ctx;
-		if (options.useOffscreenCanvas) {
-			if (!canvas.transferControlToOffscreen) {
+		if(options.useOffscreenCanvas) {
+			if(!canvas.transferControlToOffscreen) {
 				// If this browser does not support offscreen canvas, mark the test as 'pending', which will skip the
 				// test.
 				// TODO: switch to skip() once it's implemented (https://github.com/jasmine/jasmine/issues/1709), or
@@ -80,11 +80,11 @@ function acquireChart(config, options) {
 		} else {
 			ctx = canvas.getContext('2d');
 		}
-		if (options.spriteText) {
+		if(options.spriteText) {
 			spritingOn(ctx);
 		}
 		chart = new Chart(ctx, config);
-	} catch (e) {
+	} catch(e) {
 		window.document.body.removeChild(wrapper);
 		throw e;
 	}
@@ -102,7 +102,7 @@ function releaseChart(chart) {
 	chart.destroy();
 
 	var wrapper = (chart.$test || {}).wrapper;
-	if (wrapper && wrapper.parentNode) {
+	if(wrapper && wrapper.parentNode) {
 		wrapper.parentNode.removeChild(wrapper);
 	}
 }
@@ -112,7 +112,7 @@ function injectCSS(css) {
 	var head = document.getElementsByTagName('head')[0];
 	var style = document.createElement('style');
 	style.setAttribute('type', 'text/css');
-	if (style.styleSheet) { // IE
+	if(style.styleSheet) { // IE
 		style.styleSheet.cssText = css;
 	} else {
 		style.appendChild(document.createTextNode(css));
@@ -124,7 +124,7 @@ function waitForResize(chart, callback) {
 	var override = chart.resize;
 	chart.resize = function() {
 		chart.resize = override;
-		override.apply(this, arguments);
+		Reflect.apply(override, this, arguments);
 		callback();
 	};
 }
@@ -132,8 +132,8 @@ function waitForResize(chart, callback) {
 function afterEvent(chart, type, callback) {
 	var override = chart._eventHandler;
 	chart._eventHandler = function(event) {
-		override.call(this, event);
-		if (event.type === type) {
+		Reflect.apply(override, this, [event]);
+		if(event.type === type) {
 			chart._eventHandler = override;
 			// eslint-disable-next-line callback-return
 			callback();
@@ -143,10 +143,10 @@ function afterEvent(chart, type, callback) {
 
 function _resolveElementPoint(el) {
 	var point = {x: 0, y: 0};
-	if (el) {
-		if (typeof el.getCenterPoint === 'function') {
+	if(el) {
+		if(typeof el.getCenterPoint === 'function') {
 			point = el.getCenterPoint();
-		} else if (el.x !== undefined && el.y !== undefined) {
+		} else if(el.x !== undefined && el.y !== undefined) {
 			point = el;
 		}
 	}

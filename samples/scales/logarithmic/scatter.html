@@ -139,8 +139,8 @@
 						ticks: {
 							callback: function(tick) {
 								var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.math.log10(tick))));
-								if (remain === 1 || remain === 2 || remain === 5) {
-									return tick.toString() + 'Hz';
+								if(remain === 1 || remain === 2 || remain === 5) {
+									return `${tick.toString()}Hz`;
 								}
 								return '';
 							},
@@ -154,7 +154,7 @@
 						type: 'linear',
 						ticks: {
 							callback: function(tick) {
-								return tick.toString() + 'dB';
+								return `${tick.toString()}dB`;
 							}
 						},
 						scaleLabel: {

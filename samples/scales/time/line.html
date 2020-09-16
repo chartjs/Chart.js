@@ -135,7 +135,7 @@
 		document.getElementById('randomizeData').addEventListener('click', function() {
 			config.data.datasets.forEach(function(dataset) {
 				dataset.data.forEach(function(dataObj, j) {
-					if (typeof dataObj === 'object') {
+					if(typeof dataObj === 'object') {
 						dataObj.y = randomScalingFactor();
 					} else {
 						dataset.data[j] = randomScalingFactor();
@@ -151,13 +151,13 @@
 			var colorName = colorNames[config.data.datasets.length % colorNames.length];
 			var newColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + config.data.datasets.length,
+				label: `Dataset ${config.data.datasets.length}`,
 				borderColor: newColor,
 				backgroundColor: color(newColor).alpha(0.5).rgbString(),
 				data: [],
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for(var index = 0; index < config.data.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 			}
 
@@ -166,11 +166,11 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
+			if(config.data.datasets.length > 0) {
 				config.data.labels.push(newDate(config.data.labels.length));
 
-				for (var index = 0; index < config.data.datasets.length; ++index) {
-					if (typeof config.data.datasets[index].data[0] === 'object') {
+				for(var index = 0; index < config.data.datasets.length; ++index) {
+					if(typeof config.data.datasets[index].data[0] === 'object') {
 						config.data.datasets[index].data.push({
 							x: newDate(config.data.datasets[index].data.length),
 							y: randomScalingFactor(),

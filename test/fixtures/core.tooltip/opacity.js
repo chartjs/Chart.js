@@ -61,7 +61,7 @@ module.exports = {
 		},
 		plugins: [{
 			beforeDatasetsUpdate: function(chart) {
-				if (!gradient) {
+				if(!gradient) {
 					gradient = chart.ctx.createLinearGradient(0, 0, 512, 256);
 					gradient.addColorStop(0, '#ff0000');
 					gradient.addColorStop(1, '#0000ff');
@@ -76,8 +76,8 @@ module.exports = {
 				var rect = canvas.getBoundingClientRect();
 				var point, event;
 
-				for (var i = 0; i < 3; ++i) {
-					for (var j = 0; j < 11; ++j) {
+				for(var i = 0; i < 3; ++i) {
+					for(var j = 0; j < 11; ++j) {
 						point = chart.getDatasetMeta(i).data[j];
 						event = {
 							type: 'mousemove',

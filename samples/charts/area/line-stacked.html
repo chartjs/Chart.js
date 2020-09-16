@@ -136,13 +136,13 @@
 			var colorName = colorNames[config.data.datasets.length % colorNames.length];
 			var newColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + config.data.datasets.length,
+				label: `Dataset ${config.data.datasets.length}`,
 				borderColor: newColor,
 				backgroundColor: newColor,
 				data: [],
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for(var index = 0; index < config.data.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 			}
 
@@ -151,7 +151,7 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
+			if(config.data.datasets.length > 0) {
 				var month = MONTHS[config.data.labels.length % MONTHS.length];
 				config.data.labels.push(month);
 

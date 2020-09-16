@@ -95,14 +95,14 @@
 			var colorName = colorNames[barChartData.datasets.length % colorNames.length];
 			var dsColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + (barChartData.datasets.length + 1),
+				label: `Dataset ${barChartData.datasets.length + 1}`,
 				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
 				borderColor: dsColor,
 				borderWidth: 1,
 				data: []
 			};
 
-			for (var index = 0; index < barChartData.labels.length; ++index) {
+			for(var index = 0; index < barChartData.labels.length; ++index) {
 				newDataset.data.push([randomScalingFactor(), randomScalingFactor()]);
 			}
 
@@ -111,11 +111,11 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (barChartData.datasets.length > 0) {
+			if(barChartData.datasets.length > 0) {
 				var month = MONTHS[barChartData.labels.length % MONTHS.length];
 				barChartData.labels.push(month);
 
-				for (var index = 0; index < barChartData.datasets.length; ++index) {
+				for(var index = 0; index < barChartData.datasets.length; ++index) {
 					barChartData.datasets[index].data.push([randomScalingFactor(), randomScalingFactor()]);
 				}
 

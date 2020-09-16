@@ -38,7 +38,7 @@ module.exports = {
 					afterBuildTicks: function(scale) {
 						const major = [0, 12, 24];
 						const ticks = scale.ticks;
-						for (let i = 0; i < ticks.length; i++) {
+						for(let i = 0; i < ticks.length; i++) {
 							ticks[i].major = major.indexOf(i) >= 0;
 						}
 					}

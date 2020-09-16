@@ -7,7 +7,7 @@ import utils from './utils';
 function readFile(url, callback) {
 	var request = new XMLHttpRequest();
 	request.onreadystatechange = function() {
-		if (request.readyState === 4) {
+		if(request.readyState === 4) {
 			return callback(request.responseText);
 		}
 	};
@@ -44,8 +44,8 @@ function specFromFixture(description, inputs) {
 		loadConfig(input, function(json) {
 			var descr = json.description || (json.description = description);
 			var chart = utils.acquireChart(json.config, json.options);
-			if (!inputs.png) {
-				fail(descr + '\r\nMissing PNG comparison file for ' + input);
+			if(!inputs.png) {
+				fail(`${descr}\r\nMissing PNG comparison file for ${input}`);
 				done();
 			}
 
@@ -59,7 +59,7 @@ function specFromFixture(description, inputs) {
 }
 
 function specsFromFixtures(path) {
-	var regex = new RegExp('(^/base/test/fixtures/' + path + '.+)\\.(png|json|js)');
+	var regex = new RegExp(`(^/base/test/fixtures/${path}.+)\\.(png|json|js)`);
 	var inputs = {};
 
 	Object.keys(__karma__.files || {}).forEach(function(file) {
@@ -67,7 +67,7 @@ function specsFromFixtures(path) {
 		var name = matches && matches[1];
 		var type = matches && matches[2];
 
-		if (name && type) {
+		if(name && type) {
 			inputs[name] = inputs[name] || {};
 			inputs[name][type] = file;
 		}

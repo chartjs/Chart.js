@@ -73,7 +73,7 @@
 			// reset the random seed to generate the same data for all charts
 			utils.srand(8);
 
-			new Chart('chart-' + index, {
+			new Chart(`chart-${index}`, {
 				type: 'line',
 				data: {
 					labels: generateLabels(),
@@ -87,7 +87,7 @@
 				},
 				options: Chart.helpers.merge(options, {
 					title: {
-						text: 'fill: ' + boundary,
+						text: `fill: ${boundary}`,
 						display: true
 					}
 				})

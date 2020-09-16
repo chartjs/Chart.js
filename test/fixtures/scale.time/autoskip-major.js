@@ -1,6 +1,6 @@
 var date = moment('Jan 01 1990', 'MMM DD YYYY');
 var data = [];
-for (var i = 0; i < 60; i++) {
+for(var i = 0; i < 60; i++) {
 	data.push({x: date.valueOf(), y: i});
 	date = date.clone().add(1, 'month');
 }

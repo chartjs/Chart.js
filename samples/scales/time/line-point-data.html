@@ -95,7 +95,7 @@
 								enabled: true
 							},
 							font: function(context) {
-								if (context.tick && context.tick.major) {
+								if(context.tick && context.tick.major) {
 									return {
 										style: 'bold',
 										color: '#FF0000'
@@ -131,7 +131,7 @@
 			window.myLine.update();
 		});
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
+			if(config.data.datasets.length > 0) {
 				config.data.datasets[0].data.push({
 					x: newDateString(config.data.datasets[0].data.length + 2),
 					y: randomScalingFactor()

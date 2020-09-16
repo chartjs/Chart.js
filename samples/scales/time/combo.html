@@ -38,7 +38,7 @@
 		var data1 = [];
 		var data2 = [];
 		var data3 = [];
-		for (var i = 0; i < 7; i++) {
+		for(var i = 0; i < 7; i++) {
 			labels.push(newDate(i));
 			data1.push(randomScalingFactor());
 			data2.push(randomScalingFactor());
@@ -109,13 +109,13 @@
 			var colorName = colorNames[config.data.datasets.length % colorNames.length];
 			var newColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + config.data.datasets.length,
+				label: `Dataset ${config.data.datasets.length}`,
 				borderColor: newColor,
 				backgroundColor: color(newColor).alpha(0.5).rgbString(),
 				data: [],
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for(var index = 0; index < config.data.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 			}
 
@@ -124,10 +124,10 @@
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
+			if(config.data.datasets.length > 0) {
 				config.data.labels.push(newDate(config.data.labels.length));
 
-				for (var index = 0; index < config.data.datasets.length; ++index) {
+				for(var index = 0; index < config.data.datasets.length; ++index) {
 					config.data.datasets[index].data.push(randomScalingFactor());
 				}
 
