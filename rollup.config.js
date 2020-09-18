@@ -13,11 +13,11 @@ const pkg = require('./package.json');
 const input = 'src/index.js';
 const inputESM = {
 	'dist/chart.esm': 'src/index.esm.js',
-	'helpers/helpers.esm': 'src/helpers/index.js'
+	'dist/helpers.esm': 'src/helpers/index.js'
 };
 const inputESMTypings = {
 	'dist/chart.esm': 'types/index.esm.d.ts',
-	'helpers/helpers.esm': 'types/helpers/index.d.ts'
+	'dist/helpers.esm': 'types/helpers/index.d.ts'
 };
 
 const banner = `/*!
@@ -91,7 +91,7 @@ module.exports = [
 		],
 		output: {
 			dir: './',
-			chunkFileNames: 'helpers/chunks/[name].js',
+			chunkFileNames: 'dist/chunks/[name].js',
 			banner,
 			format: 'esm',
 			indent: false,
@@ -107,7 +107,7 @@ module.exports = [
 		],
 		output: {
 			dir: './',
-			chunkFileNames: 'helpers/chunks/[name].ts',
+			chunkFileNames: 'dist/chunks/[name].ts',
 			banner,
 			format: 'esm',
 			indent: false,
