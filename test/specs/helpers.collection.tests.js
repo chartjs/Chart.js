@@ -1,4 +1,4 @@
-const {_filterBetween, _lookup, _lookupByKey, _rlookupByKey} = Chart.helpers.collection;
+const {_filterBetween, _lookup, _lookupByKey, _rlookupByKey} = Chart.helpers;
 
 describe('helpers.collection', function() {
 	it('Should do binary search', function() {

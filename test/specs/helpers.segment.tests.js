@@ -1,4 +1,4 @@
-const {_boundSegment} = Chart.helpers.segment;
+const {_boundSegment} = Chart.helpers;
 
 describe('helpers.segments', function() {
 	describe('_boundSegment', function() {

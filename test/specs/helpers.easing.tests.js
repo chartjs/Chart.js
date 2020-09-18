@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Chart.helpers.easing', function() {
-	var easing = Chart.helpers.easing;
+	var helpers = Chart.helpers;
 
 	describe('effects', function() {
 		var expected = {
@@ -39,7 +39,7 @@ describe('Chart.helpers.easing', function() {
 		};
 
 		function generate(method) {
-			var fn = easing.effects[method];
+			var fn = helpers.easing[method];
 			var accuracy = Math.pow(10, 8);
 			var count = 10;
 			var values = [];
@@ -52,7 +52,7 @@ describe('Chart.helpers.easing', function() {
 			return values;
 		}
 
-		Object.keys(easing.effects).forEach(function(method) {
+		Object.keys(helpers.easing).forEach(function(method) {
 			it ('"' + method + '" should return expected values', function() {
 				expect(generate(method)).toEqual(expected[method]);
 			});

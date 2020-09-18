@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Chart.helpers.canvas', function() {
-	describe('auto', jasmine.fixture.specs('helpers.canvas'));
+	describe('auto', jasmine.fixture.specs('helpers'));
 
 	var helpers = Chart.helpers;
 
@@ -15,7 +15,7 @@ describe('Chart.helpers.canvas', function() {
 
 			spyOn(chart.ctx, 'clearRect');
 
-			helpers.canvas.clear(chart);
+			helpers.clear(chart);
 
 			expect(chart.ctx.clearRect.calls.count()).toBe(1);
 			expect(chart.ctx.clearRect.calls.first().object).toBe(chart.ctx);
@@ -25,7 +25,7 @@ describe('Chart.helpers.canvas', function() {
 
 	describe('isPointInArea', function() {
 		it('should determine if a point is in the area', function() {
-			var isPointInArea = helpers.canvas._isPointInArea;
+			var isPointInArea = helpers._isPointInArea;
 			var area = {left: 0, top: 0, right: 512, bottom: 256};
 
 			expect(isPointInArea({x: 0, y: 0}, area)).toBe(true);
@@ -45,8 +45,8 @@ describe('Chart.helpers.canvas', function() {
 
 
 		// Regardless 'FooBar' is the longest label it should return (characters * 10)
-		expect(helpers.canvas._longestText(context, font, arrayOfThings1D, {})).toEqual(60);
-		expect(helpers.canvas._longestText(context, font, arrayOfThings2D, {})).toEqual(80);
+		expect(helpers._longestText(context, font, arrayOfThings1D, {})).toEqual(60);
+		expect(helpers._longestText(context, font, arrayOfThings2D, {})).toEqual(80);
 		// We check to make sure we made the right calls to the canvas.
 		expect(context.getCalls()).toEqual([{
 			name: 'save',
@@ -84,9 +84,9 @@ describe('Chart.helpers.canvas', function() {
 		var gc = [];
 		var longest = 70;
 
-		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar')).toEqual(70);
-		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar_')).toEqual(70);
-		expect(helpers.canvas._measureText(context, data, gc, longest, 'foobar_1')).toEqual(80);
+		expect(helpers._measureText(context, data, gc, longest, 'foobar')).toEqual(70);
+		expect(helpers._measureText(context, data, gc, longest, 'foobar_')).toEqual(70);
+		expect(helpers._measureText(context, data, gc, longest, 'foobar_1')).toEqual(80);
 		// We check to make sure we made the right calls to the canvas.
 		expect(context.getCalls()).toEqual([{
 			name: 'measureText',
