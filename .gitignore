@@ -3,7 +3,8 @@
 /custom
 /dist
 /gh-pages
-/helpers
+/helpers/*.esm.*
+/helpers/chunks
 
 # Node.js
 node_modules/

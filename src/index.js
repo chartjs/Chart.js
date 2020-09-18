@@ -6,7 +6,7 @@
  */
 import Chart from './core/core.controller';
 
-import helpers from './helpers/index';
+import * as helpers from './helpers/index';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import animator from './core/core.animator';
