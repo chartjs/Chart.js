@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {valueOrDefault} from '../helpers/helpers.core';
-import {isNumber} from '../helpers/helpers.math';
+import {isNumber, _limitValue} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
 import {_lookupByKey} from '../helpers/helpers.collection';
 
@@ -15,10 +15,17 @@ export default class LineController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const {dataset: line, data: points = []} = meta;
-		const {start, count} = getStartAndCountOfVisiblePoints(meta, points);
+		// @ts-ignore
+		const animationsDisabled = me.chart._animationsDisabled;
+		let {start, count} = getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
 
 		me._drawStart = start;
 		me._drawCount = count;
+
+		if (scaleRangesChanged(meta) && !animationsDisabled) {
+			start = 0;
+			count = points.length;
+		}
 
 		// Update Line
 		// In resize mode only point locations change, so no need to set the points or options.
@@ -171,7 +178,7 @@ LineController.defaults = {
 	}
 };
 
-function getStartAndCountOfVisiblePoints(meta, points) {
+function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
 	const pointCount = points.length;
 
 	let start = 0;
@@ -179,10 +186,44 @@ function getStartAndCountOfVisiblePoints(meta, points) {
 
 	if (meta._sorted) {
 		const {iScale, _parsed} = meta;
+		const axis = iScale.axis;
 		const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
-		start = minDefined ? Math.max(0, _lookupByKey(_parsed, iScale.axis, min).lo) : 0;
-		count = (maxDefined ? Math.min(pointCount, _lookupByKey(_parsed, iScale.axis, max).hi + 1) : pointCount) - start;
+		if (minDefined) {
+			start = _limitValue(Math.min(
+				_lookupByKey(_parsed, iScale.axis, min).lo,
+				animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
+			0, pointCount - 1);
+		}
+		if (maxDefined) {
+			count = _limitValue(Math.max(
+				_lookupByKey(_parsed, iScale.axis, max).hi + 1,
+				animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1),
+			start, pointCount) - start;
+		} else {
+			count = pointCount - start;
+		}
 	}
 
 	return {start, count};
+}
+
+function scaleRangesChanged(meta) {
+	const {xScale, yScale, _scaleRanges} = meta;
+	const newRanges = {
+		xmin: xScale.min,
+		xmax: xScale.max,
+		ymin: yScale.min,
+		ymax: yScale.max
+	};
+	if (!_scaleRanges) {
+		meta._scaleRanges = newRanges;
+		return true;
+	}
+	const changed = _scaleRanges.xmin !== xScale.min
+		|| _scaleRanges.xmax !== xScale.max
+		|| _scaleRanges.ymin !== yScale.min
+		|| _scaleRanges.ymax !== yScale.max;
+
+	Object.assign(_scaleRanges, newRanges);
+	return changed;
 }
