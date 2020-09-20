@@ -489,22 +489,9 @@ export default class Scale extends Element {
 		me._gridLineItems = null;
 		me._labelItems = null;
 
-		// Dimensions
-		me.beforeSetDimensions();
-		me.setDimensions();
-		me.afterSetDimensions();
-
-		// Data min/max
-		me.beforeDataLimits();
-		me.determineDataLimits();
-		me.afterDataLimits();
-
-		me.beforeBuildTicks();
-
-		me.ticks = me.buildTicks() || [];
-
-		// Allow modification of ticks in callback.
-		me.afterBuildTicks();
+		me._setDimensions();
+		me._dataLimits();
+		me._buildTicks();
 
 		// Compute tick rotation and fit using a sampled subset of labels
 		// We generally don't need to compute the size of every single label for determining scale size
@@ -517,14 +504,8 @@ export default class Scale extends Element {
 		// it's ok that coordinates are not correct there, only dimensions matter.
 		me.configure();
 
-		// Tick Rotation
-		me.beforeCalculateLabelRotation();
-		me.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
-		me.afterCalculateLabelRotation();
-
-		me.beforeFit();
-		me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
-		me.afterFit();
+		me._calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
+		me._fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
 
 		// Auto-skip
 		me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
@@ -567,10 +548,6 @@ export default class Scale extends Element {
 	}
 
 	//
-
-	beforeSetDimensions() {
-		call(this.options.beforeSetDimensions, [this]);
-	}
 	setDimensions() {
 		const me = this;
 		// Set the unconstrained dimension before label rotation
@@ -593,36 +570,43 @@ export default class Scale extends Element {
 		me.paddingRight = 0;
 		me.paddingBottom = 0;
 	}
-	afterSetDimensions() {
-		call(this.options.afterSetDimensions, [this]);
+	/**
+	 * @private
+	 */
+	_setDimensions() {
+		const me = this;
+		call(me.options.beforeSetDimensions, [me]);
+		me.setDimensions();
+		call(me.options.afterSetDimensions, [me]);
 	}
 
-	// Data limits
-	beforeDataLimits() {
-		call(this.options.beforeDataLimits, [this]);
-	}
 	determineDataLimits() {}
-	afterDataLimits() {
-		call(this.options.afterDataLimits, [this]);
+	/**
+	 * @private
+	 */
+	_dataLimits() {
+		const me = this;
+		call(me.options.beforeDataLimits, [me]);
+		me.determineDataLimits();
+		call(me.options.afterDataLimits, [me]);
 	}
 
-	//
-	beforeBuildTicks() {
-		call(this.options.beforeBuildTicks, [this]);
-	}
 	/**
 	 * @return {object[]} the ticks
 	 */
 	buildTicks() {
 		return [];
 	}
-	afterBuildTicks() {
-		call(this.options.afterBuildTicks, [this]);
+	/**
+	 * @private
+	 */
+	_buildTicks() {
+		const me = this;
+		call(me.options.beforeBuildTicks, [me]);
+		me.ticks = me.buildTicks() || [];
+		call(me.options.afterBuildTicks, [me]);
 	}
 
-	beforeTickToLabelConversion() {
-		call(this.options.beforeTickToLabelConversion, [this]);
-	}
 	/**
 	 * Convert ticks to label strings
 	 * @param {Tick[]} ticks
@@ -636,15 +620,19 @@ export default class Scale extends Element {
 			tick.label = call(tickOpts.callback, [tick.value, i, ticks], me);
 		}
 	}
-	afterTickToLabelConversion() {
-		call(this.options.afterTickToLabelConversion, [this]);
+	/**
+	 * @param {Tick[]} ticks
+	 * @private
+	 */
+	_convertTicksToLabels(ticks) {
+		const me = this;
+		call(me.options.beforeTickToLabelConversion, [me]);
+		me.generateTickLabels(ticks);
+		call(me.options.afterTickToLabelConversion, [me]);
 	}
 
 	//
 
-	beforeCalculateLabelRotation() {
-		call(this.options.beforeCalculateLabelRotation, [this]);
-	}
 	calculateLabelRotation() {
 		const me = this;
 		const options = me.options;
@@ -684,115 +672,110 @@ export default class Scale extends Element {
 
 		me.labelRotation = labelRotation;
 	}
-	afterCalculateLabelRotation() {
-		call(this.options.afterCalculateLabelRotation, [this]);
+	/**
+	 * @private
+	 */
+	_calculateLabelRotation() {
+		const me = this;
+		call(me.options.beforeCalculateLabelRotation, [me]);
+		me.calculateLabelRotation();
+		call(me.options.afterCalculateLabelRotation, [me]);
 	}
 
 	//
 
-	beforeFit() {
-		call(this.options.beforeFit, [this]);
-	}
 	fit() {
 		const me = this;
-		// Reset
-		const minSize = {
-			width: 0,
-			height: 0
-		};
-
 		const chart = me.chart;
 		const opts = me.options;
 		const tickOpts = opts.ticks;
 		const scaleLabelOpts = opts.scaleLabel;
 		const gridLineOpts = opts.gridLines;
 		const display = me._isVisible();
-		const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
 		const isHorizontal = me.isHorizontal();
 		const scaleLabelHeight = display && getScaleLabelHeight(scaleLabelOpts, chart.options.font);
+		const minSize = {};
 
-		// Width
 		if (isHorizontal) {
 			minSize.width = me.maxWidth;
-		} else if (display) {
-			minSize.width = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
-		}
-
-		// height
-		if (!isHorizontal) {
+			minSize.height = display && (getTickMarkLength(gridLineOpts) + scaleLabelHeight);
+		} else {
 			minSize.height = me.maxHeight; // fill all the height
-		} else if (display) {
-			minSize.height = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
+			minSize.width = display && (getTickMarkLength(gridLineOpts) + scaleLabelHeight);
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display && me.ticks.length) {
-			const labelSizes = me._getLabelSizes();
-			const firstLabelSize = labelSizes.first;
-			const lastLabelSize = labelSizes.last;
-			const widestLabelSize = labelSizes.widest;
-			const highestLabelSize = labelSizes.highest;
-			const lineSpace = highestLabelSize.offset * 0.8;
-			const tickPadding = tickOpts.padding;
-
-			if (isHorizontal) {
-				// A horizontal axis is more constrained by the height.
-				const isRotated = me.labelRotation !== 0;
-				const angleRadians = toRadians(me.labelRotation);
-				const cosRotation = Math.cos(angleRadians);
-				const sinRotation = Math.sin(angleRadians);
-
-				const labelHeight = sinRotation * widestLabelSize.width
-					+ cosRotation * (highestLabelSize.height - (isRotated ? highestLabelSize.offset : 0))
-					+ (isRotated ? 0 : lineSpace); // padding
-
-				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
-
-				const offsetLeft = me.getPixelForTick(0) - me.left;
-				const offsetRight = me.right - me.getPixelForTick(me.ticks.length - 1);
-				let paddingLeft, paddingRight;
-
-				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
-				// which means that the right padding is dominated by the font height
-				if (isRotated) {
-					paddingLeft = labelsBelowTicks ?
-						cosRotation * firstLabelSize.width + sinRotation * firstLabelSize.offset :
-						sinRotation * (firstLabelSize.height - firstLabelSize.offset);
-					paddingRight = labelsBelowTicks ?
-						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
-						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
-				} else {
-					paddingLeft = firstLabelSize.width / 2;
-					paddingRight = lastLabelSize.width / 2;
-				}
-
-				// Adjust padding taking into account changes in offsets
-				// and add 3 px to move away from canvas edges
-				me.paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
-				me.paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
-			} else {
-				// A vertical axis is more constrained by the width. Labels are the
-				// dominant factor here, so get that length first and account for padding
-				const labelWidth = tickOpts.mirror ? 0 :
-					// use lineSpace for consistency with horizontal axis
-					// tickPadding is not implemented for horizontal
-					widestLabelSize.width + tickPadding + lineSpace;
-
-				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
-
-				me.paddingTop = lastLabelSize.height / 2;
-				me.paddingBottom = firstLabelSize.height / 2;
-			}
+			me._calculatePadding(minSize);
 		}
 
 		me._handleMargins();
 
 		if (isHorizontal) {
 			me.width = me._length = chart.width - me._margins.left - me._margins.right;
-			me.height = minSize.height;
+			me.height = +minSize.height;
 		} else {
-			me.width = minSize.width;
+			me.width = +minSize.width;
 			me.height = me._length = chart.height - me._margins.top - me._margins.bottom;
+		}
+	}
+
+	_calculatePadding(minSize) {
+		const me = this;
+		const opts = me.options;
+		const tickOpts = opts.ticks;
+		const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
+		const {first, last, widest, highest} = me._getLabelSizes();
+		const lineSpace = highest.offset * 0.8;
+		const tickPadding = tickOpts.padding;
+
+		if (me.isHorizontal()) {
+			// A horizontal axis is more constrained by the height.
+			const isRotated = me.labelRotation !== 0;
+			const angleRadians = toRadians(me.labelRotation);
+			const cosRotation = Math.cos(angleRadians);
+			const sinRotation = Math.sin(angleRadians);
+
+			const labelHeight = sinRotation * widest.width
+				+ cosRotation * (highest.height - (isRotated ? highest.offset : 0))
+				+ (isRotated ? 0 : lineSpace); // padding
+
+			minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
+
+			const offsetLeft = me.getPixelForTick(0) - me.left;
+			const offsetRight = me.right - me.getPixelForTick(me.ticks.length - 1);
+			let paddingLeft, paddingRight;
+
+			// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
+			// which means that the right padding is dominated by the font height
+			if (isRotated) {
+				paddingLeft = labelsBelowTicks ?
+					cosRotation * first.width + sinRotation * first.offset :
+					sinRotation * (first.height - first.offset);
+				paddingRight = labelsBelowTicks ?
+					sinRotation * (last.height - last.offset) :
+					cosRotation * last.width + sinRotation * last.offset;
+			} else {
+				paddingLeft = first.width / 2;
+				paddingRight = last.width / 2;
+			}
+
+			// Adjust padding taking into account changes in offsets
+			// and add 3 px to move away from canvas edges
+			me.paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
+			me.paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
+		} else {
+			// A vertical axis is more constrained by the width. Labels are the
+			// dominant factor here, so get that length first and account for padding
+			const labelWidth = tickOpts.mirror ? 0 :
+				// use lineSpace for consistency with horizontal axis
+				// tickPadding is not implemented for horizontal
+				widest.width + tickPadding + lineSpace;
+
+			minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
+
+			me.paddingTop = last.height / 2;
+			me.paddingBottom = first.height / 2;
 		}
 	}
 
@@ -810,9 +793,13 @@ export default class Scale extends Element {
 		}
 	}
 
-	afterFit() {
-		call(this.options.afterFit, [this]);
+	_fit() {
+		const me = this;
+		call(me.options.beforeFit, [me]);
+		me.fit();
+		call(me.options.afterFit, [me]);
 	}
+
 
 	// Shared Methods
 	/**
@@ -827,20 +814,6 @@ export default class Scale extends Element {
 	 */
 	isFullWidth() {
 		return this.options.fullWidth;
-	}
-
-	/**
-	 * @param {Tick[]} ticks
-	 * @private
-	 */
-	_convertTicksToLabels(ticks) {
-		const me = this;
-
-		me.beforeTickToLabelConversion();
-
-		me.generateTickLabels(ticks);
-
-		me.afterTickToLabelConversion();
 	}
 
 	/**
