@@ -119,7 +119,8 @@ export interface ILineControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IPointPrefixedOptions>,
     ScriptableAndArrayOptions<IPointPrefixedHoverOptions>,
-    ScriptableOptions<ILineOptions> {
+    ScriptableOptions<ILineOptions>,
+    ScriptableOptions<ILineHoverOptions> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
