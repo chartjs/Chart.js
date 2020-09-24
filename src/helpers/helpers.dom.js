@@ -38,11 +38,12 @@ export function getStyle(el, property) {
 }
 
 const positions = ['top', 'right', 'bottom', 'left'];
-function getPositionedStyle(styles, style) {
+function getPositionedStyle(styles, style, suffix) {
 	const result = {};
+	suffix = suffix ? '-' + suffix : '';
 	for (let i = 0; i < 4; i++) {
 		const pos = positions[i];
-		result[pos] = parseFloat(styles[style + '-' + pos]) || 0;
+		result[pos] = parseFloat(styles[style + '-' + pos + suffix]) || 0;
 	}
 	result.width = result.left + result.right;
 	result.height = result.top + result.bottom;
@@ -75,7 +76,7 @@ export function getRelativePosition(evt, chart) {
 
 	let {width, height} = chart;
 	if (borderBox) {
-		const borders = getPositionedStyle(style, 'border');
+		const borders = getPositionedStyle(style, 'border', 'width');
 		width -= paddings.width + borders.width;
 		height -= paddings.height + borders.height;
 	}
@@ -98,7 +99,7 @@ function getContainerSize(canvas, width, height) {
 		} else {
 			const rect = container.getBoundingClientRect(); // this is the border box of the container
 			const containerStyle = getComputedStyle(container);
-			const containerBorder = getPositionedStyle(containerStyle, 'border');
+			const containerBorder = getPositionedStyle(containerStyle, 'border', 'width');
 			const contarinerPadding = getPositionedStyle(containerStyle, 'padding');
 			width = rect.width - contarinerPadding.width - containerBorder.width;
 			height = rect.height - contarinerPadding.height - containerBorder.height;
@@ -123,7 +124,7 @@ export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
 	let {width, height} = containerSize;
 
 	if (style.boxSizing === 'content-box') {
-		const borders = getPositionedStyle(style, 'border');
+		const borders = getPositionedStyle(style, 'border', 'width');
 		const paddings = getPositionedStyle(style, 'padding');
 		width -= paddings.width + borders.width;
 		height -= paddings.height + borders.height;
