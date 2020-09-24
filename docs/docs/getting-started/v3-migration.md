@@ -380,8 +380,6 @@ The following properties were renamed during v3 development:
 * `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
 * `helpers.drawRoundedRectangle` was renamed to `helpers.canvas.roundedRect`
 * `helpers.getAngleFromPoint` was renamed to `helpers.math.getAngleFromPoint`
-* `helpers.getMaximumHeight` was renamed to `helpers.dom.getMaximumHeight`
-* `helpers.getMaximumWidth` was renamed to `helpers.dom.getMaximumWidth`
 * `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`
 * `helpers.getStyle` was renamed to `helpers.dom.getStyle`
 * `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
@@ -477,6 +475,8 @@ The APIs listed in this section have changed in signature or behaviour from vers
 ##### Canvas Helper
 
 * The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
+* `helpers.getMaximumHeight` was replaced by `helpers.dom.getMaximumSize`
+* `helpers.getMaximumWidth` was replaced by `helpers.dom.getMaximumSize`
 
 #### Platform
 

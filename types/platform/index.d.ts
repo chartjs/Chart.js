@@ -39,6 +39,14 @@ export class BasePlatform {
    */
   getDevicePixelRatio(): number;
   /**
+   * @param {HTMLCanvasElement} canvas - The canvas for which to calculate the maximum size
+   * @param {number} [width] - Parent element's content width
+   * @param {number} [height] - Parent element's content height
+   * @param {number} [aspectRatio] - The aspect ratio to maintain
+   * @returns { width: number, height: number } the maximum size available.
+   */
+  getMaximumSize(canvas: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): { width: number, height: number };
+  /**
    * @param {HTMLCanvasElement} canvas
    * @returns {boolean} true if the canvas is attached to the platform, false if not.
    */

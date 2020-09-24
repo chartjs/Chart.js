@@ -50,6 +50,22 @@ export default class BasePlatform {
 	}
 
 	/**
+	 * Returns the maximum size in pixels of given canvas element.
+	 * @param {HTMLCanvasElement} element
+	 * @param {number} [width] - content width of parent element
+	 * @param {number} [height] - content height of parent element
+	 * @param {number} [aspectRatio] - aspect ratio to maintain
+	 */
+	getMaximumSize(element, width, height, aspectRatio) {
+		width = Math.max(0, width || element.width);
+		height = height || element.height;
+		return {
+			width,
+			height: Math.max(0, aspectRatio ? Math.floor(width / aspectRatio) : height)
+		};
+	}
+
+	/**
 	 * @param {HTMLCanvasElement} canvas
 	 * @returns {boolean} true if the canvas is attached to the platform, false if not.
 	 */

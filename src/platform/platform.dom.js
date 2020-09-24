@@ -3,7 +3,7 @@
  */
 
 import BasePlatform from './platform.base';
-import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize} from '../helpers/helpers.dom';
+import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize, getMaximumSize} from '../helpers/helpers.dom';
 import {throttled} from '../helpers/helpers.extras';
 import {isNullOrUndef} from '../helpers/helpers.core';
 
@@ -102,20 +102,16 @@ function removeListener(chart, type, listener) {
 	chart.canvas.removeEventListener(type, listener, eventListenerOptions);
 }
 
-function createEvent(type, chart, x, y, nativeEvent) {
+function fromNativeEvent(event, chart) {
+	const type = EVENT_TYPES[event.type] || event.type;
+	const {x, y} = getRelativePosition(event, chart);
 	return {
 		type,
 		chart,
-		native: nativeEvent || null,
+		native: event,
 		x: x !== undefined ? x : null,
 		y: y !== undefined ? y : null,
 	};
-}
-
-function fromNativeEvent(event, chart) {
-	const type = EVENT_TYPES[event.type] || event.type;
-	const pos = getRelativePosition(event, chart);
-	return createEvent(type, chart, pos.x, pos.y, event);
 }
 
 function createAttachObserver(chart, type, listener) {
@@ -371,6 +367,15 @@ export default class DomPlatform extends BasePlatform {
 		return window.devicePixelRatio;
 	}
 
+	/**
+	 * @param {HTMLCanvasElement} canvas
+	 * @param {number} [width] - content width of parent element
+	 * @param {number} [height] - content height of parent element
+	 * @param {number} [aspectRatio] - aspect ratio to maintain
+	 */
+	getMaximumSize(canvas, width, height, aspectRatio) {
+		return getMaximumSize(canvas, width, height, aspectRatio);
+	}
 
 	/**
 	 * @param {HTMLCanvasElement} canvas
