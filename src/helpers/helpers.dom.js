@@ -55,7 +55,7 @@ function getCanvasPosition(evt, canvas) {
 	const touches = e.touches;
 	const source = touches && touches.length ? touches[0] : e;
 	const {offsetX, offsetY} = source;
-	let x, y;
+	let x, y, box;
 	if (offsetX > 0 || offsetY > 0) {
 		x = offsetX;
 		y = offsetY;
@@ -63,8 +63,9 @@ function getCanvasPosition(evt, canvas) {
 		const rect = canvas.getBoundingClientRect();
 		x = source.clientX - rect.left;
 		y = source.clientY - rect.top;
+		box = true;
 	}
-	return {x, y};
+	return {x, y, box};
 }
 
 export function getRelativePosition(evt, chart) {
@@ -72,17 +73,19 @@ export function getRelativePosition(evt, chart) {
 	const style = getComputedStyle(canvas);
 	const borderBox = style.boxSizing === 'border-box';
 	const paddings = getPositionedStyle(style, 'padding');
-	const {x, y} = getCanvasPosition(evt, canvas);
+	const borders = getPositionedStyle(style, 'border', 'width');
+	const {x, y, box} = getCanvasPosition(evt, canvas);
+	const xOffset = paddings.left + (box && borders.left);
+	const yOffset = paddings.top + (box && borders.top);
 
 	let {width, height} = chart;
 	if (borderBox) {
-		const borders = getPositionedStyle(style, 'border', 'width');
 		width -= paddings.width + borders.width;
 		height -= paddings.height + borders.height;
 	}
 	return {
-		x: Math.round((x - paddings.left) / width * canvas.width / currentDevicePixelRatio),
-		y: Math.round((y - paddings.right) / height * canvas.height / currentDevicePixelRatio)
+		x: Math.round((x - xOffset) / width * canvas.width / currentDevicePixelRatio),
+		y: Math.round((y - yOffset) / height * canvas.height / currentDevicePixelRatio)
 	};
 }
 
