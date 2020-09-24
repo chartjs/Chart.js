@@ -55,7 +55,8 @@ function getCanvasPosition(evt, canvas) {
 	const touches = e.touches;
 	const source = touches && touches.length ? touches[0] : e;
 	const {offsetX, offsetY} = source;
-	let x, y, box;
+	let box = false;
+	let x, y;
 	if (offsetX > 0 || offsetY > 0) {
 		x = offsetX;
 		y = offsetY;
