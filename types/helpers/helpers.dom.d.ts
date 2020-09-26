@@ -1,5 +1,4 @@
-export function getMaximumHeight(node: HTMLElement): number;
-export function getMaximumWidth(node: HTMLElement): number;
+export function getMaximumSize(node: HTMLElement, width?: number, height?: number, aspectRatio?: number): { width: number, height: number };
 export function getRelativePosition(
   evt: MouseEvent,
   chart: { readonly canvas: HTMLCanvasElement }
