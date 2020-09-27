@@ -43,9 +43,15 @@ export interface IArcOptions extends ICommonOptions {
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 }
 
-export interface IArcHoverOptions extends ICommonHoverOptions {}
+export interface IArcHoverOptions extends ICommonHoverOptions {
+  hoverOffset: number;
+}
 
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
   extends Element<T, O>,

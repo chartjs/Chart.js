@@ -458,6 +458,8 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 ##### Canvas Helper
 
 * The second parameter to `drawPoint` is now the full options object, so `style`, `rotation`, and `radius` are no longer passed explicitly
+* `helpers.getMaximumHeight` was replaced by `helpers.dom.getMaximumSize`
+* `helpers.getMaximumWidth` was replaced by `helpers.dom.getMaximumSize`
 
 #### Platform
 
