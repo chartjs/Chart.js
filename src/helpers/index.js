@@ -5,7 +5,7 @@ export * from './helpers.canvas';
 export * from './helpers.collection';
 export * from './helpers.curve';
 export * from './helpers.dom';
-export {default as easing} from './helpers.easing';
+export {default as easingEffects} from './helpers.easing';
 export * from './helpers.interpolation';
 export * from './helpers.options';
 export * from './helpers.math';
