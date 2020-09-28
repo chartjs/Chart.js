@@ -624,43 +624,82 @@ describe('Chart.DatasetController', function() {
 			// Remove test from global defaults
 			delete Chart.defaults.elements.line.globalTest;
 		});
-	});
 
-	it('should resove names in object notation', function() {
-		Chart.defaults.elements.line.global = 'global';
+		it('should resove names in object notation', function() {
+			Chart.defaults.elements.line.global = 'global';
 
-		const chart = acquireChart({
-			type: 'line',
-			data: {
-				datasets: [{
-					data: [1],
-					datasetTest: 'dataset'
-				}]
-			},
-			options: {
-				elements: {
-					line: {
-						element: 'element'
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1],
+						datasetTest: 'dataset'
+					}]
+				},
+				options: {
+					elements: {
+						line: {
+							element: 'element'
+						}
 					}
 				}
-			}
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller._resolveOptions(
+				{
+					dataset: 'datasetTest',
+					element: 'elementTest',
+					global: 'globalTest'},
+				{type: 'line'})
+			).toEqual({
+				dataset: 'dataset',
+				element: 'element',
+				global: 'global'
+			});
+
+			// Remove test from global defaults
+			delete Chart.defaults.elements.line.global;
+		});
+	});
+
+	describe('_resolveAnimations', function() {
+		it('should resolve to empty Animations when globally disabled', function() {
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1],
+						animation: {
+							test: {duration: 10}
+						}
+					}]
+				},
+				options: {
+					animation: false
+				}
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller._resolveAnimations(0)._properties.size).toEqual(0);
 		});
 
-		const controller = chart.getDatasetMeta(0).controller;
+		it('should resolve to empty Animations when disabled at dataset level', function() {
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1],
+						animation: false
+					}]
+				}
+			});
 
-		expect(controller._resolveOptions(
-			{
-				dataset: 'datasetTest',
-				element: 'elementTest',
-				global: 'globalTest'},
-			{type: 'line'})
-		).toEqual({
-			dataset: 'dataset',
-			element: 'element',
-			global: 'global'
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller._resolveAnimations(0)._properties.size).toEqual(0);
 		});
-
-		// Remove test from global defaults
-		delete Chart.defaults.elements.line.global;
 	});
 });
