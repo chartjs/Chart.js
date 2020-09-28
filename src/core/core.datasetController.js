@@ -804,9 +804,9 @@ export default class DatasetController {
 
 		const info = {cacheable: true};
 		const context = me._getContext(index, active);
-		const datasetAnim = resolve([me._config.animation], context, index, info);
 		const chartAnim = resolve([chart.options.animation], context, index, info);
-		let config = mergeIf({}, [datasetAnim, chartAnim]);
+		const datasetAnim = resolve([me._config.animation], context, index, info);
+		let config = chartAnim && mergeIf({}, [datasetAnim, chartAnim]);
 
 		if (config[mode]) {
 			config = Object.assign({}, config, config[mode]);
