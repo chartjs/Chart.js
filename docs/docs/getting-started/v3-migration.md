@@ -306,9 +306,9 @@ The following properties and methods were removed:
 * `helpers.getValueAtIndexOrDefault`. Use `helpers.resolve` instead.
 * `helpers.indexOf`
 * `helpers.lineTo`
-* `helpers.longestText` was moved to the `helpers.canvas` namespace and made private
+* `helpers.longestText` was made private
 * `helpers.max`
-* `helpers.measureText` was moved to the `helpers.canvas` namespace and made private
+* `helpers.measureText` was made private
 * `helpers.min`
 * `helpers.nextItem`
 * `helpers.niceNum`
@@ -369,29 +369,12 @@ The following properties were renamed during v3 development:
 
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
-* `Chart.canvasHelpers` was renamed to `Chart.helpers.canvas`
+* `Chart.canvasHelpers` was merged with `Chart.helpers`
 * `Chart.layoutService` was renamed to `Chart.layouts`
 * `Chart.pluginService` was renamed to `Chart.plugins`
-* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
-* `helpers.almostEquals` was renamed to `helpers.math.almostEquals`
-* `helpers.almostWhole` was renamed to `helpers.math.almostWhole`
 * `helpers.callCallback` was renamed to `helpers.callback`
-* `helpers.clear` was renamed to `helpers.canvas.clear`
-* `helpers.distanceBetweenPoints` was renamed to `helpers.math.distanceBetweenPoints`
-* `helpers.drawRoundedRectangle` was renamed to `helpers.canvas.roundedRect`
-* `helpers.getAngleFromPoint` was renamed to `helpers.math.getAngleFromPoint`
-* `helpers.getRelativePosition` was renamed to `helpers.dom.getRelativePosition`
-* `helpers.getStyle` was renamed to `helpers.dom.getStyle`
+* `helpers.drawRoundedRectangle` was renamed to `helpers.roundedRect`
 * `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
-* `helpers.easingEffects` was renamed to `helpers.easing.effects`
-* `helpers.log10` was renamed to `helpers.math.log10`
-* `helpers.isNumber` was renamed to `helpers.math.isNumber`
-* `helpers.sign` was renamed to `helpers.math.sign`
-* `helpers.retinaScale` was renamed to `helpers.dom.retinaScale`
-* `helpers.splineCurve` was renamed to `helpers.curve.splineCurve`
-* `helpers.splineCurveMonotone` was renamed to `helpers.curve.splineCurveMonotone`
-* `helpers.toDegrees` was renamed to `helpers.math.toDegrees`
-* `helpers.toRadians` was renamed to `helpers.math.toRadians`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
@@ -426,8 +409,6 @@ The private APIs listed below were renamed:
 * `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
 * `RadialLinearScale.setReductions` was renamed to `RadialLinearScale._setReductions`
 * `Scale.handleMargins` was renamed to `Scale._handleMargins`
-* `helpers._alignPixel` was renamed to `helpers.canvas._alignPixel`
-* `helpers._decimalPlaces` was renamed to `helpers.math._decimalPlaces`
 
 ### Changed
 
@@ -471,6 +452,8 @@ The APIs listed in this section have changed in signature or behaviour from vers
 * `ILayoutItem.update` no longer has a return value
 
 #### Helpers
+
+All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.clipArea` -> `Chart.helpers.clipArea`
 
 ##### Canvas Helper
 

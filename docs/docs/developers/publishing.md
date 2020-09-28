@@ -20,12 +20,19 @@ But not the helpers.
 
 In UMD, helpers are available through `Chart.helpers`. In ESM, they are imported from `chart.js/helpers`.
 
-There are multiple namespaces under helpers. Some of the namespaces are bundled directly under `Chart.helpers` for backward compatibility, those are: `core`, `color` and `extras`.
-
-For example `import {isNullOrUndef} from 'chart.js/helpers/core'` is available at `Chart.helpers.isNullOrUndef` for UMD.
+For example `import {isNullOrUndef} from 'chart.js/helpers'` is available at `Chart.helpers.isNullOrUndef` for UMD.
 
 ### Rollup
 
 `output.globals` can be used to convert the helpers.
 
-For convinience, a plugin is available for the configuration: [rollup-plugin-chartjs-globals](https://www.npmjs.com/package/rollup-plugin-chartjs-globals).
+```js
+{
+    output: {
+        globals: {
+            'chart.js': 'Chart',
+            'chart.js/helpers': 'Chart.helpers'
+        }
+    }
+}
+```

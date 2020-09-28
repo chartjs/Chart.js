@@ -1,4 +1,4 @@
-const {toLineHeight, toPadding, toFont, resolve} = Chart.helpers.options; // from '../../src/helpers/helpers.options';
+const {toLineHeight, toPadding, toFont, resolve} = Chart.helpers; // from '../../src/helpers/helpers.options';
 
 describe('Chart.helpers.options', function() {
 	describe('toLineHeight', function() {

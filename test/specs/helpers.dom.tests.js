@@ -2,7 +2,7 @@ describe('DOM helpers tests', function() {
 	let helpers;
 
 	beforeAll(function() {
-		helpers = window.Chart.helpers.dom;
+		helpers = window.Chart.helpers;
 	});
 
 	it ('should get the maximum size for a node', function() {
