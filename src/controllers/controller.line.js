@@ -1,7 +1,8 @@
 import DatasetController from '../core/core.datasetController';
 import {valueOrDefault} from '../helpers/helpers.core';
-import {isNumber} from '../helpers/helpers.math';
+import {isNumber, _limitValue} from '../helpers/helpers.math';
 import {resolve} from '../helpers/helpers.options';
+import {_lookupByKey} from '../helpers/helpers.collection';
 
 export default class LineController extends DatasetController {
 
@@ -13,8 +14,18 @@ export default class LineController extends DatasetController {
 	update(mode) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const line = meta.dataset;
-		const points = meta.data || [];
+		const {dataset: line, data: points = []} = meta;
+		// @ts-ignore
+		const animationsDisabled = me.chart._animationsDisabled;
+		let {start, count} = getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
+
+		me._drawStart = start;
+		me._drawCount = count;
+
+		if (scaleRangesChanged(meta) && !animationsDisabled) {
+			start = 0;
+			count = points.length;
+		}
 
 		// Update Line
 		// In resize mode only point locations change, so no need to set the points or options.
@@ -28,10 +39,10 @@ export default class LineController extends DatasetController {
 		}
 
 		// Update Points
-		me.updateElements(points, 0, mode);
+		me.updateElements(points, start, count, mode);
 	}
 
-	updateElements(points, start, mode) {
+	updateElements(points, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const {xScale, yScale, _stacked} = me._cachedMeta;
@@ -40,14 +51,13 @@ export default class LineController extends DatasetController {
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
-		let prevParsed;
+		let prevParsed = start > 0 && me.getParsed(start - 1);
 
-		for (let i = 0; i < points.length; ++i) {
-			const index = start + i;
+		for (let i = start; i < start + count; ++i) {
 			const point = points[i];
-			const parsed = me.getParsed(index);
-			const x = xScale.getPixelForValue(parsed.x, index);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, index);
+			const parsed = me.getParsed(i);
+			const x = xScale.getPixelForValue(parsed.x, i);
+			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
 			const properties = {
 				x,
 				y,
@@ -56,10 +66,10 @@ export default class LineController extends DatasetController {
 			};
 
 			if (includeOptions) {
-				properties.options = sharedOptions || me.resolveDataElementOptions(index, mode);
+				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 
-			me.updateElement(point, index, properties, mode);
+			me.updateElement(point, i, properties, mode);
 
 			prevParsed = parsed;
 		}
@@ -167,3 +177,53 @@ LineController.defaults = {
 		},
 	}
 };
+
+function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
+	const pointCount = points.length;
+
+	let start = 0;
+	let count = pointCount;
+
+	if (meta._sorted) {
+		const {iScale, _parsed} = meta;
+		const axis = iScale.axis;
+		const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+		if (minDefined) {
+			start = _limitValue(Math.min(
+				_lookupByKey(_parsed, iScale.axis, min).lo,
+				animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
+			0, pointCount - 1);
+		}
+		if (maxDefined) {
+			count = _limitValue(Math.max(
+				_lookupByKey(_parsed, iScale.axis, max).hi + 1,
+				animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1),
+			start, pointCount) - start;
+		} else {
+			count = pointCount - start;
+		}
+	}
+
+	return {start, count};
+}
+
+function scaleRangesChanged(meta) {
+	const {xScale, yScale, _scaleRanges} = meta;
+	const newRanges = {
+		xmin: xScale.min,
+		xmax: xScale.max,
+		ymin: yScale.min,
+		ymax: yScale.max
+	};
+	if (!_scaleRanges) {
+		meta._scaleRanges = newRanges;
+		return true;
+	}
+	const changed = _scaleRanges.xmin !== xScale.min
+		|| _scaleRanges.xmax !== xScale.max
+		|| _scaleRanges.ymin !== yScale.min
+		|| _scaleRanges.ymax !== yScale.max;
+
+	Object.assign(_scaleRanges, newRanges);
+	return changed;
+}

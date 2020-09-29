@@ -150,3 +150,28 @@ new Chart(ctx, {
     options: options
 });
 ```
+
+## TypeScript Typings
+
+If you want your new chart type to be statically typed, you must provide a `.d.ts` TypeScript declaration file. Chart.js provides a way to augment built-in types with user-defined ones, by using the concept of "declaration merging".
+
+There are three main declarations that can be augmented when adding a new chart type:
+
+* `ChartTypeEnum` enumeration must contain an entry for the new type.
+* `IChartTypeRegistry` must contains the declarations for the new type, either by extending an existing entry in `IChartTypeRegistry` or by creating a new one.
+
+For example, to provide typings for a new chart type that extends from a bubble chart, you would add a `.d.ts` containing:
+
+```javascript
+import { IChartTypeRegistry } from 'chart.js'
+
+declare module 'chart.js' {
+    enum ChartTypeEnum {
+        derivedBubble = 'derivedBubble'
+    }
+
+    interface IChartTypeRegistry {
+        derivedBubble: IChartTypeRegistry['bubble']
+    }
+}
+```

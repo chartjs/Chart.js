@@ -12,7 +12,6 @@ import {
   IPointPrefixedOptions,
   IRectangleOptions,
 } from '../elements';
-import { ICategoryScaleType, ILinearScaleType, IRadialLinearScaleType } from '../scales';
 
 export interface IControllerDatasetOptions {
   /**
@@ -80,10 +79,6 @@ export interface IBarControllerDatasetOptions
 }
 
 export interface IBarControllerChartOptions {
-  scales: {
-    _index_: ICategoryScaleType;
-    _value_: ILinearScaleType;
-  };
 }
 
 export interface BarController extends DatasetController {}
@@ -124,7 +119,8 @@ export interface ILineControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IPointPrefixedOptions>,
     ScriptableAndArrayOptions<IPointPrefixedHoverOptions>,
-    ScriptableOptions<ILineOptions> {
+    ScriptableOptions<ILineOptions>,
+    ScriptableOptions<ILineHoverOptions> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -169,12 +165,7 @@ export interface IScatterDataPoint {
   y: number;
 }
 
-export interface IScatterControllerChartOptions extends ILineControllerChartOptions {
-  scales: {
-    x: ILinearScaleType;
-    y: ILinearScaleType;
-  };
-}
+export type IScatterControllerChartOptions = ILineControllerChartOptions;
 
 export interface ScatterController extends LineController {}
 export const ScatterController: IChartComponent & {
@@ -275,10 +266,6 @@ export interface IPolarAreaControllerChartOptions {
    * @default 0
    */
   startAngle: number;
-
-  scales: {
-    r: IRadialLinearScaleType;
-  };
 
   animation: IPolarAreaAnimationOptions;
 }

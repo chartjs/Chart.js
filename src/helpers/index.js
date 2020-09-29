@@ -1,36 +1,16 @@
 /* eslint-disable import/no-namespace */
 
-import * as coreHelpers from './helpers.core';
-import * as canvas from './helpers.canvas';
-import * as collection from './helpers.collection';
-import * as curve from './helpers.curve';
-import * as dom from './helpers.dom';
-import effects from './helpers.easing';
-import * as interpolation from './helpers.interpolation';
-import * as options from './helpers.options';
-import * as math from './helpers.math';
-import * as rtl from './helpers.rtl';
-import * as segment from './helpers.segment';
+export * from './helpers.core';
+export * from './helpers.canvas';
+export * from './helpers.collection';
+export * from './helpers.curve';
+export * from './helpers.dom';
+export {default as easingEffects} from './helpers.easing';
+export * from './helpers.interpolation';
+export * from './helpers.options';
+export * from './helpers.math';
+export * from './helpers.rtl';
+export * from './helpers.segment';
 
-import {color, getHoverColor} from './helpers.color';
-import {requestAnimFrame, fontString} from './helpers.extras';
-
-export default {
-	...coreHelpers,
-	canvas,
-	collection,
-	curve,
-	dom,
-	easing: {effects},
-	interpolation,
-	options,
-	math,
-	rtl,
-	segment,
-
-	requestAnimFrame,
-	// -- Canvas methods
-	fontString,
-	color,
-	getHoverColor
-};
+export {color, getHoverColor} from './helpers.color';
+export {requestAnimFrame, fontString} from './helpers.extras';

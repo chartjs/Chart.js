@@ -6,7 +6,7 @@
  */
 import Chart from './core/core.controller';
 
-import helpers from './helpers/index';
+import * as helpers from './helpers/index';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import animator from './core/core.animator';
@@ -27,7 +27,7 @@ import Ticks from './core/core.ticks';
 // Register built-ins
 Chart.register(controllers, scales, elements, plugins);
 
-Chart.helpers = helpers;
+Chart.helpers = {...helpers};
 Chart._adapters = _adapters;
 Chart.Animation = Animation;
 Chart.Animations = Animations;

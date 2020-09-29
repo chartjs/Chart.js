@@ -10,7 +10,15 @@ import {
   TimeUnit,
   IEvent,
 } from './interfaces';
-import { IChartDataset, IChartConfiguration, ConfigurationOptions, ConfigurationData, IChartType } from '../interfaces';
+import {
+  DefaultDataPoint,
+  IChartConfiguration,
+  IChartData,
+  IChartDataset,
+  IChartOptions,
+  IChartType,
+  IScaleOptions
+} from '../interfaces';
 
 export interface IDateAdapter {
   /**
@@ -232,16 +240,16 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface Chart<
-  T = unknown,
-  L = string,
-  C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>
+export declare class Chart<
+  TYPE extends IChartType = IChartType,
+  DATA extends unknown[] = DefaultDataPoint<TYPE>,
+  LABEL = string
 > {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: C;
+  readonly config: IChartConfiguration<TYPE, DATA, LABEL>
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -252,8 +260,10 @@ export interface Chart<
   readonly scale: Scale | undefined;
   readonly attached: boolean;
 
-  data: ConfigurationData<C>;
-  options: ConfigurationOptions<C>;
+  data: IChartData<TYPE, DATA, LABEL>;
+  options: IChartOptions<TYPE>;
+
+  constructor(item: ChartItem, config: IChartConfiguration<TYPE, DATA, LABEL>);
 
   clear(): this;
   stop(): this;
@@ -288,6 +298,12 @@ export interface Chart<
   bindEvents(): void;
   unbindEvents(): void;
   updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
+
+  static readonly version: string;
+  static readonly instances: { [key: string]: Chart };
+  static readonly registry: Registry;
+  static register(...items: IChartComponentLike[]): void;
+  static unregister(...items: IChartComponentLike[]): void;
 }
 
 export declare type ChartItem =
@@ -298,20 +314,6 @@ export declare type ChartItem =
   | OffscreenCanvas
   | { canvas: HTMLCanvasElement | OffscreenCanvas }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>;
-
-export const Chart: {
-  prototype: Chart;
-  new <T = unknown, L = string, C extends IChartConfiguration<IChartType, T, L> = IChartConfiguration<IChartType, T, L>>(
-    item: ChartItem,
-    config: C
-  ): Chart<T, L, C>;
-
-  readonly version: string;
-  readonly instances: { [key: string]: Chart };
-  readonly registry: Registry;
-  register(...items: IChartComponentLike[]): void;
-  unregister(...items: IChartComponentLike[]): void;
-};
 
 export enum UpdateModeEnum {
   resize = 'resize',
@@ -336,7 +338,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
   linkScales(): void;
   getAllParsedValues(scale: Scale): number[];
   protected getLabelAndValue(index: number): { label: string; value: string };
-  updateElements(elements: E[], start: number, mode: UpdateMode): void;
+  updateElements(elements: E[], start: number, count: number, mode: UpdateMode): void;
   update(mode: UpdateMode): void;
   updateIndex(datasetIndex: number): void;
   protected getMaxOverflow(): boolean | number;
@@ -868,7 +870,7 @@ export interface ITick {
   major?: boolean;
 }
 
-export interface IScaleOptions {
+export interface ICoreScaleOptions {
   /**
    * Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.
    * @default true
@@ -942,7 +944,7 @@ export interface IScaleOptions {
   afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<{}, O>, IChartArea {
+export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends Element<{}, O>, IChartArea {
   readonly id: string;
   readonly type: string;
   readonly ctx: CanvasRenderingContext2D;
@@ -1057,7 +1059,7 @@ export interface Scale<O extends IScaleOptions = IScaleOptions> extends Element<
 }
 export const Scale: {
   prototype: Scale;
-  new <O extends IScaleOptions = IScaleOptions>(cfg: any): Scale<O>;
+  new <O extends ICoreScaleOptions = ICoreScaleOptions>(cfg: any): Scale<O>;
 };
 
 export interface IScriptAbleScaleContext {

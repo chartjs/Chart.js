@@ -1,4 +1,4 @@
-const {_pointInLine, _steppedInterpolation, _bezierInterpolation} = Chart.helpers.interpolation;
+const {_pointInLine, _steppedInterpolation, _bezierInterpolation} = Chart.helpers;
 
 describe('helpers.interpolation', function() {
 	it('Should interpolate a point in line', function() {

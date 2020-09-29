@@ -43,9 +43,15 @@ export interface IArcOptions extends ICommonOptions {
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 }
 
-export interface IArcHoverOptions extends ICommonHoverOptions {}
+export interface IArcHoverOptions extends ICommonHoverOptions {
+  hoverOffset: number;
+}
 
 export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
   extends Element<T, O>,
@@ -91,7 +97,7 @@ export interface ILineOptions extends ICommonOptions {
   cubicInterpolationMode: 'default' | 'monotone';
   /**
    * Bézier curve tension (0 for no Bézier curves).
-   * @default 0.4 or 0 // TODO
+   * @default 0
    */
   tension: number;
   /**
