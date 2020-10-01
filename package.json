@@ -2,7 +2,7 @@
   "name": "chart.js",
   "homepage": "https://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "license": "MIT",
   "jsdelivr": "dist/chart.min.js",
   "unpkg": "dist/chart.min.js",
@@ -25,8 +25,8 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "files": [
-    "dist/*.js",
-    "dist/*.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
     "helpers/**/*.js",
     "helpers/**/*.d.ts"
   ],
