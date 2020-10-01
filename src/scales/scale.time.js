@@ -1,6 +1,6 @@
 import adapters from '../core/core.adapters';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians} from '../helpers/helpers.math';
+import {toRadians, isNumber} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
 
@@ -71,7 +71,7 @@ function parse(scale, input) {
 	}
 
 	if (round) {
-		value = round === 'week' && isoWeekday
+		value = round === 'week' && (isNumber(isoWeekday) || isoWeekday === true)
 			? scale._adapter.startOf(value, 'isoWeek', isoWeekday)
 			: scale._adapter.startOf(value, round);
 	}
@@ -135,17 +135,18 @@ function determineMajorUnit(unit) {
 }
 
 /**
- * @param {number[]} timestamps
  * @param {object} ticks
  * @param {number} time
+ * @param {number[]} [timestamps] - if defined, snap to these timestamps
  */
-function addTick(timestamps, ticks, time) {
-	if (!timestamps.length) {
-		return;
+function addTick(ticks, time, timestamps) {
+	if (!timestamps) {
+		ticks[time] = true;
+	} else if (timestamps.length) {
+		const {lo, hi} = _lookup(timestamps, time);
+		const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
+		ticks[timestamp] = true;
 	}
-	const {lo, hi} = _lookup(timestamps, time);
-	const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
-	ticks[timestamp] = true;
 }
 
 /**
@@ -399,45 +400,35 @@ export default class TimeScale extends Scale {
 		const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, me._getLabelCapacity(min));
 		const stepSize = valueOrDefault(timeOpts.stepSize, 1);
 		const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
+		const hasWeekday = isNumber(weekday) || weekday === true;
 		const ticks = {};
 		let first = min;
 		let time;
 
 		// For 'week' unit, handle the first day of week option
-		if (weekday) {
+		if (hasWeekday) {
 			first = +adapter.startOf(first, 'isoWeek', weekday);
 		}
 
 		// Align first ticks on unit
-		first = +adapter.startOf(first, weekday ? 'day' : minor);
+		first = +adapter.startOf(first, hasWeekday ? 'day' : minor);
 
 		// Prevent browser from freezing in case user options request millions of milliseconds
 		if (adapter.diff(max, min, minor) > 100000 * stepSize) {
 			throw new Error(min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor);
 		}
 
-		if (me.options.ticks.source === 'data') {
-			// need to make sure ticks are in data in this case
-			const timestamps = me.getDataTimestamps();
-
-			for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-				addTick(timestamps, ticks, time);
-			}
-
-			if (time === max || options.bounds === 'ticks') {
-				addTick(timestamps, ticks, time);
-			}
-		} else {
-			for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
-				ticks[time] = true;
-			}
-
-			if (time === max || options.bounds === 'ticks') {
-				ticks[time] = true;
-			}
+		const timestamps = options.ticks.source === 'data' && me.getDataTimestamps();
+		for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+			addTick(ticks, time, timestamps);
 		}
 
-		return Object.keys(ticks).map(x => +x);
+		if (time === max || options.bounds === 'ticks') {
+			addTick(ticks, time, timestamps);
+		}
+
+		// @ts-ignore
+		return Object.keys(ticks).sort((a, b) => a - b).map(x => +x);
 	}
 
 	/**

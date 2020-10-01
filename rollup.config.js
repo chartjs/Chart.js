@@ -4,7 +4,6 @@
 const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
 const dts = require('rollup-plugin-dts').default;
-const glob = require('glob');
 const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
@@ -14,16 +13,12 @@ const pkg = require('./package.json');
 const input = 'src/index.js';
 const inputESM = {
 	'dist/chart.esm': 'src/index.esm.js',
+	'dist/helpers.esm': 'src/helpers/index.js'
 };
-const inputESMTypings = {};
-glob('src/helpers/helpers.*.js', (_er, files) => {
-	files.forEach(file => {
-		inputESM[file.replace(/src\/|helpers\.|\.js/g, '')] = file;
-	});
-	Object.keys(inputESM).forEach((key) => {
-		inputESMTypings[key.replace('src', 'types')] = inputESM[key].replace('src', 'types').replace(/\.js$/, '.d.ts');
-	});
-});
+const inputESMTypings = {
+	'dist/chart.esm': 'types/index.esm.d.ts',
+	'dist/helpers.esm': 'types/helpers/index.d.ts'
+};
 
 const banner = `/*!
  * Chart.js v${pkg.version}
@@ -96,7 +91,7 @@ module.exports = [
 		],
 		output: {
 			dir: './',
-			chunkFileNames: 'helpers/chunks/[name].js',
+			chunkFileNames: 'dist/chunks/[name].js',
 			banner,
 			format: 'esm',
 			indent: false,
@@ -112,7 +107,7 @@ module.exports = [
 		],
 		output: {
 			dir: './',
-			chunkFileNames: 'helpers/chunks/[name].ts',
+			chunkFileNames: 'dist/chunks/[name].ts',
 			banner,
 			format: 'esm',
 			indent: false,

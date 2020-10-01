@@ -1,4 +1,4 @@
-const math = Chart.helpers.math;
+const math = Chart.helpers;
 
 describe('Chart.helpers.math', function() {
 	var factorize = math._factorize;

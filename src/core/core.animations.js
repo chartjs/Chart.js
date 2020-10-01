@@ -129,7 +129,7 @@ export default class Animations {
 			// Going from distinct options to shared options:
 			// After all animations are done, assing the shared options object to the element
 			// So any new updates to the shared options are observed
-			awaitAll(target.$animations, newOptions).then(() => {
+			awaitAll(target.options.$animations, newOptions).then(() => {
 				target.options = newOptions;
 			});
 		}

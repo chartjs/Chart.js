@@ -231,10 +231,10 @@ export default class BarController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 
-		me.updateElements(meta.data, 0, mode);
+		me.updateElements(meta.data, 0, meta.data.length, mode);
 	}
 
-	updateElements(rectangles, start, mode) {
+	updateElements(rectangles, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
@@ -247,11 +247,10 @@ export default class BarController extends DatasetController {
 
 		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-		for (let i = 0; i < rectangles.length; i++) {
-			const index = start + i;
-			const options = sharedOptions || me.resolveDataElementOptions(index, mode);
-			const vpixels = me._calculateBarValuePixels(index, options);
-			const ipixels = me._calculateBarIndexPixels(index, ruler, options);
+		for (let i = start; i < start + count; i++) {
+			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
+			const vpixels = me._calculateBarValuePixels(i, options);
+			const ipixels = me._calculateBarIndexPixels(i, ruler, options);
 
 			const properties = {
 				horizontal,
@@ -265,7 +264,7 @@ export default class BarController extends DatasetController {
 			if (includeOptions) {
 				properties.options = options;
 			}
-			me.updateElement(rectangles[i], index, properties, mode);
+			me.updateElement(rectangles[i], i, properties, mode);
 		}
 	}
 

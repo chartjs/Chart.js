@@ -1,11 +1,12 @@
 /* eslint-disable import/no-namespace, import/namespace */
+// @ts-nocheck
 
 /**
  * @namespace Chart
  */
 import Chart from './core/core.controller';
 
-import helpers from './helpers/index';
+import * as helpers from './helpers/index';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import animator from './core/core.animator';
@@ -24,10 +25,9 @@ import * as scales from './scales';
 import Ticks from './core/core.ticks';
 
 // Register built-ins
-// @ts-ignore
 Chart.register(controllers, scales, elements, plugins);
 
-Chart.helpers = helpers;
+Chart.helpers = {...helpers};
 Chart._adapters = _adapters;
 Chart.Animation = Animation;
 Chart.Animations = Animations;
@@ -47,7 +47,6 @@ Object.assign(Chart, controllers, scales, elements, plugins, platforms);
 Chart.Chart = Chart;
 
 if (typeof window !== 'undefined') {
-	// @ts-ignore
 	window.Chart = Chart;
 }
 
