@@ -1133,7 +1133,7 @@ class Chart {
 		// Invoke onHover hook
 		callCallback(options.onHover || options.hover.onHover, [e, active, me], me);
 
-		if (e.type === 'mouseup' || e.type === 'click') {
+		if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
 			if (_isPointInArea(e, me.chartArea)) {
 				callCallback(options.onClick, [e, active, me], me);
 			}
