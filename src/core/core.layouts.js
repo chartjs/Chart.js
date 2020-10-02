@@ -47,14 +47,14 @@ function setLayoutDims(layouts, params) {
 	let i, ilen, layout;
 	for (i = 0, ilen = layouts.length; i < ilen; ++i) {
 		layout = layouts[i];
-		// store width used instead of chartArea.w in fitBoxes
-		layout.width = layout.horizontal
-			? layout.box.fullWidth && params.availableWidth
-			: params.vBoxMaxWidth;
-		// store height used instead of chartArea.h in fitBoxes
-		layout.height = layout.horizontal
-			? params.hBoxMaxHeight
-			: layout.box.fullWidth && params.availableHeight;
+		// store dimensions used instead of available chartArea in fitBoxes
+		if (layout.horizontal) {
+			layout.width = layout.box.fullWidth && params.availableWidth;
+			layout.height = params.hBoxMaxHeight;
+		} else {
+			layout.width = params.vBoxMaxWidth;
+			layout.height = layout.box.fullWidth && params.availableHeight;
+		}
 	}
 }
 
