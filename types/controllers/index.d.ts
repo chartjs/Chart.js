@@ -177,6 +177,19 @@ export interface IDoughnutControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IArcOptions>,
     ScriptableAndArrayOptions<IArcHoverOptions> {
+  
+  /**
+   * Sweep to allow arcs to cover.
+   * @default 2 * Math.PI
+   */
+  circumference: number;
+
+  /**
+   * Starting angle to draw this dataset from.
+   * @default -0.5 * Math.PI
+   */
+  rotation: number;
+
   /**
    * The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
    * @default 1

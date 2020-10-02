@@ -160,7 +160,7 @@ describe('Chart.controllers.doughnut', function() {
 				}, {
 					data: [1, 0]
 				}],
-				labels: ['label0', 'label1']
+				labels: ['label0', 'label1', 'label2']
 			},
 			options: {
 				legend: false,
