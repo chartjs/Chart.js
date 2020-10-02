@@ -52,7 +52,9 @@ function setLayoutDims(layouts, params) {
 			? layout.box.fullWidth && params.availableWidth
 			: params.vBoxMaxWidth;
 		// store height used instead of chartArea.h in fitBoxes
-		layout.height = layout.horizontal && params.hBoxMaxHeight;
+		layout.height = layout.horizontal
+			? params.hBoxMaxHeight
+			: layout.box.fullWidth && params.availableHeight;
 	}
 }
 
@@ -187,8 +189,8 @@ function placeBoxes(boxes, chartArea, params) {
 		} else {
 			box.left = x;
 			box.right = x + box.width;
-			box.top = chartArea.top;
-			box.bottom = chartArea.top + chartArea.h;
+			box.top = box.fullWidth ? userPadding.top : chartArea.top;
+			box.bottom = box.fullWidth ? params.outerHeight - userPadding.right : chartArea.top + chartArea.h;
 			box.height = box.bottom - box.top;
 			x = box.right;
 		}
@@ -344,6 +346,7 @@ export default {
 			outerHeight: height,
 			padding,
 			availableWidth,
+			availableHeight,
 			vBoxMaxWidth: availableWidth / 2 / verticalBoxes.length,
 			hBoxMaxHeight: availableHeight / 2
 		});
