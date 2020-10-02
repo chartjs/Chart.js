@@ -147,17 +147,11 @@ function getFirstScaleId(chart, axis) {
 	return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
-function optionKeys(optionNames) {
-	return isArray(optionNames) ? optionNames : Object.keys(optionNames);
-}
-
-function optionKey(key, active) {
-	return active ? 'hover' + _capitalize(key) : key;
-}
-
-function isDirectUpdateMode(mode) {
-	return mode === 'reset' || mode === 'none';
-}
+const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.keys(optionNames);
+const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
+const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
+const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
+const freezeIfShared = (values, shared) => shared ? Object.freeze(values) : values;
 
 export default class DatasetController {
 
@@ -732,10 +726,11 @@ export default class DatasetController {
 		mode = mode || 'default';
 		const me = this;
 		const active = mode === 'active';
-		const cached = me._cachedDataOpts;
+		const cache = me._cachedDataOpts;
+		const cached = cache[mode];
 		const sharing = me.enableOptionSharing;
-		if (cached[mode]) {
-			return cached[mode];
+		if (cached) {
+			return cloneIfNotShared(cached, sharing);
 		}
 		const info = {cacheable: !active};
 
@@ -754,7 +749,7 @@ export default class DatasetController {
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
-			cached[mode] = sharing ? Object.freeze(values) : values;
+			cache[mode] = freezeIfShared(values, sharing);
 		}
 
 		return values;

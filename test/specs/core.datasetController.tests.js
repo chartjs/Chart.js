@@ -664,6 +664,73 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	describe('resolveDataElementOptions', function() {
+		it('should cache options when possible', function() {
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1, 2, 3],
+					}]
+				},
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller.enableOptionSharing).toBeTrue();
+
+			const opts0 = controller.resolveDataElementOptions(0);
+			const opts1 = controller.resolveDataElementOptions(1);
+
+			expect(opts0 === opts1).toBeTrue();
+			expect(opts0.$shared).toBeTrue();
+			expect(Object.isFrozen(opts0)).toBeTrue();
+		});
+
+		it('should not cache options when option sharing is disabled', function() {
+			const chart = acquireChart({
+				type: 'radar',
+				data: {
+					datasets: [{
+						data: [1, 2, 3],
+					}]
+				},
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			expect(controller.enableOptionSharing).toBeFalse();
+
+			const opts0 = controller.resolveDataElementOptions(0);
+			const opts1 = controller.resolveDataElementOptions(1);
+
+			expect(opts0 === opts1).toBeFalse();
+			expect(opts0.$shared).not.toBeTrue();
+			expect(Object.isFrozen(opts0)).toBeFalse();
+		});
+
+		it('should not cache options when functions are used', function() {
+			const chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [1, 2, 3],
+						backgroundColor: () => 'red'
+					}]
+				},
+			});
+
+			const controller = chart.getDatasetMeta(0).controller;
+
+			const opts0 = controller.resolveDataElementOptions(0);
+			const opts1 = controller.resolveDataElementOptions(1);
+
+			expect(opts0 === opts1).toBeFalse();
+			expect(opts0.$shared).not.toBeTrue();
+			expect(Object.isFrozen(opts0)).toBeFalse();
+		});
+	});
+
 	describe('_resolveAnimations', function() {
 		it('should resolve to empty Animations when globally disabled', function() {
 			const chart = acquireChart({
