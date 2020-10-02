@@ -64,9 +64,6 @@ A number of changes were made to the configuration options passed to the `Chart`
 #### Specific changes
 
 * `hover.animationDuration` is now configured in `animation.active.duration`
-* `tooltips.titleFontFamily` is now configured in `tooltips.titleFont`
-* `tooltips.bodyFontFamily` is now configured in `tooltips.bodyFont`
-* `tooltips.footerFontFamily` is now configured in `tooltips.footerFont`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 * Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
@@ -104,6 +101,9 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `defaultFontSize` was renamed to `font.size`
 * `defaultFontStyle` was renamed to `font.style`
 * `defaultLineHeight` was renamed to `font.lineHeight`
+* `titleFontFamily` was renamed to `titleFont`
+* `bodyFontFamily` was renamed to `bodyFont`
+* `footerFontFamily` was renamed to `footerFont`
 * Horizontal Bar default tooltip mode was changed from `'index'` to `'nearest'` to match vertical bar charts
 * `legend`, `title` and `tooltip` namespaces were moved from `Chart.defaults` to `Chart.defaults.plugins`.
 
