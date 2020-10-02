@@ -732,10 +732,11 @@ export default class DatasetController {
 		mode = mode || 'default';
 		const me = this;
 		const active = mode === 'active';
-		const cached = me._cachedDataOpts;
+		const cache = me._cachedDataOpts;
+		const cached = cache[mode];
 		const sharing = me.enableOptionSharing;
-		if (cached[mode]) {
-			return cached[mode];
+		if (cached) {
+			return sharing ? cached : Object.assign({}, cached);
 		}
 		const info = {cacheable: !active};
 
@@ -754,7 +755,7 @@ export default class DatasetController {
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
-			cached[mode] = sharing ? Object.freeze(values) : values;
+			cache[mode] = sharing ? Object.freeze(values) : values;
 		}
 
 		return values;
