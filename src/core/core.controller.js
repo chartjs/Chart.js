@@ -1158,7 +1158,7 @@ Chart.version = version;
 Chart.getChart = (key) => {
 	let chart;
 
-	if (typeof key === "string") {
+	if (typeof key === 'string') {
 		// Canvas ID
 		chart = Object.values(Chart.instances).filter((c) => c.canvas.id === key).pop();
 	} else {
@@ -1168,7 +1168,7 @@ Chart.getChart = (key) => {
 	}
 
 	return chart;
-}
+};
 
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
