@@ -42,5 +42,10 @@ jobs:
       - run: npm run typedoc
       - run: npm pack
       - run: ./scripts/publish.sh
+      # On releases, GITHUB_REF is the tag name which is the version
+      # However, it will include the leading "v", so we need to strip that
+      # first character off here since we want the docs folder to not have
+      # the "v" in it.
+      - run: ./scripts/deploy-docs.sh "${GITHUB_REF:1}"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
