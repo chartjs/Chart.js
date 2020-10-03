@@ -1,5 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
+import {toRadians} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -79,6 +80,35 @@ export default class DoughnutController extends DatasetController {
 	}
 
 	/**
+	 * Get the maximal rotation & circumference extents
+	 * across all visible datasets.
+	 */
+	_getRotationExtents() {
+		let min = DOUBLE_PI;
+		let max = -DOUBLE_PI;
+
+		const me = this;
+		const opts = me.chart.options;
+
+		for (let i = 0; i < me.chart.data.datasets.length; ++i) {
+			if (me.chart.isDatasetVisible(i)) {
+				const dataset = me.chart.data.datasets[i];
+				const rotation = toRadians(valueOrDefault(dataset.rotation, opts.rotation) - 90);
+				const circumference = toRadians(valueOrDefault(dataset.circumference, opts.circumference));
+
+				min = Math.min(min, rotation);
+				max = Math.max(max, rotation + circumference);
+			}
+		}
+
+
+		return {
+			rotation: min,
+			circumference: max - min,
+		};
+	}
+
+	/**
 	 * @param {string} mode
 	 */
 	update(mode) {
@@ -89,7 +119,12 @@ export default class DoughnutController extends DatasetController {
 		const arcs = meta.data;
 		const cutout = options.cutoutPercentage / 100 || 0;
 		const chartWeight = me._getRingWeight(me.index);
-		const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(options.rotation, options.circumference, cutout);
+
+		// Compute the maximal rotation & circumference limits.
+		// If we only consider our dataset, this can cause problems when two datasets
+		// are both less than a circle with different rotations (starting angles)
+		const {circumference, rotation} = me._getRotationExtents();
+		const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(rotation, circumference, cutout);
 		const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
 		const maxWidth = (chartArea.right - chartArea.left - spacing) / ratioX;
 		const maxHeight = (chartArea.bottom - chartArea.top - spacing) / ratioY;
@@ -114,7 +149,8 @@ export default class DoughnutController extends DatasetController {
 		const me = this;
 		const opts = me.chart.options;
 		const meta = me._cachedMeta;
-		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * opts.circumference / DOUBLE_PI) : 0;
+		const circumference = toRadians(valueOrDefault(me._config.circumference, opts.circumference));
+		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / DOUBLE_PI) : 0;
 	}
 
 	updateElements(arcs, start, count, mode) {
@@ -132,7 +168,7 @@ export default class DoughnutController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
-		let startAngle = opts.rotation;
+		let startAngle = toRadians(valueOrDefault(me._config.rotation, opts.rotation) - 90);
 		let i;
 
 		for (i = 0; i < start; ++i) {
@@ -334,10 +370,10 @@ DoughnutController.defaults = {
 	cutoutPercentage: 50,
 
 	// The rotation of the chart, where the first data arc begins.
-	rotation: -HALF_PI,
+	rotation: 0,
 
 	// The total circumference of the chart.
-	circumference: DOUBLE_PI,
+	circumference: 360,
 
 	// Need to override these to give a nice default
 	tooltips: {

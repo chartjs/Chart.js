@@ -69,8 +69,8 @@ describe('Chart.controllers.doughnut', function() {
 					animateScale: false
 				},
 				cutoutPercentage: 50,
-				rotation: Math.PI * -0.5,
-				circumference: Math.PI * 2.0,
+				rotation: 0,
+				circumference: 360,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -160,14 +160,14 @@ describe('Chart.controllers.doughnut', function() {
 				}, {
 					data: [1, 0]
 				}],
-				labels: ['label0', 'label1']
+				labels: ['label0', 'label1', 'label2']
 			},
 			options: {
 				legend: false,
 				title: false,
 				cutoutPercentage: 50,
-				rotation: Math.PI,
-				circumference: Math.PI * 0.5,
+				rotation: 270,
+				circumference: 90,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -210,8 +210,8 @@ describe('Chart.controllers.doughnut', function() {
 				legend: false,
 				title: false,
 				cutoutPercentage: 50,
-				rotation: Math.PI,
-				circumference: Math.PI * 0.5,
+				rotation: 270,
+				circumference: 90,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
