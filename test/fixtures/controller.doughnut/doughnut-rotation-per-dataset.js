@@ -20,7 +20,7 @@ module.exports = {
                     'rgb(75, 192, 192)',
                     'rgb(153, 102, 255)'
                 ],
-                rotation: -3.14
+                rotation: -90
             }, {
                 data: [1, 5, 10, 50, 100],
                 backgroundColor: [
@@ -38,11 +38,11 @@ module.exports = {
                     'rgb(75, 192, 192)',
                     'rgb(153, 102, 255)'
                 ],
-                rotation: -1.57
+                rotation: 0
             }]
         },
         options: {
-            circumference: 3.14,
+            circumference: 180,
             responsive: false,
             legend: false,
             title: false

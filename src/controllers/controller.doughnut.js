@@ -1,5 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
+import {toRadians} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -92,8 +93,8 @@ export default class DoughnutController extends DatasetController {
 		for (let i = 0; i < me.chart.data.datasets.length; ++i) {
 			if (me.chart.isDatasetVisible(i)) {
 				const dataset = me.chart.data.datasets[i];
-				const rotation = valueOrDefault(dataset.rotation, opts.rotation);
-				const circumference = valueOrDefault(dataset.circumference, opts.circumference);
+				const rotation = toRadians(valueOrDefault(dataset.rotation, opts.rotation) - 90);
+				const circumference = toRadians(valueOrDefault(dataset.circumference, opts.circumference));
 
 				min = Math.min(min, rotation);
 				max = Math.max(max, rotation + circumference);
@@ -148,7 +149,7 @@ export default class DoughnutController extends DatasetController {
 		const me = this;
 		const opts = me.chart.options;
 		const meta = me._cachedMeta;
-		const circumference = valueOrDefault(me._config.circumference, opts.circumference);
+		const circumference = toRadians(valueOrDefault(me._config.circumference, opts.circumference));
 		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / DOUBLE_PI) : 0;
 	}
 
@@ -167,7 +168,7 @@ export default class DoughnutController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
-		let startAngle = valueOrDefault(me._config.rotation, opts.rotation);
+		let startAngle = toRadians(valueOrDefault(me._config.rotation, opts.rotation) - 90);
 		let i;
 
 		for (i = 0; i < start; ++i) {
@@ -369,10 +370,10 @@ DoughnutController.defaults = {
 	cutoutPercentage: 50,
 
 	// The rotation of the chart, where the first data arc begins.
-	rotation: -HALF_PI,
+	rotation: 0,
 
 	// The total circumference of the chart.
-	circumference: DOUBLE_PI,
+	circumference: 360,
 
 	// Need to override these to give a nice default
 	tooltips: {

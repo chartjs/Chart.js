@@ -20,11 +20,11 @@ module.exports = {
                     'rgb(75, 192, 192)',
                     'rgb(153, 102, 255)'
                 ],
-                circumference: 3.14
+                circumference: 180
             }]
         },
         options: {
-            circumference: 1,
+            circumference: 57.32,
             responsive: false,
             legend: false,
             title: false
