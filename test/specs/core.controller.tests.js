@@ -1440,4 +1440,48 @@ describe('Chart', function() {
 			expect(chart.getDataVisibility(1)).toBe(false);
 		});
 	});
+
+	describe('getChart', function() {
+		it('should get the chart from the canvas ID', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			chart.canvas.id = 'myID';
+
+			expect(Chart.getChart('myID')).toBe(chart);
+		});
+
+		it('should get the chart from an HTMLCanvasElement', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			expect(Chart.getChart(chart.canvas)).toBe(chart);
+		});
+
+		it('should get the chart from an CanvasRenderingContext2D', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			expect(Chart.getChart(chart.ctx)).toBe(chart);
+		});
+
+		it('should return undefined when a chart is not found or bad data is provided', function() {
+			expect(Chart.getChart(1)).toBeUndefined();
+		});
+	});
 });

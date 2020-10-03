@@ -302,6 +302,7 @@ export declare class Chart<
   static readonly version: string;
   static readonly instances: { [key: string]: Chart };
   static readonly registry: Registry;
+  static getChart(key: string | CanvasRenderingContext2D | HTMLCanvasElement) : Chart | undefined;
   static register(...items: IChartComponentLike[]): void;
   static unregister(...items: IChartComponentLike[]): void;
 }

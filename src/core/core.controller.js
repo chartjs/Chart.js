@@ -1155,6 +1155,21 @@ Chart.instances = {};
 Chart.registry = registry;
 Chart.version = version;
 
+Chart.getChart = (key) => {
+	let chart;
+
+	if (typeof key === "string") {
+		// Canvas ID
+		chart = Object.values(Chart.instances).filter((c) => c.canvas.id === key).pop();
+	} else {
+		// Could be a 2DContext or the Canvas DOM node itself
+		const canvas = key.canvas || key;
+		chart = Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
+	}
+
+	return chart;
+}
+
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
 
