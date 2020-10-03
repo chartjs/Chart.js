@@ -33,6 +33,9 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - run: npm install -g json
+      - run: json -I -f package.json -e "this.version=\"$GITHUB_REF\""
+      - run: json -I -f package-lock.json -e "this.version=\"$GITHUB_REF\""
       - run: npm run build
       - run: ./scripts/docs-config.sh
       - run: npm run docs
