@@ -204,3 +204,11 @@ Sets the visibility for the given dataset to true. Updates the chart and animate
 ```javascript
 chart.show(1); // shows dataset at index 1 and does 'show' animation.
 ```
+
+## Static: getChart(key)
+
+Finds the chart instance from the given key. If the key is a `string`, it is interpreted as the ID of the Canvas node for the Chart. The key can also be a `CanvasRenderingContext2D` or an `HTMLDOMElement`. This will return `undefined` if no Chart is found. To be found, the chart must have previously been created.
+
+```javascript
+const chart = Chart.getChart("canvas-id")
+```

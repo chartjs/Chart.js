@@ -222,6 +222,14 @@ class Chart {
 
 		config = initConfig(config);
 		const initialCanvas = getCanvas(item);
+		const existingChart = Chart.getChart(initialCanvas);
+		if (existingChart) {
+			throw new Error(
+				'Canvas is already in use. Chart with ID \'' + existingChart.id + '\'' +
+				' must be destroyed before the canvas can be reused.'
+			);
+		}
+
 		this.platform = me._initializePlatform(initialCanvas, config);
 
 		const context = me.platform.acquireContext(initialCanvas, config);
@@ -1154,6 +1162,11 @@ Chart.defaults = defaults;
 Chart.instances = {};
 Chart.registry = registry;
 Chart.version = version;
+
+Chart.getChart = (key) => {
+	const canvas = getCanvas(key);
+	return Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
+};
 
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());

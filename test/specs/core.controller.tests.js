@@ -10,6 +10,33 @@ describe('Chart', function() {
 		expect(chart instanceof Chart).toBeTruthy();
 	});
 
+	it('should throw an error if the canvas is already in use', function() {
+		var config = {
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [1, 2, 3, 4]
+				}],
+				labels: ['A', 'B', 'C', 'D']
+			}
+		};
+		var chart = acquireChart(config);
+		var canvas = chart.canvas;
+
+		function createChart() {
+			return new Chart(canvas, config);
+		}
+
+		expect(createChart).toThrow(new Error(
+			'Canvas is already in use. ' +
+			'Chart with ID \'' + chart.id + '\'' +
+			' must be destroyed before the canvas can be reused.'
+		));
+
+		chart.destroy();
+		expect(createChart).not.toThrow();
+	});
+
 	describe('config initialization', function() {
 		it('should create missing config.data properties', function() {
 			var chart = acquireChart({});
@@ -1438,6 +1465,50 @@ describe('Chart', function() {
 
 			chart.update();
 			expect(chart.getDataVisibility(1)).toBe(false);
+		});
+	});
+
+	describe('getChart', function() {
+		it('should get the chart from the canvas ID', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			chart.canvas.id = 'myID';
+
+			expect(Chart.getChart('myID')).toBe(chart);
+		});
+
+		it('should get the chart from an HTMLCanvasElement', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			expect(Chart.getChart(chart.canvas)).toBe(chart);
+		});
+
+		it('should get the chart from an CanvasRenderingContext2D', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3]
+					}]
+				}
+			});
+			expect(Chart.getChart(chart.ctx)).toBe(chart);
+		});
+
+		it('should return undefined when a chart is not found or bad data is provided', function() {
+			expect(Chart.getChart(1)).toBeUndefined();
 		});
 	});
 });
