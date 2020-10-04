@@ -222,6 +222,14 @@ class Chart {
 
 		config = initConfig(config);
 		const initialCanvas = getCanvas(item);
+		const existingChart = Chart.getChart(initialCanvas);
+		if (existingChart) {
+			throw new Error(
+				'Canvas is already in use. Chart with ID \'' + existingChart.id + '\'' +
+				' must be destroyed before the canvas can be reused.'
+			);
+		}
+
 		this.platform = me._initializePlatform(initialCanvas, config);
 
 		const context = me.platform.acquireContext(initialCanvas, config);
@@ -1156,18 +1164,8 @@ Chart.registry = registry;
 Chart.version = version;
 
 Chart.getChart = (key) => {
-	let chart;
-
-	if (typeof key === 'string') {
-		// Canvas ID
-		chart = Object.values(Chart.instances).filter((c) => c.canvas.id === key).pop();
-	} else {
-		// Could be a 2DContext or the Canvas DOM node itself
-		const canvas = key.canvas || key;
-		chart = Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
-	}
-
-	return chart;
+	const canvas = getCanvas(key);
+	return Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
 };
 
 // @ts-ignore

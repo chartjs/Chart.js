@@ -10,6 +10,33 @@ describe('Chart', function() {
 		expect(chart instanceof Chart).toBeTruthy();
 	});
 
+	it('should throw an error if the canvas is already in use', function() {
+		var config = {
+			type: 'line',
+			data: {
+				datasets: [{
+					data: [1, 2, 3, 4]
+				}],
+				labels: ['A', 'B', 'C', 'D']
+			}
+		};
+		var chart = acquireChart(config);
+		var canvas = chart.canvas;
+
+		function createChart() {
+			return new Chart(canvas, config);
+		}
+
+		expect(createChart).toThrow(new Error(
+			'Canvas is already in use. ' +
+			'Chart with ID \'' + chart.id + '\'' +
+			' must be destroyed before the canvas can be reused.'
+		));
+
+		chart.destroy();
+		expect(createChart).not.toThrow();
+	});
+
 	describe('config initialization', function() {
 		it('should create missing config.data properties', function() {
 			var chart = acquireChart({});
