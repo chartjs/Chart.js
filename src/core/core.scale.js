@@ -1239,7 +1239,8 @@ export default class Scale extends Element {
 		const tl = getTickMarkLength(options.gridLines);
 		const rotation = -toRadians(me.labelRotation);
 		const items = [];
-		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+		let i, ilen, tick, label, x, y, textAlign, textBaseline, pixel, font, lineHeight, lineCount, textOffset;
+		textBaseline = 'middle';
 
 		if (position === 'top') {
 			y = me.bottom - tl - tickPadding;
@@ -1303,7 +1304,8 @@ export default class Scale extends Element {
 				label,
 				font,
 				textOffset,
-				textAlign
+				textAlign,
+				textBaseline,
 			});
 		}
 
@@ -1419,8 +1421,8 @@ export default class Scale extends Element {
 			ctx.rotate(item.rotation);
 			ctx.font = tickFont.string;
 			ctx.fillStyle = tickFont.color;
-			ctx.textBaseline = 'middle';
 			ctx.textAlign = item.textAlign;
+			ctx.textBaseline = item.textBaseline;
 
 			if (useStroke) {
 				ctx.strokeStyle = tickFont.strokeStyle;
