@@ -1062,6 +1062,41 @@ class Chart {
 	}
 
 	/**
+	 * Get active (hovered) elements
+	 * @returns array
+	 */
+	getActiveElements() {
+		return this._active || [];
+	}
+
+	/**
+	 * Set active (hovered) elements
+	 * @param {array} activePoints New active points
+	 */
+	setActiveElements(activePoints) {
+		const me = this;
+		const lastActive = me._active || [];
+		const active = activePoints.map(({datasetIndex, index}) => {
+			const meta = me.getDatasetMeta(datasetIndex);
+			if (!meta) {
+				throw new Error('No dataset found at index ' + datasetIndex);
+			}
+
+			return {
+				datasetIndex,
+				element: meta.data[index],
+				index,
+			};
+		});
+		const changed = !_elementsEqual(active, lastActive);
+
+		if (changed) {
+			me._active = active;
+			me._updateHoverStyles(active, lastActive);
+		}
+	}
+
+	/**
 	 * @private
 	 */
 	_updateHoverStyles(active, lastActive) {

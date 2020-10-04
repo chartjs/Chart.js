@@ -240,6 +240,11 @@ export interface IParsingOptions {
     | false;
 }
 
+export interface ChartActiveElement {
+  datasetIndex: number;
+  index: number;
+}
+
 export declare class Chart<
   TYPE extends IChartType = IChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
@@ -292,6 +297,9 @@ export declare class Chart<
   getDataVisibility(index: number): boolean;
   hide(datasetIndex: number): void;
   show(datasetIndex: number): void;
+
+  getActiveElements(): ChartActiveElement[];
+  setActiveElements(active: ChartActiveElement[]);
 
   destroy(): void;
   toBase64Image(type?: string, quality?: any): string;

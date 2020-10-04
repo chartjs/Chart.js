@@ -1490,4 +1490,25 @@ describe('Plugin.Tooltip', function() {
 			]));
 		});
 	});
+
+	describe('active events', function() {
+		it('should set the active events', function() {
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Dataset 1',
+						data: [10, 20, 30],
+						pointHoverBorderColor: 'rgb(255, 0, 0)',
+						pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+					}],
+					labels: ['Point 1', 'Point 2', 'Point 3']
+				},
+			});
+
+			const meta = chart.getDatasetMeta(0);
+			chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], {x: 0, y: 0});
+			expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
+		});
+	});
 });

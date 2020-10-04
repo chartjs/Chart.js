@@ -250,6 +250,9 @@
 		}, {
 			title: 'Line Gradient',
 			path: 'advanced/line-gradient.html'
+		}, {
+			title: 'Programmatic Event Triggers',
+			path: 'advanced/programmatic-events.html'
 		}]
 	}];
 
