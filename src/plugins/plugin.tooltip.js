@@ -918,13 +918,13 @@ export class Tooltip extends Element {
 
 	/**
 	 * Set active elements in the tooltip
-	 * @param {array} activePoints Array of active datasetIndex/index pairs.
+	 * @param {array} activeElements Array of active datasetIndex/index pairs.
 	 * @param {object} eventPosition Synthetic event position used in positioning
 	 */
-	setActiveElements(activePoints, eventPosition) {
+	setActiveElements(activeElements, eventPosition) {
 		const me = this;
 		const lastActive = me._active;
-		const active = activePoints.map(({datasetIndex, index}) => {
+		const active = activeElements.map(({datasetIndex, index}) => {
 			const meta = me._chart.getDatasetMeta(datasetIndex);
 
 			if (!meta) {

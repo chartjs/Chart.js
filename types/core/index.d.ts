@@ -240,9 +240,13 @@ export interface IParsingOptions {
     | false;
 }
 
-export interface ChartActiveElement {
+export interface ActiveDataPoint {
   datasetIndex: number;
   index: number;
+}
+
+export interface ActiveElement extends ActiveDataPoint {
+  element: Element;
 }
 
 export declare class Chart<
@@ -298,8 +302,8 @@ export declare class Chart<
   hide(datasetIndex: number): void;
   show(datasetIndex: number): void;
 
-  getActiveElements(): ChartActiveElement[];
-  setActiveElements(active: ChartActiveElement[]);
+  getActiveElements(): ActiveElement[];
+  setActiveElements(active: ActiveDataPoint[]);
 
   destroy(): void;
   toBase64Image(type?: string, quality?: any): string;

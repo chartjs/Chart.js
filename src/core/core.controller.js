@@ -1071,12 +1071,12 @@ class Chart {
 
 	/**
 	 * Set active (hovered) elements
-	 * @param {array} activePoints New active points
+	 * @param {array} activeElements New active data points
 	 */
-	setActiveElements(activePoints) {
+	setActiveElements(activeElements) {
 		const me = this;
 		const lastActive = me._active || [];
-		const active = activePoints.map(({datasetIndex, index}) => {
+		const active = activeElements.map(({datasetIndex, index}) => {
 			const meta = me.getDatasetMeta(datasetIndex);
 			if (!meta) {
 				throw new Error('No dataset found at index ' + datasetIndex);
