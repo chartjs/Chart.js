@@ -186,6 +186,14 @@ If set to `'flex'`, the base sample widths are calculated automatically based on
 
 If not set (default), the base sample widths are calculated using the smallest interval that prevents bar overlapping, and bars are sized using `barPercentage` and `categoryPercentage`. This mode always generates bars equally sized.
 
+## Config Options
+
+These are the customisation options specific to Bar charts. These options are merged with the global chart configuration options, and form the options of the chart.
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `skipNull` | `boolean` | `undefined` | If `true`, null or undefined values will not be drawn
+
 ## Scale Configuration
 
 The bar chart sets unique default values for the following configuration from the associated `scale` options:

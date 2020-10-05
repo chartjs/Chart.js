@@ -79,6 +79,10 @@ export interface IBarControllerDatasetOptions
 }
 
 export interface IBarControllerChartOptions {
+  /**
+   * Should null or undefined values be omitted from drawing
+   */
+  skipNull?: boolean;
 }
 
 export interface BarController extends DatasetController {}
