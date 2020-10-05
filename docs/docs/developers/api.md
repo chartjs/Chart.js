@@ -205,6 +205,16 @@ Sets the visibility for the given dataset to true. Updates the chart and animate
 chart.show(1); // shows dataset at index 1 and does 'show' animation.
 ```
 
+## setActiveElements(activeElements)
+
+Sets the active (hovered) elements for the chart. See the "Programmatic Events" sample file to see this in action.
+
+```javascript
+chart.setActiveElements([
+    {datasetIndex: 0, index: 1},
+]);
+```
+
 ## Static: getChart(key)
 
 Finds the chart instance from the given key. If the key is a `string`, it is interpreted as the ID of the Canvas node for the Chart. The key can also be a `CanvasRenderingContext2D` or an `HTMLDOMElement`. This will return `undefined` if no Chart is found. To be found, the chart must have previously been created.

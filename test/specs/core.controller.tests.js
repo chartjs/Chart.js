@@ -1511,4 +1511,35 @@ describe('Chart', function() {
 			expect(Chart.getChart(1)).toBeUndefined();
 		});
 	});
+
+	describe('active elements', function() {
+		it('should set the active elements', function() {
+			var chart = acquireChart({
+				type: 'pie',
+				data: {
+					datasets: [{
+						data: [1, 2, 3],
+						borderColor: 'red',
+						hoverBorderColor: 'blue',
+					}]
+				}
+			});
+
+			const meta = chart.getDatasetMeta(0);
+			let props = meta.data[0].getProps(['borderColor']);
+			expect(props.options.borderColor).toEqual('red');
+
+			chart.setActiveElements([{
+				datasetIndex: 0,
+				index: 0,
+			}]);
+
+			props = meta.data[0].getProps(['borderColor']);
+			expect(props.options.borderColor).toEqual('blue');
+
+			const active = chart.getActiveElements();
+			expect(active.length).toEqual(1);
+			expect(active[0].element).toBe(meta.data[0]);
+		});
+	});
 });

@@ -1,4 +1,4 @@
-import { Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
+import { ActiveDataPoint, ActiveElement, Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
 import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent, IHoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { IChartData, IChartDataset } from '../interfaces';
@@ -281,6 +281,9 @@ export const Tooltip: IPlugin & {
   readonly positioners: {
     [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number };
   };
+
+  getActiveElements(): ActiveElement[];
+  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number });
 };
 
 export interface ITooltipCallbacks {
