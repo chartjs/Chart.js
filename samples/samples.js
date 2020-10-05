@@ -146,6 +146,9 @@
 			title: 'Filtering Labels',
 			path: 'scales/filtering-labels.html'
 		}, {
+			title: 'Label Text Alignment',
+			path: 'scales/label-text-alignment.html'
+		}, {
 			title: 'Non numeric Y Axis',
 			path: 'scales/non-numeric-y.html'
 		}, {
