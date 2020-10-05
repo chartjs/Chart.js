@@ -173,6 +173,6 @@ export function _limitValue(value, min, max) {
 	return Math.max(min, Math.min(max, value));
 }
 
-export function _int32Range(value) {
-	return _limitValue(value, -2147483648, 2147483647);
+export function _int16Range(value) {
+	return _limitValue(value, -32768, 32767);
 }
