@@ -59,12 +59,12 @@ export default class PolarAreaController extends DatasetController {
 		me._cachedMeta.count = me.countVisibleElements();
 
 		for (i = 0; i < start; ++i) {
-			angle += me._computeAngle(i);
+			angle += me._computeAngle(i, mode);
 		}
 		for (i = start; i < start + count; i++) {
 			const arc = arcs[i];
 			let startAngle = angle;
-			let endAngle = angle + me._computeAngle(i);
+			let endAngle = angle + me._computeAngle(i, mode);
 			let outerRadius = this.chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
 			angle = endAngle;
 
@@ -109,7 +109,7 @@ export default class PolarAreaController extends DatasetController {
 	/**
 	 * @private
 	 */
-	_computeAngle(index) {
+	_computeAngle(index, mode) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const count = meta.count;
@@ -120,13 +120,7 @@ export default class PolarAreaController extends DatasetController {
 		}
 
 		// Scriptable options
-		const context = {
-			chart: me.chart,
-			dataPoint: this.getParsed(index),
-			dataIndex: index,
-			dataset,
-			datasetIndex: me.index
-		};
+		const context = me.getContext(index, mode === 'active');
 
 		return resolve([
 			me.chart.options.elements.arc.angle,

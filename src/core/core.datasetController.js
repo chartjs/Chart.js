@@ -693,9 +693,9 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getContext(index, active) {
+	getContext(index, active) {
 		return {
 			chart: this.chart,
 			dataPoint: this.getParsed(index),
@@ -764,7 +764,7 @@ export default class DatasetController {
 		const datasetOpts = me._config;
 		const options = me.chart.options.elements[type] || {};
 		const values = {};
-		const context = me._getContext(index, active);
+		const context = me.getContext(index, active);
 		const keys = optionKeys(optionNames);
 
 		for (let i = 0, ilen = keys.length; i < ilen; ++i) {
@@ -798,7 +798,7 @@ export default class DatasetController {
 		}
 
 		const info = {cacheable: true};
-		const context = me._getContext(index, active);
+		const context = me.getContext(index, active);
 		const chartAnim = resolve([chart.options.animation], context, index, info);
 		const datasetAnim = resolve([me._config.animation], context, index, info);
 		let config = chartAnim && mergeIf({}, [datasetAnim, chartAnim]);

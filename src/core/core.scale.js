@@ -1014,6 +1014,19 @@ export default class Scale extends Element {
 	}
 
 	/**
+	 * @protected
+	 */
+	getContext(index) {
+		const ticks = this.ticks || [];
+		return {
+			chart: this.chart,
+			scale: this,
+			tick: ticks[index],
+			index
+		};
+	}
+
+	/**
 	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
 	 * @param {Tick[]} ticks
 	 * @return {Tick[]}
@@ -1105,12 +1118,7 @@ export default class Scale extends Element {
 		const tl = getTickMarkLength(gridLines);
 		const items = [];
 
-		let context = {
-			chart,
-			scale: me,
-			tick: ticks[0],
-			index: 0,
-		};
+		let context = this.getContext(0);
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const axisHalfWidth = axisWidth / 2;
 		const alignBorderValue = function(pixel) {
@@ -1172,15 +1180,7 @@ export default class Scale extends Element {
 		}
 
 		for (i = 0; i < ticksLength; ++i) {
-			/** @type {Tick|object} */
-			const tick = ticks[i] || {};
-
-			context = {
-				chart,
-				scale: me,
-				tick,
-				index: i,
-			};
+			context = this.getContext(i);
 
 			const lineWidth = resolve([gridLines.lineWidth], context, i);
 			const lineColor = resolve([gridLines.color], context, i);
@@ -1318,12 +1318,7 @@ export default class Scale extends Element {
 		const gridLines = me.options.gridLines;
 		const ctx = me.ctx;
 		const chart = me.chart;
-		let context = {
-			chart,
-			scale: me,
-			tick: me.ticks[0],
-			index: 0,
-		};
+		let context = me.getContext(0);
 		const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
 		const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
 		let i, ilen;
@@ -1364,12 +1359,7 @@ export default class Scale extends Element {
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			const firstLineWidth = axisWidth;
-			context = {
-				chart,
-				scale: me,
-				tick: me.ticks[me._ticksLength - 1],
-				index: me._ticksLength - 1,
-			};
+			context = me.getContext(me._ticksLength - 1);
 			const lastLineWidth = resolve([gridLines.lineWidth, 1], context, me._ticksLength - 1);
 			const borderValue = me._borderValue;
 			let x1, x2, y1, y2;
@@ -1597,13 +1587,7 @@ export default class Scale extends Element {
 		const me = this;
 		const chart = me.chart;
 		const options = me.options.ticks;
-		const ticks = me.ticks || [];
-		const context = {
-			chart,
-			scale: me,
-			tick: ticks[index],
-			index
-		};
+		const context = me.getContext(index);
 		return toFont(resolve([options.font], context), chart.options.font);
 	}
 }
