@@ -120,13 +120,7 @@ export default class PolarAreaController extends DatasetController {
 		}
 
 		// Scriptable options
-		const context = {
-			chart: me.chart,
-			dataPoint: this.getParsed(index),
-			dataIndex: index,
-			dataset,
-			datasetIndex: me.index
-		};
+		const context = me.getContext(index, false);
 
 		return resolve([
 			me.chart.options.elements.arc.angle,

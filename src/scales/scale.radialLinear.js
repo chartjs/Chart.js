@@ -96,12 +96,7 @@ function fitWithPointLabels(scale) {
 	for (i = 0; i < valueCount; i++) {
 		pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
 
-		const context = {
-			chart: scale.chart,
-			scale,
-			index: i,
-			label: scale.pointLabels[i]
-		};
+		const context = scale.getContext(i);
 		const plFont = toFont(resolve([scale.options.pointLabels.font], context, i), scale.chart.options.font);
 		scale.ctx.font = plFont.string;
 		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
@@ -185,12 +180,7 @@ function drawPointLabels(scale) {
 		const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
 		const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
-		const context = {
-			chart: scale.chart,
-			scale,
-			index: i,
-			label: scale.pointLabels[i],
-		};
+		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
 		ctx.font = plFont.string;
 		ctx.fillStyle = plFont.color;
@@ -208,12 +198,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	const circular = gridLineOpts.circular;
 	const valueCount = scale.chart.data.labels.length;
 
-	const context = {
-		chart: scale.chart,
-		scale,
-		index,
-		tick: scale.ticks[index],
-	};
+	const context = scale.getContext(index);
 	const lineColor = resolve([gridLineOpts.color], context, index - 1);
 	const lineWidth = resolve([gridLineOpts.lineWidth], context, index - 1);
 	let pointPosition;
@@ -440,12 +425,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 			ctx.save();
 
 			for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
-				const context = {
-					chart: me.chart,
-					scale: me,
-					index: i,
-					label: me.pointLabels[i],
-				};
+				const context = me.getContext(i);
 				const lineWidth = resolve([angleLineOpts.lineWidth, gridLineOpts.lineWidth], context, i);
 				const color = resolve([angleLineOpts.color, gridLineOpts.color], context, i);
 
@@ -496,17 +476,11 @@ export default class RadialLinearScale extends LinearScaleBase {
 		ctx.textBaseline = 'middle';
 
 		me.ticks.forEach((tick, index) => {
-			const context = {
-				chart: me.chart,
-				scale: me,
-				index,
-				tick,
-			};
-
 			if (index === 0 && !opts.reverse) {
 				return;
 			}
 
+			const context = me.getContext(index);
 			const tickFont = me._resolveTickFontOptions(index);
 			ctx.font = tickFont.string;
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
