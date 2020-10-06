@@ -1,6 +1,6 @@
 import defaults from '../core/core.defaults';
 import {_longestText} from '../helpers/helpers.canvas';
-import {isNumber, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
+import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
@@ -218,7 +218,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	ctx.beginPath();
 	if (circular) {
 		// Draw circular arcs between the points
-		ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
+		ctx.arc(scale.xCenter, scale.yCenter, radius, 0, TAU);
 	} else {
 		// Draw straight lines connecting each index
 		pointPosition = scale.getPointPosition(0, radius);
@@ -347,7 +347,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 	getIndexAngle(index) {
 		const chart = this.chart;
-		const angleMultiplier = Math.PI * 2 / chart.data.labels.length;
+		const angleMultiplier = TAU / chart.data.labels.length;
 		const options = chart.options || {};
 		const startAngle = options.startAngle || 0;
 
@@ -381,7 +381,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 	getPointPosition(index, distanceFromCenter) {
 		const me = this;
-		const angle = me.getIndexAngle(index) - (Math.PI / 2);
+		const angle = me.getIndexAngle(index) - HALF_PI;
 		return {
 			x: Math.cos(angle) * distanceFromCenter + me.xCenter,
 			y: Math.sin(angle) * distanceFromCenter + me.yCenter,

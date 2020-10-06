@@ -1,3 +1,5 @@
+import {PI, TAU, HALF_PI} from './index';
+
 /**
  * Easing functions adapted from Robert Penner's easing equations.
  * @namespace Chart.helpers.easing.effects
@@ -69,15 +71,15 @@ const effects = {
 	},
 
 	easeInSine(t) {
-		return -Math.cos(t * (Math.PI / 2)) + 1;
+		return -Math.cos(t * HALF_PI) + 1;
 	},
 
 	easeOutSine(t) {
-		return Math.sin(t * (Math.PI / 2));
+		return Math.sin(t * HALF_PI);
 	},
 
 	easeInOutSine(t) {
-		return -0.5 * (Math.cos(Math.PI * t) - 1);
+		return -0.5 * (Math.cos(PI * t) - 1);
 	},
 
 	easeInExpo(t) {
@@ -136,9 +138,9 @@ const effects = {
 			a = 1;
 			s = p / 4;
 		} else {
-			s = p / (2 * Math.PI) * Math.asin(1 / a);
+			s = p / TAU * Math.asin(1 / a);
 		}
-		return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * (2 * Math.PI) / p));
+		return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * TAU / p));
 	},
 
 	easeOutElastic(t) {
@@ -158,9 +160,9 @@ const effects = {
 			a = 1;
 			s = p / 4;
 		} else {
-			s = p / (2 * Math.PI) * Math.asin(1 / a);
+			s = p / TAU * Math.asin(1 / a);
 		}
-		return a * Math.pow(2, -10 * t) * Math.sin((t - s) * (2 * Math.PI) / p) + 1;
+		return a * Math.pow(2, -10 * t) * Math.sin((t - s) * TAU / p) + 1;
 	},
 
 	easeInOutElastic(t) {
@@ -180,12 +182,12 @@ const effects = {
 			a = 1;
 			s = p / 4;
 		} else {
-			s = p / (2 * Math.PI) * Math.asin(1 / a);
+			s = p / TAU * Math.asin(1 / a);
 		}
 		if (t < 1) {
-			return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * (2 * Math.PI) / p));
+			return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * TAU / p));
 		}
-		return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t - s) * (2 * Math.PI) / p) * 0.5 + 1;
+		return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t - s) * TAU / p) * 0.5 + 1;
 	},
 	easeInBack(t) {
 		const s = 1.70158;

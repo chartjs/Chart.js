@@ -1,14 +1,11 @@
 import DatasetController from '../core/core.datasetController';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians} from '../helpers/helpers.math';
+import {toRadians, PI, TAU, HALF_PI} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
  */
 
-const PI = Math.PI;
-const DOUBLE_PI = PI * 2;
-const HALF_PI = PI / 2;
 
 function getRatioAndOffset(rotation, circumference, cutout) {
 	let ratioX = 1;
@@ -16,16 +13,16 @@ function getRatioAndOffset(rotation, circumference, cutout) {
 	let offsetX = 0;
 	let offsetY = 0;
 	// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
-	if (circumference < DOUBLE_PI) {
-		let startAngle = rotation % DOUBLE_PI;
-		startAngle += startAngle >= PI ? -DOUBLE_PI : startAngle < -PI ? DOUBLE_PI : 0;
+	if (circumference < TAU) {
+		let startAngle = rotation % TAU;
+		startAngle += startAngle >= PI ? -TAU : startAngle < -PI ? TAU : 0;
 		const endAngle = startAngle + circumference;
 		const startX = Math.cos(startAngle);
 		const startY = Math.sin(startAngle);
 		const endX = Math.cos(endAngle);
 		const endY = Math.sin(endAngle);
-		const contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI;
-		const contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= DOUBLE_PI + HALF_PI;
+		const contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= TAU;
+		const contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= TAU + HALF_PI;
 		const contains180 = startAngle === -PI || endAngle >= PI;
 		const contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
 		const minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
@@ -84,8 +81,8 @@ export default class DoughnutController extends DatasetController {
 	 * across all visible datasets.
 	 */
 	_getRotationExtents() {
-		let min = DOUBLE_PI;
-		let max = -DOUBLE_PI;
+		let min = TAU;
+		let max = -TAU;
 
 		const me = this;
 		const opts = me.chart.options;
@@ -150,7 +147,7 @@ export default class DoughnutController extends DatasetController {
 		const opts = me.chart.options;
 		const meta = me._cachedMeta;
 		const circumference = toRadians(valueOrDefault(me._config.circumference, opts.circumference));
-		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / DOUBLE_PI) : 0;
+		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / TAU) : 0;
 	}
 
 	updateElements(arcs, start, count, mode) {
@@ -216,7 +213,7 @@ export default class DoughnutController extends DatasetController {
 	calculateCircumference(value) {
 		const total = this._cachedMeta.total;
 		if (total > 0 && !isNaN(value)) {
-			return DOUBLE_PI * (Math.abs(value) / total);
+			return TAU * (Math.abs(value) / total);
 		}
 		return 0;
 	}

@@ -2,9 +2,11 @@ import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
-import {callback as call, merge, valueOrDefault, isNullOrUndef} from '../helpers/helpers.core';
-import {toFont, toPadding} from '../helpers/helpers.options';
-import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
+import {
+	callback as call, merge, valueOrDefault, isNullOrUndef, toFont,
+	toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
+	INFINITY
+} from '../helpers/index';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
@@ -279,8 +281,8 @@ export class Legend extends Element {
 			minSize.width += totalWidth;
 		}
 
-		me.width = minSize.width;
-		me.height = minSize.height;
+		me.width = Math.min(minSize.width, opts.maxWidth || INFINITY);
+		me.height = Math.min(minSize.height, opts.maxHeight || INFINITY);
 	}
 
 	afterFit() {}
