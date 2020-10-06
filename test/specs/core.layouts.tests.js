@@ -668,7 +668,7 @@ describe('Chart.layouts', function() {
 				type: 'line',
 				responsive: true,
 				data: {
-					labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+					labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
 					datasets: [{
 						label: '# of Votes',
 						data: [12, 19, 3, 5, 2, 3]
@@ -676,16 +676,16 @@ describe('Chart.layouts', function() {
 				},
 				options: {
 					scales: {
-					yAxes: [{
-						type: 'linear',
-						label: 'first axis',
-						position: 'right'
-					}, {
-						type: 'linear',
-						label: 'second axis',
-						position: 'right'
-					}]
-				  }
+						yAxes: [{
+							type: 'linear',
+							label: 'first axis',
+							position: 'right'
+						}, {
+							type: 'linear',
+							label: 'second axis',
+							position: 'right'
+						}]
+					}
 				}
 			});
 
@@ -694,6 +694,4 @@ describe('Chart.layouts', function() {
 
 		});
 	});
-
-	
 });
