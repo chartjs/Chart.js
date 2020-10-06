@@ -30,7 +30,7 @@ function computeMinSampleSize(scale, pixels) {
  * mode currently always generates bars equally sized (until we introduce scriptable options?).
  * @private
  */
-function computeFitCategoryTraits(index, ruler, options, count) {
+function computeFitCategoryTraits(index, ruler, options, stackCount) {
 	const thickness = options.barThickness;
 	let size, ratio;
 
@@ -41,12 +41,12 @@ function computeFitCategoryTraits(index, ruler, options, count) {
 		// When bar thickness is enforced, category and bar percentages are ignored.
 		// Note(SB): we could add support for relative bar thickness (e.g. barThickness: '50%')
 		// and deprecate barPercentage since this value is ignored when thickness is absolute.
-		size = thickness * count;
+		size = thickness * stackCount;
 		ratio = 1;
 	}
 
 	return {
-		chunk: size / count,
+		chunk: size / stackCount,
 		ratio,
 		start: ruler.pixels[index] - (size / 2)
 	};
@@ -287,11 +287,14 @@ export default class BarController extends DatasetController {
 		for (i = 0; i < ilen; ++i) {
 			item = metasets[i];
 
-			if (
-				typeof dataIndex !== 'undefined' &&
-				isNullOrUndef(me.chart.data.datasets[item.index].data[dataIndex])
-			) {
-				continue;
+			if (typeof dataIndex !== 'undefined') {
+				const val = item.controller.getParsed(dataIndex)[
+					item.controller._cachedMeta.vScale.axis
+				];
+
+				if (isNullOrUndef(val) || isNaN(val)) {
+					continue;
+				}
 			}
 
 			// stacked   | meta.stack
