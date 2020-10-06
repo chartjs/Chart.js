@@ -13,6 +13,8 @@ The legend configuration is passed into the `options.legend` namespace. The glob
 | `display` | `boolean` | `true` | Is the legend shown?
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
 | `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
+| `maxHeight` `number` | | Maximum height of the legend, in pixels
+| `maxWidth` `number` | | Maximum width of the legend, in pixels
 | `fullWidth` | `boolean` | `true` | Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.

@@ -1,15 +1,11 @@
-import {isArray, isNullOrUndef} from './helpers.core';
+import {
+	isArray, isNullOrUndef, PI, TAU, HALF_PI, QUARTER_PI,
+	TWO_THIRDS_PI, RAD_PER_DEG
+} from './index';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
  */
-
-const PI = Math.PI;
-const RAD_PER_DEG = PI / 180;
-const DOUBLE_PI = PI * 2;
-const HALF_PI = PI / 2;
-const QUARTER_PI = PI / 4;
-const TWO_THIRDS_PI = PI * 2 / 3;
 
 /**
  * @namespace Chart.helpers.canvas
@@ -148,7 +144,7 @@ export function drawPoint(ctx, options, x, y) {
 	switch (style) {
 	// Default includes circle
 	default:
-		ctx.arc(x, y, radius, 0, DOUBLE_PI);
+		ctx.arc(x, y, radius, 0, TAU);
 		ctx.closePath();
 		break;
 	case 'triangle':

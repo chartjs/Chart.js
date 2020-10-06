@@ -1,8 +1,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {isArray, mergeIf} from '../helpers/helpers.core';
-import {toPadding, toFont} from '../helpers/helpers.options';
+import {PI, isArray, mergeIf, toPadding, toFont} from '../helpers';
 
 export class Title extends Element {
 	constructor(config) {
@@ -178,7 +177,7 @@ export class Title extends Element {
 				break;
 			}
 			maxWidth = bottom - top;
-			rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
+			rotation = PI * (opts.position === 'left' ? -0.5 : 0.5);
 		}
 
 		ctx.save();

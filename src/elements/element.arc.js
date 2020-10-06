@@ -1,7 +1,5 @@
 import Element from '../core/core.element';
-import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
-
-const TAU = Math.PI * 2;
+import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
 
 function clipArc(ctx, element) {
 	const {startAngle, endAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
@@ -15,7 +13,7 @@ function clipArc(ctx, element) {
 		angleMargin = pixelMargin / innerRadius;
 		ctx.arc(x, y, innerRadius, endAngle + angleMargin, startAngle - angleMargin, true);
 	} else {
-		ctx.arc(x, y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
+		ctx.arc(x, y, pixelMargin, endAngle + HALF_PI, startAngle - HALF_PI);
 	}
 	ctx.closePath();
 	ctx.clip();

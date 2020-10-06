@@ -1,3 +1,5 @@
+import {INFINITY} from './index';
+
 /**
  * @private
  */
@@ -90,8 +92,6 @@ export function getRelativePosition(evt, chart) {
 	};
 }
 
-const infinity = Number.POSITIVE_INFINITY;
-
 function getContainerSize(canvas, width, height) {
 	let maxWidth, maxHeight;
 
@@ -114,16 +114,16 @@ function getContainerSize(canvas, width, height) {
 	return {
 		width,
 		height,
-		maxWidth: maxWidth || infinity,
-		maxHeight: maxHeight || infinity
+		maxWidth: maxWidth || INFINITY,
+		maxHeight: maxHeight || INFINITY
 	};
 }
 
 export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
 	const style = getComputedStyle(canvas);
 	const margins = getPositionedStyle(style, 'margin');
-	const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || infinity;
-	const maxHeight = parseMaxStyle(style.maxHeight, canvas, 'clientHeight') || infinity;
+	const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
+	const maxHeight = parseMaxStyle(style.maxHeight, canvas, 'clientHeight') || INFINITY;
 	const containerSize = getContainerSize(canvas, bbWidth, bbHeight);
 	let {width, height} = containerSize;
 
