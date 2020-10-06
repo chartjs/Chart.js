@@ -104,20 +104,81 @@ function getDistanceMetricForAxis(axis) {
 	};
 }
 
+function x(chart, e, options) {
+	var position = getRelativePosition(e, chart);
+	var items = [];
+	var intersectsItem = false;
+
+	parseVisibleItems(chart, function(element) {
+		if (element.inXRange(position.x)) {
+			items.push(element);
+		}
+
+		if (element.inRange(position.x, position.y)) {
+			intersectsItem = true;
+		}
+	});
+
+	// If we want to trigger on an intersect and we don't have any items
+	// that intersect the position, return nothing
+	if (options.intersect && !intersectsItem) {
+		items = [];
+	}
+	return items;
+}
+
+function y(chart, e, options) {
+	var position = getRelativePosition(e, chart);
+	var items = [];
+	var intersectsItem = false;
+
+	parseVisibleItems(chart, function(element) {
+		if (element.inYRange(position.y)) {
+			items.push(element);
+		}
+
+		if (element.inRange(position.x, position.y)) {
+			intersectsItem = true;
+		}
+	});
+
+	// If we want to trigger on an intersect and we don't have any items
+	// that intersect the position, return nothing
+	if (options.intersect && !intersectsItem) {
+		items = [];
+	}
+	return items;
+}
+
 function indexMode(chart, e, options) {
 	var position = getRelativePosition(e, chart);
 	// Default axis for index mode is 'x' to match old behaviour
 	options.axis = options.axis || 'x';
 	var distanceMetric = getDistanceMetricForAxis(options.axis);
-	var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+	var items;
 	var elements = [];
+
+	if (options.intersect) {
+		items = options.axis === 'x' ? x(chart, e, options) : y(chart, e, options);
+	} else {
+		items = getNearestItems(chart, position, false, distanceMetric);
+	}
 
 	if (!items.length) {
 		return [];
 	}
 
 	chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
-		var element = meta.data[items[0]._index];
+		var element;
+
+		if (options.intersect) {
+			var item = items.find(function(i) {
+				return i._datasetIndex === meta.index;
+			});
+			element = item && meta.data[item._index];
+		} else {
+			element = meta.data[items[0]._index];
+		}
 
 		// don't count items that are skipped (null data)
 		if (element && !element._view.skip) {
@@ -246,28 +307,7 @@ module.exports = {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		x: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
-
-			parseVisibleItems(chart, function(element) {
-				if (element.inXRange(position.x)) {
-					items.push(element);
-				}
-
-				if (element.inRange(position.x, position.y)) {
-					intersectsItem = true;
-				}
-			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				items = [];
-			}
-			return items;
-		},
+		x: x,
 
 		/**
 		 * y mode returns the elements that hit-test at the current y coordinate
@@ -277,27 +317,6 @@ module.exports = {
 		 * @param {IInteractionOptions} options - options to use
 		 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
 		 */
-		y: function(chart, e, options) {
-			var position = getRelativePosition(e, chart);
-			var items = [];
-			var intersectsItem = false;
-
-			parseVisibleItems(chart, function(element) {
-				if (element.inYRange(position.y)) {
-					items.push(element);
-				}
-
-				if (element.inRange(position.x, position.y)) {
-					intersectsItem = true;
-				}
-			});
-
-			// If we want to trigger on an intersect and we don't have any items
-			// that intersect the position, return nothing
-			if (options.intersect && !intersectsItem) {
-				items = [];
-			}
-			return items;
-		}
+		y: y
 	}
 };

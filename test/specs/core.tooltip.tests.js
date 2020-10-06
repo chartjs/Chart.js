@@ -740,6 +740,123 @@ describe('Core.Tooltip', function() {
 		expect(tooltip._view.y).toBeCloseToPixel(155);
 	});
 
+	it('Should display axis labels when missing datapoints', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Test',
+					data: [{x: 'March', y: 10}]
+				}],
+				labels: ['January', 'February', 'March']
+			},
+			options: {
+				tooltips: {
+					mode: 'label'
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[0];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			title: ['March'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Test: 10'],
+				after: []
+			}],
+			afterBody: [],
+			footer: []
+		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(417);
+		expect(tooltip._view.y).toBeCloseToPixel(236);
+	});
+
+	it('Should display axis labels when missing datapoints (Vertical)', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'Test',
+					data: [
+						{x: 'B', y: 'February'},
+						{x: 'C', y: 'April'}
+					]
+				}],
+				labels: ['A', 'B', 'C', 'D']
+			},
+			options: {
+				tooltips: {
+					mode: 'label'
+				},
+				scales: {
+					yAxes: [{
+						type: 'category',
+						labels: ['January', 'February', 'March', 'April', 'May']
+					}]
+				}
+			}
+		});
+
+		// Trigger an event over top of the
+		var meta0 = chart.getDatasetMeta(0);
+		var point0 = meta0.data[0];
+
+		var node = chart.canvas;
+		var rect = node.getBoundingClientRect();
+
+		var evt = new MouseEvent('mousemove', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+			clientX: rect.left + point0._model.x,
+			clientY: rect.top + point0._model.y
+		});
+
+		// Manually trigger rather than having an async test
+		node.dispatchEvent(evt);
+
+		// Check and see if tooltip was displayed
+		var tooltip = chart.tooltip;
+
+		expect(tooltip._view).toEqual(jasmine.objectContaining({
+			title: ['B'],
+			beforeBody: [],
+			body: [{
+				before: [],
+				lines: ['Test: February'],
+				after: []
+			}],
+			afterBody: [],
+			footer: []
+		}));
+
+		expect(tooltip._view.x).toBeCloseToPixel(218);
+		expect(tooltip._view.y).toBeCloseToPixel(123);
+	});
+
 	it('should filter items from the tooltip using the callback', function() {
 		var chart = window.acquireChart({
 			type: 'line',

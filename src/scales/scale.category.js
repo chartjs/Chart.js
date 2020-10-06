@@ -55,9 +55,19 @@ module.exports = Scale.extend({
 	getLabelForIndex: function(index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
+		var dataset = chart.data.datasets[datasetIndex];
+		var data = dataset.data[index];
 
 		if (chart.getDatasetMeta(datasetIndex).controller._getValueScaleId() === me.id) {
-			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
+			return me.getRightValue(data);
+		}
+
+		if (me.isHorizontal()) {
+			if (data.x !== undefined) {
+				return data.x;
+			}
+		} else if (data.y !== undefined) {
+			return data.y;
 		}
 
 		return me._getLabels()[index];
