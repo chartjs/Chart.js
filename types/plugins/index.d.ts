@@ -166,6 +166,11 @@ export interface ILegendOptions {
     filter(item: ILegendItem, data: IChartData): boolean;
 
     /**
+     * Sorts the legend items
+     */
+    sort(a: ILegendItem, b: ILegendItem, data: IChartData): number;
+
+    /**
      * Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
      * @default false
      */
