@@ -160,6 +160,10 @@ export class Legend extends Element {
 			legendItems = legendItems.filter((item) => labelOpts.filter(item, me.chart.data));
 		}
 
+		if (labelOpts.sort) {
+			legendItems = legendItems.sort((a, b) => labelOpts.sort(a, b, me.chart.data));
+		}
+
 		if (me.options.reverse) {
 			legendItems.reverse();
 		}
