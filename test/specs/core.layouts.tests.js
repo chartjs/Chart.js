@@ -653,5 +653,47 @@ describe('Chart.layouts', function() {
 			expect(yAxis.width).toBeCloseToPixel(33);
 			expect(yAxis.ticks).toEqual(['2.5', '2.0', '1.5', '1.0', '0.5', '0']);
 		});
+
+		it('should correctly handle NaN dimensions', function() {
+
+			// issue #7761: Maximum call stack size exceeded
+			var chartContainer = document.createElement('div');
+			chartContainer.style.width = '600px';
+			chartContainer.style.height = '400px';
+
+			var chartCanvas = document.createElement('canvas');
+			chartContainer.appendChild(chartCanvas);
+
+			var chart = new Chart(chartCanvas, {
+				type: 'line',
+				responsive: true,
+				data: {
+					labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+					datasets: [{
+						label: '# of Votes',
+						data: [12, 19, 3, 5, 2, 3]
+					}]
+				},
+				options: {
+					scales: {
+					yAxes: [{
+						type: 'linear',
+						label: 'first axis',
+						position: 'right'
+					}, {
+						type: 'linear',
+						label: 'second axis',
+						position: 'right'
+					}]
+				  }
+				}
+			});
+
+			expect(chart.width).toBeNaN();
+			expect(chart.height).toBeNaN();
+
+		});
 	});
+
+	
 });
