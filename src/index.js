@@ -46,7 +46,7 @@ Chart.Ticks = Ticks;
 Object.assign(Chart, controllers, scales, elements, plugins, platforms);
 Chart.Chart = Chart;
 
-if (typeof window !== 'undefined') {
+if (window !== undefined) {
 	window.Chart = Chart;
 }
 
