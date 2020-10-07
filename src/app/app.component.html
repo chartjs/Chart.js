@@ -1,0 +1,547 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="node_modules/chart.js/src/chart.js"></script>
+<style>
+     :host {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 14px;
+        color: #333;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .sidenav-container {
+        height: 100%;
+    }
+    
+    .sidenav-container .sidenav {
+        width: 300px;
+        background-color: #0000FF;
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    }
+    
+    .sidenav-container .sidenav .home-button {
+        width: 100%;
+        padding-top: 60px;
+        margin-bottom: 30px;
+        display: inline-block;
+    }
+    
+    .sidenav-container .sidenav .home-button .app-logo {
+        width: 60px;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .sidenav-container .sidenav .mat-toolbar {
+        background: inherit;
+        padding: 10px;
+    }
+    
+    .sidenav-container .sidenav .navigation-list {
+        padding-top: 30px;
+    }
+    
+    .sidenav-container .sidenav .navigation-list .navigation-item.active {
+        border-radius: 30px;
+        background: #dcf0fb;
+        color: #062639;
+    }
+    
+    .sidenav-container .sidenav .navigation-list .navigation-item .mat-icon {
+        margin-right: 5px;
+        color: #fff;
+    }
+    
+    .sidenav-container .sidenav .navigation-list .navigation-item .navigation-item-label {
+        padding-top: 2px;
+    }
+    
+    .sidenav-container .sidenav .navigation-list .navigation-divider {
+        color: #dcf0fb;
+        border-color: #dcf0fb;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar {
+        background: #062639;
+        color: #fff;
+        padding-left: 60px;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .menu-button {
+        color: #fff;
+        background: #062639;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .menu-button:focus {
+        outline: none;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .navbar-link {
+        color: #fff;
+        padding-right: 10px;
+        cursor: pointer;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .navbar-link:hover {
+        color: #fff;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .navbar-link:focus {
+        outline: none;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .gifts a {
+        color: #fff;
+        display: inline-block;
+        padding-top: 7px;
+        padding-right: 20px;
+        position: relative;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .gifts a .mat-badge-content {
+        background: #d3544d;
+    }
+    
+    .sidenav-container .sidenav-content .sidenav-content-toolbar .gifts:focus {
+        outline: none;
+    }
+    
+    .sidenav-container .sidenav-content .filler {
+        flex: 1 1 auto;
+    }
+    
+    .sidenav-container .mat-toolbar.mat-primary {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    /*left sidenav style override*/
+    
+    mat-sidenav:not(.mat-drawer-opened) {
+        transform: translate3d(0, 0, 0) !important;
+        visibility: visible !important;
+        width: 60px !important;
+        overflow: hidden;
+    }
+    
+    mat-sidenav:not(.mat-drawer-opened) .navigation-item-label {
+        display: none !important;
+    }
+    
+    mat-sidenav:not(.mat-drawer-opened) .home-button {
+        display: none !important;
+    }
+    
+    mat-card {
+        border-radius: 20px;
+    }
+    
+    .slidetoggle {
+        position: absolute;
+        bottom: 70px;
+    }
+    
+    .profilepic {
+        position: absolute;
+        bottom: 50px;
+        background-size: cover;
+        border-radius: 10px;
+    }
+    
+    .slide-nav {
+        position: absolute;
+        bottom: 100px;
+    }
+    
+    .listitems {
+        position: absolute;
+        bottom: 40%;
+    }
+    
+    .some {
+        position: relative;
+        margin: 50px;
+    }
+    
+    .something {
+        margin-left: 10px;
+    }
+    
+    .chartssomething {
+        margin-left: 10px;
+        width: 300px;
+    }
+    
+    table {
+        width: 100%;
+    }
+    
+    .tablepic {
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    
+     :host ::ng-deep .custom-spinner circle {
+        stroke: #0000FF;
+    }
+    
+     :host ::ng-deep .custom-spinner1 circle {
+        stroke: #FF0000;
+    }
+    
+     :host ::ng-deep .custom-spinner2 circle {
+        stroke: #00FFFF;
+    }
+    
+    .topcard {
+        margin-left: 10px;
+        padding-bottom: 20px;
+    }
+    
+    .spinner {
+        position: absolute;
+        right: 40px;
+        bottom: 30px;
+    }
+    
+    .matmenu {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+    }
+</style>
+
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [attr.role]="'navigation'" mode="'over'" opened="false">
+        <mat-toolbar class="sidenav-content-toolbar" color="primary">
+            <button mat-icon-button class="menu-button" type="button" aria-label="Toggle sidenav" (click)="drawer.toggle()">
+    <i class="material-icons">menu</i>
+  </button>
+            <span class="filler">
+      <!-- You can place a search bar here or anything you like -->
+  </span>
+        </mat-toolbar>
+
+        <mat-nav-list class="navigation-list listitems">
+            <a class="navigation-item" mat-list-item routerLink="/route1" routerLinkActive="active" style="border-radius: 10px;">
+                <mat-icon class="material-icons">dashboard</mat-icon><span class="navigation-item-label">Dashboard</span>
+            </a>
+            <a class="navigation-item" mat-list-item routerLink="/route2" routerLinkActive="active">
+                <mat-icon class="material-icons">work</mat-icon><span class="navigation-item-label">Projects</span>
+            </a>
+            <a class="navigation-item" mat-list-item routerLink="/route3" routerLinkActive="active">
+                <mat-icon class="material-icons">settings_application</mat-icon><span class="navigation-item-label">Settings</span>
+            </a>
+            <a class="navigation-item" mat-list-item routerLink="/route4" routerLinkActive="active">
+                <mat-icon class="material-icons">search</mat-icon><span class="navigation-item-label">Settings</span>
+            </a>
+        </mat-nav-list>
+        <mat-nav-list>
+            <a class="navigation-item slide-nav" mat-list-item>
+                <mat-slide-toggle class="slidertoggle">Slide me!</mat-slide-toggle>
+            </a>
+            <a class="profilepic" mat-list-item routerLink="/">
+                <img class="app-logo" style="border-radius: 10px;" src="http://i.pravatar.cc/300" />
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="sidenav-content">
+        <section class="container py-3">
+            <div class="row">
+                <mat-card class="col-sm something">
+                    <div class="row topcard">
+                        <div mat-card-list>
+                            <h1>$ 56,789,054</h1>
+                            <p style="color: darkgray;">Total revenue this year</p>
+                        </div>
+                        <div mat-card-list class="spinner">
+                            <mat-progress-spinner class="custom-spinner" diameter="35" mode="determinate" value="60">
+                            </mat-progress-spinner>
+                        </div>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                        <mat-icon>dialpad</mat-icon>
+                        <span>Redial</span>
+                      </button>
+                            <button mat-menu-item disabled>
+                        <mat-icon>voicemail</mat-icon>
+                        <span>Check voice mail</span>
+                      </button>
+                            <button mat-menu-item>
+                        <mat-icon>notifications_off</mat-icon>
+                        <span>Disable alerts</span>
+                      </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+                <!-- we use mat-card instead of div -->
+                <mat-card class="col-sm something">
+                    <div class="row topcard">
+                        <div mat-card-list>
+                            <h1>$ 10,000</h1>
+                            <p style="color: darkgray;">Total revenue this year</p>
+                        </div>
+                        <div mat-card-list class="spinner">
+                            <mat-progress-spinner class="custom-spinner1" diameter="35" mode="determinate" value="50">
+                            </mat-progress-spinner>
+                        </div>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+                <mat-card class="col-sm something">
+                    <div class="row topcard">
+                        <div mat-card-list>
+                            <h1>$ 550</h1>
+                            <p style="color: darkgray;">Total revenue this year</p>
+                        </div>
+                        <div mat-card-list class="spinner">
+                            <mat-progress-spinner class="custom-spinner2" diameter="35" mode="determinate" value="40">
+                            </mat-progress-spinner>
+                        </div>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+            </div>
+        </section>
+        <section class="container py-3">
+            <div class="row">
+                <mat-card class="col-sm something">
+                    <h2>Revenue</h2>
+                    <div style="display: block;width: 100px;">
+                        <google-chart #chart [type]="lineCharttype" [data]="linedata" [options]="lineoptions" [width]="width" [height]="height" style="margin-left: -10px;">
+                        </google-chart>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+                <mat-card class="col-sm-8 something">
+                    <h2>Subscriptions</h2>
+                    <div>
+                        <div style="display: block">
+                            <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType" [colors]="barChartcolor">
+                    </canvas>
+                        </div>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+            </div>
+        </section>
+        <section class="container py-3">
+            <div class="row">
+                <mat-card class="col-sm something">
+                    <h2>Users</h2>
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                        <!--- Note that these columns can be defined in any order.
+                            The actual rendered columns are set as a property on the row definition" -->
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="position">
+                            <th mat-header-cell *matHeaderCellDef> No. </th>
+                            <td mat-cell *matCellDef="let element"><img class="app-logo tablepic" style="border-radius: 10px;" src="http://i.pravatar.cc/300" /></td>
+                        </ng-container>
+
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Name </th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="weight">
+                            <th mat-header-cell *matHeaderCellDef> Weight </th>
+                            <td mat-cell *matCellDef="let element"><button mat-raised-button color="{{element.weight}}">{{element.weight}}</button></td>
+                        </ng-container>
+
+                        <!-- Symbol Column -->
+                        <ng-container matColumnDef="symbol">
+                            <th mat-header-cell *matHeaderCellDef> Symbol </th>
+                            <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                        </ng-container>
+
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+                <!-- we use mat-card instead of div -->
+                <mat-card class="col-sm something">
+                    <h2>Revenue</h2>
+                    <div>
+                        <h4>Meontegro</h4>
+                        <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+                    </div>
+                    <div class="py-3">
+                        <h4>Cape Varde</h4>
+                        <mat-progress-bar mode="determinate" value="70"></mat-progress-bar>
+                    </div>
+                    <div>
+                        <h4>Bulgaria</h4>
+                        <mat-progress-bar mode="determinate" value="50"></mat-progress-bar>
+                    </div>
+                    <div class="py-3">
+                        <h4>Israel</h4>
+                        <mat-progress-bar mode="determinate" value="30"></mat-progress-bar>
+                    </div>
+                    <div>
+                        <h4>Germany</h4>
+                        <mat-progress-bar mode="determinate" value="100"></mat-progress-bar>
+                    </div>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+                <mat-card class="col-sm chartssomething">
+                    <h2>Shops</h2>
+                    <canvas baseChart [data]="doughnutChartData" [chartType]="doughnutChartType" [colors]="doughnutcolor" [labels]="doughnutChartLabels"></canvas>
+                    <div class="matmenu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                            <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voice mail</span>
+                    </button>
+                            <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                        </mat-menu>
+                    </div>
+                </mat-card>
+            </div>
+        </section>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<router-outlet></router-outlet>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
