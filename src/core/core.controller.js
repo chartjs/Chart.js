@@ -222,6 +222,14 @@ class Chart {
 
 		config = initConfig(config);
 		const initialCanvas = getCanvas(item);
+		const existingChart = Chart.getChart(initialCanvas);
+		if (existingChart) {
+			throw new Error(
+				'Canvas is already in use. Chart with ID \'' + existingChart.id + '\'' +
+				' must be destroyed before the canvas can be reused.'
+			);
+		}
+
 		this.platform = me._initializePlatform(initialCanvas, config);
 
 		const context = me.platform.acquireContext(initialCanvas, config);
@@ -1054,6 +1062,41 @@ class Chart {
 	}
 
 	/**
+	 * Get active (hovered) elements
+	 * @returns array
+	 */
+	getActiveElements() {
+		return this._active || [];
+	}
+
+	/**
+	 * Set active (hovered) elements
+	 * @param {array} activeElements New active data points
+	 */
+	setActiveElements(activeElements) {
+		const me = this;
+		const lastActive = me._active || [];
+		const active = activeElements.map(({datasetIndex, index}) => {
+			const meta = me.getDatasetMeta(datasetIndex);
+			if (!meta) {
+				throw new Error('No dataset found at index ' + datasetIndex);
+			}
+
+			return {
+				datasetIndex,
+				element: meta.data[index],
+				index,
+			};
+		});
+		const changed = !_elementsEqual(active, lastActive);
+
+		if (changed) {
+			me._active = active;
+			me._updateHoverStyles(active, lastActive);
+		}
+	}
+
+	/**
 	 * @private
 	 */
 	_updateHoverStyles(active, lastActive) {
@@ -1133,7 +1176,7 @@ class Chart {
 		// Invoke onHover hook
 		callCallback(options.onHover || options.hover.onHover, [e, active, me], me);
 
-		if (e.type === 'mouseup' || e.type === 'click') {
+		if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
 			if (_isPointInArea(e, me.chartArea)) {
 				callCallback(options.onClick, [e, active, me], me);
 			}
@@ -1154,6 +1197,11 @@ Chart.defaults = defaults;
 Chart.instances = {};
 Chart.registry = registry;
 Chart.version = version;
+
+Chart.getChart = (key) => {
+	const canvas = getCanvas(key);
+	return Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
+};
 
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());

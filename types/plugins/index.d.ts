@@ -1,4 +1,4 @@
-import { Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
+import { ActiveDataPoint, ActiveElement, Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
 import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent, IHoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { IChartData, IChartDataset } from '../interfaces';
@@ -166,6 +166,11 @@ export interface ILegendOptions {
     filter(item: ILegendItem, data: IChartData): boolean;
 
     /**
+     * Sorts the legend items
+     */
+    sort(a: ILegendItem, b: ILegendItem, data: IChartData): number;
+
+    /**
      * Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
      * @default false
      */
@@ -281,6 +286,9 @@ export const Tooltip: IPlugin & {
   readonly positioners: {
     [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number };
   };
+
+  getActiveElements(): ActiveElement[];
+  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number });
 };
 
 export interface ITooltipCallbacks {

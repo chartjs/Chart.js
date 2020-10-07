@@ -30,9 +30,8 @@ function computeMinSampleSize(scale, pixels) {
  * mode currently always generates bars equally sized (until we introduce scriptable options?).
  * @private
  */
-function computeFitCategoryTraits(index, ruler, options) {
+function computeFitCategoryTraits(index, ruler, options, stackCount) {
 	const thickness = options.barThickness;
-	const count = ruler.stackCount;
 	let size, ratio;
 
 	if (isNullOrUndef(thickness)) {
@@ -42,12 +41,12 @@ function computeFitCategoryTraits(index, ruler, options) {
 		// When bar thickness is enforced, category and bar percentages are ignored.
 		// Note(SB): we could add support for relative bar thickness (e.g. barThickness: '50%')
 		// and deprecate barPercentage since this value is ignored when thickness is absolute.
-		size = thickness * count;
+		size = thickness * stackCount;
 		ratio = 1;
 	}
 
 	return {
-		chunk: size / count,
+		chunk: size / stackCount,
 		ratio,
 		start: ruler.pixels[index] - (size / 2)
 	};
@@ -59,7 +58,7 @@ function computeFitCategoryTraits(index, ruler, options) {
  * generates bars with different widths when data are not evenly spaced.
  * @private
  */
-function computeFlexCategoryTraits(index, ruler, options) {
+function computeFlexCategoryTraits(index, ruler, options, stackCount) {
 	const pixels = ruler.pixels;
 	const curr = pixels[index];
 	let prev = index > 0 ? pixels[index - 1] : null;
@@ -81,7 +80,7 @@ function computeFlexCategoryTraits(index, ruler, options) {
 	const size = Math.abs(next - prev) / 2 * percent;
 
 	return {
-		chunk: size / ruler.stackCount,
+		chunk: size / stackCount,
 		ratio: options.barPercentage,
 		start
 	};
@@ -271,10 +270,11 @@ export default class BarController extends DatasetController {
 	/**
 	 * Returns the stacks based on groups and bar visibility.
 	 * @param {number} [last] - The dataset index
+	 * @param {number} [dataIndex] - The data index of the ruler
 	 * @returns {string[]} The list of stack IDs
 	 * @private
 	 */
-	_getStacks(last) {
+	_getStacks(last, dataIndex) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
@@ -286,6 +286,17 @@ export default class BarController extends DatasetController {
 
 		for (i = 0; i < ilen; ++i) {
 			item = metasets[i];
+
+			if (typeof dataIndex !== 'undefined') {
+				const val = item.controller.getParsed(dataIndex)[
+					item.controller._cachedMeta.vScale.axis
+				];
+
+				if (isNullOrUndef(val) || isNaN(val)) {
+					continue;
+				}
+			}
+
 			// stacked   | meta.stack
 			//           | found | not found | undefined
 			// false     |   x   |     x     |     x
@@ -314,8 +325,8 @@ export default class BarController extends DatasetController {
 	 * Returns the effective number of stacks based on groups and bar visibility.
 	 * @private
 	 */
-	_getStackCount() {
-		return this._getStacks().length;
+	_getStackCount(index) {
+		return this._getStacks(undefined, index).length;
 	}
 
 	/**
@@ -429,9 +440,10 @@ export default class BarController extends DatasetController {
 	 */
 	_calculateBarIndexPixels(index, ruler, options) {
 		const me = this;
+		const stackCount = me.chart.options.skipNull ? me._getStackCount(index) : ruler.stackCount;
 		const range = options.barThickness === 'flex'
-			? computeFlexCategoryTraits(index, ruler, options)
-			: computeFitCategoryTraits(index, ruler, options);
+			? computeFlexCategoryTraits(index, ruler, options, stackCount)
+			: computeFitCategoryTraits(index, ruler, options, stackCount);
 
 		const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack);
 		const center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
@@ -486,7 +498,7 @@ BarController.defaults = {
 		'barThickness',
 		'categoryPercentage',
 		'maxBarThickness',
-		'minBarLength'
+		'minBarLength',
 	],
 	hover: {
 		mode: 'index'

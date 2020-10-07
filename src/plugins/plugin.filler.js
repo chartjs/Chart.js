@@ -8,7 +8,7 @@ import Line from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
-import {_normalizeAngle} from '../helpers/helpers.math';
+import {TAU, _normalizeAngle} from '../helpers/helpers.math';
 
 /**
  * @typedef { import('../core/core.controller').default } Chart
@@ -106,7 +106,7 @@ class simpleArc {
 
 	pathSegment(ctx, bounds, opts) {
 		const {x, y, radius} = this;
-		bounds = bounds || {start: 0, end: Math.PI * 2};
+		bounds = bounds || {start: 0, end: TAU};
 		if (opts.reverse) {
 			ctx.arc(x, y, radius, bounds.end, bounds.start, true);
 		} else {

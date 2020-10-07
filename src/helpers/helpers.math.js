@@ -1,8 +1,13 @@
 import {isFinite as isFiniteNumber} from './helpers.core';
 
-const PI = Math.PI;
-const TAU = 2 * PI;
-const PITAU = TAU + PI;
+export const PI = Math.PI;
+export const TAU = 2 * PI;
+export const PITAU = TAU + PI;
+export const INFINITY = Number.POSITIVE_INFINITY;
+export const RAD_PER_DEG = PI / 180;
+export const HALF_PI = PI / 2;
+export const QUARTER_PI = PI / 4;
+export const TWO_THIRDS_PI = PI * 2 / 3;
 
 /**
  * @alias Chart.helpers.math
@@ -173,6 +178,6 @@ export function _limitValue(value, min, max) {
 	return Math.max(min, Math.min(max, value));
 }
 
-export function _int32Range(value) {
-	return _limitValue(value, -2147483648, 2147483647);
+export function _int16Range(value) {
+	return _limitValue(value, -32768, 32767);
 }

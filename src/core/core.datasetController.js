@@ -147,17 +147,11 @@ function getFirstScaleId(chart, axis) {
 	return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
-function optionKeys(optionNames) {
-	return isArray(optionNames) ? optionNames : Object.keys(optionNames);
-}
-
-function optionKey(key, active) {
-	return active ? 'hover' + _capitalize(key) : key;
-}
-
-function isDirectUpdateMode(mode) {
-	return mode === 'reset' || mode === 'none';
-}
+const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.keys(optionNames);
+const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
+const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
+const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
+const freezeIfShared = (values, shared) => shared ? Object.freeze(values) : values;
 
 export default class DatasetController {
 
@@ -699,9 +693,9 @@ export default class DatasetController {
 	}
 
 	/**
-	 * @private
+	 * @protected
 	 */
-	_getContext(index, active) {
+	getContext(index, active) {
 		return {
 			chart: this.chart,
 			dataPoint: this.getParsed(index),
@@ -732,10 +726,11 @@ export default class DatasetController {
 		mode = mode || 'default';
 		const me = this;
 		const active = mode === 'active';
-		const cached = me._cachedDataOpts;
+		const cache = me._cachedDataOpts;
+		const cached = cache[mode];
 		const sharing = me.enableOptionSharing;
-		if (cached[mode]) {
-			return cached[mode];
+		if (cached) {
+			return cloneIfNotShared(cached, sharing);
 		}
 		const info = {cacheable: !active};
 
@@ -754,7 +749,7 @@ export default class DatasetController {
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
-			cached[mode] = sharing ? Object.freeze(values) : values;
+			cache[mode] = freezeIfShared(values, sharing);
 		}
 
 		return values;
@@ -769,7 +764,7 @@ export default class DatasetController {
 		const datasetOpts = me._config;
 		const options = me.chart.options.elements[type] || {};
 		const values = {};
-		const context = me._getContext(index, active);
+		const context = me.getContext(index, active);
 		const keys = optionKeys(optionNames);
 
 		for (let i = 0, ilen = keys.length; i < ilen; ++i) {
@@ -803,7 +798,7 @@ export default class DatasetController {
 		}
 
 		const info = {cacheable: true};
-		const context = me._getContext(index, active);
+		const context = me.getContext(index, active);
 		const chartAnim = resolve([chart.options.animation], context, index, info);
 		const datasetAnim = resolve([me._config.animation], context, index, info);
 		let config = chartAnim && mergeIf({}, [datasetAnim, chartAnim]);

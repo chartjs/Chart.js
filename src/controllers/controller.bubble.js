@@ -109,18 +109,11 @@ export default class BubbleController extends DatasetController {
 	resolveDataElementOptions(index, mode) {
 		const me = this;
 		const chart = me.chart;
-		const dataset = me.getDataset();
 		const parsed = me.getParsed(index);
 		let values = super.resolveDataElementOptions(index, mode);
 
 		// Scriptable options
-		const context = {
-			chart,
-			dataPoint: parsed,
-			dataIndex: index,
-			dataset,
-			datasetIndex: me.index
-		};
+		const context = me.getContext(index, mode === 'active');
 
 		// In case values were cached (and thus frozen), we need to clone the values
 		if (values.$shared) {

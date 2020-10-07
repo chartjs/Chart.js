@@ -15,7 +15,7 @@
             }]
         },
         "options": {
-            "circumference": 7,
+            "circumference": 400,
             "responsive": false,
             "legend": false,
             "title": false

@@ -45,17 +45,6 @@ export type DeepPartial<T> = T extends {}
 
 export type DistributiveArray<T> = T extends unknown ? T[] : never
 
-export enum ScaleTypeEnum {
-  linear = 'linear',
-  logarithmic = 'logarithmic',
-  category = 'category',
-  radialLinear = 'radialLinear',
-  time = 'time',
-  timeseries = 'timeseries',
-}
-
-export type IScaleType = keyof typeof ScaleTypeEnum;
-
 export interface ICartesianScaleTypeRegistry {
   linear: {
     options: ILinearScaleOptions;
@@ -83,18 +72,7 @@ export interface IRadialScaleTypeRegistry {
 export interface IScaleTypeRegistry extends ICartesianScaleTypeRegistry, IRadialScaleTypeRegistry {
 }
 
-export enum ChartTypeEnum {
-  bar = 'bar',
-  bubble = 'bubble',
-  doughnut = 'doughnut',
-  line = 'line',
-  pie = 'pie',
-  polarArea = 'polarArea',
-  radar = 'radar',
-  scatter = 'scatter',
-}
-
-export type IChartType = keyof typeof ChartTypeEnum;
+export type IScaleType = keyof IScaleTypeRegistry;
 
 export interface IChartTypeRegistry {
   bar: {
@@ -146,6 +124,8 @@ export interface IChartTypeRegistry {
     scales: keyof IRadialScaleTypeRegistry;
   };
 }
+
+export type IChartType = keyof IChartTypeRegistry;
 
 export type IScaleOptions<SCALES extends IScaleType = IScaleType> = DeepPartial<
   { [key in IScaleType]: { type: key } & IScaleTypeRegistry[key]['options'] }[SCALES]

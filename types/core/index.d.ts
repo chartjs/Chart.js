@@ -240,6 +240,15 @@ export interface IParsingOptions {
     | false;
 }
 
+export interface ActiveDataPoint {
+  datasetIndex: number;
+  index: number;
+}
+
+export interface ActiveElement extends ActiveDataPoint {
+  element: Element;
+}
+
 export declare class Chart<
   TYPE extends IChartType = IChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
@@ -293,6 +302,9 @@ export declare class Chart<
   hide(datasetIndex: number): void;
   show(datasetIndex: number): void;
 
+  getActiveElements(): ActiveElement[];
+  setActiveElements(active: ActiveDataPoint[]);
+
   destroy(): void;
   toBase64Image(type?: string, quality?: any): string;
   bindEvents(): void;
@@ -302,6 +314,7 @@ export declare class Chart<
   static readonly version: string;
   static readonly instances: { [key: string]: Chart };
   static readonly registry: Registry;
+  static getChart(key: string | CanvasRenderingContext2D | HTMLCanvasElement) : Chart | undefined;
   static register(...items: IChartComponentLike[]): void;
   static unregister(...items: IChartComponentLike[]): void;
 }
@@ -315,7 +328,7 @@ export declare type ChartItem =
   | { canvas: HTMLCanvasElement | OffscreenCanvas }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>;
 
-export enum UpdateModeEnum {
+export declare enum UpdateModeEnum {
   resize = 'resize',
   reset = 'reset',
   none = 'none',
