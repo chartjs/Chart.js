@@ -64,6 +64,7 @@ export default class LogarithmicScale extends Scale {
 	parse(raw, index) {
 		const value = LinearScaleBase.prototype.parse.apply(this, [raw, index]);
 		if (value === 0) {
+			this._zero = true;
 			return undefined;
 		}
 		return isFinite(value) && value > 0 ? value : NaN;
@@ -100,6 +101,11 @@ export default class LogarithmicScale extends Scale {
 		}
 		if (max <= 0) {
 			max = Math.pow(10, Math.floor(log10(min)) + 1);
+		}
+		// if data has `0` in it or `beginAtZero` is true, and min (non zero) value is at bottom
+		// of scale, lower the min bound by one exp.
+		if (!me._userMin && me._zero && min === Math.pow(10, Math.floor(log10(me.min)))) {
+			min = Math.pow(10, Math.floor(log10(min)) - 1);
 		}
 		me.min = min;
 		me.max = max;
@@ -153,6 +159,7 @@ export default class LogarithmicScale extends Scale {
 
 		me._startValue = log10(start);
 		me._valueRange = log10(me.max) - log10(start);
+		me._zero = me.options.beginAtZero;
 	}
 
 	getPixelForValue(value) {
