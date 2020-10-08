@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-  - lts/*
+# Using node 12.18.2 instead of lts
+# https://github.com/chartjs/Chart.js/issues/7863#issuecomment-705222874
+  - "12.18.2"
 
 before_install:
   - "export CHROME_BIN=/usr/bin/google-chrome"
