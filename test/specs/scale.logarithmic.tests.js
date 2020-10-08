@@ -478,7 +478,7 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var y = chart.scales.y;
-		expect(y.min).toBe(1);
+		expect(y.min).toBe(0.1);
 		expect(y.max).toBe(2);
 	});
 
@@ -508,7 +508,7 @@ describe('Logarithmic Scale tests', function() {
 		});
 
 		var y = chart.scales.y;
-		expect(y.min).toBe(1);
+		expect(y.min).toBe(0.1);
 		expect(y.max).toBe(2);
 	});
 
@@ -638,7 +638,7 @@ describe('Logarithmic Scale tests', function() {
 			type: 'line',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 0, 78]
+					data: [10, 5, 1.1, 25, 0, 78]
 				}],
 				labels: []
 			},
@@ -751,7 +751,7 @@ describe('Logarithmic Scale tests', function() {
 						min: 0
 					}
 				},
-				firstTick: 1,
+				firstTick: 0.1,
 				describe: 'all stacks are defined and min: 0'
 			},
 			{
@@ -762,7 +762,7 @@ describe('Logarithmic Scale tests', function() {
 						min: 0
 					}
 				},
-				firstTick: 1,
+				firstTick: 0.1,
 				describe: 'not stacks are defined and min: 0'
 			},
 			{
@@ -783,7 +783,7 @@ describe('Logarithmic Scale tests', function() {
 						min: 0
 					}
 				},
-				firstTick: 1,
+				firstTick: 0.1,
 				describe: 'all stacks are defined and min: 0'
 			},
 			{
@@ -794,7 +794,7 @@ describe('Logarithmic Scale tests', function() {
 						min: 0
 					}
 				},
-				firstTick: 1,
+				firstTick: 0.1,
 				describe: 'not all stacks are defined and min: 0'
 			},
 		];
@@ -812,7 +812,8 @@ describe('Logarithmic Scale tests', function() {
 				chartEnd = 'top';
 			}
 			scaleConfig[setup.axis] = {
-				type: 'logarithmic'
+				type: 'logarithmic',
+				beginAtZero: false
 			};
 			Object.assign(scaleConfig, setup.scale);
 			scaleConfig[setup.axis].type = 'logarithmic';
