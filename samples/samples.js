@@ -188,6 +188,9 @@
 			title: 'Positioning',
 			path: 'tooltips/positioning.html'
 		}, {
+			title: 'Custom Positioning',
+			path: 'tooltips/position-custom.html'
+		}, {
 			title: 'Interactions',
 			path: 'tooltips/interactions.html'
 		}, {
