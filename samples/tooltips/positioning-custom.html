@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Tooltip Interaction Modes</title>
+	<script src="../../dist/chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.chart-container {
+		width: 500px;
+		margin-left: 40px;
+		margin-right: 40px;
+		margin-bottom: 40px;
+	}
+	.container {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="container" style="width: 75%;">
+		<canvas id="chart"></canvas>
+	</div>
+	<script>
+		window.onload = function() {
+			Chart.Tooltip.positioners.middle = (items) => {
+				if (items.length !== 1) {
+					// For more than 1 item, just show at the nearest
+					return Chart.Tooltip.positioners.average(items);
+				}
+
+				const el = items[0].element;
+				let xPos = 0;
+				let yPos = 0;
+
+				if (el && el.hasValue()) {
+					const {
+						base,
+						horizontal,
+						x,
+						y
+					} = el.getProps();
+					if (horizontal) {
+						xPos = (base + x) / 2;
+						yPos = y;
+					} else {
+						xPos = x;
+						yPos = (base + y) / 2;
+					}
+				}
+
+				return {
+					x: xPos,
+					y: yPos
+				};
+			};
+
+			var canvas = document.getElementById('chart');
+			new Chart(canvas, {
+				type: 'bar',
+				data: {
+					labels: ['January', 'February', 'March', 'April'],
+					datasets: [{
+						label: 'My First dataset',
+						borderColor: window.chartColors.red,
+						backgroundColor: window.chartColors.red,
+						data: [1, 1, 1, 1],
+					}, {
+						label: 'My Second dataset',
+						borderColor: window.chartColors.blue,
+						backgroundColor: window.chartColors.blue,
+						data: [2, 4, 6, 8],
+					}]
+				},
+				options: {
+					responsive: true,
+					tooltips: {
+						position: 'middle',
+						intersect: false,
+					},
+				}
+			});
+		};
+	</script>
+</body>
+
+</html>
