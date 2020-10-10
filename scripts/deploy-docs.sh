@@ -4,7 +4,7 @@ set -e
 
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
-TARGET_REPO_URL="https://$GH_AUTH_TOKEN@github.com/chartjs/chartjs.github.io.git"
+TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 
 # Note: this code also exists in docs-config.sh
 # Make sure that this script is executed only for the release and master branches
