@@ -32,6 +32,13 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      # Since we created the release in the UI, we need to find it.
+      # This step gets the release from the GITHUB_REF env var
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
       - run: npm ci
       - run: npm install -g json
       - run: json -I -f package.json -e "this.version=\"$GITHUB_REF\""
@@ -49,3 +56,43 @@ jobs:
       - run: ./scripts/deploy-docs.sh "${GITHUB_REF:1}"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Upload chart.js
+        id: upload-chart-js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/chart.js
+          asset_name: chart.js
+          asset_content_type: text/javascript
+      - name: Upload chart.min.js
+        id: upload-chart-min-js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/chart.min.js
+          asset_name: chart.min.js
+          asset_content_type: text/javascript
+      - name: Upload chart.esm.js
+        id: upload-chart-esm-js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/chart.esm.js
+          asset_name: chart.esm.js
+          asset_content_type: text/javascript
+      - name: Upload helpers.esm.js
+        id: upload-helpers-esm-js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/helpers.esm.js
+          asset_name: helpers.esm.js
+          asset_content_type: text/javascript
