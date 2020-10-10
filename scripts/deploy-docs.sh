@@ -39,7 +39,7 @@ function update_tagged_files {
     if [ "$VERSION" == "master" ]; then
         update_with_tag master
     elif [[ "$VERSION" =~ ^[^-]+$ ]]; then
-        update_with_tag lastest
+        update_with_tag latest
     else
         update_with_tag next
     fi
