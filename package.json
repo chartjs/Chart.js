@@ -1,6 +1,6 @@
 {
   "name": "chart.js",
-  "version": "dev",
+  "version": "3.0.0-beta.3",
   "homepage": "https://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
   "license": "MIT",
