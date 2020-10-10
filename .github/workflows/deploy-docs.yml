@@ -22,6 +22,7 @@ jobs:
       run: |
         npm ci
         npm run build
+        ./scripts/docs-config "master"
         npm run docs
         npm run typedoc
         npm pack

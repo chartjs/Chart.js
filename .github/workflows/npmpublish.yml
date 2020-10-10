@@ -44,7 +44,7 @@ jobs:
       - run: json -I -f package.json -e "this.version=\"$GITHUB_REF\""
       - run: json -I -f package-lock.json -e "this.version=\"$GITHUB_REF\""
       - run: npm run build
-      - run: ./scripts/docs-config.sh
+      - run: ./scripts/docs-config.sh "${GITHUB_REF:1}"
       - run: npm run docs
       - run: npm run typedoc
       - run: npm pack

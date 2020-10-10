@@ -9,7 +9,7 @@ TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 # Note: this code also exists in docs-config.sh
 # Make sure that this script is executed only for the release and master branches
 VERSION_REGEX='[[:digit:]]+.[[:digit:]]+.[[:digit:]]+(-.*)?'
-VERSION = $1
+VERSION=$1
 
 function move_sample_scripts {
     local subdirectory=$1
@@ -69,7 +69,7 @@ git add --all
 git remote add auth-origin $TARGET_REPO_URL
 git config --global user.email "$GH_AUTH_EMAIL"
 git config --global user.name "Chart.js"
-git commit -m "Deploy $VERSION from $TRAVIS_REPO_SLUG" -m "Commit: $TRAVIS_COMMIT"
+git commit -m "Deploy $VERSION from chartjs/Chart.js" -m "Commit: $GITHUB_SHA"
 git push -q auth-origin $TARGET_BRANCH
 git remote rm auth-origin
 
