@@ -12,7 +12,7 @@
 			margin-top: 50px;
 			text-align: center;
 		}
-		#chartjs-tooltip {
+		.chartjs-tooltip {
 			opacity: 1;
 			position: absolute;
 			background: rgba(0, 0, 0, .7);
@@ -37,16 +37,26 @@
 <body>
 	<div id="canvas-holder" style="width: 300px;">
 		<canvas id="chart-area" width="300" height="300"></canvas>
-		<div id="chartjs-tooltip">
-			<table></table>
-		</div>
 	</div>
 
 	<script>
+		var getOrCreateTooltip = function(chart) {
+			var tooltipEl = chart.canvas.parentNode.querySelector('div');
+
+			if (!tooltipEl) {
+				tooltipEl = document.createElement('div');
+				tooltipEl.classList.add('chartjs-tooltip');
+				tooltipEl.innerHTML = '<table></table>';
+				chart.canvas.parentNode.appendChild(tooltipEl);
+			}
+
+			return tooltipEl;
+		};
+
 		Chart.defaults.plugins.tooltip.custom = function(context) {
 			// Tooltip Element
 			var tooltip = context.tooltip;
-			var tooltipEl = document.getElementById('chartjs-tooltip');
+			var tooltipEl = getOrCreateTooltip(context.chart);
 
 			// Hide if no tooltip
 			if (tooltip.opacity === 0) {
