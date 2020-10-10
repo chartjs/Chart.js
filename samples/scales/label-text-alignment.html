@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Label Text Alignment</title>
+	<script src="../../dist/chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+		.chart-container {
+			width: 500px;
+			margin-left: 40px;
+			margin-right: 40px;
+		}
+		.container {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="chart-container">
+			<canvas id="chart-start-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-start-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-start-end"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-center-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-center-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-center-end"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-end-start"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-end-center"></canvas>
+		</div>
+		<div class="chart-container">
+			<canvas id="chart-end-end"></canvas>
+		</div>
+	</div>
+	<script>
+		var color = Chart.helpers.color;
+		function createConfig(xAlign, yAlign, colorName) {
+			return {
+				type: 'line',
+				data: {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+					datasets: [{
+						label: 'My First dataset',
+						data: [
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor(),
+							randomScalingFactor()
+						],
+						backgroundColor: color(window.chartColors[colorName]).alpha(0.5).rgbString(),
+						borderColor: window.chartColors[colorName],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						display: false,
+					},
+					scales: {
+						x: {
+							display: true,
+							ticks: {
+								alignment: xAlign,
+							}
+						},
+						y: {
+							display: true,
+							ticks: {
+								alignment: yAlign
+							}
+						}
+					},
+					title: {
+						display: true,
+						text: 'X Tick Alignment: ' + xAlign + ', Y Tick Alignment ' + yAlign
+					}
+				}
+			};
+		}
+
+		window.onload = function() {
+			[{
+				id: 'chart-start-start',
+				xAlign: 'start',
+				yAlign: 'start',
+				color: 'red'
+			}, {
+				id: 'chart-start-center',
+				xAlign: 'start',
+				yAlign: 'center',
+				color: 'orange'
+			}, {
+				id: 'chart-start-end',
+				xAlign: 'start',
+				yAlign: 'end',
+				color: 'yellow'
+			}, {
+				id: 'chart-center-start',
+				xAlign: 'center',
+				yAlign: 'start',
+				color: 'green'
+			}, {
+				id: 'chart-center-center',
+				xAlign: 'center',
+				yAlign: 'center',
+				color: 'blue'
+			}, {
+				id: 'chart-center-end',
+				xAlign: 'center',
+				yAlign: 'end',
+				color: 'purple'
+			}, {
+				id: 'chart-end-start',
+				xAlign: 'end',
+				yAlign: 'start',
+				color: 'grey'
+			}, {
+				id: 'chart-end-center',
+				xAlign: 'end',
+				yAlign: 'center',
+				color: 'red'
+			}, {
+				id: 'chart-end-end',
+				xAlign: 'end',
+				yAlign: 'end',
+				color: 'orange'
+			}].forEach(function(details) {
+				var ctx = document.getElementById(details.id).getContext('2d');
+				var config = createConfig(details.xAlign, details.yAlign, details.color);
+				new Chart(ctx, config);
+			});
+		};
+	</script>
+</body>
+
+</html>
