@@ -416,7 +416,13 @@ export default class BarController extends DatasetController {
 			vScale._startPixel - 10,
 			vScale._endPixel + 10);
 
-		head = vScale.getPixelForValue(start + length);
+		if (this.chart.getDataVisibility(index)) {
+			head = vScale.getPixelForValue(start + length);
+		} else {
+			// When not visible, no height
+			head = base;
+		}
+
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
