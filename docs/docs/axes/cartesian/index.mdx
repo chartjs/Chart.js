@@ -2,6 +2,8 @@
 title: Cartesian Axes
 ---
 
+import { useEffect } from 'react';
+
 Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes are used for line, bar, and bubble charts. Four cartesian axes are included in Chart.js by default.
 
 * [linear](./linear.md#linear-cartesian-axis)
@@ -47,6 +49,8 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `alignment` | `string` | | `'center'` | The tick alignment along the axis. Can be `'start'`, `'center'`, or `'end'`.
+| `crossAlignment` | `string` | | `'near'` | The tick alignment perpendicular to the axis. Can be `'near'`, `'center'`, or `'far'`. See [Tick Alignment](#tick-alignment)
 | `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
@@ -55,6 +59,65 @@ The following options are common to all cartesian axes but do not apply to other
 | `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
 | `mirror` | `boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 | `padding` | `number` | `0` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+
+### Tick Alignment
+
+The alignment of ticks is primarily controlled using two settings on the tick configuration object: `alignment` and `crossAlignment`. The `alignment` setting configures how labels align with the tick mark along the axis direction (i.e. horizontal for a horizontal axis and vertical for a vertical axis). The `crossAlignment` setting configures how labels align with the tick mark in the perpendicular direction (i.e. vertical for a horizontal axis and horizontal for a vertical axis). In the example below, the `crossAlignment` setting is used to left align the labels on the Y axis.
+
+```jsx live
+function exampleAlignment() {
+  useEffect(() => {
+    const cfg = {
+      type: 'bar',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          axis: 'y',
+          label: 'My First Dataset',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)',
+            'rgb(201, 203, 207)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: {
+            beginAtZero: true
+          },
+          y: {
+            ticks: {
+              crossAlignment: 'far',
+            }
+          }
+        }
+      }
+    };
+    new Chart(document.getElementById('chartjs-1').getContext('2d'), cfg);
+  });
+  return <div className="chartjs-wrapper"><canvas id="chartjs-1" className="chartjs"></canvas></div>;
+}
+```
+
+**Note:** the `crossAlignment` setting is not used the the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.
 
 ### Axis ID
 
