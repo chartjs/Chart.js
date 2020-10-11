@@ -1253,18 +1253,19 @@ export default class Scale extends Element {
 		const {position, ticks: optionTicks} = options;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const tickPadding = optionTicks.padding;
+		const {alignment, crossAlignment, padding} = optionTicks;
 		const tl = getTickMarkLength(options.gridLines);
+		const tickAndPadding = tl + padding;
 		const rotation = -toRadians(me.labelRotation);
 		const items = [];
 		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 		let textBaseline = 'middle';
 
 		if (position === 'top') {
-			y = me.bottom - tl - tickPadding;
+			y = me.bottom - tickAndPadding;
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'bottom') {
-			y = me.top + tl + tickPadding;
+			y = me.top + tickAndPadding;
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'left') {
 			const ret = this._getYAxisLabelAlignment(tl);
@@ -1276,16 +1277,16 @@ export default class Scale extends Element {
 			x = ret.x;
 		} else if (axis === 'x') {
 			if (position === 'center') {
-				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
+				y = ((chartArea.top + chartArea.bottom) / 2) + tickAndPadding;
 			} else if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
-				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tl + tickPadding;
+				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tickAndPadding;
 			}
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (axis === 'y') {
 			if (position === 'center') {
-				x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
+				x = ((chartArea.left + chartArea.right) / 2) - tickAndPadding;
 			} else if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
@@ -1295,9 +1296,9 @@ export default class Scale extends Element {
 		}
 
 		if (axis === 'y') {
-			if (optionTicks.alignment === 'start') {
+			if (alignment === 'start') {
 				textBaseline = 'top';
-			} else if (optionTicks.alignment === 'end') {
+			} else if (alignment === 'end') {
 				textBaseline = 'bottom';
 			}
 		}
@@ -1311,26 +1312,27 @@ export default class Scale extends Element {
 			font = me._resolveTickFontOptions(i);
 			lineHeight = font.lineHeight;
 			lineCount = isArray(label) ? label.length : 1;
+			const halfCount = lineCount / 2;
 
 			if (isHorizontal) {
 				x = pixel;
 				if (position === 'top') {
-					if (optionTicks.crossAlignment === 'near' || rotation !== 0) {
-						textOffset = (Math.sin(rotation) * (lineCount / 2) + 0.5) * lineHeight;
-						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
-					} else if (optionTicks.crossAlignment === 'center') {
+					if (crossAlignment === 'near' || rotation !== 0) {
+						textOffset = (Math.sin(rotation) * halfCount + 0.5) * lineHeight;
+						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * halfCount) * lineHeight;
+					} else if (crossAlignment === 'center') {
 						textOffset = -1 * (labelSizes.highest.height / 2);
-						textOffset -= (lineCount / 2) * lineHeight;
+						textOffset -= halfCount * lineHeight;
 					} else {
 						textOffset = (-1 * labelSizes.highest.height) + (0.5 * lineHeight);
 					}
 				} else if (position === 'bottom') {
-					if (optionTicks.crossAlignment === 'near' || rotation !== 0) {
-						textOffset = Math.sin(rotation) * (lineCount / 2) * lineHeight;
-						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
-					} else if (optionTicks.crossAlignment === 'center') {
+					if (crossAlignment === 'near' || rotation !== 0) {
+						textOffset = Math.sin(rotation) * halfCount * lineHeight;
+						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * halfCount) * lineHeight;
+					} else if (crossAlignment === 'center') {
 						textOffset = labelSizes.highest.height / 2;
-						textOffset -= (lineCount / 2) * lineHeight;
+						textOffset -= halfCount * lineHeight;
 					} else {
 						textOffset = labelSizes.highest.height - ((lineCount - 0.5) * lineHeight);
 					}
@@ -1380,6 +1382,7 @@ export default class Scale extends Element {
 		const {position, ticks} = me.options;
 		const {crossAlignment, mirror, padding} = ticks;
 		const labelSizes = me._getLabelSizes();
+		const tickAndPadding = tl + padding;
 		const widest = labelSizes.widest.width;
 
 		let textAlign;
@@ -1389,29 +1392,35 @@ export default class Scale extends Element {
 			if (mirror) {
 				textAlign = 'left';
 				x = me.right - padding;
-			} else if (crossAlignment === 'near') {
-				textAlign = 'right';
-				x = me.right - tl - padding;
-			} else if (crossAlignment === 'center') {
-				textAlign = 'center';
-				x = me.right - tl - (widest / 2) - padding;
 			} else {
-				textAlign = 'left';
-				x = me.right - tl - widest - padding;
+				x = me.right - tickAndPadding;
+
+				if (crossAlignment === 'near') {
+					textAlign = 'right';
+				} else if (crossAlignment === 'center') {
+					textAlign = 'center';
+					x -= (widest / 2);
+				} else {
+					textAlign = 'left';
+					x -= widest;
+				}
 			}
 		} else if (position === 'right') {
 			if (mirror) {
 				textAlign = 'right';
 				x = me.left + padding;
-			} else if (crossAlignment === 'near') {
-				textAlign = 'left';
-				x = me.left + tl + padding;
-			} else if (crossAlignment === 'center') {
-				textAlign = 'center';
-				x = me.left + tl + padding + (widest / 2);
 			} else {
-				textAlign = 'right';
-				x = me.left + tl + padding + widest;
+				x = me.left + tickAndPadding;
+
+				if (crossAlignment === 'near') {
+					textAlign = 'left';
+				} else if (crossAlignment === 'center') {
+					textAlign = 'center';
+					x += widest / 2;
+				} else {
+					textAlign = 'right';
+					x += widest;
+				}
 			}
 		} else {
 			textAlign = 'right';
