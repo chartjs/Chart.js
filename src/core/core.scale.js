@@ -63,6 +63,7 @@ defaults.set('scale', {
 		minor: {},
 		major: {},
 		alignment: 'center',
+		crossAlignment: 'near',
 	}
 });
 
@@ -1268,10 +1269,10 @@ export default class Scale extends Element {
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'left') {
 			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
-			textAlign = isMirrored ? 'left' : 'right';
+			textAlign = this._getYAxisLabelAlignment();
 		} else if (position === 'right') {
 			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
-			textAlign = isMirrored ? 'right' : 'left';
+			textAlign = this._getYAxisLabelAlignment();
 		} else if (axis === 'x') {
 			if (position === 'center') {
 				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
@@ -1289,7 +1290,7 @@ export default class Scale extends Element {
 				const value = position[positionAxisID];
 				x = me.chart.scales[positionAxisID].getPixelForValue(value);
 			}
-			textAlign = 'right';
+			textAlign = this._getYAxisLabelAlignment();
 		}
 
 		if (axis === 'y') {
@@ -1356,6 +1357,23 @@ export default class Scale extends Element {
 		}
 
 		return align;
+	}
+
+	_getYAxisLabelAlignment() {
+		const me = this;
+		const {position, ticks} = me.options;
+		const isMirrored = ticks.mirror;
+		let textAlign;
+
+		if (position === 'left') {
+			textAlign = isMirrored ? 'left' : 'right';
+		} else if (position === 'right') {
+			textAlign = isMirrored ? 'right' : 'left';
+		} else {
+			textAlign = 'right';
+		}
+
+		return textAlign;
 	}
 
 	/**
