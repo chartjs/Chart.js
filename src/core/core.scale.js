@@ -1251,7 +1251,6 @@ export default class Scale extends Element {
 		const axis = me.axis;
 		const options = me.options;
 		const {position, ticks: optionTicks} = options;
-		const isMirrored = optionTicks.mirror;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
 		const tickPadding = optionTicks.padding;
@@ -1268,11 +1267,13 @@ export default class Scale extends Element {
 			y = me.top + tl + tickPadding;
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'left') {
-			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
-			textAlign = this._getYAxisLabelAlignment();
+			const ret = this._getYAxisLabelAlignment(tl);
+			textAlign = ret.textAlign;
+			x = ret.x;
 		} else if (position === 'right') {
-			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
-			textAlign = this._getYAxisLabelAlignment();
+			const ret = this._getYAxisLabelAlignment(tl);
+			textAlign = ret.textAlign;
+			x = ret.x;
 		} else if (axis === 'x') {
 			if (position === 'center') {
 				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
@@ -1290,7 +1291,7 @@ export default class Scale extends Element {
 				const value = position[positionAxisID];
 				x = me.chart.scales[positionAxisID].getPixelForValue(value);
 			}
-			textAlign = this._getYAxisLabelAlignment();
+			textAlign = this._getYAxisLabelAlignment(tl).textAlign;
 		}
 
 		if (axis === 'y') {
@@ -1359,21 +1360,49 @@ export default class Scale extends Element {
 		return align;
 	}
 
-	_getYAxisLabelAlignment() {
+	_getYAxisLabelAlignment(tl) {
 		const me = this;
 		const {position, ticks} = me.options;
-		const isMirrored = ticks.mirror;
+		const {crossAlignment, mirror, padding} = ticks;
+		const labelSizes = me._getLabelSizes();
+		const widest = labelSizes.widest.width;
+		
 		let textAlign;
+		let x;
 
 		if (position === 'left') {
-			textAlign = isMirrored ? 'left' : 'right';
+			if (mirror) {
+				textAlign = 'left';
+				x = me.right - padding;
+			} else if (crossAlignment === 'near') {
+				textAlign = 'right';
+				x = me.right - tl - padding;
+			} else if (crossAlignment === 'center') {
+				textAlign = 'center';
+				x = me.right - tl - (widest / 2) - padding;
+			} else {
+				textAlign = 'left';
+				x = me.right - tl - widest - padding;
+			}
 		} else if (position === 'right') {
-			textAlign = isMirrored ? 'right' : 'left';
+			if (mirror) {
+				textAlign = 'right';
+				x = me.left + padding;
+			} else if (crossAlignment === 'near') {
+				textAlign = 'left';
+				x = me.left + tl + padding;
+			} else if (crossAlignment === 'center') {
+				textAlign = 'center';
+				x = me.left + tl + padding + (widest / 2);
+			} else {
+				textAlign = 'right';
+				x = me.left + tl + padding + widest;
+			}
 		} else {
 			textAlign = 'right';
 		}
 
-		return textAlign;
+		return {textAlign, x};
 	}
 
 	/**
