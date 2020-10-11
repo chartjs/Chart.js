@@ -2,11 +2,11 @@
 
 set -e
 
-NPM_TAG="latest"
+NPM_TAG="next"
 
-if [[ ! "$GITHUB_REF" =~ ^v\d+\.\d+\.\d+$ ]]; then
-    echo "Release tag indicates a pre-release. Releasing as \"next\"."
-    NPM_TAG="next"
+if [[ "$GITHUB_REF" =~ ^[^-]+$ ]]; then
+    echo "Release tag indicates a full release. Releasing as \"latest\"."
+    NPM_TAG="latest"
 fi
 
 npm publish --tag "$NPM_TAG"
