@@ -22,3 +22,6 @@ jobs:
         npm run typedoc
         npm pack
         ./scripts/deploy-docs.sh "master"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}

@@ -39,23 +39,30 @@ jobs:
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm ci
-      - run: npm install -g json
-      - run: json -I -f package.json -e "this.version=\"$GITHUB_REF\""
-      - run: json -I -f package-lock.json -e "this.version=\"$GITHUB_REF\""
-      - run: npm run build
-      - run: ./scripts/docs-config.sh "${GITHUB_REF:1}"
-      - run: npm run docs
-      - run: npm run typedoc
-      - run: npm pack
-      - run: ./scripts/publish.sh
+      - name: Setup and build
+        run: |
+          npm ci
+          npm install -g json
+          json -I -f package.json -e "this.version=\"$GITHUB_REF\""
+          json -I -f package-lock.json -e "this.version=\"$GITHUB_REF\""
+          npm run build
+          ./scripts/docs-config.sh "${GITHUB_REF:1}"
+          npm run docs
+          npm run typedoc
+          npm pack
+      - name: Publish to NPM
+        run: ./scripts/publish.sh
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       # On releases, GITHUB_REF is the tag name which is the version
       # However, it will include the leading "v", so we need to strip that
       # first character off here since we want the docs folder to not have
       # the "v" in it.
-      - run: ./scripts/deploy-docs.sh "${GITHUB_REF:1}"
+      - name: Deploy Docs
+        run: ./scripts/deploy-docs.sh "${GITHUB_REF:1}"
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+          GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
       - name: Upload chart.js
         id: upload-chart-js
         uses: actions/upload-release-asset@v1
