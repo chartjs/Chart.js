@@ -1302,6 +1302,7 @@ export default class Scale extends Element {
 			}
 		}
 
+		const labelSizes = me._getLabelSizes();
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			tick = ticks[i];
 			label = tick.label;
@@ -1314,11 +1315,25 @@ export default class Scale extends Element {
 			if (isHorizontal) {
 				x = pixel;
 				if (position === 'top') {
-					textOffset = (Math.sin(rotation) * (lineCount / 2) + 0.5) * lineHeight;
-					textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
-				} else {
-					textOffset = Math.sin(rotation) * (lineCount / 2) * lineHeight;
-					textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+					if (optionTicks.crossAlignment === 'near' || rotation !== 0) {
+						textOffset = (Math.sin(rotation) * (lineCount / 2) + 0.5) * lineHeight;
+						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+					} else if (optionTicks.crossAlignment === 'center') {
+						textOffset = -1 * (labelSizes.highest.height / 2);
+						textOffset -= (lineCount / 2) * lineHeight;
+					} else {
+						textOffset = (-1 * labelSizes.highest.height) + (0.5 * lineHeight);
+					}
+				} else if (position === 'bottom') {
+					if (optionTicks.crossAlignment === 'near' || rotation !== 0) {
+						textOffset = Math.sin(rotation) * (lineCount / 2) * lineHeight;
+						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+					} else if (optionTicks.crossAlignment === 'center') {
+						textOffset = labelSizes.highest.height / 2;
+						textOffset -= (lineCount / 2) * lineHeight;
+					} else {
+						textOffset = labelSizes.highest.height - ((lineCount - 0.5) * lineHeight);
+					}
 				}
 			} else {
 				y = pixel;
@@ -1366,7 +1381,7 @@ export default class Scale extends Element {
 		const {crossAlignment, mirror, padding} = ticks;
 		const labelSizes = me._getLabelSizes();
 		const widest = labelSizes.widest.width;
-		
+
 		let textAlign;
 		let x;
 
