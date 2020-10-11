@@ -91,7 +91,7 @@ The following values are supported for `borderAlign`.
 * `'center'` (default)
 * `'inner'`
 
-When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders are not overlap.
+When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all the borders do not overlap.
 
 ### Interactions
 
@@ -107,7 +107,7 @@ All these values, if `undefined`, fallback to the associated [`elements.arc.*`](
 
 ## Config Options
 
-These are the customisation options specific to Polar Area charts. These options are merged with the [global chart default options](#default-options), and form the options of the chart.
+These are the customisation options specific to Polar Area charts. These options are merged with the [global chart default options](#default-options) and form the options of the chart.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -119,7 +119,7 @@ The polar area chart uses the [radialLinear](../axes/radial/linear.md) scale. Ad
 
 ## Default Options
 
-We can also change these defaults values for each PolarArea type that is created, this object is available at `Chart.defaults.polarArea`. Changing the global options only affects charts created after the change. Existing charts are not changed.
+We can also change these default values for each PolarArea type that is created, this object is available at `Chart.defaults.polarArea`. Changing the global options only affects charts created after the change. Existing charts are not changed.
 
 For example, to configure all new polar area charts with `animateScale = false` you would do:
 

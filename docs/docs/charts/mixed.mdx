@@ -24,7 +24,7 @@ var mixedChart = new Chart(ctx, {
 });
 ```
 
-At this point we have a chart rendering how we'd like. It's important to note that the default options for the charts are only considered at the dataset level and are not merged at the chart level in this case.
+At this point, we have a chart rendering how we'd like. It's important to note that the default options for the charts are only considered at the dataset level and are not merged at the chart level in this case.
 
 import { useEffect } from 'react';
 
@@ -69,7 +69,7 @@ export const ExampleChart = () => {
 
 ## Drawing order
 
- By default, datasets are drawn so that first one is top-most. This can be altered by specifying `order` option to datasets. `order` defaults to `0`. Note that this also affects stacking, legend and tooltip. So its essentially the same as reordering the datasets.
+ By default, datasets are drawn such that the first one is top-most. This can be altered by specifying `order` option to datasets. `order` defaults to `0`. Note that this also affects stacking, legend, and tooltip. So it's essentially the same as reordering the datasets.
 
  ```javascript
 var mixedChart = new Chart(ctx, {
