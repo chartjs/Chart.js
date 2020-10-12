@@ -2,11 +2,11 @@
 title: Logarithmic Axis
 ---
 
-The logarithmic scale is use to chart numerical data. It can be placed on either the x or y axis. As the name suggests, logarithmic interpolation is used to determine where a value lies on the axis.
+The logarithmic scale is used to chart numerical data. It can be placed on either the x or y-axis. As the name suggests, logarithmic interpolation is used to determine where a value lies on the axis.
 
 ## Tick Configuration Options
 
-The following options are provided by the logarithmic scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](index.md#tick-configuration).
+The following options are provided by the logarithmic scale. They are all located in the `ticks` sub-options. These options extend the [common tick configuration](index.md#tick-configuration).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -14,4 +14,4 @@ The following options are provided by the logarithmic scale. They are all locate
 
 ## Internal data format
 
-Internally logarithmic scale uses numeric data
+Internally, the logarithmic scale uses numeric data.

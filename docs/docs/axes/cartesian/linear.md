@@ -2,7 +2,7 @@
 title: Linear Axis
 ---
 
-The linear scale is use to chart numerical data. It can be placed on either the x or y axis. The scatter chart type automatically configures a line chart to use one of these scales for the x axis. As the name suggests, linear interpolation is used to determine where a value lies on the axis.
+The linear scale is used to chart numerical data. It can be placed on either the x or y-axis. The scatter chart type automatically configures a line chart to use one of these scales for the x-axis. As the name suggests, linear interpolation is used to determine where a value lies on the axis.
 
 ## Configuration Options
 
@@ -16,14 +16,14 @@ These options extend the [common configuration for all cartesian axes](index.md#
 
 ## Tick Configuration Options
 
-The following tick options are provided by the linear scale. They are all located in the `ticks` sub options. These options extend the [common tick configuration](index.md#tick-configuration).
+The following tick options are provided by the linear scale. They are all located in the `ticks` sub-options. These options extend the [common tick configuration](index.md#tick-configuration).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 | `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
 | `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
-| `stepSize` | `number` | | User defined fixed step size for the scale. [more...](#step-size)
+| `stepSize` | `number` | | User-defined fixed step size for the scale. [more...](#step-size)
 
 ## Axis Range Settings
 
@@ -83,4 +83,4 @@ let options = {
 
 ## Internal data format
 
-Internally, linear scale uses numeric data
+Internally, the linear scale uses numeric data

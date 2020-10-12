@@ -6,7 +6,7 @@ The time scale is used to display times and dates. Data are spread according to 
 
 ## Date Adapters
 
-The time scale **requires** both a date library and corresponding adapter to be present. Please choose from the [available adapters](https://github.com/chartjs/awesome#adapters).
+The time scale **requires** both a date library and a corresponding adapter to be present. Please choose from the [available adapters](https://github.com/chartjs/awesome#adapters).
 
 ## Data Sets
 
@@ -16,7 +16,7 @@ See [data structures](../../general/data-structures.md).
 
 ### Date Formats
 
-When providing data for the time scale, Chart.js uses timestamps defined as milliseconds since the epoch (midnight January 1, 1970 UTC) internally. However, Chart.js also supports all of the formats that your chosen date adapter accepts. You should use timestamps if you'd like to set `parsing: false` for better performance.
+When providing data for the time scale, Chart.js uses timestamps defined as milliseconds since the epoch (midnight January 1, 1970, UTC) internally. However, Chart.js also supports all of the formats that your chosen date adapter accepts. You should use timestamps if you'd like to set `parsing: false` for better performance.
 
 ## Configuration Options
 
@@ -125,7 +125,7 @@ The `ticks.source` property controls the ticks generation.
 
 If this property is defined as a string, it is interpreted as a custom format to be used by the date adapter to parse the date.
 
-If this is a function, it must return a type which can be handled by your date adapter's `parse` method.
+If this is a function, it must return a type that can be handled by your date adapter's `parse` method.
 
 ### Internal data format
 
