@@ -1,3 +1,4 @@
+# This workflow publishes new documentation to https://chartjs.org/docs/master after every commit
 name: CI
 
 on:
