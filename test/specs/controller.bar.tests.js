@@ -1532,6 +1532,43 @@ describe('Chart.controllers.bar', function() {
 		expect(data[1].base - minBarLength).toEqual(data[1].x);
 	});
 
+	it('should respect the data visibility settings', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: [1, 2, 3, 4]
+				}],
+				labels: ['A', 'B', 'C', 'D']
+			},
+			options: {
+				legend: false,
+				title: false,
+				scales: {
+					x: {
+						type: 'category',
+						display: false
+					},
+					y: {
+						type: 'linear',
+						display: false,
+					}
+				}
+			}
+		});
+
+		var data = chart.getDatasetMeta(0).data;
+		expect(data[0].base).toBeCloseToPixel(512);
+		expect(data[0].y).toBeCloseToPixel(384);
+
+		chart.toggleDataVisibility(0);
+		chart.update();
+
+		data = chart.getDatasetMeta(0).data;
+		expect(data[0].base).toBeCloseToPixel(512);
+		expect(data[0].y).toBeCloseToPixel(512);
+	});
+
 	describe('Float bar', function() {
 		it('Should return correct values from getMinMax', function() {
 			var chart = window.acquireChart({
