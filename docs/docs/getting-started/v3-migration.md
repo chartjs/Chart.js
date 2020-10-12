@@ -66,6 +66,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
+* Polar area `elements.arc.angle` is now configured in degrees instead of radians.
 * Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * Doughnut `rotation` option is now in degrees and 0 is at top. Default is changed from `-½π` to  `0`.
 * Doughnut `circumference` option is now in degrees. Default is changed from `2π` to `0`.

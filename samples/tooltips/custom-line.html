@@ -11,7 +11,7 @@
 			-webkit-user-select: none;
 			-ms-user-select: none;
 		}
-		#chartjs-tooltip {
+		.chartjs-tooltip {
 			opacity: 1;
 			position: absolute;
 			background: rgba(0, 0, 0, .7);
@@ -41,11 +41,11 @@
 		Chart.defaults.pointHitDetectionRadius = 1;
 
 		var getOrCreateTooltip = function(chart) {
-			var tooltipEl = document.getElementById('chartjs-tooltip');
+			var tooltipEl = chart.canvas.parentNode.querySelector('div');
 
 			if (!tooltipEl) {
 				tooltipEl = document.createElement('div');
-				tooltipEl.id = 'chartjs-tooltip';
+				tooltipEl.classList.add('chartjs-tooltip');
 				tooltipEl.innerHTML = '<table></table>';
 				chart.canvas.parentNode.appendChild(tooltipEl);
 			}

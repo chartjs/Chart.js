@@ -42,7 +42,6 @@ The tick configuration is nested under the scale configuration in the `ticks` ke
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | :-------------------------------: | ------- | -----------
-| `alignment` | `string` | | `'center'` | The tick alignment along the axis. Can be `'start'`, `'center'`, or `'end'`.
 | `callback` | `function` | | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).
 | `display` | `boolean` | | `true` | If true, show tick labels.
 | `font` | `Font` | Yes | `defaults.font` | See [Fonts](../general/fonts.md)

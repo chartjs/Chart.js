@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {resolve, toRadians, PI, TAU} from '../helpers/index';
+import {resolve, toRadians, PI} from '../helpers/index';
 
 function getStartAngleRadians(deg) {
 	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
@@ -121,10 +121,10 @@ export default class PolarAreaController extends DatasetController {
 		// Scriptable options
 		const context = me.getContext(index, mode === 'active');
 
-		return resolve([
+		return toRadians(resolve([
 			me.chart.options.elements.arc.angle,
-			TAU / count
-		], context, index);
+			360 / count
+		], context, index));
 	}
 }
 

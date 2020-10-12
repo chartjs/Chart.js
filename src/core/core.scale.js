@@ -63,6 +63,7 @@ defaults.set('scale', {
 		minor: {},
 		major: {},
 		alignment: 'center',
+		crossAlignment: 'near',
 	}
 });
 
@@ -1250,56 +1251,59 @@ export default class Scale extends Element {
 		const axis = me.axis;
 		const options = me.options;
 		const {position, ticks: optionTicks} = options;
-		const isMirrored = optionTicks.mirror;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const tickPadding = optionTicks.padding;
+		const {alignment, crossAlignment, padding} = optionTicks;
 		const tl = getTickMarkLength(options.gridLines);
+		const tickAndPadding = tl + padding;
 		const rotation = -toRadians(me.labelRotation);
 		const items = [];
 		let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
 		let textBaseline = 'middle';
 
 		if (position === 'top') {
-			y = me.bottom - tl - tickPadding;
+			y = me.bottom - tickAndPadding;
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'bottom') {
-			y = me.top + tl + tickPadding;
+			y = me.top + tickAndPadding;
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (position === 'left') {
-			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
-			textAlign = isMirrored ? 'left' : 'right';
+			const ret = this._getYAxisLabelAlignment(tl);
+			textAlign = ret.textAlign;
+			x = ret.x;
 		} else if (position === 'right') {
-			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
-			textAlign = isMirrored ? 'right' : 'left';
+			const ret = this._getYAxisLabelAlignment(tl);
+			textAlign = ret.textAlign;
+			x = ret.x;
 		} else if (axis === 'x') {
 			if (position === 'center') {
-				y = ((chartArea.top + chartArea.bottom) / 2) + tl + tickPadding;
+				y = ((chartArea.top + chartArea.bottom) / 2) + tickAndPadding;
 			} else if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
-				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tl + tickPadding;
+				y = me.chart.scales[positionAxisID].getPixelForValue(value) + tickAndPadding;
 			}
 			textAlign = me._getXAxisLabelAlignment();
 		} else if (axis === 'y') {
 			if (position === 'center') {
-				x = ((chartArea.left + chartArea.right) / 2) - tl - tickPadding;
+				x = ((chartArea.left + chartArea.right) / 2) - tickAndPadding;
 			} else if (isObject(position)) {
 				const positionAxisID = Object.keys(position)[0];
 				const value = position[positionAxisID];
 				x = me.chart.scales[positionAxisID].getPixelForValue(value);
 			}
-			textAlign = 'right';
+			textAlign = this._getYAxisLabelAlignment(tl).textAlign;
 		}
 
 		if (axis === 'y') {
-			if (optionTicks.alignment === 'start') {
+			if (alignment === 'start') {
 				textBaseline = 'top';
-			} else if (optionTicks.alignment === 'end') {
+			} else if (alignment === 'end') {
 				textBaseline = 'bottom';
 			}
 		}
 
+		const labelSizes = me._getLabelSizes();
 		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
 			tick = ticks[i];
 			label = tick.label;
@@ -1308,15 +1312,30 @@ export default class Scale extends Element {
 			font = me._resolveTickFontOptions(i);
 			lineHeight = font.lineHeight;
 			lineCount = isArray(label) ? label.length : 1;
+			const halfCount = lineCount / 2;
 
 			if (isHorizontal) {
 				x = pixel;
 				if (position === 'top') {
-					textOffset = (Math.sin(rotation) * (lineCount / 2) + 0.5) * lineHeight;
-					textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
-				} else {
-					textOffset = Math.sin(rotation) * (lineCount / 2) * lineHeight;
-					textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * (lineCount / 2)) * lineHeight;
+					if (crossAlignment === 'near' || rotation !== 0) {
+						textOffset = (Math.sin(rotation) * halfCount + 0.5) * lineHeight;
+						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * halfCount) * lineHeight;
+					} else if (crossAlignment === 'center') {
+						textOffset = -1 * (labelSizes.highest.height / 2);
+						textOffset -= halfCount * lineHeight;
+					} else {
+						textOffset = (-1 * labelSizes.highest.height) + (0.5 * lineHeight);
+					}
+				} else if (position === 'bottom') {
+					if (crossAlignment === 'near' || rotation !== 0) {
+						textOffset = Math.sin(rotation) * halfCount * lineHeight;
+						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * halfCount) * lineHeight;
+					} else if (crossAlignment === 'center') {
+						textOffset = labelSizes.highest.height / 2;
+						textOffset -= halfCount * lineHeight;
+					} else {
+						textOffset = labelSizes.highest.height - ((lineCount - 0.5) * lineHeight);
+					}
 				}
 			} else {
 				y = pixel;
@@ -1356,6 +1375,58 @@ export default class Scale extends Element {
 		}
 
 		return align;
+	}
+
+	_getYAxisLabelAlignment(tl) {
+		const me = this;
+		const {position, ticks} = me.options;
+		const {crossAlignment, mirror, padding} = ticks;
+		const labelSizes = me._getLabelSizes();
+		const tickAndPadding = tl + padding;
+		const widest = labelSizes.widest.width;
+
+		let textAlign;
+		let x;
+
+		if (position === 'left') {
+			if (mirror) {
+				textAlign = 'left';
+				x = me.right - padding;
+			} else {
+				x = me.right - tickAndPadding;
+
+				if (crossAlignment === 'near') {
+					textAlign = 'right';
+				} else if (crossAlignment === 'center') {
+					textAlign = 'center';
+					x -= (widest / 2);
+				} else {
+					textAlign = 'left';
+					x -= widest;
+				}
+			}
+		} else if (position === 'right') {
+			if (mirror) {
+				textAlign = 'right';
+				x = me.left + padding;
+			} else {
+				x = me.left + tickAndPadding;
+
+				if (crossAlignment === 'near') {
+					textAlign = 'left';
+				} else if (crossAlignment === 'center') {
+					textAlign = 'center';
+					x += widest / 2;
+				} else {
+					textAlign = 'right';
+					x += widest;
+				}
+			}
+		} else {
+			textAlign = 'right';
+		}
+
+		return {textAlign, x};
 	}
 
 	/**
