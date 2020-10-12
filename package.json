@@ -1,8 +1,8 @@
 {
   "name": "chart.js",
-  "version": "3.0.0-beta.3",
   "homepage": "https://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
+  "version": "3.0.0-beta.3",
   "license": "MIT",
   "jsdelivr": "dist/chart.min.js",
   "unpkg": "dist/chart.min.js",
