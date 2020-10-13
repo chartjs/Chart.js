@@ -41,7 +41,7 @@ jobs:
       shell: bash
     - name: Build and Test
       run: |
-        npm install
+        npm ci
         npm run build
         npm test
     - name: Package
