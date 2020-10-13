@@ -33,6 +33,7 @@ version-resolver:
       - 'type: enhancement'
   patch:
     labels:
+      - 'type: bug'
       - 'type: chore'
       - 'type: types'
   default: patch
