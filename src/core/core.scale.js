@@ -894,6 +894,8 @@ export default class Scale extends Element {
 		const widths = [];
 		const heights = [];
 		const offsets = [];
+		let widestLabelSize = 0;
+		let highestLabelSize = 0;
 		let ticks = me.ticks;
 		if (sampleSize < ticks.length) {
 			ticks = sample(ticks, sampleSize);
@@ -926,11 +928,13 @@ export default class Scale extends Element {
 			widths.push(width);
 			heights.push(height);
 			offsets.push(lineHeight / 2);
+			widestLabelSize = Math.max(width, widestLabelSize);
+			highestLabelSize = Math.max(height, highestLabelSize);
 		}
 		garbageCollect(caches, length);
 
-		const widest = widths.indexOf(Math.max.apply(null, widths));
-		const highest = heights.indexOf(Math.max.apply(null, heights));
+		const widest = widths.indexOf(widestLabelSize);
+		const highest = heights.indexOf(highestLabelSize);
 
 		function valueAt(idx) {
 			return {
