@@ -1,0 +1,53 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '# Breaking Changes'
+    labels:
+        - 'breaking change'
+  - title: '# Enhancements'
+    labels:
+      - 'type: enhancement'
+  - title: '# Performance'
+    labels:
+      - 'type: performance'
+  - title: '# Bugs Fixed'
+    labels:
+      - 'type: bug'
+  - title: '# Types'
+    labels:
+      - 'type: types'
+  - title: '# Documentation'
+    labels:
+      - 'type: documentation'
+  - title: '# Development'
+    labels:
+      - 'type: chore'
+change-template: '- #$NUMBER $TITLE'
+change-title-escapes: '\<*_&`#@'
+version-resolver:
+  major:
+    labels:
+      - 'breaking change'
+  minor:
+    labels:
+      - 'type: enhancement'
+  patch:
+    labels:
+      - 'type: bug'
+      - 'type: chore'
+      - 'type: types'
+  default: patch
+template: |
+  # Essential Links
+
+  * [npm](https://www.npmjs.com/package/chart.js)
+  * [Migration guide](https://www.chartjs.org/docs/next/getting-started/v3-migration)
+  * [Docs](https://www.chartjs.org/docs/next/)
+  * [API](https://www.chartjs.org/docs/next/typedoc/)
+  * [Samples](https://www.chartjs.org/samples/next/)
+
+  ## Changes
+
+  $CHANGES
+
+  Thanks to $CONTRIBUTORS

@@ -174,7 +174,7 @@ chart.update(); // chart now renders with dataset hidden
 
 ## toggleDataVisibility(index)
 
-Toggles the visibility of an item in all datasets. A dataset needs to explicitly support this feature for it to have an effect. From internal chart types, doughnut / pie and polar area use this.
+Toggles the visibility of an item in all datasets. A dataset needs to explicitly support this feature for it to have an effect. From internal chart types, doughnut / pie, polar area, and bar use this.
 
 ```javascript
 chart.toggleDataVisibility(2); // toggles the item in all datasets, at index 2

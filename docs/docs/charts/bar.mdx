@@ -100,9 +100,9 @@ the color of the bars is generally set this way.
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `indexAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `label` | The label for the dataset which appears in the legend and tooltips.
-| `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
-| `xAxisID` | The ID of the x axis to plot this dataset on.
-| `yAxisID` | The ID of the y axis to plot this dataset on.
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
+| `xAxisID` | The ID of the x-axis to plot this dataset on.
+| `yAxisID` | The ID of the y-axis to plot this dataset on.
 
 ### Styling
 
@@ -124,7 +124,7 @@ This setting is used to avoid drawing the bar stroke at the base of the fill.
 In general, this does not need to be changed except when creating chart types
 that derive from a bar chart.
 
-**Note:** for negative bars in vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in horizontal chart.
+**Note:** for negative bars in a vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in a horizontal chart.
 
 Options are:
 
@@ -138,7 +138,7 @@ Options are:
 
 #### borderWidth
 
-If this value is a number, it is applied to all sides of the rectangle (left, top, right, bottom), except [`borderSkipped`](#borderskipped). If this value is an object, the `left` property defines the left border width. Similarly the `right`, `top` and `bottom` properties can also be specified. Omitted borders and [`borderSkipped`](#borderskipped) are skipped.
+If this value is a number, it is applied to all sides of the rectangle (left, top, right, bottom), except [`borderSkipped`](#borderskipped). If this value is an object, the `left` property defines the left border width. Similarly, the `right`, `top`, and `bottom` properties can also be specified. Omitted borders and [`borderSkipped`](#borderskipped) are skipped.
 
 ### Interactions
 
@@ -200,7 +200,7 @@ The bar chart sets unique default values for the following configuration from th
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `offset` | `boolean` | `true` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area.
+| `offset` | `boolean` | `true` | If true, extra space is added to both edges and the axis is scaled to fit into the chart area.
 | `gridLines.offsetGridLines` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
 ### Example Usage
@@ -343,8 +343,8 @@ var myBarChart = new Chart(ctx, {
 
 ### Config Options
 
-The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x axis in a bar chart, are applied to the y axis in a horizontal bar chart.
+The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x-axis in a bar chart, are applied to the y-axis in a horizontal bar chart.
 
 ## Internal data format
 
-`{x, y, _custom}` where `_custom` is optional object defining stacked bar properties: `{start, end, barStart, barEnd, min, max}`. `start` and `end` are the input values. Those two are repeated in `barStart` (closer to origin), `barEnd` (further from origin), `min` and `max`.
+`{x, y, _custom}` where `_custom` is an optional object defining stacked bar properties: `{start, end, barStart, barEnd, min, max}`. `start` and `end` are the input values. Those two are repeated in `barStart` (closer to origin), `barEnd` (further from origin), `min` and `max`.
