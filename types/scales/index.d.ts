@@ -132,7 +132,7 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
      * The label alignment
      * @default 'center'
      */
-    alignment: 'start' | 'center' | 'end';
+    align: 'start' | 'center' | 'end';
     /**
      * 	If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
      * @default true

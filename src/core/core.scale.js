@@ -62,7 +62,7 @@ defaults.set('scale', {
 		callback: Ticks.formatters.values,
 		minor: {},
 		major: {},
-		alignment: 'center',
+		align: 'center',
 		crossAlign: 'near',
 	}
 });
@@ -763,10 +763,10 @@ export default class Scale extends Element {
 					paddingRight = labelsBelowTicks ?
 						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
 						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
-				} else if (tickOpts.alignment === 'start') {
+				} else if (tickOpts.align === 'start') {
 					paddingLeft = 0;
 					paddingRight = lastLabelSize.width;
-				} else if (tickOpts.alignment === 'end') {
+				} else if (tickOpts.align === 'end') {
 					paddingLeft = firstLabelSize.width;
 					paddingRight = 0;
 				} else {
@@ -791,10 +791,10 @@ export default class Scale extends Element {
 				let paddingTop = lastLabelSize.height / 2;
 				let paddingBottom = firstLabelSize.height / 2;
 
-				if (tickOpts.alignment === 'start') {
+				if (tickOpts.align === 'start') {
 					paddingTop = 0;
 					paddingBottom = firstLabelSize.height;
-				} else if (tickOpts.alignment === 'end') {
+				} else if (tickOpts.align === 'end') {
 					paddingTop = lastLabelSize.height;
 					paddingBottom = 0;
 				}
@@ -1253,7 +1253,7 @@ export default class Scale extends Element {
 		const {position, ticks: optionTicks} = options;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const {alignment, crossAlign, padding} = optionTicks;
+		const {align, crossAlign, padding} = optionTicks;
 		const tl = getTickMarkLength(options.gridLines);
 		const tickAndPadding = tl + padding;
 		const rotation = -toRadians(me.labelRotation);
@@ -1296,9 +1296,9 @@ export default class Scale extends Element {
 		}
 
 		if (axis === 'y') {
-			if (alignment === 'start') {
+			if (align === 'start') {
 				textBaseline = 'top';
-			} else if (alignment === 'end') {
+			} else if (align === 'end') {
 				textBaseline = 'bottom';
 			}
 		}
@@ -1368,9 +1368,9 @@ export default class Scale extends Element {
 
 		let align = 'center';
 
-		if (ticks.alignment === 'start') {
+		if (ticks.align === 'start') {
 			align = 'left';
-		} else if (ticks.alignment === 'end') {
+		} else if (ticks.align === 'end') {
 			align = 'right';
 		}
 
