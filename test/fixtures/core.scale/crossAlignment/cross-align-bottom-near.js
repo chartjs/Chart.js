@@ -13,7 +13,7 @@ module.exports = {
 			scales: {
 				x: {
 					ticks: {
-						crossAlignment: 'near',
+						crossAlign: 'near',
 					},
 				},
 			}

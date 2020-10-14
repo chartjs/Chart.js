@@ -15,7 +15,7 @@ module.exports = {
 				y: {
 					position: 'right',
 					ticks: {
-						crossAlignment: 'near',
+						crossAlign: 'near',
 					},
 				},
 			}

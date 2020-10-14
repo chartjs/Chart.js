@@ -13,12 +13,12 @@ module.exports = {
 			scales: {
 				x: {
 					ticks: {
-						alignment: 'center',
+						align: 'center',
 					},
 				},
 				y: {
 					ticks: {
-						alignment: 'center',
+						align: 'center',
 					}
 				}
 			}
