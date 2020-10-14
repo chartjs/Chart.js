@@ -149,7 +149,7 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
      * This only applies when the rotation is 0 and the axis position is one of "top", "left", "right", or "bottom"
      * @default 'near'
      */
-    crossAlignment: 'near' | 'center' | 'far';
+    crossAlign: 'near' | 'center' | 'far';
 
     /**
      * Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas

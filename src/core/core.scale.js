@@ -63,7 +63,7 @@ defaults.set('scale', {
 		minor: {},
 		major: {},
 		alignment: 'center',
-		crossAlignment: 'near',
+		crossAlign: 'near',
 	}
 });
 
@@ -1253,7 +1253,7 @@ export default class Scale extends Element {
 		const {position, ticks: optionTicks} = options;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const {alignment, crossAlignment, padding} = optionTicks;
+		const {alignment, crossAlign, padding} = optionTicks;
 		const tl = getTickMarkLength(options.gridLines);
 		const tickAndPadding = tl + padding;
 		const rotation = -toRadians(me.labelRotation);
@@ -1317,20 +1317,20 @@ export default class Scale extends Element {
 			if (isHorizontal) {
 				x = pixel;
 				if (position === 'top') {
-					if (crossAlignment === 'near' || rotation !== 0) {
+					if (crossAlign === 'near' || rotation !== 0) {
 						textOffset = (Math.sin(rotation) * halfCount + 0.5) * lineHeight;
 						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * halfCount) * lineHeight;
-					} else if (crossAlignment === 'center') {
+					} else if (crossAlign === 'center') {
 						textOffset = -1 * (labelSizes.highest.height / 2);
 						textOffset -= halfCount * lineHeight;
 					} else {
 						textOffset = (-1 * labelSizes.highest.height) + (0.5 * lineHeight);
 					}
 				} else if (position === 'bottom') {
-					if (crossAlignment === 'near' || rotation !== 0) {
+					if (crossAlign === 'near' || rotation !== 0) {
 						textOffset = Math.sin(rotation) * halfCount * lineHeight;
 						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * halfCount) * lineHeight;
-					} else if (crossAlignment === 'center') {
+					} else if (crossAlign === 'center') {
 						textOffset = labelSizes.highest.height / 2;
 						textOffset -= halfCount * lineHeight;
 					} else {
@@ -1380,7 +1380,7 @@ export default class Scale extends Element {
 	_getYAxisLabelAlignment(tl) {
 		const me = this;
 		const {position, ticks} = me.options;
-		const {crossAlignment, mirror, padding} = ticks;
+		const {crossAlign, mirror, padding} = ticks;
 		const labelSizes = me._getLabelSizes();
 		const tickAndPadding = tl + padding;
 		const widest = labelSizes.widest.width;
@@ -1395,9 +1395,9 @@ export default class Scale extends Element {
 			} else {
 				x = me.right - tickAndPadding;
 
-				if (crossAlignment === 'near') {
+				if (crossAlign === 'near') {
 					textAlign = 'right';
-				} else if (crossAlignment === 'center') {
+				} else if (crossAlign === 'center') {
 					textAlign = 'center';
 					x -= (widest / 2);
 				} else {
@@ -1412,9 +1412,9 @@ export default class Scale extends Element {
 			} else {
 				x = me.left + tickAndPadding;
 
-				if (crossAlignment === 'near') {
+				if (crossAlign === 'near') {
 					textAlign = 'left';
-				} else if (crossAlignment === 'center') {
+				} else if (crossAlign === 'center') {
 					textAlign = 'center';
 					x += widest / 2;
 				} else {
