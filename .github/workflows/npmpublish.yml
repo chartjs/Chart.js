@@ -59,17 +59,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
           GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
-        env:
           VERSION: ${{ github.event.release.tag_name }}
       - name: Upload NPM package file
         id: upload-npm-package-file
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.event.release.tag_name }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: chart.js-$VERSION.tgz
           asset_name: chart.js-$VERSION.tgz
           asset_content_type: application/gzip
-        env:
-          VERSION: ${{ github.event.release.tag_name }}
