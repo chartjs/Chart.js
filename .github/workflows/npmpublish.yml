@@ -68,6 +68,6 @@ jobs:
           VERSION: ${{ github.event.release.tag_name }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: chart.js-$VERSION.tgz
-          asset_name: chart.js-$VERSION.tgz
+          asset_path: ${{ format('chart.js-{0}.tgz', github.event.release.tag_name) }}
+          asset_name: ${{ format('chart.js-{0}.tgz', github.event.release.tag_name) }}
           asset_content_type: application/gzip
