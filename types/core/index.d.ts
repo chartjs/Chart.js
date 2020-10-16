@@ -286,11 +286,7 @@ export declare class Chart<
   render(): void;
   draw(): void;
 
-  getElementAtEvent(e: Event): InteractionItem[];
-  getElementsAtEvent(e: Event): InteractionItem[];
-  getElementsAtXAxis(e: Event): InteractionItem[];
-  getElementsAtEventForMode(e: Event, mode: string, options: any, useFinalPosition: boolean): InteractionItem[];
-  getDatasetAtEvent(e: Event): InteractionItem[];
+  getElementsAtEventForMode(e: Event, mode: string, options: IInteractionOptions, useFinalPosition: boolean): InteractionItem[];
 
   getSortedVisibleDatasetMetas(): IChartMeta[];
   getDatasetMeta(datasetIndex: number): IChartMeta;
