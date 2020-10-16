@@ -77,6 +77,10 @@ export default class LogarithmicScale extends Scale {
 		me.min = isFinite(min) ? Math.max(0, min) : null;
 		me.max = isFinite(max) ? Math.max(0, max) : null;
 
+		if (me.options.beginAtZero) {
+			me._zero = true;
+		}
+
 		me.handleTickRangeOptions();
 	}
 
@@ -159,7 +163,6 @@ export default class LogarithmicScale extends Scale {
 
 		me._startValue = log10(start);
 		me._valueRange = log10(me.max) - log10(start);
-		me._zero = me.options.beginAtZero;
 	}
 
 	getPixelForValue(value) {
