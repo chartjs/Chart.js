@@ -1,4 +1,4 @@
-import {INFINITY} from './index';
+import {INFINITY} from './helpers.math';
 
 /**
  * @private

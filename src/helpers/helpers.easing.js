@@ -1,4 +1,4 @@
-import {PI, TAU, HALF_PI} from './index';
+import {PI, TAU, HALF_PI} from './helpers.math';
 
 /**
  * Easing functions adapted from Robert Penner's easing equations.
