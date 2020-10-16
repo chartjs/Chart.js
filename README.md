@@ -30,3 +30,7 @@ Instructions on building and testing Chart.js can be found in [the documentation
 ## License
 
 Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).
+
+Please accept this pullrequest and you can change it later.
+i need your acceptance for my hacktober fest PRs.
+Plzzzzzzz
