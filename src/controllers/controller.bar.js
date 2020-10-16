@@ -25,17 +25,19 @@ function computeMinSampleSize(scale) {
 	const values = getAllScaleValues(scale);
 	let min = scale._length;
 	let i, ilen, curr, prev;
+	const updateMinAndPrev = () => {
+		min = Math.min(min, i && Math.abs(curr - prev) || min);
+		prev = curr;
+	};
 
 	for (i = 0, ilen = values.length; i < ilen; ++i) {
 		curr = scale.getPixelForValue(values[i]);
-		min = i > 0 ? Math.min(min, Math.abs(curr - prev) || min) : min;
-		prev = curr;
+		updateMinAndPrev();
 	}
 
 	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
-		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
-		prev = curr;
+		updateMinAndPrev();
 	}
 
 	return min;
