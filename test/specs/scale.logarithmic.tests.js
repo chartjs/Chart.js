@@ -345,7 +345,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.y.min).toBe(1);
+		expect(chart.scales.y.min).toBe(0.1);
 		expect(chart.scales.y.max).toBe(200);
 	});
 
@@ -387,7 +387,7 @@ describe('Logarithmic Scale tests', function() {
 			}
 		});
 
-		expect(chart.scales.y.min).toBe(1);
+		expect(chart.scales.y.min).toBe(0.1);
 		expect(chart.scales.y.max).toBe(200);
 	});
 
@@ -517,7 +517,7 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 78]
+					data: [10, 5, 2, 25, 78]
 				}],
 				labels: []
 			},
@@ -659,7 +659,7 @@ describe('Logarithmic Scale tests', function() {
 			type: 'bar',
 			data: {
 				datasets: [{
-					data: [10, 5, 1, 25, 78]
+					data: [10, 5, 2, 25, 78]
 				}],
 				labels: []
 			},
