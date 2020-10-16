@@ -1,24 +1,43 @@
 import DatasetController from '../core/core.datasetController';
-import {clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {isArray, isNullOrUndef, valueOrDefault, resolveObjectKey} from '../helpers/helpers.core';
-import {_limitValue, sign} from '../helpers/helpers.math';
+import {
+	clipArea, unclipArea, _arrayUnique, isArray, isNullOrUndef,
+	valueOrDefault, resolveObjectKey, _limitValue, sign
+} from '../helpers';
+
+function getAllScaleValues(scale) {
+	if (!scale._cache.$bar) {
+		const metas = scale.getMatchingVisibleMetas('bar');
+		let values = [];
+
+		for (let i = 0, ilen = metas.length; i < ilen; i++) {
+			values = values.concat(metas[i].controller.getAllParsedValues(scale));
+		}
+		scale._cache.$bar = _arrayUnique(values.sort((a, b) => a - b));
+	}
+	return scale._cache.$bar;
+}
 
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
  * @private
  */
-function computeMinSampleSize(scale, pixels) {
+function computeMinSampleSize(scale) {
+	const values = getAllScaleValues(scale);
 	let min = scale._length;
-	let prev, curr, i, ilen;
+	let i, ilen, curr, prev;
+	const updateMinAndPrev = () => {
+		min = Math.min(min, i && Math.abs(curr - prev) || min);
+		prev = curr;
+	};
 
-	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
-		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
+	for (i = 0, ilen = values.length; i < ilen; ++i) {
+		curr = scale.getPixelForValue(values[i]);
+		updateMinAndPrev();
 	}
 
 	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
-		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
-		prev = curr;
+		updateMinAndPrev();
 	}
 
 	return min;
@@ -365,7 +384,7 @@ export default class BarController extends DatasetController {
 		// only if the barThickness option is defined
 		// Since a scriptable option may return null or undefined that
 		// means the option would have to be of type number
-		const min = computeMinSampleSize(iScale, pixels);
+		const min = computeMinSampleSize(iScale);
 
 		return {
 			min,

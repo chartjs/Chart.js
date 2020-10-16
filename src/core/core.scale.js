@@ -344,6 +344,7 @@ export default class Scale extends Element {
 		this._userMin = undefined;
 		this._ticksLength = 0;
 		this._borderValue = 0;
+		this._cache = {};
 	}
 
 	/**
@@ -418,7 +419,9 @@ export default class Scale extends Element {
 		return {min, max};
 	}
 
-	invalidateCaches() {}
+	invalidateCaches() {
+		this._cache = {};
+	}
 
 	/**
 	 * Get the padding needed for the scale
