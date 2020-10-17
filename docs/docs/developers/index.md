@@ -32,6 +32,8 @@ Chart.js offers support for the following browsers:
 
 Browser support for the canvas element is available in all modern & major mobile browsers. [CanIUse](https://caniuse.com/#feat=canvas)
 
+Run `npx browserslist` at the root of the [codebase](https://github.com/chartjs/Chart.js) to get a list of supported browsers.
+
 Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
 
 ## Previous versions
