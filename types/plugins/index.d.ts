@@ -9,7 +9,7 @@ export interface IFillerOptions {
   propagate: boolean;
 }
 
-export type FillTarget = number | string | 'start' | 'end' | 'origin' | 'stack' | false;
+export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | false;
 
 export interface IFillTarget {
   /**

@@ -7,7 +7,7 @@
 import Line from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {isArray, isFinite, valueOrDefault} from '../helpers/helpers.core';
+import {isArray, isFinite, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {TAU, _normalizeAngle} from '../helpers/helpers.math';
 
 /**
@@ -57,7 +57,9 @@ function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
 	let target = parseFloat(fill);
 
-	if (isFinite(target) && Math.floor(target) === target) {
+	if (isObject(fill)) {
+		return isNaN(fill.value) ? false : fill;
+	} else if (isFinite(target) && Math.floor(target) === target) {
 		if (fill[0] === '-' || fill[0] === '+') {
 			target = index + target;
 		}
@@ -81,6 +83,8 @@ function computeLinearBoundary(source) {
 		target = scale.bottom;
 	} else if (fill === 'end') {
 		target = scale.top;
+	} else if (isObject(fill)) {
+		target = scale.getPixelForValue(fill.value);
 	} else if (scale.getBasePixel) {
 		target = scale.getBasePixel();
 	}
@@ -135,8 +139,17 @@ function computeCircularBoundary(source) {
 	const target = [];
 	const start = options.reverse ? scale.max : scale.min;
 	const end = options.reverse ? scale.min : scale.max;
-	const value = fill === 'start' ? start : fill === 'end' ? end : scale.getBaseValue();
-	let i, center;
+	let i, center, value;
+
+	if (fill === 'start') {
+		value = start;
+	} else if (fill === 'end') {
+		value = end;
+	} else if (isObject(fill)) {
+		value = fill.value;
+	} else {
+		value = scale.getBaseValue();
+	}
 
 	if (options.gridLines.circular) {
 		center = scale.getPointPositionForValue(0, start);
