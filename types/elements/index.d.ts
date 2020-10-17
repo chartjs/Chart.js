@@ -254,6 +254,11 @@ export interface IRectangleProps {
 
 export interface IRectangleOptions extends ICommonOptions {
   /**
+   * The base value for the bar in data units along the value axis.
+   */
+  base: number;
+
+  /**
    * 	Skipped (excluded) border: 'start', 'end', 'bottom', 'left', 'top' or 'right'.
    * @default 'start'
    */
