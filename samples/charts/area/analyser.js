@@ -48,7 +48,7 @@
 					} else if (isFinite(target)) {
 						target = 'dataset ' + target;
 					} else {
-						target = 'boundary "' + target + '"';
+						target = 'boundary "' + (typeof target === 'object' ? JSON.stringify(target) : target) + '"';
 					}
 
 					if (stat.visible) {

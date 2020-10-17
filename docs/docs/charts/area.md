@@ -15,11 +15,13 @@ Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option 
 | Boundary <sup>2</sup> | `string` | `'start'`, `'end'`, `'origin'` |
 | Disabled <sup>3</sup> | `boolean` | `false` |
 | Stacked value below <sup>4</sup> | `string` | `'stack'` |
+| Axis value <sup>5</sup> | `object` | `{ value: number; }` |
 
 > <sup>1</sup> dataset filling modes have been introduced in version 2.6.0<br/>
 > <sup>2</sup> prior version 2.6.0, boundary values was `'zero'`, `'top'`, `'bottom'` (not supported anymore)<br/>
 > <sup>3</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br/>
 > <sup>4</sup> stack mode has been introduced in version 3.0.0<br/>
+> <sup>5</sup> axis value mode has been introduced in version 3.0.0<br/>
 
 **Example**
 
@@ -31,7 +33,8 @@ new Chart(ctx, {
             {fill: '+2'},          // 1: fill to dataset 3
             {fill: 1},             // 2: fill to dataset 1
             {fill: false},         // 3: no fill
-            {fill: '-2'}           // 4: fill to dataset 2
+            {fill: '-2'},          // 4: fill to dataset 2
+            {fill: {value: 25}}    // 5: fill to axis value 25
         ]
     }
 });
@@ -41,7 +44,7 @@ If you need to support multiple colors when filling from one dataset to another,
 
 | Param | Type | Description |
 | :--- | :--- | :--- |
-| `target` | `number`, `string`, `boolean` | The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries. |
+| `target` | `number`, `string`, `boolean`, `object` | The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries. |
 | `above` | `Color` | If no color is set, the default color will be the background color of the chart. |
 | `below` | `Color` | Same as the above. |
 
