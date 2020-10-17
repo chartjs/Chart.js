@@ -350,6 +350,15 @@ The following properties and methods were removed:
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were replaced by `element`. You can use `element.x` and `element.y` or `element.tooltipPosition()` instead.
 
+#### Removal of Public APIs
+
+The following public APIs were removed.
+
+* `getElementAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)`
+* `getElementsAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'index', { intersect: true }, false)`
+* `getElementsAtXAxis` is replaced with `chart.getElementsAtEventForMode(e, 'index', { intersect: false }, false)`
+* `getDatasetAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'dataset', { intersect: true }, false)`
+
 #### Removal of private APIs
 
 The following private APIs were removed.
