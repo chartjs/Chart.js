@@ -35,7 +35,7 @@ var scatterChart = new Chart(ctx, {
 
 ## Dataset Properties
 
-The scatter chart supports all of the same properties as the [line chart](./line.md#dataset-properties).
+The scatter chart supports all of the same properties as the [line chart](./charts/line#dataset-properties).
 
 ## Data Structure
 
