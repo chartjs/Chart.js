@@ -57,7 +57,7 @@ var myChart = new Chart(ctx, {
 
 ## Contributing
 
-Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](./docs/developers/contributing.md) first.
+Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](./developers/contributing.md) first.
 
 For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs).
 
