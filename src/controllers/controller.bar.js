@@ -404,9 +404,10 @@ export default class BarController extends DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const vScale = meta.vScale;
-		const minBarLength = options.minBarLength;
+		const {base: baseValue, minBarLength} = options;
 		const parsed = me.getParsed(index);
 		const custom = parsed._custom;
+		const floating = isFloatBar(custom);
 		let value = parsed[vScale.axis];
 		let start = 0;
 		let length = meta._stacked ? me.applyStack(vScale, parsed) : value;
@@ -417,7 +418,7 @@ export default class BarController extends DatasetController {
 			length = value;
 		}
 
-		if (isFloatBar(custom)) {
+		if (floating) {
 			value = custom.barStart;
 			length = custom.barEnd - custom.barStart;
 			// bars crossing origin are not stacked
@@ -431,7 +432,8 @@ export default class BarController extends DatasetController {
 		// So we don't try to draw so huge rectangles.
 		// https://github.com/chartjs/Chart.js/issues/5247
 		// TODO: use borderWidth instead (need to move the parsing from rectangle)
-		let base = _limitValue(vScale.getPixelForValue(start),
+		const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
+		let base = _limitValue(vScale.getPixelForValue(startValue),
 			vScale._startPixel - 10,
 			vScale._endPixel + 10);
 
@@ -521,6 +523,7 @@ BarController.defaults = {
 		'borderWidth',
 		'barPercentage',
 		'barThickness',
+		'base',
 		'categoryPercentage',
 		'maxBarThickness',
 		'minBarLength',

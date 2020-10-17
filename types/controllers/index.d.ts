@@ -63,6 +63,11 @@ export interface IBarControllerDatasetOptions
   barThickness: number | 'flex';
 
   /**
+   * The base value for the bar in data units along the value axis.
+   */
+  base: number;
+
+  /**
    * Set this to ensure that bars are not sized thicker than this.
    */
   maxBarThickness: number;
