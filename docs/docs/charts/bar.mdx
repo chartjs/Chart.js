@@ -79,6 +79,7 @@ the color of the bars is generally set this way.
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`base`](#general) | `number` | Yes | Yes | 
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'start'`
 | [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
@@ -97,6 +98,7 @@ the color of the bars is generally set this way.
 
 | Name | Description
 | ---- | ----
+| `base` | Base value for the bar in data units along the value axis. If not set, defaults to the value axis base value.
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `indexAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `label` | The label for the dataset which appears in the legend and tooltips.
@@ -161,6 +163,7 @@ The bar chart accepts the following configuration from the associated dataset op
 | `barPercentage` | `number` | `0.9` | Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other. [more...](#barpercentage-vs-categorypercentage)
 | `categoryPercentage` | `number` | `0.8` | Percent (0-1) of the available width each category should be within the sample width. [more...](#barpercentage-vs-categorypercentage)
 | `barThickness` | <code>number&#124;string</code> | | Manually set width of each bar in pixels. If set to `'flex'`, it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. [more...](#barthickness)
+| `base` | `number` | | Base value for the bar in data units along the value axis. If not set, defaults to the value axis base value.
 | `maxBarThickness` | `number` | | Set this to ensure that bars are not sized thicker than this.
 | `minBarLength` | `number` | | Set this to ensure that bars have a minimum length in pixels.
 
