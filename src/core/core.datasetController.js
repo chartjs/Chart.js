@@ -275,7 +275,7 @@ helpers.extend(DatasetController.prototype, {
 	 */
 	_configure: function() {
 		var me = this;
-		me._config = helpers.merge({}, [
+		me._config = helpers.merge(Object.create(null), [
 			me.chart.options.datasets[me._type],
 			me.getDataset(),
 		], {

@@ -41,7 +41,7 @@ defaults._set('global', {
  * returns a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeScaleConfig(/* config objects ... */) {
-	return helpers.merge({}, [].slice.call(arguments), {
+	return helpers.merge(Object.create(null), [].slice.call(arguments), {
 		merger: function(key, target, source, options) {
 			if (key === 'xAxes' || key === 'yAxes') {
 				var slen = source[key].length;
@@ -81,9 +81,9 @@ function mergeScaleConfig(/* config objects ... */) {
  * a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeConfig(/* config objects ... */) {
-	return helpers.merge({}, [].slice.call(arguments), {
+	return helpers.merge(Object.create(null), [].slice.call(arguments), {
 		merger: function(key, target, source, options) {
-			var tval = target[key] || {};
+			var tval = target[key] || Object.create(null);
 			var sval = source[key];
 
 			if (key === 'scales') {
@@ -100,7 +100,7 @@ function mergeConfig(/* config objects ... */) {
 }
 
 function initConfig(config) {
-	config = config || {};
+	config = config || Object.create(null);
 
 	// Do NOT use mergeConfig for the data object because this method merges arrays
 	// and so would change references to labels and datasets, preventing data updates.
