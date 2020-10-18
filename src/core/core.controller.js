@@ -44,7 +44,7 @@ function mergeScaleConfig(config, options) {
 	const chartDefaults = defaults[config.type] || {scales: {}};
 	const configScales = options.scales || {};
 	const chartIndexAxis = getIndexAxis(config.type, options);
-	const firstIDs = {};
+	const firstIDs = Object.create(null);
 	const scales = Object.create(null);
 
 	// First figure out first scale id's per axis.
@@ -53,12 +53,12 @@ function mergeScaleConfig(config, options) {
 		const axis = determineAxis(id, scaleConf);
 		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
 		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = mergeIf({axis}, [scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
+		scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
 	});
 
 	// Backward compatibility
 	if (options.scale) {
-		scales[options.scale.id || 'r'] = mergeIf({axis: 'r'}, [options.scale, chartDefaults.scales.r]);
+		scales[options.scale.id || 'r'] = mergeIf(Object.create(null), [{axis: 'r'}, options.scale, chartDefaults.scales.r]);
 		firstIDs.r = firstIDs.r || options.scale.id || 'r';
 	}
 
