@@ -17,7 +17,7 @@ module.exports = {
 		type: 'line',
 		data: {
 			datasets: [{
-				data: [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+				data: [8, 8, 8, 8, 8, 8, 7, 8, 8, 8, 8],
 				pointBorderColor: '#ff0000',
 				pointBackgroundColor: '#00ff00',
 				showLine: false
@@ -29,7 +29,7 @@ module.exports = {
 				showLine: false
 			}, {
 				label: '',
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+				data: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
 				showLine: false
 			}],
 			labels: ['', '', '', '', '', '', '', '', '', '', '']

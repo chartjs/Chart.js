@@ -234,13 +234,15 @@ export interface ITitleChartOptions {
   title: ITitleOptions;
 }
 
+export type TooltipAlignment = 'start' | 'center' | 'end';
+
 export interface TooltipModel {
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
   dataPoints: ITooltipItem[];
 
   // Positioning
-  xAlign: 'start' | 'center' | 'end';
-  yAlign: 'start' | 'center' | 'end';
+  xAlign: TooltipAlignment;
+  yAlign: TooltipAlignment;
 
   // X and Y properties are the top left of the tooltip
   x: number;
@@ -347,6 +349,12 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    * The mode for positioning the tooltip
    */
   position: 'average' | 'nearest';
+
+  /**
+   * Override the tooltip alignment calculations
+   */
+  xAlign: TooltipAlignment;
+  yAlign: TooltipAlignment;
 
   /**
    * Sort tooltip items.

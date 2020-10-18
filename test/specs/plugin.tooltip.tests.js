@@ -386,8 +386,8 @@ describe('Plugin.Tooltip', function() {
 
 			expect(tooltip.options.xPadding).toEqual(6);
 			expect(tooltip.options.yPadding).toEqual(6);
-			expect(tooltip.xAlign).toEqual('center');
-			expect(tooltip.yAlign).toEqual('top');
+			expect(tooltip.xAlign).toEqual('left');
+			expect(tooltip.yAlign).toEqual('center');
 
 			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
 				color: '#fff',
@@ -462,8 +462,8 @@ describe('Plugin.Tooltip', function() {
 				}]
 			}));
 
-			expect(tooltip.x).toBeCloseToPixel(214);
-			expect(tooltip.y).toBeCloseToPixel(190);
+			expect(tooltip.x).toBeCloseToPixel(267);
+			expect(tooltip.y).toBeCloseToPixel(75);
 
 			done();
 		});
