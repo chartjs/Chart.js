@@ -172,12 +172,20 @@ export function clone(source) {
 	return source;
 }
 
+function isValidKey(key) {
+	return ['__proto__', 'prototype', 'constructor'].indexOf(key) === -1;
+}
+
 /**
  * The default merger when Chart.helpers.merge is called without merger option.
  * Note(SB): also used by mergeConfig and mergeScaleConfig as fallback.
  * @private
  */
 export function _merger(key, target, source, options) {
+	if (!isValidKey(key)) {
+		return;
+	}
+
 	const tval = target[key];
 	const sval = source[key];
 
@@ -241,6 +249,10 @@ export function mergeIf(target, source) {
  * @private
  */
 export function _mergerIf(key, target, source) {
+	if (!isValidKey(key)) {
+		return;
+	}
+
 	const tval = target[key];
 	const sval = source[key];
 
