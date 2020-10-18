@@ -196,6 +196,12 @@ var helpers = {
 	 * @private
 	 */
 	_merger: function(key, target, source, options) {
+		if (['__proto__', 'prototype', 'constructor'].indexOf(key) !== -1) {
+			// We want to ensure we do not copy prototypes over
+			// as this can pollute global namespaces
+			return;
+		}
+
 		var tval = target[key];
 		var sval = source[key];
 
