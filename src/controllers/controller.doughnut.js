@@ -298,7 +298,7 @@ export default class DoughnutController extends DatasetController {
 	}
 
 	/**
-	 * Returns the sum of all visibile data set weights.
+	 * Returns the sum of all visible data set weights.
 	 * @private
 	 */
 	_getVisibleDatasetWeightTotal() {

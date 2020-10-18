@@ -5,7 +5,7 @@ function clipArc(ctx, element) {
 	const {startAngle, endAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
 	let angleMargin = pixelMargin / outerRadius;
 
-	// Draw an inner border by cliping the arc and drawing a double-width border
+	// Draw an inner border by clipping the arc and drawing a double-width border
 	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
 	ctx.beginPath();
 	ctx.arc(x, y, outerRadius, startAngle - angleMargin, endAngle + angleMargin);
