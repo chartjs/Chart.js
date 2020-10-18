@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {each} from '../helpers/helpers.core';
+import {each, isObject} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
 /**
@@ -84,6 +84,10 @@ function updateDims(chartArea, params, layout) {
 	const box = layout.box;
 	const maxPadding = chartArea.maxPadding;
 
+	if (isObject(layout.pos)) {
+		// dynamically placed boxes are not considered
+		return;
+	}
 	if (layout.size) {
 		// this layout was already counted for, lets first reduce old size
 		chartArea[layout.pos] -= layout.size;

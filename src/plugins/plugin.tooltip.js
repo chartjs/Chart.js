@@ -139,7 +139,7 @@ function createTooltipItem(chart, item) {
  */
 function resolveOptions(options, fallbackFont) {
 
-	options = merge({}, [defaults.plugins.tooltip, options]);
+	options = merge(Object.create(null), [defaults.plugins.tooltip, options]);
 
 	options.bodyFont = toFont(options.bodyFont, fallbackFont);
 	options.titleFont = toFont(options.titleFont, fallbackFont);
