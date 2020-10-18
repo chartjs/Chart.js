@@ -116,10 +116,25 @@ function initConfig(config) {
 		defaults[config.type],
 		config.options || {});
 
+	options.hover = merge(Object.create(null), [
+		defaults.interaction,
+		defaults.hover,
+		options.interaction,
+		options.hover
+	]);
+
 	options.scales = scaleConfig;
 
-	options.title = (options.title !== false) && merge(Object.create(null), [defaults.plugins.title, options.title]);
-	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [defaults.plugins.tooltip, options.tooltips]);
+	options.title = (options.title !== false) && merge(Object.create(null), [
+		defaults.plugins.title,
+		options.title
+	]);
+	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [
+		defaults.interaction,
+		defaults.plugins.tooltip,
+		options.interaction,
+		options.tooltips
+	]);
 
 	return config;
 }

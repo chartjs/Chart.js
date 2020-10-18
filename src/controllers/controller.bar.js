@@ -528,9 +528,11 @@ BarController.defaults = {
 		'maxBarThickness',
 		'minBarLength',
 	],
-	hover: {
+	interaction: {
 		mode: 'index'
 	},
+
+	hover: {},
 
 	datasets: {
 		categoryPercentage: 0.8,
