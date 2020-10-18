@@ -1130,7 +1130,7 @@ class Chart {
 		// If the event is replayed from `update`, we should evaluate with the final positions.
 		//
 		// The `replay`:
-		// It's the last event (excluding click) that has occured before `update`.
+		// It's the last event (excluding click) that has occurred before `update`.
 		// So mouse has not moved. It's also over the chart, because there is a `replay`.
 		//
 		// The why:
