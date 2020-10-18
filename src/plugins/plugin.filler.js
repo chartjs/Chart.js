@@ -55,11 +55,14 @@ function parseFillOption(line) {
  */
 function decodeFill(line, index, count) {
 	const fill = parseFillOption(line);
-	let target = parseFloat(fill);
 
 	if (isObject(fill)) {
 		return isNaN(fill.value) ? false : fill;
-	} else if (isFinite(target) && Math.floor(target) === target) {
+	}
+
+	let target = parseFloat(fill);
+
+	if (isFinite(target) && Math.floor(target) === target) {
 		if (fill[0] === '-' || fill[0] === '+') {
 			target = index + target;
 		}
