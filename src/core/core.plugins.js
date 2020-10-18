@@ -214,7 +214,7 @@ function createDescriptors(plugins, options) {
 /**
  * @method IPlugin#beforeDraw
  * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
- * the frame drawing is cancelled untilanother `render` is triggered.
+ * the frame drawing is cancelled until another `render` is triggered.
  * @param {Chart} chart - The chart instance.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart drawing.

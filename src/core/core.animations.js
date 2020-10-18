@@ -127,7 +127,7 @@ export default class Animations {
 		const animations = this._createAnimations(options, newOptions);
 		if (newOptions.$shared && !options.$shared) {
 			// Going from distinct options to shared options:
-			// After all animations are done, assing the shared options object to the element
+			// After all animations are done, assign the shared options object to the element
 			// So any new updates to the shared options are observed
 			awaitAll(target.options.$animations, newOptions).then(() => {
 				target.options = newOptions;
