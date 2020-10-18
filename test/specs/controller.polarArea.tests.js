@@ -42,10 +42,10 @@ describe('Chart.controllers.polarArea', function() {
 
 		var meta = chart.getDatasetMeta(1);
 		expect(meta.data.length).toBe(4); // 4 arcs created
-		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.ArcElement).toBe(true);
 	});
 
 	it('should draw all elements', function() {
@@ -221,8 +221,8 @@ describe('Chart.controllers.polarArea', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
-		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.ArcElement).toBe(true);
 
 		// add 3 items
 		chart.data.labels = ['label1', 'label2', 'label3', 'label4', 'label5'];
@@ -230,11 +230,11 @@ describe('Chart.controllers.polarArea', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(5);
-		expect(meta.data[0] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Arc).toBe(true);
-		expect(meta.data[4] instanceof Chart.elements.Arc).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.ArcElement).toBe(true);
+		expect(meta.data[4] instanceof Chart.elements.ArcElement).toBe(true);
 	});
 
 	describe('Interactions', function() {

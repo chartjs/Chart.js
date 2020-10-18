@@ -38,12 +38,12 @@ describe('Chart.controllers.radar', function() {
 		});
 
 		var meta = chart.getDatasetMeta(0);
-		expect(meta.dataset instanceof Chart.elements.Line).toBe(true); // line element
+		expect(meta.dataset instanceof Chart.elements.LineElement).toBe(true); // line element
 		expect(meta.data.length).toBe(4); // 4 points created
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.PointElement).toBe(true);
 	});
 
 	it('should draw all elements', function() {

@@ -1,7 +1,7 @@
 import Element from '../core/core.element';
 import {drawPoint} from '../helpers/helpers.canvas';
 
-export default class Point extends Element {
+export default class PointElement extends Element {
 
 	constructor(cfg) {
 		super();
@@ -66,12 +66,12 @@ export default class Point extends Element {
 	}
 }
 
-Point.id = 'point';
+PointElement.id = 'point';
 
 /**
  * @type {any}
  */
-Point.defaults = {
+PointElement.defaults = {
 	borderWidth: 1,
 	hitRadius: 1,
 	hoverBorderWidth: 1,
@@ -83,7 +83,7 @@ Point.defaults = {
 /**
  * @type {any}
  */
-Point.defaultRoutes = {
+PointElement.defaultRoutes = {
 	backgroundColor: 'color',
 	borderColor: 'color'
 };

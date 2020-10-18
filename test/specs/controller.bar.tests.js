@@ -569,10 +569,10 @@ describe('Chart.controllers.bar', function() {
 
 		var meta = chart.getDatasetMeta(1);
 		expect(meta.data.length).toBe(4); // 4 rectangles created
-		expect(meta.data[0] instanceof Chart.elements.Rectangle).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Rectangle).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Rectangle).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Rectangle).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.RectangleElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.RectangleElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.RectangleElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.RectangleElement).toBe(true);
 	});
 
 	it('should update elements when modifying data', function() {

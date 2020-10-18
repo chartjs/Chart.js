@@ -2,7 +2,7 @@
 
 describe('Rectangle element tests', function() {
 	it('Should correctly identify as in range', function() {
-		var rectangle = new Chart.elements.Rectangle({
+		var rectangle = new Chart.elements.RectangleElement({
 			base: 0,
 			width: 4,
 			x: 10,
@@ -15,7 +15,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.inRange(5, 5)).toBe(false);
 
 		// Test when the y is below the base (negative bar)
-		var negativeRectangle = new Chart.elements.Rectangle({
+		var negativeRectangle = new Chart.elements.RectangleElement({
 			base: 0,
 			width: 4,
 			x: 10,
@@ -28,7 +28,7 @@ describe('Rectangle element tests', function() {
 	});
 
 	it('should get the correct tooltip position', function() {
-		var rectangle = new Chart.elements.Rectangle({
+		var rectangle = new Chart.elements.RectangleElement({
 			base: 0,
 			width: 4,
 			x: 10,
@@ -41,7 +41,7 @@ describe('Rectangle element tests', function() {
 		});
 
 		// Test when the y is below the base (negative bar)
-		var negativeRectangle = new Chart.elements.Rectangle({
+		var negativeRectangle = new Chart.elements.RectangleElement({
 			base: -10,
 			width: 4,
 			x: 10,
@@ -55,7 +55,7 @@ describe('Rectangle element tests', function() {
 	});
 
 	it('should get the center', function() {
-		var rectangle = new Chart.elements.Rectangle({
+		var rectangle = new Chart.elements.RectangleElement({
 			base: 0,
 			width: 4,
 			x: 10,
