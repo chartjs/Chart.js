@@ -45,7 +45,7 @@ function mergeScaleConfig(config, options) {
 	const configScales = options.scales || {};
 	const chartIndexAxis = getIndexAxis(config.type, options);
 	const firstIDs = {};
-	const scales = {};
+	const scales = Object.create(null);
 
 	// First figure out first scale id's per axis.
 	Object.keys(configScales).forEach(id => {
@@ -71,7 +71,7 @@ function mergeScaleConfig(config, options) {
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
 			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
 			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
-			scales[id] = scales[id] || {};
+			scales[id] = scales[id] || Object.create(null);
 			mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
 		});
 	});
@@ -91,7 +91,7 @@ function mergeScaleConfig(config, options) {
  * a deep copy of the result, thus doesn't alter inputs.
  */
 function mergeConfig(...args/* config objects ... */) {
-	return merge({}, args, {
+	return merge(Object.create(null), args, {
 		merger(key, target, source, options) {
 			if (key !== 'scales' && key !== 'scale') {
 				_merger(key, target, source, options);
@@ -118,8 +118,8 @@ function initConfig(config) {
 
 	options.scales = scaleConfig;
 
-	options.title = (options.title !== false) && merge({}, [defaults.plugins.title, options.title]);
-	options.tooltips = (options.tooltips !== false) && merge({}, [defaults.plugins.tooltip, options.tooltips]);
+	options.title = (options.title !== false) && merge(Object.create(null), [defaults.plugins.title, options.title]);
+	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [defaults.plugins.tooltip, options.tooltips]);
 
 	return config;
 }

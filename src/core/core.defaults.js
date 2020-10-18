@@ -12,7 +12,7 @@ function getScope(node, key) {
 	const keys = key.split('.');
 	for (let i = 0, n = keys.length; i < n; ++i) {
 		const k = keys[i];
-		node = node[k] || (node[k] = {});
+		node = node[k] || (node[k] = Object.create(null));
 	}
 	return node;
 }

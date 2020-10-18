@@ -629,7 +629,7 @@ export class Legend extends Element {
 }
 
 function resolveOptions(options) {
-	return options !== false && merge({}, [defaults.plugins.legend, options]);
+	return options !== false && merge(Object.create(null), [defaults.plugins.legend, options]);
 }
 
 function createNewLegendAndAttach(chart, legendOpts) {
