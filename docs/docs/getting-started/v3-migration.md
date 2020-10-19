@@ -202,6 +202,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Interactions
 
+* To allow DRY configuration, a root options scope for common interaction options was added. `options.hover` and `options.tooltips` now both extend from `options.interaction`. Defaults are defined at `defaults.interaction` level, so by default hover and tooltip interactions share the same mode etc.
 * `interactions` are now limited to the chart area
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
