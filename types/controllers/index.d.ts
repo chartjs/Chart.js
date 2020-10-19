@@ -10,7 +10,7 @@ import {
   IPointOptions,
   IPointPrefixedHoverOptions,
   IPointPrefixedOptions,
-  IRectangleOptions,
+  IBarOptions,
 } from '../elements';
 
 export interface IControllerDatasetOptions {
@@ -30,7 +30,7 @@ export interface IControllerDatasetOptions {
 
 export interface IBarControllerDatasetOptions
   extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IRectangleOptions>,
+    ScriptableAndArrayOptions<IBarOptions>,
     ScriptableAndArrayOptions<ICommonHoverOptions> {
   /**
    * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.

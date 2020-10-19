@@ -243,7 +243,7 @@ export const PointElement: IChartComponent & {
   new (cfg: any): PointElement;
 };
 
-export interface IRectangleProps {
+export interface IBarProps {
   x: number;
   y: number;
   base: number;
@@ -252,7 +252,7 @@ export interface IRectangleProps {
   height: number;
 }
 
-export interface IRectangleOptions extends ICommonOptions {
+export interface IBarOptions extends ICommonOptions {
   /**
    * The base value for the bar in data units along the value axis.
    */
@@ -265,22 +265,22 @@ export interface IRectangleOptions extends ICommonOptions {
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 }
 
-export interface IRectangleHoverOptions extends ICommonHoverOptions {}
+export interface IBarHoverOptions extends ICommonHoverOptions {}
 
-export interface RectangleElement<
-  T extends IRectangleProps = IRectangleProps,
-  O extends IRectangleOptions = IRectangleOptions
+export interface BarElement<
+  T extends IBarProps = IBarProps,
+  O extends IBarOptions = IBarOptions
 > extends Element<T, O>, IVisualElement {}
 
-export const RectangleElement: IChartComponent & {
-  prototype: RectangleElement;
-  new (cfg: any): RectangleElement;
+export const BarElement: IChartComponent & {
+  prototype: BarElement;
+  new (cfg: any): BarElement;
 };
 
 export interface IElementChartOptions {
   elements: {
     arc: IArcOptions & IArcHoverOptions;
-    rectangle: IRectangleOptions & IRectangleHoverOptions;
+    bar: IBarOptions & IBarHoverOptions;
     line: ILineOptions & ILineHoverOptions;
     point: IPointOptions & IPointHoverOptions;
   };

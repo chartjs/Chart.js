@@ -252,7 +252,7 @@ export default class BarController extends DatasetController {
 		me.updateElements(meta.data, 0, meta.data.length, mode);
 	}
 
-	updateElements(rectangles, start, count, mode) {
+	updateElements(bars, start, count, mode) {
 		const me = this;
 		const reset = mode === 'reset';
 		const vscale = me._cachedMeta.vScale;
@@ -282,7 +282,7 @@ export default class BarController extends DatasetController {
 			if (includeOptions) {
 				properties.options = options;
 			}
-			me.updateElement(rectangles[i], i, properties, mode);
+			me.updateElement(bars[i], i, properties, mode);
 		}
 	}
 
@@ -515,7 +515,7 @@ BarController.id = 'bar';
  */
 BarController.defaults = {
 	datasetElementType: false,
-	dataElementType: 'rectangle',
+	dataElementType: 'bar',
 	dataElementOptions: [
 		'backgroundColor',
 		'borderColor',

@@ -25,9 +25,9 @@ describe('Chart namespace', function() {
 	describe('Chart.elements', function() {
 		it('should contains "elements" classes', function() {
 			expect(Chart.elements.ArcElement instanceof Function).toBeTruthy();
+			expect(Chart.elements.BarElement instanceof Function).toBeTruthy();
 			expect(Chart.elements.LineElement instanceof Function).toBeTruthy();
 			expect(Chart.elements.PointElement instanceof Function).toBeTruthy();
-			expect(Chart.elements.RectangleElement instanceof Function).toBeTruthy();
 		});
 	});
 

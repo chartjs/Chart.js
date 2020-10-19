@@ -3,7 +3,7 @@ import {toTRBL} from '../helpers/helpers.options';
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
- * @param {RectangleElement} bar the bar
+ * @param {BarElement} bar the bar
  * @param {boolean} [useFinalPosition]
  * @return {object} bounds of the bar
  * @private
@@ -114,7 +114,7 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-export default class RectangleElement extends Element {
+export default class BarElement extends Element {
 
 	constructor(cfg) {
 		super();
@@ -176,12 +176,12 @@ export default class RectangleElement extends Element {
 	}
 }
 
-RectangleElement.id = 'rectangle';
+BarElement.id = 'bar';
 
 /**
  * @type {any}
  */
-RectangleElement.defaults = {
+BarElement.defaults = {
 	borderSkipped: 'start',
 	borderWidth: 0
 };
@@ -189,7 +189,7 @@ RectangleElement.defaults = {
 /**
  * @type {any}
  */
-RectangleElement.defaultRoutes = {
+BarElement.defaultRoutes = {
 	backgroundColor: 'color',
 	borderColor: 'color'
 };
