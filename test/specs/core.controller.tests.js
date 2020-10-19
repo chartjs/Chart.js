@@ -89,13 +89,14 @@ describe('Chart', function() {
 			expect(chart.data.datasets[0].data).toEqual([10, 11, 12]);
 		});
 
-		it('should initialize config with default options', function() {
+		it('should initialize config with default interaction options', function() {
 			var callback = function() {};
 			var defaults = Chart.defaults;
+			var defaultMode = defaults.line.interaction.mode;
 
 			defaults.hover.onHover = callback;
 			defaults.line.spanGaps = true;
-			defaults.line.hover.mode = 'x-axis';
+			defaults.line.interaction.mode = 'test';
 
 			var chart = acquireChart({
 				type: 'line'
@@ -106,11 +107,35 @@ describe('Chart', function() {
 			expect(options.showLines).toBe(defaults.line.showLines);
 			expect(options.spanGaps).toBe(true);
 			expect(options.hover.onHover).toBe(callback);
-			expect(options.hover.mode).toBe('x-axis');
+			expect(options.hover.mode).toBe('test');
 
 			defaults.hover.onHover = null;
 			defaults.line.spanGaps = false;
-			defaults.line.hover.mode = 'index';
+			defaults.line.interaction.mode = defaultMode;
+		});
+
+		it('should initialize config with default hover options', function() {
+			var callback = function() {};
+			var defaults = Chart.defaults;
+
+			defaults.hover.onHover = callback;
+			defaults.line.spanGaps = true;
+			defaults.line.hover.mode = 'test';
+
+			var chart = acquireChart({
+				type: 'line'
+			});
+
+			var options = chart.options;
+			expect(options.font.size).toBe(defaults.font.size);
+			expect(options.showLines).toBe(defaults.line.showLines);
+			expect(options.spanGaps).toBe(true);
+			expect(options.hover.onHover).toBe(callback);
+			expect(options.hover.mode).toBe('test');
+
+			defaults.hover.onHover = null;
+			defaults.line.spanGaps = false;
+			delete defaults.line.hover.mode;
 		});
 
 		it('should override default options', function() {
@@ -141,7 +166,7 @@ describe('Chart', function() {
 			expect(options.title.position).toBe('bottom');
 
 			defaults.hover.onHover = null;
-			defaults.line.hover.mode = 'index';
+			delete defaults.line.hover.mode;
 			defaults.line.spanGaps = false;
 		});
 

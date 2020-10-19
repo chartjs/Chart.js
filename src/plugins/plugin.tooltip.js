@@ -1066,9 +1066,7 @@ export default {
 	defaults: {
 		enabled: true,
 		custom: null,
-		mode: 'nearest',
 		position: 'average',
-		intersect: true,
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		titleFont: {
 			style: 'bold',

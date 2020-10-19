@@ -417,13 +417,18 @@ export interface Defaults {
   readonly color: string;
   readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
   readonly font: IFontSpec;
-  readonly hover: {
-    onHover?: () => void;
+  readonly interaction: {
     mode: InteractionMode | string;
     intersect: boolean;
   };
+  readonly hover: {
+    onHover?: () => void;
+    mode?: InteractionMode | string;
+    intersect?: boolean;
+  };
   readonly maintainAspectRatio: boolean;
   readonly onClick?: () => void;
+  readonly onHover?: () => void;
   readonly responsive: boolean;
 
   readonly plugins: { [key: string]: any };

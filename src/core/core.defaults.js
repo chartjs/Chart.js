@@ -42,12 +42,15 @@ export class Defaults {
 			lineWidth: 0,
 			strokeStyle: undefined
 		};
-		this.hover = {
-			onHover: null,
+		this.interaction = {
 			mode: 'nearest',
 			intersect: true
 		};
+		this.hover = {
+			onHover: null
+		};
 		this.maintainAspectRatio = true;
+		this.onHover = null;
 		this.onClick = null;
 		this.responsive = true;
 		this.showLines = true;
