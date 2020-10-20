@@ -1,4 +1,4 @@
-export {default as Arc} from './element.arc';
-export {default as Line} from './element.line';
-export {default as Point} from './element.point';
-export {default as Rectangle} from './element.rectangle';
+export {default as ArcElement} from './element.arc';
+export {default as LineElement} from './element.line';
+export {default as PointElement} from './element.point';
+export {default as BarElement} from './element.bar';

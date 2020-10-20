@@ -64,6 +64,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 #### Specific changes
 
+* `elements.rectangle` is now `elements.bar`
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 * Polar area `elements.arc.angle` is now configured in degrees instead of radians.
@@ -384,6 +385,10 @@ The following properties were renamed during v3 development:
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 * `Chart.canvasHelpers` was merged with `Chart.helpers`
+* `Chart.elements.Arc` was renamed to `Chart.elements.ArcElement`
+* `Chart.elements.Line` was renamed to `Chart.elements.LineElement`
+* `Chart.elements.Point` was renamed to `Chart.elements.PointElement`
+* `Chart.elements.Rectangle` was renamed to `Chart.elements.BarElement`
 * `Chart.layoutService` was renamed to `Chart.layouts`
 * `Chart.pluginService` was renamed to `Chart.plugins`
 * `helpers.callCallback` was renamed to `helpers.callback`

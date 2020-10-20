@@ -53,13 +53,13 @@ export interface IArcHoverOptions extends ICommonHoverOptions {
   hoverOffset: number;
 }
 
-export interface Arc<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
+export interface ArcElement<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
   extends Element<T, O>,
     IVisualElement {}
 
-export const Arc: IChartComponent & {
-  prototype: Arc;
-  new (cfg: any): Arc;
+export const ArcElement: IChartComponent & {
+  prototype: ArcElement;
+  new (cfg: any): ArcElement;
 };
 
 export interface ILineProps {}
@@ -114,7 +114,7 @@ export interface ILineHoverOptions extends ICommonHoverOptions {
   hoverBorderJoinStyle: CanvasLineJoin;
 }
 
-export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
+export interface LineElement<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
   extends Element<T, O>,
     IVisualElement {
   updateControlPoints(chartArea: IChartArea): void;
@@ -127,9 +127,9 @@ export interface Line<T extends ILineProps = ILineProps, O extends ILineOptions 
   path(ctx: CanvasRenderingContext2D): boolean;
 }
 
-export const Line: IChartComponent & {
-  prototype: Line;
-  new (cfg: any): Line;
+export const LineElement: IChartComponent & {
+  prototype: LineElement;
+  new (cfg: any): LineElement;
 };
 
 export interface IPointProps {
@@ -232,18 +232,18 @@ export interface IPointPrefixedHoverOptions {
   pointHoverRadius: number;
 }
 
-export interface Point<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
+export interface PointElement<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
   extends Element<T, O>,
     IVisualElement {
   readonly skip: boolean;
 }
 
-export const Point: IChartComponent & {
-  prototype: Point;
-  new (cfg: any): Point;
+export const PointElement: IChartComponent & {
+  prototype: PointElement;
+  new (cfg: any): PointElement;
 };
 
-export interface IRectangleProps {
+export interface IBarProps {
   x: number;
   y: number;
   base: number;
@@ -252,7 +252,7 @@ export interface IRectangleProps {
   height: number;
 }
 
-export interface IRectangleOptions extends ICommonOptions {
+export interface IBarOptions extends ICommonOptions {
   /**
    * The base value for the bar in data units along the value axis.
    */
@@ -265,22 +265,22 @@ export interface IRectangleOptions extends ICommonOptions {
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 }
 
-export interface IRectangleHoverOptions extends ICommonHoverOptions {}
+export interface IBarHoverOptions extends ICommonHoverOptions {}
 
-export interface Rectangle<
-  T extends IRectangleProps = IRectangleProps,
-  O extends IRectangleOptions = IRectangleOptions
+export interface BarElement<
+  T extends IBarProps = IBarProps,
+  O extends IBarOptions = IBarOptions
 > extends Element<T, O>, IVisualElement {}
 
-export const Rectangle: IChartComponent & {
-  prototype: Rectangle;
-  new (cfg: any): Rectangle;
+export const BarElement: IChartComponent & {
+  prototype: BarElement;
+  new (cfg: any): BarElement;
 };
 
 export interface IElementChartOptions {
   elements: {
     arc: IArcOptions & IArcHoverOptions;
-    rectangle: IRectangleOptions & IRectangleHoverOptions;
+    bar: IBarOptions & IBarHoverOptions;
     line: ILineOptions & ILineHoverOptions;
     point: IPointOptions & IPointHoverOptions;
   };

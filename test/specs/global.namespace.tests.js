@@ -24,10 +24,10 @@ describe('Chart namespace', function() {
 
 	describe('Chart.elements', function() {
 		it('should contains "elements" classes', function() {
-			expect(Chart.elements.Arc instanceof Function).toBeTruthy();
-			expect(Chart.elements.Line instanceof Function).toBeTruthy();
-			expect(Chart.elements.Point instanceof Function).toBeTruthy();
-			expect(Chart.elements.Rectangle instanceof Function).toBeTruthy();
+			expect(Chart.elements.ArcElement instanceof Function).toBeTruthy();
+			expect(Chart.elements.BarElement instanceof Function).toBeTruthy();
+			expect(Chart.elements.LineElement instanceof Function).toBeTruthy();
+			expect(Chart.elements.PointElement instanceof Function).toBeTruthy();
 		});
 	});
 

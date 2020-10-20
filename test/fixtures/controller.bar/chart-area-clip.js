@@ -22,7 +22,7 @@ module.exports = {
 				}
 			},
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: '#00ff00',
 					borderWidth: 8
 				}

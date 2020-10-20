@@ -54,10 +54,10 @@ describe('Chart.controllers.bubble', function() {
 		var meta = chart.getDatasetMeta(0);
 
 		expect(meta.data.length).toBe(4); // 4 points created
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.PointElement).toBe(true);
 	});
 
 	it('should draw all elements', function() {
@@ -214,8 +214,8 @@ describe('Chart.controllers.bubble', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(2);
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
 
 		chart.data.datasets[0].data = [{
 			x: 10,
@@ -242,11 +242,11 @@ describe('Chart.controllers.bubble', function() {
 		chart.update();
 
 		expect(meta.data.length).toBe(5);
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[4] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[4] instanceof Chart.elements.PointElement).toBe(true);
 	});
 
 	describe('Interactions', function() {

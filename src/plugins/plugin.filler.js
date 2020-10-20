@@ -4,7 +4,7 @@
  * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
  */
 
-import Line from '../elements/element.line';
+import LineElement from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, isObject, valueOrDefault} from '../helpers/helpers.core';
@@ -13,7 +13,7 @@ import {TAU, _normalizeAngle} from '../helpers/helpers.math';
 /**
  * @typedef { import('../core/core.controller').default } Chart
  * @typedef { import('../core/core.scale').default } Scale
- * @typedef { import("../elements/element.point").default } Point
+ * @typedef { import("../elements/element.point").default } PointElement
  */
 
 /**
@@ -27,7 +27,7 @@ function getLineByIndex(chart, index) {
 }
 
 /**
- * @param {Line} line
+ * @param {LineElement} line
  */
 function parseFillOption(line) {
 	const options = line.options;
@@ -49,7 +49,7 @@ function parseFillOption(line) {
 }
 
 /**
- * @param {Line} line
+ * @param {LineElement} line
  * @param {number} index
  * @param {number} count
  */
@@ -103,7 +103,7 @@ function computeLinearBoundary(source) {
 	return null;
 }
 
-// TODO: use elements.Arc instead
+// TODO: use elements.ArcElement instead
 class simpleArc {
 	constructor(opts) {
 		this.x = opts.x;
@@ -197,8 +197,8 @@ function pointsFromSegments(boundary, line) {
 }
 
 /**
- * @param {{ chart: Chart; scale: Scale; index: number; line: Line; }} source
- * @return {Line}
+ * @param {{ chart: Chart; scale: Scale; index: number; line: LineElement; }} source
+ * @return {LineElement}
  */
 function buildStackLine(source) {
 	const {chart, scale, index, line} = source;
@@ -214,7 +214,7 @@ function buildStackLine(source) {
 			addPointsBelow(points, sourcePoints[j], linesBelow);
 		}
 	}
-	return new Line({points, options: {}});
+	return new LineElement({points, options: {}});
 }
 
 const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidden;
@@ -222,7 +222,7 @@ const isLineAndNotInHideAnimation = (meta) => meta.type === 'line' && !meta.hidd
 /**
  * @param {Chart} chart
  * @param {number} index
- * @return {Line[]}
+ * @return {LineElement[]}
  */
 function getLinesBelow(chart, index) {
 	const below = [];
@@ -241,9 +241,9 @@ function getLinesBelow(chart, index) {
 }
 
 /**
- * @param {Point[]} points
- * @param {Point} sourcePoint
- * @param {Line[]} linesBelow
+ * @param {PointElement[]} points
+ * @param {PointElement} sourcePoint
+ * @param {LineElement[]} linesBelow
  */
 function addPointsBelow(points, sourcePoint, linesBelow) {
 	const postponed = [];
@@ -270,10 +270,10 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
 }
 
 /**
- * @param {Line} line
- * @param {Point} sourcePoint
+ * @param {LineElement} line
+ * @param {PointElement} sourcePoint
  * @param {string} property
- * @returns {{point?: Point, first?: boolean, last?: boolean}}
+ * @returns {{point?: PointElement, first?: boolean, last?: boolean}}
  */
 function findPoint(line, sourcePoint, property) {
 	const point = line.interpolate(sourcePoint, property);
@@ -320,9 +320,9 @@ function getTarget(source) {
 }
 
 /**
- * @param {Point[] | { x: number; y: number; }} boundary
- * @param {Line} line
- * @return {Line?}
+ * @param {PointElement[] | { x: number; y: number; }} boundary
+ * @param {LineElement} line
+ * @return {LineElement?}
  */
 function createBoundaryLine(boundary, line) {
 	let points = [];
@@ -336,7 +336,7 @@ function createBoundaryLine(boundary, line) {
 		points = pointsFromSegments(boundary, line);
 	}
 
-	return points.length ? new Line({
+	return points.length ? new LineElement({
 		points,
 		options: {tension: 0},
 		_loop,
@@ -536,7 +536,7 @@ export default {
 			line = meta.dataset;
 			source = null;
 
-			if (line && line.options && line instanceof Line) {
+			if (line && line.options && line instanceof LineElement) {
 				source = {
 					visible: chart.isDatasetVisible(i),
 					index: i,

@@ -110,7 +110,7 @@ function drawBorder(ctx, element) {
 	ctx.stroke();
 }
 
-export default class Arc extends Element {
+export default class ArcElement extends Element {
 
 	constructor(cfg) {
 		super();
@@ -205,12 +205,12 @@ export default class Arc extends Element {
 	}
 }
 
-Arc.id = 'arc';
+ArcElement.id = 'arc';
 
 /**
  * @type {any}
  */
-Arc.defaults = {
+ArcElement.defaults = {
 	borderAlign: 'center',
 	borderColor: '#fff',
 	borderWidth: 2,
@@ -220,6 +220,6 @@ Arc.defaults = {
 /**
  * @type {any}
  */
-Arc.defaultRoutes = {
+ArcElement.defaultRoutes = {
 	backgroundColor: 'color'
 };
