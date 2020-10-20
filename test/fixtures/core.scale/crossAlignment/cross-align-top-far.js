@@ -14,7 +14,7 @@ module.exports = {
 				x: {
 					position: 'top',
 					ticks: {
-						crossAlignment: 'far',
+						crossAlign: 'far',
 					},
 				},
 			}

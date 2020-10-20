@@ -49,8 +49,8 @@ The following options are common to all cartesian axes but do not apply to other
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `alignment` | `string` | | `'center'` | The tick alignment along the axis. Can be `'start'`, `'center'`, or `'end'`.
-| `crossAlignment` | `string` | | `'near'` | The tick alignment perpendicular to the axis. Can be `'near'`, `'center'`, or `'far'`. See [Tick Alignment](#tick-alignment)
+| `align` | `string` | | `'center'` | The tick alignment along the axis. Can be `'start'`, `'center'`, or `'end'`.
+| `crossAlign` | `string` | | `'near'` | The tick alignment perpendicular to the axis. Can be `'near'`, `'center'`, or `'far'`. See [Tick Alignment](#tick-alignment)
 | `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `0` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
@@ -62,7 +62,7 @@ The following options are common to all cartesian axes but do not apply to other
 
 ### Tick Alignment
 
-The alignment of ticks is primarily controlled using two settings on the tick configuration object: `alignment` and `crossAlignment`. The `alignment` setting configures how labels align with the tick mark along the axis direction (i.e. horizontal for a horizontal axis and vertical for a vertical axis). The `crossAlignment` setting configures how labels align with the tick mark in the perpendicular direction (i.e. vertical for a horizontal axis and horizontal for a vertical axis). In the example below, the `crossAlignment` setting is used to left align the labels on the Y axis.
+The alignment of ticks is primarily controlled using two settings on the tick configuration object: `align` and `crossAlign`. The `align` setting configures how labels align with the tick mark along the axis direction (i.e. horizontal for a horizontal axis and vertical for a vertical axis). The `crossAlign` setting configures how labels align with the tick mark in the perpendicular direction (i.e. vertical for a horizontal axis and horizontal for a vertical axis). In the example below, the `crossAlign` setting is used to left align the labels on the Y axis.
 
 ```jsx live
 function exampleAlignment() {
@@ -105,7 +105,7 @@ function exampleAlignment() {
           },
           y: {
             ticks: {
-              crossAlignment: 'far',
+              crossAlign: 'far',
             }
           }
         }
@@ -117,7 +117,7 @@ function exampleAlignment() {
 }
 ```
 
-**Note:** the `crossAlignment` setting is not used the the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.
+**Note:** the `crossAlign` setting is not used the the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.
 
 ### Axis ID
 

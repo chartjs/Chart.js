@@ -286,11 +286,7 @@ export declare class Chart<
   render(): void;
   draw(): void;
 
-  getElementAtEvent(e: Event): InteractionItem[];
-  getElementsAtEvent(e: Event): InteractionItem[];
-  getElementsAtXAxis(e: Event): InteractionItem[];
-  getElementsAtEventForMode(e: Event, mode: string, options: any, useFinalPosition: boolean): InteractionItem[];
-  getDatasetAtEvent(e: Event): InteractionItem[];
+  getElementsAtEventForMode(e: Event, mode: string, options: IInteractionOptions, useFinalPosition: boolean): InteractionItem[];
 
   getSortedVisibleDatasetMetas(): IChartMeta[];
   getDatasetMeta(datasetIndex: number): IChartMeta;
@@ -421,13 +417,18 @@ export interface Defaults {
   readonly color: string;
   readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
   readonly font: IFontSpec;
-  readonly hover: {
-    onHover?: () => void;
+  readonly interaction: {
     mode: InteractionMode | string;
     intersect: boolean;
   };
+  readonly hover: {
+    onHover?: () => void;
+    mode?: InteractionMode | string;
+    intersect?: boolean;
+  };
   readonly maintainAspectRatio: boolean;
   readonly onClick?: () => void;
+  readonly onHover?: () => void;
   readonly responsive: boolean;
 
   readonly plugins: { [key: string]: any };

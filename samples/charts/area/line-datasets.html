@@ -102,6 +102,12 @@
 				hidden: true,
 				label: 'D8',
 				fill: 'end'
+			}, {
+				backgroundColor: utils.transparentize(presets.yellow),
+				borderColor: presets.yellow,
+				data: generateData(),
+				label: 'D9',
+				fill: {above: 'blue', below: 'red', target: {value: 350}}
 			}]
 		};
 

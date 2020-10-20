@@ -139,7 +139,7 @@ function createTooltipItem(chart, item) {
  */
 function resolveOptions(options, fallbackFont) {
 
-	options = merge({}, [defaults.plugins.tooltip, options]);
+	options = merge(Object.create(null), [defaults.plugins.tooltip, options]);
 
 	options.bodyFont = toFont(options.bodyFont, fallbackFont);
 	options.titleFont = toFont(options.titleFont, fallbackFont);
@@ -234,9 +234,9 @@ function determineAlignment(chart, options, size) {
 	let xAlign = 'center';
 	let yAlign = 'center';
 
-	if (y < height) {
+	if (y < height / 2) {
 		yAlign = 'top';
-	} else if (y > (chart.height - height)) {
+	} else if (y > (chart.height - height / 2)) {
 		yAlign = 'bottom';
 	}
 
@@ -1066,9 +1066,7 @@ export default {
 	defaults: {
 		enabled: true,
 		custom: null,
-		mode: 'nearest',
 		position: 'average',
-		intersect: true,
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		titleFont: {
 			style: 'bold',

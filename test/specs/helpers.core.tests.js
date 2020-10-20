@@ -272,6 +272,11 @@ describe('Chart.helpers.core', function() {
 	});
 
 	describe('merge', function() {
+		it('should not allow prototype pollution', function() {
+			var test = helpers.merge({}, JSON.parse('{"__proto__":{"polluted": true}}'));
+			expect(test.prototype).toBeUndefined();
+			expect(Object.prototype.polluted).toBeUndefined();
+		});
 		it('should update target and return it', function() {
 			var target = {a: 1};
 			var result = helpers.merge(target, {a: 2, b: 'foo'});
@@ -319,6 +324,11 @@ describe('Chart.helpers.core', function() {
 	});
 
 	describe('mergeIf', function() {
+		it('should not allow prototype pollution', function() {
+			var test = helpers.mergeIf({}, JSON.parse('{"__proto__":{"polluted": true}}'));
+			expect(test.prototype).toBeUndefined();
+			expect(Object.prototype.polluted).toBeUndefined();
+		});
 		it('should update target and return it', function() {
 			var target = {a: 1};
 			var result = helpers.mergeIf(target, {a: 2, b: 'foo'});

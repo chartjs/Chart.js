@@ -13,4 +13,12 @@ describe('Core helper tests', function() {
 		expect(helpers.uid()).toBe(uid + 2);
 		expect(helpers.uid()).toBe(uid + 3);
 	});
+
+	describe('clone', function() {
+		it('should not allow prototype pollution', function() {
+			const test = helpers.clone(JSON.parse('{"__proto__":{"polluted": true}}'));
+			expect(test.prototype).toBeUndefined();
+			expect(Object.prototype.polluted).toBeUndefined();
+		});
+	});
 });

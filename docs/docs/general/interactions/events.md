@@ -22,3 +22,23 @@ var chart = new Chart(ctx, {
     }
 });
 ```
+
+## Converting Events to Data Values
+
+A common occurrence is taking an event, such as a click, and finding the data coordinates on the chart where the event occurred. Chart.js provides helpers that make this a straightforward process.
+
+```javascript
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        onClick: (e) => {
+            const canvasPosition = Chart.helpers.getRelativePosition(e);
+
+            // Substitute the appropriate scale IDs
+            const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+            const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+        }
+    }
+});
+```

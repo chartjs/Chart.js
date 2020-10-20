@@ -164,9 +164,11 @@ LineController.defaults = {
 	showLines: true,
 	spanGaps: false,
 
-	hover: {
+	interaction: {
 		mode: 'index'
 	},
+
+	hover: {},
 
 	scales: {
 		_index_: {

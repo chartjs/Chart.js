@@ -4,20 +4,9 @@ set -e
 
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
-TARGET_REPO_URL="https://$GITHUB_AUTH_TOKEN@github.com/chartjs/chartjs.github.io.git"
+TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 
-# Note: this code also exists in docs-config.sh
-# Make sure that this script is executed only for the release and master branches
-VERSION_REGEX='[[:digit:]]+.[[:digit:]]+.[[:digit:]]+(-.*)?'
-if [[ "$TRAVIS_BRANCH" =~ ^release.*$ ]]; then
-    # Travis executes this script from the repository root, so at the same level than package.json
-    VERSION=$(node -p -e "require('./package.json').version")
-elif [ "$TRAVIS_BRANCH" == "master" ]; then
-    VERSION="master"
-else
-    echo "Skipping deploy because this is not the master or release branch"
-    exit 0
-fi
+VERSION=$1
 
 function move_sample_scripts {
     local subdirectory=$1
@@ -47,7 +36,7 @@ function update_tagged_files {
     if [ "$VERSION" == "master" ]; then
         update_with_tag master
     elif [[ "$VERSION" =~ ^[^-]+$ ]]; then
-        update_with_tag lastest
+        update_with_tag latest
     else
         update_with_tag next
     fi
@@ -75,9 +64,9 @@ update_tagged_files
 git add --all
 
 git remote add auth-origin $TARGET_REPO_URL
-git config --global user.email "$GITHUB_AUTH_EMAIL"
+git config --global user.email "$GH_AUTH_EMAIL"
 git config --global user.name "Chart.js"
-git commit -m "Deploy $VERSION from $TRAVIS_REPO_SLUG" -m "Commit: $TRAVIS_COMMIT"
+git commit -m "Deploy $VERSION from $GITHUB_REPOSITORY" -m "Commit: $GITHUB_SHA"
 git push -q auth-origin $TARGET_BRANCH
 git remote rm auth-origin
 

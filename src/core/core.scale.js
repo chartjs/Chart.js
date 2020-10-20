@@ -62,8 +62,8 @@ defaults.set('scale', {
 		callback: Ticks.formatters.values,
 		minor: {},
 		major: {},
-		alignment: 'center',
-		crossAlignment: 'near',
+		align: 'center',
+		crossAlign: 'near',
 	}
 });
 
@@ -344,6 +344,7 @@ export default class Scale extends Element {
 		this._userMin = undefined;
 		this._ticksLength = 0;
 		this._borderValue = 0;
+		this._cache = {};
 	}
 
 	/**
@@ -418,7 +419,9 @@ export default class Scale extends Element {
 		return {min, max};
 	}
 
-	invalidateCaches() {}
+	invalidateCaches() {
+		this._cache = {};
+	}
 
 	/**
 	 * Get the padding needed for the scale
@@ -452,7 +455,7 @@ export default class Scale extends Element {
 		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
 	}
 
-	// These methods are ordered by lifecyle. Utilities then follow.
+	// These methods are ordered by lifecycle. Utilities then follow.
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
 
@@ -763,10 +766,10 @@ export default class Scale extends Element {
 					paddingRight = labelsBelowTicks ?
 						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
 						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
-				} else if (tickOpts.alignment === 'start') {
+				} else if (tickOpts.align === 'start') {
 					paddingLeft = 0;
 					paddingRight = lastLabelSize.width;
-				} else if (tickOpts.alignment === 'end') {
+				} else if (tickOpts.align === 'end') {
 					paddingLeft = firstLabelSize.width;
 					paddingRight = 0;
 				} else {
@@ -791,10 +794,10 @@ export default class Scale extends Element {
 				let paddingTop = lastLabelSize.height / 2;
 				let paddingBottom = firstLabelSize.height / 2;
 
-				if (tickOpts.alignment === 'start') {
+				if (tickOpts.align === 'start') {
 					paddingTop = 0;
 					paddingBottom = firstLabelSize.height;
-				} else if (tickOpts.alignment === 'end') {
+				} else if (tickOpts.align === 'end') {
 					paddingTop = lastLabelSize.height;
 					paddingBottom = 0;
 				}
@@ -891,6 +894,8 @@ export default class Scale extends Element {
 		const widths = [];
 		const heights = [];
 		const offsets = [];
+		let widestLabelSize = 0;
+		let highestLabelSize = 0;
 		let ticks = me.ticks;
 		if (sampleSize < ticks.length) {
 			ticks = sample(ticks, sampleSize);
@@ -923,11 +928,13 @@ export default class Scale extends Element {
 			widths.push(width);
 			heights.push(height);
 			offsets.push(lineHeight / 2);
+			widestLabelSize = Math.max(width, widestLabelSize);
+			highestLabelSize = Math.max(height, highestLabelSize);
 		}
 		garbageCollect(caches, length);
 
-		const widest = widths.indexOf(Math.max.apply(null, widths));
-		const highest = heights.indexOf(Math.max.apply(null, heights));
+		const widest = widths.indexOf(widestLabelSize);
+		const highest = heights.indexOf(highestLabelSize);
 
 		function valueAt(idx) {
 			return {
@@ -1253,7 +1260,7 @@ export default class Scale extends Element {
 		const {position, ticks: optionTicks} = options;
 		const isHorizontal = me.isHorizontal();
 		const ticks = me.ticks;
-		const {alignment, crossAlignment, padding} = optionTicks;
+		const {align, crossAlign, padding} = optionTicks;
 		const tl = getTickMarkLength(options.gridLines);
 		const tickAndPadding = tl + padding;
 		const rotation = -toRadians(me.labelRotation);
@@ -1296,9 +1303,9 @@ export default class Scale extends Element {
 		}
 
 		if (axis === 'y') {
-			if (alignment === 'start') {
+			if (align === 'start') {
 				textBaseline = 'top';
-			} else if (alignment === 'end') {
+			} else if (align === 'end') {
 				textBaseline = 'bottom';
 			}
 		}
@@ -1317,20 +1324,20 @@ export default class Scale extends Element {
 			if (isHorizontal) {
 				x = pixel;
 				if (position === 'top') {
-					if (crossAlignment === 'near' || rotation !== 0) {
+					if (crossAlign === 'near' || rotation !== 0) {
 						textOffset = (Math.sin(rotation) * halfCount + 0.5) * lineHeight;
 						textOffset -= (rotation === 0 ? (lineCount - 0.5) : Math.cos(rotation) * halfCount) * lineHeight;
-					} else if (crossAlignment === 'center') {
+					} else if (crossAlign === 'center') {
 						textOffset = -1 * (labelSizes.highest.height / 2);
 						textOffset -= halfCount * lineHeight;
 					} else {
 						textOffset = (-1 * labelSizes.highest.height) + (0.5 * lineHeight);
 					}
 				} else if (position === 'bottom') {
-					if (crossAlignment === 'near' || rotation !== 0) {
+					if (crossAlign === 'near' || rotation !== 0) {
 						textOffset = Math.sin(rotation) * halfCount * lineHeight;
 						textOffset += (rotation === 0 ? 0.5 : Math.cos(rotation) * halfCount) * lineHeight;
-					} else if (crossAlignment === 'center') {
+					} else if (crossAlign === 'center') {
 						textOffset = labelSizes.highest.height / 2;
 						textOffset -= halfCount * lineHeight;
 					} else {
@@ -1368,9 +1375,9 @@ export default class Scale extends Element {
 
 		let align = 'center';
 
-		if (ticks.alignment === 'start') {
+		if (ticks.align === 'start') {
 			align = 'left';
-		} else if (ticks.alignment === 'end') {
+		} else if (ticks.align === 'end') {
 			align = 'right';
 		}
 
@@ -1380,7 +1387,7 @@ export default class Scale extends Element {
 	_getYAxisLabelAlignment(tl) {
 		const me = this;
 		const {position, ticks} = me.options;
-		const {crossAlignment, mirror, padding} = ticks;
+		const {crossAlign, mirror, padding} = ticks;
 		const labelSizes = me._getLabelSizes();
 		const tickAndPadding = tl + padding;
 		const widest = labelSizes.widest.width;
@@ -1395,9 +1402,9 @@ export default class Scale extends Element {
 			} else {
 				x = me.right - tickAndPadding;
 
-				if (crossAlignment === 'near') {
+				if (crossAlign === 'near') {
 					textAlign = 'right';
-				} else if (crossAlignment === 'center') {
+				} else if (crossAlign === 'center') {
 					textAlign = 'center';
 					x -= (widest / 2);
 				} else {
@@ -1412,9 +1419,9 @@ export default class Scale extends Element {
 			} else {
 				x = me.left + tickAndPadding;
 
-				if (crossAlignment === 'near') {
+				if (crossAlign === 'near') {
 					textAlign = 'left';
-				} else if (crossAlignment === 'center') {
+				} else if (crossAlign === 'center') {
 					textAlign = 'center';
 					x += widest / 2;
 				} else {

@@ -334,7 +334,7 @@ export default class DatasetController {
 	 */
 	configure() {
 		const me = this;
-		me._config = merge({}, [
+		me._config = merge(Object.create(null), [
 			me.chart.options[me._type].datasets,
 			me.getDataset(),
 		], {
@@ -742,7 +742,7 @@ export default class DatasetController {
 		});
 
 		if (info.cacheable) {
-			// `$shared` indicades this set of options can be shared between multiple elements.
+			// `$shared` indicates this set of options can be shared between multiple elements.
 			// Sharing is used to reduce number of properties to change during animation.
 			values.$shared = sharing;
 

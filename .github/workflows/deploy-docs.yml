@@ -1,0 +1,35 @@
+# This workflow publishes new documentation to https://chartjs.org/docs/master after every commit
+name: Deploy docs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  correct_repository:
+    runs-on: ubuntu-latest
+    steps:
+    - name: fail on fork
+      if: github.repository_owner != 'chartjs'
+      run: exit 1
+
+  build:
+    needs: correct_repository
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - name: Package & Deploy Docs
+      run: |
+        npm ci
+        npm run build
+        ./scripts/docs-config.sh "master"
+        npm run docs
+        npm run typedoc
+        npm pack
+        ./scripts/deploy-docs.sh "master"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+        GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}

@@ -91,63 +91,22 @@ myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
 ```
 
-## .getElementAtEvent(e)
+## .getElementsAtEventForMode(e, mode, options, useFinalPosition)
 
-Calling `getElementAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the single element at the event position. If there are multiple items within range, only the first is returned. The value returned from this method is an array with a single parameter. An array is used to keep a consistent API between the `get*AtEvent` methods.
+Calling `getElementsAtEventForMode(e, mode, options, useFinalPosition)` on your Chart instance passing an event and a mode will return the elements that are found. The `options` and `useFinalPosition` arguments are passed through to the handlers.
 
-```javascript
-myLineChart.getElementAtEvent(e);
-// => returns the first element at the event point.
-```
-
-To get an item that was clicked on, `getElementAtEvent` can be used.
+To get an item that was clicked on, `getElementsAtEventForMode` can be used.
 
 ```javascript
 function clickHandler(evt) {
-    var firstPoint = myChart.getElementAtEvent(evt)[0];
+    const points = myChart.getElementAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
-    if (firstPoint) {
+    if (points.length) {
+        const firstPoint = points[0];
         var label = myChart.data.labels[firstPoint._index];
         var value = myChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
     }
 }
-```
-
-## .getElementsAtEvent(e)
-
-Looks for the element under the event point, then returns all elements at the same data index. This is used internally for 'label' mode highlighting.
-
-Calling `getElementsAtEvent(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt) {
-    var activePoints = myLineChart.getElementsAtEvent(evt);
-    // => activePoints is an array of points on the canvas that are at the same position as the click event.
-};
-```
-
-This functionality may be useful for implementing DOM based tooltips, or triggering custom behaviour in your application.
-
-## .getElementsAtXAxis(e)
-
-Returns all elements at the data index the event point is located at. This is similar to `getElementsAtEvent(event)`, but the event point does not have to intersect one of the elements.
-
-Calling `getElementsAtXAxis(event)` on your Chart instance passing an argument of an event, or jQuery event, will return the point elements that are at that the same position of that event.
-
-```javascript
-canvas.onclick = function(evt) {
-    var activePoints = myLineChart.getElementsAtXAxis(evt);
-    // => activePoints is an array of points on the canvas that are at the same X axis as the click event.
-};
-```
-
-## .getDatasetAtEvent(e)
-
-Looks for the element under the event point, then returns all elements from that dataset. This is used internally for 'dataset' mode highlighting.
-
-```javascript
-myLineChart.getDatasetAtEvent(e);
-// => returns an array of elements
 ```
 
 ## .getDatasetMeta(index)

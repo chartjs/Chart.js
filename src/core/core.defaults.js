@@ -12,7 +12,7 @@ function getScope(node, key) {
 	const keys = key.split('.');
 	for (let i = 0, n = keys.length; i < n; ++i) {
 		const k = keys[i];
-		node = node[k] || (node[k] = {});
+		node = node[k] || (node[k] = Object.create(null));
 	}
 	return node;
 }
@@ -42,12 +42,15 @@ export class Defaults {
 			lineWidth: 0,
 			strokeStyle: undefined
 		};
-		this.hover = {
-			onHover: null,
+		this.interaction = {
 			mode: 'nearest',
 			intersect: true
 		};
+		this.hover = {
+			onHover: null
+		};
 		this.maintainAspectRatio = true;
+		this.onHover = null;
 		this.onClick = null;
 		this.responsive = true;
 		this.showLines = true;

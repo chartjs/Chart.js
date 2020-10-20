@@ -51,7 +51,7 @@ const chart = new Chart(ctx, {
 
 ### Chart types
 
-* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](../charts/bar.md#general) option
+* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](./charts/bar.mdx#general) option
 
 ### Options
 
@@ -202,6 +202,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Interactions
 
+* To allow DRY configuration, a root options scope for common interaction options was added. `options.hover` and `options.tooltips` now both extend from `options.interaction`. Defaults are defined at `defaults.interaction` level, so by default hover and tooltip interactions share the same mode etc.
 * `interactions` are now limited to the chart area
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
@@ -349,6 +350,15 @@ The following properties and methods were removed:
 * Legend `onClick`, `onHover`, and `onLeave` options now receive a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
 * `Title.margins` is now private
 * The tooltip item's `x` and `y` attributes were replaced by `element`. You can use `element.x` and `element.y` or `element.tooltipPosition()` instead.
+
+#### Removal of Public APIs
+
+The following public APIs were removed.
+
+* `getElementAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)`
+* `getElementsAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'index', { intersect: true }, false)`
+* `getElementsAtXAxis` is replaced with `chart.getElementsAtEventForMode(e, 'index', { intersect: false }, false)`
+* `getDatasetAtEvent` is replaced with `chart.getElementsAtEventForMode(e, 'dataset', { intersect: true }, false)`
 
 #### Removal of private APIs
 

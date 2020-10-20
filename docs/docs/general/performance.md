@@ -26,11 +26,11 @@ Line charts are able to do [automatic data decimation during draw](#automatic-da
 
 ### Rotation
 
-[Specify a rotation value](../axes/cartesian/index.md#tick-configuration) by setting `minRotation` and `maxRotation` to the same value, which avoids the chart from having to automatically determine a value to use.
+[Specify a rotation value](./axes/cartesian/index.mdx#tick-configuration) by setting `minRotation` and `maxRotation` to the same value, which avoids the chart from having to automatically determine a value to use.
 
 ### Sampling
 
-Set the [`ticks.sampleSize`](../axes/cartesian/index.md#tick-configuration) option. This will determine how large your labels are by looking at only a subset of them in order to render axes more quickly. This works best if there is not a large variance in the size of your labels.
+Set the [`ticks.sampleSize`](./axes/cartesian/index.mdx#tick-configuration) option. This will determine how large your labels are by looking at only a subset of them in order to render axes more quickly. This works best if there is not a large variance in the size of your labels.
 
 ## Disable Animations
 
@@ -75,7 +75,7 @@ new Chart(ctx, {
 
 ## Parallel rendering with web workers (Chrome only)
 
-Chome (in version 69) added the ability to [transfer rendering control of a canvas](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) to a web worker. Web workers can use the [OffscreenCanvas API](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) to render from a web worker onto canvases in the DOM. Chart.js is a canvas-based library and supports rendering in a web worker - just pass an OffscreenCanvas into the Chart constructor instead of a Canvas element. Note that as of today, this API is only supported in Chrome.
+Chrome (in version 69) added the ability to [transfer rendering control of a canvas](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) to a web worker. Web workers can use the [OffscreenCanvas API](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) to render from a web worker onto canvases in the DOM. Chart.js is a canvas-based library and supports rendering in a web worker - just pass an OffscreenCanvas into the Chart constructor instead of a Canvas element. Note that as of today, this API is only supported in Chrome.
 
 By moving all Chart.js calculations onto a separate thread, the main thread can be freed up for other uses. Some tips and tricks when using Chart.js in a web worker:
 * Transferring data between threads can be expensive, so ensure that your config and data objects are as small as possible. Try generating them on the worker side if you can (workers can make HTTP requests!) or passing them to your worker as ArrayBuffers, which can be transferred quickly from one thread to another.
@@ -222,7 +222,7 @@ new Chart(ctx, {
 });
 ```
 
-## When transpiling with Babel, cosider using `loose` mode
+## When transpiling with Babel, consider using `loose` mode
 
 Babel 7.9 changed the way classes are constructed. It is slow, unless used with `loose` mode.
 [More information](https://github.com/babel/babel/issues/11356)
