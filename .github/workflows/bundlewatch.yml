@@ -1,8 +1,8 @@
 name: "Bundlewatch Github Action"
 
 on:
-  pull_request_target:
-    types: [synchronize, opened]
+  pull_request:
+    types: [synchronize, opened, reopened]
   push:
     branches:
     - master
