@@ -101,6 +101,13 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
+function includeDefaults(options, type) {
+	return mergeConfig(
+		defaults,
+		defaults[type],
+		options || {});
+}
+
 function initConfig(config) {
 	config = config || {};
 
@@ -112,10 +119,7 @@ function initConfig(config) {
 
 	const scaleConfig = mergeScaleConfig(config, config.options);
 
-	const options = config.options = mergeConfig(
-		defaults,
-		defaults[config.type],
-		config.options || {});
+	const options = config.options = includeDefaults(config.options, config.type);
 
 	options.hover = merge(Object.create(null), [
 		defaults.interaction,
@@ -169,10 +173,7 @@ export default class Config {
 		const config = this._config;
 		const scaleConfig = mergeScaleConfig(config, options);
 
-		options = mergeConfig(
-			defaults,
-			defaults[config.type],
-			options);
+		options = includeDefaults(options, config.type);
 
 		options.scales = scaleConfig;
 		config.options = options;
