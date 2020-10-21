@@ -117,6 +117,7 @@ class Chart {
 		this.$proxies = {};
 		this._hiddenIndices = {};
 		this.attached = false;
+		this._animationsDisabled = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -429,7 +430,12 @@ class Chart {
 
 		me._updating = true;
 
-		updateConfig(me);
+		each(me.scales, (scale) => {
+			layouts.removeBox(me, scale);
+		});
+
+		me.options = updateConfig(me.config, me.options);
+		me._animationsDisabled = !me.options.animation;
 
 		me.ensureScalesHaveIDs();
 		me.buildOrUpdateScales();

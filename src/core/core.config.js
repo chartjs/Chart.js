@@ -1,7 +1,6 @@
 /* eslint-disable import/no-namespace, import/namespace */
 import defaults from './core.defaults';
-import layouts from './core.layouts';
-import {mergeIf, merge, _merger, each} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger} from '../helpers/helpers.core';
 
 export function getIndexAxis(type, options) {
 	const typeDefaults = defaults[type] || {};
@@ -102,10 +101,6 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
-function isAnimationDisabled(config) {
-	return !config.animation;
-}
-
 export function initConfig(config) {
 	config = config || {};
 
@@ -145,22 +140,15 @@ export function initConfig(config) {
 	return config;
 }
 
-export function updateConfig(chart) {
-	let newOptions = chart.options;
-
-	each(chart.scales, (scale) => {
-		layouts.removeBox(chart, scale);
-	});
-
-	const scaleConfig = mergeScaleConfig(chart.config, newOptions);
+export function updateConfig(config, newOptions) {
+	const scaleConfig = mergeScaleConfig(config, newOptions);
 
 	newOptions = mergeConfig(
 		defaults,
-		defaults[chart.config.type],
+		defaults[config.type],
 		newOptions);
 
-	chart.options = chart.config.options = newOptions;
-	chart.options.scales = scaleConfig;
-
-	chart._animationsDisabled = isAnimationDisabled(newOptions);
+	newOptions.scales = scaleConfig;
+	config.options = newOptions;
+	return newOptions;
 }
