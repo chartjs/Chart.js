@@ -1,7 +1,7 @@
 name: "Bundlewatch Github Action"
 
 on:
-  pull_request:
+  pull_request_target:
     types: [synchronize, opened]
   push:
     branches:
@@ -21,4 +21,5 @@ jobs:
     - name: Bundlewatch
       run: npx bundlewatch
       env:
+        CI_BRANCH_BASE: master
         BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
