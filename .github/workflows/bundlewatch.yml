@@ -1,0 +1,25 @@
+name: "Bundlewatch Github Action"
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened]
+  push:
+    branches:
+    - master
+
+jobs:
+  bundlewatch:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - name: Build
+      run: |
+        npm ci
+        npm run build
+    - name: Bundlewatch
+      run: npx bundlewatch
+      env:
+        CI_BRANCH_BASE: master
+        BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
