@@ -153,7 +153,7 @@ export interface ILineControllerChartOptions {
    * If false, the lines between points are not drawn.
    * @default true
    */
-  showLines: boolean;
+  showLine: boolean;
 }
 
 export interface LineController extends DatasetController {}
@@ -181,7 +181,7 @@ export interface IDoughnutControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IArcOptions>,
     ScriptableAndArrayOptions<IArcHoverOptions> {
-  
+
   /**
    * Sweep to allow arcs to cover.
    * @default 2 * Math.PI

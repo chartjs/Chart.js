@@ -1,5 +1,5 @@
 module.exports = {
-	description: 'showLines option should draw a line if true',
+	description: 'showLine option should draw a line if true',
 	config: {
 		type: 'scatter',
 		data: {

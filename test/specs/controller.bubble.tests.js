@@ -70,7 +70,7 @@ describe('Chart.controllers.bubble', function() {
 			},
 			options: {
 				animation: false,
-				showLines: true
+				showLine: true
 			}
 		});
 

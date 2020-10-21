@@ -25,7 +25,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
-			showLines: false,
+			showLine: false,
 			elements: {
 				line: {
 					borderColor: '#ff0000',

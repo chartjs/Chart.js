@@ -16,7 +16,7 @@ module.exports = {
 		options: {
 			legend: false,
 			title: false,
-			showLines: true,
+			showLine: true,
 			scales: {
 				x: {
 					display: false
