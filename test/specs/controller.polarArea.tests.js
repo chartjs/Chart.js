@@ -86,7 +86,7 @@ describe('Chart.controllers.polarArea', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true,
+				showLine: true,
 				legend: false,
 				title: false,
 				elements: {
@@ -153,7 +153,7 @@ describe('Chart.controllers.polarArea', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true,
+				showLine: true,
 				legend: false,
 				title: false,
 				startAngle: 90, // default is 0
@@ -201,7 +201,7 @@ describe('Chart.controllers.polarArea', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true,
+				showLine: true,
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',

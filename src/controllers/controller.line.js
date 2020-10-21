@@ -87,7 +87,7 @@ export default class LineController extends DatasetController {
 		const options = me.chart.options;
 		const lineOptions = options.elements.line;
 		const values = super.resolveDatasetElementOptions(active);
-		const showLine = valueOrDefault(config.showLine, options.showLines);
+		const showLine = valueOrDefault(config.showLine, options.showLine);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
@@ -161,7 +161,7 @@ LineController.defaults = {
 		rotation: 'pointRotation'
 	},
 
-	showLines: true,
+	showLine: true,
 	spanGaps: false,
 
 	interaction: {

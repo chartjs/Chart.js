@@ -76,7 +76,7 @@ export default class RadarController extends DatasetController {
 		const config = me._config;
 		const options = me.chart.options;
 		const values = super.resolveDatasetElementOptions(active);
-		const showLine = valueOrDefault(config.showLine, options.showLines);
+		const showLine = valueOrDefault(config.showLine, options.showLine);
 
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
 		values.tension = valueOrDefault(config.lineTension, options.elements.line.tension);

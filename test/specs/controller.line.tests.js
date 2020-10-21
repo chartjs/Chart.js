@@ -74,7 +74,7 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true
+				showLine: true
 			}
 		});
 
@@ -109,7 +109,7 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true,
+				showLine: true,
 				legend: false,
 				title: false,
 				elements: {
