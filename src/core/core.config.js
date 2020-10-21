@@ -101,7 +101,7 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
-export function initConfig(config) {
+function initConfig(config) {
 	config = config || {};
 
 	// Do NOT use mergeConfig for the data object because this method merges arrays
@@ -140,15 +140,41 @@ export function initConfig(config) {
 	return config;
 }
 
-export function updateConfig(config, newOptions) {
-	const scaleConfig = mergeScaleConfig(config, newOptions);
+export default class Config {
+	constructor(config) {
+		this._config = initConfig(config);
+	}
 
-	newOptions = mergeConfig(
-		defaults,
-		defaults[config.type],
-		newOptions);
+	get type() {
+		return this._config.type;
+	}
 
-	newOptions.scales = scaleConfig;
-	config.options = newOptions;
-	return newOptions;
+	get data() {
+		return this._config.data;
+	}
+
+	set data(data) {
+		this._config.data = data;
+	}
+
+	get options() {
+		return this._config.options;
+	}
+
+	get plugins() {
+		return this._config.plugins;
+	}
+
+	update(options) {
+		const config = this._config;
+		const scaleConfig = mergeScaleConfig(config, options);
+
+		options = mergeConfig(
+			defaults,
+			defaults[config.type],
+			options);
+
+		options.scales = scaleConfig;
+		config.options = options;
+	}
 }

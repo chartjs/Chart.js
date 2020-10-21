@@ -50,7 +50,7 @@ export default class PluginService {
 			return this._cache;
 		}
 
-		const config = (chart && chart.config) || {};
+		const config = chart && chart.config;
 		const options = (config.options && config.options.plugins) || {};
 		const plugins = allPlugins(config);
 		const descriptors = createDescriptors(plugins, options);
@@ -61,6 +61,9 @@ export default class PluginService {
 	}
 }
 
+/**
+ * @param {import("./core.config").default} config
+ */
 function allPlugins(config) {
 	const plugins = [];
 	const keys = Object.keys(registry.plugins.items);

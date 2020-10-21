@@ -6,7 +6,7 @@ import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
 import PluginService from './core.plugins';
 import registry from './core.registry';
-import {determineAxis, getIndexAxis, initConfig, updateConfig} from './core.config';
+import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
@@ -73,7 +73,7 @@ class Chart {
 	constructor(item, config) {
 		const me = this;
 
-		config = initConfig(config);
+		this.config = config = new Config(config);
 		const initialCanvas = getCanvas(item);
 		const existingChart = Chart.getChart(initialCanvas);
 		if (existingChart) {
@@ -93,7 +93,6 @@ class Chart {
 		this.id = uid();
 		this.ctx = context;
 		this.canvas = canvas;
-		this.config = config;
 		this.width = width;
 		this.height = height;
 		this.aspectRatio = height ? width / height : null;
@@ -104,7 +103,6 @@ class Chart {
 		this.boxes = [];
 		this.currentDevicePixelRatio = undefined;
 		this.chartArea = undefined;
-		this.data = undefined;
 		this._active = [];
 		this._lastEvent = undefined;
 		/** @type {{attach?: function, detach?: function, resize?: function}} */
@@ -122,16 +120,6 @@ class Chart {
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
 
-		// Define alias to the config data: `chart.data === chart.config.data`
-		Object.defineProperty(me, 'data', {
-			get() {
-				return me.config.data;
-			},
-			set(value) {
-				me.config.data = value;
-			}
-		});
-
 		if (!context || !canvas) {
 			// The given item is not a compatible context2d element, let's return before finalizing
 			// the chart initialization but after setting basic chart / controller properties that
@@ -148,6 +136,14 @@ class Chart {
 		if (me.attached) {
 			me.update();
 		}
+	}
+
+	get data() {
+		return this.config.data;
+	}
+
+	set data(data) {
+		this.config.data = data;
 	}
 
 	/**
@@ -434,7 +430,8 @@ class Chart {
 			layouts.removeBox(me, scale);
 		});
 
-		me.options = updateConfig(me.config, me.options);
+		me.config.update(me.options);
+		me.options = me.config.options;
 		me._animationsDisabled = !me.options.animation;
 
 		me.ensureScalesHaveIDs();
