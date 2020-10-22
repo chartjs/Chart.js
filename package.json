@@ -32,14 +32,6 @@
     "helpers/**/*.js",
     "helpers/**/*.d.ts"
   ],
-	"bundlewatch": {
-    "files": [
-      {
-        "path": "dist/*.js",
-        "maxSize": "100kB"
-      }
-    ]
-  },
   "scripts": {
     "autobuild": "rollup -c -w",
     "build": "rollup -c",
@@ -62,7 +54,6 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
-    "bundlewatch": "^0.3.1",
     "chartjs-adapter-moment": "^0.1.2",
     "concurrently": "^5.3.0",
     "coveralls": "^3.1.0",
