@@ -32,14 +32,6 @@
     "helpers/**/*.js",
     "helpers/**/*.d.ts"
   ],
-	"bundlewatch": {
-    "files": [
-      {
-        "path": "dist/*.js",
-        "maxSize": "100kB"
-      }
-    ]
-  },
   "scripts": {
     "autobuild": "rollup -c -w",
     "build": "rollup -c",
