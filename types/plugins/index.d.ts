@@ -42,58 +42,63 @@ export interface LegendItem {
   text: string;
 
   /**
+   * Index of the associated dataset
+   */
+  datasetIndex: number;
+
+  /**
    * Fill style of the legend box
    */
-  fillStyle: CanvasLineCap;
+  fillStyle?: Color;
 
   /**
    * If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
    */
-  hidden: boolean;
+  hidden?: boolean;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
    */
-  lineCap: CanvasLineCap;
+  lineCap?: CanvasLineCap;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
    */
-  lineDash: number[];
+  lineDash?: number[];
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
    */
-  lineDashOffset: number;
+  lineDashOffset?: number;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
    */
-  lineJoin: CanvasLineJoin;
+  lineJoin?: CanvasLineJoin;
 
   /**
    * Width of box border
    */
-  lineWidth: number;
+  lineWidth?: number;
 
   /**
    * Stroke style of the legend box
    */
-  strokeStyle: Color;
+  strokeStyle?: Color;
 
   /**
    * Point style of the legend box (only used if usePointStyle is true)
    */
-  pointStyle: PointStyle;
+  pointStyle?: PointStyle;
 
   /**
    * Rotation of the point in degrees (only used if usePointStyle is true)
    */
-  rotation: number;
+  rotation?: number;
 }
 
 export interface LegendElement extends Element {}
