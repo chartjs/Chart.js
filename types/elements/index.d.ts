@@ -263,9 +263,24 @@ export interface IBarOptions extends ICommonOptions {
    * @default 'start'
    */
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
+
+  /**
+   * Border radius
+   * @default 0
+   */
+  borderRadius: number | IBorderRadius;
 }
 
-export interface IBarHoverOptions extends ICommonHoverOptions {}
+export interface IBorderRadius {
+  topLeft: number;
+  topRight: number;
+  bottomLeft: number;
+  bottomRight: number;
+}
+
+export interface IBarHoverOptions extends ICommonHoverOptions {
+  hoverBorderRadius: number | IBorderRadius;
+}
 
 export interface BarElement<
   T extends IBarProps = IBarProps,
