@@ -126,6 +126,8 @@ function createDescriptors(plugins, options) {
  * @desc Called before updating `chart`. If any plugin returns `false`, the update
  * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart update.
  */
@@ -134,6 +136,8 @@ function createDescriptors(plugins, options) {
  * @desc Called after `chart` has been updated and before rendering. Note that this
  * hook will not be called if the chart update has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  */
 /**
@@ -148,6 +152,8 @@ function createDescriptors(plugins, options) {
  * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
  * the datasets update is cancelled until another `update` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  * @returns {boolean} false to cancel the datasets update.
  * @since version 2.1.5
@@ -157,6 +163,8 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `chart` datasets have been updated. Note that this hook
  * will not be called if the datasets update has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  * @since version 2.1.5
  */
@@ -168,6 +176,7 @@ function createDescriptors(plugins, options) {
  * @param {object} args - The call arguments.
  * @param {number} args.index - The dataset index.
  * @param {object} args.meta - The dataset metadata.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart datasets drawing.
  */
@@ -179,6 +188,7 @@ function createDescriptors(plugins, options) {
  * @param {object} args - The call arguments.
  * @param {number} args.index - The dataset index.
  * @param {object} args.meta - The dataset metadata.
+ * @param {string} args.mode - The update mode
  * @param {object} options - The plugin options.
  */
 /**

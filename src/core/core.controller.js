@@ -587,6 +587,7 @@ class Chart {
 
 	update(mode) {
 		const me = this;
+		const args = {mode};
 		let i, ilen;
 
 		me._updating = true;
@@ -600,7 +601,7 @@ class Chart {
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 		me._plugins.invalidate();
 
-		if (me._plugins.notify(me, 'beforeUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeUpdate', [args]) === false) {
 			return;
 		}
 
@@ -622,7 +623,7 @@ class Chart {
 		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		me._plugins.notify(me, 'afterUpdate');
+		me._plugins.notify(me, 'afterUpdate', [args]);
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
@@ -675,8 +676,9 @@ class Chart {
 	_updateDatasets(mode) {
 		const me = this;
 		const isFunction = typeof mode === 'function';
+		const args = {mode};
 
-		if (me._plugins.notify(me, 'beforeDatasetsUpdate') === false) {
+		if (me._plugins.notify(me, 'beforeDatasetsUpdate', [args]) === false) {
 			return;
 		}
 
@@ -684,7 +686,7 @@ class Chart {
 			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
-		me._plugins.notify(me, 'afterDatasetsUpdate');
+		me._plugins.notify(me, 'afterDatasetsUpdate', [args]);
 	}
 
 	/**
