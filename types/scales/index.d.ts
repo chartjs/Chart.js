@@ -183,7 +183,7 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
 export type ICategoryScaleOptions = ICartesianScaleOptions & {
   min: string | number;
   max: string | number;
-  labels: string[];
+  labels: string[] | string[][];
 };
 
 export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> {}
