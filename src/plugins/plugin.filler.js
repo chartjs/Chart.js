@@ -525,7 +525,7 @@ function doFill(ctx, cfg) {
 export default {
 	id: 'filler',
 
-	afterDatasetsUpdate(chart, options) {
+	afterDatasetsUpdate(chart, _args, options) {
 		const count = (chart.data.datasets || []).length;
 		const propagate = options.propagate;
 		const sources = [];
