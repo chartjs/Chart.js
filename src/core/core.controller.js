@@ -6,8 +6,9 @@ import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
 import PluginService from './core.plugins';
 import registry from './core.registry';
+import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
-import {mergeIf, merge, _merger, each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
 import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -16,172 +17,9 @@ import {version} from '../../package.json';
  * @typedef { import("../platform/platform.base").IEvent } IEvent
  */
 
-
-function getIndexAxis(type, options) {
-	const typeDefaults = defaults[type] || {};
-	const datasetDefaults = typeDefaults.datasets || {};
-	const typeOptions = options[type] || {};
-	const datasetOptions = typeOptions.datasets || {};
-	return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
-}
-
-function getAxisFromDefaultScaleID(id, indexAxis) {
-	let axis = id;
-	if (id === '_index_') {
-		axis = indexAxis;
-	} else if (id === '_value_') {
-		axis = indexAxis === 'x' ? 'y' : 'x';
-	}
-	return axis;
-}
-
-function getDefaultScaleIDFromAxis(axis, indexAxis) {
-	return axis === indexAxis ? '_index_' : '_value_';
-}
-
-function mergeScaleConfig(config, options) {
-	options = options || {};
-	const chartDefaults = defaults[config.type] || {scales: {}};
-	const configScales = options.scales || {};
-	const chartIndexAxis = getIndexAxis(config.type, options);
-	const firstIDs = Object.create(null);
-	const scales = Object.create(null);
-
-	// First figure out first scale id's per axis.
-	Object.keys(configScales).forEach(id => {
-		const scaleConf = configScales[id];
-		const axis = determineAxis(id, scaleConf);
-		const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
-		firstIDs[axis] = firstIDs[axis] || id;
-		scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, chartDefaults.scales[axis], chartDefaults.scales[defaultId]]);
-	});
-
-	// Backward compatibility
-	if (options.scale) {
-		scales[options.scale.id || 'r'] = mergeIf(Object.create(null), [{axis: 'r'}, options.scale, chartDefaults.scales.r]);
-		firstIDs.r = firstIDs.r || options.scale.id || 'r';
-	}
-
-	// Then merge dataset defaults to scale configs
-	config.data.datasets.forEach(dataset => {
-		const type = dataset.type || config.type;
-		const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
-		const datasetDefaults = defaults[type] || {};
-		const defaultScaleOptions = datasetDefaults.scales || {};
-		Object.keys(defaultScaleOptions).forEach(defaultID => {
-			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
-			const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
-			scales[id] = scales[id] || Object.create(null);
-			mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
-		});
-	});
-
-	// apply scale defaults, if not overridden by dataset defaults
-	Object.keys(scales).forEach(key => {
-		const scale = scales[key];
-		mergeIf(scale, [defaults.scales[scale.type], defaults.scale]);
-	});
-
-	return scales;
-}
-
-/**
- * Recursively merge the given config objects as the root options by handling
- * default scale options for the `scales` and `scale` properties, then returns
- * a deep copy of the result, thus doesn't alter inputs.
- */
-function mergeConfig(...args/* config objects ... */) {
-	return merge(Object.create(null), args, {
-		merger(key, target, source, options) {
-			if (key !== 'scales' && key !== 'scale') {
-				_merger(key, target, source, options);
-			}
-		}
-	});
-}
-
-function initConfig(config) {
-	config = config || {};
-
-	// Do NOT use mergeConfig for the data object because this method merges arrays
-	// and so would change references to labels and datasets, preventing data updates.
-	const data = config.data = config.data || {datasets: [], labels: []};
-	data.datasets = data.datasets || [];
-	data.labels = data.labels || [];
-
-	const scaleConfig = mergeScaleConfig(config, config.options);
-
-	const options = config.options = mergeConfig(
-		defaults,
-		defaults[config.type],
-		config.options || {});
-
-	options.hover = merge(Object.create(null), [
-		defaults.interaction,
-		defaults.hover,
-		options.interaction,
-		options.hover
-	]);
-
-	options.scales = scaleConfig;
-
-	options.title = (options.title !== false) && merge(Object.create(null), [
-		defaults.plugins.title,
-		options.title
-	]);
-	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [
-		defaults.interaction,
-		defaults.plugins.tooltip,
-		options.interaction,
-		options.tooltips
-	]);
-
-	return config;
-}
-
-function isAnimationDisabled(config) {
-	return !config.animation;
-}
-
-function updateConfig(chart) {
-	let newOptions = chart.options;
-
-	each(chart.scales, (scale) => {
-		layouts.removeBox(chart, scale);
-	});
-
-	const scaleConfig = mergeScaleConfig(chart.config, newOptions);
-
-	newOptions = mergeConfig(
-		defaults,
-		defaults[chart.config.type],
-		newOptions);
-
-	chart.options = chart.config.options = newOptions;
-	chart.options.scales = scaleConfig;
-
-	chart._animationsDisabled = isAnimationDisabled(newOptions);
-}
-
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
 	return position === 'top' || position === 'bottom' || (KNOWN_POSITIONS.indexOf(position) === -1 && axis === 'x');
-}
-
-function axisFromPosition(position) {
-	if (position === 'top' || position === 'bottom') {
-		return 'x';
-	}
-	if (position === 'left' || position === 'right') {
-		return 'y';
-	}
-}
-
-function determineAxis(id, scaleOptions) {
-	if (id === 'x' || id === 'y' || id === 'r') {
-		return id;
-	}
-	return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
 }
 
 function compare2Level(l1, l2) {
@@ -235,7 +73,7 @@ class Chart {
 	constructor(item, config) {
 		const me = this;
 
-		config = initConfig(config);
+		this.config = config = new Config(config);
 		const initialCanvas = getCanvas(item);
 		const existingChart = Chart.getChart(initialCanvas);
 		if (existingChart) {
@@ -255,7 +93,6 @@ class Chart {
 		this.id = uid();
 		this.ctx = context;
 		this.canvas = canvas;
-		this.config = config;
 		this.width = width;
 		this.height = height;
 		this.aspectRatio = height ? width / height : null;
@@ -266,7 +103,6 @@ class Chart {
 		this.boxes = [];
 		this.currentDevicePixelRatio = undefined;
 		this.chartArea = undefined;
-		this.data = undefined;
 		this._active = [];
 		this._lastEvent = undefined;
 		/** @type {{attach?: function, detach?: function, resize?: function}} */
@@ -279,19 +115,10 @@ class Chart {
 		this.$proxies = {};
 		this._hiddenIndices = {};
 		this.attached = false;
+		this._animationsDisabled = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
-
-		// Define alias to the config data: `chart.data === chart.config.data`
-		Object.defineProperty(me, 'data', {
-			get() {
-				return me.config.data;
-			},
-			set(value) {
-				me.config.data = value;
-			}
-		});
 
 		if (!context || !canvas) {
 			// The given item is not a compatible context2d element, let's return before finalizing
@@ -309,6 +136,14 @@ class Chart {
 		if (me.attached) {
 			me.update();
 		}
+	}
+
+	get data() {
+		return this.config.data;
+	}
+
+	set data(data) {
+		this.config.data = data;
 	}
 
 	/**
@@ -592,7 +427,13 @@ class Chart {
 
 		me._updating = true;
 
-		updateConfig(me);
+		each(me.scales, (scale) => {
+			layouts.removeBox(me, scale);
+		});
+
+		me.config.update(me.options);
+		me.options = me.config.options;
+		me._animationsDisabled = !me.options.animation;
 
 		me.ensureScalesHaveIDs();
 		me.buildOrUpdateScales();
