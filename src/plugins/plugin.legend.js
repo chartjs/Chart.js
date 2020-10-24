@@ -80,6 +80,7 @@ defaults._set('global', {
 	legendCallback: function(chart) {
 		var list = document.createElement('ul');
 		var datasets = chart.data.datasets;
+		var globalDefaults = defaults.global;
 		var i, ilen, listItem, listItemSpan;
 
 		list.setAttribute('class', chart.id + '-legend');
@@ -87,7 +88,7 @@ defaults._set('global', {
 		for (i = 0, ilen = datasets.length; i < ilen; i++) {
 			listItem = list.appendChild(document.createElement('li'));
 			listItemSpan = listItem.appendChild(document.createElement('span'));
-			listItemSpan.style.backgroundColor = datasets[i].backgroundColor;
+			listItemSpan.style.backgroundColor = valueOrDefault(datasets[i].backgroundColor, globalDefaults.defaultColor);
 			if (datasets[i].label) {
 				listItem.appendChild(document.createTextNode(datasets[i].label));
 			}
