@@ -45,7 +45,7 @@ These options extend the [common configuration for all cartesian axes](index.md#
 | ---- | ---- | -----------
 | `min` | `string`\|`number` | | The minimum item to display. [more...](#min-max-configuration)
 | `max` | `string`\|`number` | | The maximum item to display. [more...](#min-max-configuration)
-| `labels` | `string[]` | - | An array of labels to display.
+| `labels` | `string[]|string[][]` | - | An array of labels to display. When an individual label is an array of strings, each item is rendered on a new line.
 
 ## Min Max Configuration
 
