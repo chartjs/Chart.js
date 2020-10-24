@@ -6,6 +6,7 @@ var elements = require('../elements/index');
 var helpers = require('../helpers/index');
 
 var resolve = helpers.options.resolve;
+var valueOrDefault = helpers.valueOrDefault;
 
 defaults._set('polarArea', {
 	scale: {
@@ -35,6 +36,7 @@ defaults._set('polarArea', {
 		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
+		var globalDefaults = defaults.global;
 		var labels = data.labels;
 		var i, ilen, listItem, listItemSpan;
 
@@ -43,7 +45,7 @@ defaults._set('polarArea', {
 			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
 				listItem = list.appendChild(document.createElement('li'));
 				listItemSpan = listItem.appendChild(document.createElement('span'));
-				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
+				listItemSpan.style.backgroundColor = valueOrDefault(datasets[0].backgroundColor[i], globalDefaults.defaultColor);
 				if (labels[i]) {
 					listItem.appendChild(document.createTextNode(labels[i]));
 				}
