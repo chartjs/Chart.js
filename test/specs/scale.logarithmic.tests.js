@@ -1118,4 +1118,29 @@ describe('Logarithmic Scale tests', function() {
 		});
 	});
 
+	it('Should correctly determine the max & min when no values provided and suggested minimum and maximum are set', function() {
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				datasets: [{
+					yAxisID: 'y',
+					data: []
+				}],
+				labels: ['a', 'b', 'c', 'd', 'e', 'f']
+			},
+			options: {
+				scales: {
+					y: {
+						type: 'logarithmic',
+						suggestedMin: 10,
+						suggestedMax: 100
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.y).not.toEqual(undefined); // must construct
+		expect(chart.scales.y.min).toBe(10);
+		expect(chart.scales.y.max).toBe(100);
+	});
 });
