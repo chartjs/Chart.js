@@ -1,4 +1,4 @@
-import {isFinite} from '../helpers/helpers.core';
+import {isFinite, isNullOrUndef} from '../helpers/helpers.core';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
@@ -86,10 +86,18 @@ export default class LogarithmicScale extends Scale {
 
 	handleTickRangeOptions() {
 		const me = this;
+		const {suggestedMax, suggestedMin} = me.options;
 		const DEFAULT_MIN = 1;
 		const DEFAULT_MAX = 10;
 		let min = me.min;
 		let max = me.max;
+
+		if (!isNullOrUndef(suggestedMin)) {
+			min = Math.min(min, suggestedMin);
+		}
+		if (!isNullOrUndef(suggestedMax)) {
+			max = Math.max(max, suggestedMax);
+		}
 
 		if (min === max) {
 			if (min <= 0) { // includes null

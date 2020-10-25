@@ -245,6 +245,17 @@ export const LinearScale: IChartComponent & {
 export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
   stacked?: boolean;
 
+  /**
+   * Adjustment used when calculating the maximum data value.
+   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   */
+  suggestedMin?: number;
+  /**
+   * Adjustment used when calculating the minimum data value.
+   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   */
+  suggestedMax?: number;
+
   ticks: {
     /**
      * The Intl.NumberFormat options used by the default label formatter
