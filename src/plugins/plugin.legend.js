@@ -740,8 +740,9 @@ export default {
 			// lineWidth :
 			generateLabels(chart) {
 				const datasets = chart.data.datasets;
-				const options = chart.options.legend || {};
-				const usePointStyle = options.labels && options.labels.usePointStyle;
+				const {labels} = chart.legend.options;
+				const usePointStyle = labels.usePointStyle;
+				const overrideStyle = labels.pointStyle;
 
 				return chart._getSortedDatasetMetas().map((meta) => {
 					const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
@@ -756,7 +757,7 @@ export default {
 						lineJoin: style.borderJoinStyle,
 						lineWidth: style.borderWidth,
 						strokeStyle: style.borderColor,
-						pointStyle: style.pointStyle,
+						pointStyle: overrideStyle || style.pointStyle,
 						rotation: style.rotation,
 
 						// Below is extra data used for toggling the datasets
