@@ -138,7 +138,7 @@ function inRange(bar, x, y, useFinalPosition) {
 }
 
 function hasRadius(radius) {
-	return radius.topLeft !== 0 || radius.topRight !== 0 || radius.bottomLeft !== 0 || radius.bottomRight !== 0;
+	return radius.topLeft || radius.topRight || radius.bottomLeft || radius.bottomRight;
 }
 
 /**
