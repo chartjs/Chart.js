@@ -299,7 +299,7 @@ export declare class Chart<
 	show(datasetIndex: number): void;
 
 	getActiveElements(): ActiveElement[];
-	setActiveElements(active: ActiveDataPoint[]);
+	setActiveElements(active: ActiveDataPoint[]): void;
 
 	destroy(): void;
 	toBase64Image(type?: string, quality?: any): string;
