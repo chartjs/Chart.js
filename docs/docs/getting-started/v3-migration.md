@@ -64,6 +64,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 #### Specific changes
 
+* `elements.rectangle` is now `elements.bar`
 * `hover.animationDuration` is now configured in `animation.active.duration`
 * `responsiveAnimationDuration` is now configured in `animation.resize.duration`
 * Polar area `elements.arc.angle` is now configured in degrees instead of radians.
@@ -90,6 +91,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
 * The dataset option `tension` was removed. Use `lineTension`
+* The chart option `showLines` was renamed to `showLine` to match the dataset option.
 * Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 * `aspectRatio` defaults to 1 for doughnut, pie, polarArea, and radar charts
@@ -384,6 +386,10 @@ The following properties were renamed during v3 development:
 * `Chart.Animation.animationObject` was renamed to `Chart.Animation`
 * `Chart.Animation.chartInstance` was renamed to `Chart.Animation.chart`
 * `Chart.canvasHelpers` was merged with `Chart.helpers`
+* `Chart.elements.Arc` was renamed to `Chart.elements.ArcElement`
+* `Chart.elements.Line` was renamed to `Chart.elements.LineElement`
+* `Chart.elements.Point` was renamed to `Chart.elements.PointElement`
+* `Chart.elements.Rectangle` was renamed to `Chart.elements.BarElement`
 * `Chart.layoutService` was renamed to `Chart.layouts`
 * `Chart.pluginService` was renamed to `Chart.plugins`
 * `helpers.callCallback` was renamed to `helpers.callback`
@@ -481,3 +487,8 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 * `Chart.platforms` is an object that contains two usable platform classes, `BasicPlatform` and `DomPlatform`. It also contains `BasePlatform`, a class that all platforms must extend from.
 * If the canvas passed in is an instance of `OffscreenCanvas`, the `BasicPlatform` is automatically used.
 * `isAttached` method was added to platform.
+
+#### IPlugin interface
+
+* `afterDatasetsUpdate`, `afterUpdate`, `beforeDatasetsUpdate`, and `beforeUpdate` now receive `args` object as second argument. `options` argument is always the last and thus was moved from 2nd to 3rd place.
+* `afterEvent` and `beforeEvent` now receive a wrapped `event` as the second argument. The native event is available via `event.native`.

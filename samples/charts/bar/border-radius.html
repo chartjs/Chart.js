@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Horizontal Bar Chart</title>
+	<title>Bar Chart</title>
 	<script src="../../../dist/chart.min.js"></script>
 	<script src="../../utils.js"></script>
 	<style>
@@ -26,13 +26,15 @@
 	<script>
 		var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 		var color = Chart.helpers.color;
-		var horizontalBarChartData = {
+		var barChartData = {
 			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 			datasets: [{
-				label: 'Dataset 1',
+				label: 'Fully Rounded',
 				backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 				borderColor: window.chartColors.red,
-				borderWidth: 1,
+				borderWidth: 2,
+				borderRadius: Number.MAX_VALUE,
+				borderSkipped: false,
 				data: [
 					randomScalingFactor(),
 					randomScalingFactor(),
@@ -43,9 +45,11 @@
 					randomScalingFactor()
 				]
 			}, {
-				label: 'Dataset 2',
+				label: 'Small Radius',
 				backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
 				borderColor: window.chartColors.blue,
+				borderWidth: 2,
+				borderRadius: 5,
 				data: [
 					randomScalingFactor(),
 					randomScalingFactor(),
@@ -61,25 +65,17 @@
 
 		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
-			window.myHorizontalBar = new Chart(ctx, {
+			window.myBar = new Chart(ctx, {
 				type: 'bar',
-				data: horizontalBarChartData,
+				data: barChartData,
 				options: {
-					indexAxis: 'y',
-					// Elements options apply to all of the options unless overridden in a dataset
-					// In this case, we are setting the border of each horizontal bar to be 2px wide
-					elements: {
-						bar: {
-							borderWidth: 2,
-						}
-					},
 					responsive: true,
 					legend: {
-						position: 'right',
+						position: 'top',
 					},
 					title: {
 						display: true,
-						text: 'Chart.js Horizontal Bar Chart'
+						text: 'Chart.js Bar Chart'
 					}
 				}
 			});
@@ -88,61 +84,62 @@
 
 		document.getElementById('randomizeData').addEventListener('click', function() {
 			var zero = Math.random() < 0.2 ? true : false;
-			horizontalBarChartData.datasets.forEach(function(dataset) {
+			barChartData.datasets.forEach(function(dataset) {
 				dataset.data = dataset.data.map(function() {
 					return zero ? 0.0 : randomScalingFactor();
 				});
 
 			});
-			window.myHorizontalBar.update();
+			window.myBar.update();
 		});
 
 		var colorNames = Object.keys(window.chartColors);
-
 		document.getElementById('addDataset').addEventListener('click', function() {
-			var colorName = colorNames[horizontalBarChartData.datasets.length % colorNames.length];
+			var colorName = colorNames[barChartData.datasets.length % colorNames.length];
 			var dsColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + (horizontalBarChartData.datasets.length + 1),
+				label: 'Dataset ' + (barChartData.datasets.length + 1),
 				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
 				borderColor: dsColor,
+				borderWidth: 2,
+				borderRadius: Math.floor(Math.random() * 20),
 				data: []
 			};
 
-			for (var index = 0; index < horizontalBarChartData.labels.length; ++index) {
+			for (var index = 0; index < barChartData.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 			}
 
-			horizontalBarChartData.datasets.push(newDataset);
-			window.myHorizontalBar.update();
+			barChartData.datasets.push(newDataset);
+			window.myBar.update();
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (horizontalBarChartData.datasets.length > 0) {
-				var month = MONTHS[horizontalBarChartData.labels.length % MONTHS.length];
-				horizontalBarChartData.labels.push(month);
+			if (barChartData.datasets.length > 0) {
+				var month = MONTHS[barChartData.labels.length % MONTHS.length];
+				barChartData.labels.push(month);
 
-				for (var index = 0; index < horizontalBarChartData.datasets.length; ++index) {
-					horizontalBarChartData.datasets[index].data.push(randomScalingFactor());
+				for (var index = 0; index < barChartData.datasets.length; ++index) {
+					barChartData.datasets[index].data.push(randomScalingFactor());
 				}
 
-				window.myHorizontalBar.update();
+				window.myBar.update();
 			}
 		});
 
 		document.getElementById('removeDataset').addEventListener('click', function() {
-			horizontalBarChartData.datasets.pop();
-			window.myHorizontalBar.update();
+			barChartData.datasets.pop();
+			window.myBar.update();
 		});
 
 		document.getElementById('removeData').addEventListener('click', function() {
-			horizontalBarChartData.labels.splice(-1, 1); // remove the label first
+			barChartData.labels.splice(-1, 1); // remove the label first
 
-			horizontalBarChartData.datasets.forEach(function(dataset) {
+			barChartData.datasets.forEach(function(dataset) {
 				dataset.data.pop();
 			});
 
-			window.myHorizontalBar.update();
+			window.myBar.update();
 		});
 	</script>
 </body>

@@ -53,7 +53,7 @@ export class Defaults {
 		this.onHover = null;
 		this.onClick = null;
 		this.responsive = true;
-		this.showLines = true;
+		this.showLine = true;
 		this.plugins = {};
 		this.scale = undefined;
 		this.doughnut = undefined;

@@ -3,7 +3,7 @@
 describe('Arc element tests', function() {
 	it ('should determine if in range', function() {
 		// Mock out the arc as if the controller put it there
-		var arc = new Chart.elements.Arc({
+		var arc = new Chart.elements.ArcElement({
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,
@@ -21,7 +21,7 @@ describe('Arc element tests', function() {
 
 	it ('should determine if in range, when full circle', function() {
 		// Mock out the arc as if the controller put it there
-		var arc = new Chart.elements.Arc({
+		var arc = new Chart.elements.ArcElement({
 			startAngle: -Math.PI,
 			endAngle: Math.PI * 1.5,
 			x: 0,
@@ -36,7 +36,7 @@ describe('Arc element tests', function() {
 
 	it ('should get the tooltip position', function() {
 		// Mock out the arc as if the controller put it there
-		var arc = new Chart.elements.Arc({
+		var arc = new Chart.elements.ArcElement({
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,
@@ -52,7 +52,7 @@ describe('Arc element tests', function() {
 
 	it ('should get the center', function() {
 		// Mock out the arc as if the controller put it there
-		var arc = new Chart.elements.Arc({
+		var arc = new Chart.elements.ArcElement({
 			startAngle: 0,
 			endAngle: Math.PI / 2,
 			x: 0,

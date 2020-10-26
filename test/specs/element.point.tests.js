@@ -1,9 +1,9 @@
-describe('Chart.elements.Point', function() {
+describe('Chart.elements.PointElement', function() {
 	describe('auto', jasmine.fixture.specs('element.point'));
 
 	it ('Should correctly identify as in range', function() {
 		// Mock out the point as if we were made by the controller
-		var point = new Chart.elements.Point({
+		var point = new Chart.elements.PointElement({
 			options: {
 				radius: 2,
 				hitRadius: 3,
@@ -20,7 +20,7 @@ describe('Chart.elements.Point', function() {
 
 	it ('should get the correct tooltip position', function() {
 		// Mock out the point as if we were made by the controller
-		var point = new Chart.elements.Point({
+		var point = new Chart.elements.PointElement({
 			options: {
 				radius: 2,
 				borderWidth: 6,
@@ -37,7 +37,7 @@ describe('Chart.elements.Point', function() {
 
 	it('should get the correct center point', function() {
 		// Mock out the point as if we were made by the controller
-		var point = new Chart.elements.Point({
+		var point = new Chart.elements.PointElement({
 			options: {
 				radius: 2,
 			},
@@ -52,7 +52,7 @@ describe('Chart.elements.Point', function() {
 		var mockContext = window.createMockContext();
 
 		// Mock out the point as if we were made by the controller
-		var point = new Chart.elements.Point({
+		var point = new Chart.elements.PointElement({
 			options: {
 				radius: 2,
 				hitRadius: 3,

@@ -20,7 +20,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: 'transparent',
 					borderColor: '#888',
 					borderSkipped: false,

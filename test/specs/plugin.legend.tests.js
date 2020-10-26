@@ -622,6 +622,74 @@ describe('Legend block tests', function() {
 		}]);
 	});
 
+	it('should draw correctly when usePointStyle is true and pointStyle override is set', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					backgroundColor: '#f31',
+					borderCapStyle: 'butt',
+					borderDash: [2, 2],
+					borderDashOffset: 5.5,
+					borderWidth: 0,
+					borderColor: '#f31',
+					pointStyle: 'crossRot',
+					pointBackgroundColor: 'rgba(0,0,0,0.1)',
+					pointBorderWidth: 5,
+					pointBorderColor: 'green',
+					data: []
+				}, {
+					label: 'dataset2',
+					backgroundColor: '#f31',
+					borderJoinStyle: 'miter',
+					borderWidth: 2,
+					borderColor: '#f31',
+					pointStyle: 'crossRot',
+					pointRotation: 15,
+					data: []
+				}],
+				labels: []
+			},
+			options: {
+				legend: {
+					labels: {
+						usePointStyle: true,
+						pointStyle: 'star'
+					}
+				}
+			}
+		});
+
+		expect(chart.legend.legendItems).toEqual([{
+			text: 'dataset1',
+			fillStyle: 'rgba(0,0,0,0.1)',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 5,
+			strokeStyle: 'green',
+			pointStyle: 'star',
+			rotation: undefined,
+			datasetIndex: 0
+		}, {
+			text: 'dataset2',
+			fillStyle: '#f31',
+			hidden: false,
+			lineCap: undefined,
+			lineDash: undefined,
+			lineDashOffset: undefined,
+			lineJoin: undefined,
+			lineWidth: 2,
+			strokeStyle: '#f31',
+			pointStyle: 'star',
+			rotation: 15,
+			datasetIndex: 1
+		}]);
+	});
+
 	describe('config update', function() {
 		it ('should update the options', function() {
 			var chart = acquireChart({

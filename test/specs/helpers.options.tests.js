@@ -1,4 +1,4 @@
-const {toLineHeight, toPadding, toFont, resolve} = Chart.helpers; // from '../../src/helpers/helpers.options';
+const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners} = Chart.helpers; // from '../../src/helpers/helpers.options';
 
 describe('Chart.helpers.options', function() {
 	describe('toLineHeight', function() {
@@ -20,6 +20,43 @@ describe('Chart.helpers.options', function() {
 			expect(toLineHeight(null, 16)).toBe(16 * 1.2);
 			expect(toLineHeight(undefined, 16)).toBe(16 * 1.2);
 			expect(toLineHeight('foobar', 16)).toBe(16 * 1.2);
+		});
+	});
+
+	describe('toTRBLCorners', function() {
+		it('should support number values', function() {
+			expect(toTRBLCorners(4)).toEqual(
+				{topLeft: 4, topRight: 4, bottomLeft: 4, bottomRight: 4});
+			expect(toTRBLCorners(4.5)).toEqual(
+				{topLeft: 4.5, topRight: 4.5, bottomLeft: 4.5, bottomRight: 4.5});
+		});
+		it('should support string values', function() {
+			expect(toTRBLCorners('4')).toEqual(
+				{topLeft: 4, topRight: 4, bottomLeft: 4, bottomRight: 4});
+			expect(toTRBLCorners('4.5')).toEqual(
+				{topLeft: 4.5, topRight: 4.5, bottomLeft: 4.5, bottomRight: 4.5});
+		});
+		it('should support object values', function() {
+			expect(toTRBLCorners({topLeft: 1, topRight: 2, bottomLeft: 3, bottomRight: 4})).toEqual(
+				{topLeft: 1, topRight: 2, bottomLeft: 3, bottomRight: 4});
+			expect(toTRBLCorners({topLeft: 1.5, topRight: 2.5, bottomLeft: 3.5, bottomRight: 4.5})).toEqual(
+				{topLeft: 1.5, topRight: 2.5, bottomLeft: 3.5, bottomRight: 4.5});
+			expect(toTRBLCorners({topLeft: '1', topRight: '2', bottomLeft: '3', bottomRight: '4'})).toEqual(
+				{topLeft: 1, topRight: 2, bottomLeft: 3, bottomRight: 4});
+		});
+		it('should fallback to 0 for invalid values', function() {
+			expect(toTRBLCorners({topLeft: 'foo', topRight: 'foo', bottomLeft: 'foo', bottomRight: 'foo'})).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
+			expect(toTRBLCorners({topLeft: null, topRight: null, bottomLeft: null, bottomRight: null})).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
+			expect(toTRBLCorners({})).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
+			expect(toTRBLCorners('foo')).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
+			expect(toTRBLCorners(null)).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
+			expect(toTRBLCorners(undefined)).toEqual(
+				{topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0});
 		});
 	});
 

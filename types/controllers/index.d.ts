@@ -10,7 +10,7 @@ import {
   IPointOptions,
   IPointPrefixedHoverOptions,
   IPointPrefixedOptions,
-  IRectangleOptions,
+  IBarOptions,
 } from '../elements';
 
 export interface IControllerDatasetOptions {
@@ -30,7 +30,7 @@ export interface IControllerDatasetOptions {
 
 export interface IBarControllerDatasetOptions
   extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IRectangleOptions>,
+    ScriptableAndArrayOptions<IBarOptions>,
     ScriptableAndArrayOptions<ICommonHoverOptions> {
   /**
    * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.
@@ -153,7 +153,7 @@ export interface ILineControllerChartOptions {
    * If false, the lines between points are not drawn.
    * @default true
    */
-  showLines: boolean;
+  showLine: boolean;
 }
 
 export interface LineController extends DatasetController {}
@@ -181,7 +181,7 @@ export interface IDoughnutControllerDatasetOptions
   extends IControllerDatasetOptions,
     ScriptableAndArrayOptions<IArcOptions>,
     ScriptableAndArrayOptions<IArcHoverOptions> {
-  
+
   /**
    * Sweep to allow arcs to cover.
    * @default 2 * Math.PI

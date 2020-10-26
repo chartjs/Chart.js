@@ -996,12 +996,12 @@ export default class DatasetController {
 DatasetController.defaults = {};
 
 /**
- * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+ * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
  */
 DatasetController.prototype.datasetElementType = null;
 
 /**
- * Element type used to generate a meta data (e.g. Chart.element.Point).
+ * Element type used to generate a meta data (e.g. Chart.element.PointElement).
  */
 DatasetController.prototype.dataElementType = null;
 

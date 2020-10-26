@@ -56,11 +56,11 @@ describe('Chart.controllers.line', function() {
 
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(4); // 4 points created
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.dataset instanceof Chart.elements.Line).toBe(true); // 1 line element
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.dataset instanceof Chart.elements.LineElement).toBe(true); // 1 line element
 	});
 
 	it('should draw all elements', function() {
@@ -74,7 +74,7 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true
+				showLine: true
 			}
 		});
 
@@ -109,7 +109,7 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				showLines: true,
+				showLine: true,
 				legend: false,
 				title: false,
 				elements: {
@@ -689,17 +689,17 @@ describe('Chart.controllers.line', function() {
 		chart.data.datasets[0].data = [1, 2]; // remove 2 items
 		chart.update();
 		expect(meta.data.length).toBe(2);
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
 
 		chart.data.datasets[0].data = [1, 2, 3, 4, 5]; // add 3 items
 		chart.update();
 		expect(meta.data.length).toBe(5);
-		expect(meta.data[0] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[1] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[2] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[3] instanceof Chart.elements.Point).toBe(true);
-		expect(meta.data[4] instanceof Chart.elements.Point).toBe(true);
+		expect(meta.data[0] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[1] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[2] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[3] instanceof Chart.elements.PointElement).toBe(true);
+		expect(meta.data[4] instanceof Chart.elements.PointElement).toBe(true);
 	});
 
 	describe('Interactions', function() {

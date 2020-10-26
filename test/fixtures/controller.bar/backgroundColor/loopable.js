@@ -23,7 +23,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: [
 						'#000000',
 						'#888888'

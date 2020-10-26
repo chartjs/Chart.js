@@ -183,7 +183,7 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
 export type ICategoryScaleOptions = ICartesianScaleOptions & {
   min: string | number;
   max: string | number;
-  labels: string[];
+  labels: string[] | string[][];
 };
 
 export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> {}
@@ -244,6 +244,17 @@ export const LinearScale: IChartComponent & {
 
 export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
   stacked?: boolean;
+
+  /**
+   * Adjustment used when calculating the maximum data value.
+   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   */
+  suggestedMin?: number;
+  /**
+   * Adjustment used when calculating the minimum data value.
+   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   */
+  suggestedMax?: number;
 
   ticks: {
     /**

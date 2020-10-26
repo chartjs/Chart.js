@@ -5,7 +5,7 @@ import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
 /**
- * @typedef { import("./element.point").default } Point
+ * @typedef { import("./element.point").default } PointElement
  */
 
 function setStyle(ctx, vm) {
@@ -51,7 +51,7 @@ function pathVars(points, segment, params) {
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
  * @param {CanvasRenderingContext2D} ctx - Context
- * @param {Line} line
+ * @param {LineElement} line
  * @param {object} segment
  * @param {number} segment.start - start index of the segment, referring the points array
  * @param {number} segment.end - end index of the segment, referring the points array
@@ -98,7 +98,7 @@ function pathSegment(ctx, line, segment, params) {
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
  * @param {CanvasRenderingContext2D} ctx - Context
- * @param {Line} line
+ * @param {LineElement} line
  * @param {object} segment
  * @param {number} segment.start - start index of the segment, referring the points array
  * @param {number} segment.end - end index of the segment, referring the points array
@@ -172,7 +172,7 @@ function fastPathSegment(ctx, line, segment, params) {
 }
 
 /**
- * @param {Line} line - the line
+ * @param {LineElement} line - the line
  * @returns {function}
  * @private
  */
@@ -198,7 +198,7 @@ function _getInterpolationMethod(options) {
 	return _pointInLine;
 }
 
-export default class Line extends Element {
+export default class LineElement extends Element {
 
 	constructor(cfg) {
 		super();
@@ -240,7 +240,7 @@ export default class Line extends Element {
 
 	/**
 	 * First non-skipped point on this line
-	 * @returns {Point|undefined}
+	 * @returns {PointElement|undefined}
 	 */
 	first() {
 		const segments = this.segments;
@@ -250,7 +250,7 @@ export default class Line extends Element {
 
 	/**
 	 * Last non-skipped point on this line
-	 * @returns {Point|undefined}
+	 * @returns {PointElement|undefined}
 	 */
 	last() {
 		const segments = this.segments;
@@ -262,9 +262,9 @@ export default class Line extends Element {
 	/**
 	 * Interpolate a point in this line at the same value on `property` as
 	 * the reference `point` provided
-	 * @param {Point} point - the reference point
+	 * @param {PointElement} point - the reference point
 	 * @param {string} property - the property to match on
-	 * @returns {Point|undefined}
+	 * @returns {PointElement|undefined}
 	 */
 	interpolate(point, property) {
 		const me = this;
@@ -370,12 +370,12 @@ export default class Line extends Element {
 	}
 }
 
-Line.id = 'line';
+LineElement.id = 'line';
 
 /**
  * @type {any}
  */
-Line.defaults = {
+LineElement.defaults = {
 	borderCapStyle: 'butt',
 	borderDash: [],
 	borderDashOffset: 0,
@@ -389,7 +389,7 @@ Line.defaults = {
 /**
  * @type {any}
  */
-Line.defaultRoutes = {
+LineElement.defaultRoutes = {
 	backgroundColor: 'color',
 	borderColor: 'color'
 };

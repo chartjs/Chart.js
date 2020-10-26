@@ -1,8 +1,8 @@
 import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
 
 /**
- * @typedef { import("../elements/element.line").default } Line
- * @typedef { import("../elements/element.point").default } Point
+ * @typedef { import("../elements/element.line").default } LineElement
+ * @typedef { import("../elements/element.point").default } PointElement
  */
 
 function propertyFn(property) {
@@ -62,9 +62,9 @@ function getSegment(segment, points, bounds) {
  * @param {number} segment.start - start index of the segment, referring the points array
  * @param {number} segment.end - end index of the segment, referring the points array
  * @param {boolean} segment.loop - indicates that the segment is a loop
- * @param {Point[]} points - the points that this segment refers to
+ * @param {PointElement[]} points - the points that this segment refers to
  * @param {object} [bounds]
- * @param {string} bounds.property - the property of a `Point` we are bounding. `x`, `y` or `angle`.
+ * @param {string} bounds.property - the property of a `PointElement` we are bounding. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the property
  * @param {number} bounds.end - end value of the property
  * @private
@@ -121,7 +121,7 @@ export function _boundSegment(segment, points, bounds) {
 
 /**
  * Returns the segments of the line that are inside given bounds
- * @param {Line} line
+ * @param {LineElement} line
  * @param {object} [bounds]
  * @param {string} bounds.property - the property we are bounding with. `x`, `y` or `angle`.
  * @param {number} bounds.start - start value of the `property`
@@ -180,7 +180,7 @@ function findStartAndEnd(points, count, loop, spanGaps) {
 
 /**
  * Compute solid segments from Points, when spanGaps === false
- * @param {Point[]} points - the points
+ * @param {PointElement[]} points - the points
  * @param {number} start - start index
  * @param {number} max - max index (can go past count on a loop)
  * @param {boolean} loop - boolean indicating that this would be a loop if no gaps are found
@@ -220,7 +220,7 @@ function solidSegments(points, start, max, loop) {
 /**
  * Compute the continuous segments that define the whole line
  * There can be skipped points within a segment, if spanGaps is true.
- * @param {Line} line
+ * @param {LineElement} line
  * @private
  */
 export function _computeSegments(line) {

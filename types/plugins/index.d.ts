@@ -171,6 +171,11 @@ export interface ILegendOptions {
     sort(a: ILegendItem, b: ILegendItem, data: IChartData): number;
 
     /**
+     * Override point style for the legend. Only applies if usePointStyle is true
+     */
+    pointStyle: PointStyle;
+
+    /**
      * Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
      * @default false
      */

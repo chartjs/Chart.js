@@ -188,7 +188,7 @@ new Chart(ctx, {
         }]
     },
     options: {
-        showLines: false // disable for all datasets
+        showLine: false // disable for all datasets
     }
 });
 ```

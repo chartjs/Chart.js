@@ -13,7 +13,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: '#AAAAAA80',
 					borderColor: '#80808080',
 					borderWidth: {bottom: 6, left: 15, top: 6, right: 15}

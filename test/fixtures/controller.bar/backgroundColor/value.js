@@ -19,7 +19,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: '#00ff00'
 				}
 			},

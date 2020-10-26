@@ -25,7 +25,7 @@ module.exports = {
 			legend: false,
 			title: false,
 			elements: {
-				rectangle: {
+				bar: {
 					backgroundColor: 'transparent',
 					borderColor: function(ctx) {
 						var value = ctx.dataset.data[ctx.dataIndex] || 0;
