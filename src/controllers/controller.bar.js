@@ -521,6 +521,7 @@ BarController.defaults = {
 		'borderColor',
 		'borderSkipped',
 		'borderWidth',
+		'borderRadius',
 		'barPercentage',
 		'barThickness',
 		'base',
