@@ -295,7 +295,7 @@ export const Tooltip: IPlugin & {
   };
 
   getActiveElements(): ActiveElement[];
-  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number });
+  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 };
 
 export interface ITooltipCallbacks {
