@@ -746,10 +746,8 @@ export default {
 
 				return chart._getSortedDatasetMetas().map((meta) => {
 					const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-					var lineWidth = style.borderWidth;
-					if (isObject(style.borderWidth)) {
-						lineWidth = (valueOrDefault(style.borderWidth.top, 0) + valueOrDefault(style.borderWidth.left, 0) + valueOrDefault(style.borderWidth.bottom, 0) + valueOrDefault(style.borderWidth.right, 0)) / 4;
-					}
+					const lineWidth = isObject(style.borderWidth) ? (valueOrDefault(style.borderWidth.top, 0) + valueOrDefault(style.borderWidth.left, 0) + valueOrDefault(style.borderWidth.bottom, 0) + valueOrDefault(style.borderWidth.right, 0)) / 4 : style.borderWidth;
+
 					return {
 						text: datasets[meta.index].label,
 						fillStyle: style.backgroundColor,
