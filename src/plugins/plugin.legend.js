@@ -3,7 +3,7 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {drawPoint} from '../helpers/helpers.canvas';
 import {
-	callback as call, merge, valueOrDefault, isNullOrUndef, toFont,
+	callback as call, merge, valueOrDefault, isNullOrUndef, toFont, isObject,
 	toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
 	INFINITY
 } from '../helpers/index';
@@ -746,7 +746,10 @@ export default {
 
 				return chart._getSortedDatasetMetas().map((meta) => {
 					const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-
+					var lineWidth = style.borderWidth;
+					if (isObject(style.borderWidth)) {
+						lineWidth = (valueOrDefault(style.borderWidth.top, 0) + valueOrDefault(style.borderWidth.left, 0) + valueOrDefault(style.borderWidth.bottom, 0) + valueOrDefault(style.borderWidth.right, 0)) / 4;
+					}
 					return {
 						text: datasets[meta.index].label,
 						fillStyle: style.backgroundColor,
@@ -755,7 +758,7 @@ export default {
 						lineDash: style.borderDash,
 						lineDashOffset: style.borderDashOffset,
 						lineJoin: style.borderJoinStyle,
-						lineWidth: style.borderWidth,
+						lineWidth: lineWidth,
 						strokeStyle: style.borderColor,
 						pointStyle: overrideStyle || style.pointStyle,
 						rotation: style.rotation,
