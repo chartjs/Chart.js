@@ -149,7 +149,7 @@ export interface ICoreChartOptions {
   elements: { [key: string]: IElementOptions };
 
   layout: {
-    padding: number | IChartArea;
+    padding: Scriptable<number | IChartArea>;
   };
 }
 
