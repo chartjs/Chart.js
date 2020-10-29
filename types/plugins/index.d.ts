@@ -281,6 +281,7 @@ export interface TooltipModel {
   // colors to render for each item in body[]. This is the color of the squares in the tooltip
   labelColors: Color[];
   labelTextColors: Color[];
+  labelPointStyles: { pointStyle: PointStyle; rotation: number }[];
 
   // 0 opacity is a hidden tooltip
   opacity: number;
@@ -312,6 +313,7 @@ export interface ITooltipCallbacks {
 
   labelColor(this: TooltipModel, tooltipItem: ITooltipItem): { borderColor: Color; backgroundColor: Color };
   labelTextColor(this: TooltipModel, tooltipItem: ITooltipItem): Color;
+  labelPointStyle(this: TooltipModel, tooltipItem: ITooltipItem): { pointStyle: PointStyle; rotation: number };
 
   beforeFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
   footer(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
@@ -473,6 +475,11 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    * @default bodyFont.size
    */
   boxHeight: number;
+  /**
+   * Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight)
+   * @default false
+   */
+  usePointStyle: boolean;
   /**
    * Color of the border.
    * @default 'rgba(0, 0, 0, 0)'

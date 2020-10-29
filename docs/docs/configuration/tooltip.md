@@ -37,6 +37,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
 | `boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
 | `boxHeight` | `number` | `bodyFont.size` | Height of the color box if displayColors is true.
+| `usePointStyle` | `boolean` | `false` | Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
@@ -111,6 +112,7 @@ All functions are called with the same arguments: a [tooltip item context](#tool
 | `label` | `TooltipItem, object` | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
 | `labelColor` | `TooltipItem, Chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
 | `labelTextColor` | `TooltipItem, Chart` | Returns the colors for the text of the label for the tooltip item.
+| `labelPointStyle` | `TooltipItem, Chart` | Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points. [more...](#label-point-style-callback)
 | `afterLabel` | `TooltipItem, object` | Returns text to render after an individual label.
 | `afterBody` | `TooltipItem[], object` | Returns text to render after the body section.
 | `beforeFooter` | `TooltipItem[], object` | Returns text to render before the footer section.
@@ -164,6 +166,30 @@ var chart = new Chart(ctx, {
                 },
                 labelTextColor: function(context) {
                     return '#543453';
+                }
+            }
+        }
+    }
+});
+```
+
+### Label Point Style Callback
+
+For example, to draw triangles instead of the regular color box for each item in the tooltip you could do:
+
+```javascript
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        tooltips: {
+            usePointStyle: true,
+            callbacks: {
+                labelPointStyle: function(context) {
+                    return {
+                        pointStyle: 'triangle',
+                        rotation: 0
+                    };
                 }
             }
         }

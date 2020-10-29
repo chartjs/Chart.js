@@ -206,6 +206,9 @@
 			title: 'Border',
 			path: 'tooltips/border.html'
 		}, {
+			title: 'Point style',
+			path: 'tooltips/point-style.html'
+		}, {
 			title: 'HTML tooltips (line)',
 			path: 'tooltips/custom-line.html'
 		}, {
