@@ -369,6 +369,12 @@ describe('Plugin.Tooltip', function() {
 						},
 						labelTextColor: function() {
 							return 'labelTextColor';
+						},
+						labelPointStyle: function() {
+							return {
+								pointStyle: 'labelPointStyle',
+								rotation: 42
+							};
 						}
 					}
 				}
@@ -459,6 +465,13 @@ describe('Plugin.Tooltip', function() {
 				}, {
 					borderColor: defaults.color,
 					backgroundColor: defaults.color
+				}],
+				labelPointStyles: [{
+					pointStyle: 'labelPointStyle',
+					rotation: 42
+				}, {
+					pointStyle: 'labelPointStyle',
+					rotation: 42
 				}]
 			}));
 
