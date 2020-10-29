@@ -5,6 +5,7 @@ import {valueOrDefault, each, noop, isNullOrUndef, isArray, _elementsEqual, merg
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
 import {toFont} from '../helpers/helpers.options';
+import {drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").IEvent } IEvent
@@ -382,6 +383,7 @@ export class Tooltip extends Element {
 		this.caretX = undefined;
 		this.caretY = undefined;
 		this.labelColors = undefined;
+		this.labelPointStyles = undefined;
 		this.labelTextColors = undefined;
 
 		this.initialize();
@@ -485,6 +487,7 @@ export class Tooltip extends Element {
 		const options = me.options;
 		const data = me._chart.data;
 		const labelColors = [];
+		const labelPointStyles = [];
 		const labelTextColors = [];
 		let tooltipItems = [];
 		let i, len;
@@ -506,10 +509,12 @@ export class Tooltip extends Element {
 		// Determine colors for boxes
 		each(tooltipItems, (context) => {
 			labelColors.push(options.callbacks.labelColor.call(me, context));
+			labelPointStyles.push(options.callbacks.labelPointStyle.call(me, context));
 			labelTextColors.push(options.callbacks.labelTextColor.call(me, context));
 		});
 
 		me.labelColors = labelColors;
+		me.labelPointStyles = labelPointStyles;
 		me.labelTextColors = labelTextColors;
 		me.dataPoints = tooltipItems;
 		return tooltipItems;
@@ -668,24 +673,48 @@ export class Tooltip extends Element {
 		const me = this;
 		const options = me.options;
 		const labelColors = me.labelColors[i];
+		const labelPointStyle = me.labelPointStyles[i];
 		const {boxHeight, boxWidth, bodyFont} = options;
 		const colorX = getAlignedX(me, 'left');
 		const rtlColorX = rtlHelper.x(colorX);
 		const yOffSet = boxHeight < bodyFont.size ? (bodyFont.size - boxHeight) / 2 : 0;
 		const colorY = pt.y + yOffSet;
 
-		// Fill a white rect so that colours merge nicely if the opacity is < 1
-		ctx.fillStyle = options.multiKeyBackground;
-		ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
+		if (options.usePointStyle) {
+			const drawOptions = {
+				radius: Math.min(boxWidth, boxHeight) / 2, // fit the circle in the box
+				pointStyle: labelPointStyle.pointStyle,
+				rotation: labelPointStyle.rotation,
+				borderWidth: 1
+			};
+			// Recalculate x and y for drawPoint() because its expecting
+			// x and y to be center of figure (instead of top left)
+			const centerX = rtlHelper.leftForLtr(rtlColorX, boxWidth) + boxWidth / 2;
+			const centerY = colorY + boxHeight / 2;
 
-		// Border
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = labelColors.borderColor;
-		ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
+			// Fill the point with white so that colours merge nicely if the opacity is < 1
+			ctx.strokeStyle = options.multiKeyBackground;
+			ctx.fillStyle = options.multiKeyBackground;
+			drawPoint(ctx, drawOptions, centerX, centerY);
 
-		// Inner square
-		ctx.fillStyle = labelColors.backgroundColor;
-		ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2), colorY + 1, boxWidth - 2, boxHeight - 2);
+			// Draw the point
+			ctx.strokeStyle = labelColors.borderColor;
+			ctx.fillStyle = labelColors.backgroundColor;
+			drawPoint(ctx, drawOptions, centerX, centerY);
+		} else {
+			// Fill a white rect so that colours merge nicely if the opacity is < 1
+			ctx.fillStyle = options.multiKeyBackground;
+			ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
+
+			// Border
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = labelColors.borderColor;
+			ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, boxWidth), colorY, boxWidth, boxHeight);
+
+			// Inner square
+			ctx.fillStyle = labelColors.backgroundColor;
+			ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2), colorY + 1, boxWidth - 2, boxHeight - 2);
+		}
 
 		// restore fillStyle
 		ctx.fillStyle = me.labelTextColors[i];
@@ -1154,6 +1183,14 @@ export default {
 			},
 			labelTextColor() {
 				return this.options.bodyFont.color;
+			},
+			labelPointStyle(tooltipItem) {
+				const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
+				const options = meta.controller.getStyle(tooltipItem.dataIndex);
+				return {
+					pointStyle: options.pointStyle,
+					rotation: options.rotation,
+				};
 			},
 			afterLabel: noop,
 
