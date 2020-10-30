@@ -43,7 +43,7 @@ module.exports = {
 			title: false,
 			line: {
 				datasets: {
-					lineTension: 0.4,
+					tension: 0.4,
 					borderWidth: 1,
 					pointRadius: 1.5,
 				}

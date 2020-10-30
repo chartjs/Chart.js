@@ -7,7 +7,7 @@ module.exports = {
 					data: [{x: 1, y: 10}, {x: 5, y: 0}, {x: 15, y: -10}, {x: 19, y: -5}],
 					borderColor: 'red',
 					fill: false,
-					lineTension: 1
+					tension: 1
 				}
 			]
 		},

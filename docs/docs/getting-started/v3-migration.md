@@ -90,7 +90,6 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 * `scales.[x/y]Axes.zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
-* The dataset option `tension` was removed. Use `lineTension`
 * The chart option `showLines` was renamed to `showLine` to match the dataset option.
 * Dataset options are now configured as `options[type].datasets` rather than `options.datasets[type]`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.

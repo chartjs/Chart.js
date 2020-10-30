@@ -25,7 +25,7 @@ export const ExampleChart = () => {
           data: [65, 59, 80, 81, 56, 55, 40],
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
-          lineTension: 0.1
+          tension: 0.1
         }]
       },
       options: {
@@ -72,7 +72,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`label`](#general) | `string` | - | - | `''`
-| [`lineTension`](#line-styling) | `number` | - | - | `0`
+| [`tension`](#line-styling) | `number` | - | - | `0`
 | [`order`](#general) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
@@ -131,7 +131,7 @@ The style of the line can be controlled with the following properties:
 | `borderJoinStyle` | Line joint style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | The line width (in pixels).
 | `fill` | How to fill the area under the line. See [area charts](area.md).
-| `lineTension` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
+| `tension` | Bezier curve tension of the line. Set to 0 to draw straightlines. This option is ignored if monotone cubic interpolation is used.
 | `showLine` | If false, the line is not drawn for this dataset.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `NaN` data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
 
@@ -171,7 +171,7 @@ The following values are supported for `stepped`.
 * `'after'`: Step-after Interpolation
 * `'middle'`: Step-middle Interpolation
 
-If the `stepped` value is set to anything other than false, `lineTension` will be ignored.
+If the `stepped` value is set to anything other than false, `tension` will be ignored.
 
 ## Configuration Options
 

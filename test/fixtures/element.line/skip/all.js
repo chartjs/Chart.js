@@ -7,7 +7,7 @@ module.exports = {
 					data: [{x: 0, y: NaN}, {x: NaN, y: 0}, {x: NaN, y: -10}, {x: 19, y: NaN}],
 					borderColor: 'red',
 					fill: true,
-					lineTension: 0
+					tension: 0
 				}
 			]
 		},

@@ -8,7 +8,7 @@ module.exports = {
 					borderColor: 'red',
 					fill: true,
 					spanGaps: true,
-					lineTension: 0
+					tension: 0
 				}
 			]
 		},

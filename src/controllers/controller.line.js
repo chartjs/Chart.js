@@ -93,7 +93,7 @@ export default class LineController extends DatasetController {
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
 		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(config.lineTension, lineOptions.tension);
+		values.tension = valueOrDefault(config.tension, lineOptions.tension);
 		values.stepped = resolve([config.stepped, lineOptions.stepped]);
 
 		if (!showLine) {
