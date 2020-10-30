@@ -2,14 +2,15 @@
 
 body, html {
 	color: #333538;
-	font-family: 'Lato', sans-serif;
+font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	line-height: 1.6;
 	padding: 0;
 	margin: 0;
+
 }
 
 a {
-	color: #f27173;
+	color: #e25f5f;
 	text-decoration: none;
 }
 
@@ -19,7 +20,7 @@ a:hover {
 }
 
 .content {
-	max-width: 800px;
+	max-width: 850px;
 	margin: auto;
 	padding: 16px 32px;
 }
