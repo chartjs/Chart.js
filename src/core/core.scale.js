@@ -269,6 +269,25 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 	}
 }
 
+function createScaleContext(parent, scale) {
+	return Object.create(parent, {
+		scale: {
+			value: scale
+		},
+	});
+}
+
+function createTickContext(parent, index, tick) {
+	return Object.create(parent, {
+		tick: {
+			value: tick
+		},
+		index: {
+			value: index
+		}
+	});
+}
+
 export default class Scale extends Element {
 
 	// eslint-disable-next-line max-statements
@@ -1046,31 +1065,14 @@ export default class Scale extends Element {
 	getContext(index) {
 		const me = this;
 		const ticks = me.ticks || [];
-		let context;
+
 		if (index >= 0 && index < ticks.length) {
 			const tick = ticks[index];
-			context = tick.$context ||
-				(tick.$context = Object.create(me.getContext(), {
-					active: {
-						writable: true,
-						value: false
-					},
-					tick: {
-						value: tick
-					},
-					index: {
-						value: index
-					}
-				}));
-		} else {
-			context = me.$context || (me.$context = Object.create(me.chart.getContext(), {
-				scale: {
-					value: me
-				}
-			}));
+			return tick.$context ||
+				(tick.$context = createTickContext(me.getContext(), index, tick));
 		}
-
-		return context;
+		return me.$context ||
+			(me.$context = createScaleContext(me.chart.getContext(), me));
 	}
 
 	/**
