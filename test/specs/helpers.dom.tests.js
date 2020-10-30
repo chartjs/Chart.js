@@ -317,10 +317,9 @@ describe('DOM helpers tests', function() {
 			};
 
 			const rect = chart.canvas.getBoundingClientRect();
-			expect(helpers.getRelativePosition(event, chart)).toEqual({
-				x: Math.round(event.clientX - rect.x),
-				y: Math.round(event.clientY - rect.y)
-			});
+			const pos = helpers.getRelativePosition(event, chart);
+			expect(Math.abs(pos.x - Math.round(event.clientX - rect.x))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos.y - Math.round(event.clientY - rect.y))).toBeLessThanOrEqual(1);
 
 			const chart2 = window.acquireChart({}, {
 				canvas: {
@@ -330,10 +329,9 @@ describe('DOM helpers tests', function() {
 				}
 			});
 			const rect2 = chart2.canvas.getBoundingClientRect();
-			expect(helpers.getRelativePosition(event, chart2)).toEqual({
-				x: Math.round((event.clientX - rect2.x - 10) / 180 * 200),
-				y: Math.round((event.clientY - rect2.y - 10) / 180 * 200)
-			});
+			const pos2 = helpers.getRelativePosition(event, chart2);
+			expect(Math.abs(pos2.x - Math.round((event.clientX - rect2.x - 10) / 180 * 200))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos2.y - Math.round((event.clientY - rect2.y - 10) / 180 * 200))).toBeLessThanOrEqual(1);
 
 			const chart3 = window.acquireChart({}, {
 				canvas: {
@@ -343,10 +341,9 @@ describe('DOM helpers tests', function() {
 				}
 			});
 			const rect3 = chart3.canvas.getBoundingClientRect();
-			expect(helpers.getRelativePosition(event, chart3)).toEqual({
-				x: Math.round((event.clientX - rect3.x - 10) / 360 * 400),
-				y: Math.round((event.clientY - rect3.y - 10) / 360 * 400)
-			});
+			const pos3 = helpers.getRelativePosition(event, chart3);
+			expect(Math.abs(pos3.x - Math.round((event.clientX - rect3.x - 10) / 360 * 400))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos3.y - Math.round((event.clientY - rect3.y - 10) / 360 * 400))).toBeLessThanOrEqual(1);
 		});
 	});
 });
