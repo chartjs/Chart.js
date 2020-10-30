@@ -8,7 +8,7 @@ import Ticks from './core.ticks';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef {{value:any, label?:string, major?:boolean}} Tick
+ * @typedef {{value:any, label?:string, major?:boolean, $context?:any}} Tick
  */
 
 defaults.set('scale', {
@@ -345,6 +345,7 @@ export default class Scale extends Element {
 		this._ticksLength = 0;
 		this._borderValue = 0;
 		this._cache = {};
+		this.$context = undefined;
 	}
 
 	/**
@@ -1043,13 +1044,33 @@ export default class Scale extends Element {
 	 * @protected
 	 */
 	getContext(index) {
-		const ticks = this.ticks || [];
-		return {
-			chart: this.chart,
-			scale: this,
-			tick: ticks[index],
-			index
-		};
+		const me = this;
+		const ticks = me.ticks || [];
+		let context;
+		if (index >= 0 && index < ticks.length) {
+			const tick = ticks[index];
+			context = tick.$context ||
+				(tick.$context = Object.create(me.getContext(), {
+					active: {
+						writable: true,
+						value: false
+					},
+					tick: {
+						value: tick
+					},
+					index: {
+						value: index
+					}
+				}));
+		} else {
+			context = me.$context || (me.$context = Object.create(me.chart.getContext(), {
+				scale: {
+					value: me
+				}
+			}));
+		}
+
+		return context;
 	}
 
 	/**
