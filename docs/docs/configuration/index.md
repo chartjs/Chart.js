@@ -40,7 +40,7 @@ Options may be configured directly on the dataset. The dataset options can be ch
 
 - per dataset: dataset.*
 - per chart: options[type].datasets.*
-- or globally: Chart.defaults[type].datasets.*
+- or globally: Chart.defaults.controllers[type].datasets.*
 
 where type corresponds to the dataset type.
 

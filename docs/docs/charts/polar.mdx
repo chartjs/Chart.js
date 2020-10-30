@@ -119,12 +119,12 @@ The polar area chart uses the [radialLinear](../axes/radial/linear.md) scale. Ad
 
 ## Default Options
 
-We can also change these default values for each PolarArea type that is created, this object is available at `Chart.defaults.polarArea`. Changing the global options only affects charts created after the change. Existing charts are not changed.
+We can also change these default values for each PolarArea type that is created, this object is available at `Chart.defaults.controllers.polarArea`. Changing the global options only affects charts created after the change. Existing charts are not changed.
 
 For example, to configure all new polar area charts with `animateScale = false` you would do:
 
 ```javascript
-Chart.defaults.polarArea.animation.animateScale = false;
+Chart.defaults.controllers.polarArea.animation.animateScale = false;
 ```
 
 ## Data Structure

@@ -1,4 +1,5 @@
 import Animations from './core.animations';
+import defaults from './core.defaults';
 import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {resolve} from '../helpers/helpers.options';
@@ -335,7 +336,8 @@ export default class DatasetController {
 	configure() {
 		const me = this;
 		me._config = merge(Object.create(null), [
-			me.chart.options[me._type].datasets,
+			defaults.controllers[me._type].datasets,
+			me.chart.options[me._type]?.datasets,
 			me.getDataset(),
 		], {
 			merger(key, target, source) {
