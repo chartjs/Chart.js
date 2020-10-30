@@ -1,1 +1,2 @@
-module.exports= require('..').helpers;
+//export helpers
+module.exports = require('..').helpers;
