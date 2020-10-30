@@ -3,7 +3,7 @@ import defaults from './core.defaults';
 import {mergeIf, merge, _merger} from '../helpers/helpers.core';
 
 export function getIndexAxis(type, options) {
-	const typeDefaults = defaults[type] || {};
+	const typeDefaults = defaults.controllers[type] || {};
 	const datasetDefaults = typeDefaults.datasets || {};
 	const typeOptions = options[type] || {};
 	const datasetOptions = typeOptions.datasets || {};
@@ -42,7 +42,7 @@ export function determineAxis(id, scaleOptions) {
 
 function mergeScaleConfig(config, options) {
 	options = options || {};
-	const chartDefaults = defaults[config.type] || {scales: {}};
+	const chartDefaults = defaults.controllers[config.type] || {scales: {}};
 	const configScales = options.scales || {};
 	const chartIndexAxis = getIndexAxis(config.type, options);
 	const firstIDs = Object.create(null);
@@ -67,7 +67,7 @@ function mergeScaleConfig(config, options) {
 	config.data.datasets.forEach(dataset => {
 		const type = dataset.type || config.type;
 		const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
-		const datasetDefaults = defaults[type] || {};
+		const datasetDefaults = defaults.controllers[type] || {};
 		const defaultScaleOptions = datasetDefaults.scales || {};
 		Object.keys(defaultScaleOptions).forEach(defaultID => {
 			const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
@@ -94,7 +94,7 @@ function mergeScaleConfig(config, options) {
 function mergeConfig(...args/* config objects ... */) {
 	return merge(Object.create(null), args, {
 		merger(key, target, source, options) {
-			if (key !== 'scales' && key !== 'scale') {
+			if (key !== 'scales' && key !== 'scale' && key !== 'controllers') {
 				_merger(key, target, source, options);
 			}
 		}
@@ -104,7 +104,7 @@ function mergeConfig(...args/* config objects ... */) {
 function includeDefaults(options, type) {
 	return mergeConfig(
 		defaults,
-		defaults[type],
+		defaults.controllers[type],
 		options || {});
 }
 

@@ -384,7 +384,7 @@ class Chart {
 				meta.controller.updateIndex(i);
 				meta.controller.linkScales();
 			} else {
-				const controllerDefaults = defaults[type];
+				const controllerDefaults = defaults.controllers[type];
 				const ControllerClass = registry.getController(type);
 				Object.assign(ControllerClass.prototype, {
 					dataElementType: registry.getElement(controllerDefaults.dataElementType),

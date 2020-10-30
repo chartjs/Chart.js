@@ -6,12 +6,12 @@ describe('Chart.registry', function() {
 		CustomController.prototype = Object.create(Chart.controllers.line.prototype);
 		CustomController.prototype.constructor = CustomController;
 		CustomController.id = 'myline';
-		CustomController.defaults = Chart.defaults.line;
+		CustomController.defaults = Chart.defaults.controllers.line;
 
 		Chart.register(CustomController);
 
 		expect(Chart.registry.getController('myline')).toEqual(CustomController);
-		expect(Chart.defaults.myline).toEqual(CustomController.defaults);
+		expect(Chart.defaults.controllers.myline).toEqual(CustomController.defaults);
 
 		Chart.unregister(CustomController);
 	});
@@ -94,14 +94,14 @@ describe('Chart.registry', function() {
 		Chart.register(CustomController);
 
 		expect(Chart.registry.getController('custom')).toEqual(CustomController);
-		expect(Chart.defaults.custom).toEqual(CustomController.defaults);
+		expect(Chart.defaults.controllers.custom).toEqual(CustomController.defaults);
 
 		Chart.unregister(CustomController);
 
 		expect(function() {
 			Chart.registry.getController('custom');
 		}).toThrow(new Error('"custom" is not a registered controller.'));
-		expect(Chart.defaults.custom).not.toBeDefined();
+		expect(Chart.defaults.controllers.custom).not.toBeDefined();
 	});
 
 	it('should handle an ES6 scale extension', function() {
@@ -120,7 +120,7 @@ describe('Chart.registry', function() {
 		expect(function() {
 			Chart.registry.getScale('es6Scale');
 		}).toThrow(new Error('"es6Scale" is not a registered scale.'));
-		expect(Chart.defaults.custom).not.toBeDefined();
+		expect(Chart.defaults.controllers.custom).not.toBeDefined();
 	});
 
 	it('should handle an ES6 element extension', function() {
@@ -190,14 +190,14 @@ describe('Chart.registry', function() {
 			Chart.registry.addControllers(customExtension);
 
 			expect(Chart.registry.getController('custom')).toEqual(customExtension);
-			expect(Chart.defaults.custom).toEqual(customExtension.defaults);
+			expect(Chart.defaults.controllers.custom).toEqual(customExtension.defaults);
 
 			Chart.registry.removeControllers(customExtension);
 
 			expect(function() {
 				Chart.registry.getController('custom');
 			}).toThrow(new Error('"custom" is not a registered controller.'));
-			expect(Chart.defaults.custom).not.toBeDefined();
+			expect(Chart.defaults.controllers.custom).not.toBeDefined();
 		});
 
 		it('as scale', function() {
@@ -285,11 +285,13 @@ describe('Chart.registry', function() {
 	});
 
 	it('should not register anything that would collide with existing defaults', function() {
+		Chart.defaults.controllers.test = {test: true};
 		class testController extends Chart.DatasetController {}
-		testController.id = 'events';
+		testController.id = 'test';
 		expect(function() {
 			Chart.register(testController);
-		}).toThrow(new Error('Can not register "events", because "defaults.events" would collide with existing defaults'));
+		}).toThrow(new Error('Can not register "test", because "defaults.controllers.test" would collide with existing defaults'));
+		delete Chart.defaults.controllers.test;
 	});
 
 	describe('should handle multiple items', function() {
