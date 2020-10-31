@@ -1219,7 +1219,7 @@ describe('Chart.controllers.bar', function() {
 			},
 			options: {
 				elements: {
-					bars: {
+					bar: {
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(0, 0, 255)',
 						borderWidth: 2,
