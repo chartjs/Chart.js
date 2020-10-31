@@ -9,7 +9,7 @@ module.exports = {
 				type: 'line',
 				pointRadius: 0,
 				fill: false,
-				lineTension: 0,
+				tension: 0,
 				borderWidth: 2
 			}]
 		},
