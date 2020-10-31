@@ -1493,6 +1493,22 @@ describe('Chart', function() {
 		});
 	});
 
+	describe('isDatasetVisible', function() {
+		it('should return false if index is out of bounds', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data: [0, 1, 2]
+					}],
+					labels: ['a', 'b', 'c']
+				}
+			});
+
+			expect(chart.isDatasetVisible(1)).toBe(false);
+		});
+	});
+
 	describe('getChart', function() {
 		it('should get the chart from the canvas ID', function() {
 			var chart = acquireChart({

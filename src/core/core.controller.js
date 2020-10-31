@@ -717,11 +717,16 @@ class Chart {
 	}
 
 	isDatasetVisible(datasetIndex) {
+		const dataset = this.data.datasets[datasetIndex];
+		if (!dataset) {
+			return false;
+		}
+
 		const meta = this.getDatasetMeta(datasetIndex);
 
 		// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
 		// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
-		return typeof meta.hidden === 'boolean' ? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
+		return typeof meta.hidden === 'boolean' ? !meta.hidden : !dataset.hidden;
 	}
 
 	setDatasetVisibility(datasetIndex, visible) {
