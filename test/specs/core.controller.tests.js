@@ -1289,6 +1289,7 @@ describe('Chart', function() {
 			var hooks = {
 				init: [
 					'beforeInit',
+					'resize',
 					'afterInit'
 				],
 				update: [

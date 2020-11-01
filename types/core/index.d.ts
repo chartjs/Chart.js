@@ -277,7 +277,7 @@ export declare class Chart<
 	clear(): this;
 	stop(): this;
 
-	resize(silent: boolean, width: number, height: number): void;
+	resize(width: number, height: number): void;
 	ensureScalesHaveIDs(): void;
 	buildOrUpdateScales(): void;
 	buildOrUpdateControllers(): void;
