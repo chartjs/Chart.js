@@ -97,7 +97,6 @@ class Chart {
 		this.height = height;
 		this.aspectRatio = height ? width / height : null;
 		this.options = config.options;
-		this._bufferedRender = false;
 		this._layers = [];
 		this._metasets = [];
 		this.boxes = [];
@@ -108,7 +107,6 @@ class Chart {
 		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
 		this._sortedMetasets = [];
-		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
 		this._plugins = new PluginService();
@@ -157,8 +155,7 @@ class Chart {
 		me._plugins.notify(me, 'beforeInit');
 
 		if (me.options.responsive) {
-			// Initial resize before chart draws (must be silent to preserve initial animations).
-			me.resize(true);
+			me.resize();
 		} else {
 			retinaScale(me, me.options.devicePixelRatio);
 		}
@@ -193,7 +190,15 @@ class Chart {
 		return this;
 	}
 
-	resize(silent, width, height) {
+	resize(width, height) {
+		if (!animator.running(this)) {
+			this._resize(width, height);
+		} else {
+			this._resizeBeforeDraw = {width, height};
+		}
+	}
+
+	_resize(width, height) {
 		const me = this;
 		const options = me.options;
 		const canvas = me.canvas;
@@ -217,14 +222,12 @@ class Chart {
 
 		retinaScale(me, newRatio);
 
-		if (!silent) {
-			me._plugins.notify(me, 'resize', [newSize]);
+		me._plugins.notify(me, 'resize', [newSize]);
 
-			callCallback(options.onResize, [newSize], me);
+		callCallback(options.onResize, [newSize], me);
 
-			if (me.attached) {
-				me.update('resize');
-			}
+		if (me.attached) {
+			me.update('resize');
 		}
 	}
 
@@ -426,8 +429,6 @@ class Chart {
 		const args = {mode};
 		let i, ilen;
 
-		me._updating = true;
-
 		each(me.scales, (scale) => {
 			layouts.removeBox(me, scale);
 		});
@@ -475,8 +476,6 @@ class Chart {
 		}
 
 		me.render();
-
-		me._updating = false;
 	}
 
 	/**
@@ -569,7 +568,11 @@ class Chart {
 	draw() {
 		const me = this;
 		let i;
-
+		if (me._resizeBeforeDraw) {
+			const {width, height} = me._resizeBeforeDraw;
+			me._resize(width, height);
+			me._resizeBeforeDraw = null;
+		}
 		me.clear();
 
 		if (me.width <= 0 || me.height <= 0) {
@@ -848,7 +851,7 @@ class Chart {
 		if (me.options.responsive) {
 			listener = (width, height) => {
 				if (me.canvas) {
-					me.resize(false, width, height);
+					me.resize(width, height);
 				}
 			};
 

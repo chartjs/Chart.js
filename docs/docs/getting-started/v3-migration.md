@@ -366,6 +366,8 @@ The following public APIs were removed.
 
 The following private APIs were removed.
 
+* `Chart._bufferedRender`
+* `Chart._updating`
 * `Chart.data.datasets[datasetIndex]._meta`
 * `DatasetController._getIndexScaleId`
 * `DatasetController._getIndexScale`
@@ -457,6 +459,7 @@ The APIs listed in this section have changed in signature or behaviour from vers
 ##### Core Controller
 
 * The first parameter to `updateHoverStyle` is now an array of objects containing the `element`, `datasetIndex`, and `index`
+* The signature or `resize` changed, the first `silent` parameter was removed.
 
 ##### Dataset Controllers
 
@@ -492,3 +495,4 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 
 * `afterDatasetsUpdate`, `afterUpdate`, `beforeDatasetsUpdate`, and `beforeUpdate` now receive `args` object as second argument. `options` argument is always the last and thus was moved from 2nd to 3rd place.
 * `afterEvent` and `beforeEvent` now receive a wrapped `event` as the second argument. The native event is available via `event.native`.
+* Initial `resize` is no longer silent. Meaning that `resize` event can fire between `beforeInit` and `afterInit`
