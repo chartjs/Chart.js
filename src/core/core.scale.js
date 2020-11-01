@@ -8,7 +8,7 @@ import Ticks from './core.ticks';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef {{value:any, label?:string, major?:boolean}} Tick
+ * @typedef {{value:any, label?:string, major?:boolean, $context?:any}} Tick
  */
 
 defaults.set('scale', {
@@ -269,6 +269,25 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 	}
 }
 
+function createScaleContext(parent, scale) {
+	return Object.create(parent, {
+		scale: {
+			value: scale
+		},
+	});
+}
+
+function createTickContext(parent, index, tick) {
+	return Object.create(parent, {
+		tick: {
+			value: tick
+		},
+		index: {
+			value: index
+		}
+	});
+}
+
 export default class Scale extends Element {
 
 	// eslint-disable-next-line max-statements
@@ -345,6 +364,7 @@ export default class Scale extends Element {
 		this._ticksLength = 0;
 		this._borderValue = 0;
 		this._cache = {};
+		this.$context = undefined;
 	}
 
 	/**
@@ -1043,13 +1063,16 @@ export default class Scale extends Element {
 	 * @protected
 	 */
 	getContext(index) {
-		const ticks = this.ticks || [];
-		return {
-			chart: this.chart,
-			scale: this,
-			tick: ticks[index],
-			index
-		};
+		const me = this;
+		const ticks = me.ticks || [];
+
+		if (index >= 0 && index < ticks.length) {
+			const tick = ticks[index];
+			return tick.$context ||
+				(tick.$context = createTickContext(me.getContext(), index, tick));
+		}
+		return me.$context ||
+			(me.$context = createScaleContext(me.chart.getContext(), me));
 	}
 
 	/**

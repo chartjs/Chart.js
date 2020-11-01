@@ -37,14 +37,52 @@ color: [
 ## Option Context
 
 The option context is used to give contextual information when resolving options and currently only applies to [scriptable options](#scriptable-options).
+The object is preserved, so it can be used to store and pass information between calls.
+
+There are multiple levels of context objects:
+
+- `chart`
+  - `dataset`
+    - `data`
+  - `scale`
+    - `tick`
+
+Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
 
 The context object contains the following properties:
 
+### chart
+
 - `chart`: the associated chart
-- `dataPoint`: the parsed data values for the given `dataIndex` and `datasetIndex`
-- `dataIndex`: index of the current data
+
+### dataset
+
+In addition to [chart](#chart)
+
+- `active`: true if element is active (hovered)
 - `dataset`: dataset at index `datasetIndex`
 - `datasetIndex`: index of the current dataset
-- `active`: true if element is active (hovered)
+- `index`: getter for `datasetIndex`
 
-**Important**: since the context can represent different types of entities (dataset, data, ticks, etc.), some properties may be `undefined` so be sure to test any context property before using it.
+### data
+
+In addition to [dataset](#dataset)
+
+- `active`: true if element is active (hovered)
+- `dataIndex`: index of the current data
+- `dataPoint`: the parsed data values for the given `dataIndex` and `datasetIndex`
+- `element`: the element (point, arc, bar, etc.) for this data
+- `index`: getter for `dataIndex`
+
+### scale
+
+In addition to [chart](#chart)
+
+- `scale`: the associated scale
+
+### tick
+
+In addition to [scale](#scale)
+
+- `tick`: the associated tick object
+- `index`: tick index

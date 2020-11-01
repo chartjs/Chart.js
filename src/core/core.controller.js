@@ -116,6 +116,7 @@ class Chart {
 		this._hiddenIndices = {};
 		this.attached = false;
 		this._animationsDisabled = undefined;
+		this.$context = undefined;
 
 		// Add the chart instance to the global namespace
 		Chart.instances[me.id] = me;
@@ -710,6 +711,14 @@ class Chart {
 		}
 
 		return meta;
+	}
+
+	getContext() {
+		return this.$context || (this.$context = Object.create(null, {
+			chart: {
+				value: this
+			}
+		}));
 	}
 
 	getVisibleDatasetCount() {

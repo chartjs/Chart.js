@@ -63,7 +63,6 @@
 		};
 		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
-			var started = {};
 			window.myBar = new Chart(ctx, {
 				type: 'bar',
 				data: barChartData,
@@ -77,9 +76,9 @@
 						var delay = 0;
 						var dsIndex = context.datasetIndex;
 						var index = context.dataIndex;
-						if (!started[index + dsIndex * 1000]) {
+						if (context.dataPoint && !context.delayed) {
 							delay = index * 300 + dsIndex * 100;
-							started[index + dsIndex * 1000] = true;
+							context.delayed = true;
 						}
 						return {
 							easing: 'linear',
