@@ -159,7 +159,7 @@ When adding a new chart type, `IChartTypeRegistry` must contains the declaration
 
 For example, to provide typings for a new chart type that extends from a bubble chart, you would add a `.d.ts` containing:
 
-```javascript
+```ts
 import { IChartTypeRegistry } from 'chart.js'
 
 declare module 'chart.js' {
