@@ -97,7 +97,6 @@ class Chart {
 		this.height = height;
 		this.aspectRatio = height ? width / height : null;
 		this.options = config.options;
-		this._bufferedRender = false;
 		this._layers = [];
 		this._metasets = [];
 		this.boxes = [];
@@ -108,7 +107,6 @@ class Chart {
 		/** @type {{attach?: function, detach?: function, resize?: function}} */
 		this._listeners = {};
 		this._sortedMetasets = [];
-		this._updating = false;
 		this.scales = {};
 		this.scale = undefined;
 		this._plugins = new PluginService();
@@ -425,8 +423,6 @@ class Chart {
 		const args = {mode};
 		let i, ilen;
 
-		me._updating = true;
-
 		each(me.scales, (scale) => {
 			layouts.removeBox(me, scale);
 		});
@@ -474,8 +470,6 @@ class Chart {
 		}
 
 		me.render();
-
-		me._updating = false;
 	}
 
 	/**
