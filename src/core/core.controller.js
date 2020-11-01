@@ -191,6 +191,14 @@ class Chart {
 	}
 
 	resize(silent, width, height) {
+		if (silent || !animator.running(this)) {
+			this._resize(silent, width, height);
+		} else {
+			this._resizeBeforeDraw = {width, height};
+		}
+	}
+
+	_resize(silent, width, height) {
 		const me = this;
 		const options = me.options;
 		const canvas = me.canvas;
@@ -562,7 +570,11 @@ class Chart {
 	draw() {
 		const me = this;
 		let i;
-
+		if (me._resizeBeforeDraw) {
+			const {width, height} = me._resizeBeforeDraw;
+			me._resize(false, width, height);
+			me._resizeBeforeDraw = null;
+		}
 		me.clear();
 
 		if (me.width <= 0 || me.height <= 0) {
