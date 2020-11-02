@@ -381,7 +381,7 @@ export default class DatasetController {
 		const me = this;
 		me._config = merge(Object.create(null), [
 			defaults.controllers[me._type].datasets,
-			me.chart.options[me._type]?.datasets,
+			(me.chart.options[me._type] || {}).datasets,
 			me.getDataset(),
 		], {
 			merger(key, target, source) {
