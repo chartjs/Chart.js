@@ -122,6 +122,12 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
     };
   };
 
+	/**
+	 * 	If true, data will be comprised between datasets of data
+	 * @default false
+	 */
+  stacked?: boolean;
+
   ticks: ITickOptions & {
     /**
      * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
@@ -193,7 +199,6 @@ export const CategoryScale: IChartComponent & {
 };
 
 export type ILinearScaleOptions = ICartesianScaleOptions & {
-  stacked?: boolean;
 
   /**
    *	if true, scale will include 0 if it is not already included.
@@ -243,7 +248,6 @@ export const LinearScale: IChartComponent & {
 };
 
 export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
-  stacked?: boolean;
 
   /**
    * Adjustment used when calculating the maximum data value.
