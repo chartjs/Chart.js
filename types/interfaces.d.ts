@@ -176,7 +176,7 @@ export type IChartDataset<
 export interface IChartData<
   TYPE extends IChartType = IChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
-  LABEL = string
+  LABEL = unknown
 > {
   labels: LABEL[];
   datasets: IChartDataset<TYPE, DATA>[];
