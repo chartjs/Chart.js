@@ -164,6 +164,9 @@ function createDatasetContext(parent, index, dataset) {
 			get() {
 				return this.datasetIndex;
 			}
+		},
+		type: {
+			value: 'dataset'
 		}
 	});
 }
@@ -187,6 +190,9 @@ function createDataContext(parent, index, point, element) {
 			get() {
 				return this.dataIndex;
 			}
+		},
+		type: {
+			value: 'data',
 		}
 	});
 }
