@@ -55,7 +55,8 @@ export const ExampleChart = () => {
         }
       }
     };
-    new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
+    const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
 }

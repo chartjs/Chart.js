@@ -50,7 +50,8 @@ function example() {
           }
       }
     };
-    new Chart(ctx, cfg);
+    const chart = new Chart(ctx, cfg);
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="chartjs-a0" className="chartjs"></canvas></div>;
 }
@@ -96,7 +97,8 @@ function example() {
           }
       }
     };
-    new Chart(ctx, cfg);
+    const chart = new Chart(ctx, cfg);
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="chartjs-a1" className="chartjs"></canvas></div>;
 }
@@ -117,7 +119,7 @@ The default configuration is defined here: <a href="https://github.com/chartjs/C
 | `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
 | `delay` | `number` | `undefined` | Delay before starting the animations.
 | `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
-| [[mode]](#animation-mode-configuration) | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above. 
+| [[mode]](#animation-mode-configuration) | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above.
 | [[property]](#animation-property-configuration) | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
 | [[collection]](#animation-properties-collection-configuration) | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
 
@@ -125,8 +127,8 @@ These defaults can be overridden in `options.animation` or `dataset.animation` a
 
 ## Animation mode configuration
 
-Mode option configures how an update mode animates the chart. 
-The cores modes are `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. 
+Mode option configures how an update mode animates the chart.
+The cores modes are `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`.
 A custom mode can be used by passing a custom `mode` to [update](../developers/api.md#updatemode).
 A mode option is defined by the same options of the main [animation configuration](#animation-configuration).
 
@@ -181,13 +183,13 @@ These default collections are overridden by most dataset controllers.
 
 ## Disabling animation
 
-To disable an animation configuration, the animation node must be set to `false`, with the exception for animation modes which can be disable setting the `duration` to `0`. 
+To disable an animation configuration, the animation node must be set to `false`, with the exception for animation modes which can be disable setting the `duration` to `0`.
 
 ```javascript
 chart.options.animation = false; // disables the whole animation
 chart.options.animation.active.duration = 0; // disables the animation for 'active' mode
 chart.options.animation.colors = false; // disables animation defined by the collection of 'colors' properties
-chart.options.animation.x = false; // disables animation defined by the 'x' property 
+chart.options.animation.x = false; // disables animation defined by the 'x' property
 ```
 
 ## Easing
