@@ -44,6 +44,7 @@ function example() {
 		// Configuration options go here
 		options: {}
 	});
+	return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="myChart" className="chartjs"></canvas></div>;
 }
