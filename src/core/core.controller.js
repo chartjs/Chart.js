@@ -407,9 +407,7 @@ class Chart {
 				const ControllerClass = registry.getController(type);
 				Object.assign(ControllerClass.prototype, {
 					dataElementType: registry.getElement(controllerDefaults.dataElementType),
-					datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
-					dataElementOptions: controllerDefaults.dataElementOptions,
-					datasetElementOptions: controllerDefaults.datasetElementOptions
+					datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType)
 				});
 				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);

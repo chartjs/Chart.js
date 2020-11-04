@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {resolve, toRadians, PI} from '../helpers/index';
+import {toRadians, PI} from '../helpers/index';
 
 function getStartAngleRadians(deg) {
 	// radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
@@ -55,15 +55,16 @@ export default class PolarAreaController extends DatasetController {
 		let angle = datasetStartAngle;
 		let i;
 
-		me._cachedMeta.count = me.countVisibleElements();
+		const defaultAngle = 360 / me.countVisibleElements();
 
 		for (i = 0; i < start; ++i) {
-			angle += me._computeAngle(i, mode);
+			angle += toRadians(me.resolveDataElementOptions(i, mode).angle || defaultAngle);
 		}
 		for (i = start; i < start + count; i++) {
+			const options = me.resolveDataElementOptions(i, mode);
 			const arc = arcs[i];
 			let startAngle = angle;
-			let endAngle = angle + me._computeAngle(i, mode);
+			let endAngle = angle + toRadians(options.angle || defaultAngle);
 			let outerRadius = this.chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
 			angle = endAngle;
 
@@ -84,7 +85,7 @@ export default class PolarAreaController extends DatasetController {
 				outerRadius,
 				startAngle,
 				endAngle,
-				options: me.resolveDataElementOptions(i, mode)
+				options
 			};
 
 			me.updateElement(arc, i, properties, mode);
@@ -104,28 +105,6 @@ export default class PolarAreaController extends DatasetController {
 
 		return count;
 	}
-
-	/**
-	 * @private
-	 */
-	_computeAngle(index, mode) {
-		const me = this;
-		const meta = me._cachedMeta;
-		const count = meta.count;
-		const dataset = me.getDataset();
-
-		if (isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
-			return 0;
-		}
-
-		// Scriptable options
-		const context = me.getContext(index, mode === 'active');
-
-		return toRadians(resolve([
-			me.chart.options.elements.arc.angle,
-			360 / count
-		], context, index));
-	}
 }
 
 PolarAreaController.id = 'polarArea';
@@ -135,13 +114,6 @@ PolarAreaController.id = 'polarArea';
  */
 PolarAreaController.defaults = {
 	dataElementType: 'arc',
-	dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderWidth',
-		'borderAlign',
-		'offset'
-	],
 
 	animation: {
 		numbers: {

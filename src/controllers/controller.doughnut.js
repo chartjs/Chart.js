@@ -80,14 +80,14 @@ export default class DoughnutController extends DatasetController {
 	 * @private
 	 */
 	_getRotation() {
-		return toRadians(valueOrDefault(this._config.rotation, this.chart.options.rotation) - 90);
+		return toRadians(this.options.rotation - 90);
 	}
 
 	/**
 	 * @private
 	 */
 	_getCircumference() {
-		return toRadians(valueOrDefault(this._config.circumference, this.chart.options.circumference));
+		return toRadians(this.options.circumference);
 	}
 
 	/**
@@ -156,7 +156,7 @@ export default class DoughnutController extends DatasetController {
 	 */
 	_circumference(i, reset) {
 		const me = this;
-		const opts = me.chart.options;
+		const opts = me.options;
 		const meta = me._cachedMeta;
 		const circumference = me._getCircumference();
 		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / TAU) : 0;

@@ -522,15 +522,15 @@ describe('Legend block tests', function() {
 				datasets: [{
 					label: 'dataset1',
 					backgroundColor: function(ctx) {
-						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						var value = ctx.dataset.data[ctx.index] || 0;
 						return helpers.color({r: value * 10, g: 0, b: 0}).rgbString();
 					},
 					borderWidth: function(ctx) {
-						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						var value = ctx.dataset.data[ctx.index] || 0;
 						return value;
 					},
 					borderColor: function(ctx) {
-						var value = ctx.dataset.data[ctx.dataIndex] || 0;
+						var value = ctx.dataset.data[ctx.index] || 0;
 						return helpers.color({r: 255 - value * 10, g: 0, b: 0}).rgbString();
 					},
 					data: [5, 10, 15, 20]
@@ -571,7 +571,7 @@ describe('Legend block tests', function() {
 					pointBackgroundColor: 'rgba(0,0,0,0.1)',
 					pointBorderWidth: 5,
 					pointBorderColor: 'green',
-					data: []
+					data: [1]
 				}, {
 					label: 'dataset2',
 					backgroundColor: '#f31',
@@ -580,9 +580,9 @@ describe('Legend block tests', function() {
 					borderColor: '#f31',
 					pointStyle: 'crossRot',
 					pointRotation: 15,
-					data: []
+					data: [1]
 				}],
-				labels: []
+				labels: ['a']
 			},
 			options: {
 				legend: {
@@ -638,7 +638,7 @@ describe('Legend block tests', function() {
 					pointBackgroundColor: 'rgba(0,0,0,0.1)',
 					pointBorderWidth: 5,
 					pointBorderColor: 'green',
-					data: []
+					data: [1]
 				}, {
 					label: 'dataset2',
 					backgroundColor: '#f31',
@@ -647,9 +647,9 @@ describe('Legend block tests', function() {
 					borderColor: '#f31',
 					pointStyle: 'crossRot',
 					pointRotation: 15,
-					data: []
+					data: [1]
 				}],
-				labels: []
+				labels: ['a']
 			},
 			options: {
 				legend: {

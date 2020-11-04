@@ -1,6 +1,7 @@
 /* eslint-disable import/no-namespace, import/namespace */
 import defaults from './core.defaults';
-import {mergeIf, merge, _merger} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger, resolveObjectKey} from '../helpers/helpers.core';
+import Options from './core.options';
 
 export function getIndexAxis(type, options) {
 	const typeDefaults = defaults.controllers[type] || {};
@@ -94,7 +95,7 @@ function mergeScaleConfig(config, options) {
 function mergeConfig(...args/* config objects ... */) {
 	return merge(Object.create(null), args, {
 		merger(key, target, source, options) {
-			if (key !== 'scales' && key !== 'scale' && key !== 'controllers') {
+			if (key !== 'scales' && key !== 'scale' && key !== 'elements' && key !== 'controllers') {
 				_merger(key, target, source, options);
 			}
 		}
@@ -102,11 +103,17 @@ function mergeConfig(...args/* config objects ... */) {
 }
 
 function includeDefaults(config, options) {
+	options = options || {};
+
 	const scaleConfig = mergeScaleConfig(config, options);
+	const elements = options.elements;
+
 	options = mergeConfig(
 		defaults,
 		defaults.controllers[config.type],
-		options || {});
+		options);
+
+	options.elements = elements;
 
 	options.hover = merge(Object.create(null), [
 		defaults.interaction,
@@ -172,5 +179,23 @@ export default class Config {
 	update(options) {
 		const config = this._config;
 		config.options = includeDefaults(config, options);
+	}
+
+	resolveOptions(mainScope, scopeKeys, names, prefixes) {
+		const options = this.options;
+		const scopes = [mainScope];
+		prefixes.push('');
+
+		const addIfFound = (obj, key) => {
+			const opts = resolveObjectKey(obj, key);
+			if (opts) {
+				scopes.push(opts);
+			}
+		};
+
+		scopeKeys.forEach(key => addIfFound(options, key));
+		scopeKeys.forEach(key => addIfFound(defaults, key));
+
+		return new Options(scopes, names, prefixes);
 	}
 }

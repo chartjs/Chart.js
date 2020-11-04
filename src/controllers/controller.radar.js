@@ -1,5 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import {valueOrDefault} from '../helpers/helpers.core';
 
 export default class RadarController extends DatasetController {
 
@@ -31,7 +30,7 @@ export default class RadarController extends DatasetController {
 				points,
 				_loop: true,
 				_fullLoop: labels.length === points.length,
-				options: me.resolveDatasetElementOptions()
+				options: me.resolveDatasetElementOptions(mode)
 			};
 
 			me.updateElement(line, undefined, properties, mode);
@@ -68,20 +67,14 @@ export default class RadarController extends DatasetController {
 	}
 
 	/**
-	 * @param {boolean} [active]
+	 * @param {string} [mode]
+	 * @param {string} [prefix]
 	 * @protected
 	 */
-	resolveDatasetElementOptions(active) {
-		const me = this;
-		const config = me._config;
-		const options = me.chart.options;
-		const values = super.resolveDatasetElementOptions(active);
-		const showLine = valueOrDefault(config.showLine, options.showLine);
+	resolveDatasetElementOptions(mode, prefix) {
+		const values = super.resolveDatasetElementOptions(mode, prefix);
 
-		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(config.tension, options.elements.line.tension);
-
-		if (!showLine) {
+		if (!this.options.showLine) {
 			values.borderWidth = 0;
 		}
 
@@ -96,46 +89,23 @@ RadarController.id = 'radar';
  */
 RadarController.defaults = {
 	datasetElementType: 'line',
-	datasetElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderCapStyle',
-		'borderDash',
-		'borderDashOffset',
-		'borderJoinStyle',
-		'borderWidth',
-		'fill'
-	],
-
 	dataElementType: 'point',
-	dataElementOptions: {
-		backgroundColor: 'pointBackgroundColor',
-		borderColor: 'pointBorderColor',
-		borderWidth: 'pointBorderWidth',
-		hitRadius: 'pointHitRadius',
-		hoverBackgroundColor: 'pointHoverBackgroundColor',
-		hoverBorderColor: 'pointHoverBorderColor',
-		hoverBorderWidth: 'pointHoverBorderWidth',
-		hoverRadius: 'pointHoverRadius',
-		pointStyle: 'pointStyle',
-		radius: 'pointRadius',
-		rotation: 'pointRotation'
-	},
 
 	aspectRatio: 1,
-	spanGaps: false,
+	datasets: {
+		showLine: true,
+		indexAxis: 'r'
+	},
+
 	scales: {
 		r: {
 			type: 'radialLinear',
 		}
 	},
-	datasets: {
-		indexAxis: 'r'
-	},
+
 	elements: {
 		line: {
-			fill: 'start',
-			tension: 0 // no bezier in radar
+			fill: 'start'
 		}
 	}
 };

@@ -1,4 +1,5 @@
 import {merge, valueOrDefault} from '../helpers/helpers.core';
+import {privatePrefixChars} from './core.options';
 
 /**
  * @param {object} node
@@ -53,7 +54,6 @@ export class Defaults {
 		this.onHover = null;
 		this.onClick = null;
 		this.responsive = true;
-		this.showLine = true;
 		this.plugins = {};
 		this.scale = undefined;
 		this.scales = {};
@@ -114,4 +114,20 @@ export class Defaults {
 }
 
 // singleton instance
-export default new Defaults();
+const defaults = new Defaults();
+export default defaults;
+
+const filteredOpts = ['datasets', 'elements', 'scales'];
+export function datasetOptionKeys(type) {
+	const typeDefaults = defaults.controllers[type] || {};
+	const datasetDefaults = typeDefaults.datasets || {};
+	const elementDefaults = defaults.elements[typeDefaults.datasetElementType] ||
+		defaults.elements[typeDefaults.dataElementType] || {};
+	return Object.keys(typeDefaults)
+		.concat(Object.keys(datasetDefaults))
+		.concat(Object.keys(elementDefaults))
+		.concat(['animation', 'parsing', 'clip'])
+		.filter((value, index, arr) => arr.indexOf(value) === index)
+		.filter(value => filteredOpts.indexOf(value) === -1)
+		.filter(value => privatePrefixChars.indexOf(value.charAt(0)) === -1);
+}

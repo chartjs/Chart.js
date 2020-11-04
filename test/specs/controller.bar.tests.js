@@ -1245,7 +1245,7 @@ describe('Chart.controllers.bar', function() {
 		expect(bar.options.backgroundColor).toBe(helpers.getHoverColor('rgb(128, 128, 128)'));
 		expect(bar.options.borderColor).toBe(helpers.getHoverColor('rgb(15, 15, 15)'));
 		expect(bar.options.borderWidth).toBe(3.14);
-		meta.controller.removeHoverStyle(bar);
+		meta.controller.removeHoverStyle(bar, 1, 0);
 		expect(bar.options.backgroundColor).toBe('rgb(128, 128, 128)');
 		expect(bar.options.borderColor).toBe('rgb(15, 15, 15)');
 		expect(bar.options.borderWidth).toBe(3.14);
@@ -1263,7 +1263,7 @@ describe('Chart.controllers.bar', function() {
 		expect(bar.options.backgroundColor).toBe(helpers.getHoverColor('rgb(255, 255, 255)'));
 		expect(bar.options.borderColor).toBe(helpers.getHoverColor('rgb(9, 9, 9)'));
 		expect(bar.options.borderWidth).toBe(2.5);
-		meta.controller.removeHoverStyle(bar);
+		meta.controller.removeHoverStyle(bar, 1, 0);
 		expect(bar.options.backgroundColor).toBe('rgb(255, 255, 255)');
 		expect(bar.options.borderColor).toBe('rgb(9, 9, 9)');
 		expect(bar.options.borderWidth).toBe(2.5);
@@ -1361,9 +1361,9 @@ describe('Chart.controllers.bar', function() {
 			var meta = chart.getDatasetMeta(0);
 			var yScale = chart.scales[meta.yAxisID];
 
-			var config = meta.controller._config;
-			var categoryPercentage = config.categoryPercentage;
-			var barPercentage = config.barPercentage;
+			var options = meta.controller.options;
+			var categoryPercentage = options.categoryPercentage;
+			var barPercentage = options.barPercentage;
 			var stacked = yScale.options.stacked;
 
 			var totalBarHeight = 0;

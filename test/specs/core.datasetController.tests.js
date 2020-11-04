@@ -629,85 +629,6 @@ describe('Chart.DatasetController', function() {
 		Chart.defaults.color = oldColor;
 	});
 
-	describe('_resolveOptions', function() {
-		it('should resove names in array notation', function() {
-			Chart.defaults.elements.line.globalTest = 'global';
-
-			const chart = acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						data: [1],
-						datasetTest: 'dataset'
-					}]
-				},
-				options: {
-					elements: {
-						line: {
-							elementTest: 'element'
-						}
-					}
-				}
-			});
-
-			const controller = chart.getDatasetMeta(0).controller;
-
-			expect(controller._resolveOptions(
-				[
-					'datasetTest',
-					'elementTest',
-					'globalTest'
-				],
-				{type: 'line'})
-			).toEqual({
-				datasetTest: 'dataset',
-				elementTest: 'element',
-				globalTest: 'global'
-			});
-
-			// Remove test from global defaults
-			delete Chart.defaults.elements.line.globalTest;
-		});
-
-		it('should resove names in object notation', function() {
-			Chart.defaults.elements.line.global = 'global';
-
-			const chart = acquireChart({
-				type: 'line',
-				data: {
-					datasets: [{
-						data: [1],
-						datasetTest: 'dataset'
-					}]
-				},
-				options: {
-					elements: {
-						line: {
-							element: 'element'
-						}
-					}
-				}
-			});
-
-			const controller = chart.getDatasetMeta(0).controller;
-
-			expect(controller._resolveOptions(
-				{
-					dataset: 'datasetTest',
-					element: 'elementTest',
-					global: 'globalTest'},
-				{type: 'line'})
-			).toEqual({
-				dataset: 'dataset',
-				element: 'element',
-				global: 'global'
-			});
-
-			// Remove test from global defaults
-			delete Chart.defaults.elements.line.global;
-		});
-	});
-
 	describe('resolveDataElementOptions', function() {
 		it('should cache options when possible', function() {
 			const chart = acquireChart({
@@ -728,7 +649,6 @@ describe('Chart.DatasetController', function() {
 
 			expect(opts0 === opts1).toBeTrue();
 			expect(opts0.$shared).toBeTrue();
-			expect(Object.isFrozen(opts0)).toBeTrue();
 		});
 
 		it('should not cache options when option sharing is disabled', function() {

@@ -110,7 +110,7 @@ describe('Chart', function() {
 			expect(options.hover.mode).toBe('test');
 
 			defaults.hover.onHover = null;
-			defaults.controllers.line.spanGaps = false;
+			delete defaults.controllers.line.spanGaps;
 			defaults.controllers.line.interaction.mode = defaultMode;
 		});
 
@@ -134,7 +134,7 @@ describe('Chart', function() {
 			expect(options.hover.mode).toBe('test');
 
 			defaults.hover.onHover = null;
-			defaults.controllers.line.spanGaps = false;
+			delete defaults.controllers.line.spanGaps;
 			delete defaults.controllers.line.hover.mode;
 		});
 
@@ -160,14 +160,14 @@ describe('Chart', function() {
 			});
 
 			var options = chart.options;
-			expect(options.showLine).toBe(defaults.showLine);
+			expect(options.showLine).toBe(defaults.controllers.line.showLine);
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
 			expect(options.title.position).toBe('bottom');
 
 			defaults.hover.onHover = null;
 			delete defaults.controllers.line.hover.mode;
-			defaults.controllers.line.spanGaps = false;
+			delete defaults.controllers.line.spanGaps;
 		});
 
 		it('should override axis positions that are incorrect', function() {

@@ -1,7 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {valueOrDefault} from '../helpers/helpers.core';
 import {isNumber, _limitValue} from '../helpers/helpers.math';
-import {resolve} from '../helpers/helpers.options';
 import {_lookupByKey} from '../helpers/helpers.collection';
 
 export default class LineController extends DatasetController {
@@ -32,7 +30,7 @@ export default class LineController extends DatasetController {
 		if (mode !== 'resize') {
 			const properties = {
 				points,
-				options: me.resolveDatasetElementOptions()
+				options: me.resolveDatasetElementOptions(mode)
 			};
 
 			me.updateElement(line, undefined, properties, mode);
@@ -49,7 +47,7 @@ export default class LineController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
-		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
+		const spanGaps = me.options.spanGaps;
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
 		let prevParsed = start > 0 && me.getParsed(start - 1);
 
@@ -78,31 +76,19 @@ export default class LineController extends DatasetController {
 	}
 
 	/**
-	 * @param {boolean} [active]
+	 * @param {string} [mode]
+	 * @param {string} [prefix]
 	 * @protected
 	 */
-	resolveDatasetElementOptions(active) {
-		const me = this;
-		const config = me._config;
-		const options = me.chart.options;
-		const lineOptions = options.elements.line;
-		const values = super.resolveDatasetElementOptions(active);
-		const showLine = valueOrDefault(config.showLine, options.showLine);
+	resolveDatasetElementOptions(mode, prefix) {
+		const values = super.resolveDatasetElementOptions(mode, prefix);
 
-		// The default behavior of lines is to break at null values, according
-		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
-		// This option gives lines the ability to span gaps
-		values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault(config.tension, lineOptions.tension);
-		values.stepped = resolve([config.stepped, lineOptions.stepped]);
-
-		if (!showLine) {
+		if (!this.options.showLine) {
 			values.borderWidth = 0;
 		}
 
 		return values;
 	}
-
 	/**
 	 * @protected
 	 */
@@ -132,37 +118,11 @@ LineController.id = 'line';
  */
 LineController.defaults = {
 	datasetElementType: 'line',
-	datasetElementOptions: [
-		'backgroundColor',
-		'borderCapStyle',
-		'borderColor',
-		'borderDash',
-		'borderDashOffset',
-		'borderJoinStyle',
-		'borderWidth',
-		'capBezierPoints',
-		'cubicInterpolationMode',
-		'fill'
-	],
-
 	dataElementType: 'point',
-	dataElementOptions: {
-		backgroundColor: 'pointBackgroundColor',
-		borderColor: 'pointBorderColor',
-		borderWidth: 'pointBorderWidth',
-		hitRadius: 'pointHitRadius',
-		hoverHitRadius: 'pointHitRadius',
-		hoverBackgroundColor: 'pointHoverBackgroundColor',
-		hoverBorderColor: 'pointHoverBorderColor',
-		hoverBorderWidth: 'pointHoverBorderWidth',
-		hoverRadius: 'pointHoverRadius',
-		pointStyle: 'pointStyle',
-		radius: 'pointRadius',
-		rotation: 'pointRotation'
-	},
 
-	showLine: true,
-	spanGaps: false,
+	datasets: {
+		showLine: true,
+	},
 
 	interaction: {
 		mode: 'index'

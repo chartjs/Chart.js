@@ -1,5 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import {resolve} from '../helpers/helpers.options';
 import {resolveObjectKey} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
@@ -104,34 +103,37 @@ export default class BubbleController extends DatasetController {
 	/**
 	 * @param {number} index
 	 * @param {string} [mode]
+	 * @param {string} [prefix]
 	 * @protected
 	 */
-	resolveDataElementOptions(index, mode) {
-		const me = this;
-		const chart = me.chart;
-		const parsed = me.getParsed(index);
-		let values = super.resolveDataElementOptions(index, mode);
-
-		// Scriptable options
-		const context = me.getContext(index, mode === 'active');
+	resolveDataElementOptions(index, mode, prefix) {
+		const active = mode === 'active';
+		let options = super.resolveDataElementOptions(index, mode, prefix);
 
 		// In case values were cached (and thus frozen), we need to clone the values
-		if (values.$shared) {
-			values = Object.assign({}, values, {$shared: false});
+		if (options.$shared) {
+			options = Object.assign({}, options, {$shared: false});
 		}
+		options.radius = this._determineRadius(options, index, active, prefix);
 
+		return options;
+	}
 
-		// Custom radius resolution
-		if (mode !== 'active') {
-			values.radius = 0;
+	/**
+	 * @private
+	 */
+	_determineRadius(options, index, active, prefix) {
+		const me = this;
+		const parsed = me.getParsed(index);
+		const customRadius = parsed && parsed._custom;
+		let radius = options.radius;
+		if (customRadius !== undefined) {
+			radius = (active ? radius : 0) + customRadius;
+		} else if (active) {
+			const normal = super.resolveDataElementOptions(index, '', prefix);
+			radius += normal.radius;
 		}
-		values.radius += resolve([
-			parsed && parsed._custom,
-			me._config.radius,
-			chart.options.elements.point.radius
-		], context, index);
-
-		return values;
+		return radius;
 	}
 }
 
@@ -143,15 +145,6 @@ BubbleController.id = 'bubble';
 BubbleController.defaults = {
 	datasetElementType: false,
 	dataElementType: 'point',
-	dataElementOptions: [
-		'backgroundColor',
-		'borderColor',
-		'borderWidth',
-		'hitRadius',
-		'radius',
-		'pointStyle',
-		'rotation'
-	],
 	animation: {
 		numbers: {
 			properties: ['x', 'y', 'borderWidth', 'radius']

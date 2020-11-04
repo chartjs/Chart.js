@@ -383,7 +383,10 @@ LineElement.defaults = {
 	borderWidth: 3,
 	capBezierPoints: true,
 	fill: true,
-	tension: 0
+	tension: 0,
+	spanGaps: false,
+	stepped: undefined,
+	cubicInterpolationMode: undefined
 };
 
 /**

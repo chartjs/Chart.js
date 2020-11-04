@@ -281,9 +281,10 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 	addElements(): void;
 	buildOrUpdateElements(): void;
 
-	getStyle(index: number, active: boolean): any;
-	protected resolveDatasetElementOptions(active: boolean): any;
-	protected resolveDataElementOptions(index: number, mode: UpdateMode): any;
+	getStyle(index: number, active?: boolean, prefix?: string): any;
+	protected resolveControllerOptions(prefix?: string): any;
+	protected resolveDatasetElementOptions(mode?: UpdateMode, prefix?: string): any;
+	protected resolveDataElementOptions(index: number, mode?: UpdateMode, prefix?: string): any;
 	/**
 	 * Utility for checking if the options are shared and should be animated separately.
 	 * @protected

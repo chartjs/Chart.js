@@ -12,7 +12,7 @@ module.exports = {
 					{x: 5, y: 0}
 				],
 				radius: function(ctx) {
-					return ctx.dataset.data[ctx.dataIndex].x * 4;
+					return ctx.dataset.data[ctx.dataIndex]?.x * 4;
 				}
 			}]
 		},
