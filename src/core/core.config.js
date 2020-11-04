@@ -101,25 +101,12 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
-function includeDefaults(options, type) {
-	return mergeConfig(
+function includeDefaults(config, options) {
+	const scaleConfig = mergeScaleConfig(config, options);
+	options = mergeConfig(
 		defaults,
-		defaults.controllers[type],
+		defaults.controllers[config.type],
 		options || {});
-}
-
-function initConfig(config) {
-	config = config || {};
-
-	// Do NOT use mergeConfig for the data object because this method merges arrays
-	// and so would change references to labels and datasets, preventing data updates.
-	const data = config.data = config.data || {datasets: [], labels: []};
-	data.datasets = data.datasets || [];
-	data.labels = data.labels || [];
-
-	const scaleConfig = mergeScaleConfig(config, config.options);
-
-	const options = config.options = includeDefaults(config.options, config.type);
 
 	options.hover = merge(Object.create(null), [
 		defaults.interaction,
@@ -140,6 +127,19 @@ function initConfig(config) {
 		options.interaction,
 		options.tooltips
 	]);
+	return options;
+}
+
+function initConfig(config) {
+	config = config || {};
+
+	// Do NOT use mergeConfig for the data object because this method merges arrays
+	// and so would change references to labels and datasets, preventing data updates.
+	const data = config.data = config.data || {datasets: [], labels: []};
+	data.datasets = data.datasets || [];
+	data.labels = data.labels || [];
+
+	config.options = includeDefaults(config, config.options);
 
 	return config;
 }
@@ -171,11 +171,6 @@ export default class Config {
 
 	update(options) {
 		const config = this._config;
-		const scaleConfig = mergeScaleConfig(config, options);
-
-		options = includeDefaults(options, config.type);
-
-		options.scales = scaleConfig;
-		config.options = options;
+		config.options = includeDefaults(config, options);
 	}
 }
