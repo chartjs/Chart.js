@@ -355,6 +355,28 @@ describe('Chart', function() {
 		});
 	});
 
+	describe('Updating options', function() {
+		it('update should result to same set of options as construct', function() {
+			var chart = acquireChart({
+				type: 'line',
+				data: [],
+				options: {
+					animation: false,
+					locale: 'en-US',
+					responsive: false
+				}
+			});
+			const options = chart.options;
+			chart.options = {
+				animation: false,
+				locale: 'en-US',
+				responsive: false
+			};
+			chart.update();
+			expect(chart.options).toEqual(jasmine.objectContaining(options));
+		});
+	});
+
 	describe('config.options.responsive: true (maintainAspectRatio: false)', function() {
 		it('should fill parent width and height', function() {
 			var chart = acquireChart({
