@@ -53,8 +53,8 @@ export const ExampleChart0 = () => {
         }
       }
     };
-	const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
-	return () => chart.destroy();
+    const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
 }
@@ -337,7 +337,7 @@ export const ExampleChart1 = () => {
       }
     };
     const chart = new Chart(document.getElementById('chartjs-1').getContext('2d'), cfg);
-	return () => chart.destroy();
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas id="chartjs-1" className="chartjs"></canvas></div>;
 }

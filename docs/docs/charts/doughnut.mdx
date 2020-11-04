@@ -48,7 +48,7 @@ function example() {
       }
     };
     const chart = new Chart(canvas.current.getContext('2d'), cfg);
-	return () => chart.destroy();
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
 }
@@ -83,7 +83,7 @@ function example() {
       }
     };
     const chart = new Chart(canvas.current.getContext('2d'), cfg);
-	return () => chart.destroy();
+    return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
 }
