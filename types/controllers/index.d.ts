@@ -26,6 +26,11 @@ export interface IControllerDatasetOptions {
    * The drawing order of dataset. Also affects order for stacking, tooltip and legend.
    */
   order: number;
+
+  /**
+   * The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
+   */
+  stack: string;
 }
 
 export interface IBarControllerDatasetOptions
@@ -71,11 +76,6 @@ export interface IBarControllerDatasetOptions
    * Set this to ensure that bars have a minimum length in pixels.
    */
   minBarLength: number;
-
-  /**
-   * The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
-   */
-  stack: string;
 }
 
 export interface IBarControllerChartOptions {
