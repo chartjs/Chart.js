@@ -46,7 +46,28 @@ options: {
 }
 ```
 
-### `parsing` can also be specified per dataset
+## Object
+
+```javascript
+data: {
+    January: 10,
+    February: 20
+}
+```
+
+In this mode, property name is used for `index` scale and value for `value` scale. For vertical charts, index scale is `x` and value scale is `y`.
+
+## Dataset Configuration
+
+| Name | Type | Description
+| ---- | ---- | -----------
+| `label` | `string` | The label for the dataset which appears in the legend and tooltips.
+| `clip` | <code>number&#124;object</code> | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
+| `order` | `number` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
+| `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
+| `parsing` | <code>boolean&#124;object</code> | How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
+
+### parsing
 
 ```javascript
 const data = [{x: 'Jan', net: 100, cogs: 50, gm: 50}, {x: 'Feb', net: 120, cogs: 55, gm: 75}];
@@ -76,14 +97,3 @@ const cfg = {
     },
 };
 ```
-
-## Object
-
-```javascript
-data: {
-    January: 10,
-    February: 20
-}
-```
-
-In this mode, property name is used for `index` scale and value for `value` scale. For vertical charts, index scale is `x` and value scale is `y`.
