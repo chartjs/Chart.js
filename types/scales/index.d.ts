@@ -1,7 +1,7 @@
-import { ScriptAbleScale, ICoreScaleOptions, ITick, Scale } from '../core';
-import { Color, IChartComponent, IFontSpec, TimeUnit } from '../core/interfaces';
+import { ScriptAbleScale, CoreScaleOptions, Tick, Scale } from '../core';
+import { Color, ChartComponent, FontSpec, TimeUnit } from '../core/interfaces';
 
-export interface IGridLineOptions {
+export interface GridLineOptions {
   /**
    * @default true
    */
@@ -51,11 +51,11 @@ export interface IGridLineOptions {
   offsetGridLines: boolean;
 }
 
-export interface ITickOptions {
+export interface TickOptions {
   /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
-  callback: (tickValue: any, index: number, ticks: ITick[]) => string;
+  callback: (tickValue: any, index: number, ticks: Tick[]) => string;
   /**
    * If true, show tick labels.
    * @default true
@@ -64,7 +64,7 @@ export interface ITickOptions {
   /**
    * see Fonts
    */
-  font: ScriptAbleScale<IFontSpec>;
+  font: ScriptAbleScale<FontSpec>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -84,7 +84,7 @@ export interface ITickOptions {
   };
 }
 
-export interface ICartesianScaleOptions extends ICoreScaleOptions {
+export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
    * Position of the axis.
    */
@@ -110,12 +110,12 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
    */
   offset: boolean;
 
-  gridLines: IGridLineOptions;
+  gridLines: GridLineOptions;
 
   scaleLabel: {
     display: boolean;
     labelString: string;
-    font: IFontSpec;
+    font: FontSpec;
     padding: {
       top: number;
       bottom: number;
@@ -128,7 +128,7 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
 	 */
   stacked?: boolean;
 
-  ticks: ITickOptions & {
+  ticks: TickOptions & {
     /**
      * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
      * @default ticks.length
@@ -186,19 +186,19 @@ export interface ICartesianScaleOptions extends ICoreScaleOptions {
   };
 }
 
-export type ICategoryScaleOptions = ICartesianScaleOptions & {
+export type CategoryScaleOptions = CartesianScaleOptions & {
   min: string | number;
   max: string | number;
   labels: string[] | string[][];
 };
 
-export interface CategoryScale<O extends ICategoryScaleOptions = ICategoryScaleOptions> extends Scale<O> {}
-export const CategoryScale: IChartComponent & {
+export interface CategoryScale<O extends CategoryScaleOptions = CategoryScaleOptions> extends Scale<O> {}
+export const CategoryScale: ChartComponent & {
   prototype: CategoryScale;
-  new <O extends ICategoryScaleOptions = ICategoryScaleOptions>(cfg: any): CategoryScale<O>;
+  new <O extends CategoryScaleOptions = CategoryScaleOptions>(cfg: any): CategoryScale<O>;
 };
 
-export type ILinearScaleOptions = ICartesianScaleOptions & {
+export type LinearScaleOptions = CartesianScaleOptions & {
 
   /**
    *	if true, scale will include 0 if it is not already included.
@@ -241,13 +241,13 @@ export type ILinearScaleOptions = ICartesianScaleOptions & {
   };
 };
 
-export interface LinearScale<O extends ILinearScaleOptions = ILinearScaleOptions> extends Scale<O> {}
-export const LinearScale: IChartComponent & {
+export interface LinearScale<O extends LinearScaleOptions = LinearScaleOptions> extends Scale<O> {}
+export const LinearScale: ChartComponent & {
   prototype: LinearScale;
-  new <O extends ILinearScaleOptions = ILinearScaleOptions>(cfg: any): LinearScale<O>;
+  new <O extends LinearScaleOptions = LinearScaleOptions>(cfg: any): LinearScale<O>;
 };
 
-export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
+export type LogarithmicScaleOptions = CartesianScaleOptions & {
 
   /**
    * Adjustment used when calculating the maximum data value.
@@ -268,13 +268,13 @@ export type ILogarithmicScaleOptions = ICartesianScaleOptions & {
   };
 };
 
-export interface LogarithmicScale<O extends ILogarithmicScaleOptions = ILogarithmicScaleOptions> extends Scale<O> {}
-export const LogarithmicScale: IChartComponent & {
+export interface LogarithmicScale<O extends LogarithmicScaleOptions = LogarithmicScaleOptions> extends Scale<O> {}
+export const LogarithmicScale: ChartComponent & {
   prototype: LogarithmicScale;
-  new <O extends ILogarithmicScaleOptions = ILogarithmicScaleOptions>(cfg: any): LogarithmicScale<O>;
+  new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: any): LogarithmicScale<O>;
 };
 
-export type ITimeScaleOptions = ICartesianScaleOptions & {
+export type TimeScaleOptions = CartesianScaleOptions & {
   /**
    * Scale boundary strategy (bypassed by min/max time options)
    * - `data`: make sure data are fully visible, ticks outside are removed
@@ -352,24 +352,24 @@ export type ITimeScaleOptions = ICartesianScaleOptions & {
   };
 };
 
-export interface TimeScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends Scale<O> {
+export interface TimeScale<O extends TimeScaleOptions = TimeScaleOptions> extends Scale<O> {
   getDataTimestamps(): number[];
   getLabelTimestamps(): string[];
   normalize(values: number[]): number[];
 }
 
-export const TimeScale: IChartComponent & {
+export const TimeScale: ChartComponent & {
   prototype: TimeScale;
-  new <O extends ITimeScaleOptions = ITimeScaleOptions>(cfg: any): TimeScale<O>;
+  new <O extends TimeScaleOptions = TimeScaleOptions>(cfg: any): TimeScale<O>;
 };
 
-export interface TimeSeriesScale<O extends ITimeScaleOptions = ITimeScaleOptions> extends TimeScale<O> {}
-export const TimeSeriesScale: IChartComponent & {
+export interface TimeSeriesScale<O extends TimeScaleOptions = TimeScaleOptions> extends TimeScale<O> {}
+export const TimeSeriesScale: ChartComponent & {
   prototype: TimeSeriesScale;
-  new <O extends ITimeScaleOptions = ITimeScaleOptions>(cfg: any): TimeSeriesScale<O>;
+  new <O extends TimeScaleOptions = TimeScaleOptions>(cfg: any): TimeSeriesScale<O>;
 };
 
-export type IRadialLinearScaleOptions = ICoreScaleOptions & {
+export type RadialLinearScaleOptions = CoreScaleOptions & {
   animate: boolean;
 
   angleLines: {
@@ -406,7 +406,7 @@ export type IRadialLinearScaleOptions = ICoreScaleOptions & {
    */
   beginAtZero: boolean;
 
-  gridLines: IGridLineOptions;
+  gridLines: GridLineOptions;
 
   /**
    * User defined minimum number for the scale, overrides minimum value from data.
@@ -426,7 +426,7 @@ export type IRadialLinearScaleOptions = ICoreScaleOptions & {
     /**
      * @see https://www.chartjs.org/docs/next/axes/general/fonts.md
      */
-    font: ScriptAbleScale<IFontSpec>;
+    font: ScriptAbleScale<FontSpec>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
@@ -444,7 +444,7 @@ export type IRadialLinearScaleOptions = ICoreScaleOptions & {
    */
   suggestedMin: number;
 
-  ticks: ITickOptions & {
+  ticks: TickOptions & {
     /**
      * Color of label backdrops.
      * @default 'rgba(255, 255, 255, 0.75)'
@@ -490,7 +490,7 @@ export type IRadialLinearScaleOptions = ICoreScaleOptions & {
   };
 };
 
-export interface RadialLinearScale<O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions> extends Scale<O> {
+export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLinearScaleOptions> extends Scale<O> {
   setCenterPoint(leftMovement: number, rightMovement: number, topMovement: number, bottomMovement: number): void;
   getIndexAngle(index: number): number;
   getDistanceFromCenterForValue(value: number): number;
@@ -499,7 +499,7 @@ export interface RadialLinearScale<O extends IRadialLinearScaleOptions = IRadial
   getPointPositionForValue(index: number, value: number): { x: number; y: number; angle: number };
   getBasePosition(index: number): { x: number; y: number; angle: number };
 }
-export const RadialLinearScale: IChartComponent & {
+export const RadialLinearScale: ChartComponent & {
   prototype: RadialLinearScale;
-  new <O extends IRadialLinearScaleOptions = IRadialLinearScaleOptions>(cfg: any): RadialLinearScale<O>;
+  new <O extends RadialLinearScaleOptions = RadialLinearScaleOptions>(cfg: any): RadialLinearScale<O>;
 };

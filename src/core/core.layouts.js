@@ -214,7 +214,7 @@ defaults.set('layout', {
 });
 
 /**
- * @interface ILayoutItem
+ * @interface LayoutItem
  * @typedef {object} ILayoutItem
  * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'

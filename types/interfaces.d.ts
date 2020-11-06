@@ -1,40 +1,40 @@
 import {
-  IBarControllerDatasetOptions,
-  ILineControllerDatasetOptions,
-  ILineControllerChartOptions,
-  IScatterDataPoint,
-  IScatterControllerDatasetOptions,
-  IScatterControllerChartOptions,
-  IBubbleControllerDatasetOptions,
-  IBubbleDataPoint,
-  IDoughnutControllerChartOptions,
-  IDoughnutControllerDatasetOptions,
-  IDoughnutDataPoint,
-  IPieControllerChartOptions,
-  IPieControllerDatasetOptions,
-  IPieDataPoint,
-  IControllerDatasetOptions,
-  IBarControllerChartOptions,
-  IPolarAreaControllerChartOptions,
-  IPolarAreaControllerDatasetOptions,
-  IRadarControllerChartOptions,
-  IRadarControllerDatasetOptions,
+  BarControllerDatasetOptions,
+  LineControllerDatasetOptions,
+  LineControllerChartOptions,
+  ScatterDataPoint,
+  ScatterControllerDatasetOptions,
+  ScatterControllerChartOptions,
+  BubbleControllerDatasetOptions,
+  BubbleDataPoint,
+  DoughnutControllerChartOptions,
+  DoughnutControllerDatasetOptions,
+  DoughnutDataPoint,
+  PieControllerChartOptions,
+  PieControllerDatasetOptions,
+  PieDataPoint,
+  ControllerDatasetOptions,
+  BarControllerChartOptions,
+  PolarAreaControllerChartOptions,
+  PolarAreaControllerDatasetOptions,
+  RadarControllerChartOptions,
+  RadarControllerDatasetOptions,
 } from './controllers';
-import { ICoreChartOptions } from './core/interfaces';
-import { IElementChartOptions } from './elements';
+import { CoreChartOptions } from './core/interfaces';
+import { ElementChartOptions } from './elements';
 import {
-  ITooltipChartOptions,
-  IFillerControllerDatasetOptions,
-  ILegendChartOptions,
-  ITitleChartOptions,
+  TooltipChartOptions,
+  FillerControllerDatasetOptions,
+  LegendChartOptions,
+  TitleChartOptions,
 } from './plugins';
-import { IChartAnimationOptions, IParsingOptions, IPlugin } from './core';
+import { ChartAnimationOptions, ParsingOptions as ParsingOptions, Plugin } from './core';
 import {
-  ILinearScaleOptions,
-  ILogarithmicScaleOptions,
-  ICategoryScaleOptions,
-  IRadialLinearScaleOptions,
-  ITimeScaleOptions,
+  LinearScaleOptions,
+  LogarithmicScaleOptions,
+  CategoryScaleOptions,
+  RadialLinearScaleOptions as RadialLinearScaleOptions,
+  TimeScaleOptions,
 } from './scales';
 
 export type DeepPartial<T> = T extends {}
@@ -45,150 +45,150 @@ export type DeepPartial<T> = T extends {}
 
 export type DistributiveArray<T> = T extends unknown ? T[] : never
 
-export interface ICartesianScaleTypeRegistry {
+export interface CartesianScaleTypeRegistry {
   linear: {
-    options: ILinearScaleOptions;
+    options: LinearScaleOptions;
   };
   logarithmic: {
-    options: ILogarithmicScaleOptions;
+    options: LogarithmicScaleOptions;
   };
   category: {
-    options: ICategoryScaleOptions;
+    options: CategoryScaleOptions;
   };
   time: {
-    options: ITimeScaleOptions;
+    options: TimeScaleOptions;
   };
   timeseries: {
-    options: ITimeScaleOptions;
+    options: TimeScaleOptions;
   };
 }
 
-export interface IRadialScaleTypeRegistry {
+export interface RadialScaleTypeRegistry {
   radialLinear: {
-    options: IRadialLinearScaleOptions;
+    options: RadialLinearScaleOptions;
   };
 }
 
-export interface IScaleTypeRegistry extends ICartesianScaleTypeRegistry, IRadialScaleTypeRegistry {
+export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialScaleTypeRegistry {
 }
 
-export type IScaleType = keyof IScaleTypeRegistry;
+export type ScaleType = keyof ScaleTypeRegistry;
 
-export interface IChartTypeRegistry {
+export interface ChartTypeRegistry {
   bar: {
-    chartOptions: IBarControllerChartOptions;
-    datasetOptions: IBarControllerDatasetOptions;
+    chartOptions: BarControllerChartOptions;
+    datasetOptions: BarControllerDatasetOptions;
     defaultDataPoint: number;
-    scales: keyof ICartesianScaleTypeRegistry;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   line: {
-    chartOptions: ILineControllerChartOptions;
-    datasetOptions: ILineControllerDatasetOptions & IFillerControllerDatasetOptions;
-    defaultDataPoint: IScatterDataPoint;
-    scales: keyof ICartesianScaleTypeRegistry;
+    chartOptions: LineControllerChartOptions;
+    datasetOptions: LineControllerDatasetOptions & FillerControllerDatasetOptions;
+    defaultDataPoint: ScatterDataPoint;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   scatter: {
-    chartOptions: IScatterControllerChartOptions;
-    datasetOptions: IScatterControllerDatasetOptions;
-    defaultDataPoint: IScatterDataPoint;
-    scales: keyof ICartesianScaleTypeRegistry;
+    chartOptions: ScatterControllerChartOptions;
+    datasetOptions: ScatterControllerDatasetOptions;
+    defaultDataPoint: ScatterDataPoint;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   bubble: {
     chartOptions: {};
-    datasetOptions: IBubbleControllerDatasetOptions;
-    defaultDataPoint: IBubbleDataPoint;
-    scales: keyof ICartesianScaleTypeRegistry;
+    datasetOptions: BubbleControllerDatasetOptions;
+    defaultDataPoint: BubbleDataPoint;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   pie: {
-    chartOptions: IPieControllerChartOptions;
-    datasetOptions: IPieControllerDatasetOptions;
-    defaultDataPoint: IPieDataPoint;
-    scales: keyof ICartesianScaleTypeRegistry;
+    chartOptions: PieControllerChartOptions;
+    datasetOptions: PieControllerDatasetOptions;
+    defaultDataPoint: PieDataPoint;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   doughnut: {
-    chartOptions: IDoughnutControllerChartOptions;
-    datasetOptions: IDoughnutControllerDatasetOptions;
-    defaultDataPoint: IDoughnutDataPoint;
-    scales: keyof ICartesianScaleTypeRegistry;
+    chartOptions: DoughnutControllerChartOptions;
+    datasetOptions: DoughnutControllerDatasetOptions;
+    defaultDataPoint: DoughnutDataPoint;
+    scales: keyof CartesianScaleTypeRegistry;
   };
   polarArea: {
-    chartOptions: IPolarAreaControllerChartOptions;
-    datasetOptions: IPolarAreaControllerDatasetOptions;
+    chartOptions: PolarAreaControllerChartOptions;
+    datasetOptions: PolarAreaControllerDatasetOptions;
     defaultDataPoint: number;
-    scales: keyof IRadialScaleTypeRegistry;
+    scales: keyof RadialScaleTypeRegistry;
   };
   radar: {
-    chartOptions: IRadarControllerChartOptions;
-    datasetOptions: IRadarControllerDatasetOptions;
+    chartOptions: RadarControllerChartOptions;
+    datasetOptions: RadarControllerDatasetOptions;
     defaultDataPoint: number;
-    scales: keyof IRadialScaleTypeRegistry;
+    scales: keyof RadialScaleTypeRegistry;
   };
 }
 
-export type IChartType = keyof IChartTypeRegistry;
+export type ChartType = keyof ChartTypeRegistry;
 
-export type IScaleOptions<SCALES extends IScaleType = IScaleType> = DeepPartial<
-  { [key in IScaleType]: { type: key } & IScaleTypeRegistry[key]['options'] }[SCALES]
+export type ScaleOptions<SCALES extends ScaleType = ScaleType> = DeepPartial<
+  { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[SCALES]
 >;
 
-export type IDatasetChartOptions<TYPE extends IChartType = IChartType> = {
+export type DatasetChartOptions<TYPE extends ChartType = ChartType> = {
   [key in TYPE]: {
-    datasets: IChartTypeRegistry[key]['datasetOptions'];
+    datasets: ChartTypeRegistry[key]['datasetOptions'];
   };
 };
 
-export type IScaleChartOptions<TYPE extends IChartType = IChartType> = {
+export type ScaleChartOptions<TYPE extends ChartType = ChartType> = {
   scales: {
-    [key: string]: IScaleOptions<IChartTypeRegistry[TYPE]['scales']>;
+    [key: string]: ScaleOptions<ChartTypeRegistry[TYPE]['scales']>;
   };
 };
 
-export type IChartOptions<TYPE extends IChartType = IChartType> = DeepPartial<
-  ICoreChartOptions &
-  IParsingOptions &
-  ITooltipChartOptions &
-  ILegendChartOptions &
-  ITitleChartOptions &
-  IChartAnimationOptions &
-  IElementChartOptions &
-  IDatasetChartOptions<TYPE> &
-  IScaleChartOptions<TYPE> &
-  IChartTypeRegistry[TYPE]['chartOptions']
+export type ChartOptions<TYPE extends ChartType = ChartType> = DeepPartial<
+  CoreChartOptions &
+  ParsingOptions &
+  TooltipChartOptions &
+  LegendChartOptions &
+  TitleChartOptions &
+  ChartAnimationOptions &
+  ElementChartOptions &
+  DatasetChartOptions<TYPE> &
+  ScaleChartOptions<TYPE> &
+  ChartTypeRegistry[TYPE]['chartOptions']
 >;
 
-export type DefaultDataPoint<TYPE extends IChartType> = IChartType extends TYPE ? unknown[] : DistributiveArray<
-  IChartTypeRegistry[TYPE]['defaultDataPoint']
+export type DefaultDataPoint<TYPE extends ChartType> = ChartType extends TYPE ? unknown[] : DistributiveArray<
+  ChartTypeRegistry[TYPE]['defaultDataPoint']
 >;
 
-export interface IChartDatasetProperties<TYPE extends IChartType, DATA extends unknown[]> {
+export interface ChartDatasetProperties<TYPE extends ChartType, DATA extends unknown[]> {
   type?: TYPE;
   data: DATA;
 }
 
-export type IChartDataset<
-  TYPE extends IChartType = IChartType,
+export type ChartDataset<
+  TYPE extends ChartType = ChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>
 > = DeepPartial<
-  IParsingOptions &
-  { [key in IChartType]: { type: key } & IChartTypeRegistry[key]['datasetOptions'] }[TYPE]
-> & IChartDatasetProperties<TYPE, DATA>;
+  ParsingOptions &
+  { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TYPE]
+> & ChartDatasetProperties<TYPE, DATA>;
 
-export interface IChartData<
-  TYPE extends IChartType = IChartType,
+export interface ChartData<
+  TYPE extends ChartType = ChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
   LABEL = unknown
 > {
   labels: LABEL[];
-  datasets: IChartDataset<TYPE, DATA>[];
+  datasets: ChartDataset<TYPE, DATA>[];
 }
 
-export interface IChartConfiguration<
-  TYPE extends IChartType = IChartType,
+export interface ChartConfiguration<
+  TYPE extends ChartType = ChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
   LABEL = string
 > {
   type: TYPE;
-  data: IChartData<TYPE, DATA, LABEL>;
-  options?: IChartOptions<TYPE>;
-  plugins?: IPlugin[];
+  data: ChartData<TYPE, DATA, LABEL>;
+  options?: ChartOptions<TYPE>;
+  plugins?: Plugin[];
 }

@@ -94,7 +94,7 @@ export function each<T, TA>(
  */
 export function clone<T>(source: T): T;
 
-export interface IMergeOptions {
+export interface MergeOptions {
   merger?: (key: string, target: any, source: any, options: any) => any;
 }
 /**
@@ -106,17 +106,17 @@ export interface IMergeOptions {
  * @param {function} [options.merger] - The merge method (key, target, source, options)
  * @returns {object} The `target` object.
  */
-export function merge<T>(target: T, source: [], options?: IMergeOptions): T;
-export function merge<T, S1>(target: T, source: S1, options?: IMergeOptions): T & S1;
-export function merge<T, S1>(target: T, source: [S1], options?: IMergeOptions): T & S1;
-export function merge<T, S1, S2>(target: T, source: [S1, S2], options?: IMergeOptions): T & S1 & S2;
-export function merge<T, S1, S2, S3>(target: T, source: [S1, S2, S3], options?: IMergeOptions): T & S1 & S2 & S3;
+export function merge<T>(target: T, source: [], options?: MergeOptions): T;
+export function merge<T, S1>(target: T, source: S1, options?: MergeOptions): T & S1;
+export function merge<T, S1>(target: T, source: [S1], options?: MergeOptions): T & S1;
+export function merge<T, S1, S2>(target: T, source: [S1, S2], options?: MergeOptions): T & S1 & S2;
+export function merge<T, S1, S2, S3>(target: T, source: [S1, S2, S3], options?: MergeOptions): T & S1 & S2 & S3;
 export function merge<T, S1, S2, S3, S4>(
   target: T,
   source: [S1, S2, S3, S4],
-  options?: IMergeOptions
+  options?: MergeOptions
 ): T & S1 & S2 & S3 & S4;
-export function merge<T>(target: T, source: any[], options?: IMergeOptions): any;
+export function merge<T>(target: T, source: any[], options?: MergeOptions): any;
 
 /**
  * Recursively deep copies `source` properties into `target` *only* if not defined in target.

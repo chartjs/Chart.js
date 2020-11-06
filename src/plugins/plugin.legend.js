@@ -9,7 +9,7 @@ import {
 } from '../helpers/index';
 
 /**
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").Event } Event
  */
 
 /**
@@ -587,7 +587,7 @@ export class Legend extends Element {
 
 	/**
 	 * Handle an event
-	 * @param {IEvent} e - The event to handle
+	 * @param {Event} e - The event to handle
 	 */
 	handleEvent(e) {
 		const me = this;

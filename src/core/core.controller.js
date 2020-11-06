@@ -14,7 +14,7 @@ import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../hel
 import {version} from '../../package.json';
 
 /**
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").Event } Event
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -1006,7 +1006,7 @@ class Chart {
 
 	/**
 	 * Handle an event
-	 * @param {IEvent} e the event to handle
+	 * @param {Event} e the event to handle
 	 * @param {boolean} [replay] - true if the event was replayed by `update`
 	 * @return {boolean} true if the chart needs to re-render
 	 * @private

@@ -11,14 +11,14 @@ export function clipArea(ctx: CanvasRenderingContext2D, area: IChartArea): void;
 
 export function unclipArea(ctx: CanvasRenderingContext2D): void;
 
-export interface IDrawPointOptions {
+export interface DrawPointOptions {
   pointStyle: PointStyle;
   rotation?: number;
   radius: number;
   borderWidth: number;
 }
 
-export function drawPoint(ctx: CanvasRenderingContext2D, options: IDrawPointOptions, x: number, y: number): void;
+export function drawPoint(ctx: CanvasRenderingContext2D, options: DrawPointOptions, x: number, y: number): void;
 
 /**
  * Converts the given font object into a CSS font string.
