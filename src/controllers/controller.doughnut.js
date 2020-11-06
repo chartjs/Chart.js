@@ -77,6 +77,20 @@ export default class DoughnutController extends DatasetController {
 	}
 
 	/**
+	 * @private
+	 */
+	_getRotation() {
+		return toRadians(valueOrDefault(this._config.rotation, this.chart.options.rotation) - 90);
+	}
+
+	/**
+	 * @private
+	 */
+	_getCircumference() {
+		return toRadians(valueOrDefault(this._config.circumference, this.chart.options.circumference));
+	}
+
+	/**
 	 * Get the maximal rotation & circumference extents
 	 * across all visible datasets.
 	 */
@@ -85,19 +99,17 @@ export default class DoughnutController extends DatasetController {
 		let max = -TAU;
 
 		const me = this;
-		const opts = me.chart.options;
 
 		for (let i = 0; i < me.chart.data.datasets.length; ++i) {
 			if (me.chart.isDatasetVisible(i)) {
-				const dataset = me.chart.data.datasets[i];
-				const rotation = toRadians(valueOrDefault(dataset.rotation, opts.rotation) - 90);
-				const circumference = toRadians(valueOrDefault(dataset.circumference, opts.circumference));
+				const controller = me.chart.getDatasetMeta(i).controller;
+				const rotation = controller._getRotation();
+				const circumference = controller._getCircumference();
 
 				min = Math.min(min, rotation);
 				max = Math.max(max, rotation + circumference);
 			}
 		}
-
 
 		return {
 			rotation: min,
@@ -146,7 +158,7 @@ export default class DoughnutController extends DatasetController {
 		const me = this;
 		const opts = me.chart.options;
 		const meta = me._cachedMeta;
-		const circumference = toRadians(valueOrDefault(me._config.circumference, opts.circumference));
+		const circumference = me._getCircumference();
 		return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / TAU) : 0;
 	}
 
@@ -165,7 +177,7 @@ export default class DoughnutController extends DatasetController {
 		const firstOpts = me.resolveDataElementOptions(start, mode);
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
-		let startAngle = toRadians(valueOrDefault(me._config.rotation, opts.rotation) - 90);
+		let startAngle = me._getRotation();
 		let i;
 
 		for (i = 0; i < start; ++i) {
