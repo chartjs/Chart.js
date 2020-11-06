@@ -319,7 +319,7 @@ class Chart {
 		me.scales = scales;
 
 		each(scales, (scale) => {
-			// Set ILayoutItem parameters for backwards compatibility
+			// Set LayoutItem parameters for backwards compatibility
 			scale.fullWidth = scale.options.fullWidth;
 			scale.position = scale.options.position;
 			scale.weight = scale.options.weight;
