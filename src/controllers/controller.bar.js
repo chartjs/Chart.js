@@ -1,7 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {
 	clipArea, unclipArea, _arrayUnique, isArray, isNullOrUndef,
-	valueOrDefault, resolveObjectKey, _limitValue, sign
+	valueOrDefault, resolveObjectKey, sign
 } from '../helpers';
 
 function getAllScaleValues(scale) {
