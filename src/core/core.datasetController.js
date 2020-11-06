@@ -191,6 +191,13 @@ function createDataContext(parent, index, point, element) {
 	});
 }
 
+function clearStacks(meta, items) {
+	items = items || meta._parsed;
+	items.forEach((parsed) => {
+		delete parsed._stacks[meta.vScale.id][meta.index];
+	});
+}
+
 const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.keys(optionNames);
 const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -293,8 +300,12 @@ export default class DatasetController {
 	 * @private
 	 */
 	_destroy() {
+		const meta = this._cachedMeta;
 		if (this._data) {
 			unlistenArrayEvents(this._data, this);
+		}
+		if (meta._stacked) {
+			clearStacks(meta);
 		}
 	}
 
@@ -357,9 +368,7 @@ export default class DatasetController {
 		if (meta.stack !== dataset.stack) {
 			stackChanged = true;
 			// remove values from old stack
-			meta._parsed.forEach((parsed) => {
-				delete parsed._stacks[meta.vScale.id][meta.index];
-			});
+			clearStacks(meta);
 			meta.stack = dataset.stack;
 		}
 
@@ -1004,12 +1013,7 @@ export default class DatasetController {
 		if (me._parsing) {
 			const removed = meta._parsed.splice(start, count);
 			if (meta._stacked) {
-				const index = me.index;
-				removed.forEach(item => {
-					Object.keys(item._stacks).forEach(axis => {
-						delete item._stacks[axis][index];
-					});
-				});
+				clearStacks(meta, removed);
 			}
 		}
 		meta.data.splice(start, count);
