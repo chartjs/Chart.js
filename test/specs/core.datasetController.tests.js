@@ -519,6 +519,50 @@ describe('Chart.DatasetController', function() {
 		});
 	});
 
+	it('should re-synchronize stacks when data is removed', function() {
+		var chart = acquireChart({
+			type: 'bar',
+			data: {
+				labels: ['a', 'b'],
+				datasets: [{
+					data: [1, 10],
+					stack: '1'
+				}, {
+					data: [2, 20],
+					stack: '2'
+				}, {
+					data: [3, 30],
+					stack: '1'
+				}]
+			}
+		});
+
+		expect(chart._stacks).toEqual({
+			'x.y.1.bar': {
+				0: {0: 1, 2: 3},
+				1: {0: 10, 2: 30}
+			},
+			'x.y.2.bar': {
+				0: {1: 2},
+				1: {1: 20}
+			}
+		});
+
+		chart.data.datasets[2].data = [4];
+		chart.update();
+
+		expect(chart._stacks).toEqual({
+			'x.y.1.bar': {
+				0: {0: 1, 2: 4},
+				1: {0: 10}
+			},
+			'x.y.2.bar': {
+				0: {1: 2},
+				1: {1: 20}
+			}
+		});
+	});
+
 	it('should cleanup attached properties when the reference changes or when the chart is destroyed', function() {
 		var data0 = [0, 1, 2, 3, 4, 5];
 		var data1 = [6, 7, 8];

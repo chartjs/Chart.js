@@ -191,6 +191,13 @@ function createDataContext(parent, index, point, element) {
 	});
 }
 
+function clearStacks(meta, items) {
+	items = items || meta._parsed;
+	items.forEach((parsed) => {
+		delete parsed._stacks[meta.vScale.id][meta.index];
+	});
+}
+
 const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.keys(optionNames);
 const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -293,8 +300,12 @@ export default class DatasetController {
 	 * @private
 	 */
 	_destroy() {
+		const meta = this._cachedMeta;
 		if (this._data) {
 			unlistenArrayEvents(this._data, this);
+		}
+		if (meta._stacked) {
+			clearStacks(meta);
 		}
 	}
 
@@ -357,9 +368,7 @@ export default class DatasetController {
 		if (meta.stack !== dataset.stack) {
 			stackChanged = true;
 			// remove values from old stack
-			meta._parsed.forEach((parsed) => {
-				delete parsed._stacks[meta.vScale.id][meta.index];
-			});
+			clearStacks(meta);
 			meta.stack = dataset.stack;
 		}
 
@@ -958,15 +967,13 @@ export default class DatasetController {
 	 */
 	_resyncElements() {
 		const me = this;
-		const meta = me._cachedMeta;
-		const numMeta = meta.data.length;
+		const numMeta = me._cachedMeta.data.length;
 		const numData = me._data.length;
 
 		if (numData > numMeta) {
 			me._insertElements(numMeta, numData - numMeta);
 		} else if (numData < numMeta) {
-			meta.data.splice(numData, numMeta - numData);
-			meta._parsed.splice(numData, numMeta - numData);
+			me._removeElements(numData, numMeta - numData);
 		}
 		// Re-parse the old elements (new elements are parsed in _insertElements)
 		me.parse(0, Math.min(numData, numMeta));
@@ -1002,10 +1009,14 @@ export default class DatasetController {
 	 */
 	_removeElements(start, count) {
 		const me = this;
+		const meta = me._cachedMeta;
 		if (me._parsing) {
-			me._cachedMeta._parsed.splice(start, count);
+			const removed = meta._parsed.splice(start, count);
+			if (meta._stacked) {
+				clearStacks(meta, removed);
+			}
 		}
-		me._cachedMeta.data.splice(start, count);
+		meta.data.splice(start, count);
 	}
 
 

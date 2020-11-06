@@ -362,11 +362,26 @@ class Chart {
 		me._sortedMetasets = metasets.slice(0).sort(compare2Level('order', 'index'));
 	}
 
+	/**
+	 * @private
+	 */
+	_removeUnreferencedMetasets() {
+		const me = this;
+		const datasets = me.data.datasets;
+		me._metasets.forEach((meta, index) => {
+			if (datasets.filter(x => x === meta._dataset).length === 0) {
+				me._destroyDatasetMeta(index);
+			}
+		});
+	}
+
 	buildOrUpdateControllers() {
 		const me = this;
 		const newControllers = [];
 		const datasets = me.data.datasets;
 		let i, ilen;
+
+		me._removeUnreferencedMetasets();
 
 		for (i = 0, ilen = datasets.length; i < ilen; i++) {
 			const dataset = datasets[i];
@@ -694,7 +709,7 @@ class Chart {
 		const me = this;
 		const dataset = me.data.datasets[datasetIndex];
 		const metasets = me._metasets;
-		let meta = metasets.filter(x => x._dataset === dataset).pop();
+		let meta = metasets.filter(x => x && x._dataset === dataset).pop();
 
 		if (!meta) {
 			meta = metasets[datasetIndex] = {
