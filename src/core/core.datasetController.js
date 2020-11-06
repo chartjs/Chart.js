@@ -958,15 +958,13 @@ export default class DatasetController {
 	 */
 	_resyncElements() {
 		const me = this;
-		const meta = me._cachedMeta;
-		const numMeta = meta.data.length;
+		const numMeta = me._cachedMeta.data.length;
 		const numData = me._data.length;
 
 		if (numData > numMeta) {
 			me._insertElements(numMeta, numData - numMeta);
 		} else if (numData < numMeta) {
-			meta.data.splice(numData, numMeta - numData);
-			meta._parsed.splice(numData, numMeta - numData);
+			me._removeElements(numData, numMeta - numData);
 		}
 		// Re-parse the old elements (new elements are parsed in _insertElements)
 		me.parse(0, Math.min(numData, numMeta));
@@ -1002,10 +1000,19 @@ export default class DatasetController {
 	 */
 	_removeElements(start, count) {
 		const me = this;
+		const meta = me._cachedMeta;
 		if (me._parsing) {
-			me._cachedMeta._parsed.splice(start, count);
+			const removed = meta._parsed.splice(start, count);
+			if (meta._stacked) {
+				const index = me.index;
+				removed.forEach(item => {
+					Object.keys(item._stacks).forEach(axis => {
+						delete item._stacks[axis][index];
+					});
+				});
+			}
 		}
-		me._cachedMeta.data.splice(start, count);
+		meta.data.splice(start, count);
 	}
 
 
