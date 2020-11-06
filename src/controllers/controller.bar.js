@@ -1,7 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {
 	clipArea, unclipArea, _arrayUnique, isArray, isNullOrUndef,
-	valueOrDefault, resolveObjectKey, _limitValue, sign
+	valueOrDefault, resolveObjectKey, sign
 } from '../helpers';
 
 function getAllScaleValues(scale) {
@@ -428,14 +428,8 @@ export default class BarController extends DatasetController {
 			start += value;
 		}
 
-		// Limit the bar to only extend up to 10 pixels past scale bounds (chartArea)
-		// So we don't try to draw so huge rectangles.
-		// https://github.com/chartjs/Chart.js/issues/5247
-		// TODO: use borderWidth instead (need to move the parsing from rectangle)
 		const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
-		let base = _limitValue(vScale.getPixelForValue(startValue),
-			vScale._startPixel - 10,
-			vScale._endPixel + 10);
+		let base = vScale.getPixelForValue(startValue);
 
 		if (this.chart.getDataVisibility(index)) {
 			head = vScale.getPixelForValue(start + length);

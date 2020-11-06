@@ -630,7 +630,7 @@ describe('Chart.controllers.bar', function() {
 		].forEach(function(expected, i) {
 			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-			expect(meta.data[i].base).toBeCloseToPixel(522);
+			expect(meta.data[i].base).toBeCloseToPixel(1024);
 			expect(meta.data[i].width).toBeCloseToPixel(46);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
 				backgroundColor: 'red',
@@ -828,10 +828,10 @@ describe('Chart.controllers.bar', function() {
 		var meta0 = chart.getDatasetMeta(0);
 
 		[
-			{b: 522, w: 92 / 2, x: 38, y: 512},
-			{b: 522, w: 92 / 2, x: 166, y: 819},
-			{b: 522, w: 92 / 2, x: 294, y: 922},
-			{b: 522, w: 92 / 2, x: 422.5, y: 0}
+			{b: 1024, w: 92 / 2, x: 38, y: 512},
+			{b: 1024, w: 92 / 2, x: 166, y: 819},
+			{b: 1024, w: 92 / 2, x: 294, y: 922},
+			{b: 1024, w: 92 / 2, x: 422.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta0.data[i].base).toBeCloseToPixel(values.b);
 			expect(meta0.data[i].width).toBeCloseToPixel(values.w);
@@ -843,8 +843,8 @@ describe('Chart.controllers.bar', function() {
 
 		[
 			{b: 512, w: 92 / 2, x: 89, y: 0},
-			{b: 522, w: 92 / 2, x: 217, y: 0},
-			{b: 522, w: 92 / 2, x: 345, y: 0},
+			{b: 819.2, w: 92 / 2, x: 217, y: 0},
+			{b: 921.6, w: 92 / 2, x: 345, y: 0},
 			{b: 0, w: 92 / 2, x: 473.5, y: 0}
 		].forEach(function(values, i) {
 			expect(meta1.data[i].base).toBeCloseToPixel(values.b);
