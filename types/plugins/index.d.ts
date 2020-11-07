@@ -1,5 +1,5 @@
 import { ActiveDataPoint, ActiveElement, Chart, Element, AnimationSpecContainer, InteractionMode, LayoutPosition, Plugin } from '../core';
-import { Color, ChartArea, FontSpec, Scriptable, TextAlign, Event, HoverInteractionOptions } from '../core/interfaces';
+import { Color, ChartArea, FontSpec, Scriptable, TextAlign, ChartEvent, HoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { ChartData, ChartDataset } from '../interfaces';
 
@@ -127,15 +127,15 @@ export interface LegendOptions {
   /**
    * A callback that is called when a click event is registered on a label item.
    */
-  onClick(this: LegendElement, e: Event, legendItem: LegendItem, legend: LegendElement): void;
+  onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
    *	A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement, e: Event, legendItem: LegendItem, legend: LegendElement): void;
+  onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
    *	A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
-  onLeave(this: LegendElement, e: Event, legendItem: LegendItem, legend: LegendElement): void;
+  onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
 
   labels: {
     /**

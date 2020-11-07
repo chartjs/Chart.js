@@ -8,7 +8,7 @@ import {
 	Point,
 	Scriptable,
 	TimeUnit,
-	Event,
+	ChartEvent,
 } from './interfaces';
 import {
 	DefaultDataPoint,
@@ -503,7 +503,7 @@ export interface InteractionItem {
 
 export type InteractionModeFunction = (
 	chart: Chart,
-	e: Event,
+	e: ChartEvent,
 	options: InteractionOptions,
 	useFinalPosition?: boolean
 ) => InteractionItem[];
@@ -827,20 +827,20 @@ export interface Plugin<O = {}> {
 	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
 	 * the event will be discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {Event} event - The event object.
+	 * @param {ChartEvent} event - The event object.
 	 * @param {object} options - The plugin options.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
 	 */
-	beforeEvent?(chart: Chart, event: Event, options: O, replay: boolean): void;
+	beforeEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
 	/**
 	 * @desc Called after the `event` has been consumed. Note that this hook
 	 * will not be called if the `event` has been previously discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {Event} event - The event object.
+	 * @param {ChartEvent} event - The event object.
 	 * @param {object} options - The plugin options.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
 	 */
-	afterEvent?(chart: Chart, event: Event, options: O, replay: boolean): void;
+	afterEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
