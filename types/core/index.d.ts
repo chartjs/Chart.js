@@ -20,7 +20,7 @@ import {
 	ScaleOptions
 } from '../interfaces';
 
-export interface DateAdapter {
+export interface DateAdapterBase {
 	/**
 	 * Returns a map of time formats for the supported formatting units defined
 	 * in Unit as well as 'datetime' representing a detailed date/time string.
@@ -74,7 +74,7 @@ export interface DateAdapter {
 	endOf(timestamp: number, unit: TimeUnit | 'isoWeek'): number;
 }
 
-export interface DateAdapter extends DateAdapter {
+export interface DateAdapter extends DateAdapterBase {
 	readonly options: any;
 }
 
