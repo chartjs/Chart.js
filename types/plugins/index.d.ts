@@ -11,7 +11,7 @@ export interface FillerOptions {
 
 export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | false;
 
-export interface FillTarget {
+export interface ComplexFillTarget {
   /**
    * The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries.
    */
@@ -30,7 +30,7 @@ export interface FillerControllerDatasetOptions {
   /**
    * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
    */
-  fill: FillTarget | FillTarget;
+  fill: FillTarget | ComplexFillTarget;
 }
 
 export const Legend: Plugin;
