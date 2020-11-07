@@ -1,5 +1,5 @@
 import { Chart } from '../core';
-import { Event } from '../core/interfaces';
+import { ChartEvent } from '../core/interfaces';
 
 export class BasePlatform {
   /**
@@ -22,18 +22,18 @@ export class BasePlatform {
   /**
    * Registers the specified listener on the given chart.
    * @param {Chart} chart - Chart from which to listen for event
-   * @param {string} type - The ({@link Event}) type to listen for
+   * @param {string} type - The ({@link ChartEvent}) type to listen for
    * @param listener - Receives a notification (an object that implements
-   * the {@link Event} interface) when an event of the specified type occurs.
+   * the {@link ChartEvent} interface) when an event of the specified type occurs.
    */
-  addEventListener(chart: Chart, type: string, listener: (e: Event) => void): void;
+  addEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
   /**
    * Removes the specified listener previously registered with addEventListener.
    * @param {Chart} chart - Chart from which to remove the listener
-   * @param {string} type - The ({@link Event}) type to remove
+   * @param {string} type - The ({@link ChartEvent}) type to remove
    * @param listener - The listener function to remove from the event target.
    */
-  removeEventListener(chart: Chart, type: string, listener: (e: Event) => void): void;
+  removeEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
   /**
    * @returns {number} the current devicePixelRatio of the device this platform is connected to.
    */

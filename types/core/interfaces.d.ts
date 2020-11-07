@@ -3,7 +3,7 @@ import { ChartDataset } from '../interfaces';
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
-export interface Event {
+export interface ChartEvent {
   type:
     | 'contextmenu'
     | 'mouseenter'
@@ -140,11 +140,11 @@ export interface CoreChartOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: Event, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: Element[]): void;
   /**
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
-  onClick(event: Event, elements: Element[]): void;
+  onClick(event: ChartEvent, elements: Element[]): void;
 
   elements: { [key: string]: ElementOptions };
 
