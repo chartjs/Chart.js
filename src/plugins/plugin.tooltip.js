@@ -8,7 +8,7 @@ import {toFont} from '../helpers/helpers.options';
 import {drawPoint} from '../helpers';
 
 /**
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  */
 
 const positioners = {
@@ -979,7 +979,7 @@ export class Tooltip extends Element {
 
 	/**
 	 * Handle an event
-	 * @param {IEvent} e - The event to handle
+	 * @param {ChartEvent} e - The event to handle
 	 * @param {boolean} [replay] - This is a replayed event (from update)
 	 * @returns {boolean} true if the tooltip changed
 	 */
@@ -1027,7 +1027,7 @@ export class Tooltip extends Element {
 	 * Determine if the active elements + event combination changes the
 	 * tooltip position
 	 * @param {array} active - Active elements
-	 * @param {IEvent} e - Event that triggered the position change
+	 * @param {ChartEvent} e - Event that triggered the position change
 	 * @returns {boolean} True if the position has changed
 	 */
 	_positionChanged(active, e) {

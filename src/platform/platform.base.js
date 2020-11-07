@@ -28,16 +28,16 @@ export default class BasePlatform {
 	/**
 	 * Registers the specified listener on the given chart.
 	 * @param {Chart} chart - Chart from which to listen for event
-	 * @param {string} type - The ({@link IEvent}) type to listen for
+	 * @param {string} type - The ({@link ChartEvent}) type to listen for
 	 * @param {function} listener - Receives a notification (an object that implements
-	 * the {@link IEvent} interface) when an event of the specified type occurs.
+	 * the {@link ChartEvent} interface) when an event of the specified type occurs.
 	 */
 	addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
 
 	/**
 	 * Removes the specified listener previously registered with addEventListener.
 	 * @param {Chart} chart - Chart from which to remove the listener
-	 * @param {string} type - The ({@link IEvent}) type to remove
+	 * @param {string} type - The ({@link ChartEvent}) type to remove
 	 * @param {function} listener - The listener function to remove from the event target.
 	 */
 	removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
@@ -75,8 +75,8 @@ export default class BasePlatform {
 }
 
 /**
- * @interface IEvent
- * @typedef {object} IEvent
+ * @interface ChartEvent
+ * @typedef {object} ChartEvent
  * @prop {string} type - The event type name, possible values are:
  * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
  * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'

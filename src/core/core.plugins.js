@@ -4,7 +4,7 @@ import {mergeIf} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 
@@ -108,7 +108,7 @@ function createDescriptors(plugins, options) {
 
 /**
  * Plugin extension hooks.
- * @interface IPlugin
+ * @interface Plugin
  * @typedef {object} IPlugin
  * @since 2.1.0
  */
@@ -301,7 +301,7 @@ function createDescriptors(plugins, options) {
  * @desc Called before processing the specified `event`. If any plugin returns `false`,
  * the event will be discarded.
  * @param {Chart} chart - The chart instance.
- * @param {IEvent} event - The event object.
+ * @param {ChartEvent} event - The event object.
  * @param {boolean} replay - True if this event is replayed from `Chart.update`
  * @param {object} options - The plugin options.
  */
@@ -310,7 +310,7 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `event` has been consumed. Note that this hook
  * will not be called if the `event` has been previously discarded.
  * @param {Chart} chart - The chart instance.
- * @param {IEvent} event - The event object.
+ * @param {ChartEvent} event - The event object.
  * @param {boolean} replay - True if this event is replayed from `Chart.update`
  * @param {object} options - The plugin options.
  */

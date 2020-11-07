@@ -1,17 +1,17 @@
-import { ActiveDataPoint, ActiveElement, Chart, Element, IAnimationSpecContainer, InteractionMode, LayoutPosition, IPlugin } from '../core';
-import { Color, IChartArea, IFontSpec, Scriptable, TextAlign, IEvent, IHoverInteractionOptions } from '../core/interfaces';
+import { ActiveDataPoint, ActiveElement, Chart, Element, AnimationSpecContainer, InteractionMode, LayoutPosition, Plugin } from '../core';
+import { Color, ChartArea, FontSpec, Scriptable, TextAlign, ChartEvent, HoverInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
-import { IChartData, IChartDataset } from '../interfaces';
+import { ChartData, ChartDataset } from '../interfaces';
 
-export const Filler: IPlugin;
+export const Filler: Plugin;
 
-export interface IFillerOptions {
+export interface FillerOptions {
   propagate: boolean;
 }
 
 export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | false;
 
-export interface IFillTarget {
+export interface ComplexFillTarget {
   /**
    * The accepted values are the same as the filling mode values, so you may use absolute and relative dataset indexes and/or boundaries.
    */
@@ -26,16 +26,16 @@ export interface IFillTarget {
   below: Color;
 }
 
-export interface IFillerControllerDatasetOptions {
+export interface FillerControllerDatasetOptions {
   /**
    * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
    */
-  fill: FillTarget | IFillTarget;
+  fill: FillTarget | ComplexFillTarget;
 }
 
-export const Legend: IPlugin;
+export const Legend: Plugin;
 
-export interface ILegendItem {
+export interface LegendItem {
   /**
    * Label that will be displayed
    */
@@ -98,7 +98,7 @@ export interface ILegendItem {
 
 export interface LegendElement extends Element {}
 
-export interface ILegendOptions {
+export interface LegendOptions {
   /**
    * Is the legend shown?
    * @default true
@@ -127,15 +127,15 @@ export interface ILegendOptions {
   /**
    * A callback that is called when a click event is registered on a label item.
    */
-  onClick(this: LegendElement, e: IEvent, legendItem: ILegendItem, legend: LegendElement): void;
+  onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
    *	A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement, e: IEvent, legendItem: ILegendItem, legend: LegendElement): void;
+  onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
    *	A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
-  onLeave(this: LegendElement, e: IEvent, legendItem: ILegendItem, legend: LegendElement): void;
+  onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
 
   labels: {
     /**
@@ -149,7 +149,7 @@ export interface ILegendOptions {
      */
     boxHeight: number;
 
-    font: IFontSpec;
+    font: FontSpec;
     /**
      * Padding between rows of colored boxes.
      * @default 10
@@ -158,17 +158,17 @@ export interface ILegendOptions {
     /**
      * Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See Legend Item for details.
      */
-    generateLabels(chart: Chart): ILegendItem[];
+    generateLabels(chart: Chart): LegendItem[];
 
     /**
      * Filters legend items out of the legend. Receives 2 parameters, a Legend Item and the chart data
      */
-    filter(item: ILegendItem, data: IChartData): boolean;
+    filter(item: LegendItem, data: ChartData): boolean;
 
     /**
      * Sorts the legend items
      */
-    sort(a: ILegendItem, b: ILegendItem, data: IChartData): number;
+    sort(a: LegendItem, b: LegendItem, data: ChartData): number;
 
     /**
      * Override point style for the legend. Only applies if usePointStyle is true
@@ -191,9 +191,9 @@ export interface ILegendOptions {
     /**
      * see Fonts
      */
-    font: IFontSpec;
+    font: FontSpec;
     position: 'center' | 'start' | 'end';
-    padding?: number | IChartArea;
+    padding?: number | ChartArea;
     /**
      * The string title.
      */
@@ -201,13 +201,13 @@ export interface ILegendOptions {
   };
 }
 
-export interface ILegendChartOptions {
-  legend: ILegendOptions;
+export interface LegendChartOptions {
+  legend: LegendOptions;
 }
 
-export const Title: IPlugin;
+export const Title: Plugin;
 
-export interface ITitleOptions {
+export interface TitleOptions {
   /**
    * Alignment of the title.
    * @default 'center'
@@ -223,7 +223,7 @@ export interface ITitleOptions {
    * @default 'top'
    */
   position: 'top' | 'left' | 'bottom' | 'right';
-  font: IFontSpec;
+  font: FontSpec;
   // fullWidth: boolean;
   /**
    * 	Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
@@ -235,15 +235,15 @@ export interface ITitleOptions {
   text: string | string[];
 }
 
-export interface ITitleChartOptions {
-  title: ITitleOptions;
+export interface TitleChartOptions {
+  title: TitleOptions;
 }
 
 export type TooltipAlignment = 'start' | 'center' | 'end';
 
 export interface TooltipModel {
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
-  dataPoints: ITooltipItem[];
+  dataPoints: TooltipItem[];
 
   // Positioning
   xAlign: TooltipAlignment;
@@ -287,10 +287,10 @@ export interface TooltipModel {
   opacity: number;
 
   // tooltip options
-  options: ITooltipOptions;
+  options: TooltipOptions;
 }
 
-export const Tooltip: IPlugin & {
+export const Tooltip: Plugin & {
   readonly positioners: {
     [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number };
   };
@@ -299,28 +299,28 @@ export const Tooltip: IPlugin & {
   setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 };
 
-export interface ITooltipCallbacks {
-  beforeTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-  title(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-  afterTitle(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+export interface TooltipCallbacks {
+  beforeTitle(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+  title(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+  afterTitle(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 
-  beforeBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-  afterBody(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  beforeBody(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+  afterBody(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 
-  beforeLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
-  label(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
-  afterLabel(this: TooltipModel, tooltipItem: ITooltipItem): string | string[];
+  beforeLabel(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
+  label(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
+  afterLabel(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
 
-  labelColor(this: TooltipModel, tooltipItem: ITooltipItem): { borderColor: Color; backgroundColor: Color };
-  labelTextColor(this: TooltipModel, tooltipItem: ITooltipItem): Color;
-  labelPointStyle(this: TooltipModel, tooltipItem: ITooltipItem): { pointStyle: PointStyle; rotation: number };
+  labelColor(this: TooltipModel, tooltipItem: TooltipItem): { borderColor: Color; backgroundColor: Color };
+  labelTextColor(this: TooltipModel, tooltipItem: TooltipItem): Color;
+  labelPointStyle(this: TooltipModel, tooltipItem: TooltipItem): { pointStyle: PointStyle; rotation: number };
 
-  beforeFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-  footer(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
-  afterFooter(this: TooltipModel, tooltipItems: ITooltipItem[]): string | string[];
+  beforeFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+  footer(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+  afterFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 }
 
-export interface ITooltipPlugin<O = {}> {
+export interface TooltipPlugin<O = {}> {
   /**
    * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
    * the tooltip drawing is cancelled until another `render` is triggered.
@@ -342,7 +342,7 @@ export interface ITooltipPlugin<O = {}> {
   afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
 }
 
-export interface ITooltipOptions extends IHoverInteractionOptions {
+export interface TooltipOptions extends HoverInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
@@ -366,9 +366,9 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
   /**
    * Sort tooltip items.
    */
-  itemSort: (a: ITooltipItem, b: ITooltipItem) => number;
+  itemSort: (a: TooltipItem, b: TooltipItem) => number;
 
-  filter: (e: ITooltipItem) => boolean;
+  filter: (e: TooltipItem) => boolean;
 
   /**
    * Background color of the tooltip.
@@ -379,7 +379,7 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    * See Fonts
    * @default {style: 'bold', color: '#fff'}
    */
-  titleFont: IFontSpec;
+  titleFont: FontSpec;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
@@ -404,7 +404,7 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    * 	See Fonts.
    * @default {color: '#fff'}
    */
-  bodyFont: IFontSpec;
+  bodyFont: FontSpec;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
@@ -424,7 +424,7 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    * See Fonts
    * @default {style: 'bold', color: '#fff'}
    */
-  footerFont: IFontSpec;
+  footerFont: FontSpec;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
@@ -501,16 +501,16 @@ export interface ITooltipOptions extends IHoverInteractionOptions {
    */
   textDirection: string;
 
-  animation: Scriptable<IAnimationSpecContainer>;
+  animation: Scriptable<AnimationSpecContainer>;
 
-  callbacks: ITooltipCallbacks;
+  callbacks: TooltipCallbacks;
 }
 
-export interface ITooltipChartOptions {
-  tooltips: ITooltipOptions;
+export interface TooltipChartOptions {
+  tooltips: TooltipOptions;
 }
 
-export interface ITooltipItem {
+export interface TooltipItem {
   /**
    * The chart the tooltip is being shown on
    */
@@ -534,7 +534,7 @@ export interface ITooltipItem {
   /**
    * The dataset the item comes from
    */
-  dataset: IChartDataset;
+  dataset: ChartDataset;
 
   /**
    * Index of the dataset the item comes from

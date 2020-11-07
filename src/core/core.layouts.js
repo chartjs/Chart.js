@@ -214,8 +214,8 @@ defaults.set('layout', {
 });
 
 /**
- * @interface ILayoutItem
- * @typedef {object} ILayoutItem
+ * @interface LayoutItem
+ * @typedef {object} LayoutItem
  * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'
  * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
@@ -241,7 +241,7 @@ export default {
 	 * Register a box to a chart.
 	 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
 	 * @param {Chart} chart - the chart to use
-	 * @param {ILayoutItem} item - the item to add to be laid out
+	 * @param {LayoutItem} item - the item to add to be laid out
 	 */
 	addBox(chart, item) {
 		if (!chart.boxes) {
@@ -268,7 +268,7 @@ export default {
 	/**
 	 * Remove a layoutItem from a chart
 	 * @param {Chart} chart - the chart to remove the box from
-	 * @param {ILayoutItem} layoutItem - the item to remove from the layout
+	 * @param {LayoutItem} layoutItem - the item to remove from the layout
 	 */
 	removeBox(chart, layoutItem) {
 		const index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
@@ -280,7 +280,7 @@ export default {
 	/**
 	 * Sets (or updates) options on the given `item`.
 	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
-	 * @param {ILayoutItem} item - the item to configure with the given options
+	 * @param {LayoutItem} item - the item to configure with the given options
 	 * @param {object} options - the new item options.
 	 */
 	configure(chart, item, options) {

@@ -4,14 +4,14 @@ import {getRelativePosition as helpersGetRelativePosition} from '../helpers/help
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean}} InteractionOptions
  * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
  */
 
 /**
  * Helper function to get relative position for an event
- * @param {Event|IEvent} e - The event to get the position for
+ * @param {Event|ChartEvent} e - The event to get the position for
  * @param {Chart} chart - The chart
  * @returns {object} the event position
  */

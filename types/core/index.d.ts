@@ -2,25 +2,25 @@ import { BasePlatform } from '../platform';
 import {
 	Color,
 	EasingFunction,
-	IChartArea,
-	IChartComponent,
-	IFontSpec,
-	IPoint,
+	ChartArea,
+	ChartComponent,
+	FontSpec,
+	Point,
 	Scriptable,
 	TimeUnit,
-	IEvent,
+	ChartEvent,
 } from './interfaces';
 import {
 	DefaultDataPoint,
-	IChartConfiguration,
-	IChartData,
-	IChartDataset,
-	IChartOptions,
-	IChartType,
-	IScaleOptions
+	ChartConfiguration,
+	ChartData,
+	ChartDataset,
+	ChartOptions,
+	ChartType,
+	ScaleOptions
 } from '../interfaces';
 
-export interface IDateAdapter {
+export interface DateAdapterBase {
 	/**
 	 * Returns a map of time formats for the supported formatting units defined
 	 * in Unit as well as 'datetime' representing a detailed date/time string.
@@ -74,14 +74,14 @@ export interface IDateAdapter {
 	endOf(timestamp: number, unit: TimeUnit | 'isoWeek'): number;
 }
 
-export interface DateAdapter extends IDateAdapter {
+export interface DateAdapter extends DateAdapterBase {
 	readonly options: any;
 }
 
 export const DateAdapter: {
 	prototype: DateAdapter;
 	new(options: any): DateAdapter;
-	override(members: Partial<IDateAdapter>): void;
+	override(members: Partial<DateAdapter>): void;
 };
 
 export const _adapters: {
@@ -96,14 +96,14 @@ export class Animation {
 	tick(date: number): void;
 }
 
-export interface IAnimationEvent {
+export interface AnimationEvent {
 	chart: Chart;
 	numSteps: number;
 	currentState: number;
 }
 
 export class Animator {
-	listen(chart: Chart, event: 'complete' | 'progress', cb: (event: IAnimationEvent) => void): void;
+	listen(chart: Chart, event: 'complete' | 'progress', cb: (event: AnimationEvent) => void): void;
 	add(chart: Chart, items: readonly Animation[]): void;
 	has(chart: Chart): boolean;
 	start(chart: Chart): void;
@@ -118,7 +118,7 @@ export class Animations {
 	update(target: any, values: any): undefined | boolean;
 }
 
-export interface IAnimationCommonSpec {
+export interface AnimationCommonSpec {
 	/**
 	 * The number of milliseconds an animation takes.
 	 * @default 1000
@@ -149,7 +149,7 @@ export interface IAnimationCommonSpec {
 	loop: boolean;
 }
 
-export interface IAnimationPropertySpec extends IAnimationCommonSpec {
+export interface AnimationPropertySpec extends AnimationCommonSpec {
 	properties: string[];
 
 	/**
@@ -169,35 +169,35 @@ export interface IAnimationPropertySpec extends IAnimationCommonSpec {
 	to: Color | number | boolean;
 }
 
-export type IAnimationSpecContainer = IAnimationCommonSpec & {
-	[prop: string]: IAnimationPropertySpec;
+export type AnimationSpecContainer = AnimationCommonSpec & {
+	[prop: string]: AnimationPropertySpec;
 };
 
-export type IAnimationOptions = IAnimationSpecContainer & {
+export type AnimationOptions = AnimationSpecContainer & {
 	/**
 	 * Callback called on each step of an animation.
 	 */
-	onProgress: (this: Chart, event: IAnimationEvent) => void;
+	onProgress: (this: Chart, event: AnimationEvent) => void;
 	/**
 	 *Callback called when all animations are completed.
 	 */
-	onComplete: (this: Chart, event: IAnimationEvent) => void;
+	onComplete: (this: Chart, event: AnimationEvent) => void;
 
-	active: IAnimationSpecContainer;
-	hide: IAnimationSpecContainer;
-	reset: IAnimationSpecContainer;
-	resize: IAnimationSpecContainer;
-	show: IAnimationSpecContainer;
+	active: AnimationSpecContainer;
+	hide: AnimationSpecContainer;
+	reset: AnimationSpecContainer;
+	resize: AnimationSpecContainer;
+	show: AnimationSpecContainer;
 };
 
-export interface IChartAnimationOptions {
-	animation: Scriptable<IAnimationOptions>;
+export interface ChartAnimationOptions {
+	animation: Scriptable<AnimationOptions>;
 	datasets: {
-		animation: Scriptable<IAnimationOptions>;
+		animation: Scriptable<AnimationOptions>;
 	};
 }
 
-export interface IChartMeta<E extends Element = Element, DSE extends Element = Element> {
+export interface ChartMeta<E extends Element = Element, DSE extends Element = Element> {
 	type: string;
 	controller: DatasetController;
 	order: number;
@@ -232,7 +232,7 @@ export interface IChartMeta<E extends Element = Element, DSE extends Element = E
 	_parsed: any[];
 }
 
-export interface IParsingOptions {
+export interface ParsingOptions {
 	parsing:
 	| {
 		[key: string]: string;
@@ -250,7 +250,7 @@ export interface ActiveElement extends ActiveDataPoint {
 }
 
 export declare class Chart<
-	TYPE extends IChartType = IChartType,
+	TYPE extends ChartType = ChartType,
 	DATA extends unknown[] = DefaultDataPoint<TYPE>,
 	LABEL = string
 	> {
@@ -258,21 +258,21 @@ export declare class Chart<
 	readonly id: string;
 	readonly canvas: HTMLCanvasElement;
 	readonly ctx: CanvasRenderingContext2D;
-	readonly config: IChartConfiguration<TYPE, DATA, LABEL>
+	readonly config: ChartConfiguration<TYPE, DATA, LABEL>
 	readonly width: number;
 	readonly height: number;
 	readonly aspectRatio: number;
-	readonly boxes: ILayoutItem[];
+	readonly boxes: LayoutItem[];
 	readonly currentDevicePixelRatio: number;
-	readonly chartArea: IChartArea;
+	readonly chartArea: ChartArea;
 	readonly scales: { [key: string]: Scale };
 	readonly scale: Scale | undefined;
 	readonly attached: boolean;
 
-	data: IChartData<TYPE, DATA, LABEL>;
-	options: IChartOptions<TYPE>;
+	data: ChartData<TYPE, DATA, LABEL>;
+	options: ChartOptions<TYPE>;
 
-	constructor(item: ChartItem, config: IChartConfiguration<TYPE, DATA, LABEL>);
+	constructor(item: ChartItem, config: ChartConfiguration<TYPE, DATA, LABEL>);
 
 	clear(): this;
 	stop(): this;
@@ -286,10 +286,10 @@ export declare class Chart<
 	render(): void;
 	draw(): void;
 
-	getElementsAtEventForMode(e: Event, mode: string, options: IInteractionOptions, useFinalPosition: boolean): InteractionItem[];
+	getElementsAtEventForMode(e: Event, mode: string, options: InteractionOptions, useFinalPosition: boolean): InteractionItem[];
 
-	getSortedVisibleDatasetMetas(): IChartMeta[];
-	getDatasetMeta(datasetIndex: number): IChartMeta;
+	getSortedVisibleDatasetMetas(): ChartMeta[];
+	getDatasetMeta(datasetIndex: number): ChartMeta;
 	getVisibleDatasetCount(): number;
 	isDatasetVisible(datasetIndex: number): boolean;
 	setDatasetVisibility(datasetIndex: number, visible: boolean): void;
@@ -311,8 +311,8 @@ export declare class Chart<
 	static readonly instances: { [key: string]: Chart };
 	static readonly registry: Registry;
 	static getChart(key: string | CanvasRenderingContext2D | HTMLCanvasElement): Chart | undefined;
-	static register(...items: IChartComponentLike[]): void;
-	static unregister(...items: IChartComponentLike[]): void;
+	static register(...items: ChartComponentLike[]): void;
+	static unregister(...items: ChartComponentLike[]): void;
 }
 
 export declare type ChartItem =
@@ -341,7 +341,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 
 	readonly chart: Chart;
 	readonly index: number;
-	readonly _cachedMeta: IChartMeta<E, DSE>;
+	readonly _cachedMeta: ChartMeta<E, DSE>;
 	enableOptionSharing: boolean;
 
 	linkScales(): void;
@@ -353,8 +353,8 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 	protected getMaxOverflow(): boolean | number;
 	draw(): void;
 	reset(): void;
-	getDataset(): IChartDataset;
-	getMeta(): IChartMeta<E, DSE>;
+	getDataset(): ChartDataset;
+	getMeta(): ChartMeta<E, DSE>;
 	getScaleForId(scaleID: string): Scale | undefined;
 	configure(): void;
 	initialize(): void;
@@ -390,9 +390,9 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 	setHoverStyle(element: E, datasetIndex: number, index: number): void;
 
 	parse(start: number, count: number): void;
-	protected parsePrimitiveData(meta: IChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
-	protected parseArrayData(meta: IChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
-	protected parseObjectData(meta: IChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
+	protected parsePrimitiveData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
+	protected parseArrayData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
+	protected parseObjectData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
 	protected getParsed(index: number): any;
 	protected applyStack(scale: Scale, parsed: any[]): number;
 	protected updateRangeFromParsed(
@@ -404,7 +404,7 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 	protected getMinMax(scale: Scale, canStack?: boolean): { min: number; max: number };
 }
 
-export interface IDatasetControllerChartComponent extends IChartComponent {
+export interface DatasetControllerChartComponent extends ChartComponent {
 	defaults: {
 		datasetElementType?: string | null | false;
 		dataElementType?: string | null | false;
@@ -416,7 +416,7 @@ export interface IDatasetControllerChartComponent extends IChartComponent {
 export interface Defaults {
 	readonly color: string;
 	readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
-	readonly font: IFontSpec;
+	readonly font: FontSpec;
 	readonly interaction: {
 		mode: InteractionMode | string;
 		intersect: boolean;
@@ -432,9 +432,9 @@ export interface Defaults {
 	readonly responsive: boolean;
 
 	readonly plugins: { [key: string]: any };
-	readonly scale?: IScaleOptions;
+	readonly scale?: ScaleOptions;
 	readonly doughnut: any;
-	readonly scales: { [key: string]: IScaleOptions };
+	readonly scales: { [key: string]: ScaleOptions };
 	readonly controllers: { [key: string]: any };
 
 	set(scope: string, values: any): any;
@@ -467,7 +467,7 @@ export interface Element<T = {}, O = {}> {
 	readonly active: boolean;
 	readonly options: O;
 
-	tooltipPosition(useFinalPosition?: boolean): IPoint;
+	tooltipPosition(useFinalPosition?: boolean): Point;
 	hasValue(): boolean;
 	getProps<P extends keyof T>(props: [P], final?: boolean): Pick<T, P>;
 	getProps<P extends keyof T, P2 extends keyof T>(props: [P, P2], final?: boolean): Pick<T, P | P2>;
@@ -490,7 +490,7 @@ export const Element: {
 	new <T = {}, O = {}>(): Element<T, O>;
 };
 
-export interface IInteractionOptions {
+export interface InteractionOptions {
 	axis?: string;
 	intersect?: boolean;
 }
@@ -503,12 +503,12 @@ export interface InteractionItem {
 
 export type InteractionModeFunction = (
 	chart: Chart,
-	e: IEvent,
-	options: IInteractionOptions,
+	e: ChartEvent,
+	options: InteractionOptions,
 	useFinalPosition?: boolean
 ) => InteractionItem[];
 
-export interface IInteractionMode {
+export interface InteractionModeMap {
 	/**
 	 * Returns items at the same index. If the options.intersect parameter is true, we only return items if we intersect something
 	 * If the options.intersect mode is false, we find the nearest item and return the items at the same index as that item
@@ -539,15 +539,15 @@ export interface IInteractionMode {
 	y: InteractionModeFunction;
 }
 
-export type InteractionMode = keyof IInteractionMode;
+export type InteractionMode = keyof InteractionModeMap;
 
 export const Interaction: {
-	modes: IInteractionMode;
+	modes: InteractionModeMap;
 };
 
 export type LayoutPosition = 'left' | 'top' | 'right' | 'chartArea';
 
-export interface ILayoutItem {
+export interface LayoutItem {
 	/**
 	 * The position of the item in the chart layout. Possible values are
 	 */
@@ -579,7 +579,7 @@ export interface ILayoutItem {
 	/**
 	 * Returns an object with padding on the edges
 	 */
-	getPadding?(): IChartArea;
+	getPadding?(): ChartArea;
 
 	/**
 	 *  Width of item. Must be valid after update()
@@ -612,26 +612,26 @@ export const layouts: {
 	 * Register a box to a chart.
 	 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
 	 * @param {Chart} chart - the chart to use
-	 * @param {ILayoutItem} item - the item to add to be laid out
+	 * @param {LayoutItem} item - the item to add to be laid out
 	 */
-	addBox(chart: Chart, item: ILayoutItem): void;
+	addBox(chart: Chart, item: LayoutItem): void;
 
 	/**
 	 * Remove a layoutItem from a chart
 	 * @param {Chart} chart - the chart to remove the box from
-	 * @param {ILayoutItem} layoutItem - the item to remove from the layout
+	 * @param {LayoutItem} layoutItem - the item to remove from the layout
 	 */
-	removeBox(chart: Chart, layoutItem: ILayoutItem): void;
+	removeBox(chart: Chart, layoutItem: LayoutItem): void;
 
 	/**
 	 * Sets (or updates) options on the given `item`.
 	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
-	 * @param {ILayoutItem} item - the item to configure with the given options
+	 * @param {LayoutItem} item - the item to configure with the given options
 	 * @param options - the new item options.
 	 */
 	configure(
 		chart: Chart,
-		item: ILayoutItem,
+		item: LayoutItem,
 		options: { fullWidth?: number; position?: LayoutPosition; weight?: number }
 	): void;
 
@@ -659,7 +659,7 @@ export interface PluginService {
 	invalidate(): void;
 }
 
-export interface IPlugin<O = {}> {
+export interface Plugin<O = {}> {
 	id: string;
 
 	/**
@@ -728,7 +728,7 @@ export interface IPlugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart datasets drawing.
 	 */
-	beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: IChartMeta, mode: UpdateMode }, options: O): boolean | void;
+	beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` datasets at the given `args.index` has been updated. Note
 	 * that this hook will not be called if the datasets update has been previously cancelled.
@@ -739,7 +739,7 @@ export interface IPlugin<O = {}> {
 	 * @param {UpdateMode} args.mode - The update mode.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: IChartMeta, mode: UpdateMode }, options: O): void;
+	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): void;
 	/**
 	 * @desc Called before laying out `chart`. If any plugin returns `false`,
 	 * the layout update is cancelled until another `update` is triggered.
@@ -811,7 +811,7 @@ export interface IPlugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart datasets drawing.
 	 */
-	beforeDatasetDraw?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): boolean | void;
+	beforeDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` datasets at the given `args.index` have been drawn
 	 * (datasets are drawn in the reverse order). Note that this hook will not be called
@@ -822,25 +822,25 @@ export interface IPlugin<O = {}> {
 	 * @param {object} args.meta - The dataset metadata.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetDraw?(chart: Chart, args: { index: number; meta: IChartMeta }, options: O): void;
+	afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): void;
 	/**
 	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
 	 * the event will be discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {IEvent} event - The event object.
+	 * @param {ChartEvent} event - The event object.
 	 * @param {object} options - The plugin options.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
 	 */
-	beforeEvent?(chart: Chart, event: IEvent, options: O, replay: boolean): void;
+	beforeEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
 	/**
 	 * @desc Called after the `event` has been consumed. Note that this hook
 	 * will not be called if the `event` has been previously discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {IEvent} event - The event object.
+	 * @param {ChartEvent} event - The event object.
 	 * @param {object} options - The plugin options.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
 	 */
-	afterEvent?(chart: Chart, event: IEvent, options: O, replay: boolean): void;
+	afterEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
@@ -856,7 +856,7 @@ export interface IPlugin<O = {}> {
 	destroy?(chart: Chart, options: O): void;
 }
 
-export declare type IChartComponentLike = IChartComponent | IChartComponent[] | { [key: string]: IChartComponent };
+export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -865,32 +865,32 @@ export declare type IChartComponentLike = IChartComponent | IChartComponent[] | 
 export interface Registry {
 	readonly controllers: TypedRegistry<DatasetController>;
 	readonly elements: TypedRegistry<Element>;
-	readonly plugins: TypedRegistry<IPlugin>;
+	readonly plugins: TypedRegistry<Plugin>;
 	readonly scales: TypedRegistry<Scale>;
 
-	add(...args: IChartComponentLike[]): void;
-	remove(...args: IChartComponentLike[]): void;
+	add(...args: ChartComponentLike[]): void;
+	remove(...args: ChartComponentLike[]): void;
 
-	addControllers(...args: IChartComponentLike[]): void;
-	addElements(...args: IChartComponentLike[]): void;
-	addPlugins(...args: IChartComponentLike[]): void;
-	addScales(...args: IChartComponentLike[]): void;
+	addControllers(...args: ChartComponentLike[]): void;
+	addElements(...args: ChartComponentLike[]): void;
+	addPlugins(...args: ChartComponentLike[]): void;
+	addScales(...args: ChartComponentLike[]): void;
 
 	getController(id: string): DatasetController | undefined;
 	getElement(id: string): Element | undefined;
-	getPlugin(id: string): IPlugin | undefined;
+	getPlugin(id: string): Plugin | undefined;
 	getScale(id: string): Scale | undefined;
 }
 
 export const registry: Registry;
 
-export interface ITick {
+export interface Tick {
 	value: number;
 	label?: string;
 	major?: boolean;
 }
 
-export interface ICoreScaleOptions {
+export interface CoreScaleOptions {
 	/**
 	 * Controls the axis global visibility (visible when true, hidden when false). When display: 'auto', the axis is visible only if at least one associated dataset is visible.
 	 * @default true
@@ -964,7 +964,7 @@ export interface ICoreScaleOptions {
 	afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends Element<{}, O>, IChartArea {
+export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<{}, O>, ChartArea {
 	readonly id: string;
 	readonly type: string;
 	readonly ctx: CanvasRenderingContext2D;
@@ -985,13 +985,13 @@ export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends 
 	labelRotation: number;
 	min: number;
 	max: number;
-	ticks: ITick[];
-	getMatchingVisibleMetas(type?: string): IChartMeta[];
+	ticks: Tick[];
+	getMatchingVisibleMetas(type?: string): ChartMeta[];
 
-	draw(chartArea: IChartArea): void;
-	drawTitle(chartArea: IChartArea): void;
-	drawLabels(chartArea: IChartArea): void;
-	drawGrid(chartArea: IChartArea): void;
+	draw(chartArea: ChartArea): void;
+	drawTitle(chartArea: ChartArea): void;
+	drawLabels(chartArea: ChartArea): void;
+	drawGrid(chartArea: ChartArea): void;
 
 	/**
 	 * @param {number} pixel
@@ -1048,8 +1048,8 @@ export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends 
 	getUserBounds(): { min: number; max: number; minDefined: boolean; maxDefined: boolean };
 	getMinMax(canStack: boolean): { min: number; max: number };
 	invalidateCaches(): void;
-	getPadding(): IChartArea;
-	getTicks(): ITick[];
+	getPadding(): ChartArea;
+	getTicks(): Tick[];
 	getLabels(): string[];
 	beforeUpdate(): void;
 	update(maxWidth: number, maxHeight: number, margins: any): void;
@@ -1062,10 +1062,10 @@ export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends 
 	determineDataLimits(): void;
 	afterDataLimits(): void;
 	beforeBuildTicks(): void;
-	buildTicks(): ITick[];
+	buildTicks(): Tick[];
 	afterBuildTicks(): void;
 	beforeTickToLabelConversion(): void;
-	generateTickLabels(ticks: ITick[]): void;
+	generateTickLabels(ticks: Tick[]): void;
 	afterTickToLabelConversion(): void;
 	beforeCalculateLabelRotation(): void;
 	calculateLabelRotation(): void;
@@ -1079,17 +1079,17 @@ export interface Scale<O extends ICoreScaleOptions = ICoreScaleOptions> extends 
 }
 export const Scale: {
 	prototype: Scale;
-	new <O extends ICoreScaleOptions = ICoreScaleOptions>(cfg: any): Scale<O>;
+	new <O extends CoreScaleOptions = CoreScaleOptions>(cfg: any): Scale<O>;
 };
 
-export interface IScriptAbleScaleContext {
+export interface ScriptAbleScaleContext {
 	chart: Chart;
 	scale: Scale;
 	index: number;
-	tick: ITick;
+	tick: Tick;
 }
 
-export type ScriptAbleScale<T> = T | ((ctx: IScriptAbleScaleContext) => T);
+export type ScriptAbleScale<T> = T | ((ctx: ScriptAbleScaleContext) => T);
 
 export const Ticks: {
 	formatters: {
@@ -1120,10 +1120,10 @@ export const Ticks: {
 
 export interface TypedRegistry<T> {
 	/**
-	 * @param {IChartComponent} item
+	 * @param {ChartComponent} item
 	 * @returns {string} The scope where items defaults were registered to.
 	 */
-	register(item: IChartComponent): string;
+	register(item: ChartComponent): string;
 	get(id: string): T | undefined;
-	unregister(item: IChartComponent): void;
+	unregister(item: ChartComponent): void;
 }

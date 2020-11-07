@@ -1,7 +1,7 @@
 import { Element } from '../core';
-import { Color, IChartArea, IChartComponent, IPoint } from '../core/interfaces';
+import { Color, ChartArea, ChartComponent, Point } from '../core/interfaces';
 
-export interface IVisualElement {
+export interface VisualElement {
   draw(ctx: CanvasRenderingContext2D): void;
   inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
   inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
@@ -10,25 +10,25 @@ export interface IVisualElement {
   getRange?(axis: 'x' | 'y'): number;
 }
 
-export interface ICommonOptions {
+export interface CommonOptions {
   borderWidth: number;
   borderColor: Color;
   backgroundColor: Color;
 }
 
-export interface ICommonHoverOptions {
+export interface CommonHoverOptions {
   hoverBorderWidth: number;
   hoverBorderColor: Color;
   hoverBackgroundColor: Color;
 }
 
-export interface ISegment {
+export interface Segment {
   start: number;
   end: number;
   loop: boolean;
 }
 
-export interface IArcProps {
+export interface ArcProps {
   x: number;
   y: number;
   startAngle: number;
@@ -38,7 +38,7 @@ export interface IArcProps {
   circumference: number;
 }
 
-export interface IArcOptions extends ICommonOptions {
+export interface ArcOptions extends CommonOptions {
   /**
    * Arc stroke alignment.
    */
@@ -49,22 +49,22 @@ export interface IArcOptions extends ICommonOptions {
   offset: number;
 }
 
-export interface IArcHoverOptions extends ICommonHoverOptions {
+export interface ArcHoverOptions extends CommonHoverOptions {
   hoverOffset: number;
 }
 
-export interface ArcElement<T extends IArcProps = IArcProps, O extends IArcOptions = IArcOptions>
+export interface ArcElement<T extends ArcProps = ArcProps, O extends ArcOptions = ArcOptions>
   extends Element<T, O>,
-    IVisualElement {}
+    VisualElement {}
 
-export const ArcElement: IChartComponent & {
+export const ArcElement: ChartComponent & {
   prototype: ArcElement;
   new (cfg: any): ArcElement;
 };
 
-export interface ILineProps {}
+export interface LineProps {}
 
-export interface ILineOptions extends ICommonOptions {
+export interface LineOptions extends CommonOptions {
   /**
    * Line cap style. See MDN.
    * @default 'butt'
@@ -107,32 +107,32 @@ export interface ILineOptions extends ICommonOptions {
   stepped: 'before' | 'after' | 'middle' | boolean;
 }
 
-export interface ILineHoverOptions extends ICommonHoverOptions {
+export interface LineHoverOptions extends CommonHoverOptions {
   hoverBorderCapStyle: CanvasLineCap;
   hoverBorderDash: number[];
   hoverBorderDashOffset: number;
   hoverBorderJoinStyle: CanvasLineJoin;
 }
 
-export interface LineElement<T extends ILineProps = ILineProps, O extends ILineOptions = ILineOptions>
+export interface LineElement<T extends LineProps = LineProps, O extends LineOptions = LineOptions>
   extends Element<T, O>,
-    IVisualElement {
-  updateControlPoints(chartArea: IChartArea): void;
-  points: IPoint[];
-  readonly segments: ISegment[];
-  first(): IPoint | false;
-  last(): IPoint | false;
-  interpolate(point: IPoint, property: 'x' | 'y'): undefined | IPoint | IPoint[];
-  pathSegment(ctx: CanvasRenderingContext2D, segment: ISegment, params: any): undefined | boolean;
+    VisualElement {
+  updateControlPoints(chartArea: ChartArea): void;
+  points: Point[];
+  readonly segments: Segment[];
+  first(): Point | false;
+  last(): Point | false;
+  interpolate(point: Point, property: 'x' | 'y'): undefined | Point | Point[];
+  pathSegment(ctx: CanvasRenderingContext2D, segment: Segment, params: any): undefined | boolean;
   path(ctx: CanvasRenderingContext2D): boolean;
 }
 
-export const LineElement: IChartComponent & {
+export const LineElement: ChartComponent & {
   prototype: LineElement;
   new (cfg: any): LineElement;
 };
 
-export interface IPointProps {
+export interface PointProps {
   x: number;
   y: number;
 }
@@ -151,7 +151,7 @@ export type PointStyle =
   | HTMLImageElement
   | HTMLCanvasElement;
 
-export interface IPointOptions extends ICommonOptions {
+export interface PointOptions extends CommonOptions {
   /**
    * Point radius
    * @default 3
@@ -174,7 +174,7 @@ export interface IPointOptions extends ICommonOptions {
   rotation: number;
 }
 
-export interface IPointHoverOptions extends ICommonHoverOptions {
+export interface PointHoverOptions extends CommonHoverOptions {
   /**
    * Point radius when hovered.
    * @default 4
@@ -182,7 +182,7 @@ export interface IPointHoverOptions extends ICommonHoverOptions {
   hoverRadius: number;
 }
 
-export interface IPointPrefixedOptions {
+export interface PointPrefixedOptions {
   /**
    * The fill color for points.
    */
@@ -213,7 +213,7 @@ export interface IPointPrefixedOptions {
   pointStyle: PointStyle;
 }
 
-export interface IPointPrefixedHoverOptions {
+export interface PointPrefixedHoverOptions {
   /**
    * Point background color when hovered.
    */
@@ -232,18 +232,18 @@ export interface IPointPrefixedHoverOptions {
   pointHoverRadius: number;
 }
 
-export interface PointElement<T extends IPointProps = IPointProps, O extends IPointOptions = IPointOptions>
+export interface PointElement<T extends PointProps = PointProps, O extends PointOptions = PointOptions>
   extends Element<T, O>,
-    IVisualElement {
+    VisualElement {
   readonly skip: boolean;
 }
 
-export const PointElement: IChartComponent & {
+export const PointElement: ChartComponent & {
   prototype: PointElement;
   new (cfg: any): PointElement;
 };
 
-export interface IBarProps {
+export interface BarProps {
   x: number;
   y: number;
   base: number;
@@ -252,7 +252,7 @@ export interface IBarProps {
   height: number;
 }
 
-export interface IBarOptions extends ICommonOptions {
+export interface BarOptions extends CommonOptions {
   /**
    * The base value for the bar in data units along the value axis.
    */
@@ -268,35 +268,35 @@ export interface IBarOptions extends ICommonOptions {
    * Border radius
    * @default 0
    */
-  borderRadius: number | IBorderRadius;
+  borderRadius: number | BorderRadius;
 }
 
-export interface IBorderRadius {
+export interface BorderRadius {
   topLeft: number;
   topRight: number;
   bottomLeft: number;
   bottomRight: number;
 }
 
-export interface IBarHoverOptions extends ICommonHoverOptions {
-  hoverBorderRadius: number | IBorderRadius;
+export interface BarHoverOptions extends CommonHoverOptions {
+  hoverBorderRadius: number | BorderRadius;
 }
 
 export interface BarElement<
-  T extends IBarProps = IBarProps,
-  O extends IBarOptions = IBarOptions
-> extends Element<T, O>, IVisualElement {}
+  T extends BarProps = BarProps,
+  O extends BarOptions = BarOptions
+> extends Element<T, O>, VisualElement {}
 
-export const BarElement: IChartComponent & {
+export const BarElement: ChartComponent & {
   prototype: BarElement;
   new (cfg: any): BarElement;
 };
 
-export interface IElementChartOptions {
+export interface ElementChartOptions {
   elements: {
-    arc: IArcOptions & IArcHoverOptions;
-    bar: IBarOptions & IBarHoverOptions;
-    line: ILineOptions & ILineHoverOptions;
-    point: IPointOptions & IPointHoverOptions;
+    arc: ArcOptions & ArcHoverOptions;
+    bar: BarOptions & BarHoverOptions;
+    line: LineOptions & LineHoverOptions;
+    point: PointOptions & PointHoverOptions;
   };
 }

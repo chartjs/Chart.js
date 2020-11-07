@@ -1,9 +1,9 @@
 import { Chart, Element, InteractionMode } from '.';
-import { IChartDataset } from '../interfaces';
+import { ChartDataset } from '../interfaces';
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
-export interface IEvent {
+export interface ChartEvent {
   type:
     | 'contextmenu'
     | 'mouseenter'
@@ -22,12 +22,12 @@ export interface IEvent {
   y: number | null;
 }
 
-export interface IPoint {
+export interface Point {
   x: number;
   y: number;
 }
 
-export interface IChartComponent {
+export interface ChartComponent {
   id: string;
   defaults?: any;
   defaultRoutes?: { [property: string]: string };
@@ -40,35 +40,35 @@ export interface IChartComponent {
 
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 
-export interface IChartArea {
+export interface ChartArea {
   top: number;
   left: number;
   right: number;
   bottom: number;
 }
 
-export interface IPadding {
+export interface Padding {
   top: number;
   left: number;
   right: number;
   bottom: number;
 }
 
-export interface IScriptableContext {
+export interface ScriptableContext {
   chart: Chart;
   dataPoint: any;
   dataIndex: number;
-  dataset: IChartDataset;
+  dataset: ChartDataset;
   datasetIndex: number;
   active: boolean;
 }
 
-export type Scriptable<T> = T | ((ctx: IScriptableContext) => T);
+export type Scriptable<T> = T | ((ctx: ScriptableContext) => T);
 export type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
 export type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
 export type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
 
-export interface IHoverInteractionOptions {
+export interface HoverInteractionOptions {
   /**
    * Sets which elements appear in the tooltip. See Interaction Modes for details.
    * @default 'nearest'
@@ -86,11 +86,11 @@ export interface IHoverInteractionOptions {
   axis: 'x' | 'y' | 'xy';
 }
 
-export interface IElementOptions {
+export interface ElementOptions {
   // TODO
 }
 
-export interface ICoreChartOptions {
+export interface CoreChartOptions {
   /**
    * base color
    * @see Defaults.color
@@ -100,7 +100,7 @@ export interface ICoreChartOptions {
    * base font
    * @see Defaults.font
    */
-  font: IFontSpec;
+  font: FontSpec;
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
@@ -129,7 +129,7 @@ export interface ICoreChartOptions {
    */
   devicePixelRatio: number;
 
-  hover: IHoverInteractionOptions;
+  hover: HoverInteractionOptions;
 
   /**
    * The events option defines the browser events that the chart should listen to for tooltips and hovering.
@@ -140,16 +140,16 @@ export interface ICoreChartOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: IEvent, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: Element[]): void;
   /**
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
-  onClick(event: IEvent, elements: Element[]): void;
+  onClick(event: ChartEvent, elements: Element[]): void;
 
-  elements: { [key: string]: IElementOptions };
+  elements: { [key: string]: ElementOptions };
 
   layout: {
-    padding: Scriptable<number | IChartArea>;
+    padding: Scriptable<number | ChartArea>;
   };
 }
 
@@ -186,7 +186,7 @@ export type EasingFunction =
   | 'easeOutBounce'
   | 'easeInOutBounce';
 
-export interface IFontSpec {
+export interface FontSpec {
   /**
    * Default font color for all text.
    * @default '#666'

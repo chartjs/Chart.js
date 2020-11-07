@@ -14,7 +14,7 @@ import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../hel
 import {version} from '../../package.json';
 
 /**
- * @typedef { import("../platform/platform.base").IEvent } IEvent
+ * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -319,7 +319,7 @@ class Chart {
 		me.scales = scales;
 
 		each(scales, (scale) => {
-			// Set ILayoutItem parameters for backwards compatibility
+			// Set LayoutItem parameters for backwards compatibility
 			scale.fullWidth = scale.options.fullWidth;
 			scale.position = scale.options.position;
 			scale.weight = scale.options.weight;
@@ -1006,7 +1006,7 @@ class Chart {
 
 	/**
 	 * Handle an event
-	 * @param {IEvent} e the event to handle
+	 * @param {ChartEvent} e the event to handle
 	 * @param {boolean} [replay] - true if the event was replayed by `update`
 	 * @return {boolean} true if the chart needs to re-render
 	 * @private

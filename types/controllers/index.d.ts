@@ -1,23 +1,23 @@
 import { Chart, DatasetController } from '../core';
-import { IChartArea, IChartComponent, ScriptableAndArrayOptions, ScriptableOptions } from '../core/interfaces';
+import { ChartArea, ChartComponent, ScriptableAndArrayOptions, ScriptableOptions } from '../core/interfaces';
 import {
-  IArcHoverOptions,
-  IArcOptions,
-  ICommonHoverOptions,
-  IPointHoverOptions,
-  ILineHoverOptions,
-  ILineOptions,
-  IPointOptions,
-  IPointPrefixedHoverOptions,
-  IPointPrefixedOptions,
-  IBarOptions,
+  ArcHoverOptions,
+  ArcOptions,
+  CommonHoverOptions,
+  PointHoverOptions,
+  LineHoverOptions,
+  LineOptions,
+  PointOptions,
+  PointPrefixedHoverOptions,
+  PointPrefixedOptions,
+  BarOptions,
 } from '../elements';
 
-export interface IControllerDatasetOptions {
+export interface ControllerDatasetOptions {
   /**
    * 	How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
    */
-  clip: number | IChartArea;
+  clip: number | ChartArea;
   /**
    * The label for the dataset which appears in the legend and tooltips.
    */
@@ -33,10 +33,10 @@ export interface IControllerDatasetOptions {
   stack: string;
 }
 
-export interface IBarControllerDatasetOptions
-  extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IBarOptions>,
-    ScriptableAndArrayOptions<ICommonHoverOptions> {
+export interface BarControllerDatasetOptions
+  extends ControllerDatasetOptions,
+    ScriptableAndArrayOptions<BarOptions>,
+    ScriptableAndArrayOptions<CommonHoverOptions> {
   /**
    * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.
    * @default 'x'
@@ -78,7 +78,7 @@ export interface IBarControllerDatasetOptions
   minBarLength: number;
 }
 
-export interface IBarControllerChartOptions {
+export interface BarControllerChartOptions {
   /**
    * Should null or undefined values be omitted from drawing
    */
@@ -86,17 +86,17 @@ export interface IBarControllerChartOptions {
 }
 
 export interface BarController extends DatasetController {}
-export const BarController: IChartComponent & {
+export const BarController: ChartComponent & {
   prototype: BarController;
   new (chart: Chart, datasetIndex: number): BarController;
 };
 
-export interface IBubbleControllerDatasetOptions
-  extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IPointOptions>,
-    ScriptableAndArrayOptions<IPointHoverOptions> {}
+export interface BubbleControllerDatasetOptions
+  extends ControllerDatasetOptions,
+    ScriptableAndArrayOptions<PointOptions>,
+    ScriptableAndArrayOptions<PointHoverOptions> {}
 
-export interface IBubbleDataPoint {
+export interface BubbleDataPoint {
   /**
    * X Value
    */
@@ -114,17 +114,17 @@ export interface IBubbleDataPoint {
 }
 
 export interface BubbleController extends DatasetController {}
-export const BubbleController: IChartComponent & {
+export const BubbleController: ChartComponent & {
   prototype: BubbleController;
   new (chart: Chart, datasetIndex: number): BubbleController;
 };
 
-export interface ILineControllerDatasetOptions
-  extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IPointPrefixedOptions>,
-    ScriptableAndArrayOptions<IPointPrefixedHoverOptions>,
-    ScriptableOptions<ILineOptions>,
-    ScriptableOptions<ILineHoverOptions> {
+export interface LineControllerDatasetOptions
+  extends ControllerDatasetOptions,
+    ScriptableAndArrayOptions<PointPrefixedOptions>,
+    ScriptableAndArrayOptions<PointPrefixedHoverOptions>,
+    ScriptableOptions<LineOptions>,
+    ScriptableOptions<LineHoverOptions> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -143,7 +143,7 @@ export interface ILineControllerDatasetOptions
   showLine: boolean;
 }
 
-export interface ILineControllerChartOptions {
+export interface LineControllerChartOptions {
   /**
    * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
    * @default false
@@ -157,30 +157,30 @@ export interface ILineControllerChartOptions {
 }
 
 export interface LineController extends DatasetController {}
-export const LineController: IChartComponent & {
+export const LineController: ChartComponent & {
   prototype: LineController;
   new (chart: Chart, datasetIndex: number): LineController;
 };
 
-export type IScatterControllerDatasetOptions = ILineControllerDatasetOptions;
+export type ScatterControllerDatasetOptions = LineControllerDatasetOptions;
 
-export interface IScatterDataPoint {
+export interface ScatterDataPoint {
   x: number;
   y: number;
 }
 
-export type IScatterControllerChartOptions = ILineControllerChartOptions;
+export type ScatterControllerChartOptions = LineControllerChartOptions;
 
 export interface ScatterController extends LineController {}
-export const ScatterController: IChartComponent & {
+export const ScatterController: ChartComponent & {
   prototype: ScatterController;
   new (chart: Chart, datasetIndex: number): ScatterController;
 };
 
-export interface IDoughnutControllerDatasetOptions
-  extends IControllerDatasetOptions,
-    ScriptableAndArrayOptions<IArcOptions>,
-    ScriptableAndArrayOptions<IArcHoverOptions> {
+export interface DoughnutControllerDatasetOptions
+  extends ControllerDatasetOptions,
+    ScriptableAndArrayOptions<ArcOptions>,
+    ScriptableAndArrayOptions<ArcHoverOptions> {
 
   /**
    * Sweep to allow arcs to cover.
@@ -201,7 +201,7 @@ export interface IDoughnutControllerDatasetOptions
   weight: number;
 }
 
-export interface IDoughnutAnimationOptions {
+export interface DoughnutAnimationOptions {
   /**
    * 	If true, the chart will animate in with a rotation animation. This property is in the options.animation object.
    * @default true
@@ -215,7 +215,7 @@ export interface IDoughnutAnimationOptions {
   animateScale: boolean;
 }
 
-export interface IDoughnutControllerChartOptions {
+export interface DoughnutControllerChartOptions {
   /**
    * The percentage of the chart that is cut out of the middle. (50 - for doughnut, 0 - for pie)
    * @default 50
@@ -234,10 +234,10 @@ export interface IDoughnutControllerChartOptions {
    */
   circumference: number;
 
-  animation: IDoughnutAnimationOptions;
+  animation: DoughnutAnimationOptions;
 }
 
-export type IDoughnutDataPoint = number;
+export type DoughnutDataPoint = number;
 
 export interface DoughnutController extends DatasetController {
   readonly innerRadius: number;
@@ -250,24 +250,24 @@ export interface DoughnutController extends DatasetController {
   calculateCircumference(value: number): number;
 }
 
-export const DoughnutController: IChartComponent & {
+export const DoughnutController: ChartComponent & {
   prototype: DoughnutController;
   new (chart: Chart, datasetIndex: number): DoughnutController;
 };
 
-export type IPieControllerDatasetOptions = IDoughnutControllerDatasetOptions;
-export type IPieControllerChartOptions = IDoughnutControllerChartOptions;
-export type IPieAnimationOptions = IDoughnutAnimationOptions;
+export type PieControllerDatasetOptions = DoughnutControllerDatasetOptions;
+export type PieControllerChartOptions = DoughnutControllerChartOptions;
+export type PieAnimationOptions = DoughnutAnimationOptions;
 
-export type IPieDataPoint = IDoughnutDataPoint;
+export type PieDataPoint = DoughnutDataPoint;
 
 export interface PieController extends DoughnutController {}
-export const PieController: IChartComponent & {
+export const PieController: ChartComponent & {
   prototype: PieController;
   new (chart: Chart, datasetIndex: number): PieController;
 };
 
-export interface IPolarAreaControllerDatasetOptions extends IDoughnutControllerDatasetOptions {
+export interface PolarAreaControllerDatasetOptions extends DoughnutControllerDatasetOptions {
   /**
    * Arc angle to cover. - for polar only
    * @default circumference / (arc count)
@@ -275,32 +275,32 @@ export interface IPolarAreaControllerDatasetOptions extends IDoughnutControllerD
   angle: number;
 }
 
-export type IPolarAreaAnimationOptions = IDoughnutAnimationOptions;
+export type PolarAreaAnimationOptions = DoughnutAnimationOptions;
 
-export interface IPolarAreaControllerChartOptions {
+export interface PolarAreaControllerChartOptions {
   /**
    * Starting angle to draw arcs for the first item in a dataset. In degrees, 0 is at top.
    * @default 0
    */
   startAngle: number;
 
-  animation: IPolarAreaAnimationOptions;
+  animation: PolarAreaAnimationOptions;
 }
 
 export interface PolarAreaController extends DoughnutController {
   countVisibleElements(): number;
 }
-export const PolarAreaController: IChartComponent & {
+export const PolarAreaController: ChartComponent & {
   prototype: PolarAreaController;
   new (chart: Chart, datasetIndex: number): PolarAreaController;
 };
 
-export interface IRadarControllerDatasetOptions
-  extends IControllerDatasetOptions,
-    ScriptableOptions<IPointPrefixedOptions>,
-    ScriptableOptions<IPointPrefixedHoverOptions>,
-    ScriptableOptions<ILineOptions>,
-    ScriptableOptions<ILineHoverOptions> {
+export interface RadarControllerDatasetOptions
+  extends ControllerDatasetOptions,
+    ScriptableOptions<PointPrefixedOptions>,
+    ScriptableOptions<PointPrefixedHoverOptions>,
+    ScriptableOptions<LineOptions>,
+    ScriptableOptions<LineHoverOptions> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -321,10 +321,10 @@ export interface IRadarControllerDatasetOptions
   showLine: boolean;
 }
 
-export type IRadarControllerChartOptions = ILineControllerChartOptions;
+export type RadarControllerChartOptions = LineControllerChartOptions;
 
 export interface RadarController extends DatasetController {}
-export const RadarController: IChartComponent & {
+export const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
