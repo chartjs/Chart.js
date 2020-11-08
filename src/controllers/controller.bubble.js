@@ -34,10 +34,10 @@ export default class BubbleController extends DatasetController {
 	getMaxOverflow() {
 		const me = this;
 		const meta = me._cachedMeta;
-		let i = (meta.data || []).length - 1;
+		const data = meta.data;
 		let max = 0;
-		for (; i >= 0; --i) {
-			max = Math.max(max, me.getStyle(i, true).radius);
+		for (let i = data.length - 1; i >= 0; --i) {
+			max = Math.max(max, data[i].size());
 		}
 		return max > 0 && max;
 	}
