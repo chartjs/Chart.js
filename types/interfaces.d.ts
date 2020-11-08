@@ -22,13 +22,8 @@ import {
 } from './controllers';
 import { CoreChartOptions } from './core/interfaces';
 import { ElementChartOptions } from './elements';
-import {
-  TooltipChartOptions,
-  FillerControllerDatasetOptions,
-  LegendChartOptions,
-  TitleChartOptions,
-} from './plugins';
-import { ChartAnimationOptions, ParsingOptions as ParsingOptions, Plugin } from './core';
+import { FillerControllerDatasetOptions, PluginChartOptions } from './plugins';
+import { Plugin } from './core';
 import {
   LinearScaleOptions,
   LogarithmicScaleOptions,
@@ -145,11 +140,7 @@ export type ScaleChartOptions<TYPE extends ChartType = ChartType> = {
 
 export type ChartOptions<TYPE extends ChartType = ChartType> = DeepPartial<
   CoreChartOptions &
-  ParsingOptions &
-  TooltipChartOptions &
-  LegendChartOptions &
-  TitleChartOptions &
-  ChartAnimationOptions &
+  PluginChartOptions &
   ElementChartOptions &
   DatasetChartOptions<TYPE> &
   ScaleChartOptions<TYPE> &
@@ -169,7 +160,6 @@ export type ChartDataset<
   TYPE extends ChartType = ChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>
 > = DeepPartial<
-  ParsingOptions &
   { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TYPE]
 > & ChartDatasetProperties<TYPE, DATA>;
 

@@ -1,5 +1,6 @@
 import { Chart, Element, InteractionMode } from '.';
 import { ChartDataset } from '../interfaces';
+import { ParsingOptions } from '../controllers';
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
@@ -47,13 +48,6 @@ export interface ChartArea {
   bottom: number;
 }
 
-export interface Padding {
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
-}
-
 export interface ScriptableContext {
   chart: Chart;
   dataPoint: any;
@@ -68,7 +62,7 @@ export type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
 export type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
 export type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
 
-export interface HoverInteractionOptions {
+export interface CoreInteractionOptions {
   /**
    * Sets which elements appear in the tooltip. See Interaction Modes for details.
    * @default 'nearest'
@@ -86,11 +80,20 @@ export interface HoverInteractionOptions {
   axis: 'x' | 'y' | 'xy';
 }
 
-export interface ElementOptions {
-  // TODO
+export interface HoverInteractionOptions extends CoreInteractionOptions {
+  /**
+   * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
+   */
+  onHover(event: ChartEvent, elements: Element[]): void;
 }
 
-export interface CoreChartOptions {
+export interface CoreChartOptions extends ParsingOptions {
+  animation: Scriptable<AnimationOptions>;
+
+  datasets: {
+    animation: Scriptable<AnimationOptions>;
+  };
+
   /**
    * base color
    * @see Defaults.color
@@ -129,6 +132,8 @@ export interface CoreChartOptions {
    */
   devicePixelRatio: number;
 
+  interaction: CoreInteractionOptions;
+
   hover: HoverInteractionOptions;
 
   /**
@@ -141,12 +146,11 @@ export interface CoreChartOptions {
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
   onHover(event: ChartEvent, elements: Element[]): void;
+
   /**
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
   onClick(event: ChartEvent, elements: Element[]): void;
-
-  elements: { [key: string]: ElementOptions };
 
   layout: {
     padding: Scriptable<number | ChartArea>;
@@ -185,6 +189,78 @@ export type EasingFunction =
   | 'easeInBounce'
   | 'easeOutBounce'
   | 'easeInOutBounce';
+
+export interface AnimationCommonSpec {
+	/**
+	 * The number of milliseconds an animation takes.
+	 * @default 1000
+	 */
+	duration: number;
+	/**
+	 * Easing function to use
+	 * @default 'easeOutQuart'
+	 */
+	easing: EasingFunction;
+
+	/**
+	 * Running animation count + FPS display in upper left corner of the chart.
+	 * @default false
+	 */
+	debug: boolean;
+
+	/**
+	 * Delay before starting the animations.
+	 * @default 0
+	 */
+	delay: number;
+
+	/**
+	 * 	If set to true, the animations loop endlessly.
+	 * @default false
+	 */
+	loop: boolean;
+}
+
+export interface AnimationPropertySpec extends AnimationCommonSpec {
+	properties: string[];
+
+	/**
+	 * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
+	 */
+	type: 'color' | 'number' | 'boolean';
+
+	fn: <T>(from: T, to: T, factor: number) => T;
+
+	/**
+	 * Start value for the animation. Current value is used when undefined
+	 */
+	from: Color | number | boolean;
+	/**
+	 *
+	 */
+	to: Color | number | boolean;
+}
+
+export type AnimationSpecContainer = AnimationCommonSpec & {
+	[prop: string]: AnimationPropertySpec;
+};
+
+export type AnimationOptions = AnimationSpecContainer & {
+	/**
+	 * Callback called on each step of an animation.
+	 */
+	onProgress: (this: Chart, event: AnimationEvent) => void;
+	/**
+	 *Callback called when all animations are completed.
+	 */
+	onComplete: (this: Chart, event: AnimationEvent) => void;
+
+	active: AnimationSpecContainer;
+	hide: AnimationSpecContainer;
+	reset: AnimationSpecContainer;
+	resize: AnimationSpecContainer;
+	show: AnimationSpecContainer;
+};
 
 export interface FontSpec {
   /**

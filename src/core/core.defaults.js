@@ -56,9 +56,8 @@ export class Defaults {
 		this.showLine = true;
 		this.plugins = {};
 		this.scale = undefined;
-		this.doughnut = undefined;
 		this.scales = {};
-		this.controllers = undefined;
+		this.controllers = {};
 	}
 	/**
 	 * @param {string} scope
