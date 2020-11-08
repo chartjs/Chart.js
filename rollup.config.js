@@ -21,7 +21,7 @@ const inputESMTypings = {
 };
 
 const banner = `/*!
- * Chart.js v${pkg.version}
+ * Chart.js ${pkg.version}
  * ${pkg.homepage}
  * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
