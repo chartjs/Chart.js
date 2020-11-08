@@ -13,9 +13,25 @@ import {
   BarOptions,
 } from '../elements';
 
-export interface ControllerDatasetOptions {
+export interface ParsingOptions {
   /**
-   * 	How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
+   * How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
+   */
+  parsing:
+  {
+    [key: string]: string;
+  }
+  | false;
+
+  /**
+   * Chart.js is fastest if you provide data with indices that are unique, sorted, and consistent across datasets and provide the normalized: true option to let Chart.js know that you have done so.
+   */
+  normalized: boolean;
+}
+
+export interface ControllerDatasetOptions extends ParsingOptions {
+  /**
+   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
    */
   clip: number | ChartArea;
   /**

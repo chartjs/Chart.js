@@ -1,5 +1,5 @@
-import { ActiveDataPoint, ActiveElement, Chart, Element, AnimationSpecContainer, InteractionMode, LayoutPosition, Plugin } from '../core';
-import { Color, ChartArea, FontSpec, Scriptable, TextAlign, ChartEvent, HoverInteractionOptions } from '../core/interfaces';
+import { ActiveDataPoint, ActiveElement, Chart, Element, InteractionMode, LayoutPosition, Plugin } from '../core';
+import { AnimationSpecContainer, Color, ChartArea, FontSpec, Scriptable, TextAlign, ChartEvent, CoreInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { ChartData, ChartDataset } from '../interfaces';
 
@@ -342,7 +342,7 @@ export interface TooltipPlugin<O = {}> {
   afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
 }
 
-export interface TooltipOptions extends HoverInteractionOptions {
+export interface TooltipOptions extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
@@ -550,4 +550,14 @@ export interface TooltipItem {
    * The chart element (point, arc, bar, etc.) for this tooltip item
    */
   element: Element;
+}
+
+export interface PluginOptions {
+  filler: FillerOptions;
+  legend: LegendOptions;
+  title: TitleOptions;
+  tooltip: TooltipOptions;
+}
+
+export interface PluginChartOptions extends LegendChartOptions, TitleChartOptions, TooltipChartOptions {
 }

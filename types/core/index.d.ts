@@ -1,7 +1,7 @@
 import { BasePlatform } from '../platform';
 import {
 	Color,
-	EasingFunction,
+	CoreChartOptions,
 	ChartArea,
 	ChartComponent,
 	FontSpec,
@@ -11,14 +11,21 @@ import {
 	ChartEvent,
 } from './interfaces';
 import {
+	DeepPartial,
 	DefaultDataPoint,
 	ChartConfiguration,
 	ChartData,
 	ChartDataset,
 	ChartOptions,
 	ChartType,
-	ScaleOptions
+	ChartTypeRegistry,
+	DatasetChartOptions,
+	ScaleChartOptions,
+	ScaleOptions,
+	ScaleType
 } from '../interfaces';
+import { ElementChartOptions } from '../elements';
+import { PluginOptions, PluginChartOptions } from '../plugins';
 
 export interface DateAdapterBase {
 	/**
@@ -118,85 +125,6 @@ export class Animations {
 	update(target: any, values: any): undefined | boolean;
 }
 
-export interface AnimationCommonSpec {
-	/**
-	 * The number of milliseconds an animation takes.
-	 * @default 1000
-	 */
-	duration: number;
-	/**
-	 * Easing function to use
-	 * @default 'easeOutQuart'
-	 */
-	easing: EasingFunction;
-
-	/**
-	 * Running animation count + FPS display in upper left corner of the chart.
-	 * @default false
-	 */
-	debug: boolean;
-
-	/**
-	 * Delay before starting the animations.
-	 * @default 0
-	 */
-	delay: number;
-
-	/**
-	 * 	If set to true, the animations loop endlessly.
-	 * @default false
-	 */
-	loop: boolean;
-}
-
-export interface AnimationPropertySpec extends AnimationCommonSpec {
-	properties: string[];
-
-	/**
-	 * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
-	 */
-	type: 'color' | 'number' | 'boolean';
-
-	fn: <T>(from: T, to: T, factor: number) => T;
-
-	/**
-	 * Start value for the animation. Current value is used when undefined
-	 */
-	from: Color | number | boolean;
-	/**
-	 *
-	 */
-	to: Color | number | boolean;
-}
-
-export type AnimationSpecContainer = AnimationCommonSpec & {
-	[prop: string]: AnimationPropertySpec;
-};
-
-export type AnimationOptions = AnimationSpecContainer & {
-	/**
-	 * Callback called on each step of an animation.
-	 */
-	onProgress: (this: Chart, event: AnimationEvent) => void;
-	/**
-	 *Callback called when all animations are completed.
-	 */
-	onComplete: (this: Chart, event: AnimationEvent) => void;
-
-	active: AnimationSpecContainer;
-	hide: AnimationSpecContainer;
-	reset: AnimationSpecContainer;
-	resize: AnimationSpecContainer;
-	show: AnimationSpecContainer;
-};
-
-export interface ChartAnimationOptions {
-	animation: Scriptable<AnimationOptions>;
-	datasets: {
-		animation: Scriptable<AnimationOptions>;
-	};
-}
-
 export interface ChartMeta<E extends Element = Element, DSE extends Element = Element> {
 	type: string;
 	controller: DatasetController;
@@ -230,14 +158,6 @@ export interface ChartMeta<E extends Element = Element, DSE extends Element = El
 	_sorted: boolean;
 	_stacked: boolean;
 	_parsed: any[];
-}
-
-export interface ParsingOptions {
-	parsing:
-	| {
-		[key: string]: string;
-	}
-	| false;
 }
 
 export interface ActiveDataPoint {
@@ -413,32 +333,28 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	};
 }
 
-export interface Defaults {
-	readonly color: string;
-	readonly events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
-	readonly font: FontSpec;
-	readonly interaction: {
-		mode: InteractionMode | string;
-		intersect: boolean;
+export interface Defaults extends CoreChartOptions, ElementChartOptions {
+	controllers: {
+		[key in ChartType]: DeepPartial<
+			CoreChartOptions &
+			PluginChartOptions &
+			ElementChartOptions &
+			DatasetChartOptions<key>[key] &
+			ScaleChartOptions<key> &
+			ChartTypeRegistry[key]['chartOptions']
+			>;
 	};
-	readonly hover: {
-		onHover?: () => void;
-		mode?: InteractionMode | string;
-		intersect?: boolean;
-	};
-	readonly maintainAspectRatio: boolean;
-	readonly onClick?: () => void;
-	readonly onHover?: () => void;
-	readonly responsive: boolean;
 
-	readonly plugins: { [key: string]: any };
-	readonly scale?: ScaleOptions;
-	readonly doughnut: any;
-	readonly scales: { [key: string]: ScaleOptions };
-	readonly controllers: { [key: string]: any };
+	scale: ScaleOptions;
+	scales: {
+		[key in ScaleType]: ScaleOptions<key>;
+	};
+
+	plugins: PluginOptions;
 
 	set(scope: string, values: any): any;
 	get(scope: string): any;
+
 	/**
 	 * Routes the named defaults to fallback to another scope/name.
 	 * This routing is useful when those target values, like defaults.color, are changed runtime.
@@ -459,7 +375,7 @@ export interface Defaults {
 	route(scope: string, name: string, targetScope: string, targetName: string): void;
 }
 
-export const defaults: Defaults;
+export const defaults: Defaults & DeepPartial<PluginChartOptions>;
 
 export interface Element<T = {}, O = {}> {
 	readonly x: number;
@@ -545,7 +461,7 @@ export const Interaction: {
 	modes: InteractionModeMap;
 };
 
-export type LayoutPosition = 'left' | 'top' | 'right' | 'chartArea';
+export type LayoutPosition = 'left' | 'top' | 'right' | 'bottom' | 'chartArea';
 
 export interface LayoutItem {
 	/**
