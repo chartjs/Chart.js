@@ -1146,7 +1146,10 @@ export default {
 					const item = tooltipItems[0];
 					const labels = item.chart.data.labels;
 					const labelCount = labels ? labels.length : 0;
-					if (item.label) {
+
+					if (this && this.options && this.options.mode === 'dataset') {
+						return item.dataset.label || '';
+					} else if (item.label) {
 						return item.label;
 					} else if (labelCount > 0 && item.dataIndex < labelCount) {
 						return labels[item.dataIndex];
@@ -1163,6 +1166,10 @@ export default {
 			// Args are: (tooltipItem, data)
 			beforeLabel: noop,
 			label(tooltipItem) {
+				if (this && this.options && this.options.mode === 'dataset') {
+					return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
+				}
+
 				let label = tooltipItem.dataset.label || '';
 
 				if (label) {
