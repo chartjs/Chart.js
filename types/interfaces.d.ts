@@ -175,7 +175,7 @@ export interface ChartData<
 export interface ChartConfiguration<
   TYPE extends ChartType = ChartType,
   DATA extends unknown[] = DefaultDataPoint<TYPE>,
-  LABEL = string
+  LABEL = unknown
 > {
   type: TYPE;
   data: ChartData<TYPE, DATA, LABEL>;
