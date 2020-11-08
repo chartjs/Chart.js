@@ -54,6 +54,7 @@ The context object contains the following properties:
 ### chart
 
 - `chart`: the associated chart
+- `type`: `'chart'`
 
 ### dataset
 
@@ -63,6 +64,7 @@ In addition to [chart](#chart)
 - `dataset`: dataset at index `datasetIndex`
 - `datasetIndex`: index of the current dataset
 - `index`: getter for `datasetIndex`
+- `type`: `'dataset'`
 
 ### data
 
@@ -73,12 +75,14 @@ In addition to [dataset](#dataset)
 - `dataPoint`: the parsed data values for the given `dataIndex` and `datasetIndex`
 - `element`: the element (point, arc, bar, etc.) for this data
 - `index`: getter for `dataIndex`
+- `type`: `'data'`
 
 ### scale
 
 In addition to [chart](#chart)
 
 - `scale`: the associated scale
+- `type`: `'scale'`
 
 ### tick
 
@@ -86,3 +90,4 @@ In addition to [scale](#scale)
 
 - `tick`: the associated tick object
 - `index`: tick index
+- `type`: `'tick'`

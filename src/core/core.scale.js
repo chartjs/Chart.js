@@ -274,6 +274,9 @@ function createScaleContext(parent, scale) {
 		scale: {
 			value: scale
 		},
+		type: {
+			value: 'scale'
+		}
 	});
 }
 
@@ -284,6 +287,9 @@ function createTickContext(parent, index, tick) {
 		},
 		index: {
 			value: index
+		},
+		type: {
+			value: 'tick'
 		}
 	});
 }

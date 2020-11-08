@@ -735,6 +735,9 @@ class Chart {
 		return this.$context || (this.$context = Object.create(null, {
 			chart: {
 				value: this
+			},
+			type: {
+				value: 'chart'
 			}
 		}));
 	}
