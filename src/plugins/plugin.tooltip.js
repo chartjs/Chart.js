@@ -1147,7 +1147,7 @@ export default {
 					const labels = item.chart.data.labels;
 					const labelCount = labels ? labels.length : 0;
 
-					if (item?.chart?.config?.options?.tooltips?.mode === 'dataset') {
+					if (this && this.options && this.options.mode === 'dataset') {
 						return item.dataset.label || '';
 					} else if (item.label) {
 						return item.label;
@@ -1166,7 +1166,7 @@ export default {
 			// Args are: (tooltipItem, data)
 			beforeLabel: noop,
 			label(tooltipItem) {
-				if (tooltipItem?.chart?.config?.options?.tooltips?.mode === 'dataset') {
+				if (this && this.options && this.options.mode === 'dataset') {
 					return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
 				}
 
