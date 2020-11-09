@@ -278,13 +278,12 @@ export function resolveObjectKey(obj, key) {
 		return obj[key];
 	}
 	const keys = key.split('.');
-	for (let i = 0, n = keys.length; i < n; ++i) {
+	for (let i = 0, n = keys.length; i < n && obj; ++i) {
 		const k = keys[i];
-		if (k in obj) {
-			obj = obj[k];
-		} else {
-			return;
+		if (!k) {
+			break;
 		}
+		obj = obj[k];
 	}
 	return obj;
 }

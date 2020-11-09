@@ -374,4 +374,87 @@ describe('Chart.helpers.core', function() {
 			expect(output.o.a).not.toBe(a1);
 		});
 	});
+
+	describe('resolveObjectKey', function() {
+		it('should resolve empty key to root object', function() {
+			const obj = {test: true};
+			expect(helpers.resolveObjectKey(obj, '')).toEqual(obj);
+		});
+		it('should resolve one level', function() {
+			const obj = {
+				bool: true,
+				str: 'test',
+				int: 42,
+				obj: {name: 'object'}
+			};
+			expect(helpers.resolveObjectKey(obj, 'bool')).toEqual(true);
+			expect(helpers.resolveObjectKey(obj, 'str')).toEqual('test');
+			expect(helpers.resolveObjectKey(obj, 'int')).toEqual(42);
+			expect(helpers.resolveObjectKey(obj, 'obj')).toEqual(obj.obj);
+		});
+		it('should resolve multiple levels', function() {
+			const obj = {
+				child: {
+					level: 1,
+					child: {
+						level: 2,
+						child: {
+							level: 3
+						}
+					}
+				}
+			};
+			expect(helpers.resolveObjectKey(obj, 'child.level')).toEqual(1);
+			expect(helpers.resolveObjectKey(obj, 'child.child.level')).toEqual(2);
+			expect(helpers.resolveObjectKey(obj, 'child.child.child.level')).toEqual(3);
+		});
+		it('should resolve circular reference', function() {
+			const root = {};
+			const child = {root};
+			child.child = child;
+			root.child = child;
+			expect(helpers.resolveObjectKey(root, 'child')).toEqual(child);
+			expect(helpers.resolveObjectKey(root, 'child.child.child.child.child.child')).toEqual(child);
+			expect(helpers.resolveObjectKey(root, 'child.child.root')).toEqual(root);
+		});
+		it('should break at empty key', function() {
+			const obj = {
+				child: {
+					level: 1,
+					child: {
+						level: 2,
+						child: {
+							level: 3
+						}
+					}
+				}
+			};
+			expect(helpers.resolveObjectKey(obj, 'child..level')).toEqual(obj.child);
+			expect(helpers.resolveObjectKey(obj, 'child.child.level...')).toEqual(2);
+			expect(helpers.resolveObjectKey(obj, '.')).toEqual(obj);
+			expect(helpers.resolveObjectKey(obj, '..')).toEqual(obj);
+		});
+		it('should resolve undefined', function() {
+			const obj = {
+				child: {
+					level: 1,
+					child: {
+						level: 2,
+						child: {
+							level: 3
+						}
+					}
+				}
+			};
+			expect(helpers.resolveObjectKey(obj, 'level')).toEqual(undefined);
+			expect(helpers.resolveObjectKey(obj, 'child.level.a')).toEqual(undefined);
+		});
+		it('should throw on invalid input', function() {
+			expect(() => helpers.resolveObjectKey(undefined, undefined)).toThrow();
+			expect(() => helpers.resolveObjectKey({}, null)).toThrow();
+			expect(() => helpers.resolveObjectKey({}, false)).toThrow();
+			expect(() => helpers.resolveObjectKey({}, true)).toThrow();
+			expect(() => helpers.resolveObjectKey({}, 1)).toThrow();
+		});
+	});
 });
