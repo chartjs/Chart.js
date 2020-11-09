@@ -274,8 +274,13 @@ export function _deprecated(scope, value, previous, current) {
 }
 
 export function resolveObjectKey(obj, key) {
-	if (key.length < 3) {
-		return obj[key];
+	// Special cases for `x` and `y` keys. It's quite a lot faster to aceess this way.
+	// Those are the default keys Chart.js is resolving, so it makes sense to be fast.
+	if (key === 'x') {
+		return obj.x;
+	}
+	if (key === 'y') {
+		return obj.y;
 	}
 	const keys = key.split('.');
 	for (let i = 0, n = keys.length; i < n && obj; ++i) {
