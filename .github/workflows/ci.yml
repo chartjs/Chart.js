@@ -49,8 +49,20 @@ jobs:
         npm run docs
         npm run typedoc
         npm pack
-    - name: Coveralls
-      if: runner.os == 'Linux'
+    - name: Coveralls Parallel
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
+        flag-name: run-${{ matrix.os }}
+        parallel: true
+
+
+  finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
