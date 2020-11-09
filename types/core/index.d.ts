@@ -172,7 +172,7 @@ export interface ActiveElement extends ActiveDataPoint {
 export declare class Chart<
 	TYPE extends ChartType = ChartType,
 	DATA extends unknown[] = DefaultDataPoint<TYPE>,
-	LABEL = string
+	LABEL = unknown
 	> {
 	readonly platform: BasePlatform;
 	readonly id: string;
