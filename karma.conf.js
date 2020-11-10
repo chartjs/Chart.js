@@ -112,7 +112,7 @@ module.exports = function(karma) {
 			dir: 'coverage/',
 			reporters: [
 				{type: 'html', subdir: 'html'},
-				{type: 'lcovonly', subdir: '.'}
+				{type: 'lcovonly', subdir: (browser) => browser.toLowerCase().split(/[ /-]/)[0]}
 			]
 		};
 	}

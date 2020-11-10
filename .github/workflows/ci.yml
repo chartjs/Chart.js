@@ -49,11 +49,19 @@ jobs:
         npm run docs
         npm run typedoc
         npm pack
-    - name: Coveralls Parallel
+    - name: Coveralls Parallel - Chrome
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
-        flag-name: run-${{ matrix.os }}
+        path-to-lcov: './coverage/chrome/lcov.info'
+        flag-name: ${{ matrix.os }}-chrome
+        parallel: true
+    - name: Coveralls Parallel - Firefox
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: './coverage/firefox/lcov.info'
+        flag-name: ${{ matrix.os }}-firefox
         parallel: true
 
 
