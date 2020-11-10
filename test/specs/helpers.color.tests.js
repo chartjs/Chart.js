@@ -11,6 +11,14 @@ describe('Color helper', function() {
 });
 
 describe('Background hover color helper', function() {
+	it('should return a modified version of color when called with a color', function() {
+		var originalColorRGB = 'rgb(70, 191, 189)';
+
+		expect(getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
+	});
+});
+
+describe('color and getHoverColor helpers', function() {
 	it('should return a CanvasPattern when called with a CanvasPattern', function(done) {
 		var dots = new Image();
 		dots.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAD1BMVEUAAAD///////////////+PQt5oAAAABXRSTlMAHlFhZsfk/BEAAAAqSURBVHgBY2BgZGJmYmSAAUYWEIDzmcBcJhiXGcxlRpPFrhdmMiqgvX0AcGIBEUAo6UAAAAAASUVORK5CYII=';
@@ -20,10 +28,10 @@ describe('Background hover color helper', function() {
 			var patternContext = patternCanvas.getContext('2d');
 			var pattern = patternContext.createPattern(dots, 'repeat');
 			patternContext.fillStyle = pattern;
+			var chartPattern = chartContext.createPattern(patternCanvas, 'repeat');
 
-			var backgroundColor = getHoverColor(chartContext.createPattern(patternCanvas, 'repeat'));
-
-			expect(backgroundColor instanceof CanvasPattern).toBe(true);
+			expect(color(chartPattern) instanceof CanvasPattern).toBe(true);
+			expect(getHoverColor(chartPattern) instanceof CanvasPattern).toBe(true);
 
 			done();
 		};
@@ -33,12 +41,7 @@ describe('Background hover color helper', function() {
 		var context = document.createElement('canvas').getContext('2d');
 		var gradient = context.createLinearGradient(0, 1, 2, 3);
 
+		expect(color(gradient) instanceof CanvasGradient).toBe(true);
 		expect(getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
-	});
-
-	it('should return a modified version of color when called with a color', function() {
-		var originalColorRGB = 'rgb(70, 191, 189)';
-
-		expect(getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
 	});
 });
