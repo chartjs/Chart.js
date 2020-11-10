@@ -65,6 +65,7 @@ function resolveValue(key, value, context) {
 const containsHover = (prefixes) => prefixes.indexOf('hover') !== -1;
 const getReadKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
 const noHoverFallback = (prefix, name) => prefix === '' && name.indexOf('Color') !== -1;
+const isDefined = value => typeof value !== 'undefined';
 
 function firstDefinedValue(scopes, name, prefixes) {
 	const hover = containsHover(prefixes);
@@ -76,12 +77,19 @@ function firstDefinedValue(scopes, name, prefixes) {
 			continue;
 		}
 		const readKey = getReadKey(prefix, name);
-		for (let scopeIndex = 0; scopeIndex < scopes.length; scopeIndex++) {
-			const scope = scopes[scopeIndex];
-			const value = scope && scope[readKey];
-			if (typeof value !== 'undefined') {
-				return value;
-			}
+		const value = firstValueFromScopes(scopes, readKey);
+		if (isDefined(value)) {
+			return value;
+		}
+	}
+}
+
+function firstValueFromScopes(scopes, readKey) {
+	for (let scopeIndex = 0; scopeIndex < scopes.length; scopeIndex++) {
+		const scope = scopes[scopeIndex];
+		const value = scope && scope[readKey];
+		if (isDefined(value)) {
+			return value;
 		}
 	}
 }
