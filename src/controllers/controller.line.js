@@ -1,7 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {isNumber, _limitValue} from '../helpers/helpers.math';
 import {_lookupByKey} from '../helpers/helpers.collection';
-import {_hideLine} from '../helpers/helpers.extras';
 
 export default class LineController extends DatasetController {
 
@@ -83,12 +82,7 @@ export default class LineController extends DatasetController {
 	 */
 	resolveDatasetElementOptions(mode, prefix) {
 		const values = super.resolveDatasetElementOptions(mode, prefix);
-
-		if (!this.options.showLine) {
-			_hideLine(values);
-		}
-
-		return values;
+		return _applyLineControllerOptions(values, this.options);
 	}
 	/**
 	 * @protected
@@ -189,4 +183,15 @@ function scaleRangesChanged(meta) {
 
 	Object.assign(_scaleRanges, newRanges);
 	return changed;
+}
+
+
+/**
+ * @private
+ */
+export function _applyLineControllerOptions(lineOptions, controllerOptions) {
+	if (!controllerOptions.showLine) {
+		lineOptions.borderWidth = 0;
+	}
+	return lineOptions;
 }

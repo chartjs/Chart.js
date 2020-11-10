@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {_hideLine} from '../helpers/helpers.extras';
+import {_applyLineControllerOptions} from './controller.line';
 
 export default class RadarController extends DatasetController {
 
@@ -74,12 +74,7 @@ export default class RadarController extends DatasetController {
 	 */
 	resolveDatasetElementOptions(mode, prefix) {
 		const values = super.resolveDatasetElementOptions(mode, prefix);
-
-		if (!this.options.showLine) {
-			_hideLine(values);
-		}
-
-		return values;
+		return _applyLineControllerOptions(values, this.options);
 	}
 }
 

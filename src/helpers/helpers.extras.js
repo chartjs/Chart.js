@@ -38,10 +38,3 @@ export function throttled(fn, thisArg, updateFn) {
 		}
 	};
 }
-
-/**
- * @private
- */
-export function _hideLine(options) {
-	options.borderWidth = 0;
-}
