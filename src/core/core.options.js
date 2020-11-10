@@ -45,35 +45,42 @@ export default class Options {
 				continue;
 			}
 			const value = options[key];
-			result[key] = isScriptable(value) ? value(context) :
-				isIndexable(key, value) ? value[context.index % value.length] : value;
+			result[key] = resolveValue(key, value, context);
 		}
 		result.$shared = false;
 		return result;
 	}
 }
 
+function resolveValue(key, value, context) {
+	if (isScriptable(value)) {
+		value = value(context);
+	}
+	if (isIndexable(key, value)) {
+		value = value[context.index % value.length];
+	}
+	return value;
+}
+
+const getReadKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
+const noHoverFallback = (prefix, name) => prefix === '' && name.indexOf('Color') !== -1;
+
 function firstDefinedValue(scopes, name, prefixes) {
 	const hover = prefixes.indexOf('hover') !== -1;
 	for (let prefixIndex = 0; prefixIndex < prefixes.length; prefixIndex++) {
 		const prefix = prefixes[prefixIndex];
-		if (hover && prefix === '' && name.indexOf('Color') !== -1) {
+		if (hover && noHoverFallback(prefix, name)) {
 			// prevent defaulting hovedBackgroundColor to backgroundColor,
 			// to allow adding automatic hover colors
 			continue;
 		}
-		const readKey = prefix ? prefix + _capitalize(name) : name;
+		const readKey = getReadKey(prefix, name);
 		for (let scopeIndex = 0; scopeIndex < scopes.length; scopeIndex++) {
 			const scope = scopes[scopeIndex];
-			if (!scope) {
-				continue;
+			const value = scope && scope[readKey];
+			if (typeof value !== 'undefined') {
+				return value;
 			}
-
-			const value = scope[readKey];
-			if (typeof value === 'undefined') {
-				continue;
-			}
-			return value;
 		}
 	}
 }
