@@ -108,10 +108,7 @@ function includeDefaults(config, options) {
 	const scaleConfig = mergeScaleConfig(config, options);
 	const elements = options.elements;
 
-	options = mergeConfig(
-		defaults,
-		defaults.controllers[config.type],
-		options);
+	options = mergeConfig(defaults, defaults.controllers[config.type], options);
 
 	options.elements = elements;
 
@@ -128,12 +125,14 @@ function includeDefaults(config, options) {
 		defaults.plugins.title,
 		options.title
 	]);
+
 	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [
 		defaults.interaction,
 		defaults.plugins.tooltip,
 		options.interaction,
 		options.tooltips
 	]);
+
 	return options;
 }
 
