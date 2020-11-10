@@ -1,6 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {isNumber, _limitValue} from '../helpers/helpers.math';
 import {_lookupByKey} from '../helpers/helpers.collection';
+import {_hideLine} from '../helpers/helpers.extras';
 
 export default class LineController extends DatasetController {
 
@@ -84,7 +85,7 @@ export default class LineController extends DatasetController {
 		const values = super.resolveDatasetElementOptions(mode, prefix);
 
 		if (!this.options.showLine) {
-			values.borderWidth = 0;
+			_hideLine(values);
 		}
 
 		return values;
