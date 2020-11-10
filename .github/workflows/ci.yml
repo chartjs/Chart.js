@@ -49,7 +49,20 @@ jobs:
         npm run docs
         npm run typedoc
         npm pack
-    - name: Publish Test Results
-      run: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-      shell: bash
-      continue-on-error: true
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: run-${{ matrix.os }}
+        parallel: true
+
+
+  finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
