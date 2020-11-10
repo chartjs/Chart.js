@@ -62,11 +62,12 @@ function resolveValue(key, value, context) {
 	return value;
 }
 
+const containsHover = (prefixes) => prefixes.indexOf('hover') !== -1;
 const getReadKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
 const noHoverFallback = (prefix, name) => prefix === '' && name.indexOf('Color') !== -1;
 
 function firstDefinedValue(scopes, name, prefixes) {
-	const hover = prefixes.indexOf('hover') !== -1;
+	const hover = containsHover(prefixes);
 	for (let prefixIndex = 0; prefixIndex < prefixes.length; prefixIndex++) {
 		const prefix = prefixes[prefixIndex];
 		if (hover && noHoverFallback(prefix, name)) {
