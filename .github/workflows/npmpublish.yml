@@ -8,6 +8,16 @@ on:
     types: [published]
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.trim.outputs.version }}
+    steps: 
+      - id: trim
+        run: echo "::set-output name=version::${TAG:1}"
+        env: 
+          TAG: ${{ github.event.release.tag_name }}
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +34,7 @@ jobs:
         npm test
 
   publish-npm:
-    needs: test
+    needs: [test, setup]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -39,35 +49,31 @@ jobs:
           json -I -f package.json -e "this.version=\"$VERSION\""
           json -I -f package-lock.json -e "this.version=\"$VERSION\""
           npm run build
-          ./scripts/docs-config.sh "${VERSION:1}"
+          ./scripts/docs-config.sh "${VERSION}"
           npm run docs
           npm run typedoc
           npm pack
         env:
-          VERSION: ${{ github.event.release.tag_name }}
+          VERSION: ${{ needs.setup.outputs.version }}
       - name: Publish to NPM
         run: ./scripts/publish.sh
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          VERSION: ${{ github.event.release.tag_name }}
-      # On releases, VERSION is the tag name which is the version
-      # However, it will include the leading "v", so we need to strip that
-      # first character off here since we want the docs folder to not have
-      # the "v" in it.
+          VERSION: ${{ needs.setup.outputs.version }}
       - name: Deploy Docs
-        run: ./scripts/deploy-docs.sh "${VERSION:1}"
+        run: ./scripts/deploy-docs.sh "$VERSION"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
           GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
-          VERSION: ${{ github.event.release.tag_name }}
+          VERSION: ${{ needs.setup.outputs.version }}
       - name: Upload NPM package file
         id: upload-npm-package-file
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ github.event.release.tag_name }}
+          VERSION: ${{ needs.setup.outputs.version }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ format('chart.js-{0}.tgz', github.event.release.tag_name) }}
-          asset_name: ${{ format('chart.js-{0}.tgz', github.event.release.tag_name) }}
+          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
           asset_content_type: application/gzip
