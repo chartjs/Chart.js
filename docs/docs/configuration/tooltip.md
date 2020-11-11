@@ -40,7 +40,7 @@ The tooltip configuration is passed into the `options.tooltips` namespace. The g
 | `usePointStyle` | `boolean` | `false` | Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
-| `rtl` | `boolean` | | `true` for rendering the legends from right to left.
+| `rtl` | `boolean` | | `true` for rendering the tooltip from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
 
 ### Position Modes
