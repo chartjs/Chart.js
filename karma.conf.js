@@ -102,7 +102,9 @@ module.exports = function(karma) {
 	});
 
 	if (args.coverage) {
-		build.plugins.push(istanbul());
+		build.plugins.push(istanbul({
+			exclude: 'node_modules/**/*.js'
+		}));
 		karma.reporters.push('coverage');
 		karma.coverageReporter = {
 			dir: 'coverage/',
