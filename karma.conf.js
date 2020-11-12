@@ -1,11 +1,11 @@
 /* eslint-disable import/no-commonjs */
 
 const commonjs = require('@rollup/plugin-commonjs');
+const istanbul = require('rollup-plugin-istanbul');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const builds = require('./rollup.config');
 const yargs = require('yargs');
-
 
 module.exports = function(karma) {
 	const args = yargs
@@ -101,12 +101,8 @@ module.exports = function(karma) {
 		browserDisconnectTolerance: 3
 	});
 
-	// https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647
-	if (process.env.TRAVIS) {
-		karma.customLaunchers.chrome.flags.push('--no-sandbox');
-	}
-
 	if (args.coverage) {
+		build.plugins.push(istanbul());
 		karma.reporters.push('coverage');
 		karma.coverageReporter = {
 			dir: 'coverage/',
