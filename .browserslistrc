@@ -1,4 +1,4 @@
-> 0.5%
-last 2 versions
-Firefox ESR
-not dead
+defaults
+not IE 11
+not IE_Mob 11
+maintained node versions
