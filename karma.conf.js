@@ -22,6 +22,14 @@ module.exports = function(karma) {
 	const regex = karma.autoWatch ? /chart\.js$/ : /chart\.min\.js$/;
 	const build = builds.filter(v => v.output.file && v.output.file.match(regex))[0];
 
+	if (args.coverage) {
+		build.plugins = [
+			json(),
+			resolve(),
+			istanbul({exclude: ['node_modules/**/*.js', 'package.json']})
+		];
+	}
+
 	karma.set({
 		frameworks: ['jasmine'],
 		reporters: ['progress', 'kjhtml'],
@@ -102,9 +110,6 @@ module.exports = function(karma) {
 	});
 
 	if (args.coverage) {
-		build.plugins.push(istanbul({
-			exclude: 'node_modules/**/*.js'
-		}));
 		karma.reporters.push('coverage');
 		karma.coverageReporter = {
 			dir: 'coverage/',
