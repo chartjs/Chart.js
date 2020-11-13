@@ -25,9 +25,9 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js 3 is tree-shakeable. So if you are using it as an `npm` module in a project, you need to import and register the controllers, elements, scales and plugins you want to use. You will not have to call `register` if importing Chart.js via a `script` tag, but will not get the tree shaking benefits in this case. Here is an example of registering components:
 
 ```javascript
-import { Chart, LineController, Line, Point, LinearScale, Title } from `chart.js`
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title } from `chart.js`
 
-Chart.register(LineController, Line, Point, LinearScale, Title);
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title);
 
 const chart = new Chart(ctx, {
     type: 'line',
