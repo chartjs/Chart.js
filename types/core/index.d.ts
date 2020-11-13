@@ -352,7 +352,7 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions {
 
 	plugins: PluginOptions;
 
-	set(scope: string, values: any): any;
+	set(scopeOrValues: string|any, values?: any): any;
 	get(scope: string): any;
 
 	/**
