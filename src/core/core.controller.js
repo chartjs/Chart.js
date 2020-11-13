@@ -998,11 +998,13 @@ class Chart {
 			return;
 		}
 
-		me._handleEvent(e, replay);
+		const changed = me._handleEvent(e, replay);
 
 		me._plugins.notify(me, 'afterEvent', [e, replay]);
 
-		me.render();
+		if (changed) {
+			me.render();
+		}
 
 		return me;
 	}
