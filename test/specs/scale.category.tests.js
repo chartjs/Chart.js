@@ -90,6 +90,30 @@ describe('Category scale tests', function() {
 		expect(getLabels(scale)).toEqual(labels);
 	});
 
+	it('Should generate missing labels', function() {
+		var labels = ['a', 'b', 'c', 'd'];
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				datasets: [{
+					data: {a: 1, b: 3, c: -1, d: 10}
+				}]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+						labels: ['a']
+					}
+				}
+			}
+		});
+
+		var scale = chart.scales.x;
+		expect(getLabels(scale)).toEqual(labels);
+
+	});
+
 	it('should get the correct label for the index', function() {
 		var chart = window.acquireChart({
 			type: 'line',
