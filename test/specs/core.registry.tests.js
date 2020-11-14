@@ -284,14 +284,18 @@ describe('Chart.registry', function() {
 		expect(afterUnregisterCount).withContext('afterUnregister').toBe(4);
 	});
 
-	it('should not register anything that would collide with existing defaults', function() {
-		Chart.defaults.controllers.test = {test: true};
+	it('should preserve existing defaults', function() {
+		Chart.defaults.controllers.test = {test1: true};
+
 		class testController extends Chart.DatasetController {}
 		testController.id = 'test';
-		expect(function() {
-			Chart.register(testController);
-		}).toThrow(new Error('Can not register "test", because "defaults.controllers.test" would collide with existing defaults'));
-		delete Chart.defaults.controllers.test;
+		testController.defaults = {test1: false, test2: true};
+
+		Chart.register(testController);
+		expect(Chart.defaults.controllers.test).toEqual({test1: true, test2: true});
+
+		Chart.unregister(testController);
+		expect(Chart.defaults.controllers.test).not.toBeDefined();
 	});
 
 	describe('should handle multiple items', function() {
