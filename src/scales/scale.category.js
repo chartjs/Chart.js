@@ -12,12 +12,16 @@ export default class CategoryScale extends Scale {
 
 	parse(raw, index) {
 		const labels = this.getLabels();
-		if (labels[index] === raw) {
+		const indexSupplied = isFinite(index);
+		if (indexSupplied && labels[index] === raw) {
 			return index;
 		}
 		const first = labels.indexOf(raw);
+		if (first === -1) {
+			return indexSupplied && typeof raw === 'string' ? labels.push(raw) - 1 : index;
+		}
 		const last = labels.lastIndexOf(raw);
-		return first === -1 || first !== last ? index : first;
+		return first !== last ? index : first;
 	}
 
 	determineDataLimits() {

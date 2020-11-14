@@ -2,7 +2,6 @@ module.exports = {
 	config: {
 		type: 'bar',
 		data: {
-			labels: [0, 1, 3, 4],
 			datasets: [
 				{
 					data: {0: 5, 1: 20, 2: 1, 3: 10},
