@@ -1,5 +1,16 @@
 import Scale from '../core/core.scale';
 
+function findOrAddLabel(labels, raw, index) {
+	const first = labels.indexOf(raw);
+	if (first === -1) {
+		return isFinite(index)
+			? typeof raw === 'string' ? labels.push(raw) - 1 : index
+			: raw;
+	}
+	const last = labels.lastIndexOf(raw);
+	return first !== last ? index : first;
+}
+
 export default class CategoryScale extends Scale {
 
 	constructor(cfg) {
@@ -12,16 +23,8 @@ export default class CategoryScale extends Scale {
 
 	parse(raw, index) {
 		const labels = this.getLabels();
-		const indexSupplied = isFinite(index);
-		if (indexSupplied && labels[index] === raw) {
-			return index;
-		}
-		const first = labels.indexOf(raw);
-		if (first === -1) {
-			return indexSupplied && typeof raw === 'string' ? labels.push(raw) - 1 : index;
-		}
-		const last = labels.lastIndexOf(raw);
-		return first !== last ? index : first;
+		return isFinite(index) && labels[index] === raw
+			? index : findOrAddLabel(labels, raw, index);
 	}
 
 	determineDataLimits() {
