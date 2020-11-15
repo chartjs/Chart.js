@@ -1,4 +1,4 @@
-import {isFinite, isNullOrUndef} from '../helpers/helpers.core';
+import {finiteOrDefault, isFinite} from '../helpers/helpers.core';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
@@ -7,10 +7,6 @@ import Ticks from '../core/core.ticks';
 function isMajor(tickVal) {
 	const remain = tickVal / (Math.pow(10, Math.floor(log10(tickVal))));
 	return remain === 1;
-}
-
-function finiteOrDefault(value, def) {
-	return isFinite(value) ? value : def;
 }
 
 /**
@@ -86,38 +82,33 @@ export default class LogarithmicScale extends Scale {
 
 	handleTickRangeOptions() {
 		const me = this;
-		const {suggestedMax, suggestedMin} = me.options;
-		const DEFAULT_MIN = 1;
-		const DEFAULT_MAX = 10;
+		const {minDefined, maxDefined} = me.getUserBounds();
 		let min = me.min;
 		let max = me.max;
 
-		if (!isNullOrUndef(suggestedMin)) {
-			min = Math.min(min, suggestedMin);
-		}
-		if (!isNullOrUndef(suggestedMax)) {
-			max = Math.max(max, suggestedMax);
-		}
+		const setMin = v => (min = minDefined ? min : v);
+		const setMax = v => (max = maxDefined ? max : v);
+		const exp = (v, m) => Math.pow(10, Math.floor(log10(v)) + m);
 
 		if (min === max) {
 			if (min <= 0) { // includes null
-				min = DEFAULT_MIN;
-				max = DEFAULT_MAX;
+				setMin(1);
+				setMax(10);
 			} else {
-				min = Math.pow(10, Math.floor(log10(min)) - 1);
-				max = Math.pow(10, Math.floor(log10(max)) + 1);
+				setMin(exp(min, -1));
+				setMax(exp(max, +1));
 			}
 		}
 		if (min <= 0) {
-			min = Math.pow(10, Math.floor(log10(max)) - 1);
+			setMin(exp(max, -1));
 		}
 		if (max <= 0) {
-			max = Math.pow(10, Math.floor(log10(min)) + 1);
+			setMax(exp(min, +1));
 		}
-		// if data has `0` in it or `beginAtZero` is true, and min (non zero) value is at bottom
-		// of scale, lower the min bound by one exp.
-		if (!me._userMin && me._zero && min === Math.pow(10, Math.floor(log10(me.min)))) {
-			min = Math.pow(10, Math.floor(log10(min)) - 1);
+		// if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
+		// of scale, and it does not equal suggestedMin, lower the min bound by one exp.
+		if (me._zero && me.min !== me._suggestedMin && min === exp(me.min, 0)) {
+			setMin(exp(min, -1));
 		}
 		me.min = min;
 		me.max = max;

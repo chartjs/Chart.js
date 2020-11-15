@@ -1,7 +1,7 @@
 import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
-import {callback as call, each, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
 import {toFont, resolve, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
@@ -367,6 +367,8 @@ export default class Scale extends Element {
 		this._reversePixels = false;
 		this._userMax = undefined;
 		this._userMin = undefined;
+		this._suggestedMax = undefined;
+		this._suggestedMin = undefined;
 		this._ticksLength = 0;
 		this._borderValue = 0;
 		this._cache = {};
@@ -386,6 +388,8 @@ export default class Scale extends Element {
 		// parse min/max value, so we can properly determine min/max for other scales
 		me._userMin = me.parse(options.min);
 		me._userMax = me.parse(options.max);
+		me._suggestedMin = me.parse(options.suggestedMin);
+		me._suggestedMax = me.parse(options.suggestedMax);
 	}
 
 	/**
@@ -404,15 +408,17 @@ export default class Scale extends Element {
 	 * @since 3.0
 	 */
 	getUserBounds() {
-		let min = this._userMin;
-		let max = this._userMax;
-		if (isNullOrUndef(min) || isNaN(min)) {
-			min = Number.POSITIVE_INFINITY;
-		}
-		if (isNullOrUndef(max) || isNaN(max)) {
-			max = Number.NEGATIVE_INFINITY;
-		}
-		return {min, max, minDefined: isFinite(min), maxDefined: isFinite(max)};
+		let {_userMin, _userMax, _suggestedMin, _suggestedMax} = this;
+		_userMin = finiteOrDefault(_userMin, Number.POSITIVE_INFINITY);
+		_userMax = finiteOrDefault(_userMax, Number.NEGATIVE_INFINITY);
+		_suggestedMin = finiteOrDefault(_suggestedMin, Number.POSITIVE_INFINITY);
+		_suggestedMax = finiteOrDefault(_suggestedMax, Number.NEGATIVE_INFINITY);
+		return {
+			min: finiteOrDefault(_userMin, _suggestedMin),
+			max: finiteOrDefault(_userMax, _suggestedMax),
+			minDefined: isFinite(_userMin),
+			maxDefined: isFinite(_userMax)
+		};
 	}
 
 	/**
@@ -442,7 +448,10 @@ export default class Scale extends Element {
 			}
 		}
 
-		return {min, max};
+		return {
+			min: finiteOrDefault(min, finiteOrDefault(max, min)),
+			max: finiteOrDefault(max, finiteOrDefault(min, max))
+		};
 	}
 
 	invalidateCaches() {

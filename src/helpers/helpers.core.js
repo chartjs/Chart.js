@@ -66,6 +66,16 @@ export {
 };
 
 /**
+ * Returns `value` if finite, else returns `defaultValue`.
+ * @param {*} value - The value to return if defined.
+ * @param {*} defaultValue - The value to return if `value` is not finite.
+ * @returns {*}
+ */
+export function finiteOrDefault(value, defaultValue) {
+	return isNumberFinite(value) ? value : defaultValue;
+}
+
+/**
  * Returns `value` if defined, else returns `defaultValue`.
  * @param {*} value - The value to return if defined.
  * @param {*} defaultValue - The value to return if `value` is undefined.
