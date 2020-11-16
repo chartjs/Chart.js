@@ -41,6 +41,7 @@
     "lint-tsc": "tsc",
     "lint": "concurrently \"npm:lint-*\"",
     "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
+    "mac-test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --browsers safari --grep",
     "typedoc": "npx typedoc"
   },
   "devDependencies": {
