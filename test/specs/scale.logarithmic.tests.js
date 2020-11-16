@@ -1142,4 +1142,27 @@ describe('Logarithmic Scale tests', function() {
 		expect(chart.scales.y.min).toBe(10);
 		expect(chart.scales.y.max).toBe(100);
 	});
+
+	it('Should bound to data', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b'],
+				datasets: [{
+					data: [1.1, 99]
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						type: 'logarithmic',
+						bounds: 'data'
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.y.min).toEqual(1.1);
+		expect(chart.scales.y.max).toEqual(99);
+	});
 });

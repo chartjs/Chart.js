@@ -27,10 +27,20 @@ export default class CategoryScale extends Scale {
 
 	determineDataLimits() {
 		const me = this;
-		const max = me.getLabels().length - 1;
+		const {minDefined, maxDefined} = me.getUserBounds();
+		let {min, max} = me.getMinMax(true);
 
-		me.min = Math.max(me._userMin || 0, 0);
-		me.max = Math.min(me._userMax || max, max);
+		if (me.options.bounds === 'ticks') {
+			if (!minDefined) {
+				min = 0;
+			}
+			if (!maxDefined) {
+				max = me.getLabels().length - 1;
+			}
+		}
+
+		me.min = min;
+		me.max = max;
 	}
 
 	buildTicks() {

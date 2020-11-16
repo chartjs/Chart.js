@@ -475,4 +475,33 @@ describe('Category scale tests', function() {
 		expect(yScale.getPixelForValue(3)).toBeCloseToPixel(426);
 		expect(yScale.getPixelForValue(4)).toBeCloseToPixel(538);
 	});
+
+	it('Should bound to ticks/data', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b', 'c', 'd'],
+				datasets: [{
+					data: {b: 1, c: 99}
+				}]
+			},
+			options: {
+				scales: {
+					x: {
+						type: 'category',
+						bounds: 'data'
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.x.min).toEqual(1);
+		expect(chart.scales.x.max).toEqual(2);
+
+		chart.options.scales.x.bounds = 'ticks';
+		chart.update();
+
+		expect(chart.scales.x.min).toEqual(0);
+		expect(chart.scales.x.max).toEqual(3);
+	});
 });

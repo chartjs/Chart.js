@@ -124,9 +124,11 @@ export default class LogarithmicScale extends Scale {
 		};
 		const ticks = generateTicks(generationOptions, me);
 
-		// At this point, we need to update our max and min given the tick values since we have expanded the
-		// range of the scale
-		_setMinAndMaxByKey(ticks, me, 'value');
+		// At this point, we need to update our max and min given the tick values,
+		// since we probably have expanded the range of the scale
+		if (opts.bounds === 'ticks') {
+			_setMinAndMaxByKey(ticks, me, 'value');
+		}
 
 		if (opts.reverse) {
 			ticks.reverse();
