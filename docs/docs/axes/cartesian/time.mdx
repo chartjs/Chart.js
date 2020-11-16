@@ -2,6 +2,10 @@
 title: Time Cartesian Axis
 ---
 
+import CommonAll from '../_common.md'
+import CommonCartesian from './_common.md'
+import CommonTicks from './_common_ticks.md'
+
 The time scale is used to display times and dates. Data are spread according to the amount of time between data points. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 ## Date Adapters
@@ -20,12 +24,12 @@ When providing data for the time scale, Chart.js uses timestamps defined as mill
 
 ## Configuration Options
 
-The following options are provided by the time scale. You may also set options provided by the [common tick configuration](index.md#tick-configuration).
+### Time Axis specific options
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
-| `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](#scale-bounds)
+| `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](./index.mdx#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `boolean`\|`number` | `false` | If `boolean` and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday. If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday)
@@ -36,7 +40,10 @@ The following options are provided by the time scale. You may also set options p
 | `time.stepSize` | `number` | `1` | The number of units between grid lines.
 | `time.minUnit` | `string` | `'millisecond'` | The minimum display format to be used for a time unit.
 
-### Time Units
+<CommonCartesian />
+<CommonAll />
+
+#### Time Units
 
 The following time measurements are supported. The names can be passed as strings to the `time.unit` config option to force a certain unit.
 
@@ -69,7 +76,7 @@ var chart = new Chart(ctx, {
 });
 ```
 
-### Display Formats
+#### Display Formats
 
 You may specify a map of display formats with a key for each unit:
 
@@ -106,14 +113,7 @@ var chart = new Chart(ctx, {
 });
 ```
 
-### Scale Bounds
-
-The `bounds` property controls the scale boundary strategy (bypassed by `min`/`max` time options).
-
-* `'data'`: makes sure data are fully visible, labels outside are removed
-* `'ticks'`: makes sure ticks are fully visible, data outside are truncated
-
-### Ticks Source
+#### Ticks Source
 
 The `ticks.source` property controls the ticks generation.
 
@@ -121,12 +121,12 @@ The `ticks.source` property controls the ticks generation.
 * `'data'`: generates ticks from data (including labels from data `{x|y}` objects)
 * `'labels'`: generates ticks from user given `labels` ONLY
 
-### Parser
+#### Parser
 
 If this property is defined as a string, it is interpreted as a custom format to be used by the date adapter to parse the date.
 
 If this is a function, it must return a type that can be handled by your date adapter's `parse` method.
 
-### Internal data format
+## Internal data format
 
 Internally time scale uses milliseconds since epoch
