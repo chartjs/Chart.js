@@ -2,29 +2,28 @@
 title: Linear Radial Axis
 ---
 
+import CommonAll from '../_common.md'
+import CommonTicksAll from '../_common_ticks.md'
+
 The linear radial scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation to the center of the axis.
 
 The following additional configuration options are provided by the radial linear scale.
 
 ## Configuration Options
 
-The axis has configuration properties for ticks, angle lines (lines that appear in a radar chart outward from the center), pointLabels (labels around the edge in a radar chart). The following sections define each of the properties in those sections.
+### Linear Radial Axis specific options
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
 | `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
-| `gridLines` | `object` | | Grid line configuration. [more...](../styling.md#grid-line-configuration)
-| `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](#axis-range-settings)
-| `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](#axis-range-settings)
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
-| `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](#axis-range-settings)
-| `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](#axis-range-settings)
-| `ticks` | `object` | | Tick configuration. [more...](#tick-options)
 
-## Tick Options
+<CommonAll />
 
-The following options are provided by the linear radial scale. They are all located in the `ticks` sub-options. The [common tick configuration](../styling.md#tick-configuration) options are supported by this axis.
+## Tick Configuration
+
+### Linear Radial Axis specific options
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
@@ -36,6 +35,8 @@ The following options are provided by the linear radial scale. They are all loca
 | `precision` | `number` | | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | | | User defined fixed step size for the scale. [more...](#step-size)
 | `showLabelBackdrop` | `boolean` | Yes | `true` | If true, draw a background behind the tick labels.
+
+<CommonTicksAll />
 
 The scriptable context has the following form:
 

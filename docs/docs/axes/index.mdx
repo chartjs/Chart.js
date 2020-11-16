@@ -2,9 +2,12 @@
 title: Axes
 ---
 
-Axes are an integral part of a chart. They are used to determine how data maps to a pixel value on the chart. In a cartesian chart, there is 1 or more X-axis and 1 or more Y-axis to map points onto the 2-dimensional canvas. These axes are known as ['cartesian axes'](./cartesian/index.md#cartesian-axes).
+import Common from './_common.md'
+import CommonTicks from './_common_ticks.md'
 
-In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/index.md#radial-axes).
+Axes are an integral part of a chart. They are used to determine how data maps to a pixel value on the chart. In a cartesian chart, there is 1 or more X-axis and 1 or more Y-axis to map points onto the 2-dimensional canvas. These axes are known as ['cartesian axes'](./cartesian/index#cartesian-axes).
+
+In a radial chart, such as a radar chart or a polar area chart, there is a single axis that maps points in the angular and radial directions. These are known as ['radial axes'](./radial/index#radial-axes).
 
 Scales in Chart.js >v2.0 are significantly more powerful, but also different than those of v1.0.
 
@@ -15,13 +18,47 @@ Scales in Chart.js >v2.0 are significantly more powerful, but also different tha
 
 ## Common Configuration
 
-The following options are common to all axes provided by Chart.js.
+<Common />
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `display` | `boolean`\|`string` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
-| `reverse` | `boolean` | `false` | Reverse the scale.
-| `weight` | `number` | `0` | The weight used to sort the axis. Higher weights are further away from the chart area.
+## Tick Configuration
+
+<CommonTicks />
+
+## Axis Range Settings
+
+Given the number of axis range settings, it is important to understand how they all interact with each other.
+
+The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto fit behaviour.
+
+```javascript
+let minDataValue = Math.min(mostNegativeValue, options.suggestedMin);
+let maxDataValue = Math.max(mostPositiveValue, options.suggestedMax);
+```
+
+In this example, the largest positive value is 50, but the data maximum is expanded out to 100. However, because the lowest data value is below the `suggestedMin` setting, it is ignored.
+
+```javascript
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'First dataset',
+            data: [0, 20, 40, 50]
+        }],
+        labels: ['January', 'February', 'March', 'April']
+    },
+    options: {
+        scales: {
+            y: {
+                suggestedMin: 50,
+                suggestedMax: 100
+            }
+        }
+    }
+});
+```
+
+In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
 ### Callbacks
 

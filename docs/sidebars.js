@@ -49,7 +49,8 @@ module.exports = {
 				'axes/cartesian/category',
 				'axes/cartesian/linear',
 				'axes/cartesian/logarithmic',
-				'axes/cartesian/time'
+				'axes/cartesian/time',
+				'axes/cartesian/timeseries'
 			]},
 			{Radial: [
 				'axes/radial/index',
