@@ -23,11 +23,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
-    - name: Install chrome
-      run: |
-        brew update
-        brew cask install google-chrome
-      if: runner.os == 'macOS'
     - name: Build
       run: |
         npm ci
@@ -35,7 +30,7 @@ jobs:
         if [ "${{ runner.os }}" == "Windows" ]; then
           npm test
         elif [ "${{ runner.os }}" == "macOS" ]; then
-          xvfb-run --auto-servernum npm test --browsers chrome
+          xvfb-run --auto-servernum npm test --browsers chrome,safari
         else
           xvfb-run --auto-servernum npm test
         fi
