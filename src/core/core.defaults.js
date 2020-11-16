@@ -61,16 +61,19 @@ export class Defaults {
 	}
 
 	/**
-	 * @param {string|*} scopeOrValues
-	 * @param {*} [values]
+	 * @param {string|object} scope
+	 * @param {object} [values]
 	 */
-	set(scopeOrValues, values) {
-		if (typeof values === 'undefined' && typeof scopeOrValues !== 'string') {
-			return merge(getScope(this, ''), scopeOrValues);
+	set(scope, values) {
+		if (typeof scope === 'string') {
+			return merge(getScope(this, scope), values);
 		}
-		return merge(getScope(this, scopeOrValues), values);
+		return merge(getScope(this, ''), scope);
 	}
 
+	/**
+	 * @param {string} scope
+	 */
 	get(scope) {
 		return getScope(this, scope);
 	}
