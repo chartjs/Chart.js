@@ -1,10 +1,8 @@
 /* eslint-disable import/no-commonjs */
 /* eslint-env es6 */
 
-const babel = require('rollup-plugin-babel');
 const cleanup = require('rollup-plugin-cleanup');
 const dts = require('rollup-plugin-dts').default;
-const inject = require('@rollup/plugin-inject');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const terser = require('rollup-plugin-terser').terser;
@@ -34,13 +32,8 @@ module.exports = [
 	{
 		input,
 		plugins: [
-			inject({
-				ResizeObserver: 'resize-observer-polyfill',
-				Promise: 'promise-polyfill'
-			}),
 			json(),
 			resolve(),
-			babel(),
 			cleanup({
 				sourcemap: true
 			})
@@ -56,13 +49,8 @@ module.exports = [
 	{
 		input,
 		plugins: [
-			inject({
-				ResizeObserver: 'resize-observer-polyfill',
-				Promise: 'promise-polyfill'
-			}),
 			json(),
 			resolve(),
-			babel(),
 			terser({
 				output: {
 					preamble: banner

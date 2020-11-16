@@ -345,10 +345,7 @@ export class Legend extends Element {
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = valueOrDefault(legendItem.strokeStyle, defaultColor);
 
-			if (ctx.setLineDash) {
-				// IE 9 and 10 do not support line dash
-				ctx.setLineDash(valueOrDefault(legendItem.lineDash, []));
-			}
+			ctx.setLineDash(valueOrDefault(legendItem.lineDash, []));
 
 			if (labelOpts && labelOpts.usePointStyle) {
 				// Recalculate x and y for drawPoint() because its expecting
