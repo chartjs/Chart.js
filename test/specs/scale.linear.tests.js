@@ -759,6 +759,28 @@ describe('Linear Scale', function() {
 		expect(getLabels(chart.scales.y)).toEqual(['0.3', '0.8', '1.3', '1.8', '2.3', '2.8']);
 	});
 
+	it('Should bound to data', function() {
+		var chart = window.acquireChart({
+			type: 'line',
+			data: {
+				labels: ['a', 'b'],
+				datasets: [{
+					data: [1, 99]
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						bounds: 'data'
+					}
+				}
+			}
+		});
+
+		expect(chart.scales.y.min).toEqual(1);
+		expect(chart.scales.y.max).toEqual(99);
+	});
+
 	it('Should build labels using the user supplied callback', function() {
 		var chart = window.acquireChart({
 			type: 'bar',
