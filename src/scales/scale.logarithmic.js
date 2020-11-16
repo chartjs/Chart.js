@@ -123,23 +123,21 @@ export default class LogarithmicScale extends Scale {
 			max: me._userMax
 		};
 		const ticks = generateTicks(generationOptions, me);
-		let reverse = !me.isHorizontal();
 
 		// At this point, we need to update our max and min given the tick values since we have expanded the
 		// range of the scale
 		_setMinAndMaxByKey(ticks, me, 'value');
 
 		if (opts.reverse) {
-			reverse = !reverse;
+			ticks.reverse();
+
 			me.start = me.max;
 			me.end = me.min;
 		} else {
 			me.start = me.min;
 			me.end = me.max;
 		}
-		if (reverse) {
-			ticks.reverse();
-		}
+
 		return ticks;
 	}
 
