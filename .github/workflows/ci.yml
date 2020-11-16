@@ -30,7 +30,7 @@ jobs:
         if [ "${{ runner.os }}" == "Windows" ]; then
           npm test
         elif [ "${{ runner.os }}" == "macOS" ]; then
-          xvfb-run --auto-servernum npm test --browsers chrome,safari
+          npm test --browsers chrome,safari
         else
           xvfb-run --auto-servernum npm test
         fi
