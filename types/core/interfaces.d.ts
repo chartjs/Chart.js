@@ -1,6 +1,7 @@
 import { Chart, Element, InteractionMode } from '.';
 import { ChartDataset } from '../interfaces';
 import { ParsingOptions } from '../controllers';
+import { PluginOptions } from '../plugins';
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
@@ -155,6 +156,8 @@ export interface CoreChartOptions extends ParsingOptions {
   layout: {
     padding: Scriptable<number | ChartArea>;
   };
+
+  plugins: PluginOptions;
 }
 
 export type EasingFunction =
