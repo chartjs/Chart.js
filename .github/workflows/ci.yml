@@ -23,27 +23,18 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
-    - name: Setup xvfb
-      run: |
-        Xvfb :99 -screen 0 1024x768x24 &
-        echo "::set-env name=DISPLAY:::99.0"
-      if: runner.os == 'Linux'
-    - name: Install chrome
-      run: |
-        brew update
-        brew cask install google-chrome
-      if: runner.os == 'macOS'
-    - name: Select browsers
-      run: |
-        if [ "${{ runner.os }}" == "macOS" ]; then
-          echo "::set-env name=BROWSERS::--browsers chrome"
-        fi
-      shell: bash
     - name: Build and Test
       run: |
         npm ci
         npm run build
-        npm test
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          npm test
+        elif [ "${{ runner.os }}" == "macOS" ]; then
+          npm test --browsers chrome,safari
+        else
+          xvfb-run --auto-servernum npm test
+        fi
+      shell: bash
     - name: Package
       run: |
         npm run docs

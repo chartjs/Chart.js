@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.trim.outputs.version }}
-    steps: 
+    steps:
       - id: trim
         run: echo "::set-output name=version::${TAG:1}"
-        env: 
+        env:
           TAG: ${{ github.event.release.tag_name }}
 
   test:
@@ -24,14 +24,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
-    - name: Setup xvfb
-      run: |
-        Xvfb :99 -screen 0 1024x768x24 &
-        echo "::set-env name=DISPLAY:::99.0"
     - name: Test
       run: |
         npm ci
-        npm test
+        xvfb-run --auto-servernum npm test
 
   publish-npm:
     needs: [test, setup]
