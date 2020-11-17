@@ -32,6 +32,7 @@ describe('Test the radial linear scale', function() {
 			},
 
 			ticks: {
+				color: Chart.defaults.color,
 				showLabelBackdrop: true,
 				backdropColor: 'rgba(255,255,255,0.75)',
 				backdropPaddingY: 2,
@@ -40,6 +41,7 @@ describe('Test the radial linear scale', function() {
 			},
 
 			pointLabels: {
+				color: Chart.defaults.color,
 				display: true,
 				font: {
 					size: 10

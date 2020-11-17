@@ -263,6 +263,6 @@ BarElement.defaults = {
  * @type {any}
  */
 BarElement.defaultRoutes = {
-	backgroundColor: 'color',
-	borderColor: 'color'
+	backgroundColor: 'backgroundColor',
+	borderColor: 'borderColor'
 };

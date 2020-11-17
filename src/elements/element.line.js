@@ -390,6 +390,6 @@ LineElement.defaults = {
  * @type {any}
  */
 LineElement.defaultRoutes = {
-	backgroundColor: 'color',
-	borderColor: 'color'
+	backgroundColor: 'backgroundColor',
+	borderColor: 'borderColor'
 };

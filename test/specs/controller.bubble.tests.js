@@ -141,8 +141,8 @@ describe('Chart.controllers.bubble', function() {
 			expect(meta.data[i].x).toBeCloseToPixel(expected.x);
 			expect(meta.data[i].y).toBeCloseToPixel(expected.y);
 			expect(meta.data[i].options).toEqual(jasmine.objectContaining({
-				backgroundColor: Chart.defaults.color,
-				borderColor: Chart.defaults.color,
+				backgroundColor: Chart.defaults.backgroundColor,
+				borderColor: Chart.defaults.borderColor,
 				borderWidth: 1,
 				hitRadius: 1,
 				radius: expected.r

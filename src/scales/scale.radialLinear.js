@@ -183,7 +183,7 @@ function drawPointLabels(scale) {
 		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
 		ctx.font = plFont.string;
-		ctx.fillStyle = plFont.color;
+		ctx.fillStyle = pointLabelOpts.color;
 
 		const angle = toDegrees(scale.getIndexAngle(i));
 		ctx.textAlign = getTextAlignForAngle(angle);
@@ -499,7 +499,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickFont.color;
+			ctx.fillStyle = tickOpts.color;
 			ctx.fillText(tick.label, 0, -offset);
 		});
 
@@ -526,7 +526,6 @@ RadialLinearScale.defaults = {
 
 	angleLines: {
 		display: true,
-		color: 'rgba(0,0,0,0.1)',
 		lineWidth: 1,
 		borderDash: [],
 		borderDashOffset: 0.0
@@ -567,4 +566,10 @@ RadialLinearScale.defaults = {
 			return label;
 		}
 	}
+};
+
+RadialLinearScale.defaultRoutes = {
+	'angleLines.color': 'borderColor',
+	'pointLabels.color': 'color',
+	'ticks.color': 'color'
 };

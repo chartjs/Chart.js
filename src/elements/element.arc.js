@@ -221,5 +221,5 @@ ArcElement.defaults = {
  * @type {any}
  */
 ArcElement.defaultRoutes = {
-	backgroundColor: 'color'
+	backgroundColor: 'backgroundColor'
 };
