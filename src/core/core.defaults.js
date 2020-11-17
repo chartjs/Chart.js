@@ -23,9 +23,9 @@ function getScope(node, key) {
  */
 export class Defaults {
 	constructor() {
-		this.color = '#666';
 		this.backgroundColor = 'rgba(0,0,0,0.1)';
 		this.borderColor = 'rgba(0,0,0,0.1)';
+		this.color = '#666';
 		this.controllers = {};
 		this.elements = {};
 		this.events = [
