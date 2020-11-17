@@ -333,7 +333,7 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	};
 }
 
-export type AnyObject = { [key: string]: unknown };
+export type AnyObject = Record<string, unknown>;
 export interface Defaults extends CoreChartOptions, ElementChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
