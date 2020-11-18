@@ -33,7 +33,7 @@ A `mode` string can be provided to indicate what should be updated and what anim
 Example:
 
 ```javascript
-myChart.update();
+myChart.update('active');
 ```
 
 See [Updating Charts](updates.md) for more details.
