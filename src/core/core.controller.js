@@ -1,4 +1,3 @@
-/* eslint-disable import/no-namespace, import/namespace */
 import animator from './core.animator';
 import defaults from './core.defaults';
 import Interaction from './core.interaction';

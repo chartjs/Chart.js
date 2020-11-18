@@ -1,5 +1,3 @@
-/* eslint-disable import/no-namespace */
-
 export * from './helpers.core';
 export * from './helpers.canvas';
 export * from './helpers.collection';

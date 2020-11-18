@@ -1,4 +1,3 @@
-/* eslint-disable import/no-namespace, import/namespace */
 import defaults from './core.defaults';
 import {mergeIf, merge, _merger} from '../helpers/helpers.core';
 
