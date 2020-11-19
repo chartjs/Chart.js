@@ -59,14 +59,21 @@ export class Defaults {
 		this.scales = {};
 		this.controllers = {};
 	}
+
 	/**
-	 * @param {string} scope
-	 * @param {*} values
+	 * @param {string|object} scope
+	 * @param {object} [values]
 	 */
 	set(scope, values) {
-		return merge(getScope(this, scope), values);
+		if (typeof scope === 'string') {
+			return merge(getScope(this, scope), values);
+		}
+		return merge(getScope(this, ''), scope);
 	}
 
+	/**
+	 * @param {string} scope
+	 */
 	get(scope) {
 		return getScope(this, scope);
 	}

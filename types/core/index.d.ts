@@ -333,6 +333,7 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	};
 }
 
+export type AnyObject = Record<string, unknown>;
 export interface Defaults extends CoreChartOptions, ElementChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
@@ -352,8 +353,9 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions {
 
 	plugins: PluginOptions;
 
-	set(scope: string, values: any): any;
-	get(scope: string): any;
+	set(values: AnyObject): AnyObject;
+	set(scope: string, values: AnyObject): AnyObject;
+	get(scope: string): AnyObject;
 
 	/**
 	 * Routes the named defaults to fallback to another scope/name.
