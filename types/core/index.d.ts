@@ -170,15 +170,15 @@ export interface ActiveElement extends ActiveDataPoint {
 }
 
 export declare class Chart<
-	TYPE extends ChartType = ChartType,
-	DATA extends unknown[] = DefaultDataPoint<TYPE>,
-	LABEL = unknown
+	TType extends ChartType = ChartType,
+	TData extends unknown[] = DefaultDataPoint<TType>,
+	TLabel = unknown
 	> {
 	readonly platform: BasePlatform;
 	readonly id: string;
 	readonly canvas: HTMLCanvasElement;
 	readonly ctx: CanvasRenderingContext2D;
-	readonly config: ChartConfiguration<TYPE, DATA, LABEL>
+	readonly config: ChartConfiguration<TType, TData, TLabel>
 	readonly width: number;
 	readonly height: number;
 	readonly aspectRatio: number;
@@ -189,10 +189,10 @@ export declare class Chart<
 	readonly scale: Scale | undefined;
 	readonly attached: boolean;
 
-	data: ChartData<TYPE, DATA, LABEL>;
-	options: ChartOptions<TYPE>;
+	data: ChartData<TType, TData, TLabel>;
+	options: ChartOptions<TType>;
 
-	constructor(item: ChartItem, config: ChartConfiguration<TYPE, DATA, LABEL>);
+	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
 
 	clear(): this;
 	stop(): this;
