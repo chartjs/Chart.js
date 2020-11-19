@@ -1,4 +1,4 @@
-const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners} = Chart.helpers; // from '../../src/helpers/helpers.options';
+const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners} = Chart.helpers;
 
 describe('Chart.helpers.options', function() {
 	describe('toLineHeight', function() {
@@ -102,7 +102,6 @@ describe('Chart.helpers.options', function() {
 			const defaultFont = Object.assign({}, Chart.defaults.font);
 
 			Object.assign(Chart.defaults.font, {
-				color: 'bar',
 				family: 'foobar',
 				size: 42,
 				style: 'xxxyyy',
@@ -110,55 +109,44 @@ describe('Chart.helpers.options', function() {
 			});
 
 			expect(toFont({})).toEqual({
-				color: 'bar',
 				family: 'foobar',
 				lineHeight: 63,
 				size: 42,
 				string: 'xxxyyy 42px foobar',
 				style: 'xxxyyy',
-				weight: null,
-				lineWidth: 0,
-				strokeStyle: undefined
+				weight: null
 			});
 
 			Object.assign(Chart.defaults.font, defaultFont);
 		});
 		it ('should return a font with given values', function() {
 			expect(toFont({
-				color: 'asd',
 				family: 'bla',
 				lineHeight: 8,
 				size: 21,
 				style: 'zzz'
 			})).toEqual({
-				color: 'asd',
 				family: 'bla',
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
 				style: 'zzz',
-				weight: null,
-				lineWidth: 0,
-				strokeStyle: undefined
+				weight: null
 			});
 		});
 		it ('should handle a string font size', function() {
 			expect(toFont({
-				color: 'asd',
 				family: 'bla',
 				lineHeight: 8,
 				size: '21',
 				style: 'zzz'
 			})).toEqual({
-				color: 'asd',
 				family: 'bla',
 				lineHeight: 8 * 21,
 				size: 21,
 				string: 'zzz 21px bla',
 				style: 'zzz',
-				weight: null,
-				lineWidth: 0,
-				strokeStyle: undefined
+				weight: null
 			});
 		});
 		it('should return null as a font string if size or family are missing', function() {

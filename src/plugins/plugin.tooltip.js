@@ -653,7 +653,7 @@ export class Tooltip extends Element {
 			titleFont = options.titleFont;
 			titleSpacing = options.titleSpacing;
 
-			ctx.fillStyle = options.titleFont.color;
+			ctx.fillStyle = options.titleColor;
 			ctx.font = titleFont.string;
 
 			for (i = 0; i < length; ++i) {
@@ -745,7 +745,7 @@ export class Tooltip extends Element {
 		pt.x = getAlignedX(me, bodyAlignForCalculation);
 
 		// Before body lines
-		ctx.fillStyle = bodyFont.color;
+		ctx.fillStyle = options.bodyColor;
 		each(me.beforeBody, fillLineOfText);
 
 		xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
@@ -803,7 +803,7 @@ export class Tooltip extends Element {
 
 			footerFont = options.footerFont;
 
-			ctx.fillStyle = options.footerFont.color;
+			ctx.fillStyle = options.footerColor;
 			ctx.font = footerFont.string;
 
 			for (i = 0; i < length; ++i) {
@@ -1098,22 +1098,22 @@ export default {
 		custom: null,
 		position: 'average',
 		backgroundColor: 'rgba(0,0,0,0.8)',
+		titleColor: '#fff',
 		titleFont: {
 			style: 'bold',
-			color: '#fff',
 		},
 		titleSpacing: 2,
 		titleMarginBottom: 6,
 		titleAlign: 'left',
+		bodyColor: '#fff',
 		bodySpacing: 2,
 		bodyFont: {
-			color: '#fff',
 		},
 		bodyAlign: 'left',
+		footerColor: '#fff',
 		footerSpacing: 2,
 		footerMarginTop: 6,
 		footerFont: {
-			color: '#fff',
 			style: 'bold',
 		},
 		footerAlign: 'left',
@@ -1190,7 +1190,7 @@ export default {
 				};
 			},
 			labelTextColor() {
-				return this.options.bodyFont.color;
+				return this.options.bodyColor;
 			},
 			labelPointStyle(tooltipItem) {
 				const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);

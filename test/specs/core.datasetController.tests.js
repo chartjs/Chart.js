@@ -610,8 +610,8 @@ describe('Chart.DatasetController', function() {
 
 	it('should resolve data element options to the default color', function() {
 		var data0 = [0, 1, 2, 3, 4, 5];
-		var oldColor = Chart.defaults.color;
-		Chart.defaults.color = 'red';
+		var oldColor = Chart.defaults.borderColor;
+		Chart.defaults.borderColor = 'red';
 		var chart = acquireChart({
 			type: 'line',
 			data: {
@@ -626,7 +626,7 @@ describe('Chart.DatasetController', function() {
 		expect(meta.data[0].options.borderColor).toBe('red');
 
 		// Reset old shared state
-		Chart.defaults.color = oldColor;
+		Chart.defaults.borderColor = oldColor;
 	});
 
 	describe('_resolveOptions', function() {

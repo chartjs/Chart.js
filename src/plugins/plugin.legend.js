@@ -311,7 +311,7 @@ export class Legend extends Element {
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me._minSize.width);
 		const ctx = me.ctx;
 		const labelFont = toFont(labelOpts.font, me.chart.options.font);
-		const fontColor = labelFont.color;
+		const fontColor = labelOpts.color;
 		const fontSize = labelFont.size;
 		let cursor;
 
@@ -542,8 +542,8 @@ export class Legend extends Element {
 		// Canvas setup
 		ctx.textAlign = rtlHelper.textAlign(textAlign);
 		ctx.textBaseline = 'middle';
-		ctx.strokeStyle = titleFont.color;
-		ctx.fillStyle = titleFont.color;
+		ctx.strokeStyle = titleOpts.color;
+		ctx.fillStyle = titleOpts.color;
 		ctx.font = titleFont.string;
 
 		ctx.fillText(titleOpts.text, x, y);

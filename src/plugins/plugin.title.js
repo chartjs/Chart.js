@@ -182,7 +182,7 @@ export class Title extends Element {
 
 		ctx.save();
 
-		ctx.fillStyle = fontOpts.color;
+		ctx.fillStyle = opts.color;
 		ctx.font = fontOpts.string;
 
 		ctx.translate(titleX, titleY);
@@ -267,5 +267,9 @@ export default {
 		position: 'top',
 		text: '',
 		weight: 2000         // by default greater than legend (1000) to be above
+	},
+
+	defaultRoutes: {
+		color: 'color'
 	}
 };

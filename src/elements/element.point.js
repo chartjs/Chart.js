@@ -84,6 +84,6 @@ PointElement.defaults = {
  * @type {any}
  */
 PointElement.defaultRoutes = {
-	backgroundColor: 'color',
-	borderColor: 'color'
+	backgroundColor: 'backgroundColor',
+	borderColor: 'borderColor'
 };

@@ -75,9 +75,9 @@ describe('Plugin.Tooltip', function() {
 				expect(tooltip.options.yPadding).toEqual(6);
 				expect(tooltip.xAlign).toEqual('left');
 				expect(tooltip.yAlign).toEqual('center');
+				expect(tooltip.options.bodyColor).toEqual('#fff');
 
 				expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
-					color: '#fff',
 					family: defaults.font.family,
 					style: defaults.font.style,
 					size: defaults.font.size,
@@ -88,8 +88,8 @@ describe('Plugin.Tooltip', function() {
 					bodySpacing: 2,
 				}));
 
+				expect(tooltip.options.titleColor).toEqual('#fff');
 				expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
-					color: '#fff',
 					family: defaults.font.family,
 					style: 'bold',
 					size: defaults.font.size,
@@ -101,8 +101,8 @@ describe('Plugin.Tooltip', function() {
 					titleMarginBottom: 6,
 				}));
 
+				expect(tooltip.options.footerColor).toEqual('#fff');
 				expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
-					color: '#fff',
 					family: defaults.font.family,
 					style: 'bold',
 					size: defaults.font.size,
@@ -142,11 +142,11 @@ describe('Plugin.Tooltip', function() {
 					afterBody: [],
 					footer: [],
 					labelColors: [{
-						borderColor: defaults.color,
-						backgroundColor: defaults.color
+						borderColor: defaults.borderColor,
+						backgroundColor: defaults.backgroundColor
 					}, {
-						borderColor: defaults.color,
-						backgroundColor: defaults.color
+						borderColor: defaults.borderColor,
+						backgroundColor: defaults.backgroundColor
 					}]
 				}));
 
@@ -241,7 +241,6 @@ describe('Plugin.Tooltip', function() {
 			expect(tooltip.yAlign).toEqual('center');
 
 			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: defaults.font.style,
 				size: defaults.font.size,
@@ -253,7 +252,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -266,7 +264,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -301,8 +298,8 @@ describe('Plugin.Tooltip', function() {
 			expect(tooltip.labelTextColors).toEqual(['#fff']);
 
 			expect(tooltip.labelColors).toEqual([{
-				borderColor: defaults.color,
-				backgroundColor: defaults.color
+				borderColor: defaults.borderColor,
+				backgroundColor: defaults.backgroundColor
 			}]);
 
 			expect(tooltip.x).toBeCloseToPixel(267);
@@ -396,7 +393,6 @@ describe('Plugin.Tooltip', function() {
 			expect(tooltip.yAlign).toEqual('center');
 
 			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: defaults.font.style,
 				size: defaults.font.size,
@@ -408,7 +404,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -420,7 +415,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -460,11 +454,11 @@ describe('Plugin.Tooltip', function() {
 				footer: ['beforeFooter', 'footer', 'afterFooter'],
 				labelTextColors: ['labelTextColor', 'labelTextColor'],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}, {
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}],
 				labelPointStyles: [{
 					pointStyle: 'labelPointStyle',
@@ -580,11 +574,11 @@ describe('Plugin.Tooltip', function() {
 				afterBody: [],
 				footer: [],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}, {
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}]
 			}));
 
@@ -651,11 +645,11 @@ describe('Plugin.Tooltip', function() {
 				afterBody: [],
 				footer: [],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}, {
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}]
 			}));
 
@@ -723,11 +717,11 @@ describe('Plugin.Tooltip', function() {
 				afterBody: [],
 				footer: [],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}, {
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}]
 			}));
 
@@ -794,8 +788,8 @@ describe('Plugin.Tooltip', function() {
 				afterBody: [],
 				footer: [],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}]
 			}));
 
@@ -1229,7 +1223,6 @@ describe('Plugin.Tooltip', function() {
 			expect(tooltip.yAlign).toEqual('top');
 
 			expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: defaults.font.style,
 				size: defaults.font.size,
@@ -1241,7 +1234,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -1254,7 +1246,6 @@ describe('Plugin.Tooltip', function() {
 			}));
 
 			expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
-				color: '#fff',
 				family: defaults.font.family,
 				style: 'bold',
 				size: defaults.font.size,
@@ -1294,11 +1285,11 @@ describe('Plugin.Tooltip', function() {
 				footer: ['beforeFooter', 'newline', 'footer', 'newline', 'afterFooter', 'newline'],
 				labelTextColors: ['labelTextColor', 'labelTextColor'],
 				labelColors: [{
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}, {
-					borderColor: defaults.color,
-					backgroundColor: defaults.color
+					borderColor: defaults.borderColor,
+					backgroundColor: defaults.backgroundColor
 				}]
 			}));
 

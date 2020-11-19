@@ -125,14 +125,11 @@ export function toFont(options, fallback) {
 	}
 
 	const font = {
-		color: valueOrDefault(options.color, fallback.color),
 		family: valueOrDefault(options.family, fallback.family),
 		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, fallback.lineHeight), size),
-		lineWidth: valueOrDefault(options.lineWidth, fallback.lineWidth),
 		size,
 		style: valueOrDefault(options.style, fallback.style),
 		weight: valueOrDefault(options.weight, fallback.weight),
-		strokeStyle: valueOrDefault(options.strokeStyle, fallback.strokeStyle),
 		string: ''
 	};
 

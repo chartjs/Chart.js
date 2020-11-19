@@ -6,6 +6,7 @@ describe('Title block tests', function() {
 	it('Should have the correct default config', function() {
 		expect(Chart.defaults.plugins.title).toEqual({
 			align: 'center',
+			color: Chart.defaults.color,
 			display: false,
 			position: 'top',
 			fullWidth: true,

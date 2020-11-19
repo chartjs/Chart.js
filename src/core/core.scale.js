@@ -29,7 +29,6 @@ defaults.set('scale', {
 	// grid line settings
 	gridLines: {
 		display: true,
-		color: 'rgba(0,0,0,0.1)',
 		lineWidth: 1,
 		drawBorder: true,
 		drawOnChartArea: true,
@@ -75,6 +74,10 @@ defaults.set('scale', {
 		crossAlign: 'near',
 	}
 });
+
+defaults.route('scale.ticks', 'color', '', 'color');
+defaults.route('scale.gridLines', 'color', '', 'borderColor');
+defaults.route('scale.scaleLabel', 'color', '', 'color');
 
 /**
  * Returns a new array containing numItems from arr
@@ -1402,6 +1405,7 @@ export default class Scale extends Element {
 				rotation,
 				label,
 				font,
+				color: optionTicks.color,
 				textOffset,
 				textAlign,
 				textBaseline,
@@ -1574,20 +1578,20 @@ export default class Scale extends Element {
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
-			const useStroke = tickFont.lineWidth > 0 && tickFont.strokeStyle !== '';
+			const useStroke = optionTicks.textStrokeWidth > 0 && optionTicks.textStrokeColor !== '';
 
 			// Make sure we draw text in the correct color and font
 			ctx.save();
 			ctx.translate(item.x, item.y);
 			ctx.rotate(item.rotation);
 			ctx.font = tickFont.string;
-			ctx.fillStyle = tickFont.color;
+			ctx.fillStyle = item.color;
 			ctx.textAlign = item.textAlign;
 			ctx.textBaseline = item.textBaseline;
 
 			if (useStroke) {
-				ctx.strokeStyle = tickFont.strokeStyle;
-				ctx.lineWidth = tickFont.lineWidth;
+				ctx.strokeStyle = optionTicks.textStrokeColor;
+				ctx.lineWidth = optionTicks.textStrokeWidth;
 			}
 
 			const label = item.label;
@@ -1678,7 +1682,7 @@ export default class Scale extends Element {
 		ctx.rotate(rotation);
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = 'middle';
-		ctx.fillStyle = scaleLabelFont.color;
+		ctx.fillStyle = scaleLabel.color;
 		ctx.font = scaleLabelFont.string;
 		ctx.fillText(scaleLabel.labelString, 0, 0);
 		ctx.restore();

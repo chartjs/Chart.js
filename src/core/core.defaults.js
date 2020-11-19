@@ -23,7 +23,10 @@ function getScope(node, key) {
  */
 export class Defaults {
 	constructor() {
-		this.color = 'rgba(0,0,0,0.1)';
+		this.backgroundColor = 'rgba(0,0,0,0.1)';
+		this.borderColor = 'rgba(0,0,0,0.1)';
+		this.color = '#666';
+		this.controllers = {};
 		this.elements = {};
 		this.events = [
 			'mousemove',
@@ -33,31 +36,27 @@ export class Defaults {
 			'touchmove'
 		];
 		this.font = {
-			color: '#666',
 			family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
 			size: 12,
 			style: 'normal',
 			lineHeight: 1.2,
-			weight: null,
-			lineWidth: 0,
-			strokeStyle: undefined
+			weight: null
+		};
+		this.hover = {
+			onHover: null
 		};
 		this.interaction = {
 			mode: 'nearest',
 			intersect: true
 		};
-		this.hover = {
-			onHover: null
-		};
 		this.maintainAspectRatio = true;
 		this.onHover = null;
 		this.onClick = null;
-		this.responsive = true;
-		this.showLine = true;
 		this.plugins = {};
+		this.responsive = true;
 		this.scale = undefined;
 		this.scales = {};
-		this.controllers = {};
+		this.showLine = true;
 	}
 
 	/**
