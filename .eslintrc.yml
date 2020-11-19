@@ -1,5 +1,5 @@
 extends:
-  - eslint:recommended
+  - chartjs
   - plugin:es/no-2019
 
 env:
@@ -19,6 +19,7 @@ plugins: ['html', 'es']
 rules:
   class-methods-use-this: "off"
   no-empty-function: "off"
+  no-use-before-define: ["error", { "functions": false }]
   complexity: ["warn", 10]
   max-statements: ["warn", 30]
   # disable everything, except Rest/Spread Properties in ES2018
