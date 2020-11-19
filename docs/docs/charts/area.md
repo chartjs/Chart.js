@@ -10,18 +10,14 @@ Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option 
 
 | Mode | Type | Values |
 | :--- | :--- | :--- |
-| Absolute dataset index <sup>1</sup> | `number` | `1`, `2`, `3`, ... |
-| Relative dataset index <sup>1</sup> | `string` | `'-1'`, `'-2'`, `'+1'`, ... |
-| Boundary <sup>2</sup> | `string` | `'start'`, `'end'`, `'origin'` |
-| Disabled <sup>3</sup> | `boolean` | `false` |
+| Absolute dataset index | `number` | `1`, `2`, `3`, ... |
+| Relative dataset index | `string` | `'-1'`, `'-2'`, `'+1'`, ... |
+| Boundary | `string` | `'start'`, `'end'`, `'origin'` |
+| Disabled <sup>1</sup> | `boolean` | `false` |
 | Stacked value below <sup>4</sup> | `string` | `'stack'` |
-| Axis value <sup>5</sup> | `object` | `{ value: number; }` |
+| Axis value | `object` | `{ value: number; }` |
 
-> <sup>1</sup> dataset filling modes have been introduced in version 2.6.0<br/>
-> <sup>2</sup> prior version 2.6.0, boundary values was `'zero'`, `'top'`, `'bottom'` (not supported anymore)<br/>
-> <sup>3</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br/>
-> <sup>4</sup> stack mode has been introduced in version 3.0.0<br/>
-> <sup>5</sup> axis value mode has been introduced in version 3.0.0<br/>
+> <sup>1</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br/>
 
 **Example**
 
