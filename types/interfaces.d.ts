@@ -122,8 +122,8 @@ export interface ChartTypeRegistry {
 
 export type ChartType = keyof ChartTypeRegistry;
 
-export type ScaleOptions<SCALES extends ScaleType = ScaleType> = DeepPartial<
-  { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[SCALES]
+export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<
+  { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
 >;
 
 export type DatasetChartOptions<TType extends ChartType = ChartType> = {
