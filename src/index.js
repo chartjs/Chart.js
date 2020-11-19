@@ -1,4 +1,3 @@
-/* eslint-disable import/no-namespace, import/namespace */
 // @ts-nocheck
 
 /**
