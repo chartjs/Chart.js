@@ -122,63 +122,63 @@ export interface ChartTypeRegistry {
 
 export type ChartType = keyof ChartTypeRegistry;
 
-export type ScaleOptions<SCALES extends ScaleType = ScaleType> = DeepPartial<
-  { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[SCALES]
+export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<
+  { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
 >;
 
-export type DatasetChartOptions<TYPE extends ChartType = ChartType> = {
-  [key in TYPE]: {
+export type DatasetChartOptions<TType extends ChartType = ChartType> = {
+  [key in TType]: {
     datasets: ChartTypeRegistry[key]['datasetOptions'];
   };
 };
 
-export type ScaleChartOptions<TYPE extends ChartType = ChartType> = {
+export type ScaleChartOptions<TType extends ChartType = ChartType> = {
   scales: {
-    [key: string]: ScaleOptions<ChartTypeRegistry[TYPE]['scales']>;
+    [key: string]: ScaleOptions<ChartTypeRegistry[TType]['scales']>;
   };
 };
 
-export type ChartOptions<TYPE extends ChartType = ChartType> = DeepPartial<
+export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
   CoreChartOptions &
   PluginChartOptions &
   ElementChartOptions &
-  DatasetChartOptions<TYPE> &
-  ScaleChartOptions<TYPE> &
-  ChartTypeRegistry[TYPE]['chartOptions']
+  DatasetChartOptions<TType> &
+  ScaleChartOptions<TType> &
+  ChartTypeRegistry[TType]['chartOptions']
 >;
 
-export type DefaultDataPoint<TYPE extends ChartType> = ChartType extends TYPE ? unknown[] : DistributiveArray<
-  ChartTypeRegistry[TYPE]['defaultDataPoint']
+export type DefaultDataPoint<TType extends ChartType> = ChartType extends TType ? unknown[] : DistributiveArray<
+  ChartTypeRegistry[TType]['defaultDataPoint']
 >;
 
-export interface ChartDatasetProperties<TYPE extends ChartType, DATA extends unknown[]> {
-  type?: TYPE;
-  data: DATA;
+export interface ChartDatasetProperties<TType extends ChartType, TData extends unknown[]> {
+  type?: TType;
+  data: TData;
 }
 
 export type ChartDataset<
-  TYPE extends ChartType = ChartType,
-  DATA extends unknown[] = DefaultDataPoint<TYPE>
+  TType extends ChartType = ChartType,
+  TData extends unknown[] = DefaultDataPoint<TType>
 > = DeepPartial<
-  { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TYPE]
-> & ChartDatasetProperties<TYPE, DATA>;
+  { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+> & ChartDatasetProperties<TType, TData>;
 
 export interface ChartData<
-  TYPE extends ChartType = ChartType,
-  DATA extends unknown[] = DefaultDataPoint<TYPE>,
-  LABEL = unknown
+  TType extends ChartType = ChartType,
+  TData extends unknown[] = DefaultDataPoint<TType>,
+  TLabel = unknown
 > {
-  labels: LABEL[];
-  datasets: ChartDataset<TYPE, DATA>[];
+  labels: TLabel[];
+  datasets: ChartDataset<TType, TData>[];
 }
 
 export interface ChartConfiguration<
-  TYPE extends ChartType = ChartType,
-  DATA extends unknown[] = DefaultDataPoint<TYPE>,
-  LABEL = unknown
+  TType extends ChartType = ChartType,
+  TData extends unknown[] = DefaultDataPoint<TType>,
+  TLabel = unknown
 > {
-  type: TYPE;
-  data: ChartData<TYPE, DATA, LABEL>;
-  options?: ChartOptions<TYPE>;
+  type: TType;
+  data: ChartData<TType, TData, TLabel>;
+  options?: ChartOptions<TType>;
   plugins?: Plugin[];
 }

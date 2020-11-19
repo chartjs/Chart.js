@@ -125,7 +125,7 @@ export class Animations {
 	update(target: any, values: any): undefined | boolean;
 }
 
-export interface ChartMeta<E extends Element = Element, DSE extends Element = Element> {
+export interface ChartMeta<TElement extends Element = Element, TDatasetElement extends Element = Element> {
 	type: string;
 	controller: DatasetController;
 	order: number;
@@ -138,8 +138,8 @@ export interface ChartMeta<E extends Element = Element, DSE extends Element = El
 
 	indexAxis: 'x' | 'y';
 
-	data: E[];
-	dataset?: DSE;
+	data: TElement[];
+	dataset?: TDatasetElement;
 
 	hidden: boolean;
 
@@ -170,15 +170,15 @@ export interface ActiveElement extends ActiveDataPoint {
 }
 
 export declare class Chart<
-	TYPE extends ChartType = ChartType,
-	DATA extends unknown[] = DefaultDataPoint<TYPE>,
-	LABEL = unknown
+	TType extends ChartType = ChartType,
+	TData extends unknown[] = DefaultDataPoint<TType>,
+	TLabel = unknown
 	> {
 	readonly platform: BasePlatform;
 	readonly id: string;
 	readonly canvas: HTMLCanvasElement;
 	readonly ctx: CanvasRenderingContext2D;
-	readonly config: ChartConfiguration<TYPE, DATA, LABEL>
+	readonly config: ChartConfiguration<TType, TData, TLabel>
 	readonly width: number;
 	readonly height: number;
 	readonly aspectRatio: number;
@@ -189,10 +189,10 @@ export declare class Chart<
 	readonly scale: Scale | undefined;
 	readonly attached: boolean;
 
-	data: ChartData<TYPE, DATA, LABEL>;
-	options: ChartOptions<TYPE>;
+	data: ChartData<TType, TData, TLabel>;
+	options: ChartOptions<TType>;
 
-	constructor(item: ChartItem, config: ChartConfiguration<TYPE, DATA, LABEL>);
+	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
 
 	clear(): this;
 	stop(): this;
@@ -256,25 +256,25 @@ export declare enum UpdateModeEnum {
 
 export type UpdateMode = keyof typeof UpdateModeEnum;
 
-export class DatasetController<E extends Element = Element, DSE extends Element = Element> {
+export class DatasetController<TElement extends Element = Element, TDatasetElement extends Element = Element> {
 	constructor(chart: Chart, datasetIndex: number);
 
 	readonly chart: Chart;
 	readonly index: number;
-	readonly _cachedMeta: ChartMeta<E, DSE>;
+	readonly _cachedMeta: ChartMeta<TElement, TDatasetElement>;
 	enableOptionSharing: boolean;
 
 	linkScales(): void;
 	getAllParsedValues(scale: Scale): number[];
 	protected getLabelAndValue(index: number): { label: string; value: string };
-	updateElements(elements: E[], start: number, count: number, mode: UpdateMode): void;
+	updateElements(elements: TElement[], start: number, count: number, mode: UpdateMode): void;
 	update(mode: UpdateMode): void;
 	updateIndex(datasetIndex: number): void;
 	protected getMaxOverflow(): boolean | number;
 	draw(): void;
 	reset(): void;
 	getDataset(): ChartDataset;
-	getMeta(): ChartMeta<E, DSE>;
+	getMeta(): ChartMeta<TElement, TDatasetElement>;
 	getScaleForId(scaleID: string): Scale | undefined;
 	configure(): void;
 	initialize(): void;
@@ -299,20 +299,20 @@ export class DatasetController<E extends Element = Element, DSE extends Element 
 	 * @protected
 	 */
 
-	protected updateElement(element: E | DSE, index: number | undefined, properties: any, mode: UpdateMode): void;
+	protected updateElement(element: TElement | TDatasetElement, index: number | undefined, properties: any, mode: UpdateMode): void;
 	/**
 	 * Utility to animate the shared options, that are potentially affecting multiple elements.
 	 * @protected
 	 */
 
 	protected updateSharedOptions(sharedOptions: any, mode: UpdateMode, newOptions: any): void;
-	removeHoverStyle(element: E, datasetIndex: number, index: number): void;
-	setHoverStyle(element: E, datasetIndex: number, index: number): void;
+	removeHoverStyle(element: TElement, datasetIndex: number, index: number): void;
+	setHoverStyle(element: TElement, datasetIndex: number, index: number): void;
 
 	parse(start: number, count: number): void;
-	protected parsePrimitiveData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
-	protected parseArrayData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
-	protected parseObjectData(meta: ChartMeta<E, DSE>, data: any[], start: number, count: number): any[];
+	protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement>, data: any[], start: number, count: number): any[];
+	protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement>, data: any[], start: number, count: number): any[];
+	protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement>, data: any[], start: number, count: number): any[];
 	protected getParsed(index: number): any;
 	protected applyStack(scale: Scale, parsed: any[]): number;
 	protected updateRangeFromParsed(
