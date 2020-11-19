@@ -11,23 +11,6 @@ class MyScale extends Chart.Scale {
 MyScale.id = 'myScale';
 MyScale.defaults = defaultConfigObject;
 
-// Or in classic style
-/*
-function MyScale() {
-  Chart.Scale.call(this, arguments);
-  // constructor stuff
-}
-MyScale.prototype = Object.create(Chart.Scale.prototype);
-MyScale.prototype.constructor = MyScale;
-
-MyScale.prototype.draw = function(ctx) {
-  Chart.Scale.prototype.draw.call(this, arguments);
-  // ...
-}
-MyScale.id = 'myScale';
-MyScale.defaults = defaultConfigObject;
-*/
-
 // MyScale is now derived from Chart.Scale
 ```
 

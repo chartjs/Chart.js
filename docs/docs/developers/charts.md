@@ -113,44 +113,6 @@ new Chart(ctx, {
 });
 ```
 
-Same example in classic style
-
-```javascript
-function Custom() {
-  Chart.BubbleController.apply(this, arguments);
-  // constructor stuff
-}
-Custom.prototype = Object.create(Chart.BubbleController.prototype);
-Custom.prototype.constructor = Custom;
-
-Custom.prototype.draw = function(ctx) {
-    Chart.BubbleController.prototype.draw.apply(this, arguments);
-
-    var meta = this.getMeta();
-    var pt0 = meta.data[0];
-    var radius = pt0.radius;
-
-    var ctx = this.chart.chart.ctx;
-    ctx.save();
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(pt0.x - radius, pt0.y - radius, 2 * radius, 2 * radius);
-    ctx.restore();}
-}
-
-Custom.id = 'derivedBubble';
-Custom.defaults = Chart.defaults.bubble;
-
-Chart.register(Custom);
-
-// Now we can create and use our new chart type
-new Chart(ctx, {
-    type: 'derivedBubble',
-    data: data,
-    options: options
-});
-```
-
 ## TypeScript Typings
 
 If you want your new chart type to be statically typed, you must provide a `.d.ts` TypeScript declaration file. Chart.js provides a way to augment built-in types with user-defined ones, by using the concept of "declaration merging".
