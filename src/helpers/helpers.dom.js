@@ -59,7 +59,7 @@ function getCanvasPosition(evt, canvas) {
 	const {offsetX, offsetY} = source;
 	let box = false;
 	let x, y;
-	if (offsetX > 0 || offsetY > 0) {
+	if ((offsetX > 0 || offsetY > 0) && !e.target.shadowRoot) {
 		x = offsetX;
 		y = offsetY;
 	} else {

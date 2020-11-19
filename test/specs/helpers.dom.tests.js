@@ -256,7 +256,7 @@ describe('DOM helpers tests', function() {
 
 	describe('getRelativePosition', function() {
 		it('should use offsetX/Y when available', function() {
-			const event = {offsetX: 50, offsetY: 100};
+			const event = {offsetX: 50, offsetY: 100, target: {}};
 			const chart = window.acquireChart({}, {
 				canvas: {
 					height: 200,
