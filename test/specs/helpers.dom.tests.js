@@ -345,5 +345,59 @@ describe('DOM helpers tests', function() {
 			expect(Math.abs(pos3.x - Math.round((event.clientX - rect3.x - 10) / 360 * 400))).toBeLessThanOrEqual(1);
 			expect(Math.abs(pos3.y - Math.round((event.clientY - rect3.y - 10) / 360 * 400))).toBeLessThanOrEqual(1);
 		});
+
+		it ('should get the correct relative position for a node in a ShadowRoot', function() {
+			const event = {
+				offsetX: 50,
+				offsetY: 100,
+				clientX: 50,
+				clientY: 100
+			};
+
+			const chart = window.acquireChart({}, {
+				canvas: {
+					height: 200,
+					width: 200,
+				},
+				useShadowDOM: true
+			});
+
+			event.target = chart.canvas.parentNode.host;
+			expect(event.target.shadowRoot).not.toEqual(null);
+			const rect = chart.canvas.getBoundingClientRect();
+			const pos = helpers.getRelativePosition(event, chart);
+			expect(Math.abs(pos.x - Math.round(event.clientX - rect.x))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos.y - Math.round(event.clientY - rect.y))).toBeLessThanOrEqual(1);
+
+			const chart2 = window.acquireChart({}, {
+				canvas: {
+					height: 200,
+					width: 200,
+					style: 'padding: 10px'
+				},
+				useShadowDOM: true
+			});
+
+			event.target = chart2.canvas.parentNode.host;
+			const rect2 = chart2.canvas.getBoundingClientRect();
+			const pos2 = helpers.getRelativePosition(event, chart2);
+			expect(Math.abs(pos2.x - Math.round((event.clientX - rect2.x - 10) / 180 * 200))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos2.y - Math.round((event.clientY - rect2.y - 10) / 180 * 200))).toBeLessThanOrEqual(1);
+
+			const chart3 = window.acquireChart({}, {
+				canvas: {
+					height: 200,
+					width: 200,
+					style: 'width: 400px, height: 400px; padding: 10px'
+				},
+				useShadowDOM: true
+			});
+
+			event.target = chart3.canvas.parentNode.host;
+			const rect3 = chart3.canvas.getBoundingClientRect();
+			const pos3 = helpers.getRelativePosition(event, chart3);
+			expect(Math.abs(pos3.x - Math.round((event.clientX - rect3.x - 10) / 360 * 400))).toBeLessThanOrEqual(1);
+			expect(Math.abs(pos3.y - Math.round((event.clientY - rect3.y - 10) / 360 * 400))).toBeLessThanOrEqual(1);
+		});
 	});
 });

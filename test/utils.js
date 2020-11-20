@@ -30,6 +30,7 @@ function readImageData(url, callback) {
  * @param {object} options.canvas - Canvas attributes.
  * @param {object} options.wrapper - Canvas wrapper attributes.
  * @param {boolean} options.useOffscreenCanvas - use an OffscreenCanvas instead of the normal HTMLCanvasElement.
+ * @param {boolean} options.useShadowDOM - use shadowDom
  * @param {boolean} options.persistent - If true, the chart will not be released after the spec.
  */
 function acquireChart(config, options) {
@@ -60,7 +61,15 @@ function acquireChart(config, options) {
 	config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
 	config.options.locale = config.options.locale || 'en-US';
 
-	wrapper.appendChild(canvas);
+	if (options.useShadowDOM) {
+		if (!wrapper.attachShadow) {
+			// If shadowDOM is not supported by the browsers, mark test as 'pending'.
+			return pending();
+		}
+		wrapper.attachShadow({mode: 'open'}).appendChild(canvas);
+	} else {
+		wrapper.appendChild(canvas);
+	}
 	window.document.body.appendChild(wrapper);
 
 	try {
@@ -71,8 +80,7 @@ function acquireChart(config, options) {
 				// test.
 				// TODO: switch to skip() once it's implemented (https://github.com/jasmine/jasmine/issues/1709), or
 				// remove if all browsers implement `transferControlToOffscreen`
-				pending();
-				return;
+				return pending();
 			}
 			var offscreenCanvas = canvas.transferControlToOffscreen();
 			ctx = offscreenCanvas.getContext('2d');
