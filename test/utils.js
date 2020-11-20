@@ -63,7 +63,7 @@ function acquireChart(config, options) {
 
 	if (options.useShadowDOM) {
 		if (!wrapper.attachShadow) {
-			// If shadowDOM is not supported by the browsers, mark tests as 'peding'.
+			// If shadowDOM is not supported by the browsers, mark test as 'pending'.
 			return pending();
 		}
 		wrapper.attachShadow({mode: 'open'}).appendChild(canvas);
