@@ -83,19 +83,21 @@
 			},
 			options: {
 				responsive: true,
-				title: {
-					display: true,
-					text: 'Tooltip Point Styles'
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					usePointStyle: true,
-				},
-				legend: {
-					labels: {
-						usePointStyle: true
-					}
+				plugins: {
+					title: {
+						display: true,
+						text: 'Tooltip Point Styles'
+					},
+					tooltip: {
+						mode: 'index',
+						intersect: false,
+						usePointStyle: true,
+					},
+					legend: {
+						labels: {
+							usePointStyle: true
+						}
+					},
 				},
 				hover: {
 					mode: 'nearest',

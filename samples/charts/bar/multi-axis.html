@@ -66,13 +66,15 @@
 				data: barChartData,
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Chart.js Bar Chart - Multi Axis'
-					},
-					tooltips: {
-						mode: 'index',
-						intersect: true
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js Bar Chart - Multi Axis'
+						},
+						tooltip: {
+							mode: 'index',
+							intersect: true
+						}
 					},
 					scales: {
 						y: {

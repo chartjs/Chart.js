@@ -83,10 +83,12 @@
 				},
 				options: {
 					responsive: true,
-					tooltips: {
-						position: 'middle',
-						intersect: false,
-					},
+					plugins: {
+						tooltip: {
+							position: 'middle',
+							intersect: false,
+						}
+					}
 				}
 			});
 		};

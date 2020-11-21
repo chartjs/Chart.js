@@ -52,8 +52,10 @@
 		};
 
 		var options = {
-			legend: false,
-			tooltips: false,
+			plugins: {
+				legend: false,
+				tooltip: false,
+			},
 			elements: {
 				bar: {
 					backgroundColor: colorize.bind(null, false),

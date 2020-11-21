@@ -138,7 +138,7 @@ export interface CoreChartOptions extends ParsingOptions {
   hover: HoverInteractionOptions;
 
   /**
-   * The events option defines the browser events that the chart should listen to for tooltips and hovering.
+   * The events option defines the browser events that the chart should listen to for tooltip and hovering.
    * @default ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
    */
   events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];

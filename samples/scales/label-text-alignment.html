@@ -80,8 +80,14 @@
 				},
 				options: {
 					responsive: true,
-					legend: {
-						display: false,
+					plugins: {
+						legend: {
+							display: false,
+						},
+						title: {
+							display: true,
+							text: 'X Tick Alignment: ' + xAlign + ', Y Tick Alignment ' + yAlign
+						}
 					},
 					scales: {
 						x: {
@@ -96,10 +102,6 @@
 								align: yAlign
 							}
 						}
-					},
-					title: {
-						display: true,
-						text: 'X Tick Alignment: ' + xAlign + ', Y Tick Alignment ' + yAlign
 					}
 				}
 			};

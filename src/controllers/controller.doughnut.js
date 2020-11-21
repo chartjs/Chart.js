@@ -344,36 +344,6 @@ DoughnutController.defaults = {
 		animateScale: false
 	},
 	aspectRatio: 1,
-	legend: {
-		labels: {
-			generateLabels(chart) {
-				const data = chart.data;
-				if (data.labels.length && data.datasets.length) {
-					return data.labels.map((label, i) => {
-						const meta = chart.getDatasetMeta(0);
-						const style = meta.controller.getStyle(i);
-
-						return {
-							text: label,
-							fillStyle: style.backgroundColor,
-							strokeStyle: style.borderColor,
-							lineWidth: style.borderWidth,
-							hidden: !chart.getDataVisibility(i),
-
-							// Extra data used for toggling the correct item
-							index: i
-						};
-					});
-				}
-				return [];
-			}
-		},
-
-		onClick(e, legendItem, legend) {
-			legend.chart.toggleDataVisibility(legendItem.index);
-			legend.chart.update();
-		}
-	},
 
 	// The percentage of the chart that we cut out of the middle.
 	cutoutPercentage: 50,
@@ -385,25 +355,57 @@ DoughnutController.defaults = {
 	circumference: 360,
 
 	// Need to override these to give a nice default
-	tooltips: {
-		callbacks: {
-			title() {
-				return '';
-			},
-			label(tooltipItem) {
-				let dataLabel = tooltipItem.label;
-				const value = ': ' + tooltipItem.formattedValue;
+	plugins: {
+		legend: {
+			labels: {
+				generateLabels(chart) {
+					const data = chart.data;
+					if (data.labels.length && data.datasets.length) {
+						return data.labels.map((label, i) => {
+							const meta = chart.getDatasetMeta(0);
+							const style = meta.controller.getStyle(i);
 
-				if (isArray(dataLabel)) {
-					// show value on first line of multiline label
-					// need to clone because we are changing the value
-					dataLabel = dataLabel.slice();
-					dataLabel[0] += value;
-				} else {
-					dataLabel += value;
+							return {
+								text: label,
+								fillStyle: style.backgroundColor,
+								strokeStyle: style.borderColor,
+								lineWidth: style.borderWidth,
+								hidden: !chart.getDataVisibility(i),
+
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						});
+					}
+					return [];
 				}
+			},
 
-				return dataLabel;
+			onClick(e, legendItem, legend) {
+				legend.chart.toggleDataVisibility(legendItem.index);
+				legend.chart.update();
+			}
+		},
+		tooltip: {
+			callbacks: {
+				title() {
+					return '';
+				},
+				label(tooltipItem) {
+					let dataLabel = tooltipItem.label;
+					const value = ': ' + tooltipItem.formattedValue;
+
+					if (isArray(dataLabel)) {
+						// show value on first line of multiline label
+						// need to clone because we are changing the value
+						dataLabel = dataLabel.slice();
+						dataLabel[0] += value;
+					} else {
+						dataLabel += value;
+					}
+
+					return dataLabel;
+				}
 			}
 		}
 	}

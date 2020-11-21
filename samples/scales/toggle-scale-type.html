@@ -85,7 +85,7 @@
 
 		document.getElementById('toggleScale').addEventListener('click', function() {
 			type = type === 'linear' ? 'logarithmic' : 'linear';
-			window.myLine.options.title.text = 'Chart.js Line Chart - ' + type;
+			window.myLine.options.plugins.title.text = 'Chart.js Line Chart - ' + type;
 			window.myLine.options.scales.y = {
 				display: true,
 				type: type

@@ -62,9 +62,15 @@
 				},
 				options: {
 					responsive: true,
-					legend: {
-						labels: {
-							usePointStyle: false
+					plugins: {
+						legend: {
+							labels: {
+								usePointStyle: false
+							}
+						},
+						title: {
+							display: true,
+							text: 'Normal Legend'
 						}
 					},
 					scales: {
@@ -82,10 +88,6 @@
 								labelString: 'Value'
 							}
 						}
-					},
-					title: {
-						display: true,
-						text: 'Normal Legend'
 					}
 				}
 			};
@@ -93,8 +95,8 @@
 
 		function createPointStyleConfig(colorName) {
 			var config = createConfig(colorName);
-			config.options.legend.labels.usePointStyle = true;
-			config.options.title.text = 'Point Style Legend';
+			config.options.plugins.legend.labels.usePointStyle = true;
+			config.options.plugins.title.text = 'Point Style Legend';
 			return config;
 		}
 

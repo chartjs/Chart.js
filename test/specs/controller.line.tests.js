@@ -110,8 +110,10 @@ describe('Chart.controllers.line', function() {
 			},
 			options: {
 				showLine: true,
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				elements: {
 					point: {
 						backgroundColor: 'red',
@@ -167,8 +169,10 @@ describe('Chart.controllers.line', function() {
 				}]
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				hover: {
 					mode: 'nearest',
 					intersect: true
@@ -238,8 +242,10 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						display: false,
@@ -296,8 +302,10 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false,
+				},
 				scales: {
 					x: {
 						display: false,
@@ -379,8 +387,10 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						display: false,
@@ -433,8 +443,10 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						display: false,

@@ -121,10 +121,12 @@ var chart = new Chart(ctx, {
     type: 'bar',
     data: data,
     options: {
-        legend: {
-            display: true,
-            labels: {
-                fontColor: 'rgb(255, 99, 132)'
+        plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: 'rgb(255, 99, 132)'
+                }
             }
         }
     }
@@ -177,8 +179,10 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        legend: {
-            onClick: newLegendClickHandler
+        plugins: {
+            legend: {
+                onClick: newLegendClickHandler
+            }
         }
     }
 });

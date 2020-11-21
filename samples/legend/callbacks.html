@@ -83,20 +83,22 @@
 				}]
 			},
 			options: {
-				legend: {
-					onHover: function(event, legendItem) {
-						log('onHover: ' + legendItem.text);
+				plugins: {
+					legend: {
+						onHover: function(event, legendItem) {
+							log('onHover: ' + legendItem.text);
+						},
+						onLeave: function(event, legendItem) {
+							log('onLeave: ' + legendItem.text);
+						},
+						onClick: function(event, legendItem) {
+							log('onClick:' + legendItem.text);
+						}
 					},
-					onLeave: function(event, legendItem) {
-						log('onLeave: ' + legendItem.text);
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart'
 					},
-					onClick: function(event, legendItem) {
-						log('onClick:' + legendItem.text);
-					}
-				},
-				title: {
-					display: true,
-					text: 'Chart.js Line Chart'
 				},
 				scales: {
 					x: {

@@ -57,12 +57,14 @@
 			},
 			options: {
 				responsive: true,
-				title: {
-					display: true,
-					text: 'Chart.js Line Chart - Cubic interpolation mode'
-				},
-				tooltips: {
-					mode: 'index'
+				plugins: {
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart - Cubic interpolation mode'
+					},
+					tooltip: {
+						mode: 'index'
+					}
 				},
 				scales: {
 					x: {

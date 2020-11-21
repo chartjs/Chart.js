@@ -75,13 +75,15 @@
 				data: chartData,
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Chart.js Combo Bar Line Chart'
-					},
-					tooltips: {
-						mode: 'index',
-						intersect: true
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js Combo Bar Line Chart'
+						},
+						tooltip: {
+							mode: 'index',
+							intersect: true
+						}
 					}
 				}
 			});

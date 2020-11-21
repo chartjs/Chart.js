@@ -119,15 +119,17 @@ function includeDefaults(config, options) {
 
 	options.scales = scaleConfig;
 
-	options.title = (options.title !== false) && merge(Object.create(null), [
+	options.plugins = options.plugins || {};
+	options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
 		defaults.plugins.title,
-		options.title
+		options.plugins.title
 	]);
-	options.tooltips = (options.tooltips !== false) && merge(Object.create(null), [
+
+	options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
 		defaults.interaction,
 		defaults.plugins.tooltip,
 		options.interaction,
-		options.tooltips
+		options.plugins.tooltip
 	]);
 	return options;
 }

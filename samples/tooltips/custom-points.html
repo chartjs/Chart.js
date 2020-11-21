@@ -112,15 +112,17 @@
 				type: 'line',
 				data: lineChartData,
 				options: {
-					title: {
-						display: true,
-						text: 'Chart.js - Custom Tooltips using Data Points'
-					},
-					tooltips: {
-						enabled: false,
-						mode: 'index',
-						intersect: false,
-						custom: customTooltips
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js - Custom Tooltips using Data Points'
+						},
+						tooltip: {
+							enabled: false,
+							mode: 'index',
+							intersect: false,
+							custom: customTooltips
+						}
 					}
 				}
 			});

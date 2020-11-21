@@ -230,7 +230,7 @@ export default {
 	_element: Title,
 
 	beforeInit(chart) {
-		const titleOpts = chart.options.title;
+		const titleOpts = chart.options.plugins.title;
 
 		if (titleOpts) {
 			createNewTitleBlockAndAttach(chart, titleOpts);
@@ -238,7 +238,7 @@ export default {
 	},
 
 	beforeUpdate(chart) {
-		const titleOpts = chart.options.title;
+		const titleOpts = chart.options.plugins.title;
 		const titleBlock = chart.titleBlock;
 
 		if (titleOpts) {

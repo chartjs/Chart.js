@@ -165,11 +165,13 @@ BubbleController.defaults = {
 			type: 'linear'
 		}
 	},
-	tooltips: {
-		callbacks: {
-			title() {
-				// Title doesn't make sense for scatter since we format the data as a point
-				return '';
+	plugins: {
+		tooltip: {
+			callbacks: {
+				title() {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				}
 			}
 		}
 	}

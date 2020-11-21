@@ -24,13 +24,15 @@ ScatterController.defaults = {
 		fill: false
 	},
 
-	tooltips: {
-		callbacks: {
-			title() {
-				return '';     // doesn't make sense for scatter since data are formatted as a point
-			},
-			label(item) {
-				return '(' + item.label + ', ' + item.formattedValue + ')';
+	plugins: {
+		tooltip: {
+			callbacks: {
+				title() {
+					return '';     // doesn't make sense for scatter since data are formatted as a point
+				},
+				label(item) {
+					return '(' + item.label + ', ' + item.formattedValue + ')';
+				}
 			}
 		}
 	}

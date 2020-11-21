@@ -262,11 +262,9 @@ describe('Chart.layouts', function() {
 							display: false
 						}
 					},
-					legend: {
-						display: false
-					},
-					title: {
-						display: false
+					plugins: {
+						legend: false,
+						title: false
 					},
 					layout: {
 						padding: 10
@@ -307,11 +305,9 @@ describe('Chart.layouts', function() {
 							display: false
 						}
 					},
-					legend: {
-						display: false
-					},
-					title: {
-						display: false
+					plugins: {
+						legend: false,
+						title: false
 					},
 					layout: {
 						padding: {
@@ -357,11 +353,9 @@ describe('Chart.layouts', function() {
 							display: false
 						}
 					},
-					legend: {
-						display: false
-					},
-					title: {
-						display: false
+					plugins: {
+						legend: false,
+						title: false
 					},
 					layout: {
 						padding: {}
@@ -394,14 +388,16 @@ describe('Chart.layouts', function() {
 					labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6']
 				},
 				options: {
-					legend: {
-						display: true,
-						position: 'left',
-					},
-					title: {
-						display: true,
-						position: 'bottom',
-					},
+					plugins: {
+						legend: {
+							display: true,
+							position: 'left',
+						},
+						title: {
+							display: true,
+							position: 'bottom',
+						},
+					}
 				},
 			}, {
 				canvas: {
@@ -555,8 +551,8 @@ describe('Chart.layouts', function() {
 					}],
 				},
 				options: {
-					legend: {
-						display: false,
+					plugins: {
+						legend: false
 					},
 				},
 			}, {

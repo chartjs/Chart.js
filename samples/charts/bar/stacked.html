@@ -67,13 +67,15 @@
 				type: 'bar',
 				data: barChartData,
 				options: {
-					title: {
-						display: true,
-						text: 'Chart.js Bar Chart - Stacked'
-					},
-					tooltips: {
-						mode: 'index',
-						intersect: false
+					plugin: {
+						title: {
+							display: true,
+							text: 'Chart.js Bar Chart - Stacked'
+						},
+						tooltip: {
+							mode: 'index',
+							intersect: false
+						},
 					},
 					responsive: true,
 					scales: {

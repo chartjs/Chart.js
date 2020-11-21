@@ -35,7 +35,7 @@ export interface ControllerDatasetOptions extends ParsingOptions {
    */
   clip: number | ChartArea;
   /**
-   * The label for the dataset which appears in the legend and tooltips.
+   * The label for the dataset which appears in the legend and tooltip.
    */
   label: string;
   /**

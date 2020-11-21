@@ -78,14 +78,16 @@
 					}
 				},
 				responsive: true,
-				title: {
-					display: true,
-					text: 'Chart.js Line Chart'
-				},
-				tooltips: {
-					mode: 'nearest',
-					axis: 'x',
-					intersect: false,
+				plugins: {
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart'
+					},
+					tooltip: {
+						mode: 'nearest',
+						axis: 'x',
+						intersect: false,
+					},
 				},
 				hover: {
 					mode: 'nearest',

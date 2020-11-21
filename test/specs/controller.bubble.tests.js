@@ -115,8 +115,10 @@ describe('Chart.controllers.bubble', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',

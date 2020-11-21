@@ -20,8 +20,8 @@ describe('Test tick generators', function() {
 				}],
 			},
 			options: {
-				legend: {
-					display: false,
+				plugins: {
+					legend: false
 				},
 				scales: {
 					x: {
@@ -61,8 +61,8 @@ describe('Test tick generators', function() {
 				}],
 			},
 			options: {
-				legend: {
-					display: false,
+				plugins: {
+					legend: false
 				},
 				scales: {
 					x: {

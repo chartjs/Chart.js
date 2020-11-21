@@ -153,8 +153,10 @@ describe('Chart', function() {
 					hover: {
 						mode: 'dataset',
 					},
-					title: {
-						position: 'bottom'
+					plugins: {
+						title: {
+							position: 'bottom'
+						}
 					}
 				}
 			});
@@ -163,7 +165,7 @@ describe('Chart', function() {
 			expect(options.showLine).toBe(defaults.showLine);
 			expect(options.spanGaps).toBe(false);
 			expect(options.hover.mode).toBe('dataset');
-			expect(options.title.position).toBe('bottom');
+			expect(options.plugins.title.position).toBe('bottom');
 
 			defaults.hover.onHover = null;
 			delete defaults.controllers.line.hover.mode;
@@ -1298,7 +1300,7 @@ describe('Chart', function() {
 				mode: 'dataset',
 				intersect: false
 			};
-			chart.options.tooltips = newTooltipConfig;
+			chart.options.plugins.tooltip = newTooltipConfig;
 
 			chart.update();
 			expect(chart.tooltip.options).toEqual(jasmine.objectContaining(newTooltipConfig));

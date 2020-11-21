@@ -1039,7 +1039,7 @@ class Chart {
 		let active = [];
 		let changed = false;
 
-		// Find Active Elements for hover and tooltips
+		// Find Active Elements for hover and tooltip
 		if (e.type === 'mouseout') {
 			me._lastEvent = null;
 		} else {

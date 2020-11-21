@@ -57,8 +57,10 @@
 		};
 
 		var options = {
-			legend: false,
-			tooltips: false,
+			plugins: {
+				legend: false,
+				tooltip: false,
+			},
 			elements: {
 				arc: {
 					backgroundColor: colorize.bind(null, false, false),

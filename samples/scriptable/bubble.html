@@ -69,9 +69,10 @@
 
 		var options = {
 			aspectRatio: 1,
-			legend: false,
-			tooltips: false,
-
+			plugins: {
+				legend: false,
+				tooltip: false,
+			},
 			elements: {
 				point: {
 					backgroundColor: colorize.bind(null, false),
