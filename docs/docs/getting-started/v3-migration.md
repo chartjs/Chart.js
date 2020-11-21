@@ -95,6 +95,8 @@ A number of changes were made to the configuration options passed to the `Chart`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 * `aspectRatio` defaults to 1 for doughnut, pie, polarArea, and radar charts
 * `TimeScale` does not read `t` from object data by default anymore. The default property is `x` or `y`, depending on the orientation. See [data structures](../general/data-structures.md) for details on how to change the default.
+* `tooltips` namespace was renamed to `tooltip` to match the plugin name
+* `legend`, `title` and `tooltip` namespaces were moved from `options` to `options.plugins`.
 
 #### Defaults
 
