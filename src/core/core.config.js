@@ -4,9 +4,9 @@ import {mergeIf, merge, _merger} from '../helpers/helpers.core';
 export function getIndexAxis(type, options) {
 	const typeDefaults = defaults.controllers[type] || {};
 	const datasetDefaults = typeDefaults.datasets || {};
-	const typeOptions = options[type] || {};
-	const datasetOptions = typeOptions.datasets || {};
-	return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
+	const datasetOptions = options.datasets || {};
+	const typeOptions = datasetOptions[type] || {};
+	return typeOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
 }
 
 function getAxisFromDefaultScaleID(id, indexAxis) {

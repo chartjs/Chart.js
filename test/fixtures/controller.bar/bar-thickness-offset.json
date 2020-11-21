@@ -16,8 +16,8 @@
         },
         "options": {
             "responsive": false,
-            "bar": {
-                "datasets": {
+            "datasets": {
+              "bar": {
                     "barPercentage": 1,
                     "categoryPercentage": 1
                 }

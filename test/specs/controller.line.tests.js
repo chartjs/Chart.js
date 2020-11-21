@@ -570,8 +570,8 @@ describe('Chart.controllers.line', function() {
 					labels: ['label1', 'label2']
 				},
 				options: {
-					line: {
-						datasets: {
+					datasets: {
+						line: {
 							tension: 0.345,
 							backgroundColor: '#add'
 						}
@@ -601,8 +601,8 @@ describe('Chart.controllers.line', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
-				line: {
-					datasets: {
+				datasets: {
+					line: {
 						spanGaps: true,
 						tension: 0.231,
 						backgroundColor: '#add',

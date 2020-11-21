@@ -39,7 +39,7 @@ var chartDifferentHoverMode = new Chart(ctx, {
 Options may be configured directly on the dataset. The dataset options can be changed at 3 different levels and are evaluated with the following priority:
 
 - per dataset: dataset.*
-- per chart: options[type].datasets.*
+- per chart: options.datasets[type].*
 - or globally: Chart.defaults.controllers[type].datasets.*
 
 where type corresponds to the dataset type.
