@@ -43,9 +43,11 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        title: {
-            display: true,
-            text: 'Custom Chart Title'
+        plugins: {
+            title: {
+                display: true,
+                text: 'Custom Chart Title'
+            }
         }
     }
 });
@@ -58,12 +60,14 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        title: {
-            display: true,
-            text: 'Custom Chart Title',
-            padding: {
-                top: 10,
-                bottom: 30
+        plugins: {
+            title: {
+                display: true,
+                text: 'Custom Chart Title',
+                padding: {
+                    top: 10,
+                    bottom: 30
+                }
             }
         }
     }
