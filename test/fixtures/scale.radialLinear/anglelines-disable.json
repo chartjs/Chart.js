@@ -6,8 +6,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "scale": {
                 "gridLines": {
                     "color": "rgb(0, 0, 0)",

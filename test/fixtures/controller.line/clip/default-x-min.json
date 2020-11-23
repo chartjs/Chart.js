@@ -13,8 +13,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "min": -2,

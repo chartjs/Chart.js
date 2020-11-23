@@ -20,8 +20,6 @@
         "options": {
             "responsive": false,
             "spanGaps": false,
-            "legend": false,
-            "title": false,
             "scale": {
                 "display": false,
                 "gridLines": {
@@ -36,6 +34,11 @@
                     "borderColor": "transparent",
                     "fill": "end"
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false
             }
         }
     },

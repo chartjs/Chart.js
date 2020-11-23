@@ -21,8 +21,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			elements: {
 				line: {
 					backgroundColor: function(ctx) {
@@ -46,6 +44,12 @@ module.exports = {
 					display: false,
 					beginAtZero: true
 				}
+			},
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
+				filler: true
 			}
 		}
 	},

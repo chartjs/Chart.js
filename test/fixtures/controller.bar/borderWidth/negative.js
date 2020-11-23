@@ -25,8 +25,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			elements: {
 				bar: {
 					backgroundColor: '#888',

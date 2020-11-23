@@ -106,6 +106,16 @@ var chart = new Chart(ctx, {
 });
 ```
 
+To disable all plugins for a specific chart instance, set `options.plugins` to `false`:
+
+```javascript
+var chart = new Chart(ctx, {
+    options: {
+        plugins: false // all plugins are disabled for this instance
+    }
+});
+```
+
 ## Plugin Core API
 
 Read more about the [existing plugin extension hooks](../jsdoc/IPlugin.html).

@@ -26,7 +26,11 @@ module.exports = {
 					}
 				}
 			},
-			legend: false
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false
+			}
 		}
 	},
 	options: {

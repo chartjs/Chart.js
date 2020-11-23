@@ -37,8 +37,7 @@ module.exports = {
 					labels: ['2005', '2006', '2007'],
 					time: timeOpts
 				}
-			},
-			legend: false
+			}
 		}
 	},
 	options: {

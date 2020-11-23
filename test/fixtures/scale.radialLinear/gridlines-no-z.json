@@ -10,8 +10,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "scale": {
                 "gridLines": {
                     "color": "rgba(0, 0, 0, 1)",
@@ -27,6 +25,12 @@
                 "ticks": {
                     "display": false
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false,
+                "filler": true
             }
         }
     }

@@ -19,8 +19,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			scale: {
 				display: false
 			}

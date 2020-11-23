@@ -9,8 +9,6 @@ module.exports = {
 		},
 		options: {
 			indexAxis: 'y',
-			legend: false,
-			title: false,
 			scales: {
 				y: {
 					position: 'right',

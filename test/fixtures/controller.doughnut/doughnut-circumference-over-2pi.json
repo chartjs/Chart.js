@@ -16,9 +16,7 @@
         },
         "options": {
             "circumference": 400,
-            "responsive": false,
-            "legend": false,
-            "title": false
+            "responsive": false
         }
     }
 }

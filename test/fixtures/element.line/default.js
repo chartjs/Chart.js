@@ -9,8 +9,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			scales: {
 				x: {type: 'linear', display: false, min: 0, max: 20},
 				y: {display: false, min: -15, max: 15}

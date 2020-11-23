@@ -32,8 +32,6 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			legend: false,
-			title: false,
 			elements: {
 				point: {
 					pointStyle: imageCanvas,

@@ -21,8 +21,6 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			legend: false,
-			title: false,
 			elements: {
 				point: {
 					rotation: angles,

@@ -43,7 +43,16 @@ function specFromFixture(description, inputs) {
 	it(input, function(done) {
 		loadConfig(input, function(json) {
 			var descr = json.description || (json.description = description);
-			var chart = utils.acquireChart(json.config, json.options);
+
+			var config = json.config;
+			var options = config.options || (config.options = {});
+
+			// plugins are disabled by default, except if the path contains 'plugin' or there are instance plugins
+			if (input.indexOf('plugin') === -1 && config.plugins === undefined) {
+				options.plugins = options.plugins || false;
+			}
+
+			var chart = utils.acquireChart(config, json.options);
 			if (!inputs.png) {
 				fail(descr + '\r\nMissing PNG comparison file for ' + input);
 				done();

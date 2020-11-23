@@ -43,9 +43,7 @@ module.exports = {
 		},
 		options: {
 			circumference: 180,
-			responsive: false,
-			legend: false,
-			title: false
+			responsive: false
 		}
 	}
 };

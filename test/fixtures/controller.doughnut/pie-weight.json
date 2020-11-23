@@ -37,10 +37,6 @@
                 }
             ],
             "labels": [ "label0", "label1" ]
-        },
-        "options": {
-            "legend": false,
-            "title": false
         }
     },
     "options": {

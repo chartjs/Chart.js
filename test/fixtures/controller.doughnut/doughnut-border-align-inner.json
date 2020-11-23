@@ -24,9 +24,7 @@
             }]
         },
         "options": {
-            "responsive": false,
-            "legend": false,
-            "title": false
+            "responsive": false
         }
     }
 }

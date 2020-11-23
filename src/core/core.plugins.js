@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import registry from './core.registry';
-import {mergeIf} from '../helpers/helpers.core';
+import {mergeIf, valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -51,9 +51,10 @@ export default class PluginService {
 		}
 
 		const config = chart && chart.config;
-		const options = (config.options && config.options.plugins) || {};
+		const options = valueOrDefault(config.options && config.options.plugins, {});
 		const plugins = allPlugins(config);
-		const descriptors = createDescriptors(plugins, options);
+		// options === false => all plugins are disabled
+		const descriptors = options === false ? [] : createDescriptors(plugins, options);
 
 		this._cache = descriptors;
 

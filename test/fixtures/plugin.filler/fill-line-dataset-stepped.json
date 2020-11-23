@@ -33,8 +33,6 @@
         "options": {
             "responsive": false,
             "spanGaps": false,
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "display": false
@@ -50,6 +48,11 @@
                 "line": {
                     "borderColor": "black"
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false
             }
         }
     },

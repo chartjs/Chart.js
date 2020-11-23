@@ -16,8 +16,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			elements: {
 				arc: {
 					backgroundColor: '#00ff00'

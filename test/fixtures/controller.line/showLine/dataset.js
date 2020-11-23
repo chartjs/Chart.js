@@ -14,8 +14,6 @@ module.exports = {
 			labels: ['label1', 'label2', 'label3', 'label4']
 		},
 		options: {
-			legend: false,
-			title: false,
 			showLine: true,
 			scales: {
 				x: {
@@ -24,6 +22,12 @@ module.exports = {
 				y: {
 					display: false
 				}
+			},
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
+				filler: true
 			}
 		}
 	},

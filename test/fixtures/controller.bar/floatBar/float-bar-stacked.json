@@ -15,8 +15,6 @@
             }]
         },
         "options": {
-            "title": false,
-            "legend": false,
             "scales": {
                 "x": {
                     "display": false,

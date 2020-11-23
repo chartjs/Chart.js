@@ -17,8 +17,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			elements: {
 				line: {
 					fill: true
@@ -33,6 +31,12 @@ module.exports = {
 			scales: {
 				x: {display: false},
 				y: {display: false}
+			},
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
+				filler: true
 			}
 		}
 	},

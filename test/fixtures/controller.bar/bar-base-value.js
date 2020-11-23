@@ -14,8 +14,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			scales: {
 				x: {display: false},
 				y: {display: false}

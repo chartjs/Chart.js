@@ -6,8 +6,6 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			legend: false,
-			title: false,
 			scale: {
 				gridLines: {
 					display: true,

@@ -12,8 +12,6 @@ module.exports = {
 			labels: ['label1', 'label2', 'label3', 'label4']
 		},
 		options: {
-			legend: false,
-			title: false,
 			bar: {
 				datasets: {
 					barPercentage: 1,
