@@ -217,6 +217,82 @@ describe('Chart', function() {
 			}
 			expect(createChart).toThrow(new Error('"area" is not a registered controller.'));
 		});
+
+		describe('should disable hover', function() {
+			it('when options.hover=false', function() {
+				var chart = acquireChart({
+					type: 'line',
+					options: {
+						hover: false
+					}
+				});
+				expect(chart.options.hover).toBeFalse();
+			});
+
+			it('when options.interation=false and options.hover is not defined', function() {
+				var chart = acquireChart({
+					type: 'line',
+					options: {
+						interaction: false
+					}
+				});
+				expect(chart.options.hover).toBeFalse();
+			});
+
+			it('when options.interation=false and options.hover is defined', function() {
+				var chart = acquireChart({
+					type: 'line',
+					options: {
+						interaction: false,
+						hover: {mode: 'nearest'}
+					}
+				});
+				expect(chart.options.hover).toBeFalse();
+			});
+		});
+
+		it('should activate element on hover', function(done) {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				}
+			});
+
+			var point = chart.getDatasetMeta(0).data[1];
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
+				done();
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
+		});
+
+		it('should not activate elements when hover is disabled', function(done) {
+			var chart = acquireChart({
+				type: 'line',
+				data: {
+					labels: ['A', 'B', 'C', 'D'],
+					datasets: [{
+						data: [10, 20, 30, 100]
+					}]
+				},
+				options: {
+					hover: false
+				}
+			});
+
+			var point = chart.getDatasetMeta(0).data[1];
+
+			afterEvent(chart, 'mousemove', function() {
+				expect(chart.getActiveElements()).toEqual([]);
+				done();
+			});
+			jasmine.triggerMouseEvent(chart, 'mousemove', point);
+		});
 	});
 
 	describe('when merging scale options', function() {
