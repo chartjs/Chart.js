@@ -46,9 +46,6 @@ module.exports = {
 			}],
 		},
 		options: {
-			legend: {
-				display: false,
-			},
 			scales: {
 				x: {
 					display: false,
@@ -61,6 +58,9 @@ module.exports = {
 				},
 			},
 			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
 				filler: true
 			}
 		},

@@ -20,8 +20,6 @@
         "options": {
             "responsive": false,
             "spanGaps": false,
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "display": false
@@ -40,6 +38,11 @@
                     "stepped": true,
                     "fill": "origin"
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false
             }
         }
     },

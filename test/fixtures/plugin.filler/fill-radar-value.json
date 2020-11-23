@@ -11,8 +11,6 @@
         "options": {
             "responsive": false,
             "spanGaps": false,
-            "legend": false,
-            "title": false,
             "scale": {
                 "display": false,
                 "gridLines": {
@@ -27,6 +25,11 @@
                     "borderColor": "transparent",
                     "fill": { "value": 3 }
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false
             }
         }
     },

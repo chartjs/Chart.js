@@ -36,8 +36,6 @@
         "options": {
             "responsive": false,
             "spanGaps": true,
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "display": false
@@ -54,6 +52,11 @@
                     "cubicInterpolationMode": "monotone",
                     "borderColor": "transparent"
                 }
+            },
+            "plugins": {
+                "legend": false,
+                "title": false,
+                "tooltip": false
             }
         }
     },
