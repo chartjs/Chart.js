@@ -34,9 +34,7 @@ function parseMaxStyle(styleValue, node, parentProperty) {
 const getComputedStyle = (element) => window.getComputedStyle(element, null);
 
 export function getStyle(el, property) {
-	return el.currentStyle ?
-		el.currentStyle[property] :
-		getComputedStyle(el).getPropertyValue(property);
+	return getComputedStyle(el).getPropertyValue(property);
 }
 
 const positions = ['top', 'right', 'bottom', 'left'];

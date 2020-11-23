@@ -44,6 +44,23 @@ describe('Chart.animations', function() {
 		})).toBeUndefined();
 	});
 
+	it('should assing options directly, if target does not have previous options', function() {
+		const chart = {};
+		const anims = new Chart.Animations(chart, {option: {duration: 200}});
+		const target = {};
+		expect(anims.update(target, {options: {option: 1}})).toBeUndefined();
+	});
+
+	it('should clone the target options, if those are shared and new options are not', function() {
+		const chart = {};
+		const anims = new Chart.Animations(chart, {option: {duration: 200}});
+		const options = {option: 0, $shared: true};
+		const target = {options};
+		expect(anims.update(target, {options: {option: 1}})).toBeTrue();
+		expect(target.options.$shared).not.toBeTrue();
+		expect(target.options !== options).toBeTrue();
+	});
+
 	it('should assign shared options to target after animations complete', function(done) {
 		const chart = {
 			draw: function() {},
