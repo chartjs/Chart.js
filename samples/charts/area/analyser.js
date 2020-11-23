@@ -45,7 +45,7 @@
 
 					if (target === false) {
 						target = 'none';
-					} else if (isFinite(target)) {
+					} else if (typeof target !== 'object' && isFinite(target)) {
 						target = 'dataset ' + target;
 					} else {
 						target = 'boundary "' + (typeof target === 'object' ? JSON.stringify(target) : target) + '"';
