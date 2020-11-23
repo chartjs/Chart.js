@@ -106,7 +106,7 @@ var chart = new Chart(ctx, {
 });
 ```
 
-To disable all plugins for a specifi chart instance, set `options.plugins` to `false`:
+To disable all plugins for a specific chart instance, set `options.plugins` to `false`:
 
 ```javascript
 var chart = new Chart(ctx, {
