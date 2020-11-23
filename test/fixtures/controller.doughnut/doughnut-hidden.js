@@ -24,8 +24,12 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			legend: false,
-			title: false
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
+				filler: false
+			}
 		},
 		plugins: [{
 			id: 'hide',

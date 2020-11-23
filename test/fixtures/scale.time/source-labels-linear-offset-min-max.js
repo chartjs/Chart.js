@@ -24,8 +24,7 @@ module.exports = {
 				y: {
 					display: false
 				}
-			},
-			legend: false
+			}
 		}
 	},
 	options: {

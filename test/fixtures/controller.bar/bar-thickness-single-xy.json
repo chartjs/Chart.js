@@ -12,8 +12,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "type": "time",

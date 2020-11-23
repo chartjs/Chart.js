@@ -12,7 +12,6 @@ module.exports = {
 			}]
 		},
 		options: {
-			legend: false,
 			scales: {
 				x: {ticks: {display: false}},
 				y: {

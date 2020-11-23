@@ -16,8 +16,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "bar": {
                 "datasets": {
                     "barPercentage": 1,

@@ -13,8 +13,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			indexAxis: 'y',
 			scales: {
 				x: {

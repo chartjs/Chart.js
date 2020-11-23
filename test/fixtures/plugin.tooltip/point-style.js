@@ -18,8 +18,6 @@ module.exports = {
 			labels: pointStyles.map(() => '')
 		},
 		options: {
-			legend: false,
-			title: false,
 			scales: {
 				x: {display: false},
 				y: {display: false}
@@ -28,6 +26,11 @@ module.exports = {
 				line: {
 					fill: false
 				}
+			},
+			plugins: {
+				legend: false,
+				title: false,
+				filler: false
 			},
 			tooltips: {
 				mode: 'nearest',

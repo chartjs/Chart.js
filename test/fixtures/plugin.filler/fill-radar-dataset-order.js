@@ -18,8 +18,11 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false
+			},
 			scale: {
 				display: false
 			}

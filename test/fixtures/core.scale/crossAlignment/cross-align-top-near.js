@@ -8,8 +8,6 @@ module.exports = {
 			labels: [['Label1', 'line 2', 'line3'], 'Label2', 'Label3']
 		},
 		options: {
-			legend: false,
-			title: false,
 			scales: {
 				x: {
 					position: 'top',

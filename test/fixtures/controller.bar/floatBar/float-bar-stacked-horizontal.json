@@ -15,8 +15,6 @@
             }]
         },
         "options": {
-            "title": false,
-            "legend": false,
             "indexAxis": "y",
             "scales": {
                 "x": {

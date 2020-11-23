@@ -16,8 +16,6 @@
             }]
         },
         "options": {
-            "legend": false,
-            "title": false,
             "scales": {
                 "x": {
                     "position": "center",

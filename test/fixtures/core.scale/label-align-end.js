@@ -8,8 +8,6 @@ module.exports = {
 			labels: ['Label1', 'Label2', 'Label3']
 		},
 		options: {
-			legend: false,
-			title: false,
 			scales: {
 				x: {
 					ticks: {

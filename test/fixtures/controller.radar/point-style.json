@@ -64,8 +64,6 @@
         },
         "options": {
             "responsive": false,
-            "legend": false,
-            "title": false,
             "scale": {
                 "display": false,
                 "min": 0,

@@ -10,8 +10,6 @@ module.exports = {
 		},
 		options: {
 			indexAxis: 'y',
-			legend: false,
-			title: false,
 			elements: {
 				bar: {
 					backgroundColor: '#AAAAAA80',

@@ -16,8 +16,6 @@ module.exports = {
 			]
 		},
 		options: {
-			legend: false,
-			title: false,
 			elements: {
 				line: {
 					backgroundColor: '#00ff00',
@@ -32,6 +30,9 @@ module.exports = {
 				min: -15
 			},
 			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false,
 				filler: true
 			}
 		}

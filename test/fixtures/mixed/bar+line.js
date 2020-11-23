@@ -18,8 +18,6 @@ module.exports = {
 		},
 		options: {
 			indexAxis: 'y',
-			legend: false,
-			title: false,
 			scales: {
 				horz: {
 					position: 'top'

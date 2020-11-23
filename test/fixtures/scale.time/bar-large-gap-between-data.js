@@ -32,7 +32,6 @@ module.exports = {
 			}]
 		},
 		options: {
-			legend: false,
 			scales: {
 				x: {
 					display: false,
