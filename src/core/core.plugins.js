@@ -53,7 +53,8 @@ export default class PluginService {
 		const config = chart && chart.config;
 		const options = valueOrDefault(config.options && config.options.plugins, {});
 		const plugins = allPlugins(config);
-		const descriptors = createDescriptors(plugins, options);
+		// options === false => all plugins are disabled
+		const descriptors = options === false ? [] : createDescriptors(plugins, options);
 
 		this._cache = descriptors;
 
@@ -85,11 +86,6 @@ function allPlugins(config) {
 
 function createDescriptors(plugins, options) {
 	const result = [];
-
-	if (options === false) {
-		// options.plugins === false => all plugins are disabled.
-		return result;
-	}
 
 	for (let i = 0; i < plugins.length; i++) {
 		const plugin = plugins[i];
