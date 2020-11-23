@@ -38,20 +38,21 @@
 					borderColor: window.chartColors.red,
 					backgroundColor: 'rgba(0, 0, 0, 0)',
 					fill: false,
-					cubicInterpolationMode: 'monotone'
+					cubicInterpolationMode: 'monotone',
+					tension: 0.4
 				}, {
-					label: 'Cubic interpolation (default)',
+					label: 'Cubic interpolation',
 					data: datapoints,
 					borderColor: window.chartColors.blue,
 					backgroundColor: 'rgba(0, 0, 0, 0)',
 					fill: false,
+					tension: 0.4
 				}, {
-					label: 'Linear interpolation',
+					label: 'Linear interpolation (default)',
 					data: datapoints,
 					borderColor: window.chartColors.green,
 					backgroundColor: 'rgba(0, 0, 0, 0)',
-					fill: false,
-					tension: 0
+					fill: false
 				}]
 			},
 			options: {
