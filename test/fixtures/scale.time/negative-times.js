@@ -25,6 +25,11 @@ module.exports = {
 						display: false
 					}
 				}
+			},
+			plugins: {
+				legend: false,
+				title: false,
+				tooltip: false
 			}
 		}
 	},
