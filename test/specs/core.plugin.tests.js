@@ -324,5 +324,21 @@ describe('Chart.plugins', function() {
 			expect(plugin.hook).toHaveBeenCalled();
 			expect(plugin.hook.calls.first().args[1]).toEqual({bar: 'bar'});
 		});
+
+		it('should disable all plugins', function() {
+			var plugin = {id: 'a', hook: function() {}};
+			var chart = window.acquireChart({
+				plugins: [plugin],
+				options: {
+					plugins: false
+				}
+			});
+
+			spyOn(plugin, 'hook');
+
+			chart._plugins.notify(chart, 'hook');
+
+			expect(plugin.hook).not.toHaveBeenCalled();
+		});
 	});
 });
