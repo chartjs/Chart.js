@@ -60,6 +60,9 @@ module.exports = {
 					position: 'left',
 				},
 			},
+			plugins: {
+				filler: true
+			}
 		},
 	},
 	options: {

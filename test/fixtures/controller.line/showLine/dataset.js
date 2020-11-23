@@ -24,6 +24,9 @@ module.exports = {
 				y: {
 					display: false
 				}
+			},
+			plugins: {
+				filler: true
 			}
 		}
 	},

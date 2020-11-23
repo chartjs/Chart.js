@@ -35,6 +35,9 @@ module.exports = {
 			scales: {
 				x: {stacked: true, display: false},
 				y: {stacked: true, display: false}
+			},
+			plugins: {
+				filler: true
 			}
 		}
 	},

@@ -33,6 +33,9 @@ module.exports = {
 			scales: {
 				x: {display: false},
 				y: {display: false}
+			},
+			plugins: {
+				filler: true
 			}
 		}
 	},

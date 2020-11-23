@@ -28,6 +28,9 @@
                 "ticks": {
                     "display": false
                 }
+            },
+            "plugins": {
+              "filler": true
             }
         }
     }

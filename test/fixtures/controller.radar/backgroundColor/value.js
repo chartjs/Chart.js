@@ -30,6 +30,9 @@ module.exports = {
 			scale: {
 				display: false,
 				min: -15
+			},
+			plugins: {
+				filler: true
 			}
 		}
 	},

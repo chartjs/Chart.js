@@ -46,6 +46,9 @@ module.exports = {
 					display: false,
 					beginAtZero: true
 				}
+			},
+			plugins: {
+				filler: true
 			}
 		}
 	},
