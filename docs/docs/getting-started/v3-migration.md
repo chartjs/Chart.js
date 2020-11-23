@@ -102,7 +102,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * Dataset controller defaults were relocate to `controllers`. For example `Chart.defaults.line` is now `Chart.defaults.controllers.line`
 * `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
 * `defaultColor` was split to `color`, `borderColor` and `backgroundColor`
-* `defaultFontColor` was renamed to `color`
+* `defaultFontColor` was renamed to `font.color`
 * `defaultFontFamily` was renamed to `font.family`
 * `defaultFontSize` was renamed to `font.size`
 * `defaultFontStyle` was renamed to `font.style`
