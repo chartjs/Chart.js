@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {mergeIf, merge, _merger, valueOrDefault} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger} from '../helpers/helpers.core';
 
 export function getIndexAxis(type, options) {
 	const typeDefaults = defaults.controllers[type] || {};
