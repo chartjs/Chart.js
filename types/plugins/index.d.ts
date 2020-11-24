@@ -488,7 +488,7 @@ export interface TooltipOptions extends CoreInteractionOptions {
   rtl: boolean;
 
   /**
-   * This will force the text direction 'rtl' or 'ltr on the canvas for rendering the tooltip, regardless of the css specified on the canvas
+   * This will force the text direction 'rtl' or 'ltr on the canvas for rendering the tooltips, regardless of the css specified on the canvas
    * @default canvas's default
    */
   textDirection: string;

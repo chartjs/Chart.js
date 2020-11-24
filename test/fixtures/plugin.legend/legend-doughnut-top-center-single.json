@@ -10,12 +10,12 @@
 			}]
 		},
 		"options": {
-      "plugins": {
-        "legend": {
-          "position": "top",
-          "align": "center"
-        }
-      }
+			"plugins": {
+				"legend": {
+					"position": "top",
+					"align": "center"
+				}
+			}
 		}
 	},
 	"options": {
