@@ -39,8 +39,8 @@ module.exports = {
 		options: {
 			animation: false,
 			responsive: false,
-			line: {
-				datasets: {
+			datasets: {
+				line: {
 					tension: 0.4,
 					borderWidth: 1,
 					pointRadius: 1.5,

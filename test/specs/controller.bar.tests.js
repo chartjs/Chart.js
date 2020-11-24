@@ -1436,8 +1436,8 @@ describe('Chart.controllers.bar', function() {
 						options: {
 							legend: false,
 							title: false,
-							bar: {
-								datasets: {
+							datasets: {
+								bar: {
 									barThickness: barThickness
 								}
 							},
