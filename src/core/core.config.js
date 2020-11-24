@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {mergeIf, merge, _merger} from '../helpers/helpers.core';
+import {mergeIf, merge, _merger, valueOrDefault} from '../helpers/helpers.core';
 
 export function getIndexAxis(type, options) {
 	const typeDefaults = defaults.controllers[type] || {};
@@ -119,18 +119,20 @@ function includeDefaults(config, options) {
 
 	options.scales = scaleConfig;
 
-	options.plugins = options.plugins || {};
-	options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
-		defaults.plugins.title,
-		options.plugins.title
-	]);
+	if (options.plugins !== false) {
+		options.plugins = options.plugins || {};
+		options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
+			defaults.plugins.title,
+			options.plugins.title
+		]);
 
-	options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
-		defaults.interaction,
-		defaults.plugins.tooltip,
-		options.interaction,
-		options.plugins.tooltip
-	]);
+		options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
+			defaults.interaction,
+			defaults.plugins.tooltip,
+			options.interaction,
+			options.plugins.tooltip
+		]);
+	}
 	return options;
 }
 
