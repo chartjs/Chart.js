@@ -4,12 +4,12 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.plugins.tooltip` namespace. The global options for the chart tooltip is defined in `Chart.defaults.plugins.tooltip`.
+The tooltip configuration is passed into the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `enabled` | `boolean` | `true` | Are on-canvas tooltip enabled?
-| `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltip) section.
+| `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
+| `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
 | `mode` | `string` | | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
 | `intersect` | `boolean` | | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
@@ -41,7 +41,7 @@ The tooltip configuration is passed into the `options.plugins.tooltip` namespace
 | `borderColor` | `Color` | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
 | `rtl` | `boolean` | | `true` for rendering the tooltip from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltip, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
 
 ### Position Modes
 
@@ -238,7 +238,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
 ## External (Custom) Tooltips
 
-Custom tooltip allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `custom` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable custom tooltip in the global or chart configuration like so:
+Custom tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `custom` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable custom tooltips in the global or chart configuration like so:
 
 ```javascript
 var myPieChart = new Chart(ctx, {
@@ -324,7 +324,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltip.
+See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
 
 ## Tooltip Model
 

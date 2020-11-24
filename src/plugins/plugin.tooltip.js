@@ -990,7 +990,7 @@ export class Tooltip extends Element {
 		let changed = false;
 		let active = [];
 
-		// Find Active Elements for tooltip
+		// Find Active Elements for tooltips
 		if (e.type !== 'mouseout') {
 			active = me._chart.getElementsAtEventForMode(e, options.mode, options, replay);
 			if (options.reverse) {

@@ -209,13 +209,13 @@
 			title: 'Point style',
 			path: 'tooltips/point-style.html'
 		}, {
-			title: 'HTML tooltip (line)',
+			title: 'HTML tooltips (line)',
 			path: 'tooltips/custom-line.html'
 		}, {
-			title: 'HTML tooltip (pie)',
+			title: 'HTML tooltips (pie)',
 			path: 'tooltips/custom-pie.html'
 		}, {
-			title: 'HTML tooltip (points)',
+			title: 'HTML tooltips (points)',
 			path: 'tooltips/custom-points.html'
 		}]
 	}, {

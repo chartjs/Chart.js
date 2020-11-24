@@ -336,7 +336,7 @@ export interface TooltipPlugin<O = {}> {
 
 export interface TooltipOptions extends CoreInteractionOptions {
   /**
-   * Are on-canvas tooltip enabled?
+   * Are on-canvas tooltips enabled?
    * @default true
    */
   enabled: boolean;

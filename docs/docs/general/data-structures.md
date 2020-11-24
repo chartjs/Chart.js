@@ -61,7 +61,7 @@ In this mode, property name is used for `index` scale and value for `value` scal
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `label` | `string` | The label for the dataset which appears in the legend and tooltip.
+| `label` | `string` | The label for the dataset which appears in the legend and tooltips.
 | `clip` | <code>number&#124;object</code> | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
 | `order` | `number` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
 | `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
