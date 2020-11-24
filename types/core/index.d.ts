@@ -25,7 +25,7 @@ import {
 	ScaleType
 } from '../interfaces';
 import { ElementChartOptions } from '../elements';
-import { PluginOptions, PluginChartOptions } from '../plugins';
+import { PluginOptions } from '../plugins';
 
 export interface DateAdapterBase {
 	/**
@@ -338,7 +338,6 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
 			CoreChartOptions &
-			PluginChartOptions &
 			ElementChartOptions &
 			DatasetChartOptions<key>[key] &
 			ScaleChartOptions<key> &
@@ -377,7 +376,7 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions {
 	route(scope: string, name: string, targetScope: string, targetName: string): void;
 }
 
-export const defaults: Defaults & DeepPartial<PluginChartOptions>;
+export const defaults: Defaults;
 
 export interface Element<T = {}, O = {}> {
 	readonly x: number;
