@@ -99,6 +99,21 @@ function mergeConfig(...args/* config objects ... */) {
 	});
 }
 
+function includePluginDefaults(options) {
+	options.plugins = options.plugins || {};
+	options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
+		defaults.plugins.title,
+		options.plugins.title
+	]);
+
+	options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
+		defaults.interaction,
+		defaults.plugins.tooltip,
+		options.interaction,
+		options.plugins.tooltip
+	]);
+}
+
 function includeDefaults(config, options) {
 	options = options || {};
 
@@ -120,18 +135,7 @@ function includeDefaults(config, options) {
 	options.scales = scaleConfig;
 
 	if (options.plugins !== false) {
-		options.plugins = options.plugins || {};
-		options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
-			defaults.plugins.title,
-			options.plugins.title
-		]);
-
-		options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
-			defaults.interaction,
-			defaults.plugins.tooltip,
-			options.interaction,
-			options.plugins.tooltip
-		]);
+		includePluginDefaults(options);
 	}
 	return options;
 }
