@@ -690,10 +690,10 @@ export default {
 	},
 
 
-	afterEvent(chart, e) {
+	afterEvent(chart, args) {
 		const legend = chart.legend;
 		if (legend) {
-			legend.handleEvent(e);
+			legend.handleEvent(args.event);
 		}
 	},
 

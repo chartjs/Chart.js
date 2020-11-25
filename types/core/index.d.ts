@@ -227,6 +227,8 @@ export declare class Chart<
 	unbindEvents(): void;
 	updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
 
+	notifyPlugins(hook: string, args?: AnyObject): boolean | void;
+
 	static readonly version: string;
 	static readonly instances: { [key: string]: Chart };
 	static readonly registry: Registry;
@@ -562,39 +564,29 @@ export const layouts: {
 	update(chart: Chart, width: number, height: number): void;
 };
 
-export interface PluginService {
-	/**
-	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
-	 * This method immediately returns as soon as a plugin explicitly returns false. The
-	 * returned value can be used, for instance, to interrupt the current action.
-	 * @param {Chart} chart - The chart instance for which plugins should be called.
-	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
-	 * @param {Array} [args] - Extra arguments to apply to the hook call.
-	 * @returns {boolean} false if any of the plugins return false, else returns true.
-	 */
-	notify(chart: Chart, hook: string, args: any[]): boolean;
-	invalidate(): void;
-}
-
 export interface Plugin<O = {}> {
 	id: string;
 
 	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	beforeInit?(chart: Chart, options: O): void;
+	beforeInit?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called after `chart` has been initialized and before the first update.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterInit?(chart: Chart, options: O): void;
+	afterInit?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called before updating `chart`. If any plugin returns `false`, the update
 	 * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {UpdateMode} args.mode - The update mode
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart update.
 	 */
@@ -603,16 +595,19 @@ export interface Plugin<O = {}> {
 	 * @desc Called after `chart` has been updated and before rendering. Note that this
 	 * hook will not be called if the chart update has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {UpdateMode} args.mode - The update mode
 	 * @param {object} options - The plugin options.
 	 */
-	afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
+	afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
 	/**
 	 * @desc Called during chart reset
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @since version 3.0.0
 	 */
-	reset?(chart: Chart, options: O): void;
+	reset?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
 	 * the datasets update is cancelled until another `update` is triggered.
@@ -633,7 +628,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @since version 2.1.5
 	 */
-	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
+	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
 	/**
 	 * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
 	 * returns `false`, the datasets update is cancelled until another `update` is triggered.
@@ -656,67 +651,75 @@ export interface Plugin<O = {}> {
 	 * @param {UpdateMode} args.mode - The update mode.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): void;
+	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): boolean | void;
 	/**
 	 * @desc Called before laying out `chart`. If any plugin returns `false`,
 	 * the layout update is cancelled until another `update` is triggered.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart layout.
 	 */
-	beforeLayout?(chart: Chart, options: O): boolean | void;
+	beforeLayout?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` has been laid out. Note that this hook will not
 	 * be called if the layout update has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterLayout?(chart: Chart, options: O): void;
+	afterLayout?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called before rendering `chart`. If any plugin returns `false`,
 	 * the rendering is cancelled until another `render` is triggered.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart rendering.
 	 */
-	beforeRender?(chart: Chart, options: O): boolean | void;
+	beforeRender?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` has been fully rendered (and animation completed). Note
 	 * that this hook will not be called if the rendering has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterRender?(chart: Chart, options: O): void;
+	afterRender?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
 	 * the frame drawing is cancelled untilanother `render` is triggered.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart drawing.
 	 */
-	beforeDraw?(chart: Chart, options: O): boolean | void;
+	beforeDraw?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` has been drawn. Note that this hook will not be called
 	 * if the drawing has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDraw?(chart: Chart, options: O): void;
+	afterDraw?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
 	 * the datasets drawing is cancelled until another `render` is triggered.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart datasets drawing.
 	 */
-	beforeDatasetsDraw?(chart: Chart, options: O): boolean | void;
+	beforeDatasetsDraw?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` datasets have been drawn. Note that this hook
 	 * will not be called if the datasets drawing has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetsDraw?(chart: Chart, options: O): void;
+	afterDatasetsDraw?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
 	 * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
 	 * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
@@ -739,38 +742,41 @@ export interface Plugin<O = {}> {
 	 * @param {object} args.meta - The dataset metadata.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): void;
+	afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): boolean | void;
 	/**
 	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
 	 * the event will be discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {ChartEvent} event - The event object.
-	 * @param {object} options - The plugin options.
+	 * @param {object} args - The call arguments.
+	 * @param {ChartEvent} args.event - The event object.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
+	 * @param {object} options - The plugin options.
 	 */
-	beforeEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
+	beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `event` has been consumed. Note that this hook
 	 * will not be called if the `event` has been previously discarded.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {ChartEvent} event - The event object.
-	 * @param {object} options - The plugin options.
+	 * @param {object} args - The call arguments.
+	 * @param {ChartEvent} args.event - The event object.
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
+	 * @param {object} options - The plugin options.
 	 */
-	afterEvent?(chart: Chart, event: ChartEvent, options: O, replay: boolean): void;
+	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): boolean | void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
-	 * @param {number} size - The new canvas display size (eq. canvas.style width & height).
+	 * @param {object} args - The call arguments.
+	 * @param {number} args.size - The new canvas display size (eq. canvas.style width & height).
 	 * @param {object} options - The plugin options.
 	 */
-	resize?(chart: Chart, size: number, options: O): void;
+	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): boolean | void;
 	/**
 	 * Called after the chart as been destroyed.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} options - The plugin options.
 	 */
-	destroy?(chart: Chart, options: O): void;
+	destroy?(chart: Chart, options: O): boolean | void;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };

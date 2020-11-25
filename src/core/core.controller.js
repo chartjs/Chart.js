@@ -33,7 +33,7 @@ function onAnimationsComplete(context) {
 	const chart = context.chart;
 	const animationOptions = chart.options.animation;
 
-	chart._plugins.notify(chart, 'afterRender');
+	chart.notifyPlugins('afterRender');
 	callCallback(animationOptions && animationOptions.onComplete, [context], chart);
 }
 
@@ -151,7 +151,7 @@ class Chart {
 		const me = this;
 
 		// Before init plugin notification
-		me._plugins.notify(me, 'beforeInit');
+		me.notifyPlugins('beforeInit');
 
 		if (me.options.responsive) {
 			me.resize();
@@ -162,7 +162,7 @@ class Chart {
 		me.bindEvents();
 
 		// After init plugin notification
-		me._plugins.notify(me, 'afterInit');
+		me.notifyPlugins('afterInit');
 
 		return me;
 	}
@@ -221,7 +221,7 @@ class Chart {
 
 		retinaScale(me, newRatio);
 
-		me._plugins.notify(me, 'resize', [newSize]);
+		me.notifyPlugins('resize', {size: newSize});
 
 		callCallback(options.onResize, [newSize], me);
 
@@ -435,7 +435,7 @@ class Chart {
 	*/
 	reset() {
 		this._resetElements();
-		this._plugins.notify(this, 'reset');
+		this.notifyPlugins('reset');
 	}
 
 	update(mode) {
@@ -458,7 +458,7 @@ class Chart {
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 		me._plugins.invalidate();
 
-		if (me._plugins.notify(me, 'beforeUpdate', [args]) === false) {
+		if (me.notifyPlugins('beforeUpdate', args) === false) {
 			return;
 		}
 
@@ -480,7 +480,7 @@ class Chart {
 		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		me._plugins.notify(me, 'afterUpdate', [args]);
+		me.notifyPlugins('afterUpdate', args);
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
@@ -500,7 +500,7 @@ class Chart {
 	_updateLayout() {
 		const me = this;
 
-		if (me._plugins.notify(me, 'beforeLayout') === false) {
+		if (me.notifyPlugins('beforeLayout') === false) {
 			return;
 		}
 
@@ -520,7 +520,7 @@ class Chart {
 			item._idx = index;
 		});
 
-		me._plugins.notify(me, 'afterLayout');
+		me.notifyPlugins('afterLayout');
 	}
 
 	/**
@@ -533,7 +533,7 @@ class Chart {
 		const isFunction = typeof mode === 'function';
 		const args = {mode};
 
-		if (me._plugins.notify(me, 'beforeDatasetsUpdate', [args]) === false) {
+		if (me.notifyPlugins('beforeDatasetsUpdate', args) === false) {
 			return;
 		}
 
@@ -541,7 +541,7 @@ class Chart {
 			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
-		me._plugins.notify(me, 'afterDatasetsUpdate', [args]);
+		me.notifyPlugins('afterDatasetsUpdate', args);
 	}
 
 	/**
@@ -554,18 +554,18 @@ class Chart {
 		const meta = me.getDatasetMeta(index);
 		const args = {meta, index, mode};
 
-		if (me._plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+		if (me.notifyPlugins('beforeDatasetUpdate', args) === false) {
 			return;
 		}
 
 		meta.controller._update(mode);
 
-		me._plugins.notify(me, 'afterDatasetUpdate', [args]);
+		me.notifyPlugins('afterDatasetUpdate', args);
 	}
 
 	render() {
 		const me = this;
-		if (me._plugins.notify(me, 'beforeRender') === false) {
+		if (me.notifyPlugins('beforeRender') === false) {
 			return;
 		}
 
@@ -593,7 +593,7 @@ class Chart {
 			return;
 		}
 
-		if (me._plugins.notify(me, 'beforeDraw') === false) {
+		if (me.notifyPlugins('beforeDraw') === false) {
 			return;
 		}
 
@@ -612,7 +612,7 @@ class Chart {
 			layers[i].draw(me.chartArea);
 		}
 
-		me._plugins.notify(me, 'afterDraw');
+		me.notifyPlugins('afterDraw');
 	}
 
 	/**
@@ -650,7 +650,7 @@ class Chart {
 	_drawDatasets() {
 		const me = this;
 
-		if (me._plugins.notify(me, 'beforeDatasetsDraw') === false) {
+		if (me.notifyPlugins('beforeDatasetsDraw') === false) {
 			return;
 		}
 
@@ -659,7 +659,7 @@ class Chart {
 			me._drawDataset(metasets[i]);
 		}
 
-		me._plugins.notify(me, 'afterDatasetsDraw');
+		me.notifyPlugins('afterDatasetsDraw');
 	}
 
 	/**
@@ -677,7 +677,7 @@ class Chart {
 			index: meta.index,
 		};
 
-		if (me._plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+		if (me.notifyPlugins('beforeDatasetDraw', args) === false) {
 			return;
 		}
 
@@ -692,7 +692,7 @@ class Chart {
 
 		unclipArea(ctx);
 
-		me._plugins.notify(me, 'afterDatasetDraw', [args]);
+		me.notifyPlugins('afterDatasetDraw', args);
 	}
 
 	getElementsAtEventForMode(e, mode, options, useFinalPosition) {
@@ -829,7 +829,7 @@ class Chart {
 			me.ctx = null;
 		}
 
-		me._plugins.notify(me, 'destroy');
+		me.notifyPlugins('destroy');
 
 		delete Chart.instances[me.id];
 	}
@@ -969,6 +969,18 @@ class Chart {
 	}
 
 	/**
+	 * Calls enabled plugins on the specified hook and with the given args.
+	 * This method immediately returns as soon as a plugin explicitly returns false. The
+	 * returned value can be used, for instance, to interrupt the current action.
+	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
+	 * @param {Object} [args] - Extra arguments to apply to the hook call.
+	 * @returns {boolean} false if any of the plugins return false, else returns true.
+	 */
+	notifyPlugins(hook, args) {
+		return this._plugins.notify(this, hook, args);
+	}
+
+	/**
 	 * @private
 	 */
 	_updateHoverStyles(active, lastActive) {
@@ -992,14 +1004,15 @@ class Chart {
 	 */
 	_eventHandler(e, replay) {
 		const me = this;
+		const args = {event: e, replay};
 
-		if (me._plugins.notify(me, 'beforeEvent', [e, replay]) === false) {
+		if (me.notifyPlugins('beforeEvent', args) === false) {
 			return;
 		}
 
 		const changed = me._handleEvent(e, replay);
 
-		me._plugins.notify(me, 'afterEvent', [e, replay]);
+		me.notifyPlugins('afterEvent', args);
 
 		if (changed) {
 			me.render();

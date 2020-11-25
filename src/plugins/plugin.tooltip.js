@@ -1074,7 +1074,7 @@ export default {
 			tooltip
 		};
 
-		if (chart._plugins.notify(chart, 'beforeTooltipDraw', [args]) === false) {
+		if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
 			return;
 		}
 
@@ -1082,14 +1082,14 @@ export default {
 			tooltip.draw(chart.ctx);
 		}
 
-		chart._plugins.notify(chart, 'afterTooltipDraw', [args]);
+		chart.notifyPlugins('afterTooltipDraw', args);
 	},
 
-	afterEvent(chart, e, replay) {
+	afterEvent(chart, args) {
 		if (chart.tooltip) {
 			// If the event is replayed from `update`, we should evaluate with the final positions.
-			const useFinalPosition = replay;
-			chart.tooltip.handleEvent(e, useFinalPosition);
+			const useFinalPosition = args.replay;
+			chart.tooltip.handleEvent(args.event, useFinalPosition);
 		}
 	},
 

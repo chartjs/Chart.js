@@ -1,31 +1,33 @@
 describe('Chart.plugins', function() {
-	describe('Chart.plugins.notify', function() {
+	describe('Chart.notifyPlugins', function() {
 		it('should call inline plugins with arguments', function() {
 			var plugin = {hook: function() {}};
 			var chart = window.acquireChart({
 				plugins: [plugin]
 			});
+			var args = {value: 42};
 
 			spyOn(plugin, 'hook');
 
-			chart._plugins.notify(chart, 'hook', 42);
+			chart.notifyPlugins('hook', args);
 			expect(plugin.hook.calls.count()).toBe(1);
 			expect(plugin.hook.calls.first().args[0]).toBe(chart);
-			expect(plugin.hook.calls.first().args[1]).toBe(42);
+			expect(plugin.hook.calls.first().args[1]).toBe(args);
 			expect(plugin.hook.calls.first().args[2]).toEqual({});
 		});
 
 		it('should call global plugins with arguments', function() {
 			var plugin = {id: 'a', hook: function() {}};
 			var chart = window.acquireChart({});
+			var args = {value: 42};
 
 			spyOn(plugin, 'hook');
 
 			Chart.register(plugin);
-			chart._plugins.notify(chart, 'hook', 42);
+			chart.notifyPlugins('hook', args);
 			expect(plugin.hook.calls.count()).toBe(1);
 			expect(plugin.hook.calls.first().args[0]).toBe(chart);
-			expect(plugin.hook.calls.first().args[1]).toBe(42);
+			expect(plugin.hook.calls.first().args[1]).toBe(args);
 			expect(plugin.hook.calls.first().args[2]).toEqual({});
 			Chart.unregister(plugin);
 		});
@@ -39,7 +41,7 @@ describe('Chart.plugins', function() {
 			spyOn(plugin, 'hook');
 
 			Chart.register([plugin, plugin]);
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 			expect(plugin.hook.calls.count()).toBe(1);
 			Chart.unregister(plugin);
 		});
@@ -80,7 +82,7 @@ describe('Chart.plugins', function() {
 			}];
 			Chart.register(plugins);
 
-			var ret = chart._plugins.notify(chart, 'hook');
+			var ret = chart.notifyPlugins('hook');
 			expect(ret).toBeTruthy();
 			expect(results).toEqual([4, 5, 6, 1, 2, 3]);
 			Chart.unregister(plugins);
@@ -114,7 +116,7 @@ describe('Chart.plugins', function() {
 				spyOn(plugin, 'hook').and.callThrough();
 			});
 
-			var ret = chart._plugins.notify(chart, 'hook');
+			var ret = chart.notifyPlugins('hook');
 			expect(ret).toBeTruthy();
 			plugins.forEach(function(plugin) {
 				expect(plugin.hook).toHaveBeenCalled();
@@ -149,7 +151,7 @@ describe('Chart.plugins', function() {
 				spyOn(plugin, 'hook').and.callThrough();
 			});
 
-			var ret = chart._plugins.notify(chart, 'hook');
+			var ret = chart.notifyPlugins('hook');
 			expect(ret).toBeFalsy();
 			expect(plugins[0].hook).toHaveBeenCalled();
 			expect(plugins[1].hook).toHaveBeenCalled();
@@ -174,14 +176,14 @@ describe('Chart.plugins', function() {
 			spyOn(plugin, 'hook');
 
 			Chart.register(plugin);
-			chart._plugins.notify(chart, 'hook');
-			chart._plugins.notify(chart, 'hook', ['bla']);
-			chart._plugins.notify(chart, 'hook', ['bla', 42]);
+			chart.notifyPlugins('hook');
+			chart.notifyPlugins('hook', {arg1: 'bla'});
+			chart.notifyPlugins('hook', {arg1: 'bla', arg2: 42});
 
 			expect(plugin.hook.calls.count()).toBe(3);
-			expect(plugin.hook.calls.argsFor(0)[1]).toEqual({a: '123'});
+			expect(plugin.hook.calls.argsFor(0)[2]).toEqual({a: '123'});
 			expect(plugin.hook.calls.argsFor(1)[2]).toEqual({a: '123'});
-			expect(plugin.hook.calls.argsFor(2)[3]).toEqual({a: '123'});
+			expect(plugin.hook.calls.argsFor(2)[2]).toEqual({a: '123'});
 
 			Chart.unregister(plugin);
 		});
@@ -210,14 +212,14 @@ describe('Chart.plugins', function() {
 			spyOn(plugins.b, 'hook');
 			spyOn(plugins.c, 'hook');
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugins.a.hook).toHaveBeenCalled();
 			expect(plugins.b.hook).toHaveBeenCalled();
 			expect(plugins.c.hook).toHaveBeenCalled();
-			expect(plugins.a.hook.calls.first().args[1]).toEqual({a: '123'});
-			expect(plugins.b.hook.calls.first().args[1]).toEqual({b: '456'});
-			expect(plugins.c.hook.calls.first().args[1]).toEqual({c: '789'});
+			expect(plugins.a.hook.calls.first().args[2]).toEqual({a: '123'});
+			expect(plugins.b.hook.calls.first().args[2]).toEqual({b: '456'});
+			expect(plugins.c.hook.calls.first().args[2]).toEqual({c: '789'});
 
 			Chart.unregister(plugins.a);
 		});
@@ -245,7 +247,7 @@ describe('Chart.plugins', function() {
 			spyOn(plugins.b, 'hook');
 			spyOn(plugins.c, 'hook');
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugins.a.hook).not.toHaveBeenCalled();
 			expect(plugins.b.hook).not.toHaveBeenCalled();
@@ -269,10 +271,10 @@ describe('Chart.plugins', function() {
 
 			spyOn(plugin, 'hook');
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugin.hook).toHaveBeenCalled();
-			expect(plugin.hook.calls.first().args[1]).toEqual({a: 42});
+			expect(plugin.hook.calls.first().args[2]).toEqual({a: 42});
 
 			Chart.unregister(plugin);
 		});
@@ -286,10 +288,10 @@ describe('Chart.plugins', function() {
 
 			var chart = window.acquireChart();
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugin.hook).toHaveBeenCalled();
-			expect(plugin.hook.calls.first().args[1]).toEqual({a: 'foobar'});
+			expect(plugin.hook.calls.first().args[2]).toEqual({a: 'foobar'});
 
 			Chart.unregister(plugin);
 		});
@@ -310,19 +312,19 @@ describe('Chart.plugins', function() {
 
 			spyOn(plugin, 'hook');
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugin.hook).toHaveBeenCalled();
-			expect(plugin.hook.calls.first().args[1]).toEqual({foo: 'foo'});
+			expect(plugin.hook.calls.first().args[2]).toEqual({foo: 'foo'});
 
 			chart.options.plugins.a = {bar: 'bar'};
 			chart.update();
 
 			plugin.hook.calls.reset();
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugin.hook).toHaveBeenCalled();
-			expect(plugin.hook.calls.first().args[1]).toEqual({bar: 'bar'});
+			expect(plugin.hook.calls.first().args[2]).toEqual({bar: 'bar'});
 		});
 
 		it('should disable all plugins', function() {
@@ -336,7 +338,7 @@ describe('Chart.plugins', function() {
 
 			spyOn(plugin, 'hook');
 
-			chart._plugins.notify(chart, 'hook');
+			chart.notifyPlugins('hook');
 
 			expect(plugin.hook).not.toHaveBeenCalled();
 		});
