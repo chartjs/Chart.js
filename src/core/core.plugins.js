@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import registry from './core.registry';
-import {mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as callCallback, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -19,11 +19,24 @@ export default class PluginService {
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
 	notify(chart, hook, args) {
-		args = args || {};
 		const descriptors = this._descriptors(chart);
+		return this._notify(descriptors, chart, hook, args);
+	}
 
-		for (let i = 0; i < descriptors.length; ++i) {
-			const descriptor = descriptors[i];
+	notifyDisabled(chart, hook, args) {
+		const previousDescriptors = this._oldCache;
+		if (!previousDescriptors) {
+			return;
+		}
+		const descriptors = this._descriptors(chart);
+		const active = descriptors.map(descriptor => descriptor.plugin.id);
+		const newlyDisabled = previousDescriptors.filter(descriptor => active.indexOf(descriptor.plugin.id) === -1);
+		return this._notify(newlyDisabled, chart, hook, args);
+	}
+
+	_notify(descriptors, chart, hook, args) {
+		args = args || [];
+		for (const descriptor of descriptors) {
 			const plugin = descriptor.plugin;
 			const method = plugin[hook];
 			if (typeof method === 'function') {
@@ -38,6 +51,11 @@ export default class PluginService {
 	}
 
 	invalidate() {
+		const old = this._cache;
+		if (old) {
+			this._oldCache = old;
+			old.forEach(d => (d.options = false));
+		}
 		this._cache = undefined;
 	}
 
