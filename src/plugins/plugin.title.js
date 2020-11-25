@@ -1,7 +1,6 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {PI, isArray, mergeIf, toPadding, toFont} from '../helpers';
+import {PI, isArray, toPadding, toFont} from '../helpers';
 
 export class Title extends Element {
 	constructor(config) {
@@ -27,44 +26,17 @@ export class Title extends Element {
 		this.fullWidth = undefined;
 	}
 
-	// These methods are ordered by lifecycle. Utilities then follow.
-
-
-	beforeUpdate() {}
-
 	update(maxWidth, maxHeight, margins) {
 		const me = this;
 
-		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
-		me.beforeUpdate();
-
-		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
 		me._margins = margins;
 
-		// Dimensions
-		me.beforeSetDimensions();
 		me.setDimensions();
-		me.afterSetDimensions();
-		// Labels
-		me.beforeBuildLabels();
-		me.buildLabels();
-		me.afterBuildLabels();
 
-		// Fit
-		me.beforeFit();
 		me.fit();
-		me.afterFit();
-		//
-		me.afterUpdate();
-
 	}
-
-	afterUpdate() {}
-
-
-	beforeSetDimensions() {}
 
 	setDimensions() {
 		const me = this;
@@ -82,16 +54,6 @@ export class Title extends Element {
 			me.bottom = me.height;
 		}
 	}
-
-	afterSetDimensions() {}
-
-	beforeBuildLabels() {}
-
-	buildLabels() {}
-
-	afterBuildLabels() {}
-
-	beforeFit() {}
 
 	fit() {
 		const me = this;
@@ -111,36 +73,23 @@ export class Title extends Element {
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
 
-	afterFit() {}
-
-	// Shared Methods
 	isHorizontal() {
 		const pos = this.options.position;
 		return pos === 'top' || pos === 'bottom';
 	}
 
-	// Actually draw the title block on the canvas
-	draw() {
+	_drawArgs(lineHeight) {
 		const me = this;
-		const ctx = me.ctx;
 		const opts = me.options;
-
-		if (!opts.display) {
-			return;
-		}
-
-		const fontOpts = toFont(opts.font, me.chart.options.font);
-		const lineHeight = fontOpts.lineHeight;
 		const offset = lineHeight / 2 + me._padding.top;
-		let rotation = 0;
 		const top = me.top;
 		const left = me.left;
 		const bottom = me.bottom;
 		const right = me.right;
+		let rotation = 0;
 		let maxWidth, titleX, titleY;
 		let align;
 
-		// Horizontal
 		if (me.isHorizontal()) {
 			switch (opts.align) {
 			case 'start':
@@ -179,6 +128,21 @@ export class Title extends Element {
 			maxWidth = bottom - top;
 			rotation = PI * (opts.position === 'left' ? -0.5 : 0.5);
 		}
+		return {titleX, titleY, align, maxWidth, rotation};
+	}
+
+	draw() {
+		const me = this;
+		const ctx = me.ctx;
+		const opts = me.options;
+
+		if (!opts.display) {
+			return;
+		}
+
+		const fontOpts = toFont(opts.font, me.chart.options.font);
+		const lineHeight = fontOpts.lineHeight;
+		const {titleX, titleY, align, maxWidth, rotation} = me._drawArgs(lineHeight);
 
 		ctx.save();
 
@@ -229,26 +193,19 @@ export default {
 	 */
 	_element: Title,
 
-	beforeInit(chart) {
-		const titleOpts = chart.options.plugins.title;
-
-		if (titleOpts) {
-			createNewTitleBlockAndAttach(chart, titleOpts);
-		}
+	beforeInit(chart, options) {
+		createNewTitleBlockAndAttach(chart, options);
 	},
 
-	beforeUpdate(chart) {
-		const titleOpts = chart.options.plugins.title;
+	beforeUpdate(chart, args, options) {
 		const titleBlock = chart.titleBlock;
 
-		if (titleOpts) {
-			mergeIf(titleOpts, defaults.plugins.title);
-
+		if (options) {
 			if (titleBlock) {
-				layouts.configure(chart, titleBlock, titleOpts);
-				titleBlock.options = titleOpts;
+				layouts.configure(chart, titleBlock, options);
+				titleBlock.options = options;
 			} else {
-				createNewTitleBlockAndAttach(chart, titleOpts);
+				createNewTitleBlockAndAttach(chart, options);
 			}
 		} else if (titleBlock) {
 			layouts.removeBox(chart, titleBlock);
