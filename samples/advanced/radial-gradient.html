@@ -78,18 +78,22 @@
 			},
 			options: {
 				responsive: true,
-				legend: {
-					position: 'right',
-				},
-				title: {
-					display: true,
-					text: 'Chart.js Polar Area Chart'
-				},
-				scale: {
-					ticks: {
-						beginAtZero: true
+				plugins: {
+					legend: {
+						position: 'right',
 					},
-					reverse: false
+					title: {
+						display: true,
+						text: 'Chart.js Polar Area Chart'
+					},
+				},
+				scales: {
+					r: {
+						ticks: {
+							beginAtZero: true
+						},
+						reverse: false
+					}
 				},
 				animation: {
 					animateRotate: false,

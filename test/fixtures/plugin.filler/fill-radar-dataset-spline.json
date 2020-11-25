@@ -28,8 +28,10 @@
         "options": {
             "responsive": false,
             "spanGaps": false,
-            "legend": false,
-            "title": false,
+            "plugins": {
+              "legend": false,
+              "title": false
+            },
             "scale": {
                 "display": false
             },

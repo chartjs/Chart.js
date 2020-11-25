@@ -35,7 +35,7 @@ To update the options, mutating the options property in place or passing in a ne
 
 ```javascript
 function updateConfigByMutating(chart) {
-    chart.options.title.text = 'new title';
+    chart.options.plugins.title.text = 'new title';
     chart.update();
 }
 

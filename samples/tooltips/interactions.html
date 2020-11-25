@@ -51,13 +51,15 @@
 				},
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Mode: ' + mode + ', intersect = ' + intersect
-					},
-					tooltips: {
-						mode: mode,
-						intersect: intersect,
+					plugins: {
+						title: {
+							display: true,
+							text: 'Mode: ' + mode + ', intersect = ' + intersect
+						},
+						tooltip: {
+							mode: mode,
+							intersect: intersect,
+						}
 					},
 					hover: {
 						mode: mode,

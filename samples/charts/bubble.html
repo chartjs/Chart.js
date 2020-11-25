@@ -107,12 +107,14 @@
 				data: bubbleChartData,
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Chart.js Bubble Chart'
-					},
-					tooltips: {
-						mode: 'point'
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js Bubble Chart'
+						},
+						tooltip: {
+							mode: 'point'
+						}
 					}
 				}
 			});

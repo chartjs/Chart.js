@@ -65,8 +65,14 @@
 				},
 				options: {
 					responsive: true,
-					legend: {
-						position: legendPosition,
+					plugins: {
+						legend: {
+							position: legendPosition,
+						},
+						title: {
+							display: true,
+							text: 'Legend Position: ' + legendPosition
+						}
 					},
 					scales: {
 						x: {
@@ -83,10 +89,6 @@
 								labelString: 'Value'
 							}
 						}
-					},
-					title: {
-						display: true,
-						text: 'Legend Position: ' + legendPosition
 					}
 				}
 			};

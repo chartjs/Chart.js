@@ -90,8 +90,14 @@
 			},
 			options: {
 				responsive: true,
-				legend: {
-					position: 'bottom',
+				plugins: {
+					legend: {
+						position: 'bottom',
+					},
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart - Different point sizes'
+					}
 				},
 				hover: {
 					mode: 'index'
@@ -111,10 +117,6 @@
 							labelString: 'Value'
 						}
 					}
-				},
-				title: {
-					display: true,
-					text: 'Chart.js Line Chart - Different point sizes'
 				}
 			}
 		};

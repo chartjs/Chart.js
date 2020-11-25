@@ -51,9 +51,11 @@ describe('Plugin.Tooltip', function() {
 					labels: ['Point 1', 'Point 2', 'Point 3']
 				},
 				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: false,
+					plugins: {
+						tooltip: {
+							mode: 'index',
+							intersect: false,
+						}
 					},
 					hover: {
 						mode: 'index',
@@ -176,9 +178,11 @@ describe('Plugin.Tooltip', function() {
 					labels: ['Point 1', 'Point 2', 'Point 3']
 				},
 				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: true
+					plugins: {
+						tooltip: {
+							mode: 'index',
+							intersect: true
+						}
 					}
 				}
 			});
@@ -219,9 +223,11 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'nearest',
-					intersect: true
+				plugins: {
+					tooltip: {
+						mode: 'nearest',
+						intersect: true
+					}
 				}
 			}
 		});
@@ -328,50 +334,52 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index',
-					callbacks: {
-						beforeTitle: function() {
-							return 'beforeTitle';
-						},
-						title: function() {
-							return 'title';
-						},
-						afterTitle: function() {
-							return 'afterTitle';
-						},
-						beforeBody: function() {
-							return 'beforeBody';
-						},
-						beforeLabel: function() {
-							return 'beforeLabel';
-						},
-						label: function() {
-							return 'label';
-						},
-						afterLabel: function() {
-							return 'afterLabel';
-						},
-						afterBody: function() {
-							return 'afterBody';
-						},
-						beforeFooter: function() {
-							return 'beforeFooter';
-						},
-						footer: function() {
-							return 'footer';
-						},
-						afterFooter: function() {
-							return 'afterFooter';
-						},
-						labelTextColor: function() {
-							return 'labelTextColor';
-						},
-						labelPointStyle: function() {
-							return {
-								pointStyle: 'labelPointStyle',
-								rotation: 42
-							};
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						callbacks: {
+							beforeTitle: function() {
+								return 'beforeTitle';
+							},
+							title: function() {
+								return 'title';
+							},
+							afterTitle: function() {
+								return 'afterTitle';
+							},
+							beforeBody: function() {
+								return 'beforeBody';
+							},
+							beforeLabel: function() {
+								return 'beforeLabel';
+							},
+							label: function() {
+								return 'label';
+							},
+							afterLabel: function() {
+								return 'afterLabel';
+							},
+							afterBody: function() {
+								return 'afterBody';
+							},
+							beforeFooter: function() {
+								return 'beforeFooter';
+							},
+							footer: function() {
+								return 'footer';
+							},
+							afterFooter: function() {
+								return 'afterFooter';
+							},
+							labelTextColor: function() {
+								return 'labelTextColor';
+							},
+							labelPointStyle: function() {
+								return {
+									pointStyle: 'labelPointStyle',
+									rotation: 42
+								};
+							}
 						}
 					}
 				}
@@ -493,11 +501,13 @@ describe('Plugin.Tooltip', function() {
 						type: 'linear'
 					}
 				},
-				tooltips: {
-					mode: 'index',
-					callbacks: {
-						beforeLabel: function(ctx) {
-							return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						callbacks: {
+							beforeLabel: function(ctx) {
+								return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+							}
 						}
 					}
 				}
@@ -536,10 +546,12 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index',
-					itemSort: function(a, b) {
-						return a.datasetIndex > b.datasetIndex ? -1 : 1;
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						itemSort: function(a, b) {
+							return a.datasetIndex > b.datasetIndex ? -1 : 1;
+						}
 					}
 				}
 			}
@@ -609,9 +621,11 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index',
-					reverse: true
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						reverse: true
+					}
 				}
 			}
 		});
@@ -682,8 +696,10 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index'
+				plugins: {
+					tooltip: {
+						mode: 'index'
+					}
 				}
 			}
 		});
@@ -753,11 +769,13 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index',
-					filter: function(tooltipItem, index, tooltipItems, data) {
-						// For testing purposes remove the first dataset that has a tooltipHidden property
-						return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						filter: function(tooltipItem, index, tooltipItems, data) {
+							// For testing purposes remove the first dataset that has a tooltipHidden property
+							return !data.datasets[tooltipItem.datasetIndex].tooltipHidden;
+						}
 					}
 				}
 			}
@@ -818,8 +836,10 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					caretPadding: 10
+				plugins: {
+					tooltip: {
+						caretPadding: 10
+					}
 				}
 			}
 		});
@@ -862,9 +882,11 @@ describe('Plugin.Tooltip', function() {
 					labels: ['Point 1', 'Point 2', 'Point 3']
 				},
 				options: {
-					tooltips: {
-						mode: 'nearest',
-						intersect: true
+					plugins: {
+						tooltip: {
+							mode: 'nearest',
+							intersect: true
+						}
 					}
 				}
 			});
@@ -916,12 +938,14 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'nearest',
-					intersect: true,
-					callbacks: {
-						title: function() {
-							return 'registering callback...';
+				plugins: {
+					tooltip: {
+						mode: 'nearest',
+						intersect: true,
+						callbacks: {
+							title: function() {
+								return 'registering callback...';
+							}
 						}
 					}
 				}
@@ -979,13 +1003,15 @@ describe('Plugin.Tooltip', function() {
 						stacked: true
 					}
 				},
-				tooltips: {
-					mode: 'nearest',
-					position: 'nearest',
-					intersect: true,
-					callbacks: {
-						title: function() {
-							return 'registering callback...';
+				plugins: {
+					tooltip: {
+						mode: 'nearest',
+						position: 'nearest',
+						intersect: true,
+						callbacks: {
+							title: function() {
+								return 'registering callback...';
+							}
 						}
 					}
 				}
@@ -1047,9 +1073,11 @@ describe('Plugin.Tooltip', function() {
 					labels: ['Point 1', 'Point 2', 'Point 3']
 				},
 				options: {
-					tooltips: {
-						mode: 'nearest',
-						position: 'test'
+					plugins: {
+						tooltip: {
+							mode: 'nearest',
+							position: 'test'
+						}
 					}
 				}
 			});
@@ -1100,8 +1128,10 @@ describe('Plugin.Tooltip', function() {
 					// without this slice center point is calculated wrong
 					animateRotate: false
 				},
-				tooltips: {
-					animation: false
+				plugins: {
+					tooltip: {
+						animation: false
+					}
 				}
 			}
 		});
@@ -1164,44 +1194,46 @@ describe('Plugin.Tooltip', function() {
 				labels: ['Point 1', 'Point 2', 'Point 3']
 			},
 			options: {
-				tooltips: {
-					mode: 'index',
-					callbacks: {
-						beforeTitle: function() {
-							return 'beforeTitle\nnewline';
-						},
-						title: function() {
-							return 'title\nnewline';
-						},
-						afterTitle: function() {
-							return 'afterTitle\nnewline';
-						},
-						beforeBody: function() {
-							return 'beforeBody\nnewline';
-						},
-						beforeLabel: function() {
-							return 'beforeLabel\nnewline';
-						},
-						label: function() {
-							return 'label';
-						},
-						afterLabel: function() {
-							return 'afterLabel\nnewline';
-						},
-						afterBody: function() {
-							return 'afterBody\nnewline';
-						},
-						beforeFooter: function() {
-							return 'beforeFooter\nnewline';
-						},
-						footer: function() {
-							return 'footer\nnewline';
-						},
-						afterFooter: function() {
-							return 'afterFooter\nnewline';
-						},
-						labelTextColor: function() {
-							return 'labelTextColor';
+				plugins: {
+					tooltip: {
+						mode: 'index',
+						callbacks: {
+							beforeTitle: function() {
+								return 'beforeTitle\nnewline';
+							},
+							title: function() {
+								return 'title\nnewline';
+							},
+							afterTitle: function() {
+								return 'afterTitle\nnewline';
+							},
+							beforeBody: function() {
+								return 'beforeBody\nnewline';
+							},
+							beforeLabel: function() {
+								return 'beforeLabel\nnewline';
+							},
+							label: function() {
+								return 'label';
+							},
+							afterLabel: function() {
+								return 'afterLabel\nnewline';
+							},
+							afterBody: function() {
+								return 'afterBody\nnewline';
+							},
+							beforeFooter: function() {
+								return 'beforeFooter\nnewline';
+							},
+							footer: function() {
+								return 'footer\nnewline';
+							},
+							afterFooter: function() {
+								return 'afterFooter\nnewline';
+							},
+							labelTextColor: function() {
+								return 'labelTextColor';
+							}
 						}
 					}
 				}
@@ -1407,8 +1439,10 @@ describe('Plugin.Tooltip', function() {
 		var tooltip = new Tooltip({
 			_chart: {
 				options: {
-					tooltips: {
-						animation: false,
+					plugins: {
+						tooltip: {
+							animation: false,
+						}
 					}
 				}
 			}

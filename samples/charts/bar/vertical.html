@@ -67,12 +67,14 @@
 				data: barChartData,
 				options: {
 					responsive: true,
-					legend: {
-						position: 'top',
-					},
-					title: {
-						display: true,
-						text: 'Chart.js Bar Chart'
+					plugins: {
+						legend: {
+							position: 'top',
+						},
+						title: {
+							display: true,
+							text: 'Chart.js Bar Chart'
+						}
 					}
 				}
 			});

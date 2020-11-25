@@ -143,8 +143,8 @@ describe('Core.scale', function() {
 							display: false
 						}
 					},
-					legend: {
-						display: false
+					plugins: {
+						legend: false
 					}
 				}
 			});
@@ -188,8 +188,8 @@ describe('Core.scale', function() {
 							offset: test.offset
 						}
 					},
-					legend: {
-						display: false
+					plugins: {
+						legend: false
 					}
 				}
 			});
@@ -224,8 +224,8 @@ describe('Core.scale', function() {
 						display: false
 					}
 				},
-				legend: {
-					display: false
+				plugins: {
+					legend: false
 				}
 			}
 		}, {

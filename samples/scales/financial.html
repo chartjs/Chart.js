@@ -182,17 +182,19 @@
 						}
 					}
 				},
-				tooltips: {
-					intersect: false,
-					mode: 'index',
-					callbacks: {
-						label: function(context) {
-							let label = context.dataset.label || '';
-							if (label) {
-								label += ': ';
+				plugins: {
+					tooltip: {
+						intersect: false,
+						mode: 'index',
+						callbacks: {
+							label: function(context) {
+								let label = context.dataset.label || '';
+								if (label) {
+									label += ': ';
+								}
+								label += context.dataPoint.y.toFixed(2);
+								return label;
 							}
-							label += context.dataPoint.y.toFixed(2);
-							return label;
 						}
 					}
 				}

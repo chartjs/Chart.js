@@ -94,6 +94,8 @@ A number of changes were made to the configuration options passed to the `Chart`
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
 * `aspectRatio` defaults to 1 for doughnut, pie, polarArea, and radar charts
 * `TimeScale` does not read `t` from object data by default anymore. The default property is `x` or `y`, depending on the orientation. See [data structures](../general/data-structures.md) for details on how to change the default.
+* `tooltips` namespace was renamed to `tooltip` to match the plugin name
+* `legend`, `title` and `tooltip` namespaces were moved from `options` to `options.plugins`.
 
 #### Defaults
 
@@ -203,7 +205,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Interactions
 
-* To allow DRY configuration, a root options scope for common interaction options was added. `options.hover` and `options.tooltips` now both extend from `options.interaction`. Defaults are defined at `defaults.interaction` level, so by default hover and tooltip interactions share the same mode etc.
+* To allow DRY configuration, a root options scope for common interaction options was added. `options.hover` and `options.plugins.tooltip` now both extend from `options.interaction`. Defaults are defined at `defaults.interaction` level, so by default hover and tooltip interactions share the same mode etc.
 * `interactions` are now limited to the chart area
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`

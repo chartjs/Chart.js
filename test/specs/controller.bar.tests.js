@@ -590,8 +590,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				elements: {
 					bar: {
 						backgroundColor: 'red',
@@ -664,8 +666,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -704,8 +708,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -748,8 +754,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -807,8 +815,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -868,8 +878,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -927,8 +939,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -988,8 +1002,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -1047,8 +1063,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -1093,8 +1111,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',
@@ -1542,8 +1562,10 @@ describe('Chart.controllers.bar', function() {
 				labels: ['A', 'B', 'C', 'D']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				scales: {
 					x: {
 						type: 'category',

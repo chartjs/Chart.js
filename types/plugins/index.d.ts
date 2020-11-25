@@ -201,10 +201,6 @@ export interface LegendOptions {
   };
 }
 
-export interface LegendChartOptions {
-  legend: LegendOptions;
-}
-
 export const Title: Plugin;
 
 export interface TitleOptions {
@@ -233,10 +229,6 @@ export interface TitleOptions {
    * 	Title text to display. If specified as an array, text is rendered on multiple lines.
    */
   text: string | string[];
-}
-
-export interface TitleChartOptions {
-  title: TitleOptions;
 }
 
 export type TooltipAlignment = 'start' | 'center' | 'end';
@@ -506,10 +498,6 @@ export interface TooltipOptions extends CoreInteractionOptions {
   callbacks: TooltipCallbacks;
 }
 
-export interface TooltipChartOptions {
-  tooltips: TooltipOptions;
-}
-
 export interface TooltipItem {
   /**
    * The chart the tooltip is being shown on
@@ -557,7 +545,4 @@ export interface PluginOptions {
   legend: LegendOptions;
   title: TitleOptions;
   tooltip: TooltipOptions;
-}
-
-export interface PluginChartOptions extends LegendChartOptions, TitleChartOptions, TooltipChartOptions {
 }

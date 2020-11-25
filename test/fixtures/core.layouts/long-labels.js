@@ -8,8 +8,8 @@ module.exports = {
 			labels: ['tick1 is very long one', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6 is very long one']
 		},
 		options: {
-			legend: {
-				display: false
+			plugins: {
+				legend: false
 			},
 			scales: {
 				x: {

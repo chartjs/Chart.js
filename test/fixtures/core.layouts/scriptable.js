@@ -21,8 +21,8 @@ module.exports = {
 					};
 				}
 			},
-			legend: {
-				display: false
+			plugins: {
+				legend: false
 			},
 			scales: {
 				x: {

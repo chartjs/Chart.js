@@ -4,7 +4,7 @@ title: Interaction Modes
 
 When configuring interaction with the graph via hover or tooltips, a number of different modes are available.
 
-`options.hover` and `options.tooltips` extend from `options.interaction`. So if `mode`, `intersect` or any other common settings are configured only in `options.interaction`, both hover and tooltips obey that.
+`options.hover` and `options.plugins.tooltip` extend from `options.interaction`. So if `mode`, `intersect` or any other common settings are configured only in `options.interaction`, both hover and tooltips obey that.
 
 The modes are detailed below and how they behave in conjunction with the `intersect` setting.
 

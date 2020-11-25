@@ -6,7 +6,7 @@ The chart title defines text to draw at the top of the chart.
 
 ## Title Configuration
 
-The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.plugins.title`.
+The title configuration is passed into the `options.plugins.title` namespace. The global options for the chart title is defined in `Chart.defaults.plugins.title`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -43,9 +43,11 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        title: {
-            display: true,
-            text: 'Custom Chart Title'
+        plugins: {
+            title: {
+                display: true,
+                text: 'Custom Chart Title'
+            }
         }
     }
 });
@@ -58,12 +60,14 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        title: {
-            display: true,
-            text: 'Custom Chart Title',
-            padding: {
-                top: 10,
-                bottom: 30
+        plugins: {
+            title: {
+                display: true,
+                text: 'Custom Chart Title',
+                padding: {
+                    top: 10,
+                    bottom: 30
+                }
             }
         }
     }

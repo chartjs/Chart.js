@@ -6,7 +6,7 @@ The chart legend displays data about the datasets that are appearing on the char
 
 ## Configuration options
 
-The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
+The legend configuration is passed into the `options.plugins.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -121,10 +121,12 @@ var chart = new Chart(ctx, {
     type: 'bar',
     data: data,
     options: {
-        legend: {
-            display: true,
-            labels: {
-                fontColor: 'rgb(255, 99, 132)'
+        plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: 'rgb(255, 99, 132)'
+                }
             }
         }
     }
@@ -177,8 +179,10 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        legend: {
-            onClick: newLegendClickHandler
+        plugins: {
+            legend: {
+                onClick: newLegendClickHandler
+            }
         }
     }
 });

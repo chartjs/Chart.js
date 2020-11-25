@@ -51,15 +51,17 @@
 				},
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Tooltip Position: ' + position
-					},
-					tooltips: {
-						position: position,
-						mode: 'index',
-						intersect: false,
-					},
+					plugins: {
+						title: {
+							display: true,
+							text: 'Tooltip Position: ' + position
+						},
+						tooltip: {
+							position: position,
+							mode: 'index',
+							intersect: false,
+						}
+					}
 				}
 			};
 		}

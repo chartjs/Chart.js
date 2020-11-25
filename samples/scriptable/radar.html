@@ -68,8 +68,10 @@
 		};
 
 		var options = {
-			legend: false,
-			tooltips: true,
+			plugins: {
+				legend: false,
+				tooltip: false,
+			},
 			elements: {
 				line: {
 					backgroundColor: make20PercentOpaque,

@@ -4,7 +4,7 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
+The tooltip configuration is passed into the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -128,18 +128,20 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
-            callbacks: {
-                label: function(context) {
-                    var label = context.dataset.label || '';
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        var label = context.dataset.label || '';
 
-                    if (label) {
-                        label += ': ';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (!isNaN(context.dataPoint.y)) {
+                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.dataPoint.y);
+                        }
+                        return label;
                     }
-                    if (!isNaN(context.dataPoint.y)) {
-                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.dataPoint.y);
-                    }
-                    return label;
                 }
             }
         }
@@ -156,16 +158,18 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
-            callbacks: {
-                labelColor: function(context) {
-                    return {
-                        borderColor: 'rgb(255, 0, 0)',
-                        backgroundColor: 'rgb(255, 0, 0)'
-                    };
-                },
-                labelTextColor: function(context) {
-                    return '#543453';
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    labelColor: function(context) {
+                        return {
+                            borderColor: 'rgb(255, 0, 0)',
+                            backgroundColor: 'rgb(255, 0, 0)'
+                        };
+                    },
+                    labelTextColor: function(context) {
+                        return '#543453';
+                    }
                 }
             }
         }
@@ -182,14 +186,16 @@ var chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        tooltips: {
-            usePointStyle: true,
-            callbacks: {
-                labelPointStyle: function(context) {
-                    return {
-                        pointStyle: 'triangle',
-                        rotation: 0
-                    };
+        plugins: {
+            tooltip: {
+                usePointStyle: true,
+                callbacks: {
+                    labelPointStyle: function(context) {
+                        return {
+                            pointStyle: 'triangle',
+                            rotation: 0
+                        };
+                    }
                 }
             }
         }
@@ -239,77 +245,79 @@ var myPieChart = new Chart(ctx, {
     type: 'pie',
     data: data,
     options: {
-        tooltips: {
-            // Disable the on-canvas tooltip
-            enabled: false,
+        plugins: {
+            tooltip: {
+                // Disable the on-canvas tooltip
+                enabled: false,
 
-            custom: function(context) {
-                // Tooltip Element
-                var tooltipEl = document.getElementById('chartjs-tooltip');
+                custom: function(context) {
+                    // Tooltip Element
+                    var tooltipEl = document.getElementById('chartjs-tooltip');
 
-                // Create element on first render
-                if (!tooltipEl) {
-                    tooltipEl = document.createElement('div');
-                    tooltipEl.id = 'chartjs-tooltip';
-                    tooltipEl.innerHTML = '<table></table>';
-                    document.body.appendChild(tooltipEl);
+                    // Create element on first render
+                    if (!tooltipEl) {
+                        tooltipEl = document.createElement('div');
+                        tooltipEl.id = 'chartjs-tooltip';
+                        tooltipEl.innerHTML = '<table></table>';
+                        document.body.appendChild(tooltipEl);
+                    }
+
+                    // Hide if no tooltip
+                    var tooltipModel = context.tooltip;
+                    if (tooltipModel.opacity === 0) {
+                        tooltipEl.style.opacity = 0;
+                        return;
+                    }
+
+                    // Set caret Position
+                    tooltipEl.classList.remove('above', 'below', 'no-transform');
+                    if (tooltipModel.yAlign) {
+                        tooltipEl.classList.add(tooltipModel.yAlign);
+                    } else {
+                        tooltipEl.classList.add('no-transform');
+                    }
+
+                    function getBody(bodyItem) {
+                        return bodyItem.lines;
+                    }
+
+                    // Set Text
+                    if (tooltipModel.body) {
+                        var titleLines = tooltipModel.title || [];
+                        var bodyLines = tooltipModel.body.map(getBody);
+
+                        var innerHtml = '<thead>';
+
+                        titleLines.forEach(function(title) {
+                            innerHtml += '<tr><th>' + title + '</th></tr>';
+                        });
+                        innerHtml += '</thead><tbody>';
+
+                        bodyLines.forEach(function(body, i) {
+                            var colors = tooltipModel.labelColors[i];
+                            var style = 'background:' + colors.backgroundColor;
+                            style += '; border-color:' + colors.borderColor;
+                            style += '; border-width: 2px';
+                            var span = '<span style="' + style + '"></span>';
+                            innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                        });
+                        innerHtml += '</tbody>';
+
+                        var tableRoot = tooltipEl.querySelector('table');
+                        tableRoot.innerHTML = innerHtml;
+                    }
+
+                    var position = context.chart.canvas.getBoundingClientRect();
+
+                    // Display, position, and set styles for font
+                    tooltipEl.style.opacity = 1;
+                    tooltipEl.style.position = 'absolute';
+                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.font = tooltipModel.bodyFont.string;
+                    tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                    tooltipEl.style.pointerEvents = 'none';
                 }
-
-                // Hide if no tooltip
-                var tooltipModel = context.tooltip;
-                if (tooltipModel.opacity === 0) {
-                    tooltipEl.style.opacity = 0;
-                    return;
-                }
-
-                // Set caret Position
-                tooltipEl.classList.remove('above', 'below', 'no-transform');
-                if (tooltipModel.yAlign) {
-                    tooltipEl.classList.add(tooltipModel.yAlign);
-                } else {
-                    tooltipEl.classList.add('no-transform');
-                }
-
-                function getBody(bodyItem) {
-                    return bodyItem.lines;
-                }
-
-                // Set Text
-                if (tooltipModel.body) {
-                    var titleLines = tooltipModel.title || [];
-                    var bodyLines = tooltipModel.body.map(getBody);
-
-                    var innerHtml = '<thead>';
-
-                    titleLines.forEach(function(title) {
-                        innerHtml += '<tr><th>' + title + '</th></tr>';
-                    });
-                    innerHtml += '</thead><tbody>';
-
-                    bodyLines.forEach(function(body, i) {
-                        var colors = tooltipModel.labelColors[i];
-                        var style = 'background:' + colors.backgroundColor;
-                        style += '; border-color:' + colors.borderColor;
-                        style += '; border-width: 2px';
-                        var span = '<span style="' + style + '"></span>';
-                        innerHtml += '<tr><td>' + span + body + '</td></tr>';
-                    });
-                    innerHtml += '</tbody>';
-
-                    var tableRoot = tooltipEl.querySelector('table');
-                    tableRoot.innerHTML = innerHtml;
-                }
-
-                var position = context.chart.canvas.getBoundingClientRect();
-
-                // Display, position, and set styles for font
-                tooltipEl.style.opacity = 1;
-                tooltipEl.style.position = 'absolute';
-                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                tooltipEl.style.font = tooltipModel.bodyFont.string;
-                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-                tooltipEl.style.pointerEvents = 'none';
             }
         }
     }

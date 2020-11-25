@@ -196,8 +196,10 @@ describe('Legend block tests', function() {
 				labels: []
 			},
 			options: {
-				legend: {
-					reverse: true
+				plugins: {
+					legend: {
+						reverse: true
+					}
 				}
 			}
 		});
@@ -271,11 +273,13 @@ describe('Legend block tests', function() {
 				labels: []
 			},
 			options: {
-				legend: {
-					labels: {
-						filter: function(legendItem, data) {
-							var dataset = data.datasets[legendItem.datasetIndex];
-							return !dataset.legendHidden;
+				plugins: {
+					legend: {
+						labels: {
+							filter: function(legendItem, data) {
+								var dataset = data.datasets[legendItem.datasetIndex];
+								return !dataset.legendHidden;
+							}
 						}
 					}
 				}
@@ -338,10 +342,12 @@ describe('Legend block tests', function() {
 				labels: []
 			},
 			options: {
-				legend: {
-					labels: {
-						sort: function(a, b) {
-							return b.datasetIndex > a.datasetIndex ? 1 : -1;
+				plugins: {
+					legend: {
+						labels: {
+							sort: function(a, b) {
+								return b.datasetIndex > a.datasetIndex ? 1 : -1;
+							}
 						}
 					}
 				}
@@ -406,8 +412,10 @@ describe('Legend block tests', function() {
 					labels: []
 				},
 				options: {
-					legend: {
-						labels: false,
+					plugins: {
+						legend: {
+							labels: false,
+						}
 					}
 				}
 			});
@@ -429,8 +437,10 @@ describe('Legend block tests', function() {
 					labels: []
 				},
 				options: {
-					legend: {
-						position: 'right'
+					plugins: {
+						legend: {
+							position: 'right'
+						}
 					}
 				}
 			},
@@ -464,10 +474,12 @@ describe('Legend block tests', function() {
 					labels: []
 				},
 				options: {
-					legend: {
-						position: 'right',
-						labels: {
-							boxHeight: 40
+					plugins: {
+						legend: {
+							position: 'right',
+							labels: {
+								boxHeight: 40
+							}
 						}
 					}
 				}
@@ -585,9 +597,11 @@ describe('Legend block tests', function() {
 				labels: []
 			},
 			options: {
-				legend: {
-					labels: {
-						usePointStyle: true
+				plugins: {
+					legend: {
+						labels: {
+							usePointStyle: true
+						}
 					}
 				}
 			}
@@ -652,10 +666,12 @@ describe('Legend block tests', function() {
 				labels: []
 			},
 			options: {
-				legend: {
-					labels: {
-						usePointStyle: true,
-						pointStyle: 'star'
+				plugins: {
+					legend: {
+						labels: {
+							usePointStyle: true,
+							pointStyle: 'star'
+						}
 					}
 				}
 			}
@@ -701,14 +717,16 @@ describe('Legend block tests', function() {
 					}]
 				},
 				options: {
-					legend: {
-						display: true
+					plugins: {
+						legend: {
+							display: true
+						}
 					}
 				}
 			});
 			expect(chart.legend.options.display).toBe(true);
 
-			chart.options.legend.display = false;
+			chart.options.plugins.legend.display = false;
 			chart.update();
 			expect(chart.legend.options.display).toBe(false);
 		});
@@ -718,10 +736,12 @@ describe('Legend block tests', function() {
 				type: 'line',
 				data: {},
 				options: {
-					legend: {
-						fullWidth: true,
-						position: 'top',
-						weight: 150
+					plugins: {
+						legend: {
+							fullWidth: true,
+							position: 'top',
+							weight: 150
+						}
 					}
 				}
 			});
@@ -730,9 +750,9 @@ describe('Legend block tests', function() {
 			expect(chart.legend.position).toBe('top');
 			expect(chart.legend.weight).toBe(150);
 
-			chart.options.legend.fullWidth = false;
-			chart.options.legend.position = 'left';
-			chart.options.legend.weight = 42;
+			chart.options.plugins.legend.fullWidth = false;
+			chart.options.plugins.legend.position = 'left';
+			chart.options.plugins.legend.weight = 42;
 			chart.update();
 
 			expect(chart.legend.fullWidth).toBe(false);
@@ -740,7 +760,7 @@ describe('Legend block tests', function() {
 			expect(chart.legend.weight).toBe(42);
 		});
 
-		it ('should remove the legend if the new options are false', function() {
+		xit ('should remove the legend if the new options are false', function() {
 			var chart = acquireChart({
 				type: 'line',
 				data: {
@@ -752,7 +772,7 @@ describe('Legend block tests', function() {
 			});
 			expect(chart.legend).not.toBe(undefined);
 
-			chart.options.legend = false;
+			chart.options.plugins.legend = false;
 			chart.update();
 			expect(chart.legend).toBe(undefined);
 		});
@@ -767,12 +787,14 @@ describe('Legend block tests', function() {
 					}]
 				},
 				options: {
-					legend: false
+					plugins: {
+						legend: false
+					}
 				}
 			});
 			expect(chart.legend).toBe(undefined);
 
-			chart.options.legend = {};
+			chart.options.plugins.legend = {};
 			chart.update();
 			expect(chart.legend).not.toBe(undefined);
 			expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.plugins.legend));
@@ -794,15 +816,17 @@ describe('Legend block tests', function() {
 					}]
 				},
 				options: {
-					legend: {
-						onClick: function(_, item) {
-							clickItem = item;
-						},
-						onHover: function(_, item) {
-							hoverItem = item;
-						},
-						onLeave: function(_, item) {
-							leaveItem = item;
+					plugins: {
+						legend: {
+							onClick: function(_, item) {
+								clickItem = item;
+							},
+							onHover: function(_, item) {
+								hoverItem = item;
+							},
+							onLeave: function(_, item) {
+								leaveItem = item;
+							}
 						}
 					}
 				}

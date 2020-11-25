@@ -153,16 +153,18 @@
 				type: 'line',
 				data: lineChartData,
 				options: {
-					title: {
-						display: true,
-						text: 'Chart.js Line Chart - Custom Tooltips'
-					},
-					tooltips: {
-						enabled: false,
-						mode: 'index',
-						intersect: false,
-						position: 'nearest',
-						custom: customTooltips
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js Line Chart - Custom Tooltips'
+						},
+						tooltip: {
+							enabled: false,
+							mode: 'index',
+							intersect: false,
+							position: 'nearest',
+							custom: customTooltips
+						}
 					}
 				}
 			});

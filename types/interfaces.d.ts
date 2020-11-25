@@ -22,7 +22,7 @@ import {
 } from './controllers';
 import { CoreChartOptions } from './core/interfaces';
 import { ElementChartOptions } from './elements';
-import { FillerControllerDatasetOptions, PluginChartOptions } from './plugins';
+import { FillerControllerDatasetOptions } from './plugins';
 import { Plugin } from './core';
 import {
   LinearScaleOptions,
@@ -140,7 +140,6 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 
 export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
   CoreChartOptions &
-  PluginChartOptions &
   ElementChartOptions &
   DatasetChartOptions<TType> &
   ScaleChartOptions<TType> &

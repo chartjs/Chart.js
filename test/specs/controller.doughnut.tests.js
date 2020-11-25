@@ -61,8 +61,10 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1', 'label2', 'label3']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false,
+				},
 				animation: {
 					duration: 0,
 					animateRotate: true,
@@ -163,8 +165,10 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1', 'label2']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false,
+				},
 				cutoutPercentage: 50,
 				rotation: 270,
 				circumference: 90,
@@ -207,8 +211,10 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1']
 			},
 			options: {
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				cutoutPercentage: 50,
 				rotation: 270,
 				circumference: 90,
@@ -281,8 +287,10 @@ describe('Chart.controllers.doughnut', function() {
 				labels: ['label0', 'label1']
 			},
 			options: {
-				legend: false,
-				title: false
+				plugins: {
+					legend: false,
+					title: false
+				}
 			}
 		});
 

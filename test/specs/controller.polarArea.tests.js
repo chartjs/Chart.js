@@ -87,8 +87,10 @@ describe('Chart.controllers.polarArea', function() {
 			},
 			options: {
 				showLine: true,
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false
+				},
 				elements: {
 					arc: {
 						backgroundColor: 'rgb(255, 0, 0)',
@@ -154,8 +156,10 @@ describe('Chart.controllers.polarArea', function() {
 			},
 			options: {
 				showLine: true,
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false,
+				},
 				startAngle: 90, // default is 0
 				elements: {
 					arc: {

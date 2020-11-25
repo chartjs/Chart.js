@@ -10,9 +10,11 @@
 			}]
 		},
 		"options": {
-			"legend": {
-				"position": "top",
-				"align": "start"
+			"plugins": {
+				"legend": {
+					"position": "top",
+					"align": "start"
+				}
 			}
 		}
 	},

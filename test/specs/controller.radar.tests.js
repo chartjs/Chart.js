@@ -85,8 +85,10 @@ describe('Chart.controllers.radar', function() {
 			},
 			options: {
 				showLine: true,
-				legend: false,
-				title: false,
+				plugins: {
+					legend: false,
+					title: false,
+				},
 				elements: {
 					line: {
 						backgroundColor: 'rgb(255, 0, 0)',

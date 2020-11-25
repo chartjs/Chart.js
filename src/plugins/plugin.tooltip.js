@@ -392,7 +392,7 @@ export class Tooltip extends Element {
 	initialize() {
 		const me = this;
 		const chartOpts = me._chart.options;
-		me.options = resolveOptions(chartOpts.tooltips, chartOpts.font);
+		me.options = resolveOptions(chartOpts.plugins.tooltip, chartOpts.font);
 		me._cachedAnimations = undefined;
 	}
 
@@ -1048,7 +1048,7 @@ export default {
 	positioners,
 
 	afterInit(chart) {
-		const tooltipOpts = chart.options.tooltips;
+		const tooltipOpts = chart.options.plugins.tooltip;
 
 		if (tooltipOpts) {
 			chart.tooltip = new Tooltip({_chart: chart});

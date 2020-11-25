@@ -654,7 +654,7 @@ export default {
 	_element: Legend,
 
 	beforeInit(chart) {
-		const legendOpts = resolveOptions(chart.options.legend);
+		const legendOpts = resolveOptions(chart.options.plugins.legend);
 
 		if (legendOpts) {
 			createNewLegendAndAttach(chart, legendOpts);
@@ -665,7 +665,7 @@ export default {
 	// This ensures that if the legend position changes (via an option update)
 	// the layout system respects the change. See https://github.com/chartjs/Chart.js/issues/7527
 	beforeUpdate(chart) {
-		const legendOpts = resolveOptions(chart.options.legend);
+		const legendOpts = resolveOptions(chart.options.plugins.legend);
 		const legend = chart.legend;
 
 		if (legendOpts) {

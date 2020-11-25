@@ -45,27 +45,29 @@
 				},
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: 'Sample tooltip with border'
-					},
-					tooltips: {
-						position: 'nearest',
-						mode: 'index',
-						intersect: false,
-						yPadding: 10,
-						xPadding: 10,
-						caretSize: 8,
-						backgroundColor: 'rgba(72, 241, 12, 1)',
-						titleFont: {
-							color: window.chartColors.black
+					plugins: {
+						title: {
+							display: true,
+							text: 'Sample tooltip with border'
 						},
-						bodyFont: {
-							color: window.chartColors.black
-						},
-						borderColor: 'rgba(0,0,0,1)',
-						borderWidth: 4
-					},
+						tooltip: {
+							position: 'nearest',
+							mode: 'index',
+							intersect: false,
+							yPadding: 10,
+							xPadding: 10,
+							caretSize: 8,
+							backgroundColor: 'rgba(72, 241, 12, 1)',
+							titleFont: {
+								color: window.chartColors.black
+							},
+							bodyFont: {
+								color: window.chartColors.black
+							},
+							borderColor: 'rgba(0,0,0,1)',
+							borderWidth: 4
+						}
+					}
 				}
 			};
 		}

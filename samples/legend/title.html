@@ -71,13 +71,19 @@
 				},
 				options: {
 					responsive: true,
-					legend: {
-						align: align,
-						position: legendPosition,
+					plugins: {
+						legend: {
+							align: align,
+							position: legendPosition,
+							title: {
+								display: true,
+								text: 'Legend Title',
+								position: titlePosition,
+							}
+						},
 						title: {
 							display: true,
-							text: 'Legend Title',
-							position: titlePosition,
+							text: 'Legend Title Position: ' + titlePosition
 						}
 					},
 					scales: {
@@ -95,10 +101,6 @@
 								labelString: 'Value'
 							}
 						}
-					},
-					title: {
-						display: true,
-						text: 'Legend Title Position: ' + titlePosition
 					}
 				}
 			};
