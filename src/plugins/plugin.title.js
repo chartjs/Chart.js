@@ -2,7 +2,7 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {PI, isArray, toPadding, toFont} from '../helpers';
 
-const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : start + ((end - start) / 2);
+const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
 
 export class Title extends Element {
 	constructor(config) {
