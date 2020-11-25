@@ -2,6 +2,8 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {PI, isArray, toPadding, toFont} from '../helpers';
 
+const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : start + ((end - start) / 2);
+
 export class Title extends Element {
 	constructor(config) {
 		super();
@@ -78,57 +80,30 @@ export class Title extends Element {
 		return pos === 'top' || pos === 'bottom';
 	}
 
-	_drawArgs(lineHeight) {
+	_drawArgs(offset) {
 		const me = this;
-		const opts = me.options;
-		const offset = lineHeight / 2 + me._padding.top;
-		const top = me.top;
-		const left = me.left;
-		const bottom = me.bottom;
-		const right = me.right;
+		const {top, left, bottom, right, options} = me;
+		const align = options.align;
 		let rotation = 0;
 		let maxWidth, titleX, titleY;
-		let align;
 
 		if (me.isHorizontal()) {
-			switch (opts.align) {
-			case 'start':
-				titleX = left;
-				align = 'left';
-				break;
-			case 'end':
-				titleX = right;
-				align = 'right';
-				break;
-			default:
-				titleX = left + ((right - left) / 2);
-				align = 'center';
-				break;
-			}
-
+			titleX = alignStartEnd(align, left, right);
 			titleY = top + offset;
 			maxWidth = right - left;
 		} else {
-			titleX = opts.position === 'left' ? left + offset : right - offset;
-
-			switch (opts.align) {
-			case 'start':
-				titleY = opts.position === 'left' ? bottom : top;
-				align = 'left';
-				break;
-			case 'end':
-				titleY = opts.position === 'left' ? top : bottom;
-				align = 'right';
-				break;
-			default:
-				titleY = top + ((bottom - top) / 2);
-				align = 'center';
-				break;
+			const isLeft = options.position === 'left';
+			if (isLeft) {
+				titleX = left + offset;
+				titleY = alignStartEnd(align, bottom, top);
+			} else {
+				titleX = right - offset;
+				titleY = alignStartEnd(align, top, bottom);
 			}
 			maxWidth = bottom - top;
-			rotation = PI * (opts.position === 'left' ? -0.5 : 0.5);
+			rotation = PI * (isLeft ? -0.5 : 0.5);
 		}
-		return {titleX, titleY, align, maxWidth, rotation};
+		return {titleX, titleY, maxWidth, rotation};
 	}
 
 	draw() {
@@ -142,7 +117,8 @@ export class Title extends Element {
 
 		const fontOpts = toFont(opts.font, me.chart.options.font);
 		const lineHeight = fontOpts.lineHeight;
-		const {titleX, titleY, align, maxWidth, rotation} = me._drawArgs(lineHeight);
+		const offset = lineHeight / 2 + me._padding.top;
+		const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
 
 		ctx.save();
 
@@ -151,7 +127,7 @@ export class Title extends Element {
 
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = align;
+		ctx.textAlign = opts.align;
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
