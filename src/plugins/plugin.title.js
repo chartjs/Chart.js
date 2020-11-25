@@ -81,27 +81,26 @@ export class Title extends Element {
 	}
 
 	_drawArgs(offset) {
-		const me = this;
-		const {top, left, bottom, right, options} = me;
+		const {top, left, bottom, right, options} = this;
 		const align = options.align;
 		let rotation = 0;
 		let maxWidth, titleX, titleY;
 
-		if (me.isHorizontal()) {
+		if (this.isHorizontal()) {
 			titleX = alignStartEnd(align, left, right);
 			titleY = top + offset;
 			maxWidth = right - left;
 		} else {
-			const isLeft = options.position === 'left';
-			if (isLeft) {
+			if (options.position === 'left') {
 				titleX = left + offset;
 				titleY = alignStartEnd(align, bottom, top);
+				rotation = PI * -0.5;
 			} else {
 				titleX = right - offset;
 				titleY = alignStartEnd(align, top, bottom);
+				rotation = PI * 0.5;
 			}
 			maxWidth = bottom - top;
-			rotation = PI * (isLeft ? -0.5 : 0.5);
 		}
 		return {titleX, titleY, maxWidth, rotation};
 	}
@@ -145,7 +144,7 @@ export class Title extends Element {
 	}
 }
 
-function createNewTitleBlockAndAttach(chart, titleOpts) {
+function createTitle(chart, titleOpts) {
 	const title = new Title({
 		ctx: chart.ctx,
 		options: titleOpts,
@@ -157,35 +156,42 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 	chart.titleBlock = title;
 }
 
+function removeTitle(chart) {
+	const title = chart.titleBlock;
+	if (title) {
+		layouts.removeBox(chart, title);
+		delete chart.titleBlock;
+	}
+}
+
+function createOrUpdateTitle(chart, options) {
+	const title = chart.titleBlock;
+	if (title) {
+		layouts.configure(chart, title, options);
+		title.options = options;
+	} else {
+		createTitle(chart, options);
+	}
+}
+
 export default {
 	id: 'title',
 
 	/**
-	 * Backward compatibility: since 2.1.5, the title is registered as a plugin, making
-	 * Chart.Title obsolete. To avoid a breaking change, we export the Title as part of
-	 * the plugin, which one will be re-exposed in the chart.js file.
-	 * https://github.com/chartjs/Chart.js/pull/2640
+	 * For tests
 	 * @private
 	 */
 	_element: Title,
 
 	beforeInit(chart, options) {
-		createNewTitleBlockAndAttach(chart, options);
+		createTitle(chart, options);
 	},
 
 	beforeUpdate(chart, args, options) {
-		const titleBlock = chart.titleBlock;
-
-		if (options) {
-			if (titleBlock) {
-				layouts.configure(chart, titleBlock, options);
-				titleBlock.options = options;
-			} else {
-				createNewTitleBlockAndAttach(chart, options);
-			}
-		} else if (titleBlock) {
-			layouts.removeBox(chart, titleBlock);
-			delete chart.titleBlock;
+		if (options === false) {
+			removeTitle(chart);
+		} else {
+			createOrUpdateTitle(chart, options);
 		}
 	},
 
