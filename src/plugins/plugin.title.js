@@ -2,6 +2,7 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {PI, isArray, toPadding, toFont} from '../helpers';
 
+const toLeftRightCenter = (align) => align === 'start' ? 'left' : align === 'end' ? 'right' : 'center';
 const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
 
 export class Title extends Element {
@@ -126,7 +127,7 @@ export class Title extends Element {
 
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = opts.align;
+		ctx.textAlign = toLeftRightCenter(opts.align);
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
