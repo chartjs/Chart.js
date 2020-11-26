@@ -1,9 +1,7 @@
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {PI, isArray, toPadding, toFont} from '../helpers';
-
-const toLeftRightCenter = (align) => align === 'start' ? 'left' : align === 'end' ? 'right' : 'center';
-const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
+import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras';
 
 export class Title extends Element {
 	constructor(config) {
@@ -88,17 +86,17 @@ export class Title extends Element {
 		let maxWidth, titleX, titleY;
 
 		if (this.isHorizontal()) {
-			titleX = alignStartEnd(align, left, right);
+			titleX = _alignStartEnd(align, left, right);
 			titleY = top + offset;
 			maxWidth = right - left;
 		} else {
 			if (options.position === 'left') {
 				titleX = left + offset;
-				titleY = alignStartEnd(align, bottom, top);
+				titleY = _alignStartEnd(align, bottom, top);
 				rotation = PI * -0.5;
 			} else {
 				titleX = right - offset;
-				titleY = alignStartEnd(align, top, bottom);
+				titleY = _alignStartEnd(align, top, bottom);
 				rotation = PI * 0.5;
 			}
 			maxWidth = bottom - top;
@@ -127,7 +125,7 @@ export class Title extends Element {
 
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = toLeftRightCenter(opts.align);
+		ctx.textAlign = _toLeftRightCenter(opts.align);
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
