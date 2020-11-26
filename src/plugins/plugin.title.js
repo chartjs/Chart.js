@@ -4,15 +4,15 @@ import {PI, isArray, toPadding, toFont} from '../helpers';
 import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras';
 
 export class Title extends Element {
+	/**
+	 * @param {{ ctx: any; options: any; chart: any; }} config
+	 */
 	constructor(config) {
 		super();
-
-		Object.assign(this, config);
 
 		this.chart = config.chart;
 		this.options = config.options;
 		this.ctx = config.ctx;
-		this._margins = undefined;
 		this._padding = undefined;
 		this.top = undefined;
 		this.bottom = undefined;
@@ -20,58 +20,35 @@ export class Title extends Element {
 		this.right = undefined;
 		this.width = undefined;
 		this.height = undefined;
-		this.maxWidth = undefined;
-		this.maxHeight = undefined;
 		this.position = undefined;
 		this.weight = undefined;
 		this.fullWidth = undefined;
 	}
 
-	update(maxWidth, maxHeight, margins) {
-		const me = this;
-
-		me.maxWidth = maxWidth;
-		me.maxHeight = maxHeight;
-		me._margins = margins;
-
-		me.setDimensions();
-
-		me.fit();
-	}
-
-	setDimensions() {
-		const me = this;
-		// Set the unconstrained dimension before label rotation
-		if (me.isHorizontal()) {
-			// Reset position before calculating rotation
-			me.width = me.maxWidth;
-			me.left = 0;
-			me.right = me.width;
-		} else {
-			me.height = me.maxHeight;
-
-			// Reset position before calculating rotation
-			me.top = 0;
-			me.bottom = me.height;
-		}
-	}
-
-	fit() {
+	update(maxWidth, maxHeight) {
 		const me = this;
 		const opts = me.options;
-		const minSize = {};
-		const isHorizontal = me.isHorizontal();
+
+		me.left = 0;
+		me.top = 0;
 
 		if (!opts.display) {
-			me.width = minSize.width = me.height = minSize.height = 0;
+			me.width = me.height = me.right = me.bottom = 0;
 			return;
 		}
+
+		me.width = me.right = maxWidth;
+		me.height = me.bottom = maxHeight;
 
 		const lineCount = isArray(opts.text) ? opts.text.length : 1;
 		me._padding = toPadding(opts.padding);
 		const textSize = lineCount * toFont(opts.font, me.chart.options.font).lineHeight + me._padding.height;
-		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
-		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
+
+		if (me.isHorizontal()) {
+			me.height = textSize;
+		} else {
+			me.width = textSize;
+		}
 	}
 
 	isHorizontal() {
