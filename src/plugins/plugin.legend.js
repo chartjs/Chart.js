@@ -49,8 +49,7 @@ export class Legend extends Element {
 		this.options = config.options;
 		this.ctx = config.ctx;
 		this.legendItems = undefined;
-		this.columnWidths = undefined;
-		this.columnHeights = undefined;
+		this.columnSizes = undefined;
 		this.lineWidths = undefined;
 		this.maxHeight = undefined;
 		this.maxWidth = undefined;
@@ -184,8 +183,7 @@ export class Legend extends Element {
 		const {ctx, maxHeight} = me;
 		const padding = me.options.labels.padding;
 		const hitboxes = me.legendHitBoxes = [];
-		const columnWidths = me.columnWidths = [];
-		const columnHeights = me.columnHeights = [];
+		const columnSizes = me.columnSizes = [];
 		let totalWidth = padding;
 		let currentColWidth = 0;
 		let currentColHeight = 0;
@@ -197,10 +195,8 @@ export class Legend extends Element {
 			// If too tall, go to new column
 			if (i > 0 && currentColHeight + fontSize + 2 * padding > heightLimit) {
 				totalWidth += currentColWidth + padding;
-				columnWidths.push(currentColWidth); // previous column width
-				columnHeights.push(currentColHeight);
-				currentColWidth = 0;
-				currentColHeight = 0;
+				columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
+				currentColWidth = currentColHeight = 0;
 			}
 
 			// Get max width
@@ -212,8 +208,7 @@ export class Legend extends Element {
 		});
 
 		totalWidth += currentColWidth;
-		columnWidths.push(currentColWidth);
-		columnHeights.push(currentColHeight);
+		columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
 
 		return totalWidth;
 	}
@@ -233,7 +228,7 @@ export class Legend extends Element {
 	 */
 	_draw() {
 		const me = this;
-		const {options: opts, height: legendHeight, width: legendWidth, columnHeights, lineWidths, ctx, legendHitBoxes} = me;
+		const {options: opts, height: legendHeight, width: legendWidth, columnSizes, lineWidths, ctx, legendHitBoxes} = me;
 		const {align, labels: labelOpts} = opts;
 		const defaultColor = defaults.color;
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.width);
@@ -329,7 +324,7 @@ export class Legend extends Element {
 		} else {
 			cursor = {
 				x: me.left + padding,
-				y: me.top + _alignStartEnd(align, padding, legendHeight - columnHeights[0]) + titleHeight,
+				y: me.top + _alignStartEnd(align, padding, legendHeight - columnSizes[0].height) + titleHeight,
 				line: 0
 			};
 		}
@@ -352,9 +347,9 @@ export class Legend extends Element {
 					x = cursor.x = me.left + _alignStartEnd(align, padding, legendWidth - lineWidths[cursor.line]);
 				}
 			} else if (i > 0 && y + lineHeight > me.bottom) {
-				x = cursor.x = x + me.columnWidths[cursor.line] + padding;
+				x = cursor.x = x + columnSizes[cursor.line].width + padding;
 				cursor.line++;
-				y = cursor.y = me.top + _alignStartEnd(align, padding, legendHeight - columnHeights[cursor.line]);
+				y = cursor.y = me.top + _alignStartEnd(align, padding, legendHeight - columnSizes[cursor.line].height);
 			}
 
 			const realX = rtlHelper.x(x);
@@ -408,7 +403,7 @@ export class Legend extends Element {
 			left = _alignStartEnd(opts.align, left, me.right - maxWidth);
 		} else {
 			// Move down so that the title is above the legend stack in every alignment
-			const maxHeight = Math.max(...me.columnHeights);
+			const maxHeight = me.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
 			y = _alignStartEnd(opts.align, y, me.height - maxHeight);
 		}
 
