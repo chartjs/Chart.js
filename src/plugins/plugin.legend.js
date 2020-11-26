@@ -29,10 +29,13 @@ const getBoxSize = (labelOpts, fontSize) => {
 
 export class Legend extends Element {
 
+	/**
+	 * @param {{ ctx: any; options: any; chart: any; }} config
+	 */
 	constructor(config) {
 		super();
 
-		Object.assign(this, config);
+		this._added = false;
 
 		// Contains hit boxes for each dataset (in dataset order)
 		this.legendHitBoxes = [];
@@ -495,18 +498,6 @@ function isListened(type, opts) {
 	return false;
 }
 
-function createNewLegendAndAttach(chart, legendOpts) {
-	const legend = new Legend({
-		ctx: chart.ctx,
-		options: legendOpts,
-		chart
-	});
-
-	layouts.configure(chart, legend, legendOpts);
-	layouts.addBox(chart, legend);
-	chart.legend = legend;
-}
-
 export default {
 	id: 'legend',
 
@@ -529,13 +520,12 @@ export default {
 	// This ensures that if the legend position changes (via an option update)
 	// the layout system respects the change. See https://github.com/chartjs/Chart.js/issues/7527
 	beforeUpdate(chart, _args, options) {
-		const legend = chart.legend;
-
-		if (legend) {
-			layouts.configure(chart, legend, options);
-			legend.options = options;
-		} else {
-			createNewLegendAndAttach(chart, options);
+		const legend = chart.legend || (chart.legend = new Legend({ctx: chart.ctx, options, chart}));
+		layouts.configure(chart, legend, options);
+		legend.options = options;
+		if (!legend._added) {
+			layouts.addBox(chart, legend);
+			legend._added = true;
 		}
 	},
 
