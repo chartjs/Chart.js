@@ -1,7 +1,9 @@
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {PI, isArray, mergeIf, toPadding, toFont} from '../helpers';
+import {PI, isArray, toPadding, toFont} from '../helpers';
+
+const toLeftRightCenter = (align) => align === 'start' ? 'left' : align === 'end' ? 'right' : 'center';
+const alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
 
 export class Title extends Element {
 	constructor(config) {
@@ -27,44 +29,17 @@ export class Title extends Element {
 		this.fullWidth = undefined;
 	}
 
-	// These methods are ordered by lifecycle. Utilities then follow.
-
-
-	beforeUpdate() {}
-
 	update(maxWidth, maxHeight, margins) {
 		const me = this;
 
-		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
-		me.beforeUpdate();
-
-		// Absorb the master measurements
 		me.maxWidth = maxWidth;
 		me.maxHeight = maxHeight;
 		me._margins = margins;
 
-		// Dimensions
-		me.beforeSetDimensions();
 		me.setDimensions();
-		me.afterSetDimensions();
-		// Labels
-		me.beforeBuildLabels();
-		me.buildLabels();
-		me.afterBuildLabels();
 
-		// Fit
-		me.beforeFit();
 		me.fit();
-		me.afterFit();
-		//
-		me.afterUpdate();
-
 	}
-
-	afterUpdate() {}
-
-
-	beforeSetDimensions() {}
 
 	setDimensions() {
 		const me = this;
@@ -82,16 +57,6 @@ export class Title extends Element {
 			me.bottom = me.height;
 		}
 	}
-
-	afterSetDimensions() {}
-
-	beforeBuildLabels() {}
-
-	buildLabels() {}
-
-	afterBuildLabels() {}
-
-	beforeFit() {}
 
 	fit() {
 		const me = this;
@@ -111,15 +76,36 @@ export class Title extends Element {
 		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	}
 
-	afterFit() {}
-
-	// Shared Methods
 	isHorizontal() {
 		const pos = this.options.position;
 		return pos === 'top' || pos === 'bottom';
 	}
 
-	// Actually draw the title block on the canvas
+	_drawArgs(offset) {
+		const {top, left, bottom, right, options} = this;
+		const align = options.align;
+		let rotation = 0;
+		let maxWidth, titleX, titleY;
+
+		if (this.isHorizontal()) {
+			titleX = alignStartEnd(align, left, right);
+			titleY = top + offset;
+			maxWidth = right - left;
+		} else {
+			if (options.position === 'left') {
+				titleX = left + offset;
+				titleY = alignStartEnd(align, bottom, top);
+				rotation = PI * -0.5;
+			} else {
+				titleX = right - offset;
+				titleY = alignStartEnd(align, top, bottom);
+				rotation = PI * 0.5;
+			}
+			maxWidth = bottom - top;
+		}
+		return {titleX, titleY, maxWidth, rotation};
+	}
+
 	draw() {
 		const me = this;
 		const ctx = me.ctx;
@@ -132,53 +118,7 @@ export class Title extends Element {
 		const fontOpts = toFont(opts.font, me.chart.options.font);
 		const lineHeight = fontOpts.lineHeight;
 		const offset = lineHeight / 2 + me._padding.top;
-		let rotation = 0;
-		const top = me.top;
-		const left = me.left;
-		const bottom = me.bottom;
-		const right = me.right;
-		let maxWidth, titleX, titleY;
-		let align;
-
-		// Horizontal
-		if (me.isHorizontal()) {
-			switch (opts.align) {
-			case 'start':
-				titleX = left;
-				align = 'left';
-				break;
-			case 'end':
-				titleX = right;
-				align = 'right';
-				break;
-			default:
-				titleX = left + ((right - left) / 2);
-				align = 'center';
-				break;
-			}
-
-			titleY = top + offset;
-			maxWidth = right - left;
-		} else {
-			titleX = opts.position === 'left' ? left + offset : right - offset;
-
-			switch (opts.align) {
-			case 'start':
-				titleY = opts.position === 'left' ? bottom : top;
-				align = 'left';
-				break;
-			case 'end':
-				titleY = opts.position === 'left' ? top : bottom;
-				align = 'right';
-				break;
-			default:
-				titleY = top + ((bottom - top) / 2);
-				align = 'center';
-				break;
-			}
-			maxWidth = bottom - top;
-			rotation = PI * (opts.position === 'left' ? -0.5 : 0.5);
-		}
+		const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
 
 		ctx.save();
 
@@ -187,7 +127,7 @@ export class Title extends Element {
 
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = align;
+		ctx.textAlign = toLeftRightCenter(opts.align);
 		ctx.textBaseline = 'middle';
 
 		const text = opts.text;
@@ -205,7 +145,7 @@ export class Title extends Element {
 	}
 }
 
-function createNewTitleBlockAndAttach(chart, titleOpts) {
+function createTitle(chart, titleOpts) {
 	const title = new Title({
 		ctx: chart.ctx,
 		options: titleOpts,
@@ -217,42 +157,42 @@ function createNewTitleBlockAndAttach(chart, titleOpts) {
 	chart.titleBlock = title;
 }
 
+function removeTitle(chart) {
+	const title = chart.titleBlock;
+	if (title) {
+		layouts.removeBox(chart, title);
+		delete chart.titleBlock;
+	}
+}
+
+function createOrUpdateTitle(chart, options) {
+	const title = chart.titleBlock;
+	if (title) {
+		layouts.configure(chart, title, options);
+		title.options = options;
+	} else {
+		createTitle(chart, options);
+	}
+}
+
 export default {
 	id: 'title',
 
 	/**
-	 * Backward compatibility: since 2.1.5, the title is registered as a plugin, making
-	 * Chart.Title obsolete. To avoid a breaking change, we export the Title as part of
-	 * the plugin, which one will be re-exposed in the chart.js file.
-	 * https://github.com/chartjs/Chart.js/pull/2640
+	 * For tests
 	 * @private
 	 */
 	_element: Title,
 
-	beforeInit(chart) {
-		const titleOpts = chart.options.plugins.title;
-
-		if (titleOpts) {
-			createNewTitleBlockAndAttach(chart, titleOpts);
-		}
+	beforeInit(chart, options) {
+		createTitle(chart, options);
 	},
 
-	beforeUpdate(chart) {
-		const titleOpts = chart.options.plugins.title;
-		const titleBlock = chart.titleBlock;
-
-		if (titleOpts) {
-			mergeIf(titleOpts, defaults.plugins.title);
-
-			if (titleBlock) {
-				layouts.configure(chart, titleBlock, titleOpts);
-				titleBlock.options = titleOpts;
-			} else {
-				createNewTitleBlockAndAttach(chart, titleOpts);
-			}
-		} else if (titleBlock) {
-			layouts.removeBox(chart, titleBlock);
-			delete chart.titleBlock;
+	beforeUpdate(chart, args, options) {
+		if (options === false) {
+			removeTitle(chart);
+		} else {
+			createOrUpdateTitle(chart, options);
 		}
 	},
 
