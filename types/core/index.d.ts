@@ -576,7 +576,7 @@ export interface Plugin<O = {}> {
 	 */
 	install?(chart: Chart, args: {}, options: O): void;
 	/**
-	 * @desc Called when a plugin is starting due to chart initialization or plugin enablement.
+	 * @desc Called when a plugin is starting. This happens when chart is created or plugin is enabled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
@@ -584,7 +584,7 @@ export interface Plugin<O = {}> {
 	 */
 	start?(chart: Chart, args: {}, options: O): void;
 	/**
-	 * @desc Called when a plugin stopping due being disabled.
+	 * @desc Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.

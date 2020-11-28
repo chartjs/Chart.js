@@ -1386,13 +1386,13 @@ describe('Chart', function() {
 		var hooks = {
 			install: ['install'],
 			uninstall: ['uninstall'],
-			chartInit: [
+			init: [
 				'beforeInit',
 				'resize',
 				'afterInit'
 			],
-			enable: ['start'],
-			disable: ['stop'],
+			start: ['start'],
+			stop: ['stop'],
 			update: [
 				'beforeUpdate',
 				'beforeLayout',
@@ -1453,14 +1453,15 @@ describe('Chart', function() {
 
 				expect(sequence).toEqual([].concat(
 					hooks.install,
-					hooks.enable,
-					hooks.chartInit,
+					hooks.start,
+					hooks.init,
 					hooks.update,
 					hooks.render,
 					hooks.resize,
 					hooks.update,
 					hooks.render,
 					hooks.destroy,
+					hooks.stop,
 					hooks.uninstall
 				));
 
@@ -1501,7 +1502,7 @@ describe('Chart', function() {
 			chart.update();
 
 			expect(sequence).toEqual([].concat(
-				hooks.enable,
+				hooks.start,
 				hooks.update,
 				hooks.render
 			));
@@ -1510,7 +1511,7 @@ describe('Chart', function() {
 			chart.options.plugins.plugin = false;
 			chart.update();
 
-			expect(sequence).toEqual(hooks.disable);
+			expect(sequence).toEqual(hooks.stop);
 
 			sequence = [];
 			chart.destroy();

@@ -34,6 +34,7 @@ export default class PluginService {
 		const result = me._notify(descriptors, chart, hook, args);
 
 		if (hook === 'destroy') {
+			me._notify(descriptors, chart, 'stop');
 			me._notify(me._init, chart, 'uninstall');
 		}
 		return result;
@@ -165,7 +166,7 @@ function createDescriptors(plugins, options, all) {
  */
 /**
  * @method IPlugin#start
- * @desc Called when a plugin is starting due to chart initialization or plugin enablement.
+ * @desc Called when a plugin is starting. This happens when chart is created or plugin is enabled.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
@@ -173,7 +174,7 @@ function createDescriptors(plugins, options, all) {
  */
 /**
  * @method IPlugin#stop
- * @desc Called when a plugin stopping due being disabled.
+ * @desc Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
