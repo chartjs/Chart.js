@@ -93,8 +93,8 @@ export default class PluginService {
 		const previousDescriptors = this._oldCache || [];
 		const descriptors = this._cache;
 		const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
-		this._notify(diff(previousDescriptors, descriptors), chart, 'disable');
-		this._notify(diff(descriptors, previousDescriptors), chart, 'enable');
+		this._notify(diff(previousDescriptors, descriptors), chart, 'stop');
+		this._notify(diff(descriptors, previousDescriptors), chart, 'start');
 	}
 }
 
@@ -120,19 +120,25 @@ function allPlugins(config) {
 	return plugins;
 }
 
+function getOpts(options, all) {
+	if (!all && options === false) {
+		return null;
+	}
+	if (options === true) {
+		return {};
+	}
+	return options;
+}
+
 function createDescriptors(plugins, options, all) {
 	const result = [];
 
 	for (let i = 0; i < plugins.length; i++) {
 		const plugin = plugins[i];
 		const id = plugin.id;
-
-		let opts = options[id];
-		if (opts === false && !all) {
+		const opts = getOpts(options[id], all);
+		if (opts === null) {
 			continue;
-		}
-		if (opts === true) {
-			opts = {};
 		}
 		result.push({
 			plugin,

@@ -653,12 +653,12 @@ export default {
 	 */
 	_element: Legend,
 
-	enable(chart) {
+	start(chart) {
 		const legendOpts = resolveOptions(chart.options.plugins.legend);
 		createNewLegendAndAttach(chart, legendOpts);
 	},
 
-	disable(chart) {
+	stop(chart) {
 		layouts.removeBox(chart, chart.legend);
 		delete chart.legend;
 	},

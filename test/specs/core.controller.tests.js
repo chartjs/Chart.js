@@ -1391,8 +1391,8 @@ describe('Chart', function() {
 				'resize',
 				'afterInit'
 			],
-			enable: ['enable'],
-			disable: ['disable'],
+			enable: ['start'],
+			disable: ['stop'],
 			update: [
 				'beforeUpdate',
 				'beforeLayout',

@@ -184,11 +184,11 @@ export default {
 	 */
 	_element: Title,
 
-	enable(chart, _args, options) {
+	start(chart, _args, options) {
 		createTitle(chart, options);
 	},
 
-	disable(chart) {
+	stop(chart) {
 		const titleBlock = chart.titleBlock;
 		layouts.removeBox(chart, titleBlock);
 		delete chart.titleBlock;
