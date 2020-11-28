@@ -15,10 +15,11 @@ export default class PluginService {
 	 * returned value can be used, for instance, to interrupt the current action.
 	 * @param {Chart} chart - The chart instance for which plugins should be called.
 	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
-	 * @param {Array} [args] - Extra arguments to apply to the hook call.
+	 * @param {object} [args] - Extra arguments to apply to the hook call.
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
 	notify(chart, hook, args) {
+		args = args || {};
 		const descriptors = this._descriptors(chart);
 
 		for (let i = 0; i < descriptors.length; ++i) {
@@ -26,8 +27,7 @@ export default class PluginService {
 			const plugin = descriptor.plugin;
 			const method = plugin[hook];
 			if (typeof method === 'function') {
-				const params = [chart].concat(args || []);
-				params.push(descriptor.options);
+				const params = [chart, args, descriptor.options];
 				if (method.apply(plugin, params) === false) {
 					return false;
 				}
@@ -117,12 +117,14 @@ function createDescriptors(plugins, options) {
  * @method IPlugin#beforeInit
  * @desc Called before initializing `chart`.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
  * @method IPlugin#afterInit
  * @desc Called after `chart` has been initialized and before the first update.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
@@ -148,6 +150,7 @@ function createDescriptors(plugins, options) {
  * @method IPlugin#reset
  * @desc Called during chart reset
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @since version 3.0.0
  */
@@ -200,6 +203,7 @@ function createDescriptors(plugins, options) {
  * @desc Called before laying out `chart`. If any plugin returns `false`,
  * the layout update is cancelled until another `update` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart layout.
  */
@@ -208,6 +212,7 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `chart` has been laid out. Note that this hook will not
  * be called if the layout update has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
@@ -215,6 +220,7 @@ function createDescriptors(plugins, options) {
  * @desc Called before rendering `chart`. If any plugin returns `false`,
  * the rendering is cancelled until another `render` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart rendering.
  */
@@ -223,6 +229,7 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `chart` has been fully rendered (and animation completed). Note
  * that this hook will not be called if the rendering has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
@@ -230,6 +237,7 @@ function createDescriptors(plugins, options) {
  * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
  * the frame drawing is cancelled until another `render` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart drawing.
  */
@@ -238,6 +246,7 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `chart` has been drawn. Note that this hook will not be called
  * if the drawing has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
@@ -245,6 +254,7 @@ function createDescriptors(plugins, options) {
  * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
  * the datasets drawing is cancelled until another `render` is triggered.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @returns {boolean} `false` to cancel the chart datasets drawing.
  */
@@ -253,6 +263,7 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `chart` datasets have been drawn. Note that this hook
  * will not be called if the datasets drawing has been previously cancelled.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
 /**
@@ -302,8 +313,9 @@ function createDescriptors(plugins, options) {
  * @desc Called before processing the specified `event`. If any plugin returns `false`,
  * the event will be discarded.
  * @param {Chart} chart - The chart instance.
- * @param {ChartEvent} event - The event object.
- * @param {boolean} replay - True if this event is replayed from `Chart.update`
+ * @param {object} args - The call arguments.
+ * @param {ChartEvent} args.event - The event object.
+ * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
  * @param {object} options - The plugin options.
  */
 /**
@@ -311,20 +323,23 @@ function createDescriptors(plugins, options) {
  * @desc Called after the `event` has been consumed. Note that this hook
  * will not be called if the `event` has been previously discarded.
  * @param {Chart} chart - The chart instance.
- * @param {ChartEvent} event - The event object.
- * @param {boolean} replay - True if this event is replayed from `Chart.update`
+ * @param {object} args - The call arguments.
+ * @param {ChartEvent} args.event - The event object.
+ * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
  * @param {object} options - The plugin options.
  */
 /**
  * @method IPlugin#resize
  * @desc Called after the chart as been resized.
  * @param {Chart} chart - The chart instance.
- * @param {number} size - The new canvas display size (eq. canvas.style width & height).
+ * @param {object} args - The call arguments.
+ * @param {number} args.size - The new canvas display size (eq. canvas.style width & height).
  * @param {object} options - The plugin options.
  */
 /**
  * @method IPlugin#destroy
  * @desc Called after the chart as been destroyed.
  * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  */
