@@ -99,7 +99,17 @@ export interface CoreChartOptions extends ParsingOptions {
    * base color
    * @see Defaults.color
    */
-  color: string;
+  color: Color;
+    /**
+   * base background color
+   * @see Defaults.backgroundColor
+   */
+  backgroundColor: Color;
+    /**
+   * base border color
+   * @see Defaults.borderColor
+   */
+  borderColor: Color;
   /**
    * base font
    * @see Defaults.font
