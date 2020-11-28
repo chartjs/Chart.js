@@ -3,6 +3,8 @@ module.exports = {
 		type: 'line',
 		data: {
 			datasets: [{
+				fill: true,
+				backgroundColor: 'red',
 				data: [
 					{x: -1000000, y: 1},
 					{x: 1000000000, y: 2}

@@ -18,6 +18,7 @@ module.exports = {
 		options: {
 			elements: {
 				line: {
+					fill: true,
 					backgroundColor: '#00ff00'
 				},
 				point: {
