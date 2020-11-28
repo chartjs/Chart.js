@@ -568,6 +568,30 @@ export interface Plugin<O = {}> {
 	id: string;
 
 	/**
+	 * @desc Called when initializing the plugin for the chart instance.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	init?(chart: Chart, args: {}, options: O): void;
+	/**
+	 * @desc Called when plugin is enabled
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	enabled?(chart: Chart, args: {}, options: O): void;
+	/**
+	 * @desc Called plugin is disabled
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	disabled?(chart: Chart, args: {}, options: O): void;
+	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
@@ -772,11 +796,20 @@ export interface Plugin<O = {}> {
 	 */
 	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): boolean | void;
 	/**
-	 * Called after the chart as been destroyed.
+	 * Called after the chart has been destroyed.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	destroy?(chart: Chart, options: O): boolean | void;
+	destroy?(chart: Chart, args: {}, options: O): boolean | void;
+	/**
+	 * Called after chart is destroyed on all plugins that were initialized for that chart. This is the only hook that is called on a disabled plugin.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	unInit?(chart: Chart, args: {}, options: O): void;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };

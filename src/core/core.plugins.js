@@ -9,6 +9,10 @@ import {callback as callCallback, mergeIf, valueOrDefault} from '../helpers/help
  */
 
 export default class PluginService {
+	constructor() {
+		this._init = [];
+	}
+
 	/**
 	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
 	 * This method immediately returns as soon as a plugin explicitly returns false. The
@@ -20,30 +24,25 @@ export default class PluginService {
 	 */
 	notify(chart, hook, args) {
 		const descriptors = this._descriptors(chart);
-		return this._notify(descriptors, chart, hook, args);
-	}
+		const result = this._notify(descriptors, chart, hook, args);
 
-	notifyDisabled(chart, hook, args) {
-		const previousDescriptors = this._oldCache;
-		if (!previousDescriptors) {
-			return;
+		if (hook === 'destroy') {
+			this._notify(this._init, chart, 'unInit');
 		}
-		const descriptors = this._descriptors(chart);
-		const active = descriptors.map(descriptor => descriptor.plugin.id);
-		const newlyDisabled = previousDescriptors.filter(descriptor => active.indexOf(descriptor.plugin.id) === -1);
-		return this._notify(newlyDisabled, chart, hook, args);
+		return result;
 	}
 
+	/**
+	 * @private
+	 */
 	_notify(descriptors, chart, hook, args) {
-		args = args || [];
+		args = args || {};
 		for (const descriptor of descriptors) {
 			const plugin = descriptor.plugin;
 			const method = plugin[hook];
-			if (typeof method === 'function') {
-				const params = [chart, args, descriptor.options];
-				if (method.apply(plugin, params) === false) {
-					return false;
-				}
+			const params = [chart, args, descriptor.options];
+			if (callCallback(method, params, plugin) === false) {
+				return false;
 			}
 		}
 
@@ -51,11 +50,7 @@ export default class PluginService {
 	}
 
 	invalidate() {
-		const old = this._cache;
-		if (old) {
-			this._oldCache = old;
-			old.forEach(d => (d.options = false));
-		}
+		this._oldCache = this._cache;
 		this._cache = undefined;
 	}
 
@@ -76,7 +71,25 @@ export default class PluginService {
 
 		this._cache = descriptors;
 
+		this._notifyStateChanges(chart);
+
 		return descriptors;
+	}
+
+	/**
+	 * @param {Chart} chart
+	 * @private
+	 */
+	_notifyStateChanges(chart) {
+		const previousDescriptors = this._oldCache || [];
+		const descriptors = this._cache;
+		const initialized = this._init;
+		const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
+		const added = diff(descriptors, initialized);
+		initialized.push(...added);
+		this._notify(added, chart, 'init');
+		this._notify(diff(previousDescriptors, descriptors), chart, 'disabled');
+		this._notify(diff(descriptors, previousDescriptors), chart, 'enabled');
 	}
 }
 
@@ -130,6 +143,30 @@ function createDescriptors(plugins, options) {
  * @interface Plugin
  * @typedef {object} IPlugin
  * @since 2.1.0
+ */
+/**
+ * @method IPlugin#init
+ * @desc Called when plugin is initialized for this chart instance.
+ * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {object} options - The plugin options.
+ * @since 3.0.0
+ */
+/**
+ * @method IPlugin#enabled
+ * @desc Called whenever a plugin status changes to enabled and plugin is about to be called on any other hook.
+ * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {object} options - The plugin options.
+ * @since 3.0.0
+ */
+/**
+ * @method IPlugin#disabled
+ * @desc Called whenever a plugin status changes to disabled and chart is updated.
+ * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {object} options - The plugin options.
+ * @since 3.0.0
  */
 /**
  * @method IPlugin#beforeInit
@@ -356,8 +393,16 @@ function createDescriptors(plugins, options) {
  */
 /**
  * @method IPlugin#destroy
- * @desc Called after the chart as been destroyed.
+ * @desc Called after the chart has been destroyed.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
+ */
+/**
+ * @method IPlugin#unInit
+ * @desc Called after chart is destroyed on all plugins that were initialized for that chart. This is the only hook that is called on a disabled plugin.
+ * @param {Chart} chart - The chart instance.
+ * @param {object} args - The call arguments.
+ * @param {object} options - The plugin options.
+ * @since 3.0.0
  */
