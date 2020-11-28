@@ -1384,15 +1384,15 @@ describe('Chart', function() {
 
 	describe('plugin.extensions', function() {
 		var hooks = {
-			init: ['init'],
-			unInit: ['unInit'],
+			install: ['install'],
+			uninstall: ['uninstall'],
 			chartInit: [
 				'beforeInit',
 				'resize',
 				'afterInit'
 			],
-			enabled: ['enabled'],
-			disabled: ['disabled'],
+			enable: ['enable'],
+			disable: ['disable'],
 			update: [
 				'beforeUpdate',
 				'beforeLayout',
@@ -1452,8 +1452,8 @@ describe('Chart', function() {
 				chart.destroy();
 
 				expect(sequence).toEqual([].concat(
-					hooks.init,
-					hooks.enabled,
+					hooks.install,
+					hooks.enable,
 					hooks.chartInit,
 					hooks.update,
 					hooks.render,
@@ -1461,7 +1461,7 @@ describe('Chart', function() {
 					hooks.update,
 					hooks.render,
 					hooks.destroy,
-					hooks.unInit
+					hooks.uninstall
 				));
 
 				done();
@@ -1492,27 +1492,30 @@ describe('Chart', function() {
 				}
 			});
 
-			expect(sequence).toEqual([]);
+			expect(sequence).toEqual([].concat(
+				hooks.install
+			));
 
+			sequence = [];
 			chart.options.plugins.plugin = true;
 			chart.update();
 
 			expect(sequence).toEqual([].concat(
-				hooks.init,
-				hooks.enabled,
+				hooks.enable,
 				hooks.update,
 				hooks.render
 			));
 
 			sequence = [];
-
 			chart.options.plugins.plugin = false;
 			chart.update();
-			expect(sequence).toEqual(hooks.disabled);
+
+			expect(sequence).toEqual(hooks.disable);
 
 			sequence = [];
 			chart.destroy();
-			expect(sequence).toEqual(hooks.unInit);
+
+			expect(sequence).toEqual(hooks.uninstall);
 		});
 
 		it('should not notify before/afterDatasetDraw if dataset is hidden', function() {

@@ -568,13 +568,13 @@ export interface Plugin<O = {}> {
 	id: string;
 
 	/**
-	 * @desc Called when initializing the plugin for the chart instance.
+	 * @desc Called when plugin is installed for this chart instance. This hook is also invoked for disabled plugins (options === false).
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	init?(chart: Chart, args: {}, options: O): void;
+	install?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called when plugin is enabled
 	 * @param {Chart} chart - The chart instance.
@@ -582,7 +582,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	enabled?(chart: Chart, args: {}, options: O): void;
+	enable?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called plugin is disabled
 	 * @param {Chart} chart - The chart instance.
@@ -590,7 +590,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	disabled?(chart: Chart, args: {}, options: O): void;
+	disable?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.
@@ -803,13 +803,13 @@ export interface Plugin<O = {}> {
 	 */
 	destroy?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
-	 * Called after chart is destroyed on all plugins that were initialized for that chart. This is the only hook that is called on a disabled plugin.
+	 * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	unInit?(chart: Chart, args: {}, options: O): void;
+	uninstall?(chart: Chart, args: {}, options: O): void;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };
