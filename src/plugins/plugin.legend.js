@@ -508,7 +508,9 @@ export default {
 	_element: Legend,
 
 	start(chart, _args, options) {
-		createNewLegendAndAttach(chart, options);
+		const legend = chart.legend = new Legend({ctx: chart.ctx, options, chart});
+		layouts.configure(chart, legend, options);
+		layouts.addBox(chart, legend);
 	},
 
 	stop(chart) {
@@ -520,30 +522,20 @@ export default {
 	// This ensures that if the legend position changes (via an option update)
 	// the layout system respects the change. See https://github.com/chartjs/Chart.js/issues/7527
 	beforeUpdate(chart, _args, options) {
-		const legend = chart.legend || (chart.legend = new Legend({ctx: chart.ctx, options, chart}));
+		const legend = chart.legend;
 		layouts.configure(chart, legend, options);
 		legend.options = options;
-		if (!legend._added) {
-			layouts.addBox(chart, legend);
-			legend._added = true;
-		}
 	},
 
 	// The labels need to be built after datasets are updated to ensure that colors
 	// and other styling are correct. See https://github.com/chartjs/Chart.js/issues/6968
 	afterUpdate(chart) {
-		const legend = chart.legend;
-		if (legend) {
-			legend.buildLabels();
-		}
+		chart.legend.buildLabels();
 	},
 
 
 	afterEvent(chart, args) {
-		const legend = chart.legend;
-		if (legend) {
-			legend.handleEvent(args.event);
-		}
+		chart.legend.handleEvent(args.event);
 	},
 
 	defaults: {
