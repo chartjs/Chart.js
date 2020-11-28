@@ -686,6 +686,42 @@ export interface Plugin<O = {}> {
 	 */
 	beforeLayout?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
+	 * @desc Called before scale data limits are calculated
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 * @returns {boolean} `false` to cancel the chart layout.
+	 */
+	beforeDataLimits?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
+	/**
+	 * @desc Called after scale data limits are calculated
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 * @returns {boolean} `false` to cancel the chart layout.
+	 */
+	afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
+	/**
+	 * @desc Called before scale bulds its ticks
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 * @returns {boolean} `false` to cancel the chart layout.
+	 */
+	beforeBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
+	/**
+	 * @desc Called after scale has build its ticks
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 * @returns {boolean} `false` to cancel the chart layout.
+	 */
+	afterBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
+	/**
 	 * @desc Called after the `chart` has been laid out. Note that this hook will not
 	 * be called if the layout update has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
