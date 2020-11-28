@@ -576,21 +576,21 @@ export interface Plugin<O = {}> {
 	 */
 	install?(chart: Chart, args: {}, options: O): void;
 	/**
-	 * @desc Called when plugin is enabled
+	 * @desc Called when a plugin is starting due to chart initialization or plugin enablement.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	enable?(chart: Chart, args: {}, options: O): void;
+	start?(chart: Chart, args: {}, options: O): void;
 	/**
-	 * @desc Called plugin is disabled
+	 * @desc Called when a plugin stopping due being disabled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	disable?(chart: Chart, args: {}, options: O): void;
+	stop?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.

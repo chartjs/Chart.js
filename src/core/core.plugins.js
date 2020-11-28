@@ -164,16 +164,16 @@ function createDescriptors(plugins, options, all) {
  * @since 3.0.0
  */
 /**
- * @method IPlugin#enable
- * @desc Called whenever a plugin status changes to enabled and plugin is about to be called on any other hook.
+ * @method IPlugin#start
+ * @desc Called when a plugin is starting due to chart initialization or plugin enablement.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
  * @since 3.0.0
  */
 /**
- * @method IPlugin#disable
- * @desc Called whenever a plugin status changes to disabled and chart is updated.
+ * @method IPlugin#stop
+ * @desc Called when a plugin stopping due being disabled.
  * @param {Chart} chart - The chart instance.
  * @param {object} args - The call arguments.
  * @param {object} options - The plugin options.
