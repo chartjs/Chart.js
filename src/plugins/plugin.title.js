@@ -184,11 +184,17 @@ export default {
 	 */
 	_element: Title,
 
-	beforeInit(chart, options) {
+	start(chart, _args, options) {
 		createTitle(chart, options);
 	},
 
-	beforeUpdate(chart, args, options) {
+	stop(chart) {
+		const titleBlock = chart.titleBlock;
+		layouts.removeBox(chart, titleBlock);
+		delete chart.titleBlock;
+	},
+
+	beforeUpdate(chart, _args, options) {
 		if (options === false) {
 			removeTitle(chart);
 		} else {

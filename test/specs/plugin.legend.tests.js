@@ -760,7 +760,7 @@ describe('Legend block tests', function() {
 			expect(chart.legend.weight).toBe(42);
 		});
 
-		xit ('should remove the legend if the new options are false', function() {
+		it ('should remove the legend if the new options are false', function() {
 			var chart = acquireChart({
 				type: 'line',
 				data: {

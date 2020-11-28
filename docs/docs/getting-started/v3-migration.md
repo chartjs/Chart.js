@@ -499,3 +499,4 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 * `afterDatasetsUpdate`, `afterUpdate`, `beforeDatasetsUpdate`, and `beforeUpdate` now receive `args` object as second argument. `options` argument is always the last and thus was moved from 2nd to 3rd place.
 * `afterEvent` and `beforeEvent` now receive a wrapped `event` as the `event` property of the second argument. The native event is available via `args.event.native`.
 * Initial `resize` is no longer silent. Meaning that `resize` event can fire between `beforeInit` and `afterInit`
+* New hooks: `install`, `start`, `stop`, and `uninstall`

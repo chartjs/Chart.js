@@ -568,6 +568,30 @@ export interface Plugin<O = {}> {
 	id: string;
 
 	/**
+	 * @desc Called when plugin is installed for this chart instance. This hook is also invoked for disabled plugins (options === false).
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	install?(chart: Chart, args: {}, options: O): void;
+	/**
+	 * @desc Called when a plugin is starting. This happens when chart is created or plugin is enabled.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	start?(chart: Chart, args: {}, options: O): void;
+	/**
+	 * @desc Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	stop?(chart: Chart, args: {}, options: O): void;
+	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
@@ -772,11 +796,20 @@ export interface Plugin<O = {}> {
 	 */
 	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): boolean | void;
 	/**
-	 * Called after the chart as been destroyed.
+	 * Called after the chart has been destroyed.
 	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	destroy?(chart: Chart, options: O): boolean | void;
+	destroy?(chart: Chart, args: {}, options: O): boolean | void;
+	/**
+	 * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 * @since 3.0.0
+	 */
+	uninstall?(chart: Chart, args: {}, options: O): void;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };

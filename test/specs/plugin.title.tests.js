@@ -295,7 +295,7 @@ describe('Title block tests', function() {
 			expect(chart.titleBlock.weight).toBe(42);
 		});
 
-		xit ('should remove the title if the new options are false', function() {
+		it ('should remove the title if the new options are false', function() {
 			var chart = acquireChart({
 				type: 'line',
 				data: {

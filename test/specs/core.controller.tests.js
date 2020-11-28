@@ -1383,44 +1383,49 @@ describe('Chart', function() {
 	});
 
 	describe('plugin.extensions', function() {
+		var hooks = {
+			install: ['install'],
+			uninstall: ['uninstall'],
+			init: [
+				'beforeInit',
+				'resize',
+				'afterInit'
+			],
+			start: ['start'],
+			stop: ['stop'],
+			update: [
+				'beforeUpdate',
+				'beforeLayout',
+				'afterLayout',
+				'beforeDatasetsUpdate',
+				'beforeDatasetUpdate',
+				'afterDatasetUpdate',
+				'afterDatasetsUpdate',
+				'afterUpdate',
+			],
+			render: [
+				'beforeRender',
+				'beforeDraw',
+				'beforeDatasetsDraw',
+				'beforeDatasetDraw',
+				'afterDatasetDraw',
+				'afterDatasetsDraw',
+				'beforeTooltipDraw',
+				'afterTooltipDraw',
+				'afterDraw',
+				'afterRender',
+			],
+			resize: [
+				'resize'
+			],
+			destroy: [
+				'destroy'
+			]
+		};
+
 		it ('should notify plugin in correct order', function(done) {
 			var plugin = this.plugin = {};
 			var sequence = [];
-			var hooks = {
-				init: [
-					'beforeInit',
-					'resize',
-					'afterInit'
-				],
-				update: [
-					'beforeUpdate',
-					'beforeLayout',
-					'afterLayout',
-					'beforeDatasetsUpdate',
-					'beforeDatasetUpdate',
-					'afterDatasetUpdate',
-					'afterDatasetsUpdate',
-					'afterUpdate',
-				],
-				render: [
-					'beforeRender',
-					'beforeDraw',
-					'beforeDatasetsDraw',
-					'beforeDatasetDraw',
-					'afterDatasetDraw',
-					'afterDatasetsDraw',
-					'beforeTooltipDraw',
-					'afterTooltipDraw',
-					'afterDraw',
-					'afterRender',
-				],
-				resize: [
-					'resize'
-				],
-				destroy: [
-					'destroy'
-				]
-			};
 
 			Object.keys(hooks).forEach(function(group) {
 				hooks[group].forEach(function(name) {
@@ -1447,18 +1452,71 @@ describe('Chart', function() {
 				chart.destroy();
 
 				expect(sequence).toEqual([].concat(
+					hooks.install,
+					hooks.start,
 					hooks.init,
 					hooks.update,
 					hooks.render,
 					hooks.resize,
 					hooks.update,
 					hooks.render,
-					hooks.destroy
+					hooks.destroy,
+					hooks.stop,
+					hooks.uninstall
 				));
 
 				done();
 			});
 			chart.canvas.parentNode.style.width = '400px';
+		});
+
+		it ('should notify initially disabled plugin in correct order', function() {
+			var plugin = this.plugin = {id: 'plugin'};
+			var sequence = [];
+
+			Object.keys(hooks).forEach(function(group) {
+				hooks[group].forEach(function(name) {
+					plugin[name] = function() {
+						sequence.push(name);
+					};
+				});
+			});
+
+			var chart = window.acquireChart({
+				type: 'line',
+				data: {datasets: [{}]},
+				plugins: [plugin],
+				options: {
+					plugins: {
+						plugin: false
+					}
+				}
+			});
+
+			expect(sequence).toEqual([].concat(
+				hooks.install
+			));
+
+			sequence = [];
+			chart.options.plugins.plugin = true;
+			chart.update();
+
+			expect(sequence).toEqual([].concat(
+				hooks.start,
+				hooks.update,
+				hooks.render
+			));
+
+			sequence = [];
+			chart.options.plugins.plugin = false;
+			chart.update();
+
+			expect(sequence).toEqual(hooks.stop);
+
+			sequence = [];
+			chart.destroy();
+
+			expect(sequence).toEqual(hooks.uninstall);
 		});
 
 		it('should not notify before/afterDatasetDraw if dataset is hidden', function() {

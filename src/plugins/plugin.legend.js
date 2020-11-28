@@ -653,12 +653,14 @@ export default {
 	 */
 	_element: Legend,
 
-	beforeInit(chart) {
+	start(chart) {
 		const legendOpts = resolveOptions(chart.options.plugins.legend);
+		createNewLegendAndAttach(chart, legendOpts);
+	},
 
-		if (legendOpts) {
-			createNewLegendAndAttach(chart, legendOpts);
-		}
+	stop(chart) {
+		layouts.removeBox(chart, chart.legend);
+		delete chart.legend;
 	},
 
 	// During the beforeUpdate step, the layout configuration needs to run
