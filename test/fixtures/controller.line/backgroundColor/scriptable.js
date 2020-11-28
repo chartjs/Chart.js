@@ -23,6 +23,7 @@ module.exports = {
 		options: {
 			elements: {
 				line: {
+					fill: true,
 					backgroundColor: function(ctx) {
 						var index = ctx.index;
 						return index === 0 ? '#ff0000'

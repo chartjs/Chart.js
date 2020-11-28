@@ -7,7 +7,8 @@ module.exports = {
 				data: [10, 15, 0, -4],
 				label: 'dataset1',
 				borderColor: 'red',
-				backgroundColor: 'green'
+				backgroundColor: 'green',
+				fill: true
 			}],
 			labels: ['label1', 'label2', 'label3', 'label4']
 		},

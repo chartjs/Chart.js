@@ -17,7 +17,7 @@ Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option 
 | Stacked value below <sup>4</sup> | `string` | `'stack'` |
 | Axis value | `object` | `{ value: number; }` |
 
-> <sup>1</sup> for backward compatibility, `fill: true` (default) is equivalent to `fill: 'origin'`<br/>
+> <sup>1</sup> for backward compatibility, `fill: true` is equivalent to `fill: 'origin'`<br/>
 
 **Example**
 
