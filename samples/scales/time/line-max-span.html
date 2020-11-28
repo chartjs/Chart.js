@@ -79,9 +79,11 @@
 			options: {
 				spanGaps: 1000 * 60 * 60 * 24 * 2, // 2 days
 				responsive: true,
-				title: {
-					display: true,
-					text: 'Chart.js Time - spanGaps: 172800000 (2 days in ms)'
+				plugins: {
+					title: {
+						display: true,
+						text: 'Chart.js Time - spanGaps: 172800000 (2 days in ms)'
+					}
 				},
 				scales: {
 					x: {

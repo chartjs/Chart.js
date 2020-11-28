@@ -128,9 +128,11 @@
 			type: 'scatter',
 			data: scatterChartData,
 			options: {
-				title: {
-					display: true,
-					text: 'Chart.js Scatter Chart - Logarithmic X-Axis'
+				plugins: {
+					title: {
+						display: true,
+						text: 'Chart.js Scatter Chart - Logarithmic X-Axis'
+					}
 				},
 				scales: {
 					x: {

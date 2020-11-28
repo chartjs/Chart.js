@@ -61,10 +61,13 @@
 				data: scatterChartData,
 				options: {
 					responsive: true,
-					title: {
-						display: true,
-						text: title
+					plugins: {
+						title: {
+							display: true,
+							text: title
+						}
 					},
+
 					scales: {
 						x: {
 							position: xPosition,
