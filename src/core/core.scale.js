@@ -649,24 +649,24 @@ export default class Scale extends Element {
 		call(this.options.afterSetDimensions, [this]);
 	}
 
+	_callHooks(name) {
+		const me = this;
+		me.chart.notifyPlugins(name, me.getContext());
+		call(me.options[name], [me]);
+	}
+
 	// Data limits
 	beforeDataLimits() {
-		const me = this;
-		me.chart.notifyPlugins('beforeDataLimits', me.getContext());
-		call(me.options.beforeDataLimits, [me]);
+		this._callHooks('beforeDataLimits');
 	}
 	determineDataLimits() {}
 	afterDataLimits() {
-		const me = this;
-		me.chart.notifyPlugins('afterDataLimits', me.getContext());
-		call(me.options.afterDataLimits, [me]);
+		this._callHooks('afterDataLimits');
 	}
 
 	//
 	beforeBuildTicks() {
-		const me = this;
-		me.chart.notifyPlugins('beforeBuildTicks', me.getContext());
-		call(me.options.beforeBuildTicks, [me]);
+		this._callHooks('beforeBuildTicks');
 	}
 	/**
 	 * @return {object[]} the ticks
@@ -675,9 +675,7 @@ export default class Scale extends Element {
 		return [];
 	}
 	afterBuildTicks() {
-		const me = this;
-		me.chart.notifyPlugins('afterBuildTicks', me.getContext());
-		call(me.options.afterBuildTicks, [me]);
+		this._callHooks('afterBuildTicks');
 	}
 
 	beforeTickToLabelConversion() {
