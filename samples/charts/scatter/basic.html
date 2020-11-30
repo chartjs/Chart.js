@@ -52,10 +52,12 @@
 				type: 'scatter',
 				data: scatterChartData,
 				options: {
-					title: {
-						display: true,
-						text: 'Chart.js Scatter Chart'
-					},
+					plugins: {
+						title: {
+							display: true,
+							text: 'Chart.js Scatter Chart'
+						}
+					}
 				}
 			});
 		};

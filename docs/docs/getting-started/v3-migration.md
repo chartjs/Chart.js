@@ -33,9 +33,11 @@ const chart = new Chart(ctx, {
     type: 'line',
     // data: ...
     options: {
-        title: {
-            display: true,
-            text: 'Chart Title'
+        plugins: {
+            title: {
+                display: true,
+                text: 'Chart Title'
+            }
         },
         scales: {
             x: {
