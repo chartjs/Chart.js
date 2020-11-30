@@ -114,12 +114,94 @@ export function clear(chart) {
 	chart.ctx.clearRect(0, 0, chart.width, chart.height);
 }
 
+export const pointStyles = {
+	triangle(ctx, x, y, rad, radius) {
+		ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		rad += TWO_THIRDS_PI;
+		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		rad += TWO_THIRDS_PI;
+		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		ctx.closePath();
+	},
+	rectRounded(ctx, x, y, rad, radius) {
+		// NOTE: the rounded rect implementation changed to use `arc` instead of
+		// `quadraticCurveTo` since it generates better results when rect is
+		// almost a circle. 0.516 (instead of 0.5) produces results with visually
+		// closer proportion to the previous impl and it is inscribed in the
+		// circle with `radius`. For more details, see the following PRs:
+		// https://github.com/chartjs/Chart.js/issues/5597
+		// https://github.com/chartjs/Chart.js/issues/5858
+		const cornerRadius = radius * 0.516;
+		const size = radius - cornerRadius;
+		const xOffset = Math.cos(rad + QUARTER_PI) * size;
+		const yOffset = Math.sin(rad + QUARTER_PI) * size;
+		ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
+		ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
+		ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
+		ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
+		ctx.closePath();
+	},
+	rectRot(ctx, x, y, rad, radius) {
+		const xOffset = Math.cos(rad) * radius;
+		const yOffset = Math.sin(rad) * radius;
+		ctx.moveTo(x - xOffset, y - yOffset);
+		ctx.lineTo(x + yOffset, y - xOffset);
+		ctx.lineTo(x + xOffset, y + yOffset);
+		ctx.lineTo(x - yOffset, y + xOffset);
+		ctx.closePath();
+	},
+	rect(ctx, x, y, rad, radius) {
+		if (rad) {
+			pointStyles.rectRot(ctx, x, y, rad + QUARTER_PI, radius);
+		} else {
+			const size = Math.SQRT1_2 * radius;
+			ctx.rect(x - size, y - size, 2 * size, 2 * size);
+		}
+	},
+	cross(ctx, x, y, rad, radius) {
+		const xOffset = Math.cos(rad) * radius;
+		const yOffset = Math.sin(rad) * radius;
+		ctx.moveTo(x - xOffset, y - yOffset);
+		ctx.lineTo(x + xOffset, y + yOffset);
+		ctx.moveTo(x + yOffset, y - xOffset);
+		ctx.lineTo(x - yOffset, y + xOffset);
+	},
+	crossRot(ctx, x, y, rad, radius) {
+		pointStyles.cross(ctx, x, y, rad + QUARTER_PI, radius);
+	},
+	star(ctx, x, y, rad, radius) {
+		let xOffset = Math.cos(rad) * radius;
+		let yOffset = Math.sin(rad) * radius;
+		ctx.moveTo(x - xOffset, y - yOffset);
+		ctx.lineTo(x + xOffset, y + yOffset);
+		ctx.moveTo(x + yOffset, y - xOffset);
+		ctx.lineTo(x - yOffset, y + xOffset);
+		rad += QUARTER_PI;
+		xOffset = Math.cos(rad) * radius;
+		yOffset = Math.sin(rad) * radius;
+		ctx.moveTo(x - xOffset, y - yOffset);
+		ctx.lineTo(x + xOffset, y + yOffset);
+		ctx.moveTo(x + yOffset, y - xOffset);
+		ctx.lineTo(x - yOffset, y + xOffset);
+	},
+	line(ctx, x, y, rad, radius) {
+		const xOffset = Math.cos(rad) * radius;
+		const yOffset = Math.sin(rad) * radius;
+		ctx.moveTo(x - xOffset, y - yOffset);
+		ctx.lineTo(x + xOffset, y + yOffset);
+	},
+	dash(ctx, x, y, rad, radius) {
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + Math.cos(rad) * radius, y + Math.sin(rad) * radius);
+	}
+};
+
 export function drawPoint(ctx, options, x, y) {
-	let type, xOffset, yOffset, size, cornerRadius;
 	const style = options.pointStyle;
 	const rotation = options.rotation;
 	const radius = options.radius;
 	let rad = (rotation || 0) * RAD_PER_DEG;
+	let type;
 
 	if (style && typeof style === 'object') {
 		type = style.toString();
@@ -139,91 +221,12 @@ export function drawPoint(ctx, options, x, y) {
 
 	ctx.beginPath();
 
-	switch (style) {
-	// Default includes circle
-	default:
+	const fn = pointStyles[style];
+	if (fn) {
+		fn(ctx, x, y, rad, radius);
+	} else {
 		ctx.arc(x, y, radius, 0, TAU);
 		ctx.closePath();
-		break;
-	case 'triangle':
-		ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-		rad += TWO_THIRDS_PI;
-		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-		rad += TWO_THIRDS_PI;
-		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-		ctx.closePath();
-		break;
-	case 'rectRounded':
-		// NOTE: the rounded rect implementation changed to use `arc` instead of
-		// `quadraticCurveTo` since it generates better results when rect is
-		// almost a circle. 0.516 (instead of 0.5) produces results with visually
-		// closer proportion to the previous impl and it is inscribed in the
-		// circle with `radius`. For more details, see the following PRs:
-		// https://github.com/chartjs/Chart.js/issues/5597
-		// https://github.com/chartjs/Chart.js/issues/5858
-		cornerRadius = radius * 0.516;
-		size = radius - cornerRadius;
-		xOffset = Math.cos(rad + QUARTER_PI) * size;
-		yOffset = Math.sin(rad + QUARTER_PI) * size;
-		ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
-		ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
-		ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
-		ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
-		ctx.closePath();
-		break;
-	case 'rect':
-		if (!rotation) {
-			size = Math.SQRT1_2 * radius;
-			ctx.rect(x - size, y - size, 2 * size, 2 * size);
-			break;
-		}
-		rad += QUARTER_PI;
-		/* falls through */
-	case 'rectRot':
-		xOffset = Math.cos(rad) * radius;
-		yOffset = Math.sin(rad) * radius;
-		ctx.moveTo(x - xOffset, y - yOffset);
-		ctx.lineTo(x + yOffset, y - xOffset);
-		ctx.lineTo(x + xOffset, y + yOffset);
-		ctx.lineTo(x - yOffset, y + xOffset);
-		ctx.closePath();
-		break;
-	case 'crossRot':
-		rad += QUARTER_PI;
-		/* falls through */
-	case 'cross':
-		xOffset = Math.cos(rad) * radius;
-		yOffset = Math.sin(rad) * radius;
-		ctx.moveTo(x - xOffset, y - yOffset);
-		ctx.lineTo(x + xOffset, y + yOffset);
-		ctx.moveTo(x + yOffset, y - xOffset);
-		ctx.lineTo(x - yOffset, y + xOffset);
-		break;
-	case 'star':
-		xOffset = Math.cos(rad) * radius;
-		yOffset = Math.sin(rad) * radius;
-		ctx.moveTo(x - xOffset, y - yOffset);
-		ctx.lineTo(x + xOffset, y + yOffset);
-		ctx.moveTo(x + yOffset, y - xOffset);
-		ctx.lineTo(x - yOffset, y + xOffset);
-		rad += QUARTER_PI;
-		xOffset = Math.cos(rad) * radius;
-		yOffset = Math.sin(rad) * radius;
-		ctx.moveTo(x - xOffset, y - yOffset);
-		ctx.lineTo(x + xOffset, y + yOffset);
-		ctx.moveTo(x + yOffset, y - xOffset);
-		ctx.lineTo(x - yOffset, y + xOffset);
-		break;
-	case 'line':
-		xOffset = Math.cos(rad) * radius;
-		yOffset = Math.sin(rad) * radius;
-		ctx.moveTo(x - xOffset, y - yOffset);
-		ctx.lineTo(x + xOffset, y + yOffset);
-		break;
-	case 'dash':
-		ctx.moveTo(x, y);
-		ctx.lineTo(x + Math.cos(rad) * radius, y + Math.sin(rad) * radius);
-		break;
 	}
 
 	ctx.fill();
