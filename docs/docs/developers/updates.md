@@ -42,9 +42,11 @@ function updateConfigByMutating(chart) {
 function updateConfigAsNewObject(chart) {
     chart.options = {
         responsive: true,
-        title: {
-            display: true,
-            text: 'Chart.js'
+        plugins: {
+            title: {
+                display: true,
+                text: 'Chart.js'
+            }
         },
         scales: {
             x: {

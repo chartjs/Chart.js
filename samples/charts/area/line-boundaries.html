@@ -86,10 +86,12 @@
 					}]
 				},
 				options: Chart.helpers.merge(options, {
-					title: {
-						text: 'fill: ' + boundary,
-						display: true
-					}
+					plugins: {
+						title: {
+							text: 'fill: ' + boundary,
+							display: true
+						}
+					},
 				})
 			});
 		});
