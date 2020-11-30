@@ -686,7 +686,7 @@ export interface Plugin<O = {}> {
 	 */
 	beforeLayout?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
-	 * @desc Called before scale data limits are calculated
+	 * @desc Called before scale data limits are calculated. This hook is called separately for each scale in the chart.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {Scale} args.scale - The scale.
@@ -695,7 +695,7 @@ export interface Plugin<O = {}> {
 	 */
 	beforeDataLimits?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
 	/**
-	 * @desc Called after scale data limits are calculated
+	 * @desc Called after scale data limits are calculated. This hook is called separately for each scale in the chart.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {Scale} args.scale - The scale.
@@ -704,7 +704,7 @@ export interface Plugin<O = {}> {
 	 */
 	afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
 	/**
-	 * @desc Called before scale bulds its ticks
+	 * @desc Called before scale bulds its ticks. This hook is called separately for each scale in the chart.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {Scale} args.scale - The scale.
@@ -713,7 +713,7 @@ export interface Plugin<O = {}> {
 	 */
 	beforeBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): boolean | void;
 	/**
-	 * @desc Called after scale has build its ticks
+	 * @desc Called after scale has build its ticks. This hook is called separately for each scale in the chart.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {Scale} args.scale - The scale.
