@@ -151,7 +151,7 @@ describe('Chart.plugins', function() {
 				spyOn(plugin, 'hook').and.callThrough();
 			});
 
-			var ret = chart.notifyPlugins('hook');
+			var ret = chart.notifyPlugins('hook', {cancelable: true});
 			expect(ret).toBeFalsy();
 			expect(plugins[0].hook).toHaveBeenCalled();
 			expect(plugins[1].hook).toHaveBeenCalled();
