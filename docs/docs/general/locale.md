@@ -2,7 +2,7 @@
 title: Locale
 ---
 
-For applications where the numbers of ticks on scales must be formatted accordingly with the language sensitive number formatting( leveraging on [INTL NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat), you can enable this kind of formatting setting `locale` option.
+For applications where the numbers of ticks on scales must be formatted accordingly with a language sensitive number formatting, you can enable this kind of formatting setting `locale` option.
 
 The locale is a string that is a [Unicode BCP 47 locale identifier](https://www.unicode.org/reports/tr35/tr35.html#BCP_47_Conformance).
 
@@ -22,4 +22,4 @@ By default the chart is using the default locale of the platform which is runnin
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `locale` | `string` | `undefined` | a string with a BCP 47 language tag.
+| `locale` | `string` | `undefined` | a string with a BCP 47 language tag, leveraging on [INTL NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat).
