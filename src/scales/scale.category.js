@@ -111,8 +111,7 @@ export default class CategoryScale extends Scale {
 
 	getValueForPixel(pixel) {
 		const me = this;
-		const value = Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
-		return Math.min(Math.max(value, 0), me.ticks.length - 1);
+		return Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
 	}
 
 	getBasePixel() {

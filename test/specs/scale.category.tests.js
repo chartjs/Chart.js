@@ -476,6 +476,35 @@ describe('Category scale tests', function() {
 		expect(yScale.getPixelForValue(4)).toBeCloseToPixel(538);
 	});
 
+	it('Should be consistent on pixels and values with autoSkipped ticks', function() {
+		var labels = [];
+		for (let i = 0; i < 50; i++) {
+			labels.push('very long label ' + i);
+		}
+		var chart = window.acquireChart({
+			type: 'bar',
+			data: {
+				labels,
+				datasets: [{
+					data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				}]
+			}
+		});
+
+		var scale = chart.scales.x;
+		expect(scale.ticks.length).toBeLessThan(50);
+
+		let x = 0;
+		for (let i = 0; i < 50; i++) {
+			var x2 = scale.getPixelForValue(labels[i]);
+			var x3 = scale.getPixelForValue(i);
+			expect(x2).toEqual(x3);
+			expect(x2).toBeGreaterThan(x);
+			expect(scale.getValueForPixel(x2)).toBe(i);
+			x = x2;
+		}
+	});
+
 	it('Should bound to ticks/data', function() {
 		var chart = window.acquireChart({
 			type: 'line',
