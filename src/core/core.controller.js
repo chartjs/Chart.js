@@ -440,7 +440,6 @@ class Chart {
 
 	update(mode) {
 		const me = this;
-		const args = {mode};
 		let i, ilen;
 
 		each(me.scales, (scale) => {
@@ -458,7 +457,7 @@ class Chart {
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 		me._plugins.invalidate();
 
-		if (me.notifyPlugins('beforeUpdate', args) === false) {
+		if (me.notifyPlugins('beforeUpdate', {mode, cancelable: true}) === false) {
 			return;
 		}
 
@@ -480,7 +479,7 @@ class Chart {
 		me._updateDatasets(mode);
 
 		// Do this before render so that any plugins that need final scale updates can use it
-		me.notifyPlugins('afterUpdate', args);
+		me.notifyPlugins('afterUpdate', {mode});
 
 		me._layers.sort(compare2Level('z', '_idx'));
 
@@ -500,7 +499,7 @@ class Chart {
 	_updateLayout() {
 		const me = this;
 
-		if (me.notifyPlugins('beforeLayout') === false) {
+		if (me.notifyPlugins('beforeLayout', {cancelable: true}) === false) {
 			return;
 		}
 
@@ -531,9 +530,8 @@ class Chart {
 	_updateDatasets(mode) {
 		const me = this;
 		const isFunction = typeof mode === 'function';
-		const args = {mode};
 
-		if (me.notifyPlugins('beforeDatasetsUpdate', args) === false) {
+		if (me.notifyPlugins('beforeDatasetsUpdate', {mode, cancelable: true}) === false) {
 			return;
 		}
 
@@ -541,7 +539,7 @@ class Chart {
 			me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
 		}
 
-		me.notifyPlugins('afterDatasetsUpdate', args);
+		me.notifyPlugins('afterDatasetsUpdate', {mode});
 	}
 
 	/**
@@ -552,7 +550,7 @@ class Chart {
 	_updateDataset(index, mode) {
 		const me = this;
 		const meta = me.getDatasetMeta(index);
-		const args = {meta, index, mode};
+		const args = {meta, index, mode, cancelable: true};
 
 		if (me.notifyPlugins('beforeDatasetUpdate', args) === false) {
 			return;
@@ -560,12 +558,13 @@ class Chart {
 
 		meta.controller._update(mode);
 
+		args.cancelable = false;
 		me.notifyPlugins('afterDatasetUpdate', args);
 	}
 
 	render() {
 		const me = this;
-		if (me.notifyPlugins('beforeRender') === false) {
+		if (me.notifyPlugins('beforeRender', {cancelable: true}) === false) {
 			return;
 		}
 
@@ -593,7 +592,7 @@ class Chart {
 			return;
 		}
 
-		if (me.notifyPlugins('beforeDraw') === false) {
+		if (me.notifyPlugins('beforeDraw', {cancelable: true}) === false) {
 			return;
 		}
 
@@ -650,7 +649,7 @@ class Chart {
 	_drawDatasets() {
 		const me = this;
 
-		if (me.notifyPlugins('beforeDatasetsDraw') === false) {
+		if (me.notifyPlugins('beforeDatasetsDraw', {cancelable: true}) === false) {
 			return;
 		}
 
@@ -675,6 +674,7 @@ class Chart {
 		const args = {
 			meta,
 			index: meta.index,
+			cancelable: true
 		};
 
 		if (me.notifyPlugins('beforeDatasetDraw', args) === false) {
@@ -692,6 +692,7 @@ class Chart {
 
 		unclipArea(ctx);
 
+		args.cancelable = false;
 		me.notifyPlugins('afterDatasetDraw', args);
 	}
 
@@ -1004,7 +1005,7 @@ class Chart {
 	 */
 	_eventHandler(e, replay) {
 		const me = this;
-		const args = {event: e, replay};
+		const args = {event: e, replay, cancelable: true};
 
 		if (me.notifyPlugins('beforeEvent', args) === false) {
 			return;
@@ -1012,6 +1013,7 @@ class Chart {
 
 		const changed = me._handleEvent(e, replay);
 
+		args.cancelable = false;
 		me.notifyPlugins('afterEvent', args);
 
 		if (changed) {

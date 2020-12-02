@@ -597,14 +597,14 @@ export interface Plugin<O = {}> {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	beforeInit?(chart: Chart, args: {}, options: O): boolean | void;
+	beforeInit?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called after `chart` has been initialized and before the first update.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterInit?(chart: Chart, args: {}, options: O): boolean | void;
+	afterInit?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before updating `chart`. If any plugin returns `false`, the update
 	 * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
@@ -623,7 +623,7 @@ export interface Plugin<O = {}> {
 	 * @param {UpdateMode} args.mode - The update mode
 	 * @param {object} options - The plugin options.
 	 */
-	afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+	afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
 	/**
 	 * @desc Called during chart reset
 	 * @param {Chart} chart - The chart instance.
@@ -652,7 +652,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @since version 2.1.5
 	 */
-	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
 	/**
 	 * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
 	 * returns `false`, the datasets update is cancelled until another `update` is triggered.
@@ -675,7 +675,7 @@ export interface Plugin<O = {}> {
 	 * @param {UpdateMode} args.mode - The update mode.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): boolean | void;
+	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): void;
 	/**
 	 * @desc Called before laying out `chart`. If any plugin returns `false`,
 	 * the layout update is cancelled until another `update` is triggered.
@@ -686,13 +686,45 @@ export interface Plugin<O = {}> {
 	 */
 	beforeLayout?(chart: Chart, args: {}, options: O): boolean | void;
 	/**
+	 * @desc Called before scale data limits are calculated. This hook is called separately for each scale in the chart.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 */
+	beforeDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
+	/**
+	 * @desc Called after scale data limits are calculated. This hook is called separately for each scale in the chart.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 */
+	afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
+	/**
+	 * @desc Called before scale bulds its ticks. This hook is called separately for each scale in the chart.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 */
+	beforeBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): void;
+	/**
+	 * @desc Called after scale has build its ticks. This hook is called separately for each scale in the chart.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {Scale} args.scale - The scale.
+	 * @param {object} options - The plugin options.
+	 */
+	afterBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): void;
+	/**
 	 * @desc Called after the `chart` has been laid out. Note that this hook will not
 	 * be called if the layout update has been previously cancelled.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterLayout?(chart: Chart, args: {}, options: O): boolean | void;
+	afterLayout?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before rendering `chart`. If any plugin returns `false`,
 	 * the rendering is cancelled until another `render` is triggered.
@@ -709,7 +741,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterRender?(chart: Chart, args: {}, options: O): boolean | void;
+	afterRender?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
 	 * the frame drawing is cancelled untilanother `render` is triggered.
@@ -726,7 +758,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDraw?(chart: Chart, args: {}, options: O): boolean | void;
+	afterDraw?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
 	 * the datasets drawing is cancelled until another `render` is triggered.
@@ -743,7 +775,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetsDraw?(chart: Chart, args: {}, options: O): boolean | void;
+	afterDatasetsDraw?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
 	 * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
@@ -766,7 +798,7 @@ export interface Plugin<O = {}> {
 	 * @param {object} args.meta - The dataset metadata.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): boolean | void;
+	afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): void;
 	/**
 	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
 	 * the event will be discarded.
@@ -786,7 +818,7 @@ export interface Plugin<O = {}> {
 	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
 	 * @param {object} options - The plugin options.
 	 */
-	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): boolean | void;
+	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
@@ -794,14 +826,14 @@ export interface Plugin<O = {}> {
 	 * @param {number} args.size - The new canvas display size (eq. canvas.style width & height).
 	 * @param {object} options - The plugin options.
 	 */
-	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): boolean | void;
+	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
 	/**
 	 * Called after the chart has been destroyed.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	destroy?(chart: Chart, args: {}, options: O): boolean | void;
+	destroy?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
 	 * @param {Chart} chart - The chart instance.
