@@ -16,6 +16,7 @@ module.exports = {
 			'general/accessibility',
 			'general/responsive',
 			'general/device-pixel-ratio',
+			'general/locale',
 			{Interactions: ['general/interactions/index', 'general/interactions/events', 'general/interactions/modes']},
 			'general/options',
 			'general/colors',
