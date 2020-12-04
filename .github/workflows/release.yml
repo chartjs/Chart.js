@@ -69,7 +69,7 @@ jobs:
       - name: Publish to NPM
         run: ./scripts/publish.sh
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
           VERSION: ${{ needs.version.outputs.version }}
       - name: Deploy Docs
         run: ./scripts/deploy-docs.sh "$VERSION"
