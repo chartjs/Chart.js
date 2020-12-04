@@ -131,6 +131,12 @@ export interface CoreChartOptions extends ParsingOptions {
    * @default 2
    */
   aspectRatio: number;
+	
+  /**
+   * Locale used for number formatting (using `Intl.NumberFormat`).
+   * @default user's browser setting
+   */
+  locale: string;
 
   /**
    * Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
