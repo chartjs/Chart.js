@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      coveralls: staps.changes.outputs.src
+      coveralls: steps.changes.outputs.src
 
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
     - name: Install
       run: npm ci
     - name: Build and Test
-      if: steps.chages.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       run: |
         npm run build
         if [ "${{ runner.os }}" == "Windows" ]; then
@@ -49,7 +49,7 @@ jobs:
         fi
       shell: bash
     - name: Lint
-      if: steps.chages.outputs.src != 'true'
+      if: steps.changes.outputs.src != 'true'
       run: npm run lint
     - name: Package
       if: steps.changes.outputs.docs == 'true'
@@ -58,7 +58,7 @@ jobs:
         npm run typedoc
         npm pack
     - name: Coveralls Parallel - Chrome
-      if: steps.chages.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
@@ -66,7 +66,7 @@ jobs:
         flag-name: ${{ matrix.os }}-chrome
         parallel: true
     - name: Coveralls Parallel - Firefox
-      if: steps.chages.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
