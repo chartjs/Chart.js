@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      coveralls: staps.changes.outputs.src
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -55,6 +58,7 @@ jobs:
         npm run typedoc
         npm pack
     - name: Coveralls Parallel - Chrome
+      if: steps.chages.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
@@ -62,6 +66,7 @@ jobs:
         flag-name: ${{ matrix.os }}-chrome
         parallel: true
     - name: Coveralls Parallel - Firefox
+      if: steps.chages.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
@@ -75,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
+      if: needs.build.outputs.coveralls == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
