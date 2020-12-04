@@ -35,7 +35,14 @@ jobs:
           xvfb-run --auto-servernum npm test
         fi
       shell: bash
+    - name: Check if docs are modified
+      id: docs
+      uses: pheel/path-watcher-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          paths: 'docs/**/*'
     - name: Package
+      if: steps.docs.outputs.modified
       run: |
         npm run docs
         npm run typedoc
