@@ -1,4 +1,3 @@
-/* eslint-disable import/no-commonjs */
 // VERSION replaced by deploy script
 module.exports = {
 	title: 'Chart.js',
