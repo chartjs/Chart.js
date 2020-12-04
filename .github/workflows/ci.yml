@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      coveralls: steps.changes.outputs.src
+      coveralls: ${{ steps.changes.outputs.src }}
 
     strategy:
       matrix:
