@@ -1,0 +1,75 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Node.js Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.trim.outputs.version }}
+    steps:
+      - id: trim
+        run: echo "::set-output name=version::${TAG:1}"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - name: Test
+      run: |
+        npm ci
+        xvfb-run --auto-servernum npm test
+
+  publish-npm:
+    needs: [test, setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Setup and build
+        run: |
+          npm ci
+          npm install -g json
+          json -I -f package.json -e "this.version=\"$VERSION\""
+          json -I -f package-lock.json -e "this.version=\"$VERSION\""
+          npm run build
+          ./scripts/docs-config.sh "${VERSION}"
+          npm run docs
+          npm run typedoc
+          npm pack
+        env:
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Publish to NPM
+        run: ./scripts/publish.sh
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Deploy Docs
+        run: ./scripts/deploy-docs.sh "$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+          GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Upload NPM package file
+        id: upload-npm-package-file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.setup.outputs.version }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          asset_content_type: application/gzip
