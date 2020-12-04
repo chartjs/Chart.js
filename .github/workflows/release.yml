@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
-    needs: [version, draft]
+    needs: [version, notes]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
