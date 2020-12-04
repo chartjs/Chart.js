@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      coveralls: steps.changes.outputs.src
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -77,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
+      if: needs.build.outputs.coveralls == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
