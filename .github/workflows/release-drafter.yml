@@ -1,0 +1,22 @@
+name: Release Drafter
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  correct_repository:
+    runs-on: ubuntu-latest
+    steps:
+    - name: fail on fork
+      if: github.repository_owner != 'chartjs'
+      run: exit 1
+
+  update_release_draft:
+    needs: correct_repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
