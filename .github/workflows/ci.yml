@@ -23,9 +23,19 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          src:
+            - 'src/**'
+          docs:
+            - 'docs/**'
+    - name: Install
+      run: npm ci
     - name: Build and Test
+      if: steps.chages.outputs.src == 'true'
       run: |
-        npm ci
         npm run build
         if [ "${{ runner.os }}" == "Windows" ]; then
           npm test
@@ -35,14 +45,11 @@ jobs:
           xvfb-run --auto-servernum npm test
         fi
       shell: bash
-    - name: Check if docs are modified
-      id: docs
-      uses: pheel/path-watcher-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          paths: 'docs/**/*'
+    - name: Lint
+      if: steps.chages.outputs.src != 'true'
+      run: npm run lint
     - name: Package
-      if: steps.docs.outputs.modified
+      if: steps.changes.outputs.docs == 'true'
       run: |
         npm run docs
         npm run typedoc
