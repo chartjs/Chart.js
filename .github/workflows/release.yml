@@ -29,10 +29,13 @@ jobs:
           git config --global user.name "Chart.js"
           ouput=$(npm version ${version})
           echo "::set-output name=version::$output"
-          git push
-          git push --tags
         env:
           version: ${{ github.event.inputs.version }}
+      - name: Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
 
   notes:
     needs: version
