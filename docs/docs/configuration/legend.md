@@ -125,7 +125,7 @@ var chart = new Chart(ctx, {
             legend: {
                 display: true,
                 labels: {
-                    fontColor: 'rgb(255, 99, 132)'
+                    color: 'rgb(255, 99, 132)'
                 }
             }
         }
