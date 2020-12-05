@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      coveralls: ${{ steps.changes.outputs.src }}
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -23,9 +26,19 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          src:
+            - 'src/**'
+          docs:
+            - 'docs/**'
+    - name: Install
+      run: npm ci
     - name: Build and Test
+      if: steps.changes.outputs.src == 'true'
       run: |
-        npm ci
         npm run build
         if [ "${{ runner.os }}" == "Windows" ]; then
           npm test
@@ -35,12 +48,17 @@ jobs:
           xvfb-run --auto-servernum npm test
         fi
       shell: bash
+    - name: Lint
+      if: steps.changes.outputs.src != 'true'
+      run: npm run lint
     - name: Package
+      if: steps.changes.outputs.docs == 'true'
       run: |
         npm run docs
         npm run typedoc
         npm pack
     - name: Coveralls Parallel - Chrome
+      if: steps.changes.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
@@ -48,6 +66,7 @@ jobs:
         flag-name: ${{ matrix.os }}-chrome
         parallel: true
     - name: Coveralls Parallel - Firefox
+      if: steps.changes.outputs.src == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
@@ -61,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
+      if: needs.build.outputs.coveralls == 'true'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
