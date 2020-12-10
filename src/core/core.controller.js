@@ -189,6 +189,11 @@ class Chart {
 		return this;
 	}
 
+	/**
+	 * Resize the chart to its container or to explicit dimensions.
+	 * @param {number} [width]
+	 * @param {number} [height]
+	 */
 	resize(width, height) {
 		if (!animator.running(this)) {
 			this._resize(width, height);

@@ -19,7 +19,7 @@ This must be called before the canvas is reused for a new chart.
 myLineChart.destroy();
 ```
 
-## .update(mode)
+## .update(mode?)
 
 Triggers an update of the chart. This can be safely called after updating the data object. This will update all scales, legends, and then re-render the chart.
 
@@ -40,7 +40,7 @@ See [Updating Charts](updates.md) for more details.
 
 ## .reset()
 
-Reset the chart to it's state before the initial animation. A new animation can then be triggered using `update`.
+Reset the chart to its state before the initial animation. A new animation can then be triggered using `update`.
 
 ```javascript
 myLineChart.reset();
@@ -60,14 +60,19 @@ myLineChart.stop();
 // => returns 'this' for chainability
 ```
 
-## .resize()
+## .resize(width?, height?)
 
 Use this to manually resize the canvas element. This is run each time the canvas container is resized, but you can call this method manually if you change the size of the canvas nodes container element.
+
+You can call `.resize()` with no parameters to have the chart take the size of its container element, or you can pass explicit dimensions (e.g., for [printing](../general/responsive.md#printing-resizable-charts)).
 
 ```javascript
 // Resizes & redraws to fill its container element
 myLineChart.resize();
 // => returns 'this' for chainability
+
+// With an explicit size:
+myLineChart.resize(width, height);
 ```
 
 ## .clear()
@@ -82,7 +87,7 @@ myLineChart.clear();
 
 ## .toBase64Image()
 
-This returns a base 64 encoded string of the chart in it's current state.
+This returns a base 64 encoded string of the chart in its current state.
 
 ```javascript
 myLineChart.toBase64Image();
@@ -177,5 +182,5 @@ chart.setActiveElements([
 Finds the chart instance from the given key. If the key is a `string`, it is interpreted as the ID of the Canvas node for the Chart. The key can also be a `CanvasRenderingContext2D` or an `HTMLDOMElement`. This will return `undefined` if no Chart is found. To be found, the chart must have previously been created.
 
 ```javascript
-const chart = Chart.getChart("canvas-id")
+const chart = Chart.getChart("canvas-id");
 ```
