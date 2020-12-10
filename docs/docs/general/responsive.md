@@ -41,7 +41,7 @@ Note that in order for the above code to correctly resize the chart height, the 
 
 ## Printing Resizable Charts
 
-CSS media queries allow changing styles when printing a page. The CSS applied from these media queries may cause charts to need to resize. However, the resize won't happen automatically. To support resizing charts when printing, one needs to hook the [onbeforeprint](https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeprint) event and manually trigger resizing of each chart.
+CSS media queries allow changing styles when printing a page. The CSS applied from these media queries may cause charts to need to resize. However, the resize won't happen automatically. To support resizing charts when printing, you need to hook the [onbeforeprint](https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeprint) event and manually trigger resizing of each chart.
 
 ```javascript
 function beforePrintHandler () {
@@ -49,4 +49,15 @@ function beforePrintHandler () {
         Chart.instances[id].resize();
     }
 }
+```
+
+You may also find that, due to complexities in when the browser lays out the document for printing and when resize events are fired, Chart.js is unable to properly resize for the print layout. To work around this, you can pass an explicit size to `.resize()` then use an [onafterprint](https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onafterprint) event to restore the automatic size when done.
+
+```javascript
+window.addEventListener('beforeprint', () => {
+	myChart.resize(600, 600);
+});
+window.addEventListener('afterprint', () => {
+	myChart.resize();
+});
 ```
