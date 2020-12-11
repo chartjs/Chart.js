@@ -44,6 +44,7 @@ The following values are supported:
 - `'rectRot'`
 - `'star'`
 - `'triangle'`
+- `'arrow'`
 
 If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
