@@ -153,6 +153,15 @@ export function drawPoint(ctx, options, x, y) {
 		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
 		ctx.closePath();
 		break;
+	case 'arrow':
+		ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		rad += TWO_THIRDS_PI;
+		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		ctx.lineTo(x,y);
+		rad += TWO_THIRDS_PI;
+		ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+		ctx.closePath();
+		break;
 	case 'rectRounded':
 		// NOTE: the rounded rect implementation changed to use `arc` instead of
 		// `quadraticCurveTo` since it generates better results when rect is
