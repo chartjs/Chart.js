@@ -183,6 +183,16 @@ export class Legend extends Element {
 		const labelOpts = opts.labels;
 		const display = opts.display;
 
+		// The legend may not be displayed for a variety of reasons including
+		// the fact that the defaults got set to `false`.
+		// When the legend is not displayed, there are no guarantees that the options
+		// are correctly formatted so we need to bail out as early as possible.
+		const minSize = me._minSize;
+		if (!display) {
+			me.width = minSize.width = me.height = minSize.height = 0;
+			return;
+		}
+
 		const ctx = me.ctx;
 		const labelFont = toFont(labelOpts.font, me.chart.options.font);
 		const fontSize = labelFont.size;
@@ -192,8 +202,6 @@ export class Legend extends Element {
 
 		// Reset hit boxes
 		const hitboxes = me.legendHitBoxes = [];
-
-		const minSize = me._minSize;
 		const isHorizontal = me.isHorizontal();
 		const titleHeight = me._computeTitleHeight();
 
@@ -205,11 +213,6 @@ export class Legend extends Element {
 			minSize.height = me.maxHeight; // fill all the height
 		}
 
-		// Increase sizes here
-		if (!display) {
-			me.width = minSize.width = me.height = minSize.height = 0;
-			return;
-		}
 		ctx.font = labelFont.string;
 
 		if (isHorizontal) {
