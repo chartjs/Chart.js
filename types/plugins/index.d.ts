@@ -312,28 +312,7 @@ export interface TooltipCallbacks {
   afterFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 }
 
-export interface TooltipPlugin<O = {}> {
-  /**
-   * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
-   * the tooltip drawing is cancelled until another `render` is triggered.
-   * @param {Chart} chart - The chart instance.
-   * @param {object} args - The call arguments.
-   * @param {Tooltip} args.tooltip - The tooltip.
-   * @param {object} options - The plugin options.
-   * @returns {boolean} `false` to cancel the chart tooltip drawing.
-   */
-  beforeTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): boolean | void;
-  /**
-   * @desc Called after drawing the `tooltip`. Note that this hook will not
-   * be called if the tooltip drawing has been previously cancelled.
-   * @param {Chart} chart - The chart instance.
-   * @param {object} args - The call arguments.
-   * @param {Tooltip} args.tooltip - The tooltip.
-   * @param {object} options - The plugin options.
-   */
-  afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
-}
-
+export const TooltipPlugin: Plugin;
 export interface TooltipOptions extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
