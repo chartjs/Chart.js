@@ -611,5 +611,10 @@ export default {
 			position: 'center',
 			text: '',
 		}
+	},
+
+	defaultRoutes: {
+		'labels.color': 'color',
+		'title.color': 'color'
 	}
 };
