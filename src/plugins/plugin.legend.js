@@ -231,7 +231,7 @@ export class Legend extends Element {
 	 */
 	_draw() {
 		const me = this;
-		const {options: opts, height: legendHeight, width: legendWidth, columnSizes, lineWidths, ctx, legendHitBoxes} = me;
+		const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes} = me;
 		const {align, labels: labelOpts} = opts;
 		const defaultColor = defaults.color;
 		const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.width);
@@ -320,14 +320,14 @@ export class Legend extends Element {
 		const titleHeight = this._computeTitleHeight();
 		if (isHorizontal) {
 			cursor = {
-				x: me.left + _alignStartEnd(align, padding, legendWidth - lineWidths[0]),
+				x: _alignStartEnd(align, me.left + padding, me.right - lineWidths[0]),
 				y: me.top + padding + titleHeight,
 				line: 0
 			};
 		} else {
 			cursor = {
 				x: me.left + padding,
-				y: me.top + _alignStartEnd(align, padding, legendHeight - columnSizes[0].height) + titleHeight,
+				y: _alignStartEnd(align, me.top + titleHeight + padding, me.bottom - columnSizes[0].height),
 				line: 0
 			};
 		}
@@ -347,12 +347,12 @@ export class Legend extends Element {
 				if (i > 0 && x + width + padding > me.right) {
 					y = cursor.y += lineHeight;
 					cursor.line++;
-					x = cursor.x = me.left + _alignStartEnd(align, padding, legendWidth - lineWidths[cursor.line]);
+					x = cursor.x = _alignStartEnd(align, me.left + padding, me.right - lineWidths[cursor.line]);
 				}
 			} else if (i > 0 && y + lineHeight > me.bottom) {
 				x = cursor.x = x + columnSizes[cursor.line].width + padding;
 				cursor.line++;
-				y = cursor.y = me.top + _alignStartEnd(align, padding, legendHeight - columnSizes[cursor.line].height);
+				y = cursor.y = _alignStartEnd(align, me.top + titleHeight + padding, me.bottom - columnSizes[cursor.line].height);
 			}
 
 			const realX = rtlHelper.x(x);
@@ -393,7 +393,8 @@ export class Legend extends Element {
 		const ctx = me.ctx;
 		const position = titleOpts.position;
 		const halfFontSize = titleFont.size / 2;
-		let y = me.top + titlePadding.top + halfFontSize;
+		const topPaddingPlusHalfFontSize = titlePadding.top + halfFontSize;
+		let y;
 
 		// These defaults are used when the legend is vertical.
 		// When horizontal, they are computed below.
@@ -403,11 +404,12 @@ export class Legend extends Element {
 		if (this.isHorizontal()) {
 			// Move left / right so that the title is above the legend lines
 			maxWidth = Math.max(...me.lineWidths);
+			y = me.top + topPaddingPlusHalfFontSize;
 			left = _alignStartEnd(opts.align, left, me.right - maxWidth);
 		} else {
 			// Move down so that the title is above the legend stack in every alignment
 			const maxHeight = me.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
-			y = _alignStartEnd(opts.align, y, me.height - maxHeight);
+			y = topPaddingPlusHalfFontSize + _alignStartEnd(opts.align, me.top, me.bottom - maxHeight - opts.labels.padding - me._computeTitleHeight());
 		}
 
 		// Now that we know the left edge of the inner legend box, compute the correct
