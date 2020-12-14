@@ -826,25 +826,6 @@ export interface Plugin<O = {}> {
 	 * @param {number} args.size - The new canvas display size (eq. canvas.style width & height).
 	 * @param {object} options - The plugin options.
 	 */
-	/**
-	 * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
-	 * the tooltip drawing is cancelled until another `render` is triggered.
-	 * @param {Chart} chart - The chart instance.
-	 * @param {object} args - The call arguments.
-	 * @param {Tooltip} args.tooltip - The tooltip.
-	 * @param {object} options - The plugin options.
-	 * @returns {boolean} `false` to cancel the chart tooltip drawing.
-	 */
-	beforeTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): boolean | void;
-	/**
-	 * @desc Called after drawing the `tooltip`. Note that this hook will not
-	 * be called if the tooltip drawing has been previously cancelled.
-	 * @param {Chart} chart - The chart instance.
-	 * @param {object} args - The call arguments.
-	 * @param {Tooltip} args.tooltip - The tooltip.
-	 * @param {object} options - The plugin options.
-	 */
-	afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
 	resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
 	/**
 	 * Called after the chart has been destroyed.
