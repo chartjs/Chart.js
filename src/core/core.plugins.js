@@ -1,5 +1,6 @@
 import defaults from './core.defaults';
 import registry from './core.registry';
+import {isNullOrUndef} from '../helpers';
 import {callback as callCallback, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 
 /**
@@ -58,8 +59,15 @@ export default class PluginService {
 	}
 
 	invalidate() {
-		this._oldCache = this._cache;
-		this._cache = undefined;
+		// When plugins are registered, there is the possibility of a double
+		// invalidate situation. In this case, we only want to invalidate once.
+		// If we invalidate multiple times, the `_oldCache` is lost and all of the
+		// plugins are restarted without being correctly stopped.
+		// See https://github.com/chartjs/Chart.js/issues/8147
+		if (!isNullOrUndef(this._cache)) {
+			this._oldCache = this._cache;
+			this._cache = undefined;
+		}
 	}
 
 	/**

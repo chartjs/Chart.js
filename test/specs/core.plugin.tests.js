@@ -342,5 +342,24 @@ describe('Chart.plugins', function() {
 
 			expect(plugin.hook).not.toHaveBeenCalled();
 		});
+
+		it('should not restart plugins when a double register occurs', function() {
+			var results = [];
+			var chart = window.acquireChart({
+				plugins: [{
+					start: function() {
+						results.push(1);
+					}
+				}]
+			});
+
+			Chart.register({id: 'abc', hook: function() {}});
+			Chart.register({id: 'def', hook: function() {}});
+
+			chart.update();
+
+			// The plugin on the chart should only be started once
+			expect(results).toEqual([1]);
+		});
 	});
 });
