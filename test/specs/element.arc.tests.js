@@ -65,4 +65,36 @@ describe('Arc element tests', function() {
 		expect(center.x).toBeCloseTo(0.5, 6);
 		expect(center.y).toBeCloseTo(0.5, 6);
 	});
+
+	it('should not draw when radius < 0', function() {
+		var ctx = window.createMockContext();
+
+		var arc = new Chart.elements.ArcElement({
+			startAngle: 0,
+			endAngle: Math.PI / 2,
+			x: 0,
+			y: 0,
+			innerRadius: -0.1,
+			outerRadius: Math.sqrt(2),
+			options: {}
+		});
+
+		arc.draw(ctx);
+
+		expect(ctx.getCalls().length).toBe(0);
+
+		arc = new Chart.elements.ArcElement({
+			startAngle: 0,
+			endAngle: Math.PI / 2,
+			x: 0,
+			y: 0,
+			innerRadius: 0,
+			outerRadius: -1,
+			options: {}
+		});
+
+		arc.draw(ctx);
+
+		expect(ctx.getCalls().length).toBe(0);
+	});
 });

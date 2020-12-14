@@ -184,7 +184,7 @@ export default class ArcElement extends Element {
 		me.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
 		me.fullCircles = Math.floor(me.circumference / TAU);
 
-		if (me.circumference === 0) {
+		if (me.circumference === 0 || me.innerRadius < 0 || me.outerRadius < 0) {
 			return;
 		}
 
