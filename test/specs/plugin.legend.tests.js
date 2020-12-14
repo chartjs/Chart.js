@@ -17,12 +17,14 @@ describe('Legend block tests', function() {
 			onLeave: null,
 
 			labels: {
+				color: Chart.defaults.color,
 				boxWidth: 40,
 				padding: 10,
 				generateLabels: jasmine.any(Function)
 			},
 
 			title: {
+				color: Chart.defaults.color,
 				display: false,
 				position: 'center',
 				text: '',
