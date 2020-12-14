@@ -706,6 +706,34 @@ describe('Legend block tests', function() {
 		}]);
 	});
 
+	it('should not crash when the legend defaults are false', function() {
+		const oldDefaults = Chart.defaults.plugins.legend;
+
+		Chart.defaults.set({
+			plugins: {
+				legend: false,
+			},
+		});
+
+		var chart = window.acquireChart({
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					label: 'dataset1',
+					data: [1, 2, 3, 4]
+				}],
+				labels: ['', '', '', '']
+			},
+		});
+		expect(chart).toBeDefined();
+
+		Chart.defaults.set({
+			plugins: {
+				legend: oldDefaults,
+			},
+		});
+	});
+
 	describe('config update', function() {
 		it ('should update the options', function() {
 			var chart = acquireChart({
