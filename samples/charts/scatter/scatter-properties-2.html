@@ -1,0 +1,165 @@
+<!--Author: AmirHoseinRostami(gitHubId:AHReccese)-->
+
+<html lang="en">
+
+   <head> 
+     
+      <title>Example2</title> 
+
+      <!--Load Libraries-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script> 
+      
+   </head> 
+
+   <body> 
+
+      <div style="width:50%; float: left"> 
+         <canvas id="chart1"></canvas> 
+      </div> 
+      <div style="width:50%; float: left;"> 
+         <canvas id="chart2"></canvas> 
+      </div> 
+
+      <script>
+        // this function adds noise(variance) to main dataSet.
+        var varianced = function(data) {
+
+          return data.map(function(e) {
+            var xVarianced = Math.random()*10;
+            var yVarianced = Math.random()*10;
+            return {
+              x: e.x + xVarianced,
+              y: e.y + yVarianced,
+            }
+          });
+
+        };
+
+        // firstDataSet.
+        var data1 = [
+          {x: 10, y: 20},
+          {x: 11, y: 30},
+          {x: 11.5, y: 30},
+          {x: 10.75 + 20, y: 10},
+          {x: 12.4 + 20, y: 30},
+          {x: 9.6 + 20, y: 10},
+        ];
+
+        // secondDataSet.
+        var data2 = [
+          {x: 1, y: 30 + .1},
+          {x: 11, y: 30 - .1},
+          {x: 10.5 + 1.5, y: 30 + .2},
+          {x: 11.5 + .2, y: 15},
+          {x: 10.75 + 20 + 1.5, y: 20},
+          {x: 12.4 + 20 + 1.5, y: 30},
+        ];
+
+        var ctx = document.getElementById("chart1").getContext("2d");
+        var myScatter = Chart.Scatter(ctx, {
+
+          data: {
+
+            // this chart has 2 scatterCharts.
+            datasets: [
+              {
+                label: "dataset1", // Name the series
+                borderColor: 'rgb(255,0,0)', // Add custom color border   
+                data: data1, // Specify the data values array
+              },
+              {
+                label: "dataset2",  // Name the series
+                borderColor: '#3fae52',  // Add custom color border  
+                data: data2, // Specify the data values array
+              }
+            ]
+          },
+          
+          options: {
+
+            title: {
+              display: true,
+              text: 'Original DataSet'
+            },
+
+            showLines: true,
+            scales: {
+              yAxes: [{
+                ticks: { 
+                // limiting the yAxis's range.
+                //  min: 5,
+                //  max: 40,
+                }
+              }],
+            },
+            
+            elements: {
+              point: {
+                // pointer's radius and color.
+                radius: 10,
+                borderColor: '#ff0000'
+              }
+            }
+          }});
+
+        var ctx = document.getElementById("chart2").getContext("2d");
+        var myScatter2 = Chart.Scatter(ctx, {
+
+          data: {
+
+            datasets: [
+              {
+                label: "variancedDataset1", // Name the series
+                borderColor: 'rgb(255, 99, 132)', // Add custom color border 
+                data: varianced(data1), // Specify the data values array
+                steppedLine: false, // step line :)
+                borderDash: [1,4,9], // style of line(which connects the points)
+                pointHoverBorderColor: '#0000ff' // Hover color of pointer's border.
+              },
+
+              {
+                label: "variancedDataset2", // Name the series
+                borderColor: 'rgb(54, 162, 235)', // Add custom color border  
+                data: varianced(data2), // Specify the data values array
+                steppedLine: true, // step line :)
+                borderDash: [1,2,3], // style of line(which connects the points)
+                pointHoverBorderColor: '#0000ff', // Hover color of pointer's border.
+              }
+            ]
+
+          },
+
+          options: {
+
+            title: {
+              display: true,
+              text: 'Jittered Data'
+            },
+
+            showLines: true,
+            
+            scales: {
+              yAxes: [{
+                ticks: {
+                  // limiting the yAxis's range.
+                // min: 5,
+                // max: 40,
+                }
+              }],
+            },
+            
+            elements: {
+              point: {
+                // pointer's radius and color.
+                radius: 10,
+                borderColor: '#00f03A',
+              }
+            }
+
+          }
+
+        });
+      </script> 
+
+   </body>
+</html>

@@ -1,0 +1,85 @@
+<!--Author: AmirHoseinRostami(gitHubId:AHReccese)-->
+
+<html>
+
+<head>
+    <title>Example1</title> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+
+<body>
+
+    <div style="width: 400px; height: 500px;">
+        <canvas id="scatterChart1"></canvas>  
+    </div>
+    <script>
+        var ctx = document.getElementById("scatterChart1").getContext('2d');
+        // Define the data 
+        var data = [{
+                        x: 5,
+                        y: 4
+                    }, {
+                        x: 2,
+                        y: 14
+                    },
+                    {
+                        x: 4,
+                        y: 12
+                    },
+                    {
+                        x: 2,
+                        y: 10
+                    },
+                    {
+                        x: 3,
+                        y: 4
+                    },
+                    {
+                        x: 3,
+                        y: 5
+                    },
+                    {
+                        x: 3,
+                        y: 8
+                    },
+                    {
+                        x: 6,
+                        y: 12
+            
+                }]; // Add data values to array
+
+        // setting chart's option.
+        var options = {
+            responsive: true, // Instruct chart js to respond nicely.
+            maintainAspectRatio: false, // Add to prevent default behaviour of full-width/height 
+        };
+
+        // creating chart.
+        var myChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+
+                    // Setting parameters for Dataset (from line chart Dataset Properties)
+                        label: 'Example1', // Name the series
+                        data: data, // Specify the data values array
+                        borderColor: '#2196f3', // Add custom color border            
+                        backgroundColor: '#f49080', // Add custom color background (Points and Fill)
+                        fill: true, // fill the area under the line.
+                        showLine: true, // connect points via a line.
+                        lineTension: 1, // Tension Rate of connector line.
+                        pointBackgroundColor:'#ff0000', // red pointer background
+                        pointBorderColor:'#00ff00', // green pointer border
+                        pointRadius: 5, // radius of pointer's circle.
+                        steppedLine: false, // set it to true and enjoy :)
+                        borderDash: [1,4,9], // style of line(which connects the points)
+                        pointHoverBorderColor: '#0000ff' // Hover color of pointer's border.
+
+                    }]
+            },
+            options: options
+        });
+    </script>  
+</body>
+
+</html>
