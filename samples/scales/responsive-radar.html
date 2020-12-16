@@ -19,128 +19,122 @@
 	<div >
 		<canvas id="canvas"></canvas>
 	</div>
-	
+
 	<script>
         // chart config
-		var config = {
-			type: 'radar',
-			data: {
-				labels: ['This is a very very long label1', 'This is a very very long label2', 'This is a very very long label3', 'This is a very very long label4', 'This is a very very long label5'],
-				datasets: [{
-					label: 'My First dataset',
-					data: [
-                        10,
-                        40,
-                        20,
-                        50,
-                        70
-					],
-				}]
-			},
-			options: {
-                scale: {
-                    ticks: {
-                        min : 0,
-                    },
-                    pointLabels: {
-                        display: true,
-                        fontSize: 30
-                    }
-                },
-            }
-		};
+        const config = {
+          type: 'radar',
+          data: {
+            labels: ['This is a very very long label1', 'This is a very very long label2', 'This is a very very long label3', 'This is a very very long label4', 'This is a very very long label5'],
+            datasets: [{
+              label: 'My First dataset',
+              data: [
+                10,
+                40,
+                20,
+                50,
+                70,
+              ],
+            }],
+          },
+          options: {
+            scale: {
+              ticks: {
+                min: 0,
+              },
+              pointLabels: {
+                display: true,
+                fontSize: 30,
+              },
+            },
+          },
+        };
 
         // Our previous state to prevent oveloading multiple times
-        var preState = 'show';
+        let preState = 'show';
 
         // get browser screen width
         function getWidth() {
-            return Math.max(
-                document.body.scrollWidth,
-                document.documentElement.scrollWidth,
-                document.body.offsetWidth,
-                document.documentElement.offsetWidth,
-                document.documentElement.clientWidth
-            );
+          return Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.documentElement.clientWidth,
+          );
         }
 
         // define the boundries
-        var bounds = [
-            {min:0,max:1200,func:'hide'},
-            {min:1200,max:10000,func:'show'},
+        const bounds = [
+          { min: 0, max: 1200, func: 'hide' },
+          { min: 1200, max: 10000, func: 'show' },
         ];
 
         // show labels of the chart
         function show(anim) {
-            var ctx = document.getElementById('canvas').getContext('2d');      
-            config.options.scale.pointLabels["display"] = true;
-            if(!anim)
-                config.options["animation"] = false;
+          const ctx = document.getElementById('canvas').getContext('2d');
+          config.options.scale.pointLabels.display = true;
+          if (!anim) config.options.animation = false;
 
-			window.myLine = new Chart(ctx, config);
+  window.myLine = new Chart(ctx, config);
         }
 
         // hide labels of the chart
         function hide(anim) {
-            var ctx = document.getElementById('canvas').getContext('2d');
-            config.options.scale.pointLabels["display"] = false;
-            if(!anim)
-                config.options["animation"] = false;
+          const ctx = document.getElementById('canvas').getContext('2d');
+          config.options.scale.pointLabels.display = false;
+          if (!anim) config.options.animation = false;
 
-			window.myLine = new Chart(ctx, config);
+  window.myLine = new Chart(ctx, config);
         }
 
         // edit labels based on size
         function configLabel() {
-            var ctx = document.getElementById('canvas').getContext('2d');
-            var width = getWidth(); //widows's inner width
-            console.log(width);
+          const width = getWidth(); // widows's inner width
+          console.log(width);
 
-            for(var i=0; i<bounds.length; i++){
-                boundry = bounds[i];
-                min = boundry.min || Number.MIN_VALUE;
-                max = boundry.max || Number.MAX_VALUE;
-                if(width >= min && width < max){
-                    if(boundry.func == preState)
-                        return;
+          for (let i = 0; i < bounds.length; i += 1) {
+            const boundry = bounds[i];
+            const min = boundry.min || Number.MIN_VALUE;
+            const max = boundry.max || Number.MAX_VALUE;
+            if (width >= min && width < max) {
+              if (boundry.func === preState) return;
 
-                    if(boundry.func == 'show') {
-                        preState = 'show';
-                        return show(false); 
-                    }
-
-                    preState = 'hide';
-                    return hide(false);        
-                }
+              if (boundry.func === 'show') {
+                preState = 'show';
+                show(false);
+              } else {
+                preState = 'hide';
+                hide(false);
+              }
             }
+          }
         }
 
         // edit labels based on size (First time)
         function initConfig() {
-            var ctx = document.getElementById('canvas').getContext('2d');
-            var width = getWidth(); //widows's inner width
-            console.log(width);
+          const width = getWidth(); // widows's inner width
+          console.log(width);
 
-            for(var i=0; i<bounds.length; i++){
-                boundry = bounds[i];
-                min = boundry.min || Number.MIN_VALUE;
-                max = boundry.max || Number.MAX_VALUE;
-                if(width >= min && width < max){
-                    if(boundry.func == 'show') {
-                        preState = 'show';
-                        return show(true); 
-                    }       
-
-                    preState = 'hide';
-                    return hide(true);        
-                }
+          for (let i = 0; i < bounds.length; i += 1) {
+            const boundry = bounds[i];
+            const min = boundry.min || Number.MIN_VALUE;
+            const max = boundry.max || Number.MAX_VALUE;
+            if (width >= min && width < max) {
+              if (boundry.func === 'show') {
+                preState = 'show';
+                show(true);
+              } else {
+                preState = 'hide';
+                hide(true);
+              }
             }
+          }
         }
 
         // set onLoad and onResize functions for window
-        window.onresize = configLabel;        
+        window.onresize = configLabel;
         window.onload = initConfig;
-
 	</script>
 </body>
 
