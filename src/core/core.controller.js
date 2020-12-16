@@ -933,8 +933,8 @@ class Chart {
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			item = items[i];
-			const controller = this.getDatasetMeta(item.datasetIndex).controller;
-			if (item && controller) {
+			const controller = item && this.getDatasetMeta(item.datasetIndex).controller;
+			if (controller) {
 				controller[prefix + 'HoverStyle'](item.element, item.datasetIndex, item.index);
 			}
 		}
