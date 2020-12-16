@@ -25,9 +25,56 @@ var myChart = new Chart(ctx, {...});
 Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
 
 ```javascript
-import { Chart, LineController, LineElement, PointElement, ArcElement, LinearScale, CategoryScale, Title, Tooltip, Filler, Legend } from 'chart.js';
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Filler,
+  Legend,
+  Title,
+  Tooltip
+} from 'chart.js';
 
-Chart.register(LineController, LineElement, PointElement, ArcElement, LinearScale, CategoryScale, Title, Tooltip, Filler, Legend);
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Filler,
+  Legend,
+  Title,
+  Tooltip
+);
 
 var myChart = new Chart(ctx, {...});
 ```
