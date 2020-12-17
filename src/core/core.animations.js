@@ -131,6 +131,8 @@ export default class Animations {
 			// So any new updates to the shared options are observed
 			awaitAll(target.options.$animations, newOptions).then(() => {
 				target.options = newOptions;
+			}, () => {
+				// rejected, noop
 			});
 		}
 
