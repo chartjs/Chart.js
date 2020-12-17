@@ -1,4 +1,4 @@
-import { ActiveDataPoint, ActiveElement, Chart, Element, InteractionMode, LayoutPosition, Plugin } from '../core';
+import { ActiveDataPoint, ActiveElement, Chart, Element, LayoutPosition } from 'core';
 import { AnimationSpecContainer, Color, ChartArea, FontSpec, Scriptable, TextAlign, ChartEvent, CoreInteractionOptions } from '../core/interfaces';
 import { PointStyle } from '../elements';
 import { ChartData, ChartDataset } from '../interfaces';
@@ -312,7 +312,7 @@ export interface TooltipCallbacks {
   afterFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 }
 
-export interface TooltipPlugin<O = {}> {
+export interface ExtendedPlugin<O = {}> {
   /**
    * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
    * the tooltip drawing is cancelled until another `render` is triggered.
@@ -333,7 +333,6 @@ export interface TooltipPlugin<O = {}> {
    */
   afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
 }
-
 export interface TooltipOptions extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
