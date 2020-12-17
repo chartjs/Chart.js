@@ -89,10 +89,10 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 }
 
 export interface CoreChartOptions extends ParsingOptions {
-  animation: Scriptable<AnimationOptions>;
+  animation: Scriptable<AnimationOptions | false>;
 
   datasets: {
-    animation: Scriptable<AnimationOptions>;
+    animation: Scriptable<AnimationOptions | false>;
   };
 
   /**
@@ -261,7 +261,7 @@ export interface AnimationPropertySpec extends AnimationCommonSpec {
 }
 
 export type AnimationSpecContainer = AnimationCommonSpec & {
-	[prop: string]: AnimationPropertySpec;
+	[prop: string]: AnimationPropertySpec | false;
 };
 
 export type AnimationOptions = AnimationSpecContainer & {
@@ -274,11 +274,11 @@ export type AnimationOptions = AnimationSpecContainer & {
 	 */
 	onComplete: (this: Chart, event: AnimationEvent) => void;
 
-	active: AnimationSpecContainer;
-	hide: AnimationSpecContainer;
-	reset: AnimationSpecContainer;
-	resize: AnimationSpecContainer;
-	show: AnimationSpecContainer;
+	active: AnimationSpecContainer | false;
+	hide: AnimationSpecContainer | false;
+	reset: AnimationSpecContainer | false;
+	resize: AnimationSpecContainer | false;
+	show: AnimationSpecContainer | false;
 };
 
 export interface FontSpec {
