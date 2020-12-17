@@ -994,15 +994,16 @@ class Chart {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;
+		const diff = (a, b) => a.filter(x => !b.some(y => x.datasetIndex === y.datasetIndex && x.index === y.index));
+		const deactivated = diff(lastActive, active);
+		const activated = diff(active, lastActive);
 
-		// Remove styling for last active (even if it may still be active)
-		if (lastActive.length) {
-			me.updateHoverStyle(lastActive, hoverOptions.mode, false);
+		if (deactivated.length) {
+			me.updateHoverStyle(deactivated, hoverOptions.mode, false);
 		}
 
-		// Built-in hover styling
-		if (active.length && hoverOptions.mode) {
-			me.updateHoverStyle(active, hoverOptions.mode, true);
+		if (activated.length && hoverOptions.mode) {
+			me.updateHoverStyle(activated, hoverOptions.mode, true);
 		}
 	}
 
