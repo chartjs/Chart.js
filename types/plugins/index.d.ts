@@ -312,7 +312,7 @@ export interface TooltipCallbacks {
   afterFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
 }
 
-interface Plugin<O = {}> {
+export interface ExtendedPlugin<O = {}> {
   /**
    * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
    * the tooltip drawing is cancelled until another `render` is triggered.
