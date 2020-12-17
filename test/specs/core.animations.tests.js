@@ -96,4 +96,93 @@ describe('Chart.animations', function() {
 			done();
 		}, 300);
 	});
+
+	it('should not assign shared options to target when animations are cancelled', function(done) {
+		const chart = {
+			draw: function() {},
+			options: {
+				animation: {
+					debug: false
+				}
+			}
+		};
+		const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
+
+		const target = {
+			value: 1,
+			options: {
+				option: 2
+			}
+		};
+		const sharedOpts = {option: 10, $shared: true};
+
+		expect(anims.update(target, {
+			options: sharedOpts
+		})).toBeTrue();
+
+		expect(target.options !== sharedOpts).toBeTrue();
+
+		Chart.animator.start(chart);
+
+		setTimeout(function() {
+			expect(Chart.animator.running(chart)).toBeTrue();
+			Chart.animator.stop(chart);
+			expect(Chart.animator.running(chart)).toBeFalse();
+
+			setTimeout(function() {
+				expect(target.options === sharedOpts).toBeFalse();
+
+				Chart.animator.remove(chart);
+				done();
+			}, 250);
+		}, 50);
+	});
+
+
+	it('should assign final shared options to target after animations complete', function(done) {
+		const chart = {
+			draw: function() {},
+			options: {
+				animation: {
+					debug: false
+				}
+			}
+		};
+		const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
+
+		const origOpts = {option: 2};
+		const target = {
+			value: 1,
+			options: origOpts
+		};
+		const sharedOpts = {option: 10, $shared: true};
+		const sharedOpts2 = {option: 20, $shared: true};
+
+		expect(anims.update(target, {
+			options: sharedOpts
+		})).toBeTrue();
+
+		expect(target.options !== sharedOpts).toBeTrue();
+
+		Chart.animator.start(chart);
+
+		setTimeout(function() {
+			expect(Chart.animator.running(chart)).toBeTrue();
+
+			expect(target.options === origOpts).toBeTrue();
+
+			expect(anims.update(target, {
+				options: sharedOpts2
+			})).toBeUndefined();
+
+			expect(target.options === origOpts).toBeTrue();
+
+			setTimeout(function() {
+				expect(target.options === sharedOpts2).toBeTrue();
+
+				Chart.animator.remove(chart);
+				done();
+			}, 250);
+		}, 50);
+	});
 });
