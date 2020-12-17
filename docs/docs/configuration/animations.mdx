@@ -153,6 +153,7 @@ A property option is defined by the same options of the main [animation configur
 | `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
 | `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
 | `to`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | End value for the animation. Updated value is used when `undefined`
+| `fn` | <code>&lt;T&gt;(from: T, to: T, factor: number) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
 
 ## Animation properties collection configuration
 
@@ -264,7 +265,7 @@ var chart = new Chart(ctx, {
     options: {
         animation: {
             onProgress: function(animation) {
-                progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
+                progress.value = animation.currentStep / animation.numSteps;
             }
         }
     }
