@@ -1,4 +1,4 @@
-import { Chart, Element, InteractionMode } from '.';
+import { ActiveElement, Chart, InteractionMode } from '.';
 import { ChartDataset } from '../interfaces';
 import { ParsingOptions } from '../controllers';
 import { PluginOptions } from '../plugins';
@@ -85,7 +85,7 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: ChartEvent, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 }
 
 export interface CoreChartOptions extends ParsingOptions {
@@ -131,7 +131,7 @@ export interface CoreChartOptions extends ParsingOptions {
    * @default 2
    */
   aspectRatio: number;
-	
+
   /**
    * Locale used for number formatting (using `Intl.NumberFormat`).
    * @default user's browser setting
@@ -162,12 +162,12 @@ export interface CoreChartOptions extends ParsingOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: ChartEvent, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   /**
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
-  onClick(event: ChartEvent, elements: Element[]): void;
+  onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
     padding: Scriptable<number | ChartArea>;

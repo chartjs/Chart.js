@@ -134,11 +134,11 @@ export interface LegendOptions {
    */
   onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
-   *	A callback that is called when a 'mousemove' event is registered on top of a label item
+   * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
   onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
-   *	A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
   onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
 
@@ -181,7 +181,7 @@ export interface LegendOptions {
     pointStyle: PointStyle;
 
     /**
-     * Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
+     * Label style will match corresponding point style (size is based on the minimum value between boxWidth and font.size).
      * @default false
      */
     usePointStyle: boolean;
