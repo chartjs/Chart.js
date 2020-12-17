@@ -1,4 +1,4 @@
-import { ActiveElement, Chart, InteractionMode } from '.';
+import { ActiveElement, AnimationEvent, Chart, InteractionMode } from '.';
 import { ChartDataset } from '../interfaces';
 import { ParsingOptions } from '../controllers';
 import { PluginOptions } from '../plugins';
@@ -270,7 +270,7 @@ export type AnimationOptions = AnimationSpecContainer & {
 	 */
 	onProgress: (this: Chart, event: AnimationEvent) => void;
 	/**
-	 *Callback called when all animations are completed.
+	 * Callback called when all animations are completed.
 	 */
 	onComplete: (this: Chart, event: AnimationEvent) => void;
 
