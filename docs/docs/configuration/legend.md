@@ -82,6 +82,9 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // Label that will be displayed
     text: string,
 
+    // Index of the associated dataset
+    datasetIndex: number,
+
     // Fill style of the legend box
     fillStyle: Color,
 

@@ -92,7 +92,7 @@ function updateDims(chartArea, params, layout) {
 		// this layout was already counted for, lets first reduce old size
 		chartArea[layout.pos] -= layout.size;
 	}
-	layout.size = layout.horizontal ? box.height : box.width;
+	layout.size = layout.horizontal ? Math.min(layout.height, box.height) : Math.min(layout.width, box.width);
 	chartArea[layout.pos] += layout.size;
 
 	if (box.getPadding) {
@@ -103,8 +103,8 @@ function updateDims(chartArea, params, layout) {
 		maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
 	}
 
-	const newWidth = params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right');
-	const newHeight = params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom');
+	const newWidth = Math.max(0, params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right'));
+	const newHeight = Math.max(0, params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom'));
 
 	if (newWidth !== chartArea.w || newHeight !== chartArea.h) {
 		chartArea.w = newWidth;

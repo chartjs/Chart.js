@@ -1,4 +1,4 @@
-import { Chart, Element, InteractionMode } from '.';
+import { ActiveElement, AnimationEvent, Chart, InteractionMode } from '.';
 import { ChartDataset } from '../interfaces';
 import { ParsingOptions } from '../controllers';
 import { PluginOptions } from '../plugins';
@@ -85,14 +85,14 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: ChartEvent, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 }
 
 export interface CoreChartOptions extends ParsingOptions {
-  animation: Scriptable<AnimationOptions>;
+  animation: Scriptable<AnimationOptions | false>;
 
   datasets: {
-    animation: Scriptable<AnimationOptions>;
+    animation: Scriptable<AnimationOptions | false>;
   };
 
   /**
@@ -131,7 +131,7 @@ export interface CoreChartOptions extends ParsingOptions {
    * @default 2
    */
   aspectRatio: number;
-	
+
   /**
    * Locale used for number formatting (using `Intl.NumberFormat`).
    * @default user's browser setting
@@ -162,12 +162,12 @@ export interface CoreChartOptions extends ParsingOptions {
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
    */
-  onHover(event: ChartEvent, elements: Element[]): void;
+  onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   /**
    * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
    */
-  onClick(event: ChartEvent, elements: Element[]): void;
+  onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
     padding: Scriptable<number | ChartArea>;
@@ -261,7 +261,7 @@ export interface AnimationPropertySpec extends AnimationCommonSpec {
 }
 
 export type AnimationSpecContainer = AnimationCommonSpec & {
-	[prop: string]: AnimationPropertySpec;
+	[prop: string]: AnimationPropertySpec | false;
 };
 
 export type AnimationOptions = AnimationSpecContainer & {
@@ -270,15 +270,15 @@ export type AnimationOptions = AnimationSpecContainer & {
 	 */
 	onProgress: (this: Chart, event: AnimationEvent) => void;
 	/**
-	 *Callback called when all animations are completed.
+	 * Callback called when all animations are completed.
 	 */
 	onComplete: (this: Chart, event: AnimationEvent) => void;
 
-	active: AnimationSpecContainer;
-	hide: AnimationSpecContainer;
-	reset: AnimationSpecContainer;
-	resize: AnimationSpecContainer;
-	show: AnimationSpecContainer;
+	active: AnimationSpecContainer | false;
+	hide: AnimationSpecContainer | false;
+	reset: AnimationSpecContainer | false;
+	resize: AnimationSpecContainer | false;
+	show: AnimationSpecContainer | false;
 };
 
 export interface FontSpec {

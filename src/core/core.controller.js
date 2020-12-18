@@ -510,8 +510,16 @@ class Chart {
 
 		layouts.update(me, me.width, me.height);
 
+		const area = me.chartArea;
+		const noArea = area.width <= 0 || area.height <= 0;
+
 		me._layers = [];
 		each(me.boxes, (box) => {
+			if (noArea && box.position === 'chartArea') {
+				// Skip drawing and configuring chartArea boxes when chartArea is zero or negative
+				return;
+			}
+
 			// configure is called twice, once in core.scale.update and once here.
 			// Here the boxes are fully updated and at their final positions.
 			if (box.configure) {
@@ -994,15 +1002,16 @@ class Chart {
 		const me = this;
 		const options = me.options || {};
 		const hoverOptions = options.hover;
+		const diff = (a, b) => a.filter(x => !b.some(y => x.datasetIndex === y.datasetIndex && x.index === y.index));
+		const deactivated = diff(lastActive, active);
+		const activated = diff(active, lastActive);
 
-		// Remove styling for last active (even if it may still be active)
-		if (lastActive.length) {
-			me.updateHoverStyle(lastActive, hoverOptions.mode, false);
+		if (deactivated.length) {
+			me.updateHoverStyle(deactivated, hoverOptions.mode, false);
 		}
 
-		// Built-in hover styling
-		if (active.length && hoverOptions.mode) {
-			me.updateHoverStyle(active, hoverOptions.mode, true);
+		if (activated.length && hoverOptions.mode) {
+			me.updateHoverStyle(activated, hoverOptions.mode, true);
 		}
 	}
 

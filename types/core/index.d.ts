@@ -25,7 +25,7 @@ import {
 	ScaleType
 } from '../interfaces';
 import { ElementChartOptions } from '../elements';
-import { PluginOptions } from '../plugins';
+import { ExtendedPlugin, PluginOptions } from '../plugins';
 
 export interface DateAdapterBase {
 	/**
@@ -564,7 +564,7 @@ export const layouts: {
 	update(chart: Chart, width: number, height: number): void;
 };
 
-export interface Plugin<O = {}> {
+export interface Plugin<O = {}> extends ExtendedPlugin {
 	id: string;
 
 	/**
@@ -874,7 +874,7 @@ export const registry: Registry;
 
 export interface Tick {
 	value: number;
-	label?: string;
+	label?: string | string[];
 	major?: boolean;
 }
 

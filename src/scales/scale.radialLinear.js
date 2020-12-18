@@ -183,7 +183,7 @@ function drawPointLabels(scale) {
 		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
 		ctx.font = plFont.string;
-		ctx.fillStyle = pointLabelOpts.color;
+		ctx.fillStyle = resolve([pointLabelOpts.color], context, i);
 
 		const angle = toDegrees(scale.getIndexAngle(i));
 		ctx.textAlign = getTextAlignForAngle(angle);
@@ -203,7 +203,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	const lineWidth = resolve([gridLineOpts.lineWidth], context, index - 1);
 	let pointPosition;
 
-	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
+	if ((!circular && !valueCount) || !lineColor || !lineWidth || radius < 0) {
 		return;
 	}
 
