@@ -42,58 +42,63 @@ export interface LegendItem {
   text: string;
 
   /**
+   * Index of the associated dataset
+   */
+  datasetIndex: number;
+
+  /**
    * Fill style of the legend box
    */
-  fillStyle: CanvasLineCap;
+  fillStyle?: Color;
 
   /**
    * If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
    */
-  hidden: boolean;
+  hidden?: boolean;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
    */
-  lineCap: CanvasLineCap;
+  lineCap?: CanvasLineCap;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
    */
-  lineDash: number[];
+  lineDash?: number[];
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
    */
-  lineDashOffset: number;
+  lineDashOffset?: number;
 
   /**
    * For box border.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
    */
-  lineJoin: CanvasLineJoin;
+  lineJoin?: CanvasLineJoin;
 
   /**
    * Width of box border
    */
-  lineWidth: number;
+  lineWidth?: number;
 
   /**
    * Stroke style of the legend box
    */
-  strokeStyle: Color;
+  strokeStyle?: Color;
 
   /**
    * Point style of the legend box (only used if usePointStyle is true)
    */
-  pointStyle: PointStyle;
+  pointStyle?: PointStyle;
 
   /**
    * Rotation of the point in degrees (only used if usePointStyle is true)
    */
-  rotation: number;
+  rotation?: number;
 }
 
 export interface LegendElement extends Element {}
@@ -129,11 +134,11 @@ export interface LegendOptions {
    */
   onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
-   *	A callback that is called when a 'mousemove' event is registered on top of a label item
+   * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
   onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
   /**
-   *	A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
   onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
 
@@ -176,7 +181,7 @@ export interface LegendOptions {
     pointStyle: PointStyle;
 
     /**
-     * Label style will match corresponding point style (size is based on the mimimum value between boxWidth and font.size).
+     * Label style will match corresponding point style (size is based on the minimum value between boxWidth and font.size).
      * @default false
      */
     usePointStyle: boolean;

@@ -874,7 +874,7 @@ export const registry: Registry;
 
 export interface Tick {
 	value: number;
-	label?: string;
+	label?: string | string[];
 	major?: boolean;
 }
 
