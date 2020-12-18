@@ -203,7 +203,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	const lineWidth = resolve([gridLineOpts.lineWidth], context, index - 1);
 	let pointPosition;
 
-	if ((!circular && !valueCount) || !lineColor || !lineWidth) {
+	if ((!circular && !valueCount) || !lineColor || !lineWidth || radius < 0) {
 		return;
 	}
 
