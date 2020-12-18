@@ -510,8 +510,16 @@ class Chart {
 
 		layouts.update(me, me.width, me.height);
 
+		const area = me.chartArea;
+		const noArea = area.width <= 0 || area.height <= 0;
+
 		me._layers = [];
 		each(me.boxes, (box) => {
+			if (noArea && box.position === 'chartArea') {
+				// Skip drawing and configuring chartArea boxes when chartArea is zero or negative
+				return;
+			}
+
 			// configure is called twice, once in core.scale.update and once here.
 			// Here the boxes are fully updated and at their final positions.
 			if (box.configure) {

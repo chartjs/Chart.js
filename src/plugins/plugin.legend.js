@@ -5,7 +5,7 @@ import {drawPoint} from '../helpers/helpers.canvas';
 import {
 	callback as call, valueOrDefault, toFont, isObject,
 	toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
-	INFINITY
+	clipArea, unclipArea
 } from '../helpers/index';
 import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras';
 /**
@@ -145,8 +145,8 @@ export class Legend extends Element {
 			width = me._fitCols(titleHeight, fontSize, boxWidth, itemHeight) + 10;
 		}
 
-		me.width = Math.min(width, options.maxWidth || INFINITY);
-		me.height = Math.min(height, options.maxHeight || INFINITY);
+		me.width = Math.min(width, options.maxWidth || me.maxWidth);
+		me.height = Math.min(height, options.maxHeight || me.maxHeight);
 	}
 
 	/**
@@ -221,8 +221,14 @@ export class Legend extends Element {
 	}
 
 	draw() {
-		if (this.options.display) {
-			this._draw();
+		const me = this;
+		if (me.options.display) {
+			const ctx = me.ctx;
+			clipArea(ctx, me);
+
+			me._draw();
+
+			unclipArea(ctx);
 		}
 	}
 
