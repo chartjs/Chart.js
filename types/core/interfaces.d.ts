@@ -283,11 +283,6 @@ export type AnimationOptions = AnimationSpecContainer & {
 
 export interface FontSpec {
   /**
-   * Default font color for all text.
-   * @default '#666'
-   */
-  color: Color;
-  /**
    * Default font family for all text, follows CSS font-family options.
    * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
    */
@@ -311,15 +306,6 @@ export interface FontSpec {
    * @default 1.2
    */
   lineHeight: number | string;
-  /**
-   * Stroke width around the text. Currently only supported by ticks.
-   * @default 0
-   */
-  lineWidth: number;
-  /**
-   * The color of the stroke around the text. Currently only supported by ticks.
-   */
-  strokeStyle: string | null;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';

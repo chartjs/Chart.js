@@ -151,8 +151,8 @@ A property option is defined by the same options of the main [animation configur
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
-| `from`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | Start value for the animation. Current value is used when `undefined`
-| `to`  | <code>`number`&#124;`Color`&#124;`boolean`</code> | `undefined` | End value for the animation. Updated value is used when `undefined`
+| `from`  | `number`\|`Color`\|`boolean` | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `to`  | `number`\|`Color`\|`boolean` | `undefined` | End value for the animation. Updated value is used when `undefined`
 | `fn` | <code>&lt;T&gt;(from: T, to: T, factor: number) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
 
 ## Animation properties collection configuration

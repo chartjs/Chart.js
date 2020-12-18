@@ -32,7 +32,7 @@ let chart = new Chart(ctx, {
 | `size` | `number` | `12` | Default font size (in px) for text. Does not apply to radialLinear scale point labels.
 | `style` | `string` | `'normal'` | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
 | `weight` | `string` | `undefined` | Default font weight (boldness). (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight)).
-| `lineHeight` | <code>number&#124;string</code> | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
+| `lineHeight` | `number`\|`string` | `1.2` | Height of an individual line of text (see [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height)).
 
 ## Missing Fonts
 

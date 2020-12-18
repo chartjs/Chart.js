@@ -15,6 +15,7 @@ The following additional configuration options are provided by the radial linear
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre
 | `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
 | `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
@@ -27,7 +28,7 @@ The following additional configuration options are provided by the radial linear
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
-| `backdropColor` | `Color` | Yes | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
+| `backdropColor` | [`Color`](../../general/colors.md) | Yes | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
 | `backdropPaddingX` | `number` | | `2` | Horizontal padding of label backdrop.
 | `backdropPaddingY` | `number` | | `2` | Vertical padding of label backdrop.
 | `format` | `object` | | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
@@ -38,16 +39,7 @@ The following additional configuration options are provided by the radial linear
 
 <CommonTicksAll />
 
-The scriptable context has the following form:
-
-```javascript
-{
-    chart,
-    scale,
-    index,
-    tick
-}
-```
+The scriptable context is described in [Options](../../general/options.md#tick) section.
 
 ## Axis Range Settings
 
@@ -108,23 +100,14 @@ The following options are used to configure angled lines that radiate from the c
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
 | `display` | `boolean` | | `true` | if true, angle lines are shown.
-| `color` | `Color` | Yes | `'rgba(0, 0, 0, 0.1)'` | Color of angled lines.
+| `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.borderColor` | Color of angled lines.
 | `lineWidth` | `number` | Yes | `1` | Width of angled lines.
-| `borderDash` | `number[]` | Yes* | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDash` | `number[]` | Yes<sup>1</sup> | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | Yes | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 
-The `borderDash` setting only accepts a static value or a function. Passing an array of arrays is not supported.
+  1. the `borderDash` setting only accepts a static value or a function. Passing an array of arrays is not supported.
 
-The scriptable context has the following form:
-
-```javascript
-{
-    chart,
-    scale,
-    index,
-    label
-}
-```
+The scriptable context is described in [Options](../../general/options.md#scale) section.
 
 ## Point Label Options
 
@@ -134,9 +117,10 @@ The following options are used to configure the point labels that are shown on t
 | ---- | ---- | ------- | ------- | -----------
 | `display` | `boolean` | | `true` | if true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-| `font` | `Font` | Yes | `defaults.font` | See [Fonts](./general/fonts.md)
+| `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
+| `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](./general/fonts.md)
 
-The scriptable context is the same as for the [Angle Line Options](#angle-line-options).
+The scriptable context is described in [Options](../../general/options.md#scale) section.
 
 ## Internal data format
 

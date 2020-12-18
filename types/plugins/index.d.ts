@@ -153,7 +153,15 @@ export interface LegendOptions {
      * @default fontSize
      */
     boxHeight: number;
-
+    /**
+     * Color of label
+     * @see Defaults.color
+     */
+    color: Color;
+    /**
+     * Font of label
+     * @see Defaults.font
+     */
     font: FontSpec;
     /**
      * Padding between rows of colored boxes.
@@ -194,6 +202,11 @@ export interface LegendOptions {
      */
     display: boolean;
     /**
+     * Color of title
+     * @see Defaults.color
+     */
+    color: Color;
+    /**
      * see Fonts
      */
     font: FontSpec;
@@ -224,6 +237,11 @@ export interface TitleOptions {
    * @default 'top'
    */
   position: 'top' | 'left' | 'bottom' | 'right';
+  /**
+   * Color of text
+   * @see Defaults.color
+   */
+  color: Color;
   font: FontSpec;
   // fullWidth: boolean;
   /**
@@ -372,8 +390,13 @@ export interface TooltipOptions extends CoreInteractionOptions {
    */
   backgroundColor: Color;
   /**
+   * Color of title
+   * @default '#fff'
+   */
+  titleColor: Color;
+  /**
    * See Fonts
-   * @default {style: 'bold', color: '#fff'}
+   * @default {style: 'bold'}
    */
   titleFont: FontSpec;
   /**
@@ -397,8 +420,13 @@ export interface TooltipOptions extends CoreInteractionOptions {
    */
   bodySpacing: number;
   /**
+   * Color of body
+   * @default '#fff'
+   */
+  bodyColor: Color;
+  /**
    * 	See Fonts.
-   * @default {color: '#fff'}
+   * @default {}
    */
   bodyFont: FontSpec;
   /**
@@ -417,8 +445,13 @@ export interface TooltipOptions extends CoreInteractionOptions {
    */
   footerMarginTop: number;
   /**
+   * Color of footer
+   * @default '#fff'
+   */
+  footerColor: Color;
+  /**
    * See Fonts
-   * @default {style: 'bold', color: '#fff'}
+   * @default {style: 'bold'}
    */
   footerFont: FontSpec;
   /**

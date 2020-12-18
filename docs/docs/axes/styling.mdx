@@ -27,22 +27,13 @@ The grid line configuration is nested under the scale configuration in the `grid
 | `offsetGridLines` | `boolean` | | | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default.
 | `z` | `number` | | | `0` | z-index of gridline layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
-The scriptable context has the following form:
-
-```javascript
-{
-    chart,
-    scale,
-    index,
-    tick
-}
-```
+The scriptable context is described in [Options](../general/options.md#tick) section.
 
 ## Tick Configuration
 
 <CommonTicks />
 
-The scriptable context is the same as for the [Grid Line Configuration](#grid-line-configuration).
+The scriptable context is described in [Options](../general/options.md#tick) section.
 
 ## Major Tick Configuration
 

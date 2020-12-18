@@ -82,15 +82,15 @@ the color of the bars is generally set this way.
 | [`base`](#general) | `number` | Yes | Yes |
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'start'`
-| [`borderWidth`](#borderwidth) | <code>number&#124;object</code> | Yes | Yes | `0`
-| [`borderRadius`](#borderradius) | <code>number&#124;object</code> | Yes | Yes | `0`
-| [`clip`](#general) | <code>number&#124;object</code> | - | - | `undefined`
+| [`borderWidth`](#borderwidth) | `number`\|`object` | Yes | Yes | `0`
+| [`borderRadius`](#borderradius) | `number`\|`object` | Yes | Yes | `0`
+| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
 | [`hoverBorderRadius`](#interactions) | `number` | Yes | Yes | `0`
-| [`indexAxis`](#general) | `string` | `'x'` | The base axis for the dataset. Use `'y'` for horizontal bar.
+| [`indexAxis`](#general) | `string` | - | - | `'x'`
 | [`label`](#general) | `string` | - | - | `''`
 | [`order`](#general) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
@@ -170,7 +170,7 @@ The bar chart accepts the following configuration from the associated dataset op
 | ---- | ---- | ------- | -----------
 | `barPercentage` | `number` | `0.9` | Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other. [more...](#barpercentage-vs-categorypercentage)
 | `categoryPercentage` | `number` | `0.8` | Percent (0-1) of the available width each category should be within the sample width. [more...](#barpercentage-vs-categorypercentage)
-| `barThickness` | <code>number&#124;string</code> | | Manually set width of each bar in pixels. If set to `'flex'`, it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. [more...](#barthickness)
+| `barThickness` | `number`\|`string` | | Manually set width of each bar in pixels. If set to `'flex'`, it computes "optimal" sample widths that globally arrange bars side by side. If not set (default), bars are equally sized based on the smallest interval. [more...](#barthickness)
 | `base` | `number` | | Base value for the bar in data units along the value axis. If not set, defaults to the value axis base value.
 | `maxBarThickness` | `number` | | Set this to ensure that bars are not sized thicker than this.
 | `minBarLength` | `number` | | Set this to ensure that bars have a minimum length in pixels.
