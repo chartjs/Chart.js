@@ -62,6 +62,11 @@ export interface TickOptions {
    */
   display: boolean;
   /**
+   * Color of tick
+   * @see Defaults.color
+   */
+  color: ScriptAbleScale<Color>;
+  /**
    * see Fonts
    */
   font: ScriptAbleScale<FontSpec>;
@@ -115,6 +120,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   scaleLabel: {
     display: boolean;
     labelString: string;
+    color: Color;
     font: FontSpec;
     padding: {
       top: number;
@@ -423,6 +429,11 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * @default true
      */
     display: boolean;
+    /**
+     * Color of label
+     * @see Defaults.color
+     */
+    color: ScriptAbleScale<Color>;
     /**
      * @see https://www.chartjs.org/docs/next/axes/general/fonts.md
      */
