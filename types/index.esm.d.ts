@@ -13,7 +13,7 @@
  */
 
 import { ChartArea, Point } from './geometric';
-// export { ChartArea, Point } from './geometric';
+export { ChartArea, Point } from './geometric';
 
 export interface ParsingOptions {
   /**
