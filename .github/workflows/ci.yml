@@ -30,14 +30,22 @@ jobs:
       id: changes
       with:
         filters: |
-          src:
-            - 'src/**'
           docs:
             - 'docs/**'
+          src:
+            - 'src/**'
+          test:
+            - 'test/**'
+          types:
+            - 'types/**'
     - name: Install
       run: npm ci
-    - name: Build and Test
-      if: steps.changes.outputs.src == 'true'
+    - name: Build
+      run: npm run build
+    - name: Test
+      if: |
+        steps.changes.outputs.src == 'true' ||
+        steps.changes.outputs.test == 'true'
       run: |
         npm run build
         if [ "${{ runner.os }}" == "Windows" ]; then
@@ -49,7 +57,6 @@ jobs:
         fi
       shell: bash
     - name: Lint
-      if: steps.changes.outputs.src != 'true'
       run: npm run lint
     - name: Package
       if: steps.changes.outputs.docs == 'true'
