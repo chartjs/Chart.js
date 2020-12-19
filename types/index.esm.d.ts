@@ -12,10 +12,11 @@
  * }
  */
 
-import { ChartArea, Point } from './geometric';
-export { ChartArea, Point } from './geometric';
 import { TimeUnit } from "./adapters";
+import { ChartArea, Point } from './geometric';
+
 export { DateAdapterBase, DateAdapter, TimeUnit, _adapters } from './adapters';
+export { ChartArea, Point } from './geometric';
 
 export interface ParsingOptions {
   /**
