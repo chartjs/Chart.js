@@ -1,4 +1,4 @@
-import { EasingFunction } from '../core/interfaces';
+import { EasingFunction } from '../index.esm';
 
 export type EasingFunctionSignature = (t: number) => number;
 
