@@ -1,4 +1,5 @@
-import { ChartArea, PointStyle } from '../index.esm';
+import { PointStyle } from '../index.esm';
+import { ChartArea } from '../geometric';
 
 /**
  * Clears the entire canvas associated to the given `chart`.

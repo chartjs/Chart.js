@@ -12,6 +12,9 @@
  * }
  */
 
+import { ChartArea, Point } from './geometric';
+export { ChartArea, Point } from './geometric';
+
 export interface ParsingOptions {
   /**
    * How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
@@ -1452,12 +1455,6 @@ export interface ChartEvent {
   x: number | null;
   y: number | null;
 }
-
-export interface Point {
-  x: number;
-  y: number;
-}
-
 export interface ChartComponent {
   id: string;
   defaults?: any;
@@ -1470,13 +1467,6 @@ export interface ChartComponent {
 }
 
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
-
-export interface ChartArea {
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
-}
 
 export interface ScriptableContext {
   chart: Chart;
