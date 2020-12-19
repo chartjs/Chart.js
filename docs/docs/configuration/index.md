@@ -50,7 +50,7 @@ The following example would set the `showLine` option to 'false' for all line da
 
 ```javascript
 // Do not show lines for all datasets by default
-Chart.defaults.datasets.line.showLine = false;
+Chart.defaults.controllers.line.showLine = false;
 
 // This chart would show a line only for the third dataset
 var chart = new Chart(ctx, {
