@@ -13,10 +13,12 @@
  */
 
 import { TimeUnit } from "./adapters";
+import { AnimationEvent } from './animation';
 import { Element }from './element';
 import { ChartArea, Point } from './geometric';
 
 export { DateAdapterBase, DateAdapter, TimeUnit, _adapters } from './adapters';
+export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 
@@ -351,37 +353,6 @@ export const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
-
-export class Animation {
-	constructor(cfg: any, target: any, prop: string, to?: any);
-	active(): boolean;
-	update(cfg: any, to: any, date: number): void;
-	cancel(): void;
-	tick(date: number): void;
-}
-
-export interface AnimationEvent {
-	chart: Chart;
-	numSteps: number;
-	currentState: number;
-}
-
-export class Animator {
-	listen(chart: Chart, event: 'complete' | 'progress', cb: (event: AnimationEvent) => void): void;
-	add(chart: Chart, items: readonly Animation[]): void;
-	has(chart: Chart): boolean;
-	start(chart: Chart): void;
-	running(chart: Chart): boolean;
-	stop(chart: Chart): void;
-	remove(chart: Chart): boolean;
-}
-
-export class Animations {
-	constructor(chart: Chart, animations: {});
-	configure(animations: {}): void;
-	update(target: any, values: any): undefined | boolean;
-}
-
 export interface ChartMeta<TElement extends Element = Element, TDatasetElement extends Element = Element> {
 	type: string;
 	controller: DatasetController;
