@@ -4,6 +4,9 @@ title: Data structures
 
 The `data` property of a dataset can be passed in various formats. By default, that `data` is parsed using the associated chart type and scales.
 
+If the `labels` property of the main `data` property is used, it has to contain the same amount of elements as the dataset with the most values. These labels are used to label the index axis (default x axes). The values for the labels have to be provided in an array.
+The provides labels can be of the type string or number to be rendered correctly. In case you want multiline labels you can provide an array with each line as one entry in the array.
+
 ## Primitive[]
 
 ```javascript
