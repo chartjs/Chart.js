@@ -37,3 +37,7 @@ let chart = new Chart(ctx, {
 ## Missing Fonts
 
 If a font is specified for a chart that does exist on the system, the browser will not apply the font when it is set. If you notice odd fonts appearing in your charts, check that the font you are applying exists on your system. See [issue 3318](https://github.com/chartjs/Chart.js/issues/3318) for more details.
+
+## Loading Fonts
+
+If a font is not cached and needs to be loaded, charts that use the font will need to be updated once the font is loaded. This can be accomplished using the [Font Loading APIs](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API). See [issue 8020](https://github.com/chartjs/Chart.js/issues/8020) for more details.
