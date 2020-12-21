@@ -33,7 +33,7 @@ defaults.set('scale', {
 		drawBorder: true,
 		drawOnChartArea: true,
 		drawTicks: true,
-		tickMarkLength: 10,
+		tickLength: 10,
 		offsetGridLines: false,
 		borderDash: [],
 		borderDashOffset: 0.0
@@ -150,7 +150,7 @@ function garbageCollect(caches, length) {
  * @param {object} options
  */
 function getTickMarkLength(options) {
-	return options.drawTicks ? options.tickMarkLength : 0;
+	return options.drawTicks ? options.tickLength : 0;
 }
 
 /**

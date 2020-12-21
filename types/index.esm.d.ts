@@ -2584,7 +2584,7 @@ export interface GridLineOptions {
   /**
    * @default 10
    */
-  tickMarkLength: number;
+  tickLength: number;
   /**
    * @default false
    */
