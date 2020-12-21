@@ -139,9 +139,9 @@ A mode option is defined by the same options of the main [animation configuratio
 | `'active'` | duration | 400 | Override default duration to 400ms for hover animations
 | `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
 | `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
-| | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `'show'` | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
 | `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
-| | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
+| `'hide'` | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
 
 ## Animation property configuration
 
