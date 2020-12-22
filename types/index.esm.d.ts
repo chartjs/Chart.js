@@ -16,11 +16,31 @@ import { TimeUnit } from "./adapters";
 import { AnimationEvent } from './animation';
 import { Element }from './element';
 import { ChartArea, Point } from './geometric';
+import {
+  Scriptable,
+  ScriptableOptions,
+  ScriptableAndArrayOptions
+} from './scriptable';
 
 export { DateAdapterBase, DateAdapter, TimeUnit, _adapters } from './adapters';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Element } from './element';
 export { ChartArea, Point } from './geometric';
+export {
+  Scriptable,
+  ScriptableOptions,
+  ScriptableAndArray,
+  ScriptableAndArrayOptions
+} from './scriptable';
+
+export interface ScriptableContext {
+  chart: Chart;
+  dataPoint: any;
+  dataIndex: number;
+  dataset: ChartDataset;
+  datasetIndex: number;
+  active: boolean;
+}
 
 export interface ParsingOptions {
   /**
@@ -60,8 +80,8 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 
 export interface BarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<BarOptions>,
-    ScriptableAndArrayOptions<CommonHoverOptions> {
+    ScriptableAndArrayOptions<BarOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {
   /**
    * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.
    * @default 'x'
@@ -118,8 +138,8 @@ export const BarController: ChartComponent & {
 
 export interface BubbleControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointOptions>,
-    ScriptableAndArrayOptions<PointHoverOptions> {}
+    ScriptableAndArrayOptions<PointOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext> {}
 
 export interface BubbleDataPoint {
   /**
@@ -146,10 +166,10 @@ export const BubbleController: ChartComponent & {
 
 export interface LineControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointPrefixedOptions>,
-    ScriptableAndArrayOptions<PointPrefixedHoverOptions>,
-    ScriptableOptions<LineOptions>,
-    ScriptableOptions<LineHoverOptions> {
+    ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext>,
+    ScriptableOptions<LineOptions, ScriptableContext>,
+    ScriptableOptions<LineHoverOptions, ScriptableContext> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -204,8 +224,8 @@ export const ScatterController: ChartComponent & {
 
 export interface DoughnutControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<ArcOptions>,
-    ScriptableAndArrayOptions<ArcHoverOptions> {
+    ScriptableAndArrayOptions<ArcOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext> {
 
   /**
    * Sweep to allow arcs to cover.
@@ -322,10 +342,10 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableOptions<PointPrefixedOptions>,
-    ScriptableOptions<PointPrefixedHoverOptions>,
-    ScriptableOptions<LineOptions>,
-    ScriptableOptions<LineHoverOptions> {
+    ScriptableOptions<PointPrefixedOptions, ScriptableContext>,
+    ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext>,
+    ScriptableOptions<LineOptions, ScriptableContext>,
+    ScriptableOptions<LineHoverOptions, ScriptableContext> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -1268,14 +1288,12 @@ export const Scale: {
 	new <O extends CoreScaleOptions = CoreScaleOptions>(cfg: any): Scale<O>;
 };
 
-export interface ScriptAbleScaleContext {
+export interface ScriptableScaleContext {
 	chart: Chart;
 	scale: Scale;
 	index: number;
 	tick: Tick;
 }
-
-export type ScriptAbleScale<T> = T | ((ctx: ScriptAbleScaleContext) => T);
 
 export const Ticks: {
 	formatters: {
@@ -1345,21 +1363,6 @@ export interface ChartComponent {
   afterUnregister?(): void;
 }
 
-
-export interface ScriptableContext {
-  chart: Chart;
-  dataPoint: any;
-  dataIndex: number;
-  dataset: ChartDataset;
-  datasetIndex: number;
-  active: boolean;
-}
-
-export type Scriptable<T> = T | ((ctx: ScriptableContext) => T);
-export type ScriptableOptions<T> = { [P in keyof T]: Scriptable<T[P]> };
-export type ScriptableAndArray<T> = readonly T[] | Scriptable<T>;
-export type ScriptableAndArrayOptions<T> = { [P in keyof T]: ScriptableAndArray<T[P]> };
-
 export interface CoreInteractionOptions {
   /**
    * Sets which elements appear in the tooltip. See Interaction Modes for details.
@@ -1386,10 +1389,10 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 }
 
 export interface CoreChartOptions extends ParsingOptions {
-  animation: Scriptable<AnimationOptions | false>;
+  animation: Scriptable<AnimationOptions | false, ScriptableContext>;
 
   datasets: {
-    animation: Scriptable<AnimationOptions | false>;
+    animation: Scriptable<AnimationOptions | false, ScriptableContext>;
   };
 
   /**
@@ -1467,7 +1470,7 @@ export interface CoreChartOptions extends ParsingOptions {
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
-    padding: Scriptable<number | ChartArea>;
+    padding: Scriptable<number | ChartArea, ScriptableContext>;
   };
 
   plugins: PluginOptions;
@@ -2488,7 +2491,7 @@ export interface TooltipOptions extends CoreInteractionOptions {
    */
   textDirection: string;
 
-  animation: Scriptable<AnimationSpecContainer>;
+  animation: Scriptable<AnimationSpecContainer, ScriptableContext>;
 
   callbacks: TooltipCallbacks;
 }
@@ -2555,7 +2558,7 @@ export interface GridLineOptions {
   /**
    * @default 'rgba(0, 0, 0, 0.1)'
    */
-  color: ScriptAbleScale<Color> | readonly Color[];
+  color: Scriptable<Color, ScriptableScaleContext> | readonly Color[];
   /**
    * @default []
    */
@@ -2563,11 +2566,11 @@ export interface GridLineOptions {
   /**
    * @default 0
    */
-  borderDashOffset: ScriptAbleScale<number>;
+  borderDashOffset: Scriptable<number, ScriptableScaleContext>;
   /**
    * @default 1
    */
-  lineWidth: ScriptAbleScale<number> | readonly number[];
+  lineWidth: Scriptable<number, ScriptableScaleContext> | readonly number[];
 
   /**
    * @default true
@@ -2588,11 +2591,11 @@ export interface GridLineOptions {
   /**
    * @default 0
    */
-  tickBorderDashOffset: ScriptAbleScale<number>;
+  tickBorderDashOffset: Scriptable<number, ScriptableScaleContext>;
   /**
    * @default 'rgba(0, 0, 0, 0.1)'
    */
-  tickColor: ScriptAbleScale<Color> | readonly Color[];
+  tickColor: Scriptable<Color, ScriptableScaleContext> | readonly Color[];
   /**
    * @default 10
    */
@@ -2621,11 +2624,11 @@ export interface TickOptions {
    * Color of tick
    * @see Defaults.color
    */
-  color: ScriptAbleScale<Color>;
+  color: Scriptable<Color, ScriptableScaleContext>;
   /**
    * see Fonts
    */
-  font: ScriptAbleScale<FontSpec>;
+  font: Scriptable<FontSpec, ScriptableScaleContext>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -2954,22 +2957,22 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Color of angled lines.
      * @default 'rgba(0, 0, 0, 0.1)'
      */
-    color: ScriptAbleScale<Color>;
+    color: Scriptable<Color, ScriptableScaleContext>;
     /**
      * Width of angled lines.
      * @default 1
      */
-    lineWidth: ScriptAbleScale<number>;
+    lineWidth: Scriptable<number, ScriptableScaleContext>;
     /**
      * Length and spacing of dashes on angled lines. See MDN.
      * @default []
      */
-    borderDash: ScriptAbleScale<number[]>;
+    borderDash: Scriptable<number[], ScriptableScaleContext>;
     /**
      * Offset for line dashes. See MDN.
      * @default 0
      */
-    borderDashOffset: ScriptAbleScale<number>;
+    borderDashOffset: Scriptable<number, ScriptableScaleContext>;
   };
 
   /**
@@ -2999,11 +3002,11 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Color of label
      * @see Defaults.color
      */
-    color: ScriptAbleScale<Color>;
+    color: Scriptable<Color, ScriptableScaleContext>;
     /**
      * @see https://www.chartjs.org/docs/next/axes/general/fonts.md
      */
-    font: ScriptAbleScale<FontSpec>;
+    font: Scriptable<FontSpec, ScriptableScaleContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
@@ -3026,7 +3029,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Color of label backdrops.
      * @default 'rgba(255, 255, 255, 0.75)'
      */
-    backdropColor: ScriptAbleScale<Color>;
+    backdropColor: Scriptable<Color, ScriptableScaleContext>;
     /**
      * Horizontal padding of label backdrop.
      * @default 2
@@ -3063,7 +3066,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * If true, draw a background behind the tick labels.
      * @default true
      */
-    showLabelBackdrop: ScriptAbleScale<boolean>;
+    showLabelBackdrop: Scriptable<boolean, ScriptableScaleContext>;
   };
 };
 
