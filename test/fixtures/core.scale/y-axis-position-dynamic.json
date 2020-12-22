@@ -54,5 +54,6 @@
             "width": 512
         },
         "spriteText": true
-    }
+    },
+    "tolerance": 0.01
 }
