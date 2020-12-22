@@ -2582,9 +2582,25 @@ export interface GridLineOptions {
    */
   drawTicks: boolean;
   /**
+   * @default []
+   */
+  tickBorderDash: number[];
+  /**
+   * @default 0
+   */
+  tickBorderDashOffset: ScriptAbleScale<number>;
+  /**
+   * @default 'rgba(0, 0, 0, 0.1)'
+   */
+  tickColor: ScriptAbleScale<Color> | readonly Color[];
+  /**
    * @default 10
    */
-  tickMarkLength: number;
+  tickLength: number;
+  /**
+   * @default 1
+   */
+  tickWidth: number;
   /**
    * @default false
    */
