@@ -99,4 +99,96 @@ describe('Chart.helpers.canvas', function() {
 			args: ['foobar_1']
 		}]);
 	});
+
+	describe('renderText', function() {
+		it('should render multiple lines of text', function() {
+			var context = window.createMockContext();
+			helpers.renderText(context, ['foo', 'foo2'], 0, 0, 20);
+
+			expect(context.getCalls()).toEqual([{
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'fillText',
+				args: ['foo2', 0, 20, undefined],
+			}]);
+		});
+
+		it('should accept the text maxWidth', function() {
+			var context = window.createMockContext();
+			helpers.renderText(context, 'foo', 0, 0, 20, {maxWidth: 30});
+			expect(context.getCalls()).toEqual([{
+				name: 'fillText',
+				args: ['foo', 0, 0, 30],
+			}]);
+		});
+
+		it('should stroke the text', function() {
+			var context = window.createMockContext();
+			helpers.renderText(context, 'foo', 0, 0, 20, {stroke: true});
+			expect(context.getCalls()).toEqual([{
+				name: 'strokeText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}]);
+		});
+
+		it('should underline the text', function() {
+			var context = window.createMockContext();
+			helpers.renderText(context, 'foo', 0, 0, 20, {decorationWidth: 3, underline: true});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'measureText',
+				args: ['foo'],
+			}, {
+				name: 'beginPath',
+				args: [],
+			}, {
+				name: 'setLineWidth',
+				args: [3],
+			}, {
+				name: 'moveTo',
+				args: [-15, 8],
+			}, {
+				name: 'lineTo',
+				args: [25, 8],
+			}, {
+				name: 'stroke',
+				args: [],
+			}]);
+		});
+
+		it('should strikethrough the text', function() {
+			var context = window.createMockContext();
+			helpers.renderText(context, 'foo', 0, 0, 20, {strikethrough: true});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'measureText',
+				args: ['foo'],
+			}, {
+				name: 'beginPath',
+				args: [],
+			}, {
+				name: 'setLineWidth',
+				args: [2],
+			}, {
+				name: 'moveTo',
+				args: [-15, 2],
+			}, {
+				name: 'lineTo',
+				args: [25, 2],
+			}, {
+				name: 'stroke',
+				args: [],
+			}]);
+		});
+	});
 });

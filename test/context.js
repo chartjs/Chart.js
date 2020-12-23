@@ -98,7 +98,20 @@ Context.prototype._initMethods = function() {
 		lineTo: function() {},
 		measureText: function(text) {
 			// return the number of characters * fixed size
-			return text ? {width: text.length * 10} : {width: 0};
+			// Uses fake numbers for the bounding box
+			return text ? {
+				actualBoundingBoxAscent: 4,
+				actualBoundingBoxDescent: 8,
+				actualBoundingBoxLeft: 15,
+				actualBoundingBoxRight: 25,
+				width: text.length * 10
+			} : {
+				actualBoundingBoxAscent: 0,
+				actualBoundingBoxDescent: 0,
+				actualBoundingBoxLeft: 0,
+				actualBoundingBoxRight: 0,
+				width: 0
+			};
 		},
 		moveTo: function() {},
 		quadraticCurveTo: function() {},
