@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import Element from './core.element';
-import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
+import {_alignPixel, _measureText, renderText} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
 import {toFont, resolve, toPadding} from '../helpers/helpers.options';
@@ -1596,7 +1596,7 @@ export default class Scale extends Element {
 
 		const ctx = me.ctx;
 		const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
-		let i, j, ilen, jlen;
+		let i, ilen;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
@@ -1619,21 +1619,9 @@ export default class Scale extends Element {
 
 			const label = item.label;
 			let y = item.textOffset;
-			if (isArray(label)) {
-				for (j = 0, jlen = label.length; j < jlen; ++j) {
-					// We just make sure the multiline element is a string here..
-					if (useStroke) {
-						ctx.strokeText('' + label[j], 0, y);
-					}
-					ctx.fillText('' + label[j], 0, y);
-					y += tickFont.lineHeight;
-				}
-			} else {
-				if (useStroke) {
-					ctx.strokeText(label, 0, y);
-				}
-				ctx.fillText(label, 0, y);
-			}
+			renderText(ctx, label, 0, y, tickFont.lineHeight, {
+				stroke: useStroke,
+			});
 			ctx.restore();
 		}
 	}
@@ -1707,7 +1695,7 @@ export default class Scale extends Element {
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = scaleLabel.color;
 		ctx.font = scaleLabelFont.string;
-		ctx.fillText(scaleLabel.labelString, 0, 0);
+		renderText(ctx, scaleLabel.labelString, 0, 0, scaleLabelFont.lineHeight);
 		ctx.restore();
 	}
 

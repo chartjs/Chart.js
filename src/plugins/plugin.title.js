@@ -2,6 +2,7 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {PI, isArray, toPadding, toFont} from '../helpers';
 import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras';
+import {renderText} from '../helpers/helpers.canvas';
 
 export class Title extends Element {
 	/**
@@ -105,17 +106,7 @@ export class Title extends Element {
 		ctx.textAlign = _toLeftRightCenter(opts.align);
 		ctx.textBaseline = 'middle';
 
-		const text = opts.text;
-		if (isArray(text)) {
-			let y = 0;
-			for (let i = 0; i < text.length; ++i) {
-				ctx.fillText(text[i], 0, y, maxWidth);
-				y += lineHeight;
-			}
-		} else {
-			ctx.fillText(text, 0, 0, maxWidth);
-		}
-
+		renderText(ctx, opts.text, 0, 0, lineHeight, {maxWidth});
 		ctx.restore();
 	}
 }

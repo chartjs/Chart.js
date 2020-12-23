@@ -291,3 +291,44 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
 		target.x,
 		target.y);
 }
+
+/**
+ * Render text onto the canvas
+ */
+export function renderText(ctx, text, x, y, lineHeight, opts = {}) {
+	const lines = isArray(text) ? text : [text];
+	let i, line;
+
+	for (i = 0; i < lines.length; ++i) {
+		line = lines[i];
+
+		if (opts.stroke) {
+			ctx.strokeText(line, x, y, opts.maxWidth);
+		}
+
+		ctx.fillText(line, x, y, opts.maxWidth);
+
+		if (opts.strikethrough || opts.underline) {
+			/**
+			 * Now that IE11 support has been dropped, we can use more
+			 * of the TextMetrics object. The actual bounding boxes
+			 * are unflagged in Chrome, Firefox, Edge, and Safari so they
+			 * can be safely used.
+			 * See https://developer.mozilla.org/en-US/docs/Web/API/TextMetrics#Browser_compatibility
+			 */
+			const metrics = ctx.measureText(line);
+			const left = x - metrics.actualBoundingBoxLeft;
+			const right = x + metrics.actualBoundingBoxRight;
+			const top = y - metrics.actualBoundingBoxAscent;
+			const bottom = y + metrics.actualBoundingBoxDescent;
+			const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
+
+			ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.moveTo(left, yDecoration);
+			ctx.lineTo(right, yDecoration);
+			ctx.stroke();
+		}
+		y += lineHeight;
+	}
+}

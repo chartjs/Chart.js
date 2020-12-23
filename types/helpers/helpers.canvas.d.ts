@@ -26,3 +26,19 @@ export function drawPoint(ctx: CanvasRenderingContext2D, options: DrawPointOptio
  * @return The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  */
 export function toFontString(font: { size: number; family: string; style?: string; weight?: string }): string | null;
+
+export interface RenderTextOpts {
+  maxWidth?: number;
+  strikethrough?: boolean;
+  stroke?: boolean;
+  underline?: boolean;
+}
+
+export function renderText(
+  ctx: CanvasRenderingContext2D,
+  text: string | string[],
+  x: number,
+  y: number,
+  lineHeight: number,
+  opts?: RenderTextOpts
+): void;
