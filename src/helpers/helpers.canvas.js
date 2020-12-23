@@ -324,7 +324,7 @@ export function renderText(ctx, text, x, y, lineHeight, opts = {}) {
 			const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
 
 			ctx.beginPath();
-			ctx.lineWidth = 2;
+			ctx.lineWidth = opts.decorationWidth || 2;
 			ctx.moveTo(left, yDecoration);
 			ctx.lineTo(right, yDecoration);
 			ctx.stroke();

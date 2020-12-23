@@ -28,9 +28,30 @@ export function drawPoint(ctx: CanvasRenderingContext2D, options: DrawPointOptio
 export function toFontString(font: { size: number; family: string; style?: string; weight?: string }): string | null;
 
 export interface RenderTextOpts {
+  /**
+   * The width of the strikethrough / underline
+   * @default 2
+   */
+  decorationWidth?: number;
+
+  /**
+   * The max width of the text in pixels
+   */
   maxWidth?: number;
+
+  /**
+   * Apply a strikethrough effect to the text
+   */
   strikethrough?: boolean;
+
+  /**
+   * Should the text be stroked as well as filled
+   */
   stroke?: boolean;
+
+  /**
+   * Underline the text
+   */
   underline?: boolean;
 }
 
