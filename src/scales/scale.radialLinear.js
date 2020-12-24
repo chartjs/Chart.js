@@ -169,7 +169,6 @@ function drawPointLabels(scale) {
 		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
 		const angle = toDegrees(scale.getIndexAngle(i));
-		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
 		renderText(
 			ctx,
@@ -179,6 +178,7 @@ function drawPointLabels(scale) {
 			plFont,
 			{
 				color: resolve([pointLabelOpts.color], context, i),
+				textAlign: getTextAlignForAngle(angle),
 			}
 		);
 	}

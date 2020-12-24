@@ -136,11 +136,14 @@ describe('Title block tests', function() {
 			name: 'rotate',
 			args: [0]
 		}, {
+			name: 'setFillStyle',
+			args: ['#666']
+		}, {
 			name: 'setTextAlign',
 			args: ['center'],
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
+			name: 'setTextBaseline',
+			args: ['middle'],
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]
@@ -191,11 +194,14 @@ describe('Title block tests', function() {
 			name: 'rotate',
 			args: [-0.5 * Math.PI]
 		}, {
+			name: 'setFillStyle',
+			args: ['#666']
+		}, {
 			name: 'setTextAlign',
 			args: ['center'],
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
+			name: 'setTextBaseline',
+			args: ['middle'],
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]
@@ -227,11 +233,14 @@ describe('Title block tests', function() {
 			name: 'rotate',
 			args: [0.5 * Math.PI]
 		}, {
+			name: 'setFillStyle',
+			args: ['#666']
+		}, {
 			name: 'setTextAlign',
 			args: ['center'],
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
+			name: 'setTextBaseline',
+			args: ['middle'],
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]

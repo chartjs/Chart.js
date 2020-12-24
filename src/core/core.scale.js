@@ -1607,8 +1607,6 @@ export default class Scale extends Element {
 			ctx.save();
 			ctx.translate(item.x, item.y);
 			ctx.rotate(item.rotation);
-			ctx.textAlign = item.textAlign;
-			ctx.textBaseline = item.textBaseline;
 
 			const label = item.label;
 			let y = item.textOffset;
@@ -1617,6 +1615,8 @@ export default class Scale extends Element {
 				stroke: useStroke,
 				strokeColor: optionTicks.textStrokeColor,
 				strokeWidth: optionTicks.textStrokeWidth,
+				textAlign: item.textAlign,
+				textBaseline: item.textBaseline,
 			});
 			ctx.restore();
 		}
@@ -1687,10 +1687,10 @@ export default class Scale extends Element {
 		ctx.save();
 		ctx.translate(scaleLabelX, scaleLabelY);
 		ctx.rotate(rotation);
-		ctx.textAlign = textAlign;
-		ctx.textBaseline = 'middle';
 		renderText(ctx, scaleLabel.labelString, 0, 0, scaleLabelFont, {
 			color: scaleLabel.color,
+			textAlign,
+			textBaseline: 'middle',
 		});
 		ctx.restore();
 	}

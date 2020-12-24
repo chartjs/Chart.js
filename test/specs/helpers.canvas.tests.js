@@ -228,5 +228,22 @@ describe('Chart.helpers.canvas', function() {
 				args: ['foo', 0, 0, undefined],
 			}]);
 		});
+
+		it('should set the text alignment', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {textAlign: 'left', textBaseline: 'middle'});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'setTextAlign',
+				args: ['left'],
+			}, {
+				name: 'setTextBaseline',
+				args: ['middle'],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}]);
+		});
 	});
 });

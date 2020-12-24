@@ -70,6 +70,18 @@ export interface RenderTextOpts {
   strokeWidth?: number;
 
   /**
+   * The text alignment to use. If unset, the existing
+   * textAlign property of the context is unchanged
+   */
+  textAlign: CanvasTextAlign;
+
+  /**
+   * The text baseline to use. If unset, the existing
+   * textBaseline property of the context is unchanged
+   */
+  textBaseline: CanvasTextBaseline;
+
+  /**
    * Underline the text
    */
   underline?: boolean;

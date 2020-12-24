@@ -99,10 +99,12 @@ export class Title extends Element {
 		ctx.save();
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
-		ctx.textAlign = _toLeftRightCenter(opts.align);
-		ctx.textBaseline = 'middle';
-
-		renderText(ctx, opts.text, 0, 0, fontOpts, {color: opts.color, maxWidth});
+		renderText(ctx, opts.text, 0, 0, fontOpts, {
+			color: opts.color,
+			maxWidth,
+			textAlign: _toLeftRightCenter(opts.align),
+			textBaseline: 'middle',
+		});
 		ctx.restore();
 	}
 }

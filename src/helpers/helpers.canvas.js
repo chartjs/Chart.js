@@ -305,6 +305,14 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 		ctx.fillStyle = opts.color;
 	}
 
+	if (opts.textAlign) {
+		ctx.textAlign = opts.textAlign;
+	}
+
+	if (opts.textBaseline) {
+		ctx.textBaseline = opts.textBaseline;
+	}
+
 	for (i = 0; i < lines.length; ++i) {
 		line = lines[i];
 
