@@ -14,6 +14,7 @@
 
 import { TimeUnit } from "./adapters";
 import { AnimationEvent } from './animation';
+import { Color } from './color';
 import { Element }from './element';
 import { ChartArea, Point } from './geometric';
 import {
@@ -24,6 +25,7 @@ import {
 
 export { DateAdapterBase, DateAdapter, TimeUnit, _adapters } from './adapters';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
+export { Color } from './color';
 export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export {
@@ -1331,8 +1333,6 @@ export interface TypedRegistry<T> {
 	get(id: string): T | undefined;
 	unregister(item: ChartComponent): void;
 }
-
-export type Color = string | CanvasGradient | CanvasPattern;
 
 export interface ChartEvent {
   type:
