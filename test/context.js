@@ -10,6 +10,7 @@ const Context = function() {
 	this._lineWidth = null;
 	this._strokeStyle = null;
 	this._textAlign = null;
+	this._textBaseline = null;
 
 	// Define properties here so that we can record each time they are set
 	Object.defineProperties(this, {
@@ -74,6 +75,15 @@ const Context = function() {
 			set: function(align) {
 				this._textAlign = align;
 				this.record('setTextAlign', [align]);
+			}
+		},
+		textBaseline: {
+			get: function() {
+				return this._textBaseline;
+			},
+			set: function(baseline) {
+				this._textBaseline = baseline;
+				this.record('setTextBaseline', [baseline]);
 			}
 		}
 	});
