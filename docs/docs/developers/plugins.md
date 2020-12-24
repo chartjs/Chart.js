@@ -29,7 +29,7 @@ Plugins can also be defined directly in the chart `plugins` config (a.k.a. *inli
 ```javascript
 var chart = new Chart(ctx, {
     plugins: [{
-        beforeInit: function(chart, options) {
+        beforeInit: function(chart, args, options) {
             //..
         }
     }]
