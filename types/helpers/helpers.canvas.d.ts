@@ -1,5 +1,7 @@
 import { PointStyle } from '../index.esm';
+import { Color } from '../color';
 import { ChartArea } from '../geometric';
+import { CanvasFontSpec } from './helpers.options';
 
 /**
  * Clears the entire canvas associated to the given `chart`.
@@ -29,6 +31,12 @@ export function toFontString(font: { size: number; family: string; style?: strin
 
 export interface RenderTextOpts {
   /**
+   * The fill color of the text. If unset, the existing
+   * fillStyle property of the canvas is unchanged.
+   */
+  color?: Color;
+
+  /**
    * The width of the strikethrough / underline
    * @default 2
    */
@@ -50,6 +58,18 @@ export interface RenderTextOpts {
   stroke?: boolean;
 
   /**
+   * The color of the text stroke. If unset, the existing
+   * strokeStyle property of the context is unchanged
+   */
+  strokeColor?: Color;
+
+  /**
+   * The text stroke width. If unset, the existing
+   * lineWidth property of the context is unchanged
+   */
+  strokeWidth?: number;
+
+  /**
    * Underline the text
    */
   underline?: boolean;
@@ -60,6 +80,6 @@ export function renderText(
   text: string | string[],
   x: number,
   y: number,
-  lineHeight: number,
+  font: CanvasFontSpec,
   opts?: RenderTextOpts
 ): void;

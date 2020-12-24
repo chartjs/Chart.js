@@ -168,9 +168,6 @@ function drawPointLabels(scale) {
 
 		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
-		ctx.font = plFont.string;
-		ctx.fillStyle = resolve([pointLabelOpts.color], context, i);
-
 		const angle = toDegrees(scale.getIndexAngle(i));
 		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
@@ -179,7 +176,10 @@ function drawPointLabels(scale) {
 			scale.pointLabels[i],
 			pointLabelPosition.x,
 			pointLabelPosition.y + (plFont.lineHeight / 2),
-			plFont.lineHeight
+			plFont,
+			{
+				color: resolve([pointLabelOpts.color], context, i),
+			}
 		);
 	}
 	ctx.restore();
@@ -474,7 +474,6 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 			const context = me.getContext(index);
 			const tickFont = me._resolveTickFontOptions(index);
-			ctx.font = tickFont.string;
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
 			const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
@@ -491,8 +490,9 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickOpts.color;
-			renderText(ctx, tick.label, 0, -offset, tickFont.lineHeight);
+			renderText(ctx, tick.label, 0, -offset, tickFont, {
+				color: tickOpts.color,
+			});
 		});
 
 		ctx.restore();

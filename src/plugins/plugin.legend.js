@@ -308,7 +308,7 @@ export class Legend extends Element {
 		const fillText = function(x, y, legendItem) {
 			const halfFontSize = fontSize / 2;
 			const xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
-			renderText(ctx, legendItem.text, xLeft, y + (itemHeight / 2), labelFont.lineHeight, {strikethrough: legendItem.hidden});
+			renderText(ctx, legendItem.text, xLeft, y + (itemHeight / 2), labelFont, {strikethrough: legendItem.hidden});
 		};
 
 		// Horizontal
@@ -419,7 +419,7 @@ export class Legend extends Element {
 		ctx.fillStyle = titleOpts.color;
 		ctx.font = titleFont.string;
 
-		renderText(ctx, titleOpts.text, x, y, titleFont.lineHeight);
+		renderText(ctx, titleOpts.text, x, y, titleFont);
 	}
 
 	/**

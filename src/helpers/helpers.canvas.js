@@ -295,14 +295,28 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
 /**
  * Render text onto the canvas
  */
-export function renderText(ctx, text, x, y, lineHeight, opts = {}) {
+export function renderText(ctx, text, x, y, font, opts = {}) {
 	const lines = isArray(text) ? text : [text];
 	let i, line;
+
+	ctx.font = font.fontString;
+
+	if (opts.color) {
+		ctx.fillStyle = opts.color;
+	}
 
 	for (i = 0; i < lines.length; ++i) {
 		line = lines[i];
 
 		if (opts.stroke) {
+			if (opts.strokeColor) {
+				ctx.strokeStyle = opts.strokeColor;
+			}
+
+			if (!isNullOrUndef(opts.strokeWidth)) {
+				ctx.lineWidth = opts.strokeWidth;
+			}
+
 			ctx.strokeText(line, x, y, opts.maxWidth);
 		}
 
@@ -329,6 +343,6 @@ export function renderText(ctx, text, x, y, lineHeight, opts = {}) {
 			ctx.lineTo(right, yDecoration);
 			ctx.stroke();
 		}
-		y += lineHeight;
+		y += font.lineHeight;
 	}
 }

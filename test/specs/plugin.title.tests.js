@@ -130,9 +130,6 @@ describe('Title block tests', function() {
 			name: 'save',
 			args: []
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'translate',
 			args: [300, 67.2]
 		}, {
@@ -141,6 +138,9 @@ describe('Title block tests', function() {
 		}, {
 			name: 'setTextAlign',
 			args: ['center'],
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]
@@ -185,9 +185,6 @@ describe('Title block tests', function() {
 			name: 'save',
 			args: []
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'translate',
 			args: [117.2, 250]
 		}, {
@@ -196,6 +193,9 @@ describe('Title block tests', function() {
 		}, {
 			name: 'setTextAlign',
 			args: ['center'],
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]
@@ -221,9 +221,6 @@ describe('Title block tests', function() {
 			name: 'save',
 			args: []
 		}, {
-			name: 'setFillStyle',
-			args: ['#666']
-		}, {
 			name: 'translate',
 			args: [117.2, 250]
 		}, {
@@ -232,6 +229,9 @@ describe('Title block tests', function() {
 		}, {
 			name: 'setTextAlign',
 			args: ['center'],
+		}, {
+			name: 'setFillStyle',
+			args: ['#666']
 		}, {
 			name: 'fillText',
 			args: ['My title', 0, 0, 400]

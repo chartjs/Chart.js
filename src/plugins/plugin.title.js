@@ -97,16 +97,12 @@ export class Title extends Element {
 		const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
 
 		ctx.save();
-
-		ctx.fillStyle = opts.color;
-		ctx.font = fontOpts.string;
-
 		ctx.translate(titleX, titleY);
 		ctx.rotate(rotation);
 		ctx.textAlign = _toLeftRightCenter(opts.align);
 		ctx.textBaseline = 'middle';
 
-		renderText(ctx, opts.text, 0, 0, lineHeight, {maxWidth});
+		renderText(ctx, opts.text, 0, 0, fontOpts, {color: opts.color, maxWidth});
 		ctx.restore();
 	}
 }

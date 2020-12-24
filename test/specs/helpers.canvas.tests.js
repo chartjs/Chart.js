@@ -103,7 +103,8 @@ describe('Chart.helpers.canvas', function() {
 	describe('renderText', function() {
 		it('should render multiple lines of text', function() {
 			var context = window.createMockContext();
-			helpers.renderText(context, ['foo', 'foo2'], 0, 0, 20);
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, ['foo', 'foo2'], 0, 0, font);
 
 			expect(context.getCalls()).toEqual([{
 				name: 'fillText',
@@ -116,7 +117,8 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should accept the text maxWidth', function() {
 			var context = window.createMockContext();
-			helpers.renderText(context, 'foo', 0, 0, 20, {maxWidth: 30});
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {maxWidth: 30});
 			expect(context.getCalls()).toEqual([{
 				name: 'fillText',
 				args: ['foo', 0, 0, 30],
@@ -125,7 +127,8 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should stroke the text', function() {
 			var context = window.createMockContext();
-			helpers.renderText(context, 'foo', 0, 0, 20, {stroke: true});
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true});
 			expect(context.getCalls()).toEqual([{
 				name: 'strokeText',
 				args: ['foo', 0, 0, undefined],
@@ -137,7 +140,8 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should underline the text', function() {
 			var context = window.createMockContext();
-			helpers.renderText(context, 'foo', 0, 0, 20, {decorationWidth: 3, underline: true});
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {decorationWidth: 3, underline: true});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'fillText',
@@ -165,7 +169,8 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should strikethrough the text', function() {
 			var context = window.createMockContext();
-			helpers.renderText(context, 'foo', 0, 0, 20, {strikethrough: true});
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {strikethrough: true});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'fillText',
@@ -188,6 +193,39 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'stroke',
 				args: [],
+			}]);
+		});
+
+		it('should set the fill style if supplied', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {color: 'red'});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'setFillStyle',
+				args: ['red'],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}]);
+		});
+
+		it('should set the stroke style if supplied', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true, strokeColor: 'red', strokeWidth: 2});
+			expect(context.getCalls()).toEqual([{
+				name: 'setStrokeStyle',
+				args: ['red'],
+			}, {
+				name: 'setLineWidth',
+				args: [2],
+			}, {
+				name: 'strokeText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
 			}]);
 		});
 	});
