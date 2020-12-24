@@ -96,16 +96,14 @@ export class Title extends Element {
 		const offset = lineHeight / 2 + me._padding.top;
 		const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
 
-		ctx.save();
-		ctx.translate(titleX, titleY);
-		ctx.rotate(rotation);
 		renderText(ctx, opts.text, 0, 0, fontOpts, {
 			color: opts.color,
 			maxWidth,
+			rotation,
 			textAlign: _toLeftRightCenter(opts.align),
 			textBaseline: 'middle',
+			translation: [titleX, titleY],
 		});
-		ctx.restore();
 	}
 }
 

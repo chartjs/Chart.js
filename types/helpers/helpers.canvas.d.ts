@@ -48,6 +48,12 @@ export interface RenderTextOpts {
   maxWidth?: number;
 
   /**
+   * A rotation to be applied to the canvas
+   * This is applied after the translation is applied
+   */
+  rotation?: number;
+
+  /**
    * Apply a strikethrough effect to the text
    */
   strikethrough?: boolean;
@@ -80,6 +86,11 @@ export interface RenderTextOpts {
    * textBaseline property of the context is unchanged
    */
   textBaseline: CanvasTextBaseline;
+
+  /**
+   * If specified, a translation to apply to the context
+   */
+  translation?: [number, number];
 
   /**
    * Underline the text

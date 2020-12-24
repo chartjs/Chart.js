@@ -107,11 +107,17 @@ describe('Chart.helpers.canvas', function() {
 			helpers.renderText(context, ['foo', 'foo2'], 0, 0, font);
 
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
 			}, {
 				name: 'fillText',
 				args: ['foo2', 0, 20, undefined],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -120,8 +126,14 @@ describe('Chart.helpers.canvas', function() {
 			var font = {fontString: '', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {maxWidth: 30});
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, 30],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -130,11 +142,17 @@ describe('Chart.helpers.canvas', function() {
 			var font = {fontString: '', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true});
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'strokeText',
 				args: ['foo', 0, 0, undefined],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -144,6 +162,9 @@ describe('Chart.helpers.canvas', function() {
 			helpers.renderText(context, 'foo', 0, 0, font, {decorationWidth: 3, underline: true});
 
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
 			}, {
@@ -164,6 +185,9 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'stroke',
 				args: [],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -173,6 +197,9 @@ describe('Chart.helpers.canvas', function() {
 			helpers.renderText(context, 'foo', 0, 0, font, {strikethrough: true});
 
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
 			}, {
@@ -193,6 +220,9 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'stroke',
 				args: [],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -202,11 +232,17 @@ describe('Chart.helpers.canvas', function() {
 			helpers.renderText(context, 'foo', 0, 0, font, {color: 'red'});
 
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'setFillStyle',
 				args: ['red'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -215,6 +251,9 @@ describe('Chart.helpers.canvas', function() {
 			var font = {fontString: '', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true, strokeColor: 'red', strokeWidth: 2});
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'setStrokeStyle',
 				args: ['red'],
 			}, {
@@ -226,6 +265,9 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 
@@ -235,6 +277,9 @@ describe('Chart.helpers.canvas', function() {
 			helpers.renderText(context, 'foo', 0, 0, font, {textAlign: 'left', textBaseline: 'middle'});
 
 			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
 				name: 'setTextAlign',
 				args: ['left'],
 			}, {
@@ -243,6 +288,32 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should translate and rotate text', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {rotation: 90, translation: [10, 20]});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'translate',
+				args: [10, 20],
+			}, {
+				name: 'rotate',
+				args: [90],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
 			}]);
 		});
 	});

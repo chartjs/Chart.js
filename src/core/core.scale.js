@@ -1603,22 +1603,18 @@ export default class Scale extends Element {
 			const tickFont = item.font;
 			const useStroke = optionTicks.textStrokeWidth > 0 && optionTicks.textStrokeColor !== '';
 
-			// Make sure we draw text in the correct color and font
-			ctx.save();
-			ctx.translate(item.x, item.y);
-			ctx.rotate(item.rotation);
-
 			const label = item.label;
 			let y = item.textOffset;
 			renderText(ctx, label, 0, y, tickFont, {
 				color: item.color,
+				rotation: item.rotation,
 				stroke: useStroke,
 				strokeColor: optionTicks.textStrokeColor,
 				strokeWidth: optionTicks.textStrokeWidth,
 				textAlign: item.textAlign,
 				textBaseline: item.textBaseline,
+				translation: [item.x, item.y],
 			});
-			ctx.restore();
 		}
 	}
 
@@ -1684,15 +1680,13 @@ export default class Scale extends Element {
 			rotation = isLeft ? -HALF_PI : HALF_PI;
 		}
 
-		ctx.save();
-		ctx.translate(scaleLabelX, scaleLabelY);
-		ctx.rotate(rotation);
 		renderText(ctx, scaleLabel.labelString, 0, 0, scaleLabelFont, {
 			color: scaleLabel.color,
+			rotation,
 			textAlign,
 			textBaseline: 'middle',
+			translation: [scaleLabelX, scaleLabelY],
 		});
-		ctx.restore();
 	}
 
 	draw(chartArea) {

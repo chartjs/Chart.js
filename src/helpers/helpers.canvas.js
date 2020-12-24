@@ -299,6 +299,16 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 	const lines = isArray(text) ? text : [text];
 	let i, line;
 
+	ctx.save();
+
+	if (opts.translation) {
+		ctx.translate(opts.translation[0], opts.translation[1]);
+	}
+
+	if (!isNullOrUndef(opts.rotation)) {
+		ctx.rotate(opts.rotation);
+	}
+
 	ctx.font = font.fontString;
 
 	if (opts.color) {
@@ -353,4 +363,6 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 		}
 		y += font.lineHeight;
 	}
+
+	ctx.restore();
 }
