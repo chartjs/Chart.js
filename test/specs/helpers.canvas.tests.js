@@ -171,6 +171,9 @@ describe('Chart.helpers.canvas', function() {
 				name: 'measureText',
 				args: ['foo'],
 			}, {
+				name: 'setStrokeStyle',
+				args: [null],
+			}, {
 				name: 'beginPath',
 				args: [],
 			}, {
@@ -205,6 +208,9 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'measureText',
 				args: ['foo'],
+			}, {
+				name: 'setStrokeStyle',
+				args: [null],
 			}, {
 				name: 'beginPath',
 				args: [],

@@ -355,6 +355,7 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 			const bottom = y + metrics.actualBoundingBoxDescent;
 			const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
 
+			ctx.strokeStyle = ctx.fillStyle;
 			ctx.beginPath();
 			ctx.lineWidth = opts.decorationWidth || 2;
 			ctx.moveTo(left, yDecoration);
