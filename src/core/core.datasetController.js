@@ -415,7 +415,7 @@ export default class DatasetController {
 	parse(start, count) {
 		const me = this;
 		const {_cachedMeta: meta, _data: data} = me;
-		const {iScale, vScale, _stacked} = meta;
+		const {iScale, _stacked} = meta;
 		const iAxis = iScale.axis;
 		let sorted = true;
 		let i, parsed, cur, prev;
@@ -453,9 +453,6 @@ export default class DatasetController {
 		if (_stacked) {
 			updateStacks(me, parsed);
 		}
-
-		iScale.invalidateCaches();
-		vScale.invalidateCaches();
 	}
 
 	/**

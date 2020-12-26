@@ -1260,7 +1260,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 	parse(raw: any, index: number): any;
 	getUserBounds(): { min: number; max: number; minDefined: boolean; maxDefined: boolean };
 	getMinMax(canStack: boolean): { min: number; max: number };
-	invalidateCaches(): void;
+	beforeLayout(): void;
 	getPadding(): ChartArea;
 	getTicks(): Tick[];
 	getLabels(): string[];

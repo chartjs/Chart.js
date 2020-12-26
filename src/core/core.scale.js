@@ -467,10 +467,6 @@ export default class Scale extends Element {
 		};
 	}
 
-	invalidateCaches() {
-		this._cache = {};
-	}
-
 	/**
 	 * Get the padding needed for the scale
 	 * @return {{top: number, left: number, bottom: number, right: number}} the necessary padding
@@ -505,6 +501,7 @@ export default class Scale extends Element {
 
 	// When a new layout is created, reset the data limits cache
 	beforeLayout() {
+		this._cache = {};
 		this._dataLimitsCached = false;
 	}
 
