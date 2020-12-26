@@ -10,6 +10,7 @@ const Context = function() {
 	this._lineWidth = null;
 	this._strokeStyle = null;
 	this._textAlign = null;
+	this._textBaseline = null;
 
 	// Define properties here so that we can record each time they are set
 	Object.defineProperties(this, {
@@ -75,6 +76,15 @@ const Context = function() {
 				this._textAlign = align;
 				this.record('setTextAlign', [align]);
 			}
+		},
+		textBaseline: {
+			get: function() {
+				return this._textBaseline;
+			},
+			set: function(baseline) {
+				this._textBaseline = baseline;
+				this.record('setTextBaseline', [baseline]);
+			}
 		}
 	});
 };
@@ -98,7 +108,20 @@ Context.prototype._initMethods = function() {
 		lineTo: function() {},
 		measureText: function(text) {
 			// return the number of characters * fixed size
-			return text ? {width: text.length * 10} : {width: 0};
+			// Uses fake numbers for the bounding box
+			return text ? {
+				actualBoundingBoxAscent: 4,
+				actualBoundingBoxDescent: 8,
+				actualBoundingBoxLeft: 15,
+				actualBoundingBoxRight: 25,
+				width: text.length * 10
+			} : {
+				actualBoundingBoxAscent: 0,
+				actualBoundingBoxDescent: 0,
+				actualBoundingBoxLeft: 0,
+				actualBoundingBoxRight: 0,
+				width: 0
+			};
 		},
 		moveTo: function() {},
 		quadraticCurveTo: function() {},

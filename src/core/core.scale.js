@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import Element from './core.element';
-import {_alignPixel, _measureText} from '../helpers/helpers.canvas';
+import {_alignPixel, _measureText, renderText} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
 import {toFont, resolve, toPadding} from '../helpers/helpers.options';
@@ -1386,6 +1386,8 @@ export default class Scale extends Element {
 			lineCount = isArray(label) ? label.length : 1;
 			const halfCount = lineCount / 2;
 			const color = resolve([optionTicks.color], me.getContext(i), i);
+			const strokeColor = resolve([optionTicks.textStrokeColor], me.getContext(i), i);
+			const strokeWidth = resolve([optionTicks.textStrokeWidth], me.getContext(i), i);
 
 			if (isHorizontal) {
 				x = pixel;
@@ -1417,15 +1419,16 @@ export default class Scale extends Element {
 			}
 
 			items.push({
-				x,
-				y,
 				rotation,
 				label,
 				font,
 				color,
+				strokeColor,
+				strokeWidth,
 				textOffset,
 				textAlign,
 				textBaseline,
+				translation: [x, y]
 			});
 		}
 
@@ -1596,45 +1599,14 @@ export default class Scale extends Element {
 
 		const ctx = me.ctx;
 		const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
-		let i, j, ilen, jlen;
+		let i, ilen;
 
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
-			const useStroke = optionTicks.textStrokeWidth > 0 && optionTicks.textStrokeColor !== '';
-
-			// Make sure we draw text in the correct color and font
-			ctx.save();
-			ctx.translate(item.x, item.y);
-			ctx.rotate(item.rotation);
-			ctx.font = tickFont.string;
-			ctx.fillStyle = item.color;
-			ctx.textAlign = item.textAlign;
-			ctx.textBaseline = item.textBaseline;
-
-			if (useStroke) {
-				ctx.strokeStyle = optionTicks.textStrokeColor;
-				ctx.lineWidth = optionTicks.textStrokeWidth;
-			}
-
 			const label = item.label;
 			let y = item.textOffset;
-			if (isArray(label)) {
-				for (j = 0, jlen = label.length; j < jlen; ++j) {
-					// We just make sure the multiline element is a string here..
-					if (useStroke) {
-						ctx.strokeText('' + label[j], 0, y);
-					}
-					ctx.fillText('' + label[j], 0, y);
-					y += tickFont.lineHeight;
-				}
-			} else {
-				if (useStroke) {
-					ctx.strokeText(label, 0, y);
-				}
-				ctx.fillText(label, 0, y);
-			}
-			ctx.restore();
+			renderText(ctx, label, 0, y, tickFont, item);
 		}
 	}
 
@@ -1700,15 +1672,13 @@ export default class Scale extends Element {
 			rotation = isLeft ? -HALF_PI : HALF_PI;
 		}
 
-		ctx.save();
-		ctx.translate(scaleLabelX, scaleLabelY);
-		ctx.rotate(rotation);
-		ctx.textAlign = textAlign;
-		ctx.textBaseline = 'middle';
-		ctx.fillStyle = scaleLabel.color;
-		ctx.font = scaleLabelFont.string;
-		ctx.fillText(scaleLabel.labelString, 0, 0);
-		ctx.restore();
+		renderText(ctx, scaleLabel.labelString, 0, 0, scaleLabelFont, {
+			color: scaleLabel.color,
+			rotation,
+			textAlign,
+			textBaseline: 'middle',
+			translation: [scaleLabelX, scaleLabelY],
+		});
 	}
 
 	draw(chartArea) {

@@ -8,6 +8,6 @@
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
 | `major` | `object` | | `{}` | [Major ticks configuration](./styling.mdx#major-tick-configuration).
 | `padding` | `number` | | `0` | Sets the offset of the tick labels from the axis
-| `textStrokeColor` | `string` | | `` | The color of the stroke around the text.
-| `textStrokeWidth` | `number` | | `0` | Stroke width around the text.
+| `textStrokeColor` | [`Color`](../general/colors.md) | Yes | `` | The color of the stroke around the text.
+| `textStrokeWidth` | `number` | Yes | `0` | Stroke width around the text.
 | `z` | `number` | | `0` | z-index of tick layer. Useful when ticks are drawn on chart area. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.

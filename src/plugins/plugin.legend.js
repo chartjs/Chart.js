@@ -1,7 +1,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {drawPoint} from '../helpers/helpers.canvas';
+import {drawPoint, renderText} from '../helpers/helpers.canvas';
 import {
 	callback as call, valueOrDefault, toFont, isObject,
 	toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
@@ -305,20 +305,10 @@ export class Legend extends Element {
 			ctx.restore();
 		};
 
-		const fillText = function(x, y, legendItem, textWidth) {
+		const fillText = function(x, y, legendItem) {
 			const halfFontSize = fontSize / 2;
 			const xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
-			const yMiddle = y + (itemHeight / 2);
-			ctx.fillText(legendItem.text, xLeft, yMiddle);
-
-			if (legendItem.hidden) {
-				// Strikethrough the text if hidden
-				ctx.beginPath();
-				ctx.lineWidth = 2;
-				ctx.moveTo(xLeft, yMiddle);
-				ctx.lineTo(rtlHelper.xPlus(xLeft, textWidth), yMiddle);
-				ctx.stroke();
-			}
+			renderText(ctx, legendItem.text, xLeft, y + (itemHeight / 2), labelFont, {strikethrough: legendItem.hidden});
 		};
 
 		// Horizontal
@@ -369,7 +359,7 @@ export class Legend extends Element {
 			legendHitBoxes[i].top = y;
 
 			// Fill the actual label
-			fillText(realX, y, legendItem, textWidth);
+			fillText(realX, y, legendItem);
 
 			if (isHorizontal) {
 				cursor.x += width + padding;
@@ -429,7 +419,7 @@ export class Legend extends Element {
 		ctx.fillStyle = titleOpts.color;
 		ctx.font = titleFont.string;
 
-		ctx.fillText(titleOpts.text, x, y);
+		renderText(ctx, titleOpts.text, x, y, titleFont);
 	}
 
 	/**

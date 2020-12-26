@@ -1,5 +1,5 @@
 import defaults from '../core/core.defaults';
-import {_longestText} from '../helpers/helpers.canvas';
+import {_longestText, renderText} from '../helpers/helpers.canvas';
 import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
@@ -142,20 +142,6 @@ function getTextAlignForAngle(angle) {
 	return 'right';
 }
 
-function fillText(ctx, text, position, lineHeight) {
-	let y = position.y + lineHeight / 2;
-	let i, ilen;
-
-	if (isArray(text)) {
-		for (i = 0, ilen = text.length; i < ilen; ++i) {
-			ctx.fillText(text[i], position.x, y);
-			y += lineHeight;
-		}
-	} else {
-		ctx.fillText(text, position.x, y);
-	}
-}
-
 function adjustPointPositionForLabelHeight(angle, textSize, position) {
 	if (angle === 90 || angle === 270) {
 		position.y -= (textSize.h / 2);
@@ -182,13 +168,19 @@ function drawPointLabels(scale) {
 
 		const context = scale.getContext(i);
 		const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
-		ctx.font = plFont.string;
-		ctx.fillStyle = resolve([pointLabelOpts.color], context, i);
-
 		const angle = toDegrees(scale.getIndexAngle(i));
-		ctx.textAlign = getTextAlignForAngle(angle);
 		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
+		renderText(
+			ctx,
+			scale.pointLabels[i],
+			pointLabelPosition.x,
+			pointLabelPosition.y + (plFont.lineHeight / 2),
+			plFont,
+			{
+				color: resolve([pointLabelOpts.color], context, i),
+				textAlign: getTextAlignForAngle(angle),
+			}
+		);
 	}
 	ctx.restore();
 }
@@ -482,7 +474,6 @@ export default class RadialLinearScale extends LinearScaleBase {
 
 			const context = me.getContext(index);
 			const tickFont = me._resolveTickFontOptions(index);
-			ctx.font = tickFont.string;
 			offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
 			const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
@@ -499,8 +490,9 @@ export default class RadialLinearScale extends LinearScaleBase {
 				);
 			}
 
-			ctx.fillStyle = tickOpts.color;
-			ctx.fillText(tick.label, 0, -offset);
+			renderText(ctx, tick.label, 0, -offset, tickFont, {
+				color: tickOpts.color,
+			});
 		});
 
 		ctx.restore();

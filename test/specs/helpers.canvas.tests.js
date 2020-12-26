@@ -99,4 +99,209 @@ describe('Chart.helpers.canvas', function() {
 			args: ['foobar_1']
 		}]);
 	});
+
+	describe('renderText', function() {
+		it('should render multiple lines of text', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, ['foo', 'foo2'], 0, 0, font);
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'fillText',
+				args: ['foo2', 0, 20, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should accept the text maxWidth', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {maxWidth: 30});
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, 30],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should underline the text', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {decorationWidth: 3, underline: true});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'measureText',
+				args: ['foo'],
+			}, {
+				name: 'setStrokeStyle',
+				args: [null],
+			}, {
+				name: 'beginPath',
+				args: [],
+			}, {
+				name: 'setLineWidth',
+				args: [3],
+			}, {
+				name: 'moveTo',
+				args: [-15, 8],
+			}, {
+				name: 'lineTo',
+				args: [25, 8],
+			}, {
+				name: 'stroke',
+				args: [],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should strikethrough the text', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {strikethrough: true});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'measureText',
+				args: ['foo'],
+			}, {
+				name: 'setStrokeStyle',
+				args: [null],
+			}, {
+				name: 'beginPath',
+				args: [],
+			}, {
+				name: 'setLineWidth',
+				args: [2],
+			}, {
+				name: 'moveTo',
+				args: [-15, 2],
+			}, {
+				name: 'lineTo',
+				args: [25, 2],
+			}, {
+				name: 'stroke',
+				args: [],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should set the fill style if supplied', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {color: 'red'});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'setFillStyle',
+				args: ['red'],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should set the stroke style if supplied', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {strokeColor: 'red', strokeWidth: 2});
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'setStrokeStyle',
+				args: ['red'],
+			}, {
+				name: 'setLineWidth',
+				args: [2],
+			}, {
+				name: 'strokeText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should set the text alignment', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {textAlign: 'left', textBaseline: 'middle'});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'setTextAlign',
+				args: ['left'],
+			}, {
+				name: 'setTextBaseline',
+				args: ['middle'],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+
+		it('should translate and rotate text', function() {
+			var context = window.createMockContext();
+			var font = {fontString: '', lineHeight: 20};
+			helpers.renderText(context, 'foo', 0, 0, font, {rotation: 90, translation: [10, 20]});
+
+			expect(context.getCalls()).toEqual([{
+				name: 'save',
+				args: [],
+			}, {
+				name: 'translate',
+				args: [10, 20],
+			}, {
+				name: 'rotate',
+				args: [90],
+			}, {
+				name: 'fillText',
+				args: ['foo', 0, 0, undefined],
+			}, {
+				name: 'restore',
+				args: [],
+			}]);
+		});
+	});
 });
