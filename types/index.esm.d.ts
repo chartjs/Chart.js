@@ -718,7 +718,12 @@ export interface LayoutItem {
 	/**
 	 * Returns an object with padding on the edges
 	 */
-	getPadding?(): ChartArea;
+  getPadding?(): ChartArea;
+  
+  /**
+   * Called before the layout process starts
+   */
+  beforeLayout?(): void;
 
 	/**
 	 *  Width of item. Must be valid after update()

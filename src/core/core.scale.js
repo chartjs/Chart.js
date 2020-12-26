@@ -384,6 +384,7 @@ export default class Scale extends Element {
 		this._ticksLength = 0;
 		this._borderValue = 0;
 		this._cache = {};
+		this._dataLimitsCached = false;
 		this.$context = undefined;
 	}
 
@@ -502,6 +503,11 @@ export default class Scale extends Element {
 		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
 	}
 
+	// When a new layout is created, reset the data limits cache
+	beforeLayout() {
+		this._dataLimitsCached = false;
+	}
+
 	// These methods are ordered by lifecycle. Utilities then follow.
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
@@ -547,9 +553,12 @@ export default class Scale extends Element {
 		me.afterSetDimensions();
 
 		// Data min/max
-		me.beforeDataLimits();
-		me.determineDataLimits();
-		me.afterDataLimits();
+		if (!me._dataLimitsCached) {
+			me.beforeDataLimits();
+			me.determineDataLimits();
+			me.afterDataLimits();
+			me._dataLimitsCached = true;
+		}
 
 		me.beforeBuildTicks();
 

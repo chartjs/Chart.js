@@ -319,6 +319,14 @@ export default {
 		const verticalBoxes = boxes.vertical;
 		const horizontalBoxes = boxes.horizontal;
 
+		// Before any changes are made, notify boxes that an update is about to being
+		// This is used to clear any cached data (e.g. scale limits)
+		each(chart.boxes, box => {
+			if (typeof box.beforeLayout === 'function') {
+				box.beforeLayout();
+			}
+		});
+
 		// Essentially we now have any number of boxes on each of the 4 sides.
 		// Our canvas looks like the following.
 		// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and
