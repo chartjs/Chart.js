@@ -17,6 +17,7 @@ import { AnimationEvent } from './animation';
 import { Color } from './color';
 import { Element }from './element';
 import { ChartArea, Point } from './geometric';
+import { LayoutItem, LayoutPosition } from './layout';
 import {
   Scriptable,
   ScriptableOptions,
@@ -28,6 +29,7 @@ export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
 export { Element } from './element';
 export { ChartArea, Point } from './geometric';
+export { LayoutItem, LayoutPosition } from './layout';
 export {
   Scriptable,
   ScriptableOptions,
@@ -684,73 +686,6 @@ export const Interaction: {
 	modes: InteractionModeMap;
 };
 
-export type LayoutPosition = 'left' | 'top' | 'right' | 'bottom' | 'chartArea';
-
-export interface LayoutItem {
-	/**
-	 * The position of the item in the chart layout. Possible values are
-	 */
-	position: LayoutPosition;
-	/**
-	 * The weight used to sort the item. Higher weights are further away from the chart area
-	 */
-	weight: number;
-	/**
-	 * if true, and the item is horizontal, then push vertical boxes down
-	 */
-	fullWidth: boolean;
-	/**
-	 * returns true if the layout item is horizontal (ie. top or bottom)
-	 */
-	isHorizontal(): boolean;
-	/**
-	 * Takes two parameters: width and height. Returns size of item
-	 * @param width
-	 * @param height
-	 */
-	update(width: number, height: number): number;
-
-	/**
-	 * Draws the element
-	 */
-	draw(): void;
-
-	/**
-	 * Returns an object with padding on the edges
-	 */
-  getPadding?(): ChartArea;
-  
-  /**
-   * Called before the layout process starts
-   */
-  beforeLayout?(): void;
-
-	/**
-	 *  Width of item. Must be valid after update()
-	 */
-	width: number;
-	/**
-	 * Height of item. Must be valid after update()
-	 */
-	height: number;
-	/**
-	 * Left edge of the item. Set by layout system and cannot be used in update
-	 */
-	left: number;
-	/**
-	 * Top edge of the item. Set by layout system and cannot be used in update
-	 */
-	top: number;
-	/**
-	 * Right edge of the item. Set by layout system and cannot be used in update
-	 */
-	right: number;
-	/**
-	 *  Bottom edge of the item. Set by layout system and cannot be used in update
-	 */
-	bottom: number;
-}
-
 export const layouts: {
 	/**
 	 * Register a box to a chart.
@@ -1177,14 +1112,11 @@ export interface CoreScaleOptions {
 	afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<{}, O>, ChartArea {
+export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<{}, O>, LayoutItem {
 	readonly id: string;
 	readonly type: string;
 	readonly ctx: CanvasRenderingContext2D;
 	readonly chart: Chart;
-
-	width: number;
-	height: number;
 
 	maxWidth: number;
 	maxHeight: number;
@@ -1201,7 +1133,6 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 	ticks: Tick[];
 	getMatchingVisibleMetas(type?: string): ChartMeta[];
 
-	draw(chartArea: ChartArea): void;
 	drawTitle(chartArea: ChartArea): void;
 	drawLabels(chartArea: ChartArea): void;
 	drawGrid(chartArea: ChartArea): void;
@@ -1260,12 +1191,9 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 	parse(raw: any, index: number): any;
 	getUserBounds(): { min: number; max: number; minDefined: boolean; maxDefined: boolean };
 	getMinMax(canStack: boolean): { min: number; max: number };
-	beforeLayout(): void;
-	getPadding(): ChartArea;
 	getTicks(): Tick[];
 	getLabels(): string[];
 	beforeUpdate(): void;
-	update(maxWidth: number, maxHeight: number, margins: any): void;
 	configure(): void;
 	afterUpdate(): void;
 	beforeSetDimensions(): void;
@@ -1287,7 +1215,6 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 	fit(): void;
 	afterFit(): void;
 
-	isHorizontal(): boolean;
 	isFullWidth(): boolean;
 }
 export const Scale: {
@@ -2067,7 +1994,7 @@ export interface LegendItem {
   rotation?: number;
 }
 
-export interface LegendElement extends Element {}
+export interface LegendElement extends Element, LayoutItem {}
 
 export interface LegendOptions {
   /**
