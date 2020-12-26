@@ -297,6 +297,7 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
  */
 export function renderText(ctx, text, x, y, font, opts = {}) {
 	const lines = isArray(text) ? text : [text];
+	const stroke = opts.strokeWidth > 0 && opts.strokeColor !== '';
 	let i, line;
 
 	ctx.save();
@@ -326,7 +327,7 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 	for (i = 0; i < lines.length; ++i) {
 		line = lines[i];
 
-		if (opts.stroke) {
+		if (stroke) {
 			if (opts.strokeColor) {
 				ctx.strokeStyle = opts.strokeColor;
 			}

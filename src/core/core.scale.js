@@ -1601,14 +1601,11 @@ export default class Scale extends Element {
 		for (i = 0, ilen = items.length; i < ilen; ++i) {
 			const item = items[i];
 			const tickFont = item.font;
-			const useStroke = optionTicks.textStrokeWidth > 0 && optionTicks.textStrokeColor !== '';
-
 			const label = item.label;
 			let y = item.textOffset;
 			renderText(ctx, label, 0, y, tickFont, {
 				color: item.color,
 				rotation: item.rotation,
-				stroke: useStroke,
 				strokeColor: optionTicks.textStrokeColor,
 				strokeWidth: optionTicks.textStrokeWidth,
 				textAlign: item.textAlign,

@@ -59,11 +59,6 @@ export interface RenderTextOpts {
   strikethrough?: boolean;
 
   /**
-   * Should the text be stroked as well as filled
-   */
-  stroke?: boolean;
-
-  /**
    * The color of the text stroke. If unset, the existing
    * strokeStyle property of the context is unchanged
    */

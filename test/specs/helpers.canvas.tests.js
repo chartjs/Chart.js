@@ -137,25 +137,6 @@ describe('Chart.helpers.canvas', function() {
 			}]);
 		});
 
-		it('should stroke the text', function() {
-			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
-			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true});
-			expect(context.getCalls()).toEqual([{
-				name: 'save',
-				args: [],
-			}, {
-				name: 'strokeText',
-				args: ['foo', 0, 0, undefined],
-			}, {
-				name: 'fillText',
-				args: ['foo', 0, 0, undefined],
-			}, {
-				name: 'restore',
-				args: [],
-			}]);
-		});
-
 		it('should underline the text', function() {
 			var context = window.createMockContext();
 			var font = {fontString: '', lineHeight: 20};
@@ -255,7 +236,7 @@ describe('Chart.helpers.canvas', function() {
 		it('should set the stroke style if supplied', function() {
 			var context = window.createMockContext();
 			var font = {fontString: '', lineHeight: 20};
-			helpers.renderText(context, 'foo', 0, 0, font, {stroke: true, strokeColor: 'red', strokeWidth: 2});
+			helpers.renderText(context, 'foo', 0, 0, font, {strokeColor: 'red', strokeWidth: 2});
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
