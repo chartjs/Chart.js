@@ -249,7 +249,8 @@ export default class TimeScale extends Scale {
 		return parse(this, raw);
 	}
 
-	invalidateCaches() {
+	beforeLayout() {
+		super.beforeLayout();
 		this._cache = {
 			data: [],
 			labels: [],
