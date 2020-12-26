@@ -1386,6 +1386,8 @@ export default class Scale extends Element {
 			lineCount = isArray(label) ? label.length : 1;
 			const halfCount = lineCount / 2;
 			const color = resolve([optionTicks.color], me.getContext(i), i);
+			const strokeColor = resolve([optionTicks.textStrokeColor], me.getContext(i), i);
+			const strokeWidth = resolve([optionTicks.textStrokeWidth], me.getContext(i), i);
 
 			if (isHorizontal) {
 				x = pixel;
@@ -1417,15 +1419,16 @@ export default class Scale extends Element {
 			}
 
 			items.push({
-				x,
-				y,
 				rotation,
 				label,
 				font,
 				color,
+				strokeColor,
+				strokeWidth,
 				textOffset,
 				textAlign,
 				textBaseline,
+				translation: [x, y]
 			});
 		}
 
@@ -1603,15 +1606,7 @@ export default class Scale extends Element {
 			const tickFont = item.font;
 			const label = item.label;
 			let y = item.textOffset;
-			renderText(ctx, label, 0, y, tickFont, {
-				color: item.color,
-				rotation: item.rotation,
-				strokeColor: optionTicks.textStrokeColor,
-				strokeWidth: optionTicks.textStrokeWidth,
-				textAlign: item.textAlign,
-				textBaseline: item.textBaseline,
-				translation: [item.x, item.y],
-			});
+			renderText(ctx, label, 0, y, tickFont, item);
 		}
 	}
 

@@ -2637,12 +2637,12 @@ export interface TickOptions {
    * The color of the stroke around the text.
    * @default undefined
    */
-  textStrokeColor: Color;
+  textStrokeColor: Scriptable<Color, ScriptableScaleContext>;
   /**
    * Stroke width around the text.
    * @default 0
    */
-  textStrokeWidth: number;
+  textStrokeWidth: Scriptable<number, ScriptableScaleContext>;
   /**
    * z-index of tick layer. Useful when ticks are drawn on chart area. Values <= 0 are drawn under datasets, > 0 on top.
    * @default 0
