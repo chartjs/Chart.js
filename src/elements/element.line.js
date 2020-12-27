@@ -50,7 +50,7 @@ function pathVars(points, segment, params) {
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
- * @param {CanvasRenderingContext2D} ctx - Context
+ * @param {CanvasRenderingContext2D|Path2D} ctx - Context
  * @param {LineElement} line
  * @param {object} segment
  * @param {number} segment.start - start index of the segment, referring the points array
@@ -97,7 +97,7 @@ function pathSegment(ctx, line, segment, params) {
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
- * @param {CanvasRenderingContext2D} ctx - Context
+ * @param {CanvasRenderingContext2D|Path2D} ctx - Context
  * @param {LineElement} line
  * @param {object} segment
  * @param {number} segment.start - start index of the segment, referring the points array
@@ -198,6 +198,11 @@ function _getInterpolationMethod(options) {
 	return _pointInLine;
 }
 
+function coordsAnimated(point) {
+	const anims = point.$animations;
+	return anims && ((anims.x && anims.x.active) || (anims.y && anims.y.active));
+}
+
 export default class LineElement extends Element {
 
 	constructor(cfg) {
@@ -206,6 +211,7 @@ export default class LineElement extends Element {
 		this.options = undefined;
 		this._loop = undefined;
 		this._fullLoop = undefined;
+		this._path = undefined;
 		this._points = undefined;
 		this._segments = undefined;
 		this._pointsUpdated = false;
@@ -228,6 +234,7 @@ export default class LineElement extends Element {
 	set points(points) {
 		this._points = points;
 		delete this._segments;
+		delete this._path;
 	}
 
 	get points() {
@@ -317,7 +324,7 @@ export default class LineElement extends Element {
 
 	/**
 	 * Append all segments of this line to current path.
-	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {CanvasRenderingContext2D|Path2D} ctx
 	 * @param {number} [start]
 	 * @param {number} [count]
 	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
@@ -357,16 +364,22 @@ export default class LineElement extends Element {
 
 		setStyle(ctx, options);
 
-		ctx.beginPath();
-
-		if (this.path(ctx, start, count)) {
-			ctx.closePath();
+		let path = this._path;
+		if (!path) {
+			path = this._path = new Path2D();
+			if (this.path(path, start, count)) {
+				path.closePath();
+			}
 		}
 
-		ctx.stroke();
+		ctx.stroke(path);
+
 		ctx.restore();
 
-		this._pointsUpdated = false;
+		if (points.length && coordsAnimated(points[0])) {
+			this._pointsUpdated = false;
+			this._path = undefined;
+		}
 	}
 }
 
