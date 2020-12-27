@@ -15,7 +15,7 @@ describe('Chart.helpers.canvas', function() {
 
 			spyOn(chart.ctx, 'clearRect');
 
-			helpers.clear(chart);
+			helpers.clear(chart.canvas, chart.ctx);
 
 			expect(chart.ctx.clearRect.calls.count()).toBe(1);
 			expect(chart.ctx.clearRect.calls.first().object).toBe(chart.ctx);
