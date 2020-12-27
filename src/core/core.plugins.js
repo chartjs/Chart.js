@@ -50,7 +50,7 @@ export default class PluginService {
 			const plugin = descriptor.plugin;
 			const method = plugin[hook];
 			const params = [chart, args, descriptor.options];
-			if (callCallback(method, params, plugin) === false && args.cancelable) {
+			if (callCallback(method, params, plugin) === false && args.cancellable) {
 				return false;
 			}
 		}
