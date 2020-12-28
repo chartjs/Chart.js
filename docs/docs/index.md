@@ -6,7 +6,7 @@ title: Chart.js
 
 ## Installation
 
-You can download the latest version of Chart.js from the [GitHub releases](https://github.com/chartjs/Chart.js/releases/latest) or use a [Chart.js CDN](https://www.jsdelivr.com/package/npm/chart.js). Detailed installation instructions can be found on the [installation](./getting-started/installation.md) page.
+You can get the latest version of Chart.js from [npm](https://npmjs.com/package/chart.js), the [GitHub releases](https://github.com/chartjs/Chart.js/releases/latest), or use a [Chart.js CDN](https://www.jsdelivr.com/package/npm/chart.js). Detailed installation instructions can be found on the [installation](./getting-started/installation.md) page.
 
 ## Creating a Chart
 
