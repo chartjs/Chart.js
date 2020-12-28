@@ -3,6 +3,7 @@ import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../help
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
+import {_coordsAnimated} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("./element.point").default } PointElement
@@ -198,11 +199,6 @@ function _getInterpolationMethod(options) {
 	return _pointInLine;
 }
 
-function coordsAnimated(point) {
-	const anims = point.$animations;
-	return anims && ((anims.x && anims.x.active) || (anims.y && anims.y.active));
-}
-
 export default class LineElement extends Element {
 
 	constructor(cfg) {
@@ -376,7 +372,10 @@ export default class LineElement extends Element {
 
 		ctx.restore();
 
-		if (points.length && coordsAnimated(points[0])) {
+		if (_coordsAnimated(points[0]) || _coordsAnimated(points[points.length - 1])) {
+			// When point coordinates are animating, we need to recalculate the
+			// path (and control points when beziers are used). Only coordinates
+			// matter, other animations are ignored.
 			this._pointsUpdated = false;
 			this._path = undefined;
 		}
