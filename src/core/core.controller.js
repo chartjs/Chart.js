@@ -462,7 +462,7 @@ class Chart {
 		// https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
 		me._plugins.invalidate();
 
-		if (me.notifyPlugins('beforeUpdate', {mode, cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeUpdate', {mode, cancellable: true}) === false) {
 			return;
 		}
 
@@ -504,7 +504,7 @@ class Chart {
 	_updateLayout() {
 		const me = this;
 
-		if (me.notifyPlugins('beforeLayout', {cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeLayout', {cancellable: true}) === false) {
 			return;
 		}
 
@@ -544,7 +544,7 @@ class Chart {
 		const me = this;
 		const isFunction = typeof mode === 'function';
 
-		if (me.notifyPlugins('beforeDatasetsUpdate', {mode, cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeDatasetsUpdate', {mode, cancellable: true}) === false) {
 			return;
 		}
 
@@ -563,7 +563,7 @@ class Chart {
 	_updateDataset(index, mode) {
 		const me = this;
 		const meta = me.getDatasetMeta(index);
-		const args = {meta, index, mode, cancelable: true};
+		const args = {meta, index, mode, cancellable: true};
 
 		if (me.notifyPlugins('beforeDatasetUpdate', args) === false) {
 			return;
@@ -571,13 +571,13 @@ class Chart {
 
 		meta.controller._update(mode);
 
-		args.cancelable = false;
+		args.cancellable = false;
 		me.notifyPlugins('afterDatasetUpdate', args);
 	}
 
 	render() {
 		const me = this;
-		if (me.notifyPlugins('beforeRender', {cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeRender', {cancellable: true}) === false) {
 			return;
 		}
 
@@ -605,7 +605,7 @@ class Chart {
 			return;
 		}
 
-		if (me.notifyPlugins('beforeDraw', {cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeDraw', {cancellable: true}) === false) {
 			return;
 		}
 
@@ -662,7 +662,7 @@ class Chart {
 	_drawDatasets() {
 		const me = this;
 
-		if (me.notifyPlugins('beforeDatasetsDraw', {cancelable: true}) === false) {
+		if (me.notifyPlugins('beforeDatasetsDraw', {cancellable: true}) === false) {
 			return;
 		}
 
@@ -687,7 +687,7 @@ class Chart {
 		const args = {
 			meta,
 			index: meta.index,
-			cancelable: true
+			cancellable: true
 		};
 
 		if (me.notifyPlugins('beforeDatasetDraw', args) === false) {
@@ -705,7 +705,7 @@ class Chart {
 
 		unclipArea(ctx);
 
-		args.cancelable = false;
+		args.cancellable = false;
 		me.notifyPlugins('afterDatasetDraw', args);
 	}
 
@@ -1020,7 +1020,7 @@ class Chart {
 	 */
 	_eventHandler(e, replay) {
 		const me = this;
-		const args = {event: e, replay, cancelable: true};
+		const args = {event: e, replay, cancellable: true};
 
 		if (me.notifyPlugins('beforeEvent', args) === false) {
 			return;
@@ -1028,7 +1028,7 @@ class Chart {
 
 		const changed = me._handleEvent(e, replay);
 
-		args.cancelable = false;
+		args.cancellable = false;
 		me.notifyPlugins('afterEvent', args);
 
 		if (changed) {
