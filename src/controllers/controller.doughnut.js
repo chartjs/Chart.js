@@ -1,4 +1,5 @@
 import DatasetController from '../core/core.datasetController';
+import {formatNumber} from '../core/core.intl';
 import {isArray, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians, PI, TAU, HALF_PI} from '../helpers/helpers.math';
 
@@ -235,7 +236,7 @@ export default class DoughnutController extends DatasetController {
 		const meta = me._cachedMeta;
 		const chart = me.chart;
 		const labels = chart.data.labels || [];
-		const value = new Intl.NumberFormat(chart.options.locale).format(meta._parsed[index]);
+		const value = formatNumber(meta._parsed[index], chart.options.locale);
 
 		return {
 			label: labels[index] || '',

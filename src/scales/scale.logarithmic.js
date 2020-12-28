@@ -3,6 +3,7 @@ import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import {formatNumber} from '../core/core.intl';
 
 function isMajor(tickVal) {
 	const remain = tickVal / (Math.pow(10, Math.floor(log10(tickVal))));
@@ -148,7 +149,7 @@ export default class LogarithmicScale extends Scale {
 	 * @return {string}
 	 */
 	getLabelForValue(value) {
-		return value === undefined ? '0' : new Intl.NumberFormat(this.options.locale).format(value);
+		return value === undefined ? '0' : formatNumber(value, this.options.locale);
 	}
 
 	/**

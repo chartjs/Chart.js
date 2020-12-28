@@ -1,6 +1,7 @@
 import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
+import {formatNumber} from '../core/core.intl';
 
 /**
  * Implementation of the nice number algorithm used in determining where axis labels will go
@@ -244,6 +245,6 @@ export default class LinearScaleBase extends Scale {
 	}
 
 	getLabelForValue(value) {
-		return new Intl.NumberFormat(this.options.locale).format(value);
+		return formatNumber(value, this.options.locale);
 	}
 }
