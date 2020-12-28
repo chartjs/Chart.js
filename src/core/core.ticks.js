@@ -1,7 +1,7 @@
 import {isArray} from '../helpers/helpers.core';
 import {log10} from '../helpers/helpers.math';
+import {formatNumber} from './core.intl';
 
-const intlCache = new Map();
 /**
  * Namespace to hold formatters for different types of ticks
  * @namespace Chart.Ticks.formatters
@@ -55,14 +55,7 @@ const formatters = {
 		const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
 		Object.assign(options, this.options.ticks.format);
 
-		const cacheKey = locale + JSON.stringify(options);
-		let formatter = intlCache.get(cacheKey);
-		if (!formatter) {
-			formatter = new Intl.NumberFormat(locale, options);
-			intlCache.set(cacheKey, formatter);
-		}
-
-		return formatter.format(tickValue);
+		return formatNumber(tickValue, locale, options);
 	}
 };
 
