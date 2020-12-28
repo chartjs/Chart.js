@@ -2,6 +2,8 @@ import defaults from '../core/core.defaults';
 import {isArray, isObject, valueOrDefault} from './helpers.core';
 import {toFontString} from './helpers.canvas';
 
+const LINE_HEIGHT = new RegExp(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
+
 /**
  * @alias Chart.helpers.options
  * @namespace
@@ -15,7 +17,7 @@ import {toFontString} from './helpers.canvas';
  * @since 2.7.0
  */
 export function toLineHeight(value, size) {
-	const matches = ('' + value).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
+	const matches = ('' + value).match(LINE_HEIGHT);
 	if (!matches || matches[1] === 'normal') {
 		return size * 1.2;
 	}
