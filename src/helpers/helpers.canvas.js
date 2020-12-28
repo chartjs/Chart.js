@@ -107,11 +107,13 @@ export function _alignPixel(chart, pixel, width) {
 }
 
 /**
- * Clears the entire canvas associated to the given `chart`.
- * @param {Chart} chart - The chart for which to clear the canvas.
+ * Clears the entire canvas.
+ * @param {HTMLCanvasElement} canvas
+ * @param {CanvasRenderingContext2D} [ctx]
  */
-export function clear(chart) {
-	chart.ctx.clearRect(0, 0, chart.width, chart.height);
+export function clearCanvas(canvas, ctx) {
+	ctx = ctx || canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 export function drawPoint(ctx, options, x, y) {

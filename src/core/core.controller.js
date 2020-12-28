@@ -8,7 +8,7 @@ import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
-import {clear as canvasClear, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
+import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
 
@@ -180,7 +180,7 @@ class Chart {
 	}
 
 	clear() {
-		canvasClear(this);
+		clearCanvas(this.canvas, this.ctx);
 		return this;
 	}
 
@@ -824,7 +824,7 @@ class Chart {
 
 	destroy() {
 		const me = this;
-		const canvas = me.canvas;
+		const {canvas, ctx} = me;
 		let i, ilen;
 
 		me.stop();
@@ -837,8 +837,8 @@ class Chart {
 
 		if (canvas) {
 			me.unbindEvents();
-			canvasClear(me);
-			me.platform.releaseContext(me.ctx);
+			clearCanvas(canvas, ctx);
+			me.platform.releaseContext(ctx);
 			me.canvas = null;
 			me.ctx = null;
 		}

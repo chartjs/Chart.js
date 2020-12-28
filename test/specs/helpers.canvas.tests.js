@@ -5,7 +5,7 @@ describe('Chart.helpers.canvas', function() {
 
 	var helpers = Chart.helpers;
 
-	describe('clear', function() {
+	describe('clearCanvas', function() {
 		it('should clear the chart canvas', function() {
 			var chart = acquireChart({}, {
 				canvas: {
@@ -15,7 +15,7 @@ describe('Chart.helpers.canvas', function() {
 
 			spyOn(chart.ctx, 'clearRect');
 
-			helpers.clear(chart);
+			helpers.clearCanvas(chart.canvas, chart.ctx);
 
 			expect(chart.ctx.clearRect.calls.count()).toBe(1);
 			expect(chart.ctx.clearRect.calls.first().object).toBe(chart.ctx);
