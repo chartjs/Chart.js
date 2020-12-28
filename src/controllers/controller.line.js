@@ -51,25 +51,25 @@ export default class LineController extends DatasetController {
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 		const spanGaps = valueOrDefault(me._config.spanGaps, me.chart.options.spanGaps);
 		const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
+		const directUpdate = me.chart._animationsDisabled || reset || mode === 'none';
 		let prevParsed = start > 0 && me.getParsed(start - 1);
 
 		for (let i = start; i < start + count; ++i) {
 			const point = points[i];
 			const parsed = me.getParsed(i);
-			const x = xScale.getPixelForValue(parsed.x, i);
-			const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
-			const properties = {
-				x,
-				y,
-				skip: isNaN(x) || isNaN(y),
-				stop: i > 0 && (parsed.x - prevParsed.x) > maxGapLength
-			};
+			const properties = directUpdate ? point : {};
+			const x = properties.x = xScale.getPixelForValue(parsed.x, i);
+			const y = properties.y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
+			properties.skip = isNaN(x) || isNaN(y);
+			properties.stop = i > 0 && (parsed.x - prevParsed.x) > maxGapLength;
 
 			if (includeOptions) {
 				properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
 			}
 
-			me.updateElement(point, i, properties, mode);
+			if (!directUpdate) {
+				me.updateElement(point, i, properties, mode);
+			}
 
 			prevParsed = parsed;
 		}
