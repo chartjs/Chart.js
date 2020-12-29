@@ -476,9 +476,10 @@ class Chart {
 
 		me._updateLayout();
 
-		// Only reset the conrtollers if we have animations
+		// Only reset the controllers if we have animations
 		if (!animsDisabled) {
 			// Can only reset the new controllers after the scales have been updated
+			// Reset is done to get the starting point for the initial animation
 			each(newControllers, (controller) => {
 				controller.reset();
 			});
