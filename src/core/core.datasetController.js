@@ -208,7 +208,6 @@ const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.
 const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
 const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
-const freezeIfShared = (values, shared) => shared ? Object.freeze(values) : values;
 
 export default class DatasetController {
 
@@ -818,7 +817,8 @@ export default class DatasetController {
 			// We cache options by `mode`, which can be 'active' for example. This enables us
 			// to have the 'active' element options and 'default' options to switch between
 			// when interacting.
-			cache[mode] = freezeIfShared(values, sharing);
+			// We freeze a clone of this object, so the returned values are not frozen.
+			cache[mode] = Object.freeze(Object.assign({}, values));
 		}
 
 		return values;
