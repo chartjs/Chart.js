@@ -36,6 +36,8 @@ export function throttled(fn, thisArg, updateFn) {
 				ticking = false;
 				fn.apply(thisArg, args);
 			});
+		} else {
+			console.warn('throttled!');
 		}
 	};
 }
