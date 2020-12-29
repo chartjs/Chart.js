@@ -453,7 +453,7 @@ class Chart {
 
 		me.config.update(me.options);
 		me.options = me.config.options;
-		me._animationsDisabled = !me.options.animation;
+		const animsDisabled = me._animationsDisabled = !me.options.animation;
 
 		me.ensureScalesHaveIDs();
 		me.buildOrUpdateScales();
@@ -476,10 +476,13 @@ class Chart {
 
 		me._updateLayout();
 
-		// Can only reset the new controllers after the scales have been updated
-		each(newControllers, (controller) => {
-			controller.reset();
-		});
+		// Only reset the conrtollers if we have animations
+		if (!animsDisabled) {
+			// Can only reset the new controllers after the scales have been updated
+			each(newControllers, (controller) => {
+				controller.reset();
+			});
+		}
 
 		me._updateDatasets(mode);
 
