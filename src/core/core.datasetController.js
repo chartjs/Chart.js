@@ -1,6 +1,6 @@
 import Animations from './core.animations';
 import defaults from './core.defaults';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize, isNullOrUndef} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
@@ -346,15 +346,38 @@ export default class DatasetController {
 
 		me._dataCheck();
 
-		const data = me._data;
-		const metaData = meta.data = new Array(data.length);
+		// const data = me._data;
+		// const metaData = meta.data = new Array(data.length);
 
-		for (let i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = new me.dataElementType();
-		}
+		// for (let i = 0, ilen = data.length; i < ilen; ++i) {
+		// 	metaData[i] = new me.dataElementType();
+		// }
 
 		if (me.datasetElementType) {
 			meta.dataset = new me.datasetElementType();
+		}
+	}
+
+	_notifyAfterParse() {
+		const me = this;
+		const {_cachedMeta: meta} = me;
+		const {iScale} = meta;
+
+		// We expect afterDataParse hooks to set the modified data
+		// onto the args object under the data key
+		// If that key is not set by a plugin, then the parsed data is set to
+		// the raw parsed data
+		const args = {
+			indexScale: iScale,
+			parsed: meta._parsedRaw,
+			previousParsed: meta._parsed,
+		};
+		me.chart.notifyPlugins('afterDataParse', args);
+
+		if (!isNullOrUndef(args.data)) {
+			meta._parsed = args.data;
+		} else {
+			meta._parsed = meta._parsedRaw;
 		}
 	}
 
@@ -421,11 +444,11 @@ export default class DatasetController {
 
 		if (start > 0) {
 			sorted = meta._sorted;
-			prev = meta._parsed[start - 1];
+			prev = meta._parsedRaw[start - 1];
 		}
 
 		if (me._parsing === false) {
-			meta._parsed = data;
+			meta._parsedRaw = data;
 			meta._sorted = true;
 		} else {
 			if (isArray(data[start])) {
@@ -438,7 +461,7 @@ export default class DatasetController {
 
 			const isNotInOrderComparedToPrev = () => isNaN(cur[iAxis]) || (prev && cur[iAxis] < prev[iAxis]);
 			for (i = 0; i < count; ++i) {
-				meta._parsed[i + start] = cur = parsed[i];
+				meta._parsedRaw[i + start] = cur = parsed[i];
 				if (sorted) {
 					if (isNotInOrderComparedToPrev()) {
 						sorted = false;
@@ -591,7 +614,8 @@ export default class DatasetController {
 	getMinMax(scale, canStack) {
 		const me = this;
 		const meta = me._cachedMeta;
-		const _parsed = meta._parsed;
+		// Use filtered parsed elements if the exist, otherwise the full elements
+		const _parsed = meta._parsed && meta._parsed.length ? meta._parsed : meta._parsedRaw;
 		const sorted = meta._sorted && scale === meta.iScale;
 		const ilen = _parsed.length;
 		const otherScale = me._getOtherScale(scale);
@@ -631,7 +655,8 @@ export default class DatasetController {
 	}
 
 	getAllParsedValues(scale) {
-		const parsed = this._cachedMeta._parsed;
+		const {_parsed, _parsedRaw} = this._cachedMeta;
+		const parsed = _parsed && _parsed.length ? _parsed : _parsedRaw;
 		const values = [];
 		let i, ilen, value;
 
@@ -971,7 +996,7 @@ export default class DatasetController {
 	_resyncElements() {
 		const me = this;
 		const numMeta = me._cachedMeta.data.length;
-		const numData = me._data.length;
+		const numData = me._cachedMeta._parsed.length;
 
 		if (numData > numMeta) {
 			me._insertElements(numMeta, numData - numMeta);
@@ -979,7 +1004,7 @@ export default class DatasetController {
 			me._removeElements(numData, numMeta - numData);
 		}
 		// Re-parse the old elements (new elements are parsed in _insertElements)
-		me.parse(0, Math.min(numData, numMeta));
+		// me.parse(0, Math.min(numData, numMeta));
 	}
 
 	/**
@@ -998,7 +1023,7 @@ export default class DatasetController {
 		data.splice(start, 0, ...elements);
 
 		if (me._parsing) {
-			meta._parsed.splice(start, 0, ...new Array(count));
+			meta._parsedRaw.splice(start, 0, ...new Array(count));
 		}
 		me.parse(start, count);
 
@@ -1014,7 +1039,7 @@ export default class DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		if (me._parsing) {
-			const removed = meta._parsed.splice(start, count);
+			const removed = meta._parsedRaw.splice(start, count);
 			if (meta._stacked) {
 				clearStacks(meta, removed);
 			}

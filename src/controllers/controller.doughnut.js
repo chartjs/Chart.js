@@ -60,7 +60,7 @@ export default class DoughnutController extends DatasetController {
 		const meta = this._cachedMeta;
 		let i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {
-			meta._parsed[i] = +data[i];
+			meta._parsedRaw[i] = meta._parsed[i] = +data[i];
 		}
 	}
 

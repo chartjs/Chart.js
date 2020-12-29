@@ -471,10 +471,20 @@ class Chart {
 
 		// Make sure all dataset controllers have correct meta data counts
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
-			me.getDatasetMeta(i).controller.buildOrUpdateElements();
+			const {controller} = me.getDatasetMeta(i);
+			controller.parse(0, me.data.datasets[i].data.length);
 		}
 
 		me._updateLayout();
+
+		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
+			// After parse notification takes place after the layout pass
+			// to ensure that decimation plugins can take advantage of the
+			// scale dimensions
+			const controller = me.getDatasetMeta(i).controller;
+			controller._notifyAfterParse();
+			controller.buildOrUpdateElements();
+		}
 
 		// Only reset the controllers if we have animations
 		if (!animsDisabled) {
@@ -741,6 +751,7 @@ class Chart {
 				index: datasetIndex,
 				_dataset: dataset,
 				_parsed: [],
+				_parsedRaw: [],
 				_sorted: false
 			};
 		}
