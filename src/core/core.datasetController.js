@@ -901,7 +901,7 @@ export default class DatasetController {
 	 * @protected
 	 */
 	includeOptions(mode, sharedOptions) {
-		return !sharedOptions || isDirectUpdateMode(mode);
+		return !sharedOptions || isDirectUpdateMode(mode) || this.chart._animationsDisabled;
 	}
 
 	/**
