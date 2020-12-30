@@ -539,7 +539,7 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	configure(): void;
 	initialize(): void;
 	addElements(): void;
-	buildOrUpdateElements(): void;
+	buildOrUpdateElements(resetNewElements?: boolean): void;
 
 	getStyle(index: number, active: boolean): any;
 	protected resolveDatasetElementOptions(active: boolean): any;
@@ -779,7 +779,15 @@ export interface Plugin<O = {}> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart update.
 	 */
-	beforeUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+  beforeUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+  /**
+   * @desc Called during the update process, before any chart elements have been created.
+   * This can be used for data decimation by changing the data array inside a dataset.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+   */
+  beforeElementUpdate?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called after `chart` has been updated and before rendering. Note that this
 	 * hook will not be called if the chart update has been previously cancelled.
