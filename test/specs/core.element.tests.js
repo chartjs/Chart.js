@@ -8,7 +8,7 @@ describe('Chart.element', function() {
 			expect(elem.getProps(['x', 'y'])).toEqual(jasmine.objectContaining({x: 10, y: 1.5}));
 			expect(elem.getProps(['x', 'y'], true)).toEqual(jasmine.objectContaining({x: 10, y: 1.5}));
 
-			elem.$animations = {x: {active: true, _to: 20}};
+			elem.$animations = {x: {active: () => true, _to: 20}};
 			expect(elem.getProps(['x', 'y'])).toEqual(jasmine.objectContaining({x: 10, y: 1.5}));
 			expect(elem.getProps(['x', 'y'], true)).toEqual(jasmine.objectContaining({x: 20, y: 1.5}));
 		});

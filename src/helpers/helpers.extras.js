@@ -65,5 +65,5 @@ export const _alignStartEnd = (align, start, end) => align === 'start' ? start :
  */
 export function _coordsAnimated(element) {
 	const anims = element && element.$animations;
-	return anims && ((anims.x && anims.x.active) || (anims.y && anims.y.active));
+	return anims && ((anims.x && anims.x.active()) || (anims.y && anims.y.active()));
 }

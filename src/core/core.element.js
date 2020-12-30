@@ -37,7 +37,7 @@ export default class Element {
 		}
 		const ret = {};
 		props.forEach(prop => {
-			ret[prop] = anims[prop] && anims[prop].active ? anims[prop]._to : me[prop];
+			ret[prop] = anims[prop] && anims[prop].active() ? anims[prop]._to : me[prop];
 		});
 		return ret;
 	}
