@@ -1089,7 +1089,10 @@ export default {
 		if (chart.tooltip) {
 			// If the event is replayed from `update`, we should evaluate with the final positions.
 			const useFinalPosition = args.replay;
-			chart.tooltip.handleEvent(args.event, useFinalPosition);
+			if (chart.tooltip.handleEvent(args.event, useFinalPosition)) {
+				// notify chart about the change, so it will render
+				args.changed = true;
+			}
 		}
 	},
 

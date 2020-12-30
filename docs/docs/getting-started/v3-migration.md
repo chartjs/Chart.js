@@ -504,3 +504,4 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 * `afterEvent` and `beforeEvent` now receive a wrapped `event` as the `event` property of the second argument. The native event is available via `args.event.native`.
 * Initial `resize` is no longer silent. Meaning that `resize` event can fire between `beforeInit` and `afterInit`
 * New hooks: `install`, `start`, `stop`, and `uninstall`
+* `afterEvent` should notify about changes that need a render by setting `args.changed` to true. Because the `args` are shared with all plugins, it should only be set to true and not false.
