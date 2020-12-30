@@ -1344,37 +1344,39 @@ describe('Plugin.Tooltip', function() {
 				yAlign: 'top',
 
 				options: {
+					enabled: true,
+
 					xPadding: 5,
 					yPadding: 5,
 
 					// Body
 					bodyFont: {
-						color: '#fff',
 						family: defaults.font.family,
 						style: defaults.font.style,
 						size: defaults.font.size,
 					},
+					bodyColor: '#fff',
 					bodyAlign: body,
 					bodySpacing: 2,
 
 					// Title
 					titleFont: {
-						color: '#fff',
 						family: defaults.font.family,
 						style: 'bold',
 						size: defaults.font.size,
 					},
+					titleColor: '#fff',
 					titleAlign: title,
 					titleSpacing: 2,
 					titleMarginBottom: 6,
 
 					// Footer
 					footerFont: {
-						color: '#fff',
 						family: defaults.font.family,
 						style: 'bold',
 						size: defaults.font.size,
 					},
+					footerColor: '#fff',
 					footerAlign: footer,
 					footerSpacing: 2,
 					footerMarginTop: 6,

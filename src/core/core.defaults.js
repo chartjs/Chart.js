@@ -1,4 +1,4 @@
-import {merge, valueOrDefault} from '../helpers/helpers.core';
+import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @param {object} node
@@ -102,14 +102,19 @@ export class Defaults {
 		Object.defineProperties(scopeObject, {
 			// A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
 			[privateName]: {
+				value: scopeObject[name],
 				writable: true
 			},
 			// The actual property is defined as getter/setter so we can do the routing when value is not locally set.
 			[name]: {
 				enumerable: true,
 				get() {
-					// @ts-ignore
-					return valueOrDefault(this[privateName], targetScopeObject[targetName]);
+					const local = this[privateName];
+					const target = targetScopeObject[targetName];
+					if (isObject(local)) {
+						return Object.assign({}, target, local);
+					}
+					return valueOrDefault(local, target);
 				},
 				set(value) {
 					this[privateName] = value;
