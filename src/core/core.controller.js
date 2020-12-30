@@ -1035,7 +1035,7 @@ class Chart {
 		args.cancellable = false;
 		me.notifyPlugins('afterEvent', args);
 
-		if (changed) {
+		if (changed || args.changed) {
 			me.render();
 		}
 

@@ -975,10 +975,11 @@ export interface Plugin<O = {}> extends ExtendedPlugin {
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {ChartEvent} args.event - The event object.
-	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
+	 * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
+	 * @param {boolean} [args.changed] - Set to true if the plugin needs a render. Should only be changed to true, because this args object is passed through all plugins.
 	 * @param {object} options - The plugin options.
 	 */
-	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): void;
+	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean }, options: O): void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
