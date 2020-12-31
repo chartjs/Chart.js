@@ -533,7 +533,8 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	protected getMaxOverflow(): boolean | number;
 	draw(): void;
 	reset(): void;
-	getDataset(): ChartDataset;
+  getDataset(): ChartDataset;
+  getDataKey(): string;
 	getMeta(): ChartMeta<TElement, TDatasetElement>;
 	getScaleForId(scaleID: string): Scale | undefined;
 	configure(): void;

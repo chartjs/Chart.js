@@ -56,7 +56,8 @@ export default class DoughnutController extends DatasetController {
 	 * Override data parsing, since we are not using scales
 	 */
 	parse(start, count) {
-		const data = this.getDataset().data;
+		const dataKey = this.getDataKey();
+		const data = this.getDataset()[dataKey];
 		const meta = this._cachedMeta;
 		let i, ilen;
 		for (i = start, ilen = start + count; i < ilen; ++i) {

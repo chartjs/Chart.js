@@ -64,6 +64,7 @@ In this mode, property name is used for `index` scale and value for `value` scal
 
 | Name | Type | Description
 | ---- | ---- | -----------
+| `dataKey` | `string` | If specified, tells the chart to look for the dataset data in `dataset[dataset.dataKey]`. If unspecified, this defaults to `'data'`.
 | `label` | `string` | The label for the dataset which appears in the legend and tooltips.
 | `clip` | `number`\|`object` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
 | `order` | `number` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
