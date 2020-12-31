@@ -1,7 +1,54 @@
 import {isNullOrUndef} from '../helpers';
 
+function minMaxDecimation(data, availableWidth) {
+	let i, point, x, y, prevX, minIndex, maxIndex, minY, maxY;
+	const decimated = [];
+
+	const xMin = data[0].x;
+	const xMax = data[data.length - 1].x;
+	const dx = xMax - xMin;
+
+	for (i = 0; i < data.length; ++i) {
+		point = data[i];
+		x = (point.x - xMin) / dx * availableWidth;
+		y = point.y;
+		const truncX = x | 0;
+
+		if (truncX === prevX) {
+			// Determine `minY` / `maxY` and `avgX` while we stay within same x-position
+			if (y < minY) {
+				minY = y;
+				minIndex = i;
+			} else if (y > maxY) {
+				maxY = y;
+				maxIndex = i;
+			}
+		} else {
+			// Push up to 4 points, 3 for the last interval and the first point for this interval
+			if (minIndex && maxIndex) {
+				decimated.push(data[minIndex], data[maxIndex]);
+			}
+			if (i > 0) {
+				// Last point in the previous interval
+				decimated.push(data[i - 1]);
+			}
+			decimated.push(point);
+			prevX = truncX;
+			minY = maxY = y;
+			minIndex = maxIndex = i;
+		}
+	}
+
+	return decimated;
+}
+
 export default {
 	id: 'decimation',
+
+	defaults: {
+		algorithm: 'min-max',
+		enabled: false,
+	},
 
 	beforeElementsUpdate: (chart, args, options) => {
 		if (!options.enabled) {
@@ -16,7 +63,6 @@ export default {
 		const availableWidth = chart.width - (verticalAxisCount * 50);
 
 		chart.data.datasets.forEach((dataset, datasetIndex) => {
-			let i, point, x, y, prevX, minIndex, maxIndex, minY, maxY;
 			const {_originalDataKey} = dataset;
 			const meta = chart.getDatasetMeta(datasetIndex);
 			const dataKey = !isNullOrUndef(_originalDataKey) ? _originalDataKey : meta.controller.getDataKey();
@@ -48,44 +94,16 @@ export default {
 				return;
 			}
 
-			const decimated = [];
-
-			const xMin = data[0].x;
-			const xMax = data[data.length - 1].x;
-			const dx = xMax - xMin;
-
-			for (i = 0; i < data.length; ++i) {
-				point = data[i];
-				x = (point.x - xMin) / dx * availableWidth;
-				y = point.y;
-				const truncX = x | 0;
-
-				if (truncX === prevX) {
-					// Determine `minY` / `maxY` and `avgX` while we stay within same x-position
-					if (y < minY) {
-						minY = y;
-						minIndex = i;
-					} else if (y > maxY) {
-						maxY = y;
-						maxIndex = i;
-					}
-				} else {
-					// Push up to 4 points, 3 for the last interval and the first point for this interval
-					if (minIndex && maxIndex) {
-						decimated.push(data[minIndex], data[maxIndex]);
-					}
-					if (i > 0) {
-						// Last point in the previous interval
-						decimated.push(data[i - 1]);
-					}
-					decimated.push(point);
-					prevX = truncX;
-					minY = maxY = y;
-					minIndex = maxIndex = i;
-				}
+			// Point the chart to the decimated data
+			let decimated;
+			switch (options.algorithm) {
+				case 'min-max':
+					decimated = minMaxDecimation(data, availableWidth);
+					break;
+				default:
+					throw new Error(`Unsupported decimation algorithm '${options.algorithm}'`);
 			}
 
-			// Point the chart to the decimated data
 			dataset._decimated = decimated;
 			dataset.dataKey = '_decimated';
 		});
