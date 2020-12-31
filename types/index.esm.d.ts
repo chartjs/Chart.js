@@ -796,7 +796,7 @@ export interface Plugin<O = {}> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
    */
-  beforeElementUpdate?(chart: Chart, args: {}, options: O): void;
+  beforeElementsUpdate?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called during chart reset
 	 * @param {Chart} chart - The chart instance.

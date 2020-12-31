@@ -466,7 +466,7 @@ class Chart {
 		// Make sure dataset controllers are updated and new controllers are reset
 		const newControllers = me.buildOrUpdateControllers();
 
-		me.notifyPlugins('beforeElementUpdate');
+		me.notifyPlugins('beforeElementsUpdate');
 
 		// Make sure all dataset controllers have correct meta data counts
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
