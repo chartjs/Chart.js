@@ -256,7 +256,8 @@ BarElement.id = 'bar';
 BarElement.defaults = {
   borderSkipped: 'start',
   borderWidth: 0,
-  borderRadius: 0
+  borderRadius: 0,
+  pointStyle: undefined
 };
 
 /**

@@ -81,14 +81,14 @@ export default class DoughnutController extends DatasetController {
 	 * @private
 	 */
   _getRotation() {
-    return toRadians(valueOrDefault(this._config.rotation, this.chart.options.rotation) - 90);
+    return toRadians(this.options.rotation - 90);
   }
 
   /**
 	 * @private
 	 */
   _getCircumference() {
-    return toRadians(valueOrDefault(this._config.circumference, this.chart.options.circumference));
+    return toRadians(this.options.circumference);
   }
 
   /**
@@ -124,10 +124,10 @@ export default class DoughnutController extends DatasetController {
   update(mode) {
     const me = this;
     const chart = me.chart;
-    const {chartArea, options} = chart;
+    const {chartArea} = chart;
     const meta = me._cachedMeta;
     const arcs = meta.data;
-    const cutout = options.cutoutPercentage / 100 || 0;
+    const cutout = me.options.cutoutPercentage / 100 || 0;
     const chartWeight = me._getRingWeight(me.index);
 
     // Compute the maximal rotation & circumference limits.
@@ -157,7 +157,7 @@ export default class DoughnutController extends DatasetController {
 	 */
   _circumference(i, reset) {
     const me = this;
-    const opts = me.chart.options;
+    const opts = me.options;
     const meta = me._cachedMeta;
     const circumference = me._getCircumference();
     return reset && opts.animation.animateRotate ? 0 : this.chart.getDataVisibility(i) ? me.calculateCircumference(meta._parsed[i] * circumference / TAU) : 0;
@@ -328,13 +328,6 @@ DoughnutController.id = 'doughnut';
 DoughnutController.defaults = {
   datasetElementType: false,
   dataElementType: 'arc',
-  dataElementOptions: [
-    'backgroundColor',
-    'borderColor',
-    'borderWidth',
-    'borderAlign',
-    'offset'
-  ],
   animation: {
     numbers: {
       type: 'number',
@@ -347,14 +340,18 @@ DoughnutController.defaults = {
   },
   aspectRatio: 1,
 
-  // The percentage of the chart that we cut out of the middle.
-  cutoutPercentage: 50,
+  datasets: {
+    // The percentage of the chart that we cut out of the middle.
+    cutoutPercentage: 50,
 
-  // The rotation of the chart, where the first data arc begins.
-  rotation: 0,
+    // The rotation of the chart, where the first data arc begins.
+    rotation: 0,
 
-  // The total circumference of the chart.
-  circumference: 360,
+    // The total circumference of the chart.
+    circumference: 360
+  },
+
+  indexAxis: 'r',
 
   // Need to override these to give a nice default
   plugins: {

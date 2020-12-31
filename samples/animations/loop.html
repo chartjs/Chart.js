@@ -62,16 +62,13 @@
 				}]
 			},
 			options: {
-				animation: (context) => Object.assign({},
-					Chart.defaults.animation,
-					{
-						radius: {
-							duration: 400,
-							easing: 'linear',
-							loop: context.active
-						}
+				animation: {
+					radius: {
+						duration: 400,
+						easing: 'linear',
+						loop: (context) => context.active
 					}
-				),
+				},
 				elements: {
 					point: {
 						hoverRadius: 6

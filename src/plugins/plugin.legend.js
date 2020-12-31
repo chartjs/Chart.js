@@ -614,5 +614,12 @@ export default {
   defaultRoutes: {
     'labels.color': 'color',
     'title.color': 'color'
+  },
+
+  descriptors: {
+    _scriptable: (name) => !name.startsWith('on'),
+    labels: {
+      _scriptable: false,
+    }
   }
 };

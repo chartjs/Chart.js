@@ -1,5 +1,4 @@
 import DatasetController from '../core/core.datasetController';
-import {valueOrDefault} from '../helpers/helpers.core';
 
 export default class RadarController extends DatasetController {
 
@@ -28,10 +27,15 @@ export default class RadarController extends DatasetController {
     line.points = points;
     // In resize mode only point locations change, so no need to set the points or options.
     if (mode !== 'resize') {
+      const options = me.resolveDatasetElementOptions(mode);
+      if (!me.options.showLine) {
+        options.borderWidth = 0;
+      }
+
       const properties = {
         _loop: true,
         _fullLoop: labels.length === points.length,
-        options: me.resolveDatasetElementOptions()
+        options
       };
 
       me.updateElement(line, undefined, properties, mode);
@@ -66,27 +70,6 @@ export default class RadarController extends DatasetController {
       me.updateElement(point, i, properties, mode);
     }
   }
-
-  /**
-	 * @param {boolean} [active]
-	 * @protected
-	 */
-  resolveDatasetElementOptions(active) {
-    const me = this;
-    const config = me._config;
-    const options = me.chart.options;
-    const values = super.resolveDatasetElementOptions(active);
-    const showLine = valueOrDefault(config.showLine, options.showLine);
-
-    values.spanGaps = valueOrDefault(config.spanGaps, options.spanGaps);
-    values.tension = valueOrDefault(config.tension, options.elements.line.tension);
-
-    if (!showLine) {
-      values.borderWidth = 0;
-    }
-
-    return values;
-  }
 }
 
 RadarController.id = 'radar';
@@ -96,44 +79,20 @@ RadarController.id = 'radar';
  */
 RadarController.defaults = {
   datasetElementType: 'line',
-  datasetElementOptions: [
-    'backgroundColor',
-    'borderColor',
-    'borderCapStyle',
-    'borderDash',
-    'borderDashOffset',
-    'borderJoinStyle',
-    'borderWidth',
-    'fill'
-  ],
-
   dataElementType: 'point',
-  dataElementOptions: {
-    backgroundColor: 'pointBackgroundColor',
-    borderColor: 'pointBorderColor',
-    borderWidth: 'pointBorderWidth',
-    hitRadius: 'pointHitRadius',
-    hoverBackgroundColor: 'pointHoverBackgroundColor',
-    hoverBorderColor: 'pointHoverBorderColor',
-    hoverBorderWidth: 'pointHoverBorderWidth',
-    hoverRadius: 'pointHoverRadius',
-    pointStyle: 'pointStyle',
-    radius: 'pointRadius',
-    rotation: 'pointRotation'
-  },
-
   aspectRatio: 1,
-  spanGaps: false,
-  scales: {
-    r: {
-      type: 'radialLinear',
+  datasets: {
+    showLine: true,
+  },
+  elements: {
+    line: {
+      fill: 'start'
     }
   },
   indexAxis: 'r',
-  elements: {
-    line: {
-      fill: 'start',
-      tension: 0 // no bezier in radar
+  scales: {
+    r: {
+      type: 'radialLinear',
     }
   }
 };

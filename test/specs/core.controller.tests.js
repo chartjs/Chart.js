@@ -104,7 +104,7 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.showLine);
+      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
       expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
@@ -128,7 +128,7 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.showLine);
+      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
       expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
@@ -162,7 +162,6 @@ describe('Chart', function() {
       });
 
       var options = chart.options;
-      expect(options.showLine).toBe(defaults.showLine);
       expect(options.spanGaps).toBe(false);
       expect(options.hover.mode).toBe('dataset');
       expect(options.plugins.title.position).toBe('bottom');
@@ -1252,7 +1251,7 @@ describe('Chart', function() {
         options: {
           responsive: true,
           scales: {
-            y: {
+            yAxis0: {
               min: 0,
               max: 10
             }
@@ -1298,7 +1297,7 @@ describe('Chart', function() {
       chart.options.plugins.tooltip = newTooltipConfig;
 
       chart.update();
-      expect(chart.tooltip.options).toEqual(jasmine.objectContaining(newTooltipConfig));
+      expect(chart.tooltip.options).toEqualOptions(newTooltipConfig);
     });
 
     it ('should update the tooltip on update', async function() {

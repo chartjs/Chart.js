@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import {each, isObject} from '../helpers/helpers.core';
-import {toPadding, resolve} from '../helpers/helpers.options';
+import {toPadding} from '../helpers/helpers.options';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -301,10 +301,7 @@ export default {
       return;
     }
 
-    const layoutOptions = chart.options.layout || {};
-    const context = {chart};
-    const padding = toPadding(resolve([layoutOptions.padding], context));
-
+    const padding = toPadding(chart.options.layout.padding);
     const availableWidth = width - padding.width;
     const availableHeight = height - padding.height;
     const boxes = buildLayoutBoxes(chart.boxes);

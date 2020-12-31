@@ -309,3 +309,8 @@ export function resolveObjectKey(obj, key) {
 export function _capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+
+export const defined = (value) => typeof value !== 'undefined';
+
+export const isFunction = (value) => typeof value === 'function';
