@@ -415,13 +415,10 @@ export default class DatasetController {
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, _stacked} = meta;
 		const iAxis = iScale.axis;
-		let sorted = true;
-		let i, parsed, cur, prev;
 
-		if (start > 0 || (start === 0 && count < data.length)) {
-			sorted = meta._sorted;
-			prev = start > 0 ? meta._parsed[start - 1] : undefined;
-		}
+		let sorted = start === 0 && count === data.length ? true : meta._sorted;
+		let prev = start > 0 && meta._parsed[start - 1];
+		let i, cur, parsed;
 
 		if (me._parsing === false) {
 			meta._parsed = data;
