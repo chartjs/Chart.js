@@ -1,3 +1,5 @@
+import {isNullOrUndef} from '../helpers';
+
 export default {
 	id: 'decimation',
 
@@ -15,8 +17,15 @@ export default {
 
 		chart.data.datasets.forEach((dataset, datasetIndex) => {
 			let i, point, x, y, prevX, minIndex, maxIndex, minY, maxY;
-			const {data} = dataset;
+			const {_originalDataKey} = dataset;
 			const meta = chart.getDatasetMeta(datasetIndex);
+			const dataKey = !isNullOrUndef(_originalDataKey) ? _originalDataKey : meta.controller.getDataKey();
+			const data = dataset[dataKey];
+
+			if (isNullOrUndef(_originalDataKey)) {
+				// Store this for the next update
+				dataset._originalDataKey = dataKey;
+			}
 
 			if (meta.type !== 'line') {
 				// Only line datasets are supported
@@ -76,8 +85,9 @@ export default {
 				}
 			}
 
-			dataset._data = dataset.data;
-			dataset.data = decimated;
+			// Point the chart to the decimated data
+			dataset._decimated = decimated;
+			dataset.dataKey = '_decimated';
 		});
 	}
 };
