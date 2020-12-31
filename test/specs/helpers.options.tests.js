@@ -1,6 +1,6 @@
-const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners, getHoverColor, _resolver, _withContext} = Chart.helpers;
-
 describe('Chart.helpers.options', function() {
+	const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners, getHoverColor, _resolver, _withContext} = Chart.helpers;
+
 	describe('toLineHeight', function() {
 		it ('should support keyword values', function() {
 			expect(toLineHeight('normal', 16)).toBe(16 * 1.2);
