@@ -1,4 +1,4 @@
-const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners} = Chart.helpers;
+const {toLineHeight, toPadding, toFont, resolve, toTRBLCorners, getHoverColor, _resolver, _withContext} = Chart.helpers;
 
 describe('Chart.helpers.options', function() {
 	describe('toLineHeight', function() {
@@ -243,6 +243,42 @@ describe('Chart.helpers.options', function() {
 			expect(resolve([input, 'foo'], {v: 42}, 1)).toBe('foo');
 			expect(resolve([input, 'foo'], {v: 42}, 5)).toBe('bar');
 			expect(resolve([input, ['foo', 'bar']], {v: 42}, 1)).toBe('bar');
+		});
+	});
+
+	describe('_resolver', function() {
+		it('should resolve to raw values', function() {
+			const defaults = {
+				color: 'red',
+				backgroundColor: 'green',
+				hoverColor: (ctx, options) => getHoverColor(options.color)
+			};
+			const options = {
+				color: 'blue'
+			};
+			const resolver = _resolver([options, defaults]);
+			expect(resolver.color).toEqual('blue');
+			expect(resolver.backgroundColor).toEqual('green');
+			expect(resolver.hoverColor).toEqual(defaults.hoverColor);
+
+		});
+	});
+
+	describe('_withContext', function() {
+		it('should resolve to final values', function() {
+			const defaults = {
+				color: 'red',
+				backgroundColor: 'green',
+				hoverColor: (ctx, options) => getHoverColor(options.color)
+			};
+			const options = {
+				color: ['white', 'blue']
+			};
+			const resolver = _resolver([options, defaults]);
+			const opts = _withContext(resolver, {index: 1});
+			expect(opts.color).toEqual('blue');
+			expect(opts.backgroundColor).toEqual('green');
+			expect(opts.hoverColor).toEqual(getHoverColor('blue'));
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import defaults from '../core/core.defaults';
-import {isArray, isObject, valueOrDefault} from './helpers.core';
+import {isArray, isObject, valueOrDefault, _capitalize} from './helpers.core';
 import {toFontString} from './helpers.canvas';
 
 const LINE_HEIGHT = new RegExp(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
@@ -174,4 +174,65 @@ export function resolve(inputs, context, index, info) {
 			return value;
 		}
 	}
+}
+
+const notIndexable = ['borderDash', 'fill', 'events'];
+const scriptable = (value) => typeof value === 'function';
+const indexable = (key, value) => isArray(value) && notIndexable.indexOf(key) === -1;
+const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
+const defined = (value) => typeof value !== 'undefined';
+
+/**
+ * Creates a Proxy for resolving raw values for options.
+ * @param {object[]} scopes - The option scopes to look for values, in resolution order
+ * @param {string[]} [prefixes] - The prefixes for values, in resolution order.
+ * @private
+ */
+export function _resolver(scopes, prefixes = ['']) {
+	const cache = Object.create(null);
+	return new Proxy(cache, {
+		get(target, prop) {
+			let value = Reflect.get(target, prop);
+			if (defined(value)) {
+				return value;
+			}
+			let key;
+			loop:
+			for (const prefix of prefixes) {
+				key = readKey(prefix, prop);
+				for (const scope of scopes) {
+					value = scope && scope[key];
+					if (defined(value)) {
+						break loop;
+					}
+				}
+			}
+			if (defined(value)) {
+				Reflect.set(target, prop, value);
+			}
+			return value;
+		}
+	});
+}
+
+/**
+ * Returns an Proxy for resolving option values with context.
+ * @param {Proxy} options - The Proxy returned by `resolver`
+ * @param {object} context - Context object for scriptable/indexable options
+ * @private
+ */
+export function _withContext(options, context) {
+	const cache = Object.create(null);
+	return new Proxy(cache, {
+		get(target, prop, proxy) {
+			let value = valueOrDefault(Reflect.get(target, prop), Reflect.get(options, prop));
+			if (scriptable(value)) {
+				value = value(context, proxy);
+			}
+			if (indexable(prop, value)) {
+				value = value[context.index % value.length];
+			}
+			return value;
+		}
+	});
 }

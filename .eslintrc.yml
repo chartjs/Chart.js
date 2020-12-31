@@ -22,6 +22,7 @@ rules:
   max-statements: ["warn", 30]
   no-empty-function: "off"
   no-use-before-define: ["error", { "functions": false }]
+  no-labels: ["error", { "allowLoop": true }]
   # disable everything, except Rest/Spread Properties in ES2018
   es/no-async-iteration: "error"
   es/no-malformed-template-literals: "error"
