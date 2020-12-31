@@ -1,11 +1,9 @@
 import Animations from '../core/core.animations';
-import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
-import {valueOrDefault, each, noop, isNullOrUndef, isArray, _elementsEqual, merge} from '../helpers/helpers.core';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, valueOrDefault} from '../helpers/helpers.core';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
-import {toFont} from '../helpers/helpers.options';
-import {drawPoint} from '../helpers';
+import {drawPoint, toFontString} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
@@ -134,25 +132,6 @@ function createTooltipItem(chart, item) {
 }
 
 /**
- * Helper to get the reset model for the tooltip
- * @param options {object} the tooltip options
- * @param fallbackFont {object} the fallback font options
- */
-function resolveOptions(options, fallbackFont) {
-
-	options = merge(Object.create(null), [defaults.plugins.tooltip, options]);
-
-	options.bodyFont = toFont(options.bodyFont, fallbackFont);
-	options.titleFont = toFont(options.titleFont, fallbackFont);
-	options.footerFont = toFont(options.footerFont, fallbackFont);
-
-	options.boxHeight = valueOrDefault(options.boxHeight, options.bodyFont.size);
-	options.boxWidth = valueOrDefault(options.boxWidth, options.bodyFont.size);
-
-	return options;
-}
-
-/**
  * Get the size of the tooltip
  */
 function getTooltipSize(tooltip) {
@@ -196,11 +175,11 @@ function getTooltipSize(tooltip) {
 
 	ctx.save();
 
-	ctx.font = titleFont.string;
+	ctx.font = toFontString(titleFont);
 	each(tooltip.title, maxLineWidth);
 
 	// Body width
-	ctx.font = bodyFont.string;
+	ctx.font = toFontString(bodyFont);
 	each(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
 
 	// Body lines may include some extra width due to the color box
@@ -215,7 +194,7 @@ function getTooltipSize(tooltip) {
 	widthPadding = 0;
 
 	// Footer width
-	ctx.font = footerFont.string;
+	ctx.font = toFontString(footerFont);
 	each(tooltip.footer, maxLineWidth);
 
 	ctx.restore();
@@ -367,7 +346,7 @@ export class Tooltip extends Element {
 		this._size = undefined;
 		this._cachedAnimations = undefined;
 		this.$animations = undefined;
-		this.options = undefined;
+		this.options = config.options;
 		this.dataPoints = undefined;
 		this.title = undefined;
 		this.beforeBody = undefined;
@@ -385,15 +364,14 @@ export class Tooltip extends Element {
 		this.labelColors = undefined;
 		this.labelPointStyles = undefined;
 		this.labelTextColors = undefined;
-
-		this.initialize();
 	}
 
-	initialize() {
-		const me = this;
-		const chartOpts = me._chart.options;
-		me.options = resolveOptions(chartOpts.plugins.tooltip, chartOpts.font);
-		me._cachedAnimations = undefined;
+	initialize(options) {
+		const defaultSize = options.bodyFont.size;
+		options.boxHeight = valueOrDefault(options.boxHeight, defaultSize);
+		options.boxWidth = valueOrDefault(options.boxWidth, defaultSize);
+		this.options = options;
+		this._cachedAnimations = undefined;
 	}
 
 	/**
@@ -654,7 +632,7 @@ export class Tooltip extends Element {
 			titleSpacing = options.titleSpacing;
 
 			ctx.fillStyle = options.titleColor;
-			ctx.font = titleFont.string;
+			ctx.font = toFontString(titleFont);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFont.size / 2);
@@ -740,7 +718,7 @@ export class Tooltip extends Element {
 
 		ctx.textAlign = bodyAlign;
 		ctx.textBaseline = 'middle';
-		ctx.font = bodyFont.string;
+		ctx.font = toFontString(bodyFont);
 
 		pt.x = getAlignedX(me, bodyAlignForCalculation);
 
@@ -804,7 +782,7 @@ export class Tooltip extends Element {
 			footerFont = options.footerFont;
 
 			ctx.fillStyle = options.footerColor;
-			ctx.font = footerFont.string;
+			ctx.font = toFontString(footerFont);
 
 			for (i = 0; i < length; ++i) {
 				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFont.size / 2);
@@ -1047,23 +1025,21 @@ export default {
 	_element: Tooltip,
 	positioners,
 
-	afterInit(chart) {
-		const tooltipOpts = chart.options.plugins.tooltip;
-
-		if (tooltipOpts) {
-			chart.tooltip = new Tooltip({_chart: chart});
+	afterInit(chart, _args, options) {
+		if (options) {
+			chart.tooltip = new Tooltip({_chart: chart, options});
 		}
 	},
 
-	beforeUpdate(chart) {
+	beforeUpdate(chart, _args, options) {
 		if (chart.tooltip) {
-			chart.tooltip.initialize();
+			chart.tooltip.initialize(options);
 		}
 	},
 
-	reset(chart) {
+	reset(chart, _args, options) {
 		if (chart.tooltip) {
-			chart.tooltip.initialize();
+			chart.tooltip.initialize(options);
 		}
 	},
 
@@ -1214,4 +1190,10 @@ export default {
 			afterFooter: noop
 		}
 	},
+
+	defaultRoutes: {
+		bodyFont: 'font',
+		footerFont: 'font',
+		titleFont: 'font'
+	}
 };
