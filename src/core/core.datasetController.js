@@ -395,6 +395,9 @@ export default class DatasetController {
 			me.getDataset(),
 		], {
 			merger(key, target, source) {
+				// Cloning the data is expensive and unnecessary.
+				// Additionally, plugins may add dataset level fields that should
+				// not be cloned. We identify those via an underscore prefix
 				if (key !== 'data' && key.charAt(0) !== '_') {
 					_merger(key, target, source);
 				}
