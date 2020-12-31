@@ -2,7 +2,13 @@
 title: Colors
 ---
 
-When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.color`. It is initially set to `'rgba(0, 0, 0, 0.1)'`.
+When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. There are 3 color options, stored at `Chart.defaults`, to set:
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `backgroundColor` | `Color` | `rgba(0, 0, 0, 0.1)` | Background color.
+| `borderColor` | `Color` | `rgba(0, 0, 0, 0.1)` | Border color.
+| `color` | `Color` | `#666` | Font color.
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 
