@@ -97,11 +97,11 @@ export default {
 			// Point the chart to the decimated data
 			let decimated;
 			switch (options.algorithm) {
-				case 'min-max':
-					decimated = minMaxDecimation(data, availableWidth);
-					break;
-				default:
-					throw new Error(`Unsupported decimation algorithm '${options.algorithm}'`);
+			case 'min-max':
+				decimated = minMaxDecimation(data, availableWidth);
+				break;
+			default:
+				throw new Error(`Unsupported decimation algorithm '${options.algorithm}'`);
 			}
 
 			dataset._decimated = decimated;
