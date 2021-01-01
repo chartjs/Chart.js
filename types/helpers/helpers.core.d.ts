@@ -32,7 +32,7 @@ export function isArray<T = any>(value: any): value is ArrayLike<T>;
 export function isObject(value: any): value is object;
 /**
  * Returns true if `value` is a finite number, else returns false
- * @param {*} value  - The value to test.
+ * @param {*} value - The value to test.
  * @returns {boolean}
  */
 export function isFinite(value: any): value is number;
@@ -52,9 +52,9 @@ export function valueOrDefault<T>(value: T | undefined, defaultValue: T): T;
  * @returns {*}
  */
 export function callback<T extends (this: TA, ...args: any[]) => R, TA, R>(
-  fn: T | undefined,
-  args: any[],
-  thisArg?: TA
+	fn: T | undefined,
+	args: any[],
+	thisArg?: TA
 ): R | undefined;
 
 /**
@@ -62,30 +62,30 @@ export function callback<T extends (this: TA, ...args: any[]) => R, TA, R>(
  * is unknown or in none intensive code (not called often and small loopable). Else
  * it's preferable to use a regular for() loop and save extra function calls.
  * @param loopable - The object or array to be iterated.
- * @param  fn - The function to call for each item.
+ * @param fn - The function to call for each item.
  * @param [thisArg] - The value of `this` provided for the call to `fn`.
  * @param [reverse] - If true, iterates backward on the loopable.
  */
 export function each<T, TA>(
-  loopable: T[],
-  fn: (this: TA, v: T, i: number) => void,
-  thisArg?: TA,
-  reverse?: boolean
+	loopable: T[],
+	fn: (this: TA, v: T, i: number) => void,
+	thisArg?: TA,
+	reverse?: boolean
 ): void;
 /**
  * Note(SB) for performance sake, this method should only be used when loopable type
  * is unknown or in none intensive code (not called often and small loopable). Else
  * it's preferable to use a regular for() loop and save extra function calls.
  * @param loopable - The object or array to be iterated.
- * @param  fn - The function to call for each item.
+ * @param fn - The function to call for each item.
  * @param [thisArg] - The value of `this` provided for the call to `fn`.
  * @param [reverse] - If true, iterates backward on the loopable.
  */
 export function each<T, TA>(
-  loopable: { [key: string]: T },
-  fn: (this: TA, v: T, k: string) => void,
-  thisArg?: TA,
-  reverse?: boolean
+	loopable: { [key: string]: T },
+	fn: (this: TA, v: T, k: string) => void,
+	thisArg?: TA,
+	reverse?: boolean
 ): void;
 
 /**
@@ -95,7 +95,7 @@ export function each<T, TA>(
 export function clone<T>(source: T): T;
 
 export interface MergeOptions {
-  merger?: (key: string, target: any, source: any, options: any) => any;
+	merger?: (key: string, target: any, source: any, options: any) => any;
 }
 /**
  * Recursively deep copies `source` properties into `target` with the given `options`.
@@ -112,9 +112,9 @@ export function merge<T, S1>(target: T, source: [S1], options?: MergeOptions): T
 export function merge<T, S1, S2>(target: T, source: [S1, S2], options?: MergeOptions): T & S1 & S2;
 export function merge<T, S1, S2, S3>(target: T, source: [S1, S2, S3], options?: MergeOptions): T & S1 & S2 & S3;
 export function merge<T, S1, S2, S3, S4>(
-  target: T,
-  source: [S1, S2, S3, S4],
-  options?: MergeOptions
+	target: T,
+	source: [S1, S2, S3, S4],
+	options?: MergeOptions
 ): T & S1 & S2 & S3 & S4;
 export function merge<T>(target: T, source: any[], options?: MergeOptions): any;
 
