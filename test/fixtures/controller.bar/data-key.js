@@ -5,8 +5,8 @@ module.exports = {
 			labels: [0, 1, 3, 4],
 			datasets: [
 				{
-                    data2: [5, 20, 10, 11],
-                    dataKey: 'data2',
+					data2: [5, 20, 10, 11],
+					dataKey: 'data2',
 					backgroundColor: '#00ff00',
 					borderColor: '#ff0000',
 					borderWidth: 2,
