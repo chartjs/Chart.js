@@ -228,9 +228,11 @@ export default class LineElement extends Element {
 	}
 
 	set points(points) {
-		this._points = points;
-		delete this._segments;
-		delete this._path;
+		const me = this;
+		me._points = points;
+		delete me._segments;
+		delete me._path;
+		me._pointsUpdated = false;
 	}
 
 	get points() {
