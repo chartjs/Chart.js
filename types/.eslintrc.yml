@@ -1,0 +1,18 @@
+parser: '@typescript-eslint/parser'
+
+plugins:
+  - '@typescript-eslint'
+
+extends:
+  - chartjs
+  - plugin:@typescript-eslint/recommended
+
+# These rules were set to warning to make the linting pass initially,
+# without making any major changes to types.
+rules:
+  no-use-before-define: "warn"
+  no-shadow: "warn"
+  object-curly-spacing: ["warn", "always"]
+  '@typescript-eslint/no-empty-interface': "warn"
+  '@typescript-eslint/ban-types': "warn"
+  '@typescript-eslint/adjacent-overload-signatures': "warn"
