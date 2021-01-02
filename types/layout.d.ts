@@ -14,9 +14,9 @@ export interface LayoutItem {
 	/**
 	 * if true, and the item is horizontal, then push vertical boxes down
 	 */
-  fullWidth: boolean;
-  /**
-	 *  Width of item. Must be valid after update()
+	fullWidth: boolean;
+	/**
+	 * Width of item. Must be valid after update()
 	 */
 	width: number;
 	/**
@@ -36,22 +36,22 @@ export interface LayoutItem {
 	 */
 	right: number;
 	/**
-	 *  Bottom edge of the item. Set by layout system and cannot be used in update
+	 * Bottom edge of the item. Set by layout system and cannot be used in update
 	 */
-  bottom: number;
+	bottom: number;
 
-  /**
-   * Called before the layout process starts
-   */
-  beforeLayout?(): void;
-  /**
+	/**
+	 * Called before the layout process starts
+	 */
+	beforeLayout?(): void;
+	/**
 	 * Draws the element
 	 */
-  draw(ChartArea): void;
-  /**
+	draw(ChartArea): void;
+	/**
 	 * Returns an object with padding on the edges
 	 */
-  getPadding?(): ChartArea;
+	getPadding?(): ChartArea;
 	/**
 	 * returns true if the layout item is horizontal (ie. top or bottom)
 	 */
