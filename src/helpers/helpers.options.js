@@ -223,11 +223,17 @@ export function _resolver(scopes, prefixes = ['']) {
  */
 export function _withContext(options, context) {
 	const cache = Object.create(null);
+	const scriptables = new Set();
 	return new Proxy(cache, {
 		get(target, prop, proxy) {
 			let value = valueOrDefault(Reflect.get(target, prop), Reflect.get(options, prop));
 			if (scriptable(value)) {
+				if (scriptables.has(prop)) {
+					throw new Error('Recursion detected: ' + [...scriptables].join('->') + '->' + prop.toString());
+				}
+				scriptables.add(prop);
 				value = value(context, proxy);
+				scriptables.delete(prop);
 			}
 			if (indexable(prop, value)) {
 				value = value[context.index % value.length];

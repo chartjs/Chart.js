@@ -280,5 +280,18 @@ describe('Chart.helpers.options', function() {
 			expect(opts.backgroundColor).toEqual('green');
 			expect(opts.hoverColor).toEqual(getHoverColor('blue'));
 		});
+
+		it('should thrown on recursion', function() {
+			const options = {
+				foo: (ctx, opts) => opts.bar,
+				bar: (ctx, opts) => opts.xyz,
+				xyz: (ctx, opts) => opts.foo
+			};
+			const resolver = _resolver([options]);
+			const opts = _withContext(resolver, {test: true});
+			expect(function() {
+				return opts.foo;
+			}).toThrowError('Recursion detected: foo->bar->xyz->foo');
+		});
 	});
 });
