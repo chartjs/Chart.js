@@ -12,13 +12,14 @@
   },
   "typedocOptions": {
     "name": "Chart.js",
+    "entryPoints": ["src/index.esm.js"],
     "excludeExternals": true,
     "excludeNotExported": true,
     "includeVersion": true,
-    "inputFiles": ["./src"],
     "out": "./dist/docs/typedoc"
   },
   "include": [
-    "./src/**/*.js"
+    "./src/**/*.js",
+    "./types"
   ]
 }
