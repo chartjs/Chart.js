@@ -46,7 +46,7 @@ module.exports = {
 						},
 						{
 							label: 'v2 Docs',
-							href: 'https://www.chartjs.org/docs/2.9.3/',
+							href: 'https://www.chartjs.org/docs/2.9.4/',
 						},
 					],
 				},
