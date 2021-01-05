@@ -12,10 +12,10 @@
  * }
  */
 
-import { TimeUnit } from "./adapters";
+import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
 import { Color } from './color';
-import { Element }from './element';
+import { Element } from './element';
 import { ChartArea, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 import {
