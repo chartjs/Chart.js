@@ -1,7 +1,7 @@
 describe('Default Configs', function() {
 	describe('Bubble Chart', function() {
 		it('should return correct tooltip strings', function() {
-			var config = Chart.defaults.bubble;
+			var config = Chart.defaults.controllers.bubble;
 			var chart = window.acquireChart({
 				type: 'bubble',
 				data: {
