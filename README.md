@@ -13,6 +13,8 @@
 
 ## Documentation
 
+Note that this documentation is for the latest production version (2.9.4). The code here is for the v3 development version. Documentation for V3 is [available](https://www.chartjs.org/docs/master/) as is the [source code for V2](https://github.com/chartjs/Chart.js/tree/2.9).
+
 - [Introduction](https://www.chartjs.org/docs/latest/)
 - [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
 - [General](https://www.chartjs.org/docs/latest/general/)
