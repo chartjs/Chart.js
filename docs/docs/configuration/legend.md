@@ -52,7 +52,7 @@ The legend label configuration is nested below the legend configuration using th
 | ---- | ---- | ------- | -----------
 | `boxWidth` | `number` | `40` | Width of coloured box.
 | `boxHeight` | `number` | `font.size` | Height of the coloured box.
-| `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of label.
+| `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of label and the strikethrough.
 | `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
