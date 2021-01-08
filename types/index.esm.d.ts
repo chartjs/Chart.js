@@ -965,7 +965,7 @@ export interface Plugin<O = {}> extends ExtendedPlugin {
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {ChartEvent} args.event - The event object.
-	 * @param {boolean} replay - True if this event is replayed from `Chart.update`
+	 * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
 	 * @param {object} options - The plugin options.
 	 */
 	beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): boolean | void;
