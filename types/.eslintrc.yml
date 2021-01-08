@@ -7,11 +7,16 @@ extends:
   - chartjs
   - plugin:@typescript-eslint/recommended
 
-# These rules were set to warning to make the linting pass initially,
-# without making any major changes to types.
 rules:
-  no-use-before-define: "warn"
-  no-shadow: "warn"
+  # Replace stock eslint rules with typescript-eslint equivalents for proper
+  # TypeScript support.
+  no-use-before-define: "off"
+  '@typescript-eslint/no-use-before-define': "error"
+  no-shadow: "off"
+  '@typescript-eslint/no-shadow': "error"
+
+  # These rules were set to warning to make the linting pass initially,
+  # without making any major changes to types.
   object-curly-spacing: ["warn", "always"]
   '@typescript-eslint/no-empty-interface': "warn"
   '@typescript-eslint/ban-types': "warn"
