@@ -13,6 +13,13 @@
 
 ## Documentation
 
+Currently, there are two versions of the library (2.9.4 and 3.x.x). Version 2 is the latest stable version while 3 is the next (currently beta) version. As such bear the following in mind:
+
+* Current docs points to version 2.9.4
+* Npm/CDN/etc point to version 2.9.4 (unless you explicitly set newer version, e.g. npm next)
+* Source currently points to 3.x.x version. 2.9.4 source is available [here](https://github.com/chartjs/Chart.js/tree/2.9)
+* Docs for version 3.x.x are available [here](https://www.chartjs.org/docs/master/)
+
 - [Introduction](https://www.chartjs.org/docs/latest/)
 - [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
 - [General](https://www.chartjs.org/docs/latest/general/)
