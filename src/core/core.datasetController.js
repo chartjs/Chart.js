@@ -200,6 +200,9 @@ function createDataContext(parent, index, point, element) {
 function clearStacks(meta, items) {
 	items = items || meta._parsed;
 	items.forEach((parsed) => {
+		if (parsed._stacks[meta.vScale.id] === undefined || parsed._stacks[meta.vScale.id][meta.index] === undefined) {
+			return;
+		}
 		delete parsed._stacks[meta.vScale.id][meta.index];
 	});
 }
