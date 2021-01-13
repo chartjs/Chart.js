@@ -47,7 +47,7 @@ export interface LayoutItem {
 	/**
 	 * Draws the element
 	 */
-	draw(ChartArea): void;
+	draw(ChartArea: ChartArea): void;
 	/**
 	 * Returns an object with padding on the edges
 	 */
