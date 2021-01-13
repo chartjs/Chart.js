@@ -50,7 +50,7 @@ export default class PointElement extends Element {
 		const me = this;
 		const options = me.options;
 
-		if (me.skip || options.radius <= 0) {
+		if (me.skip || options.radius < 0.1) {
 			return;
 		}
 
