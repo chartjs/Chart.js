@@ -534,7 +534,6 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	draw(): void;
 	reset(): void;
 	getDataset(): ChartDataset;
-	getDataKey(): string;
 	getMeta(): ChartMeta<TElement, TDatasetElement>;
 	getScaleForId(scaleID: string): Scale | undefined;
 	configure(): void;

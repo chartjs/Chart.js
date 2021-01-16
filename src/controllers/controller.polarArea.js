@@ -52,7 +52,6 @@ export default class PolarAreaController extends DatasetController {
 		const centerX = scale.xCenter;
 		const centerY = scale.yCenter;
 		const datasetStartAngle = getStartAngleRadians(opts.startAngle);
-		const dataKey = me.getDataKey();
 		let angle = datasetStartAngle;
 		let i;
 
@@ -65,7 +64,7 @@ export default class PolarAreaController extends DatasetController {
 			const arc = arcs[i];
 			let startAngle = angle;
 			let endAngle = angle + me._computeAngle(i, mode);
-			let outerRadius = this.chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset[dataKey][i]) : 0;
+			let outerRadius = this.chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
 			angle = endAngle;
 
 			if (reset) {
@@ -95,11 +94,10 @@ export default class PolarAreaController extends DatasetController {
 	countVisibleElements() {
 		const dataset = this.getDataset();
 		const meta = this._cachedMeta;
-		const dataKey = this.getDataKey();
 		let count = 0;
 
 		meta.data.forEach((element, index) => {
-			if (!isNaN(dataset[dataKey][index]) && this.chart.getDataVisibility(index)) {
+			if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
 				count++;
 			}
 		});
@@ -115,9 +113,8 @@ export default class PolarAreaController extends DatasetController {
 		const meta = me._cachedMeta;
 		const count = meta.count;
 		const dataset = me.getDataset();
-		const dataKey = me.getDataKey();
 
-		if (isNaN(dataset[dataKey][index]) || !this.chart.getDataVisibility(index)) {
+		if (isNaN(dataset.data[index]) || !this.chart.getDataVisibility(index)) {
 			return 0;
 		}
 

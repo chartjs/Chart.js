@@ -1,6 +1,6 @@
 import Animations from './core.animations';
 import defaults from './core.defaults';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize, isNullOrUndef} from '../helpers/helpers.core';
+import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {resolve} from '../helpers/helpers.options';
 import {getHoverColor} from '../helpers/helpers.color';
@@ -278,11 +278,6 @@ export default class DatasetController {
 		return this.chart.data.datasets[this.index];
 	}
 
-	getDataKey() {
-		const {dataKey} = this.getDataset();
-		return isNullOrUndef(dataKey) ? 'data' : dataKey;
-	}
-
 	getMeta() {
 		return this.chart.getDatasetMeta(this.index);
 	}
@@ -328,8 +323,7 @@ export default class DatasetController {
 	_dataCheck() {
 		const me = this;
 		const dataset = me.getDataset();
-		const dataKey = me.getDataKey();
-		const data = dataset[dataKey] || (dataset[dataKey] = []);
+		const data = dataset.data || (dataset.data = []);
 
 		// In order to correctly handle data addition/deletion animation (an thus simulate
 		// real-time charts), we need to monitor these data modifications and synchronize
@@ -395,7 +389,6 @@ export default class DatasetController {
 	 */
 	configure() {
 		const me = this;
-		const dataKey = me.getDataKey();
 		me._config = merge(Object.create(null), [
 			defaults.controllers[me._type].datasets,
 			(me.chart.options.datasets || {})[me._type],
@@ -405,7 +398,7 @@ export default class DatasetController {
 				// Cloning the data is expensive and unnecessary.
 				// Additionally, plugins may add dataset level fields that should
 				// not be cloned. We identify those via an underscore prefix
-				if (key !== 'data' && key !== dataKey && key.charAt(0) !== '_') {
+				if (key !== 'data' && key.charAt(0) !== '_') {
 					_merger(key, target, source);
 				}
 			}
@@ -1033,8 +1026,7 @@ export default class DatasetController {
 	 */
 	_onDataPush() {
 		const count = arguments.length;
-		const dataKey = this.getDataKey();
-		this._insertElements(this.getDataset()[dataKey].length - count, count);
+		this._insertElements(this.getDataset().data.length - count, count);
 	}
 
 	/**
