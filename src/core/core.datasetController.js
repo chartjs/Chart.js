@@ -171,7 +171,7 @@ function createDatasetContext(parent, index, dataset) {
 	});
 }
 
-function createDataContext(parent, index, point, rawPoint, element) {
+function createDataContext(parent, index, point, raw, element) {
 	return Object.create(parent, {
 		active: {
 			writable: true,
@@ -180,11 +180,11 @@ function createDataContext(parent, index, point, rawPoint, element) {
 		dataIndex: {
 			value: index
 		},
-		dataPoint: {
+		parsed: {
 			value: point
 		},
-		rawPoint: {
-			value: rawPoint
+		raw: {
+			value: raw
 		},
 		element: {
 			value: element

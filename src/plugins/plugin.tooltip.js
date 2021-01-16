@@ -122,7 +122,8 @@ function createTooltipItem(chart, item) {
 	return {
 		chart,
 		label,
-		dataPoint: controller.getParsed(index),
+		parsed: controller.getParsed(index),
+		raw: chart.data.datasets[datasetIndex].data[index],
 		formattedValue: value,
 		dataset: controller.getDataset(),
 		dataIndex: index,

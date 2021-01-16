@@ -140,8 +140,8 @@ var chart = new Chart(ctx, {
                         if (label) {
                             label += ': ';
                         }
-                        if (!isNaN(context.dataPoint.y)) {
-                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.dataPoint.y);
+                        if (!isNaN(context.parsed.y)) {
+                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
                         }
                         return label;
                     }
@@ -220,7 +220,10 @@ The tooltip items passed to the tooltip callbacks implement the following interf
     label: string,
 
     // Parsed data values for the given `dataIndex` and `datasetIndex`
-    dataPoint: object,
+    parsed: object,
+
+    // Raw data values for the given `dataIndex` and `datasetIndex`
+    raw: object,
 
     // Formatted value for the tooltip
     formattedValue: string,
