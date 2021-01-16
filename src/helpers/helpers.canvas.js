@@ -312,7 +312,7 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 		ctx.rotate(opts.rotation);
 	}
 
-	ctx.font = font.fontString;
+	ctx.font = font.string;
 
 	if (opts.color) {
 		ctx.fillStyle = opts.color;
