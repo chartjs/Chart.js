@@ -51,7 +51,8 @@ export default {
 	},
 
 	beforeElementsUpdate: (chart, args, options) => {
-		if (!options.enabled) {
+		// Decimation is only supported for lines that have an X indexAxis
+		if (!options.enabled || chart.options.indexAxis === 'y') {
 			return;
 		}
 
