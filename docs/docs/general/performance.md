@@ -35,6 +35,7 @@ Set the [`ticks.sampleSize`](./axes/cartesian/index.mdx#tick-configuration) opti
 ## Disable Animations
 
 If your charts have long render times, it is a good idea to disable animations. Doing so will mean that the chart needs to only be rendered once during an update instead of multiple times. This will have the effect of reducing CPU usage and improving general page performance.
+Line charts use Path2D caching when animations are disabled.
 
 To disable animations
 
