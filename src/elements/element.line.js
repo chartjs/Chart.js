@@ -3,7 +3,6 @@ import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../help
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
-import {_coordsAnimated} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("./element.point").default } PointElement
@@ -204,6 +203,7 @@ export default class LineElement extends Element {
 	constructor(cfg) {
 		super();
 
+		this.animated = true;
 		this.options = undefined;
 		this._loop = undefined;
 		this._fullLoop = undefined;
@@ -351,8 +351,9 @@ export default class LineElement extends Element {
 	 * @param {number} [count]
 	 */
 	draw(ctx, chartArea, start, count) {
-		const options = this.options || {};
-		const points = this.points || [];
+		const me = this;
+		const options = me.options || {};
+		const points = me.points || [];
 
 		if (!points.length || !options.borderWidth) {
 			return;
@@ -362,10 +363,10 @@ export default class LineElement extends Element {
 
 		setStyle(ctx, options);
 
-		let path = this._path;
+		let path = me._path;
 		if (!path) {
-			path = this._path = new Path2D();
-			if (this.path(path, start, count)) {
+			path = me._path = new Path2D();
+			if (me.path(path, start, count)) {
 				path.closePath();
 			}
 		}
@@ -374,12 +375,10 @@ export default class LineElement extends Element {
 
 		ctx.restore();
 
-		if (_coordsAnimated(points[0]) || _coordsAnimated(points[points.length - 1])) {
-			// When point coordinates are animating, we need to recalculate the
-			// path (and control points when beziers are used). Only coordinates
-			// matter, other animations are ignored.
-			this._pointsUpdated = false;
-			this._path = undefined;
+		if (me.animated) {
+			// When line is animated, the control points and path are not cached.
+			me._pointsUpdated = false;
+			me._path = undefined;
 		}
 	}
 }
