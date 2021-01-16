@@ -56,14 +56,3 @@ export const _toLeftRightCenter = (align) => align === 'start' ? 'left' : align 
  * @private
  */
 export const _alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
-
-/**
- * Return true if `x` or `y` property (coordinates) of the element is currently animated.
- * @param {object} element
- * @returns {boolean}
- * @private
- */
-export function _coordsAnimated(element) {
-	const anims = element && element.$animations;
-	return anims && ((anims.x && anims.x.active()) || (anims.y && anims.y.active()));
-}
