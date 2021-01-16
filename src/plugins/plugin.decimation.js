@@ -63,14 +63,27 @@ export default {
 		const availableWidth = chart.width - (verticalAxisCount * 50);
 
 		chart.data.datasets.forEach((dataset, datasetIndex) => {
-			const {_originalDataKey} = dataset;
+			const {_data} = dataset;
 			const meta = chart.getDatasetMeta(datasetIndex);
-			const dataKey = !isNullOrUndef(_originalDataKey) ? _originalDataKey : meta.controller.getDataKey();
-			const data = dataset[dataKey];
+			const data = _data || dataset.data;
 
-			if (isNullOrUndef(_originalDataKey)) {
-				// Store this for the next update
-				dataset._originalDataKey = dataKey;
+			if (isNullOrUndef(_data)) {
+				// First time we are seeing this dataset
+				// We override the 'data' property with a setter that stores the
+				// raw data in _data, but reads the decimated data from _decimated
+				// TODO: Undo this on chart destruction
+				dataset._data = data;
+				delete dataset.data;
+				Object.defineProperty(dataset, 'data', {
+					configurable: true,
+					enumerable: true,
+					get: function() {
+						return this._decimated;
+					},
+					set: function(d) {
+						this._data = d;
+					}
+				});
 			}
 
 			if (meta.type !== 'line') {
@@ -105,7 +118,6 @@ export default {
 			}
 
 			dataset._decimated = decimated;
-			dataset.dataKey = '_decimated';
 		});
 	}
 };
