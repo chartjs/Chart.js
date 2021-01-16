@@ -84,7 +84,7 @@
 						callbacks: {
 							label: function(context) {
 								var labelIndex = (context.datasetIndex * 2) + context.dataIndex;
-								return context.chart.data.labels[labelIndex] + ': ' + context.dataset.data[context.dataIndex];
+								return context.chart.data.labels[labelIndex] + ': ' + context.formattedValue;
 							}
 						}
 					}
