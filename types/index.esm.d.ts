@@ -233,13 +233,13 @@ export interface DoughnutControllerDatasetOptions
 
 	/**
 	 * Sweep to allow arcs to cover.
-	 * @default 2 * Math.PI
+	 * @default 360
 	 */
 	circumference: number;
 
 	/**
 	 * Starting angle to draw this dataset from.
-	 * @default -0.5 * Math.PI
+	 * @default 0
 	 */
 	rotation: number;
 
@@ -273,13 +273,13 @@ export interface DoughnutControllerChartOptions {
 
 	/**
 	 * Starting angle to draw arcs from.
-	 * @default -0.5 * Math.PI
+	 * @default 0
 	 */
 	rotation: number;
 
 	/**
 	 * Sweep to allow arcs to cover.
-	 * @default 2 * Math.PI
+	 * @default 360
 	 */
 	circumference: number;
 

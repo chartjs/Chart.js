@@ -143,12 +143,12 @@
 		});
 
 		document.getElementById('changeCircleSize').addEventListener('click', function() {
-			if (window.myDoughnut.options.circumference === Math.PI) {
-				window.myDoughnut.options.circumference = 2 * Math.PI;
-				window.myDoughnut.options.rotation = -Math.PI / 2;
+			if (window.myDoughnut.options.circumference === 180) {
+				window.myDoughnut.options.circumference = 360;
+				window.myDoughnut.options.rotation = -45;
 			} else {
-				window.myDoughnut.options.circumference = Math.PI;
-				window.myDoughnut.options.rotation = -Math.PI;
+				window.myDoughnut.options.circumference = 180;
+				window.myDoughnut.options.rotation = -90;
 			}
 
 			window.myDoughnut.update();
