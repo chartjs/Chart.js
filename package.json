@@ -53,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
     "chartjs-adapter-moment": "^0.1.2",
-    "chartjs-test-utils": "^0.1.1",
+    "chartjs-test-utils": "^0.1.2",
     "concurrently": "^5.3.0",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.3",

@@ -52,6 +52,9 @@ describe('Chart.helpers.canvas', function() {
 			name: 'save',
 			args: []
 		}, {
+			name: 'setFont',
+			args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+		}, {
 			name: 'measureText',
 			args: ['FooBar']
 		}, {
@@ -63,6 +66,9 @@ describe('Chart.helpers.canvas', function() {
 		}, {
 			name: 'save',
 			args: []
+		}, {
+			name: 'setFont',
+			args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
 		}, {
 			name: 'measureText',
 			args: ['FooBar_1']
@@ -103,12 +109,15 @@ describe('Chart.helpers.canvas', function() {
 	describe('renderText', function() {
 		it('should render multiple lines of text', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, ['foo', 'foo2'], 0, 0, font);
 
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
@@ -123,11 +132,14 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should accept the text maxWidth', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {maxWidth: 30});
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, 30],
@@ -139,12 +151,15 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should underline the text', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {decorationWidth: 3, underline: true});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
@@ -177,12 +192,15 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should strikethrough the text', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {strikethrough: true});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],
@@ -215,12 +233,15 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should set the fill style if supplied', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {color: 'red'});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'setFillStyle',
 				args: ['red'],
@@ -235,11 +256,14 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should set the stroke style if supplied', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {strokeColor: 'red', strokeWidth: 2});
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'setStrokeStyle',
 				args: ['red'],
@@ -260,12 +284,15 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should set the text alignment', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {textAlign: 'left', textBaseline: 'middle'});
 
 			expect(context.getCalls()).toEqual([{
 				name: 'save',
 				args: [],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'setTextAlign',
 				args: ['left'],
@@ -283,7 +310,7 @@ describe('Chart.helpers.canvas', function() {
 
 		it('should translate and rotate text', function() {
 			var context = window.createMockContext();
-			var font = {fontString: '', lineHeight: 20};
+			var font = {string: '12px arial', lineHeight: 20};
 			helpers.renderText(context, 'foo', 0, 0, font, {rotation: 90, translation: [10, 20]});
 
 			expect(context.getCalls()).toEqual([{
@@ -295,6 +322,9 @@ describe('Chart.helpers.canvas', function() {
 			}, {
 				name: 'rotate',
 				args: [90],
+			}, {
+				name: 'setFont',
+				args: ['12px arial'],
 			}, {
 				name: 'fillText',
 				args: ['foo', 0, 0, undefined],

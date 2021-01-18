@@ -136,6 +136,9 @@ describe('Title block tests', function() {
 			name: 'rotate',
 			args: [0]
 		}, {
+			name: 'setFont',
+			args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+		}, {
 			name: 'setFillStyle',
 			args: ['#666']
 		}, {
@@ -194,6 +197,9 @@ describe('Title block tests', function() {
 			name: 'rotate',
 			args: [-0.5 * Math.PI]
 		}, {
+			name: 'setFont',
+			args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+		}, {
 			name: 'setFillStyle',
 			args: ['#666']
 		}, {
@@ -232,6 +238,9 @@ describe('Title block tests', function() {
 		}, {
 			name: 'rotate',
 			args: [0.5 * Math.PI]
+		}, {
+			name: 'setFont',
+			args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
 		}, {
 			name: 'setFillStyle',
 			args: ['#666']
