@@ -113,7 +113,13 @@ export function _alignPixel(chart, pixel, width) {
  */
 export function clearCanvas(canvas, ctx) {
 	ctx = ctx || canvas.getContext('2d');
+
+	ctx.save();
+	// canvas.width and canvas.height do not consider the canvas transform,
+	// while clearRect does
+	ctx.resetTransform();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.restore();
 }
 
 export function drawPoint(ctx, options, x, y) {
