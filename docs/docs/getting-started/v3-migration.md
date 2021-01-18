@@ -53,7 +53,7 @@ const chart = new Chart(ctx, {
 
 ### Chart types
 
-* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](./charts/bar.mdx#general) option
+* `horizontalBar` chart type was removed. Horizontal bar charts can be configured using the new [`indexAxis`](./charts/bar.mdx#horizontal-bar-chart) option
 
 ### Options
 

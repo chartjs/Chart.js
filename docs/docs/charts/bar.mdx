@@ -294,6 +294,8 @@ The following dataset properties are specific to stacked bar charts.
 ## Horizontal Bar Chart
 
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
+To achieve this you will have to set the `indexAxis` property in the options object to `'y'`.
+The default for this property is `'x'` and thus will show vertical bars.
 
 export const ExampleChart1 = () => {
   useEffect(() => {
@@ -328,6 +330,7 @@ export const ExampleChart1 = () => {
         }]
       },
       options: {
+      	indexAxis: 'y',
         scales: {
           x: {
             beginAtZero: true
@@ -349,7 +352,9 @@ export const ExampleChart1 = () => {
 var myBarChart = new Chart(ctx, {
     type: 'bar',
     data: data,
-    options: options
+    options: {
+    	indexAxis: 'y'
+    }
 });
 ```
 
