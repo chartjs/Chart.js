@@ -30,7 +30,8 @@ module.exports = {
 			'configuration/legend',
 			'configuration/title',
 			'configuration/tooltip',
-			'configuration/elements'
+			'configuration/elements',
+			'configuration/decimation'
 		],
 		'Chart Types': [
 			'charts/line',
