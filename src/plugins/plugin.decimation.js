@@ -56,17 +56,18 @@ export default {
 			return;
 		}
 
-		// Use an approximation since this is before scales are parsed
-		const verticalAxisCount = Object.values(chart.scales).reduce((acc, scale) => acc + scale.axis === 'y' ? 1 : 0, 0);
-
-		// assume ~50px for now. If the axis is actually wider then we have more points than needed
-		// TODO: Take display settings into account and compute a more accurate guess for each axis
-		const availableWidth = chart.width - (verticalAxisCount * 50);
+		// Assume the entire chart is available to show a few more points than needed
+		const availableWidth = chart.width;
 
 		chart.data.datasets.forEach((dataset, datasetIndex) => {
-			const {_data} = dataset;
+			const {_data, indexAxis} = dataset;
 			const meta = chart.getDatasetMeta(datasetIndex);
 			const data = _data || dataset.data;
+
+			if (indexAxis === 'y') {
+				// Skip this dataset as it is not horizontal
+				return;
+			}
 
 			if (isNullOrUndef(_data)) {
 				// First time we are seeing this dataset
