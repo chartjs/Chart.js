@@ -63,7 +63,7 @@ export default {
 			const meta = chart.getDatasetMeta(datasetIndex);
 			const data = _data || dataset.data;
 
-			if (resolve([indexAxis, chart.options.indexAxis]) !== 'x') {
+			if (resolve([indexAxis, chart.options.indexAxis]) === 'y') {
 				// Decimation is only supported for lines that have an X indexAxis
 				return;
 			}
