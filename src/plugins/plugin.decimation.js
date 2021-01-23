@@ -1,4 +1,4 @@
-import {isNullOrUndef} from '../helpers';
+import {isNullOrUndef, resolve} from '../helpers';
 
 function minMaxDecimation(data, availableWidth) {
 	let i, point, x, y, prevX, minIndex, maxIndex, minY, maxY;
@@ -51,8 +51,7 @@ export default {
 	},
 
 	beforeElementsUpdate: (chart, args, options) => {
-		// Decimation is only supported for lines that have an X indexAxis
-		if (!options.enabled || chart.options.indexAxis === 'y') {
+		if (!options.enabled) {
 			return;
 		}
 
@@ -64,8 +63,13 @@ export default {
 			const meta = chart.getDatasetMeta(datasetIndex);
 			const data = _data || dataset.data;
 
-			if (indexAxis === 'y') {
-				// Skip this dataset as it is not horizontal
+			if (resolve([indexAxis, chart.options.indexAxis]) !== 'x') {
+				// Decimation is only supported for lines that have an X indexAxis
+				return;
+			}
+
+			if (meta.type !== 'line') {
+				// Only line datasets are supported
 				return;
 			}
 
@@ -86,11 +90,6 @@ export default {
 						this._data = d;
 					}
 				});
-			}
-
-			if (meta.type !== 'line') {
-				// Only line datasets are supported
-				return;
 			}
 
 			const xAxis = chart.scales[meta.xAxisID];
