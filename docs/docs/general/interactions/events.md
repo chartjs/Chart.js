@@ -33,7 +33,7 @@ const chart = new Chart(ctx, {
     data: data,
     options: {
         onClick: (e) => {
-            const canvasPosition = Chart.helpers.getRelativePosition(e);
+            const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
 
             // Substitute the appropriate scale IDs
             const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
