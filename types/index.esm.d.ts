@@ -1910,8 +1910,16 @@ export class BasePlatform {
 export class BasicPlatform extends BasePlatform {}
 export class DomPlatform extends BasePlatform {}
 
-export const Filler: Plugin;
+export declare enum DecimationAlgorithm {
+	minmax = 'min-max',
+}
 
+export interface DecimationOptions {
+	enabled: boolean;
+	algorithm: DecimationAlgorithm;
+}
+
+export const Filler: Plugin;
 export interface FillerOptions {
 	propagate: boolean;
 }
@@ -2485,6 +2493,7 @@ export interface TooltipItem {
 }
 
 export interface PluginOptionsByType {
+	decimation: DecimationOptions;
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;
