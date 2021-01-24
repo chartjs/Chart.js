@@ -68,7 +68,7 @@
 								var sum = 0;
 
 								tooltipItems.forEach(function(tooltipItem) {
-									sum += tooltipItem.dataPoint.y;
+									sum += tooltipItem.parsed.y;
 								});
 								return 'Sum: ' + sum;
 							},

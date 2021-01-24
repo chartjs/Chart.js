@@ -27,7 +27,7 @@
 		utils.srand(110);
 
 		function colorize(opaque, ctx) {
-			var v = ctx.dataPoint.y;
+			var v = ctx.parsed.y;
 			var c = v < -50 ? '#D60000'
 				: v < 0 ? '#F46300'
 				: v < 50 ? '#0358B6'
