@@ -95,7 +95,7 @@ describe('Legend block tests', function() {
 			lineJoin: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
-			pointStyle: undefined,
+			pointStyle: 'crossRot',
 			rotation: undefined,
 			datasetIndex: 2
 		}]);
@@ -311,7 +311,7 @@ describe('Legend block tests', function() {
 			lineJoin: undefined,
 			lineWidth: 10,
 			strokeStyle: 'green',
-			pointStyle: undefined,
+			pointStyle: 'crossRot',
 			rotation: undefined,
 			datasetIndex: 2
 		}]);
@@ -887,4 +887,3 @@ describe('Legend block tests', function() {
 		});
 	});
 });
-
