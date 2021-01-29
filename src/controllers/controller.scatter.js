@@ -24,9 +24,12 @@ ScatterController.defaults = {
 		fill: false
 	},
 
+	interaction: {
+		mode: 'point'
+	},
+
 	plugins: {
 		tooltip: {
-			mode: 'point',
 			callbacks: {
 				title() {
 					return '';     // doesn't make sense for scatter since data are formatted as a point
