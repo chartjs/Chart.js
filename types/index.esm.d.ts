@@ -1840,14 +1840,16 @@ export const BarElement: ChartComponent & {
 	new (cfg: any): BarElement;
 };
 
-export interface ElementChartOptions {
-	elements: {
-		arc: ArcOptions & ArcHoverOptions;
-		bar: BarOptions & BarHoverOptions;
-		line: LineOptions & LineHoverOptions;
-		point: PointOptions & PointHoverOptions;
-	};
+export interface ElementOptions {
+	arc: ArcOptions & ArcHoverOptions;
+	bar: BarOptions & BarHoverOptions;
+	line: LineOptions & LineHoverOptions;
+	point: PointOptions & PointHoverOptions;
 }
+export interface ElementChartOptions {
+	elements: ElementOptions;
+}
+
 export class BasePlatform {
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
