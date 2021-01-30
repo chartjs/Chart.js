@@ -594,11 +594,12 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 }
 
 export type AnyObject = Record<string, unknown>;
-export interface Defaults extends CoreChartOptions, ElementChartOptions {
+export interface Defaults extends CoreChartOptions, ElementChartOptions, PluginChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
 			CoreChartOptions &
 			ElementChartOptions &
+			PluginChartOptions &
 			DatasetChartOptions<key>[key] &
 			ScaleChartOptions<key> &
 			ChartTypeRegistry[key]['chartOptions']
@@ -609,8 +610,6 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions {
 	scales: {
 		[key in ScaleType]: ScaleOptions<key>;
 	};
-
-	plugins: PluginOptions;
 
 	set(values: AnyObject): AnyObject;
 	set(scope: string, values: AnyObject): AnyObject;
@@ -1411,8 +1410,6 @@ export interface CoreChartOptions extends ParsingOptions {
 	layout: {
 		padding: Scriptable<number | ChartArea, ScriptableContext>;
 	};
-
-	plugins: PluginOptions;
 }
 
 export type EasingFunction =
@@ -2479,12 +2476,16 @@ export interface TooltipItem {
 	element: Element;
 }
 
-export interface PluginOptions {
+export interface PluginOptionsByType {
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;
 	tooltip: TooltipOptions;
 }
+export interface PluginChartOptions {
+	plugins: { [k in keyof PluginOptionsByType]: PluginOptionsByType[k]; };
+}
+
 export interface GridLineOptions {
 	/**
 	 * @default true
@@ -3141,6 +3142,7 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
 	CoreChartOptions &
 	ElementChartOptions &
+	PluginChartOptions &
 	DatasetChartOptions<TType> &
 	ScaleChartOptions<TType> &
 	ChartTypeRegistry[TType]['chartOptions']
