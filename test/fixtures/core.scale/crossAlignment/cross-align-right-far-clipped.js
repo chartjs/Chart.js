@@ -28,5 +28,6 @@ module.exports = {
 			height: 256,
 			width: 512
 		}
-	}
+	},
+	tolerance: 0.1
 };
