@@ -24,6 +24,10 @@ ScatterController.defaults = {
 		fill: false
 	},
 
+	interaction: {
+		mode: 'point'
+	},
+
 	plugins: {
 		tooltip: {
 			callbacks: {
