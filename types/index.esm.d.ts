@@ -125,6 +125,12 @@ export interface BarControllerDatasetOptions
 	 * Set this to ensure that bars have a minimum length in pixels.
 	 */
 	minBarLength: number;
+
+	/**
+	 * Point style for the legend
+	 * @default 'circle;
+	 */
+	pointStyle: PointStyle;
 }
 
 export interface BarControllerChartOptions {
