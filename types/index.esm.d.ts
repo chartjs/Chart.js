@@ -1840,14 +1840,14 @@ export const BarElement: ChartComponent & {
 	new (cfg: any): BarElement;
 };
 
-export interface ElementOptions {
+export interface ElementOptionsByType {
 	arc: ArcOptions & ArcHoverOptions;
 	bar: BarOptions & BarHoverOptions;
 	line: LineOptions & LineHoverOptions;
 	point: PointOptions & PointHoverOptions;
 }
 export interface ElementChartOptions {
-	elements: ElementOptions;
+	elements: { [k in keyof ElementOptionsByType]: ElementOptionsByType[k]; };
 }
 
 export class BasePlatform {
