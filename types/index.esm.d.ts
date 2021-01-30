@@ -1339,12 +1339,12 @@ export interface CoreChartOptions extends ParsingOptions {
 	 * @see Defaults.color
 	 */
 	color: Color;
-		/**
+	/**
 	 * base background color
 	 * @see Defaults.backgroundColor
 	 */
 	backgroundColor: Color;
-		/**
+	/**
 	 * base border color
 	 * @see Defaults.borderColor
 	 */
@@ -1558,7 +1558,7 @@ export interface VisualElement {
 	getRange?(axis: 'x' | 'y'): number;
 }
 
-export interface CommonOptions {
+export interface CommonElementOptions {
 	borderWidth: number;
 	borderColor: Color;
 	backgroundColor: Color;
@@ -1586,7 +1586,7 @@ export interface ArcProps {
 	circumference: number;
 }
 
-export interface ArcOptions extends CommonOptions {
+export interface ArcOptions extends CommonElementOptions {
 	/**
 	 * Arc stroke alignment.
 	 */
@@ -1612,7 +1612,7 @@ export const ArcElement: ChartComponent & {
 
 export interface LineProps {}
 
-export interface LineOptions extends CommonOptions {
+export interface LineOptions extends CommonElementOptions {
 	/**
 	 * Line cap style. See MDN.
 	 * @default 'butt'
@@ -1699,7 +1699,7 @@ export type PointStyle =
 	| HTMLImageElement
 	| HTMLCanvasElement;
 
-export interface PointOptions extends CommonOptions {
+export interface PointOptions extends CommonElementOptions {
 	/**
 	 * Point radius
 	 * @default 3
@@ -1800,7 +1800,7 @@ export interface BarProps {
 	height: number;
 }
 
-export interface BarOptions extends CommonOptions {
+export interface BarOptions extends CommonElementOptions {
 	/**
 	 * The base value for the bar in data units along the value axis.
 	 */
