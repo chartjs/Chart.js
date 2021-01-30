@@ -40,6 +40,10 @@ describe('Chart.controllers.scatter', function() {
 					data: [{
 						x: 10,
 						y: 15
+					},
+					{
+						x: 12,
+						y: 10
 					}],
 					label: 'dataset1'
 				},
@@ -47,16 +51,20 @@ describe('Chart.controllers.scatter', function() {
 					data: [{
 						x: 20,
 						y: 10
+					},
+					{
+						x: 4,
+						y: 8
 					}],
 					label: 'dataset2'
-				}],
+				}]
 			},
 			options: {}
 		});
-		var point = chart.getDatasetMeta(0).data[0];
+		var point = chart.getDatasetMeta(0).data[1];
 
 		afterEvent(chart, 'mousemove', function() {
-			expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
+			expect(chart.tooltip.body.length).toEqual(1);
 
 			done();
 		});
