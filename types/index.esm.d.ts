@@ -606,9 +606,9 @@ export interface Defaults extends CoreChartOptions, ElementChartOptions, PluginC
 			>;
 	};
 
-	scale: ScaleOptions;
+	scale: ScaleOptionsByType;
 	scales: {
-		[key in ScaleType]: ScaleOptions<key>;
+		[key in ScaleType]: ScaleOptionsByType<key>;
 	};
 
 	set(values: AnyObject): AnyObject;
@@ -3123,7 +3123,7 @@ export interface ChartTypeRegistry {
 
 export type ChartType = keyof ChartTypeRegistry;
 
-export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<
+export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> = DeepPartial<
 	{ [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
 >;
 
@@ -3135,7 +3135,7 @@ export type DatasetChartOptions<TType extends ChartType = ChartType> = {
 
 export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 	scales: {
-		[key: string]: ScaleOptions<ChartTypeRegistry[TType]['scales']>;
+		[key: string]: ScaleOptionsByType<ChartTypeRegistry[TType]['scales']>;
 	};
 };
 
