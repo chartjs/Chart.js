@@ -49,11 +49,11 @@ function setLayoutDims(layouts, params) {
 		layout = layouts[i];
 		// store dimensions used instead of available chartArea in fitBoxes
 		if (layout.horizontal) {
-			layout.width = layout.box.fullWidth && params.availableWidth;
+			layout.width = layout.box.fullSize && params.availableWidth;
 			layout.height = params.hBoxMaxHeight;
 		} else {
 			layout.width = params.vBoxMaxWidth;
-			layout.height = layout.box.fullWidth && params.availableHeight;
+			layout.height = layout.box.fullSize && params.availableHeight;
 		}
 	}
 }
@@ -166,7 +166,7 @@ function fitBoxes(boxes, chartArea, params) {
 				refit = true;
 			}
 		}
-		if (!box.fullWidth) { // fullWidth boxes don't need to be re-fitted in any case
+		if (!box.fullSize) { // fullSize boxes don't need to be re-fitted in any case
 			refitBoxes.push(layout);
 		}
 	}
@@ -184,8 +184,8 @@ function placeBoxes(boxes, chartArea, params) {
 		layout = boxes[i];
 		box = layout.box;
 		if (layout.horizontal) {
-			box.left = box.fullWidth ? userPadding.left : chartArea.left;
-			box.right = box.fullWidth ? params.outerWidth - userPadding.right : chartArea.left + chartArea.w;
+			box.left = box.fullSize ? userPadding.left : chartArea.left;
+			box.right = box.fullSize ? params.outerWidth - userPadding.right : chartArea.left + chartArea.w;
 			box.top = y;
 			box.bottom = y + box.height;
 			box.width = box.right - box.left;
@@ -193,8 +193,8 @@ function placeBoxes(boxes, chartArea, params) {
 		} else {
 			box.left = x;
 			box.right = x + box.width;
-			box.top = box.fullWidth ? userPadding.top : chartArea.top;
-			box.bottom = box.fullWidth ? params.outerHeight - userPadding.right : chartArea.top + chartArea.h;
+			box.top = box.fullSize ? userPadding.top : chartArea.top;
+			box.bottom = box.fullSize ? params.outerHeight - userPadding.right : chartArea.top + chartArea.h;
 			box.height = box.bottom - box.top;
 			x = box.right;
 		}
@@ -219,7 +219,7 @@ defaults.set('layout', {
  * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'
  * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
- * @prop {boolean} fullWidth - if true, and the item is horizontal, then push vertical boxes down
+ * @prop {boolean} fullSize - if true, and the item is horizontal, then push vertical boxes down
  * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
  * @prop {function} update - Takes two parameters: width and height. Returns size of item
  * @prop {function} draw - Draws the element
@@ -249,7 +249,7 @@ export default {
 		}
 
 		// initialize item with default values
-		item.fullWidth = item.fullWidth || false;
+		item.fullSize = item.fullSize || false;
 		item.position = item.position || 'top';
 		item.weight = item.weight || 0;
 		// @ts-ignore
@@ -284,7 +284,7 @@ export default {
 	 * @param {object} options - the new item options.
 	 */
 	configure(chart, item, options) {
-		const props = ['fullWidth', 'position', 'weight'];
+		const props = ['fullSize', 'position', 'weight'];
 		const ilen = props.length;
 		let i = 0;
 		let prop;

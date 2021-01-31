@@ -402,6 +402,7 @@ The following properties were renamed during v3 development:
 * `helpers.callCallback` was renamed to `helpers.callback`
 * `helpers.drawRoundedRectangle` was renamed to `helpers.roundedRect`
 * `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
+* `LayoutItem.fullWidth` was renamed to `LayoutItem.fullSize`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 
@@ -434,6 +435,7 @@ The private APIs listed below were renamed:
 * `DatasetController.onDataUnshift` was renamed to `DatasetController._onDataUnshift`
 * `DatasetController.removeElements` was renamed to `DatasetController._removeElements`
 * `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
+* `LayoutItem.isFullWidth` was renamed to `LayoutItem.isFullSize`
 * `RadialLinearScale.setReductions` was renamed to `RadialLinearScale._setReductions`
 * `Scale.handleMargins` was renamed to `Scale._handleMargins`
 

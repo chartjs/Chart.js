@@ -14,7 +14,7 @@ export interface LayoutItem {
 	/**
 	 * if true, and the item is horizontal, then push vertical boxes down
 	 */
-	fullWidth: boolean;
+	fullSize: boolean;
 	/**
 	 * Width of item. Must be valid after update()
 	 */

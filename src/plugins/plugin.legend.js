@@ -65,7 +65,7 @@ export class Legend extends Element {
 		this._margins = undefined;
 		this.position = undefined;
 		this.weight = undefined;
-		this.fullWidth = undefined;
+		this.fullSize = undefined;
 	}
 
 	update(maxWidth, maxHeight, margins) {
@@ -540,7 +540,7 @@ export default {
 		display: true,
 		position: 'top',
 		align: 'center',
-		fullWidth: true,
+		fullSize: true,
 		reverse: false,
 		weight: 1000,
 
