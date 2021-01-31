@@ -120,5 +120,16 @@ export default {
 
 			dataset._decimated = decimated;
 		});
+	},
+
+	destroy(chart) {
+		chart.data.datasets.forEach((dataset) => {
+			if (dataset._decimated) {
+				const data = dataset._data;
+				delete dataset._decimated;
+				delete dataset._data;
+				Object.defineProperty(dataset, 'data', {value: data});
+			}
+		});
 	}
 };
