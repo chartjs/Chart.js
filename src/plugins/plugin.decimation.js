@@ -73,6 +73,22 @@ export default {
 				return;
 			}
 
+			const xAxis = chart.scales[meta.xAxisID];
+			if (xAxis.type !== 'linear' && xAxis.type !== 'time') {
+				// Only linear interpolation is supported
+				return;
+			}
+
+			if (chart.options.parsing) {
+				// Plugin only supports data that does not need parsing
+				return;
+			}
+
+			if (data.length <= 4 * availableWidth) {
+				// No decimation is required until we are above this threshold
+				return;
+			}
+
 			if (isNullOrUndef(_data)) {
 				// First time we are seeing this dataset
 				// We override the 'data' property with a setter that stores the
@@ -90,22 +106,6 @@ export default {
 						this._data = d;
 					}
 				});
-			}
-
-			const xAxis = chart.scales[meta.xAxisID];
-			if (xAxis.type !== 'linear' && xAxis.type !== 'time') {
-				// Only linear interpolation is supported
-				return;
-			}
-
-			if (chart.options.parsing) {
-				// Plugin only supports data that does not need parsing
-				return;
-			}
-
-			if (data.length <= 4 * availableWidth) {
-				// No decimation is required until we are above this threshold
-				return;
 			}
 
 			// Point the chart to the decimated data
