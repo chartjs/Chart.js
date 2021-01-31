@@ -1,6 +1,6 @@
 import defaults from './core.defaults';
 import Element from './core.element';
-import {_alignPixel, _measureText, renderText} from '../helpers/helpers.canvas';
+import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
 import {toFont, resolve, toPadding} from '../helpers/helpers.options';
@@ -1468,6 +1468,7 @@ export default class Scale extends Element {
 		const labelSizes = me._getLabelSizes();
 		const tickAndPadding = tl + padding;
 		const widest = labelSizes.widest.width;
+		const lineSpace = labelSizes.highest.offset * 0.8;
 
 		let textAlign;
 		let x;
@@ -1486,7 +1487,7 @@ export default class Scale extends Element {
 					x -= (widest / 2);
 				} else {
 					textAlign = 'left';
-					x -= widest;
+					x = me.left + lineSpace;
 				}
 			}
 		} else if (position === 'right') {
@@ -1503,7 +1504,7 @@ export default class Scale extends Element {
 					x += widest / 2;
 				} else {
 					textAlign = 'right';
-					x += widest;
+					x = me.right - lineSpace;
 				}
 			}
 		} else {
@@ -1511,6 +1512,23 @@ export default class Scale extends Element {
 		}
 
 		return {textAlign, x};
+	}
+
+	/**
+	 * @private
+	 */
+	_computeLabelArea() {
+		const me = this;
+		const chart = me.chart;
+		const position = me.options.position;
+
+		if (position === 'left' || position === 'right') {
+			return {top: 0, left: me.left, bottom: chart.height, right: me.right};
+		} if (position === 'top' || position === 'bottom') {
+			return {top: me.top, left: 0, bottom: me.bottom, right: chart.width};
+		}
+
+		return null;
 	}
 
 	/**
@@ -1604,6 +1622,12 @@ export default class Scale extends Element {
 		}
 
 		const ctx = me.ctx;
+
+		const area = me._computeLabelArea();
+		if (area) {
+			clipArea(ctx, area);
+		}
+
 		const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
 		let i, ilen;
 
@@ -1613,6 +1637,10 @@ export default class Scale extends Element {
 			const label = item.label;
 			let y = item.textOffset;
 			renderText(ctx, label, 0, y, tickFont, item);
+		}
+
+		if (area) {
+			unclipArea(ctx);
 		}
 	}
 
