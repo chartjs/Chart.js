@@ -906,8 +906,8 @@ export default class Scale extends Element {
 	/**
 	 * @return {boolean}
 	 */
-	isFullWidth() {
-		return this.options.fullWidth;
+	isFullSize() {
+		return this.options.fullSize;
 	}
 
 	/**

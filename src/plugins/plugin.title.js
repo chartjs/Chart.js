@@ -23,7 +23,7 @@ export class Title extends Element {
 		this.height = undefined;
 		this.position = undefined;
 		this.weight = undefined;
-		this.fullWidth = undefined;
+		this.fullSize = undefined;
 	}
 
 	update(maxWidth, maxHeight) {
@@ -170,7 +170,7 @@ export default {
 		font: {
 			style: 'bold',
 		},
-		fullWidth: true,
+		fullSize: true,
 		padding: 10,
 		position: 'top',
 		text: '',

@@ -717,7 +717,7 @@ export const layouts: {
 	configure(
 		chart: Chart,
 		item: LayoutItem,
-		options: { fullWidth?: number; position?: LayoutPosition; weight?: number }
+		options: { fullSize?: number; position?: LayoutPosition; weight?: number }
 	): void;
 
 	/**
@@ -1222,7 +1222,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 	fit(): void;
 	afterFit(): void;
 
-	isFullWidth(): boolean;
+	isFullSize(): boolean;
 }
 export const Scale: {
 	prototype: Scale;
@@ -2022,10 +2022,10 @@ export interface LegendOptions {
 	 */
 	align: TextAlign;
 	/**
-	 * Marks that this box should take the full width of the canvas (pushing down other boxes). This is unlikely to need to be changed in day-to-day use.
+	 * Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
 	 * @default true
 	 */
-	fullWidth: boolean;
+	fullSize: boolean;
 	/**
 	 * Legend will show datasets in reverse order.
 	 * @default false
@@ -2145,7 +2145,7 @@ export interface TitleOptions {
 	 */
 	color: Color;
 	font: FontSpec;
-	// fullWidth: boolean;
+	// fullSize: boolean;
 	/**
 	 * 	Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
 	 */

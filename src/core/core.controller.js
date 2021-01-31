@@ -324,7 +324,7 @@ class Chart {
 
 		each(scales, (scale) => {
 			// Set LayoutItem parameters for backwards compatibility
-			scale.fullWidth = scale.options.fullWidth;
+			scale.fullSize = scale.options.fullSize;
 			scale.position = scale.options.position;
 			scale.weight = scale.options.weight;
 			layouts.addBox(me, scale);

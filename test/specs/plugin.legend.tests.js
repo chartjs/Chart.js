@@ -7,7 +7,7 @@ describe('Legend block tests', function() {
 			display: true,
 			position: 'top',
 			align: 'center',
-			fullWidth: true, // marks that this box should take the full width of the canvas (pushing down other boxes)
+			fullSize: true,
 			reverse: false,
 			weight: 1000,
 
@@ -768,7 +768,7 @@ describe('Legend block tests', function() {
 				options: {
 					plugins: {
 						legend: {
-							fullWidth: true,
+							fullSize: true,
 							position: 'top',
 							weight: 150
 						}
@@ -776,16 +776,16 @@ describe('Legend block tests', function() {
 				}
 			});
 
-			expect(chart.legend.fullWidth).toBe(true);
+			expect(chart.legend.fullSize).toBe(true);
 			expect(chart.legend.position).toBe('top');
 			expect(chart.legend.weight).toBe(150);
 
-			chart.options.plugins.legend.fullWidth = false;
+			chart.options.plugins.legend.fullSize = false;
 			chart.options.plugins.legend.position = 'left';
 			chart.options.plugins.legend.weight = 42;
 			chart.update();
 
-			expect(chart.legend.fullWidth).toBe(false);
+			expect(chart.legend.fullSize).toBe(false);
 			expect(chart.legend.position).toBe('left');
 			expect(chart.legend.weight).toBe(42);
 		});

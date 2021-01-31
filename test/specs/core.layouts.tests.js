@@ -206,7 +206,7 @@ describe('Chart.layouts', function() {
 					x2: {
 						type: 'category',
 						position: 'top',
-						fullWidth: true,
+						fullSize: true,
 						offset: false
 					},
 					y: {
