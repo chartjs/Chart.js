@@ -1844,7 +1844,7 @@ export interface ElementOptionsByType {
 	point: PointOptions & PointHoverOptions;
 }
 export interface ElementChartOptions {
-	elements: { [k in keyof ElementOptionsByType]: ElementOptionsByType[k]; };
+	elements: Partial<ElementOptionsByType>;
 }
 
 export class BasePlatform {
@@ -2483,7 +2483,7 @@ export interface PluginOptionsByType {
 	tooltip: TooltipOptions;
 }
 export interface PluginChartOptions {
-	plugins: { [k in keyof PluginOptionsByType]: PluginOptionsByType[k]; };
+	plugins: Partial<PluginOptionsByType>;
 }
 
 export interface GridLineOptions {
