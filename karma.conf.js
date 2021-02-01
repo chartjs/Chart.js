@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
 const json = require('@rollup/plugin-json');
@@ -49,7 +47,10 @@ module.exports = function(karma) {
 			chrome: {
 				base: 'Chrome',
 				flags: [
-					'--disable-accelerated-2d-canvas'
+					'--disable-accelerated-2d-canvas',
+					'--disable-background-timer-throttling',
+					'--disable-backgrounding-occluded-windows',
+					'--disable-renderer-backgrounding'
 				]
 			},
 			firefox: {
