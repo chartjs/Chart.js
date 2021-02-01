@@ -349,19 +349,12 @@ export default class DatasetController {
 
 		me._dataCheck();
 
-		const data = me._data;
-		const metaData = meta.data = new Array(data.length);
-
-		for (let i = 0, ilen = data.length; i < ilen; ++i) {
-			metaData[i] = new me.dataElementType();
-		}
-
 		if (me.datasetElementType) {
 			meta.dataset = new me.datasetElementType();
 		}
 	}
 
-	buildOrUpdateElements() {
+	buildOrUpdateElements(resetNewElements) {
 		const me = this;
 		const meta = me._cachedMeta;
 		const dataset = me.getDataset();
@@ -382,7 +375,7 @@ export default class DatasetController {
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
 		// any updates and so make sure that we handle number of datapoints changing.
-		me._resyncElements();
+		me._resyncElements(resetNewElements);
 
 		// if stack changed, update stack values for the whole dataset
 		if (stackChanged) {
@@ -402,7 +395,10 @@ export default class DatasetController {
 			me.getDataset(),
 		], {
 			merger(key, target, source) {
-				if (key !== 'data') {
+				// Cloning the data is expensive and unnecessary.
+				// Additionally, plugins may add dataset level fields that should
+				// not be cloned. We identify those via an underscore prefix
+				if (key !== 'data' && key.charAt(0) !== '_') {
 					_merger(key, target, source);
 				}
 			}
@@ -419,13 +415,10 @@ export default class DatasetController {
 		const {_cachedMeta: meta, _data: data} = me;
 		const {iScale, _stacked} = meta;
 		const iAxis = iScale.axis;
-		let sorted = true;
-		let i, parsed, cur, prev;
 
-		if (start > 0) {
-			sorted = meta._sorted;
-			prev = meta._parsed[start - 1];
-		}
+		let sorted = start === 0 && count === data.length ? true : meta._sorted;
+		let prev = start > 0 && meta._parsed[start - 1];
+		let i, cur, parsed;
 
 		if (me._parsing === false) {
 			meta._parsed = data;
@@ -971,13 +964,13 @@ export default class DatasetController {
 	/**
 	 * @private
 	 */
-	_resyncElements() {
+	_resyncElements(resetNewElements) {
 		const me = this;
 		const numMeta = me._cachedMeta.data.length;
 		const numData = me._data.length;
 
 		if (numData > numMeta) {
-			me._insertElements(numMeta, numData - numMeta);
+			me._insertElements(numMeta, numData - numMeta, resetNewElements);
 		} else if (numData < numMeta) {
 			me._removeElements(numData, numMeta - numData);
 		}
@@ -988,7 +981,7 @@ export default class DatasetController {
 	/**
 	 * @private
 	 */
-	_insertElements(start, count) {
+	_insertElements(start, count, resetNewElements = true) {
 		const me = this;
 		const elements = new Array(count);
 		const meta = me._cachedMeta;
@@ -1005,7 +998,9 @@ export default class DatasetController {
 		}
 		me.parse(start, count);
 
-		me.updateElements(data, start, count, 'reset');
+		if (resetNewElements) {
+			me.updateElements(data, start, count, 'reset');
+		}
 	}
 
 	updateElements(element, start, count, mode) {} // eslint-disable-line no-unused-vars

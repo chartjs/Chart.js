@@ -539,7 +539,7 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	configure(): void;
 	initialize(): void;
 	addElements(): void;
-	buildOrUpdateElements(): void;
+	buildOrUpdateElements(resetNewElements?: boolean): void;
 
 	getStyle(index: number, active: boolean): any;
 	protected resolveDatasetElementOptions(active: boolean): any;
@@ -789,6 +789,14 @@ export interface Plugin<O = {}> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 */
 	afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
+	/**
+	 * @desc Called during the update process, before any chart elements have been created.
+	 * This can be used for data decimation by changing the data array inside a dataset.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {object} args - The call arguments.
+	 * @param {object} options - The plugin options.
+	 */
+	beforeElementsUpdate?(chart: Chart, args: {}, options: O): void;
 	/**
 	 * @desc Called during chart reset
 	 * @param {Chart} chart - The chart instance.
@@ -1902,8 +1910,16 @@ export class BasePlatform {
 export class BasicPlatform extends BasePlatform {}
 export class DomPlatform extends BasePlatform {}
 
-export const Filler: Plugin;
+export declare enum DecimationAlgorithm {
+	minmax = 'min-max',
+}
 
+export interface DecimationOptions {
+	enabled: boolean;
+	algorithm: DecimationAlgorithm;
+}
+
+export const Filler: Plugin;
 export interface FillerOptions {
 	propagate: boolean;
 }
@@ -2477,6 +2493,7 @@ export interface TooltipItem {
 }
 
 export interface PluginOptionsByType {
+	decimation: DecimationOptions;
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;

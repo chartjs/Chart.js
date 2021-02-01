@@ -466,9 +466,15 @@ class Chart {
 		// Make sure dataset controllers are updated and new controllers are reset
 		const newControllers = me.buildOrUpdateControllers();
 
+		me.notifyPlugins('beforeElementsUpdate');
+
 		// Make sure all dataset controllers have correct meta data counts
 		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
-			me.getDatasetMeta(i).controller.buildOrUpdateElements();
+			const {controller} = me.getDatasetMeta(i);
+			const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
+			// New controllers will be reset after the layout pass, so we only want to modify
+			// elements added to new datasets
+			controller.buildOrUpdateElements(reset);
 		}
 
 		me._updateLayout();
