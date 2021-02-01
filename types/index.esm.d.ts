@@ -594,23 +594,22 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 }
 
 export type AnyObject = Record<string, unknown>;
-export interface Defaults extends CoreChartOptions, ElementChartOptions {
+export interface Defaults extends CoreChartOptions, ElementChartOptions, PluginChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
 			CoreChartOptions &
 			ElementChartOptions &
+			PluginChartOptions &
 			DatasetChartOptions<key>[key] &
 			ScaleChartOptions<key> &
 			ChartTypeRegistry[key]['chartOptions']
 			>;
 	};
 
-	scale: ScaleOptions;
+	scale: ScaleOptionsByType;
 	scales: {
-		[key in ScaleType]: ScaleOptions<key>;
+		[key in ScaleType]: ScaleOptionsByType<key>;
 	};
-
-	plugins: PluginOptions;
 
 	set(values: AnyObject): AnyObject;
 	set(scope: string, values: AnyObject): AnyObject;
@@ -1339,12 +1338,12 @@ export interface CoreChartOptions extends ParsingOptions {
 	 * @see Defaults.color
 	 */
 	color: Color;
-		/**
+	/**
 	 * base background color
 	 * @see Defaults.backgroundColor
 	 */
 	backgroundColor: Color;
-		/**
+	/**
 	 * base border color
 	 * @see Defaults.borderColor
 	 */
@@ -1411,8 +1410,6 @@ export interface CoreChartOptions extends ParsingOptions {
 	layout: {
 		padding: Scriptable<number | ChartArea, ScriptableContext>;
 	};
-
-	plugins: PluginOptions;
 }
 
 export type EasingFunction =
@@ -1558,7 +1555,7 @@ export interface VisualElement {
 	getRange?(axis: 'x' | 'y'): number;
 }
 
-export interface CommonOptions {
+export interface CommonElementOptions {
 	borderWidth: number;
 	borderColor: Color;
 	backgroundColor: Color;
@@ -1586,7 +1583,7 @@ export interface ArcProps {
 	circumference: number;
 }
 
-export interface ArcOptions extends CommonOptions {
+export interface ArcOptions extends CommonElementOptions {
 	/**
 	 * Arc stroke alignment.
 	 */
@@ -1612,7 +1609,7 @@ export const ArcElement: ChartComponent & {
 
 export interface LineProps {}
 
-export interface LineOptions extends CommonOptions {
+export interface LineOptions extends CommonElementOptions {
 	/**
 	 * Line cap style. See MDN.
 	 * @default 'butt'
@@ -1699,7 +1696,7 @@ export type PointStyle =
 	| HTMLImageElement
 	| HTMLCanvasElement;
 
-export interface PointOptions extends CommonOptions {
+export interface PointOptions extends CommonElementOptions {
 	/**
 	 * Point radius
 	 * @default 3
@@ -1800,7 +1797,7 @@ export interface BarProps {
 	height: number;
 }
 
-export interface BarOptions extends CommonOptions {
+export interface BarOptions extends CommonElementOptions {
 	/**
 	 * The base value for the bar in data units along the value axis.
 	 */
@@ -1840,14 +1837,14 @@ export const BarElement: ChartComponent & {
 	new (cfg: any): BarElement;
 };
 
-export interface ElementOptions {
+export interface ElementOptionsByType {
 	arc: ArcOptions & ArcHoverOptions;
 	bar: BarOptions & BarHoverOptions;
 	line: LineOptions & LineHoverOptions;
 	point: PointOptions & PointHoverOptions;
 }
 export interface ElementChartOptions {
-	elements: ElementOptions;
+	elements: Partial<ElementOptionsByType>;
 }
 
 export class BasePlatform {
@@ -2479,12 +2476,16 @@ export interface TooltipItem {
 	element: Element;
 }
 
-export interface PluginOptions {
+export interface PluginOptionsByType {
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;
 	tooltip: TooltipOptions;
 }
+export interface PluginChartOptions {
+	plugins: Partial<PluginOptionsByType>;
+}
+
 export interface GridLineOptions {
 	/**
 	 * @default true
@@ -3122,7 +3123,7 @@ export interface ChartTypeRegistry {
 
 export type ChartType = keyof ChartTypeRegistry;
 
-export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<
+export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> = DeepPartial<
 	{ [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
 >;
 
@@ -3134,13 +3135,14 @@ export type DatasetChartOptions<TType extends ChartType = ChartType> = {
 
 export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 	scales: {
-		[key: string]: ScaleOptions<ChartTypeRegistry[TType]['scales']>;
+		[key: string]: ScaleOptionsByType<ChartTypeRegistry[TType]['scales']>;
 	};
 };
 
 export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
 	CoreChartOptions &
 	ElementChartOptions &
+	PluginChartOptions &
 	DatasetChartOptions<TType> &
 	ScaleChartOptions<TType> &
 	ChartTypeRegistry[TType]['chartOptions']
