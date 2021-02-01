@@ -323,10 +323,7 @@ class Chart {
 		me.scales = scales;
 
 		each(scales, (scale) => {
-			// Set LayoutItem parameters for backwards compatibility
-			scale.fullSize = scale.options.fullSize;
-			scale.position = scale.options.position;
-			scale.weight = scale.options.weight;
+			layouts.configure(me, scale, scale.options);
 			layouts.addBox(me, scale);
 		});
 	}

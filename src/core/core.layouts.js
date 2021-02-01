@@ -284,17 +284,9 @@ export default {
 	 * @param {object} options - the new item options.
 	 */
 	configure(chart, item, options) {
-		const props = ['fullSize', 'position', 'weight'];
-		const ilen = props.length;
-		let i = 0;
-		let prop;
-
-		for (; i < ilen; ++i) {
-			prop = props[i];
-			if (Object.prototype.hasOwnProperty.call(options, prop)) {
-				item[prop] = options[prop];
-			}
-		}
+		item.fullSize = options.fullSize;
+		item.position = options.position;
+		item.weight = options.weight;
 	},
 
 	/**
