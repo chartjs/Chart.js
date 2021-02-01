@@ -36,6 +36,7 @@ jobs:
             - 'src/**'
           test:
             - 'test/**'
+            - 'karma.conf.js'
           types:
             - 'types/**'
     - name: Install
