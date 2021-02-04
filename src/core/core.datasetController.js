@@ -975,7 +975,10 @@ export default class DatasetController {
 			me._removeElements(numData, numMeta - numData);
 		}
 		// Re-parse the old elements (new elements are parsed in _insertElements)
-		me.parse(0, Math.min(numData, numMeta));
+		const count = Math.min(numData, numMeta);
+		if (count) {
+			me.parse(0, count);
+		}
 	}
 
 	/**
