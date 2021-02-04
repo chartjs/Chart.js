@@ -38,7 +38,7 @@ Options may be configured directly on the dataset. The dataset options can be ch
 
 - per dataset: dataset.*
 - per chart: options.datasets[type].*
-- or globally: Chart.defaults.global.datasets[type].*
+- or globally: Chart.defaults.[type].*
 
 where type corresponds to the dataset type.
 
@@ -48,7 +48,7 @@ The following example would set the `showLine` option to 'false' for all line da
 
 ```javascript
 // Do not show lines for all datasets by default
-Chart.defaults.global.datasets.line.showLine = false;
+Chart.defaults.line.showLine = false;
 
 // This chart would show a line only for the third dataset
 var chart = new Chart(ctx, {
