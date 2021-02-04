@@ -56,12 +56,12 @@ export interface DateAdapterBase {
 
 export interface DateAdapter extends DateAdapterBase {
 	readonly options: any;
+	override(members: Partial<DateAdapter>): void;
 }
 
 export const DateAdapter: {
 	prototype: DateAdapter;
 	new(options: any): DateAdapter;
-	override(members: Partial<DateAdapter>): void;
 };
 
 export const _adapters: {
