@@ -21,10 +21,47 @@
 	<br>
 	<button id="randomizeData">Randomize Data</button>
 	<script>
-		var chartColors = window.chartColors;
-		var gradient = null;
+		var cache = new Map();
 		var width = null;
 		var height = null;
+
+		function createRadialGradient3(context, c1, c2, c3) {
+			var chartArea = context.chart.chartArea;
+			if (!chartArea) {
+				// This case happens on initial chart load
+				return null;
+			}
+
+			var chartWidth = chartArea.right - chartArea.left;
+			var chartHeight = chartArea.bottom - chartArea.top;
+			if (width !== chartWidth || height !== chartHeight) {
+				cache.clear();
+			}
+			var gradient = cache.get(c1 + c2 + c3);
+			if (!gradient) {
+				// Create the gradient because this is either the first render
+				// or the size of the chart has changed
+				width = chartWidth;
+				height = chartHeight;
+				var centerX = (chartArea.left + chartArea.right) / 2;
+				var centerY = (chartArea.top + chartArea.bottom) / 2;
+				var r = Math.min(
+					(chartArea.right - chartArea.left) / 2,
+					(chartArea.bottom - chartArea.top) / 2
+				);
+				var ctx = context.chart.ctx;
+				gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
+				gradient.addColorStop(0, c1);
+				gradient.addColorStop(0.5, c2);
+				gradient.addColorStop(1, c3);
+				cache.set(c1 + c2 + c3, gradient);
+			}
+
+			return gradient;
+		}
+
+		var chartColors = window.chartColors;
+		var colors = [chartColors.red, chartColors.orange, chartColors.yellow, chartColors.green, chartColors.blue];
 		var config = {
 			type: 'polarArea',
 			data: {
@@ -37,34 +74,14 @@
 						randomScalingFactor(),
 					],
 					backgroundColor: function(context) {
-						var chartArea = context.chart.chartArea;
-
-						if (!chartArea) {
-							// This case happens on initial chart load
-							return null;
+						var c = colors[context.dataIndex];
+						if (context.active) {
+							c = Chart.helpers.getHoverColor(c);
 						}
-
-						var chartWidth = chartArea.right - chartArea.left;
-						var chartHeight = chartArea.bottom - chartArea.top;
-						if (gradient === null || width !== chartWidth || height !== chartHeight) {
-							// Create the gradient because this is either the first render
-							// or the size of the chart has changed
-							width = chartWidth;
-							height = chartHeight;
-							var centerX = (chartArea.left + chartArea.right) / 2;
-							var centerY = (chartArea.top + chartArea.bottom) / 2;
-							var r = Math.min(
-								(chartArea.right - chartArea.left) / 2,
-								(chartArea.bottom - chartArea.top) / 2
-							);
-							var ctx = context.chart.ctx;
-							gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
-							gradient.addColorStop(0, chartColors.red);
-							gradient.addColorStop(0.5, chartColors.green);
-							gradient.addColorStop(1, chartColors.purple);
-						}
-
-						return gradient;
+						var mid = Chart.helpers.color(c).desaturate(0.2).darken(0.2).rgbString();
+						var start = Chart.helpers.color(c).lighten(0.2).rotate(270).rgbString();
+						var end = Chart.helpers.color(c).lighten(0.1).rgbString();
+						return createRadialGradient3(context, start, mid, end);
 					},
 					label: 'My dataset' // for legend
 				}],
