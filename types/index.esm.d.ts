@@ -447,6 +447,7 @@ export declare class Chart<
 	readonly scales: { [key: string]: Scale };
 	readonly scale: Scale | undefined;
 	readonly attached: boolean;
+	readonly defaults: Defaults;
 
 	data: ChartData<TType, TData, TLabel>;
 	options: ChartOptions<TType>;
