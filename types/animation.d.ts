@@ -1,9 +1,9 @@
-import { Chart } from './index.esm';
+import { AnyObject, Chart } from './index.esm';
 
 export class Animation {
-	constructor(cfg: any, target: any, prop: string, to?: any);
+	constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);
 	active(): boolean;
-	update(cfg: any, to: any, date: number): void;
+	update(cfg: AnyObject, to: unknown, date: number): void;
 	cancel(): void;
 	tick(date: number): void;
 }
@@ -25,7 +25,7 @@ export class Animator {
 }
 
 export class Animations {
-	constructor(chart: Chart, animations: {});
-	configure(animations: {}): void;
-	update(target: any, values: any): undefined | boolean;
+	constructor(chart: Chart, animations: AnyObject);
+	configure(animations: AnyObject): void;
+	update(target: AnyObject, values: AnyObject): undefined | boolean;
 }
