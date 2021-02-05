@@ -992,12 +992,26 @@ export default class DatasetController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const data = meta.data;
+		const end = start + count;
 		let i;
 
-		for (i = start; i < start + count; ++i) {
+		data.length += count;
+
+		for (i = data.length - 1; i >= end; i--) {
+			data[i] = data[i - count];
+		}
+
+		for (i = start; i < end; ++i) {
 			data[i] = new me.dataElementType();
 		}
 
+		if (me._parsing) {
+			const parsed = meta._parsed;
+			parsed.length += count;
+			for (i = parsed.length - 1; i >= end; i--) {
+				parsed[i] = parsed[i - count];
+			}
+		}
 		me.parse(start, count);
 
 		if (resetNewElements) {
