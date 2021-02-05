@@ -58,11 +58,6 @@ export interface DateAdapter {
 	endOf(timestamp: number, unit: TimeUnit | 'isoWeek'): number;
 }
 
-declare const DateAdapter: {
-	prototype: DateAdapter;
-	new(options: any): DateAdapter;
-};
-
 export const _adapters: {
 	_date: DateAdapter;
 };
