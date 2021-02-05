@@ -64,6 +64,11 @@ export interface ParsingOptions {
 
 export interface ControllerDatasetOptions extends ParsingOptions {
 	/**
+	 * The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.
+	 * @default 'x'
+	 */
+	indexAxis: 'x' | 'y';
+	/**
 	 * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
 	 */
 	clip: number | ChartArea;
@@ -86,11 +91,6 @@ export interface BarControllerDatasetOptions
 	extends ControllerDatasetOptions,
 		ScriptableAndArrayOptions<BarOptions, ScriptableContext>,
 		ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {
-	/**
-	 * The base axis of the dataset. 'x' for vertical bars and 'y' for horizontal bars.
-	 * @default 'x'
-	 */
-	indexAxis: 'x' | 'y';
 	/**
 	 * The ID of the x axis to plot this dataset on.
 	 */
@@ -1340,6 +1340,12 @@ export interface CoreChartOptions extends ParsingOptions {
 	datasets: {
 		animation: Scriptable<AnimationOptions | false, ScriptableContext>;
 	};
+
+	/**
+	 * The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.
+	 * @default 'x'
+	 */
+	indexAxis: 'x' | 'y';
 
 	/**
 	 * base color
