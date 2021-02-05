@@ -995,22 +995,20 @@ export default class DatasetController {
 		const end = start + count;
 		let i;
 
-		data.length += count;
-
-		for (i = data.length - 1; i >= end; i--) {
-			data[i] = data[i - count];
-		}
+		const move = (arr) => {
+			arr.length += count;
+			for (i = arr.length - 1; i >= end; i--) {
+				arr[i] = arr[i - count];
+			}
+		};
+		move(data);
 
 		for (i = start; i < end; ++i) {
 			data[i] = new me.dataElementType();
 		}
 
 		if (me._parsing) {
-			const parsed = meta._parsed;
-			parsed.length += count;
-			for (i = parsed.length - 1; i >= end; i--) {
-				parsed[i] = parsed[i - count];
-			}
+			move(meta._parsed);
 		}
 		me.parse(start, count);
 
