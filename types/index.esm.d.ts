@@ -1342,6 +1342,12 @@ export interface CoreChartOptions extends ParsingOptions {
 	};
 
 	/**
+	 * The base axis of the chart. 'x' for vertical bars and 'y' for horizontal bars.
+	 * @default 'x'
+	 */
+	indexAxis: 'x' | 'y';
+
+	/**
 	 * base color
 	 * @see Defaults.color
 	 */
