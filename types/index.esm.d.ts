@@ -416,7 +416,7 @@ export interface ChartMeta<TElement extends Element = Element, TDatasetElement e
 
 	_sorted: boolean;
 	_stacked: boolean;
-	_parsed: AnyObject[];
+	_parsed: unknown[];
 }
 
 export interface ActiveDataPoint {
