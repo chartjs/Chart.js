@@ -907,4 +907,30 @@ describe('Chart.controllers.line', function() {
 		expect(meta.data[2].options.borderWidth).toBe(3);
 		expect(meta.data[3].options.borderWidth).toBe(4);
 	});
+
+	it('should render a million points', function() {
+		var data = [];
+		for (let x = 0; x < 1e6; x++) {
+			data.push({x, y: Math.sin(x / 10000)});
+		}
+		function createChart() {
+			window.acquireChart({
+				type: 'line',
+				data: {
+					datasets: [{
+						data,
+						borderWidth: 1,
+						radius: 0
+					}],
+				},
+				options: {
+					scales: {
+						x: {type: 'linear'},
+						y: {type: 'linear'}
+					}
+				}
+			});
+		}
+		expect(createChart).not.toThrow();
+	});
 });

@@ -990,19 +990,14 @@ export default class DatasetController {
 	 */
 	_insertElements(start, count, resetNewElements = true) {
 		const me = this;
-		const elements = new Array(count);
 		const meta = me._cachedMeta;
 		const data = meta.data;
 		let i;
 
-		for (i = 0; i < count; ++i) {
-			elements[i] = new me.dataElementType();
+		for (i = start; i < start + count; ++i) {
+			data[i] = new me.dataElementType();
 		}
-		data.splice(start, 0, ...elements);
 
-		if (me._parsing) {
-			meta._parsed.splice(start, 0, ...new Array(count));
-		}
 		me.parse(start, count);
 
 		if (resetNewElements) {
