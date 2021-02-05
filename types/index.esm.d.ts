@@ -447,7 +447,6 @@ export declare class Chart<
 	readonly scales: { [key: string]: Scale };
 	readonly scale: Scale | undefined;
 	readonly attached: boolean;
-	readonly defaults: Defaults;
 
 	data: ChartData<TType, TData, TLabel>;
 	options: ChartOptions<TType>;
@@ -489,6 +488,7 @@ export declare class Chart<
 
 	notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
+	static readonly defaults: Defaults;
 	static readonly version: string;
 	static readonly instances: { [key: string]: Chart };
 	static readonly registry: Registry;
