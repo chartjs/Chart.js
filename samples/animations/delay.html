@@ -76,7 +76,7 @@
 						var delay = 0;
 						var dsIndex = context.datasetIndex;
 						var index = context.dataIndex;
-						if (context.dataPoint && !context.delayed) {
+						if (context.parsed && !context.delayed) {
 							delay = index * 300 + dsIndex * 100;
 							context.delayed = true;
 						}

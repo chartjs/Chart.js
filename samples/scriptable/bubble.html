@@ -33,7 +33,7 @@
 		}
 
 		function colorize(opaque, context) {
-			var value = context.dataset.data[context.dataIndex];
+			var value = context.raw;
 			var x = value.x / 100;
 			var y = value.y / 100;
 			var r = channelValue(x, y, [250, 150, 50, 0]);
@@ -90,14 +90,12 @@
 					},
 
 					hoverBorderWidth: function(context) {
-						var value = context.dataset.data[context.dataIndex];
-						return Math.round(8 * value.v / 1000);
+						return Math.round(8 * context.raw.v / 1000);
 					},
 
 					radius: function(context) {
-						var value = context.dataset.data[context.dataIndex];
 						var size = context.chart.width;
-						var base = Math.abs(value.v) / 1000;
+						var base = Math.abs(context.raw.v) / 1000;
 						return (size / 24) * base;
 					}
 				}

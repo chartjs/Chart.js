@@ -506,7 +506,7 @@ describe('Plugin.Tooltip', function() {
 						mode: 'index',
 						callbacks: {
 							beforeLabel: function(ctx) {
-								return ctx.dataPoint.x + ',' + ctx.dataPoint.y;
+								return ctx.parsed.x + ',' + ctx.parsed.y;
 							}
 						}
 					}

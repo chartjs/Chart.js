@@ -171,7 +171,7 @@ function createDatasetContext(parent, index, dataset) {
 	});
 }
 
-function createDataContext(parent, index, point, element) {
+function createDataContext(parent, index, point, raw, element) {
 	return Object.create(parent, {
 		active: {
 			writable: true,
@@ -180,8 +180,11 @@ function createDataContext(parent, index, point, element) {
 		dataIndex: {
 			value: index
 		},
-		dataPoint: {
+		parsed: {
 			value: point
+		},
+		raw: {
+			value: raw
 		},
 		element: {
 			value: element
@@ -757,13 +760,14 @@ export default class DatasetController {
 	 */
 	getContext(index, active) {
 		const me = this;
+		const dataset = me.getDataset();
 		let context;
 		if (index >= 0 && index < me._cachedMeta.data.length) {
 			const element = me._cachedMeta.data[index];
 			context = element.$context ||
-				(element.$context = createDataContext(me.getContext(), index, me.getParsed(index), element));
+				(element.$context = createDataContext(me.getContext(), index, me.getParsed(index), dataset.data[index], element));
 		} else {
-			context = me.$context || (me.$context = createDatasetContext(me.chart.getContext(), me.index, me.getDataset()));
+			context = me.$context || (me.$context = createDatasetContext(me.chart.getContext(), me.index, dataset));
 		}
 
 		context.active = !!active;

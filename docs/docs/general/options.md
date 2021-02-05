@@ -72,7 +72,8 @@ In addition to [dataset](#dataset)
 
 - `active`: true if element is active (hovered)
 - `dataIndex`: index of the current data
-- `dataPoint`: the parsed data values for the given `dataIndex` and `datasetIndex`
+- `parsed`: the parsed data values for the given `dataIndex` and `datasetIndex`
+- `raw`: the raw data values for the given `dataIndex` and `datasetIndex`
 - `element`: the element (point, arc, bar, etc.) for this data
 - `index`: getter for `dataIndex`
 - `type`: `'data'`
