@@ -24,7 +24,7 @@ import {
 	ScriptableAndArrayOptions
 } from './scriptable';
 
-export { DateAdapterBase, DateAdapter, TimeUnit, _adapters } from './adapters';
+export { DateAdapter, TimeUnit, _adapters } from './adapters';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
 export { Element } from './element';
