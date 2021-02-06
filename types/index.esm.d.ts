@@ -12,8 +12,9 @@
  * }
  */
 
-import { DateAdapter, TimeUnit } from './adapters';
+import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
+import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
 import { Element } from './element';
 import { ChartArea, Point } from './geometric';
@@ -595,7 +596,6 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	};
 }
 
-export type AnyObject = Record<string, unknown>;
 export interface Defaults extends CoreChartOptions, ElementChartOptions, PluginChartOptions {
 	controllers: {
 		[key in ChartType]: DeepPartial<
@@ -741,7 +741,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	install?(chart: Chart, args: Record<string, never>, options: O): void;
+	install?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called when a plugin is starting. This happens when chart is created or plugin is enabled.
 	 * @param {Chart} chart - The chart instance.
@@ -749,7 +749,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	start?(chart: Chart, args: Record<string, never>, options: O): void;
+	start?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled.
 	 * @param {Chart} chart - The chart instance.
@@ -757,21 +757,21 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	stop?(chart: Chart, args: Record<string, never>, options: O): void;
+	stop?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before initializing `chart`.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	beforeInit?(chart: Chart, args: Record<string, never>, options: O): void;
+	beforeInit?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called after `chart` has been initialized and before the first update.
 	 * @param {Chart} chart - The chart instance.
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterInit?(chart: Chart, args: Record<string, never>, options: O): void;
+	afterInit?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before updating `chart`. If any plugin returns `false`, the update
 	 * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
@@ -781,7 +781,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart update.
 	 */
-	beforeUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+	beforeUpdate?(chart: Chart, args: { mode: UpdateMode, cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after `chart` has been updated and before rendering. Note that this
 	 * hook will not be called if the chart update has been previously cancelled.
@@ -798,7 +798,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	beforeElementsUpdate?(chart: Chart, args: Record<string, never>, options: O): void;
+	beforeElementsUpdate?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called during chart reset
 	 * @param {Chart} chart - The chart instance.
@@ -806,7 +806,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since version 3.0.0
 	 */
-	reset?(chart: Chart, args: Record<string, never>, options: O): void;
+	reset?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
 	 * the datasets update is cancelled until another `update` is triggered.
@@ -827,7 +827,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since version 2.1.5
 	 */
-	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
+	afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode, cancelable: true }, options: O): void;
 	/**
 	 * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
 	 * returns `false`, the datasets update is cancelled until another `update` is triggered.
@@ -839,7 +839,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart datasets drawing.
 	 */
-	beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): boolean | void;
+	beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` datasets at the given `args.index` has been updated. Note
 	 * that this hook will not be called if the datasets update has been previously cancelled.
@@ -859,7 +859,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart layout.
 	 */
-	beforeLayout?(chart: Chart, args: Record<string, never>, options: O): boolean | void;
+	beforeLayout?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called before scale data limits are calculated. This hook is called separately for each scale in the chart.
 	 * @param {Chart} chart - The chart instance.
@@ -899,7 +899,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterLayout?(chart: Chart, args: Record<string, never>, options: O): void;
+	afterLayout?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before rendering `chart`. If any plugin returns `false`,
 	 * the rendering is cancelled until another `render` is triggered.
@@ -908,7 +908,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart rendering.
 	 */
-	beforeRender?(chart: Chart, args: Record<string, never>, options: O): boolean | void;
+	beforeRender?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` has been fully rendered (and animation completed). Note
 	 * that this hook will not be called if the rendering has been previously cancelled.
@@ -916,7 +916,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterRender?(chart: Chart, args: Record<string, never>, options: O): void;
+	afterRender?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
 	 * the frame drawing is cancelled untilanother `render` is triggered.
@@ -925,7 +925,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart drawing.
 	 */
-	beforeDraw?(chart: Chart, args: Record<string, never>, options: O): boolean | void;
+	beforeDraw?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` has been drawn. Note that this hook will not be called
 	 * if the drawing has been previously cancelled.
@@ -933,7 +933,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDraw?(chart: Chart, args: Record<string, never>, options: O): void;
+	afterDraw?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
 	 * the datasets drawing is cancelled until another `render` is triggered.
@@ -942,7 +942,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart datasets drawing.
 	 */
-	beforeDatasetsDraw?(chart: Chart, args: Record<string, never>, options: O): boolean | void;
+	beforeDatasetsDraw?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `chart` datasets have been drawn. Note that this hook
 	 * will not be called if the datasets drawing has been previously cancelled.
@@ -950,7 +950,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetsDraw?(chart: Chart, args: Record<string, never>, options: O): void;
+	afterDatasetsDraw?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
 	 * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
@@ -1009,7 +1009,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	destroy?(chart: Chart, args: Record<string, never>, options: O): void;
+	destroy?(chart: Chart, args: EmptyObject, options: O): void;
 	/**
 	 * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
 	 * @param {Chart} chart - The chart instance.
@@ -1017,7 +1017,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} options - The plugin options.
 	 * @since 3.0.0
 	 */
-	uninstall?(chart: Chart, args: Record<string, never>, options: O): void;
+	uninstall?(chart: Chart, args: EmptyObject, options: O): void;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };
@@ -2830,7 +2830,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
 	 * options for creating a new adapter instance
 	 */
 	adapters: {
-		date: DateAdapter;
+		date: unknown;
 	};
 
 	time: {
@@ -3114,7 +3114,7 @@ export interface ChartTypeRegistry {
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	bubble: {
-		chartOptions: Record<string, never>;
+		chartOptions: EmptyObject;
 		datasetOptions: BubbleControllerDatasetOptions;
 		defaultDataPoint: BubbleDataPoint;
 		scales: keyof CartesianScaleTypeRegistry;
