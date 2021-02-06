@@ -28,9 +28,11 @@ module.exports = {
 					rotation: 0,
 				}
 			},
-			scale: {
-				display: false,
-				min: -15
+			scales: {
+				r: {
+					display: false,
+					min: -15
+				}
 			}
 		}
 	},

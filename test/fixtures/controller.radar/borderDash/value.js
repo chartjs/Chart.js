@@ -27,10 +27,13 @@ module.exports = {
 					radius: 10
 				}
 			},
-			scale: {
-				display: false,
-				min: -15
+			scales: {
+				r: {
+					display: false,
+					min: -15
+				}
 			}
+
 		}
 	},
 	options: {

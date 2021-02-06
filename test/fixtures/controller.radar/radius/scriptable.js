@@ -36,9 +36,11 @@ module.exports = {
 					},
 				}
 			},
-			scale: {
-				display: false,
-				min: -15
+			scales: {
+				r: {
+					display: false,
+					min: -15
+				}
 			}
 		}
 	},

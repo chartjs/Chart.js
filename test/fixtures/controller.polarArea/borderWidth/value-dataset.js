@@ -18,8 +18,10 @@ module.exports = {
 					borderColor: '#888',
 				}
 			},
-			scale: {
-				display: false,
+			scales: {
+				r: {
+					display: false
+				}
 			}
 		}
 	},

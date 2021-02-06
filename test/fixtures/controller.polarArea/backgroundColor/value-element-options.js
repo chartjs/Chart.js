@@ -16,8 +16,10 @@ module.exports = {
 					backgroundColor: '#00ff00'
 				}
 			},
-			scale: {
-				display: false
+			scales: {
+				r: {
+					display: false
+				}
 			}
 		}
 	},

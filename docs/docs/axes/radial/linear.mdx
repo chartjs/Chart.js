@@ -65,9 +65,11 @@ let chart = new Chart(ctx, {
         labels: ['January', 'February', 'March', 'April']
     },
     options: {
-        scale: {
-            suggestedMin: 50,
-            suggestedMax: 100
+        scales: {
+            r: {
+                suggestedMin: 50,
+                suggestedMax: 100
+            }
         }
     }
 });
@@ -83,11 +85,13 @@ This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5
 
 ```javascript
 let options = {
-    scale: {
-        max: 5,
-        min: 0,
-        ticks: {
-            stepSize: 0.5
+    scales: {
+        r: {
+            max: 5,
+            min: 0,
+            ticks: {
+                stepSize: 0.5
+            }
         }
     }
 };

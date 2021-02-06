@@ -6,19 +6,21 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			scale: {
-				gridLines: {
-					display: true,
-				},
-				angleLines: {
-					color: ['red', 'green'],
-					lineWidth: [1, 5]
-				},
-				pointLabels: {
-					display: false
-				},
-				ticks: {
-					display: false
+			scales: {
+				r: {
+					gridLines: {
+						display: true,
+					},
+					angleLines: {
+						color: ['red', 'green'],
+						lineWidth: [1, 5]
+					},
+					pointLabels: {
+						display: false
+					},
+					ticks: {
+						display: false
+					}
 				}
 			}
 		}

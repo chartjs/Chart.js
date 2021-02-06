@@ -24,8 +24,10 @@ module.exports = {
 					borderWidth: 8
 				}
 			},
-			scale: {
-				display: false
+			scales: {
+				r: {
+					display: false
+				}
 			}
 		}
 	},

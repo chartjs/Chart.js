@@ -389,7 +389,11 @@ describe('Chart.controllers.radar', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				scale: {id: 'test'}
+				scales: {
+					test: {
+						axis: 'r'
+					}
+				}
 			}
 		});
 

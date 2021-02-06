@@ -56,12 +56,6 @@ function mergeScaleConfig(config, options) {
 		scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
 	});
 
-	// Backward compatibility
-	if (options.scale) {
-		scales[options.scale.id || 'r'] = mergeIf(Object.create(null), [{axis: 'r'}, options.scale, chartDefaults.scales.r]);
-		firstIDs.r = firstIDs.r || options.scale.id || 'r';
-	}
-
 	// Then merge dataset defaults to scale configs
 	config.data.datasets.forEach(dataset => {
 		const type = dataset.type || config.type;
