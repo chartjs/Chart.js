@@ -12,8 +12,10 @@ module.exports = {
 			]
 		},
 		options: {
-			scale: {
-				display: false
+			scales: {
+				r: {
+					display: false
+				}
 			}
 		}
 	},

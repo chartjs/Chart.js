@@ -31,9 +31,11 @@ module.exports = {
 					fill: true
 				}
 			},
-			scale: {
-				display: false,
-				min: -15
+			scales: {
+				r: {
+					display: false,
+					min: -15
+				}
 			},
 			plugins: {
 				legend: false,

@@ -446,7 +446,6 @@ export declare class Chart<
 	readonly currentDevicePixelRatio: number;
 	readonly chartArea: ChartArea;
 	readonly scales: { [key: string]: Scale };
-	readonly scale: Scale | undefined;
 	readonly attached: boolean;
 
 	data: ChartData<TType, TData, TLabel>;

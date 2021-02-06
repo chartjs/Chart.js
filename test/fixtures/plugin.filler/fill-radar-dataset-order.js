@@ -23,8 +23,10 @@ module.exports = {
 				title: false,
 				tooltip: false
 			},
-			scale: {
-				display: false
+			scales: {
+				r: {
+					display: false
+				}
 			}
 		}
 	}

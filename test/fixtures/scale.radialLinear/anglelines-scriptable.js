@@ -6,23 +6,25 @@ module.exports = {
 		},
 		options: {
 			responsive: false,
-			scale: {
-				gridLines: {
-					display: true,
-				},
-				angleLines: {
-					color: function(context) {
-						return context.index % 2 === 0 ? 'red' : 'green';
+			scales: {
+				r: {
+					gridLines: {
+						display: true,
 					},
-					lineWidth: function(context) {
-						return context.index % 2 === 0 ? 1 : 5;
+					angleLines: {
+						color: function(context) {
+							return context.index % 2 === 0 ? 'red' : 'green';
+						},
+						lineWidth: function(context) {
+							return context.index % 2 === 0 ? 1 : 5;
+						},
 					},
-				},
-				pointLabels: {
-					display: false
-				},
-				ticks: {
-					display: false
+					pointLabels: {
+						display: false
+					},
+					ticks: {
+						display: false
+					}
 				}
 			}
 		}

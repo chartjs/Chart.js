@@ -32,10 +32,13 @@ module.exports = {
 			layout: {
 				padding: 32
 			},
-			scale: {
-				display: false,
-				min: -1
+			scales: {
+				r: {
+					display: false,
+					min: -1
+				}
 			}
+
 		}
 	},
 	options: {

@@ -44,9 +44,11 @@ module.exports = {
 			layout: {
 				padding: 32
 			},
-			scale: {
-				display: false,
-				beginAtZero: true
+			scales: {
+				r: {
+					display: false,
+					beginAtZero: true
+				}
 			}
 		}
 	},

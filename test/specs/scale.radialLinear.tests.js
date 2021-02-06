@@ -166,9 +166,11 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
-				scale: {
-					suggestedMin: -10,
-					suggestedMax: 10
+				scales: {
+					r: {
+						suggestedMin: -10,
+						suggestedMax: 10
+					}
 				}
 			}
 		});
@@ -187,9 +189,11 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
 			},
 			options: {
-				scale: {
-					min: -1010,
-					max: 1010
+				scales: {
+					r: {
+						min: -1010,
+						max: 1010
+					}
 				}
 			}
 		});
@@ -209,8 +213,10 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4']
 			},
 			options: {
-				scale: {
-					beginAtZero: false
+				scales: {
+					r: {
+						beginAtZero: false
+					}
 				}
 			}
 		});
@@ -243,8 +249,10 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					reverse: true
+				scales: {
+					r: {
+						reverse: true
+					}
 				}
 			}
 		});
@@ -264,9 +272,11 @@ describe('Test the radial linear scale', function() {
 				}]
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						display: false
+				scales: {
+					r: {
+						pointLabels: {
+							display: false
+						}
 					}
 				}
 			}
@@ -301,10 +311,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					ticks: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						ticks: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -325,10 +337,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -362,10 +376,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -387,10 +403,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -409,10 +427,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -443,10 +463,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				}
@@ -476,10 +498,12 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
 						}
 					}
 				},
@@ -515,14 +539,16 @@ describe('Test the radial linear scale', function() {
 				labels: ['label1', 'label2', 'label3', 'label4', 'label5']
 			},
 			options: {
-				scale: {
-					pointLabels: {
-						callback: function(value, index) {
-							return index.toString();
+				scales: {
+					r: {
+						pointLabels: {
+							callback: function(value, index) {
+								return index.toString();
+							}
+						},
+						ticks: {
+							display: false
 						}
-					},
-					ticks: {
-						display: false
 					}
 				}
 			}
