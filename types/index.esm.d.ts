@@ -850,7 +850,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {UpdateMode} args.mode - The update mode.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode }, options: O): void;
+	afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: false }, options: O): void;
 	/**
 	 * @desc Called before laying out `chart`. If any plugin returns `false`,
 	 * the layout update is cancelled until another `update` is triggered.
@@ -950,7 +950,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {object} args - The call arguments.
 	 * @param {object} options - The plugin options.
 	 */
-	afterDatasetsDraw?(chart: Chart, args: EmptyObject, options: O): void;
+	afterDatasetsDraw?(chart: Chart, args: EmptyObject, options: O, cancelable: false): void;
 	/**
 	 * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
 	 * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
@@ -983,7 +983,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
 	 * @param {object} options - The plugin options.
 	 */
-	beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean }, options: O): boolean | void;
+	beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, cancelable: true }, options: O): boolean | void;
 	/**
 	 * @desc Called after the `event` has been consumed. Note that this hook
 	 * will not be called if the `event` has been previously discarded.
@@ -994,7 +994,7 @@ export interface Plugin<O = AnyObject> extends ExtendedPlugin {
 	 * @param {boolean} [args.changed] - Set to true if the plugin needs a render. Should only be changed to true, because this args object is passed through all plugins.
 	 * @param {object} options - The plugin options.
 	 */
-	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean }, options: O): void;
+	afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean, cancelable: false }, options: O): void;
 	/**
 	 * @desc Called after the chart as been resized.
 	 * @param {Chart} chart - The chart instance.
