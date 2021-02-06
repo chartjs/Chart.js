@@ -7,6 +7,10 @@ plugins:
         - javascript
   fixme:
     enabled: true
+checks:
+  method-complexity:
+    config:
+      threshold: 6
 exclude_patterns:
   - "dist/"
   - "docs/"
