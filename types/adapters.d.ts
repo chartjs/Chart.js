@@ -1,6 +1,10 @@
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 
-export interface DateAdapterBase {
+export interface DateAdapter {
+	// Override one or multiple of the methods to adjust to the logic of the current date library.
+	override(members: Partial<DateAdapter>): void;
+	readonly options: any;
+
 	/**
 	 * Returns a map of time formats for the supported formatting units defined
 	 * in Unit as well as 'datetime' representing a detailed date/time string.
@@ -53,16 +57,6 @@ export interface DateAdapterBase {
 	 */
 	endOf(timestamp: number, unit: TimeUnit | 'isoWeek'): number;
 }
-
-export interface DateAdapter extends DateAdapterBase {
-	readonly options: any;
-}
-
-export const DateAdapter: {
-	prototype: DateAdapter;
-	new(options: any): DateAdapter;
-	override(members: Partial<DateAdapter>): void;
-};
 
 export const _adapters: {
 	_date: DateAdapter;
