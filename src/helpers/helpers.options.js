@@ -93,8 +93,8 @@ export function toTRBLCorners(value) {
 	};
 }
 
-export function percentageToPx(value, basePx){
-  let tl, tr, bl, br;
+export function percentageToPx(value, basePx) {
+	let tl, tr, bl, br;
 
 	if (isObject(value)) {
 		tl = basePx * value.topLeft;

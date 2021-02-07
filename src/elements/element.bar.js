@@ -85,14 +85,14 @@ function parseBorderWidth(bar, maxW, maxH) {
 function parseBorderRadius(bar, maxW, maxH) {
 	const value = bar.options.borderRadius;
 	const percentage = bar.options.borderRadiusPercentage;
-  const maxR = Math.min(maxW, maxH);
-  let o;
-  // if set the `borderRadiusPercentage`, ignore borderRadius
-  if(percentage){
-    o = percentageToPx(percentage, maxR)
-  }else{
-    o = toTRBLCorners(value);
-  }
+	const maxR = Math.min(maxW, maxH);
+	let o;
+	// if set the `borderRadiusPercentage`, ignore borderRadius
+	if (percentage) {
+		o = percentageToPx(percentage, maxR);
+	} else {
+		o = toTRBLCorners(value);
+	}
 	const skip = parseBorderSkipped(bar);
 
 	return {
@@ -264,7 +264,7 @@ BarElement.defaults = {
 	borderSkipped: 'start',
 	borderWidth: 0,
 	borderRadius: 0,
-  borderRadiusPercentage: 0,
+	borderRadiusPercentage: 0,
 };
 
 /**
