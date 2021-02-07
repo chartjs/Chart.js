@@ -1807,10 +1807,16 @@ export interface BarOptions extends CommonOptions {
 	borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 
 	/**
-	 * Border radius
+	 * Border radius. May be affected by `borderRadiusPercentage`
 	 * @default 0
 	 */
 	borderRadius: number | BorderRadius;
+
+	/**
+	 * Border radius percentage. if Not equal to the default value, More important than `borderRadius`
+	 * @default 0
+	 */
+	borderRadiusPercentage: number | BorderRadius;
 }
 
 export interface BorderRadius {

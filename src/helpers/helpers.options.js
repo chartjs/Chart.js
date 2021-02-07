@@ -93,6 +93,26 @@ export function toTRBLCorners(value) {
 	};
 }
 
+export function percentageToPx(value, basePx){
+  let tl, tr, bl, br;
+
+	if (isObject(value)) {
+		tl = basePx * value.topLeft;
+		tr = basePx * value.topRight;
+		bl = basePx * value.bottomLeft;
+		br = basePx * value.bottomRight;
+	} else {
+		tl = tr = bl = br = basePx * value;
+	}
+
+	return {
+		topLeft: tl,
+		topRight: tr,
+		bottomLeft: bl,
+		bottomRight: br
+	};
+}
+
 /**
  * Converts the given value into a padding object with pre-computed width/height.
  * @param {number|object} value - If a number, set the value to all TRBL component,
