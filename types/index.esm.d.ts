@@ -1807,10 +1807,10 @@ export interface BarOptions extends CommonOptions {
 	borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
 
 	/**
-	 * Border radius. May be affected by `borderRadiusPercentage`
+	 * Border radius. use number to px, 5 => 5px; use string to percentage, '50' => 50%
 	 * @default 0
 	 */
-	borderRadius: number | BorderRadius;
+	borderRadius: number| string | BorderRadius;
 
 	/**
 	 * Border radius percentage. if Not equal to the default value, More important than `borderRadius`
@@ -1820,10 +1820,10 @@ export interface BarOptions extends CommonOptions {
 }
 
 export interface BorderRadius {
-	topLeft: number;
-	topRight: number;
-	bottomLeft: number;
-	bottomRight: number;
+	topLeft: number | string;
+	topRight: number | string;
+	bottomLeft: number | string;
+	bottomRight: number | string;
 }
 
 export interface BarHoverOptions extends CommonHoverOptions {

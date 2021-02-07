@@ -1,5 +1,5 @@
 import Element from '../core/core.element';
-import {percentageToPx, toTRBL, toTRBLCorners} from '../helpers/helpers.options';
+import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 import {PI, HALF_PI} from '../helpers/helpers.math';
 
 /**
@@ -84,15 +84,8 @@ function parseBorderWidth(bar, maxW, maxH) {
 
 function parseBorderRadius(bar, maxW, maxH) {
 	const value = bar.options.borderRadius;
-	const percentage = bar.options.borderRadiusPercentage;
 	const maxR = Math.min(maxW, maxH);
-	let o;
-	// if set the `borderRadiusPercentage`, ignore borderRadius
-	if (percentage) {
-		o = percentageToPx(percentage, maxR);
-	} else {
-		o = toTRBLCorners(value);
-	}
+	const o = toTRBLCorners(value, maxR);
 	const skip = parseBorderSkipped(bar);
 
 	return {

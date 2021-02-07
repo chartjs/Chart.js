@@ -39,6 +39,14 @@ export function toLineHeight(value, size) {
 
 const numberOrZero = v => +v || 0;
 
+const parseRadiusToPx = (value, basePx) => {
+	if (typeof value === 'number') {
+		return numberOrZero(value);
+	}
+	const num = value / 100;
+	return isNaN(num) ? 0 : num * basePx;
+};
+
 /**
  * Converts the given value into a TRBL object.
  * @param {number|object} value - If a number, set the value to all TRBL component,
@@ -73,36 +81,16 @@ export function toTRBL(value) {
  * @returns {object} The TRBL corner values (topLeft, topRight, bottomLeft, bottomRight)
  * @since 3.0.0
  */
-export function toTRBLCorners(value) {
+export function toTRBLCorners(value, basePx) {
 	let tl, tr, bl, br;
 
 	if (isObject(value)) {
-		tl = numberOrZero(value.topLeft);
-		tr = numberOrZero(value.topRight);
-		bl = numberOrZero(value.bottomLeft);
-		br = numberOrZero(value.bottomRight);
+		tl = parseRadiusToPx(value.topLeft, basePx);
+		tr = parseRadiusToPx(value.topRight, basePx);
+		bl = parseRadiusToPx(value.bottomLeft, basePx);
+		br = parseRadiusToPx(value.bottomRight, basePx);
 	} else {
-		tl = tr = bl = br = numberOrZero(value);
-	}
-
-	return {
-		topLeft: tl,
-		topRight: tr,
-		bottomLeft: bl,
-		bottomRight: br
-	};
-}
-
-export function percentageToPx(value, basePx) {
-	let tl, tr, bl, br;
-
-	if (isObject(value)) {
-		tl = basePx * value.topLeft;
-		tr = basePx * value.topRight;
-		bl = basePx * value.bottomLeft;
-		br = basePx * value.bottomRight;
-	} else {
-		tl = tr = bl = br = basePx * value;
+		tl = tr = bl = br = parseRadiusToPx(value, basePx);
 	}
 
 	return {
