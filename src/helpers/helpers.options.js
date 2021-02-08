@@ -42,9 +42,18 @@ const numberOrZero = v => +v || 0;
 const parseRadiusToPx = (value, basePx) => {
 	if (typeof value === 'number') {
 		return numberOrZero(value);
+	} else if (typeof value === 'string') {
+		const percentReg = /^(100|[1-9]?\d(\.\d\d*)?)%$/;
+		const pxReg = /^(\d+(\.\d\d*)?)px$/;
+		const	resPx = value.match(pxReg);
+		const resPercent = value.match(percentReg);
+		if (resPx) {
+			return numberOrZero(resPx[1]);
+		} else if (resPercent) {
+			return +resPercent[1] / 100 * basePx;
+		}
 	}
-	const num = value / 100;
-	return isNaN(num) ? 0 : num * basePx;
+	return 0;
 };
 
 /**

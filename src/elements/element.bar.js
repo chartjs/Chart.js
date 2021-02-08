@@ -85,7 +85,7 @@ function parseBorderWidth(bar, maxW, maxH) {
 function parseBorderRadius(bar, maxW, maxH) {
 	const value = bar.options.borderRadius;
 	const maxR = Math.min(maxW, maxH);
-	const o = toTRBLCorners(value, maxR);
+	const o = toTRBLCorners(value, maxR * 2);
 	const skip = parseBorderSkipped(bar);
 
 	return {
@@ -256,8 +256,7 @@ BarElement.id = 'bar';
 BarElement.defaults = {
 	borderSkipped: 'start',
 	borderWidth: 0,
-	borderRadius: 0,
-	borderRadiusPercentage: 0,
+	borderRadius: 0
 };
 
 /**
