@@ -40,7 +40,7 @@ describe('Chart.helpers.options', function() {
 			expect(toTRBLCorners('4.5%', 100)).toEqual(
 				{topLeft: 4.5, topRight: 4.5, bottomLeft: 4.5, bottomRight: 4.5});
 			expect(toTRBLCorners('4.666%', 50)).toEqual(
-				{topLeft: 2.33, topRight: 2.33, bottomLeft: 2.33, bottomRight: 2.33});
+				{topLeft: 2.333, topRight: 2.333, bottomLeft: 2.333, bottomRight: 2.333});
 		});
 		it('should support object values', function() {
 			expect(toTRBLCorners({topLeft: 1, topRight: 2, bottomLeft: 3, bottomRight: 4})).toEqual(
