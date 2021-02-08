@@ -48,10 +48,11 @@ const parseRadiusToPx = (value, basePx) => {
 		const numReg = /^(\d+(\.\d\d*)?)$/;
 		const	resPx = value.match(pxReg);
 		const resPercent = value.match(percentReg);
+		const resNum = value.match(numReg);
 		if (resPx) {
 			return numberOrZero(resPx[1]);
-		} else if (numReg) {
-			return numberOrZero(numReg[1]);
+		} else if (resNum) {
+			return numberOrZero(resNum[1]);
 		} else if (resPercent) {
 			return +resPercent[1] / 100 * basePx;
 		}
