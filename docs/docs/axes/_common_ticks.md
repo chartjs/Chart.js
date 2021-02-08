@@ -1,4 +1,4 @@
-### Common to all axes
+### Common tick options to all axes
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | :-------------------------------: | ------- | -----------

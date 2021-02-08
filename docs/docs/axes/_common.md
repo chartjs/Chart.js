@@ -1,4 +1,4 @@
-### Common to all axes
+### Common options to all axes
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

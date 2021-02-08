@@ -1,4 +1,4 @@
-### Common options to all cartesian axes
+### Common tick options to all cartesian axes
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
