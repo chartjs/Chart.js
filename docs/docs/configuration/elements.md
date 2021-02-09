@@ -80,6 +80,8 @@ Global bar options: `Chart.defaults.elements.bar`.
 | `borderWidth` | `number` | `0` | Bar stroke width.
 | `borderColor` | [`Color`](../general/colors.md) | `Chart.defaults.borderColor` | Bar stroke color.
 | `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'bottom'`, `'left'`, `'top'` or `'right'`.
+| `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
+| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Style of the point for legend.
 
 ## Arc Configuration
 
