@@ -46,7 +46,7 @@ Object.assign(Chart, controllers, scales, elements, plugins, platforms);
 Chart.Chart = Chart;
 
 if (typeof window !== 'undefined') {
-	window.Chart = Chart;
+  window.Chart = Chart;
 }
 
 export default Chart;

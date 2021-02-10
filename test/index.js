@@ -13,15 +13,15 @@ window.createMockContext = createMockContext;
 injectWrapperCSS();
 
 jasmine.fixture = {
-	specs: specsFromFixtures
+  specs: specsFromFixtures
 };
 
 jasmine.triggerMouseEvent = triggerMouseEvent;
 
 beforeEach(function() {
-	addMatchers();
+  addMatchers();
 });
 
 afterEach(function() {
-	releaseCharts();
+  releaseCharts();
 });

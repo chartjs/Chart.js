@@ -20,9 +20,9 @@ import { Element } from './element';
 import { ChartArea, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 import {
-	Scriptable,
-	ScriptableOptions,
-	ScriptableAndArrayOptions
+  Scriptable,
+  ScriptableOptions,
+  ScriptableAndArrayOptions
 } from './scriptable';
 
 export { DateAdapter, TimeUnit, _adapters } from './adapters';
@@ -32,10 +32,10 @@ export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export { LayoutItem, LayoutPosition } from './layout';
 export {
-	Scriptable,
-	ScriptableOptions,
-	ScriptableAndArray,
-	ScriptableAndArrayOptions
+  Scriptable,
+  ScriptableOptions,
+  ScriptableAndArray,
+  ScriptableAndArrayOptions
 } from './scriptable';
 
 export interface ScriptableContext {
@@ -519,7 +519,7 @@ export declare enum UpdateModeEnum {
 export type UpdateMode = keyof typeof UpdateModeEnum;
 
 export class DatasetController<TElement extends Element = Element, TDatasetElement extends Element = Element> {
-	constructor(chart: Chart, datasetIndex: number);
+  constructor(chart: Chart, datasetIndex: number);
 
 	readonly chart: Chart;
 	readonly index: number;
@@ -1863,13 +1863,13 @@ export interface ElementChartOptions {
 }
 
 export class BasePlatform {
-	/**
+  /**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
 	 * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
 	 * @param options - The chart options
 	 */
-	acquireContext(
+  acquireContext(
 		canvas: HTMLCanvasElement,
 		options?: CanvasRenderingContext2DSettings
 	): CanvasRenderingContext2D | null;
@@ -1879,39 +1879,39 @@ export class BasePlatform {
 	 * @param {CanvasRenderingContext2D} context - The context2d instance
 	 * @returns {boolean} true if the method succeeded, else false
 	 */
-	releaseContext(context: CanvasRenderingContext2D): boolean;
-	/**
+  releaseContext(context: CanvasRenderingContext2D): boolean;
+  /**
 	 * Registers the specified listener on the given chart.
 	 * @param {Chart} chart - Chart from which to listen for event
 	 * @param {string} type - The ({@link ChartEvent}) type to listen for
 	 * @param listener - Receives a notification (an object that implements
 	 * the {@link ChartEvent} interface) when an event of the specified type occurs.
 	 */
-	addEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
-	/**
+  addEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
+  /**
 	 * Removes the specified listener previously registered with addEventListener.
 	 * @param {Chart} chart - Chart from which to remove the listener
 	 * @param {string} type - The ({@link ChartEvent}) type to remove
 	 * @param listener - The listener function to remove from the event target.
 	 */
-	removeEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
-	/**
+  removeEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
+  /**
 	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
 	 */
-	getDevicePixelRatio(): number;
-	/**
+  getDevicePixelRatio(): number;
+  /**
 	 * @param {HTMLCanvasElement} canvas - The canvas for which to calculate the maximum size
 	 * @param {number} [width] - Parent element's content width
 	 * @param {number} [height] - Parent element's content height
 	 * @param {number} [aspectRatio] - The aspect ratio to maintain
 	 * @returns { width: number, height: number } the maximum size available.
 	 */
-	getMaximumSize(canvas: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): { width: number, height: number };
-	/**
+  getMaximumSize(canvas: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): { width: number, height: number };
+  /**
 	 * @param {HTMLCanvasElement} canvas
 	 * @returns {boolean} true if the canvas is attached to the platform, false if not.
 	 */
-	isAttached(canvas: HTMLCanvasElement): boolean;
+  isAttached(canvas: HTMLCanvasElement): boolean;
 }
 
 export class BasicPlatform extends BasePlatform {}
