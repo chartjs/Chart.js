@@ -152,9 +152,7 @@ PolarAreaController.defaults = {
     animateScale: true
   },
   aspectRatio: 1,
-  datasets: {
-    indexAxis: 'r'
-  },
+  indexAxis: 'r',
   scales: {
     r: {
       type: 'radialLinear',

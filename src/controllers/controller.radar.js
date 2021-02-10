@@ -129,9 +129,7 @@ RadarController.defaults = {
       type: 'radialLinear',
     }
   },
-  datasets: {
-    indexAxis: 'r'
-  },
+  indexAxis: 'r',
   elements: {
     line: {
       fill: 'start',
