@@ -366,7 +366,7 @@ describe('Platform.dom', function() {
   });
 
   describe('event handling', function() {
-    it('should notify plugins about events', function(done) {
+    it('should notify plugins about events', async function() {
       var notifiedEvent;
       var plugin = {
         afterEvent: function(chart, args) {
@@ -387,24 +387,19 @@ describe('Platform.dom', function() {
         plugins: [plugin]
       });
 
-      afterEvent(chart, 'click', function() {
-        // Check that notifiedEvent is correct
-        expect(notifiedEvent).not.toBe(undefined);
-
-        // Is type correctly translated
-        expect(notifiedEvent.type).toBe('click');
-
-        // Relative Position
-        expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
-        expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
-
-        done();
-      });
-
-      jasmine.triggerMouseEvent(chart, 'click', {
+      await jasmine.triggerMouseEvent(chart, 'click', {
         x: chart.width / 2,
         y: chart.height / 2
       });
+      // Check that notifiedEvent is correct
+      expect(notifiedEvent).not.toBe(undefined);
+
+      // Is type correctly translated
+      expect(notifiedEvent.type).toBe('click');
+
+      // Relative Position
+      expect(notifiedEvent.x).toBeCloseToPixel(chart.width / 2);
+      expect(notifiedEvent.y).toBeCloseToPixel(chart.height / 2);
     });
   });
 

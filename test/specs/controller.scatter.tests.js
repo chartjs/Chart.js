@@ -5,7 +5,7 @@ describe('Chart.controllers.scatter', function() {
     expect(typeof Chart.controllers.scatter).toBe('function');
   });
 
-  it('should test default tooltip callbacks', function(done) {
+  it('should test default tooltip callbacks', async function() {
     var chart = window.acquireChart({
       type: 'scatter',
       data: {
@@ -21,18 +21,13 @@ describe('Chart.controllers.scatter', function() {
     });
     var point = chart.getDatasetMeta(0).data[0];
 
-    afterEvent(chart, 'mousemove', function() {
-      // Title should be empty
-      expect(chart.tooltip.title.length).toBe(0);
-      expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
-
-      done();
-    });
-
-    jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    // Title should be empty
+    expect(chart.tooltip.title.length).toBe(0);
+    expect(chart.tooltip.body[0].lines).toEqual(['(10, 15)']);
   });
 
-  it('should only show a single point in the tooltip on multiple datasets', function(done) {
+  it('should only show a single point in the tooltip on multiple datasets', async function() {
     var chart = window.acquireChart({
       type: 'scatter',
       data: {
@@ -63,12 +58,7 @@ describe('Chart.controllers.scatter', function() {
     });
     var point = chart.getDatasetMeta(0).data[1];
 
-    afterEvent(chart, 'mousemove', function() {
-      expect(chart.tooltip.body.length).toEqual(1);
-
-      done();
-    });
-
-    jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    expect(chart.tooltip.body.length).toEqual(1);
   });
 });
