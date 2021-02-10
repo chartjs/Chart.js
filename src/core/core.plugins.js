@@ -10,11 +10,11 @@ import {callback as callCallback, mergeIf, valueOrDefault} from '../helpers/help
  */
 
 export default class PluginService {
-	constructor() {
-		this._init = [];
-	}
+  constructor() {
+    this._init = [];
+  }
 
-	/**
+  /**
 	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
 	 * This method immediately returns as soon as a plugin explicitly returns false. The
 	 * returned value can be used, for instance, to interrupt the current action.
@@ -23,137 +23,137 @@ export default class PluginService {
 	 * @param {object} [args] - Extra arguments to apply to the hook call.
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
-	notify(chart, hook, args) {
-		const me = this;
+  notify(chart, hook, args) {
+    const me = this;
 
-		if (hook === 'beforeInit') {
-			me._init = me._createDescriptors(chart, true);
-			me._notify(me._init, chart, 'install');
-		}
+    if (hook === 'beforeInit') {
+      me._init = me._createDescriptors(chart, true);
+      me._notify(me._init, chart, 'install');
+    }
 
-		const descriptors = me._descriptors(chart);
-		const result = me._notify(descriptors, chart, hook, args);
+    const descriptors = me._descriptors(chart);
+    const result = me._notify(descriptors, chart, hook, args);
 
-		if (hook === 'destroy') {
-			me._notify(descriptors, chart, 'stop');
-			me._notify(me._init, chart, 'uninstall');
-		}
-		return result;
-	}
+    if (hook === 'destroy') {
+      me._notify(descriptors, chart, 'stop');
+      me._notify(me._init, chart, 'uninstall');
+    }
+    return result;
+  }
 
-	/**
+  /**
 	 * @private
 	 */
-	_notify(descriptors, chart, hook, args) {
-		args = args || {};
-		for (const descriptor of descriptors) {
-			const plugin = descriptor.plugin;
-			const method = plugin[hook];
-			const params = [chart, args, descriptor.options];
-			if (callCallback(method, params, plugin) === false && args.cancelable) {
-				return false;
-			}
-		}
+  _notify(descriptors, chart, hook, args) {
+    args = args || {};
+    for (const descriptor of descriptors) {
+      const plugin = descriptor.plugin;
+      const method = plugin[hook];
+      const params = [chart, args, descriptor.options];
+      if (callCallback(method, params, plugin) === false && args.cancelable) {
+        return false;
+      }
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	invalidate() {
-		// When plugins are registered, there is the possibility of a double
-		// invalidate situation. In this case, we only want to invalidate once.
-		// If we invalidate multiple times, the `_oldCache` is lost and all of the
-		// plugins are restarted without being correctly stopped.
-		// See https://github.com/chartjs/Chart.js/issues/8147
-		if (!isNullOrUndef(this._cache)) {
-			this._oldCache = this._cache;
-			this._cache = undefined;
-		}
-	}
+  invalidate() {
+    // When plugins are registered, there is the possibility of a double
+    // invalidate situation. In this case, we only want to invalidate once.
+    // If we invalidate multiple times, the `_oldCache` is lost and all of the
+    // plugins are restarted without being correctly stopped.
+    // See https://github.com/chartjs/Chart.js/issues/8147
+    if (!isNullOrUndef(this._cache)) {
+      this._oldCache = this._cache;
+      this._cache = undefined;
+    }
+  }
 
-	/**
+  /**
 	 * @param {Chart} chart
 	 * @private
 	 */
-	_descriptors(chart) {
-		if (this._cache) {
-			return this._cache;
-		}
+  _descriptors(chart) {
+    if (this._cache) {
+      return this._cache;
+    }
 
-		const descriptors = this._cache = this._createDescriptors(chart);
+    const descriptors = this._cache = this._createDescriptors(chart);
 
-		this._notifyStateChanges(chart);
+    this._notifyStateChanges(chart);
 
-		return descriptors;
-	}
+    return descriptors;
+  }
 
-	_createDescriptors(chart, all) {
-		const config = chart && chart.config;
-		const options = valueOrDefault(config.options && config.options.plugins, {});
-		const plugins = allPlugins(config);
-		// options === false => all plugins are disabled
-		return options === false && !all ? [] : createDescriptors(plugins, options, all);
-	}
+  _createDescriptors(chart, all) {
+    const config = chart && chart.config;
+    const options = valueOrDefault(config.options && config.options.plugins, {});
+    const plugins = allPlugins(config);
+    // options === false => all plugins are disabled
+    return options === false && !all ? [] : createDescriptors(plugins, options, all);
+  }
 
-	/**
+  /**
 	 * @param {Chart} chart
 	 * @private
 	 */
-	_notifyStateChanges(chart) {
-		const previousDescriptors = this._oldCache || [];
-		const descriptors = this._cache;
-		const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
-		this._notify(diff(previousDescriptors, descriptors), chart, 'stop');
-		this._notify(diff(descriptors, previousDescriptors), chart, 'start');
-	}
+  _notifyStateChanges(chart) {
+    const previousDescriptors = this._oldCache || [];
+    const descriptors = this._cache;
+    const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
+    this._notify(diff(previousDescriptors, descriptors), chart, 'stop');
+    this._notify(diff(descriptors, previousDescriptors), chart, 'start');
+  }
 }
 
 /**
  * @param {import("./core.config").default} config
  */
 function allPlugins(config) {
-	const plugins = [];
-	const keys = Object.keys(registry.plugins.items);
-	for (let i = 0; i < keys.length; i++) {
-		plugins.push(registry.getPlugin(keys[i]));
-	}
+  const plugins = [];
+  const keys = Object.keys(registry.plugins.items);
+  for (let i = 0; i < keys.length; i++) {
+    plugins.push(registry.getPlugin(keys[i]));
+  }
 
-	const local = config.plugins || [];
-	for (let i = 0; i < local.length; i++) {
-		const plugin = local[i];
+  const local = config.plugins || [];
+  for (let i = 0; i < local.length; i++) {
+    const plugin = local[i];
 
-		if (plugins.indexOf(plugin) === -1) {
-			plugins.push(plugin);
-		}
-	}
+    if (plugins.indexOf(plugin) === -1) {
+      plugins.push(plugin);
+    }
+  }
 
-	return plugins;
+  return plugins;
 }
 
 function getOpts(options, all) {
-	if (!all && options === false) {
-		return null;
-	}
-	if (options === true) {
-		return {};
-	}
-	return options;
+  if (!all && options === false) {
+    return null;
+  }
+  if (options === true) {
+    return {};
+  }
+  return options;
 }
 
 function createDescriptors(plugins, options, all) {
-	const result = [];
+  const result = [];
 
-	for (let i = 0; i < plugins.length; i++) {
-		const plugin = plugins[i];
-		const id = plugin.id;
-		const opts = getOpts(options[id], all);
-		if (opts === null) {
-			continue;
-		}
-		result.push({
-			plugin,
-			options: mergeIf({}, [opts, defaults.plugins[id]])
-		});
-	}
+  for (let i = 0; i < plugins.length; i++) {
+    const plugin = plugins[i];
+    const id = plugin.id;
+    const opts = getOpts(options[id], all);
+    if (opts === null) {
+      continue;
+    }
+    result.push({
+      plugin,
+      options: mergeIf({}, [opts, defaults.plugins[id]])
+    });
+  }
 
-	return result;
+  return result;
 }

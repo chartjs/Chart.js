@@ -17,24 +17,24 @@ const LINE_HEIGHT = new RegExp(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
  * @since 2.7.0
  */
 export function toLineHeight(value, size) {
-	const matches = ('' + value).match(LINE_HEIGHT);
-	if (!matches || matches[1] === 'normal') {
-		return size * 1.2;
-	}
+  const matches = ('' + value).match(LINE_HEIGHT);
+  if (!matches || matches[1] === 'normal') {
+    return size * 1.2;
+  }
 
-	value = +matches[2];
+  value = +matches[2];
 
-	switch (matches[3]) {
-	case 'px':
-		return value;
-	case '%':
-		value /= 100;
-		break;
-	default:
-		break;
-	}
+  switch (matches[3]) {
+  case 'px':
+    return value;
+  case '%':
+    value /= 100;
+    break;
+  default:
+    break;
+  }
 
-	return size * value;
+  return size * value;
 }
 
 const numberOrZero = v => +v || 0;
@@ -47,23 +47,23 @@ const numberOrZero = v => +v || 0;
  * @since 3.0.0
  */
 export function toTRBL(value) {
-	let t, r, b, l;
+  let t, r, b, l;
 
-	if (isObject(value)) {
-		t = numberOrZero(value.top);
-		r = numberOrZero(value.right);
-		b = numberOrZero(value.bottom);
-		l = numberOrZero(value.left);
-	} else {
-		t = r = b = l = numberOrZero(value);
-	}
+  if (isObject(value)) {
+    t = numberOrZero(value.top);
+    r = numberOrZero(value.right);
+    b = numberOrZero(value.bottom);
+    l = numberOrZero(value.left);
+  } else {
+    t = r = b = l = numberOrZero(value);
+  }
 
-	return {
-		top: t,
-		right: r,
-		bottom: b,
-		left: l
-	};
+  return {
+    top: t,
+    right: r,
+    bottom: b,
+    left: l
+  };
 }
 
 /**
@@ -74,23 +74,23 @@ export function toTRBL(value) {
  * @since 3.0.0
  */
 export function toTRBLCorners(value) {
-	let tl, tr, bl, br;
+  let tl, tr, bl, br;
 
-	if (isObject(value)) {
-		tl = numberOrZero(value.topLeft);
-		tr = numberOrZero(value.topRight);
-		bl = numberOrZero(value.bottomLeft);
-		br = numberOrZero(value.bottomRight);
-	} else {
-		tl = tr = bl = br = numberOrZero(value);
-	}
+  if (isObject(value)) {
+    tl = numberOrZero(value.topLeft);
+    tr = numberOrZero(value.topRight);
+    bl = numberOrZero(value.bottomLeft);
+    br = numberOrZero(value.bottomRight);
+  } else {
+    tl = tr = bl = br = numberOrZero(value);
+  }
 
-	return {
-		topLeft: tl,
-		topRight: tr,
-		bottomLeft: bl,
-		bottomRight: br
-	};
+  return {
+    topLeft: tl,
+    topRight: tr,
+    bottomLeft: bl,
+    bottomRight: br
+  };
 }
 
 /**
@@ -101,12 +101,12 @@ export function toTRBLCorners(value) {
  * @since 2.7.0
  */
 export function toPadding(value) {
-	const obj = toTRBL(value);
+  const obj = toTRBL(value);
 
-	obj.width = obj.left + obj.right;
-	obj.height = obj.top + obj.bottom;
+  obj.width = obj.left + obj.right;
+  obj.height = obj.top + obj.bottom;
 
-	return obj;
+  return obj;
 }
 
 /**
@@ -117,26 +117,26 @@ export function toPadding(value) {
  * @private
  */
 export function toFont(options, fallback) {
-	options = options || {};
-	fallback = fallback || defaults.font;
+  options = options || {};
+  fallback = fallback || defaults.font;
 
-	let size = valueOrDefault(options.size, fallback.size);
+  let size = valueOrDefault(options.size, fallback.size);
 
-	if (typeof size === 'string') {
-		size = parseInt(size, 10);
-	}
+  if (typeof size === 'string') {
+    size = parseInt(size, 10);
+  }
 
-	const font = {
-		family: valueOrDefault(options.family, fallback.family),
-		lineHeight: toLineHeight(valueOrDefault(options.lineHeight, fallback.lineHeight), size),
-		size,
-		style: valueOrDefault(options.style, fallback.style),
-		weight: valueOrDefault(options.weight, fallback.weight),
-		string: ''
-	};
+  const font = {
+    family: valueOrDefault(options.family, fallback.family),
+    lineHeight: toLineHeight(valueOrDefault(options.lineHeight, fallback.lineHeight), size),
+    size,
+    style: valueOrDefault(options.style, fallback.style),
+    weight: valueOrDefault(options.weight, fallback.weight),
+    string: ''
+  };
 
-	font.string = toFontString(font);
-	return font;
+  font.string = toFontString(font);
+  return font;
 }
 
 /**
@@ -151,27 +151,27 @@ export function toFont(options, fallback) {
  * @since 2.7.0
  */
 export function resolve(inputs, context, index, info) {
-	let cacheable = true;
-	let i, ilen, value;
+  let cacheable = true;
+  let i, ilen, value;
 
-	for (i = 0, ilen = inputs.length; i < ilen; ++i) {
-		value = inputs[i];
-		if (value === undefined) {
-			continue;
-		}
-		if (context !== undefined && typeof value === 'function') {
-			value = value(context);
-			cacheable = false;
-		}
-		if (index !== undefined && isArray(value)) {
-			value = value[index % value.length];
-			cacheable = false;
-		}
-		if (value !== undefined) {
-			if (info && !cacheable) {
-				info.cacheable = false;
-			}
-			return value;
-		}
-	}
+  for (i = 0, ilen = inputs.length; i < ilen; ++i) {
+    value = inputs[i];
+    if (value === undefined) {
+      continue;
+    }
+    if (context !== undefined && typeof value === 'function') {
+      value = value(context);
+      cacheable = false;
+    }
+    if (index !== undefined && isArray(value)) {
+      value = value[index % value.length];
+      cacheable = false;
+    }
+    if (value !== undefined) {
+      if (info && !cacheable) {
+        info.cacheable = false;
+      }
+      return value;
+    }
+  }
 }

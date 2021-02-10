@@ -11,52 +11,52 @@ import {isNullOrUndef} from '../helpers/helpers.core';
  * @return {object}
  */
 function interpolate(table, val, reverse) {
-	let prevSource, nextSource, prevTarget, nextTarget;
+  let prevSource, nextSource, prevTarget, nextTarget;
 
-	// Note: the lookup table ALWAYS contains at least 2 items (min and max)
-	if (reverse) {
-		prevSource = Math.floor(val);
-		nextSource = Math.ceil(val);
-		prevTarget = table[prevSource];
-		nextTarget = table[nextSource];
-	} else {
-		const result = _lookup(table, val);
-		prevTarget = result.lo;
-		nextTarget = result.hi;
-		prevSource = table[prevTarget];
-		nextSource = table[nextTarget];
-	}
+  // Note: the lookup table ALWAYS contains at least 2 items (min and max)
+  if (reverse) {
+    prevSource = Math.floor(val);
+    nextSource = Math.ceil(val);
+    prevTarget = table[prevSource];
+    nextTarget = table[nextSource];
+  } else {
+    const result = _lookup(table, val);
+    prevTarget = result.lo;
+    nextTarget = result.hi;
+    prevSource = table[prevTarget];
+    nextSource = table[nextTarget];
+  }
 
-	const span = nextSource - prevSource;
-	return span ? prevTarget + (nextTarget - prevTarget) * (val - prevSource) / span : prevTarget;
+  const span = nextSource - prevSource;
+  return span ? prevTarget + (nextTarget - prevTarget) * (val - prevSource) / span : prevTarget;
 }
 
 class TimeSeriesScale extends TimeScale {
 
-	/**
+  /**
 	 * @param {object} props
 	 */
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		/** @type {object[]} */
-		this._table = [];
-		/** @type {number} */
-		this._maxIndex = undefined;
-	}
+    /** @type {object[]} */
+    this._table = [];
+    /** @type {number} */
+    this._maxIndex = undefined;
+  }
 
-	/**
+  /**
 	 * @protected
 	 */
-	initOffsets() {
-		const me = this;
-		const timestamps = me._getTimestampsForTable();
-		me._table = me.buildLookupTable(timestamps);
-		me._maxIndex = me._table.length - 1;
-		super.initOffsets(timestamps);
-	}
+  initOffsets() {
+    const me = this;
+    const timestamps = me._getTimestampsForTable();
+    me._table = me.buildLookupTable(timestamps);
+    me._maxIndex = me._table.length - 1;
+    super.initOffsets(timestamps);
+  }
 
-	/**
+  /**
 	 * Returns an array of {time, pos} objects used to interpolate a specific `time` or position
 	 * (`pos`) on the scale, by searching entries before and after the requested value. `pos` is
 	 * a decimal between 0 and 1: 0 being the start of the scale (left or top) and 1 the other
@@ -67,89 +67,89 @@ class TimeSeriesScale extends TimeScale {
 	 * @return {object[]}
 	 * @protected
 	 */
-	buildLookupTable(timestamps) {
-		const me = this;
-		const {min, max} = me;
-		if (!timestamps.length) {
-			return [
-				{time: min, pos: 0},
-				{time: max, pos: 1}
-			];
-		}
+  buildLookupTable(timestamps) {
+    const me = this;
+    const {min, max} = me;
+    if (!timestamps.length) {
+      return [
+        {time: min, pos: 0},
+        {time: max, pos: 1}
+      ];
+    }
 
-		const items = [min];
-		let i, ilen, curr;
+    const items = [min];
+    let i, ilen, curr;
 
-		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
-			curr = timestamps[i];
-			if (curr > min && curr < max) {
-				items.push(curr);
-			}
-		}
+    for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
+      curr = timestamps[i];
+      if (curr > min && curr < max) {
+        items.push(curr);
+      }
+    }
 
-		items.push(max);
+    items.push(max);
 
-		return items;
-	}
+    return items;
+  }
 
-	/**
+  /**
 	 * Returns all timestamps
 	 * @return {number[]}
 	 * @private
 	 */
-	_getTimestampsForTable() {
-		const me = this;
-		let timestamps = me._cache.all || [];
+  _getTimestampsForTable() {
+    const me = this;
+    let timestamps = me._cache.all || [];
 
-		if (timestamps.length) {
-			return timestamps;
-		}
+    if (timestamps.length) {
+      return timestamps;
+    }
 
-		const data = me.getDataTimestamps();
-		const label = me.getLabelTimestamps();
-		if (data.length && label.length) {
-			// If combining labels and data (data might not contain all labels),
-			// we need to recheck uniqueness and sort
-			timestamps = me.normalize(data.concat(label));
-		} else {
-			timestamps = data.length ? data : label;
-		}
-		timestamps = me._cache.all = timestamps;
+    const data = me.getDataTimestamps();
+    const label = me.getLabelTimestamps();
+    if (data.length && label.length) {
+      // If combining labels and data (data might not contain all labels),
+      // we need to recheck uniqueness and sort
+      timestamps = me.normalize(data.concat(label));
+    } else {
+      timestamps = data.length ? data : label;
+    }
+    timestamps = me._cache.all = timestamps;
 
-		return timestamps;
-	}
+    return timestamps;
+  }
 
-	/**
+  /**
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 * @param {number} [index]
 	 * @return {number}
 	 */
-	getPixelForValue(value, index) {
-		const me = this;
-		const offsets = me._offsets;
-		const pos = me._normalized && me._maxIndex > 0 && !isNullOrUndef(index)
-			? index / me._maxIndex : me.getDecimalForValue(value);
-		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-	}
+  getPixelForValue(value, index) {
+    const me = this;
+    const offsets = me._offsets;
+    const pos = me._normalized && me._maxIndex > 0 && !isNullOrUndef(index)
+      ? index / me._maxIndex : me.getDecimalForValue(value);
+    return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
+  }
 
-	/**
+  /**
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 * @return {number}
 	 */
-	getDecimalForValue(value) {
-		return interpolate(this._table, value) / this._maxIndex;
-	}
+  getDecimalForValue(value) {
+    return interpolate(this._table, value) / this._maxIndex;
+  }
 
-	/**
+  /**
 	 * @param {number} pixel
 	 * @return {number}
 	 */
-	getValueForPixel(pixel) {
-		const me = this;
-		const offsets = me._offsets;
-		const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-		return interpolate(me._table, decimal * this._maxIndex, true);
-	}
+  getValueForPixel(pixel) {
+    const me = this;
+    const offsets = me._offsets;
+    const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+    return interpolate(me._table, decimal * this._maxIndex, true);
+  }
 }
 
 TimeSeriesScale.id = 'timeseries';

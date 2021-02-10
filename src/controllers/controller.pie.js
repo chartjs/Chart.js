@@ -11,5 +11,5 @@ PieController.id = 'pie';
  * @type {any}
  */
 PieController.defaults = {
-	cutoutPercentage: 0
+  cutoutPercentage: 0
 };

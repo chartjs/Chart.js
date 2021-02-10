@@ -6,15 +6,15 @@ import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
  * @return {object}
  */
 function getScope(node, key) {
-	if (!key) {
-		return node;
-	}
-	const keys = key.split('.');
-	for (let i = 0, n = keys.length; i < n; ++i) {
-		const k = keys[i];
-		node = node[k] || (node[k] = Object.create(null));
-	}
-	return node;
+  if (!key) {
+    return node;
+  }
+  const keys = key.split('.');
+  for (let i = 0, n = keys.length; i < n; ++i) {
+    const k = keys[i];
+    node = node[k] || (node[k] = Object.create(null));
+  }
+  return node;
 }
 
 /**
@@ -22,62 +22,62 @@ function getScope(node, key) {
  * Note: class is exported for typedoc
  */
 export class Defaults {
-	constructor() {
-		this.backgroundColor = 'rgba(0,0,0,0.1)';
-		this.borderColor = 'rgba(0,0,0,0.1)';
-		this.color = '#666';
-		this.controllers = {};
-		this.elements = {};
-		this.events = [
-			'mousemove',
-			'mouseout',
-			'click',
-			'touchstart',
-			'touchmove'
-		];
-		this.font = {
-			family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-			size: 12,
-			style: 'normal',
-			lineHeight: 1.2,
-			weight: null
-		};
-		this.hover = {
-			onHover: null
-		};
-		this.interaction = {
-			mode: 'nearest',
-			intersect: true
-		};
-		this.maintainAspectRatio = true;
-		this.onHover = null;
-		this.onClick = null;
-		this.plugins = {};
-		this.responsive = true;
-		this.scale = undefined;
-		this.scales = {};
-		this.showLine = true;
-	}
+  constructor() {
+    this.backgroundColor = 'rgba(0,0,0,0.1)';
+    this.borderColor = 'rgba(0,0,0,0.1)';
+    this.color = '#666';
+    this.controllers = {};
+    this.elements = {};
+    this.events = [
+      'mousemove',
+      'mouseout',
+      'click',
+      'touchstart',
+      'touchmove'
+    ];
+    this.font = {
+      family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+      size: 12,
+      style: 'normal',
+      lineHeight: 1.2,
+      weight: null
+    };
+    this.hover = {
+      onHover: null
+    };
+    this.interaction = {
+      mode: 'nearest',
+      intersect: true
+    };
+    this.maintainAspectRatio = true;
+    this.onHover = null;
+    this.onClick = null;
+    this.plugins = {};
+    this.responsive = true;
+    this.scale = undefined;
+    this.scales = {};
+    this.showLine = true;
+  }
 
-	/**
+  /**
 	 * @param {string|object} scope
 	 * @param {object} [values]
 	 */
-	set(scope, values) {
-		if (typeof scope === 'string') {
-			return merge(getScope(this, scope), values);
-		}
-		return merge(getScope(this, ''), scope);
-	}
+  set(scope, values) {
+    if (typeof scope === 'string') {
+      return merge(getScope(this, scope), values);
+    }
+    return merge(getScope(this, ''), scope);
+  }
 
-	/**
+  /**
 	 * @param {string} scope
 	 */
-	get(scope) {
-		return getScope(this, scope);
-	}
+  get(scope) {
+    return getScope(this, scope);
+  }
 
-	/**
+  /**
 	 * Routes the named defaults to fallback to another scope/name.
 	 * This routing is useful when those target values, like defaults.color, are changed runtime.
 	 * If the values would be copied, the runtime change would not take effect. By routing, the
@@ -94,34 +94,34 @@ export class Defaults {
 	 * Empty string ('') is the root of defaults.
 	 * @param {string} targetName The target name in the target scope the property should be routed to.
 	 */
-	route(scope, name, targetScope, targetName) {
-		const scopeObject = getScope(this, scope);
-		const targetScopeObject = getScope(this, targetScope);
-		const privateName = '_' + name;
+  route(scope, name, targetScope, targetName) {
+    const scopeObject = getScope(this, scope);
+    const targetScopeObject = getScope(this, targetScope);
+    const privateName = '_' + name;
 
-		Object.defineProperties(scopeObject, {
-			// A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
-			[privateName]: {
-				value: scopeObject[name],
-				writable: true
-			},
-			// The actual property is defined as getter/setter so we can do the routing when value is not locally set.
-			[name]: {
-				enumerable: true,
-				get() {
-					const local = this[privateName];
-					const target = targetScopeObject[targetName];
-					if (isObject(local)) {
-						return Object.assign({}, target, local);
-					}
-					return valueOrDefault(local, target);
-				},
-				set(value) {
-					this[privateName] = value;
-				}
-			}
-		});
-	}
+    Object.defineProperties(scopeObject, {
+      // A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
+      [privateName]: {
+        value: scopeObject[name],
+        writable: true
+      },
+      // The actual property is defined as getter/setter so we can do the routing when value is not locally set.
+      [name]: {
+        enumerable: true,
+        get() {
+          const local = this[privateName];
+          const target = targetScopeObject[targetName];
+          if (isObject(local)) {
+            return Object.assign({}, target, local);
+          }
+          return valueOrDefault(local, target);
+        },
+        set(value) {
+          this[privateName] = value;
+        }
+      }
+    });
+  }
 }
 
 // singleton instance

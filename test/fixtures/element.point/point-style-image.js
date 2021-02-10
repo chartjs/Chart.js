@@ -21,36 +21,36 @@ imageContext.closePath();
 imageContext.fill();
 
 module.exports = {
-	config: {
-		type: 'line',
-		data: {
-			labels: [0, 1, 2, 3, 4, 5, 6, 7],
-			datasets: [{
-				data: [0, 0, 0, 0, 0, 0, 0, 0],
-				showLine: false
-			}]
-		},
-		options: {
-			responsive: false,
-			elements: {
-				point: {
-					pointStyle: imageCanvas,
-					rotation: [0, 45, 90, 135, 180, 225, 270, 315]
-				}
-			},
-			layout: {
-				padding: 20
-			},
-			scales: {
-				x: {display: false},
-				y: {display: false}
-			}
-		}
-	},
-	options: {
-		canvas: {
-			height: 256,
-			width: 512
-		}
-	}
+  config: {
+    type: 'line',
+    data: {
+      labels: [0, 1, 2, 3, 4, 5, 6, 7],
+      datasets: [{
+        data: [0, 0, 0, 0, 0, 0, 0, 0],
+        showLine: false
+      }]
+    },
+    options: {
+      responsive: false,
+      elements: {
+        point: {
+          pointStyle: imageCanvas,
+          rotation: [0, 45, 90, 135, 180, 225, 270, 315]
+        }
+      },
+      layout: {
+        padding: 20
+      },
+      scales: {
+        x: {display: false},
+        y: {display: false}
+      }
+    }
+  },
+  options: {
+    canvas: {
+      height: 256,
+      width: 512
+    }
+  }
 };
