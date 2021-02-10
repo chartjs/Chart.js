@@ -253,7 +253,7 @@ describe('Chart', function() {
       });
     });
 
-    it('should activate element on hover', function(done) {
+    it('should activate element on hover', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -266,14 +266,11 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[1];
 
-      afterEvent(chart, 'mousemove', function() {
-        expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
-        done();
-      });
-      jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
     });
 
-    it('should not activate elements when hover is disabled', function(done) {
+    it('should not activate elements when hover is disabled', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -289,11 +286,8 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[1];
 
-      afterEvent(chart, 'mousemove', function() {
-        expect(chart.getActiveElements()).toEqual([]);
-        done();
-      });
-      jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      expect(chart.getActiveElements()).toEqual([]);
     });
   });
 
@@ -1307,7 +1301,7 @@ describe('Chart', function() {
       expect(chart.tooltip.options).toEqual(jasmine.objectContaining(newTooltipConfig));
     });
 
-    it ('should update the tooltip on update', function(done) {
+    it ('should update the tooltip on update', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -1329,21 +1323,17 @@ describe('Chart', function() {
       var meta = chart.getDatasetMeta(0);
       var point = meta.data[1];
 
-      afterEvent(chart, 'mousemove', function() {
-        // Check and see if tooltip was displayed
-        var tooltip = chart.tooltip;
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      // Check and see if tooltip was displayed
+      var tooltip = chart.tooltip;
 
-        expect(chart._active[0].element).toEqual(point);
-        expect(tooltip._active[0].element).toEqual(point);
+      expect(chart._active[0].element).toEqual(point);
+      expect(tooltip._active[0].element).toEqual(point);
 
-        // Update and confirm tooltip is updated
-        chart.update();
-        expect(chart._active[0].element).toEqual(point);
-        expect(tooltip._active[0].element).toEqual(point);
-
-        done();
-      });
-      jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      // Update and confirm tooltip is updated
+      chart.update();
+      expect(chart._active[0].element).toEqual(point);
+      expect(tooltip._active[0].element).toEqual(point);
     });
 
     it ('should update the metadata', function() {
