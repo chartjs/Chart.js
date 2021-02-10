@@ -41,11 +41,11 @@ The object is preserved, so it can be used to store and pass information between
 
 There are multiple levels of context objects:
 
-- `chart`
-  - `dataset`
-    - `data`
-  - `scale`
-    - `tick`
+* `chart`
+  * `dataset`
+    * `data`
+  * `scale`
+    * `tick`
 
 Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
 
@@ -53,42 +53,42 @@ The context object contains the following properties:
 
 ### chart
 
-- `chart`: the associated chart
-- `type`: `'chart'`
+* `chart`: the associated chart
+* `type`: `'chart'`
 
 ### dataset
 
 In addition to [chart](#chart)
 
-- `active`: true if element is active (hovered)
-- `dataset`: dataset at index `datasetIndex`
-- `datasetIndex`: index of the current dataset
-- `index`: getter for `datasetIndex`
-- `type`: `'dataset'`
+* `active`: true if element is active (hovered)
+* `dataset`: dataset at index `datasetIndex`
+* `datasetIndex`: index of the current dataset
+* `index`: getter for `datasetIndex`
+* `type`: `'dataset'`
 
 ### data
 
 In addition to [dataset](#dataset)
 
-- `active`: true if element is active (hovered)
-- `dataIndex`: index of the current data
-- `parsed`: the parsed data values for the given `dataIndex` and `datasetIndex`
-- `raw`: the raw data values for the given `dataIndex` and `datasetIndex`
-- `element`: the element (point, arc, bar, etc.) for this data
-- `index`: getter for `dataIndex`
-- `type`: `'data'`
+* `active`: true if element is active (hovered)
+* `dataIndex`: index of the current data
+* `parsed`: the parsed data values for the given `dataIndex` and `datasetIndex`
+* `raw`: the raw data values for the given `dataIndex` and `datasetIndex`
+* `element`: the element (point, arc, bar, etc.) for this data
+* `index`: getter for `dataIndex`
+* `type`: `'data'`
 
 ### scale
 
 In addition to [chart](#chart)
 
-- `scale`: the associated scale
-- `type`: `'scale'`
+* `scale`: the associated scale
+* `type`: `'scale'`
 
 ### tick
 
 In addition to [scale](#scale)
 
-- `tick`: the associated tick object
-- `index`: tick index
-- `type`: `'tick'`
+* `tick`: the associated tick object
+* `index`: tick index
+* `type`: `'tick'`

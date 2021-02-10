@@ -238,15 +238,10 @@ class Chart {
   ensureScalesHaveIDs() {
     const options = this.options;
     const scalesOptions = options.scales || {};
-    const scaleOptions = options.scale;
 
     each(scalesOptions, (axisOptions, axisID) => {
       axisOptions.id = axisID;
     });
-
-    if (scaleOptions) {
-      scaleOptions.id = scaleOptions.id || 'scale';
-    }
   }
 
   /**
@@ -256,7 +251,7 @@ class Chart {
     const me = this;
     const options = me.options;
     const scaleOpts = options.scales;
-    const scales = me.scales || {};
+    const scales = me.scales;
     const updated = Object.keys(scales).reduce((obj, id) => {
       obj[id] = false;
       return obj;
@@ -312,8 +307,6 @@ class Chart {
         delete scales[id];
       }
     });
-
-    me.scales = scales;
 
     each(scales, (scale) => {
       layouts.configure(me, scale, scale.options);
@@ -435,7 +428,6 @@ class Chart {
 
   update(mode) {
     const me = this;
-    let i, ilen;
 
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
@@ -462,7 +454,7 @@ class Chart {
     me.notifyPlugins('beforeElementsUpdate');
 
     // Make sure all dataset controllers have correct meta data counts
-    for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
+    for (let i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
       const {controller} = me.getDatasetMeta(i);
       const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
       // New controllers will be reset after the layout pass, so we only want to modify
@@ -1078,7 +1070,7 @@ class Chart {
     }
 
     // Invoke onHover hook
-    callCallback(options.onHover || options.hover.onHover, [e, active, me], me);
+    callCallback(options.onHover || hoverOptions.onHover, [e, active, me], me);
 
     if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
       if (_isPointInArea(e, me.chartArea)) {
