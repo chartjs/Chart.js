@@ -103,9 +103,12 @@ function initConfig(config) {
   return config;
 }
 
+const keyCache = new Map();
 export default class Config {
   constructor(config) {
     this._config = initConfig(config);
+    this._scopeCache = new Map();
+    this._resolverCache = new Map();
   }
 
   get type() {
@@ -134,6 +137,10 @@ export default class Config {
 
   update(options) {
     const config = this._config;
+    if (config.options !== options) {
+      this._scopeCache.clear();
+      this._resolverCache.clear();
+    }
     config.options = initOptions(config, options);
   }
 
@@ -144,7 +151,12 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetScopeKeys(datasetType) {
-    return [`datasets.${datasetType}`, `controllers.${datasetType}.datasets`, ''];
+    let keys = keyCache.get(datasetType);
+    if (!keys) {
+      keys = [`datasets.${datasetType}`, `controllers.${datasetType}.datasets`, ''];
+      keyCache.set(datasetType, keys);
+    }
+    return keys;
   }
 
   /**
@@ -154,7 +166,13 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetAnimationScopeKeys(datasetType) {
-    return [`datasets.${datasetType}.animation`, `controllers.${datasetType}.datasets.animation`, 'animation'];
+    const cacheKey = `${datasetType}.animation`;
+    let keys = keyCache.get(cacheKey);
+    if (!keys) {
+      keys = [`datasets.${datasetType}.animation`, `controllers.${datasetType}.datasets.animation`, 'animation'];
+      keyCache.set(cacheKey, keys);
+    }
+    return keys;
   }
 
   /**
@@ -166,13 +184,40 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetElementScopeKeys(datasetType, elementType) {
-    return [
-      `datasets.${datasetType}`,
-      `controllers.${datasetType}.datasets`,
-      `controllers.${datasetType}.elements.${elementType}`,
-      `elements.${elementType}`,
-      ''
-    ];
+    const cacheKey = `${datasetType}-${elementType}`;
+    let keys = keyCache.get(cacheKey);
+    if (!keys) {
+      keys = [
+        `datasets.${datasetType}`,
+        `controllers.${datasetType}.datasets`,
+        `controllers.${datasetType}.elements.${elementType}`,
+        `elements.${elementType}`,
+        ''
+      ];
+      keyCache.set(cacheKey, keys);
+    }
+    return keys;
+  }
+
+  /**
+   * Returns the options scope keys for resolving plugin options.
+   * @param {{id: string, additionalOptionScopes?: string[]}} plugin
+	 * @return {string[]}
+   */
+  pluginScopeKeys(plugin) {
+    const id = plugin.id;
+    const cacheKey = `plugin-${id}`;
+    let keys = keyCache.get(cacheKey);
+    if (!keys) {
+      keys = [
+        `controllers.${this.type}.plugins.${id}`,
+        `plugins.${id}`,
+        ...plugin.additionalOptionScopes || [],
+        ''
+      ];
+      keyCache.set(cacheKey, keys);
+    }
+    return keys;
   }
 
   /**
@@ -180,9 +225,19 @@ export default class Config {
 	 * @param {object} mainScope - The main scope object for options
 	 * @param {string[]} scopeKeys - The keys in resolution order
 	 */
-  getOptionScopes(mainScope = {}, scopeKeys) {
+  getOptionScopes(mainScope, scopeKeys) {
+    let cache = this._scopeCache.get(mainScope);
+    if (!cache) {
+      cache = new Map();
+      this._scopeCache.set(mainScope, cache);
+    }
+    const cached = cache.get(scopeKeys);
+    if (cached) {
+      return cached;
+    }
+
     const options = this.options;
-    const scopes = new Set([mainScope]);
+    const scopes = new Set();
 
     const addIfFound = (obj, key) => {
       const opts = resolveObjectKey(obj, key);
@@ -191,14 +246,19 @@ export default class Config {
       }
     };
 
-    scopeKeys.forEach(key => addIfFound(mainScope, key));
+    if (mainScope) {
+      scopes.add(mainScope);
+      scopeKeys.forEach(key => addIfFound(mainScope, key));
+    }
     scopeKeys.forEach(key => addIfFound(options, key));
     scopeKeys.forEach(key => addIfFound(defaults, key));
 
     const descriptors = defaults.descriptors;
     scopeKeys.forEach(key => addIfFound(descriptors, key));
 
-    return [...scopes];
+    const array = [...scopes];
+    cache.set(scopeKeys, array);
+    return array;
   }
 
   /**
@@ -206,12 +266,17 @@ export default class Config {
 	 * @return {object[]}
 	 */
   chartOptionsScopes() {
-    return [
-      this.options,
-      defaults.controllers[this.type] || {},
-      {type: this.type},
-      defaults, defaults.descriptors
-    ];
+    let scopes = this._scopeCache.get(0);
+    if (!scopes) {
+      scopes = [
+        this.options,
+        defaults.controllers[this.type] || {},
+        {type: this.type},
+        defaults, defaults.descriptors
+      ];
+      this._scopeCache.set(0, scopes);
+    }
+    return scopes;
   }
 
   /**
@@ -223,13 +288,12 @@ export default class Config {
 	 */
   resolveNamedOptions(scopes, names, context, prefixes = ['']) {
     const result = {};
-    const resolver = _createResolver(scopes, prefixes);
+    const {resolver, subPrefixes} = getResolver(this._resolverCache, scopes, prefixes);
     let options;
     if (needContext(resolver, names)) {
       result.$shared = false;
       context = isFunction(context) ? context() : context;
-      // subResolver os passed to scriptable options. It should not resolve to hover options.
-      const subPrefixes = prefixes.filter(p => !p.toLowerCase().includes('hover'));
+      // subResolver is passed to scriptable options. It should not resolve to hover options.
       const subResolver = this.createResolver(scopes, context, subPrefixes);
       options = _attachContext(resolver, context, subResolver);
     } else {
@@ -248,11 +312,31 @@ export default class Config {
 	 * @param {function|object} context
 	 */
   createResolver(scopes, context, prefixes = ['']) {
-    const resolver = _createResolver(scopes, prefixes);
-    return context && needContext(resolver, Object.getOwnPropertyNames(resolver))
-      ? _attachContext(resolver, isFunction(context) ? context() : context)
-      : resolver;
+    const cached = getResolver(this._resolverCache, scopes, prefixes);
+    return context && cached.needContext
+      ? _attachContext(cached.resolver, isFunction(context) ? context() : context)
+      : cached.resolver;
   }
+}
+
+function getResolver(resolverCache, scopes, prefixes) {
+  let cache = resolverCache.get(scopes);
+  if (!cache) {
+    cache = new Map();
+    resolverCache.set(scopes, cache);
+  }
+  const cacheKey = prefixes.join();
+  let cached = cache.get(cacheKey);
+  if (!cached) {
+    const resolver = _createResolver(scopes, prefixes);
+    cached = {
+      resolver,
+      subPrefixes: prefixes.filter(p => !p.toLowerCase().includes('hover')),
+      needContext: needContext(resolver, Object.getOwnPropertyNames(resolver))
+    };
+    cache.set(cacheKey, cached);
+  }
+  return cached;
 }
 
 function needContext(proxy, names) {
