@@ -149,20 +149,19 @@ function getFirstScaleId(chart, axis) {
 }
 
 function createDatasetContext(parent, index, dataset) {
-  return Object.setPrototypeOf(
+  return Object.assign(Object.create(parent),
     {
       active: false,
       dataset,
       datasetIndex: index,
       index,
       type: 'dataset'
-    },
-    parent
+    }
   );
 }
 
 function createDataContext(parent, index, point, raw, element) {
-  const context = {
+  return Object.assign(Object.create(parent), {
     active: false,
     dataIndex: index,
     parsed: point,
@@ -171,9 +170,7 @@ function createDataContext(parent, index, point, raw, element) {
     index,
     mode: 'default',
     type: 'data'
-  };
-  Object.setPrototypeOf(context, parent);
-  return context;
+  });
 }
 
 function clearStacks(meta, items) {
