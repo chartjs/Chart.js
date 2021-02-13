@@ -1,0 +1,8 @@
+{
+    "name": "chart.js-tree-shaking",
+    "private": true,
+    "description": "tree shakeable version of chart.js ESM build",
+    "main": "tree.js",
+    "module": "tree.esm.js",
+    "types": "tree.esm.d.ts"
+}

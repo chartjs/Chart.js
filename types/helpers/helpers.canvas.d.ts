@@ -1,4 +1,4 @@
-import { PointStyle } from '../index.esm';
+import { PointStyle } from '../index.shakeable.esm';
 import { Color } from '../color';
 import { ChartArea } from '../geometric';
 import { CanvasFontSpec } from './helpers.options';

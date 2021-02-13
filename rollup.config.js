@@ -11,10 +11,12 @@ const pkg = require('./package.json');
 const input = 'src/index.js';
 const inputESM = {
 	'dist/chart.esm': 'src/index.esm.js',
+	'dist/chart.shakeable.esm': 'src/index.shakeable.esm.js',
 	'dist/helpers.esm': 'src/helpers/index.js'
 };
 const inputESMTypings = {
 	'dist/chart.esm': 'types/index.esm.d.ts',
+	'dist/chart.shakeable.esm': 'types/index.shakeable.esm.d.ts',
 	'dist/helpers.esm': 'types/helpers/index.d.ts'
 };
 

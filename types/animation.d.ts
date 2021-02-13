@@ -1,4 +1,4 @@
-import { Chart } from './index.esm';
+import { Chart } from './index.shakeable.esm';
 import { AnyObject } from './basic';
 
 export class Animation {

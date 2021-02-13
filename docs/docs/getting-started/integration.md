@@ -22,9 +22,17 @@ var myChart = new Chart(ctx, {...});
 
 ## Bundlers (Webpack, Rollup, etc.)
 
-Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
+To use Chart.js, a simple import is all that is required.
 
-For all available imports see the example below.
+```javascript
+import Chart from 'chart.js';
+var myChart = new Chart(ctx, {...});
+```
+
+### Tree Shaking
+
+Chart.js 3 has optional tree shaking that is enabled via the `chart.js/tree` package. To use this, it is necessary to import and register the controllers, elements, scales and plugins you wish to use. The example below shows all of the available imports and how to register them.
+
 ```javascript
 import {
   Chart,
@@ -50,7 +58,7 @@ import {
   Legend,
   Title,
   Tooltip
-} from 'chart.js';
+} from 'chart.js/tree';
 
 Chart.register(
   ArcElement,

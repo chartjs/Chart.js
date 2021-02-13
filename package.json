@@ -30,7 +30,9 @@
     "dist/chunks/*.js",
     "dist/chunks/*.d.ts",
     "helpers/**/*.js",
-    "helpers/**/*.d.ts"
+    "helpers/**/*.d.ts",
+    "tree/**/*.js",
+    "tree/**/*.d.ts"
   ],
   "scripts": {
     "autobuild": "rollup -c -w",

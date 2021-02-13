@@ -1,4 +1,4 @@
-import { FontSpec } from '../index.esm';
+import { FontSpec } from '../index.shakeable.esm';
 
 export interface CanvasFontSpec extends FontSpec {
 	string: string;

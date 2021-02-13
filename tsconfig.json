@@ -12,7 +12,7 @@
   },
   "typedocOptions": {
     "name": "Chart.js",
-    "entryPoints": ["src/index.esm.js"],
+    "entryPoints": ["src/index.esm.js", "src/index.shakeable.esm.js"],
     "excludeExternals": true,
     "excludeNotExported": true,
     "includeVersion": true,

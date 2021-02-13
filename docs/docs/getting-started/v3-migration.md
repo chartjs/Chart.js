@@ -22,34 +22,7 @@ Chart.js 3.0 introduces a number of breaking changes. Chart.js 2.0 was released 
 * Chart.js is no longer providing the `Chart.bundle.js` and `Chart.bundle.min.js`. Please see the [installation](installation.md) and [integration](integration.md) docs for details on the recommended way to setup Chart.js if you were using these builds.
 * `moment` is no longer specified as an npm dependency. If you are using the `time` or `timeseries` scales, you must include one of [the available adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library. You no longer need to exclude moment from your build.
 * The `Chart` constructor will throw an error if the canvas/context provided is already in use
-* Chart.js 3 is tree-shakeable. So if you are using it as an `npm` module in a project, you need to import and register the controllers, elements, scales and plugins you want to use. You will not have to call `register` if importing Chart.js via a `script` tag, but will not get the tree shaking benefits in this case. Here is an example of registering components:
-
-```javascript
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title } from `chart.js`
-
-Chart.register(LineController, LineElement, PointElement, LinearScale, Title);
-
-const chart = new Chart(ctx, {
-    type: 'line',
-    // data: ...
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'Chart Title'
-            }
-        },
-        scales: {
-            x: {
-                type: 'linear'
-            },
-            y: {
-                type: 'linear'
-            }
-        }
-    }
-})
-```
+* Chart.js 3 has optional tree shaking when used as an `npm` module. In v3.0.0-beta.10 and below, this was the always enabled. Starting in v3.0.0-beta.11, tree shaking was moved to the `chart.js/tree` package and made into an optional enhancement. For details on how to enable tree-shaking, see the [integration](integration.md#tree-shaking) documentation.
 
 ### Chart types
 
