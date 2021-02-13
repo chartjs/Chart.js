@@ -1667,7 +1667,7 @@ export default class Scale extends Element {
       return;
     }
 
-    const scaleLabelFont = toFont(scaleLabel.font, me.chart.options.font);
+    const scaleLabelFont = toFont(scaleLabel.font);
     const scaleLabelPadding = toPadding(scaleLabel.padding);
     const halfLineHeight = scaleLabelFont.lineHeight / 2;
     const scaleLabelAlign = scaleLabel.align;

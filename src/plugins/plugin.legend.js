@@ -128,7 +128,7 @@ export class Legend extends Element {
     }
 
     const labelOpts = options.labels;
-    const labelFont = toFont(labelOpts.font, me.chart.options.font);
+    const labelFont = toFont(labelOpts.font);
     const fontSize = labelFont.size;
     const titleHeight = me._computeTitleHeight();
     const {boxWidth, itemHeight} = getBoxSize(labelOpts, fontSize);
@@ -241,7 +241,7 @@ export class Legend extends Element {
     const {align, labels: labelOpts} = opts;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.width);
-    const labelFont = toFont(labelOpts.font, me.chart.options.font);
+    const labelFont = toFont(labelOpts.font);
     const {color: fontColor, padding} = labelOpts;
     const fontSize = labelFont.size;
     let cursor;
@@ -378,7 +378,7 @@ export class Legend extends Element {
     const me = this;
     const opts = me.options;
     const titleOpts = opts.title;
-    const titleFont = toFont(titleOpts.font, me.chart.options.font);
+    const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
 
     if (!titleOpts.display) {
@@ -427,7 +427,7 @@ export class Legend extends Element {
 	 */
   _computeTitleHeight() {
     const titleOpts = this.options.title;
-    const titleFont = toFont(titleOpts.font, this.chart.options.font);
+    const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
     return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
   }
@@ -621,5 +621,7 @@ export default {
     labels: {
       _scriptable: false,
     }
-  }
+  },
+
+  additionalOptionScopes: ['']
 };

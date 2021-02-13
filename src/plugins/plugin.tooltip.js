@@ -1206,5 +1206,5 @@ export default {
     }
   },
 
-  additionalOptionScopes: ['interaction']
+  additionalOptionScopes: ['interaction', '']
 };
