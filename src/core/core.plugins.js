@@ -168,8 +168,7 @@ function pluginOpts(config, plugin, opts, context) {
   const keys = [
     `controllers.${config.type}.plugins.${id}`,
     `plugins.${id}`,
-    ...plugin.additionalOptionScopes || [],
-    ''
+    ...plugin.additionalOptionScopes || []
   ];
   const scopes = config.getOptionScopes(opts || {}, keys);
   return config.createResolver(scopes, context);

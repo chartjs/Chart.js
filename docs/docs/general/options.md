@@ -60,11 +60,9 @@ Each scope is looked up with `elementType` prefix in the option name first, then
 * options.plugins[`plugin.id`]
 * options.controllers[`config.type`].plugins[`plugin.id`]
 * (options.[`...plugin.additionalOptionScopes`])
-* options
 * defaults.controllers[`config.type`].plugins[`plugin.id`]
 * defaults.plugins[`plugin.id`]
 * (defaults.[`...plugin.additionalOptionScopes`])
-* defaults
 
 ## Scriptable Options
 
