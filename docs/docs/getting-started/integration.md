@@ -85,10 +85,10 @@ A short registration format is also available.
 ```javascript
 import { Chart, controllers, elements, plugins, scales } from 'chart.js';
 Chart.register(...[
-    ...controllers.values(),
-    ...elements.values(),
-    ...plugins.values(),
-    ...scales.values(),
+    ...Object.values(controllers),
+    ...Object.values(elements),
+    ...Object.values(plugins),
+    ...Object.values(scales),
 ]);
 ```
 
