@@ -282,27 +282,17 @@ function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
 }
 
 function createScaleContext(parent, scale) {
-  return Object.create(parent, {
-    scale: {
-      value: scale
-    },
-    type: {
-      value: 'scale'
-    }
+  return Object.assign(Object.create(parent), {
+    scale,
+    type: 'scale'
   });
 }
 
 function createTickContext(parent, index, tick) {
-  return Object.create(parent, {
-    tick: {
-      value: tick
-    },
-    index: {
-      value: index
-    },
-    type: {
-      value: 'tick'
-    }
+  return Object.assign(Object.create(parent), {
+    tick,
+    index,
+    type: 'tick'
   });
 }
 

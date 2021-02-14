@@ -149,54 +149,27 @@ function getFirstScaleId(chart, axis) {
 }
 
 function createDatasetContext(parent, index, dataset) {
-  return Object.create(parent, {
-    active: {
-      writable: true,
-      value: false
-    },
-    dataset: {
-      value: dataset
-    },
-    datasetIndex: {
-      value: index
-    },
-    index: {
-      get() {
-        return this.datasetIndex;
-      }
-    },
-    type: {
-      value: 'dataset'
+  return Object.assign(Object.create(parent),
+    {
+      active: false,
+      dataset,
+      datasetIndex: index,
+      index,
+      type: 'dataset'
     }
-  });
+  );
 }
 
 function createDataContext(parent, index, point, raw, element) {
-  return Object.create(parent, {
-    active: {
-      writable: true,
-      value: false
-    },
-    dataIndex: {
-      value: index
-    },
-    parsed: {
-      value: point
-    },
-    raw: {
-      value: raw
-    },
-    element: {
-      value: element
-    },
-    index: {
-      get() {
-        return this.dataIndex;
-      }
-    },
-    type: {
-      value: 'data',
-    }
+  return Object.assign(Object.create(parent), {
+    active: false,
+    dataIndex: index,
+    parsed: point,
+    raw,
+    element,
+    index,
+    mode: 'default',
+    type: 'data'
   });
 }
 
