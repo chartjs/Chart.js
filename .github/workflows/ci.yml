@@ -26,6 +26,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
+      with:
+        node-version: '14'
     - uses: dorny/paths-filter@v2
       id: changes
       with:
