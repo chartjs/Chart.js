@@ -497,6 +497,8 @@ export declare class Chart<
 	static unregister(...items: ChartComponentLike[]): void;
 }
 
+export const registerables: readonly ChartComponentLike[];
+
 export declare type ChartItem =
 	| string
 	| CanvasRenderingContext2D

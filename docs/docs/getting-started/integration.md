@@ -80,6 +80,13 @@ Chart.register(
 var myChart = new Chart(ctx, {...});
 ```
 
+A short registration format is also available to quickly register everything.
+
+```javascript
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+```
+
 ## Require JS
 
 **Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/chart.js`, `dist/chart.min.js`, etc.).
