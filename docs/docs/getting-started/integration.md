@@ -25,6 +25,7 @@ var myChart = new Chart(ctx, {...});
 Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
 
 For all available imports see the example below.
+
 ```javascript
 import {
   Chart,
@@ -85,6 +86,12 @@ A short registration format is also available to quickly register everything.
 ```javascript
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
+```
+
+And finally there is an separate path to do just the above for you, in one line:
+
+```javascript
+import Chart from 'chart.js/auto';
 ```
 
 ## Require JS

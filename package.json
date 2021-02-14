@@ -25,6 +25,8 @@
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
   "files": [
+    "auto/**/*.js",
+    "auto/**/*.d.ts",
     "dist/*.js",
     "dist/*.d.ts",
     "dist/chunks/*.js",

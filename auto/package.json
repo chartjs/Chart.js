@@ -1,0 +1,8 @@
+{
+    "name": "chart.js-auto",
+    "private": true,
+    "description": "auto registering package",
+    "main": "auto.js",
+    "module": "auto.esm.js",
+    "types": "auto.esm.d.ts"
+}
