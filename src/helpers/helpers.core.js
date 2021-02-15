@@ -283,22 +283,26 @@ export function _deprecated(scope, value, previous, current) {
   }
 }
 
+const emptyString = '';
+const dot = '.';
+function indexOfDotOrLength(key, start) {
+  const idx = key.indexOf(dot, start);
+  return idx === -1 ? key.length : idx;
+}
+
 export function resolveObjectKey(obj, key) {
-  // Special cases for `x` and `y` keys. It's quite a lot faster to aceess this way.
-  // Those are the default keys Chart.js is resolving, so it makes sense to be fast.
-  if (key === 'x') {
-    return obj.x;
+  if (key === emptyString) {
+    return obj;
   }
-  if (key === 'y') {
-    return obj.y;
-  }
-  const keys = key.split('.');
-  for (let i = 0, n = keys.length; i < n && obj; ++i) {
-    const k = keys[i];
-    if (!k) {
+  let pos = 0;
+  let idx = indexOfDotOrLength(key, pos);
+  while (idx > pos) {
+    obj = obj[key.substr(pos, idx - pos)];
+    if (!obj) {
       break;
     }
-    obj = obj[k];
+    pos = idx + 1;
+    idx = indexOfDotOrLength(key, pos);
   }
   return obj;
 }
