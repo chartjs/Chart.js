@@ -10,8 +10,8 @@ The decimation plugin configuration is passed into the `options.plugins.decimati
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `enabled` | `boolean` | `true` | Is decimation enabled?
-| `algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
+| `decimation.enabled` | `boolean` | `true` | Is decimation enabled?
+| `decimation.algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
 
 ## Decimation Algorithms
 

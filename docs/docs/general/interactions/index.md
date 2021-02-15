@@ -6,6 +6,6 @@ The interaction configuration is passed into the `options.interaction` namespace
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `mode` | `string` | `'nearest'` | Sets which elements appear in the tooltip. See [Interaction Modes](./modes.md#interaction-modes) for details.
-| `intersect` | `boolean` | `true` | if true, the hover mode only applies when the mouse position intersects an item on the chart.
-| `axis` | `string` | `'x'` | Can be set to `'x'`, `'y'`, or `'xy'` to define which directions are used in calculating distances. Defaults to `'x'` for `'index'` mode and `'xy'` in `dataset` and `'nearest'` modes.
+| `interaction.mode` | `string` | `'nearest'` | Sets which elements appear in the tooltip. See [Interaction Modes](./modes.md#interaction-modes) for details.
+| `interaction.intersect` | `boolean` | `true` | if true, the hover mode only applies when the mouse position intersects an item on the chart.
+| `interaction.axis` | `string` | `'x'` | Can be set to `'x'`, `'y'`, or `'xy'` to define which directions are used in calculating distances. Defaults to `'x'` for `'index'` mode and `'xy'` in `dataset` and `'nearest'` modes.

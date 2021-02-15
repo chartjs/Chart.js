@@ -16,19 +16,19 @@ Chart.defaults.elements.bar.borderWidth = 2;
 
 Point elements are used to represent the points in a line, radar or bubble chart.
 
-Global point options: `Chart.defaults.elements.point`.
+The point element configuration is passed into the `options.elements.point` namespace. Global point options: `Chart.defaults.elements.point`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `radius` | `number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Point style.
-| `rotation` | `number` | `0` | Point rotation (in degrees).
-| `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Point fill color.
-| `borderWidth` | `number` | `1` | Point stroke width.
-| `borderColor` | [`Color`](../general/colors.md) | `Chart.defaults.borderColor` | Point stroke color.
-| `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
-| `hoverRadius` | `number` | `4` | Point radius when hovered.
-| `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
+| `elements.point.radius` | `number` | `3` | Point radius.
+| [`elements.point.pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Point style.
+| `elements.point.rotation` | `number` | `0` | Point rotation (in degrees).
+| `elements.point.backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Point fill color.
+| `elements.point.borderWidth` | `number` | `1` | Point stroke width.
+| `elements.point.borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Point stroke color.
+| `elements.point.hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
+| `elements.point.hoverRadius` | `number` | `4` | Point radius when hovered.
+| `elements.point.hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
 
 ### Point Styles
 
@@ -51,48 +51,48 @@ If the value is an image, that image is drawn on the canvas using [drawImage](ht
 
 Line elements are used to represent the line in a line chart.
 
-Global line options: `Chart.defaults.elements.line`.
+The line element configuration is passed into the `options.elements.line` namespace. Global line options: `Chart.defaults.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `tension` | `number` | `0` | Bézier curve tension (`0` for no Bézier curves).
-| `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Line fill color.
-| `borderWidth` | `number` | `3` | Line stroke width.
-| `borderColor` | [`Color`](../general/colors.md) | `Chart.defaults.borderColor` | Line stroke color.
-| `borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
-| `borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
-| `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
-| `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](./charts/line.mdx/#cubicinterpolationmode)
-| `fill` | `boolean`\|`string` | `false` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
-| `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
+| `elements.line.tension` | `number` | `0` | Bézier curve tension (`0` for no Bézier curves).
+| `elements.line.backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Line fill color.
+| `elements.line.borderWidth` | `number` | `3` | Line stroke width.
+| `elements.line.borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Line stroke color.
+| `elements.line.borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
+| `elements.line.borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `elements.line.borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `elements.line.borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `elements.line.capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
+| `elements.line.cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](./charts/line.mdx/#cubicinterpolationmode)
+| `elements.line.fill` | `boolean`\|`string` | `false` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
+| `elements.line.stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
 ## Bar Configuration
 
 Bar elements are used to represent the bars in a bar chart.
 
-Global bar options: `Chart.defaults.elements.bar`.
+The bar element configuration is passed into the `options.elements.bar` namespace. Global bar options: `Chart.defaults.elements.bar`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Bar fill color.
-| `borderWidth` | `number` | `0` | Bar stroke width.
-| `borderColor` | [`Color`](../general/colors.md) | `Chart.defaults.borderColor` | Bar stroke color.
-| `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'bottom'`, `'left'`, `'top'` or `'right'`.
-| `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
-| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Style of the point for legend.
+| `options.elements.bar.backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Bar fill color.
+| `options.elements.bar.borderWidth` | `number` | `0` | Bar stroke width.
+| `options.elements.bar.borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Bar stroke color.
+| `options.elements.bar.borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'bottom'`, `'left'`, `'top'` or `'right'`.
+| `options.elements.bar.borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
+| [`options.elements.bar.pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Style of the point for legend.
 
 ## Arc Configuration
 
 Arcs are used in the polar area, doughnut and pie charts.
 
-Global arc options: `Chart.defaults.elements.arc`.
+The arc element configuration is passed into the `options.elements.arc` namespace. Global arc options: `Chart.defaults.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
-| `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Arc fill color.
-| `borderAlign` | `string` | `'center'` | Arc stroke alignment.
-| `borderColor` | [`Color`](../general/colors.md) | `'#fff'` | Arc stroke color.
-| `borderWidth`| `number` | `2` | Arc stroke width.
+| `elements.arc.angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
+| `elements.arc.backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.1)'` | Arc fill color.
+| `elements.arc.borderAlign` | `string` | `'center'` | Arc stroke alignment.
+| `elements.arc.borderColor` | [`Color`](../general/colors.md) | `'#fff'` | Arc stroke color.
+| `elements.arc.borderWidth`| `number` | `2` | Arc stroke width.
