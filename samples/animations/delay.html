@@ -62,29 +62,23 @@
 
 		};
 		window.onload = function() {
+			var delayed = false;
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myBar = new Chart(ctx, {
 				type: 'bar',
 				data: barChartData,
 				options: {
-					animation: (context) => {
-						if (context.active) {
-							return {
-								duration: 400
-							};
-						}
-						var delay = 0;
-						var dsIndex = context.datasetIndex;
-						var index = context.dataIndex;
-						if (context.parsed && !context.delayed) {
-							delay = index * 300 + dsIndex * 100;
-							context.delayed = true;
-						}
-						return {
-							easing: 'linear',
-							duration: 600,
-							delay
-						};
+					animation: {
+						onComplete: () => {
+							delayed = true;
+						},
+						delay: (context) => {
+							let delay = 0;
+							if (context.type === 'data' && context.mode === 'default' && !delayed) {
+								delay = context.dataIndex * 300 + context.datasetIndex * 100;
+							}
+							return delay;
+						},
 					},
 					plugins: {
 						title: {

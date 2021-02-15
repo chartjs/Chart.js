@@ -88,6 +88,10 @@ function registerDefaults(item, scope, parentScope) {
   if (item.defaultRoutes) {
     routeDefaults(scope, item.defaultRoutes);
   }
+
+  if (item.descriptors) {
+    defaults.describe(scope, item.descriptors);
+  }
 }
 
 function routeDefaults(scope, routes) {

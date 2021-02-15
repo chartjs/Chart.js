@@ -214,7 +214,8 @@ ArcElement.defaults = {
   borderAlign: 'center',
   borderColor: '#fff',
   borderWidth: 2,
-  offset: 0
+  offset: 0,
+  angle: undefined
 };
 
 /**

@@ -43,7 +43,7 @@ export class Title extends Element {
 
     const lineCount = isArray(opts.text) ? opts.text.length : 1;
     me._padding = toPadding(opts.padding);
-    const textSize = lineCount * toFont(opts.font, me.chart.options.font).lineHeight + me._padding.height;
+    const textSize = lineCount * toFont(opts.font).lineHeight + me._padding.height;
 
     if (me.isHorizontal()) {
       me.height = textSize;
@@ -91,7 +91,7 @@ export class Title extends Element {
       return;
     }
 
-    const fontOpts = toFont(opts.font, me.chart.options.font);
+    const fontOpts = toFont(opts.font);
     const lineHeight = fontOpts.lineHeight;
     const offset = lineHeight / 2 + me._padding.top;
     const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
@@ -179,5 +179,8 @@ export default {
 
   defaultRoutes: {
     color: 'color'
-  }
+  },
+
+  // For easier configuration, resolve additionally from root of options and defaults.
+  additionalOptionScopes: ['']
 };

@@ -80,44 +80,44 @@ describe('Plugin.Tooltip', function() {
       expect(tooltip.yAlign).toEqual('center');
       expect(tooltip.options.bodyColor).toEqual('#fff');
 
-      expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+      expect(tooltip.options.bodyFont).toEqualOptions({
         family: defaults.font.family,
         style: defaults.font.style,
         size: defaults.font.size,
-      }));
+      });
 
-      expect(tooltip.options).toEqual(jasmine.objectContaining({
+      expect(tooltip.options).toEqualOptions({
         bodyAlign: 'left',
         bodySpacing: 2,
-      }));
+      });
 
       expect(tooltip.options.titleColor).toEqual('#fff');
-      expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+      expect(tooltip.options.titleFont).toEqualOptions({
         family: defaults.font.family,
         style: 'bold',
         size: defaults.font.size,
-      }));
+      });
 
-      expect(tooltip.options).toEqual(jasmine.objectContaining({
+      expect(tooltip.options).toEqualOptions({
         titleAlign: 'left',
         titleSpacing: 2,
         titleMarginBottom: 6,
-      }));
+      });
 
       expect(tooltip.options.footerColor).toEqual('#fff');
-      expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+      expect(tooltip.options.footerFont).toEqualOptions({
         family: defaults.font.family,
         style: 'bold',
         size: defaults.font.size,
-      }));
+      });
 
-      expect(tooltip.options).toEqual(jasmine.objectContaining({
+      expect(tooltip.options).toEqualOptions({
         footerAlign: 'left',
         footerSpacing: 2,
         footerMarginTop: 6,
-      }));
+      });
 
-      expect(tooltip.options).toEqual(jasmine.objectContaining({
+      expect(tooltip.options).toEqualOptions({
         // Appearance
         caretSize: 5,
         caretPadding: 2,
@@ -125,7 +125,7 @@ describe('Plugin.Tooltip', function() {
         backgroundColor: 'rgba(0,0,0,0.8)',
         multiKeyBackground: '#fff',
         displayColors: true
-      }));
+      });
 
       expect(tooltip).toEqual(jasmine.objectContaining({
         opacity: 1,
@@ -245,10 +245,10 @@ describe('Plugin.Tooltip', function() {
       size: defaults.font.size,
     }));
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       bodyAlign: 'left',
       bodySpacing: 2,
-    }));
+    });
 
     expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
       family: defaults.font.family,
@@ -256,25 +256,25 @@ describe('Plugin.Tooltip', function() {
       size: defaults.font.size,
     }));
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       titleAlign: 'left',
       titleSpacing: 2,
       titleMarginBottom: 6,
-    }));
+    });
 
-    expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.footerFont).toEqualOptions({
       family: defaults.font.family,
       style: 'bold',
       size: defaults.font.size,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       footerAlign: 'left',
       footerSpacing: 2,
       footerMarginTop: 6,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       // Appearance
       caretSize: 5,
       caretPadding: 2,
@@ -282,7 +282,7 @@ describe('Plugin.Tooltip', function() {
       backgroundColor: 'rgba(0,0,0,0.8)',
       multiKeyBackground: '#fff',
       displayColors: true
-    }));
+    });
 
     expect(tooltip.opacity).toEqual(1);
     expect(tooltip.title).toEqual(['Point 2']);
@@ -395,10 +395,10 @@ describe('Plugin.Tooltip', function() {
       size: defaults.font.size,
     }));
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       bodyAlign: 'left',
       bodySpacing: 2,
-    }));
+    });
 
     expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
       family: defaults.font.family,
@@ -406,10 +406,10 @@ describe('Plugin.Tooltip', function() {
       size: defaults.font.size,
     }));
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       titleSpacing: 2,
       titleMarginBottom: 6,
-    }));
+    });
 
     expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
       family: defaults.font.family,
@@ -417,20 +417,20 @@ describe('Plugin.Tooltip', function() {
       size: defaults.font.size,
     }));
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       footerAlign: 'left',
       footerSpacing: 2,
       footerMarginTop: 6,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       // Appearance
       caretSize: 5,
       caretPadding: 2,
       cornerRadius: 6,
       backgroundColor: 'rgba(0,0,0,0.8)',
       multiKeyBackground: '#fff',
-    }));
+    });
 
     expect(tooltip).toEqual(jasmine.objectContaining({
       opacity: 1,
@@ -469,7 +469,6 @@ describe('Plugin.Tooltip', function() {
     expect(tooltip.x).toBeCloseToPixel(267);
     expect(tooltip.y).toBeCloseToPixel(75);
   });
-
 
   it('Should provide context object to user callbacks', async function() {
     const chart = window.acquireChart({
@@ -811,10 +810,10 @@ describe('Plugin.Tooltip', function() {
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       // Positioning
       caretPadding: 10,
-    }));
+    });
   });
 
   ['line', 'bar'].forEach(function(type) {
@@ -1184,51 +1183,51 @@ describe('Plugin.Tooltip', function() {
     expect(tooltip.xAlign).toEqual('center');
     expect(tooltip.yAlign).toEqual('top');
 
-    expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.bodyFont).toEqualOptions({
       family: defaults.font.family,
       style: defaults.font.style,
       size: defaults.font.size,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       bodyAlign: 'left',
       bodySpacing: 2,
-    }));
+    });
 
-    expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.titleFont).toEqualOptions({
       family: defaults.font.family,
       style: 'bold',
       size: defaults.font.size,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       titleAlign: 'left',
       titleSpacing: 2,
       titleMarginBottom: 6,
-    }));
+    });
 
-    expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.footerFont).toEqualOptions({
       family: defaults.font.family,
       style: 'bold',
       size: defaults.font.size,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       footerAlign: 'left',
       footerSpacing: 2,
       footerMarginTop: 6,
-    }));
+    });
 
-    expect(tooltip.options).toEqual(jasmine.objectContaining({
+    expect(tooltip.options).toEqualOptions({
       // Appearance
       caretSize: 5,
       caretPadding: 2,
       cornerRadius: 6,
       backgroundColor: 'rgba(0,0,0,0.8)',
       multiKeyBackground: '#fff',
-    }));
+    });
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqualOptions({
       opacity: 1,
 
       // Text
@@ -1253,7 +1252,7 @@ describe('Plugin.Tooltip', function() {
         borderColor: defaults.borderColor,
         backgroundColor: defaults.backgroundColor
       }]
-    }));
+    });
   });
 
   describe('text align', function() {

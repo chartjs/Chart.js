@@ -11,7 +11,7 @@ describe('Chart.animations', function() {
       }
     });
     expect(anims._properties.get('property1')).toEqual(jasmine.objectContaining({duration: 1000}));
-    expect(anims._properties.get('property2')).toEqual({duration: 2000});
+    expect(anims._properties.get('property2')).toEqual(jasmine.objectContaining({duration: 2000}));
   });
 
   it('should ignore duplicate definitions from collections', function() {
@@ -52,7 +52,7 @@ describe('Chart.animations', function() {
   });
 
   it('should clone the target options, if those are shared and new options are not', function() {
-    const chart = {};
+    const chart = {options: {}};
     const anims = new Chart.Animations(chart, {option: {duration: 200}});
     const options = {option: 0, $shared: true};
     const target = {options};
@@ -137,7 +137,6 @@ describe('Chart.animations', function() {
       }, 250);
     }, 50);
   });
-
 
   it('should assign final shared options to target after animations complete', function(done) {
     const chart = {

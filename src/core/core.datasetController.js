@@ -1,9 +1,7 @@
 import Animations from './core.animations';
 import defaults from './core.defaults';
-import {isObject, merge, _merger, isArray, valueOrDefault, mergeIf, resolveObjectKey, _capitalize} from '../helpers/helpers.core';
+import {isObject, isArray, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
-import {resolve} from '../helpers/helpers.options';
-import {getHoverColor} from '../helpers/helpers.color';
 import {sign} from '../helpers/helpers.math';
 
 /**
@@ -183,8 +181,6 @@ function clearStacks(meta, items) {
   });
 }
 
-const optionKeys = (optionNames) => isArray(optionNames) ? optionNames : Object.keys(optionNames);
-const optionKey = (key, active) => active ? 'hover' + _capitalize(key) : key;
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
 const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
 
@@ -198,11 +194,10 @@ export default class DatasetController {
     this.chart = chart;
     this._ctx = chart.ctx;
     this.index = datasetIndex;
-    this._cachedAnimations = {};
     this._cachedDataOpts = {};
     this._cachedMeta = this.getMeta();
     this._type = this._cachedMeta.type;
-    this._config = undefined;
+    this.options = undefined;
     /** @type {boolean | object} */
     this._parsing = false;
     this._data = undefined;
@@ -365,21 +360,11 @@ export default class DatasetController {
 	 */
   configure() {
     const me = this;
-    me._config = merge(Object.create(null), [
-      defaults.controllers[me._type].datasets,
-      (me.chart.options.datasets || {})[me._type],
-      me.getDataset(),
-    ], {
-      merger(key, target, source) {
-        // Cloning the data is expensive and unnecessary.
-        // Additionally, plugins may add dataset level fields that should
-        // not be cloned. We identify those via an underscore prefix
-        if (key !== 'data' && key.charAt(0) !== '_') {
-          _merger(key, target, source);
-        }
-      }
-    });
-    me._parsing = resolve([me._config.parsing, me.chart.options.parsing, true]);
+    const config = me.chart.config;
+    const scopeKeys = config.datasetScopeKeys(me._type);
+    const scopes = config.getOptionScopes(me.getDataset(), scopeKeys);
+    me.options = config.createResolver(scopes, me.getContext());
+    me._parsing = me.options.parsing;
   }
 
   /**
@@ -646,10 +631,9 @@ export default class DatasetController {
     const me = this;
     const meta = me._cachedMeta;
     me.configure();
-    me._cachedAnimations = {};
     me._cachedDataOpts = {};
     me.update(mode || 'default');
-    meta._clip = toClip(valueOrDefault(me._config.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
+    meta._clip = toClip(valueOrDefault(me.options.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
   }
 
   /**
@@ -688,21 +672,6 @@ export default class DatasetController {
   }
 
   /**
-	 * @private
-	 */
-  _addAutomaticHoverColors(index, options) {
-    const me = this;
-    const normalOptions = me.getStyle(index);
-    const missingColors = Object.keys(normalOptions).filter(key => key.indexOf('Color') !== -1 && !(key in options));
-    let i = missingColors.length - 1;
-    let color;
-    for (; i >= 0; i--) {
-      color = missingColors[i];
-      options[color] = getHoverColor(normalOptions[color]);
-    }
-  }
-
-  /**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index
@@ -710,28 +679,16 @@ export default class DatasetController {
 	 * @return {object} style object
 	 */
   getStyle(index, active) {
-    const me = this;
-    const meta = me._cachedMeta;
-    const dataset = meta.dataset;
-
-    if (!me._config) {
-      me.configure();
-    }
-
-    const options = dataset && index === undefined
-      ? me.resolveDatasetElementOptions(active)
-      : me.resolveDataElementOptions(index || 0, active && 'active');
-    if (active) {
-      me._addAutomaticHoverColors(index, options);
-    }
-
-    return options;
+    const mode = active ? 'active' : 'default';
+    return index === undefined && this._cachedMeta.dataset
+      ? this.resolveDatasetElementOptions(mode)
+      : this.resolveDataElementOptions(index || 0, mode);
   }
 
   /**
 	 * @protected
 	 */
-  getContext(index, active) {
+  getContext(index, active, mode) {
     const me = this;
     const dataset = me.getDataset();
     let context;
@@ -744,18 +701,16 @@ export default class DatasetController {
     }
 
     context.active = !!active;
+    context.mode = mode;
     return context;
   }
 
   /**
-	 * @param {boolean} [active]
+	 * @param {string} [mode]
 	 * @protected
 	 */
-  resolveDatasetElementOptions(active) {
-    return this._resolveOptions(this.datasetElementOptions, {
-      active,
-      type: this.datasetElementType.id
-    });
+  resolveDatasetElementOptions(mode) {
+    return this._resolveElementOptions(this.datasetElementType.id, mode);
   }
 
   /**
@@ -764,25 +719,33 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDataElementOptions(index, mode) {
-    mode = mode || 'default';
+    return this._resolveElementOptions(this.dataElementType.id, mode, index);
+  }
+
+  /**
+	 * @private
+	 */
+  _resolveElementOptions(elementType, mode = 'default', index) {
     const me = this;
     const active = mode === 'active';
     const cache = me._cachedDataOpts;
-    const cached = cache[mode];
-    const sharing = me.enableOptionSharing;
+    const cacheKey = elementType + '-' + mode;
+    const cached = cache[cacheKey];
+    const sharing = me.enableOptionSharing && defined(index);
     if (cached) {
       return cloneIfNotShared(cached, sharing);
     }
-    const info = {cacheable: !active};
+    const config = me.chart.config;
+    const scopeKeys = config.datasetElementScopeKeys(me._type, elementType);
+    const prefixes = active ? [`${elementType}Hover`, 'hover', elementType, ''] : [elementType, ''];
+    const scopes = config.getOptionScopes(me.getDataset(), scopeKeys);
+    const names = Object.keys(defaults.elements[elementType]);
+    // context is provided as a function, and is called only if needed,
+    // so we don't create a context for each element if not needed.
+    const context = () => me.getContext(index, active);
+    const values = config.resolveNamedOptions(scopes, names, context, prefixes);
 
-    const values = me._resolveOptions(me.dataElementOptions, {
-      index,
-      active,
-      info,
-      type: me.dataElementType.id
-    });
-
-    if (info.cacheable) {
+    if (values.$shared) {
       // `$shared` indicates this set of options can be shared between multiple elements.
       // Sharing is used to reduce number of properties to change during animation.
       values.$shared = sharing;
@@ -790,41 +753,12 @@ export default class DatasetController {
       // We cache options by `mode`, which can be 'active' for example. This enables us
       // to have the 'active' element options and 'default' options to switch between
       // when interacting.
-      // We freeze a clone of this object, so the returned values are not frozen.
-      cache[mode] = Object.freeze(Object.assign({}, values));
+      cache[cacheKey] = Object.freeze(cloneIfNotShared(values, sharing));
     }
 
     return values;
   }
 
-  /**
-	 * @private
-	 */
-  _resolveOptions(optionNames, args) {
-    const me = this;
-    const {index, active, type, info} = args;
-    const datasetOpts = me._config;
-    const options = me.chart.options.elements[type] || {};
-    const values = {};
-    const context = me.getContext(index, active);
-    const keys = optionKeys(optionNames);
-
-    for (let i = 0, ilen = keys.length; i < ilen; ++i) {
-      const key = keys[i];
-      const readKey = optionKey(key, active);
-      const value = resolve([
-        datasetOpts[optionNames[readKey]],
-        datasetOpts[readKey],
-        options[readKey]
-      ], context, index, info);
-
-      if (value !== undefined) {
-        values[key] = value;
-      }
-    }
-
-    return values;
-  }
 
   /**
 	 * @private
@@ -832,29 +766,24 @@ export default class DatasetController {
   _resolveAnimations(index, mode, active) {
     const me = this;
     const chart = me.chart;
-    const cached = me._cachedAnimations;
-    mode = mode || 'default';
-
-    if (cached[mode]) {
-      return cached[mode];
+    const cache = me._cachedDataOpts;
+    const cacheKey = 'animation-' + mode;
+    const cached = cache[cacheKey];
+    if (cached) {
+      return cached;
     }
-
-    const info = {cacheable: true};
-    const context = me.getContext(index, active);
-    const chartAnim = resolve([chart.options.animation], context, index, info);
-    const datasetAnim = resolve([me._config.animation], context, index, info);
-    let config = chartAnim && mergeIf({}, [datasetAnim, chartAnim]);
-
-    if (config[mode]) {
-      config = Object.assign({}, config, config[mode]);
+    let options;
+    if (chart.options.animation !== false) {
+      const config = me.chart.config;
+      const scopeKeys = config.datasetAnimationScopeKeys(me._type);
+      const scopes = config.getOptionScopes(me.getDataset().animation, scopeKeys);
+      const context = () => me.getContext(index, active, mode);
+      options = config.createResolver(scopes, context);
     }
-
-    const animations = new Animations(chart, config);
-
-    if (info.cacheable) {
-      cached[mode] = animations && Object.freeze(animations);
+    const animations = new Animations(chart, options && options[mode] || options);
+    if (options && options._cacheable) {
+      cache[cacheKey] = Object.freeze(animations);
     }
-
     return animations;
   }
 
@@ -895,7 +824,7 @@ export default class DatasetController {
 	 */
   updateSharedOptions(sharedOptions, mode, newOptions) {
     if (sharedOptions) {
-      this._resolveAnimations(undefined, mode).update({options: sharedOptions}, {options: newOptions});
+      this._resolveAnimations(undefined, mode).update(sharedOptions, newOptions);
     }
   }
 
@@ -905,7 +834,11 @@ export default class DatasetController {
   _setStyle(element, index, mode, active) {
     element.active = active;
     const options = this.getStyle(index, active);
-    this._resolveAnimations(index, mode, active).update(element, {options: this.getSharedOptions(options) || options});
+    this._resolveAnimations(index, mode, active).update(element, {
+      // When going from active to inactive, we need to update to the shared options.
+      // This way the once hovered element will end up with the same original shared options instance, after animation.
+      options: (!active && this.getSharedOptions(options)) || options
+    });
   }
 
   removeHoverStyle(element, datasetIndex, index) {
@@ -1060,32 +993,3 @@ DatasetController.prototype.datasetElementType = null;
  * Element type used to generate a meta data (e.g. Chart.element.PointElement).
  */
 DatasetController.prototype.dataElementType = null;
-
-/**
- * Dataset element option keys to be resolved in resolveDatasetElementOptions.
- * A derived controller may override this to resolve controller-specific options.
- * The keys defined here are for backward compatibility for legend styles.
- * @type {string[]}
- */
-DatasetController.prototype.datasetElementOptions = [
-  'backgroundColor',
-  'borderCapStyle',
-  'borderColor',
-  'borderDash',
-  'borderDashOffset',
-  'borderJoinStyle',
-  'borderWidth'
-];
-
-/**
- * Data element option keys to be resolved in resolveDataElementOptions.
- * A derived controller may override this to resolve controller-specific options.
- * The keys defined here are for backward compatibility for legend styles.
- * @type {string[]|object}
- */
-DatasetController.prototype.dataElementOptions = [
-  'backgroundColor',
-  'borderColor',
-  'borderWidth',
-  'pointStyle'
-];

@@ -4,7 +4,7 @@ import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {toFont, resolve} from '../helpers/helpers.options';
+import {toFont} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
@@ -95,9 +95,8 @@ function fitWithPointLabels(scale) {
   const valueCount = scale.chart.data.labels.length;
   for (i = 0; i < valueCount; i++) {
     pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
-
-    const context = scale.getContext(i);
-    const plFont = toFont(resolve([scale.options.pointLabels.font], context, i), scale.chart.options.font);
+    const opts = scale.options.pointLabels.setContext(scale.getContext(i));
+    const plFont = toFont(opts.font);
     scale.ctx.font = plFont.string;
     textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
     scale._pointLabelSizes[i] = textSize;
@@ -166,8 +165,8 @@ function drawPointLabels(scale) {
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
-    const context = scale.getContext(i);
-    const plFont = toFont(resolve([pointLabelOpts.font], context, i), scale.chart.options.font);
+    const optsAtIndex = pointLabelOpts.setContext(scale.getContext(i));
+    const plFont = toFont(optsAtIndex.font);
     const angle = toDegrees(scale.getIndexAngle(i));
     adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
     renderText(
@@ -177,7 +176,7 @@ function drawPointLabels(scale) {
       pointLabelPosition.y + (plFont.lineHeight / 2),
       plFont,
       {
-        color: resolve([pointLabelOpts.color], context, i),
+        color: optsAtIndex.color,
         textAlign: getTextAlignForAngle(angle),
       }
     );
@@ -185,14 +184,13 @@ function drawPointLabels(scale) {
   ctx.restore();
 }
 
-function drawRadiusLine(scale, gridLineOpts, radius, index) {
+function drawRadiusLine(scale, gridLineOpts, radius) {
   const ctx = scale.ctx;
   const circular = gridLineOpts.circular;
   const valueCount = scale.chart.data.labels.length;
 
-  const context = scale.getContext(index);
-  const lineColor = resolve([gridLineOpts.color], context, index - 1);
-  const lineWidth = resolve([gridLineOpts.lineWidth], context, index - 1);
+  const lineColor = gridLineOpts.color;
+  const lineWidth = gridLineOpts.lineWidth;
   let pointPosition;
 
   if ((!circular && !valueCount) || !lineColor || !lineWidth || radius < 0) {
@@ -202,10 +200,8 @@ function drawRadiusLine(scale, gridLineOpts, radius, index) {
   ctx.save();
   ctx.strokeStyle = lineColor;
   ctx.lineWidth = lineWidth;
-  if (ctx.setLineDash) {
-    ctx.setLineDash(resolve([gridLineOpts.borderDash, []], context));
-    ctx.lineDashOffset = resolve([gridLineOpts.borderDashOffset], context, index - 1);
-  }
+  ctx.setLineDash(gridLineOpts.borderDash);
+  ctx.lineDashOffset = gridLineOpts.borderDashOffset;
 
   ctx.beginPath();
   if (circular) {
@@ -243,11 +239,6 @@ export default class RadialLinearScale extends LinearScaleBase {
     this.drawingArea = undefined;
     /** @type {string[]} */
     this.pointLabels = [];
-  }
-
-  init(options) {
-    super.init(options);
-    this.axis = 'r';
   }
 
   setDimensions() {
@@ -408,7 +399,8 @@ export default class RadialLinearScale extends LinearScaleBase {
       me.ticks.forEach((tick, index) => {
         if (index !== 0) {
           offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
-          drawRadiusLine(me, gridLineOpts, offset, index);
+          const optsAtIndex = gridLineOpts.setContext(me.getContext(index - 1));
+          drawRadiusLine(me, optsAtIndex, offset);
         }
       });
     }
@@ -417,9 +409,9 @@ export default class RadialLinearScale extends LinearScaleBase {
       ctx.save();
 
       for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
-        const context = me.getContext(i);
-        const lineWidth = resolve([angleLineOpts.lineWidth, gridLineOpts.lineWidth], context, i);
-        const color = resolve([angleLineOpts.color, gridLineOpts.color], context, i);
+        const optsAtIndex = angleLineOpts.setContext(me.getContext(i));
+        const lineWidth = optsAtIndex.lineWidth;
+        const color = optsAtIndex.color;
 
         if (!lineWidth || !color) {
           continue;
@@ -428,10 +420,8 @@ export default class RadialLinearScale extends LinearScaleBase {
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
 
-        if (ctx.setLineDash) {
-          ctx.setLineDash(resolve([angleLineOpts.borderDash, gridLineOpts.borderDash, []], context));
-          ctx.lineDashOffset = resolve([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0], context, i);
-        }
+        ctx.setLineDash(optsAtIndex.borderDash);
+        ctx.lineDashOffset = optsAtIndex.borderDashOffset;
 
         offset = me.getDistanceFromCenterForValue(opts.ticks.reverse ? me.min : me.max);
         position = me.getPointPosition(i, offset);
@@ -472,26 +462,24 @@ export default class RadialLinearScale extends LinearScaleBase {
         return;
       }
 
-      const context = me.getContext(index);
-      const tickFont = me._resolveTickFontOptions(index);
+      const optsAtIndex = tickOpts.setContext(me.getContext(index));
+      const tickFont = toFont(optsAtIndex.font);
       offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
-      const showLabelBackdrop = resolve([tickOpts.showLabelBackdrop], context, index);
-
-      if (showLabelBackdrop) {
+      if (optsAtIndex.showLabelBackdrop) {
         width = ctx.measureText(tick.label).width;
-        ctx.fillStyle = resolve([tickOpts.backdropColor], context, index);
+        ctx.fillStyle = optsAtIndex.backdropColor;
 
         ctx.fillRect(
-          -width / 2 - tickOpts.backdropPaddingX,
-          -offset - tickFont.size / 2 - tickOpts.backdropPaddingY,
-          width + tickOpts.backdropPaddingX * 2,
-          tickFont.size + tickOpts.backdropPaddingY * 2
+          -width / 2 - optsAtIndex.backdropPaddingX,
+          -offset - tickFont.size / 2 - optsAtIndex.backdropPaddingY,
+          width + optsAtIndex.backdropPaddingX * 2,
+          tickFont.size + optsAtIndex.backdropPaddingY * 2
         );
       }
 
       renderText(ctx, tick.label, 0, -offset, tickFont, {
-        color: tickOpts.color,
+        color: optsAtIndex.color,
       });
     });
 
@@ -564,4 +552,10 @@ RadialLinearScale.defaultRoutes = {
   'angleLines.color': 'borderColor',
   'pointLabels.color': 'color',
   'ticks.color': 'color'
+};
+
+RadialLinearScale.descriptors = {
+  angleLines: {
+    _fallback: 'gridLines'
+  }
 };

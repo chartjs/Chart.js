@@ -1,6 +1,6 @@
 import Animations from '../core/core.animations';
 import Element from '../core/core.element';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, valueOrDefault} from '../helpers/helpers.core';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
 import {drawPoint, toFontString} from '../helpers';
@@ -368,9 +368,6 @@ export class Tooltip extends Element {
   }
 
   initialize(options) {
-    const defaultSize = options.bodyFont.size;
-    options.boxHeight = valueOrDefault(options.boxHeight, defaultSize);
-    options.boxWidth = valueOrDefault(options.boxWidth, defaultSize);
     this.options = options;
     this._cachedAnimations = undefined;
   }
@@ -1102,6 +1099,8 @@ export default {
     caretPadding: 2,
     caretSize: 5,
     cornerRadius: 6,
+    boxHeight: (ctx, opts) => opts.bodyFont.size,
+    boxWidth: (ctx, opts) => opts.bodyFont.size,
     multiKeyBackground: '#fff',
     displayColors: true,
     borderColor: 'rgba(0,0,0,0)',
@@ -1196,5 +1195,17 @@ export default {
     bodyFont: 'font',
     footerFont: 'font',
     titleFont: 'font'
-  }
+  },
+
+  descriptors: {
+    _scriptable: (name) => name !== 'filter' && name !== 'itemSort' && name !== 'custom',
+    _indexable: false,
+    callbacks: {
+      _scriptable: false,
+      _indexable: false,
+    }
+  },
+
+  // For easier configuration, resolve additionally from `interaction` and root of options and defaults.
+  additionalOptionScopes: ['interaction', '']
 };

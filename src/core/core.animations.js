@@ -1,17 +1,18 @@
 import animator from './core.animator';
 import Animation from './core.animation';
 import defaults from './core.defaults';
-import {noop, isObject} from '../helpers/helpers.core';
+import {isObject} from '../helpers/helpers.core';
 
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['borderColor', 'backgroundColor'];
+const animationOptions = ['duration', 'easing', 'from', 'to', 'type', 'easing', 'loop', 'fn'];
 
 defaults.set('animation', {
   // Plain properties can be overridden in each object
   duration: 1000,
   easing: 'easeOutQuart',
-  onProgress: noop,
-  onComplete: noop,
+  onProgress: undefined,
+  onComplete: undefined,
 
   // Property sets
   colors: {
@@ -54,30 +55,11 @@ defaults.set('animation', {
   }
 });
 
-function copyOptions(target, values) {
-  const oldOpts = target.options;
-  const newOpts = values.options;
-  if (!oldOpts || !newOpts) {
-    return;
-  }
-  if (oldOpts.$shared && !newOpts.$shared) {
-    target.options = Object.assign({}, oldOpts, newOpts, {$shared: false});
-  } else {
-    Object.assign(oldOpts, newOpts);
-  }
-  delete values.options;
-}
-
-function extensibleConfig(animations) {
-  const result = {};
-  Object.keys(animations).forEach(key => {
-    const value = animations[key];
-    if (!isObject(value)) {
-      result[key] = value;
-    }
-  });
-  return result;
-}
+defaults.describe('animation', {
+  _scriptable: (name) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
+  _indexable: false,
+  _fallback: 'animation',
+});
 
 export default class Animations {
   constructor(chart, animations) {
@@ -92,22 +74,20 @@ export default class Animations {
     }
 
     const animatedProps = this._properties;
-    const animDefaults = extensibleConfig(animations);
 
-    Object.keys(animations).forEach(key => {
+    Object.getOwnPropertyNames(animations).forEach(key => {
       const cfg = animations[key];
       if (!isObject(cfg)) {
         return;
       }
+      const resolved = {};
+      for (const option of animationOptions) {
+        resolved[option] = cfg[option];
+      }
+
       (cfg.properties || [key]).forEach((prop) => {
-        // Can have only one config per animation.
-        if (!animatedProps.has(prop)) {
-          animatedProps.set(prop, Object.assign({}, animDefaults, cfg));
-        } else if (prop === key) {
-          // Single property targetting config wins over multi-targetting.
-          // eslint-disable-next-line no-unused-vars
-          const {properties, ...inherited} = animatedProps.get(prop);
-          animatedProps.set(prop, Object.assign({}, inherited, cfg));
+        if (prop === key || !animatedProps.has(prop)) {
+          animatedProps.set(prop, resolved);
         }
       });
     });
@@ -125,8 +105,8 @@ export default class Animations {
     }
 
     const animations = this._createAnimations(options, newOptions);
-    if (newOptions.$shared && !options.$shared) {
-      // Going from distinct options to shared options:
+    if (newOptions.$shared) {
+      // Going to shared options:
       // After all animations are done, assign the shared options object to the element
       // So any new updates to the shared options are observed
       awaitAll(target.options.$animations, newOptions).then(() => {
@@ -195,10 +175,6 @@ export default class Animations {
   update(target, values) {
     if (this._properties.size === 0) {
       // Nothing is animated, just apply the new values.
-      // Options can be shared, need to account for that.
-      copyOptions(target, values);
-      // copyOptions removes the `options` from `values`,
-      // unless it can be directly assigned.
       Object.assign(target, values);
       return;
     }
@@ -234,7 +210,7 @@ function resolveTargetOptions(target, newOptions) {
     target.options = newOptions;
     return;
   }
-  if (options.$shared && !newOptions.$shared) {
+  if (options.$shared) {
     // Going from shared options to distinct one:
     // Create new options object containing the old shared values and start updating that.
     target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});

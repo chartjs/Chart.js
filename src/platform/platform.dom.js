@@ -36,9 +36,9 @@ const isNullOrEmpty = value => value === null || value === '';
  * since responsiveness is handled by the controller.resize() method. The config is used
  * to determine the aspect ratio to apply in case no explicit height has been specified.
  * @param {HTMLCanvasElement} canvas
- * @param {{ options: any; }} config
+ * @param {number} [aspectRatio]
  */
-function initCanvas(canvas, config) {
+function initCanvas(canvas, aspectRatio) {
   const style = canvas.style;
 
   // NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
@@ -78,7 +78,7 @@ function initCanvas(canvas, config) {
       // If no explicit render height and style height, let's apply the aspect ratio,
       // which one can be specified by the user but also by charts as default option
       // (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
-      canvas.height = canvas.width / (config.options.aspectRatio || 2);
+      canvas.height = canvas.width / (aspectRatio || 2);
     } else {
       const displayHeight = readUsedSize(canvas, 'height');
       if (displayHeight !== undefined) {
@@ -259,10 +259,10 @@ export default class DomPlatform extends BasePlatform {
 
   /**
 	 * @param {HTMLCanvasElement} canvas
-	 * @param {{ options: { aspectRatio?: number; }; }} config
+	 * @param {number} [aspectRatio]
 	 * @return {CanvasRenderingContext2D|null}
 	 */
-  acquireContext(canvas, config) {
+  acquireContext(canvas, aspectRatio) {
     // To prevent canvas fingerprinting, some add-ons undefine the getContext
     // method, for example: https://github.com/kkapsner/CanvasBlocker
     // https://github.com/chartjs/Chart.js/issues/2807
@@ -278,7 +278,7 @@ export default class DomPlatform extends BasePlatform {
     if (context && context.canvas === canvas) {
       // Load platform resources on first chart creation, to make it possible to
       // import the library before setting platform options.
-      initCanvas(canvas, config);
+      initCanvas(canvas, aspectRatio);
       return context;
     }
 

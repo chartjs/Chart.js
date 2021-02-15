@@ -546,7 +546,7 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	buildOrUpdateElements(resetNewElements?: boolean): void;
 
 	getStyle(index: number, active: boolean): AnyObject;
-	protected resolveDatasetElementOptions(active: boolean): AnyObject;
+	protected resolveDatasetElementOptions(mode: UpdateMode): AnyObject;
 	protected resolveDataElementOptions(index: number, mode: UpdateMode): AnyObject;
 	/**
 	 * Utility for checking if the options are shared and should be animated separately.
@@ -592,8 +592,6 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	defaults: {
 		datasetElementType?: string | null | false;
 		dataElementType?: string | null | false;
-		dataElementOptions?: string[];
-		datasetElementOptions?: string[] | { [key: string]: string };
 	};
 }
 

@@ -1,7 +1,5 @@
-import defaults from './core.defaults';
 import registry from './core.registry';
-import {isNullOrUndef} from '../helpers';
-import {callback as callCallback, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -91,7 +89,7 @@ export default class PluginService {
     const options = valueOrDefault(config.options && config.options.plugins, {});
     const plugins = allPlugins(config);
     // options === false => all plugins are disabled
-    return options === false && !all ? [] : createDescriptors(plugins, options, all);
+    return options === false && !all ? [] : createDescriptors(chart, plugins, options, all);
   }
 
   /**
@@ -139,8 +137,9 @@ function getOpts(options, all) {
   return options;
 }
 
-function createDescriptors(plugins, options, all) {
+function createDescriptors(chart, plugins, options, all) {
   const result = [];
+  const context = chart.getContext();
 
   for (let i = 0; i < plugins.length; i++) {
     const plugin = plugins[i];
@@ -151,9 +150,26 @@ function createDescriptors(plugins, options, all) {
     }
     result.push({
       plugin,
-      options: mergeIf({}, [opts, defaults.plugins[id]])
+      options: pluginOpts(chart.config, plugin, opts, context)
     });
   }
 
   return result;
+}
+
+/**
+ * @param {import("./core.config").default} config
+ * @param {*} plugin
+ * @param {*} opts
+ * @param {*} context
+ */
+function pluginOpts(config, plugin, opts, context) {
+  const id = plugin.id;
+  const keys = [
+    `controllers.${config.type}.plugins.${id}`,
+    `plugins.${id}`,
+    ...plugin.additionalOptionScopes || []
+  ];
+  const scopes = config.getOptionScopes(opts || {}, keys);
+  return config.createResolver(scopes, context);
 }

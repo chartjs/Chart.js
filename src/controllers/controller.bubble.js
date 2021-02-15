@@ -1,6 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {resolve} from '../helpers/helpers.options';
-import {resolveObjectKey} from '../helpers/helpers.core';
+import {resolveObjectKey, valueOrDefault} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
   initialize() {
@@ -107,29 +106,20 @@ export default class BubbleController extends DatasetController {
 	 * @protected
 	 */
   resolveDataElementOptions(index, mode) {
-    const me = this;
-    const chart = me.chart;
-    const parsed = me.getParsed(index);
+    const parsed = this.getParsed(index);
     let values = super.resolveDataElementOptions(index, mode);
-
-    // Scriptable options
-    const context = me.getContext(index, mode === 'active');
 
     // In case values were cached (and thus frozen), we need to clone the values
     if (values.$shared) {
       values = Object.assign({}, values, {$shared: false});
     }
 
-
     // Custom radius resolution
+    const radius = values.radius;
     if (mode !== 'active') {
       values.radius = 0;
     }
-    values.radius += resolve([
-      parsed && parsed._custom,
-      me._config.radius,
-      chart.options.elements.point.radius
-    ], context, index);
+    values.radius += valueOrDefault(parsed && parsed._custom, radius);
 
     return values;
   }
@@ -143,15 +133,6 @@ BubbleController.id = 'bubble';
 BubbleController.defaults = {
   datasetElementType: false,
   dataElementType: 'point',
-  dataElementOptions: [
-    'backgroundColor',
-    'borderColor',
-    'borderWidth',
-    'hitRadius',
-    'radius',
-    'pointStyle',
-    'rotation'
-  ],
   animation: {
     numbers: {
       properties: ['x', 'y', 'borderWidth', 'radius']

@@ -63,6 +63,10 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 * Indexable options are now looping. `backgroundColor: ['red', 'green']` will result in alternating `'red'` / `'green'` if there are more than 2 data points.
 * The input properties of object data can now be freely specified, see [data structures](../general/data-structures.md) for details.
+* Most options are resolved utilizing proxies, instead merging with defaults. In addition to easily enabling different resolution routes for different contexts, it allows using other resolved options in scriptable options.
+  * Options are by default scriptable and indexable, unless disabled for some reason.
+  * Scriptable options receive a option reolver as second parameter for accessing other options in same context.
+  * Resolution falls to upper scopes, if no match is found earlier. See [options](./general/options.md) for details.
 
 #### Specific changes
 

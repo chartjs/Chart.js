@@ -1,4 +1,7 @@
+import {getHoverColor} from '../helpers/helpers.color';
 import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
+
+const privateSymbol = Symbol('private');
 
 /**
  * @param {object} node
@@ -22,11 +25,13 @@ function getScope(node, key) {
  * Note: class is exported for typedoc
  */
 export class Defaults {
-  constructor() {
+  constructor(descriptors) {
+    this.animation = undefined;
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
     this.color = '#666';
     this.controllers = {};
+    this.devicePixelRatio = (context) => context.chart.platform.getDevicePixelRatio();
     this.elements = {};
     this.events = [
       'mousemove',
@@ -45,6 +50,10 @@ export class Defaults {
     this.hover = {
       onHover: null
     };
+    this.hoverBackgroundColor = (ctx, options) => getHoverColor(options.backgroundColor);
+    this.hoverBorderColor = (ctx, options) => getHoverColor(options.borderColor);
+    this.hoverColor = (ctx, options) => getHoverColor(options.color);
+    this.indexAxis = 'x';
     this.interaction = {
       mode: 'nearest',
       intersect: true
@@ -52,11 +61,19 @@ export class Defaults {
     this.maintainAspectRatio = true;
     this.onHover = null;
     this.onClick = null;
+    this.parsing = true;
     this.plugins = {};
     this.responsive = true;
     this.scale = undefined;
     this.scales = {};
     this.showLine = true;
+
+    Object.defineProperty(this, privateSymbol, {
+      value: Object.create(null),
+      writable: false
+    });
+
+    this.describe(descriptors);
   }
 
   /**
@@ -75,6 +92,22 @@ export class Defaults {
 	 */
   get(scope) {
     return getScope(this, scope);
+  }
+
+  /**
+	 * @param {string|object} scope
+	 * @param {object} [values]
+	 */
+  describe(scope, values) {
+    const root = this[privateSymbol];
+    if (typeof scope === 'string') {
+      return merge(getScope(root, scope), values);
+    }
+    return merge(getScope(root, ''), scope);
+  }
+
+  get descriptors() {
+    return this[privateSymbol];
   }
 
   /**
@@ -125,4 +158,14 @@ export class Defaults {
 }
 
 // singleton instance
-export default new Defaults();
+export default new Defaults({
+  _scriptable: (name) => name !== 'onClick' && name !== 'onHover',
+  _indexable: (name) => name !== 'events',
+  hover: {
+    _fallback: 'interaction'
+  },
+  interaction: {
+    _scriptable: false,
+    _indexable: false,
+  }
+});

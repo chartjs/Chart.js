@@ -1381,7 +1381,7 @@ describe('Chart.controllers.bar', function() {
       var meta = chart.getDatasetMeta(0);
       var yScale = chart.scales[meta.yAxisID];
 
-      var config = meta.controller._config;
+      var config = meta.controller.options;
       var categoryPercentage = config.categoryPercentage;
       var barPercentage = config.barPercentage;
       var stacked = yScale.options.stacked;

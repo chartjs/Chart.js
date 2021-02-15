@@ -82,9 +82,11 @@ class Chart {
       );
     }
 
+    const options = config.createResolver(config.chartOptionsScopes(), me.getContext());
+
     this.platform = me._initializePlatform(initialCanvas, config);
 
-    const context = me.platform.acquireContext(initialCanvas, config);
+    const context = me.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
     const height = canvas && canvas.height;
     const width = canvas && canvas.width;
@@ -95,7 +97,7 @@ class Chart {
     this.width = width;
     this.height = height;
     this.aspectRatio = height ? width / height : null;
-    this.options = config.options;
+    this._options = options;
     this._layers = [];
     this._metasets = [];
     this.boxes = [];
@@ -142,6 +144,14 @@ class Chart {
 
   set data(data) {
     this.config.data = data;
+  }
+
+  get options() {
+    return this._options;
+  }
+
+  set options(options) {
+    this.config.update(options);
   }
 
   /**
@@ -394,9 +404,7 @@ class Chart {
         const ControllerClass = registry.getController(type);
         Object.assign(ControllerClass.prototype, {
           dataElementType: registry.getElement(controllerDefaults.dataElementType),
-          datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
-          dataElementOptions: controllerDefaults.dataElementOptions,
-          datasetElementOptions: controllerDefaults.datasetElementOptions
+          datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType)
         });
         meta.controller = new ControllerClass(me, i);
         newControllers.push(meta.controller);
@@ -428,13 +436,15 @@ class Chart {
 
   update(mode) {
     const me = this;
+    const config = me.config;
+
+    config.update(config.options);
+    me._options = config.createResolver(config.chartOptionsScopes(), me.getContext());
 
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
     });
 
-    me.config.update(me.options);
-    me.options = me.config.options;
     const animsDisabled = me._animationsDisabled = !me.options.animation;
 
     me.ensureScalesHaveIDs();
@@ -985,8 +995,7 @@ class Chart {
 	 */
   _updateHoverStyles(active, lastActive, replay) {
     const me = this;
-    const options = me.options || {};
-    const hoverOptions = options.hover;
+    const hoverOptions = me.options.hover;
     const diff = (a, b) => a.filter(x => !b.some(y => x.datasetIndex === y.datasetIndex && x.index === y.index));
     const deactivated = diff(lastActive, active);
     const activated = replay ? active : diff(active, lastActive);

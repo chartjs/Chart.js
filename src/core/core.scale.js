@@ -3,7 +3,7 @@ import Element from './core.element';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
-import {toFont, resolve, toPadding} from '../helpers/helpers.options';
+import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
 /**
@@ -34,9 +34,13 @@ defaults.set('scale', {
     drawOnChartArea: true,
     drawTicks: true,
     tickLength: 10,
+    tickWidth: (_ctx, options) => options.lineWidth,
+    tickColor: (_ctx, options) => options.color,
     offsetGridLines: false,
     borderDash: [],
-    borderDashOffset: 0.0
+    borderDashOffset: 0.0,
+    borderColor: (_ctx, options) => options.color,
+    borderWidth: (_ctx, options) => options.lineWidth
   },
 
   // scale label
@@ -78,6 +82,12 @@ defaults.set('scale', {
 defaults.route('scale.ticks', 'color', '', 'color');
 defaults.route('scale.gridLines', 'color', '', 'borderColor');
 defaults.route('scale.scaleLabel', 'color', '', 'color');
+
+defaults.describe('scales', {
+  _fallback: 'scale',
+  _scriptable: (name) => !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
+  _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash',
+});
 
 /**
  * Returns a new array containing numItems from arr
@@ -386,7 +396,7 @@ export default class Scale extends Element {
     const me = this;
     me.options = options;
 
-    me.axis = me.isHorizontal() ? 'x' : 'y';
+    me.axis = options.axis;
 
     // parse min/max value, so we can properly determine min/max for other scales
     me._userMin = me.parse(options.min);
@@ -1196,8 +1206,8 @@ export default class Scale extends Element {
     const tl = getTickMarkLength(gridLines);
     const items = [];
 
-    let context = this.getContext(0);
-    const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
+    const borderOpts = gridLines.setContext(me.getContext(0));
+    const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
     const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
       return _alignPixel(chart, pixel, axisWidth);
@@ -1258,17 +1268,17 @@ export default class Scale extends Element {
     }
 
     for (i = 0; i < ticksLength; ++i) {
-      context = this.getContext(i);
+      const optsAtIndex = gridLines.setContext(me.getContext(i));
 
-      const lineWidth = resolve([gridLines.lineWidth], context, i);
-      const lineColor = resolve([gridLines.color], context, i);
+      const lineWidth = optsAtIndex.lineWidth;
+      const lineColor = optsAtIndex.color;
       const borderDash = gridLines.borderDash || [];
-      const borderDashOffset = resolve([gridLines.borderDashOffset], context, i);
+      const borderDashOffset = optsAtIndex.borderDashOffset;
 
-      const tickWidth = resolve([gridLines.tickWidth, lineWidth], context, i);
-      const tickColor = resolve([gridLines.tickColor, lineColor], context, i);
-      const tickBorderDash = gridLines.tickBorderDash || borderDash;
-      const tickBorderDashOffset = resolve([gridLines.tickBorderDashOffset, borderDashOffset], context, i);
+      const tickWidth = optsAtIndex.tickWidth;
+      const tickColor = optsAtIndex.tickColor;
+      const tickBorderDash = optsAtIndex.tickBorderDash || [];
+      const tickBorderDashOffset = optsAtIndex.tickBorderDashOffset;
 
       lineValue = getPixelForGridLine(me, i, offsetGridLines);
 
@@ -1376,14 +1386,15 @@ export default class Scale extends Element {
       tick = ticks[i];
       label = tick.label;
 
+      const optsAtIndex = optionTicks.setContext(me.getContext(i));
       pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
       font = me._resolveTickFontOptions(i);
       lineHeight = font.lineHeight;
       lineCount = isArray(label) ? label.length : 1;
       const halfCount = lineCount / 2;
-      const color = resolve([optionTicks.color], me.getContext(i), i);
-      const strokeColor = resolve([optionTicks.textStrokeColor], me.getContext(i), i);
-      const strokeWidth = resolve([optionTicks.textStrokeWidth], me.getContext(i), i);
+      const color = optsAtIndex.color;
+      const strokeColor = optsAtIndex.textStrokeColor;
+      const strokeWidth = optsAtIndex.textStrokeWidth;
 
       if (isHorizontal) {
         x = pixel;
@@ -1529,8 +1540,8 @@ export default class Scale extends Element {
     const gridLines = me.options.gridLines;
     const ctx = me.ctx;
     const chart = me.chart;
-    let context = me.getContext(0);
-    const axisWidth = gridLines.drawBorder ? resolve([gridLines.borderWidth, gridLines.lineWidth, 0], context, 0) : 0;
+    const borderOpts = gridLines.setContext(me.getContext(0));
+    const axisWidth = gridLines.drawBorder ? borderOpts.borderWidth : 0;
     const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
     let i, ilen;
 
@@ -1575,24 +1586,23 @@ export default class Scale extends Element {
 
     if (axisWidth) {
       // Draw the line at the edge of the axis
-      const firstLineWidth = axisWidth;
-      context = me.getContext(me._ticksLength - 1);
-      const lastLineWidth = resolve([gridLines.lineWidth, 1], context, me._ticksLength - 1);
+      const edgeOpts = gridLines.setContext(me.getContext(me._ticksLength - 1));
+      const lastLineWidth = edgeOpts.lineWidth;
       const borderValue = me._borderValue;
       let x1, x2, y1, y2;
 
       if (me.isHorizontal()) {
-        x1 = _alignPixel(chart, me.left, firstLineWidth) - firstLineWidth / 2;
+        x1 = _alignPixel(chart, me.left, axisWidth) - axisWidth / 2;
         x2 = _alignPixel(chart, me.right, lastLineWidth) + lastLineWidth / 2;
         y1 = y2 = borderValue;
       } else {
-        y1 = _alignPixel(chart, me.top, firstLineWidth) - firstLineWidth / 2;
+        y1 = _alignPixel(chart, me.top, axisWidth) - axisWidth / 2;
         y2 = _alignPixel(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
         x1 = x2 = borderValue;
       }
 
       ctx.lineWidth = axisWidth;
-      ctx.strokeStyle = resolve([gridLines.borderColor, gridLines.color], context, 0);
+      ctx.strokeStyle = edgeOpts.borderColor;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -1647,7 +1657,7 @@ export default class Scale extends Element {
       return;
     }
 
-    const scaleLabelFont = toFont(scaleLabel.font, me.chart.options.font);
+    const scaleLabelFont = toFont(scaleLabel.font);
     const scaleLabelPadding = toPadding(scaleLabel.padding);
     const halfLineHeight = scaleLabelFont.lineHeight / 2;
     const scaleLabelAlign = scaleLabel.align;
@@ -1778,11 +1788,8 @@ export default class Scale extends Element {
 	 * @protected
  	 */
   _resolveTickFontOptions(index) {
-    const me = this;
-    const chart = me.chart;
-    const options = me.options.ticks;
-    const context = me.getContext(index);
-    return toFont(resolve([options.font], context), chart.options.font);
+    const opts = this.options.ticks.setContext(this.getContext(index));
+    return toFont(opts.font);
   }
 }
 

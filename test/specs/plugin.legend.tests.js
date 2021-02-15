@@ -620,7 +620,7 @@ describe('Legend block tests', function() {
       lineWidth: 5,
       strokeStyle: 'green',
       pointStyle: 'crossRot',
-      rotation: undefined,
+      rotation: 0,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -690,7 +690,7 @@ describe('Legend block tests', function() {
       lineWidth: 5,
       strokeStyle: 'green',
       pointStyle: 'star',
-      rotation: undefined,
+      rotation: 0,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -737,7 +737,7 @@ describe('Legend block tests', function() {
   });
 
   describe('config update', function() {
-    it ('should update the options', function() {
+    it('should update the options', function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -761,7 +761,7 @@ describe('Legend block tests', function() {
       expect(chart.legend.options.display).toBe(false);
     });
 
-    it ('should update the associated layout item', function() {
+    it('should update the associated layout item', function() {
       var chart = acquireChart({
         type: 'line',
         data: {},
@@ -790,7 +790,7 @@ describe('Legend block tests', function() {
       expect(chart.legend.weight).toBe(42);
     });
 
-    it ('should remove the legend if the new options are false', function() {
+    it('should remove the legend if the new options are false', function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -807,7 +807,7 @@ describe('Legend block tests', function() {
       expect(chart.legend).toBe(undefined);
     });
 
-    it ('should create the legend if the legend options are changed to exist', function() {
+    it('should create the legend if the legend options are changed to exist', function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -827,7 +827,7 @@ describe('Legend block tests', function() {
       chart.options.plugins.legend = {};
       chart.update();
       expect(chart.legend).not.toBe(undefined);
-      expect(chart.legend.options).toEqual(jasmine.objectContaining(Chart.defaults.plugins.legend));
+      expect(chart.legend.options).toEqualOptions(Chart.defaults.plugins.legend);
     });
   });
 
