@@ -137,10 +137,8 @@ export default class Config {
 
   update(options) {
     const config = this._config;
-    if (config.options !== options) {
-      this._scopeCache.clear();
-      this._resolverCache.clear();
-    }
+    this._scopeCache.clear();
+    this._resolverCache.clear();
     config.options = initOptions(config, options);
   }
 
@@ -224,10 +222,11 @@ export default class Config {
 	 * Resolves the objects from options and defaults for option value resolution.
 	 * @param {object} mainScope - The main scope object for options
 	 * @param {string[]} scopeKeys - The keys in resolution order
+   * @param {boolean} [resetCache] - reset the cache for this mainScope
 	 */
-  getOptionScopes(mainScope, scopeKeys) {
+  getOptionScopes(mainScope, scopeKeys, resetCache) {
     let cache = this._scopeCache.get(mainScope);
-    if (!cache) {
+    if (!cache || resetCache) {
       cache = new Map();
       this._scopeCache.set(mainScope, cache);
     }
