@@ -104,6 +104,18 @@ function initConfig(config) {
 }
 
 const keyCache = new Map();
+const keysCached = new Set();
+
+function cachedKeys(cacheKey, generate) {
+  let keys = keyCache.get(cacheKey);
+  if (!keys) {
+    keys = generate();
+    keyCache.set(cacheKey, keys);
+    keysCached.add(keys);
+  }
+  return keys;
+}
+
 export default class Config {
   constructor(config) {
     this._config = initConfig(config);
@@ -149,12 +161,8 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetScopeKeys(datasetType) {
-    let keys = keyCache.get(datasetType);
-    if (!keys) {
-      keys = [`datasets.${datasetType}`, `controllers.${datasetType}.datasets`, ''];
-      keyCache.set(datasetType, keys);
-    }
-    return keys;
+    return cachedKeys(datasetType,
+      () => [`datasets.${datasetType}`, `controllers.${datasetType}.datasets`, '']);
   }
 
   /**
@@ -164,13 +172,12 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetAnimationScopeKeys(datasetType) {
-    const cacheKey = `${datasetType}.animation`;
-    let keys = keyCache.get(cacheKey);
-    if (!keys) {
-      keys = [`datasets.${datasetType}.animation`, `controllers.${datasetType}.datasets.animation`, 'animation'];
-      keyCache.set(cacheKey, keys);
-    }
-    return keys;
+    return cachedKeys(`${datasetType}.animation`,
+      () => [
+        `datasets.${datasetType}.animation`,
+        `controllers.${datasetType}.datasets.animation`,
+        'animation'
+      ]);
   }
 
   /**
@@ -182,19 +189,14 @@ export default class Config {
 	 * @return {string[]}
 	 */
   datasetElementScopeKeys(datasetType, elementType) {
-    const cacheKey = `${datasetType}-${elementType}`;
-    let keys = keyCache.get(cacheKey);
-    if (!keys) {
-      keys = [
+    return cachedKeys(`${datasetType}-${elementType}`,
+      () => [
         `datasets.${datasetType}`,
         `controllers.${datasetType}.datasets`,
         `controllers.${datasetType}.elements.${elementType}`,
         `elements.${elementType}`,
         ''
-      ];
-      keyCache.set(cacheKey, keys);
-    }
-    return keys;
+      ]);
   }
 
   /**
@@ -205,17 +207,12 @@ export default class Config {
   pluginScopeKeys(plugin) {
     const id = plugin.id;
     const type = this.type;
-    const cacheKey = `${type}-plugin-${id}`;
-    let keys = keyCache.get(cacheKey);
-    if (!keys) {
-      keys = [
+    return cachedKeys(`${type}-plugin-${id}`,
+      () => [
         `controllers.${type}.plugins.${id}`,
         `plugins.${id}`,
         ...plugin.additionalOptionScopes || [],
-      ];
-      keyCache.set(cacheKey, keys);
-    }
-    return keys;
+      ]);
   }
 
   /**
@@ -256,7 +253,9 @@ export default class Config {
     scopeKeys.forEach(key => addIfFound(descriptors, key));
 
     const array = [...scopes];
-    cache.set(scopeKeys, array);
+    if (keysCached.has(scopeKeys)) {
+      cache.set(scopeKeys, array);
+    }
     return array;
   }
 
