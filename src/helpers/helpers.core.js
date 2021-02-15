@@ -289,7 +289,7 @@ function indexOfDotOrLength(key, start) {
 }
 
 export function resolveObjectKey(obj, key) {
-  if (!key) {
+  if (key === '') {
     return obj;
   }
   let pos = 0;
