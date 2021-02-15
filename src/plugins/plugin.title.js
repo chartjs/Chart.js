@@ -181,5 +181,6 @@ export default {
     color: 'color'
   },
 
+  // For easier configuration, resolve additionally from root of options and defaults.
   additionalOptionScopes: ['']
 };

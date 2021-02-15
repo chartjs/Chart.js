@@ -57,6 +57,8 @@ Each scope is looked up with `elementType` prefix in the option name first, then
 
 ### Plugin options
 
+A plugin can provide `additionalOptionScopes` array of paths to additionally look for its options in. For root scope, use empty string: `''`. Most core plugins also take options from root scope.
+
 * options.plugins[`plugin.id`]
 * options.controllers[`config.type`].plugins[`plugin.id`]
 * (options.[`...plugin.additionalOptionScopes`])
