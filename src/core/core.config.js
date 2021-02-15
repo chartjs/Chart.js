@@ -206,14 +206,14 @@ export default class Config {
    */
   pluginScopeKeys(plugin) {
     const id = plugin.id;
-    const cacheKey = `plugin-${id}`;
+    const type = this.type;
+    const cacheKey = `${type}-plugin-${id}`;
     let keys = keyCache.get(cacheKey);
     if (!keys) {
       keys = [
-        `controllers.${this.type}.plugins.${id}`,
+        `controllers.${type}.plugins.${id}`,
         `plugins.${id}`,
         ...plugin.additionalOptionScopes || [],
-        ''
       ];
       keyCache.set(cacheKey, keys);
     }
