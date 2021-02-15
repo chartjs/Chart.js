@@ -14,7 +14,6 @@
     "name": "Chart.js",
     "entryPoints": ["src/index.esm.js"],
     "excludeExternals": true,
-    "excludeNotExported": true,
     "includeVersion": true,
     "out": "./dist/docs/typedoc"
   },
