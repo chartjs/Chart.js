@@ -232,7 +232,6 @@ export default class Config {
       return cached;
     }
 
-    const options = this.options;
     const scopes = new Set();
 
     const addIfFound = (obj, key) => {
@@ -246,11 +245,9 @@ export default class Config {
       scopes.add(mainScope);
       scopeKeys.forEach(key => addIfFound(mainScope, key));
     }
-    scopeKeys.forEach(key => addIfFound(options, key));
+    scopeKeys.forEach(key => addIfFound(this.options, key));
     scopeKeys.forEach(key => addIfFound(defaults, key));
-
-    const descriptors = defaults.descriptors;
-    scopeKeys.forEach(key => addIfFound(descriptors, key));
+    scopeKeys.forEach(key => addIfFound(defaults.descriptors, key));
 
     const array = [...scopes];
     if (keysCached.has(scopeKeys)) {
@@ -264,15 +261,16 @@ export default class Config {
 	 * @return {object[]}
 	 */
   chartOptionsScopes() {
-    let scopes = this._scopeCache.get(0);
+    const me = this;
+    let scopes = me._scopeCache.get(0);
     if (!scopes) {
       scopes = [
-        this.options,
-        defaults.controllers[this.type] || {},
-        {type: this.type},
-        defaults, defaults.descriptors
-      ];
-      this._scopeCache.set(0, scopes);
+        me.options,
+        defaults.controllers[me.type] || {},
+        {type: me.type},
+        defaults,
+        defaults.descriptors];
+      me._scopeCache.set(0, scopes);
     }
     return scopes;
   }
@@ -285,18 +283,15 @@ export default class Config {
 	 * @return {object}
 	 */
   resolveNamedOptions(scopes, names, context, prefixes = ['']) {
-    const result = {};
+    const result = {$shared: true};
     const {resolver, subPrefixes} = getResolver(this._resolverCache, scopes, prefixes);
-    let options;
+    let options = resolver;
     if (needContext(resolver, names)) {
       result.$shared = false;
       context = isFunction(context) ? context() : context;
       // subResolver is passed to scriptable options. It should not resolve to hover options.
       const subResolver = this.createResolver(scopes, context, subPrefixes);
       options = _attachContext(resolver, context, subResolver);
-    } else {
-      result.$shared = true;
-      options = resolver;
     }
 
     for (const prop of names) {
