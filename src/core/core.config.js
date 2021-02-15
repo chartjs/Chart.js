@@ -116,6 +116,13 @@ function cachedKeys(cacheKey, generate) {
   return keys;
 }
 
+const addIfFound = (set, obj, key) => {
+  const opts = resolveObjectKey(obj, key);
+  if (opts !== undefined) {
+    set.add(opts);
+  }
+};
+
 export default class Config {
   constructor(config) {
     this._config = initConfig(config);
@@ -234,20 +241,13 @@ export default class Config {
 
     const scopes = new Set();
 
-    const addIfFound = (obj, key) => {
-      const opts = resolveObjectKey(obj, key);
-      if (opts !== undefined) {
-        scopes.add(opts);
-      }
-    };
-
     if (mainScope) {
       scopes.add(mainScope);
-      scopeKeys.forEach(key => addIfFound(mainScope, key));
+      scopeKeys.forEach(key => addIfFound(scopes, mainScope, key));
     }
-    scopeKeys.forEach(key => addIfFound(this.options, key));
-    scopeKeys.forEach(key => addIfFound(defaults, key));
-    scopeKeys.forEach(key => addIfFound(defaults.descriptors, key));
+    scopeKeys.forEach(key => addIfFound(scopes, this.options, key));
+    scopeKeys.forEach(key => addIfFound(scopes, defaults, key));
+    scopeKeys.forEach(key => addIfFound(scopes, defaults.descriptors, key));
 
     const array = [...scopes];
     if (keysCached.has(scopeKeys)) {
