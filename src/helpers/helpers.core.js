@@ -283,13 +283,15 @@ export function _deprecated(scope, value, previous, current) {
   }
 }
 
+const emptyString = '';
+const dot = '.';
 function indexOfDotOrLength(key, start) {
-  const idx = key.indexOf('.', start);
+  const idx = key.indexOf(dot, start);
   return idx === -1 ? key.length : idx;
 }
 
 export function resolveObjectKey(obj, key) {
-  if (key === '') {
+  if (key === emptyString) {
     return obj;
   }
   let pos = 0;
