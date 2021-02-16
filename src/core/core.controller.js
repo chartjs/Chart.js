@@ -831,6 +831,8 @@ class Chart {
       me._destroyDatasetMeta(i);
     }
 
+    me.config.clearCache();
+
     if (canvas) {
       me.unbindEvents();
       clearCanvas(canvas, ctx);
