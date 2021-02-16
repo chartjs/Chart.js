@@ -12,5 +12,6 @@ export function retinaScale(
 		readonly height: number;
 		readonly ctx: CanvasRenderingContext2D;
 	},
-	forceRatio: number
+  forceRatio: number,
+  forceStyle?: boolean
 ): void;
