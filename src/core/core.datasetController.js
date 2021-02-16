@@ -362,7 +362,7 @@ export default class DatasetController {
     const me = this;
     const config = me.chart.config;
     const scopeKeys = config.datasetScopeKeys(me._type);
-    const scopes = config.getOptionScopes(me.getDataset(), scopeKeys);
+    const scopes = config.getOptionScopes(me.getDataset(), scopeKeys, true);
     me.options = config.createResolver(scopes, me.getContext());
     me._parsing = me.options.parsing;
   }

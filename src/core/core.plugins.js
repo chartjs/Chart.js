@@ -164,12 +164,7 @@ function createDescriptors(chart, plugins, options, all) {
  * @param {*} context
  */
 function pluginOpts(config, plugin, opts, context) {
-  const id = plugin.id;
-  const keys = [
-    `controllers.${config.type}.plugins.${id}`,
-    `plugins.${id}`,
-    ...plugin.additionalOptionScopes || []
-  ];
-  const scopes = config.getOptionScopes(opts || {}, keys);
+  const keys = config.pluginScopeKeys(plugin);
+  const scopes = config.getOptionScopes(opts, keys);
   return config.createResolver(scopes, context);
 }

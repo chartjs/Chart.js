@@ -88,7 +88,7 @@ class Chart {
       );
     }
 
-    const options = config.createResolver(config.chartOptionsScopes(), me.getContext());
+    const options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
     this.platform = me._initializePlatform(initialCanvas, config);
 
@@ -440,7 +440,7 @@ class Chart {
     const config = me.config;
 
     config.update(config.options);
-    me._options = config.createResolver(config.chartOptionsScopes(), me.getContext());
+    me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
