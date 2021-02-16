@@ -496,6 +496,7 @@ All helpers are now exposed in a flat hierarchy, e.g., `Chart.helpers.canvas.cli
 * `helpers.getMaximumHeight` was replaced by `helpers.dom.getMaximumSize`
 * `helpers.getMaximumWidth` was replaced by `helpers.dom.getMaximumSize`
 * `helpers.clear` was renamed to `helpers.clearCanvas` and now takes `canvas` and optionally `ctx` as parameter(s).
+* `helpers.retinaScale` accepts optional third parameter `forceStyle`, which forces overriding current canvas style. `forceRatio` no longer falls back to `window.devicePixelRatio`, instead it defaults to `1`.
 
 #### Platform
 
