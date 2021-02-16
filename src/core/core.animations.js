@@ -5,7 +5,7 @@ import {isObject} from '../helpers/helpers.core';
 
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['borderColor', 'backgroundColor'];
-const animationOptions = ['duration', 'easing', 'from', 'to', 'type', 'easing', 'loop', 'fn'];
+const animationOptions = ['delay', 'duration', 'easing', 'fn', 'from', 'loop', 'to', 'type'];
 
 defaults.set('animation', {
   // Plain properties can be overridden in each object
