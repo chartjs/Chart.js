@@ -260,19 +260,14 @@ export default class Config {
 	 * Returns the option scopes for resolving chart options
 	 * @return {object[]}
 	 */
-  chartOptionsScopes() {
-    const me = this;
-    let scopes = me._scopeCache.get(0);
-    if (!scopes) {
-      scopes = [
-        me.options,
-        defaults.controllers[me.type] || {},
-        {type: me.type},
-        defaults,
-        defaults.descriptors];
-      me._scopeCache.set(0, scopes);
-    }
-    return scopes;
+  chartOptionScopes() {
+    return [
+      this.options,
+      defaults.controllers[this.type] || {},
+      {type: this.type},
+      defaults,
+      defaults.descriptors
+    ];
   }
 
   /**
