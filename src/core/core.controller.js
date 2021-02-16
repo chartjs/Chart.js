@@ -233,14 +233,9 @@ class Chart {
       return;
     }
 
-    canvas.width = me.width = newSize.width;
-    canvas.height = me.height = newSize.height;
-    if (canvas.style) {
-      canvas.style.width = newSize.width + 'px';
-      canvas.style.height = newSize.height + 'px';
-    }
-
-    retinaScale(me, newRatio);
+    me.width = newSize.width;
+    me.height = newSize.height;
+    retinaScale(me, newRatio, true);
 
     me.notifyPlugins('resize', {size: newSize});
 
