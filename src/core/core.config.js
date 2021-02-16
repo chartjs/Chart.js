@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault} from '../helpers/helpers.core';
+import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core';
 import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config';
 
 export function getIndexAxis(type, options) {
@@ -301,13 +301,14 @@ export default class Config {
 
   /**
 	 * @param {object[]} scopes
-	 * @param {function|object} context
+	 * @param {object} [context]
+   * @param {string[]} [prefixes]
 	 */
   createResolver(scopes, context, prefixes = ['']) {
-    const cached = getResolver(this._resolverCache, scopes, prefixes);
-    return context && cached.needContext
-      ? _attachContext(cached.resolver, isFunction(context) ? context() : context)
-      : cached.resolver;
+    const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
+    return isObject(context)
+      ? _attachContext(resolver, isFunction(context) ? context() : context)
+      : resolver;
   }
 }
 
@@ -323,8 +324,7 @@ function getResolver(resolverCache, scopes, prefixes) {
     const resolver = _createResolver(scopes, prefixes);
     cached = {
       resolver,
-      subPrefixes: prefixes.filter(p => !p.toLowerCase().includes('hover')),
-      needContext: needContext(resolver, Object.getOwnPropertyNames(resolver))
+      subPrefixes: prefixes.filter(p => !p.toLowerCase().includes('hover'))
     };
     cache.set(cacheKey, cached);
   }

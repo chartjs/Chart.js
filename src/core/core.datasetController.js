@@ -777,8 +777,7 @@ export default class DatasetController {
       const config = me.chart.config;
       const scopeKeys = config.datasetAnimationScopeKeys(me._type);
       const scopes = config.getOptionScopes(me.getDataset().animation, scopeKeys);
-      const context = () => me.getContext(index, active, mode);
-      options = config.createResolver(scopes, context);
+      options = config.createResolver(scopes, me.getContext(index, active, mode));
     }
     const animations = new Animations(chart, options && options[mode] || options);
     if (options && options._cacheable) {
