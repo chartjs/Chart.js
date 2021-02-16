@@ -156,9 +156,13 @@ export default class Config {
 
   update(options) {
     const config = this._config;
+    this.clearCache();
+    config.options = initOptions(config, options);
+  }
+
+  clearCache() {
     this._scopeCache.clear();
     this._resolverCache.clear();
-    config.options = initOptions(config, options);
   }
 
   /**
