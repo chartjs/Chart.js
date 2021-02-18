@@ -49,12 +49,6 @@ module.exports = {
         }
       }
     },
-    // plugins: [{
-    //   id: 'hide',
-    //   afterInit(chart) {
-    //     chart.toggleDataVisibility(4);
-    //   }
-    // }]
   },
   options: {
     canvas: {
