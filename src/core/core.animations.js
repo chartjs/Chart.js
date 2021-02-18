@@ -50,7 +50,7 @@ defaults.set('animation', {
     },
     visible: {
       type: 'boolean',
-      easing: 'easeInExpo' // for keeping the dataset visible almost all the way through the animation
+      fn: v => v < 1 ? 0 : 1 // for keeping the dataset visible all the way through the animation
     },
   }
 });
