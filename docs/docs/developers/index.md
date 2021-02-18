@@ -8,15 +8,15 @@ Developer features allow extending and enhancing Chart.js in many different ways
 
 Latest documentation and samples, including unreleased features, are available at:
 
-- https://www.chartjs.org/docs/master/
-- https://www.chartjs.org/samples/master/
+- <https://www.chartjs.org/docs/master/>
+- <https://www.chartjs.org/samples/master/>
 
 ## Development releases
 
 Latest builds are available for testing at:
 
-- https://www.chartjs.org/dist/master/chart.js
-- https://www.chartjs.org/dist/master/chart.min.js
+- <https://www.chartjs.org/dist/master/chart.js>
+- <https://www.chartjs.org/dist/master/chart.min.js>
 
 **WARNING: Development builds MUST not be used for production purposes or as replacement for CDN.**
 
