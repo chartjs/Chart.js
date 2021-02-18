@@ -32,6 +32,8 @@ data: [{x:'Sales', y:20}, {x:'Revenue', y:10}]
 
 This is also the internal format used for parsed data. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 
+In case you specify the index scale as a number as shown in the first example you will need a labels array. The number indicates the index of the element and does not replace the label as when you provide a string.
+
 ## Object[] using custom properties
 
 ```javascript
