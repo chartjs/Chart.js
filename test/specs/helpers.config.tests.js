@@ -88,6 +88,41 @@ describe('Chart.helpers.config', function() {
         option3: 'defaults3'
       });
     });
+
+    it('should support common object methods', function() {
+      const defaults = {
+        option1: 'defaults'
+      };
+      class Options {
+        constructor() {
+          this.option2 = 'options';
+        }
+        get getter() {
+          return 'options getter';
+        }
+      }
+      const options = new Options();
+
+      const resolver = _createResolver([options, defaults]);
+
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'option2')).toBeTrue();
+
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'option1')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'getter')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'nonexistent')).toBeFalse();
+
+      expect(Object.keys(resolver)).toEqual(['option2']);
+      expect(Object.getOwnPropertyNames(resolver)).toEqual(['option2', 'option1']);
+
+      expect('option2' in resolver).toBeTrue();
+      expect('option1' in resolver).toBeTrue();
+      expect('getter' in resolver).toBeFalse();
+      expect('nonexistent' in resolver).toBeFalse();
+
+      expect(resolver instanceof Options).toBeTrue();
+
+      expect(resolver.getter).toEqual('options getter');
+    });
   });
 
   describe('_attachContext', function() {
@@ -247,6 +282,41 @@ describe('Chart.helpers.config', function() {
       expect(opts.fn).toEqual(1);
       expect(opts.setContext({test: 2}).fn).toEqual(2);
       expect(opts.fn).toEqual(1);
+    });
+
+    it('should support common object methods', function() {
+      const defaults = {
+        option1: 'defaults'
+      };
+      class Options {
+        constructor() {
+          this.option2 = () => 'options';
+        }
+        get getter() {
+          return 'options getter';
+        }
+      }
+      const options = new Options();
+      const resolver = _createResolver([options, defaults]);
+      const opts = _attachContext(resolver, {index: 1});
+
+      expect(Object.prototype.hasOwnProperty.call(opts, 'option2')).toBeTrue();
+
+      expect(Object.prototype.hasOwnProperty.call(opts, 'option1')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(opts, 'getter')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(opts, 'nonexistent')).toBeFalse();
+
+      expect(Object.keys(opts)).toEqual(['option2']);
+      expect(Object.getOwnPropertyNames(opts)).toEqual(['option2', 'option1']);
+
+      expect('option2' in opts).toBeTrue();
+      expect('option1' in opts).toBeTrue();
+      expect('getter' in opts).toBeFalse();
+      expect('nonexistent' in opts).toBeFalse();
+
+      expect(opts instanceof Options).toBeTrue();
+
+      expect(opts.getter).toEqual('options getter');
     });
 
     describe('_indexable and _scriptable', function() {

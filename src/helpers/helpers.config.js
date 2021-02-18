@@ -15,19 +15,46 @@ export function _createResolver(scopes, prefixes = ['']) {
     override: (scope) => _createResolver([scope].concat(scopes), prefixes),
   };
   return new Proxy(cache, {
+    /**
+     * A trap for getting property values.
+     */
     get(target, prop) {
       return _cached(target, prop,
         () => _resolveWithPrefixes(prop, prefixes, scopes));
     },
 
-    ownKeys(target) {
-      return getKeysFromAllScopes(target);
-    },
-
+    /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */
     getOwnPropertyDescriptor(target, prop) {
       return Reflect.getOwnPropertyDescriptor(target._scopes[0], prop);
     },
 
+    /**
+     * A trap for Object.getPrototypeOf.
+     */
+    getPrototypeOf() {
+      return Reflect.getPrototypeOf(scopes[0]);
+    },
+
+    /**
+     * A trap for the in operator.
+     */
+    has(target, prop) {
+      return getKeysFromAllScopes(target).includes(prop);
+    },
+
+    /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */
+    ownKeys(target) {
+      return getKeysFromAllScopes(target);
+    },
+
+    /**
+     * A trap for setting property values.
+     */
     set(target, prop, value) {
       scopes[0][prop] = value;
       return delete target[prop];
@@ -54,19 +81,46 @@ export function _attachContext(proxy, context, subProxy) {
     override: (scope) => _attachContext(proxy.override(scope), context, subProxy)
   };
   return new Proxy(cache, {
+    /**
+     * A trap for getting property values.
+     */
     get(target, prop, receiver) {
       return _cached(target, prop,
         () => _resolveWithContext(target, prop, receiver));
     },
 
+    /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */
+    getOwnPropertyDescriptor(target, prop) {
+      return Reflect.getOwnPropertyDescriptor(proxy, prop);
+    },
+
+    /**
+     * A trap for Object.getPrototypeOf.
+     */
+    getPrototypeOf() {
+      return Reflect.getPrototypeOf(proxy);
+    },
+
+    /**
+     * A trap for the in operator.
+     */
+    has(target, prop) {
+      return Reflect.has(proxy, prop);
+    },
+
+    /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */
     ownKeys() {
       return Reflect.ownKeys(proxy);
     },
 
-    getOwnPropertyDescriptor(target, prop) {
-      return Reflect.getOwnPropertyDescriptor(proxy._scopes[0], prop);
-    },
-
+    /**
+     * A trap for setting property values.
+     */
     set(target, prop, value) {
       proxy[prop] = value;
       return delete target[prop];
