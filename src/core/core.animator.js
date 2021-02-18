@@ -69,9 +69,8 @@ export class Animator {
   /**
 	 * @private
 	 */
-  _update() {
+  _update(date = Date.now()) {
     const me = this;
-    const date = Date.now();
     let remaining = 0;
 
     me._charts.forEach((anims, chart) => {

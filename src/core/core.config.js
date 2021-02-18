@@ -1,5 +1,6 @@
 import defaults from './core.defaults';
-import {mergeIf, merge, _merger} from '../helpers/helpers.core';
+import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core';
+import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config';
 
 export function getIndexAxis(type, options) {
   const typeDefaults = defaults.controllers[type] || {};
@@ -79,59 +80,12 @@ function mergeScaleConfig(config, options) {
   return scales;
 }
 
-/**
- * Recursively merge the given config objects as the root options by handling
- * default scale options for the `scales` and `scale` properties, then returns
- * a deep copy of the result, thus doesn't alter inputs.
- */
-function mergeConfig(...args/* config objects ... */) {
-  return merge(Object.create(null), args, {
-    merger(key, target, source, options) {
-      if (key !== 'scales' && key !== 'scale' && key !== 'controllers') {
-        _merger(key, target, source, options);
-      }
-    }
-  });
-}
-
-function includePluginDefaults(options) {
-  options.plugins = options.plugins || {};
-  options.plugins.title = (options.plugins.title !== false) && merge(Object.create(null), [
-    defaults.plugins.title,
-    options.plugins.title
-  ]);
-
-  options.plugins.tooltip = (options.plugins.tooltip !== false) && merge(Object.create(null), [
-    defaults.interaction,
-    defaults.plugins.tooltip,
-    options.interaction,
-    options.plugins.tooltip
-  ]);
-}
-
-function includeDefaults(config, options) {
+function initOptions(config, options) {
   options = options || {};
 
-  const scaleConfig = mergeScaleConfig(config, options);
-  const hoverEanbled = options.interaction !== false && options.hover !== false;
+  options.plugins = valueOrDefault(options.plugins, {});
+  options.scales = mergeScaleConfig(config, options);
 
-  options = mergeConfig(
-    defaults,
-    defaults.controllers[config.type],
-    options);
-
-  options.hover = hoverEanbled && merge(Object.create(null), [
-    defaults.interaction,
-    defaults.hover,
-    options.interaction,
-    options.hover
-  ]);
-
-  options.scales = scaleConfig;
-
-  if (options.plugins !== false) {
-    includePluginDefaults(options);
-  }
   return options;
 }
 
@@ -144,14 +98,36 @@ function initConfig(config) {
   data.datasets = data.datasets || [];
   data.labels = data.labels || [];
 
-  config.options = includeDefaults(config, config.options);
+  config.options = initOptions(config, config.options);
 
   return config;
 }
 
+const keyCache = new Map();
+const keysCached = new Set();
+
+function cachedKeys(cacheKey, generate) {
+  let keys = keyCache.get(cacheKey);
+  if (!keys) {
+    keys = generate();
+    keyCache.set(cacheKey, keys);
+    keysCached.add(keys);
+  }
+  return keys;
+}
+
+const addIfFound = (set, obj, key) => {
+  const opts = resolveObjectKey(obj, key);
+  if (opts !== undefined) {
+    set.add(opts);
+  }
+};
+
 export default class Config {
   constructor(config) {
     this._config = initConfig(config);
+    this._scopeCache = new Map();
+    this._resolverCache = new Map();
   }
 
   get type() {
@@ -180,6 +156,195 @@ export default class Config {
 
   update(options) {
     const config = this._config;
-    config.options = includeDefaults(config, options);
+    this.clearCache();
+    config.options = initOptions(config, options);
   }
+
+  clearCache() {
+    this._scopeCache.clear();
+    this._resolverCache.clear();
+  }
+
+  /**
+	 * Returns the option scope keys for resolving dataset options.
+	 * These keys do not include the dataset itself, because it is not under options.
+	 * @param {string} datasetType
+	 * @return {string[]}
+	 */
+  datasetScopeKeys(datasetType) {
+    return cachedKeys(datasetType,
+      () => [
+        `datasets.${datasetType}`,
+        `controllers.${datasetType}`,
+        `controllers.${datasetType}.datasets`,
+        ''
+      ]);
+  }
+
+  /**
+	 * Returns the option scope keys for resolving dataset animation options.
+	 * These keys do not include the dataset itself, because it is not under options.
+	 * @param {string} datasetType
+	 * @return {string[]}
+	 */
+  datasetAnimationScopeKeys(datasetType) {
+    return cachedKeys(`${datasetType}.animation`,
+      () => [
+        `datasets.${datasetType}.animation`,
+        `controllers.${datasetType}.animation`,
+        `controllers.${datasetType}.datasets.animation`,
+        'animation'
+      ]);
+  }
+
+  /**
+	 * Returns the options scope keys for resolving element options that belong
+	 * to an dataset. These keys do not include the dataset itself, because it
+	 * is not under options.
+	 * @param {string} datasetType
+	 * @param {string} elementType
+	 * @return {string[]}
+	 */
+  datasetElementScopeKeys(datasetType, elementType) {
+    return cachedKeys(`${datasetType}-${elementType}`,
+      () => [
+        `datasets.${datasetType}`,
+        `controllers.${datasetType}.datasets`,
+        `controllers.${datasetType}.elements.${elementType}`,
+        `elements.${elementType}`,
+        ''
+      ]);
+  }
+
+  /**
+   * Returns the options scope keys for resolving plugin options.
+   * @param {{id: string, additionalOptionScopes?: string[]}} plugin
+	 * @return {string[]}
+   */
+  pluginScopeKeys(plugin) {
+    const id = plugin.id;
+    const type = this.type;
+    return cachedKeys(`${type}-plugin-${id}`,
+      () => [
+        `controllers.${type}.plugins.${id}`,
+        `plugins.${id}`,
+        ...plugin.additionalOptionScopes || [],
+      ]);
+  }
+
+  /**
+	 * Resolves the objects from options and defaults for option value resolution.
+	 * @param {object} mainScope - The main scope object for options
+	 * @param {string[]} scopeKeys - The keys in resolution order
+   * @param {boolean} [resetCache] - reset the cache for this mainScope
+	 */
+  getOptionScopes(mainScope, scopeKeys, resetCache) {
+    let cache = this._scopeCache.get(mainScope);
+    if (!cache || resetCache) {
+      cache = new Map();
+      this._scopeCache.set(mainScope, cache);
+    }
+    const cached = cache.get(scopeKeys);
+    if (cached) {
+      return cached;
+    }
+
+    const scopes = new Set();
+
+    if (mainScope) {
+      scopes.add(mainScope);
+      scopeKeys.forEach(key => addIfFound(scopes, mainScope, key));
+    }
+    scopeKeys.forEach(key => addIfFound(scopes, this.options, key));
+    scopeKeys.forEach(key => addIfFound(scopes, defaults, key));
+    scopeKeys.forEach(key => addIfFound(scopes, defaults.descriptors, key));
+
+    const array = [...scopes];
+    if (keysCached.has(scopeKeys)) {
+      cache.set(scopeKeys, array);
+    }
+    return array;
+  }
+
+  /**
+	 * Returns the option scopes for resolving chart options
+	 * @return {object[]}
+	 */
+  chartOptionScopes() {
+    return [
+      this.options,
+      defaults.controllers[this.type] || {},
+      {type: this.type},
+      defaults,
+      defaults.descriptors
+    ];
+  }
+
+  /**
+	 * @param {object[]} scopes
+	 * @param {string[]} names
+	 * @param {function|object} context
+	 * @param {string[]} [prefixes]
+	 * @return {object}
+	 */
+  resolveNamedOptions(scopes, names, context, prefixes = ['']) {
+    const result = {$shared: true};
+    const {resolver, subPrefixes} = getResolver(this._resolverCache, scopes, prefixes);
+    let options = resolver;
+    if (needContext(resolver, names)) {
+      result.$shared = false;
+      context = isFunction(context) ? context() : context;
+      // subResolver is passed to scriptable options. It should not resolve to hover options.
+      const subResolver = this.createResolver(scopes, context, subPrefixes);
+      options = _attachContext(resolver, context, subResolver);
+    }
+
+    for (const prop of names) {
+      result[prop] = options[prop];
+    }
+    return result;
+  }
+
+  /**
+	 * @param {object[]} scopes
+	 * @param {object} [context]
+   * @param {string[]} [prefixes]
+	 */
+  createResolver(scopes, context, prefixes = ['']) {
+    const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
+    return isObject(context)
+      ? _attachContext(resolver, isFunction(context) ? context() : context)
+      : resolver;
+  }
+}
+
+function getResolver(resolverCache, scopes, prefixes) {
+  let cache = resolverCache.get(scopes);
+  if (!cache) {
+    cache = new Map();
+    resolverCache.set(scopes, cache);
+  }
+  const cacheKey = prefixes.join();
+  let cached = cache.get(cacheKey);
+  if (!cached) {
+    const resolver = _createResolver(scopes, prefixes);
+    cached = {
+      resolver,
+      subPrefixes: prefixes.filter(p => !p.toLowerCase().includes('hover'))
+    };
+    cache.set(cacheKey, cached);
+  }
+  return cached;
+}
+
+function needContext(proxy, names) {
+  const {isScriptable, isIndexable} = _descriptors(proxy);
+
+  for (const prop of names) {
+    if ((isScriptable(prop) && isFunction(proxy[prop]))
+			|| (isIndexable(prop) && isArray(proxy[prop]))) {
+      return true;
+    }
+  }
+  return false;
 }

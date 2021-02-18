@@ -77,7 +77,8 @@ PointElement.defaults = {
   hoverBorderWidth: 1,
   hoverRadius: 4,
   pointStyle: 'circle',
-  radius: 3
+  radius: 3,
+  rotation: 0
 };
 
 /**

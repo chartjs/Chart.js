@@ -10,23 +10,23 @@ This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults`. The defaults for each chart type are discussed in the documentation for that chart type.
 
-The following example would set the hover mode to 'nearest' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
+The following example would set the interaction mode to 'nearest' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
 
 ```javascript
-Chart.defaults.hover.mode = 'nearest';
+Chart.defaults.interaction.mode = 'nearest';
 
-// Hover mode is set to nearest because it was not overridden here
-var chartHoverModeNearest = new Chart(ctx, {
+// Interaction mode is set to nearest because it was not overridden here
+var chartInteractionModeNearest = new Chart(ctx, {
     type: 'line',
     data: data
 });
 
-// This chart would have the hover mode that was passed in
-var chartDifferentHoverMode = new Chart(ctx, {
+// This chart would have the interaction mode that was passed in
+var chartDifferentInteractionMode = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        hover: {
+        interaction: {
             // Overrides the global setting
             mode: 'index'
         }
@@ -36,15 +36,7 @@ var chartDifferentHoverMode = new Chart(ctx, {
 
 ## Dataset Configuration
 
-Options may be configured directly on the dataset. The dataset options can be changed at 3 different levels and are evaluated with the following priority:
-
-- per dataset: dataset.*
-- per chart: options.datasets[type].*
-- or globally: Chart.defaults.controllers[type].datasets.*
-
-where type corresponds to the dataset type.
-
-*Note:* dataset options take precedence over element options.
+Options may be configured directly on the dataset. The dataset options can be changed at multiple different levels. See [options](../general/options.md#dataset-level-options) for details on how the options are resolved.
 
 The following example would set the `showLine` option to 'false' for all line datasets except for those overridden by options passed to the dataset on creation.
 

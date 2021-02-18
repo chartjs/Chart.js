@@ -266,9 +266,8 @@ export default class BarController extends DatasetController {
     me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i++) {
-      const options = sharedOptions || me.resolveDataElementOptions(i, mode);
-      const vpixels = me._calculateBarValuePixels(i, options);
-      const ipixels = me._calculateBarIndexPixels(i, ruler, options);
+      const vpixels = me._calculateBarValuePixels(i);
+      const ipixels = me._calculateBarIndexPixels(i, ruler);
 
       const properties = {
         horizontal,
@@ -280,7 +279,7 @@ export default class BarController extends DatasetController {
       };
 
       if (includeOptions) {
-        properties.options = options;
+        properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
       }
       me.updateElement(bars[i], i, properties, mode);
     }
@@ -400,11 +399,11 @@ export default class BarController extends DatasetController {
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
-  _calculateBarValuePixels(index, options) {
+  _calculateBarValuePixels(index) {
     const me = this;
     const meta = me._cachedMeta;
     const vScale = meta.vScale;
-    const {base: baseValue, minBarLength} = options;
+    const {base: baseValue, minBarLength} = me.options;
     const parsed = me.getParsed(index);
     const custom = parsed._custom;
     const floating = isFloatBar(custom);
@@ -459,9 +458,10 @@ export default class BarController extends DatasetController {
   /**
 	 * @private
 	 */
-  _calculateBarIndexPixels(index, ruler, options) {
+  _calculateBarIndexPixels(index, ruler) {
     const me = this;
-    const stackCount = me.chart.options.skipNull ? me._getStackCount(index) : ruler.stackCount;
+    const options = me.options;
+    const stackCount = options.skipNull ? me._getStackCount(index) : ruler.stackCount;
     const range = options.barThickness === 'flex'
       ? computeFlexCategoryTraits(index, ruler, options, stackCount)
       : computeFitCategoryTraits(index, ruler, options, stackCount);
@@ -510,20 +510,7 @@ BarController.id = 'bar';
 BarController.defaults = {
   datasetElementType: false,
   dataElementType: 'bar',
-  dataElementOptions: [
-    'backgroundColor',
-    'borderColor',
-    'borderSkipped',
-    'borderWidth',
-    'borderRadius',
-    'barPercentage',
-    'barThickness',
-    'base',
-    'categoryPercentage',
-    'maxBarThickness',
-    'minBarLength',
-    'pointStyle'
-  ],
+
   interaction: {
     mode: 'index'
   },

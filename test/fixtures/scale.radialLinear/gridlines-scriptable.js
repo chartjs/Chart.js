@@ -11,10 +11,10 @@ module.exports = {
           gridLines: {
             display: true,
             color: function(context) {
-              return context.index % 2 === 0 ? 'red' : 'green';
+              return context.index % 2 === 0 ? 'green' : 'red';
             },
             lineWidth: function(context) {
-              return context.index % 2 === 0 ? 1 : 5;
+              return context.index % 2 === 0 ? 5 : 1;
             },
           },
           angleLines: {

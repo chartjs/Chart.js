@@ -26,19 +26,27 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
+      with:
+        node-version: '14'
     - uses: dorny/paths-filter@v2
       id: changes
       with:
         filters: |
           docs:
             - 'docs/**'
+            - 'package.json'
+            - 'tsconfig.json'
           src:
             - 'src/**'
+            - 'package.json'
           test:
             - 'test/**'
             - 'karma.conf.js'
+            - 'package.json'
           types:
             - 'types/**'
+            - 'package.json'
+            - 'tsconfig.json'
     - name: Install
       run: npm ci
     - name: Build

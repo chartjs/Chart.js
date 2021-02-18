@@ -350,7 +350,7 @@ describe('Title block tests', function() {
       chart.options.plugins.title = {};
       chart.update();
       expect(chart.titleBlock).not.toBe(undefined);
-      expect(chart.titleBlock.options).toEqual(jasmine.objectContaining(Chart.defaults.plugins.title));
+      expect(chart.titleBlock.options).toEqualOptions(Chart.defaults.plugins.title);
     });
   });
 });

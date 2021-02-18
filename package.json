@@ -80,7 +80,7 @@
     "rollup-plugin-dts": "^2.0.1",
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-terser": "^7.0.2",
-    "typedoc": "^0.20.9",
+    "typedoc": "^0.20.25",
     "typescript": "^4.1.3",
     "yargs": "^16.2.0"
   },

@@ -13,7 +13,7 @@ describe('Chart.plugins', function() {
       expect(plugin.hook.calls.count()).toBe(1);
       expect(plugin.hook.calls.first().args[0]).toBe(chart);
       expect(plugin.hook.calls.first().args[1]).toBe(args);
-      expect(plugin.hook.calls.first().args[2]).toEqual({});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({});
     });
 
     it('should call global plugins with arguments', function() {
@@ -28,7 +28,7 @@ describe('Chart.plugins', function() {
       expect(plugin.hook.calls.count()).toBe(1);
       expect(plugin.hook.calls.first().args[0]).toBe(chart);
       expect(plugin.hook.calls.first().args[1]).toBe(args);
-      expect(plugin.hook.calls.first().args[2]).toEqual({});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({});
       Chart.unregister(plugin);
     });
 
@@ -181,9 +181,9 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook', {arg1: 'bla', arg2: 42});
 
       expect(plugin.hook.calls.count()).toBe(3);
-      expect(plugin.hook.calls.argsFor(0)[2]).toEqual({a: '123'});
-      expect(plugin.hook.calls.argsFor(1)[2]).toEqual({a: '123'});
-      expect(plugin.hook.calls.argsFor(2)[2]).toEqual({a: '123'});
+      expect(plugin.hook.calls.argsFor(0)[2]).toEqualOptions({a: '123'});
+      expect(plugin.hook.calls.argsFor(1)[2]).toEqualOptions({a: '123'});
+      expect(plugin.hook.calls.argsFor(2)[2]).toEqualOptions({a: '123'});
 
       Chart.unregister(plugin);
     });
@@ -217,9 +217,9 @@ describe('Chart.plugins', function() {
       expect(plugins.a.hook).toHaveBeenCalled();
       expect(plugins.b.hook).toHaveBeenCalled();
       expect(plugins.c.hook).toHaveBeenCalled();
-      expect(plugins.a.hook.calls.first().args[2]).toEqual({a: '123'});
-      expect(plugins.b.hook.calls.first().args[2]).toEqual({b: '456'});
-      expect(plugins.c.hook.calls.first().args[2]).toEqual({c: '789'});
+      expect(plugins.a.hook.calls.first().args[2]).toEqualOptions({a: '123'});
+      expect(plugins.b.hook.calls.first().args[2]).toEqualOptions({b: '456'});
+      expect(plugins.c.hook.calls.first().args[2]).toEqualOptions({c: '789'});
 
       Chart.unregister(plugins.a);
     });
@@ -274,7 +274,7 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqual({a: 42});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({a: 42});
 
       Chart.unregister(plugin);
     });
@@ -291,7 +291,7 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqual({a: 'foobar'});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({a: 'foobar'});
 
       Chart.unregister(plugin);
     });
@@ -315,7 +315,7 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqual({foo: 'foo'});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({foo: 'foo'});
 
       chart.options.plugins.a = {bar: 'bar'};
       chart.update();
@@ -324,7 +324,7 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqual({bar: 'bar'});
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({bar: 'bar'});
     });
 
     it('should disable all plugins', function() {

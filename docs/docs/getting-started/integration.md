@@ -46,6 +46,7 @@ import {
   RadialLinearScale,
   TimeScale,
   TimeSeriesScale,
+  Decimation,
   Filler,
   Legend,
   Title,
@@ -71,6 +72,7 @@ Chart.register(
   RadialLinearScale,
   TimeScale,
   TimeSeriesScale,
+  Decimation,
   Filler,
   Legend,
   Title,
@@ -78,6 +80,13 @@ Chart.register(
 );
 
 var myChart = new Chart(ctx, {...});
+```
+
+A short registration format is also available to quickly register everything.
+
+```javascript
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 ```
 
 ## Require JS

@@ -395,8 +395,11 @@ LineElement.defaults = {
   borderJoinStyle: 'miter',
   borderWidth: 3,
   capBezierPoints: true,
+  cubicInterpolationMode: 'default',
   fill: false,
-  tension: 0
+  spanGaps: false,
+  stepped: false,
+  tension: 0,
 };
 
 /**
@@ -405,4 +408,10 @@ LineElement.defaults = {
 LineElement.defaultRoutes = {
   backgroundColor: 'backgroundColor',
   borderColor: 'borderColor'
+};
+
+
+LineElement.descriptors = {
+  _scriptable: true,
+  _indexable: (name) => name !== 'borderDash' && name !== 'fill',
 };

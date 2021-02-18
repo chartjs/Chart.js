@@ -66,6 +66,12 @@ function getCanvas(item) {
   return item;
 }
 
+const instances = {};
+const getChart = (key) => {
+  const canvas = getCanvas(key);
+  return Object.values(instances).filter((c) => c.canvas === canvas).pop();
+};
+
 class Chart {
 
   // eslint-disable-next-line max-statements
@@ -74,7 +80,7 @@ class Chart {
 
     this.config = config = new Config(config);
     const initialCanvas = getCanvas(item);
-    const existingChart = Chart.getChart(initialCanvas);
+    const existingChart = getChart(initialCanvas);
     if (existingChart) {
       throw new Error(
         'Canvas is already in use. Chart with ID \'' + existingChart.id + '\'' +
@@ -82,9 +88,11 @@ class Chart {
       );
     }
 
+    const options = config.createResolver(config.chartOptionScopes(), me.getContext());
+
     this.platform = me._initializePlatform(initialCanvas, config);
 
-    const context = me.platform.acquireContext(initialCanvas, config);
+    const context = me.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
     const height = canvas && canvas.height;
     const width = canvas && canvas.width;
@@ -95,7 +103,7 @@ class Chart {
     this.width = width;
     this.height = height;
     this.aspectRatio = height ? width / height : null;
-    this.options = config.options;
+    this._options = options;
     this._layers = [];
     this._metasets = [];
     this.boxes = [];
@@ -116,7 +124,7 @@ class Chart {
     this.$context = undefined;
 
     // Add the chart instance to the global namespace
-    Chart.instances[me.id] = me;
+    instances[me.id] = me;
 
     if (!context || !canvas) {
       // The given item is not a compatible context2d element, let's return before finalizing
@@ -142,6 +150,14 @@ class Chart {
 
   set data(data) {
     this.config.data = data;
+  }
+
+  get options() {
+    return this._options;
+  }
+
+  set options(options) {
+    this.config.update(options);
   }
 
   /**
@@ -217,14 +233,9 @@ class Chart {
       return;
     }
 
-    canvas.width = me.width = newSize.width;
-    canvas.height = me.height = newSize.height;
-    if (canvas.style) {
-      canvas.style.width = newSize.width + 'px';
-      canvas.style.height = newSize.height + 'px';
-    }
-
-    retinaScale(me, newRatio);
+    me.width = newSize.width;
+    me.height = newSize.height;
+    retinaScale(me, newRatio, true);
 
     me.notifyPlugins('resize', {size: newSize});
 
@@ -394,9 +405,7 @@ class Chart {
         const ControllerClass = registry.getController(type);
         Object.assign(ControllerClass.prototype, {
           dataElementType: registry.getElement(controllerDefaults.dataElementType),
-          datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType),
-          dataElementOptions: controllerDefaults.dataElementOptions,
-          datasetElementOptions: controllerDefaults.datasetElementOptions
+          datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType)
         });
         meta.controller = new ControllerClass(me, i);
         newControllers.push(meta.controller);
@@ -428,13 +437,15 @@ class Chart {
 
   update(mode) {
     const me = this;
+    const config = me.config;
+
+    config.update(config.options);
+    me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
     });
 
-    me.config.update(me.options);
-    me.options = me.config.options;
     const animsDisabled = me._animationsDisabled = !me.options.animation;
 
     me.ensureScalesHaveIDs();
@@ -737,14 +748,7 @@ class Chart {
   }
 
   getContext() {
-    return this.$context || (this.$context = Object.create(null, {
-      chart: {
-        value: this
-      },
-      type: {
-        value: 'chart'
-      }
-    }));
+    return this.$context || (this.$context = {chart: this, type: 'chart'});
   }
 
   getVisibleDatasetCount() {
@@ -827,6 +831,8 @@ class Chart {
       me._destroyDatasetMeta(i);
     }
 
+    me.config.clearCache();
+
     if (canvas) {
       me.unbindEvents();
       clearCanvas(canvas, ctx);
@@ -837,7 +843,7 @@ class Chart {
 
     me.notifyPlugins('destroy');
 
-    delete Chart.instances[me.id];
+    delete instances[me.id];
   }
 
   toBase64Image(...args) {
@@ -992,8 +998,7 @@ class Chart {
 	 */
   _updateHoverStyles(active, lastActive, replay) {
     const me = this;
-    const options = me.options || {};
-    const hoverOptions = options.hover;
+    const hoverOptions = me.options.hover;
     const diff = (a, b) => a.filter(x => !b.some(y => x.datasetIndex === y.datasetIndex && x.index === y.index));
     const deactivated = diff(lastActive, active);
     const activated = replay ? active : diff(active, lastActive);
@@ -1088,27 +1093,47 @@ class Chart {
   }
 }
 
-// These are available to both, UMD and ESM packages
-Chart.defaults = defaults;
-Chart.instances = {};
-Chart.registry = registry;
-Chart.version = version;
-
-Chart.getChart = (key) => {
-  const canvas = getCanvas(key);
-  return Object.values(Chart.instances).filter((c) => c.canvas === canvas).pop();
-};
-
 // @ts-ignore
 const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
 
-Chart.register = (...items) => {
-  registry.add(...items);
-  invalidatePlugins();
-};
-Chart.unregister = (...items) => {
-  registry.remove(...items);
-  invalidatePlugins();
-};
+const enumerable = true;
+
+// These are available to both, UMD and ESM packages. Read Only!
+Object.defineProperties(Chart, {
+  defaults: {
+    enumerable,
+    value: defaults
+  },
+  instances: {
+    enumerable,
+    value: instances
+  },
+  registry: {
+    enumerable,
+    value: registry
+  },
+  version: {
+    enumerable,
+    value: version
+  },
+  getChart: {
+    enumerable,
+    value: getChart
+  },
+  register: {
+    enumerable,
+    value: (...items) => {
+      registry.add(...items);
+      invalidatePlugins();
+    }
+  },
+  unregister: {
+    enumerable,
+    value: (...items) => {
+      registry.remove(...items);
+      invalidatePlugins();
+    }
+  }
+});
 
 export default Chart;

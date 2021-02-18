@@ -1,6 +1,6 @@
 extends:
   - chartjs
-  - plugin:es/no-2019
+  - plugin:es/no-new-in-es2019
 
 env:
   es6: true

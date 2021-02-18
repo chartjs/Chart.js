@@ -119,6 +119,8 @@ function getContainerSize(canvas, width, height) {
   };
 }
 
+const round1 = v => Math.round(v * 10) / 10;
+
 export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
   const style = getComputedStyle(canvas);
   const margins = getPositionedStyle(style, 'margin');
@@ -136,13 +138,13 @@ export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
   width = Math.max(0, width - margins.width);
   height = Math.max(0, aspectRatio ? Math.floor(width / aspectRatio) : height - margins.height);
   return {
-    width: Math.min(width, maxWidth, containerSize.maxWidth),
-    height: Math.min(height, maxHeight, containerSize.maxHeight)
+    width: round1(Math.min(width, maxWidth, containerSize.maxWidth)),
+    height: round1(Math.min(height, maxHeight, containerSize.maxHeight))
   };
 }
 
-export function retinaScale(chart, forceRatio) {
-  const pixelRatio = chart.currentDevicePixelRatio = forceRatio || (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+export function retinaScale(chart, forceRatio, forceStyle) {
+  const pixelRatio = chart.currentDevicePixelRatio = forceRatio || 1;
   const {canvas, width, height} = chart;
 
   canvas.height = height * pixelRatio;
@@ -152,7 +154,7 @@ export function retinaScale(chart, forceRatio) {
   // If no style has been set on the canvas, the render size is used as display size,
   // making the chart visually bigger, so let's enforce it to the "correct" values.
   // See https://github.com/chartjs/Chart.js/issues/3575
-  if (canvas.style && !canvas.style.height && !canvas.style.width) {
+  if (canvas.style && (forceStyle || (!canvas.style.height && !canvas.style.width))) {
     canvas.style.height = height + 'px';
     canvas.style.width = width + 'px';
   }
