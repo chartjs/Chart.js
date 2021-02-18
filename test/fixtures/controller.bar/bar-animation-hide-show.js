@@ -42,7 +42,9 @@ module.exports = {
     },
     run: function(chart) {
       const animator = Chart.animator;
+      const anims = animator._getAnims(chart);
       // disable animator
+      const backup = animator._refresh;
       animator._refresh = function() { };
 
       return new Promise((resolve) => {
@@ -51,7 +53,7 @@ module.exports = {
           animator._update(Date.now() + 5000);
 
           chart.hide(1);
-          let start = animator._getAnims(chart).items[0]._start;
+          let start = anims.items[0]._start;
           for (let i = 0; i < 8; i++) {
             animator._update(start + i * 200);
             let x = i % 4 * 128;
@@ -63,8 +65,7 @@ module.exports = {
           animator._update(Date.now() + 5000);
 
           chart.show(1);
-          start = animator._getAnims(chart).items[0]._start;
-          animator._runnign = false;
+          start = anims.items[0]._start;
           for (let i = 0; i < 8; i++) {
             animator._update(start + i * 200);
             let x = i % 4 * 128;
@@ -73,6 +74,8 @@ module.exports = {
           }
           Chart.helpers.clearCanvas(chart.canvas);
           chart.ctx.drawImage(canvas, 0, 0);
+
+          animator._refresh = backup;
           resolve();
         });
       });
