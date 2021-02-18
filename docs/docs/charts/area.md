@@ -19,7 +19,7 @@ Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option 
 
 > <sup>1</sup> for backward compatibility, `fill: true` is equivalent to `fill: 'origin'`<br/>
 
-**Example**
+### Example
 
 ```javascript
 new Chart(ctx, {
@@ -44,7 +44,7 @@ If you need to support multiple colors when filling from one dataset to another,
 | `above` | `Color` | If no color is set, the default color will be the background color of the chart. |
 | `below` | `Color` | Same as the above. |
 
-**Example**
+### Example with multiple colors
 
 ```javascript
 new Chart(ctx, {
@@ -74,7 +74,7 @@ new Chart(ctx, {
 
 If `true`, the fill area will be recursively extended to the visible target defined by the `fill` value of hidden dataset targets:
 
-**Example**
+#### Example using propagate
 
 ```javascript
 new Chart(ctx, {
