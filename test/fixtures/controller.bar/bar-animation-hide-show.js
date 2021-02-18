@@ -25,7 +25,7 @@ module.exports = {
     },
     options: {
       animation: {
-        duration: 1400,
+        duration: 14000,
         easing: 'linear'
       },
       events: [],
@@ -50,24 +50,24 @@ module.exports = {
       return new Promise((resolve) => {
         window.requestAnimationFrame(() => {
           // make sure previous animation is finished
-          animator._update(Date.now() + 5000);
+          animator._update(Date.now() * 2);
 
           chart.hide(1);
           let start = anims.items[0]._start;
           for (let i = 0; i < 8; i++) {
-            animator._update(start + i * 200);
+            animator._update(start + i * 2000);
             let x = i % 4 * 128;
             let y = Math.floor(i / 4) * 128;
             ctx.drawImage(chart.canvas, x, y, 128, 128);
           }
 
           // make sure previous animation is finished
-          animator._update(Date.now() + 5000);
+          animator._update(Date.now() * 2);
 
           chart.show(1);
           start = anims.items[0]._start;
           for (let i = 0; i < 8; i++) {
-            animator._update(start + i * 200);
+            animator._update(start + i * 2000);
             let x = i % 4 * 128;
             let y = Math.floor(2 + i / 4) * 128;
             ctx.drawImage(chart.canvas, x, y, 128, 128);
