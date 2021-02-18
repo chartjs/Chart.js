@@ -1,4 +1,5 @@
 ### Common tick options to all cartesian axes
+The common tick configuration can be adjusted in the `options.scales[scaleId].ticks` namespace.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

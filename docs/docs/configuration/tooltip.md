@@ -4,47 +4,47 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
+The tooltip configuration can be adjusted in the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `tooltip.enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
-| `tooltip.custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
-| `tooltip.mode` | `string` | | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
-| `tooltip.intersect` | `boolean` | | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
-| `tooltip.position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
-| `tooltip.callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
-| `tooltip.itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
-| `tooltip.filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
-| `tooltip.backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
-| `tooltip.titleColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of title text.
-| `tooltip.titleFont` | `Font` | `{style: 'bold'}` | See [Fonts](../general/fonts.md).
-| `tooltip.titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
-| `tooltip.titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
-| `tooltip.titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
-| `tooltip.bodyColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of body text.
-| `tooltip.bodyFont` | `Font` | `{}` | See [Fonts](../general/fonts.md).
-| `tooltip.bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
-| `tooltip.bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
-| `tooltip.footerColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of footer text.
-| `tooltip.footerFont` | `Font` | `{style: 'bold'}` | See [Fonts](../general/fonts.md).
-| `tooltip.footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
-| `tooltip.footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
-| `tooltip.footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
-| `tooltip.xPadding` | `number` | `6` | Padding to add on left and right of tooltip.
-| `tooltip.yPadding` | `number` | `6` | Padding to add on top and bottom of tooltip.
-| `tooltip.caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
-| `tooltip.caretSize` | `number` | `5` | Size, in px, of the tooltip arrow.
-| `tooltip.cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
-| `tooltip.multiKeyBackground` | [`Color`](../general/colors.md) | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
-| `tooltip.displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
-| `tooltip.boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
-| `tooltip.boxHeight` | `number` | `bodyFont.size` | Height of the color box if displayColors is true.
-| `tooltip.usePointStyle` | `boolean` | `false` | Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
-| `tooltip.borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0)'` | Color of the border.
-| `tooltip.borderWidth` | `number` | `0` | Size of the border.
-| `tooltip.rtl` | `boolean` | | `true` for rendering the tooltip from right to left.
-| `tooltip.textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
+| `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
+| `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
+| `mode` | `string` | | Sets which elements appear in the tooltip. [more...](interactions/modes.md#interaction-modes).
+| `intersect` | `boolean` | | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
+| `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
+| `callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
+| `itemSort` | `function` | | Sort tooltip items. [more...](#sort-callback)
+| `filter` | `function` | | Filter tooltip items. [more...](#filter-callback)
+| `backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
+| `titleColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of title text.
+| `titleFont` | `Font` | `{style: 'bold'}` | See [Fonts](../general/fonts.md).
+| `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
+| `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
+| `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
+| `bodyColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of body text.
+| `bodyFont` | `Font` | `{}` | See [Fonts](../general/fonts.md).
+| `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
+| `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
+| `footerColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of footer text.
+| `footerFont` | `Font` | `{style: 'bold'}` | See [Fonts](../general/fonts.md).
+| `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
+| `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
+| `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
+| `xPadding` | `number` | `6` | Padding to add on left and right of tooltip.
+| `yPadding` | `number` | `6` | Padding to add on top and bottom of tooltip.
+| `caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
+| `caretSize` | `number` | `5` | Size, in px, of the tooltip arrow.
+| `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
+| `multiKeyBackground` | [`Color`](../general/colors.md) | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
+| `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
+| `boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
+| `boxHeight` | `number` | `bodyFont.size` | Height of the color box if displayColors is true.
+| `usePointStyle` | `boolean` | `false` | Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
+| `borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0)'` | Color of the border.
+| `borderWidth` | `number` | `0` | Size of the border.
+| `rtl` | `boolean` | | `true` for rendering the tooltip from right to left.
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
 
 ### Position Modes
 
@@ -107,20 +107,20 @@ All functions are called with the same arguments: a [tooltip item context](#tool
 
 | Name | Arguments | Description
 | ---- | --------- | -----------
-| `tooltip.callbacks.beforeTitle` | `TooltipItem[], object` | Returns the text to render before the title.
-| `tooltip.callbacks.title` | `TooltipItem[], object` | Returns text to render as the title of the tooltip.
-| `tooltip.callbacks.afterTitle` | `TooltipItem[], object` | Returns text to render after the title.
-| `tooltip.callbacks.beforeBody` | `TooltipItem[], object` | Returns text to render before the body section.
-| `tooltip.callbacks.beforeLabel` | `TooltipItem, object` | Returns text to render before an individual label. This will be called for each item in the tooltip.
-| `tooltip.callbacks.label` | `TooltipItem, object` | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
-| `tooltip.callbacks.labelColor` | `TooltipItem, Chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
-| `tooltip.callbacks.labelTextColor` | `TooltipItem, Chart` | Returns the colors for the text of the label for the tooltip item.
-| `tooltip.callbacks.labelPointStyle` | `TooltipItem, Chart` | Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points. [more...](#label-point-style-callback)
-| `tooltip.callbacks.afterLabel` | `TooltipItem, object` | Returns text to render after an individual label.
-| `tooltip.callbacks.afterBody` | `TooltipItem[], object` | Returns text to render after the body section.
-| `tooltip.callbacks.beforeFooter` | `TooltipItem[], object` | Returns text to render before the footer section.
-| `tooltip.callbacks.footer` | `TooltipItem[], object` | Returns text to render as the footer of the tooltip.
-| `tooltip.callbacks.afterFooter` | `TooltipItem[], object` | Text to render after the footer section.
+| `beforeTitle` | `TooltipItem[], object` | Returns the text to render before the title.
+| `title` | `TooltipItem[], object` | Returns text to render as the title of the tooltip.
+| `afterTitle` | `TooltipItem[], object` | Returns text to render after the title.
+| `beforeBody` | `TooltipItem[], object` | Returns text to render before the body section.
+| `beforeLabel` | `TooltipItem, object` | Returns text to render before an individual label. This will be called for each item in the tooltip.
+| `label` | `TooltipItem, object` | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
+| `labelColor` | `TooltipItem, Chart` | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
+| `labelTextColor` | `TooltipItem, Chart` | Returns the colors for the text of the label for the tooltip item.
+| `labelPointStyle` | `TooltipItem, Chart` | Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points. [more...](#label-point-style-callback)
+| `afterLabel` | `TooltipItem, object` | Returns text to render after an individual label.
+| `afterBody` | `TooltipItem[], object` | Returns text to render after the body section.
+| `beforeFooter` | `TooltipItem[], object` | Returns text to render before the footer section.
+| `footer` | `TooltipItem[], object` | Returns text to render as the footer of the tooltip.
+| `afterFooter` | `TooltipItem[], object` | Text to render after the footer section.
 
 ### Label Callback
 

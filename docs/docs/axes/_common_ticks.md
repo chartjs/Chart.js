@@ -1,4 +1,5 @@
 ### Common tick options to all axes
+The common tick options can be configured in the `options.scales[scaleId].ticks` namespace
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | :-------------------------------: | ------- | -----------

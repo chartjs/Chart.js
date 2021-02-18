@@ -1,4 +1,5 @@
 ### Common options to all cartesian axes
+The common scale configuration can be adjusted in the `options.scales[scaleId]` namespace.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

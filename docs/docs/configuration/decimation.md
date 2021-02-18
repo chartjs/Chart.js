@@ -6,12 +6,12 @@ The decimation plugin can be used with line charts to automatically decimate dat
 
 ## Configuration Options
 
-The decimation plugin configuration is passed into the `options.plugins.decimation` namespace. The global options for the plugin are defined in `Chart.defaults.plugins.decimation`.
+The decimation plugin configuration can be adjusted in the `options.plugins.decimation` namespace. The global options for the plugin are defined in `Chart.defaults.plugins.decimation`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `decimation.enabled` | `boolean` | `true` | Is decimation enabled?
-| `decimation.algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
+| `enabled` | `boolean` | `true` | Is decimation enabled?
+| `algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
 
 ## Decimation Algorithms
 

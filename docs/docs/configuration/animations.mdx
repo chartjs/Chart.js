@@ -109,19 +109,19 @@ function example() {
 
 ## Animation Configuration
 
-The animation configuration is passed into the `options.animation` namespace. The global options are defined in `Chart.defaults.animation`.
+The animation configuration can be adjusted in the `options.animation` namespace. The global options are defined in `Chart.defaults.animation`.
 The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `animation.duration` | `number` | `1000` | The number of milliseconds an animation takes.
-| `animation.easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
-| `animation.debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
-| `animation.delay` | `number` | `undefined` | Delay before starting the animations.
-| `animation.loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
-| [animation[mode]](#animation-mode-configuration) | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above.
-| [animation[property]](#animation-property-configuration) | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
-| [animation[collection]](#animation-properties-collection-configuration) | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
+| `duration` | `number` | `1000` | The number of milliseconds an animation takes.
+| `easing` | `string` | `'easeOutQuart'` | Easing function to use. [more...](#easing)
+| `debug` | `boolean` | `undefined` | Running animation count + FPS display in upper left corner of the chart.
+| `delay` | `number` | `undefined` | Delay before starting the animations.
+| `loop` | `boolean` | `undefined` | If set to `true`, the animations loop endlessly.
+| [[mode]](#animation-mode-configuration) | `object` | [defaults...](#default-modes) | Option overrides for update mode. Core modes: `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`. See **Hide and show [mode]** example above.
+| [[property]](#animation-property-configuration) | `object` | `undefined` | Option overrides for a single element `[property]`. These have precedence over `[collection]`. See **Looping tension [property]** example above.
+| [[collection]](#animation-properties-collection-configuration) | `object` | [defaults...](#default-collections) | Option overrides for multiple properties, identified by `properties` array.
 
 These defaults can be overridden in `options.animation` or `dataset.animation` and `tooltip.animation`. These keys are also [Scriptable](../general/options.md#scriptable-options).
 
@@ -133,27 +133,29 @@ A custom mode can be used by passing a custom `mode` to [update](../developers/a
 A mode option is defined by the same options of the main [animation configuration](#animation-configuration).
 
 ### Default modes
+The animation mode configuration can be adjusted in the `options.animation` namespace.
 
 | Mode | Option | Value | Description
 | -----| ------ | ----- | -----
-| `animation.active` | duration | 400 | Override default duration to 400ms for hover animations
-| `animation.resize` | duration | 0 | Override default duration to 0ms (= no animation) for resize
-| `animation.show` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
-| `animation.show` | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
-| `animation.hide` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
-| `animation.hide` | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
+| `active` | duration | 400 | Override default duration to 400ms for hover animations
+| `resize` | duration | 0 | Override default duration to 0ms (= no animation) for resize
+| `show` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
+| `show` | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `hide` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
+| `hide` | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
 
 ## Animation property configuration
 
+The animation property configuration can be adjusted in the `options.animation[animation]` namespace.
 Property option configures which element property to use to animate the chart and its starting and ending values.
 A property option is defined by the same options of the main [animation configuration](#animation-configuration), adding the following ones:
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `animation[animation].type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
-| `animation[animation].from`  | `number`\|`Color`\|`boolean` | `undefined` | Start value for the animation. Current value is used when `undefined`
-| `animation[animation].to`  | `number`\|`Color`\|`boolean` | `undefined` | End value for the animation. Updated value is used when `undefined`
-| `animation[animation].fn` | <code>&lt;T&gt;(from: T, to: T, factor: number) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
+| `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
+| `from`  | `number`\|`Color`\|`boolean` | `undefined` | Start value for the animation. Current value is used when `undefined`
+| `to`  | `number`\|`Color`\|`boolean` | `undefined` | End value for the animation. Updated value is used when `undefined`
+| `fn` | <code>&lt;T&gt;(from: T, to: T, factor: number) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
 
 ## Animation properties collection configuration
 
@@ -161,9 +163,11 @@ Properties collection option configures which set of element properties to use t
 Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
 A properties collection option is defined by the same options as the [animation property configuration](#animation-property-configuration), adding the following one:
 
+The animation properties collection configuration can be adjusted in the `options.animation[collection]` namespace.
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `animation[collection].properties` | `string[]` | `undefined` | Set of properties to use to animate the chart.
+| `properties` | `string[]` | `undefined` | Set of properties to use to animate the chart.
 
 ### Default collections
 
@@ -236,10 +240,12 @@ See [Robert Penner's easing equations](http://robertpenner.com/easing/).
 The animation configuration provides callbacks which are useful for synchronizing an external draw to the chart animation.
 The callbacks can be set only at main [animation configuration](#animation-configuration).
 
+The callbacks configuration can be adjusted in the `options.animation` namespace.
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `animation.onProgress` | `function` | `null` | Callback called on each step of an animation.
-| `animation.onComplete` | `function` | `null` | Callback called when all animations are completed.
+| `onProgress` | `function` | `null` | Callback called on each step of an animation.
+| `onComplete` | `function` | `null` | Callback called when all animations are completed.
 
 The callback is passed the following object:
 
