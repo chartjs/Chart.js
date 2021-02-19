@@ -399,5 +399,33 @@ describe('DOM helpers tests', function() {
       expect(Math.abs(pos3.x - Math.round((event.clientX - rect3.x - 10) / 360 * 400))).toBeLessThanOrEqual(1);
       expect(Math.abs(pos3.y - Math.round((event.clientY - rect3.y - 10) / 360 * 400))).toBeLessThanOrEqual(1);
     });
+
+    it('Should not return NaN with a custom event', async function() {
+      let dataX = null;
+      let dataY = null;
+      const chart = window.acquireChart(
+        {
+          type: 'bar',
+          data: {
+            datasets: [{
+              data: [{x: 'first', y: 10}, {x: 'second', y: 5}, {x: 'third', y: 15}]
+            }]
+          },
+          options: {
+            onHover: (e) => {
+              const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+
+              dataX = canvasPosition.x;
+              dataY = canvasPosition.y;
+            }
+          }
+        });
+
+      const point = chart.getDatasetMeta(0).data[1];
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+      expect(dataX).not.toEqual(NaN);
+      expect(dataY).not.toEqual(NaN);
+    });
   });
 });
