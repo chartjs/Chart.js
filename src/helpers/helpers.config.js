@@ -242,9 +242,9 @@ function addScopes(set, parentScopes, key, parentFallback) {
   return false;
 }
 
-function createSubResolver(parentScopes, receiver, prop, value) {
-  const rootScopes = receiver._rootScopes;
-  const fallback = resolveFallback(receiver._fallback, prop, value);
+function createSubResolver(parentScopes, resolver, prop, value) {
+  const rootScopes = resolver._rootScopes;
+  const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
   const set = new Set([value]);
   let key = prop;
