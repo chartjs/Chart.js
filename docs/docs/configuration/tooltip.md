@@ -206,7 +206,6 @@ var chart = new Chart(ctx, {
 });
 ```
 
-
 ### Tooltip Item Context
 
 The tooltip items passed to the tooltip callbacks implement the following interface.

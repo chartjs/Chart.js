@@ -12,7 +12,9 @@ Namespace: `options`
 | `onClick` | `function` | `null` | Called if the event is of type `'mouseup'` or `'click'`. Passed the event, an array of active elements, and the chart.
 
 ## Event Option
+
 For example, to have the chart only respond to click events, you could do:
+
 ```javascript
 var chart = new Chart(ctx, {
     type: 'line',

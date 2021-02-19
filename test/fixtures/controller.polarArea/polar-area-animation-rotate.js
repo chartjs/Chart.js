@@ -5,11 +5,11 @@ const ctx = canvas.getContext('2d');
 
 module.exports = {
   config: {
-    type: 'doughnut',
+    type: 'polarArea',
     data: {
       labels: ['A', 'B', 'C', 'D', 'E'],
       datasets: [{
-        data: [1, 5, 10, 50, 100],
+        data: [1, 5, 10, 2, 4],
         backgroundColor: [
           'rgba(255, 99, 132, 0.8)',
           'rgba(54, 162, 235, 0.8)',
@@ -29,7 +29,9 @@ module.exports = {
     },
     options: {
       animation: {
-        duration: 8000,
+        animateRotate: true,
+        animateScale: false,
+        duration: 800,
         easing: 'linear'
       },
       responsive: false,
@@ -38,14 +40,15 @@ module.exports = {
         title: false,
         tooltip: false,
         filler: false
+      },
+      scales: {
+        r: {
+          ticks: {
+            display: false,
+          }
+        }
       }
     },
-    plugins: [{
-      id: 'hide',
-      afterInit(chart) {
-        chart.toggleDataVisibility(4);
-      }
-    }]
   },
   options: {
     canvas: {
@@ -54,28 +57,19 @@ module.exports = {
     },
     run: function(chart) {
       const animator = Chart.animator;
-      const anims = animator._getAnims(chart);
-      // disable animator
-      const backup = animator._refresh;
-      animator._refresh = function() { };
-
-      return new Promise((resolve) => {
-        window.requestAnimationFrame(() => {
-
-          const start = anims.items[0]._start;
-          for (let i = 0; i < 16; i++) {
-            animator._update(start + i * 500);
-            let x = i % 4 * 128;
-            let y = Math.floor(i / 4) * 128;
-            ctx.drawImage(chart.canvas, x, y, 128, 128);
-          }
-          Chart.helpers.clearCanvas(chart.canvas);
-          chart.ctx.drawImage(canvas, 0, 0);
-
-          animator._refresh = backup;
-          resolve();
-        });
-      });
+      const start = animator._getAnims(chart).items[0]._start;
+      animator._running = false;
+      return new Promise((resolve) => setTimeout(() => {
+        for (let i = 0; i < 16; i++) {
+          animator._update(start + i * 50);
+          let x = i % 4 * 128;
+          let y = Math.floor(i / 4) * 128;
+          ctx.drawImage(chart.canvas, x, y, 128, 128);
+        }
+        Chart.helpers.clearCanvas(chart.canvas);
+        chart.ctx.drawImage(canvas, 0, 0);
+        resolve();
+      }, 100));
     }
   }
 };
