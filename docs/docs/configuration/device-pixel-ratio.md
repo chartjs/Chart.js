@@ -9,7 +9,8 @@ For applications where a chart will be converted to a bitmap, or printed to a hi
 Setting `devicePixelRatio` to a value other than 1 will force the canvas size to be scaled by that amount, relative to the container size. There should be no visible difference on screen; the difference will only be visible when the image is zoomed or printed.
 
 ## Configuration Options
-The device pixel ratio configuration can be adjusted in the `options` namespace (root of options object)
+
+Namespace: `options`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

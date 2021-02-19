@@ -109,8 +109,8 @@ function example() {
 
 ## Animation Configuration
 
-The animation configuration can be adjusted in the `options.animation` namespace. The global options are defined in `Chart.defaults.animation`.
 The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
+Namespace:  `options.animation`, the global options are defined in `Chart.defaults.animation`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -133,7 +133,8 @@ A custom mode can be used by passing a custom `mode` to [update](../developers/a
 A mode option is defined by the same options of the main [animation configuration](#animation-configuration).
 
 ### Default modes
-The animation mode configuration can be adjusted in the `options.animation` namespace.
+
+Namespace: `options.animation`
 
 | Mode | Option | Value | Description
 | -----| ------ | ----- | -----
@@ -146,9 +147,10 @@ The animation mode configuration can be adjusted in the `options.animation` name
 
 ## Animation property configuration
 
-The animation property configuration can be adjusted in the `options.animation[animation]` namespace.
 Property option configures which element property to use to animate the chart and its starting and ending values.
 A property option is defined by the same options of the main [animation configuration](#animation-configuration), adding the following ones:
+
+Namespace: `options.animation[animation]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -240,7 +242,7 @@ See [Robert Penner's easing equations](http://robertpenner.com/easing/).
 The animation configuration provides callbacks which are useful for synchronizing an external draw to the chart animation.
 The callbacks can be set only at main [animation configuration](#animation-configuration).
 
-The callbacks configuration can be adjusted in the `options.animation` namespace.
+Namespace: `options.animation`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

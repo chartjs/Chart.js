@@ -19,7 +19,8 @@ with all present components separated by hyphens.
 By default the chart is using the default locale of the platform which is running on.
 
 ## Configuration Options
-The locale configuration can be adjusted in the `options` namespace (root of options object)
+
+Namespace: `options`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

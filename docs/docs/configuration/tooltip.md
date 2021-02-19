@@ -4,7 +4,7 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration can be adjusted in the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
+Namespace: `options.plugins.tooltip`, the global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -101,7 +101,7 @@ Allows filtering of [tooltip items](#tooltip-item-context). Must implement at mi
 
 ## Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `options.plugins.tooltip.callbacks` namespace. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
+Namespace: `options.plugins.tooltip.callbacks`, the tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
 
 All functions are called with the same arguments: a [tooltip item context](#tooltip-item-context). All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 

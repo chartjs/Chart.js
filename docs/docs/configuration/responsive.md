@@ -12,7 +12,8 @@ The following examples **do not work**:
 Chart.js provides a [few options](#configuration-options) to enable responsiveness and control the resize behavior of charts by detecting when the canvas *display* size changes and update the *render* size accordingly.
 
 ## Configuration Options
-The performance configuration can be adjusted in the `options` namespace (root of options object)
+
+Namespace: `options`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

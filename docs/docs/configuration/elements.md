@@ -16,7 +16,7 @@ Chart.defaults.elements.bar.borderWidth = 2;
 
 Point elements are used to represent the points in a line, radar or bubble chart.
 
-The point element configuration is passed into the `options.elements.point` namespace. Global point options: `Chart.defaults.elements.point`.
+Namespace: `options.elements.point`, global point options: `Chart.defaults.elements.point`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -51,7 +51,7 @@ If the value is an image, that image is drawn on the canvas using [drawImage](ht
 
 Line elements are used to represent the line in a line chart.
 
-The line element configuration can be adjusted in the `options.elements.line` namespace. Global line options: `Chart.defaults.elements.line`.
+Namespace: `options.elements.line`, global line options: `Chart.defaults.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -72,7 +72,7 @@ The line element configuration can be adjusted in the `options.elements.line` na
 
 Bar elements are used to represent the bars in a bar chart.
 
-The bar element configuration can be adjusted in the `options.elements.bar` namespace. Global bar options: `Chart.defaults.elements.bar`.
+Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.bar`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -87,7 +87,7 @@ The bar element configuration can be adjusted in the `options.elements.bar` name
 
 Arcs are used in the polar area, doughnut and pie charts.
 
-The arc element configuration can be adjusted in the `options.elements.arc` namespace. Global arc options: `Chart.defaults.elements.arc`.
+Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

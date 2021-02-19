@@ -2,7 +2,7 @@
 title: Interactions
 ---
 
-The interaction configuration can be adjusted in the `options.interaction` namespace. The global interaction configuration is at `Chart.defaults.interaction`. To configure which events trigger chart interactions, see [events](events.md#events).
+Namespace: `options.interaction`, the global interaction configuration is at `Chart.defaults.interaction`. To configure which events trigger chart interactions, see [events](events.md#events).
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

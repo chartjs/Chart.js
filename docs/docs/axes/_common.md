@@ -1,5 +1,6 @@
 ### Common options to all axes
-The common scale configuration can be adjusted in the `options.scales[scaleId]` namespace.
+
+Namespace: `options.scales[scaleId]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

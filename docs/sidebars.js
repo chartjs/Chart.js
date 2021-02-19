@@ -9,7 +9,7 @@ module.exports = {
       'getting-started/installation',
       'getting-started/integration',
       'getting-started/usage',
-      'getting-started/v3-migration',
+      'getting-started/v3-migration'
     ],
     General: [
       'general/data-structures',
@@ -17,7 +17,7 @@ module.exports = {
       'general/options',
       'general/colors',
       'general/fonts',
-      'general/performance',
+      'general/performance'
     ],
     Configuration: [
       'configuration/index',
@@ -31,7 +31,7 @@ module.exports = {
       'configuration/title',
       'configuration/tooltip',
       'configuration/elements',
-      'configuration/decimation',
+      'configuration/decimation'
     ],
     'Chart Types': [
       'charts/line',
@@ -42,7 +42,7 @@ module.exports = {
       'charts/bubble',
       'charts/scatter',
       'charts/area',
-      'charts/mixed',
+      'charts/mixed'
     ],
     Axes: [
       'axes/index',
@@ -53,17 +53,17 @@ module.exports = {
           'axes/cartesian/linear',
           'axes/cartesian/logarithmic',
           'axes/cartesian/time',
-          'axes/cartesian/timeseries',
+          'axes/cartesian/timeseries'
         ],
       },
       {
         Radial: [
           'axes/radial/index',
-          'axes/radial/linear',
+          'axes/radial/linear'
         ],
       },
       'axes/labelling',
-      'axes/styling',
+      'axes/styling'
     ],
     Developers: [
       'developers/index',
@@ -71,23 +71,23 @@ module.exports = {
       {
         type: 'link',
         label: 'TypeDoc',
-        href: 'https://chartjs.org/docs/' + docsVersion + '/typedoc/',
+        href: 'https://chartjs.org/docs/' + docsVersion + '/typedoc/'
       },
       'developers/updates',
       'developers/plugins',
       'developers/charts',
       'developers/axes',
       'developers/contributing',
-      'developers/publishing',
+      'developers/publishing'
     ],
     'Additional Notes': [
       'notes/comparison',
       {
         type: 'link',
         label: 'Extensions',
-        href: 'https://github.com/chartjs/awesome',
+        href: 'https://github.com/chartjs/awesome'
       },
-      'notes/license',
-    ],
-  },
+      'notes/license'
+    ]
+  }
 };

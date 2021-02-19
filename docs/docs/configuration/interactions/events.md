@@ -3,7 +3,7 @@ title: Events
 ---
 
 The following properties define how the chart interacts with events.
-The events configuration can be adjusted in the `options` namespace (root of options object)
+Namespace: `options`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

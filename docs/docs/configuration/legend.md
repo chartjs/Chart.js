@@ -6,7 +6,7 @@ The chart legend displays data about the datasets that are appearing on the char
 
 ## Configuration options
 
-The legend configuration can be adjusted in the `options.plugins.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
+Namespace: `options.plugins.legend`, the global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -46,7 +46,7 @@ Defaults to `'center'` for unrecognized values.
 
 ## Legend Label Configuration
 
-The legend label configuration is nested below the legend configuration using the `options.plugins.legend.labels` namespace.
+Namespace: `options.plugins.legend.labels`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -63,7 +63,7 @@ The legend label configuration is nested below the legend configuration using th
 
 ## Legend Title Configuration
 
-The legend title configuration is nested below the legend configuration using the `options.plugins.legend.title` namespace.
+Namespace: `options.plugins.legend.title`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
