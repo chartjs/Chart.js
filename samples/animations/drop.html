@@ -33,13 +33,13 @@
 				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
 				datasets: [{
 					label: 'My First dataset',
-					animation: {
+					animations: {
 						y: {
 							duration: 2000,
-							delay: 100
+							delay: 500
 						}
 					},
-					backgroundColor: window.chartColors.red,
+					backgroundColor: 'rgba(170,0,0,0.1)',
 					borderColor: window.chartColors.red,
 					data: [
 						randomScalingFactor(),
@@ -50,7 +50,8 @@
 						randomScalingFactor(),
 						randomScalingFactor()
 					],
-					fill: false,
+					fill: 1,
+					tension: 0.5
 				}, {
 					label: 'My Second dataset',
 					fill: false,
@@ -68,10 +69,17 @@
 				}]
 			},
 			options: {
-				animation: {
+				animations: {
 					y: {
 						easing: 'easeInOutElastic',
-						from: 0
+						from: (ctx) => {
+							if (ctx.type === 'data') {
+								if (ctx.mode === 'default' && !ctx.dropped) {
+									ctx.dropped = true;
+									return 0;
+								}
+							}
+						}
 					}
 				},
 				responsive: true,

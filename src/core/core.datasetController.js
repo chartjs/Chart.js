@@ -763,11 +763,11 @@ export default class DatasetController {
   /**
 	 * @private
 	 */
-  _resolveAnimations(index, mode, active) {
+  _resolveAnimations(index, transition, active) {
     const me = this;
     const chart = me.chart;
     const cache = me._cachedDataOpts;
-    const cacheKey = 'animation-' + mode;
+    const cacheKey = `animation-${transition}`;
     const cached = cache[cacheKey];
     if (cached) {
       return cached;
@@ -775,11 +775,11 @@ export default class DatasetController {
     let options;
     if (chart.options.animation !== false) {
       const config = me.chart.config;
-      const scopeKeys = config.datasetAnimationScopeKeys(me._type);
-      const scopes = config.getOptionScopes(me.getDataset().animation, scopeKeys);
-      options = config.createResolver(scopes, me.getContext(index, active, mode));
+      const scopeKeys = config.datasetAnimationScopeKeys(me._type, transition);
+      const scopes = config.getOptionScopes(me.getDataset(), scopeKeys);
+      options = config.createResolver(scopes, me.getContext(index, active, transition));
     }
-    const animations = new Animations(chart, options && options[mode] || options);
+    const animations = new Animations(chart, options && options.animations);
     if (options && options._cacheable) {
       cache[cacheKey] = Object.freeze(animations);
     }

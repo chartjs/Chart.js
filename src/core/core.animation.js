@@ -28,7 +28,7 @@ export default class Animation {
 
     this._active = true;
     this._fn = cfg.fn || interpolators[cfg.type || typeof from];
-    this._easing = effects[cfg.easing || 'linear'];
+    this._easing = effects[cfg.easing] || effects.linear;
     this._start = Math.floor(Date.now() + (cfg.delay || 0));
     this._duration = Math.floor(cfg.duration);
     this._loop = !!cfg.loop;

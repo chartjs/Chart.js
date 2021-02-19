@@ -185,15 +185,20 @@ export default class Config {
 	 * Returns the option scope keys for resolving dataset animation options.
 	 * These keys do not include the dataset itself, because it is not under options.
 	 * @param {string} datasetType
+   * @param {string} transition
 	 * @return {string[]}
 	 */
-  datasetAnimationScopeKeys(datasetType) {
-    return cachedKeys(`${datasetType}.animation`,
+  datasetAnimationScopeKeys(datasetType, transition) {
+    return cachedKeys(`${datasetType}.transition.${transition}`,
       () => [
-        `datasets.${datasetType}.animation`,
-        `controllers.${datasetType}.animation`,
-        `controllers.${datasetType}.datasets.animation`,
-        'animation'
+        `datasets.${datasetType}.transitions.${transition}`,
+        `controllers.${datasetType}.transitions.${transition}`,
+        `controllers.${datasetType}.datasets.transitions.${transition}`,
+        `transitions.${transition}`,
+        `datasets.${datasetType}`,
+        `controllers.${datasetType}`,
+        `controllers.${datasetType}.datasets`,
+        ''
       ]);
   }
 

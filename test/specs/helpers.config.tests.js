@@ -17,7 +17,10 @@ describe('Chart.helpers.config', function() {
       expect(resolver.hoverColor).toEqual(defaults.hoverColor);
     });
 
-    it('should resolve to parent scopes', function() {
+    it('should resolve to parent scopes, when _fallback is true', function() {
+      const descriptors = {
+        _fallback: true
+      };
       const defaults = {
         root: true,
         sub: {
@@ -28,7 +31,7 @@ describe('Chart.helpers.config', function() {
         child: 'sub default comes before this',
         opt: 'opt'
       };
-      const resolver = _createResolver([options, defaults]);
+      const resolver = _createResolver([options, defaults, descriptors]);
       const sub = resolver.sub;
       expect(sub.root).toEqual(true);
       expect(sub.child).toEqual(true);
@@ -125,10 +128,9 @@ describe('Chart.helpers.config', function() {
         });
       });
 
-      it('should not fallback when _fallback is false', function() {
+      it('should not fallback by default', function() {
         const defaults = {
           hover: {
-            _fallback: false,
             a: 'defaults.hover'
           },
           controllers: {
@@ -252,16 +254,23 @@ describe('Chart.helpers.config', function() {
       });
 
       it('should fallback throuhg multiple routes', function() {
+        const descriptors = {
+          _fallback: 'level1',
+          level1: {
+            _fallback: 'root'
+          },
+          level2: {
+            _fallback: 'level1'
+          }
+        };
         const defaults = {
           root: {
             a: 'root'
           },
           level1: {
-            _fallback: 'root',
             b: 'level1',
           },
           level2: {
-            _fallback: 'level1',
             level1: {
               g: 'level2.level1'
             },
@@ -277,7 +286,7 @@ describe('Chart.helpers.config', function() {
             }
           }
         };
-        const resolver = _createResolver([defaults]);
+        const resolver = _createResolver([defaults, descriptors]);
         expect(resolver.level1).toEqualOptions({
           a: 'root',
           b: 'level1',
@@ -292,7 +301,7 @@ describe('Chart.helpers.config', function() {
         expect(resolver.level2.sublevel1).toEqualOptions({
           a: 'root',
           b: 'level1',
-          c: 'level2', // TODO: this should be undefined
+          c: undefined,
           d: 'sublevel1',
           e: undefined,
           f: undefined,
@@ -301,7 +310,7 @@ describe('Chart.helpers.config', function() {
         expect(resolver.level2.sublevel2).toEqualOptions({
           a: 'root',
           b: 'level1',
-          c: 'level2', // TODO: this should be undefined
+          c: undefined,
           d: undefined,
           e: 'sublevel2',
           f: undefined,
@@ -310,13 +319,129 @@ describe('Chart.helpers.config', function() {
         expect(resolver.level2.sublevel2.level1).toEqualOptions({
           a: 'root',
           b: 'level1',
-          c: 'level2', // TODO: this should be undefined
+          c: undefined,
           d: undefined,
-          e: 'sublevel2', // TODO: this should be undefined
+          e: undefined,
           f: 'sublevel2.level1',
-          g: 'level2.level1'
+          g: undefined // same key only included from immediate parents and root
         });
       });
+
+      it('should fallback through multiple routes (animations)', function() {
+        const descriptors = {
+          animations: {
+            _fallback: 'animation',
+          },
+        };
+        const defaults = {
+          animation: {
+            duration: 1000,
+            easing: 'easeInQuad'
+          },
+          animations: {
+            colors: {
+              properties: ['color', 'backgroundColor'],
+              type: 'color'
+            },
+            numbers: {
+              properties: ['x', 'y'],
+              type: 'number'
+            }
+          },
+          transitions: {
+            resize: {
+              animation: {
+                duration: 0
+              }
+            },
+            show: {
+              animation: {
+                duration: 400
+              },
+              animations: {
+                colors: {
+                  from: 'transparent'
+                }
+              }
+            }
+          }
+        };
+        const options = {
+          animation: {
+            easing: 'linear'
+          },
+          animations: {
+            colors: {
+              properties: ['color', 'borderColor', 'backgroundColor'],
+            },
+            duration: {
+              properties: ['a', 'b'],
+              type: 'boolean'
+            }
+          }
+        };
+
+        const show = _createResolver([options, defaults.transitions.show, defaults, descriptors]);
+        expect(show.animation).toEqualOptions({
+          duration: 400,
+          easing: 'linear'
+        });
+        expect(show.animations.colors._scopes).toEqual([
+          options.animations.colors,
+          defaults.transitions.show.animations.colors,
+          defaults.animations.colors,
+          options.animation,
+          defaults.transitions.show.animation,
+          defaults.animation
+        ]);
+        expect(show.animations.colors).toEqualOptions({
+          duration: 400,
+          from: 'transparent',
+          easing: 'linear',
+          type: 'color',
+          properties: ['color', 'borderColor', 'backgroundColor']
+        });
+        expect(show.animations.duration).toEqualOptions({
+          duration: 400,
+          easing: 'linear',
+          type: 'boolean',
+          properties: ['a', 'b']
+        });
+        expect(Object.getOwnPropertyNames(show.animations).filter(k => Chart.helpers.isObject(show.animations[k]))).toEqual([
+          'colors',
+          'duration',
+          'numbers',
+        ]);
+        const def = _createResolver([options, defaults, descriptors]);
+        expect(def.animation).toEqualOptions({
+          duration: 1000,
+          easing: 'linear'
+        });
+        expect(def.animations.colors._scopes).toEqual([
+          options.animations.colors,
+          defaults.animations.colors,
+          options.animation,
+          defaults.animation
+        ]);
+        expect(def.animations.colors).toEqualOptions({
+          duration: 1000,
+          easing: 'linear',
+          type: 'color',
+          properties: ['color', 'borderColor', 'backgroundColor']
+        });
+        expect(def.animations.duration).toEqualOptions({
+          duration: 1000,
+          easing: 'linear',
+          type: 'boolean',
+          properties: ['a', 'b']
+        });
+        expect(Object.getOwnPropertyNames(def.animations).filter(k => Chart.helpers.isObject(show.animations[k]))).toEqual([
+          'colors',
+          'duration',
+          'numbers',
+        ]);
+      });
+
     });
   });
 
