@@ -1,4 +1,4 @@
-import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core';
+import {defined, isArray, isFunction, isObject, resolveObjectKey, valueOrDefault, _capitalize} from './helpers.core';
 
 /**
  * Creates a Proxy for resolving raw values for options.
@@ -12,7 +12,7 @@ export function _createResolver(scopes, prefixes = ['']) {
     [Symbol.toStringTag]: 'Object',
     _cacheable: true,
     _scopes: scopes,
-    override: (scope) => _createResolver([scope].concat(scopes), prefixes),
+    override: (scope) => _createResolver([scope, ...scopes], prefixes),
   };
   return new Proxy(cache, {
     /**
@@ -186,7 +186,7 @@ function _resolveScriptable(prop, value, target, receiver) {
   _stack.delete(prop);
   if (isObject(value)) {
     // When scriptable option returns an object, create a resolver on that.
-    value = createSubResolver([value].concat(_proxy._scopes), prop, value);
+    value = createSubResolver(_proxy._scopes, prop, value);
   }
   return value;
 }
@@ -202,7 +202,7 @@ function _resolveArray(prop, value, target, isIndexable) {
     const scopes = _proxy._scopes.filter(s => s !== arr);
     value = [];
     for (const item of arr) {
-      const resolver = createSubResolver([item].concat(scopes), prop, item);
+      const resolver = createSubResolver(scopes, prop, item);
       value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop]));
     }
   }
@@ -211,12 +211,20 @@ function _resolveArray(prop, value, target, isIndexable) {
 
 function createSubResolver(parentScopes, prop, value) {
   const set = new Set([value]);
-  const {keys, includeParents} = _resolveSubKeys(parentScopes, prop, value);
-  for (const key of keys) {
-    for (const item of parentScopes) {
+  const lookupScopes = [value, ...parentScopes];
+  const {keys, includeParents} = _resolveSubKeys(lookupScopes, prop, value);
+  while (keys.length) {
+    const key = keys.shift();
+    for (const item of lookupScopes) {
       const scope = resolveObjectKey(item, key);
       if (scope) {
         set.add(scope);
+        // fallback detour?
+        const fallback = scope._fallback;
+        if (defined(fallback)) {
+          keys.push(...resolveFallback(fallback, key, scope).filter(k => k !== key));
+        }
+
       } else if (key !== prop && scope === false) {
         // If any of the fallback scopes is explicitly false, return false
         // For example, options.hover falls back to options.interaction, when
@@ -231,14 +239,18 @@ function createSubResolver(parentScopes, prop, value) {
   return _createResolver([...set]);
 }
 
+function resolveFallback(fallback, prop, value) {
+  const resolved = isFunction(fallback) ? fallback(prop, value) : fallback;
+  return isArray(resolved) ? resolved : typeof resolved === 'string' ? [resolved] : [];
+}
+
 function _resolveSubKeys(parentScopes, prop, value) {
-  const fallback = _resolve('_fallback', parentScopes.map(scope => scope[prop] || scope));
+  const fallback = valueOrDefault(_resolve('_fallback', parentScopes.map(scope => scope[prop] || scope)), true);
   const keys = [prop];
   if (defined(fallback)) {
-    const resolved = isFunction(fallback) ? fallback(prop, value) : fallback;
-    keys.push(...(isArray(resolved) ? resolved : [resolved]));
+    keys.push(...resolveFallback(fallback, prop, value));
   }
-  return {keys: keys.filter(v => v), includeParents: fallback !== prop};
+  return {keys: keys.filter(v => v), includeParents: fallback !== false && fallback !== prop};
 }
 
 function _resolveWithPrefixes(prop, prefixes, scopes) {

@@ -35,34 +35,6 @@ describe('Chart.helpers.config', function() {
       expect(sub.opt).toEqual('opt');
     });
 
-    it('should follow _fallback', function() {
-      const defaults = {
-        interaction: {
-          mode: 'test',
-          priority: 'fall'
-        },
-        hover: {
-          _fallback: 'interaction',
-          priority: 'main'
-        }
-      };
-      const options = {
-        interaction: {
-          a: 1
-        },
-        hover: {
-          b: 2
-        }
-      };
-      const resolver = _createResolver([options, defaults]);
-      expect(resolver.hover).toEqualOptions({
-        mode: 'test',
-        priority: 'main',
-        a: 1,
-        b: 2
-      });
-    });
-
     it('should support overriding options', function() {
       const defaults = {
         option1: 'defaults1',
@@ -122,6 +94,229 @@ describe('Chart.helpers.config', function() {
       expect(resolver instanceof Options).toBeTrue();
 
       expect(resolver.getter).toEqual('options getter');
+    });
+
+    describe('_fallback', function() {
+      it('should follow simple _fallback', function() {
+        const defaults = {
+          interaction: {
+            mode: 'test',
+            priority: 'fall'
+          },
+          hover: {
+            _fallback: 'interaction',
+            priority: 'main'
+          }
+        };
+        const options = {
+          interaction: {
+            a: 1
+          },
+          hover: {
+            b: 2
+          }
+        };
+        const resolver = _createResolver([options, defaults]);
+        expect(resolver.hover).toEqualOptions({
+          mode: 'test',
+          priority: 'main',
+          a: 1,
+          b: 2
+        });
+      });
+
+      it('should not fallback when _fallback is false', function() {
+        const defaults = {
+          hover: {
+            _fallback: false,
+            a: 'defaults.hover'
+          },
+          controllers: {
+            y: 'defaults.controllers',
+            bar: {
+              z: 'defaults.controllers.bar',
+              hover: {
+                b: 'defaults.controllers.bar.hover'
+              }
+            }
+          },
+          x: 'defaults root'
+        };
+        const options = {
+          x: 'options',
+          hover: {
+            c: 'options.hover',
+            sub: {
+              f: 'options.hover.sub'
+            }
+          },
+          controllers: {
+            y: 'options.controllers',
+            bar: {
+              z: 'options.controllers.bar',
+              hover: {
+                d: 'options.controllers.bar.hover',
+                sub: {
+                  e: 'options.controllers.bar.hover.sub'
+                }
+              }
+            }
+          }
+        };
+        const resolver = _createResolver([options, options.controllers.bar, options.controllers, defaults.controllers.bar, defaults.controllers, defaults]);
+        expect(resolver.hover).toEqualOptions({
+          a: 'defaults.hover',
+          b: 'defaults.controllers.bar.hover',
+          c: 'options.hover',
+          d: 'options.controllers.bar.hover',
+          e: undefined,
+          f: undefined,
+          x: undefined,
+          y: undefined,
+          z: undefined
+        });
+        expect(resolver.hover.sub).toEqualOptions({
+          a: undefined,
+          b: undefined,
+          c: undefined,
+          d: undefined,
+          e: 'options.controllers.bar.hover.sub',
+          f: 'options.hover.sub',
+          x: undefined,
+          y: undefined,
+          z: undefined
+        });
+      });
+
+      it('should fallback to specific scope', function() {
+        const defaults = {
+          hover: {
+            _fallback: 'hover',
+            a: 'defaults.hover'
+          },
+          controllers: {
+            y: 'defaults.controllers',
+            bar: {
+              z: 'defaults.controllers.bar',
+              hover: {
+                b: 'defaults.controllers.bar.hover'
+              }
+            }
+          },
+          x: 'defaults root'
+        };
+        const options = {
+          x: 'options',
+          hover: {
+            c: 'options.hover',
+            sub: {
+              f: 'options.hover.sub'
+            }
+          },
+          controllers: {
+            y: 'options.controllers',
+            bar: {
+              z: 'options.controllers.bar',
+              hover: {
+                d: 'options.controllers.bar.hover',
+                sub: {
+                  e: 'options.controllers.bar.hover.sub'
+                }
+              }
+            }
+          }
+        };
+        const resolver = _createResolver([options, options.controllers.bar, options.controllers, defaults.controllers.bar, defaults.controllers, defaults]);
+        expect(resolver.hover).toEqualOptions({
+          a: 'defaults.hover',
+          b: 'defaults.controllers.bar.hover',
+          c: 'options.hover',
+          d: 'options.controllers.bar.hover',
+          e: undefined,
+          f: undefined,
+          x: undefined,
+          y: undefined,
+          z: undefined
+        });
+        expect(resolver.hover.sub).toEqualOptions({
+          a: 'defaults.hover',
+          b: 'defaults.controllers.bar.hover',
+          c: 'options.hover',
+          d: 'options.controllers.bar.hover',
+          e: 'options.controllers.bar.hover.sub',
+          f: 'options.hover.sub',
+          x: undefined,
+          y: undefined,
+          z: undefined
+        });
+      });
+
+      it('should fallback throuhg multiple routes', function() {
+        const defaults = {
+          root: {
+            a: 'root'
+          },
+          level1: {
+            _fallback: 'root',
+            b: 'level1',
+          },
+          level2: {
+            _fallback: 'level1',
+            level1: {
+              g: 'level2.level1'
+            },
+            c: 'level2',
+            sublevel1: {
+              d: 'sublevel1'
+            },
+            sublevel2: {
+              e: 'sublevel2',
+              level1: {
+                f: 'sublevel2.level1'
+              }
+            }
+          }
+        };
+        const resolver = _createResolver([defaults]);
+        expect(resolver.level1).toEqualOptions({
+          a: 'root',
+          b: 'level1',
+          c: undefined
+        });
+        expect(resolver.level2).toEqualOptions({
+          a: 'root',
+          b: 'level1',
+          c: 'level2',
+          d: undefined
+        });
+        expect(resolver.level2.sublevel1).toEqualOptions({
+          a: 'root',
+          b: 'level1',
+          c: 'level2', // TODO: this should be undefined
+          d: 'sublevel1',
+          e: undefined,
+          f: undefined,
+          g: 'level2.level1'
+        });
+        expect(resolver.level2.sublevel2).toEqualOptions({
+          a: 'root',
+          b: 'level1',
+          c: 'level2', // TODO: this should be undefined
+          d: undefined,
+          e: 'sublevel2',
+          f: undefined,
+          g: 'level2.level1'
+        });
+        expect(resolver.level2.sublevel2.level1).toEqualOptions({
+          a: 'root',
+          b: 'level1',
+          c: 'level2', // TODO: this should be undefined
+          d: undefined,
+          e: 'sublevel2', // TODO: this should be undefined
+          f: 'sublevel2.level1',
+          g: 'level2.level1'
+        });
+      });
     });
   });
 
