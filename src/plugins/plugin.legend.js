@@ -622,7 +622,4 @@ export default {
       _scriptable: false,
     }
   },
-
-  // For easier configuration, resolve additionally from root of options and defaults.
-  additionalOptionScopes: ['']
 };

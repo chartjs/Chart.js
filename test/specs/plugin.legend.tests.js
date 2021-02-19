@@ -736,6 +736,31 @@ describe('Legend block tests', function() {
     });
   });
 
+  it('should not read onClick from chart options', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'dataset',
+          backgroundColor: 'red',
+          borderColor: 'red',
+          data: [120, 23, 24, 45, 51]
+        }]
+      },
+      options: {
+        responsive: true,
+        onClick() { },
+        plugins: {
+          legend: {
+            display: true
+          }
+        }
+      }
+    });
+    expect(chart.legend.options.onClick).toBe(Chart.defaults.plugins.legend.onClick);
+  });
+
   describe('config update', function() {
     it('should update the options', function() {
       var chart = acquireChart({
