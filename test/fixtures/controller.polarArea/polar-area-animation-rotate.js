@@ -31,7 +31,7 @@ module.exports = {
       animation: {
         animateRotate: true,
         animateScale: false,
-        duration: 800,
+        duration: 8000,
         easing: 'linear'
       },
       responsive: false,
@@ -57,19 +57,29 @@ module.exports = {
     },
     run: function(chart) {
       const animator = Chart.animator;
-      const start = animator._getAnims(chart).items[0]._start;
-      animator._running = false;
-      return new Promise((resolve) => setTimeout(() => {
-        for (let i = 0; i < 16; i++) {
-          animator._update(start + i * 50);
-          let x = i % 4 * 128;
-          let y = Math.floor(i / 4) * 128;
-          ctx.drawImage(chart.canvas, x, y, 128, 128);
-        }
-        Chart.helpers.clearCanvas(chart.canvas);
-        chart.ctx.drawImage(canvas, 0, 0);
-        resolve();
-      }, 100));
+      const anims = animator._getAnims(chart);
+      // disable animator
+      const backup = animator._refresh;
+      animator._refresh = function() { };
+
+      return new Promise((resolve) => {
+        window.requestAnimationFrame(() => {
+
+          const start = anims.items[0]._start;
+          for (let i = 0; i < 16; i++) {
+            animator._update(start + i * 500);
+            let x = i % 4 * 128;
+            let y = Math.floor(i / 4) * 128;
+            ctx.drawImage(chart.canvas, x, y, 128, 128);
+          }
+
+          Chart.helpers.clearCanvas(chart.canvas);
+          chart.ctx.drawImage(canvas, 0, 0);
+
+          animator._refresh = backup;
+          resolve();
+        });
+      });
     }
   }
 };
