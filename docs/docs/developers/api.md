@@ -64,7 +64,7 @@ myLineChart.stop();
 
 Use this to manually resize the canvas element. This is run each time the canvas container is resized, but you can call this method manually if you change the size of the canvas nodes container element.
 
-You can call `.resize()` with no parameters to have the chart take the size of its container element, or you can pass explicit dimensions (e.g., for [printing](../general/responsive.md#printing-resizable-charts)).
+You can call `.resize()` with no parameters to have the chart take the size of its container element, or you can pass explicit dimensions (e.g., for [printing](../configuration/responsive.md#printing-resizable-charts)).
 
 ```javascript
 // Resizes & redraws to fill its container element

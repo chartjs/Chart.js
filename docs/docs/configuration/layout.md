@@ -2,7 +2,7 @@
 title: Layout
 ---
 
-The layout configuration is passed into the `options.layout` namespace. The global options for the chart layout is defined in `Chart.defaults.layout`.
+Namespace: `options.layout`, the global options for the chart layout is defined in `Chart.defaults.layout`.
 
 | Name | Type | Default | [Scriptable](../general/options.md#scriptable-options) | Description
 | ---- | ---- | ------- | :----: | -----------

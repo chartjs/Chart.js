@@ -6,7 +6,7 @@ The chart title defines text to draw at the top of the chart.
 
 ## Title Configuration
 
-The title configuration is passed into the `options.plugins.title` namespace. The global options for the chart title is defined in `Chart.defaults.plugins.title`.
+Namespace: `options.plugins.title`, the global options for the chart title is defined in `Chart.defaults.plugins.title`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

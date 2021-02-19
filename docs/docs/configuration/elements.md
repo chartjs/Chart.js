@@ -16,7 +16,7 @@ Chart.defaults.elements.bar.borderWidth = 2;
 
 Point elements are used to represent the points in a line, radar or bubble chart.
 
-Global point options: `Chart.defaults.elements.point`.
+Namespace: `options.elements.point`, global point options: `Chart.defaults.elements.point`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -25,7 +25,7 @@ Global point options: `Chart.defaults.elements.point`.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
-| `borderColor` | [`Color`](../general/colors.md) | `Chart.defaults.borderColor` | Point stroke color.
+| `borderColor` | [`Color`](../general/colors.md) | `'Chart.defaults.borderColor` | Point stroke color.
 | `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
 | `hoverRadius` | `number` | `4` | Point radius when hovered.
 | `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
@@ -51,7 +51,7 @@ If the value is an image, that image is drawn on the canvas using [drawImage](ht
 
 Line elements are used to represent the line in a line chart.
 
-Global line options: `Chart.defaults.elements.line`.
+Namespace: `options.elements.line`, global line options: `Chart.defaults.elements.line`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -72,7 +72,7 @@ Global line options: `Chart.defaults.elements.line`.
 
 Bar elements are used to represent the bars in a bar chart.
 
-Global bar options: `Chart.defaults.elements.bar`.
+Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.bar`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -87,7 +87,7 @@ Global bar options: `Chart.defaults.elements.bar`.
 
 Arcs are used in the polar area, doughnut and pie charts.
 
-Global arc options: `Chart.defaults.elements.arc`.
+Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.arc`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

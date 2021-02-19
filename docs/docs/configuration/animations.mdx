@@ -109,8 +109,8 @@ function example() {
 
 ## Animation Configuration
 
-The following animation options are available. The global options are defined in `Chart.defaults.animation`.
 The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.js#L6-L55" target="_blank">core.animations.js</a>
+Namespace:  `options.animation`, the global options are defined in `Chart.defaults.animation`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -134,19 +134,23 @@ A mode option is defined by the same options of the main [animation configuratio
 
 ### Default modes
 
+Namespace: `options.animation`
+
 | Mode | Option | Value | Description
 | -----| ------ | ----- | -----
-| `'active'` | duration | 400 | Override default duration to 400ms for hover animations
-| `'resize'` | duration | 0 | Override default duration to 0ms (= no animation) for resize
-| `'show'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
-| `'show'` | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
-| `'hide'` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
-| `'hide'` | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
+| `active` | duration | 400 | Override default duration to 400ms for hover animations
+| `resize` | duration | 0 | Override default duration to 0ms (= no animation) for resize
+| `show` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
+| `show` | visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
+| `hide` | colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
+| `hide` | visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
 
 ## Animation property configuration
 
 Property option configures which element property to use to animate the chart and its starting and ending values.
 A property option is defined by the same options of the main [animation configuration](#animation-configuration), adding the following ones:
+
+Namespace: `options.animation[animation]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -159,7 +163,9 @@ A property option is defined by the same options of the main [animation configur
 
 Properties collection option configures which set of element properties to use to animate the chart.
 Collection can be named whatever you like, but should not collide with a `[property]` or `[mode]`.
-A properties collection option is defined by the same options of the [animation property configuration](#animation-property-configuration), adding the following one:
+A properties collection option is defined by the same options as the [animation property configuration](#animation-property-configuration), adding the following one:
+
+The animation properties collection configuration can be adjusted in the `options.animation[collection]` namespace.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
@@ -235,6 +241,8 @@ See [Robert Penner's easing equations](http://robertpenner.com/easing/).
 
 The animation configuration provides callbacks which are useful for synchronizing an external draw to the chart animation.
 The callbacks can be set only at main [animation configuration](#animation-configuration).
+
+Namespace: `options.animation`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

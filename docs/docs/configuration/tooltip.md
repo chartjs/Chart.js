@@ -4,13 +4,13 @@ title: Tooltip
 
 ## Tooltip Configuration
 
-The tooltip configuration is passed into the `options.plugins.tooltip` namespace. The global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
+Namespace: `options.plugins.tooltip`, the global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
 | `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
-| `mode` | `string` | | Sets which elements appear in the tooltip. [more...](../general/interactions/modes.md#interaction-modes).
+| `mode` | `string` | | Sets which elements appear in the tooltip. [more...](interactions/modes.md#interaction-modes).
 | `intersect` | `boolean` | | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
 | `callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
@@ -101,7 +101,7 @@ Allows filtering of [tooltip items](#tooltip-item-context). Must implement at mi
 
 ## Tooltip Callbacks
 
-The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
+Namespace: `options.plugins.tooltip.callbacks`, the tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
 
 All functions are called with the same arguments: a [tooltip item context](#tooltip-item-context). All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
 

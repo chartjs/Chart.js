@@ -1,5 +1,7 @@
 ### Common tick options to all cartesian axes
 
+Namespace: `options.scales[scaleId].ticks`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `align` | `string` | `'center'` | The tick alignment along the axis. Can be `'start'`, `'center'`, or `'end'`.

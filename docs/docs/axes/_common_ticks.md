@@ -1,5 +1,7 @@
 ### Common tick options to all axes
 
+Namespace: `options.scales[scaleId].ticks`
+
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | :-------------------------------: | ------- | -----------
 | `callback` | `function` | | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](../axes/labelling.md#creating-custom-tick-formats).

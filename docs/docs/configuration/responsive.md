@@ -13,6 +13,8 @@ Chart.js provides a [few options](#configuration-options) to enable responsivene
 
 ## Configuration Options
 
+Namespace: `options`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `responsive` | `boolean` | `true` | Resizes the chart canvas when its container does ([important note...](#important-note)).

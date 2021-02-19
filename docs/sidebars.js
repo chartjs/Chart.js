@@ -14,10 +14,6 @@ module.exports = {
     General: [
       'general/data-structures',
       'general/accessibility',
-      'general/responsive',
-      'general/device-pixel-ratio',
-      'general/locale',
-      {Interactions: ['general/interactions/index', 'general/interactions/events', 'general/interactions/modes']},
       'general/options',
       'general/colors',
       'general/fonts',
@@ -25,6 +21,10 @@ module.exports = {
     ],
     Configuration: [
       'configuration/index',
+      'configuration/responsive',
+      'configuration/device-pixel-ratio',
+      'configuration/locale',
+      {Interactions: ['configuration/interactions/index', 'configuration/interactions/events', 'configuration/interactions/modes']},
       'configuration/animations',
       'configuration/layout',
       'configuration/legend',
@@ -46,18 +46,22 @@ module.exports = {
     ],
     Axes: [
       'axes/index',
-      {Cartesian: [
-        'axes/cartesian/index',
-        'axes/cartesian/category',
-        'axes/cartesian/linear',
-        'axes/cartesian/logarithmic',
-        'axes/cartesian/time',
-        'axes/cartesian/timeseries'
-      ]},
-      {Radial: [
-        'axes/radial/index',
-        'axes/radial/linear'
-      ]},
+      {
+        Cartesian: [
+          'axes/cartesian/index',
+          'axes/cartesian/category',
+          'axes/cartesian/linear',
+          'axes/cartesian/logarithmic',
+          'axes/cartesian/time',
+          'axes/cartesian/timeseries'
+        ],
+      },
+      {
+        Radial: [
+          'axes/radial/index',
+          'axes/radial/linear'
+        ],
+      },
       'axes/labelling',
       'axes/styling'
     ],
@@ -85,5 +89,5 @@ module.exports = {
       },
       'notes/license'
     ]
-  },
+  }
 };
