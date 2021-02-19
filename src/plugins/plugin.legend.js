@@ -561,6 +561,7 @@ export default {
     onLeave: null,
 
     labels: {
+      color: (ctx) => ctx.chart.options.color,
       boxWidth: 40,
       padding: 10,
       // Generates labels shown in the legend
@@ -605,24 +606,17 @@ export default {
     },
 
     title: {
+      color: (ctx) => ctx.chart.options.color,
       display: false,
       position: 'center',
       text: '',
     }
   },
 
-  defaultRoutes: {
-    'labels.color': 'color',
-    'title.color': 'color'
-  },
-
   descriptors: {
     _scriptable: (name) => !name.startsWith('on'),
     labels: {
-      _scriptable: false,
+      _scriptable: (name) => !['generateLabels', 'filter', 'sort'].includes(name),
     }
   },
-
-  // For easier configuration, resolve additionally from root of options and defaults.
-  additionalOptionScopes: ['']
 };

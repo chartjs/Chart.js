@@ -1206,6 +1206,6 @@ export default {
     }
   },
 
-  // For easier configuration, resolve additionally from `interaction` and root of options and defaults.
-  additionalOptionScopes: ['interaction', '']
+  // Resolve additionally from `interaction` options and defaults.
+  additionalOptionScopes: ['interaction']
 };
