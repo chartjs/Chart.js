@@ -4,6 +4,8 @@ import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
+const usePath2D = typeof Path2D === 'function';
+
 /**
  * @typedef { import("./element.point").default } PointElement
  */
@@ -363,15 +365,22 @@ export default class LineElement extends Element {
 
     setStyle(ctx, options);
 
-    let path = me._path;
-    if (!path) {
-      path = me._path = new Path2D();
-      if (me.path(path, start, count)) {
-        path.closePath();
+    if (usePath2D) {
+      let path = me._path;
+      if (!path) {
+        path = me._path = new Path2D();
+        if (me.path(path, start, count)) {
+          path.closePath();
+        }
       }
+      ctx.stroke(path);
+    } else {
+      ctx.beginPath();
+      if (me.path(ctx, start, count)) {
+        ctx.closePath();
+      }
+      ctx.stroke();
     }
-
-    ctx.stroke(path);
 
     ctx.restore();
 
