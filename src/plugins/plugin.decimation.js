@@ -1,7 +1,9 @@
 import {isNullOrUndef, resolve} from '../helpers';
 
 function minMaxDecimation(data, availableWidth) {
-  let i, point, x, y, prevX, minIndex, maxIndex, minY, maxY;
+  let avgX = 0;
+  let countX = 0;
+  let i, point, x, y, prevX, minIndex, maxIndex, startIndex, minY, maxY;
   const decimated = [];
 
   const xMin = data[0].x;
@@ -23,19 +25,48 @@ function minMaxDecimation(data, availableWidth) {
         maxY = y;
         maxIndex = i;
       }
+      // For first point in group, countX is `0`, so average will be `x` / 1.
+      // Use point.x here because we're computing the average data `x` value
+      avgX = (countX * avgX + point.x) / ++countX;
     } else {
       // Push up to 4 points, 3 for the last interval and the first point for this interval
-      if (minIndex && maxIndex) {
-        decimated.push(data[minIndex], data[maxIndex]);
+      const lastIndex = i - 1;
+
+      if (!isNullOrUndef(minIndex) && !isNullOrUndef(maxIndex)) {
+        // The interval is defined by 4 points: start, min, max, end.
+        // The starting point is already considered at this point, so we need to determine which
+        // of the other points to add. We need to sort these points to ensure the decimated data
+        // is still sorted and then ensure there are no duplicates.
+        const intermediateIndex1 = Math.min(minIndex, maxIndex);
+        const intermediateIndex2 = Math.max(minIndex, maxIndex);
+
+        if (intermediateIndex1 !== startIndex && intermediateIndex1 !== lastIndex) {
+          decimated.push({
+            ...data[intermediateIndex1],
+            x: avgX,
+          });
+        }
+        if (intermediateIndex2 !== startIndex && intermediateIndex2 !== lastIndex) {
+          decimated.push({
+            ...data[intermediateIndex2],
+            x: avgX
+          });
+        }
       }
-      if (i > 0) {
+
+      // lastIndex === startIndex will occur when a range has only 1 point which could
+      // happen with very uneven data
+      if (i > 0 && lastIndex !== startIndex) {
         // Last point in the previous interval
-        decimated.push(data[i - 1]);
+        decimated.push(data[lastIndex]);
       }
+
+      // Start of the new interval
       decimated.push(point);
       prevX = truncX;
+      countX = 0;
       minY = maxY = y;
-      minIndex = maxIndex = i;
+      minIndex = maxIndex = startIndex = i;
     }
   }
 
@@ -93,7 +124,6 @@ export default {
         // First time we are seeing this dataset
         // We override the 'data' property with a setter that stores the
         // raw data in _data, but reads the decimated data from _decimated
-        // TODO: Undo this on chart destruction
         dataset._data = data;
         delete dataset.data;
         Object.defineProperty(dataset, 'data', {
