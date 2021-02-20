@@ -4,8 +4,6 @@ import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
 
-const usePath2D = typeof Path2D === 'function';
-
 /**
  * @typedef { import("./element.point").default } PointElement
  */
@@ -200,6 +198,27 @@ function _getInterpolationMethod(options) {
   return _pointInLine;
 }
 
+function strokePathWithCache(ctx, line, start, count) {
+  let path = line._path;
+  if (!path) {
+    path = line._path = new Path2D();
+    if (line.path(path, start, count)) {
+      path.closePath();
+    }
+  }
+  ctx.stroke(path);
+}
+function strokePathDirect(ctx, line, start, count) {
+  ctx.beginPath();
+  if (line.path(ctx, start, count)) {
+    ctx.closePath();
+  }
+  ctx.stroke();
+}
+
+const usePath2D = typeof Path2D === 'function';
+const strokePath = usePath2D ? strokePathWithCache : strokePathDirect;
+
 export default class LineElement extends Element {
 
   constructor(cfg) {
@@ -365,22 +384,7 @@ export default class LineElement extends Element {
 
     setStyle(ctx, options);
 
-    if (usePath2D) {
-      let path = me._path;
-      if (!path) {
-        path = me._path = new Path2D();
-        if (me.path(path, start, count)) {
-          path.closePath();
-        }
-      }
-      ctx.stroke(path);
-    } else {
-      ctx.beginPath();
-      if (me.path(ctx, start, count)) {
-        ctx.closePath();
-      }
-      ctx.stroke();
-    }
+    strokePath(ctx, me, start, count);
 
     ctx.restore();
 
