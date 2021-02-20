@@ -133,8 +133,9 @@ BubbleController.id = 'bubble';
 BubbleController.defaults = {
   datasetElementType: false,
   dataElementType: 'point',
-  animation: {
+  animations: {
     numbers: {
+      type: 'number',
       properties: ['x', 'y', 'borderWidth', 'radius']
     }
   },

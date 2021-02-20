@@ -6,7 +6,7 @@ When creating a chart, you want to tell the viewer what data they are viewing. T
 
 ## Scale Title Configuration
 
-The scale label configuration is nested under the scale configuration in the `scaleLabel` key. It defines options for the scale title. Note that this only applies to cartesian axes.
+Namespace: `options.scales[scaleId].scaleLabel`, it defines options for the scale title. Note that this only applies to cartesian axes.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

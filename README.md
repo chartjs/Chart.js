@@ -20,15 +20,15 @@ Currently, there are two versions of the library (2.9.4 and 3.x.x). Version 2 is
 * Source currently points to 3.x.x version. 2.9.4 source is available [here](https://github.com/chartjs/Chart.js/tree/2.9)
 * Docs for version 3.x.x are available [here](https://www.chartjs.org/docs/master/)
 
-- [Introduction](https://www.chartjs.org/docs/latest/)
-- [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
-- [General](https://www.chartjs.org/docs/latest/general/)
-- [Configuration](https://www.chartjs.org/docs/latest/configuration/)
-- [Charts](https://www.chartjs.org/docs/latest/charts/)
-- [Axes](https://www.chartjs.org/docs/latest/axes/)
-- [Developers](https://www.chartjs.org/docs/latest/developers/)
-- [Popular Extensions](https://github.com/chartjs/awesome)
-- [Samples](https://www.chartjs.org/samples/)
+* [Introduction](https://www.chartjs.org/docs/latest/)
+* [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
+* [General](https://www.chartjs.org/docs/latest/general/)
+* [Configuration](https://www.chartjs.org/docs/latest/configuration/)
+* [Charts](https://www.chartjs.org/docs/latest/charts/)
+* [Axes](https://www.chartjs.org/docs/latest/axes/)
+* [Developers](https://www.chartjs.org/docs/latest/developers/)
+* [Popular Extensions](https://github.com/chartjs/awesome)
+* [Samples](https://www.chartjs.org/samples/)
 
 ## Contributing
 

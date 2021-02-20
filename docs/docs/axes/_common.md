@@ -1,5 +1,7 @@
 ### Common options to all axes
 
+Namespace: `options.scales[scaleId]`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.

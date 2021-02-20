@@ -180,7 +180,4 @@ export default {
   defaultRoutes: {
     color: 'color'
   },
-
-  // For easier configuration, resolve additionally from root of options and defaults.
-  additionalOptionScopes: ['']
 };

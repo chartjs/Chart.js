@@ -329,14 +329,16 @@ DoughnutController.defaults = {
   datasetElementType: false,
   dataElementType: 'arc',
   animation: {
-    numbers: {
-      type: 'number',
-      properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
-    },
     // Boolean - Whether we animate the rotation of the Doughnut
     animateRotate: true,
     // Boolean - Whether we animate scaling the Doughnut from the centre
     animateScale: false
+  },
+  animations: {
+    numbers: {
+      type: 'number',
+      properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
+    },
   },
   aspectRatio: 1,
 

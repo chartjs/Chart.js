@@ -72,6 +72,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## dataset
+
 Finds items in the same dataset. If the `intersect` setting is true, the first intersecting item is used to determine the index in the data. If `intersect` false the nearest item is used to determine the index.
 
 ```javascript
@@ -87,6 +88,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## x
+
 Returns all items that would intersect based on the `X` coordinate of the position only. Would be useful for a vertical cursor implementation. Note that this only applies to cartesian charts.
 
 ```javascript
@@ -102,6 +104,7 @@ var chart = new Chart(ctx, {
 ```
 
 ## y
+
 Returns all items that would intersect based on the `Y` coordinate of the position. This would be useful for a horizontal cursor implementation. Note that this only applies to cartesian charts.
 
 ```javascript

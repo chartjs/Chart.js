@@ -1,0 +1,3 @@
+MD013: false # line-length
+MD033: false # inline HTML
+MD041: false # first line heading

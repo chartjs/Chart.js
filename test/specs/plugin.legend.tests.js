@@ -17,14 +17,14 @@ describe('Legend block tests', function() {
       onLeave: null,
 
       labels: {
-        color: Chart.defaults.color,
+        color: jasmine.any(Function),
         boxWidth: 40,
         padding: 10,
         generateLabels: jasmine.any(Function)
       },
 
       title: {
-        color: Chart.defaults.color,
+        color: jasmine.any(Function),
         display: false,
         position: 'center',
         text: '',
@@ -736,6 +736,58 @@ describe('Legend block tests', function() {
     });
   });
 
+  it('should not read onClick from chart options', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'dataset',
+          backgroundColor: 'red',
+          borderColor: 'red',
+          data: [120, 23, 24, 45, 51]
+        }]
+      },
+      options: {
+        responsive: true,
+        onClick() { },
+        plugins: {
+          legend: {
+            display: true
+          }
+        }
+      }
+    });
+    expect(chart.legend.options.onClick).toBe(Chart.defaults.plugins.legend.onClick);
+  });
+
+  it('should read labels.color from chart options', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'dataset',
+          backgroundColor: 'red',
+          borderColor: 'red',
+          data: [120, 23, 24, 45, 51]
+        }]
+      },
+      options: {
+        responsive: true,
+        color: 'green',
+        plugins: {
+          legend: {
+            display: true
+          }
+        }
+      }
+    });
+    expect(chart.legend.options.labels.color).toBe('green');
+    expect(chart.legend.options.title.color).toBe('green');
+  });
+
+
   describe('config update', function() {
     it('should update the options', function() {
       var chart = acquireChart({
@@ -827,7 +879,14 @@ describe('Legend block tests', function() {
       chart.options.plugins.legend = {};
       chart.update();
       expect(chart.legend).not.toBe(undefined);
-      expect(chart.legend.options).toEqualOptions(Chart.defaults.plugins.legend);
+      expect(chart.legend.options).toEqualOptions(Object.assign({},
+        // replace scriptable options with resolved values
+        Chart.defaults.plugins.legend,
+        {
+          labels: {color: Chart.defaults.color},
+          title: {color: Chart.defaults.color}
+        }
+      ));
     });
   });
 

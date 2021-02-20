@@ -4,30 +4,64 @@ import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} f
  * Creates a Proxy for resolving raw values for options.
  * @param {object[]} scopes - The option scopes to look for values, in resolution order
  * @param {string[]} [prefixes] - The prefixes for values, in resolution order.
+ * @param {object[]} [rootScopes] - The root option scopes
+ * @param {string|boolean} [fallback] - Parent scopes fallback
  * @returns Proxy
  * @private
  */
-export function _createResolver(scopes, prefixes = ['']) {
+export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback) {
+  if (!defined(fallback)) {
+    fallback = _resolve('_fallback', scopes);
+  }
   const cache = {
     [Symbol.toStringTag]: 'Object',
     _cacheable: true,
     _scopes: scopes,
-    override: (scope) => _createResolver([scope].concat(scopes), prefixes),
+    _rootScopes: rootScopes,
+    _fallback: fallback,
+    override: (scope) => _createResolver([scope, ...scopes], prefixes, rootScopes, fallback),
   };
   return new Proxy(cache, {
+    /**
+     * A trap for getting property values.
+     */
     get(target, prop) {
       return _cached(target, prop,
-        () => _resolveWithPrefixes(prop, prefixes, scopes));
+        () => _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
 
-    ownKeys(target) {
-      return getKeysFromAllScopes(target);
-    },
-
+    /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */
     getOwnPropertyDescriptor(target, prop) {
       return Reflect.getOwnPropertyDescriptor(target._scopes[0], prop);
     },
 
+    /**
+     * A trap for Object.getPrototypeOf.
+     */
+    getPrototypeOf() {
+      return Reflect.getPrototypeOf(scopes[0]);
+    },
+
+    /**
+     * A trap for the in operator.
+     */
+    has(target, prop) {
+      return getKeysFromAllScopes(target).includes(prop);
+    },
+
+    /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */
+    ownKeys(target) {
+      return getKeysFromAllScopes(target);
+    },
+
+    /**
+     * A trap for setting property values.
+     */
     set(target, prop, value) {
       scopes[0][prop] = value;
       return delete target[prop];
@@ -54,19 +88,46 @@ export function _attachContext(proxy, context, subProxy) {
     override: (scope) => _attachContext(proxy.override(scope), context, subProxy)
   };
   return new Proxy(cache, {
+    /**
+     * A trap for getting property values.
+     */
     get(target, prop, receiver) {
       return _cached(target, prop,
         () => _resolveWithContext(target, prop, receiver));
     },
 
+    /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */
+    getOwnPropertyDescriptor(target, prop) {
+      return Reflect.getOwnPropertyDescriptor(proxy, prop);
+    },
+
+    /**
+     * A trap for Object.getPrototypeOf.
+     */
+    getPrototypeOf() {
+      return Reflect.getPrototypeOf(proxy);
+    },
+
+    /**
+     * A trap for the in operator.
+     */
+    has(target, prop) {
+      return Reflect.has(proxy, prop);
+    },
+
+    /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */
     ownKeys() {
       return Reflect.ownKeys(proxy);
     },
 
-    getOwnPropertyDescriptor(target, prop) {
-      return Reflect.getOwnPropertyDescriptor(proxy._scopes[0], prop);
-    },
-
+    /**
+     * A trap for setting property values.
+     */
     set(target, prop, value) {
       proxy[prop] = value;
       return delete target[prop];
@@ -132,7 +193,7 @@ function _resolveScriptable(prop, value, target, receiver) {
   _stack.delete(prop);
   if (isObject(value)) {
     // When scriptable option returns an object, create a resolver on that.
-    value = createSubResolver([value].concat(_proxy._scopes), prop, value);
+    value = createSubResolver(_proxy._scopes, _proxy, prop, value);
   }
   return value;
 }
@@ -148,52 +209,69 @@ function _resolveArray(prop, value, target, isIndexable) {
     const scopes = _proxy._scopes.filter(s => s !== arr);
     value = [];
     for (const item of arr) {
-      const resolver = createSubResolver([item].concat(scopes), prop, item);
+      const resolver = createSubResolver(scopes, _proxy, prop, item);
       value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop]));
     }
   }
   return value;
 }
 
-function createSubResolver(parentScopes, prop, value) {
-  const set = new Set([value]);
-  const {keys, includeParents} = _resolveSubKeys(parentScopes, prop, value);
-  for (const key of keys) {
-    for (const item of parentScopes) {
-      const scope = resolveObjectKey(item, key);
-      if (scope) {
-        set.add(scope);
-      } else if (key !== prop && scope === false) {
-        // If any of the fallback scopes is explicitly false, return false
-        // For example, options.hover falls back to options.interaction, when
-        // options.interaction is false, options.hover will also resolve as false.
-        return false;
+function resolveFallback(fallback, prop, value) {
+  return isFunction(fallback) ? fallback(prop, value) : fallback;
+}
+
+const getScope = (key, parent) => key === true ? parent : resolveObjectKey(parent, key);
+
+function addScopes(set, parentScopes, key, parentFallback) {
+  for (const parent of parentScopes) {
+    const scope = getScope(key, parent);
+    if (scope) {
+      set.add(scope);
+      const fallback = scope._fallback;
+      if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
+        // When we reach the descriptor that defines a new _fallback, return that.
+        // The fallback will resume to that new scope.
+        return fallback;
       }
+    } else if (scope === false && key !== 'fill') {
+      // Fallback to `false` results to `false`, expect for `fill`.
+      // The special case (fill) should be handled through descriptors.
+      return null;
     }
   }
-  if (includeParents) {
-    parentScopes.forEach(set.add, set);
-  }
-  return _createResolver([...set]);
+  return false;
 }
 
-function _resolveSubKeys(parentScopes, prop, value) {
-  const fallback = _resolve('_fallback', parentScopes.map(scope => scope[prop] || scope));
-  const keys = [prop];
-  if (defined(fallback)) {
-    const resolved = isFunction(fallback) ? fallback(prop, value) : fallback;
-    keys.push(...(isArray(resolved) ? resolved : [resolved]));
+function createSubResolver(parentScopes, resolver, prop, value) {
+  const rootScopes = resolver._rootScopes;
+  const fallback = resolveFallback(resolver._fallback, prop, value);
+  const allScopes = [...parentScopes, ...rootScopes];
+  const set = new Set([value]);
+  let key = prop;
+  while (key !== false) {
+    key = addScopes(set, allScopes, key, fallback);
+    if (key === null) {
+      return false;
+    }
   }
-  return {keys: keys.filter(v => v), includeParents: fallback !== prop};
+  if (defined(fallback) && fallback !== prop) {
+    const fallbackScopes = allScopes;
+    key = fallback;
+    while (key !== false) {
+      key = addScopes(set, fallbackScopes, key, fallback);
+    }
+  }
+  return _createResolver([...set], [''], rootScopes, fallback);
 }
 
-function _resolveWithPrefixes(prop, prefixes, scopes) {
+
+function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
   let value;
   for (const prefix of prefixes) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (defined(value)) {
-      return (needsSubResolver(prop, value))
-        ? createSubResolver(scopes, prop, value)
+      return needsSubResolver(prop, value)
+        ? createSubResolver(scopes, proxy, prop, value)
         : value;
     }
   }

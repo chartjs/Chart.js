@@ -122,12 +122,14 @@ PolarAreaController.id = 'polarArea';
 PolarAreaController.defaults = {
   dataElementType: 'arc',
   animation: {
+    animateRotate: true,
+    animateScale: true
+  },
+  animations: {
     numbers: {
       type: 'number',
       properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
     },
-    animateRotate: true,
-    animateScale: true
   },
   aspectRatio: 1,
   indexAxis: 'r',

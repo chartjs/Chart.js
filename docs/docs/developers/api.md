@@ -28,7 +28,7 @@ myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's v
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
 
-A `mode` string can be provided to indicate what should be updated and what animation configuration should be used. Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also a supported mode for skipping animations for single update. Please see [animations](../configuration/animations.mdx) docs for more details.
+A `mode` string can be provided to indicate transition configuration should be used. Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also a supported mode for skipping animations for single update. Please see [animations](../configuration/animations.mdx) docs for more details.
 
 Example:
 
@@ -64,7 +64,7 @@ myLineChart.stop();
 
 Use this to manually resize the canvas element. This is run each time the canvas container is resized, but you can call this method manually if you change the size of the canvas nodes container element.
 
-You can call `.resize()` with no parameters to have the chart take the size of its container element, or you can pass explicit dimensions (e.g., for [printing](../general/responsive.md#printing-resizable-charts)).
+You can call `.resize()` with no parameters to have the chart take the size of its container element, or you can pass explicit dimensions (e.g., for [printing](../configuration/responsive.md#printing-resizable-charts)).
 
 ```javascript
 // Resizes & redraws to fill its container element

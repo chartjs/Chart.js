@@ -83,10 +83,14 @@ defaults.route('scale.ticks', 'color', '', 'color');
 defaults.route('scale.gridLines', 'color', '', 'borderColor');
 defaults.route('scale.scaleLabel', 'color', '', 'color');
 
-defaults.describe('scales', {
-  _fallback: 'scale',
+defaults.describe('scale', {
+  _fallback: false,
   _scriptable: (name) => !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
   _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash',
+});
+
+defaults.describe('scales', {
+  _fallback: 'scale',
 });
 
 /**

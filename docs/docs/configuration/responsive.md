@@ -13,6 +13,8 @@ Chart.js provides a [few options](#configuration-options) to enable responsivene
 
 ## Configuration Options
 
+Namespace: `options`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `responsive` | `boolean` | `true` | Resizes the chart canvas when its container does ([important note...](#important-note)).
@@ -55,9 +57,9 @@ You may also find that, due to complexities in when the browser lays out the doc
 
 ```javascript
 window.addEventListener('beforeprint', () => {
-	myChart.resize(600, 600);
+  myChart.resize(600, 600);
 });
 window.addEventListener('afterprint', () => {
-	myChart.resize();
+  myChart.resize();
 });
 ```

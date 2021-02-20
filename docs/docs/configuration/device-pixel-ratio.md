@@ -10,6 +10,8 @@ Setting `devicePixelRatio` to a value other than 1 will force the canvas size to
 
 ## Configuration Options
 
+Namespace: `options`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `devicePixelRatio` | `number` | `window.devicePixelRatio` | Override the window's default devicePixelRatio.

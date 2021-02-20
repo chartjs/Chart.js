@@ -13,6 +13,8 @@ The following additional configuration options are provided by the radial linear
 
 ### Linear Radial Axis specific options
 
+Namespace: `options.scales[scaleId]`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre
@@ -25,6 +27,8 @@ The following additional configuration options are provided by the radial linear
 ## Tick Configuration
 
 ### Linear Radial Axis specific options
+
+Namespace: `options.scales[scaleId].ticks`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
@@ -99,7 +103,8 @@ let options = {
 
 ## Angle Line Options
 
-The following options are used to configure angled lines that radiate from the center of the chart to the point labels. They can be found in the `angleLines` sub options.
+The following options are used to configure angled lines that radiate from the center of the chart to the point labels.
+Namespace: `options.scales[scaleId].angleLines`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
@@ -115,7 +120,8 @@ The scriptable context is described in [Options](../../general/options.md#scale)
 
 ## Point Label Options
 
-The following options are used to configure the point labels that are shown on the perimeter of the scale. They can be found in the `pointLabels` sub options.
+The following options are used to configure the point labels that are shown on the perimeter of the scale.
+Namespace: `options.scales[scaleId].pointLabels`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------

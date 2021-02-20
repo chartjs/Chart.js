@@ -520,7 +520,7 @@ BarController.defaults = {
   datasets: {
     categoryPercentage: 0.8,
     barPercentage: 0.9,
-    animation: {
+    animations: {
       numbers: {
         type: 'number',
         properties: ['x', 'y', 'base', 'width', 'height']

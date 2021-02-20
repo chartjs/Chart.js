@@ -6,7 +6,7 @@ The decimation plugin can be used with line charts to automatically decimate dat
 
 ## Configuration Options
 
-The decimation plugin configuration is passed into the `options.plugins.decimation` namespace. The global options for the plugin are defined in `Chart.defaults.plugins.decimation`.
+Namespace: `options.plugins.decimation`, the global options for the plugin are defined in `Chart.defaults.plugins.decimation`.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

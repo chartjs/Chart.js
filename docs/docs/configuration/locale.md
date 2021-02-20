@@ -14,11 +14,13 @@ A Unicode BCP 47 locale identifier consists of
   4. (optionally) one or more variant codes, and
   5. (optionally) one or more extension sequences,
 
-with all present components separated by hyphens. 
+with all present components separated by hyphens.
 
 By default the chart is using the default locale of the platform which is running on.
 
 ## Configuration Options
+
+Namespace: `options`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------

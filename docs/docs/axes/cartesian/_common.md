@@ -1,5 +1,7 @@
 ### Common options to all cartesian axes
 
+Namespace: `options.scales[scaleId]`
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `bounds` | `string` | `'ticks'` | Determines the scale bounds. [more...](./index.mdx#scale-bounds)
