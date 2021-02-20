@@ -58,10 +58,7 @@ function minMaxDecimation(data, availableWidth) {
       // happen with very uneven data
       if (i > 0 && lastIndex !== startIndex) {
         // Last point in the previous interval
-        decimated.push({
-          ...data[lastIndex],
-          x: avgX,
-        });
+        decimated.push(data[lastIndex]);
       }
 
       // Start of the new interval
