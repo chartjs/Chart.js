@@ -3,22 +3,24 @@ import {isNullOrUndef, resolve} from '../helpers';
 function lttbDecimation(data, availableWidth, options) {
   /**
    * Implementation of the Largest Triangle Three Buckets algorithm.
-   * 
+   *
    * This implementation is based on the original implementation by Sveinn Steinarsson
    * in https://github.com/sveinn-steinarsson/flot-downsample/blob/master/jquery.flot.downsample.js
-   * 
+   *
    * The original implementation is MIT licensed.
    */
   const samples = options.samples || availableWidth;
   const decimated = [];
 
   const bucketWidth = (data.length - 2) / (samples - 2);
-  let sampledIndex = 0, a = 0, maxAreaPoint, maxArea, area, nextA;
-  let i;
+  let sampledIndex = 0;
+  let a = 0;
+  let i, maxAreaPoint, maxArea, area, nextA;
   decimated[sampledIndex++] = data[a];
 
   for (i = 0; i < samples - 2; i++) {
-    let avgX = 0, avgY = 0;
+    let avgX = 0;
+    let avgY = 0;
     let j;
     const avgRangeStart = Math.floor((i + 1) * bucketWidth) + 1;
     const avgRangeEnd = Math.min(Math.floor((i + 2) * bucketWidth) + 1, data.length);
@@ -34,8 +36,8 @@ function lttbDecimation(data, availableWidth, options) {
 
     const rangeOffs = Math.floor(i * bucketWidth) + 1;
     const rangeTo = Math.floor((i + 1) * bucketWidth) + 1;
-    const { x: pointAx, y: pointAy } = data[a];
-    
+    const {x: pointAx, y: pointAy} = data[a];
+
     // Note that this is changed from the original algorithm which initializes these
     // values to 1. The reason for this change is that if the area is small, nextA
     // would never be set and thus a crash would occur in the next loop as `a` would become
