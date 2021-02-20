@@ -1,4 +1,4 @@
-import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import {isNullOrUndef} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {formatNumber} from '../core/core.intl';
@@ -200,7 +200,7 @@ export default class LinearScaleBase extends Scale {
       min: opts.min,
       max: opts.max,
       precision: tickOpts.precision,
-      stepSize: valueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
+      stepSize: tickOpts.stepSize
     };
     const ticks = generateTicks(numericGeneratorOptions, me);
 
