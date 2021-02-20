@@ -27,7 +27,7 @@ function minMaxDecimation(data, availableWidth) {
       // Push up to 4 points, 3 for the last interval and the first point for this interval
       const lastIndex = i - 1;
 
-      if (minIndex !== undefined && maxIndex !== undefined) {
+      if (!isNullOrUndef(minIndex) && !isNullOrUndef(maxIndex)) {
         // The interval is defined by 4 points: start, min, max, end.
         // The starting point is already considered at this point, so we need to determine which
         // of the other points to add. We need to sort these points to ensure the decimated data
