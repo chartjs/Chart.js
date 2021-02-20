@@ -1,6 +1,8 @@
 import {isNullOrUndef, resolve} from '../helpers';
 
 function minMaxDecimation(data, availableWidth) {
+  let avgX = 0;
+  let countX = 0;
   let i, point, x, y, prevX, minIndex, maxIndex, startIndex, minY, maxY;
   const decimated = [];
 
@@ -15,7 +17,7 @@ function minMaxDecimation(data, availableWidth) {
     const truncX = x | 0;
 
     if (truncX === prevX) {
-      // Determine `minY` / `maxY` while we stay within same x-position
+      // Determine `minY` / `maxY` and `avgX` while we stay within same x-position
       if (y < minY) {
         minY = y;
         minIndex = i;
@@ -23,6 +25,9 @@ function minMaxDecimation(data, availableWidth) {
         maxY = y;
         maxIndex = i;
       }
+      // For first point in group, countX is `0`, so average will be `x` / 1.
+      // Use point.x here because we're computing the average data `x` value
+      avgX = (countX * avgX + point.x) / ++countX;
     } else {
       // Push up to 4 points, 3 for the last interval and the first point for this interval
       const lastIndex = i - 1;
@@ -36,10 +41,16 @@ function minMaxDecimation(data, availableWidth) {
         const intermediateIndex2 = Math.max(minIndex, maxIndex);
 
         if (intermediateIndex1 !== startIndex && intermediateIndex1 !== lastIndex) {
-          decimated.push(data[intermediateIndex1]);
+          decimated.push({
+            ...data[intermediateIndex1],
+            x: avgX,
+          });
         }
         if (intermediateIndex2 !== startIndex && intermediateIndex2 !== lastIndex) {
-          decimated.push(data[intermediateIndex2]);
+          decimated.push({
+            ...data[intermediateIndex2],
+            x: avgX
+          });
         }
       }
 
@@ -47,12 +58,16 @@ function minMaxDecimation(data, availableWidth) {
       // happen with very uneven data
       if (i > 0 && lastIndex !== startIndex) {
         // Last point in the previous interval
-        decimated.push(data[lastIndex]);
+        decimated.push({
+          ...data[lastIndex],
+          x: avgX,
+        });
       }
 
       // Start of the new interval
       decimated.push(point);
       prevX = truncX;
+      countX = 0;
       minY = maxY = y;
       minIndex = maxIndex = startIndex = i;
     }
