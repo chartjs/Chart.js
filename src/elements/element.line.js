@@ -179,7 +179,7 @@ function fastPathSegment(ctx, line, segment, params) {
 function _getSegmentMethod(line) {
   const opts = line.options;
   const borderDash = opts.borderDash && opts.borderDash.length;
-  const useFastPath = !line._loop && !opts.tension && !opts.stepped && !borderDash;
+  const useFastPath = !line._decimated && !line._loop && !opts.tension && !opts.stepped && !borderDash;
   return useFastPath ? fastPathSegment : pathSegment;
 }
 
@@ -231,6 +231,7 @@ export default class LineElement extends Element {
     this._path = undefined;
     this._points = undefined;
     this._segments = undefined;
+    this._decimated = false;
     this._pointsUpdated = false;
 
     if (cfg) {
