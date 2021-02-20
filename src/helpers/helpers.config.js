@@ -1,18 +1,25 @@
-import {defined, isArray, isFunction, isObject, resolveObjectKey, valueOrDefault, _capitalize} from './helpers.core';
+import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core';
 
 /**
  * Creates a Proxy for resolving raw values for options.
  * @param {object[]} scopes - The option scopes to look for values, in resolution order
  * @param {string[]} [prefixes] - The prefixes for values, in resolution order.
+ * @param {object[]} [rootScopes] - The root option scopes
+ * @param {string|boolean} [fallback] - Parent scopes fallback
  * @returns Proxy
  * @private
  */
-export function _createResolver(scopes, prefixes = ['']) {
+export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback) {
+  if (!defined(fallback)) {
+    fallback = _resolve('_fallback', scopes);
+  }
   const cache = {
     [Symbol.toStringTag]: 'Object',
     _cacheable: true,
     _scopes: scopes,
-    override: (scope) => _createResolver([scope, ...scopes], prefixes),
+    _rootScopes: rootScopes,
+    _fallback: fallback,
+    override: (scope) => _createResolver([scope, ...scopes], prefixes, rootScopes, fallback),
   };
   return new Proxy(cache, {
     /**
@@ -20,7 +27,7 @@ export function _createResolver(scopes, prefixes = ['']) {
      */
     get(target, prop) {
       return _cached(target, prop,
-        () => _resolveWithPrefixes(prop, prefixes, scopes));
+        () => _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
 
     /**
@@ -186,7 +193,7 @@ function _resolveScriptable(prop, value, target, receiver) {
   _stack.delete(prop);
   if (isObject(value)) {
     // When scriptable option returns an object, create a resolver on that.
-    value = createSubResolver(_proxy._scopes, prop, value);
+    value = createSubResolver(_proxy._scopes, _proxy, prop, value);
   }
   return value;
 }
@@ -202,64 +209,69 @@ function _resolveArray(prop, value, target, isIndexable) {
     const scopes = _proxy._scopes.filter(s => s !== arr);
     value = [];
     for (const item of arr) {
-      const resolver = createSubResolver(scopes, prop, item);
+      const resolver = createSubResolver(scopes, _proxy, prop, item);
       value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop]));
     }
   }
   return value;
 }
 
-function createSubResolver(parentScopes, prop, value) {
-  const set = new Set([value]);
-  const lookupScopes = [value, ...parentScopes];
-  const {keys, includeParents} = _resolveSubKeys(lookupScopes, prop, value);
-  while (keys.length) {
-    const key = keys.shift();
-    for (const item of lookupScopes) {
-      const scope = resolveObjectKey(item, key);
-      if (scope) {
-        set.add(scope);
-        // fallback detour?
-        const fallback = scope._fallback;
-        if (defined(fallback)) {
-          keys.push(...resolveFallback(fallback, key, scope).filter(k => k !== key));
-        }
+function resolveFallback(fallback, prop, value) {
+  return isFunction(fallback) ? fallback(prop, value) : fallback;
+}
 
-      } else if (key !== prop && scope === false) {
-        // If any of the fallback scopes is explicitly false, return false
-        // For example, options.hover falls back to options.interaction, when
-        // options.interaction is false, options.hover will also resolve as false.
-        return false;
+const getScope = (key, parent) => key === true ? parent : resolveObjectKey(parent, key);
+
+function addScopes(set, parentScopes, key, parentFallback) {
+  for (const parent of parentScopes) {
+    const scope = getScope(key, parent);
+    if (scope) {
+      set.add(scope);
+      const fallback = scope._fallback;
+      if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
+        // When we reach the descriptor that defines a new _fallback, return that.
+        // The fallback will resume to that new scope.
+        return fallback;
       }
+    } else if (scope === false && key !== 'fill') {
+      // Fallback to `false` results to `false`, expect for `fill`.
+      // The special case (fill) should be handled through descriptors.
+      return null;
     }
   }
-  if (includeParents) {
-    parentScopes.forEach(set.add, set);
+  return false;
+}
+
+function createSubResolver(parentScopes, resolver, prop, value) {
+  const rootScopes = resolver._rootScopes;
+  const fallback = resolveFallback(resolver._fallback, prop, value);
+  const allScopes = [...parentScopes, ...rootScopes];
+  const set = new Set([value]);
+  let key = prop;
+  while (key !== false) {
+    key = addScopes(set, allScopes, key, fallback);
+    if (key === null) {
+      return false;
+    }
   }
-  return _createResolver([...set]);
-}
-
-function resolveFallback(fallback, prop, value) {
-  const resolved = isFunction(fallback) ? fallback(prop, value) : fallback;
-  return isArray(resolved) ? resolved : typeof resolved === 'string' ? [resolved] : [];
-}
-
-function _resolveSubKeys(parentScopes, prop, value) {
-  const fallback = valueOrDefault(_resolve('_fallback', parentScopes.map(scope => scope[prop] || scope)), true);
-  const keys = [prop];
-  if (defined(fallback)) {
-    keys.push(...resolveFallback(fallback, prop, value));
+  if (defined(fallback) && fallback !== prop) {
+    const fallbackScopes = allScopes;
+    key = fallback;
+    while (key !== false) {
+      key = addScopes(set, fallbackScopes, key, fallback);
+    }
   }
-  return {keys: keys.filter(v => v), includeParents: fallback !== false && fallback !== prop};
+  return _createResolver([...set], [''], rootScopes, fallback);
 }
 
-function _resolveWithPrefixes(prop, prefixes, scopes) {
+
+function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
   let value;
   for (const prefix of prefixes) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (defined(value)) {
-      return (needsSubResolver(prop, value))
-        ? createSubResolver(scopes, prop, value)
+      return needsSubResolver(prop, value)
+        ? createSubResolver(scopes, proxy, prop, value)
         : value;
     }
   }

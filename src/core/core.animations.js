@@ -1,20 +1,31 @@
 import animator from './core.animator';
 import Animation from './core.animation';
 import defaults from './core.defaults';
-import {isObject} from '../helpers/helpers.core';
+import {isArray, isObject} from '../helpers/helpers.core';
 
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
-const colors = ['borderColor', 'backgroundColor'];
-const animationOptions = ['delay', 'duration', 'easing', 'fn', 'from', 'loop', 'to', 'type'];
+const colors = ['color', 'borderColor', 'backgroundColor'];
 
 defaults.set('animation', {
-  // Plain properties can be overridden in each object
+  delay: undefined,
   duration: 1000,
   easing: 'easeOutQuart',
-  onProgress: undefined,
-  onComplete: undefined,
+  fn: undefined,
+  from: undefined,
+  loop: undefined,
+  to: undefined,
+  type: undefined,
+});
 
-  // Property sets
+const animationOptions = Object.keys(defaults.animation);
+
+defaults.describe('animation', {
+  _fallback: false,
+  _indexable: false,
+  _scriptable: (name) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
+});
+
+defaults.set('animations', {
   colors: {
     type: 'color',
     properties: colors
@@ -23,60 +34,63 @@ defaults.set('animation', {
     type: 'number',
     properties: numbers
   },
-
-  // Update modes. These are overrides / additions to the above animations.
-  active: {
-    duration: 400
-  },
-  resize: {
-    duration: 0
-  },
-  show: {
-    colors: {
-      type: 'color',
-      properties: colors,
-      from: 'transparent'
-    },
-    visible: {
-      type: 'boolean',
-      duration: 0 // show immediately
-    },
-  },
-  hide: {
-    colors: {
-      type: 'color',
-      properties: colors,
-      to: 'transparent'
-    },
-    visible: {
-      type: 'boolean',
-      fn: v => v < 1 ? 0 : 1 // for keeping the dataset visible all the way through the animation
-    },
-  }
 });
 
-defaults.describe('animation', {
-  _scriptable: (name) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
-  _indexable: false,
+defaults.describe('animations', {
   _fallback: 'animation',
 });
 
+defaults.set('transitions', {
+  active: {
+    animation: {
+      duration: 400
+    }
+  },
+  resize: {
+    animation: {
+      duration: 0
+    }
+  },
+  show: {
+    animations: {
+      colors: {
+        from: 'transparent'
+      },
+      visible: {
+        type: 'boolean',
+        duration: 0 // show immediately
+      },
+    }
+  },
+  hide: {
+    animations: {
+      colors: {
+        to: 'transparent'
+      },
+      visible: {
+        type: 'boolean',
+        fn: v => v < 1 ? 0 : 1 // for keeping the dataset visible all the way through the animation
+      },
+    }
+  }
+});
+
 export default class Animations {
-  constructor(chart, animations) {
+  constructor(chart, config) {
     this._chart = chart;
     this._properties = new Map();
-    this.configure(animations);
+    this.configure(config);
   }
 
-  configure(animations) {
-    if (!isObject(animations)) {
+  configure(config) {
+    if (!isObject(config)) {
       return;
     }
 
     const animatedProps = this._properties;
 
-    Object.getOwnPropertyNames(animations).forEach(key => {
-      const cfg = animations[key];
+    Object.getOwnPropertyNames(config).forEach(key => {
+      const cfg = config[key];
       if (!isObject(cfg)) {
         return;
       }
@@ -85,7 +99,7 @@ export default class Animations {
         resolved[option] = cfg[option];
       }
 
-      (cfg.properties || [key]).forEach((prop) => {
+      (isArray(cfg.properties) && cfg.properties || [key]).forEach((prop) => {
         if (prop === key || !animatedProps.has(prop)) {
           animatedProps.set(prop, resolved);
         }

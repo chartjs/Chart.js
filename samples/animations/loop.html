@@ -62,7 +62,7 @@
 				}]
 			},
 			options: {
-				animation: {
+				animations: {
 					radius: {
 						duration: 400,
 						easing: 'linear',
@@ -74,23 +74,18 @@
 						hoverRadius: 6
 					}
 				},
-				responsive: true,
+				interaction: {
+					mode: 'nearest',
+					axis: 'x',
+					intersect: false
+				},
 				plugins: {
 					title: {
 						display: true,
 						text: 'Chart.js Line Chart'
 					},
-					tooltip: {
-						mode: 'nearest',
-						axis: 'x',
-						intersect: false,
-					},
 				},
-				hover: {
-					mode: 'nearest',
-					axis: 'x',
-					intersect: false
-				},
+				responsive: true,
 				scales: {
 					x: {
 						display: true,

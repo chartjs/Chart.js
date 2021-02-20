@@ -385,9 +385,11 @@ export class Tooltip extends Element {
 
     const chart = me._chart;
     const options = me.options;
-    const opts = options.enabled && chart.options.animation && options.animation;
+    const opts = options.enabled && chart.options.animation && options.animations;
     const animations = new Animations(me._chart, opts);
-    me._cachedAnimations = Object.freeze(animations);
+    if (opts._cacheable) {
+      me._cachedAnimations = Object.freeze(animations);
+    }
 
     return animations;
   }
@@ -1108,6 +1110,8 @@ export default {
     animation: {
       duration: 400,
       easing: 'easeOutQuart',
+    },
+    animations: {
       numbers: {
         type: 'number',
         properties: ['x', 'y', 'width', 'height', 'caretX', 'caretY'],
@@ -1203,6 +1207,12 @@ export default {
     callbacks: {
       _scriptable: false,
       _indexable: false,
+    },
+    animation: {
+      _fallback: false
+    },
+    animations: {
+      _fallback: 'animation'
     }
   },
 

@@ -1335,12 +1335,9 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 	onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 }
 
-export interface CoreChartOptions extends ParsingOptions {
-	animation: Scriptable<AnimationOptions | false, ScriptableContext>;
+export interface CoreChartOptions extends ParsingOptions, AnimationOptions {
 
-	datasets: {
-		animation: Scriptable<AnimationOptions | false, ScriptableContext>;
-	};
+  datasets: AnimationOptions;
 
 	/**
 	 * The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.
@@ -1460,76 +1457,81 @@ export type EasingFunction =
 	| 'easeOutBounce'
 	| 'easeInOutBounce';
 
-export interface AnimationCommonSpec {
+export type AnimationSpec = {
 	/**
 	 * The number of milliseconds an animation takes.
 	 * @default 1000
 	 */
-	duration: number;
+	duration: Scriptable<number, ScriptableContext>;
 	/**
 	 * Easing function to use
 	 * @default 'easeOutQuart'
 	 */
-	easing: EasingFunction;
+	easing: Scriptable<EasingFunction, ScriptableContext>;
 
 	/**
 	 * Running animation count + FPS display in upper left corner of the chart.
 	 * @default false
 	 */
-	debug: boolean;
+	debug: Scriptable<boolean, ScriptableContext>;
 
 	/**
 	 * Delay before starting the animations.
 	 * @default 0
 	 */
-	delay: number;
+	delay: Scriptable<number, ScriptableContext>;
 
 	/**
 	 * 	If set to true, the animations loop endlessly.
 	 * @default false
 	 */
-	loop: boolean;
+	loop: Scriptable<boolean, ScriptableContext>;
 }
 
-export interface AnimationPropertySpec extends AnimationCommonSpec {
-	properties: string[];
+export type AnimationsSpec = {
+  [name: string]: AnimationSpec & {
+    properties: string[];
 
-	/**
-	 * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
-	 */
-	type: 'color' | 'number' | 'boolean';
+    /**
+     * Type of property, determines the interpolator used. Possible values: 'number', 'color' and 'boolean'. Only really needed for 'color', because typeof does not get that right.
+     */
+    type: 'color' | 'number' | 'boolean';
 
-	fn: <T>(from: T, to: T, factor: number) => T;
+    fn: <T>(from: T, to: T, factor: number) => T;
 
-	/**
-	 * Start value for the animation. Current value is used when undefined
-	 */
-	from: Color | number | boolean;
-	/**
-	 *
-	 */
-	to: Color | number | boolean;
+    /**
+     * Start value for the animation. Current value is used when undefined
+     */
+    from: Scriptable<Color | number | boolean, ScriptableContext>;
+    /**
+     *
+     */
+    to: Scriptable<Color | number | boolean, ScriptableContext>;
+  } | false
 }
 
-export type AnimationSpecContainer = AnimationCommonSpec & {
-	[prop: string]: AnimationPropertySpec | false;
-};
+export type TransitionSpec = {
+  animation: AnimationSpec;
+  animations: AnimationsSpec;
+}
 
-export type AnimationOptions = AnimationSpecContainer & {
-	/**
-	 * Callback called on each step of an animation.
-	 */
-	onProgress: (this: Chart, event: AnimationEvent) => void;
-	/**
-	 * Callback called when all animations are completed.
-	 */
-	onComplete: (this: Chart, event: AnimationEvent) => void;
+export type TransitionsSpec = {
+  [mode: string]: TransitionSpec
+}
 
-	active: AnimationSpecContainer | false;
-	hide: AnimationSpecContainer | false;
-	reset: AnimationSpecContainer | false;
-	resize: AnimationSpecContainer | false;
-	show: AnimationSpecContainer | false;
+export type AnimationOptions = {
+  animation: AnimationSpec & {
+    /**
+     * Callback called on each step of an animation.
+     */
+    onProgress: (this: Chart, event: AnimationEvent) => void;
+    /**
+     * Callback called when all animations are completed.
+     */
+    onComplete: (this: Chart, event: AnimationEvent) => void;
+  };
+  animations: AnimationsSpec;
+  transitions: TransitionsSpec;
 };
 
 export interface FontSpec {
@@ -2452,7 +2454,9 @@ export interface TooltipOptions extends CoreInteractionOptions {
 	 */
 	textDirection: string;
 
-	animation: Scriptable<AnimationSpecContainer, ScriptableContext>;
+  animation: AnimationSpec;
+
+  animations: AnimationsSpec;
 
 	callbacks: TooltipCallbacks;
 }
