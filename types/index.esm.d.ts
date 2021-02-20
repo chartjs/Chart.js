@@ -1920,13 +1920,23 @@ export class BasicPlatform extends BasePlatform {}
 export class DomPlatform extends BasePlatform {}
 
 export declare enum DecimationAlgorithm {
+	lttb = 'lttb',
 	minmax = 'min-max',
 }
-
-export interface DecimationOptions {
+interface BaseDecimationOptions {
 	enabled: boolean;
-	algorithm: DecimationAlgorithm;
 }
+
+interface LttbDecimationOptions extends BaseDecimationOptions {
+	algorithm: DecimationAlgorithm.lttb;
+	samples?: number;
+}
+
+interface MinMaxDecimationOptions extends BaseDecimationOptions {
+	algorithm: DecimationAlgorithm.minmax;
+}
+
+export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
 export const Filler: Plugin;
 export interface FillerOptions {

@@ -12,12 +12,18 @@ Namespace: `options.plugins.decimation`, the global options for the plugin are d
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `true` | Is decimation enabled?
 | `algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
+| `samples` | `number` | | If the `'lttb'` algorithm is used, this is the number of samples in the output dataset. Defaults to the canvas width to pick 1 sample per pixel.
 
 ## Decimation Algorithms
 
 Decimation algorithm to use for data. Options are:
 
+* `'lttb'`
 * `'min-max'`
+
+### Largest Triangle Three Bucket (LTTB) Decimation
+
+[LTTB](https://github.com/sveinn-steinarsson/flot-downsample) decimation reduces the number of data points significantly. This is most useful for showing trends in data using only a few data points.
 
 ### Min/Max Decimation
 
