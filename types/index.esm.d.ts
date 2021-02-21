@@ -2189,7 +2189,13 @@ export interface TitleOptions {
 	 */
 	color: Color;
 	font: FontSpec;
-	// fullSize: boolean;
+
+	/**
+	 * Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the
+	 * chart area
+	 * @default true
+	 */
+	fullSize: boolean;
 	/**
 	 * 	Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
 	 */
