@@ -13,12 +13,15 @@ PieController.id = 'pie';
 PieController.defaults = {
   datasets: {
     // The percentage of the chart that we cut out of the middle.
-    cutoutPercentage: 0,
+    cutout: 0,
 
     // The rotation of the chart, where the first data arc begins.
     rotation: 0,
 
     // The total circumference of the chart.
-    circumference: 360
+    circumference: 360,
+
+    // The outr radius of the chart
+    outerRadius: '100%'
   }
 };

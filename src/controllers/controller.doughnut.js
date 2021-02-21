@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {formatNumber} from '../core/core.intl';
-import {isArray, valueOrDefault} from '../helpers/helpers.core';
+import {isArray, numberOrPercentageOf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians, PI, TAU, HALF_PI} from '../helpers/helpers.math';
 
 /**
@@ -138,7 +138,8 @@ export default class DoughnutController extends DatasetController {
     const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
     const maxWidth = (chartArea.right - chartArea.left - spacing) / ratioX;
     const maxHeight = (chartArea.bottom - chartArea.top - spacing) / ratioY;
-    const outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
+    const maxRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
+    const outerRadius = numberOrPercentageOf(me.options.outerRadius, maxRadius);
     const innerRadius = Math.max(outerRadius * cutout, 0);
     const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
     me.offsetX = offsetX * outerRadius;
@@ -350,7 +351,10 @@ DoughnutController.defaults = {
     rotation: 0,
 
     // The total circumference of the chart.
-    circumference: 360
+    circumference: 360,
+
+    // The outr radius of the chart
+    outerRadius: '100%'
   },
 
   indexAxis: 'r',
