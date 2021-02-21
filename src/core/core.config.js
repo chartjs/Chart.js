@@ -34,7 +34,7 @@ function axisFromPosition(position) {
 }
 
 export function determineAxis(id, scaleOptions) {
-  if (id === 'x' || id === 'y' || id === 'r') {
+  if (id === 'x' || id === 'y') {
     return id;
   }
   return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
