@@ -8,7 +8,7 @@ import Ticks from './core.ticks';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef {{value:any, label?:string, major?:boolean, $context?:any}} Tick
+ * @typedef {{value:number | string, label?:string, major?:boolean, $context?:any}} Tick
  */
 
 defaults.set('scale', {
