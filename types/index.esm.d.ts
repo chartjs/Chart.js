@@ -2471,8 +2471,8 @@ export interface TooltipOptions<TParsedData> extends CoreInteractionOptions {
 	 */
 	textDirection: string;
 
-  	animation: AnimationSpec<TParsedData>;
-  	animations: AnimationsSpec<TParsedData>;
+	animation: AnimationSpec<TParsedData>;
+	animations: AnimationsSpec<TParsedData>;
 	callbacks: TooltipCallbacks<TParsedData>;
 }
 
