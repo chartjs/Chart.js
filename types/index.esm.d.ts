@@ -3251,7 +3251,7 @@ export type ChartDataset<
 export interface ChartData<
 	TType extends ChartType = ChartType,
 	TData extends unknown[] = DefaultDataPoint<TType>,
-	TLabel = unknown,
+	TLabel = unknown
 > {
 	labels: TLabel[];
 	datasets: ChartDataset<TType, TData>[];
