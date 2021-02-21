@@ -1524,6 +1524,11 @@ export default class Scale extends Element {
 	 */
   _computeLabelArea() {
     const me = this;
+
+    if (me.options.ticks.mirror) {
+      return;
+    }
+
     const chart = me.chart;
     const position = me.options.position;
 
@@ -1532,8 +1537,6 @@ export default class Scale extends Element {
     } if (position === 'top' || position === 'bottom') {
       return {top: me.top, left: 0, bottom: me.bottom, right: chart.width};
     }
-
-    return null;
   }
 
   /**
