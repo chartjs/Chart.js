@@ -1,0 +1,99 @@
+---
+title: Canvas background
+---
+
+In case you want a custom background for the whole canvas and want this to export with the chart when you make a base64 encoded string from it, you will have to use a custom plugin.
+In the 2 examples underneath here you can see how you can make a custom plugin that adds a static color, and an image as background for your canvas.
+
+import { useEffect, useRef } from 'react';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+	defaultValue='doughnut'
+	values={[
+		{label: 'Static color', value: 'static-color' },
+		{label: 'Image', value: 'image' },
+	]}
+>
+	<TabItem value="static-color">
+
+		```jsx live
+		function example() {
+		const canvas = useRef(null);
+		useEffect(() => {
+		const cfg = {
+		type: 'doughnut',
+		data: {
+		labels: [
+		'Red',
+		'Blue',
+		'Yellow'
+		],
+		datasets: [{
+		label: 'My First Dataset',
+		data: [300, 50, 100],
+		backgroundColor: [
+		'rgb(255, 99, 132)',
+		'rgb(54, 162, 235)',
+		'rgb(255, 205, 86)'
+		],
+		hoverOffset: 4
+	}],
+	},
+		plugins: [{
+		id: 'customBackgroundColor',
+		beforeDraw: (chart) => {
+		const ctx = chart.canvas.getContext('2d');
+		ctx.save();
+		ctx.globalCompositeOperation = 'destination-over';
+		ctx.fillStyle = 'lightGreen';
+		ctx.fillRect(0, 0, chart.canvas.width, chart.canvas.height);
+		ctx.restore();
+	}
+	}],
+	};
+		const chart = new Chart(canvas.current.getContext('2d'), cfg);
+		return () => chart.destroy();
+	});
+		return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
+	}
+		```
+
+	</TabItem>
+
+	<TabItem value="image">
+
+		```jsx live
+		function example() {
+		const canvas = useRef(null);
+		useEffect(() => {
+		const cfg = {
+		type: 'doughnut',
+		data: {
+		labels: [
+		'Red',
+		'Blue',
+		'Yellow'
+		],
+		datasets: [{
+		label: 'My First Dataset',
+		data: [300, 50, 100],
+		backgroundColor: [
+		'rgb(255, 99, 132)',
+		'rgb(54, 162, 235)',
+		'rgb(255, 205, 86)'
+		],
+		hoverOffset: 4
+	}]
+	}
+	};
+		const chart = new Chart(canvas.current.getContext('2d'), cfg);
+		return () => chart.destroy();
+	});
+		return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
+	}
+		```
+
+	</TabItem>
+</Tabs>
