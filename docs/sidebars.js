@@ -25,6 +25,7 @@ module.exports = {
       'configuration/device-pixel-ratio',
       'configuration/locale',
       {Interactions: ['configuration/interactions/index', 'configuration/interactions/events', 'configuration/interactions/modes']},
+      'configuration/canvas-background',
       'configuration/animations',
       'configuration/layout',
       'configuration/legend',

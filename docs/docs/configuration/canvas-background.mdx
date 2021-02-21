@@ -2,98 +2,112 @@
 title: Canvas background
 ---
 
-In case you want a custom background for the whole canvas and want this to export with the chart when you make a base64 encoded string from it, you will have to use a custom plugin.
-In the 2 examples underneath here you can see how you can make a custom plugin that adds a static color, and an image as background for your canvas.
+In some use cases you would want a background image or color over the whole canvas. There is no build in support for this, the way you can achieve this is by writing a custom plugin.
+
+In the two examples underneath here you can see how you can make the background a color or an image. This way of giving the chart a background is only necessary if you want to export the chart with that specific background.
+For normal use you can set the background more easily with CSS.
 
 import { useEffect, useRef } from 'react';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs
-	defaultValue='doughnut'
-	values={[
-		{label: 'Static color', value: 'static-color' },
-		{label: 'Image', value: 'image' },
-	]}
+    defaultValue='color'
+    values={[
+        {label: 'Color', value: 'color' },
+        {label: 'Image', value: 'image' },
+    ]}
 >
-	<TabItem value="static-color">
+<TabItem value="color">
 
-		```jsx live
-		function example() {
-		const canvas = useRef(null);
-		useEffect(() => {
-		const cfg = {
-		type: 'doughnut',
-		data: {
-		labels: [
-		'Red',
-		'Blue',
-		'Yellow'
-		],
-		datasets: [{
-		label: 'My First Dataset',
-		data: [300, 50, 100],
-		backgroundColor: [
-		'rgb(255, 99, 132)',
-		'rgb(54, 162, 235)',
-		'rgb(255, 205, 86)'
-		],
-		hoverOffset: 4
-	}],
-	},
-		plugins: [{
-		id: 'customBackgroundColor',
-		beforeDraw: (chart) => {
-		const ctx = chart.canvas.getContext('2d');
-		ctx.save();
-		ctx.globalCompositeOperation = 'destination-over';
-		ctx.fillStyle = 'lightGreen';
-		ctx.fillRect(0, 0, chart.canvas.width, chart.canvas.height);
-		ctx.restore();
-	}
-	}],
-	};
-		const chart = new Chart(canvas.current.getContext('2d'), cfg);
-		return () => chart.destroy();
-	});
-		return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
-	}
-		```
+```jsx live
+function example() {
+  const canvas = useRef(null);
+  useEffect(() => {
+    const cfg = {
+      type: 'doughnut',
+      data: {
+        labels: [
+          'Red',
+          'Blue',
+          'Yellow'
+        ],
+        datasets: [{
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+          hoverOffset: 4
+        }]
+      },
+	  plugins: [{
+	    id: 'custom_canvas_background_color',
+	    beforeDraw: (chart) => {
+          const ctx = chart.canvas.getContext('2d');
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.fillStyle = 'lightGreen';
+          ctx.fillRect(0, 0, chart.canvas.width, chart.canvas.height);
+          ctx.restore();
+	    }
+      }]
+    };
+    const chart = new Chart(canvas.current.getContext('2d'), cfg);
+    return () => chart.destroy();
+  });
+  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
+}
+```
 
-	</TabItem>
+</TabItem>
 
-	<TabItem value="image">
+<TabItem value="image">
 
-		```jsx live
-		function example() {
-		const canvas = useRef(null);
-		useEffect(() => {
-		const cfg = {
-		type: 'doughnut',
-		data: {
-		labels: [
-		'Red',
-		'Blue',
-		'Yellow'
-		],
-		datasets: [{
-		label: 'My First Dataset',
-		data: [300, 50, 100],
-		backgroundColor: [
-		'rgb(255, 99, 132)',
-		'rgb(54, 162, 235)',
-		'rgb(255, 205, 86)'
-		],
-		hoverOffset: 4
-	}]
-	}
-	};
-		const chart = new Chart(canvas.current.getContext('2d'), cfg);
-		return () => chart.destroy();
-	});
-		return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
-	}
-		```
+```jsx live
+function example() {
+  const canvas = useRef(null);
+  const image = new Image();
+  image.src = "https://www.chartjs.org/img/chartjs-logo.svg";
 
-	</TabItem>
+  useEffect(() => {
+    const cfg = {
+      type: 'doughnut',
+      data: {
+        labels: [
+          'Red',
+          'Blue',
+          'Yellow'
+        ],
+        datasets: [{
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+          hoverOffset: 4
+        }]
+      },
+	  plugins: [{
+	    id: 'custom_canvas_background_image',
+	    beforeDraw: (chart) => {
+	      const ctx = chart.canvas.getContext('2d');
+          ctx.save();
+          ctx.drawImage(image, chart.canvas.width/2-image.width/2,chart.canvas.height/2-image.height/2);
+          ctx.restore();
+	    }
+      }]
+    };
+    const chart = new Chart(canvas.current.getContext('2d'), cfg);
+    return () => chart.destroy();
+  });
+  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
+}
+```
+
+</TabItem>
 </Tabs>
