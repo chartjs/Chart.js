@@ -279,22 +279,28 @@ export interface DoughnutAnimationOptions {
 
 export interface DoughnutControllerChartOptions {
 	/**
+	 * Sweep to allow arcs to cover.
+	 * @default 360
+	 */
+	circumference: number;
+
+  /**
 	 * The percentage of the chart that is cut out of the middle. (50 - for doughnut, 0 - for pie)
 	 * @default 50
 	 */
-	cutoutPercentage: number;
+  cutoutPercentage: number;
+
+  /**
+   * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
+   * @default '100%'
+   */
+  outerRadius: Scriptable<number | string, ScriptableContext<number>>;
 
 	/**
 	 * Starting angle to draw arcs from.
 	 * @default 0
 	 */
 	rotation: number;
-
-	/**
-	 * Sweep to allow arcs to cover.
-	 * @default 360
-	 */
-	circumference: number;
 
 	animation: DoughnutAnimationOptions;
 }
