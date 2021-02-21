@@ -1489,7 +1489,7 @@ export type AnimationSpec = {
 }
 
 export type AnimationsSpec = {
-  [name: string]: AnimationSpec & {
+  [name: string]: false | AnimationSpec & {
     properties: string[];
 
     /**
@@ -1507,7 +1507,7 @@ export type AnimationsSpec = {
      *
      */
     to: Scriptable<Color | number | boolean, ScriptableContext>;
-  } | false
+  }
 }
 
 export type TransitionSpec = {
@@ -1520,7 +1520,7 @@ export type TransitionsSpec = {
 }
 
 export type AnimationOptions = {
-  animation: AnimationSpec & {
+  animation: false | AnimationSpec & {
     /**
      * Callback called on each step of an animation.
      */

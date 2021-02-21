@@ -40,7 +40,7 @@
     "lint-js": "eslint samples/**/*.html samples/**/*.js src/**/*.js test/**/*.js",
     "lint-md": "markdownlint-cli2 \"**/*.md\" \"#**/node_modules\"",
     "lint-tsc": "tsc",
-    "lint-types": "eslint types/**/*.d.ts",
+    "lint-types": "eslint types/**/*.d.ts && tsc -p types/tests/",
     "lint": "concurrently \"npm:lint-*\"",
     "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
     "typedoc": "npx typedoc"
