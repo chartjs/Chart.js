@@ -411,6 +411,7 @@ The following properties were renamed during v3 development:
 * `LayoutItem.fullWidth` was renamed to `LayoutItem.fullSize`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
+* `dataPoint` was renamed to `parsed`
 
 #### Renamed private APIs
 
