@@ -6,7 +6,7 @@
     "noEmit": true
   },
   "include": [
-    "*.ts",
+    "./**/*.ts",
     "../index.esm.d.ts"
   ]
 }

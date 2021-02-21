@@ -38,14 +38,14 @@ export {
   ScriptableAndArrayOptions
 } from './scriptable';
 
-export interface ScriptableContext {
+export interface ScriptableContext<TParsedData> {
+	active: boolean;
 	chart: Chart;
-	parsed: unknown[];
-	raw: unknown[];
 	dataIndex: number;
 	dataset: ChartDataset;
 	datasetIndex: number;
-	active: boolean;
+	parsed: TParsedData;
+	raw: unknown;
 }
 
 export interface ParsingOptions {
@@ -96,8 +96,8 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 
 export interface BarControllerDatasetOptions
 	extends ControllerDatasetOptions,
-		ScriptableAndArrayOptions<BarOptions, ScriptableContext>,
-		ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {
+		ScriptableAndArrayOptions<BarOptions, ScriptableContext<BarParsedData>>,
+		ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<BarParsedData>> {
 	/**
 	 * The ID of the x axis to plot this dataset on.
 	 */
@@ -155,8 +155,8 @@ export const BarController: ChartComponent & {
 
 export interface BubbleControllerDatasetOptions
 	extends ControllerDatasetOptions,
-		ScriptableAndArrayOptions<PointOptions, ScriptableContext>,
-		ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext> {}
+		ScriptableAndArrayOptions<PointOptions, ScriptableContext<BubbleParsedData>>,
+		ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<BubbleParsedData>> {}
 
 export interface BubbleDataPoint {
 	/**
@@ -183,10 +183,10 @@ export const BubbleController: ChartComponent & {
 
 export interface LineControllerDatasetOptions
 	extends ControllerDatasetOptions,
-		ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext>,
-		ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext>,
-		ScriptableOptions<LineOptions, ScriptableContext>,
-		ScriptableOptions<LineHoverOptions, ScriptableContext> {
+		ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<CartesianParsedData>>,
+		ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<CartesianParsedData>>,
+		ScriptableOptions<LineOptions, ScriptableContext<CartesianParsedData>>,
+		ScriptableOptions<LineHoverOptions, ScriptableContext<CartesianParsedData>> {
 	/**
 	 * The ID of the x axis to plot this dataset on.
 	 */
@@ -241,8 +241,8 @@ export const ScatterController: ChartComponent & {
 
 export interface DoughnutControllerDatasetOptions
 	extends ControllerDatasetOptions,
-		ScriptableAndArrayOptions<ArcOptions, ScriptableContext>,
-		ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext> {
+		ScriptableAndArrayOptions<ArcOptions, ScriptableContext<number>>,
+		ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<number>> {
 
 	/**
 	 * Sweep to allow arcs to cover.
@@ -359,10 +359,10 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
 	extends ControllerDatasetOptions,
-		ScriptableOptions<PointPrefixedOptions, ScriptableContext>,
-		ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext>,
-		ScriptableOptions<LineOptions, ScriptableContext>,
-		ScriptableOptions<LineHoverOptions, ScriptableContext> {
+		ScriptableOptions<PointPrefixedOptions, ScriptableContext<RadialParsedData>>,
+		ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext<RadialParsedData>>,
+		ScriptableOptions<LineOptions, ScriptableContext<RadialParsedData>>,
+		ScriptableOptions<LineHoverOptions, ScriptableContext<RadialParsedData>> {
 	/**
 	 * The ID of the x axis to plot this dataset on.
 	 */
@@ -525,7 +525,11 @@ export declare enum UpdateModeEnum {
 
 export type UpdateMode = keyof typeof UpdateModeEnum;
 
-export class DatasetController<TElement extends Element = Element, TDatasetElement extends Element = Element> {
+export class DatasetController<
+	TElement extends Element = Element,
+	TDatasetElement extends Element = Element,
+	TParsedData = unknown,
+> {
   constructor(chart: Chart, datasetIndex: number);
 
 	readonly chart: Chart;
@@ -582,7 +586,7 @@ export class DatasetController<TElement extends Element = Element, TDatasetEleme
 	protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
 	protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
 	protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
-	protected getParsed(index: number): AnyObject;
+	protected getParsed(index: number): TParsedData;
 	protected applyStack(scale: Scale, parsed: unknown[]): number;
 	protected updateRangeFromParsed(
 		range: { min: number; max: number },
@@ -600,12 +604,14 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 	};
 }
 
-export interface Defaults extends CoreChartOptions, ElementChartOptions, PluginChartOptions {
+// TParsedData defaults to unknown because global defaults are for any chart
+// type, thus the data type can be many different possible values.
+export interface Defaults extends CoreChartOptions<unknown>, ElementChartOptions, PluginChartOptions<unknown> {
 	controllers: {
 		[key in ChartType]: DeepPartial<
-			CoreChartOptions &
+			CoreChartOptions<ChartTypeRegistry[key]['parsedDataType']> &
 			ElementChartOptions &
-			PluginChartOptions &
+			PluginChartOptions<ChartTypeRegistry[key]['parsedDataType']> &
 			DatasetChartOptions<key>[key] &
 			ScaleChartOptions<key> &
 			ChartTypeRegistry[key]['chartOptions']
@@ -735,7 +741,8 @@ export const layouts: {
 	update(chart: Chart, width: number, height: number): void;
 };
 
-export interface Plugin<O = AnyObject> extends ExtendedPlugin {
+// TParsedData defaults to unknown here since plugins can work for any chart type
+export interface Plugin<TParsedData = unknown, O = AnyObject> extends ExtendedPlugin<TParsedData> {
 	id: string;
 
 	/**
@@ -1340,9 +1347,9 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 	onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 }
 
-export interface CoreChartOptions extends ParsingOptions, AnimationOptions {
+export interface CoreChartOptions<TParsedData> extends ParsingOptions, AnimationOptions<TParsedData> {
 
-  datasets: AnimationOptions;
+  datasets: AnimationOptions<TParsedData>;
 
 	/**
 	 * The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.
@@ -1425,7 +1432,7 @@ export interface CoreChartOptions extends ParsingOptions, AnimationOptions {
 	onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
 	layout: {
-		padding: Scriptable<number | ChartArea, ScriptableContext>;
+		padding: Scriptable<number | ChartArea, ScriptableContext<TParsedData>>;
 	};
 }
 
@@ -1462,39 +1469,39 @@ export type EasingFunction =
 	| 'easeOutBounce'
 	| 'easeInOutBounce';
 
-export type AnimationSpec = {
+export type AnimationSpec<TParsedData> = {
 	/**
 	 * The number of milliseconds an animation takes.
 	 * @default 1000
 	 */
-	duration: Scriptable<number, ScriptableContext>;
+	duration: Scriptable<number, ScriptableContext<TParsedData>>;
 	/**
 	 * Easing function to use
 	 * @default 'easeOutQuart'
 	 */
-	easing: Scriptable<EasingFunction, ScriptableContext>;
+	easing: Scriptable<EasingFunction, ScriptableContext<TParsedData>>;
 
 	/**
 	 * Running animation count + FPS display in upper left corner of the chart.
 	 * @default false
 	 */
-	debug: Scriptable<boolean, ScriptableContext>;
+	debug: Scriptable<boolean, ScriptableContext<TParsedData>>;
 
 	/**
 	 * Delay before starting the animations.
 	 * @default 0
 	 */
-	delay: Scriptable<number, ScriptableContext>;
+	delay: Scriptable<number, ScriptableContext<TParsedData>>;
 
 	/**
 	 * 	If set to true, the animations loop endlessly.
 	 * @default false
 	 */
-	loop: Scriptable<boolean, ScriptableContext>;
+	loop: Scriptable<boolean, ScriptableContext<TParsedData>>;
 }
 
-export type AnimationsSpec = {
-  [name: string]: false | AnimationSpec & {
+export type AnimationsSpec<TParsedData> = {
+  [name: string]: false | AnimationSpec<TParsedData> & {
     properties: string[];
 
     /**
@@ -1507,25 +1514,25 @@ export type AnimationsSpec = {
     /**
      * Start value for the animation. Current value is used when undefined
      */
-    from: Scriptable<Color | number | boolean, ScriptableContext>;
+    from: Scriptable<Color | number | boolean, ScriptableContext<TParsedData>>;
     /**
      *
      */
-    to: Scriptable<Color | number | boolean, ScriptableContext>;
+    to: Scriptable<Color | number | boolean, ScriptableContext<TParsedData>>;
   }
 }
 
-export type TransitionSpec = {
-  animation: AnimationSpec;
-  animations: AnimationsSpec;
+export type TransitionSpec<TParsedData> = {
+  animation: AnimationSpec<TParsedData>;
+  animations: AnimationsSpec<TParsedData>;
 }
 
-export type TransitionsSpec = {
-  [mode: string]: TransitionSpec
+export type TransitionsSpec<TParsedData> = {
+  [mode: string]: TransitionSpec<TParsedData>
 }
 
-export type AnimationOptions = {
-  animation: false | AnimationSpec & {
+export type AnimationOptions<TParsedData> = {
+  animation: false | AnimationSpec<TParsedData> & {
     /**
      * Callback called on each step of an animation.
      */
@@ -1535,8 +1542,8 @@ export type AnimationOptions = {
      */
     onComplete: (this: Chart, event: AnimationEvent) => void;
   };
-  animations: AnimationsSpec;
-  transitions: TransitionsSpec;
+  animations: AnimationsSpec<TParsedData>;
+  transitions: TransitionsSpec<TParsedData>;
 };
 
 export interface FontSpec {
@@ -2195,9 +2202,9 @@ export interface TitleOptions {
 
 export type TooltipAlignment = 'start' | 'center' | 'end';
 
-export interface TooltipModel {
+export interface TooltipModel<TParsedData> {
 	// The items that we are rendering in the tooltip. See Tooltip Item Interface section
-	dataPoints: TooltipItem[];
+	dataPoints: TooltipItem<TParsedData>[];
 
 	// Positioning
 	xAlign: TooltipAlignment;
@@ -2241,7 +2248,7 @@ export interface TooltipModel {
 	opacity: number;
 
 	// tooltip options
-	options: TooltipOptions;
+	options: TooltipOptions<TParsedData>;
 }
 
 export const Tooltip: Plugin & {
@@ -2253,28 +2260,28 @@ export const Tooltip: Plugin & {
 	setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 };
 
-export interface TooltipCallbacks {
-	beforeTitle(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
-	title(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
-	afterTitle(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+export interface TooltipCallbacks<TParsedData> {
+	beforeTitle(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
+	title(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
+	afterTitle(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 
-	beforeBody(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
-	afterBody(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+	beforeBody(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
+	afterBody(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 
-	beforeLabel(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
-	label(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
-	afterLabel(this: TooltipModel, tooltipItem: TooltipItem): string | string[];
+	beforeLabel(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): string | string[];
+	label(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): string | string[];
+	afterLabel(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): string | string[];
 
-	labelColor(this: TooltipModel, tooltipItem: TooltipItem): { borderColor: Color; backgroundColor: Color };
-	labelTextColor(this: TooltipModel, tooltipItem: TooltipItem): Color;
-	labelPointStyle(this: TooltipModel, tooltipItem: TooltipItem): { pointStyle: PointStyle; rotation: number };
+	labelColor(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): { borderColor: Color; backgroundColor: Color };
+	labelTextColor(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): Color;
+	labelPointStyle(this: TooltipModel<TParsedData>, tooltipItem: TooltipItem<TParsedData>): { pointStyle: PointStyle; rotation: number };
 
-	beforeFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
-	footer(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
-	afterFooter(this: TooltipModel, tooltipItems: TooltipItem[]): string | string[];
+	beforeFooter(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
+	footer(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
+	afterFooter(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 }
 
-export interface ExtendedPlugin<O = {}> {
+export interface ExtendedPlugin<TParsedData, O = {}> {
 	/**
 	 * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
 	 * the tooltip drawing is cancelled until another `render` is triggered.
@@ -2284,7 +2291,7 @@ export interface ExtendedPlugin<O = {}> {
 	 * @param {object} options - The plugin options.
 	 * @returns {boolean} `false` to cancel the chart tooltip drawing.
 	 */
-	beforeTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): boolean | void;
+	beforeTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel<TParsedData> }, options: O): boolean | void;
 	/**
 	 * @desc Called after drawing the `tooltip`. Note that this hook will not
 	 * be called if the tooltip drawing has been previously cancelled.
@@ -2293,9 +2300,9 @@ export interface ExtendedPlugin<O = {}> {
 	 * @param {Tooltip} args.tooltip - The tooltip.
 	 * @param {object} options - The plugin options.
 	 */
-	afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel }, options: O): void;
+	afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel<TParsedData> }, options: O): void;
 }
-export interface TooltipOptions extends CoreInteractionOptions {
+export interface TooltipOptions<TParsedData> extends CoreInteractionOptions {
 	/**
 	 * Are on-canvas tooltips enabled?
 	 * @default true
@@ -2304,7 +2311,7 @@ export interface TooltipOptions extends CoreInteractionOptions {
 	/**
 	 * 	See custom tooltip section.
 	 */
-	custom(this: TooltipModel, args: { chart: Chart; tooltip: TooltipModel }): void;
+	custom(this: TooltipModel<TParsedData>, args: { chart: Chart; tooltip: TooltipModel<TParsedData> }): void;
 	/**
 	 * The mode for positioning the tooltip
 	 */
@@ -2319,9 +2326,9 @@ export interface TooltipOptions extends CoreInteractionOptions {
 	/**
 	 * Sort tooltip items.
 	 */
-	itemSort: (a: TooltipItem, b: TooltipItem) => number;
+	itemSort: (a: TooltipItem<TParsedData>, b: TooltipItem<TParsedData>) => number;
 
-	filter: (e: TooltipItem) => boolean;
+	filter: (e: TooltipItem<TParsedData>) => boolean;
 
 	/**
 	 * Background color of the tooltip.
@@ -2469,14 +2476,12 @@ export interface TooltipOptions extends CoreInteractionOptions {
 	 */
 	textDirection: string;
 
-  animation: AnimationSpec;
-
-  animations: AnimationsSpec;
-
-	callbacks: TooltipCallbacks;
+	animation: AnimationSpec<TParsedData>;
+	animations: AnimationsSpec<TParsedData>;
+	callbacks: TooltipCallbacks<TParsedData>;
 }
 
-export interface TooltipItem {
+export interface TooltipItem<TParsedData> {
 	/**
 	 * The chart the tooltip is being shown on
 	 */
@@ -2490,7 +2495,7 @@ export interface TooltipItem {
 	/**
 	 * Parsed data values for the given `dataIndex` and `datasetIndex`
 	 */
-	parsed: unknown;
+	parsed: TParsedData;
 
 	/**
 	 * Raw data values for the given `dataIndex` and `datasetIndex`
@@ -2523,15 +2528,15 @@ export interface TooltipItem {
 	element: Element;
 }
 
-export interface PluginOptionsByType {
+export interface PluginOptionsByType<TParsedData> {
 	decimation: DecimationOptions;
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;
-	tooltip: TooltipOptions;
+	tooltip: TooltipOptions<TParsedData>;
 }
-export interface PluginChartOptions {
-	plugins: Partial<PluginOptionsByType>;
+export interface PluginChartOptions<TParsedData> {
+	plugins: Partial<PluginOptionsByType<TParsedData>>;
 }
 
 export interface GridLineOptions {
@@ -3118,53 +3123,87 @@ export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialSca
 
 export type ScaleType = keyof ScaleTypeRegistry;
 
+interface CartesianParsedData {
+	x: number;
+	y: number;
+}
+
+interface BarParsedData extends CartesianParsedData {
+	// Only specified if floating bars are show
+	_custom?: {
+		barStart: number;
+		barEnd: number;
+		start: number;
+		end: number;
+		min: number;
+		max: number;
+	}
+}
+
+interface BubbleParsedData extends CartesianParsedData {
+	// The bubble radius value
+	_custom: number;
+}
+
+interface RadialParsedData {
+	r: number;
+}
+
 export interface ChartTypeRegistry {
 	bar: {
 		chartOptions: BarControllerChartOptions;
 		datasetOptions: BarControllerDatasetOptions;
 		defaultDataPoint: number;
+		parsedDataType: BarParsedData,
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	line: {
 		chartOptions: LineControllerChartOptions;
 		datasetOptions: LineControllerDatasetOptions & FillerControllerDatasetOptions;
 		defaultDataPoint: ScatterDataPoint;
+		parsedDataType: CartesianParsedData;
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	scatter: {
 		chartOptions: ScatterControllerChartOptions;
 		datasetOptions: ScatterControllerDatasetOptions;
 		defaultDataPoint: ScatterDataPoint;
+		parsedDataType: CartesianParsedData;
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	bubble: {
 		chartOptions: EmptyObject;
 		datasetOptions: BubbleControllerDatasetOptions;
 		defaultDataPoint: BubbleDataPoint;
+		parsedDataType: BubbleParsedData;
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	pie: {
 		chartOptions: PieControllerChartOptions;
 		datasetOptions: PieControllerDatasetOptions;
 		defaultDataPoint: PieDataPoint;
+		parsedDataType: number;
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	doughnut: {
 		chartOptions: DoughnutControllerChartOptions;
 		datasetOptions: DoughnutControllerDatasetOptions;
 		defaultDataPoint: DoughnutDataPoint;
+		parsedDataType: number;
 		scales: keyof CartesianScaleTypeRegistry;
 	};
 	polarArea: {
 		chartOptions: PolarAreaControllerChartOptions;
 		datasetOptions: PolarAreaControllerDatasetOptions;
 		defaultDataPoint: number;
+		parsedDataType: RadialParsedData;
 		scales: keyof RadialScaleTypeRegistry;
 	};
 	radar: {
 		chartOptions: RadarControllerChartOptions;
 		datasetOptions: RadarControllerDatasetOptions;
 		defaultDataPoint: number;
+		parsedDataType: RadialParsedData;
 		scales: keyof RadialScaleTypeRegistry;
 	};
 }
@@ -3187,10 +3226,10 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 	};
 };
 
-export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
-	CoreChartOptions &
+export type ChartOptions<TType extends ChartType = ChartType, TParsedData = unknown> = DeepPartial<
+	CoreChartOptions<TParsedData> &
 	ElementChartOptions &
-	PluginChartOptions &
+	PluginChartOptions<TParsedData> &
 	DatasetChartOptions<TType> &
 	ScaleChartOptions<TType> &
 	ChartTypeRegistry[TType]['chartOptions']
@@ -3199,6 +3238,8 @@ export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
 export type DefaultDataPoint<TType extends ChartType> = ChartType extends TType ? unknown[] : DistributiveArray<
 	ChartTypeRegistry[TType]['defaultDataPoint']
 >;
+
+export type ParsedDataType<TType extends ChartType> = ChartType extends TType ? unknown : ChartTypeRegistry[TType]['parsedDataType'];
 
 export interface ChartDatasetProperties<TType extends ChartType, TData extends unknown[]> {
 	type?: TType;
@@ -3224,10 +3265,11 @@ export interface ChartData<
 export interface ChartConfiguration<
 	TType extends ChartType = ChartType,
 	TData extends unknown[] = DefaultDataPoint<TType>,
-	TLabel = unknown
+	TLabel = unknown,
+	TParsedData extends unknown = ParsedDataType<TType>,
 > {
 	type: TType;
 	data: ChartData<TType, TData, TLabel>;
-	options?: ChartOptions<TType>;
+	options?: ChartOptions<TType, TParsedData>;
 	plugins?: Plugin[];
 }
