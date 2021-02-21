@@ -71,6 +71,7 @@ In this mode, property name is used for `index` scale and value for `value` scal
 | `order` | `number` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
 | `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 | `parsing` | `boolean`\|`object` | How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
+| `hidden`  | `boolean` | Configure the visibility of the dataset. Using `hidden: true` will hide the dataset from being rendered in the Chart.
 
 ### parsing
 
