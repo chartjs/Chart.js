@@ -343,13 +343,16 @@ export default {
     // |----------------------------------------------------|
     //
 
+    const visibleVerticalBoxCount = verticalBoxes.reduce((total, wrap) =>
+      wrap.box.options && wrap.box.options.display === false ? total : total + 1, 0);
+
     const params = Object.freeze({
       outerWidth: width,
       outerHeight: height,
       padding,
       availableWidth,
       availableHeight,
-      vBoxMaxWidth: availableWidth / 2 / verticalBoxes.length,
+      vBoxMaxWidth: availableWidth / 2 / visibleVerticalBoxCount,
       hBoxMaxHeight: availableHeight / 2
     });
     const chartArea = Object.assign({
