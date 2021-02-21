@@ -87,6 +87,11 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 	 * The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
 	 */
 	stack: string;
+	/**
+     * Configures the visibility state of the dataset. Set it to true, to hide the dataset from the chart.
+	 * @default false
+	 */
+	hidden: boolean;
 }
 
 export interface BarControllerDatasetOptions
