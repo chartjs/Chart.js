@@ -443,13 +443,14 @@ export interface ActiveElement extends ActiveDataPoint {
 export declare class Chart<
 	TType extends ChartType = ChartType,
 	TData extends unknown[] = DefaultDataPoint<TType>,
-	TLabel = unknown
+	TLabel = unknown,
+	TParsedData extends unknown = ParsedDataType<TType>
 	> {
 	readonly platform: BasePlatform;
 	readonly id: string;
 	readonly canvas: HTMLCanvasElement;
 	readonly ctx: CanvasRenderingContext2D;
-	readonly config: ChartConfiguration<TType, TData, TLabel>
+	readonly config: ChartConfiguration<TType, TData, TLabel, TParsedData>
 	readonly width: number;
 	readonly height: number;
 	readonly aspectRatio: number;
@@ -462,7 +463,7 @@ export declare class Chart<
 	data: ChartData<TType, TData, TLabel>;
 	options: ChartOptions<TType>;
 
-	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
+	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel, TParsedData>);
 
 	clear(): this;
 	stop(): this;
