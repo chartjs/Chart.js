@@ -38,7 +38,7 @@ export {
   ScriptableAndArrayOptions
 } from './scriptable';
 
-export interface ScriptableContext<TParsedData> {
+export interface ScriptableContext<TParsedData extends unknown> {
 	active: boolean;
 	chart: Chart;
 	dataIndex: number;
@@ -535,7 +535,7 @@ export type UpdateMode = keyof typeof UpdateModeEnum;
 export class DatasetController<
 	TElement extends Element = Element,
 	TDatasetElement extends Element = Element,
-	TParsedData = unknown,
+	TParsedData extends unknown = unknown,
 > {
   constructor(chart: Chart, datasetIndex: number);
 
@@ -749,7 +749,7 @@ export const layouts: {
 };
 
 // TParsedData defaults to unknown here since plugins can work for any chart type
-export interface Plugin<TParsedData = unknown, O = AnyObject> extends ExtendedPlugin<TParsedData> {
+export interface Plugin<TParsedData extends unknown = unknown, O = AnyObject> extends ExtendedPlugin<TParsedData> {
 	id: string;
 
 	/**
@@ -1354,7 +1354,7 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 	onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 }
 
-export interface CoreChartOptions<TParsedData> extends ParsingOptions, AnimationOptions<TParsedData> {
+export interface CoreChartOptions<TParsedData extends unknown> extends ParsingOptions, AnimationOptions<TParsedData> {
 
   datasets: AnimationOptions<TParsedData>;
 
@@ -1476,7 +1476,7 @@ export type EasingFunction =
 	| 'easeOutBounce'
 	| 'easeInOutBounce';
 
-export type AnimationSpec<TParsedData> = {
+export type AnimationSpec<TParsedData extends unknown> = {
 	/**
 	 * The number of milliseconds an animation takes.
 	 * @default 1000
@@ -1507,7 +1507,7 @@ export type AnimationSpec<TParsedData> = {
 	loop: Scriptable<boolean, ScriptableContext<TParsedData>>;
 }
 
-export type AnimationsSpec<TParsedData> = {
+export type AnimationsSpec<TParsedData extends unknown> = {
   [name: string]: false | AnimationSpec<TParsedData> & {
     properties: string[];
 
@@ -1529,16 +1529,16 @@ export type AnimationsSpec<TParsedData> = {
   }
 }
 
-export type TransitionSpec<TParsedData> = {
+export type TransitionSpec<TParsedData extends unknown> = {
   animation: AnimationSpec<TParsedData>;
   animations: AnimationsSpec<TParsedData>;
 }
 
-export type TransitionsSpec<TParsedData> = {
+export type TransitionsSpec<TParsedData extends unknown> = {
   [mode: string]: TransitionSpec<TParsedData>
 }
 
-export type AnimationOptions<TParsedData> = {
+export type AnimationOptions<TParsedData extends unknown> = {
   animation: false | AnimationSpec<TParsedData> & {
     /**
      * Callback called on each step of an animation.
@@ -2215,7 +2215,7 @@ export interface TitleOptions {
 
 export type TooltipAlignment = 'start' | 'center' | 'end';
 
-export interface TooltipModel<TParsedData> {
+export interface TooltipModel<TParsedData extends unknown> {
 	// The items that we are rendering in the tooltip. See Tooltip Item Interface section
 	dataPoints: TooltipItem<TParsedData>[];
 
@@ -2273,7 +2273,7 @@ export const Tooltip: Plugin & {
 	setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 };
 
-export interface TooltipCallbacks<TParsedData> {
+export interface TooltipCallbacks<TParsedData extends unknown> {
 	beforeTitle(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 	title(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 	afterTitle(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
@@ -2294,7 +2294,7 @@ export interface TooltipCallbacks<TParsedData> {
 	afterFooter(this: TooltipModel<TParsedData>, tooltipItems: TooltipItem<TParsedData>[]): string | string[];
 }
 
-export interface ExtendedPlugin<TParsedData, O = {}> {
+export interface ExtendedPlugin<TParsedData extends unknown, O = {}> {
 	/**
 	 * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
 	 * the tooltip drawing is cancelled until another `render` is triggered.
@@ -2315,7 +2315,7 @@ export interface ExtendedPlugin<TParsedData, O = {}> {
 	 */
 	afterTooltipDraw?(chart: Chart, args: { tooltip: TooltipModel<TParsedData> }, options: O): void;
 }
-export interface TooltipOptions<TParsedData> extends CoreInteractionOptions {
+export interface TooltipOptions<TParsedData extends unknown> extends CoreInteractionOptions {
 	/**
 	 * Are on-canvas tooltips enabled?
 	 * @default true
@@ -2489,7 +2489,7 @@ export interface TooltipOptions<TParsedData> extends CoreInteractionOptions {
 	callbacks: TooltipCallbacks<TParsedData>;
 }
 
-export interface TooltipItem<TParsedData> {
+export interface TooltipItem<TParsedData extends unknown> {
 	/**
 	 * The chart the tooltip is being shown on
 	 */
@@ -2536,14 +2536,14 @@ export interface TooltipItem<TParsedData> {
 	element: Element;
 }
 
-export interface PluginOptionsByType<TParsedData> {
+export interface PluginOptionsByType<TParsedData extends unknown> {
 	decimation: DecimationOptions;
 	filler: FillerOptions;
 	legend: LegendOptions;
 	title: TitleOptions;
 	tooltip: TooltipOptions<TParsedData>;
 }
-export interface PluginChartOptions<TParsedData> {
+export interface PluginChartOptions<TParsedData extends unknown> {
 	plugins: Partial<PluginOptionsByType<TParsedData>>;
 }
 
@@ -3243,7 +3243,7 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 	};
 };
 
-export type ChartOptions<TType extends ChartType = ChartType, TParsedData = unknown> = DeepPartial<
+export type ChartOptions<TType extends ChartType = ChartType, TParsedData extends unknown = unknown> = DeepPartial<
 	CoreChartOptions<TParsedData> &
 	ElementChartOptions &
 	PluginChartOptions<TParsedData> &
