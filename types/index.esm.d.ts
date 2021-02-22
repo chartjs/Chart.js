@@ -3131,7 +3131,7 @@ export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialSca
 
 export type ScaleType = keyof ScaleTypeRegistry;
 
-interface CartesianParsedData {
+export interface CartesianParsedData {
 	x: number;
 	y: number;
 
@@ -3145,7 +3145,7 @@ interface CartesianParsedData {
 	}
 }
 
-interface BarParsedData extends CartesianParsedData {
+export interface BarParsedData extends CartesianParsedData {
 	// Only specified if floating bars are show
 	_custom?: {
 		barStart: number;
@@ -3157,12 +3157,12 @@ interface BarParsedData extends CartesianParsedData {
 	}
 }
 
-interface BubbleParsedData extends CartesianParsedData {
+export interface BubbleParsedData extends CartesianParsedData {
 	// The bubble radius value
 	_custom: number;
 }
 
-interface RadialParsedData {
+export interface RadialParsedData {
 	r: number;
 }
 
