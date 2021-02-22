@@ -176,7 +176,7 @@ The bar chart accepts the following configuration from the associated dataset op
 | `maxBarThickness` | `number` | | Set this to ensure that bars are not sized thicker than this.
 | `minBarLength` | `number` | | Set this to ensure that bars have a minimum length in pixels.
 
-### Example Usage
+### Example dataset configuration
 
 ```javascript
 data: {
@@ -215,7 +215,7 @@ The bar chart sets unique default values for the following configuration from th
 | `offset` | `boolean` | `true` | If true, extra space is added to both edges and the axis is scaled to fit into the chart area.
 | `gridLines.offsetGridLines` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
-### Example Usage
+### Example scale configuration
 
 ```javascript
 options = {
@@ -305,7 +305,7 @@ export const ExampleChart1 = () => {
       data: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [{
-		  axis: 'y',
+      axis: 'y',
           label: 'My First Dataset',
           data: [65, 59, 80, 81, 56, 55, 40],
           fill: false,
@@ -331,7 +331,7 @@ export const ExampleChart1 = () => {
         }]
       },
       options: {
-      	indexAxis: 'y',
+        indexAxis: 'y',
         scales: {
           x: {
             beginAtZero: true
@@ -354,12 +354,12 @@ var myBarChart = new Chart(ctx, {
     type: 'bar',
     data: data,
     options: {
-    	indexAxis: 'y'
+      indexAxis: 'y'
     }
 });
 ```
 
-### Config Options
+### Horizontal Bar Chart config Options
 
 The configuration options for the horizontal bar chart are the same as for the [bar chart](#scale-configuration). However, any options specified on the x-axis in a bar chart, are applied to the y-axis in a horizontal bar chart.
 
