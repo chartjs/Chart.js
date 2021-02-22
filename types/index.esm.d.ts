@@ -2418,15 +2418,10 @@ export interface TooltipOptions<TParsedData> extends CoreInteractionOptions {
 	 */
 	footerAlign: TextAlign;
 	/**
-	 * Padding to add on left and right of tooltip.
+	 * Padding to add to the tooltip
 	 * @default 6
 	 */
-	xPadding: number;
-	/**
-	 * Padding to add on top and bottom of tooltip.
-	 * @default 6
-	 */
-	yPadding: number;
+	padding: number | ChartArea;
 	/**
 	 * 	Extra distance to move the end of the tooltip arrow away from the tooltip point.
 	 * @default 2

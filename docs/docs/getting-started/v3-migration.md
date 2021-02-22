@@ -237,6 +237,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * All properties of tooltip model related to the tooltip options have been moved to reside within the `options` property.
 * The callbacks no longer are given a `data` parameter. The tooltip item parameter contains the chart and dataset instead
 * The tooltip item's `index` parameter was renamed to `dataIndex` and `value` was renamed to `formattedValue`
+* The `xPadding` and `yPadding` options were merged into a single `padding` object
 
 ## Developer migration
 
