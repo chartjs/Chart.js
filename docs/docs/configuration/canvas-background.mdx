@@ -43,16 +43,16 @@ function example() {
           hoverOffset: 4
         }]
       },
-	  plugins: [{
-	    id: 'custom_canvas_background_color',
-	    beforeDraw: (chart) => {
+      plugins: [{
+        id: 'custom_canvas_background_color',
+        beforeDraw: (chart) => {
           const ctx = chart.canvas.getContext('2d');
           ctx.save();
           ctx.globalCompositeOperation = 'destination-over';
           ctx.fillStyle = 'lightGreen';
           ctx.fillRect(0, 0, chart.canvas.width, chart.canvas.height);
           ctx.restore();
-	    }
+        }
       }]
     };
     const chart = new Chart(canvas.current.getContext('2d'), cfg);
@@ -93,19 +93,19 @@ function example() {
           hoverOffset: 4
         }]
       },
-	  plugins: [{
-	    id: 'custom_canvas_background_image',
-	    beforeDraw: (chart) => {
+      plugins: [{
+        id: 'custom_canvas_background_image',
+        beforeDraw: (chart) => {
           if (image.complete) {
             const ctx = chart.canvas.getContext('2d');
             ctx.drawImage(image, chart.canvas.width/2-image.width/2, chart.canvas.height/2-image.height/2);
           }
-	    }
+        }
       }]
     };
 
     const chart = new Chart(canvas.current.getContext('2d'), cfg);
-	image.onload = () => chart.draw();
+    image.onload = () => chart.draw();
 
     return () => chart.destroy();
   });
