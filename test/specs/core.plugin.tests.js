@@ -369,10 +369,10 @@ describe('Chart.plugins', function() {
           expect(opts.fun).toEqual(jasmine.any(Function));
           expect(opts.fun()).toEqual('test');
           expect(opts.arr).toEqual([1, 2, 3]);
-          // TODO: default is not inherited
-          // expect(opts.sub.subfun).toEqual(jasmine.any(Function));
-          // expect(opts.sub.subfun()).toEqual('subtest');
-          // expect(opts.sub.subarr).toEqual([3, 2, 1]);
+
+          expect(opts.sub.subfun).toEqual(jasmine.any(Function));
+          expect(opts.sub.subfun()).toEqual('subtest');
+          expect(opts.sub.subarr).toEqual([3, 2, 1]);
           done();
         }
       };

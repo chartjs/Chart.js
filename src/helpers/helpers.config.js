@@ -74,7 +74,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
  * @param {object} proxy - The Proxy returned by `_createResolver`
  * @param {object} context - Context object for scriptable/indexable options
  * @param {object} [subProxy] - The proxy provided for scriptable options
- * @param {boolean} [descriptorDefaults] - Default value for _indexable and _scriptable
+ * @param {{scriptable: boolean, indexable: boolean}} [descriptorDefaults] - Defaults for descriptors
  * @private
  */
 export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
@@ -85,8 +85,8 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     _subProxy: subProxy,
     _stack: new Set(),
     _descriptors: _descriptors(proxy, descriptorDefaults),
-    setContext: (ctx) => _attachContext(proxy, ctx, subProxy),
-    override: (scope) => _attachContext(proxy.override(scope), context, subProxy)
+    setContext: (ctx) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
+    override: (scope) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
   };
   return new Proxy(cache, {
     /**
@@ -139,9 +139,11 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
 /**
  * @private
  */
-export function _descriptors(proxy, descriptorDefaults = true) {
-  const {_scriptable = descriptorDefaults, _indexable = descriptorDefaults} = proxy;
+export function _descriptors(proxy, defaults = {scriptable: true, indexable: true}) {
+  const {_scriptable = defaults.scriptable, _indexable = defaults.indexable} = proxy;
   return {
+    scriptable: _scriptable,
+    indexable: _indexable,
     isScriptable: isFunction(_scriptable) ? _scriptable : () => _scriptable,
     isIndexable: isFunction(_indexable) ? _indexable : () => _indexable
   };
@@ -178,7 +180,7 @@ function _resolveWithContext(target, prop, receiver) {
   }
   if (needsSubResolver(prop, value)) {
     // if the resolved value is an object, crate a sub resolver for it
-    value = _attachContext(value, _context, _subProxy && _subProxy[prop]);
+    value = _attachContext(value, _context, _subProxy && _subProxy[prop], descriptors);
   }
   return value;
 }
@@ -200,7 +202,7 @@ function _resolveScriptable(prop, value, target, receiver) {
 }
 
 function _resolveArray(prop, value, target, isIndexable) {
-  const {_proxy, _context, _subProxy} = target;
+  const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
 
   if (defined(_context.index) && isIndexable(prop)) {
     value = value[_context.index % value.length];
@@ -211,7 +213,7 @@ function _resolveArray(prop, value, target, isIndexable) {
     value = [];
     for (const item of arr) {
       const resolver = createSubResolver(scopes, _proxy, prop, item);
-      value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop]));
+      value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop], descriptors));
     }
   }
   return value;

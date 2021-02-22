@@ -314,9 +314,9 @@ export default class Config {
    * @param {object[]} scopes
    * @param {object} [context]
    * @param {string[]} [prefixes]
-   * @param {boolean} [descriptorDefaults]
+   * @param {{scriptable: boolean, indexable: boolean}} [descriptorDefaults]
    */
-  createResolver(scopes, context, prefixes = [''], descriptorDefaults = true) {
+  createResolver(scopes, context, prefixes = [''], descriptorDefaults = {scriptable: true, indexable: true}) {
     const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
     return isObject(context)
       ? _attachContext(resolver, isFunction(context) ? context() : context, undefined, descriptorDefaults)
