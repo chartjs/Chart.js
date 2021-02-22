@@ -3133,6 +3133,15 @@ export type ScaleType = keyof ScaleTypeRegistry;
 interface CartesianParsedData {
 	x: number;
 	y: number;
+
+	// Only specified when stacked bars are enabled
+	_stacks?: {
+		// Key is the stack ID which is generally the axis ID
+		[key: string]: {
+			// Inner key is the datasetIndex
+			[key: number]: number;
+		}
+	}
 }
 
 interface BarParsedData extends CartesianParsedData {
