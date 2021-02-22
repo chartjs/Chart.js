@@ -1,6 +1,7 @@
 import Animations from '../core/core.animations';
 import Element from '../core/core.element';
 import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
+import {toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
 import {drawPoint, toFontString} from '../helpers';
@@ -143,7 +144,8 @@ function getTooltipSize(tooltip) {
   const footerLineCount = footer.length;
   const bodyLineItemCount = body.length;
 
-  let height = options.yPadding * 2; // Tooltip Padding
+  const padding = toPadding(options.padding);
+  let height = padding.height;
   let width = 0;
 
   // Count of all lines in the body
@@ -201,7 +203,7 @@ function getTooltipSize(tooltip) {
   ctx.restore();
 
   // Add padding
-  width += 2 * options.xPadding;
+  width += 2 * padding.width;
 
   return {width, height};
 }
@@ -322,11 +324,13 @@ function getBackgroundPoint(options, size, alignment, chart) {
 
 function getAlignedX(tooltip, align) {
   const options = tooltip.options;
+  const padding = toPadding(options.padding);
+
   return align === 'center'
     ? tooltip.x + tooltip.width / 2
     : align === 'right'
-      ? tooltip.x + tooltip.width - options.xPadding
-      : tooltip.x + options.xPadding;
+      ? tooltip.x + tooltip.width - padding.right
+      : tooltip.x + padding.left;
 }
 
 /**
@@ -887,6 +891,8 @@ export class Tooltip extends Element {
     // IE11/Edge does not like very small opacities, so snap to 0
     opacity = Math.abs(opacity) < 1e-3 ? 0 : opacity;
 
+    const padding = toPadding(options.padding);
+
     // Truthy/falsey value for empty tooltip
     const hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
 
@@ -899,7 +905,7 @@ export class Tooltip extends Element {
 
       overrideTextDirection(ctx, options.textDirection);
 
-      pt.y += options.yPadding;
+      pt.y += padding.top;
 
       // Titles
       me.drawTitle(pt, ctx);
@@ -1096,8 +1102,7 @@ export default {
       style: 'bold',
     },
     footerAlign: 'left',
-    yPadding: 6,
-    xPadding: 6,
+    padding: 6,
     caretPadding: 2,
     caretSize: 5,
     cornerRadius: 6,
