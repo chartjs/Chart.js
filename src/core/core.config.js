@@ -319,7 +319,7 @@ export default class Config {
   createResolver(scopes, context, prefixes = [''], descriptorDefaults = {scriptable: true, indexable: true}) {
     const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
     return isObject(context)
-      ? _attachContext(resolver, isFunction(context) ? context() : context, undefined, descriptorDefaults)
+      ? _attachContext(resolver, context, undefined, descriptorDefaults)
       : resolver;
   }
 }
