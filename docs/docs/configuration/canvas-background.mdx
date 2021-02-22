@@ -69,10 +69,11 @@ function example() {
 ```jsx live
 function example() {
   const canvas = useRef(null);
-  const image = new Image();
-  image.src = "https://www.chartjs.org/img/chartjs-logo.svg";
 
   useEffect(() => {
+    const image = new Image();
+    image.src = "https://www.chartjs.org/img/chartjs-logo.svg";
+
     const cfg = {
       type: 'doughnut',
       data: {
