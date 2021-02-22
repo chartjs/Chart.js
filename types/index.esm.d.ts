@@ -3278,5 +3278,5 @@ export interface ChartConfiguration<
 	type: TType;
 	data: ChartData<TType, TData, TLabel>;
 	options?: ChartOptions<TType, TParsedData>;
-  plugins?: Plugin[];
+	plugins?: Plugin[];
 }
