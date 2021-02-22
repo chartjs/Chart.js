@@ -74,16 +74,17 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
  * @param {object} proxy - The Proxy returned by `_createResolver`
  * @param {object} context - Context object for scriptable/indexable options
  * @param {object} [subProxy] - The proxy provided for scriptable options
+ * @param {boolean} [descriptorDefaults] - Default value for _indexable and _scriptable
  * @private
  */
-export function _attachContext(proxy, context, subProxy) {
+export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
   const cache = {
     _cacheable: false,
     _proxy: proxy,
     _context: context,
     _subProxy: subProxy,
     _stack: new Set(),
-    _descriptors: _descriptors(proxy),
+    _descriptors: _descriptors(proxy, descriptorDefaults),
     setContext: (ctx) => _attachContext(proxy, ctx, subProxy),
     override: (scope) => _attachContext(proxy.override(scope), context, subProxy)
   };
@@ -138,8 +139,8 @@ export function _attachContext(proxy, context, subProxy) {
 /**
  * @private
  */
-export function _descriptors(proxy) {
-  const {_scriptable = true, _indexable = true} = proxy;
+export function _descriptors(proxy, descriptorDefaults = true) {
+  const {_scriptable = descriptorDefaults, _indexable = descriptorDefaults} = proxy;
   return {
     isScriptable: isFunction(_scriptable) ? _scriptable : () => _scriptable,
     isIndexable: isFunction(_indexable) ? _indexable : () => _indexable

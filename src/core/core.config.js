@@ -314,11 +314,12 @@ export default class Config {
    * @param {object[]} scopes
    * @param {object} [context]
    * @param {string[]} [prefixes]
+   * @param {boolean} [descriptorDefaults]
    */
-  createResolver(scopes, context, prefixes = ['']) {
+  createResolver(scopes, context, prefixes = [''], descriptorDefaults = true) {
     const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
     return isObject(context)
-      ? _attachContext(resolver, isFunction(context) ? context() : context)
+      ? _attachContext(resolver, isFunction(context) ? context() : context, undefined, descriptorDefaults)
       : resolver;
   }
 }

@@ -361,5 +361,21 @@ describe('Chart.plugins', function() {
       // The plugin on the chart should only be started once
       expect(results).toEqual([1]);
     });
+
+    it('should default to false for _scriptable, _indexable', function(done) {
+      const plugin = {
+        start: function(chart, args, opts) {
+          const {isScriptable, isIndexable} = opts._descriptors;
+          expect(isScriptable.toString()).toBe('() => _scriptable');
+          expect(isIndexable.toString()).toBe('() => _indexable');
+          expect(isScriptable()).toBeFalse();
+          expect(isIndexable()).toBeFalse();
+          done();
+        }
+      };
+      window.acquireChart({
+        plugins: [plugin]
+      });
+    });
   });
 });
