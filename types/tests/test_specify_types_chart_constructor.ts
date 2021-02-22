@@ -1,6 +1,6 @@
-import { Chart } from '../index.esm';
+import { Chart, CartesianParsedData } from '../index.esm';
 
-const chart = new Chart<'scatter', number[], string>('id', {
+const chart = new Chart('id', {
   type: 'scatter',
   data: {
     labels: [],
@@ -10,7 +10,7 @@ const chart = new Chart<'scatter', number[], string>('id', {
 });
 
 interface Context {
-  chart: Chart<'scatter'|'bar', unknown[], unknown, unknown>;
+  chart: Chart;
 }
 
 const ctx: Context = {
