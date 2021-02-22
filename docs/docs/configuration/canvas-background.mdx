@@ -96,14 +96,17 @@ function example() {
 	  plugins: [{
 	    id: 'custom_canvas_background_image',
 	    beforeDraw: (chart) => {
-	      const ctx = chart.canvas.getContext('2d');
-          ctx.save();
-          ctx.drawImage(image, chart.canvas.width/2-image.width/2,chart.canvas.height/2-image.height/2);
-          ctx.restore();
+          if (image.complete) {
+            const ctx = chart.canvas.getContext('2d');
+            ctx.drawImage(image, chart.canvas.width/2-image.width/2, chart.canvas.height/2-image.height/2);
+          }
 	    }
       }]
     };
+
     const chart = new Chart(canvas.current.getContext('2d'), cfg);
+	image.onload = () => chart.draw();
+
     return () => chart.destroy();
   });
   return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
