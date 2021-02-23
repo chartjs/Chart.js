@@ -113,46 +113,13 @@ onmessage = function(event) {
 
 ## Line Charts
 
-### Disable Bezier Curves
+### Leave Bézier curves disabled
 
-If you are drawing lines on your chart, disabling bezier curves will improve render times since drawing a straight line is more performant than a bezier curve.
-
-To disable bezier curves for an entire chart:
-
-```javascript
-new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        elements: {
-            line: {
-                tension: 0 // disables bezier curves
-            }
-        }
-    }
-});
-```
+If you are drawing lines on your chart, disabling Bézier curves will improve render times since drawing a straight line is more performant than a Bézier curve. Bézier curves are disabled by default.
 
 ### Automatic data decimation during draw
 
-Line element will automatically decimate data, when the following conditions are met: `tension` is `0`, `stepped` is `false` (default) and `borderDash` is `[]` (default). This improves rendering speed by skipping drawing of invisible line segments.
-
-```javascript
-new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        elements: {
-            line: {
-                tension: 0, // disables bezier curves
-                fill: false,
-                stepped: false,
-                borderDash: []
-            }
-        }
-    }
-});
-```
+Line element will automatically decimate data, when `tension`, `stepped`, and `borderDash` are left set to their default values (`false`, `0`, and `[]` respectively). This improves rendering speed by skipping drawing of invisible line segments.
 
 ### Enable spanGaps
 
