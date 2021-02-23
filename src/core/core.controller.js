@@ -122,6 +122,7 @@ class Chart {
     this.attached = false;
     this._animationsDisabled = undefined;
     this.$context = undefined;
+    this._resizeTimer = undefined;
 
     // Add the chart instance to the global namespace
     instances[me.id] = me;
@@ -242,7 +243,15 @@ class Chart {
     callCallback(options.onResize, [newSize], me);
 
     if (me.attached) {
-      me.update('resize');
+      const delay = options.resizeDelay || 0;
+      const resizeUpdate = () => me.update('resize');
+      if (delay) {
+        clearTimeout(me._resizeTimer);
+        me._resizeTimer = setTimeout(resizeUpdate, delay);
+        me.render();
+      } else {
+        resizeUpdate();
+      }
     }
   }
 
