@@ -63,6 +63,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`data`](#data-structure) | `object`\|`object[]`\|`number[]`\|`string[]` | - | - | **required**
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
@@ -197,7 +198,7 @@ Chart.defaults.controllers.line.spanGaps = true;
 
 ## Data Structure
 
-See [`Data structures`](../general/data-structures.md)
+All of the supported [data structures](../general/data-structures.md) can be used with line charts.
 
 ## Stacked Area Chart
 
