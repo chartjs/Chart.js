@@ -1839,10 +1839,10 @@ export interface BarOptions extends CommonElementOptions {
 	base: number;
 
 	/**
-	 * 	Skipped (excluded) border: 'start', 'end', 'bottom', 'left', 'top' or 'right'.
+	 * 	Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top' or false (none).
 	 * @default 'start'
 	 */
-	borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top';
+	borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | false;
 
 	/**
 	 * Border radius
