@@ -23,6 +23,16 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
   };
   return new Proxy(cache, {
     /**
+     * A trap for the delete operator.
+     */
+    deleteProperty(target, prop) {
+      delete target[prop]; // remove from cache
+      delete target._keys; // remove cached keys
+      delete scopes[0][prop]; // remove from top level scope
+      return true;
+    },
+
+    /**
      * A trap for getting property values.
      */
     get(target, prop) {
@@ -63,8 +73,10 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
      * A trap for setting property values.
      */
     set(target, prop, value) {
-      scopes[0][prop] = value;
-      return delete target[prop];
+      scopes[0][prop] = value; // set to top level scope
+      delete target[prop]; // remove from cache
+      delete target._keys; // remove cached keys
+      return true;
     }
   });
 }
@@ -89,6 +101,15 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     override: (scope) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
   };
   return new Proxy(cache, {
+    /**
+     * A trap for the delete operator.
+     */
+    deleteProperty(target, prop) {
+      delete target[prop]; // remove from cache
+      delete proxy[prop]; // remove from proxy
+      return true;
+    },
+
     /**
      * A trap for getting property values.
      */
@@ -130,8 +151,9 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
      * A trap for setting property values.
      */
     set(target, prop, value) {
-      proxy[prop] = value;
-      return delete target[prop];
+      proxy[prop] = value; // set to proxy
+      delete target[prop]; // remove from cache
+      return true;
     }
   });
 }

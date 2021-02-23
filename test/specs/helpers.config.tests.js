@@ -637,6 +637,23 @@ describe('Chart.helpers.config', function() {
       expect(opts instanceof Options).toBeTrue();
 
       expect(opts.getter).toEqual('options getter');
+
+      expect('test' in opts).toBeFalse();
+      expect(opts.test).toBeUndefined();
+
+      opts.test = true;
+      expect('test' in opts).toBeTrue();
+      expect(opts.test).toBeTrue();
+
+      delete opts.test;
+      expect('test' in opts).toBeFalse();
+
+      opts.test = (ctx) => ctx.index;
+      expect('test' in opts).toBeTrue();
+      expect(opts.test).toBe(1);
+
+      delete opts.test;
+      expect('test' in opts).toBeFalse();
     });
 
     describe('_indexable and _scriptable', function() {
