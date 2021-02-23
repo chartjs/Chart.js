@@ -40,6 +40,25 @@ export function throttled(fn, thisArg, updateFn) {
   };
 }
 
+/**
+ * Debounces calling `fn` for `delay` ms
+ * @param {function} fn - Function to call. No arguments are passed.
+ * @param {number} delay - Delay in ms. 0 = immediate invocation.
+ * @returns {function}
+ */
+export function debounce(fn, delay) {
+  let timeout;
+  return function() {
+    if (delay) {
+      clearTimeout(timeout);
+      timeout = setTimeout(fn, delay);
+    } else {
+      fn();
+    }
+    return delay;
+  };
+}
+
 
 /**
  * Converts 'start' to 'left', 'end' to 'right' and others to 'center'

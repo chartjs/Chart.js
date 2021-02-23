@@ -11,6 +11,7 @@ import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual} fro
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
+import {debounce} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
@@ -122,6 +123,7 @@ class Chart {
     this.attached = false;
     this._animationsDisabled = undefined;
     this.$context = undefined;
+    this._doResize = debounce(() => this.update('resize'), options.resizeDelay || 0);
 
     // Add the chart instance to the global namespace
     instances[me.id] = me;
@@ -242,7 +244,10 @@ class Chart {
     callCallback(options.onResize, [newSize], me);
 
     if (me.attached) {
-      me.update('resize');
+      if (me._doResize()) {
+        // The resize update is delayed, only draw without updating.
+        me.render();
+      }
     }
   }
 
