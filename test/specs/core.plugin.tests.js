@@ -361,5 +361,36 @@ describe('Chart.plugins', function() {
       // The plugin on the chart should only be started once
       expect(results).toEqual([1]);
     });
+
+    it('should default to false for _scriptable, _indexable', function(done) {
+      const plugin = {
+        id: 'test',
+        start: function(chart, args, opts) {
+          expect(opts.fun).toEqual(jasmine.any(Function));
+          expect(opts.fun()).toEqual('test');
+          expect(opts.arr).toEqual([1, 2, 3]);
+
+          expect(opts.sub.subfun).toEqual(jasmine.any(Function));
+          expect(opts.sub.subfun()).toEqual('subtest');
+          expect(opts.sub.subarr).toEqual([3, 2, 1]);
+          done();
+        }
+      };
+      window.acquireChart({
+        options: {
+          plugins: {
+            test: {
+              fun: () => 'test',
+              arr: [1, 2, 3],
+              sub: {
+                subfun: () => 'subtest',
+                subarr: [3, 2, 1],
+              }
+            }
+          }
+        },
+        plugins: [plugin]
+      });
+    });
   });
 });
