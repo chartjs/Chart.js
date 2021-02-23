@@ -47,7 +47,7 @@ function sorter(a, b) {
  */
 function parse(scale, input) {
   if (isNullOrUndef(input)) {
-    return null;
+    return NaN;
   }
 
   const adapter = scale._adapter;
@@ -67,7 +67,7 @@ function parse(scale, input) {
   }
 
   if (value === null) {
-    return value;
+    return NaN;
   }
 
   if (round) {
