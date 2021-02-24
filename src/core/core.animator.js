@@ -5,20 +5,6 @@ import {requestAnimFrame} from '../helpers/helpers.extras';
  * @typedef { import("./core.controller").default } Chart
  */
 
-function drawFPS(chart, count, date, lastDate) {
-  const fps = (1000 / (date - lastDate)) | 0;
-  const ctx = chart.ctx;
-  ctx.save();
-  ctx.clearRect(0, 0, 50, 24);
-  ctx.fillStyle = 'black';
-  ctx.textAlign = 'right';
-  if (count) {
-    ctx.fillText(count, 50, 8);
-    ctx.fillText(fps + ' fps', 50, 18);
-  }
-  ctx.restore();
-}
-
 /**
  * Please use the module's default export which provides a singleton instance
  * Note: class is export for typedoc
@@ -35,7 +21,7 @@ export class Animator {
 	 * @private
 	 */
   _notify(chart, anims, date, type) {
-    const callbacks = anims.listeners[type] || [];
+    const callbacks = anims.listeners[type];
     const numSteps = anims.duration;
 
     callbacks.forEach(fn => fn({
@@ -99,10 +85,6 @@ export class Animator {
       if (draw) {
         chart.draw();
         me._notify(chart, anims, date, 'progress');
-      }
-
-      if (chart.options.animation.debug) {
-        drawFPS(chart, items.length, date, me._lastDate);
       }
 
       if (!items.length) {

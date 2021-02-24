@@ -69,7 +69,7 @@ defaults.set('transitions', {
       },
       visible: {
         type: 'boolean',
-        fn: v => v < 1 ? 0 : 1 // for keeping the dataset visible all the way through the animation
+        fn: v => v | 0 // for keeping the dataset visible all the way through the animation
       },
     }
   }
