@@ -541,7 +541,7 @@ export default class DatasetController {
       // in addition to the stacked value
       range.min = Math.min(range.min, value);
       range.max = Math.max(range.max, value);
-      value = applyStack(stack, parsed[scale.axis], this._cachedMeta.index, true);
+      value = applyStack(stack, parsedValue, this._cachedMeta.index, true);
     }
     range.min = Math.min(range.min, value);
     range.max = Math.max(range.max, value);
