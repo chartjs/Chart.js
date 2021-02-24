@@ -533,7 +533,7 @@ export default class DatasetController {
 	 */
   updateRangeFromParsed(range, scale, parsed, stack) {
     const parsedValue = parsed[scale.axis];
-    let value = parsedValue  === null ? NaN : parsedValue;
+    let value = parsedValue === null ? NaN : parsedValue;
     const values = stack && parsed._stacks[scale.axis];
     if (stack && values) {
       stack.values = values;
