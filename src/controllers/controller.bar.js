@@ -492,7 +492,7 @@ export default class BarController extends DatasetController {
     clipArea(chart.ctx, chart.chartArea);
 
     for (; i < ilen; ++i) {
-      if (!isNaN(me.getParsed(i)[vScale.axis])) {
+      if (me.getParsed(i)[vScale.axis] !== null) {
         rects[i].draw(me._ctx);
       }
     }

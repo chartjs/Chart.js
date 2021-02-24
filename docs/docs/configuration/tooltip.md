@@ -139,7 +139,7 @@ var chart = new Chart(ctx, {
                         if (label) {
                             label += ': ';
                         }
-                        if (!isNaN(context.parsed.y)) {
+                        if (context.parsed.y !== null) {
                             label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
                         }
                         return label;

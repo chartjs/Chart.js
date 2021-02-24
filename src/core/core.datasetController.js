@@ -1,6 +1,6 @@
 import Animations from './core.animations';
 import defaults from './core.defaults';
-import {isObject, isArray, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
+import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
 import {sign} from '../helpers/helpers.math';
 
@@ -70,6 +70,10 @@ function applyStack(stack, value, dsIndex, allOther) {
   const keys = stack.keys;
   let i, ilen, datasetIndex, otherValue;
 
+  if (value === null) {
+    return;
+  }
+
   for (i = 0, ilen = keys.length; i < ilen; ++i) {
     datasetIndex = +keys[i];
     if (datasetIndex === dsIndex) {
@@ -79,7 +83,7 @@ function applyStack(stack, value, dsIndex, allOther) {
       break;
     }
     otherValue = stack.values[datasetIndex];
-    if (!isNaN(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
+    if (isFinite(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
       value += otherValue;
     }
   }
@@ -393,7 +397,7 @@ export default class DatasetController {
         parsed = me.parsePrimitiveData(meta, data, start, count);
       }
 
-      const isNotInOrderComparedToPrev = () => isNaN(cur[iAxis]) || (prev && cur[iAxis] < prev[iAxis]);
+      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
       for (i = 0; i < count; ++i) {
         meta._parsed[i + start] = cur = parsed[i];
         if (sorted) {
@@ -528,7 +532,8 @@ export default class DatasetController {
 	 * @protected
 	 */
   updateRangeFromParsed(range, scale, parsed, stack) {
-    let value = parsed[scale.axis];
+    const parsedValue = parsed[scale.axis];
+    let value = parsedValue === null ? NaN : parsedValue;
     const values = stack && parsed._stacks[scale.axis];
     if (stack && values) {
       stack.values = values;
@@ -536,7 +541,7 @@ export default class DatasetController {
       // in addition to the stacked value
       range.min = Math.min(range.min, value);
       range.max = Math.max(range.max, value);
-      value = applyStack(stack, value, this._cachedMeta.index, true);
+      value = applyStack(stack, parsedValue, this._cachedMeta.index, true);
     }
     range.min = Math.min(range.min, value);
     range.max = Math.max(range.max, value);
@@ -561,7 +566,7 @@ export default class DatasetController {
       parsed = _parsed[i];
       value = parsed[scale.axis];
       otherValue = parsed[otherScale.axis];
-      return (isNaN(value) || isNaN(otherValue) || otherMin > otherValue || otherMax < otherValue);
+      return (!isFinite(value) || !isFinite(otherValue) || otherMin > otherValue || otherMax < otherValue);
     }
 
     for (i = 0; i < ilen; ++i) {
@@ -594,7 +599,7 @@ export default class DatasetController {
 
     for (i = 0, ilen = parsed.length; i < ilen; ++i) {
       value = parsed[i][scale.axis];
-      if (!isNaN(value)) {
+      if (isFinite(value)) {
         values.push(value);
       }
     }
