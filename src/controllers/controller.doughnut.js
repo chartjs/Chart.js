@@ -60,19 +60,6 @@ export default class DoughnutController extends DatasetController {
     }
   }
 
-  // Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
-  getRingIndex(datasetIndex) {
-    let ringIndex = 0;
-
-    for (let j = 0; j < datasetIndex; ++j) {
-      if (this.chart.isDatasetVisible(j)) {
-        ++ringIndex;
-      }
-    }
-
-    return ringIndex;
-  }
-
   /**
 	 * @private
 	 */

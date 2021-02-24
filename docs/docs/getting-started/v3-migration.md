@@ -303,6 +303,7 @@ The following properties and methods were removed:
 * `DatasetController.addElementAndReset`
 * `DatasetController.createMetaData`
 * `DatasetController.createMetaDataset`
+* `DoughnutController.getRingIndex`
 
 #### Removed from Elements
 
