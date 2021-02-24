@@ -83,7 +83,7 @@ function applyStack(stack, value, dsIndex, allOther) {
       break;
     }
     otherValue = stack.values[datasetIndex];
-    if (otherValue !== null && !isNaN(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
+    if (isFinite(otherValue) && (value === 0 || sign(value) === sign(otherValue))) {
       value += otherValue;
     }
   }
@@ -599,7 +599,7 @@ export default class DatasetController {
 
     for (i = 0, ilen = parsed.length; i < ilen; ++i) {
       value = parsed[i][scale.axis];
-      if (value !== null && !isNaN(value)) {
+      if (isFinite(value)) {
         values.push(value);
       }
     }
