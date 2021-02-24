@@ -47,7 +47,7 @@ function sorter(a, b) {
  */
 function parse(scale, input) {
   if (isNullOrUndef(input)) {
-    return NaN;
+    return null;
   }
 
   const adapter = scale._adapter;
@@ -67,7 +67,7 @@ function parse(scale, input) {
   }
 
   if (value === null) {
-    return NaN;
+    return null;
   }
 
   if (round) {
@@ -244,7 +244,7 @@ export default class TimeScale extends Scale {
 	 */
   parse(raw, index) { // eslint-disable-line no-unused-vars
     if (raw === undefined) {
-      return NaN;
+      return null;
     }
     return parse(this, raw);
   }
@@ -489,7 +489,7 @@ export default class TimeScale extends Scale {
 	 */
   getDecimalForValue(value) {
     const me = this;
-    return (value - me.min) / (me.max - me.min);
+    return value === null ? NaN : (value - me.min) / (me.max - me.min);
   }
 
   /**

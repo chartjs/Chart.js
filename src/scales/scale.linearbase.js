@@ -115,10 +115,10 @@ export default class LinearScaleBase extends Scale {
 
   parse(raw, index) { // eslint-disable-line no-unused-vars
     if (isNullOrUndef(raw)) {
-      return NaN;
+      return null;
     }
     if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(+raw)) {
-      return NaN;
+      return null;
     }
 
     return +raw;

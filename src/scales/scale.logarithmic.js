@@ -64,7 +64,7 @@ export default class LogarithmicScale extends Scale {
       this._zero = true;
       return undefined;
     }
-    return isFinite(value) && value > 0 ? value : NaN;
+    return isFinite(value) && value > 0 ? value : null;
   }
 
   determineDataLimits() {

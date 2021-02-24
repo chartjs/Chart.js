@@ -31,7 +31,7 @@ export default class LinearScale extends LinearScaleBase {
 
   // Utils
   getPixelForValue(value) {
-    return this.getPixelForDecimal((value - this._startValue) / this._valueRange);
+    return value === null ? NaN : this.getPixelForDecimal((value - this._startValue) / this._valueRange);
   }
 
   getValueForPixel(pixel) {

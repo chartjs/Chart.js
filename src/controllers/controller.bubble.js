@@ -83,7 +83,7 @@ export default class BubbleController extends DatasetController {
       const properties = {
         x,
         y,
-        skip: isNaN(x) || isNaN(y)
+        skip: x === null || y === null
       };
 
       if (includeOptions) {

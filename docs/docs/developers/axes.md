@@ -132,13 +132,6 @@ The Core.Scale base class also has some utility functions that you may find usef
     // Returns true if the scale instance is horizontal
     isHorizontal: function() {},
 
-    // Get the correct value from the value from this.chart.data.datasets[x].data[]
-    // If dataValue is an object, returns .x or .y depending on the return of isHorizontal()
-    // If the value is undefined, returns NaN
-    // Otherwise returns the value.
-    // Note that in all cases, the returned value is not guaranteed to be a number
-    getRightValue: function(dataValue) {},
-
     // Returns the scale tick objects ({label, major})
     getTicks: function() {}
 }
