@@ -1,6 +1,13 @@
 import Element from '../core/core.element';
 import {drawPoint} from '../helpers/helpers.canvas';
 
+function inRange(el, pos, axis, useFinalPosition) {
+  const options = el.options;
+  const {[axis]: value} = el.getProps([axis], useFinalPosition);
+
+  return (Math.abs(pos - value) < options.radius + options.hitRadius);
+}
+
 export default class PointElement extends Element {
 
   constructor(cfg) {
@@ -22,16 +29,11 @@ export default class PointElement extends Element {
   }
 
   inXRange(mouseX, useFinalPosition) {
-    const options = this.options;
-    const {x} = this.getProps(['x'], useFinalPosition);
-
-    return (Math.abs(mouseX - x) < options.radius + options.hitRadius);
+    return inRange(this, mouseX, 'x', useFinalPosition);
   }
 
   inYRange(mouseY, useFinalPosition) {
-    const options = this.options;
-    const {y} = this.getProps(['x'], useFinalPosition);
-    return (Math.abs(mouseY - y) < options.radius + options.hitRadius);
+    return inRange(this, mouseY, 'y', useFinalPosition);
   }
 
   getCenterPoint(useFinalPosition) {
