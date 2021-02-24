@@ -172,4 +172,47 @@ describe('Chart.animations', function() {
       }, 250);
     }, 50);
   });
+
+  describe('default transitions', function() {
+    describe('hide', function() {
+      it('should keep dataset visible through the animation', function(done) {
+        let test = false;
+        let count = 0;
+        window.acquireChart({
+          type: 'line',
+          data: {
+            labels: [0],
+            datasets: [
+              {data: [1]},
+            ]
+          },
+          options: {
+            animation: {
+              duration: 100,
+              onProgress: (args) => {
+                if (test) {
+                  if (args.currentStep < args.numSteps) {
+                    // while animating, visible should be truthly
+                    expect(args.chart.getDatasetMeta(0).visible).toBeTruthy();
+                    count++;
+                  }
+                }
+              },
+              onComplete: (args) => {
+                if (!test) {
+                  test = true;
+                  setTimeout(() => args.chart.hide(0), 1);
+                } else {
+                  // and when finished, it should be false
+                  expect(args.chart.getDatasetMeta(0).visible).toBeFalsy();
+                  expect(count).toBeGreaterThan(0);
+                  done();
+                }
+              }
+            }
+          }
+        });
+      });
+    });
+  });
 });
