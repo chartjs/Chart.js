@@ -3,7 +3,7 @@ import {PI, TAU, HALF_PI} from './helpers.math';
 const atEdge = (t) => t === 0 || t === 1;
 const elasticIn = (t, s, p) => -(Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * TAU / p));
 const elasticOut = (t, s, p) => Math.pow(2, -10 * t) * Math.sin((t - s) * TAU / p) + 1;
-// Math.pow(2, -10 * t) * Math.sin((t - 0.075) * TAU / 0.3) + 1,
+
 /**
  * Easing functions adapted from Robert Penner's easing equations.
  * @namespace Chart.helpers.easing.effects
