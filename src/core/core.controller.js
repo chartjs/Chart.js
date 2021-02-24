@@ -159,7 +159,7 @@ class Chart {
   }
 
   set options(options) {
-    this.config.update(options);
+    this.config.options = options;
   }
 
   /**
@@ -444,7 +444,7 @@ class Chart {
     const me = this;
     const config = me.config;
 
-    config.update(config.options);
+    config.update();
     me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
     each(me.scales, (scale) => {
