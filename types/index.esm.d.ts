@@ -444,13 +444,12 @@ export declare class Chart<
 	TType extends ChartType = ChartType,
 	TData extends unknown[] = DefaultDataPoint<TType>,
 	TLabel = unknown,
-	TParsedData extends unknown = ParsedDataType<TType>
 	> {
 	readonly platform: BasePlatform;
 	readonly id: string;
 	readonly canvas: HTMLCanvasElement;
 	readonly ctx: CanvasRenderingContext2D;
-	readonly config: ChartConfiguration<TType, TData, TLabel, TParsedData>
+	readonly config: ChartConfiguration<TType, TData, TLabel>
 	readonly width: number;
 	readonly height: number;
 	readonly aspectRatio: number;
@@ -463,7 +462,7 @@ export declare class Chart<
 	data: ChartData<TType, TData, TLabel>;
 	options: ChartOptions<TType>;
 
-	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel, TParsedData>);
+	constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
 
 	clear(): this;
 	stop(): this;
@@ -3243,10 +3242,10 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 	};
 };
 
-export type ChartOptions<TType extends ChartType = ChartType, TParsedData extends unknown = unknown> = DeepPartial<
-	CoreChartOptions<TParsedData> &
+export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
+	CoreChartOptions<ChartType extends TType ? ChartTypeRegistry[TType]['parsedDataType'] : unknown> &
 	ElementChartOptions &
-	PluginChartOptions<TParsedData> &
+	PluginChartOptions<ChartType extends TType ? ChartTypeRegistry[TType]['parsedDataType'] : unknown> &
 	DatasetChartOptions<TType> &
 	ScaleChartOptions<TType> &
 	ChartTypeRegistry[TType]['chartOptions']
@@ -3283,10 +3282,9 @@ export interface ChartConfiguration<
 	TType extends ChartType = ChartType,
 	TData extends unknown[] = DefaultDataPoint<TType>,
 	TLabel = unknown,
-	TParsedData extends unknown = ParsedDataType<TType>,
 > {
 	type: TType;
 	data: ChartData<TType, TData, TLabel>;
-	options?: ChartOptions<TType, TParsedData>;
+	options?: ChartOptions<TType>;
 	plugins?: Plugin[];
 }
