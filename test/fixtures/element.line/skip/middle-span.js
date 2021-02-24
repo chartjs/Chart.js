@@ -1,10 +1,11 @@
 module.exports = {
   config: {
     type: 'line',
+    parsing: false,
     data: {
       datasets: [
         {
-          data: [{x: 0, y: 10}, {x: 5, y: 0}, {x: NaN, y: -10}, {x: 19, y: -5}],
+          data: [{x: 0, y: 10}, {x: 5, y: 0}, {x: null, y: -10}, {x: 19, y: -5}],
           borderColor: 'red',
           fill: true,
           spanGaps: true,
