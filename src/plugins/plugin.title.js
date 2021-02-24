@@ -119,24 +119,6 @@ function createTitle(chart, titleOpts) {
   chart.titleBlock = title;
 }
 
-function removeTitle(chart) {
-  const title = chart.titleBlock;
-  if (title) {
-    layouts.removeBox(chart, title);
-    delete chart.titleBlock;
-  }
-}
-
-function createOrUpdateTitle(chart, options) {
-  const title = chart.titleBlock;
-  if (title) {
-    layouts.configure(chart, title, options);
-    title.options = options;
-  } else {
-    createTitle(chart, options);
-  }
-}
-
 export default {
   id: 'title',
 
@@ -157,11 +139,9 @@ export default {
   },
 
   beforeUpdate(chart, _args, options) {
-    if (options === false) {
-      removeTitle(chart);
-    } else {
-      createOrUpdateTitle(chart, options);
-    }
+    const title = chart.titleBlock;
+    layouts.configure(chart, title, options);
+    title.options = options;
   },
 
   defaults: {
