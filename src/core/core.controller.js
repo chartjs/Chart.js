@@ -107,6 +107,7 @@ class Chart {
     this._options = options;
     this._layers = [];
     this._metasets = [];
+    this._stacks = undefined;
     this.boxes = [];
     this.currentDevicePixelRatio = undefined;
     this.chartArea = undefined;
@@ -370,8 +371,11 @@ class Chart {
 	 */
   _removeUnreferencedMetasets() {
     const me = this;
-    const datasets = me.data.datasets;
-    me._metasets.forEach((meta, index) => {
+    const {_metasets: metasets, data: {datasets}} = me;
+    if (metasets.length > datasets.length) {
+      delete me._stacks;
+    }
+    metasets.forEach((meta, index) => {
       if (datasets.filter(x => x === meta._dataset).length === 0) {
         me._destroyDatasetMeta(index);
       }
