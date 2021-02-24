@@ -64,11 +64,7 @@ describe('Chart.animations', function() {
   it('should assign shared options to target after animations complete', function(done) {
     const chart = {
       draw: function() {},
-      options: {
-        animation: {
-          debug: false
-        }
-      }
+      options: {}
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 
@@ -100,11 +96,7 @@ describe('Chart.animations', function() {
   it('should not assign shared options to target when animations are cancelled', function(done) {
     const chart = {
       draw: function() {},
-      options: {
-        animation: {
-          debug: false
-        }
-      }
+      options: {}
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 
@@ -141,11 +133,7 @@ describe('Chart.animations', function() {
   it('should assign final shared options to target after animations complete', function(done) {
     const chart = {
       draw: function() {},
-      options: {
-        animation: {
-          debug: false
-        }
-      }
+      options: {}
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 
