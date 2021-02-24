@@ -77,6 +77,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * Polar area `startAngle` option is now consistent with `Radar`, 0 is at top and value is in degrees. Default is changed from `-½π` to  `0`.
 * Doughnut `rotation` option is now in degrees and 0 is at top. Default is changed from `-½π` to  `0`.
 * Doughnut `circumference` option is now in degrees. Default is changed from `2π` to `360`.
+* Doughnut `cutoutPercentage` was renamed to `cutout`and accepts pixels as numer and percent as string ending with `%`.
 * `scale` option was removed in favor of `options.scales.r` (or any other scale id, with `axis: 'r'`)
 * `scales.[x/y]Axes` arrays were removed. Scales are now configured directly to `options.scales` object with the object key being the scale Id.
 * `scales.[x/y]Axes.barPercentage` was moved to dataset option `barPercentage`

@@ -70,7 +70,7 @@ describe('Chart.controllers.doughnut', function() {
           animateRotate: true,
           animateScale: false
         },
-        cutoutPercentage: 50,
+        cutout: '50%',
         rotation: 0,
         circumference: 360,
         elements: {
@@ -169,7 +169,7 @@ describe('Chart.controllers.doughnut', function() {
           legend: false,
           title: false,
         },
-        cutoutPercentage: 50,
+        cutout: '50%',
         rotation: 270,
         circumference: 90,
         elements: {
@@ -215,7 +215,7 @@ describe('Chart.controllers.doughnut', function() {
           legend: false,
           title: false
         },
-        cutoutPercentage: 50,
+        cutout: '50%',
         rotation: 270,
         circumference: 90,
         elements: {
@@ -325,7 +325,7 @@ describe('Chart.controllers.doughnut', function() {
           }]
         },
         options: {
-          cutoutPercentage: 0,
+          cutout: '50%',
           elements: {
             arc: {
               backgroundColor: 'rgb(100, 150, 200)',
