@@ -114,24 +114,18 @@ class simpleArc {
   pathSegment(ctx, bounds, opts) {
     const {x, y, radius} = this;
     bounds = bounds || {start: 0, end: TAU};
-    if (opts.reverse) {
-      ctx.arc(x, y, radius, bounds.end, bounds.start, true);
-    } else {
-      ctx.arc(x, y, radius, bounds.start, bounds.end);
-    }
+    ctx.arc(x, y, radius, bounds.end, bounds.start, true);
     return !opts.bounds;
   }
 
-  interpolate(point, property) {
+  interpolate(point) {
     const {x, y, radius} = this;
     const angle = point.angle;
-    if (property === 'angle') {
-      return {
-        x: x + Math.cos(angle) * radius,
-        y: y + Math.sin(angle) * radius,
-        angle
-      };
-    }
+    return {
+      x: x + Math.cos(angle) * radius,
+      y: y + Math.sin(angle) * radius,
+      angle
+    };
   }
 }
 
