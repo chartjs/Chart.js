@@ -99,10 +99,10 @@
 
 		// eslint-disable-next-line no-unused-vars
 		function togglePieDoughnut() {
-			if (chart.options.cutoutPercentage) {
-				chart.options.cutoutPercentage = 0;
+			if (chart.options.cutout) {
+				chart.options.cutout = 0;
 			} else {
-				chart.options.cutoutPercentage = 50;
+				chart.options.cutout = '50%';
 			}
 			chart.update();
 		}

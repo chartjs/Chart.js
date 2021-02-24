@@ -22,7 +22,7 @@ module.exports = {
       }]
     },
     options: {
-      outerRadius: 150,
+      radius: 150,
     }
   }
 };

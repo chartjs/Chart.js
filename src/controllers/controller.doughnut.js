@@ -1,12 +1,11 @@
 import DatasetController from '../core/core.datasetController';
 import {formatNumber} from '../core/core.intl';
-import {isArray, numberOrPercentageOf, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians, PI, TAU, HALF_PI} from '../helpers/helpers.math';
+import {isArray, toPercentage, toPixels, valueOrDefault} from '../helpers/helpers.core';
+import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
  */
-
 
 function getRatioAndOffset(rotation, circumference, cutout) {
   let ratioX = 1;
@@ -15,21 +14,18 @@ function getRatioAndOffset(rotation, circumference, cutout) {
   let offsetY = 0;
   // If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
   if (circumference < TAU) {
-    let startAngle = rotation % TAU;
-    startAngle += startAngle >= PI ? -TAU : startAngle < -PI ? TAU : 0;
+    const startAngle = rotation;
     const endAngle = startAngle + circumference;
     const startX = Math.cos(startAngle);
     const startY = Math.sin(startAngle);
     const endX = Math.cos(endAngle);
     const endY = Math.sin(endAngle);
-    const contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= TAU;
-    const contains90 = (startAngle <= HALF_PI && endAngle >= HALF_PI) || endAngle >= TAU + HALF_PI;
-    const contains180 = startAngle === -PI || endAngle >= PI;
-    const contains270 = (startAngle <= -HALF_PI && endAngle >= -HALF_PI) || endAngle >= PI + HALF_PI;
-    const minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
-    const minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
-    const maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
-    const maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
+    const calcMax = (angle, a, b) => _angleBetween(angle, startAngle, endAngle) ? 1 : Math.max(a, a * cutout, b, b * cutout);
+    const calcMin = (angle, a, b) => _angleBetween(angle, startAngle, endAngle) ? -1 : Math.min(a, a * cutout, b, b * cutout);
+    const maxX = calcMax(0, startX, endX);
+    const maxY = calcMax(HALF_PI, startY, endY);
+    const minX = calcMin(PI, startX, endX);
+    const minY = calcMin(PI + HALF_PI, startY, endY);
     ratioX = (maxX - minX) / 2;
     ratioY = (maxY - minY) / 2;
     offsetX = -(maxX + minX) / 2;
@@ -127,7 +123,9 @@ export default class DoughnutController extends DatasetController {
     const {chartArea} = chart;
     const meta = me._cachedMeta;
     const arcs = meta.data;
-    const cutout = me.options.cutoutPercentage / 100 || 0;
+    const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
+    const maxSize = Math.max((Math.min(chartArea.width, chartArea.height) - spacing) / 2, 0);
+    const cutout = Math.min(toPercentage(me.options.cutout, maxSize), 1);
     const chartWeight = me._getRingWeight(me.index);
 
     // Compute the maximal rotation & circumference limits.
@@ -135,11 +133,10 @@ export default class DoughnutController extends DatasetController {
     // are both less than a circle with different rotations (starting angles)
     const {circumference, rotation} = me._getRotationExtents();
     const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(rotation, circumference, cutout);
-    const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
-    const maxWidth = (chartArea.right - chartArea.left - spacing) / ratioX;
-    const maxHeight = (chartArea.bottom - chartArea.top - spacing) / ratioY;
+    const maxWidth = (chartArea.width - spacing) / ratioX;
+    const maxHeight = (chartArea.height - spacing) / ratioY;
     const maxRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
-    const outerRadius = numberOrPercentageOf(me.options.outerRadius, maxRadius);
+    const outerRadius = toPixels(me.options.radius, maxRadius);
     const innerRadius = Math.max(outerRadius * cutout, 0);
     const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
     me.offsetX = offsetX * outerRadius;
@@ -345,7 +342,7 @@ DoughnutController.defaults = {
 
   datasets: {
     // The percentage of the chart that we cut out of the middle.
-    cutoutPercentage: 50,
+    cutout: '50%',
 
     // The rotation of the chart, where the first data arc begins.
     rotation: 0,
@@ -354,7 +351,7 @@ DoughnutController.defaults = {
     circumference: 360,
 
     // The outr radius of the chart
-    outerRadius: '100%'
+    radius: '100%'
   },
 
   indexAxis: 'r',

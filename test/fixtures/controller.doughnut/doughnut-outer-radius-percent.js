@@ -22,7 +22,7 @@ module.exports = {
       }]
     },
     options: {
-      outerRadius: '30%',
+      radius: '30%',
     }
   }
 };

@@ -6,7 +6,7 @@ Pie and doughnut charts are probably the most commonly used charts. They are div
 
 They are excellent at showing the relational proportions between data.
 
-Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `cutoutPercentage`. This equates to what percentage of the inner should be cut out. This defaults to `0` for pie charts, and `50` for doughnuts.
+Pie and doughnut charts are effectively the same class in Chart.js, but have one different default value - their `cutout`. This equates to what portion of the inner should be cut out. This defaults to `0` for pie charts, and `'50%'` for doughnuts.
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
@@ -163,8 +163,8 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `cutoutPercentage` | `number` | `50` - for doughnut, `0` - for pie | The percentage of the chart that is cut out of the middle.
-| `outerRadius` | `number`\|`string` | `100%` | The outer radius of the chart. If `string` and ending with '%', percentage of the maximum radius. `number` is considered to be pixels.
+| `cutout` | `number`\|`string` | `50%` - for doughnut, `0` - for pie | The portion of the chart that is cut out of the middle. If `string` and ending with '%', percentage of the chart radius. `number` is considered to be pixels.
+| `radius` | `number`\|`string` | `100%` | The outer radius of the chart. If `string` and ending with '%', percentage of the maximum radius. `number` is considered to be pixels.
 | `rotation` | `number` | 0 | Starting angle to draw arcs from.
 | `circumference` | `number` | 360 | Sweep to allow arcs to cover.
 | `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
@@ -172,7 +172,7 @@ These are the customisation options specific to Pie & Doughnut charts. These opt
 
 ## Default Options
 
-We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.controllers.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.controllers.pie`, with the only difference being `cutoutPercentage` being set to 0.
+We can also change these default values for each Doughnut type that is created, this object is available at `Chart.defaults.controllers.doughnut`. Pie charts also have a clone of these defaults available to change at `Chart.defaults.controllers.pie`, with the only difference being `cutout` being set to 0.
 
 ## Data Structure
 

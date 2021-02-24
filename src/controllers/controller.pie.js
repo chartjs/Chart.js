@@ -22,6 +22,6 @@ PieController.defaults = {
     circumference: 360,
 
     // The outr radius of the chart
-    outerRadius: '100%'
+    radius: '100%'
   }
 };

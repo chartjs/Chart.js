@@ -9,6 +9,6 @@ const chart = new Chart('id', {
     }]
   },
   options: {
-    outerRadius: () => Math.random() > 0.5 ? 50 : '50%',
+    radius: () => Math.random() > 0.5 ? 50 : '50%',
   }
 });
