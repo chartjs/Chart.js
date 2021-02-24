@@ -164,7 +164,7 @@ export default class DoughnutController extends DatasetController {
     if ((reset && opts.animation.animateRotate) || !this.chart.getDataVisibility(i) || meta._parsed[i] === null) {
       return 0;
     }
-    return me.calculateCircumference(meta._parsed[i]) * circumference / TAU;
+    return me.calculateCircumference(meta._parsed[i] * circumference / TAU);
   }
 
   updateElements(arcs, start, count, mode) {
