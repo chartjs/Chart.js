@@ -80,25 +80,21 @@ function mergeScaleConfig(config, options) {
   return scales;
 }
 
-function initOptions(config, options) {
-  options = options || {};
+function initOptions(config) {
+  const options = config.options || (config.options = {});
 
   options.plugins = valueOrDefault(options.plugins, {});
   options.scales = mergeScaleConfig(config, options);
-
-  return options;
 }
 
 function initConfig(config) {
   config = config || {};
 
-  // Do NOT use mergeConfig for the data object because this method merges arrays
-  // and so would change references to labels and datasets, preventing data updates.
   const data = config.data = config.data || {datasets: [], labels: []};
   data.datasets = data.datasets || [];
   data.labels = data.labels || [];
 
-  config.options = initOptions(config, config.options);
+  initOptions(config);
 
   return config;
 }
@@ -150,14 +146,18 @@ export default class Config {
     return this._config.options;
   }
 
+  set options(options) {
+    this._config.options = options;
+  }
+
   get plugins() {
     return this._config.plugins;
   }
 
-  update(options) {
+  update() {
     const config = this._config;
     this.clearCache();
-    config.options = initOptions(config, options);
+    initOptions(config);
   }
 
   clearCache() {
