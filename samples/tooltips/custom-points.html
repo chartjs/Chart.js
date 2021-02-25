@@ -41,7 +41,7 @@
 		<div class="chartjs-tooltip" id="tooltip-1"></div>
 	</div>
 	<script>
-		var customTooltips = function(context) {
+		var externalTooltips = function(context) {
 			var chart = context.chart;
 			$(chart.canvas).css('cursor', 'pointer');
 
@@ -115,13 +115,13 @@
 					plugins: {
 						title: {
 							display: true,
-							text: 'Chart.js - Custom Tooltips using Data Points'
+							text: 'Chart.js - External Tooltips using Data Points'
 						},
 						tooltip: {
 							enabled: false,
 							mode: 'index',
 							intersect: false,
-							custom: customTooltips
+							external: externalTooltips
 						}
 					}
 				}
