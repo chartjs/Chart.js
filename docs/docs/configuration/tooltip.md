@@ -61,7 +61,7 @@ Example:
 ```javascript
 /**
  * Custom positioner
- * @function Tooltip.positioners.external
+ * @function Tooltip.positioners.myCustomPositioner
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
