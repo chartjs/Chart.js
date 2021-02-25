@@ -60,14 +60,14 @@ Example:
 
 ```javascript
 /**
- * External positioner
+ * Custom positioner
  * @function Tooltip.positioners.external
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
  */
 const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-tooltipPlugin.positioners.external = function(elements, eventPosition) {
+tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition) {
     /** @type {Tooltip} */
     var tooltip = this;
 
