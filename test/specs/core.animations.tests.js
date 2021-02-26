@@ -191,7 +191,7 @@ describe('Chart.animations', function() {
               duration: 100,
               onProgress: (args) => {
                 if (test) {
-                  if (args.currentStep < 70) {
+                  if (args.currentStep < args.numSteps) {
                     // while animating, visible should be truthly
                     expect(args.chart.getDatasetMeta(0).visible).toBeTruthy();
                     count++;
