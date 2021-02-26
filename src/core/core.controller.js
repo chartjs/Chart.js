@@ -242,7 +242,7 @@ class Chart {
 
     me.notifyPlugins('resize', {size: newSize});
 
-    callCallback(options.onResize, [newSize], me);
+    callCallback(options.onResize, [me, newSize], me);
 
     if (me.attached) {
       if (me._doResize()) {

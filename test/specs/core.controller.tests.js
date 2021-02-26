@@ -471,6 +471,39 @@ describe('Chart', function() {
       });
     });
 
+    it('should call onResize with correct arguments and context', function() {
+      let count = 0;
+      let correctThis = false;
+      let size = {
+        width: 0,
+        height: 0
+      };
+      acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          onResize(chart, newSize) {
+            count++;
+            correctThis = this === chart;
+            size.width = newSize.width;
+            size.height = newSize.height;
+          }
+        }
+      }, {
+        canvas: {
+          style: 'width: 150px; height: 245px'
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px'
+        }
+      });
+
+      expect(count).toEqual(1);
+      expect(correctThis).toBeTrue();
+      expect(size).toEqual({width: 300, height: 350});
+    });
+
+
     it('should resize the canvas when parent width changes', function(done) {
       var chart = acquireChart({
         options: {
