@@ -188,7 +188,7 @@ describe('Chart.animations', function() {
           },
           options: {
             animation: {
-              duration: 100,
+              duration: 200,
               onProgress: (args) => {
                 if (test) {
                   if (args.currentStep < args.numSteps) {
@@ -200,8 +200,10 @@ describe('Chart.animations', function() {
               },
               onComplete: (args) => {
                 if (!test) {
-                  test = true;
-                  setTimeout(() => args.chart.hide(0), 1);
+                  setTimeout(() => {
+                    test = true;
+                    args.chart.hide(0);
+                  }, 50);
                 } else {
                   // and when finished, it should be false
                   expect(args.chart.getDatasetMeta(0).visible).toBeFalsy();
