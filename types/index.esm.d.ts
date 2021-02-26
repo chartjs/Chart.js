@@ -12,6 +12,8 @@
  * }
  */
 
+import { DeepPartial, DistributiveArray } from './utils';
+
 import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
@@ -3085,21 +3087,6 @@ export const RadialLinearScale: ChartComponent & {
   new <O extends RadialLinearScaleOptions = RadialLinearScaleOptions>(cfg: AnyObject): RadialLinearScale<O>;
 };
 
-// DeepPartial implementation taken from the utility-types NPM package, which is
-// Copyright (c) 2016 Piotr Witek <piotrek.witek@gmail.com> (http://piotrwitek.github.io)
-// and used under the terms of the MIT license
-export type DeepPartial<T> = T extends Function
-  ? T
-  : T extends Array<infer U>
-  ? _DeepPartialArray<U>
-  : T extends object
-  ? _DeepPartialObject<T>
-  : T | undefined;
-  type _DeepPartialArray<T> = Array<DeepPartial<T>>
-  type _DeepPartialObject<T> = { [P in keyof T]?: DeepPartial<T[P]> };
-
-export type DistributiveArray<T> = T extends unknown ? T[] : never
-
 export interface CartesianScaleTypeRegistry {
   linear: {
     options: LinearScaleOptions;
@@ -3253,7 +3240,6 @@ export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
 export type DefaultDataPoint<TType extends ChartType> = DistributiveArray<ChartTypeRegistry[TType]['defaultDataPoint']>;
 
 export type ParsedDataType<TType extends ChartType = ChartType> = ChartTypeRegistry[TType]['parsedDataType'];
-
 
 export interface ChartDatasetProperties<TType extends ChartType, TData> {
   type?: TType;
