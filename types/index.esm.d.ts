@@ -605,8 +605,6 @@ export interface DatasetControllerChartComponent extends ChartComponent {
   };
 }
 
-// TParsedData defaults to unknown because global defaults are for any chart
-// type, thus the data type can be many different possible values.
 export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions, PluginChartOptions<ChartType> {
   controllers: {
     [key in ChartType]: DeepPartial<
@@ -742,7 +740,6 @@ export const layouts: {
   update(chart: Chart, width: number, height: number): void;
 };
 
-// TParsedData defaults to unknown here since plugins can work for any chart type
 export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> extends ExtendedPlugin<TType> {
   id: string;
 
