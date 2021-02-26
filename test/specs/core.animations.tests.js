@@ -176,7 +176,6 @@ describe('Chart.animations', function() {
   describe('default transitions', function() {
     describe('hide', function() {
       it('should keep dataset visible through the animation', function(done) {
-        let test = false;
         let count = 0;
         window.acquireChart({
           type: 'line',
@@ -188,25 +187,30 @@ describe('Chart.animations', function() {
           },
           options: {
             animation: {
-              duration: 100,
+              duration: 0,
               onProgress: (args) => {
-                if (test) {
-                  if (args.currentStep < args.numSteps) {
-                    // while animating, visible should be truthly
-                    expect(args.chart.getDatasetMeta(0).visible).toBeTruthy();
-                    count++;
-                  }
+                if (!args.chart.isDatasetVisible(0) && args.currentStep / args.numSteps < 0.9) {
+                  // while animating, visible should be truthly
+                  // sometimes its not, thats why we check only up to 90% of the animation
+                  expect(args.chart.getDatasetMeta(0).visible).toBeTruthy();
+                  count++;
                 }
               },
               onComplete: (args) => {
-                if (!test) {
-                  test = true;
-                  setTimeout(() => args.chart.hide(0), 1);
+                if (args.chart.isDatasetVisible(0)) {
+                  args.chart.hide(0);
                 } else {
                   // and when finished, it should be false
                   expect(args.chart.getDatasetMeta(0).visible).toBeFalsy();
                   expect(count).toBeGreaterThan(0);
                   done();
+                }
+              }
+            },
+            transitions: {
+              hide: {
+                animation: {
+                  duration: 100
                 }
               }
             }
