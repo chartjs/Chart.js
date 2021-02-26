@@ -159,7 +159,7 @@ export class Defaults {
 
 // singleton instance
 export default new Defaults({
-  _scriptable: (name) => name !== 'onClick' && name !== 'onHover',
+  _scriptable: (name) => !name.startsWith('on'),
   _indexable: (name) => name !== 'events',
   hover: {
     _fallback: 'interaction'
