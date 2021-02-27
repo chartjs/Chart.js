@@ -76,18 +76,7 @@ export default class TypedRegistry {
 }
 
 function registerDefaults(item, scope, parentScope, relocate) {
-  let defs = item.defaults;
-  if (relocate) {
-    defs = Object.assign({}, defs);
-    const keys = Object.keys(relocate);
-    for (const key of keys) {
-      if (defs[key]) {
-        const dest = relocate[key].replace('{id}', item.id);
-        defaults.set(dest, defs[key]);
-        delete defs[key];
-      }
-    }
-  }
+  const defs = relocate ? relocateDefaults(item, relocate) : item.defaults;
 
   // Inherit the parent's defaults and keep existing defaults
   const itemDefaults = Object.assign(
@@ -106,6 +95,19 @@ function registerDefaults(item, scope, parentScope, relocate) {
   if (item.descriptors) {
     defaults.describe(scope, item.descriptors);
   }
+}
+
+function relocateDefaults(item, relocate) {
+  const defs = Object.assign({}, item.defaults);
+  const keys = Object.keys(relocate);
+  for (const key of keys) {
+    if (defs[key]) {
+      const dest = relocate[key].replace('{id}', item.id);
+      defaults.set(dest, defs[key]);
+      delete defs[key];
+    }
+  }
+  return defs;
 }
 
 function routeDefaults(scope, routes) {
