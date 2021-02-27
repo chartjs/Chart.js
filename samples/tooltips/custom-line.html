@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Line Chart with Custom Tooltips</title>
+	<title>Line Chart with external Tooltips</title>
 	<script src="../../dist/chart.min.js"></script>
 	<script src="../utils.js"></script>
 	<style>
@@ -53,7 +53,7 @@
 			return tooltipEl;
 		};
 
-		var customTooltips = function(context) {
+		var externalTooltips = function(context) {
 			// Tooltip Element
 			var chart = context.chart;
 			var tooltipEl = getOrCreateTooltip(chart);
@@ -156,14 +156,14 @@
 					plugins: {
 						title: {
 							display: true,
-							text: 'Chart.js Line Chart - Custom Tooltips'
+							text: 'Chart.js Line Chart - External Tooltips'
 						},
 						tooltip: {
 							enabled: false,
 							mode: 'index',
 							intersect: false,
 							position: 'nearest',
-							custom: customTooltips
+							external: externalTooltips
 						}
 					}
 				}

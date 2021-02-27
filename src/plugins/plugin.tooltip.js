@@ -548,8 +548,8 @@ export class Tooltip extends Element {
       me._resolveAnimations().update(me, properties);
     }
 
-    if (changed && options.custom) {
-      options.custom.call(me, {chart: me._chart, tooltip: me});
+    if (changed && options.external) {
+      options.external.call(me, {chart: me._chart, tooltip: me});
     }
   }
 
@@ -994,7 +994,7 @@ export class Tooltip extends Element {
     if (changed) {
       me._active = active;
 
-      if (options.enabled || options.custom) {
+      if (options.enabled || options.external) {
         me._eventPosition = {
           x: e.x,
           y: e.y
@@ -1080,7 +1080,7 @@ export default {
 
   defaults: {
     enabled: true,
-    custom: null,
+    external: null,
     position: 'average',
     backgroundColor: 'rgba(0,0,0,0.8)',
     titleColor: '#fff',
@@ -1207,7 +1207,7 @@ export default {
   },
 
   descriptors: {
-    _scriptable: (name) => name !== 'filter' && name !== 'itemSort' && name !== 'custom',
+    _scriptable: (name) => name !== 'filter' && name !== 'itemSort' && name !== 'external',
     _indexable: false,
     callbacks: {
       _scriptable: false,

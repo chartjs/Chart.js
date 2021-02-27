@@ -53,7 +53,7 @@
 			return tooltipEl;
 		};
 
-		Chart.defaults.plugins.tooltip.custom = function(context) {
+		Chart.defaults.plugins.tooltip.external = function(context) {
 			// Tooltip Element
 			var tooltip = context.tooltip;
 			var tooltipEl = getOrCreateTooltip(context.chart);

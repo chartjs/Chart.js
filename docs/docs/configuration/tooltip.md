@@ -9,7 +9,7 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
-| `custom` | `function` | `null` | See [custom tooltip](#external-custom-tooltips) section.
+| `external` | `function` | `null` | See [external tooltip](#external-custom-tooltips) section.
 | `mode` | `string` | | Sets which elements appear in the tooltip. [more...](interactions/modes.md#interaction-modes).
 | `intersect` | `boolean` | | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
@@ -61,13 +61,13 @@ Example:
 ```javascript
 /**
  * Custom positioner
- * @function Tooltip.positioners.custom
+ * @function Tooltip.positioners.myCustomPositioner
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {Point} the tooltip position
  */
 const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-tooltipPlugin.positioners.custom = function(elements, eventPosition) {
+tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition) {
     /** @type {Tooltip} */
     var tooltip = this;
 
@@ -242,7 +242,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 
 ## External (Custom) Tooltips
 
-Custom tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `custom` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable custom tooltips in the global or chart configuration like so:
+External tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `external` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable external tooltips in the global or chart configuration like so:
 
 ```javascript
 var myPieChart = new Chart(ctx, {
@@ -254,7 +254,7 @@ var myPieChart = new Chart(ctx, {
                 // Disable the on-canvas tooltip
                 enabled: false,
 
-                custom: function(context) {
+                external: function(context) {
                     // Tooltip Element
                     var tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -328,7 +328,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See [samples](https://www.chartjs.org/samples/) for examples on how to get started with custom tooltips.
+See [samples](https://www.chartjs.org/samples/) for examples on how to get started with external tooltips.
 
 ## Tooltip Model
 
