@@ -5,8 +5,9 @@ import defaults from './core.defaults';
  */
 
 export default class TypedRegistry {
-  constructor(type, scope) {
+  constructor(type, scope, relocate) {
     this.type = type;
+    this.relocate = relocate;
     this.scope = scope;
     this.items = Object.create(null);
   }
@@ -43,7 +44,7 @@ export default class TypedRegistry {
     }
 
     items[id] = item;
-    registerDefaults(item, scope, parentScope);
+    registerDefaults(item, scope, parentScope, this.relocate);
 
     return scope;
   }
@@ -74,12 +75,25 @@ export default class TypedRegistry {
   }
 }
 
-function registerDefaults(item, scope, parentScope) {
+function registerDefaults(item, scope, parentScope, relocate) {
+  let defs = item.defaults;
+  if (relocate) {
+    defs = Object.assign({}, defs);
+    const keys = Object.keys(relocate);
+    for (const key of keys) {
+      if (defs[key]) {
+        const dest = relocate[key].replace('{id}', item.id);
+        defaults.set(dest, defs[key]);
+        delete defs[key];
+      }
+    }
+  }
+
   // Inherit the parent's defaults and keep existing defaults
   const itemDefaults = Object.assign(
     Object.create(null),
     parentScope && defaults.get(parentScope),
-    item.defaults,
+    defs,
     defaults.get(scope)
   );
 

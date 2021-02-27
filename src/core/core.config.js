@@ -176,7 +176,7 @@ export default class Config {
       () => [
         `datasets.${datasetType}`,
         `controllers.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
+        `datasets.${datasetType}`,
         ''
       ]);
   }
@@ -193,11 +193,9 @@ export default class Config {
       () => [
         `datasets.${datasetType}.transitions.${transition}`,
         `controllers.${datasetType}.transitions.${transition}`,
-        `controllers.${datasetType}.datasets.transitions.${transition}`,
         `transitions.${transition}`,
         `datasets.${datasetType}`,
         `controllers.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
         ''
       ]);
   }
@@ -214,7 +212,6 @@ export default class Config {
     return cachedKeys(`${datasetType}-${elementType}`,
       () => [
         `datasets.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
         `controllers.${datasetType}.elements.${elementType}`,
         `elements.${elementType}`,
         ''

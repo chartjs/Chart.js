@@ -104,7 +104,7 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
+      expect(options.showLine).toBe(defaults.datasets.line.showLine);
       expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
@@ -128,7 +128,7 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
+      expect(options.showLine).toBe(defaults.datasets.line.showLine);
       expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');

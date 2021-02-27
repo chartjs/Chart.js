@@ -18,18 +18,16 @@ Options are resolved from top to bottom, using a context dependent route.
 
 * dataset
 * options.datasets[`dataset.type`]
-* options.controllers[`dataset.type`].datasets
 * options
 * defaults.datasets[`dataset.type`]
-* defaults.controllers[`dataset.type`].datasets
 * defaults
 
 ### Dataset animation options
 
 * dataset.animation
-* options.controllers[`dataset.type`].datasets.animation
+* options.datasets[`dataset.type`].animation
 * options.animation
-* defaults.controllers[`dataset.type`].datasets.animation
+* defaults.datasets[`dataset.type`].animation
 * defaults.animation
 
 ### Dataset element level options
@@ -38,12 +36,10 @@ Each scope is looked up with `elementType` prefix in the option name first, then
 
 * dataset
 * options.datasets[`dataset.type`]
-* options.controllers[`dataset.type`].datasets
 * options.controllers[`dataset.type`].elements[`elementType`]
 * options.elements[`elementType`]
 * options
 * defaults.datasets[`dataset.type`]
-* defaults.controllers[`dataset.type`].datasets
 * defaults.controllers[`dataset.type`].elements[`elementType`]
 * defaults.elements[`elementType`]
 * defaults
