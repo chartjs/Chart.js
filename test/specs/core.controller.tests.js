@@ -171,6 +171,17 @@ describe('Chart', function() {
       defaults.controllers.line.spanGaps = false;
     });
 
+    it('should initialize config with default dataset options', function() {
+      var defaults = Chart.defaults.controllers.pie.datasets;
+
+      var chart = acquireChart({
+        type: 'pie'
+      });
+
+      var options = chart.options;
+      expect(options.circumference).toBe(defaults.circumference);
+    });
+
     it('should override axis positions that are incorrect', function() {
       var chart = acquireChart({
         type: 'line',
