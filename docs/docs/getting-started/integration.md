@@ -90,6 +90,12 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 ```
 
+And finally there is an separate path to do just the above for you, in one line:
+
+```javascript
+import Chart from 'chart.js/auto';
+```
+
 ## Require JS
 
 **Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/chart.js`, `dist/chart.min.js`, etc.).
