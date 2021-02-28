@@ -172,7 +172,7 @@ export function _descriptors(proxy, defaults = {scriptable: true, indexable: tru
 }
 
 const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
-const needsSubResolver = (prop, value) => isObject(value);
+const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters';
 
 function _cached(target, prop, resolve) {
   let value = target[prop]; // cached value
