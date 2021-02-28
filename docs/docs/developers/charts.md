@@ -97,7 +97,6 @@ class Custom extends BubbleController {
 
         // Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
         const meta = this.getMeta();
-        const meta = this.getMeta();
         const pt0 = meta.data[0];
 
         const {x, y} = pt0.getProps(['x', 'y']);
