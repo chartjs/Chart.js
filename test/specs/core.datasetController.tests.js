@@ -674,7 +674,7 @@ describe('Chart.DatasetController', function() {
     Chart.defaults.borderColor = oldColor;
   });
 
-  it('should read parsing from options when defaul is false', function() {
+  it('should read parsing from options when default is false', function() {
     const originalDefault = Chart.defaults.parsing;
     Chart.defaults.parsing = false;
 
