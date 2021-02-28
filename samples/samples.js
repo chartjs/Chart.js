@@ -268,6 +268,12 @@
 		}, {
 			title: 'Programmatic Event Triggers',
 			path: 'advanced/programmatic-events.html'
+		}, {
+			title: 'Derived Chart Type',
+			path: 'advanced/derived-chart-type.html'
+		}, {
+			title: 'Derived Axis Type',
+			path: 'advanced/derived-axis-type.html'
 		}]
 	}];
 

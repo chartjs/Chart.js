@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Derived Chart Type</title>
+	<script src="../../dist/chart.min.js"></script>
+	<script src="../utils.js"></script>
+	<style type="text/css">
+		canvas{
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container" style="width: 75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+		class Custom extends Chart.controllers.bubble {
+			draw() {
+				// Call bubble controller method to draw all the points
+				super.draw(arguments);
+
+				// Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
+				var meta = this.getMeta();
+				var pt0 = meta.data[0];
+
+				const {x, y} = pt0.getProps(['x', 'y']);
+				const {radius} = pt0.options;
+
+				var ctx = this.chart.ctx;
+				ctx.save();
+				ctx.strokeStyle = 'red';
+				ctx.lineWidth = 1;
+				ctx.strokeRect(x - radius, y - radius, 2 * radius, 2 * radius);
+				ctx.restore();
+			}
+		}
+		Custom.id = 'derivedBubble';
+		Custom.defaults = Chart.controllers.bubble.defaults;
+
+		// Stores the controller so that the chart initialization routine can look it up
+		Chart.register(Custom);
+
+		var color = Chart.helpers.color;
+		var bubbleChartData = {
+			datasets: [{
+				label: 'My First dataset',
+				backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+				borderWidth: 1,
+				data: [{
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}, {
+					x: randomScalingFactor(),
+					y: randomScalingFactor(),
+					r: Math.abs(randomScalingFactor()) / 5,
+				}]
+			}]
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myChart = new Chart(ctx, {
+				type: 'derivedBubble',
+				data: bubbleChartData,
+				options: {
+					responsive: true,
+					plugins: {
+						title: {
+							display: true,
+							text: 'Derived Chart Type'
+						},
+					}
+				}
+			});
+		};
+	</script>
+</body>
+
+</html>

@@ -26,17 +26,21 @@ Dataset controllers must implement the following interface.
 
 ```javascript
 {
-    // Create elements for each piece of data in the dataset. Store elements in an array on the dataset as dataset.metaData
-    addElements: function() {},
+    // Defaults for charts of this type
+    defaults: {
+        // If set to `false` or `null`, no dataset level element is created.
+        // If set to a string, this is the type of element to create for the dataset.
+        // For example, a line create needs to create a line element so this is the string 'line'
+        datasetElementType: string | null | false,
 
-    // Draw the representation of the dataset
-    draw: function() {},
+        // If set to `false` or `null`, no elements are created for each data value.
+        // If set to a string, this is the type of element to create for each data value.
+        // For example, a line create needs to create a point element so this is the string 'point'
+        dataElementType: string | null | false,
+    }
 
-    // Remove hover styling from the given element
-    removeHoverStyle: function(element, datasetIndex, index) {},
-
-    // Add hover styling to the given element
-    setHoverStyle: function(element, datasetIndex, index) {},
+    // ID of the controller
+    id: string;
 
     // Update the elements in response to new data
     // @param mode : update mode, core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`
@@ -48,6 +52,10 @@ The following methods may optionally be overridden by derived dataset controller
 
 ```javascript
 {
+    // Draw the representation of the dataset. The base implementation works in most cases, and an example of a derived version
+    // can be found in the line controller
+    draw: function() {},
+
     // Initializes the controller
     initialize: function() {},
 
@@ -55,8 +63,9 @@ The following methods may optionally be overridden by derived dataset controller
     // chart types using a single scale
     linkScales: function() {},
 
-    // Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately.
-    buildOrUpdateElements: function() {}
+    // Parse the data into the controller meta data. The default implementation will work for cartesian parsing, but an example of an overridden
+    // version can be found in the doughnut controller
+    parse: function(start, count) {},
 }
 ```
 
@@ -83,19 +92,21 @@ For example, to derive a new chart type that extends from a bubble chart, you wo
 import {BubbleController} from 'chart.js';
 class Custom extends BubbleController {
     draw() {
-        // Call super method first
+        // Call bubble controller method to draw all the points
         super.draw(arguments);
 
         // Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
-        var meta = this.getMeta();
-        var pt0 = meta.data[0];
-        var radius = pt0.radius;
+        const meta = this.getMeta();
+        const pt0 = meta.data[0];
 
-        var ctx = this.chart.chart.ctx;
+        const {x, y} = pt0.getProps(['x', 'y']);
+        const {radius} = pt0.options;
+
+        const ctx = this.chart.ctx;
         ctx.save();
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 1;
-        ctx.strokeRect(pt0.x - radius, pt0.y - radius, 2 * radius, 2 * radius);
+        ctx.strokeRect(x - radius, y - radius, 2 * radius, 2 * radius);
         ctx.restore();
     }
 });
