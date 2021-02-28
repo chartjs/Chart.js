@@ -271,6 +271,9 @@
 		}, {
 			title: 'Derived Chart Type',
 			path: 'advanced/derived-chart-type.html'
+		}, {
+			title: 'Derived Axis Type',
+			path: 'advanced/derived-axis-type.html'
 		}]
 	}];
 
