@@ -656,6 +656,28 @@ describe('Chart.helpers.config', function() {
       expect('test' in opts).toBeFalse();
     });
 
+    it('should not create proxy for adapters', function() {
+      const defaults = {
+        scales: {
+          time: {
+            adapters: {
+              date: {
+                locale: {
+                  method: (arg) => arg === undefined ? 'ok' : 'fail'
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const resolver = _createResolver([{}, defaults]);
+      const opts = _attachContext(resolver, {index: 1});
+      const fn = opts.scales.time.adapters.date.locale.method;
+      expect(typeof fn).toBe('function');
+      expect(fn()).toEqual('ok');
+    });
+
     describe('_indexable and _scriptable', function() {
       it('should default to true', function() {
         const options = {

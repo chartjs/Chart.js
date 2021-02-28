@@ -674,6 +674,31 @@ describe('Chart.DatasetController', function() {
     Chart.defaults.borderColor = oldColor;
   });
 
+  it('should read parsing from options when default is false', function() {
+    const originalDefault = Chart.defaults.parsing;
+    Chart.defaults.parsing = false;
+
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [{t: 1, y: 0}]
+        }]
+      },
+      options: {
+        parsing: {
+          xAxisKey: 't'
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data[0].x).not.toBeNaN();
+
+    // Reset old shared state
+    Chart.defaults.parsing = originalDefault;
+  });
+
   describe('resolveDataElementOptions', function() {
     it('should cache options when possible', function() {
       const chart = acquireChart({

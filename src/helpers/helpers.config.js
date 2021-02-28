@@ -172,7 +172,7 @@ export function _descriptors(proxy, defaults = {scriptable: true, indexable: tru
 }
 
 const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
-const needsSubResolver = (prop, value) => isObject(value);
+const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters';
 
 function _cached(target, prop, resolve) {
   let value = target[prop]; // cached value
@@ -258,9 +258,9 @@ function addScopes(set, parentScopes, key, parentFallback) {
         // The fallback will resume to that new scope.
         return fallback;
       }
-    } else if (scope === false && key !== 'fill') {
-      // Fallback to `false` results to `false`, expect for `fill`.
-      // The special case (fill) should be handled through descriptors.
+    } else if (scope === false && defined(parentFallback) && key !== parentFallback) {
+      // Fallback to `false` results to `false`, when falling back to different key.
+      // For example `interaction` from `hover` or `plugins.tooltip` and `animation` from `animations`
       return null;
     }
   }
@@ -272,23 +272,25 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
   const set = new Set([value]);
-  let key = prop;
-  while (key !== false) {
-    key = addScopes(set, allScopes, key, fallback);
-    if (key === null) {
-      return false;
-    }
+  let key = addScopesFromKey(set, allScopes, prop, fallback || prop);
+  if (key === null) {
+    return false;
   }
   if (defined(fallback) && fallback !== prop) {
-    const fallbackScopes = allScopes;
-    key = fallback;
-    while (key !== false) {
-      key = addScopes(set, fallbackScopes, key, fallback);
+    key = addScopesFromKey(set, allScopes, fallback, key);
+    if (key === null) {
+      return false;
     }
   }
   return _createResolver([...set], [''], rootScopes, fallback);
 }
 
+function addScopesFromKey(set, allScopes, key, fallback) {
+  while (key) {
+    key = addScopes(set, allScopes, key, fallback);
+  }
+  return key;
+}
 
 function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
   let value;
