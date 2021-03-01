@@ -274,7 +274,8 @@ describe('Chart.plugins', function() {
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({a: 42});
+      expect(Object.keys(plugin.hook.calls.first().args[2])).toEqual(['a']);
+      expect(plugin.hook.calls.first().args[2]).toEqual(jasmine.objectContaining({a: 42}));
 
       Chart.unregister(plugin);
     });

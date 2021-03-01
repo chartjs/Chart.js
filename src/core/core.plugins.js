@@ -166,5 +166,5 @@ function createDescriptors(chart, plugins, options, all) {
 function pluginOpts(config, plugin, opts, context) {
   const keys = config.pluginScopeKeys(plugin);
   const scopes = config.getOptionScopes(opts, keys);
-  return config.createResolver(scopes, context, [''], {scriptable: false, indexable: false});
+  return config.createResolver(scopes, context, [''], {scriptable: false, indexable: false, allKeys: true});
 }
