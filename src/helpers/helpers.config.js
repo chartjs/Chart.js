@@ -245,14 +245,15 @@ function resolveFallback(fallback, prop, value) {
   return isFunction(fallback) ? fallback(prop, value) : fallback;
 }
 
-const getScope = (key, parent) => key === true ? parent : resolveObjectKey(parent, key);
+const getScope = (key, parent) => key === true ? parent
+  : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
 
 function addScopes(set, parentScopes, key, parentFallback) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
     if (scope) {
       set.add(scope);
-      const fallback = scope._fallback;
+      const fallback = resolveFallback(scope._fallback, key, scope);
       if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
         // When we reach the descriptor that defines a new _fallback, return that.
         // The fallback will resume to that new scope.

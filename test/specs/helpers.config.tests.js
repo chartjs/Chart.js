@@ -128,6 +128,37 @@ describe('Chart.helpers.config', function() {
         });
       });
 
+      it('should support _fallback as function', function() {
+        const descriptors = {
+          _fallback: (prop, value) => prop === 'hover' && value.shouldFall && 'interaction',
+        };
+        const defaults = {
+          interaction: {
+            mode: 'test',
+            priority: 'fall'
+          },
+          hover: {
+            priority: 'main'
+          }
+        };
+        const options = {
+          interaction: {
+            a: 1
+          },
+          hover: {
+            shouldFall: true,
+            b: 2
+          }
+        };
+        const resolver = _createResolver([options, defaults, descriptors]);
+        expect(resolver.hover).toEqualOptions({
+          mode: 'test',
+          priority: 'main',
+          a: 1,
+          b: 2
+        });
+      });
+
       it('should not fallback by default', function() {
         const defaults = {
           hover: {
