@@ -566,7 +566,7 @@ export default class DatasetController {
       parsed = _parsed[i];
       value = parsed[scale.axis];
       otherValue = parsed[otherScale.axis];
-      return (!isFinite(value) || !isFinite(otherValue) || otherMin > otherValue || otherMax < otherValue);
+      return !isFinite(value) || otherMin > otherValue || otherMax < otherValue;
     }
 
     for (i = 0; i < ilen; ++i) {
