@@ -87,6 +87,5 @@
     "typedoc": "^0.20.27",
     "typescript": "^4.1.5",
     "yargs": "^16.2.0"
-  },
-  "dependencies": {}
+  }
 }
