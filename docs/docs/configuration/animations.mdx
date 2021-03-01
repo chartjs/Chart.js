@@ -79,19 +79,23 @@ function example() {
       options: {
         transitions: {
           show: {
-            x: {
-                from: 0
-            },
-            y: {
-                from: 0
-            }
+            animations: {
+              x: {
+                  from: 0
+              },
+              y: {
+                  from: 0
+              }
+            }  
           },
           hide: {
-            x: {
-                to: 0
-            },
-            y: {
-                to: 0
+            animations: {
+              x: {
+                  to: 0
+              },
+              y: {
+                  to: 0
+              }
             }
           }
         }
