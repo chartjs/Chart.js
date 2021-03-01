@@ -316,7 +316,7 @@ export default class Config {
    * @param {object[]} scopes
    * @param {object} [context]
    * @param {string[]} [prefixes]
-   * @param {{scriptable: boolean, indexable: boolean}} [descriptorDefaults]
+   * @param {{scriptable: boolean, indexable: boolean, allKeys?: boolean}} [descriptorDefaults]
    */
   createResolver(scopes, context, prefixes = [''], descriptorDefaults) {
     const {resolver} = getResolver(this._resolverCache, scopes, prefixes);

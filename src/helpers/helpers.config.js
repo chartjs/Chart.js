@@ -86,7 +86,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
  * @param {object} proxy - The Proxy returned by `_createResolver`
  * @param {object} context - Context object for scriptable/indexable options
  * @param {object} [subProxy] - The proxy provided for scriptable options
- * @param {{scriptable: boolean, indexable: boolean}} [descriptorDefaults] - Defaults for descriptors
+ * @param {{scriptable: boolean, indexable: boolean, allKeys?: boolean}} [descriptorDefaults] - Defaults for descriptors
  * @private
  */
 export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
@@ -123,7 +123,9 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
      * Also used by Object.hasOwnProperty.
      */
     getOwnPropertyDescriptor(target, prop) {
-      return Reflect.getOwnPropertyDescriptor(proxy, prop);
+      return target._descriptors.allKeys
+        ? Reflect.has(proxy, prop) ? {enumerable: true, configurable: true} : undefined
+        : Reflect.getOwnPropertyDescriptor(proxy, prop);
     },
 
     /**
@@ -162,8 +164,9 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
  * @private
  */
 export function _descriptors(proxy, defaults = {scriptable: true, indexable: true}) {
-  const {_scriptable = defaults.scriptable, _indexable = defaults.indexable} = proxy;
+  const {_scriptable = defaults.scriptable, _indexable = defaults.indexable, _allKeys = defaults.allKeys} = proxy;
   return {
+    allKeys: _allKeys,
     scriptable: _scriptable,
     indexable: _indexable,
     isScriptable: isFunction(_scriptable) ? _scriptable : () => _scriptable,
