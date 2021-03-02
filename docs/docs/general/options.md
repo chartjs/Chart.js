@@ -10,6 +10,7 @@ Options are resolved from top to bottom, using a context dependent route.
 
 * options
 * defaults.controllers[`config.type`]
+* defaults.datasets[`config.type`]
 * defaults
 
 ### Dataset level options
