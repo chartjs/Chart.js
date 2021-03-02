@@ -2315,12 +2315,20 @@ export interface ExtendedPlugin<
    */
   afterTooltipDraw?(chart: Chart, args: { tooltip: Model }, options: O): void;
 }
+
+export interface ScriptableTooltipContext<TType extends ChartType> {
+  chart: Chart;
+  tooltip: TooltipModel<TType>;
+  tooltipItems: TooltipItem<TType>[];
+}
+export type ScriptableTooltip<T, TType> = T | (TType extends ChartType ? { [TT in TType]: ((ctx: ScriptableTooltipContext<TT>) => T) }[TType] : ((ctx: TType) => T));
+
 export interface TooltipOptions<TType extends ChartType> extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
    */
-  enabled: boolean;
+  enabled: ScriptableTooltip<boolean, TType>;
   /**
    *   See custom tooltip section.
    */
@@ -2328,13 +2336,13 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * The mode for positioning the tooltip
    */
-  position: 'average' | 'nearest';
+  position: ScriptableTooltip<'average' | 'nearest', TType>
 
   /**
    * Override the tooltip alignment calculations
    */
-  xAlign: TooltipAlignment;
-  yAlign: TooltipAlignment;
+  xAlign: ScriptableTooltip<TooltipAlignment, TType>;
+  yAlign: ScriptableTooltip<TooltipAlignment, TType>;
 
   /**
    * Sort tooltip items.
@@ -2347,142 +2355,142 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
    * Background color of the tooltip.
    * @default 'rgba(0, 0, 0, 0.8)'
    */
-  backgroundColor: Color;
+  backgroundColor: ScriptableTooltip<Color, TType>;
   /**
    * Color of title
    * @default '#fff'
    */
-  titleColor: Color;
+  titleColor: ScriptableTooltip<Color, TType>;
   /**
    * See Fonts
    * @default {style: 'bold'}
    */
-  titleFont: FontSpec;
+  titleFont: ScriptableTooltip<FontSpec, TType>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
    */
-  titleSpacing: number;
+  titleSpacing: ScriptableTooltip<number, TType>;
   /**
    * Margin to add on bottom of title section.
    * @default 6
    */
-  titleMarginBottom: number;
+  titleMarginBottom: ScriptableTooltip<number, TType>;
   /**
    * Horizontal alignment of the title text lines.
    * @default 'left'
    */
-  titleAlign: TextAlign;
+  titleAlign: ScriptableTooltip<TextAlign, TType>;
   /**
    * Spacing to add to top and bottom of each tooltip item.
    * @default 2
    */
-  bodySpacing: number;
+  bodySpacing: ScriptableTooltip<number, TType>;
   /**
    * Color of body
    * @default '#fff'
    */
-  bodyColor: Color;
+  bodyColor: ScriptableTooltip<Color, TType>;
   /**
    *   See Fonts.
    * @default {}
    */
-  bodyFont: FontSpec;
+  bodyFont: ScriptableTooltip<FontSpec, TType>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
    */
-  bodyAlign: TextAlign;
+  bodyAlign: ScriptableTooltip<TextAlign, TType>;
   /**
    * Spacing to add to top and bottom of each footer line.
    * @default 2
    */
-  footerSpacing: number;
+  footerSpacing: ScriptableTooltip<number, TType>;
   /**
    * Margin to add before drawing the footer.
    * @default 6
    */
-  footerMarginTop: number;
+  footerMarginTop: ScriptableTooltip<number, TType>;
   /**
    * Color of footer
    * @default '#fff'
    */
-  footerColor: Color;
+  footerColor: ScriptableTooltip<Color, TType>;
   /**
    * See Fonts
    * @default {style: 'bold'}
    */
-  footerFont: FontSpec;
+  footerFont: ScriptableTooltip<FontSpec, TType>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
    */
-  footerAlign: TextAlign;
+  footerAlign: ScriptableTooltip<TextAlign, TType>;
   /**
    * Padding to add to the tooltip
    * @default 6
    */
-  padding: number | ChartArea;
+  padding: ScriptableTooltip<number | ChartArea, TType>;
   /**
    *   Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
    */
-  caretPadding: number;
+  caretPadding: ScriptableTooltip<number, TType>;
   /**
    * Size, in px, of the tooltip arrow.
    * @default 5
    */
-  caretSize: number;
+  caretSize: ScriptableTooltip<number, TType>;
   /**
    * Radius of tooltip corner curves.
    * @default 6
    */
-  cornerRadius: number;
+  cornerRadius: ScriptableTooltip<number, TType>;
   /**
    * Color to draw behind the colored boxes when multiple items are in the tooltip.
    * @default '#fff'
    */
-  multiKeyBackground: Color;
+  multiKeyBackground: ScriptableTooltip<Color, TType>;
   /**
    * If true, color boxes are shown in the tooltip.
    * @default true
    */
-  displayColors: boolean;
+  displayColors: ScriptableTooltip<boolean, TType>;
   /**
    * Width of the color box if displayColors is true.
    * @default bodyFont.size
    */
-  boxWidth: number;
+  boxWidth: ScriptableTooltip<number, TType>;
   /**
    * Height of the color box if displayColors is true.
    * @default bodyFont.size
    */
-  boxHeight: number;
+  boxHeight: ScriptableTooltip<number, TType>;
   /**
    * Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight)
    * @default false
    */
-  usePointStyle: boolean;
+  usePointStyle: ScriptableTooltip<boolean, TType>;
   /**
    * Color of the border.
    * @default 'rgba(0, 0, 0, 0)'
    */
-  borderColor: Color;
+  borderColor: ScriptableTooltip<Color, TType>;
   /**
    * Size of the border.
    * @default 0
    */
-  borderWidth: number;
+  borderWidth: ScriptableTooltip<number, TType>;
   /**
    * true for rendering the legends from right to left.
    */
-  rtl: boolean;
+  rtl: ScriptableTooltip<boolean, TType>;
 
   /**
    * This will force the text direction 'rtl' or 'ltr on the canvas for rendering the tooltips, regardless of the css specified on the canvas
    * @default canvas's default
    */
-  textDirection: string;
+  textDirection: ScriptableTooltip<string, TType>;
 
   animation: AnimationSpec<TType>;
   animations: AnimationsSpec<TType>;
