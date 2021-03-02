@@ -5,7 +5,7 @@ const chart = new Chart('id', {
   data: {
     labels: [],
     datasets: [{
-      data: [],
+      data: [{ x: 1, y: 1 }],
       pointRadius: (ctx) => ctx.parsed.x,
     }]
   },
