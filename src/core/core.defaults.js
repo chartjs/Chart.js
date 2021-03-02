@@ -31,6 +31,7 @@ export class Defaults {
     this.borderColor = 'rgba(0,0,0,0.1)';
     this.color = '#666';
     this.controllers = {};
+    this.datasets = {};
     this.devicePixelRatio = (context) => context.chart.platform.getDevicePixelRatio();
     this.elements = {};
     this.events = [

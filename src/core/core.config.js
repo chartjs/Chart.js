@@ -272,12 +272,12 @@ export default class Config {
    * @return {object[]}
    */
   chartOptionScopes() {
-    const controllerDefaults = defaults.controllers[this.type] || {};
+    const type = this.type;
     return [
       this.options,
-      controllerDefaults,
-      controllerDefaults.datasets || {},
-      {type: this.type},
+      defaults.controllers[type] || {},
+      defaults.datasets[type] || {},
+      {type},
       defaults,
       defaults.descriptors
     ];

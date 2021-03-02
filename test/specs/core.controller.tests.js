@@ -172,7 +172,7 @@ describe('Chart', function() {
     });
 
     it('should initialize config with default dataset options', function() {
-      var defaults = Chart.defaults.controllers.pie.datasets;
+      var defaults = Chart.defaults.datasets.pie;
 
       var chart = acquireChart({
         type: 'pie'
