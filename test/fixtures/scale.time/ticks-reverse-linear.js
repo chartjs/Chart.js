@@ -13,7 +13,6 @@ module.exports = {
           time: {
             parser: 'YYYY'
           },
-          distribution: 'linear',
           reverse: true,
           ticks: {
             source: 'labels'
