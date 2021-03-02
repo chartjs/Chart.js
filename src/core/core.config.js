@@ -176,7 +176,6 @@ export default class Config {
       () => [
         `datasets.${datasetType}`,
         `controllers.${datasetType}`,
-        `datasets.${datasetType}`,
         ''
       ]);
   }
