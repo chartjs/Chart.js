@@ -1,6 +1,6 @@
 import adapters from '../core/core.adapters';
 import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians, isNumber} from '../helpers/helpers.math';
+import {toRadians, isNumber, _limitValue} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
 
@@ -379,6 +379,8 @@ export default class TimeScale extends Scale {
         end = (last - me.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
       }
     }
+    start = _limitValue(start, 0, 0.25);
+    end = _limitValue(end, 0, 0.25);
 
     me._offsets = {start, end, factor: 1 / (start + 1 + end)};
   }
@@ -404,7 +406,7 @@ export default class TimeScale extends Scale {
     const hasWeekday = isNumber(weekday) || weekday === true;
     const ticks = {};
     let first = min;
-    let time;
+    let time, count;
 
     // For 'week' unit, handle the first day of week option
     if (hasWeekday) {
@@ -420,11 +422,11 @@ export default class TimeScale extends Scale {
     }
 
     const timestamps = options.ticks.source === 'data' && me.getDataTimestamps();
-    for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+    for (time = first, count = 0; time < max; time = +adapter.add(time, stepSize, minor), count++) {
       addTick(ticks, time, timestamps);
     }
 
-    if (time === max || options.bounds === 'ticks') {
+    if (time === max || options.bounds === 'ticks' || count === 1) {
       addTick(ticks, time, timestamps);
     }
 
