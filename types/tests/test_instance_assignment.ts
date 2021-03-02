@@ -5,7 +5,7 @@ const chart = new Chart('id', {
   data: {
     labels: [],
     datasets: [{
-      data: [],
+      data: [{ x: 0, y: 1 }],
       pointRadius: (ctx) => ctx.parsed.x,
     }]
   },
@@ -18,3 +18,6 @@ interface Context {
 export const ctx: Context = {
   chart: chart
 };
+
+// @ts-expect-error Type '{ x: number; y: number; }[]' is not assignable to type 'number[]'.
+export const dataArray: number[] = chart.data.datasets[0].data;

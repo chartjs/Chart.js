@@ -12,7 +12,7 @@
  * }
  */
 
-import { DeepPartial, DistributiveArray } from './utils';
+import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
@@ -29,20 +29,20 @@ export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export { LayoutItem, LayoutPosition } from './layout';
 
-export interface ScriptableContext<TParsedData extends unknown> {
+export interface ScriptableContext<TType extends ChartType> {
   active: boolean;
-  chart: Chart;
+  chart: UnionToIntersection<Chart<TType>>;
   dataIndex: number;
-  dataset: ChartDataset;
+  dataset: UnionToIntersection<ChartDataset<TType>>;
   datasetIndex: number;
-  parsed: TParsedData;
+  parsed: UnionToIntersection<ParsedDataType<TType>>;
   raw: unknown;
 }
 
-export type Scriptable<T, TType> = T | (TType extends ChartType ? { [TT in TType]: ((ctx: ScriptableContext<ParsedDataType<TT>>) => T) }[TType] : ((ctx: TType) => T));
-export type ScriptableOptions<T, TType extends ChartType> = { [P in keyof T]: Scriptable<T[P], TType> };
-export type ScriptableAndArray<T, TType extends ChartType> = readonly T[] | Scriptable<T, TType>;
-export type ScriptableAndArrayOptions<T, TType extends ChartType> = { [P in keyof T]: ScriptableAndArray<T[P], TType> };
+export type Scriptable<T, TContext> = T | ((ctx: TContext) => T);
+export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
+export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
+export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
 
 export interface ParsingOptions {
   /**
@@ -92,8 +92,8 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 
 export interface BarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<BarOptions, 'bar'>,
-    ScriptableAndArrayOptions<CommonHoverOptions, 'bar'> {
+    ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar'>>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -151,8 +151,8 @@ export const BarController: ChartComponent & {
 
 export interface BubbleControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointOptions, 'bubble'>,
-    ScriptableAndArrayOptions<PointHoverOptions, 'bubble'> {}
+    ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
+    ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
 
 export interface BubbleDataPoint {
   /**
@@ -179,10 +179,10 @@ export const BubbleController: ChartComponent & {
 
 export interface LineControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointPrefixedOptions, 'line'>,
-    ScriptableAndArrayOptions<PointPrefixedHoverOptions, 'line'>,
-    ScriptableOptions<LineOptions, 'line'>,
-    ScriptableOptions<LineHoverOptions, 'line'> {
+    ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<'line'>>,
+    ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<'line'>>,
+    ScriptableOptions<LineOptions, ScriptableContext<'line'>>,
+    ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -237,8 +237,8 @@ export const ScatterController: ChartComponent & {
 
 export interface DoughnutControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<ArcOptions, 'doughnut'>,
-    ScriptableAndArrayOptions<ArcHoverOptions, 'doughnut'> {
+    ScriptableAndArrayOptions<ArcOptions, ScriptableContext<'doughnut'>>,
+    ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>> {
 
   /**
    * Sweep to allow arcs to cover.
@@ -285,13 +285,13 @@ export interface DoughnutControllerChartOptions {
    * String ending with '%' means percentage, number means pixels.
    * @default 50
    */
-  cutout: Scriptable<number | string, 'doughnut'>;
+  cutout: Scriptable<number | string, ScriptableContext<'doughnut'>>;
 
   /**
    * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
    * @default '100%'
    */
-  radius: Scriptable<number | string, 'doughnut'>;
+  radius: Scriptable<number | string, ScriptableContext<'doughnut'>>;
 
   /**
    * Starting angle to draw arcs from.
@@ -361,10 +361,10 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableOptions<PointPrefixedOptions, 'radar'>,
-    ScriptableOptions<PointPrefixedHoverOptions, 'radar'>,
-    ScriptableOptions<LineOptions, 'radar'>,
-    ScriptableOptions<LineHoverOptions, 'radar'> {
+    ScriptableOptions<PointPrefixedOptions, ScriptableContext<'radar'>>,
+    ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
+    ScriptableOptions<LineOptions, ScriptableContext<'radar'>>,
+    ScriptableOptions<LineHoverOptions, ScriptableContext<'radar'>> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -1432,7 +1432,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
-    padding: Scriptable<number | ChartArea, TType>;
+    padding: Scriptable<number | ChartArea, ScriptableContext<TType>>;
   };
 }
 
@@ -1474,30 +1474,30 @@ export type AnimationSpec<TType extends ChartType> = {
    * The number of milliseconds an animation takes.
    * @default 1000
    */
-  duration: Scriptable<number, TType>;
+  duration: Scriptable<number, ScriptableContext<TType>>;
   /**
    * Easing function to use
    * @default 'easeOutQuart'
    */
-  easing: Scriptable<EasingFunction, TType>;
+  easing: Scriptable<EasingFunction, ScriptableContext<TType>>;
 
   /**
    * Running animation count + FPS display in upper left corner of the chart.
    * @default false
    */
-  debug: Scriptable<boolean, TType>;
+  debug: Scriptable<boolean, ScriptableContext<TType>>;
 
   /**
    * Delay before starting the animations.
    * @default 0
    */
-  delay: Scriptable<number, TType>;
+  delay: Scriptable<number, ScriptableContext<TType>>;
 
   /**
    *   If set to true, the animations loop endlessly.
    * @default false
    */
-  loop: Scriptable<boolean, TType>;
+  loop: Scriptable<boolean, ScriptableContext<TType>>;
 }
 
 export type AnimationsSpec<TType extends ChartType> = {
@@ -1514,11 +1514,11 @@ export type AnimationsSpec<TType extends ChartType> = {
     /**
      * Start value for the animation. Current value is used when undefined
      */
-    from: Scriptable<Color | number | boolean, TType>;
+    from: Scriptable<Color | number | boolean, ScriptableContext<TType>>;
     /**
      *
      */
-    to: Scriptable<Color | number | boolean, TType>;
+    to: Scriptable<Color | number | boolean, ScriptableContext<TType>>;
   }
 }
 
