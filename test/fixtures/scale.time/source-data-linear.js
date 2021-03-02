@@ -16,8 +16,7 @@ module.exports = {
           },
           ticks: {
             source: 'data'
-          },
-          distribution: 'linear'
+          }
         },
         y: {
           display: false

@@ -22,7 +22,6 @@ module.exports = {
           time: {
             parser: 'YYYY'
           },
-          distribution: 'linear',
           ticks: {
             source: 'data'
           }

@@ -36,7 +36,6 @@ module.exports = {
         x: {
           display: false,
           type: 'time',
-          distribution: 'linear',
           ticks: {
             source: 'auto'
           },
