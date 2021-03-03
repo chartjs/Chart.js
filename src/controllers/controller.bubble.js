@@ -133,12 +133,19 @@ BubbleController.id = 'bubble';
 BubbleController.defaults = {
   datasetElementType: false,
   dataElementType: 'point',
+
   animations: {
     numbers: {
       type: 'number',
       properties: ['x', 'y', 'borderWidth', 'radius']
     }
-  },
+  }
+};
+
+/**
+ * @type {any}
+ */
+BubbleController.overrides = {
   scales: {
     x: {
       type: 'linear'

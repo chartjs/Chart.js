@@ -10,7 +10,7 @@ import {each, callback as call, _capitalize} from '../helpers/helpers.core';
  */
 export class Registry {
   constructor() {
-    this.controllers = new TypedRegistry(DatasetController, 'controllers');
+    this.controllers = new TypedRegistry(DatasetController, 'datasets', true);
     this.elements = new TypedRegistry(Element, 'elements');
     this.plugins = new TypedRegistry(Object, 'plugins');
     this.scales = new TypedRegistry(Scale, 'scales');

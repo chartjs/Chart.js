@@ -1,6 +1,6 @@
 import { Chart } from '../../../index.esm';
 
-Chart.defaults.controllers.bubble.plugins.tooltip.callbacks.label = (item) => {
+Chart.overrides.bubble.plugins.tooltip.callbacks.label = (item) => {
   const { x, y, _custom: r } = item.parsed;
   return `${item.label}: (${x}, ${y}, ${r})`;
 };

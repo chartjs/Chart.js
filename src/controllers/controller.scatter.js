@@ -10,19 +10,14 @@ ScatterController.id = 'scatter';
  * @type {any}
  */
 ScatterController.defaults = {
-  scales: {
-    x: {
-      type: 'linear'
-    },
-    y: {
-      type: 'linear'
-    }
-  },
+  showLine: false,
+  fill: false
+};
 
-  datasets: {
-    showLine: false,
-    fill: false
-  },
+/**
+ * @type {any}
+ */
+ScatterController.overrides = {
 
   interaction: {
     mode: 'point'
@@ -38,6 +33,15 @@ ScatterController.defaults = {
           return '(' + item.label + ', ' + item.formattedValue + ')';
         }
       }
+    }
+  },
+
+  scales: {
+    x: {
+      type: 'linear'
+    },
+    y: {
+      type: 'linear'
     }
   }
 };

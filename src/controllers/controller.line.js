@@ -111,11 +111,14 @@ LineController.defaults = {
   datasetElementType: 'line',
   dataElementType: 'point',
 
-  datasets: {
-    showLine: true,
-    spanGaps: false,
-  },
+  showLine: true,
+  spanGaps: false,
+};
 
+/**
+ * @type {any}
+ */
+LineController.overrides = {
   interaction: {
     mode: 'index'
   },

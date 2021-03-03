@@ -188,12 +188,12 @@ The line chart defines the following configuration options. These options are lo
 
 ## Default Options
 
-It is common to want to apply a configuration setting to all created line charts. The global line chart settings are stored in `Chart.defaults.controllers.line`. Changing the global options only affects charts created after the change. Existing charts are not changed.
+It is common to want to apply a configuration setting to all created line charts. The global line chart settings are stored in `Chart.overrides.line`. Changing the global options only affects charts created after the change. Existing charts are not changed.
 
 For example, to configure all line charts with `spanGaps = true` you would do:
 
 ```javascript
-Chart.defaults.controllers.line.spanGaps = true;
+Chart.overrides.line.spanGaps = true;
 ```
 
 ## Data Structure

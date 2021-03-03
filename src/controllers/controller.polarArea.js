@@ -131,25 +131,16 @@ PolarAreaController.defaults = {
       properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
     },
   },
-  aspectRatio: 1,
   indexAxis: 'r',
-  scales: {
-    r: {
-      type: 'radialLinear',
-      angleLines: {
-        display: false
-      },
-      beginAtZero: true,
-      gridLines: {
-        circular: true
-      },
-      pointLabels: {
-        display: false
-      }
-    }
-  },
-
   startAngle: 0,
+};
+
+/**
+ * @type {any}
+ */
+PolarAreaController.overrides = {
+  aspectRatio: 1,
+
   plugins: {
     legend: {
       labels: {
@@ -193,6 +184,21 @@ PolarAreaController.defaults = {
         }
       }
     }
-  }
+  },
 
+  scales: {
+    r: {
+      type: 'radialLinear',
+      angleLines: {
+        display: false
+      },
+      beginAtZero: true,
+      gridLines: {
+        circular: true
+      },
+      pointLabels: {
+        display: false
+      }
+    }
+  }
 };

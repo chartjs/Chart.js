@@ -1,7 +1,6 @@
 describe('Default Configs', function() {
   describe('Bubble Chart', function() {
     it('should return correct tooltip strings', function() {
-      var config = Chart.defaults.controllers.bubble;
       var chart = window.acquireChart({
         type: 'bubble',
         data: {
@@ -14,7 +13,6 @@ describe('Default Configs', function() {
             }]
           }]
         },
-        options: config
       });
 
       // fake out the tooltip hover and force the tooltip to update
@@ -33,7 +31,6 @@ describe('Default Configs', function() {
 
   describe('Doughnut Chart', function() {
     it('should return correct tooltip strings', function() {
-      var config = Chart.defaults.controllers.doughnut;
       var chart = window.acquireChart({
         type: 'doughnut',
         data: {
@@ -42,7 +39,6 @@ describe('Default Configs', function() {
             data: [10, 20, 30],
           }]
         },
-        options: config
       });
 
       // fake out the tooltip hover and force the tooltip to update
@@ -59,7 +55,6 @@ describe('Default Configs', function() {
     });
 
     it('should return correct tooltip string for a multiline label', function() {
-      var config = Chart.defaults.controllers.doughnut;
       var chart = window.acquireChart({
         type: 'doughnut',
         data: {
@@ -68,7 +63,6 @@ describe('Default Configs', function() {
             data: [10, 20, 30],
           }]
         },
-        options: config
       });
 
       // fake out the tooltip hover and force the tooltip to update
@@ -89,7 +83,6 @@ describe('Default Configs', function() {
     });
 
     it('should return correct legend label objects', function() {
-      var config = Chart.defaults.controllers.doughnut;
       var chart = window.acquireChart({
         type: 'doughnut',
         data: {
@@ -101,7 +94,6 @@ describe('Default Configs', function() {
             borderColor: '#000'
           }]
         },
-        options: config
       });
 
       var expected = [{
@@ -130,7 +122,7 @@ describe('Default Configs', function() {
     });
 
     it('should hide the correct arc when a legend item is clicked', function() {
-      var config = Chart.defaults.controllers.doughnut;
+      var config = Chart.overrides.doughnut;
       var chart = window.acquireChart({
         type: 'doughnut',
         data: {
@@ -142,7 +134,6 @@ describe('Default Configs', function() {
             borderColor: '#000'
           }]
         },
-        options: config
       });
       spyOn(chart, 'update').and.callThrough();
 
@@ -159,7 +150,6 @@ describe('Default Configs', function() {
 
   describe('Polar Area Chart', function() {
     it('should return correct tooltip strings', function() {
-      var config = Chart.defaults.controllers.polarArea;
       var chart = window.acquireChart({
         type: 'polarArea',
         data: {
@@ -168,7 +158,6 @@ describe('Default Configs', function() {
             data: [10, 20, 30],
           }]
         },
-        options: config
       });
 
       // fake out the tooltip hover and force the tooltip to update
@@ -185,7 +174,6 @@ describe('Default Configs', function() {
     });
 
     it('should return correct legend label objects', function() {
-      var config = Chart.defaults.controllers.polarArea;
       var chart = window.acquireChart({
         type: 'polarArea',
         data: {
@@ -197,7 +185,6 @@ describe('Default Configs', function() {
             borderColor: '#000'
           }]
         },
-        options: config
       });
 
       var expected = [{
@@ -226,7 +213,7 @@ describe('Default Configs', function() {
     });
 
     it('should hide the correct arc when a legend item is clicked', function() {
-      var config = Chart.defaults.controllers.polarArea;
+      var config = Chart.overrides.polarArea;
       var chart = window.acquireChart({
         type: 'polarArea',
         data: {
@@ -238,7 +225,6 @@ describe('Default Configs', function() {
             borderColor: '#000'
           }]
         },
-        options: config
       });
       spyOn(chart, 'update').and.callThrough();
 

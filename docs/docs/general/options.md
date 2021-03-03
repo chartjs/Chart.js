@@ -9,7 +9,7 @@ Options are resolved from top to bottom, using a context dependent route.
 ### Chart level options
 
 * options
-* defaults.controllers[`config.type`]
+* overrides[`config.type`]
 * defaults
 
 ### Dataset level options
@@ -18,18 +18,18 @@ Options are resolved from top to bottom, using a context dependent route.
 
 * dataset
 * options.datasets[`dataset.type`]
-* options.controllers[`dataset.type`].datasets
 * options
+* overrides[`config.type`].datasets[`dataset.type`]
 * defaults.datasets[`dataset.type`]
-* defaults.controllers[`dataset.type`].datasets
 * defaults
 
 ### Dataset animation options
 
 * dataset.animation
-* options.controllers[`dataset.type`].datasets.animation
+* options.datasets[`dataset.type`].animation
 * options.animation
-* defaults.controllers[`dataset.type`].datasets.animation
+* overrides[`config.type`].datasets[`dataset.type`].animation
+* defaults.datasets[`dataset.type`].animation
 * defaults.animation
 
 ### Dataset element level options
@@ -38,31 +38,30 @@ Each scope is looked up with `elementType` prefix in the option name first, then
 
 * dataset
 * options.datasets[`dataset.type`]
-* options.controllers[`dataset.type`].datasets
-* options.controllers[`dataset.type`].elements[`elementType`]
+* options.datasets[`dataset.type`].elements[`elementType`]
 * options.elements[`elementType`]
 * options
+* overrides[`config.type`].datasets[`dataset.type`]
+* overrides[`config.type`].datasets[`dataset.type`].elements[`elementType`]
 * defaults.datasets[`dataset.type`]
-* defaults.controllers[`dataset.type`].datasets
-* defaults.controllers[`dataset.type`].elements[`elementType`]
+* defaults.datasets[`dataset.type`].elements[`elementType`]
 * defaults.elements[`elementType`]
 * defaults
 
 ### Scale options
 
 * options.scales
-* defaults.controllers[`config.type`].scales
-* defaults.controllers[`dataset.type`].scales
+* overrides[`config.type`].scales
 * defaults.scales
+* defaults.scale
 
 ### Plugin options
 
 A plugin can provide `additionalOptionScopes` array of paths to additionally look for its options in. For root scope, use empty string: `''`. Most core plugins also take options from root scope.
 
 * options.plugins[`plugin.id`]
-* options.controllers[`config.type`].plugins[`plugin.id`]
 * (options.[`...plugin.additionalOptionScopes`])
-* defaults.controllers[`config.type`].plugins[`plugin.id`]
+* overrides[`config.type`].plugins[`plugin.id`]
 * defaults.plugins[`plugin.id`]
 * (defaults.[`...plugin.additionalOptionScopes`])
 

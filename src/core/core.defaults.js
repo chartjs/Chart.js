@@ -2,6 +2,7 @@ import {getHoverColor} from '../helpers/helpers.color';
 import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
 
 const privateSymbol = Symbol('private');
+const overridesSymbol = Symbol('overrides');
 
 /**
  * @param {object} node
@@ -20,6 +21,13 @@ function getScope(node, key) {
   return node;
 }
 
+function set(root, scope, values) {
+  if (typeof scope === 'string') {
+    return merge(getScope(root, scope), values);
+  }
+  return merge(getScope(root, ''), scope);
+}
+
 /**
  * Please use the module's default export which provides a singleton instance
  * Note: class is exported for typedoc
@@ -30,7 +38,7 @@ export class Defaults {
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
     this.color = '#666';
-    this.controllers = {};
+    this.datasets = {};
     this.devicePixelRatio = (context) => context.chart.platform.getDevicePixelRatio();
     this.elements = {};
     this.events = [
@@ -73,6 +81,11 @@ export class Defaults {
       writable: false
     });
 
+    Object.defineProperty(this, overridesSymbol, {
+      value: Object.create(null),
+      writable: false
+    });
+
     this.describe(descriptors);
   }
 
@@ -81,10 +94,7 @@ export class Defaults {
 	 * @param {object} [values]
 	 */
   set(scope, values) {
-    if (typeof scope === 'string') {
-      return merge(getScope(this, scope), values);
-    }
-    return merge(getScope(this, ''), scope);
+    return set(this, scope, values);
   }
 
   /**
@@ -99,15 +109,19 @@ export class Defaults {
 	 * @param {object} [values]
 	 */
   describe(scope, values) {
-    const root = this[privateSymbol];
-    if (typeof scope === 'string') {
-      return merge(getScope(root, scope), values);
-    }
-    return merge(getScope(root, ''), scope);
+    return set(this[privateSymbol], scope, values);
+  }
+
+  override(scope, values) {
+    return set(this[overridesSymbol], scope, values);
   }
 
   get descriptors() {
     return this[privateSymbol];
+  }
+
+  get overrides() {
+    return this[overridesSymbol];
   }
 
   /**

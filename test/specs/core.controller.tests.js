@@ -1,5 +1,7 @@
 describe('Chart', function() {
 
+  const overrides = Chart.overrides;
+
   // https://github.com/chartjs/Chart.js/issues/2481
   // See global.deprecations.tests.js for backward compatibility
   it('should be defined and prototype of chart instances', function() {
@@ -92,11 +94,10 @@ describe('Chart', function() {
     it('should initialize config with default interaction options', function() {
       var callback = function() {};
       var defaults = Chart.defaults;
-      var defaultMode = defaults.controllers.line.interaction.mode;
+      var defaultMode = overrides.line.interaction.mode;
 
       defaults.hover.onHover = callback;
-      defaults.controllers.line.spanGaps = true;
-      defaults.controllers.line.interaction.mode = 'test';
+      overrides.line.interaction.mode = 'test';
 
       var chart = acquireChart({
         type: 'line'
@@ -104,14 +105,11 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
-      expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
 
       defaults.hover.onHover = null;
-      defaults.controllers.line.spanGaps = false;
-      defaults.controllers.line.interaction.mode = defaultMode;
+      overrides.line.interaction.mode = defaultMode;
     });
 
     it('should initialize config with default hover options', function() {
@@ -119,8 +117,7 @@ describe('Chart', function() {
       var defaults = Chart.defaults;
 
       defaults.hover.onHover = callback;
-      defaults.controllers.line.spanGaps = true;
-      defaults.controllers.line.hover.mode = 'test';
+      overrides.line.hover.mode = 'test';
 
       var chart = acquireChart({
         type: 'line'
@@ -128,23 +125,21 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.showLine).toBe(defaults.controllers.line.datasets.showLine);
-      expect(options.spanGaps).toBe(true);
       expect(options.hover.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
 
       defaults.hover.onHover = null;
-      defaults.controllers.line.spanGaps = false;
-      delete defaults.controllers.line.hover.mode;
+      delete overrides.line.hover.mode;
     });
 
     it('should override default options', function() {
       var callback = function() {};
       var defaults = Chart.defaults;
+      var defaultSpanGaps = defaults.datasets.line.spanGaps;
 
       defaults.hover.onHover = callback;
-      defaults.controllers.line.hover.mode = 'x-axis';
-      defaults.controllers.line.spanGaps = true;
+      overrides.line.hover.mode = 'x-axis';
+      defaults.datasets.line.spanGaps = true;
 
       var chart = acquireChart({
         type: 'line',
@@ -167,12 +162,12 @@ describe('Chart', function() {
       expect(options.plugins.title.position).toBe('bottom');
 
       defaults.hover.onHover = null;
-      delete defaults.controllers.line.hover.mode;
-      defaults.controllers.line.spanGaps = false;
+      delete overrides.line.hover.mode;
+      defaults.datasets.line.spanGaps = defaultSpanGaps;
     });
 
     it('should initialize config with default dataset options', function() {
-      var defaults = Chart.defaults.controllers.pie.datasets;
+      var defaults = Chart.defaults.datasets.pie;
 
       var chart = acquireChart({
         type: 'pie'
@@ -431,7 +426,7 @@ describe('Chart', function() {
       expect(chart.scales.x.options._jasmineCheck).toBeDefined();
       expect(chart.scales.y.options._jasmineCheck).toBeDefined();
 
-      expect(Chart.defaults.controllers.line._jasmineCheck).not.toBeDefined();
+      expect(Chart.overrides.line._jasmineCheck).not.toBeDefined();
       expect(Chart.defaults._jasmineCheck).not.toBeDefined();
       expect(Chart.defaults.scales.linear._jasmineCheck).not.toBeDefined();
       expect(Chart.defaults.scales.category._jasmineCheck).not.toBeDefined();
