@@ -2317,18 +2317,17 @@ export interface ExtendedPlugin<
 }
 
 export interface ScriptableTooltipContext<TType extends ChartType> {
-  chart: Chart;
-  tooltip: TooltipModel<TType>;
-  tooltipItems: TooltipItem<TType>[];
+  chart: UnionToIntersection<Chart<TType>>;
+  tooltip: UnionToIntersection<TooltipModel<TType>>;
+  tooltipItems: UnionToIntersection<TooltipItem<TType>[]>;
 }
-export type ScriptableTooltip<T, TType> = T | (TType extends ChartType ? { [TT in TType]: ((ctx: ScriptableTooltipContext<TT>) => T) }[TType] : ((ctx: TType) => T));
 
 export interface TooltipOptions<TType extends ChartType> extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
    */
-  enabled: ScriptableTooltip<boolean, TType>;
+  enabled: Scriptable<boolean, ScriptableTooltipContext<TType>>;
   /**
    *   See custom tooltip section.
    */
@@ -2336,13 +2335,13 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * The mode for positioning the tooltip
    */
-  position: ScriptableTooltip<'average' | 'nearest', TType>
+  position: Scriptable<'average' | 'nearest', ScriptableTooltipContext<TType>>
 
   /**
    * Override the tooltip alignment calculations
    */
-  xAlign: ScriptableTooltip<TooltipAlignment, TType>;
-  yAlign: ScriptableTooltip<TooltipAlignment, TType>;
+  xAlign: Scriptable<TooltipAlignment, ScriptableTooltipContext<TType>>;
+  yAlign: Scriptable<TooltipAlignment, ScriptableTooltipContext<TType>>;
 
   /**
    * Sort tooltip items.
@@ -2355,142 +2354,142 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
    * Background color of the tooltip.
    * @default 'rgba(0, 0, 0, 0.8)'
    */
-  backgroundColor: ScriptableTooltip<Color, TType>;
+  backgroundColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * Color of title
    * @default '#fff'
    */
-  titleColor: ScriptableTooltip<Color, TType>;
+  titleColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * See Fonts
    * @default {style: 'bold'}
    */
-  titleFont: ScriptableTooltip<FontSpec, TType>;
+  titleFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
    */
-  titleSpacing: ScriptableTooltip<number, TType>;
+  titleSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Margin to add on bottom of title section.
    * @default 6
    */
-  titleMarginBottom: ScriptableTooltip<number, TType>;
+  titleMarginBottom: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the title text lines.
    * @default 'left'
    */
-  titleAlign: ScriptableTooltip<TextAlign, TType>;
+  titleAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each tooltip item.
    * @default 2
    */
-  bodySpacing: ScriptableTooltip<number, TType>;
+  bodySpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Color of body
    * @default '#fff'
    */
-  bodyColor: ScriptableTooltip<Color, TType>;
+  bodyColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    *   See Fonts.
    * @default {}
    */
-  bodyFont: ScriptableTooltip<FontSpec, TType>;
+  bodyFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
    */
-  bodyAlign: ScriptableTooltip<TextAlign, TType>;
+  bodyAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each footer line.
    * @default 2
    */
-  footerSpacing: ScriptableTooltip<number, TType>;
+  footerSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Margin to add before drawing the footer.
    * @default 6
    */
-  footerMarginTop: ScriptableTooltip<number, TType>;
+  footerMarginTop: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Color of footer
    * @default '#fff'
    */
-  footerColor: ScriptableTooltip<Color, TType>;
+  footerColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * See Fonts
    * @default {style: 'bold'}
    */
-  footerFont: ScriptableTooltip<FontSpec, TType>;
+  footerFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
    */
-  footerAlign: ScriptableTooltip<TextAlign, TType>;
+  footerAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
    * Padding to add to the tooltip
    * @default 6
    */
-  padding: ScriptableTooltip<number | ChartArea, TType>;
+  padding: Scriptable<number | ChartArea, ScriptableTooltipContext<TType>>;
   /**
    *   Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
    */
-  caretPadding: ScriptableTooltip<number, TType>;
+  caretPadding: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Size, in px, of the tooltip arrow.
    * @default 5
    */
-  caretSize: ScriptableTooltip<number, TType>;
+  caretSize: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Radius of tooltip corner curves.
    * @default 6
    */
-  cornerRadius: ScriptableTooltip<number, TType>;
+  cornerRadius: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Color to draw behind the colored boxes when multiple items are in the tooltip.
    * @default '#fff'
    */
-  multiKeyBackground: ScriptableTooltip<Color, TType>;
+  multiKeyBackground: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * If true, color boxes are shown in the tooltip.
    * @default true
    */
-  displayColors: ScriptableTooltip<boolean, TType>;
+  displayColors: Scriptable<boolean, ScriptableTooltipContext<TType>>;
   /**
    * Width of the color box if displayColors is true.
    * @default bodyFont.size
    */
-  boxWidth: ScriptableTooltip<number, TType>;
+  boxWidth: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Height of the color box if displayColors is true.
    * @default bodyFont.size
    */
-  boxHeight: ScriptableTooltip<number, TType>;
+  boxHeight: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight)
    * @default false
    */
-  usePointStyle: ScriptableTooltip<boolean, TType>;
+  usePointStyle: Scriptable<boolean, ScriptableTooltipContext<TType>>;
   /**
    * Color of the border.
    * @default 'rgba(0, 0, 0, 0)'
    */
-  borderColor: ScriptableTooltip<Color, TType>;
+  borderColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * Size of the border.
    * @default 0
    */
-  borderWidth: ScriptableTooltip<number, TType>;
+  borderWidth: Scriptable<number, ScriptableTooltipContext<TType>>;
   /**
    * true for rendering the legends from right to left.
    */
-  rtl: ScriptableTooltip<boolean, TType>;
+  rtl: Scriptable<boolean, ScriptableTooltipContext<TType>>;
 
   /**
    * This will force the text direction 'rtl' or 'ltr on the canvas for rendering the tooltips, regardless of the css specified on the canvas
    * @default canvas's default
    */
-  textDirection: ScriptableTooltip<string, TType>;
+  textDirection: Scriptable<string, ScriptableTooltipContext<TType>>;
 
   animation: AnimationSpec<TType>;
   animations: AnimationsSpec<TType>;
