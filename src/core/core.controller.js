@@ -1,5 +1,5 @@
 import animator from './core.animator';
-import defaults from './core.defaults';
+import defaults, {overrides} from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
@@ -1119,7 +1119,7 @@ Object.defineProperties(Chart, {
   },
   overrides: {
     enumerable,
-    value: defaults.overrides
+    value: overrides
   },
   registry: {
     enumerable,

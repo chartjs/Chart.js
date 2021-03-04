@@ -1,14 +1,14 @@
-import defaults from './core.defaults';
+import defaults, {overrides} from './core.defaults';
 
 /**
  * @typedef {{id: string, defaults: any, overrides?: any, defaultRoutes: any}} IChartComponent
  */
 
 export default class TypedRegistry {
-  constructor(type, scope, overrides) {
+  constructor(type, scope, override) {
     this.type = type;
     this.scope = scope;
-    this.overrides = overrides;
+    this.override = override;
     this.items = Object.create(null);
   }
 
@@ -46,11 +46,11 @@ export default class TypedRegistry {
 
     items[id] = item;
     registerDefaults(item, scope, parentScope);
-    if (me.overrides) {
+    if (me.override) {
       defaults.override(item.id,
         Object.assign(
           {},
-          defaults.overrides[parentId] || {},
+          overrides[parentId] || {},
           item.overrides || {})
       );
     }
@@ -80,8 +80,8 @@ export default class TypedRegistry {
 
     if (scope && id in defaults[scope]) {
       delete defaults[scope][id];
-      if (this.overrides) {
-        delete defaults.overrides[id];
+      if (this.override) {
+        delete overrides[id];
       }
     }
   }

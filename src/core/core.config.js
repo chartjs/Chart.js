@@ -1,8 +1,6 @@
-import defaults from './core.defaults';
+import defaults, {overrides, descriptors} from './core.defaults';
 import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core';
 import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config';
-
-const overrides = defaults.overrides;
 
 export function getIndexAxis(type, options) {
   const datasetDefaults = defaults.datasets[type] || {};
@@ -257,7 +255,7 @@ export default class Config {
     scopeKeys.forEach(key => addIfFound(scopes, options, key));
     scopeKeys.forEach(key => addIfFound(scopes, overrides[type] || {}, key));
     scopeKeys.forEach(key => addIfFound(scopes, defaults, key));
-    scopeKeys.forEach(key => addIfFound(scopes, defaults.descriptors, key));
+    scopeKeys.forEach(key => addIfFound(scopes, descriptors, key));
 
     const array = [...scopes];
     if (keysCached.has(scopeKeys)) {
@@ -279,7 +277,7 @@ export default class Config {
       defaults.datasets[type] || {}, // https://github.com/chartjs/Chart.js/issues/8531
       {type},
       defaults,
-      defaults.descriptors
+      descriptors
     ];
   }
 

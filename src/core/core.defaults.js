@@ -1,8 +1,8 @@
 import {getHoverColor} from '../helpers/helpers.color';
 import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
 
-const privateSymbol = Symbol('private');
-const overridesSymbol = Symbol('overrides');
+export const overrides = Object.create(null);
+export const descriptors = Object.create(null);
 
 /**
  * @param {object} node
@@ -33,7 +33,7 @@ function set(root, scope, values) {
  * Note: class is exported for typedoc
  */
 export class Defaults {
-  constructor(descriptors) {
+  constructor(_descriptors) {
     this.animation = undefined;
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
@@ -76,17 +76,7 @@ export class Defaults {
     this.scales = {};
     this.showLine = true;
 
-    Object.defineProperty(this, privateSymbol, {
-      value: Object.create(null),
-      writable: false
-    });
-
-    Object.defineProperty(this, overridesSymbol, {
-      value: Object.create(null),
-      writable: false
-    });
-
-    this.describe(descriptors);
+    this.describe(_descriptors);
   }
 
   /**
@@ -109,19 +99,11 @@ export class Defaults {
 	 * @param {object} [values]
 	 */
   describe(scope, values) {
-    return set(this[privateSymbol], scope, values);
+    return set(descriptors, scope, values);
   }
 
   override(scope, values) {
-    return set(this[overridesSymbol], scope, values);
-  }
-
-  get descriptors() {
-    return this[privateSymbol];
-  }
-
-  get overrides() {
-    return this[overridesSymbol];
+    return set(overrides, scope, values);
   }
 
   /**
