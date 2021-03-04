@@ -82,6 +82,13 @@ function getCombinedMax(maxPadding, chartArea, a, b) {
   return Math.max(maxPadding[a], chartArea[a]) + Math.max(maxPadding[b], chartArea[b]);
 }
 
+function updateMaxPadding(maxPadding, boxPadding) {
+  maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
+  maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
+  maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
+  maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
+}
+
 function updateDims(chartArea, params, layout) {
   const box = layout.box;
   const maxPadding = chartArea.maxPadding;
@@ -98,11 +105,7 @@ function updateDims(chartArea, params, layout) {
   chartArea[layout.pos] += layout.size;
 
   if (box.getPadding) {
-    const boxPadding = box.getPadding();
-    maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
-    maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
-    maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
-    maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
+    updateMaxPadding(maxPadding, box.getPadding());
   }
 
   const newWidth = Math.max(0, params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right'));
