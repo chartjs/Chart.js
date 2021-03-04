@@ -204,8 +204,8 @@ describe('Chart.registry', function() {
   });
 
   it('should preserve existing defaults', function() {
-    Chart.defaults.datasets.test = {test1: true};
-    Chart.overrides.test = {testA: true};
+    Chart.defaults.datasets.test = {test1: true, test3: false};
+    Chart.overrides.test = {testA: true, testC: false};
 
     class testController extends Chart.DatasetController {}
     testController.id = 'test';
@@ -213,7 +213,8 @@ describe('Chart.registry', function() {
     testController.overrides = {testA: false, testB: true};
 
     Chart.register(testController);
-    expect(Chart.defaults.datasets.test).toEqual({test1: true, test2: true});
+    expect(Chart.defaults.datasets.test).toEqual({test1: false, test2: true, test3: false});
+    expect(Chart.overrides.test).toEqual({testA: false, testB: true, testC: false});
 
     Chart.unregister(testController);
     expect(Chart.defaults.datasets.test).not.toBeDefined();

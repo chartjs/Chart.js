@@ -44,19 +44,8 @@
 			// Custom defaults. Bubble defaults are inherited.
 			boxStrokeStyle: 'red'
 		};
-		Custom.overrides = {
-			// Custom overrides. Bubble overrides are inherited
-			scales: {
-				x: {
-					min: -150,
-					max: 150
-				},
-				y: {
-					min: -150,
-					max: 150
-				}
-			}
-		};
+		// Overrides are only inherited, but not merged if defined
+		// Custom.overrides = Chart.overrides.bubble;
 
 		// Stores the controller so that the chart initialization routine can look it up
 		Chart.register(Custom);

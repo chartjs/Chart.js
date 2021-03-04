@@ -24,12 +24,11 @@ export default class TypedRegistry {
   register(item) {
     const me = this;
     const proto = Object.getPrototypeOf(item);
-    let parentScope, parentId;
+    let parentScope;
 
     if (isIChartComponent(proto)) {
       // Make sure the parent is registered and note the scope where its defaults are.
       parentScope = me.register(proto);
-      parentId = proto.id;
     }
 
     const items = me.items;
@@ -48,10 +47,7 @@ export default class TypedRegistry {
     items[id] = item;
     registerDefaults(item, scope, parentScope);
     if (me.override) {
-      defaults.override(item.id, merge(Object.create(null), [
-        overrides[parentId] || {},
-        item.overrides || {}
-      ]));
+      defaults.override(item.id, item.overrides);
     }
 
     return scope;
@@ -89,8 +85,8 @@ export default class TypedRegistry {
 function registerDefaults(item, scope, parentScope) {
   // Inherit the parent's defaults and keep existing defaults
   const itemDefaults = merge(Object.create(null), [
-    defaults.get(scope),
     parentScope ? defaults.get(parentScope) : {},
+    defaults.get(scope),
     item.defaults
   ]);
 
