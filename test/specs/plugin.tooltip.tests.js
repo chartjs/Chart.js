@@ -1265,7 +1265,7 @@ describe('Plugin.Tooltip', function() {
   describe('text align', function() {
     var defaults = Chart.defaults;
     var makeView = function(title, body, footer) {
-      return {
+      const model = {
         // Positioning
         x: 100,
         y: 100,
@@ -1275,6 +1275,7 @@ describe('Plugin.Tooltip', function() {
         yAlign: 'top',
 
         options: {
+          setContext: () => model.options,
           enabled: true,
 
           padding: 5,
@@ -1343,6 +1344,7 @@ describe('Plugin.Tooltip', function() {
           backgroundColor: 'rgb(0, 255, 255)'
         }]
       };
+      return model;
     };
     var drawBody = [
       {name: 'save', args: []},
@@ -1370,6 +1372,7 @@ describe('Plugin.Tooltip', function() {
     var mockContext = window.createMockContext();
     var tooltip = new Tooltip({
       _chart: {
+        getContext: () => ({}),
         options: {
           plugins: {
             tooltip: {
