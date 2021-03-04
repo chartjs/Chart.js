@@ -76,6 +76,7 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-rollup-preprocessor": "^7.0.5",
     "karma-safari-private-launcher": "^1.0.0",
+    "karma-spec-reporter": "0.0.32",
     "markdownlint-cli2": "0.0.14",
     "moment": "^2.29.1",
     "pixelmatch": "^5.2.1",
