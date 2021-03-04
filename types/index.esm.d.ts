@@ -2319,7 +2319,7 @@ export interface ExtendedPlugin<
 export interface ScriptableTooltipContext<TType extends ChartType> {
   chart: UnionToIntersection<Chart<TType>>;
   tooltip: UnionToIntersection<TooltipModel<TType>>;
-  tooltipItems: UnionToIntersection<TooltipItem<TType>[]>;
+  tooltipItems: TooltipItem<TType>[];
 }
 
 export interface TooltipOptions<TType extends ChartType> extends CoreInteractionOptions {
@@ -2510,7 +2510,7 @@ export interface TooltipItem<TType extends ChartType> {
   /**
    * Parsed data values for the given `dataIndex` and `datasetIndex`
    */
-  parsed: ParsedDataType<TType>;
+  parsed: UnionToIntersection<ParsedDataType<TType>>;
 
   /**
    * Raw data values for the given `dataIndex` and `datasetIndex`
