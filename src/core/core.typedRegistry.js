@@ -1,3 +1,4 @@
+import {merge} from '../helpers';
 import defaults, {overrides} from './core.defaults';
 
 /**
@@ -47,12 +48,10 @@ export default class TypedRegistry {
     items[id] = item;
     registerDefaults(item, scope, parentScope);
     if (me.override) {
-      defaults.override(item.id,
-        Object.assign(
-          {},
-          overrides[parentId] || {},
-          item.overrides || {})
-      );
+      defaults.override(item.id, merge(Object.create(null), [
+        overrides[parentId] || {},
+        item.overrides || {}
+      ]));
     }
 
     return scope;
@@ -89,12 +88,11 @@ export default class TypedRegistry {
 
 function registerDefaults(item, scope, parentScope) {
   // Inherit the parent's defaults and keep existing defaults
-  const itemDefaults = Object.assign(
-    Object.create(null),
-    parentScope && defaults.get(parentScope),
-    item.defaults,
-    defaults.get(scope)
-  );
+  const itemDefaults = merge(Object.create(null), [
+    defaults.get(scope),
+    parentScope ? defaults.get(parentScope) : {},
+    item.defaults
+  ]);
 
   defaults.set(scope, itemDefaults);
 
