@@ -30,7 +30,7 @@ module.exports = function(karma) {
 
   karma.set({
     frameworks: ['jasmine'],
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['spec', 'kjhtml'],
     browsers: (args.browsers || 'chrome,firefox').split(','),
     logLevel: karma.LOG_INFO,
 
@@ -38,6 +38,16 @@ module.exports = function(karma) {
       jasmine: {
         failFast: !!karma.autoWatch
       }
+    },
+
+    specReporter: {
+      // maxLogLines: 5,             // limit number of lines logged per test
+      suppressErrorSummary: true, // do not print error summary
+      suppressFailed: false,      // do not print information about failed tests
+      suppressPassed: true,      // do not print information about passed tests
+      suppressSkipped: false,      // do not print information about skipped tests
+      showSpecTiming: false,      // print the time elapsed for each spec
+      failFast: false              // test would finish with error when a first fail occurs.
     },
 
     // Explicitly disable hardware acceleration to make image
