@@ -1,5 +1,10 @@
 import {isFinite as isFiniteNumber} from './helpers.core';
 
+/**
+ * @alias Chart.helpers.math
+ * @namespace
+ */
+
 export const PI = Math.PI;
 export const TAU = 2 * PI;
 export const PITAU = TAU + PI;
@@ -9,10 +14,19 @@ export const HALF_PI = PI / 2;
 export const QUARTER_PI = PI / 4;
 export const TWO_THIRDS_PI = PI * 2 / 3;
 
+export const log10 = Math.log10;
+export const sign = Math.sign;
+
 /**
- * @alias Chart.helpers.math
- * @namespace
+ * Implementation of the nice number algorithm used in determining where axis labels will go
+ * @return {number}
  */
+export function niceNum(range) {
+  const niceRange = Math.pow(10, Math.floor(log10(range)));
+  const fraction = range / niceRange;
+  const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
+  return niceFraction * niceRange;
+}
 
 /**
  * Returns an array of factors sorted from 1 to sqrt(value)
@@ -36,16 +50,6 @@ export function _factorize(value) {
   result.sort((a, b) => a - b).pop();
   return result;
 }
-
-export const log10 = Math.log10 || function(x) {
-  const exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
-  // Check for whole powers of 10,
-  // which due to floating point rounding error should be corrected.
-  const powerOf10 = Math.round(exponent);
-  const isPowerOf10 = x === Math.pow(10, powerOf10);
-
-  return isPowerOf10 ? powerOf10 : exponent;
-};
 
 export function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -74,18 +78,6 @@ export function _setMinAndMaxByKey(array, target, property) {
     }
   }
 }
-
-export const sign = Math.sign ?
-  function(x) {
-    return Math.sign(x);
-  } :
-  function(x) {
-    x = +x; // convert to a number
-    if (x === 0 || isNaN(x)) {
-      return x;
-    }
-    return x > 0 ? 1 : -1;
-  };
 
 export function toRadians(degrees) {
   return degrees * (PI / 180);

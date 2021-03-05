@@ -1,29 +1,7 @@
 import {isNullOrUndef} from '../helpers/helpers.core';
-import {almostEquals, almostWhole, log10, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
+import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {formatNumber} from '../core/core.intl';
-
-/**
- * Implementation of the nice number algorithm used in determining where axis labels will go
- * @return {number}
- */
-function niceNum(range) {
-  const exponent = Math.floor(log10(range));
-  const fraction = range / Math.pow(10, exponent);
-  let niceFraction;
-
-  if (fraction <= 1.0) {
-    niceFraction = 1;
-  } else if (fraction <= 2) {
-    niceFraction = 2;
-  } else if (fraction <= 5) {
-    niceFraction = 5;
-  } else {
-    niceFraction = 10;
-  }
-
-  return niceFraction * Math.pow(10, exponent);
-}
 
 /**
  * Generate a set of linear ticks
