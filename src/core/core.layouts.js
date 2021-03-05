@@ -60,6 +60,7 @@ function setLayoutDims(layouts, params) {
 
 function buildLayoutBoxes(boxes) {
   const layoutBoxes = wrapBoxes(boxes);
+  const fullSize = sortByWeight(layoutBoxes.filter(wrap => wrap.box.fullSize), true);
   const left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
   const right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
   const top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
@@ -68,6 +69,7 @@ function buildLayoutBoxes(boxes) {
   const centerVertical = filterDynamicPositionByAxis(layoutBoxes, 'y');
 
   return {
+    fullSize,
     leftAndTop: left.concat(top),
     rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
     chartArea: filterByPosition(layoutBoxes, 'chartArea'),
@@ -80,13 +82,20 @@ function getCombinedMax(maxPadding, chartArea, a, b) {
   return Math.max(maxPadding[a], chartArea[a]) + Math.max(maxPadding[b], chartArea[b]);
 }
 
+function updateMaxPadding(maxPadding, boxPadding) {
+  maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
+  maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
+  maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
+  maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
+}
+
 function updateDims(chartArea, params, layout) {
   const box = layout.box;
   const maxPadding = chartArea.maxPadding;
 
   if (isObject(layout.pos)) {
     // dynamically placed boxes are not considered
-    return;
+    return {same: false, other: false};
   }
   if (layout.size) {
     // this layout was already counted for, lets first reduce old size
@@ -96,23 +105,23 @@ function updateDims(chartArea, params, layout) {
   chartArea[layout.pos] += layout.size;
 
   if (box.getPadding) {
-    const boxPadding = box.getPadding();
-    maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
-    maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
-    maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
-    maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
+    updateMaxPadding(maxPadding, box.getPadding());
   }
 
   const newWidth = Math.max(0, params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right'));
   const newHeight = Math.max(0, params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom'));
 
-  if (newWidth !== chartArea.w || newHeight !== chartArea.h) {
+  const widthChanged = newWidth !== chartArea.w;
+  const heightChanged = newHeight !== chartArea.h;
+  if (widthChanged || heightChanged) {
     chartArea.w = newWidth;
     chartArea.h = newHeight;
-
-    // return true if chart area changed in layout's direction
-    return layout.horizontal ? newWidth !== chartArea.w : newHeight !== chartArea.h;
   }
+
+  // return booleans on the changes per direction
+  return layout.horizontal
+    ? {same: widthChanged, other: heightChanged}
+    : {same: heightChanged, other: widthChanged};
 }
 
 function handleMaxPadding(chartArea) {
@@ -158,13 +167,15 @@ function fitBoxes(boxes, chartArea, params) {
       layout.height || chartArea.h,
       getMargins(layout.horizontal, chartArea)
     );
-    if (updateDims(chartArea, params, layout)) {
+    const {same, other} = updateDims(chartArea, params, layout);
+    if (same && refitBoxes.length) {
+      // Dimensions changed and there were non full width boxes before this
+      // -> we have to refit those
+      refit = true;
+    }
+    if (other) {
+      // Chart area changed in the opposite direction
       changed = true;
-      if (refitBoxes.length) {
-        // Dimensions changed and there were non full width boxes before this
-        // -> we have to refit those
-        refit = true;
-      }
     }
     if (!box.fullSize) { // fullSize boxes don't need to be re-fitted in any case
       refitBoxes.push(layout);
@@ -365,7 +376,10 @@ export default {
 
     setLayoutDims(verticalBoxes.concat(horizontalBoxes), params);
 
-    // First fit vertical boxes
+    // First fit the fullSize boxes, to reduce probability of re-fitting.
+    fitBoxes(boxes.fullSize, chartArea, params);
+
+    // Then fit vertical boxes
     fitBoxes(verticalBoxes, chartArea, params);
 
     // Then fit horizontal boxes

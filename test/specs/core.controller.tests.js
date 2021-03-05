@@ -1430,13 +1430,15 @@ describe('Chart', function() {
       update: [
         'beforeUpdate',
         'beforeLayout',
-        'beforeDataLimits',
+        'beforeDataLimits', // y-axis fit
         'afterDataLimits',
         'beforeBuildTicks',
         'afterBuildTicks',
-        'beforeDataLimits',
+        'beforeDataLimits', // x-axis fit
         'afterDataLimits',
         'beforeBuildTicks',
+        'afterBuildTicks',
+        'beforeBuildTicks', // y-axis re-fit
         'afterBuildTicks',
         'afterLayout',
         'beforeDatasetsUpdate',

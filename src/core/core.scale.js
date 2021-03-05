@@ -2,7 +2,7 @@ import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI} from '../helpers/helpers.math';
+import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI, _limitValue} from '../helpers/helpers.math';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
@@ -734,7 +734,7 @@ export default class Scale extends Element {
 
     // Estimate the width of each grid based on the canvas width, the maximum
     // label width and the number of tick intervals
-    const maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
+    const maxWidth = _limitValue(me.chart.width - maxLabelWidth, 0, me.maxWidth);
     tickWidth = options.offset ? me.maxWidth / numTicks : maxWidth / (numTicks - 1);
 
     // Allow 3 pixels x2 padding either side for label readability
