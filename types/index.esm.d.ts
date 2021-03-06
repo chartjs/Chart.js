@@ -1613,6 +1613,11 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc offset (in pixels).
    */
   offset: number;
+  /**
+   * If true, the ends of the arc are rounded
+   * @default false
+   */
+  roundedEnds: boolean;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

@@ -21,13 +21,29 @@ function clipArc(ctx, element) {
 
 
 function pathArc(ctx, element) {
-  const {x, y, startAngle, endAngle, pixelMargin} = element;
+  const {x, y, startAngle, endAngle, options, pixelMargin} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
+  const {roundedEnds} = options;
+  const endRadius = (outerRadius - innerRadius) / 2;
+  const halfRadius = innerRadius + endRadius;
 
   ctx.beginPath();
   ctx.arc(x, y, outerRadius, startAngle, endAngle);
+
+  if (roundedEnds) {
+    const xEnd = x + halfRadius * Math.cos(endAngle);
+    const yEnd = y + halfRadius * Math.sin(endAngle);
+    ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
+  }
+
   ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+
+  if (roundedEnds) {
+    const xStart = x + halfRadius * Math.cos(startAngle);
+    const yStart = y + halfRadius * Math.sin(startAngle);
+    ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
+  }
   ctx.closePath();
 }
 
@@ -84,6 +100,7 @@ function drawBorder(ctx, element) {
   const outerRadius = element.outerRadius;
   const innerRadius = element.innerRadius + pixelMargin;
   const inner = options.borderAlign === 'inner';
+  const {roundedEnds} = options;
 
   if (!options.borderWidth) {
     return;
@@ -105,9 +122,26 @@ function drawBorder(ctx, element) {
     clipArc(ctx, element);
   }
 
+  const endRadius = (outerRadius - innerRadius) / 2;
+  const halfRadius = innerRadius + endRadius;
+
   ctx.beginPath();
   ctx.arc(x, y, outerRadius, startAngle, endAngle);
+
+  if (roundedEnds) {
+    const xEnd = x + halfRadius * Math.cos(endAngle);
+    const yEnd = y + halfRadius * Math.sin(endAngle);
+    ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
+  }
+  
   ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+
+  if (roundedEnds) {
+    const xStart = x + halfRadius * Math.cos(startAngle);
+    const yStart = y + halfRadius * Math.sin(startAngle);
+    ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
+  }
+
   ctx.closePath();
   ctx.stroke();
 }
@@ -217,7 +251,8 @@ ArcElement.defaults = {
   borderColor: '#fff',
   borderWidth: 2,
   offset: 0,
-  angle: undefined
+  angle: undefined,
+  roundedEnds: false,
 };
 
 /**
