@@ -2696,9 +2696,9 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
 
   gridLines: GridLineOptions;
 
-  scaleLabel: {
+  title: {
     display: boolean;
-    labelString: string;
+    text: string;
     color: Color;
     font: FontSpec;
     padding: {

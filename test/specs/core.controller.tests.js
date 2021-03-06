@@ -1396,9 +1396,9 @@ describe('Chart', function() {
             },
             y: {
               type: 'linear',
-              scaleLabel: {
+              title: {
                 display: true,
-                labelString: 'Value'
+                text: 'Value'
               }
             }
           }

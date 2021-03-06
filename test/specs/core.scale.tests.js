@@ -6,10 +6,10 @@ describe('Core.scale', function() {
   describe('auto', jasmine.fixture.specs('core.scale'));
 
   it('should provide default scale label options', function() {
-    expect(Chart.defaults.scale.scaleLabel).toEqual({
+    expect(Chart.defaults.scale.title).toEqual({
       color: Chart.defaults.color,
       display: false,
-      labelString: '',
+      text: '',
       padding: {
         top: 4,
         bottom: 4
