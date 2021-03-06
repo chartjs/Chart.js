@@ -177,8 +177,9 @@ function getTitleHeight(options, fallback) {
 
   const font = toFont(options.font, fallback);
   const padding = toPadding(options.padding);
+  const lines = isArray(options.text) ? options.text.length : 1;
 
-  return font.lineHeight + padding.height;
+  return (lines * font.lineHeight) + padding.height;
 }
 
 /**
