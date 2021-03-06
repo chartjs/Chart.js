@@ -1614,10 +1614,10 @@ export interface ArcOptions extends CommonElementOptions {
    */
   offset: number;
   /**
-   * If true, the ends of the arc are rounded
-   * @default false
+   * Sets the end style for arcs
+   * @default flat
    */
-  roundedEnds: boolean;
+  endStyle: 'flat' | 'point' | 'round';
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

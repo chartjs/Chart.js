@@ -24,25 +24,39 @@ function pathArc(ctx, element) {
   const {x, y, startAngle, endAngle, options, pixelMargin} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
-  const {roundedEnds} = options;
+  const {endStyle} = options;
   const endRadius = (outerRadius - innerRadius) / 2;
   const halfRadius = innerRadius + endRadius;
 
   ctx.beginPath();
   ctx.arc(x, y, outerRadius, startAngle, endAngle);
 
-  if (roundedEnds) {
+  if (endStyle === 'round') {
     const xEnd = x + halfRadius * Math.cos(endAngle);
     const yEnd = y + halfRadius * Math.sin(endAngle);
     ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
+  } else if (endStyle === 'point') {
+    const x1 = x + innerRadius * Math.cos(endAngle);
+    const y1 = y + innerRadius * Math.sin(endAngle);
+    const x3 = x + halfRadius * Math.cos(endAngle + (Math.PI / 16));
+    const y3 = y + halfRadius * Math.sin(endAngle + (Math.PI / 16));
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x1, y1);
   }
 
   ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
 
-  if (roundedEnds) {
+  if (endStyle === 'round') {
     const xStart = x + halfRadius * Math.cos(startAngle);
     const yStart = y + halfRadius * Math.sin(startAngle);
     ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
+  } else if (endStyle === 'point') {
+    const x2 = x + outerRadius * Math.cos(startAngle);
+    const y2 = y + outerRadius * Math.sin(startAngle);
+    const x3 = x + halfRadius * Math.cos(startAngle + (Math.PI / 16));
+    const y3 = y + halfRadius * Math.sin(startAngle + (Math.PI / 16));
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x2, y2);
   }
   ctx.closePath();
 }
@@ -100,7 +114,7 @@ function drawBorder(ctx, element) {
   const outerRadius = element.outerRadius;
   const innerRadius = element.innerRadius + pixelMargin;
   const inner = options.borderAlign === 'inner';
-  const {roundedEnds} = options;
+  const {endStyle} = options;
 
   if (!options.borderWidth) {
     return;
@@ -128,18 +142,32 @@ function drawBorder(ctx, element) {
   ctx.beginPath();
   ctx.arc(x, y, outerRadius, startAngle, endAngle);
 
-  if (roundedEnds) {
+  if (endStyle === 'round') {
     const xEnd = x + halfRadius * Math.cos(endAngle);
     const yEnd = y + halfRadius * Math.sin(endAngle);
     ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
+  } else if (endStyle === 'point') {
+    const x1 = x + innerRadius * Math.cos(endAngle);
+    const y1 = y + innerRadius * Math.sin(endAngle);
+    const x3 = x + halfRadius * Math.cos(endAngle + (Math.PI / 16));
+    const y3 = y + halfRadius * Math.sin(endAngle + (Math.PI / 16));
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x1, y1);
   }
   
   ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
 
-  if (roundedEnds) {
+  if (endStyle === 'round') {
     const xStart = x + halfRadius * Math.cos(startAngle);
     const yStart = y + halfRadius * Math.sin(startAngle);
     ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
+  } else if (endStyle === 'point') {
+    const x2 = x + outerRadius * Math.cos(startAngle);
+    const y2 = y + outerRadius * Math.sin(startAngle);
+    const x3 = x + halfRadius * Math.cos(startAngle + (Math.PI / 16));
+    const y3 = y + halfRadius * Math.sin(startAngle + (Math.PI / 16));
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x2, y2);
   }
 
   ctx.closePath();
@@ -252,7 +280,7 @@ ArcElement.defaults = {
   borderWidth: 2,
   offset: 0,
   angle: undefined,
-  roundedEnds: false,
+  endStyle: 'flat',
 };
 
 /**
