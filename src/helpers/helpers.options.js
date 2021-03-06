@@ -1,5 +1,5 @@
 import defaults from '../core/core.defaults';
-import {isArray, isObject, valueOrDefault} from './helpers.core';
+import {isArray, isObject, toDimension, valueOrDefault} from './helpers.core';
 import {toFontString} from './helpers.canvas';
 
 const LINE_HEIGHT = new RegExp(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);
@@ -174,4 +174,17 @@ export function resolve(inputs, context, index, info) {
       return value;
     }
   }
+}
+
+/**
+ * @param {{min: number, max: number}} minmax
+ * @param {number|string} grace
+ * @private
+ */
+export function _addGrace(minmax, grace) {
+  const {min, max} = minmax;
+  return {
+    min: min - Math.abs(toDimension(grace, min)),
+    max: max + toDimension(grace, max)
+  };
 }
