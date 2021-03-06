@@ -90,7 +90,7 @@ export const toPercentage = (value, dimension) =>
     parseFloat(value) / 100
     : value / dimension;
 
-export const toPixels = (value, dimension) =>
+export const toDimension = (value, dimension) =>
   typeof value === 'string' && value.endsWith('%') ?
     parseFloat(value) / 100 * dimension
     : +value;

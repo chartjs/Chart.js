@@ -1,4 +1,4 @@
-import {isNullOrUndef} from '../helpers/helpers.core';
+import {isNullOrUndef, toDimension} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {formatNumber} from '../core/core.intl';
@@ -205,7 +205,11 @@ export default class LinearScaleBase extends Scale {
       precision: tickOpts.precision,
       stepSize: tickOpts.stepSize
     };
-    const ticks = generateTicks(numericGeneratorOptions, me);
+    const {min, max} = me;
+    const ticks = generateTicks(numericGeneratorOptions, {
+      min: min - Math.abs(toDimension(opts.grace, min)),
+      max: max + toDimension(opts.grace, max)
+    });
 
     // At this point, we need to update our max and min given the tick values,
     // since we probably have expanded the range of the scale
