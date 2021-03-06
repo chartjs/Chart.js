@@ -1,13 +1,11 @@
-import defaults from './core.defaults';
+import defaults, {overrides, descriptors} from './core.defaults';
 import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core';
 import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config';
 
 export function getIndexAxis(type, options) {
-  const typeDefaults = defaults.controllers[type] || {};
-  const datasetDefaults = typeDefaults.datasets || {};
-  const datasetOptions = options.datasets || {};
-  const typeOptions = datasetOptions[type] || {};
-  return typeOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
+  const datasetDefaults = defaults.datasets[type] || {};
+  const datasetOptions = (options.datasets || {})[type] || {};
+  return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
 }
 
 function getAxisFromDefaultScaleID(id, indexAxis) {
@@ -41,7 +39,7 @@ export function determineAxis(id, scaleOptions) {
 }
 
 function mergeScaleConfig(config, options) {
-  const chartDefaults = defaults.controllers[config.type] || {scales: {}};
+  const chartDefaults = overrides[config.type] || {scales: {}};
   const configScales = options.scales || {};
   const chartIndexAxis = getIndexAxis(config.type, options);
   const firstIDs = Object.create(null);
@@ -61,7 +59,7 @@ function mergeScaleConfig(config, options) {
   config.data.datasets.forEach(dataset => {
     const type = dataset.type || config.type;
     const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
-    const datasetDefaults = defaults.controllers[type] || {};
+    const datasetDefaults = overrides[type] || {};
     const defaultScaleOptions = datasetDefaults.scales || {};
     Object.keys(defaultScaleOptions).forEach(defaultID => {
       const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
@@ -175,8 +173,6 @@ export default class Config {
     return cachedKeys(datasetType,
       () => [
         `datasets.${datasetType}`,
-        `controllers.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
         ''
       ]);
   }
@@ -192,12 +188,9 @@ export default class Config {
     return cachedKeys(`${datasetType}.transition.${transition}`,
       () => [
         `datasets.${datasetType}.transitions.${transition}`,
-        `controllers.${datasetType}.transitions.${transition}`,
-        `controllers.${datasetType}.datasets.transitions.${transition}`,
         `transitions.${transition}`,
+        // The following are used for looking up the `animations` and `animation` keys
         `datasets.${datasetType}`,
-        `controllers.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
         ''
       ]);
   }
@@ -213,9 +206,8 @@ export default class Config {
   datasetElementScopeKeys(datasetType, elementType) {
     return cachedKeys(`${datasetType}-${elementType}`,
       () => [
+        `datasets.${datasetType}.elements.${elementType}`,
         `datasets.${datasetType}`,
-        `controllers.${datasetType}.datasets`,
-        `controllers.${datasetType}.elements.${elementType}`,
         `elements.${elementType}`,
         ''
       ]);
@@ -231,7 +223,6 @@ export default class Config {
     const type = this.type;
     return cachedKeys(`${type}-plugin-${id}`,
       () => [
-        `controllers.${type}.plugins.${id}`,
         `plugins.${id}`,
         ...plugin.additionalOptionScopes || [],
       ]);
@@ -244,10 +235,11 @@ export default class Config {
    * @param {boolean} [resetCache] - reset the cache for this mainScope
    */
   getOptionScopes(mainScope, scopeKeys, resetCache) {
-    let cache = this._scopeCache.get(mainScope);
+    const {_scopeCache, options, type} = this;
+    let cache = _scopeCache.get(mainScope);
     if (!cache || resetCache) {
       cache = new Map();
-      this._scopeCache.set(mainScope, cache);
+      _scopeCache.set(mainScope, cache);
     }
     const cached = cache.get(scopeKeys);
     if (cached) {
@@ -260,9 +252,10 @@ export default class Config {
       scopes.add(mainScope);
       scopeKeys.forEach(key => addIfFound(scopes, mainScope, key));
     }
-    scopeKeys.forEach(key => addIfFound(scopes, this.options, key));
+    scopeKeys.forEach(key => addIfFound(scopes, options, key));
+    scopeKeys.forEach(key => addIfFound(scopes, overrides[type] || {}, key));
     scopeKeys.forEach(key => addIfFound(scopes, defaults, key));
-    scopeKeys.forEach(key => addIfFound(scopes, defaults.descriptors, key));
+    scopeKeys.forEach(key => addIfFound(scopes, descriptors, key));
 
     const array = [...scopes];
     if (keysCached.has(scopeKeys)) {
@@ -276,14 +269,15 @@ export default class Config {
    * @return {object[]}
    */
   chartOptionScopes() {
-    const controllerDefaults = defaults.controllers[this.type] || {};
+    const {options, type} = this;
+
     return [
-      this.options,
-      controllerDefaults,
-      controllerDefaults.datasets || {},
-      {type: this.type},
+      options,
+      overrides[type] || {},
+      defaults.datasets[type] || {}, // https://github.com/chartjs/Chart.js/issues/8531
+      {type},
       defaults,
-      defaults.descriptors
+      descriptors
     ];
   }
 

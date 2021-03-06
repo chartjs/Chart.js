@@ -1,5 +1,5 @@
 import animator from './core.animator';
-import defaults from './core.defaults';
+import defaults, {overrides} from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
 import {BasicPlatform, DomPlatform} from '../platform';
@@ -410,11 +410,11 @@ class Chart {
         meta.controller.updateIndex(i);
         meta.controller.linkScales();
       } else {
-        const controllerDefaults = defaults.controllers[type];
         const ControllerClass = registry.getController(type);
+        const {datasetElementType, dataElementType} = defaults.datasets[type];
         Object.assign(ControllerClass.prototype, {
-          dataElementType: registry.getElement(controllerDefaults.dataElementType),
-          datasetElementType: controllerDefaults.datasetElementType && registry.getElement(controllerDefaults.datasetElementType)
+          dataElementType: registry.getElement(dataElementType),
+          datasetElementType: datasetElementType && registry.getElement(datasetElementType)
         });
         meta.controller = new ControllerClass(me, i);
         newControllers.push(meta.controller);
@@ -1116,6 +1116,10 @@ Object.defineProperties(Chart, {
   instances: {
     enumerable,
     value: instances
+  },
+  overrides: {
+    enumerable,
+    value: overrides
   },
   registry: {
     enumerable,

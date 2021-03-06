@@ -5,17 +5,22 @@ describe('Chart.registry', function() {
     CustomController.defaults = {
       foo: 'bar'
     };
+    CustomController.overrides = {
+      bar: 'foo'
+    };
     Chart.register(CustomController);
 
     expect(Chart.registry.getController('custom')).toEqual(CustomController);
-    expect(Chart.defaults.controllers.custom).toEqual(CustomController.defaults);
+    expect(Chart.defaults.datasets.custom).toEqual(CustomController.defaults);
+    expect(Chart.overrides.custom).toEqual(CustomController.overrides);
 
     Chart.unregister(CustomController);
 
     expect(function() {
       Chart.registry.getController('custom');
     }).toThrow(new Error('"custom" is not a registered controller.'));
-    expect(Chart.defaults.controllers.custom).not.toBeDefined();
+    expect(Chart.overrides.custom).not.toBeDefined();
+    expect(Chart.defaults.datasets.custom).not.toBeDefined();
   });
 
   it('should handle an ES6 scale extension', function() {
@@ -34,7 +39,7 @@ describe('Chart.registry', function() {
     expect(function() {
       Chart.registry.getScale('es6Scale');
     }).toThrow(new Error('"es6Scale" is not a registered scale.'));
-    expect(Chart.defaults.controllers.custom).not.toBeDefined();
+    expect(Chart.defaults.scales.es6Scale).not.toBeDefined();
   });
 
   it('should handle an ES6 element extension', function() {
@@ -104,14 +109,14 @@ describe('Chart.registry', function() {
       Chart.registry.addControllers(customExtension);
 
       expect(Chart.registry.getController('custom')).toEqual(customExtension);
-      expect(Chart.defaults.controllers.custom).toEqual(customExtension.defaults);
+      expect(Chart.defaults.datasets.custom).toEqual(customExtension.defaults);
 
       Chart.registry.removeControllers(customExtension);
 
       expect(function() {
         Chart.registry.getController('custom');
       }).toThrow(new Error('"custom" is not a registered controller.'));
-      expect(Chart.defaults.controllers.custom).not.toBeDefined();
+      expect(Chart.defaults.datasets.custom).not.toBeDefined();
     });
 
     it('as scale', function() {
@@ -199,17 +204,21 @@ describe('Chart.registry', function() {
   });
 
   it('should preserve existing defaults', function() {
-    Chart.defaults.controllers.test = {test1: true};
+    Chart.defaults.datasets.test = {test1: true, test3: false};
+    Chart.overrides.test = {testA: true, testC: false};
 
     class testController extends Chart.DatasetController {}
     testController.id = 'test';
     testController.defaults = {test1: false, test2: true};
+    testController.overrides = {testA: false, testB: true};
 
     Chart.register(testController);
-    expect(Chart.defaults.controllers.test).toEqual({test1: true, test2: true});
+    expect(Chart.defaults.datasets.test).toEqual({test1: false, test2: true, test3: false});
+    expect(Chart.overrides.test).toEqual({testA: false, testB: true, testC: false});
 
     Chart.unregister(testController);
-    expect(Chart.defaults.controllers.test).not.toBeDefined();
+    expect(Chart.defaults.datasets.test).not.toBeDefined();
+    expect(Chart.overrides.test).not.toBeDefined();
   });
 
   describe('should handle multiple items', function() {

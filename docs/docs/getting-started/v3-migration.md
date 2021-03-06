@@ -111,7 +111,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 #### Defaults
 
 * `global` namespace was removed from `defaults`. So `Chart.defaults.global` is now `Chart.defaults`
-* Dataset controller defaults were relocate to `controllers`. For example `Chart.defaults.line` is now `Chart.defaults.controllers.line`
+* Dataset controller defaults were relocate to `overrides`. For example `Chart.defaults.line` is now `Chart.overrides.line`
 * `default` prefix was removed from defaults. For example `Chart.defaults.global.defaultColor` is now `Chart.defaults.color`
 * `defaultColor` was split to `color`, `borderColor` and `backgroundColor`
 * `defaultFontColor` was renamed to `color`

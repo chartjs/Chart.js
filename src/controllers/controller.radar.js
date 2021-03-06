@@ -80,16 +80,21 @@ RadarController.id = 'radar';
 RadarController.defaults = {
   datasetElementType: 'line',
   dataElementType: 'point',
-  aspectRatio: 1,
-  datasets: {
-    showLine: true,
-  },
+  indexAxis: 'r',
+  showLine: true,
   elements: {
     line: {
       fill: 'start'
     }
   },
-  indexAxis: 'r',
+};
+
+/**
+ * @type {any}
+ */
+RadarController.overrides = {
+  aspectRatio: 1,
+
   scales: {
     r: {
       type: 'radialLinear',

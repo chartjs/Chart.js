@@ -328,23 +328,26 @@ DoughnutController.defaults = {
       properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
     },
   },
-  aspectRatio: 1,
+  // The percentage of the chart that we cut out of the middle.
+  cutout: '50%',
 
-  datasets: {
-    // The percentage of the chart that we cut out of the middle.
-    cutout: '50%',
+  // The rotation of the chart, where the first data arc begins.
+  rotation: 0,
 
-    // The rotation of the chart, where the first data arc begins.
-    rotation: 0,
+  // The total circumference of the chart.
+  circumference: 360,
 
-    // The total circumference of the chart.
-    circumference: 360,
-
-    // The outr radius of the chart
-    radius: '100%'
-  },
+  // The outr radius of the chart
+  radius: '100%',
 
   indexAxis: 'r',
+};
+
+/**
+ * @type {any}
+ */
+DoughnutController.overrides = {
+  aspectRatio: 1,
 
   // Need to override these to give a nice default
   plugins: {

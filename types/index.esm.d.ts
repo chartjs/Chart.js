@@ -93,7 +93,8 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 export interface BarControllerDatasetOptions
   extends ControllerDatasetOptions,
     ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar'>>,
-    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>> {
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>>,
+    AnimationOptions<'bar'> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -182,7 +183,8 @@ export interface LineControllerDatasetOptions
     ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<'line'>>,
     ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<'line'>>,
     ScriptableOptions<LineOptions, ScriptableContext<'line'>>,
-    ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>> {
+    ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>>,
+    AnimationOptions<'line'> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -238,7 +240,8 @@ export const ScatterController: ChartComponent & {
 export interface DoughnutControllerDatasetOptions
   extends ControllerDatasetOptions,
     ScriptableAndArrayOptions<ArcOptions, ScriptableContext<'doughnut'>>,
-    ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>> {
+    ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>>,
+    AnimationOptions<'doughnut'> {
 
   /**
    * Sweep to allow arcs to cover.
@@ -364,8 +367,9 @@ export interface RadarControllerDatasetOptions
     ScriptableOptions<PointPrefixedOptions, ScriptableContext<'radar'>>,
     ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
     ScriptableOptions<LineOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<LineHoverOptions, ScriptableContext<'radar'>> {
-  /**
+    ScriptableOptions<LineHoverOptions, ScriptableContext<'radar'>>,
+    AnimationOptions<'radar'> {
+        /**
    * The ID of the x axis to plot this dataset on.
    */
   xAxisID: string;
@@ -496,6 +500,7 @@ export declare class Chart<
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
   static readonly defaults: Defaults;
+  static readonly overrides: Overrides;
   static readonly version: string;
   static readonly instances: { [key: string]: Chart };
   static readonly registry: Registry;
@@ -608,16 +613,6 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 }
 
 export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions, PluginChartOptions<ChartType> {
-  controllers: {
-    [key in ChartType]: DeepPartial<
-      CoreChartOptions<key> &
-      ElementChartOptions &
-      PluginChartOptions<key> &
-      DatasetChartOptions<key>[key] &
-      ScaleChartOptions<key> &
-      ChartTypeRegistry[key]['chartOptions']
-      >;
-  };
 
   scale: ScaleOptionsByType;
   scales: {
@@ -646,6 +641,17 @@ export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptio
    * @param targetName The target name in the target scope the property should be routed to.
    */
   route(scope: string, name: string, targetScope: string, targetName: string): void;
+}
+
+export type Overrides = {
+  [key in ChartType]: DeepPartial<
+    CoreChartOptions<key> &
+    ElementChartOptions &
+    PluginChartOptions<key> &
+    DatasetChartOptions<ChartType> &
+    ScaleChartOptions<key> &
+    ChartTypeRegistry[key]['chartOptions']
+    >;
 }
 
 export const defaults: Defaults;
@@ -1349,7 +1355,9 @@ export interface HoverInteractionOptions extends CoreInteractionOptions {
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
 
-  datasets: AnimationOptions<TType>;
+  datasets: {
+    [key in ChartType]: ChartTypeRegistry[key]['datasetOptions']
+  }
 
   /**
    * The base axis of the chart. 'x' for vertical charts and 'y' for horizontal charts.
@@ -1474,30 +1482,24 @@ export type AnimationSpec<TType extends ChartType> = {
    * The number of milliseconds an animation takes.
    * @default 1000
    */
-  duration: Scriptable<number, ScriptableContext<TType>>;
+  duration?: Scriptable<number, ScriptableContext<TType>>;
   /**
    * Easing function to use
    * @default 'easeOutQuart'
    */
-  easing: Scriptable<EasingFunction, ScriptableContext<TType>>;
-
-  /**
-   * Running animation count + FPS display in upper left corner of the chart.
-   * @default false
-   */
-  debug: Scriptable<boolean, ScriptableContext<TType>>;
+  easing?: Scriptable<EasingFunction, ScriptableContext<TType>>;
 
   /**
    * Delay before starting the animations.
    * @default 0
    */
-  delay: Scriptable<number, ScriptableContext<TType>>;
+  delay?: Scriptable<number, ScriptableContext<TType>>;
 
   /**
    *   If set to true, the animations loop endlessly.
    * @default false
    */
-  loop: Scriptable<boolean, ScriptableContext<TType>>;
+  loop?: Scriptable<boolean, ScriptableContext<TType>>;
 }
 
 export type AnimationsSpec<TType extends ChartType> = {
@@ -1536,11 +1538,11 @@ export type AnimationOptions<TType extends ChartType> = {
     /**
      * Callback called on each step of an animation.
      */
-    onProgress: (this: Chart, event: AnimationEvent) => void;
+    onProgress?: (this: Chart, event: AnimationEvent) => void;
     /**
      * Callback called when all animations are completed.
      */
-    onComplete: (this: Chart, event: AnimationEvent) => void;
+    onComplete?: (this: Chart, event: AnimationEvent) => void;
   };
   animations: AnimationsSpec<TType>;
   transitions: TransitionsSpec<TType>;

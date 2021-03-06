@@ -1,13 +1,15 @@
-import defaults from './core.defaults';
+import {merge} from '../helpers';
+import defaults, {overrides} from './core.defaults';
 
 /**
- * @typedef {{id: string, defaults: any, defaultRoutes: any}} IChartComponent
+ * @typedef {{id: string, defaults: any, overrides?: any, defaultRoutes: any}} IChartComponent
  */
 
 export default class TypedRegistry {
-  constructor(type, scope) {
+  constructor(type, scope, override) {
     this.type = type;
     this.scope = scope;
+    this.override = override;
     this.items = Object.create(null);
   }
 
@@ -20,18 +22,18 @@ export default class TypedRegistry {
 	 * @returns {string} The scope where items defaults were registered to.
 	 */
   register(item) {
+    const me = this;
     const proto = Object.getPrototypeOf(item);
     let parentScope;
 
     if (isIChartComponent(proto)) {
       // Make sure the parent is registered and note the scope where its defaults are.
-      parentScope = this.register(proto);
+      parentScope = me.register(proto);
     }
 
-    const items = this.items;
+    const items = me.items;
     const id = item.id;
-    const baseScope = this.scope;
-    const scope = baseScope ? baseScope + '.' + id : id;
+    const scope = me.scope + '.' + id;
 
     if (!id) {
       throw new Error('class does not have id: ' + item);
@@ -44,6 +46,9 @@ export default class TypedRegistry {
 
     items[id] = item;
     registerDefaults(item, scope, parentScope);
+    if (me.override) {
+      defaults.override(item.id, item.overrides);
+    }
 
     return scope;
   }
@@ -70,18 +75,20 @@ export default class TypedRegistry {
 
     if (scope && id in defaults[scope]) {
       delete defaults[scope][id];
+      if (this.override) {
+        delete overrides[id];
+      }
     }
   }
 }
 
 function registerDefaults(item, scope, parentScope) {
   // Inherit the parent's defaults and keep existing defaults
-  const itemDefaults = Object.assign(
-    Object.create(null),
-    parentScope && defaults.get(parentScope),
-    item.defaults,
-    defaults.get(scope)
-  );
+  const itemDefaults = merge(Object.create(null), [
+    parentScope ? defaults.get(parentScope) : {},
+    defaults.get(scope),
+    item.defaults
+  ]);
 
   defaults.set(scope, itemDefaults);
 
