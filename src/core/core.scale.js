@@ -26,6 +26,12 @@ defaults.set('scale', {
 	 */
   bounds: 'ticks',
 
+  /**
+   * Addition grace added to max and reduced from min data value.
+   * @since 3.0.0
+   */
+  grace: 0,
+
   // grid line settings
   gridLines: {
     display: true,

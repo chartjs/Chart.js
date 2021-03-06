@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {formatNumber} from '../core/core.intl';
-import {isArray, toPercentage, toPixels, valueOrDefault} from '../helpers/helpers.core';
+import {isArray, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
 
 /**
@@ -123,7 +123,7 @@ export default class DoughnutController extends DatasetController {
     const maxWidth = (chartArea.width - spacing) / ratioX;
     const maxHeight = (chartArea.height - spacing) / ratioY;
     const maxRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
-    const outerRadius = toPixels(me.options.radius, maxRadius);
+    const outerRadius = toDimension(me.options.radius, maxRadius);
     const innerRadius = Math.max(outerRadius * cutout, 0);
     const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
     me.offsetX = offsetX * outerRadius;
