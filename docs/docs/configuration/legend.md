@@ -33,6 +33,9 @@ Position of the legend. Options are:
 * `'left'`
 * `'bottom'`
 * `'right'`
+* `'chartArea'`
+
+When using the `'chartArea'` option the legend position is at the moment not configurable, it will always be on the left side of the chart in the middle.
 
 ## Align
 
