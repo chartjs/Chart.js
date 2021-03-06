@@ -904,8 +904,8 @@ describe('Linear Scale', function() {
     expect(yScale.height).toBeCloseToPixel(450);
 
     // Extra size when scale label showing
-    xScale.options.scaleLabel.display = true;
-    yScale.options.scaleLabel.display = true;
+    xScale.options.title.display = true;
+    yScale.options.title.display = true;
     chart.update();
 
     expect(xScale.paddingTop).toBeCloseToPixel(0);
@@ -957,7 +957,7 @@ describe('Linear Scale', function() {
               drawTicks: false,
               drawBorder: false
             },
-            scaleLabel: {
+            title: {
               display: false,
               lineHeight: 1.2
             },

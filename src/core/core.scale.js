@@ -43,13 +43,13 @@ defaults.set('scale', {
     borderWidth: (_ctx, options) => options.lineWidth
   },
 
-  // scale label
-  scaleLabel: {
+  // scale title
+  title: {
     // display property
     display: false,
 
     // actual label
-    labelString: '',
+    text: '',
 
     // top/bottom padding
     padding: {
@@ -81,7 +81,7 @@ defaults.set('scale', {
 
 defaults.route('scale.ticks', 'color', '', 'color');
 defaults.route('scale.gridLines', 'color', '', 'borderColor');
-defaults.route('scale.scaleLabel', 'color', '', 'color');
+defaults.route('scale.title', 'color', '', 'color');
 
 defaults.describe('scale', {
   _fallback: false,
@@ -170,7 +170,7 @@ function getTickMarkLength(options) {
 /**
  * @param {object} options
  */
-function getScaleLabelHeight(options, fallback) {
+function getTitleHeight(options, fallback) {
   if (!options.display) {
     return 0;
   }
@@ -741,7 +741,7 @@ export default class Scale extends Element {
     if (maxLabelWidth + 6 > tickWidth) {
       tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
       maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
-				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel, me.chart.options.font);
+				- tickOpts.padding - getTitleHeight(options.title, me.chart.options.font);
       maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
       labelRotation = toDegrees(Math.min(
         Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
@@ -772,25 +772,25 @@ export default class Scale extends Element {
     const chart = me.chart;
     const opts = me.options;
     const tickOpts = opts.ticks;
-    const scaleLabelOpts = opts.scaleLabel;
+    const titleOpts = opts.title;
     const gridLineOpts = opts.gridLines;
     const display = me._isVisible();
     const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
     const isHorizontal = me.isHorizontal();
-    const scaleLabelHeight = display && getScaleLabelHeight(scaleLabelOpts, chart.options.font);
+    const titleHeight = display && getTitleHeight(titleOpts, chart.options.font);
 
     // Width
     if (isHorizontal) {
       minSize.width = me.maxWidth;
     } else if (display) {
-      minSize.width = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
+      minSize.width = getTickMarkLength(gridLineOpts) + titleHeight;
     }
 
     // height
     if (!isHorizontal) {
       minSize.height = me.maxHeight; // fill all the height
     } else if (display) {
-      minSize.height = getTickMarkLength(gridLineOpts) + scaleLabelHeight;
+      minSize.height = getTickMarkLength(gridLineOpts) + titleHeight;
     }
 
     // Don't bother fitting the ticks if we are not showing the labels
@@ -1658,67 +1658,67 @@ export default class Scale extends Element {
     const me = this;
     const ctx = me.ctx;
     const options = me.options;
-    const scaleLabel = options.scaleLabel;
+    const title = options.title;
 
-    if (!scaleLabel.display) {
+    if (!title.display) {
       return;
     }
 
-    const scaleLabelFont = toFont(scaleLabel.font);
-    const scaleLabelPadding = toPadding(scaleLabel.padding);
-    const halfLineHeight = scaleLabelFont.lineHeight / 2;
-    const scaleLabelAlign = scaleLabel.align;
+    const titleFont = toFont(title.font);
+    const titlePadding = toPadding(title.padding);
+    const halfLineHeight = titleFont.lineHeight / 2;
+    const titleAlign = title.align;
     const position = options.position;
     const isReverse = me.options.reverse;
     let rotation = 0;
     /** @type CanvasTextAlign */
     let textAlign;
-    let scaleLabelX, scaleLabelY;
+    let titleX, titleY;
 
     if (me.isHorizontal()) {
-      switch (scaleLabelAlign) {
+      switch (titleAlign) {
       case 'start':
-        scaleLabelX = me.left + (isReverse ? me.width : 0);
+        titleX = me.left + (isReverse ? me.width : 0);
         textAlign = isReverse ? 'right' : 'left';
         break;
       case 'end':
-        scaleLabelX = me.left + (isReverse ? 0 : me.width);
+        titleX = me.left + (isReverse ? 0 : me.width);
         textAlign = isReverse ? 'left' : 'right';
         break;
       default:
-        scaleLabelX = me.left + me.width / 2;
+        titleX = me.left + me.width / 2;
         textAlign = 'center';
       }
-      scaleLabelY = position === 'top'
-        ? me.top + halfLineHeight + scaleLabelPadding.top
-        : me.bottom - halfLineHeight - scaleLabelPadding.bottom;
+      titleY = position === 'top'
+        ? me.top + halfLineHeight + titlePadding.top
+        : me.bottom - halfLineHeight - titlePadding.bottom;
     } else {
       const isLeft = position === 'left';
-      scaleLabelX = isLeft
-        ? me.left + halfLineHeight + scaleLabelPadding.top
-        : me.right - halfLineHeight - scaleLabelPadding.top;
-      switch (scaleLabelAlign) {
+      titleX = isLeft
+        ? me.left + halfLineHeight + titlePadding.top
+        : me.right - halfLineHeight - titlePadding.top;
+      switch (titleAlign) {
       case 'start':
-        scaleLabelY = me.top + (isReverse ? 0 : me.height);
+        titleY = me.top + (isReverse ? 0 : me.height);
         textAlign = isReverse === isLeft ? 'right' : 'left';
         break;
       case 'end':
-        scaleLabelY = me.top + (isReverse ? me.height : 0);
+        titleY = me.top + (isReverse ? me.height : 0);
         textAlign = isReverse === isLeft ? 'left' : 'right';
         break;
       default:
-        scaleLabelY = me.top + me.height / 2;
+        titleY = me.top + me.height / 2;
         textAlign = 'center';
       }
       rotation = isLeft ? -HALF_PI : HALF_PI;
     }
 
-    renderText(ctx, scaleLabel.labelString, 0, 0, scaleLabelFont, {
-      color: scaleLabel.color,
+    renderText(ctx, title.text, 0, 0, titleFont, {
+      color: title.color,
       rotation,
       textAlign,
       textBaseline: 'middle',
-      translation: [scaleLabelX, scaleLabelY],
+      translation: [titleX, titleY],
     });
   }
 
