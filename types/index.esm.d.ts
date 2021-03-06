@@ -2698,7 +2698,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
 
   title: {
     display: boolean;
-    text: string;
+    text: string | string[];
     color: Color;
     font: FontSpec;
     padding: {
