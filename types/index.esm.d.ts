@@ -3089,6 +3089,7 @@ export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLi
   getValueForDistanceFromCenter(distance: number): number;
   getPointPosition(index: number, distanceFromCenter: number): { x: number; y: number; angle: number };
   getPointPositionForValue(index: number, value: number): { x: number; y: number; angle: number };
+  getPointLabelPosition(index: number): ChartArea;
   getBasePosition(index: number): { x: number; y: number; angle: number };
 }
 export const RadialLinearScale: ChartComponent & {

@@ -324,7 +324,7 @@ describe('Test the radial linear scale', function() {
     });
 
     expect(getLabels(chart.scales.r)).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8']);
-    expect(chart.scales.r.pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
+    expect(chart.scales.r._pointLabels).toEqual(['label1', 'label2', 'label3', 'label4', 'label5']);
   });
 
   it('Should build point labels using the user supplied callback', function() {
@@ -349,7 +349,7 @@ describe('Test the radial linear scale', function() {
       }
     });
 
-    expect(chart.scales.r.pointLabels).toEqual(['0', '1', '2', '3', '4']);
+    expect(chart.scales.r._pointLabels).toEqual(['0', '1', '2', '3', '4']);
   });
 
   it('Should build point labels from falsy values', function() {
@@ -363,7 +363,7 @@ describe('Test the radial linear scale', function() {
       }
     });
 
-    expect(chart.scales.r.pointLabels).toEqual([0, '', '', '', '', '']);
+    expect(chart.scales.r._pointLabels).toEqual([0, '', '', '', '', '']);
   });
 
   it('should correctly set the center point', function() {

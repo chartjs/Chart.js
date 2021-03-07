@@ -90,7 +90,7 @@ function fitWithPointLabels(scale) {
   const furthestAngles = {};
   let i, textSize, pointPosition;
 
-  scale._pointLabelSizes = [];
+  const labelSizes = [];
 
   const valueCount = scale.chart.data.labels.length;
   for (i = 0; i < valueCount; i++) {
@@ -98,8 +98,8 @@ function fitWithPointLabels(scale) {
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
     const plFont = toFont(opts.font);
     scale.ctx.font = plFont.string;
-    textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
-    scale._pointLabelSizes[i] = textSize;
+    textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale._pointLabels[i]);
+    labelSizes[i] = textSize;
 
     // Add quarter circle to make degree 0 mean top of circle
     const angleRadians = scale.getIndexAngle(i);
@@ -129,6 +129,51 @@ function fitWithPointLabels(scale) {
   }
 
   scale._setReductions(scale.drawingArea, furthestLimits, furthestAngles);
+
+  scale._pointLabelItems = [];
+
+  // Now that text size is determined, compute the full positions
+  const opts = scale.options;
+  const tickBackdropHeight = getTickBackdropHeight(opts);
+  const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+
+  for (i = 0; i < valueCount; i++) {
+    // Extra pixels out for some label spacing
+    const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
+
+    const angle = toDegrees(scale.getIndexAngle(i));
+    const size = labelSizes[i];
+    adjustPointPositionForLabelHeight(angle, size, pointLabelPosition);
+
+    const textAlign = getTextAlignForAngle(angle);
+    let left;
+
+    if (textAlign === 'left') {
+      left = pointLabelPosition.x;
+    } else if (textAlign === 'center') {
+      left = pointLabelPosition.x - (size.w / 2);
+    } else {
+      left = pointLabelPosition.x - size.w;
+    }
+
+    const right = left + size.w;
+
+    scale._pointLabelItems[i] = {
+      // Text position
+      x: pointLabelPosition.x,
+      y: pointLabelPosition.y,
+
+      // Text rendering data
+      textAlign,
+
+      // Bounding box
+      left,
+      top: pointLabelPosition.y,
+      right,
+      bottom: pointLabelPosition.y + size.h,
+    };
+  }
 }
 
 function getTextAlignForAngle(angle) {
@@ -153,31 +198,24 @@ function drawPointLabels(scale) {
   const ctx = scale.ctx;
   const opts = scale.options;
   const pointLabelOpts = opts.pointLabels;
-  const tickBackdropHeight = getTickBackdropHeight(opts);
-  const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
   ctx.save();
 
   ctx.textBaseline = 'middle';
 
   for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
-    // Extra pixels out for some label spacing
-    const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
-
     const optsAtIndex = pointLabelOpts.setContext(scale.getContext(i));
     const plFont = toFont(optsAtIndex.font);
-    const angle = toDegrees(scale.getIndexAngle(i));
-    adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+    const {x, y, textAlign} = scale._pointLabelItems[i];
     renderText(
       ctx,
-      scale.pointLabels[i],
-      pointLabelPosition.x,
-      pointLabelPosition.y + (plFont.lineHeight / 2),
+      scale._pointLabels[i],
+      x,
+      y + (plFont.lineHeight / 2),
       plFont,
       {
         color: optsAtIndex.color,
-        textAlign: getTextAlignForAngle(angle),
+        textAlign: textAlign,
       }
     );
   }
@@ -238,7 +276,8 @@ export default class RadialLinearScale extends LinearScaleBase {
     /** @type {number} */
     this.drawingArea = undefined;
     /** @type {string[]} */
-    this.pointLabels = [];
+    this._pointLabels = [];
+    this._pointLabelItems = [];
   }
 
   setDimensions() {
@@ -278,7 +317,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
 
     // Point labels
-    me.pointLabels = me.chart.data.labels.map((value, index) => {
+    me._pointLabels = me.chart.data.labels.map((value, index) => {
       const label = callCallback(me.options.pointLabels.callback, [value, index], me);
       return label || label === 0 ? label : '';
     });
@@ -378,6 +417,16 @@ export default class RadialLinearScale extends LinearScaleBase {
 
   getBasePosition(index) {
     return this.getPointPositionForValue(index || 0, this.getBaseValue());
+  }
+
+  getPointLabelPosition(index) {
+    const {left, top, right, bottom} = this._pointLabelItems[index];
+    return {
+      left,
+      top,
+      right,
+      bottom,
+    };
   }
 
   /**

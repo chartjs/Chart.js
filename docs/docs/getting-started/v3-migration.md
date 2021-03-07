@@ -449,6 +449,7 @@ The private APIs listed below were renamed:
 * `DatasetController.resyncElements` was renamed to `DatasetController._resyncElements`
 * `LayoutItem.isFullWidth` was renamed to `LayoutItem.isFullSize`
 * `RadialLinearScale.setReductions` was renamed to `RadialLinearScale._setReductions`
+* `RadialLinearScale.pointLabels` was renamed to `RadialLinearScale._pointLabels`
 * `Scale.handleMargins` was renamed to `Scale._handleMargins`
 
 ### Changed
