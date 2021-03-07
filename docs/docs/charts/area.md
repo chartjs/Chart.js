@@ -14,7 +14,7 @@ Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option 
 | Relative dataset index | `string` | `'-1'`, `'-2'`, `'+1'`, ... |
 | Boundary | `string` | `'start'`, `'end'`, `'origin'` |
 | Disabled <sup>1</sup> | `boolean` | `false` |
-| Stacked value below <sup>4</sup> | `string` | `'stack'` |
+| Stacked value below | `string` | `'stack'` |
 | Axis value | `object` | `{ value: number; }` |
 
 > <sup>1</sup> for backward compatibility, `fill: true` is equivalent to `fill: 'origin'`<br/>

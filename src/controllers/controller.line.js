@@ -62,7 +62,7 @@ export default class LineController extends DatasetController {
       const parsed = me.getParsed(i);
       const properties = directUpdate ? point : {};
       const x = properties.x = xScale.getPixelForValue(parsed.x, i);
-      const y = properties.y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed) : parsed.y, i);
+      const y = properties.y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed, _stacked) : parsed.y, i);
       properties.skip = isNaN(x) || isNaN(y);
       properties.stop = i > 0 && (parsed.x - prevParsed.x) > maxGapLength;
 

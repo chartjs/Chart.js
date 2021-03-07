@@ -10,6 +10,7 @@ Namespace: `options.scales[scaleId]`
 | `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](./index.mdx#axis-range-settings)
 | `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](./index.mdx#axis-range-settings)
 | `reverse` | `boolean` | `false` | Reverse the scale.
+| `stacked` | `boolean`\|`string` | `false` | Should the data be stacked. [more...](./index.mdx#stacking)
 | `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](./index.mdx#axis-range-settings)
 | `suggestedMin` | `number` | | Adjustment used when calculating the minimum data value. [more...](./index.mdx#axis-range-settings)
 | `ticks` | `object` | | Tick configuration. [more...](#tick-configuration)

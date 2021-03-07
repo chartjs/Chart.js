@@ -19,6 +19,10 @@
 		<canvas id="canvas"></canvas>
 	</div>
 	<br>
+	<div style="width:75%;">
+		<canvas id="single"></canvas>
+	</div>
+	<br>
 	<br>
 	<button id="randomizeData">Randomize Data</button>
 	<button id="addDataset">Add Dataset</button>
@@ -27,81 +31,84 @@
 	<button id="removeData">Remove Data</button>
 	<script>
 		var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-		var config = {
+		var data = {
+			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+			datasets: [{
+				label: 'My First dataset',
+				borderColor: window.chartColors.red,
+				backgroundColor: window.chartColors.red,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				],
+				fill: true
+			}, {
+				label: 'My Second dataset',
+				borderColor: window.chartColors.blue,
+				backgroundColor: window.chartColors.blue,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				],
+				fill: true
+			}, {
+				label: 'My Third dataset',
+				borderColor: window.chartColors.green,
+				backgroundColor: window.chartColors.green,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				],
+				fill: true
+			}, {
+				label: 'My Fourth dataset',
+				borderColor: window.chartColors.yellow,
+				backgroundColor: window.chartColors.yellow,
+				data: [
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor(),
+					randomScalingFactor()
+				],
+				fill: true
+			}]
+		};
+		var config = (stacked) => ({
 			type: 'line',
-			data: {
-				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-				datasets: [{
-					label: 'My First dataset',
-					borderColor: window.chartColors.red,
-					backgroundColor: window.chartColors.red,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: true
-				}, {
-					label: 'My Second dataset',
-					borderColor: window.chartColors.blue,
-					backgroundColor: window.chartColors.blue,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: true
-				}, {
-					label: 'My Third dataset',
-					borderColor: window.chartColors.green,
-					backgroundColor: window.chartColors.green,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: true
-				}, {
-					label: 'My Fourth dataset',
-					borderColor: window.chartColors.yellow,
-					backgroundColor: window.chartColors.yellow,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: true
-				}]
-			},
+			data,
 			options: {
 				responsive: true,
 				plugins: {
 					title: {
 						display: true,
-						text: 'Chart.js Line Chart - Stacked Area'
+						text: stacked === true ? 'Chart.js Line Chart - Stacked Area' : 'Same data, stacked=\'single\'',
 					},
 					tooltip: {
 						mode: 'index',
 					}
 				},
-				hover: {
-					mode: 'index'
+				interaction: {
+					mode: 'nearest',
+					axis: 'x',
+					intersect: false
 				},
 				scales: {
 					x: {
@@ -111,7 +118,7 @@
 						}
 					},
 					y: {
-						stacked: true,
+						stacked,
 						title: {
 							display: true,
 							text: 'Value'
@@ -119,15 +126,15 @@
 					}
 				}
 			}
-		};
+		});
 
 		window.onload = function() {
-			var ctx = document.getElementById('canvas').getContext('2d');
-			window.myLine = new Chart(ctx, config);
+			window.myLine = new Chart('canvas', config(true));
+			window.myLine2 = new Chart('single', config('single'));
 		};
 
 		document.getElementById('randomizeData').addEventListener('click', function() {
-			config.data.datasets.forEach(function(dataset) {
+			data.datasets.forEach(function(dataset) {
 				dataset.data = dataset.data.map(function() {
 					return randomScalingFactor();
 				});
@@ -135,53 +142,58 @@
 			});
 
 			window.myLine.update();
+			window.myLine2.update();
 		});
 
 		var colorNames = Object.keys(window.chartColors);
 		document.getElementById('addDataset').addEventListener('click', function() {
-			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var colorName = colorNames[data.datasets.length % colorNames.length];
 			var newColor = window.chartColors[colorName];
 			var newDataset = {
-				label: 'Dataset ' + config.data.datasets.length,
+				label: 'Dataset ' + data.datasets.length,
 				borderColor: newColor,
 				backgroundColor: newColor,
 				data: [],
 			};
 
-			for (var index = 0; index < config.data.labels.length; ++index) {
+			for (var index = 0; index < data.labels.length; ++index) {
 				newDataset.data.push(randomScalingFactor());
 			}
 
-			config.data.datasets.push(newDataset);
+			data.datasets.push(newDataset);
 			window.myLine.update();
+			window.myLine2.update();
 		});
 
 		document.getElementById('addData').addEventListener('click', function() {
-			if (config.data.datasets.length > 0) {
-				var month = MONTHS[config.data.labels.length % MONTHS.length];
-				config.data.labels.push(month);
+			if (data.datasets.length > 0) {
+				var month = MONTHS[data.labels.length % MONTHS.length];
+				data.labels.push(month);
 
-				config.data.datasets.forEach(function(dataset) {
+				data.datasets.forEach(function(dataset) {
 					dataset.data.push(randomScalingFactor());
 				});
 
 				window.myLine.update();
+				window.myLine2.update();
 			}
 		});
 
 		document.getElementById('removeDataset').addEventListener('click', function() {
-			config.data.datasets.splice(0, 1);
+			data.datasets.splice(0, 1);
 			window.myLine.update();
+			window.myLine2.update();
 		});
 
 		document.getElementById('removeData').addEventListener('click', function() {
-			config.data.labels.splice(-1, 1); // remove the label first
+			data.labels.splice(-1, 1); // remove the label first
 
-			config.data.datasets.forEach(function(dataset) {
+			data.datasets.forEach(function(dataset) {
 				dataset.data.pop();
 			});
 
 			window.myLine.update();
+			window.myLine2.update();
 		});
 	</script>
 </body>
