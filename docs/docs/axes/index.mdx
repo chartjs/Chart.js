@@ -60,7 +60,12 @@ let chart = new Chart(ctx, {
 
 In contrast to the `suggested*` settings, the `min` and `max` settings set explicit ends to the axes. When these are set, some data points may not be visible.
 
-### Callbacks
+## Stacking
+
+By default data is not stacked. If the `stacked` option of the value scale (y-axis on horizontal chart) is `true`, positive and negative values are stacked separately. Additionally a `stack` option can be defined per dataset to further divide into stack groups [more...](../general/data-structures/#dataset-configuration).
+For some charts, you might want to stack positive and negative values together. That can be achieved by specifying `stacked: 'single'`.
+
+## Callbacks
 
 There are a number of config callbacks that can be used to change parameters in the scale at different points in the update process. The options are supplied at the top level of the axis options.
 

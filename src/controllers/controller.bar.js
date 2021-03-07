@@ -401,15 +401,14 @@ export default class BarController extends DatasetController {
 	 */
   _calculateBarValuePixels(index) {
     const me = this;
-    const meta = me._cachedMeta;
-    const vScale = meta.vScale;
+    const {vScale, _stacked} = me._cachedMeta;
     const {base: baseValue, minBarLength} = me.options;
     const parsed = me.getParsed(index);
     const custom = parsed._custom;
     const floating = isFloatBar(custom);
     let value = parsed[vScale.axis];
     let start = 0;
-    let length = meta._stacked ? me.applyStack(vScale, parsed) : value;
+    let length = _stacked ? me.applyStack(vScale, parsed, _stacked) : value;
     let head, size;
 
     if (length !== value) {

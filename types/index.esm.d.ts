@@ -427,7 +427,7 @@ export interface ChartMeta<TElement extends Element = Element, TDatasetElement e
   vScale?: Scale;
 
   _sorted: boolean;
-  _stacked: boolean;
+  _stacked: boolean | 'single';
   _parsed: unknown[];
 }
 
@@ -600,7 +600,7 @@ export class DatasetController<
     range: { min: number; max: number },
     scale: Scale,
     parsed: unknown[],
-    stack: boolean
+    stack: boolean | string
   ): void;
   protected getMinMax(scale: Scale, canStack?: boolean): { min: number; max: number };
 }
