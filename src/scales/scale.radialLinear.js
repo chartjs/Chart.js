@@ -368,11 +368,8 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   getIndexAngle(index) {
-    const chart = this.chart;
-    const angleMultiplier = TAU / chart.data.labels.length;
-    const options = chart.options || {};
-    const startAngle = options.startAngle || 0;
-
+    const angleMultiplier = TAU / this.getLabels().length;
+    const startAngle = this.options.startAngle || 0;
     return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
   }
 
@@ -563,6 +560,8 @@ RadialLinearScale.defaults = {
   gridLines: {
     circular: false
   },
+
+  startAngle: 0,
 
   // label settings
   ticks: {

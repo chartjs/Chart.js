@@ -160,7 +160,11 @@ describe('Chart.controllers.polarArea', function() {
           legend: false,
           title: false,
         },
-        startAngle: 90, // default is 0
+        scales: {
+          r: {
+            startAngle: 90, // default is 0
+          }
+        },
         elements: {
           arc: {
             backgroundColor: 'rgb(255, 0, 0)',

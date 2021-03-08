@@ -31,6 +31,8 @@ describe('Test the radial linear scale', function() {
         circular: false
       },
 
+      startAngle: 0,
+
       ticks: {
         color: Chart.defaults.color,
         showLabelBackdrop: true,
@@ -500,6 +502,7 @@ describe('Test the radial linear scale', function() {
       options: {
         scales: {
           r: {
+            startAngle: 15,
             pointLabels: {
               callback: function(value, index) {
                 return index.toString();
@@ -507,7 +510,6 @@ describe('Test the radial linear scale', function() {
             }
           }
         },
-        startAngle: 15
       }
     });
 
@@ -521,7 +523,7 @@ describe('Test the radial linear scale', function() {
       expect(radToNearestDegree(chart.scales.r.getIndexAngle(i))).toBe(15 + (slice * i));
     }
 
-    chart.options.startAngle = 0;
+    chart.scales.r.options.startAngle = 0;
     chart.update();
 
     for (var x = 0; x < 5; x++) {
@@ -569,7 +571,7 @@ describe('Test the radial linear scale', function() {
       textAlign: ['right', 'right', 'left', 'left', 'left'],
       y: [82, 366, 506, 319, 53]
     }].forEach(function(expected) {
-      chart.options.startAngle = expected.startAngle;
+      scale.options.startAngle = expected.startAngle;
       chart.update();
 
       scale.ctx = window.createMockContext();
