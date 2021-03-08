@@ -1,12 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {toRadians, PI} from '../helpers/index';
 
-function getStartAngleRadians(deg) {
-  // radialLinear scale draws angleLines using startAngle. 0 is expected to be at top.
-  // Here we adjust to standard unit circle used in drawing, where 0 is at right.
-  return toRadians(deg) - 0.5 * PI;
-}
-
 export default class PolarAreaController extends DatasetController {
 
   constructor(chart, datasetIndex) {
@@ -51,7 +45,7 @@ export default class PolarAreaController extends DatasetController {
     const scale = me._cachedMeta.rScale;
     const centerX = scale.xCenter;
     const centerY = scale.yCenter;
-    const datasetStartAngle = getStartAngleRadians(opts.startAngle);
+    const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
 
@@ -198,7 +192,8 @@ PolarAreaController.overrides = {
       },
       pointLabels: {
         display: false
-      }
+      },
+      startAngle: 0
     }
   }
 };
