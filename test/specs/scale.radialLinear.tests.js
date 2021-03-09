@@ -48,7 +48,8 @@ describe('Test the radial linear scale', function() {
         font: {
           size: 10
         },
-        callback: defaultConfig.pointLabels.callback
+        callback: defaultConfig.pointLabels.callback,
+        padding: 5
       }
     });
 
