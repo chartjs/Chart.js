@@ -17,9 +17,7 @@
         "options": {
             "scales": {
                 "x": {
-                    "display": false,
-                    "min": -8,
-                    "max": 12
+                    "display": false
                 },
                 "y": {
                     "display": false

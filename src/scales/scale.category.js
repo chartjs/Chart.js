@@ -1,4 +1,5 @@
 import Scale from '../core/core.scale';
+import {valueOrDefault} from '../helpers';
 
 function findOrAddLabel(labels, raw, index) {
   const first = labels.indexOf(raw);
@@ -22,7 +23,7 @@ export default class CategoryScale extends Scale {
   parse(raw, index) {
     const labels = this.getLabels();
     return isFinite(index) && labels[index] === raw
-      ? index : findOrAddLabel(labels, raw, index);
+      ? index : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
   }
 
   determineDataLimits() {
