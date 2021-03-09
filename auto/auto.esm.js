@@ -1,5 +1,5 @@
-import {Chart, registrables} from '../dist/chart.esm';
+import {Chart, registerables} from '../dist/chart.esm';
 
-Chart.register(...registrables);
+Chart.register(...registerables);
 
 export default Chart;
