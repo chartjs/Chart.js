@@ -300,16 +300,7 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
     target.y);
 }
 
-/**
- * Render text onto the canvas
- */
-export function renderText(ctx, text, x, y, font, opts = {}) {
-  const lines = isArray(text) ? text : [text];
-  const stroke = opts.strokeWidth > 0 && opts.strokeColor !== '';
-  let i, line;
-
-  ctx.save();
-
+function setRenderStyle(ctx, opts, font) {
   if (opts.translation) {
     ctx.translate(opts.translation[0], opts.translation[1]);
   }
@@ -331,19 +322,35 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
   if (opts.textBaseline) {
     ctx.textBaseline = opts.textBaseline;
   }
+}
+
+function setStrokeStyle(ctx, opts) {
+  if (opts.strokeColor) {
+    ctx.strokeStyle = opts.strokeColor;
+  }
+
+  if (!isNullOrUndef(opts.strokeWidth)) {
+    ctx.lineWidth = opts.strokeWidth;
+  }
+}
+
+/**
+ * Render text onto the canvas
+ */
+export function renderText(ctx, text, x, y, font, opts = {}) {
+  const lines = isArray(text) ? text : [text];
+  const stroke = opts.strokeWidth > 0 && opts.strokeColor !== '';
+  let i, line;
+
+  ctx.save();
+
+  setRenderStyle(ctx, opts, font);
 
   for (i = 0; i < lines.length; ++i) {
     line = lines[i];
 
     if (stroke) {
-      if (opts.strokeColor) {
-        ctx.strokeStyle = opts.strokeColor;
-      }
-
-      if (!isNullOrUndef(opts.strokeWidth)) {
-        ctx.lineWidth = opts.strokeWidth;
-      }
-
+      setStrokeStyle(ctx, opts);
       ctx.strokeText(line, x, y, opts.maxWidth);
     }
 
