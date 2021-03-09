@@ -91,11 +91,13 @@ function fitWithPointLabels(scale) {
   let i, textSize, pointPosition;
 
   const labelSizes = [];
+  const padding = [];
 
   const valueCount = scale.chart.data.labels.length;
   for (i = 0; i < valueCount; i++) {
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
-    pointPosition = scale.getPointPosition(i, scale.drawingArea + opts.padding);
+    padding[i] = opts.padding;
+    pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
     const plFont = toFont(opts.font);
     scale.ctx.font = plFont.string;
     textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale._pointLabels[i]);
@@ -139,9 +141,8 @@ function fitWithPointLabels(scale) {
 
   for (i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
-    const labelOpts = scale.options.pointLabels.setContext(scale.getContext(i));
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + labelOpts.padding);
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
 
     const angle = toDegrees(scale.getIndexAngle(i));
     const size = labelSizes[i];
