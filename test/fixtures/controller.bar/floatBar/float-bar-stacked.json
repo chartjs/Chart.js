@@ -18,9 +18,7 @@
             "scales": {
                 "x": {
                     "display": false,
-                    "stacked": true,
-                    "min": -8,
-                    "max": 12
+                    "stacked": true
                 },
                 "y": {
                     "display": false,

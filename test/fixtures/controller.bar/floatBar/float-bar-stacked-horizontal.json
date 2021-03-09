@@ -23,9 +23,7 @@
                 },
                 "y": {
                     "display": false,
-                    "stacked": true,
-                    "min": -8,
-                    "max": 12
+                    "stacked": true
                 }
             }
         }
