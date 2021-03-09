@@ -2,7 +2,7 @@ import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize, toDegrees, toRadians, _int16Range, _limitValue, PI, HALF_PI} from '../helpers/helpers.math';
+import {_factorize, toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
 import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
@@ -328,6 +328,8 @@ function titleAlign(align, position, reverse) {
   return ret;
 }
 
+const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
+
 function titleArgs(scale, offset, position, align) {
   const {top, left, bottom, right} = scale;
   let rotation = 0;
@@ -335,18 +337,12 @@ function titleArgs(scale, offset, position, align) {
 
   if (scale.isHorizontal()) {
     titleX = _alignStartEnd(align, left, right);
+    titleY = offsetFromEdge(scale, position, offset);
     maxWidth = right - left;
-    titleY = position === 'top' ? top + offset : bottom - offset;
   } else {
-    maxWidth = bottom - top;
+    titleX = offsetFromEdge(scale, position, offset);
     titleY = _alignStartEnd(align, bottom, top);
-    if (position === 'left') {
-      titleX = left + offset;
-      rotation = -HALF_PI;
-    } else {
-      titleX = right - offset;
-      rotation = HALF_PI;
-    }
+    rotation = position === 'left' ? -HALF_PI : HALF_PI;
   }
   return {titleX, titleY, maxWidth, rotation};
 }
