@@ -7,7 +7,8 @@ import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
 
-const reverseAling = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
+const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
+const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -323,12 +324,10 @@ function createTickContext(parent, index, tick) {
 function titleAlign(align, position, reverse) {
   let ret = _toLeftRightCenter(align);
   if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
-    ret = reverseAling(ret);
+    ret = reverseAlign(ret);
   }
   return ret;
 }
-
-const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
 
 function titleArgs(scale, offset, position, align) {
   const {top, left, bottom, right} = scale;
@@ -1691,7 +1690,7 @@ export default class Scale extends Element {
   /**
 	 * @protected
 	 */
-  drawTitle(chartArea) { // eslint-disable-line no-unused-vars
+  drawTitle() {
     const {ctx, options: {position, title, reverse}} = this;
 
     if (!title.display) {
