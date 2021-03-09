@@ -2,9 +2,13 @@ import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize, toDegrees, toRadians, _int16Range, HALF_PI, _limitValue} from '../helpers/helpers.math';
+import {_factorize, toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
+import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
+
+const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
+const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -315,6 +319,31 @@ function createTickContext(parent, index, tick) {
     index,
     type: 'tick'
   });
+}
+
+function titleAlign(align, position, reverse) {
+  let ret = _toLeftRightCenter(align);
+  if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
+    ret = reverseAlign(ret);
+  }
+  return ret;
+}
+
+function titleArgs(scale, offset, position, align) {
+  const {top, left, bottom, right} = scale;
+  let rotation = 0;
+  let maxWidth, titleX, titleY;
+
+  if (scale.isHorizontal()) {
+    titleX = _alignStartEnd(align, left, right);
+    titleY = offsetFromEdge(scale, position, offset);
+    maxWidth = right - left;
+  } else {
+    titleX = offsetFromEdge(scale, position, offset);
+    titleY = _alignStartEnd(align, bottom, top);
+    rotation = position === 'left' ? -HALF_PI : HALF_PI;
+  }
+  return {titleX, titleY, maxWidth, rotation};
 }
 
 export default class Scale extends Element {
@@ -1661,69 +1690,34 @@ export default class Scale extends Element {
   /**
 	 * @protected
 	 */
-  drawTitle(chartArea) { // eslint-disable-line no-unused-vars
-    const me = this;
-    const ctx = me.ctx;
-    const options = me.options;
-    const title = options.title;
+  drawTitle() {
+    const {ctx, options: {position, title, reverse}} = this;
 
     if (!title.display) {
       return;
     }
 
-    const titleFont = toFont(title.font);
-    const titlePadding = toPadding(title.padding);
-    const halfLineHeight = titleFont.lineHeight / 2;
-    const titleAlign = title.align;
-    const position = options.position;
-    const isReverse = me.options.reverse;
-    let rotation = 0;
-    /** @type CanvasTextAlign */
-    let textAlign;
-    let titleX, titleY;
+    const font = toFont(title.font);
+    const padding = toPadding(title.padding);
+    const align = title.align;
+    let offset = font.lineHeight / 2;
 
-    if (me.isHorizontal()) {
-      switch (titleAlign) {
-      case 'start':
-        titleX = me.left + (isReverse ? me.width : 0);
-        textAlign = isReverse ? 'right' : 'left';
-        break;
-      case 'end':
-        titleX = me.left + (isReverse ? 0 : me.width);
-        textAlign = isReverse ? 'left' : 'right';
-        break;
-      default:
-        titleX = me.left + me.width / 2;
-        textAlign = 'center';
+    if (position === 'bottom') {
+      offset += padding.bottom;
+      if (isArray(title.text)) {
+        offset += font.lineHeight * (title.text.length - 1);
       }
-      titleY = position === 'top'
-        ? me.top + halfLineHeight + titlePadding.top
-        : me.bottom - halfLineHeight - titlePadding.bottom;
     } else {
-      const isLeft = position === 'left';
-      titleX = isLeft
-        ? me.left + halfLineHeight + titlePadding.top
-        : me.right - halfLineHeight - titlePadding.top;
-      switch (titleAlign) {
-      case 'start':
-        titleY = me.top + (isReverse ? 0 : me.height);
-        textAlign = isReverse === isLeft ? 'right' : 'left';
-        break;
-      case 'end':
-        titleY = me.top + (isReverse ? me.height : 0);
-        textAlign = isReverse === isLeft ? 'left' : 'right';
-        break;
-      default:
-        titleY = me.top + me.height / 2;
-        textAlign = 'center';
-      }
-      rotation = isLeft ? -HALF_PI : HALF_PI;
+      offset += padding.top;
     }
 
-    renderText(ctx, title.text, 0, 0, titleFont, {
+    const {titleX, titleY, maxWidth, rotation} = titleArgs(this, offset, position, align);
+
+    renderText(ctx, title.text, 0, 0, font, {
       color: title.color,
+      maxWidth,
       rotation,
-      textAlign,
+      textAlign: titleAlign(align, position, reverse),
       textBaseline: 'middle',
       translation: [titleX, titleY],
     });
