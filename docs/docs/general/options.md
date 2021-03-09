@@ -114,6 +114,7 @@ There are multiple levels of context objects:
     * `data`
   * `scale`
     * `tick`
+  * `tooltip`
 
 Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
 
@@ -162,3 +163,10 @@ In addition to [scale](#scale)
 * `tick`: the associated tick object
 * `index`: tick index
 * `type`: `'tick'`
+
+### tooltip
+
+In addition to [chart](#chart)
+
+* `tooltip`: the tooltip object
+* `tooltipItems`: the items the tooltip is displaying
