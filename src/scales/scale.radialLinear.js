@@ -139,9 +139,9 @@ function fitWithPointLabels(scale) {
 
   for (i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
-    const opts = scale.options.pointLabels.setContext(scale.getContext(i));
+    const labelOpts = scale.options.pointLabels.setContext(scale.getContext(i));
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + opts.padding);
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + labelOpts.padding);
 
     const angle = toDegrees(scale.getIndexAngle(i));
     const size = labelSizes[i];
