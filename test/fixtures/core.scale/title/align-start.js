@@ -1,0 +1,77 @@
+module.exports = {
+  config: {
+    type: 'line',
+    options: {
+      events: [],
+      scales: {
+        top: {
+          type: 'linear',
+          position: 'top',
+          ticks: {
+            display: false
+          },
+          gridLines: {
+            display: false
+          },
+          title: {
+            display: true,
+            align: 'start',
+            text: 'top'
+          }
+        },
+        left: {
+          type: 'linear',
+          position: 'left',
+          ticks: {
+            display: false
+          },
+          gridLines: {
+            display: false
+          },
+          title: {
+            display: true,
+            align: 'start',
+            text: 'left'
+          }
+        },
+        bottom: {
+          type: 'linear',
+          position: 'bottom',
+          ticks: {
+            display: false
+          },
+          gridLines: {
+            display: false
+          },
+          title: {
+            display: true,
+            align: 'start',
+            text: 'bottom'
+          }
+        },
+        right: {
+          type: 'linear',
+          position: 'right',
+          ticks: {
+            display: false
+          },
+          gridLines: {
+            display: false
+          },
+          title: {
+            display: true,
+            align: 'start',
+            text: 'right'
+          }
+        },
+      }
+    }
+  },
+  options: {
+    spriteText: true,
+    canvas: {
+      height: 256,
+      width: 256
+    },
+  }
+};
