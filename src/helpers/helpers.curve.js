@@ -1,8 +1,7 @@
-import {almostEquals, sign} from './helpers.math';
+import {almostEquals, distanceBetweenPoints, sign} from './helpers.math';
 import {_isPointInArea} from './helpers.canvas';
 
 const EPSILON = Number.EPSILON || 1e-14;
-const hypotenuse = (cur, prev) => Math.sqrt(Math.pow(cur.x - prev.x, 2) + Math.pow(cur.y - prev.y, 2));
 const getPoint = (points, i) => i < points.length && !points[i].skip && points[i];
 
 export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
@@ -14,8 +13,8 @@ export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
   const previous = firstPoint.skip ? middlePoint : firstPoint;
   const current = middlePoint;
   const next = afterPoint.skip ? middlePoint : afterPoint;
-  const d01 = hypotenuse(current, previous);
-  const d12 = hypotenuse(next, current);
+  const d01 = distanceBetweenPoints(current, previous);
+  const d12 = distanceBetweenPoints(next, current);
 
   let s01 = d01 / (d01 + d12);
   let s12 = d12 / (d01 + d12);
