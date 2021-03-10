@@ -91,11 +91,13 @@ function fitWithPointLabels(scale) {
   let i, textSize, pointPosition;
 
   const labelSizes = [];
+  const padding = [];
 
   const valueCount = scale.chart.data.labels.length;
   for (i = 0; i < valueCount; i++) {
-    pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
+    padding[i] = opts.padding;
+    pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
     const plFont = toFont(opts.font);
     scale.ctx.font = plFont.string;
     textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale._pointLabels[i]);
@@ -140,7 +142,7 @@ function fitWithPointLabels(scale) {
   for (i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
 
     const angle = toDegrees(scale.getIndexAngle(i));
     const size = labelSizes[i];
@@ -592,7 +594,10 @@ RadialLinearScale.defaults = {
     // Function - Used to convert point labels
     callback(label) {
       return label;
-    }
+    },
+
+    // Number - Additionl padding between scale and pointLabel
+    padding: 5
   }
 };
 
