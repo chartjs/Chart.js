@@ -15,9 +15,9 @@ interface Context {
   chart: Chart;
 }
 
-export const ctx: Context = {
+const ctx: Context = {
   chart: chart
 };
 
 // @ts-expect-error Type '{ x: number; y: number; }[]' is not assignable to type 'number[]'.
-export const dataArray: number[] = chart.data.datasets[0].data;
+const dataArray: number[] = chart.data.datasets[0].data;

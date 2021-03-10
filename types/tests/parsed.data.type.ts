@@ -8,7 +8,7 @@ interface test {
   testC: ParsedDataType<'pie' | 'line' | 'bar'>
 }
 
-export const testImpl: test = {
+const testImpl: test = {
   pie: 1,
   line: { x: 1, y: 2 },
   testA: 1,

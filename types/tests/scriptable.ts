@@ -9,7 +9,7 @@ interface test {
   testD?: Scriptable<number, ScriptableContext<ChartType>>
 }
 
-export const testImpl: test = {
+const testImpl: test = {
   pie: (ctx) => ctx.parsed,
   line: (ctx) => ctx.parsed.x + ctx.parsed.y,
   testA: (ctx) => ctx.parsed,

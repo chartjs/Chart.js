@@ -1,6 +1,6 @@
 import { Chart } from '../index.esm';
 
-export const chart = new Chart('test', {
+const chart = new Chart('test', {
   type: 'bar',
   data: {
     labels: ['a'],
