@@ -69,51 +69,51 @@ describe('Curve helper tests', function() {
       x: 0,
       y: 0,
       skip: false,
-      controlPointNextX: 1,
-      controlPointNextY: 2
+      cp2x: 1,
+      cp2y: 2
     },
     {
       x: 3,
       y: 6,
       skip: false,
-      controlPointPreviousX: 2,
-      controlPointPreviousY: 6,
-      controlPointNextX: 5,
-      controlPointNextY: 6
+      cp1x: 2,
+      cp1y: 6,
+      cp2x: 5,
+      cp2y: 6
     },
     {
       x: 9,
       y: 6,
       skip: false,
-      controlPointPreviousX: 7,
-      controlPointPreviousY: 6,
-      controlPointNextX: 10,
-      controlPointNextY: 6
+      cp1x: 7,
+      cp1y: 6,
+      cp2x: 10,
+      cp2y: 6
     },
     {
       x: 12,
       y: 60,
       skip: false,
-      controlPointPreviousX: 11,
-      controlPointPreviousY: 60,
-      controlPointNextX: 13,
-      controlPointNextY: 60
+      cp1x: 11,
+      cp1y: 60,
+      cp2x: 13,
+      cp2y: 60
     },
     {
       x: 15,
       y: 60,
       skip: false,
-      controlPointPreviousX: 14,
-      controlPointPreviousY: 60,
-      controlPointNextX: 16,
-      controlPointNextY: 60
+      cp1x: 14,
+      cp1y: 60,
+      cp2x: 16,
+      cp2y: 60
     },
     {
       x: 18,
       y: 120,
       skip: false,
-      controlPointPreviousX: 17,
-      controlPointPreviousY: 100
+      cp1x: 17,
+      cp1y: 100
     },
     {
       x: null,
@@ -124,60 +124,60 @@ describe('Curve helper tests', function() {
       x: 21,
       y: 180,
       skip: false,
-      controlPointNextX: 22,
-      controlPointNextY: 160
+      cp2x: 22,
+      cp2y: 160
     },
     {
       x: 24,
       y: 120,
       skip: false,
-      controlPointPreviousX: 23,
-      controlPointPreviousY: 120,
-      controlPointNextX: 25,
-      controlPointNextY: 120
+      cp1x: 23,
+      cp1y: 120,
+      cp2x: 25,
+      cp2y: 120
     },
     {
       x: 27,
       y: 125,
       skip: false,
-      controlPointPreviousX: 26,
-      controlPointPreviousY: 125,
-      controlPointNextX: 28,
-      controlPointNextY: 125
+      cp1x: 26,
+      cp1y: 125,
+      cp2x: 28,
+      cp2y: 125
     },
     {
       x: 30,
       y: 105,
       skip: false,
-      controlPointPreviousX: 29,
-      controlPointPreviousY: 105,
-      controlPointNextX: 31,
-      controlPointNextY: 105
+      cp1x: 29,
+      cp1y: 105,
+      cp2x: 31,
+      cp2y: 105
     },
     {
       x: 33,
       y: 110,
       skip: false,
-      controlPointPreviousX: 32,
-      controlPointPreviousY: 110,
-      controlPointNextX: 33,
-      controlPointNextY: 110
+      cp1x: 32,
+      cp1y: 110,
+      cp2x: 33,
+      cp2y: 110
     },
     {
       x: 33,
       y: 110,
       skip: false,
-      controlPointPreviousX: 33,
-      controlPointPreviousY: 110,
-      controlPointNextX: 34,
-      controlPointNextY: 110
+      cp1x: 33,
+      cp1y: 110,
+      cp2x: 34,
+      cp2y: 110
     },
     {
       x: 36,
       y: 170,
       skip: false,
-      controlPointPreviousX: 35,
-      controlPointPreviousY: 150
+      cp1x: 35,
+      cp1y: 150
     }]);
   });
 });
