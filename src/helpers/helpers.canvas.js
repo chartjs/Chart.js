@@ -292,10 +292,10 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
     return ctx.lineTo(target.x, target.y);
   }
   ctx.bezierCurveTo(
-    flip ? previous.controlPointPreviousX : previous.controlPointNextX,
-    flip ? previous.controlPointPreviousY : previous.controlPointNextY,
-    flip ? target.controlPointNextX : target.controlPointPreviousX,
-    flip ? target.controlPointNextY : target.controlPointPreviousY,
+    flip ? previous.cp1x : previous.cp2x,
+    flip ? previous.cp1y : previous.cp2y,
+    flip ? target.cp2x : target.cp1x,
+    flip ? target.cp2y : target.cp1y,
     target.x,
     target.y);
 }

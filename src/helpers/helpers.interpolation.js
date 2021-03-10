@@ -24,8 +24,8 @@ export function _steppedInterpolation(p1, p2, t, mode) {
  * @private
  */
 export function _bezierInterpolation(p1, p2, t, mode) { // eslint-disable-line no-unused-vars
-  const cp1 = {x: p1.controlPointNextX, y: p1.controlPointNextY};
-  const cp2 = {x: p2.controlPointPreviousX, y: p2.controlPointPreviousY};
+  const cp1 = {x: p1.cp2x, y: p1.cp2y};
+  const cp2 = {x: p2.cp1x, y: p2.cp1y};
   const a = _pointInLine(p1, cp1, t);
   const b = _pointInLine(cp1, cp2, t);
   const c = _pointInLine(cp2, p2, t);

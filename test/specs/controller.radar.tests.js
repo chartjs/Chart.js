@@ -161,10 +161,10 @@ describe('Chart.controllers.radar', function() {
     ].forEach(function(expected, i) {
       expect(meta.data[i].x).toBeCloseToPixel(expected.x);
       expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].controlPointPreviousX).toBeCloseToPixel(expected.cppx);
-      expect(meta.data[i].controlPointPreviousY).toBeCloseToPixel(expected.cppy);
-      expect(meta.data[i].controlPointNextX).toBeCloseToPixel(expected.cpnx);
-      expect(meta.data[i].controlPointNextY).toBeCloseToPixel(expected.cpny);
+      expect(meta.data[i].cp1x).toBeCloseToPixel(expected.cppx);
+      expect(meta.data[i].cp1y).toBeCloseToPixel(expected.cppy);
+      expect(meta.data[i].cp2x).toBeCloseToPixel(expected.cpnx);
+      expect(meta.data[i].cp2y).toBeCloseToPixel(expected.cpny);
       expect(meta.data[i].options).toEqual(jasmine.objectContaining({
         backgroundColor: Chart.defaults.backgroundColor,
         borderWidth: 1,

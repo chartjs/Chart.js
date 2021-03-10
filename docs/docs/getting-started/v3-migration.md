@@ -416,6 +416,10 @@ The following properties were renamed during v3 development:
 * `helpers.drawRoundedRectangle` was renamed to `helpers.roundedRect`
 * `helpers.getValueOrDefault` was renamed to `helpers.valueOrDefault`
 * `LayoutItem.fullWidth` was renamed to `LayoutItem.fullSize`
+* `Point.controlPointPreviousX` was renamed to `Point.cp1x`
+* `Point.controlPointPreviousY` was renamed to `Point.cp1y`
+* `Point.controlPointNextX` was renamed to `Point.cp2x`
+* `Point.controlPointNextY` was renamed to `Point.cp2y`
 * `Scale.calculateTickRotation` was renamed to `Scale.calculateLabelRotation`
 * `Tooltip.options.legendColorBackgroupd` was renamed to `Tooltip.options.multiKeyBackground`
 

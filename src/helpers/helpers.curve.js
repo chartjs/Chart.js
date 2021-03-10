@@ -1,7 +1,8 @@
-import {almostEquals, sign} from './helpers.math';
+import {almostEquals, distanceBetweenPoints, sign} from './helpers.math';
 import {_isPointInArea} from './helpers.canvas';
 
 const EPSILON = Number.EPSILON || 1e-14;
+const getPoint = (points, i) => i < points.length && !points[i].skip && points[i];
 
 export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
   // Props to Rob Spencer at scaled innovation for his post on splining between points
@@ -12,9 +13,8 @@ export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
   const previous = firstPoint.skip ? middlePoint : firstPoint;
   const current = middlePoint;
   const next = afterPoint.skip ? middlePoint : afterPoint;
-
-  const d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
-  const d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
+  const d01 = distanceBetweenPoints(current, previous);
+  const d12 = distanceBetweenPoints(next, current);
 
   let s01 = d01 / (d01 + d12);
   let s12 = d12 / (d01 + d12);
@@ -38,94 +38,114 @@ export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
   };
 }
 
-export function splineCurveMonotone(points) {
-  // This function calculates Bézier control points in a similar way than |splineCurve|,
-  // but preserves monotonicity of the provided data and ensures no local extremums are added
-  // between the dataset discrete points due to the interpolation.
-  // See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
+/**
+ * Adjust tangents to ensure monotonic properties
+ */
+function monotoneAdjust(points, deltaK, mK) {
+  const pointsLen = points.length;
 
-  const pointsWithTangents = (points || []).map((point) => ({
-    model: point,
-    deltaK: 0,
-    mK: 0
-  }));
-
-  // Calculate slopes (deltaK) and initialize tangents (mK)
-  const pointsLen = pointsWithTangents.length;
-  let i, pointBefore, pointCurrent, pointAfter;
-  for (i = 0; i < pointsLen; ++i) {
-    pointCurrent = pointsWithTangents[i];
-    if (pointCurrent.model.skip) {
+  let alphaK, betaK, tauK, squaredMagnitude, pointCurrent;
+  let pointAfter = getPoint(points, 0);
+  for (let i = 0; i < pointsLen - 1; ++i) {
+    pointCurrent = pointAfter;
+    pointAfter = getPoint(points, i + 1);
+    if (!pointCurrent || !pointAfter) {
       continue;
     }
 
-    pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
-    pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
-    if (pointAfter && !pointAfter.model.skip) {
-      const slopeDeltaX = (pointAfter.model.x - pointCurrent.model.x);
-
-      // In the case of two points that appear at the same x pixel, slopeDeltaX is 0
-      pointCurrent.deltaK = slopeDeltaX !== 0 ? (pointAfter.model.y - pointCurrent.model.y) / slopeDeltaX : 0;
-    }
-
-    if (!pointBefore || pointBefore.model.skip) {
-      pointCurrent.mK = pointCurrent.deltaK;
-    } else if (!pointAfter || pointAfter.model.skip) {
-      pointCurrent.mK = pointBefore.deltaK;
-    } else if (sign(pointBefore.deltaK) !== sign(pointCurrent.deltaK)) {
-      pointCurrent.mK = 0;
-    } else {
-      pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
-    }
-  }
-
-  // Adjust tangents to ensure monotonic properties
-  let alphaK, betaK, tauK, squaredMagnitude;
-  for (i = 0; i < pointsLen - 1; ++i) {
-    pointCurrent = pointsWithTangents[i];
-    pointAfter = pointsWithTangents[i + 1];
-    if (pointCurrent.model.skip || pointAfter.model.skip) {
+    if (almostEquals(deltaK[i], 0, EPSILON)) {
+      mK[i] = mK[i + 1] = 0;
       continue;
     }
 
-    if (almostEquals(pointCurrent.deltaK, 0, EPSILON)) {
-      pointCurrent.mK = pointAfter.mK = 0;
-      continue;
-    }
-
-    alphaK = pointCurrent.mK / pointCurrent.deltaK;
-    betaK = pointAfter.mK / pointCurrent.deltaK;
+    alphaK = mK[i] / deltaK[i];
+    betaK = mK[i + 1] / deltaK[i];
     squaredMagnitude = Math.pow(alphaK, 2) + Math.pow(betaK, 2);
     if (squaredMagnitude <= 9) {
       continue;
     }
 
     tauK = 3 / Math.sqrt(squaredMagnitude);
-    pointCurrent.mK = alphaK * tauK * pointCurrent.deltaK;
-    pointAfter.mK = betaK * tauK * pointCurrent.deltaK;
+    mK[i] = alphaK * tauK * deltaK[i];
+    mK[i + 1] = betaK * tauK * deltaK[i];
   }
+}
 
-  // Compute control points
-  let deltaX;
-  for (i = 0; i < pointsLen; ++i) {
-    pointCurrent = pointsWithTangents[i];
-    if (pointCurrent.model.skip) {
+function monotoneCompute(points, mK) {
+  const pointsLen = points.length;
+  let deltaX, pointBefore, pointCurrent;
+  let pointAfter = getPoint(points, 0);
+
+  for (let i = 0; i < pointsLen; ++i) {
+    pointBefore = pointCurrent;
+    pointCurrent = pointAfter;
+    pointAfter = getPoint(points, i + 1);
+    if (!pointCurrent) {
       continue;
     }
 
-    pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
-    pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
-    if (pointBefore && !pointBefore.model.skip) {
-      deltaX = (pointCurrent.model.x - pointBefore.model.x) / 3;
-      pointCurrent.model.controlPointPreviousX = pointCurrent.model.x - deltaX;
-      pointCurrent.model.controlPointPreviousY = pointCurrent.model.y - deltaX * pointCurrent.mK;
+    const {x, y} = pointCurrent;
+    if (pointBefore) {
+      deltaX = (x - pointBefore.x) / 3;
+      pointCurrent.cp1x = x - deltaX;
+      pointCurrent.cp1y = y - deltaX * mK[i];
     }
-    if (pointAfter && !pointAfter.model.skip) {
-      deltaX = (pointAfter.model.x - pointCurrent.model.x) / 3;
-      pointCurrent.model.controlPointNextX = pointCurrent.model.x + deltaX;
-      pointCurrent.model.controlPointNextY = pointCurrent.model.y + deltaX * pointCurrent.mK;
+    if (pointAfter) {
+      deltaX = (pointAfter.x - x) / 3;
+      pointCurrent.cp2x = x + deltaX;
+      pointCurrent.cp2y = y + deltaX * mK[i];
     }
   }
+}
+
+/**
+ * This function calculates Bézier control points in a similar way than |splineCurve|,
+ * but preserves monotonicity of the provided data and ensures no local extremums are added
+ * between the dataset discrete points due to the interpolation.
+ * See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
+ *
+ * @param {{
+ * x: number,
+ * y: number,
+ * skip?: boolean,
+ * cp1x?: number,
+ * cp1y?: number,
+ * cp2x?: number,
+ * cp2y?: number,
+ * }[]} points
+ */
+export function splineCurveMonotone(points) {
+  const pointsLen = points.length;
+  const deltaK = Array(pointsLen).fill(0);
+  const mK = Array(pointsLen);
+
+  // Calculate slopes (deltaK) and initialize tangents (mK)
+  let i, pointBefore, pointCurrent;
+  let pointAfter = getPoint(points, 0);
+
+  for (i = 0; i < pointsLen; ++i) {
+    pointBefore = pointCurrent;
+    pointCurrent = pointAfter;
+    pointAfter = getPoint(points, i + 1);
+    if (!pointCurrent) {
+      continue;
+    }
+
+    if (pointAfter) {
+      const slopeDeltaX = (pointAfter.x - pointCurrent.x);
+
+      // In the case of two points that appear at the same x pixel, slopeDeltaX is 0
+      deltaK[i] = slopeDeltaX !== 0 ? (pointAfter.y - pointCurrent.y) / slopeDeltaX : 0;
+    }
+    mK[i] = !pointBefore ? deltaK[i]
+      : !pointAfter ? deltaK[i - 1]
+      : (sign(deltaK[i - 1]) !== sign(deltaK[i])) ? 0
+      : (deltaK[i - 1] + deltaK[i]) / 2;
+  }
+
+  monotoneAdjust(points, deltaK, mK);
+
+  monotoneCompute(points, mK);
 }
 
 function capControlPoint(pt, min, max) {
@@ -133,19 +153,23 @@ function capControlPoint(pt, min, max) {
 }
 
 function capBezierPoints(points, area) {
-  let i, ilen, point;
+  let i, ilen, point, inArea, inAreaPrev;
+  let inAreaNext = _isPointInArea(points[0], area);
   for (i = 0, ilen = points.length; i < ilen; ++i) {
-    point = points[i];
-    if (!_isPointInArea(point, area)) {
+    inAreaPrev = inArea;
+    inArea = inAreaNext;
+    inAreaNext = i < ilen - 1 && _isPointInArea(points[i + 1], area);
+    if (!inArea) {
       continue;
     }
-    if (i > 0 && _isPointInArea(points[i - 1], area)) {
-      point.controlPointPreviousX = capControlPoint(point.controlPointPreviousX, area.left, area.right);
-      point.controlPointPreviousY = capControlPoint(point.controlPointPreviousY, area.top, area.bottom);
+    point = points[i];
+    if (inAreaPrev) {
+      point.cp1x = capControlPoint(point.cp1x, area.left, area.right);
+      point.cp1y = capControlPoint(point.cp1y, area.top, area.bottom);
     }
-    if (i < points.length - 1 && _isPointInArea(points[i + 1], area)) {
-      point.controlPointNextX = capControlPoint(point.controlPointNextX, area.left, area.right);
-      point.controlPointNextY = capControlPoint(point.controlPointNextY, area.top, area.bottom);
+    if (inAreaNext) {
+      point.cp2x = capControlPoint(point.cp2x, area.left, area.right);
+      point.cp2y = capControlPoint(point.cp2y, area.top, area.bottom);
     }
   }
 }
@@ -173,10 +197,10 @@ export function _updateBezierControlPoints(points, options, area, loop) {
         points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen],
         options.tension
       );
-      point.controlPointPreviousX = controlPoints.previous.x;
-      point.controlPointPreviousY = controlPoints.previous.y;
-      point.controlPointNextX = controlPoints.next.x;
-      point.controlPointNextY = controlPoints.next.y;
+      point.cp1x = controlPoints.previous.x;
+      point.cp1y = controlPoints.previous.y;
+      point.cp2x = controlPoints.next.x;
+      point.cp2y = controlPoints.next.y;
       prev = point;
     }
   }

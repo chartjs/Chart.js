@@ -25,8 +25,8 @@ describe('helpers.interpolation', function() {
   });
 
   it('Should interpolate a point in curve', function() {
-    const pt1 = {x: 10, y: 10, controlPointNextX: 12, controlPointNextY: 12};
-    const pt2 = {x: 20, y: 30, controlPointPreviousX: 18, controlPointPreviousY: 28};
+    const pt1 = {x: 10, y: 10, cp2x: 12, cp2y: 12};
+    const pt2 = {x: 20, y: 30, cp1x: 18, cp1y: 28};
 
     expect(_bezierInterpolation(pt1, pt2, 0)).toEqual({x: 10, y: 10});
     expect(_bezierInterpolation(pt1, pt2, 0.2)).toBeCloseToPoint({x: 11.616, y: 12.656});

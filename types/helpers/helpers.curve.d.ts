@@ -19,10 +19,10 @@ export function splineCurve(
 
 export interface MonotoneSplinePoint extends SplinePoint {
 	skip: boolean;
-	controlPointPreviousX?: number;
-	controlPointPreviousY?: number;
-	controlPointNextX?: number;
-	controlPointNextY?: number;
+	cp1x?: number;
+	cp1y?: number;
+	cp2x?: number;
+	cp2y?: number;
 }
 
 /**
