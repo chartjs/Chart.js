@@ -1576,6 +1576,19 @@ export default class Scale extends Element {
   }
 
   /**
+   * @protected
+   */
+  drawBackground() {
+    const {ctx, options: {backgroundColor}, left, top, width, height} = this;
+    if (backgroundColor) {
+      ctx.save();
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(left, top, width, height);
+      ctx.restore();
+    }
+  }
+
+  /**
 	 * @protected
 	 */
   drawGrid(chartArea) {
@@ -1730,6 +1743,7 @@ export default class Scale extends Element {
       return;
     }
 
+    me.drawBackground();
     me.drawGrid(chartArea);
     me.drawTitle();
     me.drawLabels(chartArea);
@@ -1758,6 +1772,7 @@ export default class Scale extends Element {
     return [{
       z: gz,
       draw(chartArea) {
+        me.drawBackground();
         me.drawGrid(chartArea);
         me.drawTitle();
       }

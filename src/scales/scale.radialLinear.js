@@ -93,7 +93,7 @@ function fitWithPointLabels(scale) {
   const labelSizes = [];
   const padding = [];
 
-  const valueCount = scale.chart.data.labels.length;
+  const valueCount = scale.getLabels().length;
   for (i = 0; i < valueCount; i++) {
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
     padding[i] = opts.padding;
@@ -196,17 +196,11 @@ function adjustPointPositionForLabelHeight(angle, textSize, position) {
   }
 }
 
-function drawPointLabels(scale) {
-  const ctx = scale.ctx;
-  const opts = scale.options;
-  const pointLabelOpts = opts.pointLabels;
+function drawPointLabels(scale, labelCount) {
+  const {ctx, options: {pointLabels}} = scale;
 
-  ctx.save();
-
-  ctx.textBaseline = 'middle';
-
-  for (let i = scale.chart.data.labels.length - 1; i >= 0; i--) {
-    const optsAtIndex = pointLabelOpts.setContext(scale.getContext(i));
+  for (let i = labelCount - 1; i >= 0; i--) {
+    const optsAtIndex = pointLabels.setContext(scale.getContext(i));
     const plFont = toFont(optsAtIndex.font);
     const {x, y, textAlign} = scale._pointLabelItems[i];
     renderText(
@@ -218,45 +212,47 @@ function drawPointLabels(scale) {
       {
         color: optsAtIndex.color,
         textAlign: textAlign,
+        textBaseline: 'middle'
       }
     );
   }
-  ctx.restore();
 }
 
-function drawRadiusLine(scale, gridLineOpts, radius) {
-  const ctx = scale.ctx;
-  const circular = gridLineOpts.circular;
-  const valueCount = scale.chart.data.labels.length;
-
-  const lineColor = gridLineOpts.color;
-  const lineWidth = gridLineOpts.lineWidth;
-  let pointPosition;
-
-  if ((!circular && !valueCount) || !lineColor || !lineWidth || radius < 0) {
-    return;
-  }
-
-  ctx.save();
-  ctx.strokeStyle = lineColor;
-  ctx.lineWidth = lineWidth;
-  ctx.setLineDash(gridLineOpts.borderDash);
-  ctx.lineDashOffset = gridLineOpts.borderDashOffset;
-
-  ctx.beginPath();
+function pathRadiusLine(scale, radius, circular, labelCount) {
+  const {ctx} = scale;
   if (circular) {
     // Draw circular arcs between the points
     ctx.arc(scale.xCenter, scale.yCenter, radius, 0, TAU);
   } else {
     // Draw straight lines connecting each index
-    pointPosition = scale.getPointPosition(0, radius);
+    let pointPosition = scale.getPointPosition(0, radius);
     ctx.moveTo(pointPosition.x, pointPosition.y);
 
-    for (let i = 1; i < valueCount; i++) {
+    for (let i = 1; i < labelCount; i++) {
       pointPosition = scale.getPointPosition(i, radius);
       ctx.lineTo(pointPosition.x, pointPosition.y);
     }
   }
+}
+
+function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
+  const ctx = scale.ctx;
+  const circular = gridLineOpts.circular;
+
+  const {color, lineWidth} = gridLineOpts;
+
+  if ((!circular && !labelCount) || !color || !lineWidth || radius < 0) {
+    return;
+  }
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.setLineDash(gridLineOpts.borderDash);
+  ctx.lineDashOffset = gridLineOpts.borderDashOffset;
+
+  ctx.beginPath();
+  pathRadiusLine(scale, radius, circular, labelCount);
   ctx.closePath();
   ctx.stroke();
   ctx.restore();
@@ -319,7 +315,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
 
     // Point labels
-    me._pointLabels = me.chart.data.labels.map((value, index) => {
+    me._pointLabels = me.getLabels().map((value, index) => {
       const label = callCallback(me.options.pointLabels.callback, [value, index], me);
       return label || label === 0 ? label : '';
     });
@@ -431,35 +427,53 @@ export default class RadialLinearScale extends LinearScaleBase {
   /**
 	 * @protected
 	 */
+  drawBackground() {
+    const me = this;
+    const {backgroundColor, gridLines: {circular}} = me.options;
+    if (backgroundColor) {
+      const ctx = me.ctx;
+      ctx.save();
+      ctx.beginPath();
+      pathRadiusLine(me, me.getDistanceFromCenterForValue(me._endValue), circular, me.getLabels().length);
+      ctx.closePath();
+      ctx.fillStyle = backgroundColor;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /**
+	 * @protected
+	 */
   drawGrid() {
     const me = this;
     const ctx = me.ctx;
     const opts = me.options;
-    const gridLineOpts = opts.gridLines;
-    const angleLineOpts = opts.angleLines;
+    const {angleLines, gridLines} = opts;
+    const labelCount = me.getLabels().length;
+
     let i, offset, position;
 
     if (opts.pointLabels.display) {
-      drawPointLabels(me);
+      drawPointLabels(me, labelCount);
     }
 
-    if (gridLineOpts.display) {
+    if (gridLines.display) {
       me.ticks.forEach((tick, index) => {
         if (index !== 0) {
-          offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
-          const optsAtIndex = gridLineOpts.setContext(me.getContext(index - 1));
-          drawRadiusLine(me, optsAtIndex, offset);
+          offset = me.getDistanceFromCenterForValue(tick.value);
+          const optsAtIndex = gridLines.setContext(me.getContext(index - 1));
+          drawRadiusLine(me, optsAtIndex, offset, labelCount);
         }
       });
     }
 
-    if (angleLineOpts.display) {
+    if (angleLines.display) {
       ctx.save();
 
-      for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
-        const optsAtIndex = angleLineOpts.setContext(me.getContext(i));
-        const lineWidth = optsAtIndex.lineWidth;
-        const color = optsAtIndex.color;
+      for (i = me.getLabels().length - 1; i >= 0; i--) {
+        const optsAtIndex = angleLines.setContext(me.getContext(i));
+        const {color, lineWidth} = optsAtIndex;
 
         if (!lineWidth || !color) {
           continue;
@@ -518,11 +532,12 @@ export default class RadialLinearScale extends LinearScaleBase {
         width = ctx.measureText(tick.label).width;
         ctx.fillStyle = optsAtIndex.backdropColor;
 
+        const {backdropPaddingX, backdropPaddingY} = optsAtIndex;
         ctx.fillRect(
-          -width / 2 - optsAtIndex.backdropPaddingX,
-          -offset - tickFont.size / 2 - optsAtIndex.backdropPaddingY,
-          width + optsAtIndex.backdropPaddingX * 2,
-          tickFont.size + optsAtIndex.backdropPaddingY * 2
+          -width / 2 - backdropPaddingX,
+          -offset - tickFont.size / 2 - backdropPaddingY,
+          width + backdropPaddingX * 2,
+          tickFont.size + backdropPaddingY * 2
         );
       }
 
