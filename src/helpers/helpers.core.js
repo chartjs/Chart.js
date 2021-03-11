@@ -306,11 +306,8 @@ export function resolveObjectKey(obj, key) {
   }
   let pos = 0;
   let idx = indexOfDotOrLength(key, pos);
-  while (idx > pos) {
+  while (obj && idx > pos) {
     obj = obj[key.substr(pos, idx - pos)];
-    if (!obj) {
-      break;
-    }
     pos = idx + 1;
     idx = indexOfDotOrLength(key, pos);
   }

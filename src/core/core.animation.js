@@ -30,7 +30,7 @@ export default class Animation {
     this._fn = cfg.fn || interpolators[cfg.type || typeof from];
     this._easing = effects[cfg.easing] || effects.linear;
     this._start = Math.floor(Date.now() + (cfg.delay || 0));
-    this._duration = Math.floor(cfg.duration);
+    this._duration = this._total = Math.floor(cfg.duration);
     this._loop = !!cfg.loop;
     this._target = target;
     this._prop = prop;
@@ -53,6 +53,7 @@ export default class Animation {
       const remain = me._duration - elapsed;
       me._start = date;
       me._duration = Math.floor(Math.max(remain, cfg.duration));
+      me._total += elapsed;
       me._loop = !!cfg.loop;
       me._to = resolve([cfg.to, to, currentValue, cfg.from]);
       me._from = resolve([cfg.from, currentValue, to]);

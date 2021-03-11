@@ -6,9 +6,7 @@
 	<script src="../utils.js"></script>
 	<style>
 		canvas {
-			-moz-user-select: none;
-			-webkit-user-select: none;
-			-ms-user-select: none;
+			user-select: none;
 		}
 	</style>
 </head>
@@ -58,23 +56,26 @@
 				}]
 			},
 			options: {
-				plugins: {
-					title: {
-						display: true,
-						text: 'Chart.js Line Chart - Animation Progress Bar'
-					}
-				},
 				animation: {
 					duration: 2000,
 					onProgress: function(animation) {
 						progress.value = animation.currentStep / animation.numSteps;
 					},
 					onComplete: function() {
-						window.setTimeout(function() {
-							progress.value = 0;
-						}, 2000);
+						//
 					}
-				}
+				},
+				interaction: {
+					mode: 'nearest',
+					axis: 'x',
+					intersect: false
+				},
+				plugins: {
+					title: {
+						display: true,
+						text: 'Chart.js Line Chart - Animation Progress Bar'
+					}
+				},
 			}
 		};
 
