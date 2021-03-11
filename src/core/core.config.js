@@ -167,14 +167,14 @@ export default class Config {
    * Returns the option scope keys for resolving dataset options.
    * These keys do not include the dataset itself, because it is not under options.
    * @param {string} datasetType
-   * @return {string[]}
+   * @return {string[][]}
    */
   datasetScopeKeys(datasetType) {
     return cachedKeys(datasetType,
-      () => [
+      () => [[
         `datasets.${datasetType}`,
         ''
-      ]);
+      ]]);
   }
 
   /**
@@ -182,16 +182,20 @@ export default class Config {
    * These keys do not include the dataset itself, because it is not under options.
    * @param {string} datasetType
    * @param {string} transition
-   * @return {string[]}
+   * @return {string[][]}
    */
   datasetAnimationScopeKeys(datasetType, transition) {
     return cachedKeys(`${datasetType}.transition.${transition}`,
       () => [
-        `datasets.${datasetType}.transitions.${transition}`,
-        `transitions.${transition}`,
+        [
+          `datasets.${datasetType}.transitions.${transition}`,
+          `transitions.${transition}`,
+        ],
         // The following are used for looking up the `animations` and `animation` keys
-        `datasets.${datasetType}`,
-        ''
+        [
+          `datasets.${datasetType}`,
+          ''
+        ]
       ]);
   }
 
@@ -201,65 +205,76 @@ export default class Config {
    * is not under options.
    * @param {string} datasetType
    * @param {string} elementType
-   * @return {string[]}
+   * @return {string[][]}
    */
   datasetElementScopeKeys(datasetType, elementType) {
     return cachedKeys(`${datasetType}-${elementType}`,
-      () => [
+      () => [[
         `datasets.${datasetType}.elements.${elementType}`,
         `datasets.${datasetType}`,
         `elements.${elementType}`,
         ''
-      ]);
+      ]]);
   }
 
   /**
    * Returns the options scope keys for resolving plugin options.
    * @param {{id: string, additionalOptionScopes?: string[]}} plugin
-   * @return {string[]}
+   * @return {string[][]}
    */
   pluginScopeKeys(plugin) {
     const id = plugin.id;
     const type = this.type;
     return cachedKeys(`${type}-plugin-${id}`,
-      () => [
+      () => [[
         `plugins.${id}`,
         ...plugin.additionalOptionScopes || [],
-      ]);
+      ]]);
   }
 
   /**
-   * Resolves the objects from options and defaults for option value resolution.
-   * @param {object} mainScope - The main scope object for options
-   * @param {string[]} scopeKeys - The keys in resolution order
-   * @param {boolean} [resetCache] - reset the cache for this mainScope
+   * @private
    */
-  getOptionScopes(mainScope, scopeKeys, resetCache) {
-    const {_scopeCache, options, type} = this;
+  _cachedScopes(mainScope, resetCache) {
+    const _scopeCache = this._scopeCache;
     let cache = _scopeCache.get(mainScope);
     if (!cache || resetCache) {
       cache = new Map();
       _scopeCache.set(mainScope, cache);
     }
-    const cached = cache.get(scopeKeys);
+    return cache;
+  }
+
+  /**
+   * Resolves the objects from options and defaults for option value resolution.
+   * @param {object} mainScope - The main scope object for options
+   * @param {string[][]} keyLists - The arrays of keys in resolution order
+   * @param {boolean} [resetCache] - reset the cache for this mainScope
+   */
+  getOptionScopes(mainScope, keyLists, resetCache) {
+    const {options, type} = this;
+    const cache = this._cachedScopes(mainScope, resetCache);
+    const cached = cache.get(keyLists);
     if (cached) {
       return cached;
     }
 
     const scopes = new Set();
 
-    if (mainScope) {
-      scopes.add(mainScope);
-      scopeKeys.forEach(key => addIfFound(scopes, mainScope, key));
-    }
-    scopeKeys.forEach(key => addIfFound(scopes, options, key));
-    scopeKeys.forEach(key => addIfFound(scopes, overrides[type] || {}, key));
-    scopeKeys.forEach(key => addIfFound(scopes, defaults, key));
-    scopeKeys.forEach(key => addIfFound(scopes, descriptors, key));
+    keyLists.forEach(keys => {
+      if (mainScope) {
+        scopes.add(mainScope);
+        keys.forEach(key => addIfFound(scopes, mainScope, key));
+      }
+      keys.forEach(key => addIfFound(scopes, options, key));
+      keys.forEach(key => addIfFound(scopes, overrides[type] || {}, key));
+      keys.forEach(key => addIfFound(scopes, defaults, key));
+      keys.forEach(key => addIfFound(scopes, descriptors, key));
+    });
 
     const array = [...scopes];
-    if (keysCached.has(scopeKeys)) {
-      cache.set(scopeKeys, array);
+    if (keysCached.has(keyLists)) {
+      cache.set(keyLists, array);
     }
     return array;
   }

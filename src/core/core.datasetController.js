@@ -830,7 +830,7 @@ export default class DatasetController {
 	 * @protected
 	 */
   updateSharedOptions(sharedOptions, mode, newOptions) {
-    if (sharedOptions) {
+    if (sharedOptions && !isDirectUpdateMode(mode)) {
       this._resolveAnimations(undefined, mode).update(sharedOptions, newOptions);
     }
   }

@@ -72,6 +72,11 @@ export class Animator {
         item = items[i];
 
         if (item._active) {
+          if (item._total > anims.duration) {
+            // if the animation has been updated and its duration prolonged,
+            // update to total duration of current animations run (for progress event)
+            anims.duration = item._total;
+          }
           item.tick(date);
           draw = true;
         } else {
