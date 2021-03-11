@@ -4,6 +4,7 @@ const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
+const size = require('rollup-plugin-size');
 
 const input = 'src/index.js';
 const inputESM = {
@@ -33,7 +34,8 @@ module.exports = [
       resolve(),
       cleanup({
         sourcemap: true
-      })
+      }),
+      size()
     ],
     output: {
       name: 'Chart',
@@ -52,7 +54,8 @@ module.exports = [
         output: {
           preamble: banner
         }
-      })
+      }),
+      size()
     ],
     output: {
       name: 'Chart',
@@ -72,7 +75,8 @@ module.exports = [
       resolve(),
       cleanup({
         sourcemap: true
-      })
+      }),
+      size({pattern: 'dist/*.esm.js'})
     ],
     output: {
       dir: './',
