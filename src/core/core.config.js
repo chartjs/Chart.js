@@ -233,18 +233,27 @@ export default class Config {
   }
 
   /**
+   * @private
+   */
+  _cachedScopes(mainScope, resetCache) {
+    const _scopeCache = this._scopeCache;
+    let cache = _scopeCache.get(mainScope);
+    if (!cache || resetCache) {
+      cache = new Map();
+      _scopeCache.set(mainScope, cache);
+    }
+    return cache;
+  }
+
+  /**
    * Resolves the objects from options and defaults for option value resolution.
    * @param {object} mainScope - The main scope object for options
    * @param {string[][]} keyLists - The arrays of keys in resolution order
    * @param {boolean} [resetCache] - reset the cache for this mainScope
    */
   getOptionScopes(mainScope, keyLists, resetCache) {
-    const {_scopeCache, options, type} = this;
-    let cache = _scopeCache.get(mainScope);
-    if (!cache || resetCache) {
-      cache = new Map();
-      _scopeCache.set(mainScope, cache);
-    }
+    const {options, type} = this;
+    const cache = this._cachedScopes(mainScope, resetCache);
     const cached = cache.get(keyLists);
     if (cached) {
       return cached;
