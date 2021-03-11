@@ -9,9 +9,6 @@ import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collecti
  * @typedef {{common: boolean, size: number, steps?: number}} Interval
  */
 
-// Integer constants are from the ES6 spec.
-const MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
-
 /**
  * @type {Object<Unit, Interval>}
  */
@@ -72,8 +69,8 @@ function parse(scale, input) {
 
   if (round) {
     value = round === 'week' && (isNumber(isoWeekday) || isoWeekday === true)
-      ? scale._adapter.startOf(value, 'isoWeek', isoWeekday)
-      : scale._adapter.startOf(value, round);
+      ? adapter.startOf(value, 'isoWeek', isoWeekday)
+      : adapter.startOf(value, round);
   }
 
   return +value;
@@ -92,7 +89,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 
   for (let i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
     const interval = INTERVALS[UNITS[i]];
-    const factor = interval.steps ? interval.steps : MAX_INTEGER;
+    const factor = interval.steps ? interval.steps : Number.MAX_SAFE_INTEGER;
 
     if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
       return UNITS[i];

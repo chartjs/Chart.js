@@ -1759,7 +1759,7 @@ export default class Scale extends Element {
     const tz = opts.ticks && opts.ticks.z || 0;
     const gz = opts.gridLines && opts.gridLines.z || 0;
 
-    if (!me._isVisible() || tz === gz || me.draw !== me._draw) {
+    if (!me._isVisible() || tz === gz || me.draw !== Scale.prototype.draw) {
       // backward compatibility: draw has been overridden by custom scale
       return [{
         z: tz,
@@ -1815,5 +1815,3 @@ export default class Scale extends Element {
     return toFont(opts.font);
   }
 }
-
-Scale.prototype._draw = Scale.prototype.draw;
