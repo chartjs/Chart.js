@@ -178,12 +178,13 @@ function createDataContext(parent, index, point, raw, element) {
 
 function clearStacks(meta, items) {
   items = items || meta._parsed;
-  items.forEach((parsed) => {
-    if (parsed._stacks[meta.vScale.id] === undefined || parsed._stacks[meta.vScale.id][meta.index] === undefined) {
+  for (const parsed of items) {
+    const stacks = parsed._stacks;
+    if (!stacks || stacks[meta.vScale.id] === undefined || stacks[meta.vScale.id][meta.index] === undefined) {
       return;
     }
-    delete parsed._stacks[meta.vScale.id][meta.index];
-  });
+    delete stacks[meta.vScale.id][meta.index];
+  }
 }
 
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -311,6 +312,7 @@ export default class DatasetController {
       if (me._data) {
         // This case happens when the user replaced the data array instance.
         unlistenArrayEvents(me._data, me);
+        clearStacks(me._cachedMeta);
       }
       if (data && Object.isExtensible(data)) {
         listenArrayEvents(data, me);
