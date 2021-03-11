@@ -1162,8 +1162,8 @@ export default class Scale extends Element {
 	 */
   _autoSkip(ticks) {
     const me = this;
-    const tickOpts = me.options.ticks;
-    const ticksLimit = tickOpts.maxTicksLimit || me._length / me._tickSize();
+    const {offset, ticks: tickOpts} = me.options;
+    const ticksLimit = tickOpts.maxTicksLimit || (me._length / me._tickSize() + (offset ? 0 : 1));
     const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
     const numMajorIndices = majorIndices.length;
     const first = majorIndices[0];
