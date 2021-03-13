@@ -50,6 +50,7 @@ function determineLimits(angle, pos, size, min, max) {
 
 /**
  * Helper function to fit a radial linear scale with point labels
+ * @param {RadialLinearScale} scale
  */
 function fitWithPointLabels(scale) {
 
@@ -348,9 +349,9 @@ export default class RadialLinearScale extends LinearScaleBase {
     radiusReductionTop = numberOrZero(radiusReductionTop);
     radiusReductionBottom = numberOrZero(radiusReductionBottom);
 
-    me.drawingArea = Math.min(
+    me.drawingArea = Math.max(largestPossibleRadius / 2, Math.min(
       Math.floor(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
-      Math.floor(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2));
+      Math.floor(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2)));
     me.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
   }
 
