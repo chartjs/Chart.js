@@ -771,6 +771,34 @@ describe('Chart', function() {
       wrapper.style.display = 'block';
     });
 
+    it('should resize the canvas when the wrapper has display style changes from "none" to "block"', function(done) {
+      // https://github.com/chartjs/Chart.js/issues/4659
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'display: none; max-width: 600px; max-height: 400px;'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 600, dh: 300,
+          rw: 600, rh: 300,
+        });
+
+        done();
+      });
+      wrapper.style.display = 'block';
+    });
+
     // https://github.com/chartjs/Chart.js/issues/5485
     it('should resize the canvas when the devicePixelRatio changes', function(done) {
       var chart = acquireChart({
