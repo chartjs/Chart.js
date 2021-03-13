@@ -235,6 +235,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 * `options.ticks.fixedStepSize` is no longer used. Use `options.ticks.stepSize`.
 * `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
 * `Chart.Ticks.formatters.linear` was renamed to `Chart.Ticks.formatters.numeric`.
+* `options.ticks.backdropPaddingX` and `options.ticks.backdropPaddingY` were replaced with `options.ticks.backdropPadding` in the radial linear scale.
 
 #### Tooltip
 

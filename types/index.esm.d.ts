@@ -3006,6 +3006,17 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 
   pointLabels: {
     /**
+     * Background color of the point label.
+     * @default undefined
+     */
+    backdropColor: Scriptable<Color, ScriptableScaleContext>;
+    /**
+     * Padding of label backdrop.
+     * @default 2
+     */
+     backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
+
+    /**
      * if true, point labels are shown.
      * @default true
      */
@@ -3043,15 +3054,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      */
     backdropColor: Scriptable<Color, ScriptableScaleContext>;
     /**
-     * Horizontal padding of label backdrop.
+     * Padding of label backdrop.
      * @default 2
      */
-    backdropPaddingX: number;
-    /**
-     * Vertical padding of label backdrop.
-     * @default 2
-     */
-    backdropPaddingY: number;
+    backdropPadding: number | ChartArea;
 
     /**
      * The Intl.NumberFormat options used by the default label formatter
