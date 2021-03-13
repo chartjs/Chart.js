@@ -10,7 +10,8 @@ function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
 
   if (tickOpts.display && opts.display) {
-    return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + tickOpts.backdropPaddingY * 2;
+    const padding = toPadding(tickOpts.backdropPadding);
+    return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + padding.height;
   }
   return 0;
 }
@@ -540,12 +541,12 @@ export default class RadialLinearScale extends LinearScaleBase {
         width = ctx.measureText(tick.label).width;
         ctx.fillStyle = optsAtIndex.backdropColor;
 
-        const {backdropPaddingX, backdropPaddingY} = optsAtIndex;
+        const padding = toPadding(optsAtIndex.backdropPadding);
         ctx.fillRect(
-          -width / 2 - backdropPaddingX,
-          -offset - tickFont.size / 2 - backdropPaddingY,
-          width + backdropPaddingX * 2,
-          tickFont.size + backdropPaddingY * 2
+          -width / 2 - padding.left,
+          -offset - tickFont.size / 2 - padding.top,
+          width + padding.width,
+          tickFont.size + padding.height
         );
       }
 
@@ -596,11 +597,8 @@ RadialLinearScale.defaults = {
     // String - The colour of the label backdrop
     backdropColor: 'rgba(255,255,255,0.75)',
 
-    // Number - The backdrop padding above & below the label in pixels
-    backdropPaddingY: 2,
-
-    // Number - The backdrop padding to the side of the label in pixels
-    backdropPaddingX: 2,
+    // Number/Object - The backdrop padding of the label in pixels
+    backdropPadding: 2,
 
     callback: Ticks.formatters.numeric
   },

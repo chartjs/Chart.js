@@ -3054,15 +3054,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      */
     backdropColor: Scriptable<Color, ScriptableScaleContext>;
     /**
-     * Horizontal padding of label backdrop.
+     * Padding of label backdrop.
      * @default 2
      */
-    backdropPaddingX: number;
-    /**
-     * Vertical padding of label backdrop.
-     * @default 2
-     */
-    backdropPaddingY: number;
+    backdropPadding: number | ChartArea;
 
     /**
      * The Intl.NumberFormat options used by the default label formatter
