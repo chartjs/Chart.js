@@ -1,7 +1,7 @@
 const ticks = {
   display: false
 };
-const gridLines = {
+const grid = {
   display: false
 };
 const title = {
@@ -19,7 +19,7 @@ module.exports = {
           backgroundColor: 'red',
           position: 'top',
           ticks,
-          gridLines,
+          grid,
           title
         },
         left: {
@@ -27,7 +27,7 @@ module.exports = {
           backgroundColor: 'green',
           position: 'left',
           ticks,
-          gridLines,
+          grid,
           title
         },
         bottom: {
@@ -35,7 +35,7 @@ module.exports = {
           backgroundColor: 'blue',
           position: 'bottom',
           ticks,
-          gridLines,
+          grid,
           title
         },
         right: {
@@ -43,7 +43,7 @@ module.exports = {
           backgroundColor: 'gray',
           position: 'right',
           ticks,
-          gridLines,
+          grid,
           title
         },
       }

@@ -10,7 +10,7 @@ module.exports = {
           ticks: {
             display: false
           },
-          gridLines: {
+          grid: {
             display: false
           },
           title: {
@@ -25,7 +25,7 @@ module.exports = {
           ticks: {
             display: false
           },
-          gridLines: {
+          grid: {
             display: false
           },
           title: {
@@ -40,7 +40,7 @@ module.exports = {
           ticks: {
             display: false
           },
-          gridLines: {
+          grid: {
             display: false
           },
           title: {
@@ -55,7 +55,7 @@ module.exports = {
           ticks: {
             display: false
           },
-          gridLines: {
+          grid: {
             display: false
           },
           title: {

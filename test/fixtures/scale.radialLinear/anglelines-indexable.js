@@ -8,7 +8,7 @@ module.exports = {
       responsive: false,
       scales: {
         r: {
-          gridLines: {
+          grid: {
             display: true,
           },
           angleLines: {

@@ -953,7 +953,7 @@ describe('Linear Scale', function() {
           },
           y: {
             type: 'linear',
-            gridLines: {
+            grid: {
               drawTicks: false,
               drawBorder: false
             },

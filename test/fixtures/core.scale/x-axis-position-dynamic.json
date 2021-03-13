@@ -24,7 +24,7 @@
                     "axis": "x",
                     "min": -100,
                     "max": 100,
-                    "gridLines": {
+                    "grid": {
                         "color": "red",
                         "drawOnChartArea": false
                     },
@@ -37,7 +37,7 @@
                     "axis": "y",
                     "min": -100,
                     "max": 100,
-                    "gridLines": {
+                    "grid": {
                         "color": "red",
                         "drawOnChartArea": false
                     },

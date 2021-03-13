@@ -16,7 +16,7 @@
       "scales": {
         "r": {
           "display": false,
-          "gridLines": {
+          "grid": {
             "circular": true
           }
         }

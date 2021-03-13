@@ -8,7 +8,7 @@ module.exports = {
       responsive: false,
       scales: {
         r: {
-          gridLines: {
+          grid: {
             display: true,
             color: function(context) {
               return context.index % 2 === 0 ? 'green' : 'red';

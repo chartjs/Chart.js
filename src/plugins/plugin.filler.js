@@ -148,7 +148,7 @@ function computeCircularBoundary(source) {
     value = scale.getBaseValue();
   }
 
-  if (options.gridLines.circular) {
+  if (options.grid.circular) {
     center = scale.getPointPositionForValue(0, start);
     return new simpleArc({
       x: center.x,

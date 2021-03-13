@@ -1101,7 +1101,7 @@ describe('Time scale tests', function() {
           },
           y: {
             type: 'linear',
-            gridLines: {
+            grid: {
               drawBorder: false
             }
           }
