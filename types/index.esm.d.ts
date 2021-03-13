@@ -3184,7 +3184,7 @@ export interface ChartTypeRegistry {
     scales: keyof CartesianScaleTypeRegistry;
   };
   bubble: {
-    chartOptions: EmptyObject;
+    chartOptions: unknown;
     datasetOptions: BubbleControllerDatasetOptions;
     defaultDataPoint: BubbleDataPoint;
     parsedDataType: BubbleParsedData;
@@ -3268,7 +3268,7 @@ export interface ChartData<
   TData = DefaultDataPoint<TType>,
   TLabel = unknown
 > {
-  labels: TLabel[];
+  labels?: TLabel[];
   datasets: ChartDataset<TType, TData>[];
 }
 
