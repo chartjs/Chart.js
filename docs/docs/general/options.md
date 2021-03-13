@@ -70,6 +70,8 @@ A plugin can provide `additionalOptionScopes` array of paths to additionally loo
 Scriptable options also accept a function which is called for each of the underlying data values and that takes the unique argument `context` representing contextual information (see [option context](options.md#option-context)).
 A resolver is passed as second parameter, that can be used to access other options in the same context.
 
+> **Note:** the `context` argument should be validated in the scriptable function, because the function can be invoked in different contexts. The `type` field is a good candidate for this validation.
+
 Example:
 
 ```javascript
@@ -132,7 +134,7 @@ In addition to [chart](#chart)
 * `active`: true if element is active (hovered)
 * `dataset`: dataset at index `datasetIndex`
 * `datasetIndex`: index of the current dataset
-* `index`: getter for `datasetIndex`
+* `index`: same as `datasetIndex`
 * `mode`: the update mode
 * `type`: `'dataset'`
 
@@ -145,8 +147,7 @@ In addition to [dataset](#dataset)
 * `parsed`: the parsed data values for the given `dataIndex` and `datasetIndex`
 * `raw`: the raw data values for the given `dataIndex` and `datasetIndex`
 * `element`: the element (point, arc, bar, etc.) for this data
-* `index`: getter for `dataIndex`
-* `mode`: the update mode
+* `index`: same as `dataIndex`
 * `type`: `'data'`
 
 ### scale
