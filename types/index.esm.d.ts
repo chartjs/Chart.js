@@ -3011,15 +3011,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      */
     backdropColor: Scriptable<Color, ScriptableScaleContext>;
     /**
-     * Horizontal padding of label backdrop.
+     * Padding of label backdrop.
      * @default 2
      */
-     backdropPaddingX: Scriptable<number, ScriptableScaleContext>;
-     /**
-      * Vertical padding of label backdrop.
-      * @default 2
-      */
-     backdropPaddingY: Scriptable<number, ScriptableScaleContext>;
+     backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
 
     /**
      * if true, point labels are shown.

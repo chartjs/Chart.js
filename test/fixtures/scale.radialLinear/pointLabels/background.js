@@ -30,7 +30,7 @@ module.exports = {
           max: 3,
           pointLabels: {
             backdropColor: 'blue',
-            backdropPaddingX: 5,
+            backdropPadding: {left: 5, right: 5, top: 2, bottom: 2},
           },
           ticks: {
             display: false,

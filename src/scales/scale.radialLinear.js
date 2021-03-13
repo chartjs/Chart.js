@@ -4,7 +4,7 @@ import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {toFont} from '../helpers/helpers.options';
+import {toFont, toPadding} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
@@ -203,11 +203,12 @@ function drawPointLabels(scale, labelCount) {
     const optsAtIndex = pointLabels.setContext(scale.getContext(i));
     const plFont = toFont(optsAtIndex.font);
     const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelItems[i];
-    const {backdropColor, backdropPaddingX, backdropPaddingY} = optsAtIndex;
+    const {backdropColor} = optsAtIndex;
 
     if (!isNullOrUndef(backdropColor)) {
+      const padding = toPadding(optsAtIndex.backdropPadding);
       ctx.fillStyle = backdropColor;
-      ctx.fillRect(left - backdropPaddingX, top - backdropPaddingY, right - left + 2 * backdropPaddingX, bottom - top + 2 * backdropPaddingY);
+      ctx.fillRect(left - padding.left, top - padding.top, right - left + padding.width, bottom - top + padding.height);
     }
 
     renderText(
@@ -608,10 +609,7 @@ RadialLinearScale.defaults = {
     backdropColor: undefined,
 
     // Number - The backdrop padding above & below the label in pixels
-    backdropPaddingY: 2,
-
-    // Number - The backdrop padding to the side of the label in pixels
-    backdropPaddingX: 2,
+    backdropPadding: 2,
 
     // Boolean - if true, show point labels
     display: true,
