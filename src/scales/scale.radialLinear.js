@@ -50,7 +50,6 @@ function determineLimits(angle, pos, size, min, max) {
 
 /**
  * Helper function to fit a radial linear scale with point labels
- * @param {RadialLinearScale} scale
  */
 function fitWithPointLabels(scale) {
 
