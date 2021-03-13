@@ -163,8 +163,8 @@ describe('Plugin.Tooltip', function() {
         }]
       }));
 
-      expect(tooltip.x).toBeCloseToPixel(267);
-      expect(tooltip.y).toBeCloseToPixel(155);
+      expect(tooltip.x).toBeCloseToPixel(266);
+      expect(tooltip.y).toBeCloseToPixel(150);
     });
 
     it('Should only display if intersecting if intersect is set', async function() {
@@ -311,7 +311,7 @@ describe('Plugin.Tooltip', function() {
     }]);
 
     expect(tooltip.x).toBeCloseToPixel(267);
-    expect(tooltip.y).toBeCloseToPixel(312);
+    expect(tooltip.y).toBeCloseToPixel(308);
   });
 
   it('Should display information from user callbacks', async function() {
@@ -475,7 +475,7 @@ describe('Plugin.Tooltip', function() {
     }));
 
     expect(tooltip.x).toBeCloseToPixel(267);
-    expect(tooltip.y).toBeCloseToPixel(75);
+    expect(tooltip.y).toBeCloseToPixel(58);
   });
 
   it('Should provide context object to user callbacks', async function() {
@@ -581,7 +581,7 @@ describe('Plugin.Tooltip', function() {
     }));
 
     expect(tooltip.x).toBeCloseToPixel(267);
-    expect(tooltip.y).toBeCloseToPixel(155);
+    expect(tooltip.y).toBeCloseToPixel(150);
   });
 
   it('Should allow reversing items', async function() {
@@ -649,7 +649,7 @@ describe('Plugin.Tooltip', function() {
     }));
 
     expect(tooltip.x).toBeCloseToPixel(267);
-    expect(tooltip.y).toBeCloseToPixel(155);
+    expect(tooltip.y).toBeCloseToPixel(150);
   });
 
   it('Should follow dataset order', async function() {
@@ -718,7 +718,7 @@ describe('Plugin.Tooltip', function() {
     }));
 
     expect(tooltip.x).toBeCloseToPixel(267);
-    expect(tooltip.y).toBeCloseToPixel(155);
+    expect(tooltip.y).toBeCloseToPixel(150);
   });
 
   it('should filter items from the tooltip using the callback', async function() {
@@ -1393,18 +1393,18 @@ describe('Plugin.Tooltip', function() {
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['title', 105, 111]},
+        {name: 'fillText', args: ['title', 105, 112.2]},
         {name: 'setTextAlign', args: ['left']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFont', args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFillStyle', args: ['#fff']},
-        {name: 'fillText', args: ['label', 105, 129]},
+        {name: 'fillText', args: ['label', 105, 132.6]},
         {name: 'setTextAlign', args: ['left']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['footer', 105, 147]},
+        {name: 'fillText', args: ['footer', 105, 153]},
         {name: 'restore', args: []}
       ]));
     });
@@ -1419,18 +1419,18 @@ describe('Plugin.Tooltip', function() {
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['title', 195, 111]},
+        {name: 'fillText', args: ['title', 195, 112.2]},
         {name: 'setTextAlign', args: ['right']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFont', args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFillStyle', args: ['#fff']},
-        {name: 'fillText', args: ['label', 195, 129]},
+        {name: 'fillText', args: ['label', 195, 132.6]},
         {name: 'setTextAlign', args: ['right']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['footer', 195, 147]},
+        {name: 'fillText', args: ['footer', 195, 153]},
         {name: 'restore', args: []}
       ]));
     });
@@ -1445,18 +1445,18 @@ describe('Plugin.Tooltip', function() {
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['title', 150, 111]},
+        {name: 'fillText', args: ['title', 150, 112.2]},
         {name: 'setTextAlign', args: ['center']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFont', args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFillStyle', args: ['#fff']},
-        {name: 'fillText', args: ['label', 150, 129]},
+        {name: 'fillText', args: ['label', 150, 132.6]},
         {name: 'setTextAlign', args: ['center']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['footer', 150, 147]},
+        {name: 'fillText', args: ['footer', 150, 153]},
         {name: 'restore', args: []}
       ]));
     });
@@ -1471,18 +1471,18 @@ describe('Plugin.Tooltip', function() {
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['title', 195, 111]},
+        {name: 'fillText', args: ['title', 195, 112.2]},
         {name: 'setTextAlign', args: ['center']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFont', args: ["normal 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFillStyle', args: ['#fff']},
-        {name: 'fillText', args: ['label', 150, 129]},
+        {name: 'fillText', args: ['label', 150, 132.6]},
         {name: 'setTextAlign', args: ['left']},
         {name: 'setTextBaseline', args: ['middle']},
         {name: 'setFillStyle', args: ['#fff']},
         {name: 'setFont', args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"]},
-        {name: 'fillText', args: ['footer', 105, 147]},
+        {name: 'fillText', args: ['footer', 105, 153]},
         {name: 'restore', args: []}
       ]));
     });
