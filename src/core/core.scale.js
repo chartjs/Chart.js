@@ -620,17 +620,20 @@ export default class Scale extends Element {
     me.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
     me.afterCalculateLabelRotation();
 
-    me.beforeFit();
-    me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
-    me.afterFit();
-
     // Auto-skip
-    me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
+    if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
+      me.ticks = me._autoSkip(me.ticks);
+      me._labelSizes = null;
+    }
 
     if (samplingEnabled) {
       // Generate labels using all non-skipped ticks
       me._convertTicksToLabels(me.ticks);
     }
+
+    me.beforeFit();
+    me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
+    me.afterFit();
 
     // IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 

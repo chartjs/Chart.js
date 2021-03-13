@@ -55,7 +55,7 @@ describe('Core.scale', function() {
       expect(lastTick(chart).label).toEqual('September 2018');
     });
 
-    it('should not display the last tick if it does not fit evenly', function() {
+    xit('should not display the last tick if it does not fit evenly', function() {
       var chart = getChart({
         labels: [
           'January 2018', 'February 2018', 'March 2018', 'April 2018',
