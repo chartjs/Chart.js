@@ -1096,6 +1096,7 @@ describe('Time scale tests', function() {
             ticks: {
               source: 'data',
               autoSkip: true,
+              autoSkipPadding: 0,
               maxRotation: 0
             }
           },
