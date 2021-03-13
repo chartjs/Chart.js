@@ -1,4 +1,5 @@
 module.exports = {
+  description: 'https://github.com/chartjs/Chart.js/issues/3694',
   tolerance: 0.002,
   config: {
     type: 'line',
@@ -30,15 +31,12 @@ module.exports = {
           140,
           24
         ]
-      }]
+      }],
     },
     options: {
-      maintainAspectRatio: false,
-      plugins: {
-        legend: true,
-        title: {
-          display: true,
-          text: 'test'
+      scales: {
+        x: {
+          backgroundColor: '#eee'
         }
       }
     }
@@ -46,8 +44,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 185,
-      width: 185
+      width: 185,
+      height: 185
     }
   }
 };

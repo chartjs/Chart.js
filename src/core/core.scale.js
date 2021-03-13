@@ -192,6 +192,14 @@ function getTitleHeight(options, fallback) {
   return (lines * font.lineHeight) + padding.height;
 }
 
+function determineMaxTicks(scale) {
+  const offset = scale.options.offset;
+  const tickLength = scale._tickSize();
+  const maxScale = scale._length / tickLength + (offset ? 0 : 1);
+  const maxChart = scale._maxLength / tickLength;
+  return Math.floor(Math.min(maxScale, maxChart));
+}
+
 /**
  * @param {number[]} arr
  */
@@ -411,6 +419,7 @@ export default class Scale extends Element {
     /** @type {object|null} */
     this._labelSizes = null;
     this._length = 0;
+    this._maxLength = 0;
     this._longestTextCache = {};
     /** @type {number} */
     this._startPixel = undefined;
@@ -572,7 +581,7 @@ export default class Scale extends Element {
     // Absorb the master measurements
     me.maxWidth = maxWidth;
     me.maxHeight = maxHeight;
-    me._margins = Object.assign({
+    me._margins = margins = Object.assign({
       left: 0,
       right: 0,
       top: 0,
@@ -588,6 +597,10 @@ export default class Scale extends Element {
     me.beforeSetDimensions();
     me.setDimensions();
     me.afterSetDimensions();
+
+    me._maxLength = me.isHorizontal()
+      ? me.width + margins.left + margins.right
+      : me.height + margins.top + margins.bottom;
 
     // Data min/max
     if (!me._dataLimitsCached) {
@@ -620,17 +633,20 @@ export default class Scale extends Element {
     me.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
     me.afterCalculateLabelRotation();
 
-    me.beforeFit();
-    me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
-    me.afterFit();
-
     // Auto-skip
-    me.ticks = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(me.ticks) : me.ticks;
+    if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
+      me.ticks = me._autoSkip(me.ticks);
+      me._labelSizes = null;
+    }
 
     if (samplingEnabled) {
       // Generate labels using all non-skipped ticks
       me._convertTicksToLabels(me.ticks);
     }
+
+    me.beforeFit();
+    me.fit(); // Preconditions: label rotation and label sizes must be calculated beforehand
+    me.afterFit();
 
     // IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
 
@@ -1162,8 +1178,8 @@ export default class Scale extends Element {
 	 */
   _autoSkip(ticks) {
     const me = this;
-    const {offset, ticks: tickOpts} = me.options;
-    const ticksLimit = tickOpts.maxTicksLimit || (me._length / me._tickSize() + (offset ? 0 : 1));
+    const tickOpts = me.options.ticks;
+    const ticksLimit = tickOpts.maxTicksLimit || determineMaxTicks(me);
     const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
     const numMajorIndices = majorIndices.length;
     const first = majorIndices[0];
