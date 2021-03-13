@@ -35,7 +35,7 @@
                         "display": false
                     },
                     "grid":{
-                        "offsetGridLines": false,
+                        "offset": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)",

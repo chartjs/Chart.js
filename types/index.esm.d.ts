@@ -2619,7 +2619,7 @@ export interface GridLineOptions {
   /**
    * @default false
    */
-  offsetGridLines: boolean;
+  offset: boolean;
 }
 
 export interface TickOptions {

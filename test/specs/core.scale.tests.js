@@ -131,7 +131,7 @@ describe('Core.scale', function() {
           scales: {
             x: {
               grid: {
-                offsetGridLines: test.offsetGridLines,
+                offset: test.offsetGridLines,
                 drawTicks: false
               },
               ticks: {
@@ -179,7 +179,7 @@ describe('Core.scale', function() {
             y: {
               type: 'category',
               grid: {
-                offsetGridLines: test.offsetGridLines,
+                offset: test.offsetGridLines,
                 drawTicks: false
               },
               ticks: {

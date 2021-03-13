@@ -46,7 +46,7 @@ defaults.set('scale', {
     tickLength: 10,
     tickWidth: (_ctx, options) => options.lineWidth,
     tickColor: (_ctx, options) => options.color,
-    offsetGridLines: false,
+    offset: false,
     borderDash: [],
     borderDashOffset: 0.0,
     borderColor: (_ctx, options) => options.color,
@@ -1255,10 +1255,10 @@ export default class Scale extends Element {
     const chart = me.chart;
     const options = me.options;
     const {grid, position} = options;
-    const offsetGridLines = grid.offsetGridLines;
+    const offset = grid.offset;
     const isHorizontal = me.isHorizontal();
     const ticks = me.ticks;
-    const ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
+    const ticksLength = ticks.length + (offset ? 1 : 0);
     const tl = getTickMarkLength(grid);
     const items = [];
 
@@ -1336,7 +1336,7 @@ export default class Scale extends Element {
       const tickBorderDash = optsAtIndex.tickBorderDash || [];
       const tickBorderDashOffset = optsAtIndex.tickBorderDashOffset;
 
-      lineValue = getPixelForGridLine(me, i, offsetGridLines);
+      lineValue = getPixelForGridLine(me, i, offset);
 
       // Skip if the pixel is out of the range
       if (lineValue === undefined) {
