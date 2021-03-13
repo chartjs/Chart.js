@@ -3006,6 +3006,22 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 
   pointLabels: {
     /**
+     * Background color of the point label.
+     * @default undefined
+     */
+    backdropColor: Scriptable<Color, ScriptableScaleContext>;
+    /**
+     * Horizontal padding of label backdrop.
+     * @default 2
+     */
+     backdropPaddingX: Scriptable<number, ScriptableScaleContext>;
+     /**
+      * Vertical padding of label backdrop.
+      * @default 2
+      */
+     backdropPaddingY: Scriptable<number, ScriptableScaleContext>;
+
+    /**
      * if true, point labels are shown.
      * @default true
      */

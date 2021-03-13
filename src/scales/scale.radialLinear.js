@@ -202,7 +202,14 @@ function drawPointLabels(scale, labelCount) {
   for (let i = labelCount - 1; i >= 0; i--) {
     const optsAtIndex = pointLabels.setContext(scale.getContext(i));
     const plFont = toFont(optsAtIndex.font);
-    const {x, y, textAlign} = scale._pointLabelItems[i];
+    const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelItems[i];
+    const {backdropColor, backdropPaddingX, backdropPaddingY} = optsAtIndex;
+
+    if (!isNullOrUndef(backdropColor)) {
+      ctx.fillStyle = backdropColor;
+      ctx.fillRect(left - backdropPaddingX, top - backdropPaddingY, right - left + 2 * backdropPaddingX, bottom - top + 2 * backdropPaddingY);
+    }
+
     renderText(
       ctx,
       scale._pointLabels[i],
@@ -598,6 +605,14 @@ RadialLinearScale.defaults = {
   },
 
   pointLabels: {
+    backdropColor: undefined,
+
+    // Number - The backdrop padding above & below the label in pixels
+    backdropPaddingY: 2,
+
+    // Number - The backdrop padding to the side of the label in pixels
+    backdropPaddingX: 2,
+
     // Boolean - if true, show point labels
     display: true,
 

@@ -126,6 +126,9 @@ Namespace: `options.scales[scaleId].pointLabels`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
+| `backdropColor` | [`Color`](../../general/colors.md) | `true` | `undefined` | Background color of the point label.
+| `backdropPaddingX` | `number` | | `2` | Horizontal padding of label backdrop.
+| `backdropPaddingY` | `number` | | `2` | Vertical padding of label backdrop.
 | `display` | `boolean` | | `true` | if true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
