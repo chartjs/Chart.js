@@ -4,7 +4,7 @@ import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/hel
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints} from '../helpers/helpers.math';
-import {drawPoint, toFontString} from '../helpers';
+import {drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
@@ -181,11 +181,11 @@ function getTooltipSize(tooltip, options) {
 
   ctx.save();
 
-  ctx.font = toFontString(titleFont);
+  ctx.font = titleFont.string;
   each(tooltip.title, maxLineWidth);
 
   // Body width
-  ctx.font = toFontString(bodyFont);
+  ctx.font = bodyFont.string;
   each(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
 
   // Body lines may include some extra width due to the color box
@@ -200,7 +200,7 @@ function getTooltipSize(tooltip, options) {
   widthPadding = 0;
 
   // Footer width
-  ctx.font = toFontString(footerFont);
+  ctx.font = footerFont.string;
   each(tooltip.footer, maxLineWidth);
 
   ctx.restore();
@@ -659,7 +659,7 @@ export class Tooltip extends Element {
       titleSpacing = options.titleSpacing;
 
       ctx.fillStyle = options.titleColor;
-      ctx.font = toFontString(titleFont);
+      ctx.font = titleFont.string;
 
       for (i = 0; i < length; ++i) {
         ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFont.lineHeight / 2);
@@ -746,7 +746,7 @@ export class Tooltip extends Element {
 
     ctx.textAlign = bodyAlign;
     ctx.textBaseline = 'middle';
-    ctx.font = toFontString(bodyFont);
+    ctx.font = bodyFont.string;
 
     pt.x = getAlignedX(me, bodyAlignForCalculation, options);
 
@@ -809,7 +809,7 @@ export class Tooltip extends Element {
       footerFont = toFont(options.footerFont);
 
       ctx.fillStyle = options.footerColor;
-      ctx.font = toFontString(footerFont);
+      ctx.font = footerFont.string;
 
       for (i = 0; i < length; ++i) {
         ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFont.lineHeight / 2);
