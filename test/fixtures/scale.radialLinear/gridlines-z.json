@@ -14,7 +14,7 @@
       "responsive": false,
       "scales": {
         "r": {
-          "gridLines": {
+          "grid": {
             "color": "rgba(0, 0, 0, 1)",
             "lineWidth": 1,
             "z": 1

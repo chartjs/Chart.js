@@ -37,7 +37,7 @@ defaults.set('scale', {
   grace: 0,
 
   // grid line settings
-  gridLines: {
+  grid: {
     display: true,
     lineWidth: 1,
     drawBorder: true,
@@ -46,7 +46,7 @@ defaults.set('scale', {
     tickLength: 10,
     tickWidth: (_ctx, options) => options.lineWidth,
     tickColor: (_ctx, options) => options.color,
-    offsetGridLines: false,
+    offset: false,
     borderDash: [],
     borderDashOffset: 0.0,
     borderColor: (_ctx, options) => options.color,
@@ -90,7 +90,7 @@ defaults.set('scale', {
 });
 
 defaults.route('scale.ticks', 'color', '', 'color');
-defaults.route('scale.gridLines', 'color', '', 'borderColor');
+defaults.route('scale.grid', 'color', '', 'borderColor');
 defaults.route('scale.title', 'color', '', 'color');
 
 defaults.describe('scale', {
@@ -792,7 +792,7 @@ export default class Scale extends Element {
     // Allow 3 pixels x2 padding either side for label readability
     if (maxLabelWidth + 6 > tickWidth) {
       tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
-      maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
+      maxHeight = me.maxHeight - getTickMarkLength(options.grid)
 				- tickOpts.padding - getTitleHeight(options.title, me.chart.options.font);
       maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
       labelRotation = toDegrees(Math.min(
@@ -825,7 +825,7 @@ export default class Scale extends Element {
     const opts = me.options;
     const tickOpts = opts.ticks;
     const titleOpts = opts.title;
-    const gridLineOpts = opts.gridLines;
+    const gridLineOpts = opts.grid;
     const display = me._isVisible();
     const labelsBelowTicks = opts.position !== 'top' && me.axis === 'x';
     const isHorizontal = me.isHorizontal();
@@ -1254,15 +1254,15 @@ export default class Scale extends Element {
     const axis = me.axis;
     const chart = me.chart;
     const options = me.options;
-    const {gridLines, position} = options;
-    const offsetGridLines = gridLines.offsetGridLines;
+    const {grid, position} = options;
+    const offset = grid.offset;
     const isHorizontal = me.isHorizontal();
     const ticks = me.ticks;
-    const ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
-    const tl = getTickMarkLength(gridLines);
+    const ticksLength = ticks.length + (offset ? 1 : 0);
+    const tl = getTickMarkLength(grid);
     const items = [];
 
-    const borderOpts = gridLines.setContext(me.getContext(0));
+    const borderOpts = grid.setContext(me.getContext(0));
     const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
     const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
@@ -1324,11 +1324,11 @@ export default class Scale extends Element {
     }
 
     for (i = 0; i < ticksLength; ++i) {
-      const optsAtIndex = gridLines.setContext(me.getContext(i));
+      const optsAtIndex = grid.setContext(me.getContext(i));
 
       const lineWidth = optsAtIndex.lineWidth;
       const lineColor = optsAtIndex.color;
-      const borderDash = gridLines.borderDash || [];
+      const borderDash = grid.borderDash || [];
       const borderDashOffset = optsAtIndex.borderDashOffset;
 
       const tickWidth = optsAtIndex.tickWidth;
@@ -1336,7 +1336,7 @@ export default class Scale extends Element {
       const tickBorderDash = optsAtIndex.tickBorderDash || [];
       const tickBorderDashOffset = optsAtIndex.tickBorderDashOffset;
 
-      lineValue = getPixelForGridLine(me, i, offsetGridLines);
+      lineValue = getPixelForGridLine(me, i, offset);
 
       // Skip if the pixel is out of the range
       if (lineValue === undefined) {
@@ -1388,7 +1388,7 @@ export default class Scale extends Element {
     const isHorizontal = me.isHorizontal();
     const ticks = me.ticks;
     const {align, crossAlign, padding} = optionTicks;
-    const tl = getTickMarkLength(options.gridLines);
+    const tl = getTickMarkLength(options.grid);
     const tickAndPadding = tl + padding;
     const rotation = -toRadians(me.labelRotation);
     const items = [];
@@ -1609,20 +1609,20 @@ export default class Scale extends Element {
 	 */
   drawGrid(chartArea) {
     const me = this;
-    const gridLines = me.options.gridLines;
+    const grid = me.options.grid;
     const ctx = me.ctx;
     const chart = me.chart;
-    const borderOpts = gridLines.setContext(me.getContext(0));
-    const axisWidth = gridLines.drawBorder ? borderOpts.borderWidth : 0;
+    const borderOpts = grid.setContext(me.getContext(0));
+    const axisWidth = grid.drawBorder ? borderOpts.borderWidth : 0;
     const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
     let i, ilen;
 
-    if (gridLines.display) {
+    if (grid.display) {
       for (i = 0, ilen = items.length; i < ilen; ++i) {
         const item = items[i];
         const {color, tickColor, tickWidth, width} = item;
 
-        if (width && color && gridLines.drawOnChartArea) {
+        if (width && color && grid.drawOnChartArea) {
           ctx.save();
           ctx.lineWidth = width;
           ctx.strokeStyle = color;
@@ -1638,7 +1638,7 @@ export default class Scale extends Element {
           ctx.restore();
         }
 
-        if (tickWidth && tickColor && gridLines.drawTicks) {
+        if (tickWidth && tickColor && grid.drawTicks) {
           ctx.save();
           ctx.lineWidth = tickWidth;
           ctx.strokeStyle = tickColor;
@@ -1658,7 +1658,7 @@ export default class Scale extends Element {
 
     if (axisWidth) {
       // Draw the line at the edge of the axis
-      const edgeOpts = gridLines.setContext(me.getContext(me._ticksLength - 1));
+      const edgeOpts = grid.setContext(me.getContext(me._ticksLength - 1));
       const lastLineWidth = edgeOpts.lineWidth;
       const borderValue = me._borderValue;
       let x1, x2, y1, y2;
@@ -1773,7 +1773,7 @@ export default class Scale extends Element {
     const me = this;
     const opts = me.options;
     const tz = opts.ticks && opts.ticks.z || 0;
-    const gz = opts.gridLines && opts.gridLines.z || 0;
+    const gz = opts.grid && opts.grid.z || 0;
 
     if (!me._isVisible() || tz === gz || me.draw !== Scale.prototype.draw) {
       // backward compatibility: draw has been overridden by custom scale

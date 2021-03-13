@@ -535,8 +535,8 @@ BarController.overrides = {
     _index_: {
       type: 'category',
       offset: true,
-      gridLines: {
-        offsetGridLines: true
+      grid: {
+        offset: true
       }
     },
     _value_: {

@@ -8,7 +8,7 @@
       "responsive": false,
       "scales": {
         "r": {
-          "gridLines": {
+          "grid": {
             "color": "rgba(0, 0, 255, 0.5)",
             "lineWidth": 1,
             "borderDash": [4, 2],

@@ -14,7 +14,7 @@
                     "ticks": {
                         "display": false
                     },
-                    "gridLines":{
+                    "grid":{
                         "display": false,
                         "drawBorder": false
                     }
@@ -23,7 +23,7 @@
                     "ticks": {
                         "labelOffset": 25
                     },
-                    "gridLines":{
+                    "grid":{
                         "display": false,
                         "drawBorder": false
                     }

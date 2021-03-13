@@ -429,7 +429,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 */
   drawBackground() {
     const me = this;
-    const {backgroundColor, gridLines: {circular}} = me.options;
+    const {backgroundColor, grid: {circular}} = me.options;
     if (backgroundColor) {
       const ctx = me.ctx;
       ctx.save();
@@ -449,7 +449,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     const me = this;
     const ctx = me.ctx;
     const opts = me.options;
-    const {angleLines, gridLines} = opts;
+    const {angleLines, grid} = opts;
     const labelCount = me.getLabels().length;
 
     let i, offset, position;
@@ -458,11 +458,11 @@ export default class RadialLinearScale extends LinearScaleBase {
       drawPointLabels(me, labelCount);
     }
 
-    if (gridLines.display) {
+    if (grid.display) {
       me.ticks.forEach((tick, index) => {
         if (index !== 0) {
           offset = me.getDistanceFromCenterForValue(tick.value);
-          const optsAtIndex = gridLines.setContext(me.getContext(index - 1));
+          const optsAtIndex = grid.setContext(me.getContext(index - 1));
           drawRadiusLine(me, optsAtIndex, offset, labelCount);
         }
       });
@@ -574,7 +574,7 @@ RadialLinearScale.defaults = {
     borderDashOffset: 0.0
   },
 
-  gridLines: {
+  grid: {
     circular: false
   },
 
@@ -624,6 +624,6 @@ RadialLinearScale.defaultRoutes = {
 
 RadialLinearScale.descriptors = {
   angleLines: {
-    _fallback: 'gridLines'
+    _fallback: 'grid'
   }
 };

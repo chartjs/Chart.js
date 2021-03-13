@@ -29,7 +29,7 @@
 <body>
 	<div class="container"></div>
 	<script>
-		function createConfig(gridlines, title) {
+		function createConfig(grid, title) {
 			return {
 				type: 'line',
 				data: {
@@ -58,10 +58,10 @@
 					},
 					scales: {
 						x: {
-							gridLines: gridlines
+							grid: grid
 						},
 						y: {
-							gridLines: gridlines,
+							grid: grid,
 							min: 0,
 							max: 100,
 							ticks: {
@@ -78,30 +78,30 @@
 
 			[{
 				title: 'Display: true',
-				gridLines: {
+				grid: {
 					display: true
 				}
 			}, {
 				title: 'Display: false',
-				gridLines: {
+				grid: {
 					display: false
 				}
 			}, {
 				title: 'Display: false, no border',
-				gridLines: {
+				grid: {
 					display: false,
 					drawBorder: false
 				}
 			}, {
 				title: 'DrawOnChartArea: false',
-				gridLines: {
+				grid: {
 					display: true,
 					drawBorder: true,
 					drawOnChartArea: false,
 				}
 			}, {
 				title: 'DrawTicks: false',
-				gridLines: {
+				grid: {
 					display: true,
 					drawBorder: true,
 					drawOnChartArea: true,
@@ -116,7 +116,7 @@
 				container.appendChild(div);
 
 				var ctx = canvas.getContext('2d');
-				var config = createConfig(details.gridLines, details.title);
+				var config = createConfig(details.grid, details.title);
 				new Chart(ctx, config);
 			});
 		};

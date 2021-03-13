@@ -130,8 +130,8 @@ describe('Core.scale', function() {
         options: {
           scales: {
             x: {
-              gridLines: {
-                offsetGridLines: test.offsetGridLines,
+              grid: {
+                offset: test.offsetGridLines,
                 drawTicks: false
               },
               ticks: {
@@ -178,8 +178,8 @@ describe('Core.scale', function() {
             },
             y: {
               type: 'category',
-              gridLines: {
-                offsetGridLines: test.offsetGridLines,
+              grid: {
+                offset: test.offsetGridLines,
                 drawTicks: false
               },
               ticks: {
@@ -466,7 +466,7 @@ describe('Core.scale', function() {
           scales: {
             x: {
               type: 'customScale',
-              gridLines: {
+              grid: {
                 z: 10
               },
               ticks: {
@@ -492,7 +492,7 @@ describe('Core.scale', function() {
               ticks: {
                 z: 10
               },
-              gridLines: {
+              grid: {
                 z: 10
               }
             }
@@ -528,7 +528,7 @@ describe('Core.scale', function() {
           scales: {
             x: {
               type: 'linear',
-              gridLines: {
+              grid: {
                 z: 11
               }
             }
@@ -547,7 +547,7 @@ describe('Core.scale', function() {
               ticks: {
                 z: 10
               },
-              gridLines: {
+              grid: {
                 z: 11
               }
             }

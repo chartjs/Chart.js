@@ -187,7 +187,7 @@ PolarAreaController.overrides = {
         display: false
       },
       beginAtZero: true,
-      gridLines: {
+      grid: {
         circular: true
       },
       pointLabels: {

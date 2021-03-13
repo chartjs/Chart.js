@@ -2619,7 +2619,7 @@ export interface GridLineOptions {
   /**
    * @default false
    */
-  offsetGridLines: boolean;
+  offset: boolean;
 }
 
 export interface TickOptions {
@@ -2696,7 +2696,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    */
   offset: boolean;
 
-  gridLines: GridLineOptions;
+  grid: GridLineOptions;
 
   title: {
     display: boolean;
@@ -2993,7 +2993,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
    */
   beginAtZero: boolean;
 
-  gridLines: GridLineOptions;
+  grid: GridLineOptions;
 
   /**
    * User defined minimum number for the scale, overrides minimum value from data.

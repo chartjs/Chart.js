@@ -229,7 +229,9 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 #### Ticks
 
-* `options.gridLines.tickMarkLength` was renamed to `options.gridLines.tickLength`.
+* `options.gridLines` was renamed to `options.grid`
+* `options.gridLines.offsetGridLines` was renamed to `options.grid.offset`.
+* `options.gridLines.tickMarkLength` was renamed to `options.grid.tickLength`.
 * `options.ticks.fixedStepSize` is no longer used. Use `options.ticks.stepSize`.
 * `options.ticks.major` and `options.ticks.minor` were replaced with scriptable options for tick fonts.
 * `Chart.Ticks.formatters.linear` was renamed to `Chart.Ticks.formatters.numeric`.

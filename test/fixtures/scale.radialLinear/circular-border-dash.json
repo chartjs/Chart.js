@@ -8,7 +8,7 @@
       "responsive": false,
       "scales": {
         "r": {
-          "gridLines": {
+          "grid": {
             "circular": true,
             "color": "rgba(0, 0, 255, 0.5)",
             "lineWidth": 1,

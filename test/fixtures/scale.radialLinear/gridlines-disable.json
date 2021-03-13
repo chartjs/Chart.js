@@ -8,7 +8,7 @@
       "responsive": false,
       "scales": {
         "r": {
-          "gridLines": {
+          "grid": {
             "display": false
           },
           "angleLines": {

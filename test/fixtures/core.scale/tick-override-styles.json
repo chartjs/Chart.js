@@ -15,7 +15,7 @@
                     "ticks": {
                         "display": false
                     },
-                    "gridLines":{
+                    "grid":{
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)",
@@ -34,8 +34,8 @@
                     "ticks": {
                         "display": false
                     },
-                    "gridLines":{
-                        "offsetGridLines": false,
+                    "grid":{
+                        "offset": false,
                         "drawOnChartArea": false,
                         "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)",

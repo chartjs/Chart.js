@@ -21,7 +21,7 @@ module.exports = {
           backgroundColor: '#00FF00',
           min: 0,
           max: 3,
-          gridLines: {
+          grid: {
             circular: true
           },
           pointLabels: {

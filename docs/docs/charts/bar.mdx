@@ -213,7 +213,7 @@ The bar chart sets unique default values for the following configuration from th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `offset` | `boolean` | `true` | If true, extra space is added to both edges and the axis is scaled to fit into the chart area.
-| `gridLines.offsetGridLines` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
+| `grid.offset` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
 
 ### Example scale configuration
 
@@ -221,15 +221,15 @@ The bar chart sets unique default values for the following configuration from th
 options = {
     scales: {
         x: {
-            gridLines: {
-                offsetGridLines: true
+            grid: {
+              offset: true
             }
         }
     }
 };
 ```
 
-### offsetGridLines
+### Offset Grid Lines
 
 If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval, which is the space between the grid lines. If false, the grid line will go right down the middle of the bars. This is set to true for a category scale in a bar chart while false for other scales or chart types by default.
 
