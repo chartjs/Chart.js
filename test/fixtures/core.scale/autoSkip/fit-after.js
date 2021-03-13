@@ -41,6 +41,7 @@ module.exports = {
     }
   },
   options: {
+    spriteText: true,
     canvas: {
       width: 185,
       height: 185
