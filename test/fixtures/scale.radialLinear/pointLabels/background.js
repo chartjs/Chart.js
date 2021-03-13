@@ -1,4 +1,5 @@
 module.exports = {
+  tolerance: 0.01,
   config: {
     type: 'radar',
     data: {
