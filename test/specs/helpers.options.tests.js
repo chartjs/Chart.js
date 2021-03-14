@@ -95,6 +95,14 @@ describe('Chart.helpers.options', function() {
       expect(toPadding(undefined)).toEqual(
         {top: 0, right: 0, bottom: 0, left: 0, height: 0, width: 0});
     });
+    it('should support x / y shorthands', function() {
+      expect(toPadding({x: 1, y: 2})).toEqual(
+        {top: 2, right: 1, bottom: 2, left: 1, height: 4, width: 2});
+      expect(toPadding({x: 1, left: 0})).toEqual(
+        {top: 0, right: 1, bottom: 0, left: 0, height: 0, width: 1});
+      expect(toPadding({y: 5, bottom: 0})).toEqual(
+        {top: 5, right: 0, bottom: 0, left: 0, height: 5, width: 0});
+    });
   });
 
   describe('toFont', function() {

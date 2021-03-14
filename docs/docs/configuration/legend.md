@@ -73,7 +73,7 @@ Namespace: `options.plugins.legend.title`
 | `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of text.
 | `display` | `boolean` | `false` | Is the legend title displayed.
 | `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
-| `padding` | `number`\|`object` | `0` | Padding around the title. If specified as a number, it applies evenly to all sides.
+| `padding` | [`Padding`](../general/padding.md) | `0` | Padding around the title.
 | `text` | `string` | | The string title.
 
 ## Legend Item Interface

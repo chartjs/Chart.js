@@ -28,7 +28,7 @@ export function toLineHeight(value: string, size: number): number;
  * @since 2.7.0
  */
 export function toPadding(
-	value?: number | { top?: number; left?: number; right?: number; bottom?: number }
+  value?: number | { top?: number; left?: number; right?: number; bottom?: number; x?:number, y?: number }
 ): { top: number; left: number; right: number; bottom: number; width: number; height: number };
 
 /**
