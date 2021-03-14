@@ -8,4 +8,5 @@ globals:
   moment: true
   waitForResize: true
 
-
+rules:
+  max-statements: ["warn", 50]
