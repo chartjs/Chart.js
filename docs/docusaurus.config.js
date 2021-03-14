@@ -11,6 +11,8 @@ module.exports = {
   themes: ['@docusaurus/theme-live-codeblock'],
   onBrokenLinks: 'warn',
   themeConfig: {
+    image: 'img/logo.png',
+    metadatas: [{name: 'twitter:card', content: 'summary'}],
     algolia: {
       apiKey: 'd7ee00a3cbaaf3c33e28ad1c274e7ba6',
       indexName: 'chartjs',
