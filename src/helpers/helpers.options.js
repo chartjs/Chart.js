@@ -38,11 +38,13 @@ export function toLineHeight(value, size) {
 }
 
 const numberOrZero = v => +v || 0;
+const numberOrZero2 = (v1, v2) => numberOrZero(valueOrDefault(v1, v2));
 
 /**
  * Converts the given value into a TRBL object.
  * @param {number|object} value - If a number, set the value to all TRBL component,
  *  else, if an object, use defined properties and sets undefined ones to 0.
+ *  x / y are shorthands for same value for left/right and top/bottom.
  * @returns {object} The padding values (top, right, bottom, left)
  * @since 3.0.0
  */
@@ -50,10 +52,11 @@ export function toTRBL(value) {
   let t, r, b, l;
 
   if (isObject(value)) {
-    t = numberOrZero(value.top);
-    r = numberOrZero(value.right);
-    b = numberOrZero(value.bottom);
-    l = numberOrZero(value.left);
+    const {x, y} = value;
+    t = numberOrZero2(value.top, y);
+    r = numberOrZero2(value.right, x);
+    b = numberOrZero2(value.bottom, y);
+    l = numberOrZero2(value.left, x);
   } else {
     t = r = b = l = numberOrZero(value);
   }
@@ -97,6 +100,7 @@ export function toTRBLCorners(value) {
  * Converts the given value into a padding object with pre-computed width/height.
  * @param {number|object} value - If a number, set the value to all TRBL component,
  *  else, if an object, use defined properties and sets undefined ones to 0.
+ *  x / y are shorthands for same value for left/right and top/bottom.
  * @returns {object} The padding values (top, right, bottom, left, width, height)
  * @since 2.7.0
  */

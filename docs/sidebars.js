@@ -17,6 +17,7 @@ module.exports = {
       'general/options',
       'general/colors',
       'general/fonts',
+      'general/padding',
       'general/performance'
     ],
     Configuration: [

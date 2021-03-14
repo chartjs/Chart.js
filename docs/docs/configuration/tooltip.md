@@ -31,7 +31,7 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
 | `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
-| `padding` | | `6` | Padding inside the tooltip on the 4 sides
+| `padding` | [`Padding`](../general/padding.md) | `6` | Padding inside the tooltip.
 | `caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
 | `caretSize` | `number` | `5` | Size, in px, of the tooltip arrow.
 | `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
