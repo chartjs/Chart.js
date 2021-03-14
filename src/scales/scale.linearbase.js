@@ -8,12 +8,17 @@ import {_addGrace} from '../helpers/helpers.options';
  * Generate a set of linear ticks for an axis
  * 1. If generationOptions.min, generationOptions.max, and generationOptions.step are defined:
  *    if (max - min) / step is an integer, ticks are generated as [min, min + step, ..., max]
+ *    Note that the generationOptions.maxCount setting is respected in this scenario
+ * 
  * 2. If generationOptions.min, generationOptions.max, and generationOptions.count is defined
  *    spacing = (max - min) / count
  *    Ticks are generated as [min, min + spacing, ..., max]
+ * 
  * 3. If generationOptions.count is defined
  *    spacing = (niceMax - niceMin) / count
- * 4. Compute optimal spacing of ticks
+ *
+ * 4. Compute optimal spacing of ticks using niceNum algorithm
+ * 
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
@@ -25,9 +30,9 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {step, min, max, precision, count, maxCount} = generationOptions;
+  const {step, min, max, precision, count, maxTicks} = generationOptions;
   const unit = step || 1;
-  const maxSpaces = maxCount - 1;
+  const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
@@ -60,7 +65,7 @@ function generateTicks(generationOptions, dataRange) {
     // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
     // spacing = step;
     // numSpaces = (max - min) / spacing;
-    numSpaces = Math.min((max - min) / spacing, maxCount);
+    numSpaces = Math.min((max - min) / spacing, maxTicks);
     spacing = (max - min) / numSpaces;
     niceMin = min;
     niceMax = max;
@@ -223,12 +228,12 @@ export default class LinearScaleBase extends Scale {
     maxTicks = Math.max(2, maxTicks);
 
     const numericGeneratorOptions = {
+      maxTicks,
       min: opts.min,
       max: opts.max,
       precision: tickOpts.precision,
       step: tickOpts.stepSize,
       count: tickOpts.count,
-      maxCount: maxTicks,
     };
     const ticks = generateTicks(numericGeneratorOptions, _addGrace(me, opts.grace));
 
