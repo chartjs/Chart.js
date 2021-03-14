@@ -255,9 +255,9 @@ export default class BarController extends DatasetController {
   updateElements(bars, start, count, mode) {
     const me = this;
     const reset = mode === 'reset';
-    const vscale = me._cachedMeta.vScale;
-    const base = vscale.getBasePixel();
-    const horizontal = vscale.isHorizontal();
+    const vScale = me._cachedMeta.vScale;
+    const base = vScale.getBasePixel();
+    const horizontal = vScale.isHorizontal();
     const ruler = me._getRuler();
     const firstOpts = me.resolveDataElementOptions(start, mode);
     const sharedOptions = me.getSharedOptions(firstOpts);
@@ -266,14 +266,14 @@ export default class BarController extends DatasetController {
     me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i++) {
-      const vpixels = me._calculateBarValuePixels(i);
+      const vpixels = reset ? {base, head: base} : me._calculateBarValuePixels(i);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
 
       const properties = {
         horizontal,
-        base: reset ? base : vpixels.base,
-        x: horizontal ? reset ? base : vpixels.head : ipixels.center,
-        y: horizontal ? ipixels.center : reset ? base : vpixels.head,
+        base: vpixels.base,
+        x: horizontal ? vpixels.head : ipixels.center,
+        y: horizontal ? ipixels.center : vpixels.head,
         height: horizontal ? ipixels.size : undefined,
         width: horizontal ? undefined : ipixels.size
       };
@@ -370,6 +370,7 @@ export default class BarController extends DatasetController {
 	 */
   _getRuler() {
     const me = this;
+    const opts = me.options;
     const meta = me._cachedMeta;
     const iScale = meta.iScale;
     const pixels = [];
@@ -379,11 +380,8 @@ export default class BarController extends DatasetController {
       pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
     }
 
-    // Note: a potential optimization would be to skip computing this
-    // only if the barThickness option is defined
-    // Since a scriptable option may return null or undefined that
-    // means the option would have to be of type number
-    const min = computeMinSampleSize(iScale);
+    const barThickness = opts.barThickness;
+    const min = barThickness || computeMinSampleSize(iScale);
 
     return {
       min,
@@ -391,7 +389,10 @@ export default class BarController extends DatasetController {
       start: iScale._startPixel,
       end: iScale._endPixel,
       stackCount: me._getStackCount(),
-      scale: iScale
+      scale: iScale,
+      grouped: opts.grouped,
+      // bar thickness ratio used for non-grouped bars
+      ratio: barThickness ? 1 : opts.categoryPercentage * opts.barPercentage
     };
   }
 
@@ -459,17 +460,24 @@ export default class BarController extends DatasetController {
 	 */
   _calculateBarIndexPixels(index, ruler) {
     const me = this;
+    const scale = ruler.scale;
     const options = me.options;
-    const stackCount = options.skipNull ? me._getStackCount(index) : ruler.stackCount;
-    const range = options.barThickness === 'flex'
-      ? computeFlexCategoryTraits(index, ruler, options, stackCount)
-      : computeFitCategoryTraits(index, ruler, options, stackCount);
+    const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
+    let center, size;
+    if (ruler.grouped) {
+      const stackCount = options.skipNull ? me._getStackCount(index) : ruler.stackCount;
+      const range = options.barThickness === 'flex'
+        ? computeFlexCategoryTraits(index, ruler, options, stackCount)
+        : computeFitCategoryTraits(index, ruler, options, stackCount);
 
-    const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack);
-    const center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
-    const size = Math.min(
-      valueOrDefault(options.maxBarThickness, Infinity),
-      range.chunk * range.ratio);
+      const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack);
+      center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
+      size = Math.min(maxBarThickness, range.chunk * range.ratio);
+    } else {
+      // For non-grouped bar charts, exact pixel values are used
+      center = scale.getPixelForValue(me.getParsed(index)[scale.axis], index);
+      size = Math.min(maxBarThickness, ruler.min * ruler.ratio);
+    }
 
     return {
       base: center - size / 2,
@@ -512,6 +520,7 @@ BarController.defaults = {
 
   categoryPercentage: 0.8,
   barPercentage: 0.9,
+  grouped: true,
 
   animations: {
     numbers: {
