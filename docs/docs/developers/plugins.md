@@ -1,6 +1,7 @@
 ---
 title: Plugins
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 Plugins are the most efficient way to customize or change the default behavior of a chart. They have been introduced at [version 2.1.0](https://github.com/chartjs/Chart.js/releases/tag/2.1.0) (global plugins only) and extended at [version 2.5.0](https://github.com/chartjs/Chart.js/releases/tag/v2.5.0) (per chart plugins and options).
 
@@ -119,3 +120,21 @@ var chart = new Chart(ctx, {
 ## Plugin Core API
 
 Read more about the [existing plugin extension hooks](https://github.com/chartjs/Chart.js/blob/master/types/index.esm.d.ts#L733).
+
+### Chart Initialization
+
+Plugins are notified during the initialization process. These hooks can be used to setup data needed for the plugin to operate.
+
+<img alt="Chart.js init flowchart" src={useBaseUrl('img/init_flowchart.png')} />
+
+### Chart Update
+
+Plugins are notified during throughout the update process.
+
+<img alt="Chart.js update flowchart" src={useBaseUrl('img/update_flowchart.png')} />
+
+### Rendering
+
+Plugins can interact with the chart throughout the render process. The rendering process is documented in the flowchart below. Each of the green processes is a plugin notification. The red lines indicate how cancelling part of the render process can occur when a plugin returns `false` from a hook. Not all hooks are cancelable, however, in general most `before*` hooks can be cancelled.
+
+<img alt="Chart.js render pipeline flowchart" src={useBaseUrl('img/render_flowchart.png')} />
