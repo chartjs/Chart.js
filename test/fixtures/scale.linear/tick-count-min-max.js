@@ -1,5 +1,5 @@
 module.exports = {
-  description: 'https://github.com/chartjs/Chart.js/issues/4048',
+  description: 'https://github.com/chartjs/Chart.js/issues/4234',
   config: {
     type: 'line',
     options: {
