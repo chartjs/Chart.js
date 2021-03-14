@@ -27,3 +27,13 @@
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
 }
+
+.chartjs-small-chart {
+  width: 400px;
+}
+
+.chartjs-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
