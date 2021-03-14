@@ -6,14 +6,14 @@ import {_addGrace} from '../helpers/helpers.options';
 
 /**
  * Generate a set of linear ticks for an axis
- * If generationOptions.min, generationOptions.max, and generationOptions.step are defined:
+ * 1. If generationOptions.min, generationOptions.max, and generationOptions.step are defined:
  *    if (max - min) / step is an integer, ticks are generated as [min, min + step, ..., max]
- * If generationOptions.count is defined
+ * 2. If generationOptions.min, generationOptions.max, and generationOptions.count is defined
  *    spacing = (max - min) / count
  *    Ticks are generated as [min, min + spacing, ..., max]
- * Else:
- *    Optimal spacing is computed
- *    Optimal ticks are generated as [min, min + spacing, ..., max]
+ * 3. If generationOptions.count is defined
+ *    spacing = (niceMax - niceMin) / count
+ * 4. Compute optimal spacing of ticks
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
@@ -47,10 +47,7 @@ function generateTicks(generationOptions, dataRange) {
     spacing = niceNum(numSpaces * spacing / maxSpaces / unit) * unit;
   }
 
-  if (step || isNullOrUndef(precision)) {
-    // If a precision is not specified, calculate factor based on spacing
-    factor = Math.pow(10, _decimalPlaces(spacing));
-  } else {
+  if (!isNullOrUndef(precision)) {
     // If the user specified a precision, round to that number of decimal places
     factor = Math.pow(10, precision);
     spacing = Math.ceil(spacing * factor) / factor;
@@ -59,21 +56,29 @@ function generateTicks(generationOptions, dataRange) {
   niceMin = Math.floor(rmin / spacing) * spacing;
   niceMax = Math.ceil(rmax / spacing) * spacing;
 
-  // If min, max and stepSize is set and they make an evenly spaced scale use it.
-  if (step && minDefined && maxDefined) {
-    // If very close to our whole number, use it.
-    if (almostWhole((max - min) / step, spacing / 1000)) {
-      niceMin = min;
-      niceMax = max;
-    }
-  }
-
-  if (countDefined) {
+  if (minDefined && maxDefined && step && almostWhole((max - min) / step, spacing / 1000)) {
+    // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
+    // spacing = step;
+    // numSpaces = (max - min) / spacing;
+    numSpaces = Math.min((max - min) / spacing, maxCount);
+    spacing = (max - min) / numSpaces;
+    niceMin = min;
+    niceMax = max;
+  } else if (countDefined) {
+    // Cases 2 & 3, we have a count specified. Handle optional user defined edges to the range.
+    const cMin = minDefined ? min : niceMin;
+    const cMax = maxDefined ? max : niceMax;
     numSpaces = count - 1;
-    spacing = ((maxDefined ? max : niceMax) - (minDefined ? min : niceMin)) / numSpaces;
-    factor = Math.pow(10, _decimalPlaces(spacing));
+    spacing = (cMax - cMin) / numSpaces;
+
+    // Sometimes these are no-ops, but it makes the code a lot clearer
+    // and when a user defined range is specified, we want the correct ticks
+    niceMin = cMin;
+    niceMax = cMax;
   } else {
+    // Case 4
     numSpaces = (niceMax - niceMin) / spacing;
+
     // If very close to our rounded value, use it.
     if (almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
       numSpaces = Math.round(numSpaces);
@@ -82,6 +87,9 @@ function generateTicks(generationOptions, dataRange) {
     }
   }
 
+  // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
+  // until this point
+  factor = Math.pow(10, isNullOrUndef(precision) ? _decimalPlaces(spacing) : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
 
@@ -215,7 +223,6 @@ export default class LinearScaleBase extends Scale {
     maxTicks = Math.max(2, maxTicks);
 
     const numericGeneratorOptions = {
-      maxTicks,
       min: opts.min,
       max: opts.max,
       precision: tickOpts.precision,
