@@ -5,7 +5,15 @@ import {formatNumber} from '../core/core.intl';
 import {_addGrace} from '../helpers/helpers.options';
 
 /**
- * Generate a set of linear ticks
+ * Generate a set of linear ticks for an axis
+ * If generationOptions.min, generationOptions.max, and generationOptions.step are defined:
+ *    if (max - min) / step is an integer, ticks are generated as [min, min + step, ..., max]
+ * If generationOptions.count is defined
+ *    spacing = (max - min) / count
+ *    Ticks are generated as [min, min + spacing, ..., max]
+ * Else:
+ *    Optimal spacing is computed
+ *    Optimal ticks are generated as [min, min + spacing, ..., max]
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
@@ -17,13 +25,14 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {stepSize, min, max, precision} = generationOptions;
-  const unit = stepSize || 1;
-  const maxNumSpaces = generationOptions.maxTicks - 1;
+  const {step, min, max, precision, count, maxCount} = generationOptions;
+  const unit = step || 1;
+  const maxSpaces = maxCount - 1;
   const {min: rmin, max: rmax} = dataRange;
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
-  let spacing = niceNum((rmax - rmin) / maxNumSpaces / unit) * unit;
+  const countDefined = !isNullOrUndef(count);
+  let spacing = niceNum((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
 
   // Beyond MIN_SPACING floating point numbers being to lose precision
@@ -33,12 +42,12 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
-  if (numSpaces > maxNumSpaces) {
+  if (numSpaces > maxSpaces) {
     // If the calculated num of spaces exceeds maxNumSpaces, recalculate it
-    spacing = niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
+    spacing = niceNum(numSpaces * spacing / maxSpaces / unit) * unit;
   }
 
-  if (stepSize || isNullOrUndef(precision)) {
+  if (step || isNullOrUndef(precision)) {
     // If a precision is not specified, calculate factor based on spacing
     factor = Math.pow(10, _decimalPlaces(spacing));
   } else {
@@ -51,20 +60,26 @@ function generateTicks(generationOptions, dataRange) {
   niceMax = Math.ceil(rmax / spacing) * spacing;
 
   // If min, max and stepSize is set and they make an evenly spaced scale use it.
-  if (stepSize && minDefined && maxDefined) {
+  if (step && minDefined && maxDefined) {
     // If very close to our whole number, use it.
-    if (almostWhole((max - min) / stepSize, spacing / 1000)) {
+    if (almostWhole((max - min) / step, spacing / 1000)) {
       niceMin = min;
       niceMax = max;
     }
   }
 
-  numSpaces = (niceMax - niceMin) / spacing;
-  // If very close to our rounded value, use it.
-  if (almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
-    numSpaces = Math.round(numSpaces);
+  if (countDefined) {
+    numSpaces = count - 1;
+    spacing = ((maxDefined ? max : niceMax) - (minDefined ? min : niceMin)) / numSpaces;
+    factor = Math.pow(10, _decimalPlaces(spacing));
   } else {
-    numSpaces = Math.ceil(numSpaces);
+    numSpaces = (niceMax - niceMin) / spacing;
+    // If very close to our rounded value, use it.
+    if (almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+      numSpaces = Math.round(numSpaces);
+    } else {
+      numSpaces = Math.ceil(numSpaces);
+    }
   }
 
   niceMin = Math.round(niceMin * factor) / factor;
@@ -204,7 +219,9 @@ export default class LinearScaleBase extends Scale {
       min: opts.min,
       max: opts.max,
       precision: tickOpts.precision,
-      stepSize: tickOpts.stepSize
+      step: tickOpts.stepSize,
+      count: tickOpts.count,
+      maxCount: maxTicks,
     };
     const ticks = generateTicks(numericGeneratorOptions, _addGrace(me, opts.grace));
 
