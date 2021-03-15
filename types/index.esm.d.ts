@@ -2825,6 +2825,11 @@ export type LinearScaleOptions = CartesianScaleOptions & {
      * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#step-size
      */
     stepSize: number;
+
+    /**
+     * User defined count of ticks
+     */
+    count: number;
   };
 };
 
@@ -3079,6 +3084,11 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * User defined fixed step size for the scale.
      */
     stepSize: number;
+
+    /**
+     * User defined number of ticks
+     */
+    count: number;
 
     /**
      * If true, draw a background behind the tick labels.
