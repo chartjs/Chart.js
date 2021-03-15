@@ -30,17 +30,18 @@ module.exports = {
       plugins: {
         legend: false,
         title: false,
-        filler: false
-      },
-      tooltips: {
-        mode: 'nearest',
-        intersect: false,
-        usePointStyle: true,
-        callbacks: {
-          label: function() {
-            return '\u200b';
+        filler: false,
+        tooltip: {
+          mode: 'nearest',
+          intersect: false,
+          padding: 5,
+          usePointStyle: true,
+          callbacks: {
+            label: function() {
+              return '\u200b';
+            }
           }
-        }
+        },
       },
       layout: {
         padding: 15

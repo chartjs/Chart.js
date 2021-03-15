@@ -3,7 +3,7 @@ const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 const Tooltip = tooltipPlugin._element;
 
 describe('Plugin.Tooltip', function() {
-  describe('auto', jasmine.fixture.specs('core.tooltip'));
+  describe('auto', jasmine.fixture.specs('plugin.tooltip'));
 
   describe('config', function() {
     it('should not include the dataset label in the body string if not defined', function() {
