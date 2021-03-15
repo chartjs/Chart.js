@@ -9,16 +9,16 @@ import {_addGrace} from '../helpers/helpers.options';
  * 1. If generationOptions.min, generationOptions.max, and generationOptions.step are defined:
  *    if (max - min) / step is an integer, ticks are generated as [min, min + step, ..., max]
  *    Note that the generationOptions.maxCount setting is respected in this scenario
- * 
+ *
  * 2. If generationOptions.min, generationOptions.max, and generationOptions.count is defined
  *    spacing = (max - min) / count
  *    Ticks are generated as [min, min + spacing, ..., max]
- * 
+ *
  * 3. If generationOptions.count is defined
  *    spacing = (niceMax - niceMin) / count
  *
  * 4. Compute optimal spacing of ticks using niceNum algorithm
- * 
+ *
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
@@ -71,15 +71,12 @@ function generateTicks(generationOptions, dataRange) {
     niceMax = max;
   } else if (countDefined) {
     // Cases 2 & 3, we have a count specified. Handle optional user defined edges to the range.
-    const cMin = minDefined ? min : niceMin;
-    const cMax = maxDefined ? max : niceMax;
-    numSpaces = count - 1;
-    spacing = (cMax - cMin) / numSpaces;
-
     // Sometimes these are no-ops, but it makes the code a lot clearer
     // and when a user defined range is specified, we want the correct ticks
-    niceMin = cMin;
-    niceMax = cMax;
+    niceMin = minDefined ? min : niceMin;
+    niceMax = maxDefined ? max : niceMax;
+    numSpaces = count - 1;
+    spacing = (niceMax - niceMin) / numSpaces;
   } else {
     // Case 4
     numSpaces = (niceMax - niceMin) / spacing;
