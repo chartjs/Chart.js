@@ -1078,6 +1078,10 @@ export interface CoreScaleOptions {
    */
   display: boolean | 'auto';
   /**
+   * Align pixel values to device pixels
+   */
+  alignToPixels: boolean;
+  /**
    * Reverse the scale.
    * @default false
    */
