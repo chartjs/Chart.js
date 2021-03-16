@@ -128,7 +128,7 @@ function getDistanceMetricForAxis(axis) {
 function getIntersectItems(chart, position, axis, useFinalPosition) {
   const items = [];
 
-  if (!_isPointInArea(position, chart.chartArea)) {
+  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
     return items;
   }
 
@@ -156,7 +156,7 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
   let minDistance = Number.POSITIVE_INFINITY;
   let items = [];
 
-  if (!_isPointInArea(position, chart.chartArea)) {
+  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
     return items;
   }
 

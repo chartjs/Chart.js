@@ -41,9 +41,10 @@ export default class PointElement extends Element {
     return {x, y};
   }
 
-  size() {
-    const options = this.options || {};
-    const radius = Math.max(options.radius, options.hoverRadius) || 0;
+  size(options) {
+    options = options || this.options || {};
+    let radius = options.radius || 0;
+    radius = Math.max(radius, radius && options.hoverRadius || 0);
     const borderWidth = radius && options.borderWidth || 0;
     return (radius + borderWidth) * 2;
   }

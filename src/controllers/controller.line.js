@@ -86,13 +86,14 @@ export default class LineController extends DatasetController {
   getMaxOverflow() {
     const me = this;
     const meta = me._cachedMeta;
-    const border = meta.dataset.options.borderWidth || 0;
+    const dataset = meta.dataset;
+    const border = dataset.options && dataset.options.borderWidth || 0;
     const data = meta.data || [];
     if (!data.length) {
       return border;
     }
-    const firstPoint = data[0].size();
-    const lastPoint = data[data.length - 1].size();
+    const firstPoint = data[0].size(me.resolveDataElementOptions(0));
+    const lastPoint = data[data.length - 1].size(me.resolveDataElementOptions(data.length - 1));
     return Math.max(border, firstPoint, lastPoint) / 2;
   }
 

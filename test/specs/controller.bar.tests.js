@@ -691,9 +691,9 @@ describe('Chart.controllers.bar', function() {
     var bar2 = meta.data[1];
 
     expect(bar1.x).toBeCloseToPixel(179);
-    expect(bar1.y).toBeCloseToPixel(114);
-    expect(bar2.x).toBeCloseToPixel(435);
-    expect(bar2.y).toBeCloseToPixel(0);
+    expect(bar1.y).toBeCloseToPixel(117);
+    expect(bar2.x).toBeCloseToPixel(431);
+    expect(bar2.y).toBeCloseToPixel(4);
   });
 
   it('should get the bar points for hidden dataset', function() {

@@ -275,6 +275,30 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
     });
 
+    it('should activate element on hover when minPadding pixels outside chart area', async function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100],
+            hoverRadius: 0
+          }],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          }
+        }
+      });
+
+      var point = chart.getDatasetMeta(0).data[0];
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: point.y});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+    });
+
     it('should not activate elements when hover is disabled', async function() {
       var chart = acquireChart({
         type: 'line',

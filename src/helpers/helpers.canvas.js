@@ -244,14 +244,15 @@ export function drawPoint(ctx, options, x, y) {
  * Returns true if the point is inside the rectangle
  * @param {object} point - The point to test
  * @param {object} area - The rectangle
+ * @param {number} [margin] - allowed margin
  * @returns {boolean}
  * @private
  */
-export function _isPointInArea(point, area) {
-  const epsilon = 0.5; // margin - to match rounded decimals
+export function _isPointInArea(point, area, margin) {
+  margin = margin || 0.5; // margin - default is to match rounded decimals
 
-  return point.x > area.left - epsilon && point.x < area.right + epsilon &&
-		point.y > area.top - epsilon && point.y < area.bottom + epsilon;
+  return point.x > area.left - margin && point.x < area.right + margin &&
+		point.y > area.top - margin && point.y < area.bottom + margin;
 }
 
 export function clipArea(ctx, area) {
