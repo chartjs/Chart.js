@@ -474,15 +474,17 @@ class Chart {
     me.notifyPlugins('beforeElementsUpdate');
 
     // Make sure all dataset controllers have correct meta data counts
+    let minPadding = 0;
     for (let i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
       const {controller} = me.getDatasetMeta(i);
       const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
       // New controllers will be reset after the layout pass, so we only want to modify
       // elements added to new datasets
       controller.buildOrUpdateElements(reset);
+      minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
     }
-
-    me._updateLayout();
+    me._minPadding = minPadding;
+    me._updateLayout(minPadding);
 
     // Only reset the controllers if we have animations
     if (!animsDisabled) {
@@ -513,14 +515,14 @@ class Chart {
 	 * hook, in which case, plugins will not be called on `afterLayout`.
 	 * @private
 	 */
-  _updateLayout() {
+  _updateLayout(minPadding) {
     const me = this;
 
     if (me.notifyPlugins('beforeLayout', {cancelable: true}) === false) {
       return;
     }
 
-    layouts.update(me, me.width, me.height);
+    layouts.update(me, me.width, me.height, minPadding);
 
     const area = me.chartArea;
     const noArea = area.width <= 0 || area.height <= 0;
@@ -1087,7 +1089,7 @@ class Chart {
     callCallback(options.onHover || hoverOptions.onHover, [e, active, me], me);
 
     if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
-      if (_isPointInArea(e, me.chartArea)) {
+      if (_isPointInArea(e, me.chartArea, me._minPadding)) {
         callCallback(options.onClick, [e, active, me], me);
       }
     }

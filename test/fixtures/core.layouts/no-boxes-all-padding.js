@@ -6,6 +6,7 @@ module.exports = {
       datasets: [{
         data: [0],
         radius: 16,
+        borderWidth: 0,
         backgroundColor: 'red'
       }],
     },

@@ -12,7 +12,8 @@ module.exports = {
       datasets: [{
         data,
         backgroundColor: 'red',
-        radius: 8
+        radius: 1,
+        hoverRadius: 0
       }],
     },
     options: {

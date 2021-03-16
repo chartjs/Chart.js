@@ -306,8 +306,9 @@ export default {
 	 * @param {Chart} chart - the chart
 	 * @param {number} width - the width to fit into
 	 * @param {number} height - the height to fit into
+   * @param {number} minPadding - minimum padding required for each side of chart area
 	 */
-  update(chart, width, height) {
+  update(chart, width, height, minPadding) {
     if (!chart) {
       return;
     }
@@ -366,8 +367,10 @@ export default {
       vBoxMaxWidth: availableWidth / 2 / visibleVerticalBoxCount,
       hBoxMaxHeight: availableHeight / 2
     });
+    const maxPadding = Object.assign({}, padding);
+    updateMaxPadding(maxPadding, toPadding(minPadding));
     const chartArea = Object.assign({
-      maxPadding: Object.assign({}, padding),
+      maxPadding,
       w: availableWidth,
       h: availableHeight,
       x: padding.left,

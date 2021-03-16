@@ -142,8 +142,8 @@ describe('Chart.controllers.line', function() {
     expect(meta._parsed.length).toBe(2);
 
     [
-      {x: 0, y: 512},
-      {x: 171, y: 0}
+      {x: 5, y: 507},
+      {x: 171, y: 5}
     ].forEach(function(expected, i) {
       expect(meta.data[i].x).toBeCloseToPixel(expected.x);
       expect(meta.data[i].y).toBeCloseToPixel(expected.y);
@@ -192,7 +192,7 @@ describe('Chart.controllers.line', function() {
     var meta = chart.getDatasetMeta(0);
     // 1 point
     var point = meta.data[0];
-    expect(point.x).toBeCloseToPixel(0);
+    expect(point.x).toBeCloseToPixel(5);
 
     // 2 points
     chart.data.labels = ['One', 'Two'];
@@ -201,8 +201,8 @@ describe('Chart.controllers.line', function() {
 
     var points = meta.data;
 
-    expect(points[0].x).toBeCloseToPixel(0);
-    expect(points[1].x).toBeCloseToPixel(512);
+    expect(points[0].x).toBeCloseToPixel(5);
+    expect(points[1].x).toBeCloseToPixel(507);
 
     // 3 points
     chart.data.labels = ['One', 'Two', 'Three'];
@@ -211,9 +211,9 @@ describe('Chart.controllers.line', function() {
 
     points = meta.data;
 
-    expect(points[0].x).toBeCloseToPixel(0);
+    expect(points[0].x).toBeCloseToPixel(5);
     expect(points[1].x).toBeCloseToPixel(256);
-    expect(points[2].x).toBeCloseToPixel(512);
+    expect(points[2].x).toBeCloseToPixel(507);
 
     // 4 points
     chart.data.labels = ['One', 'Two', 'Three', 'Four'];
@@ -222,10 +222,10 @@ describe('Chart.controllers.line', function() {
 
     points = meta.data;
 
-    expect(points[0].x).toBeCloseToPixel(0);
+    expect(points[0].x).toBeCloseToPixel(5);
     expect(points[1].x).toBeCloseToPixel(171);
     expect(points[2].x).toBeCloseToPixel(340);
-    expect(points[3].x).toBeCloseToPixel(512);
+    expect(points[3].x).toBeCloseToPixel(507);
   });
 
   it('should update elements when the y scale is stacked', function() {
@@ -261,10 +261,10 @@ describe('Chart.controllers.line', function() {
     var meta0 = chart.getDatasetMeta(0);
 
     [
-      {x: 0, y: 146},
-      {x: 171, y: 439},
-      {x: 341, y: 146},
-      {x: 512, y: 439}
+      {x: 5, y: 148},
+      {x: 171, y: 435},
+      {x: 341, y: 148},
+      {x: 507, y: 435}
     ].forEach(function(values, i) {
       expect(meta0.data[i].x).toBeCloseToPixel(values.x);
       expect(meta0.data[i].y).toBeCloseToPixel(values.y);
@@ -273,10 +273,10 @@ describe('Chart.controllers.line', function() {
     var meta1 = chart.getDatasetMeta(1);
 
     [
-      {x: 0, y: 0},
-      {x: 171, y: 73},
-      {x: 341, y: 146},
-      {x: 512, y: 497}
+      {x: 5, y: 5},
+      {x: 171, y: 76},
+      {x: 341, y: 148},
+      {x: 507, y: 492}
     ].forEach(function(values, i) {
       expect(meta1.data[i].x).toBeCloseToPixel(values.x);
       expect(meta1.data[i].y).toBeCloseToPixel(values.y);
@@ -326,10 +326,10 @@ describe('Chart.controllers.line', function() {
     var meta0 = chart.getDatasetMeta(0);
 
     [
-      {x: 0, y: 146},
-      {x: 171, y: 439},
-      {x: 341, y: 146},
-      {x: 512, y: 439}
+      {x: 5, y: 148},
+      {x: 171, y: 435},
+      {x: 341, y: 148},
+      {x: 507, y: 435}
     ].forEach(function(values, i) {
       expect(meta0.data[i].x).toBeCloseToPixel(values.x);
       expect(meta0.data[i].y).toBeCloseToPixel(values.y);
@@ -338,10 +338,10 @@ describe('Chart.controllers.line', function() {
     var meta1 = chart.getDatasetMeta(1);
 
     [
-      {x: 0, y: 0},
-      {x: 171, y: 73},
-      {x: 341, y: 146},
-      {x: 512, y: 497}
+      {x: 5, y: 5},
+      {x: 171, y: 76},
+      {x: 341, y: 148},
+      {x: 507, y: 492}
     ].forEach(function(values, i) {
       expect(meta1.data[i].x).toBeCloseToPixel(values.x);
       expect(meta1.data[i].y).toBeCloseToPixel(values.y);
@@ -406,10 +406,10 @@ describe('Chart.controllers.line', function() {
     var meta0 = chart.getDatasetMeta(0);
 
     [
-      {x: 0, y: 146},
-      {x: 171, y: 439},
-      {x: 341, y: 146},
-      {x: 512, y: 439}
+      {x: 5, y: 148},
+      {x: 171, y: 435},
+      {x: 341, y: 148},
+      {x: 507, y: 435}
     ].forEach(function(values, i) {
       expect(meta0.data[i].x).toBeCloseToPixel(values.x);
       expect(meta0.data[i].y).toBeCloseToPixel(values.y);
@@ -418,10 +418,10 @@ describe('Chart.controllers.line', function() {
     var meta1 = chart.getDatasetMeta(1);
 
     [
-      {x: 0, y: 0},
-      {x: 171, y: 73},
-      {x: 341, y: 146},
-      {x: 512, y: 497}
+      {x: 5, y: 5},
+      {x: 171, y: 76},
+      {x: 341, y: 148},
+      {x: 507, y: 492}
     ].forEach(function(values, i) {
       expect(meta1.data[i].x).toBeCloseToPixel(values.x);
       expect(meta1.data[i].y).toBeCloseToPixel(values.y);
@@ -462,10 +462,10 @@ describe('Chart.controllers.line', function() {
     var meta0 = chart.getDatasetMeta(0);
 
     [
-      {x: 0, y: 146},
-      {x: 171, y: 439},
-      {x: 341, y: 146},
-      {x: 512, y: 439}
+      {x: 5, y: 148},
+      {x: 171, y: 435},
+      {x: 341, y: 148},
+      {x: 507, y: 435}
     ].forEach(function(values, i) {
       expect(meta0.data[i].x).toBeCloseToPixel(values.x);
       expect(meta0.data[i].y).toBeCloseToPixel(values.y);
@@ -474,10 +474,10 @@ describe('Chart.controllers.line', function() {
     var meta1 = chart.getDatasetMeta(1);
 
     [
-      {x: 0, y: 0},
-      {x: 171, y: 73},
-      {x: 341, y: 146},
-      {x: 512, y: 497}
+      {x: 5, y: 5},
+      {x: 171, y: 76},
+      {x: 341, y: 148},
+      {x: 507, y: 492}
     ].forEach(function(values, i) {
       expect(meta1.data[i].x).toBeCloseToPixel(values.x);
       expect(meta1.data[i].y).toBeCloseToPixel(values.y);
