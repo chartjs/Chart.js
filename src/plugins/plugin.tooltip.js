@@ -224,37 +224,24 @@ function determineYAlign(chart, size) {
 
 function determineXAlign(chart, options, size, yAlign) {
   const {x, width} = size;
-  const chartArea = chart.chartArea;
-  const midX = (chartArea.left + chartArea.right) / 2;
+  const {width: chartWidth, chartArea: {left, right}} = chart;
+  const caret = options.caretSize + options.caretPadding;
   let xAlign = 'center';
-  let lf, rf; // functions to determine left, right alignment
 
   if (yAlign === 'center') {
-    lf = (value) => value <= midX;
-    rf = (value) => value > midX;
-  } else {
-    lf = (value) => value <= (width / 2);
-    rf = (value) => value >= (chart.width - (width / 2));
+    xAlign = x <= (left + right) / 2 ? 'left' : 'right';
+  } else if (x <= width / 2) {
+    xAlign = 'left';
+  } else if (x >= chartWidth - width / 2) {
+    xAlign = 'right';
   }
 
-  // functions to determine if left/right alignment causes tooltip to go outside chart
-  const olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
-  const orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
+  if (xAlign === 'left' && x + width + caret > chartWidth) {
+    xAlign = 'center';
+  }
 
-  if (lf(x)) {
-    xAlign = 'left';
-
-    // Is tooltip too wide and goes over the right side of the chart.?
-    if (olf(x)) {
-      xAlign = 'center';
-    }
-  } else if (rf(x)) {
-    xAlign = 'right';
-
-    // Is tooltip too wide and goes outside left edge of canvas?
-    if (orf(x)) {
-      xAlign = 'center';
-    }
+  if (xAlign === 'right' && x - width - caret < 0) {
+    xAlign = 'center';
   }
   return xAlign;
 }
