@@ -1,4 +1,4 @@
-import {isArray, isNullOrUndef, valueOrDefault} from './helpers.core';
+import {isArray, isNullOrUndef} from './helpers.core';
 import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math';
 
 /**
@@ -249,7 +249,7 @@ export function drawPoint(ctx, options, x, y) {
  * @private
  */
 export function _isPointInArea(point, area, margin) {
-  margin = valueOrDefault(margin, 0.5); // margin - default is to match rounded decimals
+  margin = margin || 0.5; // margin - default is to match rounded decimals
 
   return point.x > area.left - margin && point.x < area.right + margin &&
 		point.y > area.top - margin && point.y < area.bottom + margin;

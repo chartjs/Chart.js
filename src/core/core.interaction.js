@@ -1,3 +1,4 @@
+import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 import {getRelativePosition as helpersGetRelativePosition} from '../helpers/helpers.dom';
 
@@ -127,6 +128,10 @@ function getDistanceMetricForAxis(axis) {
 function getIntersectItems(chart, position, axis, useFinalPosition) {
   const items = [];
 
+  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
+    return items;
+  }
+
   const evaluationFunc = function(element, datasetIndex, index) {
     if (element.inRange(position.x, position.y, useFinalPosition)) {
       items.push({element, datasetIndex, index});
@@ -150,6 +155,10 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
   const distanceMetric = getDistanceMetricForAxis(axis);
   let minDistance = Number.POSITIVE_INFINITY;
   let items = [];
+
+  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
+    return items;
+  }
 
   const evaluationFunc = function(element, datasetIndex, index) {
     if (intersect && !element.inRange(position.x, position.y, useFinalPosition)) {
