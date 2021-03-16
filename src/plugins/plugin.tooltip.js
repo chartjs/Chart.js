@@ -3,7 +3,7 @@ import Element from '../core/core.element';
 import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
-import {distanceBetweenPoints} from '../helpers/helpers.math';
+import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
 import {drawPoint} from '../helpers';
 
 /**
@@ -211,76 +211,67 @@ function getTooltipSize(tooltip, options) {
   return {width, height};
 }
 
+function determineYAlign(chart, size) {
+  const {y, height} = size;
+
+  if (y < height / 2) {
+    return 'top';
+  } else if (y > (chart.height - height / 2)) {
+    return 'bottom';
+  }
+  return 'center';
+}
+
+function doesNotFitWithAlign(xAlign, chart, options, size) {
+  const {x, width} = size;
+  const caret = options.caretSize + options.caretPadding;
+  if (xAlign === 'left' && x + width + caret > chart.width) {
+    return true;
+  }
+
+  if (xAlign === 'right' && x - width - caret < 0) {
+    return true;
+  }
+}
+
+function determineXAlign(chart, options, size, yAlign) {
+  const {x, width} = size;
+  const {width: chartWidth, chartArea: {left, right}} = chart;
+  let xAlign = 'center';
+
+  if (yAlign === 'center') {
+    xAlign = x <= (left + right) / 2 ? 'left' : 'right';
+  } else if (x <= width / 2) {
+    xAlign = 'left';
+  } else if (x >= chartWidth - width / 2) {
+    xAlign = 'right';
+  }
+
+  if (doesNotFitWithAlign(xAlign, chart, options, size)) {
+    xAlign = 'center';
+  }
+
+  return xAlign;
+}
+
 /**
  * Helper to get the alignment of a tooltip given the size
  */
 function determineAlignment(chart, options, size) {
-  const {x, y, width, height} = size;
-  const chartArea = chart.chartArea;
-  let xAlign = 'center';
-  let yAlign = 'center';
-
-  if (y < height / 2) {
-    yAlign = 'top';
-  } else if (y > (chart.height - height / 2)) {
-    yAlign = 'bottom';
-  }
-
-  let lf, rf; // functions to determine left, right alignment
-  const midX = (chartArea.left + chartArea.right) / 2;
-  const midY = (chartArea.top + chartArea.bottom) / 2;
-
-  if (yAlign === 'center') {
-    lf = (value) => value <= midX;
-    rf = (value) => value > midX;
-  } else {
-    lf = (value) => value <= (width / 2);
-    rf = (value) => value >= (chart.width - (width / 2));
-  }
-
-  // functions to determine if left/right alignment causes tooltip to go outside chart
-  const olf = (value) => value + width + options.caretSize + options.caretPadding > chart.width;
-  const orf = (value) => value - width - options.caretSize - options.caretPadding < 0;
-  // function to get the y alignment if the tooltip goes outside of the left or right edges
-  const yf = (value) => value <= midY ? 'top' : 'bottom';
-
-  if (lf(x)) {
-    xAlign = 'left';
-
-    // Is tooltip too wide and goes over the right side of the chart.?
-    if (olf(x)) {
-      xAlign = 'center';
-      yAlign = yf(y);
-    }
-  } else if (rf(x)) {
-    xAlign = 'right';
-
-    // Is tooltip too wide and goes outside left edge of canvas?
-    if (orf(x)) {
-      xAlign = 'center';
-      yAlign = yf(y);
-    }
-  }
+  const yAlign = options.yAlign || determineYAlign(chart, size);
 
   return {
-    xAlign: options.xAlign ? options.xAlign : xAlign,
-    yAlign: options.yAlign ? options.yAlign : yAlign
+    xAlign: options.xAlign || determineXAlign(chart, options, size, yAlign),
+    yAlign
   };
 }
 
-function alignX(size, xAlign, chartWidth) {
-  // eslint-disable-next-line prefer-const
+function alignX(size, xAlign) {
   let {x, width} = size;
   if (xAlign === 'right') {
     x -= width;
   } else if (xAlign === 'center') {
     x -= (width / 2);
-    if (x + width > chartWidth) {
-      x = chartWidth - width;
-    }
-    if (x < 0) {
-      x = 0;
-    }
   }
   return x;
 }
@@ -307,7 +298,7 @@ function getBackgroundPoint(options, size, alignment, chart) {
   const paddingAndSize = caretSize + caretPadding;
   const radiusAndPadding = cornerRadius + caretPadding;
 
-  let x = alignX(size, xAlign, chart.width);
+  let x = alignX(size, xAlign);
   const y = alignY(size, yAlign, paddingAndSize);
 
   if (yAlign === 'center') {
@@ -322,7 +313,10 @@ function getBackgroundPoint(options, size, alignment, chart) {
     x += radiusAndPadding;
   }
 
-  return {x, y};
+  return {
+    x: _limitValue(x, 0, chart.width - size.width),
+    y: _limitValue(y, 0, chart.height - size.height)
+  };
 }
 
 function getAlignedX(tooltip, align, options) {

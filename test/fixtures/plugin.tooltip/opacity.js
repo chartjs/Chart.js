@@ -47,17 +47,18 @@ module.exports = {
       plugins: {
         legend: false,
         title: false,
-        filler: false
-      },
-      tooltips: {
-        mode: 'nearest',
-        intersect: false,
-        callbacks: {
-          label: function() {
-            return '\u200b';
+        filler: false,
+        tooltip: {
+          mode: 'nearest',
+          intersect: false,
+          callbacks: {
+            label: function() {
+              return '\u200b';
+            },
           }
-        }
+        },
       },
+
       layout: {
         padding: 15
       }
