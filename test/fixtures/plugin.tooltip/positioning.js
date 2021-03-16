@@ -11,7 +11,8 @@ module.exports = {
     data: {
       datasets: [{
         data,
-        // radius: 8
+        backgroundColor: 'red',
+        radius: 8
       }],
     },
     options: {
@@ -26,6 +27,10 @@ module.exports = {
         tooltip: {
           mode: 'point',
           intersect: true,
+          // spriteText: use white background to hide any gaps between fonts
+          backgroundColor: 'white',
+          borderColor: 'black',
+          borderWidth: 1,
           callbacks: {
             beforeLabel: () => 'before label',
             label: () => 'label',
@@ -59,8 +64,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 512,
-      width: 512
+      height: 400,
+      width: 500
     }
   }
 };
