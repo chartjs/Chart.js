@@ -1606,6 +1606,21 @@ export default class Scale extends Element {
     }
   }
 
+  getLineWidthForValue(value) {
+    const me = this;
+    const grid = me.options.grid;
+    if (!me._isVisible() || !grid.display) {
+      return 0;
+    }
+    const ticks = me.ticks;
+    const index = ticks.findIndex(t => t.value === value);
+    if (index >= 0) {
+      const opts = grid.setContext(me.getContext(index));
+      return opts.lineWidth;
+    }
+    return 0;
+  }
+
   /**
 	 * @protected
 	 */

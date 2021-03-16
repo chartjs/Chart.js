@@ -447,6 +447,18 @@ export default class BarController extends DatasetController {
       head = base + size;
     }
 
+    const actualBase = baseValue || 0;
+    if (base === vScale.getPixelForValue(actualBase)) {
+      const halfGrid = vScale.getLineWidthForValue(actualBase) / 2;
+      if (size > 0) {
+        base += halfGrid;
+        size -= halfGrid;
+      } else if (size < 0) {
+        base -= halfGrid;
+        size += halfGrid;
+      }
+    }
+
     return {
       size,
       base,

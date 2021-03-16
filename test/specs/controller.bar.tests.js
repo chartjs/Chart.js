@@ -1528,9 +1528,10 @@ describe('Chart.controllers.bar', function() {
     });
 
     var data = chart.getDatasetMeta(0).data;
+    var halfBaseLine = chart.scales.y.getLineWidthForValue(0) / 2;
 
-    expect(data[0].base - minBarLength).toEqual(data[0].y);
-    expect(data[1].base + minBarLength).toEqual(data[1].y);
+    expect(data[0].base - minBarLength + halfBaseLine).toEqual(data[0].y);
+    expect(data[1].base + minBarLength - halfBaseLine).toEqual(data[1].y);
   });
 
   it('minBarLength settings should be used on X axis on horizontal bar chart', function() {
@@ -1547,9 +1548,10 @@ describe('Chart.controllers.bar', function() {
     });
 
     var data = chart.getDatasetMeta(0).data;
+    var halfBaseLine = chart.scales.x.getLineWidthForValue(0) / 2;
 
-    expect(data[0].base + minBarLength).toEqual(data[0].x);
-    expect(data[1].base - minBarLength).toEqual(data[1].x);
+    expect(data[0].base + minBarLength - halfBaseLine).toEqual(data[0].x);
+    expect(data[1].base - minBarLength + halfBaseLine).toEqual(data[1].x);
   });
 
   it('should respect the data visibility settings', function() {

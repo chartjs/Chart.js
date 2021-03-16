@@ -1199,6 +1199,12 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
    * @return {string}
    */
   getLabelForValue(value: number): string;
+
+  /**
+   * Returns the grid line width at given value
+   */
+  getLineWidthForValue(value: number): number;
+
   /**
    * Returns the location of the given data point. Value can either be an index or a numerical value
    * The coordinate (0, 0) is at the upper-left corner of the canvas
