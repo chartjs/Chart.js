@@ -222,10 +222,21 @@ function determineYAlign(chart, size) {
   return 'center';
 }
 
+function doesNotFitWithAlign(xAlign, chart, options, size) {
+  const {x, width} = size;
+  const caret = options.caretSize + options.caretPadding;
+  if (xAlign === 'left' && x + width + caret > chart.width) {
+    return true;
+  }
+
+  if (xAlign === 'right' && x - width - caret < 0) {
+    return true;
+  }
+}
+
 function determineXAlign(chart, options, size, yAlign) {
   const {x, width} = size;
   const {width: chartWidth, chartArea: {left, right}} = chart;
-  const caret = options.caretSize + options.caretPadding;
   let xAlign = 'center';
 
   if (yAlign === 'center') {
@@ -236,13 +247,10 @@ function determineXAlign(chart, options, size, yAlign) {
     xAlign = 'right';
   }
 
-  if (xAlign === 'left' && x + width + caret > chartWidth) {
+  if (doesNotFitWithAlign(xAlign, chart, options, size)) {
     xAlign = 'center';
   }
 
-  if (xAlign === 'right' && x - width - caret < 0) {
-    xAlign = 'center';
-  }
   return xAlign;
 }
 
