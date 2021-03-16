@@ -266,7 +266,7 @@ export default class BarController extends DatasetController {
     me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i++) {
-      const vpixels = reset ? {base, head: base} : me._calculateBarValuePixels(i);
+      const vpixels = reset ? {base, head: base} : me._calculateBarValuePixels(i, base);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
 
       const properties = {
@@ -445,6 +445,18 @@ export default class BarController extends DatasetController {
         base -= size / 2;
       }
       head = base + size;
+    }
+
+    const actualBase = baseValue || 0;
+    if (base === vScale.getPixelForValue(actualBase)) {
+      const halfGrid = vScale.getLineWidthForValue(actualBase) / 2;
+      if (size > 0) {
+        base += halfGrid;
+        size -= halfGrid;
+      } else if (size < 0) {
+        base -= halfGrid;
+        size += halfGrid;
+      }
     }
 
     return {
