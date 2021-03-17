@@ -53,8 +53,8 @@ describe('Platform.basic', function() {
       expect(chart.platform).toBeInstanceOf(Chart.platforms.BasicPlatform);
 
       expect(chart.chartArea.bottom).toBeCloseToPixel(120);
-      expect(chart.chartArea.left).toBeCloseToPixel(34);
-      expect(chart.chartArea.right).toBeCloseToPixel(247);
+      expect(chart.chartArea.left).toBeCloseToPixel(31);
+      expect(chart.chartArea.right).toBeCloseToPixel(250);
       expect(chart.chartArea.top).toBeCloseToPixel(32);
     });
 
@@ -83,8 +83,8 @@ describe('Platform.basic', function() {
       chart.resize();
 
       expect(chart.chartArea.bottom).toBeCloseToPixel(150);
-      expect(chart.chartArea.left).toBeCloseToPixel(34);
-      expect(chart.chartArea.right).toBeCloseToPixel(297);
+      expect(chart.chartArea.left).toBeCloseToPixel(31);
+      expect(chart.chartArea.right).toBeCloseToPixel(300);
       expect(chart.chartArea.top).toBeCloseToPixel(32);
     });
   });
