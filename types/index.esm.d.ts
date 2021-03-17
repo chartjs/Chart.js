@@ -2723,7 +2723,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    *   If true, data will be comprised between datasets of data
    * @default false
    */
-  stacked?: boolean;
+  stacked?: boolean | 'single';
 
   ticks: TickOptions & {
     /**
