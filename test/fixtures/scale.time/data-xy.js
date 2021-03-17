@@ -4,6 +4,7 @@ function newDateFromRef(days) {
 
 module.exports = {
   threshold: 0.01,
+  tolerance: 0.003,
   config: {
     type: 'line',
     data: {

@@ -900,7 +900,7 @@ describe('Linear Scale', function() {
     expect(yScale.paddingBottom).toBeCloseToPixel(10);
     expect(yScale.paddingLeft).toBeCloseToPixel(0);
     expect(yScale.paddingRight).toBeCloseToPixel(0);
-    expect(yScale.width).toBeCloseToPixel(30 + 3); // plus tick padding
+    expect(yScale.width).toBeCloseToPixel(31 + 3); // plus tick padding
     expect(yScale.height).toBeCloseToPixel(450);
 
     // Extra size when scale label showing
