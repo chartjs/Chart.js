@@ -2,6 +2,7 @@ const data = [{x: 631180800000, y: 31.80}, {x: 631267200000, y: 30.20}, {x: 6313
 
 module.exports = {
   threshold: 0.01,
+  tolerance: 0.0015,
   config: {
     data: {
       datasets: [{

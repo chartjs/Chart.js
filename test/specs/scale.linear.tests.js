@@ -835,8 +835,8 @@ describe('Linear Scale', function() {
 
     var xScale = chart.scales.x;
     expect(xScale.getPixelForValue(1)).toBeCloseToPixel(501); // right - paddingRight
-    expect(xScale.getPixelForValue(-1)).toBeCloseToPixel(31 + 6); // left + paddingLeft + lineSpace
-    expect(xScale.getPixelForValue(0)).toBeCloseToPixel(266 + 6 / 2); // halfway*/
+    expect(xScale.getPixelForValue(-1)).toBeCloseToPixel(31 + 3); // left + paddingLeft + tick padding
+    expect(xScale.getPixelForValue(0)).toBeCloseToPixel(266 + 3 / 2); // halfway*/
 
     expect(xScale.getValueForPixel(501)).toBeCloseTo(1, 1e-2);
     expect(xScale.getValueForPixel(31)).toBeCloseTo(-1, 1e-2);
@@ -893,14 +893,14 @@ describe('Linear Scale', function() {
     expect(xScale.paddingBottom).toBeCloseToPixel(0);
     expect(xScale.paddingLeft).toBeCloseToPixel(12);
     expect(xScale.paddingRight).toBeCloseToPixel(13.5);
-    expect(xScale.width).toBeCloseToPixel(468 - 6); // minus lineSpace
+    expect(xScale.width).toBeCloseToPixel(468 - 3); // minus tick padding
     expect(xScale.height).toBeCloseToPixel(30);
 
-    expect(yScale.paddingTop).toBeCloseToPixel(7);
-    expect(yScale.paddingBottom).toBeCloseToPixel(7);
+    expect(yScale.paddingTop).toBeCloseToPixel(10);
+    expect(yScale.paddingBottom).toBeCloseToPixel(10);
     expect(yScale.paddingLeft).toBeCloseToPixel(0);
     expect(yScale.paddingRight).toBeCloseToPixel(0);
-    expect(yScale.width).toBeCloseToPixel(30 + 6); // plus lineSpace
+    expect(yScale.width).toBeCloseToPixel(31 + 3); // plus tick padding
     expect(yScale.height).toBeCloseToPixel(450);
 
     // Extra size when scale label showing
@@ -912,15 +912,15 @@ describe('Linear Scale', function() {
     expect(xScale.paddingBottom).toBeCloseToPixel(0);
     expect(xScale.paddingLeft).toBeCloseToPixel(12);
     expect(xScale.paddingRight).toBeCloseToPixel(13.5);
-    expect(xScale.width).toBeCloseToPixel(440);
-    expect(xScale.height).toBeCloseToPixel(53);
+    expect(xScale.width).toBeCloseToPixel(442);
+    expect(xScale.height).toBeCloseToPixel(50);
 
-    expect(yScale.paddingTop).toBeCloseToPixel(7);
-    expect(yScale.paddingBottom).toBeCloseToPixel(7);
+    expect(yScale.paddingTop).toBeCloseToPixel(10);
+    expect(yScale.paddingBottom).toBeCloseToPixel(10);
     expect(yScale.paddingLeft).toBeCloseToPixel(0);
     expect(yScale.paddingRight).toBeCloseToPixel(0);
     expect(yScale.width).toBeCloseToPixel(58);
-    expect(yScale.height).toBeCloseToPixel(427);
+    expect(yScale.height).toBeCloseToPixel(429);
   });
 
   it('should fit correctly when display is turned off', function() {

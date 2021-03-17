@@ -31,21 +31,21 @@ describe('Chart.layouts', function() {
     });
 
     expect(chart.chartArea.bottom).toBeCloseToPixel(120);
-    expect(chart.chartArea.left).toBeCloseToPixel(34);
-    expect(chart.chartArea.right).toBeCloseToPixel(247);
+    expect(chart.chartArea.left).toBeCloseToPixel(31);
+    expect(chart.chartArea.right).toBeCloseToPixel(250);
     expect(chart.chartArea.top).toBeCloseToPixel(32);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(150);
-    expect(chart.scales.x.left).toBeCloseToPixel(34);
-    expect(chart.scales.x.right).toBeCloseToPixel(247);
+    expect(chart.scales.x.left).toBeCloseToPixel(31);
+    expect(chart.scales.x.right).toBeCloseToPixel(250);
     expect(chart.scales.x.top).toBeCloseToPixel(120);
     expect(chart.scales.x.labelRotation).toBeCloseTo(0);
 
     // Is yScale at the right spot
     expect(chart.scales.y.bottom).toBeCloseToPixel(120);
     expect(chart.scales.y.left).toBeCloseToPixel(0);
-    expect(chart.scales.y.right).toBeCloseToPixel(34);
+    expect(chart.scales.y.right).toBeCloseToPixel(31);
     expect(chart.scales.y.top).toBeCloseToPixel(32);
     expect(chart.scales.y.labelRotation).toBeCloseTo(0);
   });
@@ -78,21 +78,21 @@ describe('Chart.layouts', function() {
       }
     });
 
-    expect(chart.chartArea.bottom).toBeCloseToPixel(142);
-    expect(chart.chartArea.left).toBeCloseToPixel(3);
-    expect(chart.chartArea.right).toBeCloseToPixel(216);
+    expect(chart.chartArea.bottom).toBeCloseToPixel(139);
+    expect(chart.chartArea.left).toBeCloseToPixel(0);
+    expect(chart.chartArea.right).toBeCloseToPixel(218);
     expect(chart.chartArea.top).toBeCloseToPixel(62);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(62);
-    expect(chart.scales.x.left).toBeCloseToPixel(3);
-    expect(chart.scales.x.right).toBeCloseToPixel(216);
+    expect(chart.scales.x.left).toBeCloseToPixel(0);
+    expect(chart.scales.x.right).toBeCloseToPixel(218);
     expect(chart.scales.x.top).toBeCloseToPixel(32);
     expect(chart.scales.x.labelRotation).toBeCloseTo(0);
 
     // Is yScale at the right spot
-    expect(chart.scales.y.bottom).toBeCloseToPixel(142);
-    expect(chart.scales.y.left).toBeCloseToPixel(216);
+    expect(chart.scales.y.bottom).toBeCloseToPixel(139);
+    expect(chart.scales.y.left).toBeCloseToPixel(218);
     expect(chart.scales.y.right).toBeCloseToPixel(250);
     expect(chart.scales.y.top).toBeCloseToPixel(62);
     expect(chart.scales.y.labelRotation).toBeCloseTo(0);
@@ -158,28 +158,28 @@ describe('Chart.layouts', function() {
       }
     });
 
-    expect(chart.chartArea.bottom).toBeCloseToPixel(118);
-    expect(chart.chartArea.left).toBeCloseToPixel(73);
-    expect(chart.chartArea.right).toBeCloseToPixel(247);
+    expect(chart.chartArea.bottom).toBeCloseToPixel(110);
+    expect(chart.chartArea.left).toBeCloseToPixel(70);
+    expect(chart.chartArea.right).toBeCloseToPixel(250);
     expect(chart.chartArea.top).toBeCloseToPixel(32);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(150);
-    expect(chart.scales.x.left).toBeCloseToPixel(73);
-    expect(chart.scales.x.right).toBeCloseToPixel(247);
-    expect(chart.scales.x.top).toBeCloseToPixel(118);
+    expect(chart.scales.x.left).toBeCloseToPixel(70);
+    expect(chart.scales.x.right).toBeCloseToPixel(250);
+    expect(chart.scales.x.top).toBeCloseToPixel(110);
     expect(chart.scales.x.labelRotation).toBeCloseTo(40, -1);
 
     // Are yScales at the right spot
-    expect(chart.scales.y.bottom).toBeCloseToPixel(118);
-    expect(chart.scales.y.left).toBeCloseToPixel(41);
-    expect(chart.scales.y.right).toBeCloseToPixel(73);
+    expect(chart.scales.y.bottom).toBeCloseToPixel(110);
+    expect(chart.scales.y.left).toBeCloseToPixel(38);
+    expect(chart.scales.y.right).toBeCloseToPixel(70);
     expect(chart.scales.y.top).toBeCloseToPixel(32);
     expect(chart.scales.y.labelRotation).toBeCloseTo(0);
 
-    expect(chart.scales.y2.bottom).toBeCloseToPixel(118);
+    expect(chart.scales.y2.bottom).toBeCloseToPixel(110);
     expect(chart.scales.y2.left).toBeCloseToPixel(0);
-    expect(chart.scales.y2.right).toBeCloseToPixel(41);
+    expect(chart.scales.y2.right).toBeCloseToPixel(38);
     expect(chart.scales.y2.top).toBeCloseToPixel(32);
     expect(chart.scales.y2.labelRotation).toBeCloseTo(0);
   });
@@ -217,13 +217,13 @@ describe('Chart.layouts', function() {
     });
 
     expect(chart.chartArea.bottom).toBeCloseToPixel(484);
-    expect(chart.chartArea.left).toBeCloseToPixel(40);
+    expect(chart.chartArea.left).toBeCloseToPixel(39);
     expect(chart.chartArea.right).toBeCloseToPixel(496);
     expect(chart.chartArea.top).toBeCloseToPixel(62);
 
     // Are xScales at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(512);
-    expect(chart.scales.x.left).toBeCloseToPixel(40);
+    expect(chart.scales.x.left).toBeCloseToPixel(39);
     expect(chart.scales.x.right).toBeCloseToPixel(496);
     expect(chart.scales.x.top).toBeCloseToPixel(484);
 
@@ -235,7 +235,7 @@ describe('Chart.layouts', function() {
     // Is yScale at the right spot
     expect(chart.scales.y.bottom).toBeCloseToPixel(484);
     expect(chart.scales.y.left).toBeCloseToPixel(0);
-    expect(chart.scales.y.right).toBeCloseToPixel(40);
+    expect(chart.scales.y.right).toBeCloseToPixel(39);
     expect(chart.scales.y.top).toBeCloseToPixel(62);
   });
 
@@ -565,7 +565,7 @@ describe('Chart.layouts', function() {
 
       // issue #4441: y-axis labels partially hidden.
       // minimum horizontal space required to fit labels
-      expect(yAxis.width).toBeCloseToPixel(33);
+      expect(yAxis.width).toBeCloseToPixel(30);
       expect(getLabels(yAxis)).toEqual(['0', '0.5', '1.0', '1.5', '2.0', '2.5']);
     });
   });

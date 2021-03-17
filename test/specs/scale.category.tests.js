@@ -279,7 +279,7 @@ describe('Category scale tests', function() {
     expect(yScale.getPixelForValue(0)).toBeCloseToPixel(32);
     expect(yScale.getValueForPixel(257)).toBe(2);
 
-    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(481);
+    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(484);
     expect(yScale.getValueForPixel(144)).toBe(1);
 
     yScale.options.offset = true;
@@ -288,7 +288,7 @@ describe('Category scale tests', function() {
     expect(yScale.getPixelForValue(0)).toBeCloseToPixel(77);
     expect(yScale.getValueForPixel(256)).toBe(2);
 
-    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(436);
+    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(438);
     expect(yScale.getValueForPixel(167)).toBe(1);
   });
 
@@ -402,7 +402,7 @@ describe('Category scale tests', function() {
 
     var yScale = chart.scales.y;
     expect(yScale.getPixelForValue(0)).toBeCloseToPixel(32);
-    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(481);
+    expect(yScale.getPixelForValue(4)).toBeCloseToPixel(483);
   });
 
   it('Should get the correct pixel for an object value in a bar chart', function() {
@@ -437,8 +437,8 @@ describe('Category scale tests', function() {
 
     var xScale = chart.scales.x;
     expect(xScale.getPixelForValue(0)).toBeCloseToPixel(89);
-    expect(xScale.getPixelForValue(3)).toBeCloseToPixel(449);
-    expect(xScale.getPixelForValue(4)).toBeCloseToPixel(569);
+    expect(xScale.getPixelForValue(3)).toBeCloseToPixel(451);
+    expect(xScale.getPixelForValue(4)).toBeCloseToPixel(572);
   });
 
   it('Should get the correct pixel for an object value in a horizontal bar chart', function() {

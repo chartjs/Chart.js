@@ -1485,8 +1485,8 @@ describe('Chart', function() {
         'afterDataLimits',
         'beforeBuildTicks',
         'afterBuildTicks',
-        'beforeBuildTicks', // y-axis re-fit
-        'afterBuildTicks',
+        // 'beforeBuildTicks', // y-axis re-fit
+        // 'afterBuildTicks',
         'afterLayout',
         'beforeDatasetsUpdate',
         'beforeDatasetUpdate',
