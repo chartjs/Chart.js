@@ -7,7 +7,7 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -103,8 +103,11 @@ class Chart {
     this.canvas = canvas;
     this.width = width;
     this.height = height;
-    this.aspectRatio = height ? width / height : null;
     this._options = options;
+    // Store the previously used aspect ratio to determine if a resize
+    // is needed during updates. Do this after _options is set since
+    // aspectRatio uses a getter
+    this._aspectRatio = this.aspectRatio;
     this._layers = [];
     this._metasets = [];
     this._stacks = undefined;
@@ -145,6 +148,11 @@ class Chart {
     if (me.attached) {
       me.update();
     }
+  }
+
+  get aspectRatio() {
+    const {options: {aspectRatio}, width, height} = this;
+    return !isNullOrUndef(aspectRatio) ? aspectRatio : height ? width / height : null;
   }
 
   get data() {
@@ -238,6 +246,7 @@ class Chart {
 
     me.width = newSize.width;
     me.height = newSize.height;
+    me._aspectRatio = me.aspectRatio;
     retinaScale(me, newRatio, true);
 
     me.notifyPlugins('resize', {size: newSize});
@@ -450,6 +459,10 @@ class Chart {
 
     config.update();
     me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
+
+    if (me.aspectRatio !== me._aspectRatio) {
+      me.resize();
+    }
 
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
