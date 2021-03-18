@@ -1,10 +1,14 @@
 import Scale from '../core/core.scale';
-import {valueOrDefault} from '../helpers';
+import {isNullOrUndef, valueOrDefault} from '../helpers';
+
+const addIfString = (labels, raw, index) => typeof raw === 'string'
+  ? labels.push(raw) - 1
+  : isNaN(raw) ? null : index;
 
 function findOrAddLabel(labels, raw, index) {
   const first = labels.indexOf(raw);
   if (first === -1) {
-    return typeof raw === 'string' ? labels.push(raw) - 1 : index;
+    return addIfString(labels, raw, index);
   }
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;
@@ -21,6 +25,9 @@ export default class CategoryScale extends Scale {
   }
 
   parse(raw, index) {
+    if (isNullOrUndef(raw)) {
+      return null;
+    }
     const labels = this.getLabels();
     return isFinite(index) && labels[index] === raw
       ? index : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
@@ -96,7 +103,7 @@ export default class CategoryScale extends Scale {
       value = me.parse(value);
     }
 
-    return me.getPixelForDecimal((value - me._startValue) / me._valueRange);
+    return value === null ? NaN : me.getPixelForDecimal((value - me._startValue) / me._valueRange);
   }
 
   // Must override base implementation because it calls getPixelForValue
