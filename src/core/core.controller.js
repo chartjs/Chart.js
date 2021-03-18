@@ -151,8 +151,19 @@ class Chart {
   }
 
   get aspectRatio() {
-    const {options: {aspectRatio}, width, height} = this;
-    return !isNullOrUndef(aspectRatio) ? aspectRatio : height ? width / height : null;
+    const {options: {aspectRatio, maintainAspectRatio}, width, height, _aspectRatio} = this;
+    if (!isNullOrUndef(aspectRatio)) {
+      // If aspectRatio is defined in options, use that.
+      return aspectRatio;
+    }
+
+    if (maintainAspectRatio && _aspectRatio) {
+      // If maintainAspectRatio is truthly and we had previously determined _aspectRatio, use that
+      return _aspectRatio;
+    }
+
+    // Calculate
+    return height ? width / height : null;
   }
 
   get data() {
