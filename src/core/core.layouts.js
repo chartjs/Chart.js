@@ -101,7 +101,7 @@ function updateDims(chartArea, params, layout) {
     // this layout was already counted for, lets first reduce old size
     chartArea[layout.pos] -= layout.size;
   }
-  layout.size = layout.horizontal ? Math.min(layout.height, box.height) : Math.min(layout.width, box.width);
+  layout.size = layout.horizontal ? box.height : box.width;
   chartArea[layout.pos] += layout.size;
 
   if (box.getPadding) {
@@ -110,13 +110,10 @@ function updateDims(chartArea, params, layout) {
 
   const newWidth = Math.max(0, params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right'));
   const newHeight = Math.max(0, params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom'));
-
   const widthChanged = newWidth !== chartArea.w;
   const heightChanged = newHeight !== chartArea.h;
-  if (widthChanged || heightChanged) {
-    chartArea.w = newWidth;
-    chartArea.h = newHeight;
-  }
+  chartArea.w = newWidth;
+  chartArea.h = newHeight;
 
   // return booleans on the changes per direction
   return layout.horizontal
@@ -158,7 +155,7 @@ function fitBoxes(boxes, chartArea, params) {
   const refitBoxes = [];
   let i, ilen, layout, box, refit, changed;
 
-  for (i = 0, ilen = boxes.length; i < ilen; ++i) {
+  for (i = 0, ilen = boxes.length, refit = 0; i < ilen; ++i) {
     layout = boxes[i];
     box = layout.box;
 
@@ -168,21 +165,20 @@ function fitBoxes(boxes, chartArea, params) {
       getMargins(layout.horizontal, chartArea)
     );
     const {same, other} = updateDims(chartArea, params, layout);
-    if (same && refitBoxes.length) {
-      // Dimensions changed and there were non full width boxes before this
-      // -> we have to refit those
-      refit = true;
-    }
-    if (other) {
-      // Chart area changed in the opposite direction
-      changed = true;
-    }
+
+    // Dimensions changed and there were non full width boxes before this
+    // -> we have to refit those
+    refit |= same && refitBoxes.length;
+
+    // Chart area changed in the opposite direction
+    changed = changed || other;
+
     if (!box.fullSize) { // fullSize boxes don't need to be re-fitted in any case
       refitBoxes.push(layout);
     }
   }
 
-  return refit ? fitBoxes(refitBoxes, chartArea, params) || changed : changed;
+  return refit && fitBoxes(refitBoxes, chartArea, params) || changed;
 }
 
 function placeBoxes(boxes, chartArea, params) {
