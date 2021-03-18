@@ -206,7 +206,7 @@ function getTooltipSize(tooltip, options) {
   ctx.restore();
 
   // Add padding
-  width += 2 * padding.width;
+  width += padding.width;
 
   return {width, height};
 }
