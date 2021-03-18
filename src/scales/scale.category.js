@@ -4,7 +4,7 @@ import {isNullOrUndef, valueOrDefault} from '../helpers';
 function findOrAddLabel(labels, raw, index) {
   const first = labels.indexOf(raw);
   if (first === -1) {
-    return typeof raw === 'string' ? labels.push(raw) - 1 : index;
+    return typeof raw === 'string' ? labels.push(raw) - 1 : isNaN(raw) ? null : index;
   }
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;

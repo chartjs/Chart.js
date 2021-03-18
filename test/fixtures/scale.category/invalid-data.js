@@ -10,7 +10,7 @@ module.exports = {
           {x: 2, y: 1},
           {x: undefined, y: 1},
           {x: 4, y: 1},
-          {x: 5, y: NaN},
+          {x: NaN, y: 1},
           {x: 6, y: 1}
         ],
         backgroundColor: 'red',
