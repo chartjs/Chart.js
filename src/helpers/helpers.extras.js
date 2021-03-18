@@ -68,10 +68,19 @@ export function debounce(fn, delay) {
 export const _toLeftRightCenter = (align) => align === 'start' ? 'left' : align === 'end' ? 'right' : 'center';
 
 /**
- * Returns `start`, `end` or `(start + end) / 2` depending on `align`
+ * Returns `start`, `end` or `(start + end) / 2` depending on `align`. Defaults to `center`
  * @param {string} align start, end, center
  * @param {number} start value for start
  * @param {number} end value for end
  * @private
  */
 export const _alignStartEnd = (align, start, end) => align === 'start' ? start : align === 'end' ? end : (start + end) / 2;
+
+/**
+ * Returns `left`, `right` or `(left + right) / 2` depending on `align`. Defaults to `left`
+ * @param {string} align start, end, center
+ * @param {number} left value for start
+ * @param {number} right value for end
+ * @private
+ */
+export const _textX = (align, left, right) => align === 'right' ? right : align === 'center' ? (left + right) / 2 : left;
