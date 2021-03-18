@@ -460,10 +460,6 @@ class Chart {
     config.update();
     me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
-    if (me.aspectRatio !== me._aspectRatio) {
-      me.resize();
-    }
-
     each(me.scales, (scale) => {
       layouts.removeBox(me, scale);
     });
