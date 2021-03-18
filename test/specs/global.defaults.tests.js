@@ -102,6 +102,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 0,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }, {
         text: 'label2',
@@ -109,6 +110,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 1,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }, {
         text: 'label3',
@@ -116,6 +118,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 2,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }];
       expect(chart.legend.legendItems).toEqual(expected);
@@ -193,6 +196,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 0,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }, {
         text: 'label2',
@@ -200,6 +204,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 1,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }, {
         text: 'label3',
@@ -207,6 +212,7 @@ describe('Default Configs', function() {
         hidden: false,
         index: 2,
         strokeStyle: '#000',
+        textAlign: undefined,
         lineWidth: 2
       }];
       expect(chart.legend.legendItems).toEqual(expected);

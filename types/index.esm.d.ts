@@ -2057,6 +2057,11 @@ export interface LegendItem {
    * Rotation of the point in degrees (only used if usePointStyle is true)
    */
   rotation?: number;
+
+  /**
+   * Text alignment
+   */
+  textAlign?: TextAlign;
 }
 
 export interface LegendElement extends Element, LayoutItem {}
@@ -2076,7 +2081,7 @@ export interface LegendOptions {
    * Alignment of the legend.
    * @default 'center'
    */
-  align: TextAlign;
+  align: 'start' | 'center' | 'end';
   /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
    * @default true
@@ -2145,6 +2150,11 @@ export interface LegendOptions {
      * Override point style for the legend. Only applies if usePointStyle is true
      */
     pointStyle: PointStyle;
+
+    /**
+     * Text alignment
+     */
+    textAlign?: TextAlign;
 
     /**
      * Label style will match corresponding point style (size is based on the minimum value between boxWidth and font.size).

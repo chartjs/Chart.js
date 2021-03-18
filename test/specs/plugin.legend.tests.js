@@ -71,6 +71,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -84,6 +85,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 1
     }, {
       text: 'dataset3',
@@ -97,6 +99,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: 'crossRot',
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 2
     }]);
   });
@@ -141,6 +144,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -154,6 +158,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 1
     }, {
       text: 'dataset3',
@@ -167,6 +172,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 2
     }]);
   });
@@ -218,6 +224,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 2
     }, {
       text: 'dataset2',
@@ -231,6 +238,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 1
     }, {
       text: 'dataset1',
@@ -244,6 +252,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }]);
   });
@@ -300,6 +309,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }, {
       text: 'dataset3',
@@ -313,6 +323,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: 'crossRot',
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 2
     }]);
   });
@@ -368,6 +379,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 2
     }, {
       text: 'dataset2',
@@ -381,6 +393,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 1
     }, {
       text: 'dataset1',
@@ -394,6 +407,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgba(0,0,0,0.1)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }]);
   });
@@ -524,6 +538,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'red',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }]);
   });
@@ -565,6 +580,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'rgb(205, 0, 0)',
       pointStyle: undefined,
       rotation: undefined,
+      textAlign: undefined,
       datasetIndex: 0
     }]);
   });
@@ -621,6 +637,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: 'crossRot',
       rotation: 0,
+      textAlign: undefined,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -634,6 +651,7 @@ describe('Legend block tests', function() {
       strokeStyle: '#f31',
       pointStyle: 'crossRot',
       rotation: 15,
+      textAlign: undefined,
       datasetIndex: 1
     }]);
   });
@@ -691,6 +709,7 @@ describe('Legend block tests', function() {
       strokeStyle: 'green',
       pointStyle: 'star',
       rotation: 0,
+      textAlign: undefined,
       datasetIndex: 0
     }, {
       text: 'dataset2',
@@ -704,6 +723,7 @@ describe('Legend block tests', function() {
       strokeStyle: '#f31',
       pointStyle: 'star',
       rotation: 15,
+      textAlign: undefined,
       datasetIndex: 1
     }]);
   });
