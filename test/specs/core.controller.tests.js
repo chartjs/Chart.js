@@ -1213,6 +1213,38 @@ describe('Chart', function() {
     });
   });
 
+  describe('config.options.aspectRatio', function() {
+    it('should resize the canvas when the aspectRatio option changes', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          aspectRatio: 1,
+        }
+      }, {
+        canvas: {
+          style: '',
+          width: 400,
+        },
+      });
+
+      expect(chart).toBeChartOfSize({
+        dw: 400, dh: 400,
+        rw: 400, rh: 400,
+      });
+
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 400, dh: 200,
+          rw: 400, rh: 200,
+        });
+
+        done();
+      });
+      chart.options.aspectRatio = 2;
+      chart.resize();
+    });
+  });
+
   describe('controller.reset', function() {
     it('should reset the chart elements', function() {
       var chart = acquireChart({
