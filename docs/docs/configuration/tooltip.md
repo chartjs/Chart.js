@@ -314,13 +314,14 @@ var myPieChart = new Chart(ctx, {
                     }
 
                     var position = context.chart.canvas.getBoundingClientRect();
+                    var bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
 
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;
                     tooltipEl.style.position = 'absolute';
                     tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
                     tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                    tooltipEl.style.font = tooltipModel.bodyFont.string;
+                    tooltipEl.style.font = bodyFont.string;
                     tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
                     tooltipEl.style.pointerEvents = 'none';
                 }
