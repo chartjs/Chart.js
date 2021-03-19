@@ -42,6 +42,23 @@ describe('Chart.controllers.line', function() {
     expect(meta.yAxisID).toBe('y');
   });
 
+  it('Should not throw with empty dataset when tension is non-zero', function() {
+    // https://github.com/chartjs/Chart.js/issues/8676
+    function createChart() {
+      return window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [],
+            tension: 0.5
+          }],
+          labels: []
+        },
+      });
+    }
+    expect(createChart).not.toThrow();
+  });
+
   it('Should create line elements and point elements for each data item during initialization', function() {
     var chart = window.acquireChart({
       type: 'line',
