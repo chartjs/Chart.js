@@ -76,7 +76,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Chart.js contributors.`,
+      copyright: `Copyright © 2014-${new Date().getFullYear()} Chart.js contributors.`,
     },
   },
   presets: [
