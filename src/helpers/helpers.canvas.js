@@ -251,7 +251,7 @@ export function drawPoint(ctx, options, x, y) {
 export function _isPointInArea(point, area, margin) {
   margin = margin || 0.5; // margin - default is to match rounded decimals
 
-  return point.x > area.left - margin && point.x < area.right + margin &&
+  return point && point.x > area.left - margin && point.x < area.right + margin &&
 		point.y > area.top - margin && point.y < area.bottom + margin;
 }
 
