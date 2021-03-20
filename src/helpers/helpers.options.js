@@ -39,7 +39,7 @@ export function toLineHeight(value, size) {
 
 const numberOrZero = v => +v || 0;
 
-function readValueToProps(value, props) {
+export function _readValueToProps(value, props) {
   const ret = {};
   const objProps = isObject(props);
   const keys = objProps ? Object.keys(props) : props;
@@ -64,7 +64,7 @@ function readValueToProps(value, props) {
  * @since 3.0.0
  */
 export function toTRBL(value) {
-  return readValueToProps(value, {top: 'y', right: 'x', bottom: 'y', left: 'x'});
+  return _readValueToProps(value, {top: 'y', right: 'x', bottom: 'y', left: 'x'});
 }
 
 /**
@@ -75,7 +75,7 @@ export function toTRBL(value) {
  * @since 3.0.0
  */
 export function toTRBLCorners(value) {
-  return readValueToProps(value, ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']);
+  return _readValueToProps(value, ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']);
 }
 
 /**

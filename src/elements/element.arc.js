@@ -1,5 +1,8 @@
 import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
+import {isObject} from '../helpers/helpers.core';
+import {_limitValue} from '../helpers/helpers.math';
+import {_readValueToProps} from '../helpers/helpers.options';
 
 function clipArc(ctx, element) {
   const {startAngle, endAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
@@ -19,45 +22,110 @@ function clipArc(ctx, element) {
   ctx.clip();
 }
 
+function toRadiusCorners(value) {
+  return _readValueToProps(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd'])
+}
 
+/**
+ * Parse border radius from the provided options
+ * @param {ArcElement} arc
+ * @param {number} innerRadius 
+ * @param {number} outerRadius 
+ * @param {number} angleDelta Arc circumference in radians
+ * @returns 
+ */
+function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
+  const o = toRadiusCorners(arc.options.borderRadius);
+  const halfThickness = (outerRadius - innerRadius) / 2;
+  const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
+  // const outerLimit = Math.min(halfThickness, angleDelta * outerRadius / 2);
+
+  return {
+    outerStart: _limitValue(o.topLeft, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topLeft) / 2)),
+    outerEnd: _limitValue(o.topRight, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topRight) / 2)),
+    innerStart: _limitValue(o.bottomLeft, 0, innerLimit),
+    innerEnd:_limitValue(o.bottomRight, 0, innerLimit),
+  };
+}
+
+/**
+ * Convert (r, 𝜃) to (x, y)
+ * @param {number} r Radius from center point
+ * @param {number} theta Angle in radians
+ * @param {number} x Center X coordinate
+ * @param {number} y Center Y coordinate
+ * @returns {{ x: number; y: number }} Rectangular coordinate point
+ */
+function rThetaToXY(r, theta, x, y) {
+  return {
+    x: x + r * Math.cos(theta),
+    y: y + r * Math.sin(theta),
+  };
+}
+
+
+/**
+ * Path the arc, respecting the border radius
+ * 
+ * 8 points of interest exist around the arc segment.
+ * These points define the intersection of the arc edges and the corners.
+ * 
+ *    1---------2
+ *   /           \
+ *   8           3
+ *   |           |
+ *   |           |
+ *   7           4
+ *   \           /
+ *    6---------5
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {ArcElement} element 
+ */
 function pathArc(ctx, element) {
-  const {x, y, startAngle, endAngle, options, pixelMargin} = element;
+  const {x, y, startAngle, endAngle, pixelMargin} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
-  const {endStyle} = options;
-  const endRadius = (outerRadius - innerRadius) / 2;
-  const halfRadius = innerRadius + endRadius;
-
+  const borderRadius = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
   ctx.beginPath();
-  ctx.arc(x, y, outerRadius, startAngle, endAngle);
 
-  if (endStyle === 'round') {
-    const xEnd = x + halfRadius * Math.cos(endAngle);
-    const yEnd = y + halfRadius * Math.sin(endAngle);
-    ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
-  } else if (endStyle === 'point') {
-    const x1 = x + innerRadius * Math.cos(endAngle);
-    const y1 = y + innerRadius * Math.sin(endAngle);
-    const x3 = x + halfRadius * Math.cos(endAngle + (Math.PI / 16));
-    const y3 = y + halfRadius * Math.sin(endAngle + (Math.PI / 16));
-    ctx.lineTo(x3, y3);
-    ctx.lineTo(x1, y1);
+  // The first arc segment from point 1 to point 2
+  ctx.arc(x, y, outerRadius, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)), endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)));
+
+  // The corner segment from point 2 to point 3
+  if (borderRadius.outerEnd !== 0) {
+    const pCenter = rThetaToXY(outerRadius - borderRadius.outerEnd, endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)), x, y);
+    ctx.arc(pCenter.x, pCenter.y, borderRadius.outerEnd, endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)), endAngle + HALF_PI);
   }
 
-  ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+  // The line from point 3 to point 4
+  const p4 = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle, x, y);
+  ctx.lineTo(p4.x, p4.y)
 
-  if (endStyle === 'round') {
-    const xStart = x + halfRadius * Math.cos(startAngle);
-    const yStart = y + halfRadius * Math.sin(startAngle);
-    ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
-  } else if (endStyle === 'point') {
-    const x2 = x + outerRadius * Math.cos(startAngle);
-    const y2 = y + outerRadius * Math.sin(startAngle);
-    const x3 = x + halfRadius * Math.cos(startAngle + (Math.PI / 16));
-    const y3 = y + halfRadius * Math.sin(startAngle + (Math.PI / 16));
-    ctx.lineTo(x3, y3);
-    ctx.lineTo(x2, y2);
+ // The corner segment from point 4 to point 5
+  if (borderRadius.innerEnd !== 0) {
+    const pCenter = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)), x, y);
+    ctx.arc(pCenter.x, pCenter.y, borderRadius.innerEnd, endAngle + HALF_PI, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)) + Math.PI);
   }
+
+  // The inner arc from point 5 to point 6
+  ctx.arc(x, y, innerRadius, endAngle - (borderRadius.innerEnd / innerRadius), startAngle + (borderRadius.innerStart / innerRadius), true);
+
+  // The corner segment from point 6 to point 7
+  if (borderRadius.innerStart !== 0) {
+    const pCenter = rThetaToXY(innerRadius + borderRadius.innerStart, startAngle + (borderRadius.innerStart / (innerRadius + borderRadius.innerStart)), x, y);
+    ctx.arc(pCenter.x, pCenter.y, borderRadius.innerStart, startAngle + (borderRadius.innerStart / (innerRadius + borderRadius.innerStart)) + Math.PI, startAngle - HALF_PI);
+  }
+
+  // The line from point 7 to point 8
+  const p8 = rThetaToXY(outerRadius - borderRadius.outerStart, startAngle, x, y);
+  ctx.lineTo(p8.x, p8.y);
+
+  // The corner segment from point 8 to point 1
+  if (borderRadius.outerStart !== 0) {
+    const pCenter = rThetaToXY(outerRadius - borderRadius.outerStart, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)), x, y);
+    ctx.arc(pCenter.x, pCenter.y, borderRadius.outerStart, startAngle - HALF_PI, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)));
+  }
+
   ctx.closePath();
 }
 
@@ -110,11 +178,8 @@ function drawFullCircleBorders(ctx, element, inner) {
 }
 
 function drawBorder(ctx, element) {
-  const {x, y, startAngle, endAngle, pixelMargin, options} = element;
-  const outerRadius = element.outerRadius;
-  const innerRadius = element.innerRadius + pixelMargin;
+  const {options} = element;
   const inner = options.borderAlign === 'inner';
-  const {endStyle} = options;
 
   if (!options.borderWidth) {
     return;
@@ -136,41 +201,7 @@ function drawBorder(ctx, element) {
     clipArc(ctx, element);
   }
 
-  const endRadius = (outerRadius - innerRadius) / 2;
-  const halfRadius = innerRadius + endRadius;
-
-  ctx.beginPath();
-  ctx.arc(x, y, outerRadius, startAngle, endAngle);
-
-  if (endStyle === 'round') {
-    const xEnd = x + halfRadius * Math.cos(endAngle);
-    const yEnd = y + halfRadius * Math.sin(endAngle);
-    ctx.arc(xEnd, yEnd, endRadius, endAngle, endAngle + Math.PI);
-  } else if (endStyle === 'point') {
-    const x1 = x + innerRadius * Math.cos(endAngle);
-    const y1 = y + innerRadius * Math.sin(endAngle);
-    const x3 = x + halfRadius * Math.cos(endAngle + (Math.PI / 16));
-    const y3 = y + halfRadius * Math.sin(endAngle + (Math.PI / 16));
-    ctx.lineTo(x3, y3);
-    ctx.lineTo(x1, y1);
-  }
-  
-  ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
-
-  if (endStyle === 'round') {
-    const xStart = x + halfRadius * Math.cos(startAngle);
-    const yStart = y + halfRadius * Math.sin(startAngle);
-    ctx.arc(xStart, yStart, endRadius, startAngle + Math.PI, startAngle, true);
-  } else if (endStyle === 'point') {
-    const x2 = x + outerRadius * Math.cos(startAngle);
-    const y2 = y + outerRadius * Math.sin(startAngle);
-    const x3 = x + halfRadius * Math.cos(startAngle + (Math.PI / 16));
-    const y3 = y + halfRadius * Math.sin(startAngle + (Math.PI / 16));
-    ctx.lineTo(x3, y3);
-    ctx.lineTo(x2, y2);
-  }
-
-  ctx.closePath();
+  pathArc(ctx, element);
   ctx.stroke();
 }
 
@@ -277,10 +308,10 @@ ArcElement.id = 'arc';
 ArcElement.defaults = {
   borderAlign: 'center',
   borderColor: '#fff',
+  borderRadius: 0,
   borderWidth: 2,
   offset: 0,
   angle: undefined,
-  endStyle: 'flat',
 };
 
 /**

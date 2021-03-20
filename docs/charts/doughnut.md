@@ -97,11 +97,11 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| ['borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`circumference`](#general) | `number` | - | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`endStyle](#styling) | `boolean` | - | - | `false`
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
@@ -127,7 +127,6 @@ The style of each arc can be controlled with the following properties:
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
 | `borderWidth` | arc border width (in pixels).
-| `endStyle` | Determine the end style for the arc. Can be `'flat'`, `'round'`, or `'point'`
 | `offset` | arc offset (in pixels).
 | `weight` | The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
 
@@ -141,6 +140,10 @@ The following values are supported for `borderAlign`.
 * `'inner'`
 
 When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all borders will not overlap.
+
+### Border Radius
+
+If this value is a number, it is applied to all corners of the arc (outerStart, outerEnd, innerStart, innerRight). If this value is an object, the `outerStart` property defines the outer-start corner's border radius. Similarly, the `outerEnd`, `innerStart`, and `innerEnd` properties can also be specified.
 
 ### Interactions
 
