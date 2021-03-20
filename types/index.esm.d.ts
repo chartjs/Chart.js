@@ -1260,10 +1260,9 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
 
   isFullSize(): boolean;
 }
-export const Scale: {
-  prototype: Scale;
-  new <O extends CoreScaleOptions = CoreScaleOptions>(cfg: AnyObject): Scale<O>;
-};
+export declare class Scale {
+  constructor(cfg: {id: string, type: string, ctx: CanvasRenderingContext2D, chart: Chart});
+}
 
 export interface ScriptableScaleContext {
   chart: Chart;
