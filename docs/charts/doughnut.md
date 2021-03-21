@@ -97,7 +97,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
-| ['borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
+| [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`circumference`](#general) | `number` | - | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`

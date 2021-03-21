@@ -29,10 +29,10 @@ function toRadiusCorners(value) {
 /**
  * Parse border radius from the provided options
  * @param {ArcElement} arc
- * @param {number} innerRadius 
- * @param {number} outerRadius 
+ * @param {number} innerRadius
+ * @param {number} outerRadius
  * @param {number} angleDelta Arc circumference in radians
- * @returns 
+ * @returns
  */
 function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
   const o = toRadiusCorners(arc.options.borderRadius);
@@ -44,7 +44,7 @@ function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
     outerStart: _limitValue(o.topLeft, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topLeft) / 2)),
     outerEnd: _limitValue(o.topRight, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topRight) / 2)),
     innerStart: _limitValue(o.bottomLeft, 0, innerLimit),
-    innerEnd:_limitValue(o.bottomRight, 0, innerLimit),
+    innerEnd: _limitValue(o.bottomRight, 0, innerLimit),
   };
 }
 
@@ -66,10 +66,10 @@ function rThetaToXY(r, theta, x, y) {
 
 /**
  * Path the arc, respecting the border radius
- * 
+ *
  * 8 points of interest exist around the arc segment.
  * These points define the intersection of the arc edges and the corners.
- * 
+ *
  *    1---------2
  *   /           \
  *   8           3
@@ -78,8 +78,8 @@ function rThetaToXY(r, theta, x, y) {
  *   7           4
  *   \           /
  *    6---------5
- * @param {CanvasRenderingContext2D} ctx 
- * @param {ArcElement} element 
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {ArcElement} element
  */
 function pathArc(ctx, element) {
   const {x, y, startAngle, endAngle, pixelMargin} = element;
@@ -99,9 +99,9 @@ function pathArc(ctx, element) {
 
   // The line from point 3 to point 4
   const p4 = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle, x, y);
-  ctx.lineTo(p4.x, p4.y)
+  ctx.lineTo(p4.x, p4.y);
 
- // The corner segment from point 4 to point 5
+  // The corner segment from point 4 to point 5
   if (borderRadius.innerEnd !== 0) {
     const pCenter = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)), x, y);
     ctx.arc(pCenter.x, pCenter.y, borderRadius.innerEnd, endAngle + HALF_PI, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)) + Math.PI);
