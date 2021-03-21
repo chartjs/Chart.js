@@ -14,7 +14,7 @@ export function requestAnimFrame(cb: () => void): void;
  * @param {*} thisArg
  * @param {function} [updateFn]
  */
-export function throttled(fn: () => void, thisArg: AnyObject, updateFn: (AnyObject) => AnyObject): () => void;
+export function throttled(fn: () => void, thisArg: AnyObject, updateFn?: (AnyObject) => AnyObject): (...args: any[]) => void;
 
 /**
  * Debounces calling `fn` for `delay` ms
