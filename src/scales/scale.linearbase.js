@@ -1,7 +1,7 @@
 import {isNullOrUndef} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
-import {formatNumber} from '../core/core.intl';
+import {formatNumber} from '../helpers/helpers.intl';
 import {_addGrace} from '../helpers/helpers.options';
 
 /**
