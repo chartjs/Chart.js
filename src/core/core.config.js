@@ -38,7 +38,18 @@ export function determineAxis(id, scaleOptions) {
   return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
 }
 
-function mergeScaleConfig(config, options) {
+function mergeScaleConfig(config, options, colors) {
+  const scaleColors = {
+    ticks: {
+      color: colors.color
+    },
+    grid: {
+      color: colors.borderColor,
+    },
+    title: {
+      color: colors.color
+    }
+  };
   const chartDefaults = overrides[config.type] || {scales: {}};
   const configScales = options.scales || {};
   const chartIndexAxis = getIndexAxis(config.type, options);
@@ -72,27 +83,25 @@ function mergeScaleConfig(config, options) {
   // apply scale defaults, if not overridden by dataset defaults
   Object.keys(scales).forEach(key => {
     const scale = scales[key];
-    mergeIf(scale, [defaults.scales[scale.type], defaults.scale]);
+    mergeIf(scale, [defaults.scales[scale.type], scaleColors, defaults.scale]);
   });
 
   return scales;
 }
 
-function initOptions(config) {
+function initOptions(config, colors) {
   const options = config.options || (config.options = {});
 
   options.plugins = valueOrDefault(options.plugins, {});
-  options.scales = mergeScaleConfig(config, options);
+  options.scales = mergeScaleConfig(config, options, colors);
 }
 
-function initConfig(config) {
-  config = config || {};
-
+function initConfig(config, colors) {
   const data = config.data = config.data || {datasets: [], labels: []};
   data.datasets = data.datasets || [];
   data.labels = data.labels || [];
 
-  initOptions(config);
+  initOptions(config, colors);
 
   return config;
 }
@@ -117,9 +126,16 @@ const addIfFound = (set, obj, key) => {
   }
 };
 
+function getColors(config, platform) {
+  const mode = config.colorMode || defaults.colorMode || 'none';
+  const colorMode = mode === 'auto' ? platform.colorMode : mode;
+  return colorMode === 'none' ? Object.create(null) : defaults.colors[mode];
+}
+
 export default class Config {
-  constructor(config) {
-    this._config = initConfig(config);
+  constructor(config, platform) {
+    this._colors = getColors(config, platform);
+    this._config = initConfig(config, this._colors);
     this._scopeCache = new Map();
     this._resolverCache = new Map();
   }
@@ -155,7 +171,7 @@ export default class Config {
   update() {
     const config = this._config;
     this.clearCache();
-    initOptions(config);
+    initOptions(config, this._colors);
   }
 
   clearCache() {
@@ -252,7 +268,7 @@ export default class Config {
    * @param {boolean} [resetCache] - reset the cache for this mainScope
    */
   getOptionScopes(mainScope, keyLists, resetCache) {
-    const {options, type} = this;
+    const {options, type, _colors} = this;
     const cache = this._cachedScopes(mainScope, resetCache);
     const cached = cache.get(keyLists);
     if (cached) {
@@ -268,6 +284,7 @@ export default class Config {
       }
       keys.forEach(key => addIfFound(scopes, options, key));
       keys.forEach(key => addIfFound(scopes, overrides[type] || {}, key));
+      keys.forEach(key => addIfFound(scopes, _colors, key));
       keys.forEach(key => addIfFound(scopes, defaults, key));
       keys.forEach(key => addIfFound(scopes, descriptors, key));
     });
@@ -291,6 +308,7 @@ export default class Config {
       overrides[type] || {},
       defaults.datasets[type] || {}, // https://github.com/chartjs/Chart.js/issues/8531
       {type},
+      this._colors,
       defaults,
       descriptors
     ];

@@ -7,6 +7,11 @@
  * Abstract class that allows abstracting platform dependencies away from the chart.
  */
 export default class BasePlatform {
+
+  get colorMode() {
+    return 'none';
+  }
+
   /**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.

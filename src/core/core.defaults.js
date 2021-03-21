@@ -38,6 +38,19 @@ export class Defaults {
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
     this.color = '#666';
+    this.colorMode = 'none';
+    this.colors = {
+      dark: {
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderColor: 'rgba(255,255,255,0.1)',
+        color: '#bbb'
+      },
+      light: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        borderColor: 'rgba(0,0,0,0.1)',
+        color: '#666'
+      }
+    };
     this.datasets = {};
     this.devicePixelRatio = (context) => context.chart.platform.getDevicePixelRatio();
     this.elements = {};

@@ -76,10 +76,9 @@ const getChart = (key) => {
 class Chart {
 
   // eslint-disable-next-line max-statements
-  constructor(item, config) {
+  constructor(item, config = {}) {
     const me = this;
 
-    this.config = config = new Config(config);
     const initialCanvas = getCanvas(item);
     const existingChart = getChart(initialCanvas);
     if (existingChart) {
@@ -89,10 +88,10 @@ class Chart {
       );
     }
 
-    const options = config.createResolver(config.chartOptionScopes(), me.getContext());
-
     this.platform = me._initializePlatform(initialCanvas, config);
+    this.config = config = new Config(config, this.platform);
 
+    const options = config.createResolver(config.chartOptionScopes(), me.getContext());
     const context = me.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
     const height = canvas && canvas.height;

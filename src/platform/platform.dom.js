@@ -252,10 +252,21 @@ function createProxyAndListen(chart, type, listener) {
 }
 
 /**
+ * Variable to cache window.matchMedia query result of prefers-color-scheme
+ */
+let darkMode;
+
+/**
  * Platform class for charts that can access the DOM and global window/document properties
  * @extends BasePlatform
  */
 export default class DomPlatform extends BasePlatform {
+  get colorMode() {
+    if (isNullOrUndef(darkMode)) {
+      darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return darkMode ? 'dark' : 'light';
+  }
 
   /**
 	 * @param {HTMLCanvasElement} canvas
