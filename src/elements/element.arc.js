@@ -38,13 +38,12 @@ function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
   const o = toRadiusCorners(arc.options.borderRadius);
   const halfThickness = (outerRadius - innerRadius) / 2;
   const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
-  // const outerLimit = Math.min(halfThickness, angleDelta * outerRadius / 2);
 
   return {
-    outerStart: _limitValue(o.topLeft, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topLeft) / 2)),
-    outerEnd: _limitValue(o.topRight, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.topRight) / 2)),
-    innerStart: _limitValue(o.bottomLeft, 0, innerLimit),
-    innerEnd: _limitValue(o.bottomRight, 0, innerLimit),
+    outerStart: _limitValue(o.outerStart, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.outerStart) / 2)),
+    outerEnd: _limitValue(o.outerEnd, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.outerEnd) / 2)),
+    innerStart: _limitValue(o.innerStart, 0, innerLimit),
+    innerEnd: _limitValue(o.innerEnd, 0, innerLimit),
   };
 }
 
