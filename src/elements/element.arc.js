@@ -80,14 +80,16 @@ function rThetaToXY(r, theta, x, y) {
  * 8 points of interest exist around the arc segment.
  * These points define the intersection of the arc edges and the corners.
  *
- *    1---------2
+ *   Start      End
+ *
+ *    1---------2    Outer
  *   /           \
  *   8           3
  *   |           |
  *   |           |
  *   7           4
  *   \           /
- *    6---------5
+ *    6---------5    Inner
  * @param {CanvasRenderingContext2D} ctx
  * @param {ArcElement} element
  */
@@ -95,45 +97,56 @@ function pathArc(ctx, element) {
   const {x, y, startAngle, endAngle, pixelMargin} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
-  const borderRadius = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
+  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
+
+  const outerStartAdjustedRadius = outerRadius - outerStart;
+  const outerEndAdjustedRadius = outerRadius - outerEnd;
+  const outerStartAdjustedAngle = startAngle + outerStart / outerStartAdjustedRadius;
+  const outerEndAdjustedAngle = endAngle - outerEnd / outerEndAdjustedRadius;
+
+  const innerStartAdjustedRadius = innerRadius + innerStart;
+  const innerEndAdjustedRadius = innerRadius + innerEnd;
+  const innerStartAdjustedAngle = startAngle + innerStart / innerStartAdjustedRadius;
+  const innerEndAdjustedAngle = endAngle - innerEnd / innerEndAdjustedRadius;
+
   ctx.beginPath();
 
   // The first arc segment from point 1 to point 2
-  ctx.arc(x, y, outerRadius, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)), endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)));
+  ctx.arc(x, y, outerRadius, outerStartAdjustedAngle, outerEndAdjustedAngle);
 
   // The corner segment from point 2 to point 3
-  if (borderRadius.outerEnd !== 0) {
-    const pCenter = rThetaToXY(outerRadius - borderRadius.outerEnd, endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)), x, y);
-    ctx.arc(pCenter.x, pCenter.y, borderRadius.outerEnd, endAngle - (borderRadius.outerEnd / (outerRadius - borderRadius.outerEnd)), endAngle + HALF_PI);
+  if (outerEnd > 0) {
+    const pCenter = rThetaToXY(outerEndAdjustedRadius, outerEndAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + HALF_PI);
   }
 
   // The line from point 3 to point 4
-  const p4 = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle, x, y);
+  const p4 = rThetaToXY(innerEndAdjustedRadius, endAngle, x, y);
   ctx.lineTo(p4.x, p4.y);
 
   // The corner segment from point 4 to point 5
-  if (borderRadius.innerEnd !== 0) {
-    const pCenter = rThetaToXY(innerRadius + borderRadius.innerEnd, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)), x, y);
-    ctx.arc(pCenter.x, pCenter.y, borderRadius.innerEnd, endAngle + HALF_PI, endAngle - (borderRadius.innerEnd / (innerRadius + borderRadius.innerEnd)) + Math.PI);
+  if (innerEnd > 0) {
+    const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
   }
 
   // The inner arc from point 5 to point 6
-  ctx.arc(x, y, innerRadius, endAngle - (borderRadius.innerEnd / innerRadius), startAngle + (borderRadius.innerStart / innerRadius), true);
+  ctx.arc(x, y, innerRadius, endAngle - (innerEnd / innerRadius), startAngle + (innerStart / innerRadius), true);
 
   // The corner segment from point 6 to point 7
-  if (borderRadius.innerStart !== 0) {
-    const pCenter = rThetaToXY(innerRadius + borderRadius.innerStart, startAngle + (borderRadius.innerStart / (innerRadius + borderRadius.innerStart)), x, y);
-    ctx.arc(pCenter.x, pCenter.y, borderRadius.innerStart, startAngle + (borderRadius.innerStart / (innerRadius + borderRadius.innerStart)) + Math.PI, startAngle - HALF_PI);
+  if (innerStart > 0) {
+    const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - HALF_PI);
   }
 
   // The line from point 7 to point 8
-  const p8 = rThetaToXY(outerRadius - borderRadius.outerStart, startAngle, x, y);
+  const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
   ctx.lineTo(p8.x, p8.y);
 
   // The corner segment from point 8 to point 1
-  if (borderRadius.outerStart !== 0) {
-    const pCenter = rThetaToXY(outerRadius - borderRadius.outerStart, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)), x, y);
-    ctx.arc(pCenter.x, pCenter.y, borderRadius.outerStart, startAngle - HALF_PI, startAngle + (borderRadius.outerStart / (outerRadius - borderRadius.outerStart)));
+  if (outerStart > 0) {
+    const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - HALF_PI, outerStartAdjustedAngle);
   }
 
   ctx.closePath();
