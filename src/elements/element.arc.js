@@ -1,6 +1,5 @@
 import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
-import {isObject} from '../helpers/helpers.core';
 import {_limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
 
@@ -39,9 +38,21 @@ function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
   const halfThickness = (outerRadius - innerRadius) / 2;
   const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
 
+  // Outer limits are complicated. We want to compute the available angular distance at
+  // a radius of outerRadius - borderRadius because for small angular distances, this term limits.
+  // We compute at r = outerRadius - borderRadius because this circle defines the center of the border corners.
+  //
+  // If the borderRadius is large, that value can become negative.
+  // This causes the outer borders to lose their radius entirely, which is rather unexpected. To solve that, if borderRadius > outerRadius
+  // we know that the thickness term will dominate and compute the limits at that point
+  const computeOuterLimit = (val) => {
+    const outerArcLimit = (outerRadius - Math.min(halfThickness, val)) * angleDelta / 2;
+    return _limitValue(val, 0, Math.min(halfThickness, outerArcLimit));
+  };
+
   return {
-    outerStart: _limitValue(o.outerStart, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.outerStart) / 2)),
-    outerEnd: _limitValue(o.outerEnd, 0, Math.min(halfThickness, angleDelta * (outerRadius - o.outerEnd) / 2)),
+    outerStart: computeOuterLimit(o.outerStart),
+    outerEnd: computeOuterLimit(o.outerEnd),
     innerStart: _limitValue(o.innerStart, 0, innerLimit),
     innerEnd: _limitValue(o.innerEnd, 0, innerLimit),
   };
