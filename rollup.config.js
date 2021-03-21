@@ -1,3 +1,4 @@
+const analyze = require('rollup-plugin-analyzer');
 const cleanup = require('rollup-plugin-cleanup');
 const dts = require('rollup-plugin-dts').default;
 const json = require('@rollup/plugin-json');
@@ -34,6 +35,7 @@ module.exports = [
       cleanup({
         sourcemap: true
       }),
+      analyze({summaryOnly: true})
     ],
     output: {
       name: 'Chart',

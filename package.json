@@ -82,6 +82,7 @@
     "moment": "^2.29.1",
     "pixelmatch": "^5.2.1",
     "rollup": "^2.41.4",
+    "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-dts": "^3.0.1",
     "rollup-plugin-istanbul": "^3.0.0",
