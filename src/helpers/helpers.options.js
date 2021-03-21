@@ -38,7 +38,22 @@ export function toLineHeight(value, size) {
 }
 
 const numberOrZero = v => +v || 0;
-const numberOrZero2 = (v1, v2) => numberOrZero(valueOrDefault(v1, v2));
+
+function readValueToProps(value, props) {
+  const ret = {};
+  const objProps = isObject(props);
+  const keys = objProps ? Object.keys(props) : props;
+  const read = isObject(value)
+    ? objProps
+      ? prop => valueOrDefault(value[prop], value[props[prop]])
+      : prop => value[prop]
+    : () => value;
+
+  for (const prop of keys) {
+    ret[prop] = numberOrZero(read(prop));
+  }
+  return ret;
+}
 
 /**
  * Converts the given value into a TRBL object.
@@ -49,24 +64,7 @@ const numberOrZero2 = (v1, v2) => numberOrZero(valueOrDefault(v1, v2));
  * @since 3.0.0
  */
 export function toTRBL(value) {
-  let t, r, b, l;
-
-  if (isObject(value)) {
-    const {x, y} = value;
-    t = numberOrZero2(value.top, y);
-    r = numberOrZero2(value.right, x);
-    b = numberOrZero2(value.bottom, y);
-    l = numberOrZero2(value.left, x);
-  } else {
-    t = r = b = l = numberOrZero(value);
-  }
-
-  return {
-    top: t,
-    right: r,
-    bottom: b,
-    left: l
-  };
+  return readValueToProps(value, {top: 'y', right: 'x', bottom: 'y', left: 'x'});
 }
 
 /**
@@ -77,23 +75,7 @@ export function toTRBL(value) {
  * @since 3.0.0
  */
 export function toTRBLCorners(value) {
-  let tl, tr, bl, br;
-
-  if (isObject(value)) {
-    tl = numberOrZero(value.topLeft);
-    tr = numberOrZero(value.topRight);
-    bl = numberOrZero(value.bottomLeft);
-    br = numberOrZero(value.bottomRight);
-  } else {
-    tl = tr = bl = br = numberOrZero(value);
-  }
-
-  return {
-    topLeft: tl,
-    topRight: tr,
-    bottomLeft: bl,
-    bottomRight: br
-  };
+  return readValueToProps(value, ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']);
 }
 
 /**
