@@ -1,7 +1,7 @@
 
 const intlCache = new Map();
 
-export function getNumberFormat(locale, options) {
+function getNumberFormat(locale, options) {
   options = options || {};
   const cacheKey = locale + JSON.stringify(options);
   let formatter = intlCache.get(cacheKey);

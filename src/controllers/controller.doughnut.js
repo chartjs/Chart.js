@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
-import {formatNumber} from '../core/core.intl';
 import {isArray, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
+import {formatNumber} from '../helpers/helpers.intl';
 import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
 
 /**

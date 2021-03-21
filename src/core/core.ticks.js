@@ -1,6 +1,6 @@
 import {isArray} from '../helpers/helpers.core';
+import {formatNumber} from '../helpers/helpers.intl';
 import {log10} from '../helpers/helpers.math';
-import {formatNumber} from './core.intl';
 
 /**
  * Namespace to hold formatters for different types of ticks
