@@ -1,11 +1,12 @@
 import defaults from './core.defaults';
 import Element from './core.element';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize, toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
+import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject} from '../helpers/helpers.core';
+import {toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
 import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {toFont, toPadding} from '../helpers/helpers.options';
 import Ticks from './core.ticks';
+import {autoSkip} from './core.scale.autoskip';
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
@@ -190,128 +191,6 @@ function getTitleHeight(options, fallback) {
   const lines = isArray(options.text) ? options.text.length : 1;
 
   return (lines * font.lineHeight) + padding.height;
-}
-
-function determineMaxTicks(scale) {
-  const offset = scale.options.offset;
-  const tickLength = scale._tickSize();
-  const maxScale = scale._length / tickLength + (offset ? 0 : 1);
-  const maxChart = scale._maxLength / tickLength;
-  return Math.floor(Math.min(maxScale, maxChart));
-}
-
-/**
- * @param {number[]} arr
- */
-function getEvenSpacing(arr) {
-  const len = arr.length;
-  let i, diff;
-
-  if (len < 2) {
-    return false;
-  }
-
-  for (diff = arr[0], i = 1; i < len; ++i) {
-    if (arr[i] - arr[i - 1] !== diff) {
-      return false;
-    }
-  }
-  return diff;
-}
-
-/**
- * @param {number[]} majorIndices
- * @param {Tick[]} ticks
- * @param {number} ticksLimit
- */
-function calculateSpacing(majorIndices, ticks, ticksLimit) {
-  const evenMajorSpacing = getEvenSpacing(majorIndices);
-  const spacing = ticks.length / ticksLimit;
-
-  // If the major ticks are evenly spaced apart, place the minor ticks
-  // so that they divide the major ticks into even chunks
-  if (!evenMajorSpacing) {
-    return Math.max(spacing, 1);
-  }
-
-  const factors = _factorize(evenMajorSpacing);
-  for (let i = 0, ilen = factors.length - 1; i < ilen; i++) {
-    const factor = factors[i];
-    if (factor > spacing) {
-      return factor;
-    }
-  }
-  return Math.max(spacing, 1);
-}
-
-/**
- * @param {Tick[]} ticks
- */
-function getMajorIndices(ticks) {
-  const result = [];
-  let i, ilen;
-  for (i = 0, ilen = ticks.length; i < ilen; i++) {
-    if (ticks[i].major) {
-      result.push(i);
-    }
-  }
-  return result;
-}
-
-/**
- * @param {Tick[]} ticks
- * @param {Tick[]} newTicks
- * @param {number[]} majorIndices
- * @param {number} spacing
- */
-function skipMajors(ticks, newTicks, majorIndices, spacing) {
-  let count = 0;
-  let next = majorIndices[0];
-  let i;
-
-  spacing = Math.ceil(spacing);
-  for (i = 0; i < ticks.length; i++) {
-    if (i === next) {
-      newTicks.push(ticks[i]);
-      count++;
-      next = majorIndices[count * spacing];
-    }
-  }
-}
-
-/**
- * @param {Tick[]} ticks
- * @param {Tick[]} newTicks
- * @param {number} spacing
- * @param {number} [majorStart]
- * @param {number} [majorEnd]
- */
-function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
-  const start = valueOrDefault(majorStart, 0);
-  const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
-  let count = 0;
-  let length, i, next;
-
-  spacing = Math.ceil(spacing);
-  if (majorEnd) {
-    length = majorEnd - majorStart;
-    spacing = length / Math.floor(length / spacing);
-  }
-
-  next = start;
-
-  while (next < 0) {
-    count++;
-    next = Math.round(start + count * spacing);
-  }
-
-  for (i = Math.max(start, 0); i < end; i++) {
-    if (i === next) {
-      newTicks.push(ticks[i]);
-      count++;
-      next = Math.round(start + count * spacing);
-    }
-  }
 }
 
 function createScaleContext(parent, scale) {
@@ -635,7 +514,7 @@ export default class Scale extends Element {
 
     // Auto-skip
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
-      me.ticks = me._autoSkip(me.ticks);
+      me.ticks = autoSkip(me, me.ticks);
       me._labelSizes = null;
     }
 
@@ -1147,44 +1026,6 @@ export default class Scale extends Element {
     }
     return me.$context ||
 			(me.$context = createScaleContext(me.chart.getContext(), me));
-  }
-
-  /**
-	 * Returns a subset of ticks to be plotted to avoid overlapping labels.
-	 * @param {Tick[]} ticks
-	 * @return {Tick[]}
-	 * @private
-	 */
-  _autoSkip(ticks) {
-    const me = this;
-    const tickOpts = me.options.ticks;
-    const ticksLimit = tickOpts.maxTicksLimit || determineMaxTicks(me);
-    const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
-    const numMajorIndices = majorIndices.length;
-    const first = majorIndices[0];
-    const last = majorIndices[numMajorIndices - 1];
-    const newTicks = [];
-
-    // If there are too many major ticks to display them all
-    if (numMajorIndices > ticksLimit) {
-      skipMajors(ticks, newTicks, majorIndices, numMajorIndices / ticksLimit);
-      return newTicks;
-    }
-
-    const spacing = calculateSpacing(majorIndices, ticks, ticksLimit);
-
-    if (numMajorIndices > 0) {
-      let i, ilen;
-      const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-      skip(ticks, newTicks, spacing, isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
-      for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
-        skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
-      }
-      skip(ticks, newTicks, spacing, last, isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
-      return newTicks;
-    }
-    skip(ticks, newTicks, spacing);
-    return newTicks;
   }
 
   /**
