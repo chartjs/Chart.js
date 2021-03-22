@@ -3207,14 +3207,14 @@ export interface ChartTypeRegistry {
   line: {
     chartOptions: LineControllerChartOptions;
     datasetOptions: LineControllerDatasetOptions & FillerControllerDatasetOptions;
-    defaultDataPoint: ScatterDataPoint;
+    defaultDataPoint: ScatterDataPoint | number | null;
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
   scatter: {
     chartOptions: ScatterControllerChartOptions;
     datasetOptions: ScatterControllerDatasetOptions;
-    defaultDataPoint: ScatterDataPoint;
+    defaultDataPoint: ScatterDataPoint | number | null;
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3249,7 +3249,7 @@ export interface ChartTypeRegistry {
   radar: {
     chartOptions: RadarControllerChartOptions;
     datasetOptions: RadarControllerDatasetOptions;
-    defaultDataPoint: number;
+    defaultDataPoint: number | null;
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
   };
