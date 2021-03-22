@@ -13,22 +13,19 @@
 
 ## Documentation
 
-Currently, there are two versions of the library (2.9.4 and 3.x.x). Version 2 is the latest stable version while 3 is the next (currently beta) version. As such bear the following in mind:
-
-* Current docs points to version 2.9.4
-* Npm/CDN/etc point to version 2.9.4 (unless you explicitly set newer version, e.g. npm next)
-* Source currently points to 3.x.x version. 2.9.4 source is available [here](https://github.com/chartjs/Chart.js/tree/2.9)
-* Docs for version 3.x.x are available [here](https://www.chartjs.org/docs/master/)
+All the links point to the new version 3 of the lib.
 
 * [Introduction](https://www.chartjs.org/docs/latest/)
-* [Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
-* [General](https://www.chartjs.org/docs/latest/general/)
-* [Configuration](https://www.chartjs.org/docs/latest/configuration/)
-* [Charts](https://www.chartjs.org/docs/latest/charts/)
-* [Axes](https://www.chartjs.org/docs/latest/axes/)
-* [Developers](https://www.chartjs.org/docs/latest/developers/)
+* [Getting Started](https://www.chartjs.org/docs/latest/getting-started/index)
+* [General](https://www.chartjs.org/docs/latest/general/data-structures)
+* [Configuration](https://www.chartjs.org/docs/latest/configuration/index)
+* [Charts](https://www.chartjs.org/docs/latest/charts/line)
+* [Axes](https://www.chartjs.org/docs/latest/axes/index)
+* [Developers](https://www.chartjs.org/docs/latest/developers/index)
 * [Popular Extensions](https://github.com/chartjs/awesome)
 * [Samples](https://www.chartjs.org/samples/)
+
+In case you are looking for the docs of version 2, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
 ## Contributing
 
