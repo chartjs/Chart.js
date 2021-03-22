@@ -1966,7 +1966,7 @@ export interface FillerOptions {
   propagate: boolean;
 }
 
-export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | false;
+export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | boolean;
 
 export interface ComplexFillTarget {
   /**
