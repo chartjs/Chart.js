@@ -1,5 +1,5 @@
 import Scale from '../core/core.scale';
-import {isNullOrUndef, valueOrDefault} from '../helpers';
+import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers';
 
 const addIfString = (labels, raw, index) => typeof raw === 'string'
   ? labels.push(raw) - 1
@@ -13,6 +13,8 @@ function findOrAddLabel(labels, raw, index) {
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;
 }
+
+const validIndex = (index, max) => index === null ? null : _limitValue(Math.round(index), 0, max);
 
 export default class CategoryScale extends Scale {
 
@@ -29,8 +31,9 @@ export default class CategoryScale extends Scale {
       return null;
     }
     const labels = this.getLabels();
-    return isFinite(index) && labels[index] === raw
-      ? index : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
+    index = isFinite(index) && labels[index] === raw ? index
+      : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
+    return validIndex(index, labels.length - 1);
   }
 
   determineDataLimits() {

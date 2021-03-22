@@ -20,7 +20,6 @@ describe('Category scale tests', function() {
     });
   });
 
-
   it('Should generate ticks from the data xLabels', function() {
     var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
     var chart = window.acquireChart({
@@ -112,6 +111,42 @@ describe('Category scale tests', function() {
     var scale = chart.scales.x;
     expect(getLabels(scale)).toEqual(labels);
 
+  });
+
+  it('should parse only to a valid index', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          yAxisID: 'y',
+          data: [10, 5, 0, 25, 78]
+        }],
+        labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'category',
+            position: 'bottom'
+          },
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+
+    expect(scale.parse(-10)).toEqual(0);
+    expect(scale.parse(-0.1)).toEqual(0);
+    expect(scale.parse(4.1)).toEqual(4);
+    expect(scale.parse(5)).toEqual(4);
+    expect(scale.parse(1)).toEqual(1);
+    expect(scale.parse(1.4)).toEqual(1);
+    expect(scale.parse(1.5)).toEqual(2);
+    expect(scale.parse('tick2')).toEqual(1);
   });
 
   it('should get the correct label for the index', function() {
