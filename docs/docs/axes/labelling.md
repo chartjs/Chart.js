@@ -30,13 +30,13 @@ var chart = new Chart(ctx, {
     data: data,
     options: {
         scales: {
-            y: {
-                ticks: {
+            yAxes: {
+                ticks: [{
                     // Include a dollar sign in the ticks
                     callback: function(value, index, values) {
                         return '$' + value;
                     }
-                }
+                }]
             }
         }
     }
