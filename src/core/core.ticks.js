@@ -32,7 +32,7 @@ const formatters = {
 
     const locale = this.chart.options.locale;
     let notation;
-    let delta = 0;
+    let delta = tickValue; // This is used when there are less than 2 ticks as the tick interval.
 
     if (ticks.length > 1) {
       // all ticks are small or there huge numbers; use scientific notation

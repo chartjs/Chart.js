@@ -96,4 +96,13 @@ describe('Test tick generators', function() {
     expect(xLabels).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
     expect(yLabels).toEqual(['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']);
   });
+
+  describe('formatters.numeric', function() {
+    it('should not fail on empty or 1 item array', function() {
+      const scale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {}}}};
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, []])).toEqual('1');
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}]])).toEqual('1');
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
+    });
+  });
 });
