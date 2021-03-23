@@ -31,22 +31,25 @@ const formatters = {
     }
 
     const locale = this.chart.options.locale;
-
-    // all ticks are small or there huge numbers; use scientific notation
-    const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
     let notation;
-    if (maxTick < 1e-4 || maxTick > 1e+15) {
-      notation = 'scientific';
-    }
+    let delta = 0;
 
-    // Figure out how many digits to show
-    // The space between the first two ticks might be smaller than normal spacing
-    let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
+    if (ticks.length > 1) {
+      // all ticks are small or there huge numbers; use scientific notation
+      const maxTick = Math.max(Math.abs(ticks[0].value), Math.abs(ticks[ticks.length - 1].value));
+      if (maxTick < 1e-4 || maxTick > 1e+15) {
+        notation = 'scientific';
+      }
 
-    // If we have a number like 2.5 as the delta, figure out how many decimal places we need
-    if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
-      // not an integer
-      delta = tickValue - Math.floor(tickValue);
+      // Figure out how many digits to show
+      // The space between the first two ticks might be smaller than normal spacing
+      delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
+
+      // If we have a number like 2.5 as the delta, figure out how many decimal places we need
+      if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
+        // not an integer
+        delta = tickValue - Math.floor(tickValue);
+      }
     }
 
     const logDelta = log10(Math.abs(delta));
