@@ -20,7 +20,7 @@ export default class LineController extends DatasetController {
     me._drawStart = start;
     me._drawCount = count;
 
-    if (scaleRangesChanged(meta) && !animationsDisabled) {
+    if (scaleRangesChanged(meta)) {
       start = 0;
       count = points.length;
     }
