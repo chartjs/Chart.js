@@ -85,13 +85,16 @@ myLineChart.clear();
 // => returns 'this' for chainability
 ```
 
-## .toBase64Image()
+## .toBase64Image(type?, quality?)
 
 This returns a base 64 encoded string of the chart in its current state.
 
 ```javascript
 myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
+
+myLineChart.toBase64Image('image/jpeg', 1)
+// => returns a jpeg data url in the highest quality of the canvas
 ```
 
 ## .getElementsAtEventForMode(e, mode, options, useFinalPosition)
