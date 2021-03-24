@@ -712,6 +712,39 @@ describe('Logarithmic Scale tests', function() {
     expect(chart.scales.y.getLabelForValue(150)).toBe('150');
   });
 
+  it('should correctly use the locale when generating the label', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          yAxisID: 'y',
+          data: [10, 5, 5000, 78, 450]
+        }, {
+          yAxisID: 'y1',
+          data: [1, 1000, 10, 100],
+        }, {
+          yAxisID: 'y',
+          data: [150]
+        }],
+        labels: []
+      },
+      options: {
+        locale: 'de-DE',
+        scales: {
+          y: {
+            type: 'logarithmic'
+          },
+          y1: {
+            position: 'right',
+            type: 'logarithmic'
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.getLabelForValue(10.25)).toBe('10,25');
+  });
+
   describe('when', function() {
     var data = [
       {

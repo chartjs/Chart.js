@@ -149,7 +149,7 @@ export default class LogarithmicScale extends Scale {
 	 * @return {string}
 	 */
   getLabelForValue(value) {
-    return value === undefined ? '0' : formatNumber(value, this.options.locale);
+    return value === undefined ? '0' : formatNumber(value, this.chart.options.locale);
   }
 
   /**
