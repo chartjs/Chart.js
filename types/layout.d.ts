@@ -57,9 +57,9 @@ export interface LayoutItem {
 	 */
 	isHorizontal(): boolean;
 	/**
-	 * Takes two parameters: width and height. Returns size of item
+	 * Takes two parameters: width and height.
 	 * @param width
 	 * @param height
 	 */
-	update(width: number, height: number, margins?: ChartArea): number;
+	update(width: number, height: number, margins?: ChartArea): void;
 }
