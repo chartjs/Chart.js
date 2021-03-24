@@ -22,7 +22,7 @@ function clipArc(ctx, element) {
 }
 
 function toRadiusCorners(value) {
-  return _readValueToProps(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd'])
+  return _readValueToProps(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
 }
 
 /**
