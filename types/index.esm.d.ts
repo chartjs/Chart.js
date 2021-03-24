@@ -3038,7 +3038,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Padding of label backdrop.
      * @default 2
      */
-     backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
+    backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
 
     /**
      * if true, point labels are shown.
@@ -3057,9 +3057,8 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-     * @default true
      */
-    callback: (label: string) => string;
+    callback: (label: string, index: number) => string;
   };
 
   /**
