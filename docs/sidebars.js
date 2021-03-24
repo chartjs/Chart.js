@@ -83,7 +83,6 @@ module.exports = {
       'developers/publishing'
     ],
     'Additional Notes': [
-      'notes/comparison',
       {
         type: 'link',
         label: 'Extensions',
