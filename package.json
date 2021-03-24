@@ -88,6 +88,9 @@
     "rollup-plugin-terser": "^7.0.2",
     "typedoc": "^0.20.32",
     "typescript": "^4.1.5",
+    "vuepress": "^1.8.2",
+    "vuepress-plugin-redirect": "^1.2.5",
+    "vuepress-theme-chartjs": "^0.1.0",
     "yargs": "^16.2.0"
   }
 }
