@@ -303,6 +303,46 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.getLabelForValue(7)).toBe('7');
   });
 
+  it('Should correctly use the locale setting when getting a label', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          yAxisID: 'y',
+          data: [{
+            x: 10,
+            y: 100
+          }, {
+            x: -10,
+            y: 0
+          }, {
+            x: 0,
+            y: 0
+          }, {
+            x: 99,
+            y: 7
+          }]
+        }],
+      },
+      options: {
+        locale: 'de-DE',
+        scales: {
+          x: {
+            type: 'linear',
+            position: 'bottom'
+          },
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+    chart.update();
+
+    expect(chart.scales.y.getLabelForValue(7.07)).toBe('7,07');
+  });
+
   it('Should correctly determine the min and max data values when stacked mode is turned on', function() {
     var chart = window.acquireChart({
       type: 'line',
