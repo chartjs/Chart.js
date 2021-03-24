@@ -623,6 +623,9 @@ export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptio
   set(scope: string, values: AnyObject): AnyObject;
   get(scope: string): AnyObject;
 
+  describe(scope: string, values: AnyObject): AnyObject;
+  override(scope: string, values: AnyObject): AnyObject;
+
   /**
    * Routes the named defaults to fallback to another scope/name.
    * This routing is useful when those target values, like defaults.color, are changed runtime.
