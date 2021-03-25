@@ -20,5 +20,8 @@
   "include": [
     "./src/**/*.js",
     "./types"
+  ],
+  "exclude": [
+    "./types/tests"
   ]
 }
