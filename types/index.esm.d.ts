@@ -2370,9 +2370,9 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * Sort tooltip items.
    */
-  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>) => number;
+  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>, data: ChartData) => number;
 
-  filter: (e: TooltipItem<ChartType>) => boolean;
+  filter: (e: TooltipItem<ChartType>, index: number, array: TooltipItem<ChartType>[], data: ChartData) => boolean;
 
   /**
    * Background color of the tooltip.
@@ -3041,7 +3041,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Padding of label backdrop.
      * @default 2
      */
-     backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
+    backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
 
     /**
      * if true, point labels are shown.
@@ -3060,9 +3060,8 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
-     * @default true
      */
-    callback: (label: string) => string;
+    callback: (label: string, index: number) => string;
   };
 
   /**
