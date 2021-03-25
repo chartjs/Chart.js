@@ -2367,9 +2367,9 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * Sort tooltip items.
    */
-  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>) => number;
+  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>, data: ChartData) => number;
 
-  filter: (e: TooltipItem<ChartType>) => boolean;
+  filter: (e: TooltipItem<ChartType>, index: number, array: TooltipItem<ChartType>[], data: ChartData) => boolean;
 
   /**
    * Background color of the tooltip.
