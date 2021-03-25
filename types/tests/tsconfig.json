@@ -3,6 +3,7 @@
     "target": "ES6",
     "moduleResolution": "Node",
     "alwaysStrict": true,
+    "strict": true,
     "noEmit": true
   },
   "include": [

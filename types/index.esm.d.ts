@@ -633,14 +633,13 @@ export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptio
 }
 
 export type Overrides = {
-  [key in ChartType]: DeepPartial<
+  [key in ChartType]:
     CoreChartOptions<key> &
     ElementChartOptions &
     PluginChartOptions<key> &
     DatasetChartOptions<ChartType> &
     ScaleChartOptions<key> &
-    ChartTypeRegistry[key]['chartOptions']
-    >;
+    ChartTypeRegistry[key]['chartOptions'];
 }
 
 export const defaults: Defaults;
@@ -2561,7 +2560,7 @@ export interface PluginOptionsByType<TType extends ChartType> {
   tooltip: TooltipOptions<TType>;
 }
 export interface PluginChartOptions<TType extends ChartType> {
-  plugins: Partial<PluginOptionsByType<TType>>;
+  plugins: PluginOptionsByType<TType>;
 }
 
 export interface GridLineOptions {
@@ -3245,9 +3244,9 @@ export interface ChartTypeRegistry {
 
 export type ChartType = keyof ChartTypeRegistry;
 
-export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> = DeepPartial<
+export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> =
   { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
->;
+;
 
 export type DatasetChartOptions<TType extends ChartType = ChartType> = {
   [key in TType]: {
