@@ -151,9 +151,9 @@ export class Registry {
 	 */
   _exec(method, registry, component) {
     const camelMethod = _capitalize(method);
-    call(component['before' + camelMethod], [], component);
+    call(component['before' + camelMethod], [], component); // beforeRegister / beforeUnregister
     registry[method](component);
-    call(component['after' + camelMethod], [], component);
+    call(component['after' + camelMethod], [], component); // afterRegister / afterUnregister
   }
 
   /**
