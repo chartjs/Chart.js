@@ -1,4 +1,4 @@
-import { Chart } from '../../index.esm';
+import { Chart, ScaleOptions } from '../../index.esm';
 
 const chart = new Chart('test', {
   type: 'bar',
@@ -27,6 +27,32 @@ const chart = new Chart('test', {
           unit: 'year'
         }
       }
+    }
+  }
+});
+
+function makeChartScale(range: number): ScaleOptions<'linear'> {
+  return {
+    type: 'linear',
+    min: 0,
+    suggestedMax: range,
+  };
+}
+
+const composedChart = new Chart('test2', {
+  type: 'bar',
+  data: {
+    labels: ['a'],
+    datasets: [{
+      data: [1],
+    }, {
+      type: 'line',
+      data: [{ x: 1, y: 1 }]
+    }]
+  },
+  options: {
+    scales: {
+      x: makeChartScale(10)
     }
   }
 });
