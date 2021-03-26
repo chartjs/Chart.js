@@ -135,10 +135,10 @@ describe('Chart.controllers.bubble', function() {
     var meta = chart.getDatasetMeta(0);
 
     [
-      {r: 5, x: 0, y: 0},
-      {r: 1, x: 171, y: 512},
-      {r: 2, x: 341, y: 486},
-      {r: 1, x: 512, y: 0}
+      {r: 5, x: 5, y: 5},
+      {r: 1, x: 171, y: 507},
+      {r: 2, x: 341, y: 482},
+      {r: 1, x: 507, y: 5}
     ].forEach(function(expected, i) {
       expect(meta.data[i].x).toBeCloseToPixel(expected.x);
       expect(meta.data[i].y).toBeCloseToPixel(expected.y);

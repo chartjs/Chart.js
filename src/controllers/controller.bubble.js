@@ -31,12 +31,11 @@ export default class BubbleController extends DatasetController {
 	 * @protected
 	 */
   getMaxOverflow() {
-    const me = this;
-    const meta = me._cachedMeta;
-    const data = meta.data;
+    const {data, _parsed} = this._cachedMeta;
+
     let max = 0;
     for (let i = data.length - 1; i >= 0; --i) {
-      max = Math.max(max, data[i].size());
+      max = Math.max(max, data[i].size() / 2, _parsed[i]._custom);
     }
     return max > 0 && max;
   }
