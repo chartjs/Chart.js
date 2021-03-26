@@ -917,7 +917,7 @@ describe('Plugin.Tooltip', function() {
 
     // First dispatch change event, should update tooltip
     await jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
-    expect(tooltip.update).toHaveBeenCalledWith(true);
+    expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
 
     // Reset calls
     tooltip.update.calls.reset();
@@ -980,7 +980,7 @@ describe('Plugin.Tooltip', function() {
 
     // First dispatch change event, should update tooltip
     await jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
-    expect(tooltip.update).toHaveBeenCalledWith(true);
+    expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
 
     // Reset calls
     tooltip.update.calls.reset();
@@ -988,7 +988,7 @@ describe('Plugin.Tooltip', function() {
     // Second dispatch change event (same event), should update tooltip
     // because position mode is 'nearest'
     await jasmine.triggerMouseEvent(chart, 'mousemove', secondPoint);
-    expect(tooltip.update).toHaveBeenCalledWith(true);
+    expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
   });
 
   describe('positioners', function() {

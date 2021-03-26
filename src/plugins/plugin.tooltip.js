@@ -524,7 +524,7 @@ export class Tooltip extends Element {
     return tooltipItems;
   }
 
-  update(changed) {
+  update(changed, replay) {
     const me = this;
     const options = me.options.setContext(me.getContext());
     const active = me._active;
@@ -574,7 +574,7 @@ export class Tooltip extends Element {
     }
 
     if (changed && options.external) {
-      options.external.call(me, {chart: me._chart, tooltip: me});
+      options.external.call(me, {chart: me._chart, tooltip: me, replay});
     }
   }
 
@@ -1023,7 +1023,7 @@ export class Tooltip extends Element {
           y: e.y
         };
 
-        me.update(true);
+        me.update(true, replay);
       }
     }
 
