@@ -35,7 +35,7 @@ function makeChartScale(range: number): ScaleOptions<'linear'> {
   return {
     type: 'linear',
     min: 0,
-    suggestedMax: 100,
+    suggestedMax: range,
   };
 }
 
