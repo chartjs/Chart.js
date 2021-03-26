@@ -3248,6 +3248,9 @@ export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> =
   { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
 ;
 
+// Convenience alias for creating and manipulating scale options in user code
+export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<ScaleOptionsByType<TScale>>;
+
 export type DatasetChartOptions<TType extends ChartType = ChartType> = {
   [key in TType]: {
     datasets: ChartTypeRegistry[key]['datasetOptions'];
