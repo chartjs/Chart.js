@@ -1075,8 +1075,7 @@ class Chart {
 	 */
   _handleEvent(e, replay) {
     const me = this;
-    const lastActive = me._active || [];
-    const options = me.options;
+    const {_active: lastActive = [], options} = me;
     const hoverOptions = options.hover;
 
     // If the event is replayed from `update`, we should evaluate with the final positions.
