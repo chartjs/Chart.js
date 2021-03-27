@@ -63,7 +63,6 @@ module.exports = {
       scales: {
         x: {
           type: 'time',
-          // offset: false,
           time: {
             unit: 'month',
           },
