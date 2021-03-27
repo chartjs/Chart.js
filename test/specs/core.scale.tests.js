@@ -199,10 +199,7 @@ describe('Core.scale', function() {
       chart.draw();
 
       expect(yScale.ctx.getCalls().filter(function(x) {
-        return x.name === 'moveTo' && x.args[0] === 0.5;
-      }).filter(function(x, i, arr) {
-        // Remove the extra point at the end
-        return i !== arr.length - 1;
+        return x.name === 'moveTo' && x.args[0] === 1;
       }).map(function(x) {
         return x.args[1];
       })).toEqual(test.expected);

@@ -999,6 +999,7 @@ export default class Scale extends Element {
 
     const borderOpts = grid.setContext(me.getContext(0));
     const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
+    const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
       return _alignPixel(chart, pixel, axisWidth);
     };
@@ -1008,26 +1009,26 @@ export default class Scale extends Element {
     if (position === 'top') {
       borderValue = alignBorderValue(me.bottom);
       ty1 = me.bottom - tl;
-      ty2 = borderValue;
-      y1 = alignBorderValue(chartArea.top);
+      ty2 = borderValue - axisHalfWidth;
+      y1 = alignBorderValue(chartArea.top) + axisHalfWidth;
       y2 = chartArea.bottom;
     } else if (position === 'bottom') {
       borderValue = alignBorderValue(me.top);
       y1 = chartArea.top;
-      y2 = alignBorderValue(chartArea.bottom);
-      ty1 = borderValue;
+      y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
+      ty1 = borderValue + axisHalfWidth;
       ty2 = me.top + tl;
     } else if (position === 'left') {
       borderValue = alignBorderValue(me.right);
       tx1 = me.right - tl;
-      tx2 = borderValue;
-      x1 = alignBorderValue(chartArea.left);
+      tx2 = borderValue - axisHalfWidth;
+      x1 = alignBorderValue(chartArea.left) + axisHalfWidth;
       x2 = chartArea.right;
     } else if (position === 'right') {
       borderValue = alignBorderValue(me.left);
       x1 = chartArea.left;
-      x2 = alignBorderValue(chartArea.right);
-      tx1 = borderValue;
+      x2 = alignBorderValue(chartArea.right) - axisHalfWidth;
+      tx1 = borderValue + axisHalfWidth;
       tx2 = me.left + tl;
     } else if (axis === 'x') {
       if (position === 'center') {
@@ -1040,7 +1041,7 @@ export default class Scale extends Element {
 
       y1 = chartArea.top;
       y2 = chartArea.bottom;
-      ty1 = borderValue;
+      ty1 = borderValue + axisHalfWidth;
       ty2 = ty1 + tl;
     } else if (axis === 'y') {
       if (position === 'center') {
@@ -1051,7 +1052,7 @@ export default class Scale extends Element {
         borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
       }
 
-      tx1 = borderValue;
+      tx1 = borderValue - axisHalfWidth;
       tx2 = tx1 - tl;
       x1 = chartArea.left;
       x2 = chartArea.right;
@@ -1412,12 +1413,12 @@ export default class Scale extends Element {
       let x1, x2, y1, y2;
 
       if (me.isHorizontal()) {
-        x1 = _alignPixel(chart, me.left, axisWidth);
-        x2 = _alignPixel(chart, me.right, lastLineWidth);
+        x1 = _alignPixel(chart, me.left, axisWidth) - axisWidth / 2;
+        x2 = _alignPixel(chart, me.right, lastLineWidth) + lastLineWidth / 2;
         y1 = y2 = borderValue;
       } else {
-        y1 = _alignPixel(chart, me.top, axisWidth);
-        y2 = _alignPixel(chart, me.bottom, lastLineWidth);
+        y1 = _alignPixel(chart, me.top, axisWidth) - axisWidth / 2;
+        y2 = _alignPixel(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
         x1 = x2 = borderValue;
       }
       drawLine(
