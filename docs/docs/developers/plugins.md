@@ -27,6 +27,8 @@ var chart3 = new Chart(ctx, {});
 
 Plugins can also be defined directly in the chart `plugins` config (a.k.a. *inline plugins*):
 
+> Note: *inline* plugins are not registered. Some plugins require registering, i.e. can't be used *inline*.
+
 ```javascript
 var chart = new Chart(ctx, {
     plugins: [{
