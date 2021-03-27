@@ -1075,8 +1075,7 @@ class Chart {
 	 */
   _handleEvent(e, replay) {
     const me = this;
-    const lastActive = me._active || [];
-    const options = me.options;
+    const {_active: lastActive = [], options} = me;
     const hoverOptions = options.hover;
 
     // If the event is replayed from `update`, we should evaluate with the final positions.
@@ -1096,14 +1095,16 @@ class Chart {
 
     let active = [];
     let changed = false;
+    let lastEvent = null;
 
     // Find Active Elements for hover and tooltips
-    if (e.type === 'mouseout') {
-      me._lastEvent = null;
-    } else {
+    if (e.type !== 'mouseout') {
       active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
-      me._lastEvent = e.type === 'click' ? me._lastEvent : e;
+      lastEvent = e.type === 'click' ? me._lastEvent : e;
     }
+    // Set _lastEvent to null while we are processing the event handlers.
+    // This prevents recursion if the handler calls chart.update()
+    me._lastEvent = null;
 
     // Invoke onHover hook
     callCallback(options.onHover || hoverOptions.onHover, [e, active, me], me);
@@ -1119,6 +1120,8 @@ class Chart {
       me._active = active;
       me._updateHoverStyles(active, lastActive, replay);
     }
+
+    me._lastEvent = lastEvent;
 
     return changed;
   }
