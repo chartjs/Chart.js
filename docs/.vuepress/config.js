@@ -1,3 +1,4 @@
+const path = require('path');
 const pkg = require('../../package.json');
 const docsVersion = pkg.version.indexOf('-') > -1 ? 'next' : 'latest';
 
@@ -11,6 +12,15 @@ module.exports = {
   ],
   plugins: [
   ],
+  chainWebpack(config) {
+    config.merge({
+      resolve: {
+        alias: {
+          'chart.js': path.resolve(__dirname, '../../dist/chart.esm.js'),
+        }
+      }
+    })
+  },
   themeConfig: {
     repo: 'chartjs/Chart.js',
     logo: '/favicon.ico',

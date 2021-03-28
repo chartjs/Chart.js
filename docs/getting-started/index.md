@@ -24,11 +24,7 @@ Now, we can create a chart. We add a script to our page:
 // <block:setup:1>
 const DATA_COUNT = 7;
 
-const labels = [];
-for (let i = 0; i < DATA_COUNT; ++i) {
-  labels.push(Utils.MONTHS[i]);
-}
-
+const labels = Utils.months({ count: DATA_COUNT });
 const data = {
   labels: labels,
   datasets: [{
