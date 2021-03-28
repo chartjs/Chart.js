@@ -20,34 +20,38 @@ Now that we have a canvas we can use, we need to include Chart.js in our page.
 
 Now, we can create a chart. We add a script to our page:
 
-import { useEffect } from 'react';
+```js chart-editor
+// <block:setup:1>
+const DATA_COUNT = 7;
 
-```jsx live
-function example() {
-  useEffect(() => {
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-      // The type of chart we want to create
-      type: 'line',
-
-      // The data for our dataset
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'My First dataset',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: [0, 10, 5, 2, 20, 30, 45]
-        }]
-      },
-
-      // Configuration options go here
-      options: {}
-    });
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="myChart" className="chartjs"></canvas></div>;
+const labels = [];
+for (let i = 0; i < DATA_COUNT; ++i) {
+  labels.push(Utils.MONTHS[i]);
 }
+
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: 'rgb(255, 99, 132)',
+    borderColor: 'rgb(255, 99, 132)',
+    data: [0, 10, 5, 2, 20, 30, 45],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data,
+  options: {}
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
 ```
 
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
