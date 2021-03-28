@@ -1,18 +1,13 @@
 ---
 title: Logarithmic Axis
 ---
-
-import CommonAll from '../_common.md'
-import CommonCartesian from './_common.md'
-import CommonTicks from './_common_ticks.md'
-import CommonTicksAll from '../_common_ticks.md'
-
 The logarithmic scale is used to chart numerical data. It can be placed on either the x or y-axis. As the name suggests, logarithmic interpolation is used to determine where a value lies on the axis.
 
 ## Configuration Options
 
-<CommonCartesian />
-<CommonAll />
+!!!include(axes/cartesian/_common.md)!!!
+
+!!!include(axes/_common.md)!!!
 
 ## Tick Configuration
 
@@ -24,8 +19,9 @@ Namespace: `options.scales[scaleId]`
 | ---- | ---- | ------- | -----------
 | `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 
-<CommonTicks />
-<CommonTicksAll />
+!!!include(axes/cartesian/_common_ticks.md)!!!
+
+!!!include(axes/_common_ticks.md)!!!
 
 ## Internal data format
 

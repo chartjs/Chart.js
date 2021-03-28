@@ -1,12 +1,6 @@
 ---
 title: Linear Axis
 ---
-
-import CommonAll from '../_common.md'
-import CommonCartesian from './_common.md'
-import CommonTicks from './_common_ticks.md'
-import CommonTicksAll from '../_common_ticks.md'
-
 The linear scale is used to chart numerical data. It can be placed on either the x or y-axis. The scatter chart type automatically configures a line chart to use one of these scales for the x-axis. As the name suggests, linear interpolation is used to determine where a value lies on the axis.
 
 ## Configuration Options
@@ -20,8 +14,9 @@ Namespace: `options.scales[scaleId]`
 | `beginAtZero` | `boolean` | if true, scale will include 0 if it is not already included.
 | `grace` | `number`\|`string` | Percentage (string ending with `%`) or amount (number) for added room in the scale range above and below data. [more...](#grace)
 
-<CommonCartesian />
-<CommonAll />
+!!!include(axes/cartesian/_common.md)!!!
+
+!!!include(axes/_common.md)!!!
 
 ## Tick Configuration
 
@@ -37,8 +32,9 @@ Namespace: `options.scales[scaleId].ticks`
 | `precision` | `number` | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | | User-defined fixed step size for the scale. [more...](#step-size)
 
-<CommonTicks />
-<CommonTicksAll />
+!!!include(axes/cartesian/_common_ticks.md)!!!
+
+!!!include(axes/_common_ticks.md)!!!
 
 ## Step Size
 

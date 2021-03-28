@@ -1,11 +1,6 @@
 ---
 title: Cartesian Axes
 ---
-import CommonAll from '../_common.md'
-import CommonCartesian from './_common.md'
-import CommonTicks from './_common_ticks.md'
-import CommonTicksAll from '../_common_ticks.md'
-
 Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes are used for line, bar, and bubble charts. Four cartesian axes are included in Chart.js by default.
 
 * [linear](./linear)
@@ -198,9 +193,9 @@ module.exports = {
 
 ## Common Configuration
 
-<CommonCartesian />
+!!!include(axes/cartesian/_common.md)!!!
 
-<CommonAll />
+!!!include(axes/_common.md)!!!
 
 ### Axis Position
 
@@ -227,8 +222,9 @@ The `bounds` property controls the scale boundary strategy (bypassed by `min`/`m
 
 ### Tick Configuration
 
-<CommonTicks />
-<CommonTicksAll />
+!!!include(axes/cartesian/_common_ticks.md)!!!
+
+!!!include(axes/_common_ticks.md)!!!
 
 ### Tick Alignment
 

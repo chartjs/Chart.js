@@ -80,6 +80,7 @@
     "karma-safari-private-launcher": "^1.0.0",
     "karma-spec-reporter": "0.0.32",
     "markdownlint-cli2": "0.0.14",
+    "markdown-it-include": "^2.0.0",
     "moment": "^2.29.1",
     "pixelmatch": "^5.2.1",
     "rollup": "^2.41.4",

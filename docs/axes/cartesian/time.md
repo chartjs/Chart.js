@@ -1,11 +1,6 @@
 ---
 title: Time Cartesian Axis
 ---
-
-import CommonAll from '../_common.md'
-import CommonCartesian from './_common.md'
-import CommonTicks from './_common_ticks.md'
-
 The time scale is used to display times and dates. Data are spread according to the amount of time between data points. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 ## Date Adapters
@@ -42,8 +37,9 @@ Namespace: `options.scales[scaleId]`
 | `time.stepSize` | `number` | `1` | The number of units between grid lines.
 | `time.minUnit` | `string` | `'millisecond'` | The minimum display format to be used for a time unit.
 
-<CommonCartesian />
-<CommonAll />
+!!!include(axes/cartesian/_common.md)!!!
+
+!!!include(axes/_common.md)!!!
 
 #### Time Units
 

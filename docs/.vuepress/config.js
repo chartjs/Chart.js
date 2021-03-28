@@ -11,6 +11,7 @@ module.exports = {
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
   plugins: [
+    
   ],
   chainWebpack(config) {
     config.merge({
@@ -20,6 +21,11 @@ module.exports = {
         }
       }
     })
+  },
+  markdown: {
+    extendMarkdown: md => {
+      md.use(require('markdown-it-include'), path.resolve(__dirname, '../'));
+    }
   },
   themeConfig: {
     repo: 'chartjs/Chart.js',

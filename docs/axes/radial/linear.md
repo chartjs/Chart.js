@@ -1,10 +1,6 @@
 ---
 title: Linear Radial Axis
 ---
-
-import CommonAll from '../_common.md'
-import CommonTicksAll from '../_common_ticks.md'
-
 The linear radial scale is used to chart numerical data. As the name suggests, linear interpolation is used to determine where a value lies in relation to the center of the axis.
 
 The following additional configuration options are provided by the radial linear scale.
@@ -23,7 +19,7 @@ Namespace: `options.scales[scaleId]`
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
 | `startAngle` | `number` | `0` | Starting angle of the scale. In degrees, 0 is at top.
 
-<CommonAll />
+!!!include(axes/_common.md)!!!
 
 ## Tick Configuration
 
@@ -42,7 +38,7 @@ Namespace: `options.scales[scaleId].ticks`
 | `stepSize` | `number` | Yes | | User defined fixed step size for the scale. [more...](#step-size)
 | `showLabelBackdrop` | `boolean` | Yes | `true` | If true, draw a background behind the tick labels.
 
-<CommonTicksAll />
+!!!include(axes/_common_ticks.md)!!!
 
 The scriptable context is described in [Options](../../general/options.md#tick) section.
 

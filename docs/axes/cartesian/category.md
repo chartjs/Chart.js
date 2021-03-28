@@ -1,12 +1,6 @@
 ---
 title: Category Axis
 ---
-
-import CommonAll from '../_common.md'
-import CommonCartesian from './_common.md'
-import CommonTicks from './_common_ticks.md'
-import CommonTicksAll from '../_common_ticks.md'
-
 If the global configuration is used, labels are drawn from one of the label arrays included in the chart data. If only `data.labels` is defined, this will be used. If `data.xLabels` is defined and the axis is horizontal, this will be used. Similarly, if `data.yLabels` is defined and the axis is vertical, this property will be used. Using both `xLabels` and `yLabels` together can create a chart that uses strings for both the X and Y axes.
 
 Specifying any of the settings above defines the x-axis as `type: 'category'` if not defined otherwise. For more fine-grained control of category labels, it is also possible to add `labels` as part of the category axis definition. Doing so does not apply the global defaults.
@@ -54,13 +48,14 @@ Namespace: `options.scales[scaleId]`
 | `max` | `string`\|`number` | The maximum item to display. [more...](#min-max-configuration)
 | `labels` | `string[]`\|`string[][]` | An array of labels to display. When an individual label is an array of strings, each item is rendered on a new line.
 
-<CommonCartesian />
-<CommonAll />
+!!!include(axes/cartesian/_common.md)!!!
 
+!!!include(axes/_common.md)!!!
 ## Tick Configuration
 
-<CommonTicks />
-<CommonTicksAll />
+!!!include(axes/cartesian/_common_ticks.md)!!!
+
+!!!include(axes/_common_ticks.md)!!!
 
 ## Min Max Configuration
 
