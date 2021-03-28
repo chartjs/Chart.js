@@ -6,8 +6,6 @@ import CommonCartesian from './_common.md'
 import CommonTicks from './_common_ticks.md'
 import CommonTicksAll from '../_common_ticks.md'
 
-import { useEffect } from 'react';
-
 Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes are used for line, bar, and bubble charts. Four cartesian axes are included in Chart.js by default.
 
 * [linear](./linear)
@@ -26,95 +24,177 @@ A cartesian axis is composed of visual components that can be individually confi
 * [tick mark](#ticks-and-tick-marks)
 * [title](#title)
 
-export const CartesianChartExample = ({id, xScaleConfig}) => {
-  useEffect(() => {
-    const cfg = {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Dataset 1',
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgb(54, 162, 235)',
-          borderWidth: 1,
-          data: [
-            10, 20, 30, 40, 50, 0, 5
-          ]
-        }]
-      },
-      options: {
-        scales: {
-          x: xScaleConfig,
-        }
-      }
-    };
-    const chart = new Chart(document.getElementById(id).getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id={id} className="chartjs"></canvas></div>;
-}
-
 ### Border
 
 The axis border is drawn at the edge of the axis, beside the chart area. In the image below, it is drawn in red.
 
-<CartesianChartExample
-  id="chart-border"
-  xScaleConfig={{
-    grid: {
-      borderColor: 'red',
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    borderColor: 'rgb(54, 162, 235)',
+    borderWidth: 1,
+    data: [10, 20, 30, 40, 50, 0, 5],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data,
+  options: {
+    scales: {
+      x: {
+        grid: {
+          borderColor: 'red'
+        }
+      }
     }
-  }}
-/>
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ### Grid lines
 
 The grid lines for an axis are drawn on the chart area. In the image below, they are red.
 
-<CartesianChartExample
-  id="chart-grid"
-  xScaleConfig={{
-    grid: {
-      color: 'red',
-      borderColor: 'grey',
-      tickColor: 'grey'
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    borderColor: 'rgb(54, 162, 235)',
+    borderWidth: 1,
+    data: [10, 20, 30, 40, 50, 0, 5],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data,
+  options: {
+    scales: {
+      x: {
+        grid: {
+          color: 'red',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        }
+      }
     }
-  }}
-/>
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ### Ticks and Tick Marks
 
 Ticks represent data values on the axis that appear as labels. The tick mark is the extension of the grid line from the axis border to the label.
 In this example, the tick mark is drawn in red while the tick label is drawn in blue.
 
-<CartesianChartExample
-  id="chart-ticks"
-  xScaleConfig={{
-    grid: {
-      //color: 'red',
-      //borderColor: 'grey',
-      tickColor: 'red'
-    },
-    ticks: {
-      color: 'blue',
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    borderColor: 'rgb(54, 162, 235)',
+    borderWidth: 1,
+    data: [10, 20, 30, 40, 50, 0, 5],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data,
+  options: {
+    scales: {
+      x: {
+        grid: {
+          tickColor: 'red'
+        },
+        ticks: {
+          color: 'blue',
+        }
+      }
     }
-  }}
-/>
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ### Title
 
 The title component of the axis is used to label the data. In the example below, it is shown in red.
 
-<CartesianChartExample
-  id="chart-title"
-  xScaleConfig={{
-    title: {
-      color: 'red',
-      display: true,
-      text: 'Month'
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    borderColor: 'rgb(54, 162, 235)',
+    borderWidth: 1,
+    data: [10, 20, 30, 40, 50, 0, 5],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data,
+  options: {
+    scales: {
+      x: {
+        title: {
+          color: 'red',
+          display: true,
+          text: 'Month'
+        }
+      }
     }
-  }}
-/>
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ## Common Configuration
 

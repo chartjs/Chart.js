@@ -65,38 +65,40 @@ let options = {
 If the value is string ending with `%`, its treat as percentage. If number, its treat as value.
 The value is added to the maximum data value and subtracted from the minimum data. This extends the scale range as if the data values were that much greater.
 
-import { useEffect, useRef } from 'react';
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: ['Positive', 'Negative'],
+  datasets: [{
+      data: [100, -50],
+      backgroundColor: 'rgb(255, 99, 132)'
+  }],
+};
+// </block:setup>
 
-```jsx live
-function example() {
-  const canvas = useRef(null);
-  useEffect(() => {
-    const cfg = {
-        type: 'bar',
-        data: {
-            labels: ['Positive', 'Negative'],
-            datasets: [{
-                data: [100, -50],
-                backgroundColor: 'rgb(255, 99, 132)'
-            }],
-        },
-        options: {
-            scales: {
-                y: {
-                    type: 'linear',
-                    grace: '5%'
-                }
-            },
-            plugins: {
-              legend: false
-            }
-        }
-    };
-    const chart = new Chart(canvas.current.getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
-}
+// <block:config:0>
+const config = {
+  type: 'bar',
+  data,
+  options: {
+    scales: {
+      y: {
+        type: 'linear',
+        grace: '5%'
+      }
+    },
+    plugins: {
+      legend: false
+    }
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
 ```
 
 ## Internal data format
