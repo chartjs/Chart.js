@@ -230,54 +230,58 @@ The `bounds` property controls the scale boundary strategy (bypassed by `min`/`m
 
 The alignment of ticks is primarily controlled using two settings on the tick configuration object: `align` and `crossAlign`. The `align` setting configures how labels align with the tick mark along the axis direction (i.e. horizontal for a horizontal axis and vertical for a vertical axis). The `crossAlign` setting configures how labels align with the tick mark in the perpendicular direction (i.e. vertical for a horizontal axis and horizontal for a vertical axis). In the example below, the `crossAlign` setting is used to left align the labels on the Y axis.
 
-```jsx live
-function exampleAlignment() {
-  useEffect(() => {
-    const cfg = {
-      type: 'bar',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          axis: 'y',
-          label: 'My First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
-          ],
-          borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            'rgb(201, 203, 207)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          y: {
-            ticks: {
-              crossAlign: 'far',
-            }
-          }
+```js chart-editor
+// <block:setup:1>
+const labels = Utils.months({ count: 7 });
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First dataset',
+    backgroundColor: [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+    ],
+    borderColor: [
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)'
+    ],
+    borderWidth: 1,
+    data: [65, 59, 80, 81, 56, 55, 40],
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'bar',
+  data,
+  options: {
+    indexAxis: 'y',
+    scales: {
+      y: {
+        ticks: {
+          crossAlign: 'far',
         }
       }
-    };
-    const chart = new Chart(document.getElementById('chartjs-1').getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-1" className="chartjs"></canvas></div>;
-}
+    }
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
 ```
 
 **Note:** the `crossAlign` setting is not used the the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.

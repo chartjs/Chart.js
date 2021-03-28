@@ -11,7 +11,7 @@ module.exports = {
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
   plugins: [
-    
+    'tabs',
   ],
   chainWebpack(config) {
     config.merge({

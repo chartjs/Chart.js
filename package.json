@@ -92,6 +92,8 @@
     "typescript": "^4.1.5",
     "vuepress": "^1.8.2",
     "vuepress-plugin-redirect": "^1.2.5",
+    "vuepress-plugin-tabs": "^0.3.0",
+    "vue-tabs-component": "^1.5.0",
     "vuepress-theme-chartjs": "^0.2.0",
     "yargs": "^16.2.0"
   }

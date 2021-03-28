@@ -26,47 +26,50 @@ var mixedChart = new Chart(ctx, {
 
 At this point, we have a chart rendering how we'd like. It's important to note that the default options for the charts are only considered at the dataset level and are not merged at the chart level in this case.
 
-import { useEffect } from 'react';
+```js chart-editor
+// <block:setup:1>
+const data = {
+  labels: [
+    'January',
+    'February',
+    'March',
+    'April'
+  ],
+  datasets: [{
+    type: 'bar',
+    label: 'Bar Dataset',
+    data: [10, 20, 30, 40],
+    borderColor: 'rgb(255, 99, 132)',
+    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+  }, {
+    type: 'line',
+    label: 'Line Dataset',
+    data: [50, 50, 50, 50],
+    fill: false,
+    borderColor: 'rgb(54, 162, 235)'
+  }]
+};
+// </block:setup>
 
-export const ExampleChart = () => {
-  useEffect(() => {
-    const cfg = {
-      data: {
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April'
-        ],
-        datasets: [{
-          type: 'bar',
-          label: 'Bar Dataset',
-          data: [10, 20, 30, 40],
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)'
-        }, {
-          type: 'line',
-          label: 'Line Dataset',
-          data: [50, 50, 50, 50],
-          fill: false,
-          borderColor: 'rgb(54, 162, 235)'
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+// <block:config:0>
+const config = {
+  type: 'scatter',
+  data: data,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
       }
-    };
-    const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
-}
+    }
+  }
+};
+// </block:config>
 
-<ExampleChart/>
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ## Drawing order
 

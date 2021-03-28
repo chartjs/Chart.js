@@ -6,40 +6,42 @@ Polar area charts are similar to pie charts, but each segment has the same angle
 
 This type of chart is often useful when we want to show a comparison data similar to a pie chart, but also show a scale of values for context.
 
-import { useEffect } from 'react';
+```js chart-editor
+// <block:setup:1>
+const data = {
+  labels: [
+    'Red',
+    'Green',
+    'Yellow',
+    'Grey',
+    'Blue'
+  ],
+  datasets: [{
+    label: 'My First Dataset',
+    data: [11, 16, 7, 3, 14],
+    backgroundColor: [
+      'rgb(255, 99, 132)',
+      'rgb(75, 192, 192)',
+      'rgb(255, 205, 86)',
+      'rgb(201, 203, 207)',
+      'rgb(54, 162, 235)'
+    ]
+  }]
+};
+// </block:setup>
 
-export const ExampleChart = () => {
-  useEffect(() => {
-    const cfg = {
-      type: 'polarArea',
-      data: {
-        labels: [
-          'Red',
-          'Green',
-          'Yellow',
-          'Grey',
-          'Blue'
-        ],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [11, 16, 7, 3, 14],
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(75, 192, 192)',
-            'rgb(255, 205, 86)',
-            'rgb(201, 203, 207)',
-            'rgb(54, 162, 235)'
-          ]
-        }]
-      }
-    };
-    const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
-}
+// <block:config:0>
+const config = {
+  type: 'polarArea',
+  data: data,
+};
+// </block:config>
 
-<ExampleChart/>
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ## Example Usage
 

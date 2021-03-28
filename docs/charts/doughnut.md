@@ -10,87 +10,81 @@ Pie and doughnut charts are effectively the same class in Chart.js, but have one
 
 They are also registered under two aliases in the `Chart` core. Other than their different default value, and different alias, they are exactly the same.
 
-import { useEffect, useRef } from 'react';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+:::: tabs
 
-<Tabs
-    defaultValue='doughnut'
-    values={[
-        {label: 'Doughnut', value: 'doughnut' },
-        {label: 'Pie', value: 'pie' },
-    ]}
->
-<TabItem value="doughnut">
+::: tab Doughnut
+```js chart-editor
+// <block:setup:1>
+const data = {
+  labels: [
+    'Red',
+    'Blue',
+    'Yellow'
+  ],
+  datasets: [{
+    label: 'My First Dataset',
+    data: [300, 50, 100],
+    backgroundColor: [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 205, 86)'
+    ],
+    hoverOffset: 4
+  }]
+};
+// </block:setup>
 
-```jsx live
-function example() {
-  const canvas = useRef(null);
-  useEffect(() => {
-    const cfg = {
-      type: 'doughnut',
-      data: {
-        labels: [
-          'Red',
-          'Blue',
-          'Yellow'
-        ],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [300, 50, 100],
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-          ],
-          hoverOffset: 4
-        }]
-      }
-    };
-    const chart = new Chart(canvas.current.getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
-}
+// <block:config:0>
+const config = {
+  type: 'doughnut',
+  data: data,
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
 ```
+:::
 
-</TabItem>
+:::tab Pie
+```js chart-editor
+// <block:setup:1>
+const data = {
+  labels: [
+    'Red',
+    'Blue',
+    'Yellow'
+  ],
+  datasets: [{
+    label: 'My First Dataset',
+    data: [300, 50, 100],
+    backgroundColor: [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 205, 86)'
+    ],
+    hoverOffset: 4
+  }]
+};
+// </block:setup>
 
-<TabItem value="pie">
+// <block:config:0>
+const config = {
+  type: 'pie',
+  data: data,
+};
+// </block:config>
 
-```jsx live
-function example() {
-  const canvas = useRef(null);
-  useEffect(() => {
-    const cfg = {
-      type: 'pie',
-      data: {
-        labels: [
-          'Red',
-          'Blue',
-          'Yellow'
-        ],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [300, 50, 100],
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-          ],
-          hoverOffset: 4
-        }]
-      }
-    };
-    const chart = new Chart(canvas.current.getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas ref={canvas} className="chartjs"></canvas></div>;
-}
+module.exports = {
+  actions: [],
+  config: config,
+};
 ```
+:::
 
-</TabItem>
-</Tabs>
+::::
 
 ## Dataset Properties
 

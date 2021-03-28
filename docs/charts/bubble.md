@@ -4,35 +4,37 @@ title: Bubble Chart
 
 A bubble chart is used to display three dimensions of data at the same time. The location of the bubble is determined by the first two dimensions and the corresponding horizontal and vertical axes. The third dimension is represented by the size of the individual bubbles.
 
-import { useEffect } from 'react';
+```js chart-editor
+// <block:setup:1>
+const data = {
+  datasets: [{
+    label: 'First Dataset',
+    data: [{
+      x: 20,
+      y: 30,
+      r: 15
+    }, {
+      x: 40,
+      y: 10,
+      r: 10
+    }],
+    backgroundColor: 'rgb(255, 99, 132)'
+  }]
+};
+// </block:setup>
 
-export const ExampleChart = () => {
-  useEffect(() => {
-    const cfg = {
-      type: 'bubble',
-      data: {
-        datasets: [{
-          label: 'First Dataset',
-          data: [{
-            x: 20,
-            y: 30,
-            r: 15
-          }, {
-            x: 40,
-            y: 10,
-            r: 10
-          }],
-          backgroundColor: 'rgb(255, 99, 132)'
-        }]
-      }
-    };
-    const chart = new Chart(document.getElementById('chartjs-0').getContext('2d'), cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-0" className="chartjs"></canvas></div>;
-}
+// <block:config:0>
+const config = {
+  type: 'bubble',
+  data: data,
+};
+// </block:config>
 
-<ExampleChart/>
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
 
 ## Example Usage
 
