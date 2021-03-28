@@ -1,3 +1,3 @@
-import {Chart, registerables} from 'chart.js';
+import {Chart, registerables} from '../../dist/chart.esm';
 
 Chart.register(...registerables);

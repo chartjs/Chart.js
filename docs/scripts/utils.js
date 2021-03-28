@@ -1,4 +1,4 @@
-import {valueOrDefault} from 'chart.js/helpers';
+import {valueOrDefault} from '../../dist/helpers.esm';
 
 // Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
 var _seed = Date.now();
