@@ -23,7 +23,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | `drawOnChartArea` | `boolean` | | | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.
 | `drawTicks` | `boolean` | | | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
 | `lineWidth` | `number` | Yes | Yes | `1` | Stroke width of grid lines.
-| `offset` | `boolean` | | | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default.
+| `offset` | `boolean` | | | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default. Note: AutoSkip does not remove offset grid lines.
 | `tickBorderDash` | `number[]` | | | | Length and spacing of the tick mark line. If not set, defaults to the grid line `borderDash` value.
 | `tickBorderDashOffset` | `number` | Yes | Yes |  | Offset for the line dash of the tick mark. If unset, defaults to the grid line `borderDashOffset` value
 | `tickColor` | [`Color`](../general/colors.md) | Yes | Yes | | Color of the tick line. If unset, defaults to the grid line color.
