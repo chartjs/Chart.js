@@ -4,112 +4,106 @@ title: Animations
 
 Chart.js animates charts out of the box. A number of options are provided to configure how the animation looks and how long it takes.
 
-import { useEffect } from 'react';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+:::: tabs
 
-<Tabs
-    defaultValue='tension'
-    values={[
-        {label: 'Looping tension [property]', value: 'tension' },
-        {label: 'Hide and show [mode]', value: 'hideshow' },
-    ]}
->
-<TabItem value="tension">
+::: tab "Looping tension [property]"
+```js chart-editor
+// <block:setup:1>
+const data = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  datasets: [{
+    label: 'Looping tension',
+    data: [65, 59, 80, 81, 26, 55, 40],
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+  }]
+};
+// </block:setup>
 
-```jsx live
-function example() {
-  useEffect(() => {
-    const ctx = document.getElementById('chartjs-a0').getContext('2d');
-    const cfg = {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Looping tension',
-          data: [65, 59, 80, 81, 26, 55, 40],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-        }]
-      },
-      options: {
+// <block:config:0>
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'linear',
+        from: 1,
+        to: 0,
+        loop: true
+      }
+    },
+    scales: {
+      y: { // defining min and max so hiding the dataset does not change scale range
+        min: 0,
+        max: 100
+      }
+    }
+  }
+};
+// </block:config>
+
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
+:::
+
+::: tab "Hide and show [mode]"
+```js chart-editor
+// <block:setup:1>
+const data ={
+  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  datasets: [{
+    label: 'Try hiding me',
+    data: [65, 59, 80, 81, 26, 55, 40],
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    transitions: {
+      show: {
         animations: {
-          tension: {
-            duration: 1000,
-            easing: 'linear',
-            from: 1,
-            to: 0,
-            loop: true
-          }
-        },
-        scales: {
-          y: { // defining min and max so hiding the dataset does not change scale range
-            min: 0,
-            max: 100
-          }
-        }
-      }
-    };
-    const chart = new Chart(ctx, cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-a0" className="chartjs"></canvas></div>;
-}
-```
-
-</TabItem>
-
-<TabItem value="hideshow">
-
-```jsx live
-function example() {
-  useEffect(() => {
-    const ctx = document.getElementById('chartjs-a1').getContext('2d');
-    const cfg = {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Try hiding me',
-          data: [65, 59, 80, 81, 26, 55, 40],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-        }]
-      },
-      options: {
-        transitions: {
-          show: {
-            animations: {
-              x: {
-                  from: 0
-              },
-              y: {
-                  from: 0
-              }
-            }
+          x: {
+              from: 0
           },
-          hide: {
-            animations: {
-              x: {
-                  to: 0
-              },
-              y: {
-                  to: 0
-              }
-            }
+          y: {
+              from: 0
+          }
+        }
+      },
+      hide: {
+        animations: {
+          x: {
+              to: 0
+          },
+          y: {
+              to: 0
           }
         }
       }
-    };
-    const chart = new Chart(ctx, cfg);
-    return () => chart.destroy();
-  });
-  return <div className="chartjs-wrapper"><canvas id="chartjs-a1" className="chartjs"></canvas></div>;
-}
-```
+    }
+  }
+};
+// </block:config>
 
-</TabItem>
-</Tabs>
+module.exports = {
+  actions: [],
+  config: config,
+};
+```
+:::
+
+::::
 
 ## Animation configuration
 
