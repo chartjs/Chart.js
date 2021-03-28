@@ -22,9 +22,14 @@ Now, we can create a chart. We add a script to our page:
 
 ```js chart-editor
 // <block:setup:1>
-const DATA_COUNT = 7;
-
-const labels = Utils.months({ count: DATA_COUNT });
+const labels = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+];
 const data = {
   labels: labels,
   datasets: [{
