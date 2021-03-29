@@ -331,11 +331,6 @@ const config = {
   data,
   options: {
     indexAxis: 'y',
-    scales: {
-      x: {
-        beginAtZero: true
-      }
-    }
   }
 };
 // </block:config>
@@ -344,18 +339,6 @@ module.exports = {
   actions: [],
   config: config,
 };
-```
-
-## Example
-
-```javascript
-var myBarChart = new Chart(ctx, {
-    type: 'bar',
-    data: data,
-    options: {
-      indexAxis: 'y'
-    }
-});
 ```
 
 ### Horizontal Bar Chart config Options
