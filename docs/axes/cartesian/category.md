@@ -50,6 +50,7 @@ Namespace: `options.scales[scaleId]`
 !!!include(axes/cartesian/_common.md)!!!
 
 !!!include(axes/_common.md)!!!
+
 ## Tick Configuration
 
 !!!include(axes/cartesian/_common_ticks.md)!!!

@@ -123,7 +123,9 @@ This setting is used to avoid drawing the bar stroke at the base of the fill, or
 In general, this does not need to be changed except when creating chart types
 that derive from a bar chart.
 
-**Note:** for negative bars in a vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in a horizontal chart.
+:::tip
+For negative bars in a vertical chart, `top` and `bottom` are flipped. Same goes for `left` and `right` in a horizontal chart.
+:::
 
 Options are:
 

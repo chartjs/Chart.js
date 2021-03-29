@@ -11,6 +11,7 @@ They are also registered under two aliases in the `Chart` core. Other than their
 :::: tabs
 
 ::: tab Doughnut
+
 ```js chart-editor
 // <block:setup:1>
 const data = {
@@ -44,9 +45,11 @@ module.exports = {
   config: config,
 };
 ```
+
 :::
 
 :::tab Pie
+
 ```js chart-editor
 // <block:setup:1>
 const data = {
@@ -80,6 +83,7 @@ module.exports = {
   config: config,
 };
 ```
+
 :::
 
 ::::

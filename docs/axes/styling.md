@@ -1,7 +1,5 @@
 # Styling
 
-import CommonTicks from './_common_ticks.md'
-
 There are a number of options to allow styling an axis. There are settings to control [grid lines](#grid-line-configuration) and [ticks](#tick-configuration).
 
 ## Grid Line Configuration
@@ -33,7 +31,7 @@ The scriptable context is described in [Options](../general/options.md#tick) sec
 
 ## Tick Configuration
 
-<CommonTicks />
+!!!include(axes/_common_ticks.md)!!!
 
 The scriptable context is described in [Options](../general/options.md#tick) section.
 

@@ -5,6 +5,7 @@ Chart.js animates charts out of the box. A number of options are provided to con
 :::: tabs
 
 ::: tab "Looping tension [property]"
+
 ```js chart-editor
 // <block:setup:1>
 const data = {
@@ -47,9 +48,11 @@ module.exports = {
   config: config,
 };
 ```
+
 :::
 
 ::: tab "Hide and show [mode]"
+
 ```js chart-editor
 // <block:setup:1>
 const data ={
@@ -99,6 +102,7 @@ module.exports = {
   config: config,
 };
 ```
+
 :::
 
 ::::
@@ -160,7 +164,7 @@ Namespace: `options.animations[animation]`
 | `colors` | `properties` | `['color', 'borderColor', 'backgroundColor']`
 | `colors` | `type` | `'color'`
 
-:::note
+:::tip
 These default animations are overridden by most of the dataset controllers.
 :::
 
