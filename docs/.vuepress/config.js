@@ -12,6 +12,12 @@ module.exports = {
   ],
   plugins: [
     'tabs',
+    [
+      '@vuepress/google-analytics',
+      {
+        'ga': 'UA-28909194-3'
+      }
+    ],
   ],
   chainWebpack(config) {
     config.merge({

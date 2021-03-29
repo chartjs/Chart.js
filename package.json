@@ -57,6 +57,7 @@
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
+    "@vuepress/plugin-google-analytics": "1.8.2",
     "chartjs-adapter-moment": "^0.1.2",
     "chartjs-test-utils": "^0.2.2",
     "concurrently": "^6.0.0",
