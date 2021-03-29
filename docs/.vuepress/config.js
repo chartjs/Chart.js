@@ -156,13 +156,6 @@ module.exports = {
             'developers/publishing'
           ]
         },
-        {
-          title: 'Additional Notes',
-          children: [
-            ['https://github.com/chartjs/awesome', 'Extensions'],
-            'notes/license'
-          ]
-        }
       ],
     }
   }
