@@ -49,6 +49,16 @@ module.exports = {
       '/': [
         '',
         {
+          title: 'Getting Started',
+          children: [
+            'getting-started/',
+            'getting-started/installation',
+            'getting-started/integration',
+            'getting-started/usage',
+            'getting-started/v3-migration'
+          ]
+        },
+        {
           title: 'General',
           children: [
             'general/data-structures',
