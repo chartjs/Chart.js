@@ -1,6 +1,4 @@
----
-title: Canvas background
----
+# Canvas background
 
 In some use cases you would want a background image or color over the whole canvas. There is no build in support for this, the way you can achieve this is by writing a custom plugin.
 

@@ -1,6 +1,4 @@
----
-title: API
----
+# API
 
 For each chart, there are a set of global prototype methods on the shared chart type which you may find useful. These are available on all charts created with Chart.js, but for the examples, let's use a line chart we've made.
 

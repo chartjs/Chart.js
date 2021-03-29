@@ -1,6 +1,5 @@
----
-title: Time Cartesian Axis
----
+# Time Cartesian Axis
+
 The time scale is used to display times and dates. Data are spread according to the amount of time between data points. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 ## Date Adapters

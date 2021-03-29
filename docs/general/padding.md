@@ -1,6 +1,4 @@
----
-title: Padding
----
+# Padding
 
 Padding values in Chart options can be supplied in couple of different formats.
 

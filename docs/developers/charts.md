@@ -1,6 +1,4 @@
----
-title: New Charts
----
+# New Charts
 
 Chart.js 2.0 introduced the concept of controllers for each dataset. Like scales, new controllers can be written as needed.
 

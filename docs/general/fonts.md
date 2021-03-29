@@ -1,6 +1,4 @@
----
-title: Fonts
----
+# Fonts
 
 There are special global settings that can change all of the fonts on the chart. These options are in `Chart.defaults.font`. The global font settings only apply when more specific options are not included in the config.
 

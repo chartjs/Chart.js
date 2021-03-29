@@ -1,6 +1,5 @@
----
-title: Logarithmic Axis
----
+# Logarithmic Axis
+
 The logarithmic scale is used to chart numerical data. It can be placed on either the x or y-axis. As the name suggests, logarithmic interpolation is used to determine where a value lies on the axis.
 
 ## Configuration Options

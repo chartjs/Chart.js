@@ -1,6 +1,4 @@
----
-title: Labeling Axes
----
+# Labeling Axes
 
 When creating a chart, you want to tell the viewer what data they are viewing. To do this, you need to label the axis.
 

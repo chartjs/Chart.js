@@ -1,6 +1,4 @@
----
-title: Accessibility
----
+# Accessibility
 
 Chart.js charts are rendered on user provided `canvas` elements. Thus, it is up to the user to create the `canvas` element in a way that is accessible. The `canvas` element has support in all browsers and will render on screen but the `canvas` content will not be accessible to screen readers.
 

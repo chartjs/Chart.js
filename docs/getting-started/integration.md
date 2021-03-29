@@ -1,6 +1,4 @@
----
-title: Integration
----
+# Integration
 
 Chart.js can be integrated with plain JavaScript or with different module loaders. The examples below show how to load Chart.js in different systems.
 

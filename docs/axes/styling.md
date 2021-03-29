@@ -1,6 +1,4 @@
----
-title: Styling
----
+# Styling
 
 import CommonTicks from './_common_ticks.md'
 

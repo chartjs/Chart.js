@@ -1,6 +1,4 @@
----
-title: Animations
----
+# Animations
 
 Chart.js animates charts out of the box. A number of options are provided to configure how the animation looks and how long it takes.
 

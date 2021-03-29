@@ -1,6 +1,4 @@
----
-title: Data structures
----
+# Data structures
 
 The `data` property of a dataset can be passed in various formats. By default, that `data` is parsed using the associated chart type and scales.
 

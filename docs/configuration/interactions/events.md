@@ -1,6 +1,4 @@
----
-title: Events
----
+# Events
 
 The following properties define how the chart interacts with events.
 Namespace: `options`

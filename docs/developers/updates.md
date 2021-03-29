@@ -1,6 +1,4 @@
----
-title: Updating Charts
----
+# Updating Charts
 
 It's pretty common to want to update charts after they've been created. When the chart data or options are changed, Chart.js will animate to the new data values and options.
 

@@ -1,6 +1,4 @@
----
-title: Area Chart
----
+# Area Chart
 
 Both [line](./line.mdx) and [radar](./radar.mdx) charts support a `fill` option on the dataset object which can be used to create space between two datasets or a dataset and a boundary, i.e. the scale `origin`, `start,` or `end` (see [filling modes](#filling-modes)).
 

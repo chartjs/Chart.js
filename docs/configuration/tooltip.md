@@ -1,6 +1,4 @@
----
-title: Tooltip
----
+# Tooltip
 
 ## Tooltip Configuration
 

@@ -1,6 +1,4 @@
----
-title: Contributing
----
+# Contributing
 
 New contributions to the library are welcome, but we ask that you please follow these guidelines:
 

@@ -1,6 +1,4 @@
----
-title: Title
----
+# Title
 
 The chart title defines text to draw at the top of the chart.
 

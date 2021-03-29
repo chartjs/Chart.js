@@ -1,6 +1,4 @@
----
-title: Legend
----
+# Legend
 
 The chart legend displays data about the datasets that are appearing on the chart.
 

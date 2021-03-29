@@ -1,6 +1,4 @@
----
-title: Layout
----
+# Layout
 
 Namespace: `options.layout`, the global options for the chart layout is defined in `Chart.defaults.layout`.
 

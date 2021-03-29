@@ -1,6 +1,5 @@
----
-title: Linear Axis
----
+# Linear Axis
+
 The linear scale is used to chart numerical data. It can be placed on either the x or y-axis. The scatter chart type automatically configures a line chart to use one of these scales for the x-axis. As the name suggests, linear interpolation is used to determine where a value lies on the axis.
 
 ## Configuration Options

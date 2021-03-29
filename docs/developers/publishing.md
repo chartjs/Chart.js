@@ -1,6 +1,4 @@
----
-title: Publishing an extension
----
+# Publishing an extension
 
 If you are planning on publishing an extension for Chart.js, here are a some pointers.
 

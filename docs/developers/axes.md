@@ -1,6 +1,4 @@
----
-title: New Axes
----
+# New Axes
 
 Axes in Chart.js can be individually extended. Axes should always derive from `Chart.Scale` but this is not a mandatory requirement.
 

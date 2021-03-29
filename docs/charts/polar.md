@@ -1,6 +1,4 @@
----
-title: Polar Area Chart
----
+# Polar Area Chart
 
 Polar area charts are similar to pie charts, but each segment has the same angle - the radius of the segment differs depending on the value.
 

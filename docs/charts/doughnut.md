@@ -1,6 +1,4 @@
----
-title: Doughnut and Pie Charts
----
+# Doughnut and Pie Charts
 
 Pie and doughnut charts are probably the most commonly used charts. They are divided into segments, the arc of each segment shows the proportional value of each piece of data.
 

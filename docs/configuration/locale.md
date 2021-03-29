@@ -1,6 +1,4 @@
----
-title: Locale
----
+# Locale
 
 For applications where the numbers of ticks on scales must be formatted accordingly with a language sensitive number formatting, you can enable this kind of formatting by setting the `locale` option.
 

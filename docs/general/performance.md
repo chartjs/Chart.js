@@ -1,6 +1,4 @@
----
-title: Performance
----
+# Performance
 
 Chart.js charts are rendered on `canvas` elements, which makes rendering quite fast. For large datasets or performance sensitive applications, you may wish to consider the tips below.
 

@@ -1,6 +1,4 @@
----
-title: Time Series Axis
----
+# Time Series Axis
 
 The time series scale extends from the time scale and supports all the same options. However, for the time series scale, each data point is spread equidistant.
 

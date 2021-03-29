@@ -1,6 +1,4 @@
----
-title: Mixed Chart Types
----
+# Mixed Chart Types
 
 With Chart.js, it is possible to create mixed charts that are a combination of two or more different chart types. A common example is a bar chart that also includes a line dataset.
 

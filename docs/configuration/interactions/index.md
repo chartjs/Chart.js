@@ -1,6 +1,4 @@
----
-title: Interactions
----
+# Interactions
 
 Namespace: `options.interaction`, the global interaction configuration is at `Chart.defaults.interaction`. To configure which events trigger chart interactions, see [events](events.md#events).
 

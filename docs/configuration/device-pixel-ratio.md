@@ -1,6 +1,4 @@
----
-title: Device Pixel Ratio
----
+# Device Pixel Ratio
 
 By default the chart's canvas will use a 1:1 pixel ratio, unless the physical display has a higher pixel ratio (e.g. Retina displays).
 

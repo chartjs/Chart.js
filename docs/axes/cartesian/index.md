@@ -1,6 +1,5 @@
----
-title: Cartesian Axes
----
+# Cartesian Axes
+
 Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes are used for line, bar, and bubble charts. Four cartesian axes are included in Chart.js by default.
 
 * [linear](./linear)

@@ -1,7 +1,4 @@
----
-title: Chart.js
-slug: /
----
+# Chart.js
 
 [![slack](https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600)](https://chartjs-slack.herokuapp.com/)
 

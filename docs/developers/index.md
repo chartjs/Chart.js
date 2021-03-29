@@ -1,6 +1,4 @@
----
-title: Developers
----
+# Developers
 
 Developer features allow extending and enhancing Chart.js in many different ways.
 

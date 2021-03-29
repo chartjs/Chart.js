@@ -1,6 +1,4 @@
----
-title: Options
----
+# Options
 
 ## Option resolution
 

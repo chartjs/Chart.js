@@ -1,6 +1,4 @@
----
-title: Configuration
----
+# Configuration
 
 The configuration is used to change how the chart behaves. There are properties to control styling, fonts, the legend, etc.
 

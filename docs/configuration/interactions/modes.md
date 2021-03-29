@@ -1,6 +1,4 @@
----
-title: Interaction Modes
----
+# Interaction Modes
 
 When configuring the interaction with the graph via `interaction`, `hover` or `tooltips`, a number of different modes are available.
 

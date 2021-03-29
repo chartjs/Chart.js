@@ -1,6 +1,4 @@
----
-title: Getting Started
----
+# Getting Started
 
 Let's get started using Chart.js!
 
