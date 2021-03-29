@@ -1,11 +1,12 @@
 const path = require('path');
 const docsVersion = "VERSION";
+const base = process.env.NODE_ENV === "development" ? '' : `/docs/${docsVersion}/`;
 
 module.exports = {
   title: 'Chart.js',
   description: 'Open source HTML5 Charts for your website',
   theme: 'chartjs',
-  base: `/docs/${docsVersion}/`,
+  base,
   dest: path.resolve(__dirname, '../../dist/docs'),
   head: [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
