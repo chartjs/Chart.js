@@ -64,6 +64,7 @@ module.exports = {
           title: 'Configuration',
           path: '/configuration/',
           children: [
+            'configuration/',
             'configuration/responsive',
             'configuration/device-pixel-ratio',
             'configuration/locale',
@@ -96,10 +97,12 @@ module.exports = {
           title: 'Axes',
           path: '/axes/',
           children: [
+            'axes/',
             {
               title: 'Cartesian',
               path: '/axes/cartesian/',
               children: [
+                'axes/cartesian/',
                 'axes/cartesian/category',
                 'axes/cartesian/linear',
                 'axes/cartesian/logarithmic',
@@ -122,6 +125,7 @@ module.exports = {
           title: 'Developers',
           path: '/developers/',
           children: [
+            'developers/',
             'developers/api',
             [`https://chartjs.org/docs/${docsVersion}/typedoc/`, 'TypeDoc'],
             'developers/updates',
