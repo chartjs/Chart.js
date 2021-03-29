@@ -109,17 +109,6 @@ export default class CategoryScale extends Scale {
     return value === null ? NaN : me.getPixelForDecimal((value - me._startValue) / me._valueRange);
   }
 
-  // Must override base implementation because it calls getPixelForValue
-  // and category scale can have duplicate values
-  getPixelForTick(index) {
-    const me = this;
-    const ticks = me.ticks;
-    if (index < 0 || index > ticks.length - 1) {
-      return null;
-    }
-    return me.getPixelForValue(ticks[index].value);
-  }
-
   getValueForPixel(pixel) {
     const me = this;
     return Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
