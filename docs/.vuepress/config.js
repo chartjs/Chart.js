@@ -42,8 +42,17 @@ module.exports = {
     },
     nav: [
       {text: 'Home', link: '/'},
-      // {text: 'Guide', link: '/guide/'},
-      // {text: 'Samples', link: '/samples/'},
+      // TODO: Make local when samples moved to vuepress
+      {text: 'Samples', link: `https://www.chartjs.org/samples/${docsVersion}/`},
+      {
+        text: 'Ecosystem',
+        ariaLabel: 'Community Menu',
+        items: [
+          { text: 'Awesome', link: 'https://github.com/chartjs/awesome' },
+          { text: 'Slack', link: 'https://chartjs-slack.herokuapp.com/' },
+          { text: 'Stack Overflow', link: 'https://stackoverflow.com/questions/tagged/chart.js' }
+        ]
+      }
     ],
     sidebar: {
       '/': [
