@@ -1,12 +1,12 @@
 const path = require('path');
-const pkg = require('../../package.json');
-const docsVersion = pkg.version.indexOf('-') > -1 ? 'next' : 'latest';
+const docsVersion = "VERSION";
 
 module.exports = {
   title: 'Chart.js',
   description: 'Open source HTML5 Charts for your website',
   theme: 'chartjs',
-  base: '/',
+  base: `/docs/${docsVersion}/`,
+  dest: path.resolve(__dirname, '../../dist/docs'),
   head: [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
