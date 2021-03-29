@@ -62,7 +62,6 @@ module.exports = {
         },
         {
           title: 'Configuration',
-          path: '/configuration/',
           children: [
             'configuration/',
             'configuration/responsive',
@@ -95,12 +94,10 @@ module.exports = {
         },
         {
           title: 'Axes',
-          path: '/axes/',
           children: [
             'axes/',
             {
               title: 'Cartesian',
-              path: '/axes/cartesian/',
               children: [
                 'axes/cartesian/',
                 'axes/cartesian/category',
@@ -112,7 +109,6 @@ module.exports = {
             },
             {
               title: 'Radial',
-              path: '/axes/radial/',
               children: [
                 'axes/radial/linear'
               ],
@@ -123,7 +119,6 @@ module.exports = {
         },
         {
           title: 'Developers',
-          path: '/developers/',
           children: [
             'developers/',
             'developers/api',
