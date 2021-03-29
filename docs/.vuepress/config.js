@@ -49,16 +49,6 @@ module.exports = {
       '/': [
         '',
         {
-          title: 'Getting Started',
-          children: [
-            'getting-started/',
-            'getting-started/installation',
-            'getting-started/integration',
-            'getting-started/usage',
-            'getting-started/v3-migration'
-          ]
-        },
-        {
           title: 'General',
           children: [
             'general/data-structures',
@@ -72,19 +62,12 @@ module.exports = {
         },
         {
           title: 'Configuration',
+          path: '/configuration/',
           children: [
-            'configuration/',
             'configuration/responsive',
             'configuration/device-pixel-ratio',
             'configuration/locale',
-            {
-              title: 'Interactions',
-              children: [
-                'configuration/interactions/',
-                'configuration/interactions/events',
-                'configuration/interactions/modes'
-              ],
-            },
+            'configuration/interactions',
             'configuration/canvas-background',
             'configuration/animations',
             'configuration/layout',
@@ -111,12 +94,12 @@ module.exports = {
         },
         {
           title: 'Axes',
+          path: '/axes/',
           children: [
-            'axes/',
             {
               title: 'Cartesian',
+              path: '/axes/cartesian/',
               children: [
-                'axes/cartesian/',
                 'axes/cartesian/category',
                 'axes/cartesian/linear',
                 'axes/cartesian/logarithmic',
@@ -126,8 +109,8 @@ module.exports = {
             },
             {
               title: 'Radial',
+              path: '/axes/radial/',
               children: [
-                'axes/radial/',
                 'axes/radial/linear'
               ],
             },
@@ -137,8 +120,8 @@ module.exports = {
         },
         {
           title: 'Developers',
+          path: '/developers/',
           children: [
-            'developers/',
             'developers/api',
             [`https://chartjs.org/docs/${docsVersion}/typedoc/`, 'TypeDoc'],
             'developers/updates',

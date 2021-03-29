@@ -235,7 +235,7 @@ It is common to want to apply a configuration setting to all created bar charts.
 
 The following shows the relationship between the bar percentage option and the category percentage option.
 
-```text
+```md
 // categoryPercentage: 1.0
 // barPercentage: 1.0
 Bar:        | 1.0 | 1.0 |
