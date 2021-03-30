@@ -27,6 +27,8 @@ const getBoxSize = (labelOpts, fontSize) => {
   };
 };
 
+const itemsEqual = (a, b) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
+
 export class Legend extends Element {
 
   /**
@@ -154,44 +156,51 @@ export class Legend extends Element {
 	 */
   _fitRows(titleHeight, fontSize, boxWidth, itemHeight) {
     const me = this;
-    const {ctx, maxWidth} = me;
-    const padding = me.options.labels.padding;
+    const {ctx, maxWidth, options: {labels: {padding}}} = me;
     const hitboxes = me.legendHitBoxes = [];
     // Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
     const lineWidths = me.lineWidths = [0];
+    const lineHeight = itemHeight + padding;
     let totalHeight = titleHeight;
 
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
+    let row = -1;
+    let top = -lineHeight;
     me.legendItems.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
       if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
-        totalHeight += itemHeight + padding;
+        totalHeight += lineHeight;
         lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
+        top += lineHeight;
+        row++;
       }
 
-      // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left: 0,	top: 0,	width: itemWidth, height: itemHeight};
+      hitboxes[i] = {left: 0, top, row, width: itemWidth, height: itemHeight};
 
       lineWidths[lineWidths.length - 1] += itemWidth + padding;
-
     });
+
     return totalHeight;
   }
 
   _fitCols(titleHeight, fontSize, boxWidth, itemHeight) {
     const me = this;
-    const {ctx, maxHeight} = me;
-    const padding = me.options.labels.padding;
+    const {ctx, maxHeight, options: {labels: {padding}}} = me;
     const hitboxes = me.legendHitBoxes = [];
     const columnSizes = me.columnSizes = [];
+    const heightLimit = maxHeight - titleHeight;
+
     let totalWidth = padding;
     let currentColWidth = 0;
     let currentColHeight = 0;
 
-    const heightLimit = maxHeight - titleHeight;
+    let left = 0;
+    let top = 0;
+    let col = 0;
+
     me.legendItems.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
@@ -199,6 +208,9 @@ export class Legend extends Element {
       if (i > 0 && currentColHeight + fontSize + 2 * padding > heightLimit) {
         totalWidth += currentColWidth + padding;
         columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
+        left += currentColWidth + padding;
+        col++;
+        top = 0;
         currentColWidth = currentColHeight = 0;
       }
 
@@ -207,13 +219,48 @@ export class Legend extends Element {
       currentColHeight += fontSize + padding;
 
       // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left: 0,	top: 0,	width: itemWidth, height: itemHeight};
+      hitboxes[i] = {left, top, col, width: itemWidth, height: itemHeight};
+      top += itemHeight + padding;
     });
 
     totalWidth += currentColWidth;
     columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
 
     return totalWidth;
+  }
+
+  adjustHitBoxes() {
+    const me = this;
+    if (!me.options.display) {
+      return;
+    }
+    const titleHeight = me._computeTitleHeight();
+    const {legendHitBoxes: hitboxes, options: {align, labels: {padding}}} = me;
+    if (this.isHorizontal()) {
+      let row = 0;
+      let left = _alignStartEnd(align, me.left + padding, me.right - me.lineWidths[row]);
+      for (const hitbox of hitboxes) {
+        if (row !== hitbox.row) {
+          row = hitbox.row;
+          left = _alignStartEnd(align, me.left + padding, me.right - me.lineWidths[row]);
+        }
+        hitbox.top += me.top + titleHeight + padding;
+        hitbox.left = left;
+        left += hitbox.width + padding;
+      }
+    } else {
+      let col = 0;
+      let top = _alignStartEnd(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
+      for (const hitbox of hitboxes) {
+        if (hitbox.col !== col) {
+          col = hitbox.col;
+          top = _alignStartEnd(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
+        }
+        hitbox.top = top;
+        hitbox.left += me.left + padding;
+        top += hitbox.height + padding;
+      }
+    }
   }
 
   isHorizontal() {
@@ -237,7 +284,7 @@ export class Legend extends Element {
 	 */
   _draw() {
     const me = this;
-    const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes} = me;
+    const {options: opts, columnSizes, lineWidths, ctx} = me;
     const {align, labels: labelOpts} = opts;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, me.left, me.width);
@@ -358,9 +405,6 @@ export class Legend extends Element {
 
       drawLegendBox(realX, y, legendItem);
 
-      legendHitBoxes[i].left = rtlHelper.leftForLtr(realX, legendHitBoxes[i].width);
-      legendHitBoxes[i].top = y;
-
       x = _textX(textAlign, x + boxWidth + halfFontSize, me.right);
 
       // Fill the actual label
@@ -476,13 +520,14 @@ export class Legend extends Element {
 
     if (e.type === 'mousemove') {
       const previous = me._hoveredItem;
-      if (previous && previous !== hoveredItem) {
+      const sameItem = itemsEqual(previous, hoveredItem);
+      if (previous && !sameItem) {
         call(opts.onLeave, [e, previous, me], me);
       }
 
       me._hoveredItem = hoveredItem;
 
-      if (hoveredItem) {
+      if (hoveredItem && !sameItem) {
         call(opts.onHover, [e, hoveredItem, me], me);
       }
     } else if (hoveredItem) {
@@ -533,7 +578,9 @@ export default {
   // The labels need to be built after datasets are updated to ensure that colors
   // and other styling are correct. See https://github.com/chartjs/Chart.js/issues/6968
   afterUpdate(chart) {
-    chart.legend.buildLabels();
+    const legend = chart.legend;
+    legend.buildLabels();
+    legend.adjustHitBoxes();
   },
 
 
