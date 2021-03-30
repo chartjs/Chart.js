@@ -91,7 +91,18 @@ module.exports = {
             'bar/floating',
             'bar/border-radius',
           ]
-        }
+        },
+        {
+          title: 'Line Charts',
+          children: [
+            'line/line',
+            'line/multi-axis',
+            'line/stepped',
+            'line/interpolation',
+            'line/styling',
+            // 'line/point-styling',
+          ]
+        },
       ],
       '/': [
         '',
