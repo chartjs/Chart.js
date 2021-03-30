@@ -64,7 +64,7 @@ module.exports = {
       {text: 'Home', link: '/'},
       {text: 'API', link: '/api/'},
       // TODO: Make local when samples moved to vuepress
-      {text: 'Samples', link: `https://www.chartjs.org/samples/${docsVersion}/`},
+      {text: 'Samples', link: `/samples/`},
       {
         text: 'Ecosystem',
         ariaLabel: 'Community Menu',
@@ -79,6 +79,20 @@ module.exports = {
       '/api/': {
         title: 'API'
       },
+      '/samples/': [
+        '',
+        {
+          title: 'Bar Charts',
+          children: [
+            'bar/vertical',
+            'bar/horizontal',
+            'bar/stacked',
+            'bar/stacked-groups',
+            'bar/floating',
+            'bar/border-radius',
+          ]
+        }
+      ],
       '/': [
         '',
         {
