@@ -42,21 +42,21 @@ function sample(arr, numItems) {
  * @param {boolean} offsetGridLines
  */
 function getPixelForGridLine(scale, index, offsetGridLines) {
-  const length = offsetGridLines ? scale._allTicks.length : scale.ticks.length;
+  const length = scale.ticks.length;
   const validIndex = Math.min(index, length - 1);
   const start = scale._startPixel;
   const end = scale._endPixel;
   const epsilon = 1e-6; // 1e-6 is margin in pixels for accumulated error.
-  let lineValue = scale.getPixelForTick(validIndex, offsetGridLines);
+  let lineValue = scale.getPixelForTick(validIndex);
   let offset;
 
   if (offsetGridLines) {
     if (length === 1) {
       offset = Math.max(lineValue - start, end - lineValue);
     } else if (index === 0) {
-      offset = (scale.getPixelForTick(1, offsetGridLines) - lineValue) / 2;
+      offset = (scale.getPixelForTick(1) - lineValue) / 2;
     } else {
-      offset = (lineValue - scale.getPixelForTick(validIndex - 1, offsetGridLines)) / 2;
+      offset = (lineValue - scale.getPixelForTick(validIndex - 1)) / 2;
     }
     lineValue += validIndex < index ? offset : -offset;
 
@@ -205,7 +205,7 @@ export default class Scale extends Element {
     this.min = undefined;
     this.max = undefined;
     /** @type {Tick[]} */
-    this.ticks = this._allTicks = [];
+    this.ticks = [];
     /** @type {object[]|null} */
     this._gridLineItems = null;
     /** @type {object[]|null} */
@@ -428,7 +428,6 @@ export default class Scale extends Element {
     me.afterCalculateLabelRotation();
 
     // Auto-skip
-    me._allTicks = me.ticks;
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
       me.ticks = autoSkip(me, me.ticks);
       me._labelSizes = null;
@@ -667,7 +666,7 @@ export default class Scale extends Element {
 
   _calculatePadding(first, last, sin, cos) {
     const me = this;
-    const {position, ticks: {align, padding}} = me.options;
+    const {ticks: {align, padding}, position} = me.options;
     const isRotated = me.labelRotation !== 0;
     const labelsBelowTicks = position !== 'top' && me.axis === 'x';
 
@@ -697,8 +696,8 @@ export default class Scale extends Element {
       }
 
       // Adjust padding taking into account changes in offsets
-      me.paddingLeft = Math.max((paddingLeft - offsetLeft + padding) * me.width / (me.width - offsetLeft), padding);
-      me.paddingRight = Math.max((paddingRight - offsetRight + padding) * me.width / (me.width - offsetRight), padding);
+      me.paddingLeft = Math.max((paddingLeft - offsetLeft + padding) * me.width / (me.width - offsetLeft), 0);
+      me.paddingRight = Math.max((paddingRight - offsetRight + padding) * me.width / (me.width - offsetRight), 0);
     } else {
       let paddingTop = last.height / 2;
       let paddingBottom = first.height / 2;
@@ -872,11 +871,10 @@ export default class Scale extends Element {
 	 * Returns the location of the tick at the given index
 	 * The coordinate (0, 0) is at the upper-left corner of the canvas
 	 * @param {number} index
-   * @param {boolean} [all] - use ticks before autoSkip
 	 * @return {number}
 	 */
-  getPixelForTick(index, all = false) {
-    const ticks = all ? this._allTicks : this.ticks;
+  getPixelForTick(index) {
+    const ticks = this.ticks;
     if (index < 0 || index > ticks.length - 1) {
       return null;
     }
@@ -994,7 +992,7 @@ export default class Scale extends Element {
     const {grid, position} = options;
     const offset = grid.offset;
     const isHorizontal = me.isHorizontal();
-    const ticks = offset ? me._allTicks : me.ticks;
+    const ticks = me.ticks;
     const ticksLength = ticks.length + (offset ? 1 : 0);
     const tl = getTickMarkLength(grid);
     const items = [];

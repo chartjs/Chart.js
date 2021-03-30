@@ -473,7 +473,7 @@ describe('Category scale tests', function() {
     var xScale = chart.scales.x;
     expect(xScale.getPixelForValue(0)).toBeCloseToPixel(89);
     expect(xScale.getPixelForValue(3)).toBeCloseToPixel(451);
-    expect(xScale.getPixelForValue(4)).toBeCloseToPixel(570);
+    expect(xScale.getPixelForValue(4)).toBeCloseToPixel(572);
   });
 
   it('Should get the correct pixel for an object value in a horizontal bar chart', function() {

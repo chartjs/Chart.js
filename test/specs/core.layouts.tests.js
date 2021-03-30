@@ -32,13 +32,13 @@ describe('Chart.layouts', function() {
 
     expect(chart.chartArea.bottom).toBeCloseToPixel(120);
     expect(chart.chartArea.left).toBeCloseToPixel(31);
-    expect(chart.chartArea.right).toBeCloseToPixel(247);
+    expect(chart.chartArea.right).toBeCloseToPixel(250);
     expect(chart.chartArea.top).toBeCloseToPixel(32);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(150);
     expect(chart.scales.x.left).toBeCloseToPixel(31);
-    expect(chart.scales.x.right).toBeCloseToPixel(247);
+    expect(chart.scales.x.right).toBeCloseToPixel(250);
     expect(chart.scales.x.top).toBeCloseToPixel(120);
     expect(chart.scales.x.labelRotation).toBeCloseTo(0);
 
@@ -79,13 +79,13 @@ describe('Chart.layouts', function() {
     });
 
     expect(chart.chartArea.bottom).toBeCloseToPixel(139);
-    expect(chart.chartArea.left).toBeCloseToPixel(3);
+    expect(chart.chartArea.left).toBeCloseToPixel(0);
     expect(chart.chartArea.right).toBeCloseToPixel(218);
     expect(chart.chartArea.top).toBeCloseToPixel(62);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(62);
-    expect(chart.scales.x.left).toBeCloseToPixel(3);
+    expect(chart.scales.x.left).toBeCloseToPixel(0);
     expect(chart.scales.x.right).toBeCloseToPixel(218);
     expect(chart.scales.x.top).toBeCloseToPixel(32);
     expect(chart.scales.x.labelRotation).toBeCloseTo(0);
@@ -160,13 +160,13 @@ describe('Chart.layouts', function() {
 
     expect(chart.chartArea.bottom).toBeCloseToPixel(110);
     expect(chart.chartArea.left).toBeCloseToPixel(70);
-    expect(chart.chartArea.right).toBeCloseToPixel(247);
+    expect(chart.chartArea.right).toBeCloseToPixel(250);
     expect(chart.chartArea.top).toBeCloseToPixel(32);
 
     // Is xScale at the right spot
     expect(chart.scales.x.bottom).toBeCloseToPixel(150);
     expect(chart.scales.x.left).toBeCloseToPixel(70);
-    expect(chart.scales.x.right).toBeCloseToPixel(247);
+    expect(chart.scales.x.right).toBeCloseToPixel(250);
     expect(chart.scales.x.top).toBeCloseToPixel(110);
     expect(chart.scales.x.labelRotation).toBeCloseTo(40, -1);
 
