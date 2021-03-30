@@ -68,7 +68,7 @@ A plugin can provide `additionalOptionScopes` array of paths to additionally loo
 Scriptable options also accept a function which is called for each of the underlying data values and that takes the unique argument `context` representing contextual information (see [option context](options.md#option-context)).
 A resolver is passed as second parameter, that can be used to access other options in the same context.
 
-:::tip
+:::tip Note
 
 The `context` argument should be validated in the scriptable function, because the function can be invoked in different contexts. The `type` field is a good candidate for this validation.
 
