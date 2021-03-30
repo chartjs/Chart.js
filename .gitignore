@@ -9,9 +9,10 @@ node_modules/
 npm-debug.log*
 
 # Docs
-.docusaurus
 .cache-loader
 build/
+# generated typedocs
+docs/api
 
 # Development
 .DS_Store

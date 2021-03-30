@@ -46,8 +46,7 @@
     "lint-tsc": "tsc",
     "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
     "lint": "concurrently \"npm:lint-*\"",
-    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
-    "typedoc": "npx typedoc"
+    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
   },
   "devDependencies": {
     "@kurkle/color": "^0.1.9",
@@ -90,11 +89,13 @@
     "rollup-plugin-istanbul": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "typedoc": "^0.20.32",
+    "typedoc-plugin-markdown": "^3.6.0",
     "typescript": "^4.1.5",
     "vue-tabs-component": "^1.5.0",
     "vuepress": "^1.8.2",
     "vuepress-plugin-redirect": "^1.2.5",
     "vuepress-plugin-tabs": "^0.3.0",
+    "vuepress-plugin-typedoc": "^0.6.0",
     "vuepress-theme-chartjs": "^0.2.0",
     "yargs": "^16.2.0"
   }

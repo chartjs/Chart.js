@@ -29,7 +29,6 @@ jobs:
         npm run build
         ./scripts/docs-config.sh "master"
         npm run docs
-        npm run typedoc
         npm pack
         ./scripts/deploy-docs.sh "master"
       env:

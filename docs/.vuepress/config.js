@@ -19,6 +19,19 @@ module.exports = {
         'ga': 'UA-28909194-3'
       }
     ],
+    [
+      'vuepress-plugin-typedoc',
+
+      {
+        entryPoints: ['../../types/index.esm.d.ts'],
+        hideInPageTOC: true,
+        tsconfig: '../../tsconfig.json',
+        sidebar: {
+          fullNames: true,
+          parentCategory: 'API',
+        },
+      },
+    ],
   ],
   chainWebpack(config) {
     config.merge({
@@ -49,6 +62,7 @@ module.exports = {
     },
     nav: [
       {text: 'Home', link: '/'},
+      {text: 'API', link: '/api/'},
       // TODO: Make local when samples moved to vuepress
       {text: 'Samples', link: `https://www.chartjs.org/samples/${docsVersion}/`},
       {
@@ -62,6 +76,9 @@ module.exports = {
       }
     ],
     sidebar: {
+      '/api/': {
+        title: 'API'
+      },
       '/': [
         '',
         {
@@ -148,7 +165,7 @@ module.exports = {
           children: [
             'developers/',
             'developers/api',
-            [`https://chartjs.org/docs/${docsVersion}/typedoc/`, 'TypeDoc'],
+            ['api/', 'TypeDoc'],
             'developers/updates',
             'developers/plugins',
             'developers/charts',
