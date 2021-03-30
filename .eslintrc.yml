@@ -1,6 +1,7 @@
 extends:
   - chartjs
   - plugin:es/no-new-in-es2019
+  - plugin:markdown/recommended
 
 env:
   es6: true

@@ -16,7 +16,7 @@ function update_config {
     else
         tag=next
     fi
-    sed -i -e "s/VERSION/$tag/g" "docs/docusaurus.config.js"
+    sed -i -e "s/VERSION/$tag/g" "docs/.vuepress/config.js"
 }
 
 update_config
