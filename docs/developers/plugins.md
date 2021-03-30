@@ -122,7 +122,7 @@ var chart = new Chart(ctx, {
 
 ## Plugin Core API
 
-Read more about the [existing plugin extension hooks](https://github.com/chartjs/Chart.js/blob/master/types/index.esm.d.ts#L733).
+Read more about the [existing plugin extension hooks](https://github.com/chartjs/Chart.js/blob/master/types/index.esm.d.ts).
 
 ### Chart Initialization
 
