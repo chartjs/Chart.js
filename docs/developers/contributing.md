@@ -37,12 +37,10 @@ The following commands are now available from the repository root:
 
 ### Documentation
 
-We use [Docusaurus v2](https://v2.docusaurus.io/docs/introduction) to manage the docs which are contained as Markdown files in the docs directory. You can run the doc server locally using the commands provided by Docusaurus:
+We use [Vuepress](https://vuepress.vuejs.org/) to manage the docs which are contained as Markdown files in the docs directory. You can run the doc server locally using these commands:
 
 ```bash
-> cd docs
-> npm install
-> npm run start
+> npm run docs:dev
 ```
 
 ### Image-Based Tests
