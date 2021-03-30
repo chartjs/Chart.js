@@ -19,7 +19,7 @@
     "out": "./dist/docs/typedoc"
   },
   "include": [
-    // "./src/**/*.js",
+    "./src/**/*.js",
     "./types"
   ],
   "exclude": [

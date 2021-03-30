@@ -77,7 +77,7 @@ module.exports = {
     ],
     sidebar: {
       '/api/': {
-        titpe: 'API'
+        title: 'API'
       },
       '/': [
         '',
@@ -165,7 +165,7 @@ module.exports = {
           children: [
             'developers/',
             'developers/api',
-            [`https://chartjs.org/docs/${docsVersion}/typedoc/`, 'TypeDoc'],
+            ['api/', 'TypeDoc'],
             'developers/updates',
             'developers/plugins',
             'developers/charts',

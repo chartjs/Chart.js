@@ -47,7 +47,6 @@ jobs:
           npm run build
           ./scripts/docs-config.sh "${VERSION}"
           npm run docs
-          npm run typedoc
           npm pack
         env:
           VERSION: ${{ needs.setup.outputs.version }}

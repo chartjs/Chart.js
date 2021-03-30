@@ -71,7 +71,6 @@ jobs:
       if: steps.changes.outputs.docs == 'true'
       run: |
         npm run docs
-        npm run typedoc
         npm pack
     - name: Coveralls Parallel - Chrome
       if: steps.changes.outputs.src == 'true'
