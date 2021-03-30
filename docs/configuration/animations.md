@@ -164,7 +164,7 @@ Namespace: `options.animations[animation]`
 | `colors` | `properties` | `['color', 'borderColor', 'backgroundColor']`
 | `colors` | `type` | `'color'`
 
-:::tip
+:::tip Note
 These default animations are overridden by most of the dataset controllers.
 :::
 
