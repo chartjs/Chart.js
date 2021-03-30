@@ -19,7 +19,7 @@ The grid lines for an axis are drawn on the chart area. They stretch out from th
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -60,7 +60,7 @@ The grid lines for an axis are drawn on the chart area. In the example below, th
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -101,7 +101,7 @@ The point labels indicate the value for each angle line. In the example below, t
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -142,7 +142,7 @@ The ticks are used to label values based on how far they are from the center of 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{

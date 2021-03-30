@@ -24,7 +24,7 @@ The axis border is drawn at the edge of the axis, beside the chart area. In the 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -65,7 +65,7 @@ The grid lines for an axis are drawn on the chart area. In the image below, they
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -109,7 +109,7 @@ In this example, the tick mark is drawn in red while the tick label is drawn in 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -153,7 +153,7 @@ The title component of the axis is used to label the data. In the example below,
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -231,7 +231,7 @@ The alignment of ticks is primarily controlled using two settings on the tick co
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{

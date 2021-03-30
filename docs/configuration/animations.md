@@ -55,7 +55,7 @@ module.exports = {
 
 ```js chart-editor
 // <block:setup:1>
-const data ={
+const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
   datasets: [{
     label: 'Try hiding me',
@@ -75,20 +75,20 @@ const config = {
       show: {
         animations: {
           x: {
-              from: 0
+            from: 0
           },
           y: {
-              from: 0
+            from: 0
           }
         }
       },
       hide: {
         animations: {
           x: {
-              to: 0
+            to: 0
           },
           y: {
-              to: 0
+            to: 0
           }
         }
       }

@@ -25,12 +25,13 @@ For example `import {isNullOrUndef} from 'chart.js/helpers'` is available at `Ch
 `output.globals` can be used to convert the helpers.
 
 ```js
-{
-    output: {
-        globals: {
-            'chart.js': 'Chart',
-            'chart.js/helpers': 'Chart.helpers'
-        }
+module.exports = {
+  // ...
+  output: {
+    globals: {
+      'chart.js': 'Chart',
+      'chart.js/helpers': 'Chart.helpers'
     }
-}
+  }
+};
 ```

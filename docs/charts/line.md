@@ -4,7 +4,7 @@ A line chart is a way of plotting data points on a line. Often, it is used to sh
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -217,8 +217,8 @@ The default for this property is `'x'` and thus will show horizontal lines.
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
-const data =  {
+const labels = Utils.months({count: 7});
+const data = {
   labels: labels,
   datasets: [{
     axis: 'y',

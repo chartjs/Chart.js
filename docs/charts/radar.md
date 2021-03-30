@@ -44,7 +44,7 @@ const data = {
 const config = {
   type: 'radar',
   data: data,
-  options:  {
+  options: {
     elements: {
       line: {
         borderWidth: 3

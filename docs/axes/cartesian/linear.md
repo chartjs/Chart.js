@@ -62,12 +62,12 @@ The value is added to the maximum data value and subtracted from the minimum dat
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: ['Positive', 'Negative'],
   datasets: [{
-      data: [100, -50],
-      backgroundColor: 'rgb(255, 99, 132)'
+    data: [100, -50],
+    backgroundColor: 'rgb(255, 99, 132)'
   }],
 };
 // </block:setup>

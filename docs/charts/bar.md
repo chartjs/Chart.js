@@ -4,7 +4,7 @@ A bar chart provides a way of showing data values represented as vertical bars. 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
@@ -237,7 +237,7 @@ It is common to want to apply a configuration setting to all created bar charts.
 
 The following shows the relationship between the bar percentage option and the category percentage option.
 
-```md
+```text
 // categoryPercentage: 1.0
 // barPercentage: 1.0
 Bar:        | 1.0 | 1.0 |
@@ -296,7 +296,7 @@ The default for this property is `'x'` and thus will show vertical bars.
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({ count: 7 });
+const labels = Utils.months({count: 7});
 const data = {
   labels: labels,
   datasets: [{
