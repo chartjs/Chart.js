@@ -1114,7 +1114,7 @@ describe('Time scale tests', function() {
     });
     const scale = chart.scales.x;
     expect(scale.getPixelForDecimal(0)).toBeCloseToPixel(29);
-    expect(scale.getPixelForDecimal(1.0)).toBeCloseToPixel(509);
+    expect(scale.getPixelForDecimal(1.0)).toBeCloseToPixel(512);
   });
 
   ['data', 'labels'].forEach(function(source) {
