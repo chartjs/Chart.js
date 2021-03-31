@@ -41,7 +41,9 @@ function drawArc(ctx, element) {
       ctx.fill();
     }
   }
-  element.endAngle = element.startAngle + element.circumference % TAU;
+  if (!isNaN(element.curcumference)) {
+    element.endAngle = element.startAngle + element.circumference % TAU;
+  }
 
   pathArc(ctx, element);
   ctx.fill();
