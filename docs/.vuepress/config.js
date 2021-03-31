@@ -105,13 +105,6 @@ module.exports = {
           ]
         },
         {
-          title: 'Advanced',
-          children: [
-            'advanced/derived-axis-type',
-            'advanced/derived-chart-type',
-          ]
-        },
-        {
           title: 'Area charts',
           children: [
             'area/line-boundaries',
@@ -119,7 +112,25 @@ module.exports = {
             'area/line-stacked',
             'area/radar'
           ]
-        }
+        },
+        {
+          title: 'Scriptable Options',
+          children: [
+            'scriptable/bar',
+            // 'scriptable/bubble',
+            // 'scriptable/pie',
+            // 'scriptable/line',
+            // 'scriptable/polar',
+            // 'scriptable/radar',
+          ]
+        },
+        {
+          title: 'Advanced',
+          children: [
+            'advanced/derived-axis-type',
+            'advanced/derived-chart-type',
+          ]
+        },
       ],
       '/': [
         '',
