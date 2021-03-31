@@ -7,7 +7,7 @@ const data = {
   datasets: [
     {
       label: 'Dataset',
-      data: Utils.numbers({ count: 6, min: -100, max: 100}),
+      data: Utils.numbers({count: 6, min: -100, max: 100}),
       borderColor: Utils.CHART_COLORS.red,
       fill: false,
 

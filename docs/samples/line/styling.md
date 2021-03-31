@@ -9,7 +9,7 @@ const labels = Utils.months({count: DATA_COUNT});
 const data = {
   labels: labels,
   datasets: [
-   {
+    {
       label: 'Unfilled',
       fill: false,
       backgroundColor: Utils.CHART_COLORS.blue,
