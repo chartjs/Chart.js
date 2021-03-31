@@ -40,6 +40,8 @@ function drawArc(ctx, element) {
     for (let i = 0; i < element.fullCircles; ++i) {
       ctx.fill();
     }
+  }
+  if (!isNaN(element.curcumference)) {
     element.endAngle = element.startAngle + element.circumference % TAU;
   }
 

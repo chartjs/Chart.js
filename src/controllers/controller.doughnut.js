@@ -203,7 +203,7 @@ export default class DoughnutController extends DatasetController {
 
     for (i = 0; i < metaData.length; i++) {
       const value = meta._parsed[i];
-      if (value !== null && this.chart.getDataVisibility(i)) {
+      if (value !== null && !isNaN(value) && this.chart.getDataVisibility(i)) {
         total += Math.abs(value);
       }
     }
