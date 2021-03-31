@@ -1,4 +1,4 @@
-# Derived Axis Type - Log2
+# Derived Axis Type
 
 ```js chart-editor
 // <block:setup:1>
