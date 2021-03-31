@@ -35,7 +35,6 @@ const actions = [
 // </block:actions>
 
 // <block:setup:1>
-const DATA_COUNT = 7;
 const inputs = {
   min: 20,
   max: 80,
