@@ -117,11 +117,11 @@ module.exports = {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',
-            // 'scriptable/bubble',
-            // 'scriptable/pie',
-            // 'scriptable/line',
-            // 'scriptable/polar',
-            // 'scriptable/radar',
+            'scriptable/bubble',
+            'scriptable/pie',
+            'scriptable/line',
+            'scriptable/polar',
+            'scriptable/radar',
           ]
         },
         {
