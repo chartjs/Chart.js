@@ -1,1 +1,1 @@
-export * from '../types/helpers/index.d.ts';
+export * from '../types/helpers/index';
