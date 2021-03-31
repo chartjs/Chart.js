@@ -103,6 +103,12 @@ module.exports = {
             // 'line/point-styling',
           ]
         },
+        {
+          title: 'Advanced',
+          children: [
+            'advanced/derived-axis-type',
+          ]
+        },
       ],
       '/': [
         '',
