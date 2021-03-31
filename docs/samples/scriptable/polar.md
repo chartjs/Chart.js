@@ -1,8 +1,8 @@
-# Bar Chart
+# Polar Area Chart
 
 ```js chart-editor
 // <block:setup:2>
-var DATA_COUNT = 16;
+const DATA_COUNT = 7;
 Utils.srand(110);
 
 const actions = [
@@ -22,7 +22,7 @@ const actions = [
 function generateData() {
   return Utils.numbers({
     count: DATA_COUNT,
-    min: -100,
+    min: 0,
     max: 100
   });
 }
@@ -30,26 +30,30 @@ function generateData() {
 const data = {
   labels: Utils.months({count: DATA_COUNT}),
   datasets: [{
-    data: generateData(),
+    data: generateData()
   }]
 };
 // </block:data>
 
 // <block:options:0>
-function colorize(opaque) {
-  return (ctx) => {
-    var v = ctx.parsed.y;
-    var c = v < -50 ? '#D60000'
-      : v < 0 ? '#F46300'
-      : v < 50 ? '#0358B6'
-      : '#44DE28';
+function colorize(opaque, hover, ctx) {
+  var v = ctx.raw;
+  var c = v < 35 ? '#D60000'
+    : v < 55 ? '#F46300'
+    : v < 75 ? '#0358B6'
+    : '#44DE28';
 
-    return opaque ? c : Utils.transparentize(c, 1 - Math.abs(v / 150));
-  };
+  var opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
+
+  return opaque ? c : Utils.transparentize(c, opacity);
+}
+
+function hoverColorize(ctx) {
+  return colorize(false, true, ctx);
 }
 
 const config = {
-  type: 'bar',
+  type: 'polarArea',
   data: data,
   options: {
     plugins: {
@@ -57,10 +61,9 @@ const config = {
       tooltip: false,
     },
     elements: {
-      bar: {
-        backgroundColor: colorize(false),
-        borderColor: colorize(true),
-        borderWidth: 2
+      arc: {
+        backgroundColor: colorize.bind(null, false, false),
+        hoverBackgroundColor: hoverColorize
       }
     }
   }
