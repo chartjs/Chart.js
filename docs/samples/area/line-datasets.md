@@ -1,39 +1,6 @@
 # Line Chart Datasets
 
 ```js chart-editor
-// <block:actions:2>
-let smooth = false;
-let propagate = false;
-
-const actions = [
-  {
-    name: 'Randomize',
-    handler(chart) {
-      chart.data.datasets.forEach(dataset => {
-        dataset.data = generateData()
-      });
-      chart.update();
-    }
-  },
-  {
-    name: 'Propagate',
-    handler(chart) {
-      propagate = !propagate
-      chart.options.plugins.filler.propagate = propagate;
-      chart.update();
-    }
-  },
-  {
-    name: 'Smooth',
-    handler(chart) {
-      smooth = !smooth;
-      chart.options.elements.line.tension = smooth ? 0.4 : 0.000001;
-      chart.update();
-    }
-  }
-];
-// </block:actions>
-
 // <block:setup:1>
 const inputs = {
   min: 20,
@@ -41,15 +8,15 @@ const inputs = {
   count: 8,
   decimals: 2,
   continuity: 1
-}
+};
 
 const generateLabels = () => {
   return Utils.months({count: inputs.count});
-}
+};
 
-const generateData = () => (Utils.numbers(inputs))
+const generateData = () => (Utils.numbers(inputs));
 
-Utils.srand(42)
+Utils.srand(42);
 
 const labels = Utils.months({count: 7});
 const data = {
@@ -130,6 +97,39 @@ const data = {
   ]
 };
 // </block:setup>
+
+// <block:actions:2>
+let smooth = false;
+let propagate = false;
+
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = generateData();
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Propagate',
+    handler(chart) {
+      propagate = !propagate;
+      chart.options.plugins.filler.propagate = propagate;
+      chart.update();
+    }
+  },
+  {
+    name: 'Smooth',
+    handler(chart) {
+      smooth = !smooth;
+      chart.options.elements.line.tension = smooth ? 0.4 : 0.000001;
+      chart.update();
+    }
+  }
+];
+// </block:actions>
 
 // <block:config:0>
 const config = {
