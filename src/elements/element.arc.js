@@ -40,8 +40,8 @@ function drawArc(ctx, element) {
     for (let i = 0; i < element.fullCircles; ++i) {
       ctx.fill();
     }
-    element.endAngle = element.startAngle + element.circumference % TAU;
   }
+  element.endAngle = element.startAngle + element.circumference % TAU;
 
   pathArc(ctx, element);
   ctx.fill();
