@@ -5,6 +5,35 @@
 ::: tab "Fill: false"
 
 ```js chart-editor
+// <block:setup:1>
+const inputs = {
+  min: -100,
+  max: 100,
+  count: 8,
+  decimals: 2,
+  continuity: 1
+};
+
+const generateLabels = () => {
+  return Utils.months({count: inputs.count});
+};
+
+const generateData = () => (Utils.numbers(inputs));
+
+const data = {
+  labels: generateLabels(),
+  datasets: [
+    {
+      label: 'Dataset',
+      data: generateData(),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
+      fill: false
+    }
+  ]
+};
+// </block:setup>
+
 // <block:actions:2>
 let smooth = false;
 
@@ -29,35 +58,6 @@ const actions = [
   }
 ];
 // </block:actions>
-
-// <block:setup:1>
-const inputs = {
-  min: -100,
-  max: 100,
-  count: 8,
-  decimals: 2,
-  continuity: 1
-}
-
-const generateLabels = () => {
-  return Utils.months({count: inputs.count});
-}
-
-const generateData = () => (Utils.numbers(inputs))
-
-const data = {
-  labels: generateLabels(),
-  datasets: [
-    {
-      label: 'Dataset',
-      data: generateData(),
-      borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
-      fill: false
-    }
-  ]
-};
-// </block:setup>
 
 // <block:config:0>
 const config = {
@@ -99,6 +99,35 @@ module.exports = {
 ::: tab "Fill: origin"
 
 ```js chart-editor
+// <block:setup:1>
+const inputs = {
+  min: -100,
+  max: 100,
+  count: 8,
+  decimals: 2,
+  continuity: 1
+};
+
+const generateLabels = () => {
+  return Utils.months({count: inputs.count});
+};
+
+const generateData = () => (Utils.numbers(inputs));
+
+const data = {
+  labels: generateLabels(),
+  datasets: [
+    {
+      label: 'Dataset',
+      data: generateData(),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
+      fill: 'origin'
+    }
+  ]
+};
+// </block:setup>
+
 // <block:actions:2>
 let smooth = false;
 
@@ -123,35 +152,6 @@ const actions = [
   }
 ];
 // </block:actions>
-
-// <block:setup:1>
-const inputs = {
-  min: -100,
-  max: 100,
-  count: 8,
-  decimals: 2,
-  continuity: 1
-}
-
-const generateLabels = () => {
-  return Utils.months({count: inputs.count});
-}
-
-const generateData = () => (Utils.numbers(inputs))
-
-const data = {
-  labels: generateLabels(),
-  datasets: [
-    {
-      label: 'Dataset',
-      data: generateData(),
-      borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
-      fill: 'origin'
-    }
-  ]
-};
-// </block:setup>
 
 // <block:config:0>
 const config = {
@@ -193,6 +193,35 @@ module.exports = {
 ::: tab "Fill: start"
 
 ```js chart-editor
+// <block:setup:1>
+const inputs = {
+  min: -100,
+  max: 100,
+  count: 8,
+  decimals: 2,
+  continuity: 1
+};
+
+const generateLabels = () => {
+  return Utils.months({count: inputs.count});
+};
+
+const generateData = () => (Utils.numbers(inputs));
+
+const data = {
+  labels: generateLabels(),
+  datasets: [
+    {
+      label: 'Dataset',
+      data: generateData(),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
+      fill: 'start'
+    }
+  ]
+};
+// </block:setup>
+
 // <block:actions:2>
 let smooth = false;
 
@@ -217,35 +246,6 @@ const actions = [
   }
 ];
 // </block:actions>
-
-// <block:setup:1>
-const inputs = {
-  min: -100,
-  max: 100,
-  count: 8,
-  decimals: 2,
-  continuity: 1
-}
-
-const generateLabels = () => {
-  return Utils.months({count: inputs.count});
-}
-
-const generateData = () => (Utils.numbers(inputs))
-
-const data = {
-  labels: generateLabels(),
-  datasets: [
-    {
-      label: 'Dataset',
-      data: generateData(),
-      borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
-      fill: 'start'
-    }
-  ]
-};
-// </block:setup>
 
 // <block:config:0>
 const config = {
@@ -287,6 +287,35 @@ module.exports = {
 ::: tab "Fill: end"
 
 ```js chart-editor
+// <block:setup:1>
+const inputs = {
+  min: -100,
+  max: 100,
+  count: 8,
+  decimals: 2,
+  continuity: 1
+};
+
+const generateLabels = () => {
+  return Utils.months({count: inputs.count});
+};
+
+const generateData = () => (Utils.numbers(inputs));
+
+const data = {
+  labels: generateLabels(),
+  datasets: [
+    {
+      label: 'Dataset',
+      data: generateData(),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
+      fill: 'end'
+    }
+  ]
+};
+// </block:setup>
+
 // <block:actions:2>
 let smooth = false;
 
@@ -311,35 +340,6 @@ const actions = [
   }
 ];
 // </block:actions>
-
-// <block:setup:1>
-const inputs = {
-  min: -100,
-  max: 100,
-  count: 8,
-  decimals: 2,
-  continuity: 1
-}
-
-const generateLabels = () => {
-  return Utils.months({count: inputs.count});
-}
-
-const generateData = () => (Utils.numbers(inputs))
-
-const data = {
-  labels: generateLabels(),
-  datasets: [
-    {
-      label: 'Dataset',
-      data: generateData(),
-      borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
-      fill: 'end'
-    }
-  ]
-};
-// </block:setup>
 
 // <block:config:0>
 const config = {
