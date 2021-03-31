@@ -45,6 +45,13 @@ export function points(config) {
   return xs.map((x, i) => ({x, y: ys[i]}));
 }
 
+export function bubbles(config) {
+  return this.points(config).map(pt => {
+    pt.r = this.rand(config.rmin, config.rmax);
+    return pt;
+  });
+}
+
 export function labels(config) {
   var cfg = config || {};
   var min = cfg.min || 0;
