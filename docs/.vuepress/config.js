@@ -109,6 +109,15 @@ module.exports = {
             'advanced/derived-axis-type',
           ]
         },
+        {
+          title: 'Area charts',
+          children: [
+            'area/line-boundaries',
+            'area/line-datasets',
+            'area/line-stacked',
+            'area/radar'
+          ]
+        }
       ],
       '/': [
         '',
