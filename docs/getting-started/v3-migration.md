@@ -121,6 +121,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * Horizontal Bar default tooltip mode was changed from `'index'` to `'nearest'` to match vertical bar charts
 * `legend`, `title` and `tooltip` namespaces were moved from `Chart.defaults` to `Chart.defaults.plugins`.
 * `elements.line.fill` default changed from `true` to `false`.
+* Line charts no longer override the default `interaction` mode. Default is changed from `'index'` to `'nearest'`.
 
 #### Scales
 
@@ -217,13 +218,14 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 #### Interactions
 
 * To allow DRY configuration, a root options scope for common interaction options was added. `options.hover` and `options.plugins.tooltip` now both extend from `options.interaction`. Defaults are defined at `defaults.interaction` level, so by default hover and tooltip interactions share the same mode etc.
-* `interactions` are now limited to the chart area
+* `interactions` are now limited to the chart area + allowed overflow
 * `{mode: 'label'}` was replaced with `{mode: 'index'}`
 * `{mode: 'single'}` was replaced with `{mode: 'nearest', intersect: true}`
 * `modes['X-axis']` was replaced with `{mode: 'index', intersect: false}`
 * `options.onClick` is now limited to the chart area
 * `options.onClick` and `options.onHover` now receive the `chart` instance as a 3rd argument
 * `options.onHover` now receives a wrapped `event` as the first parameter. The previous first parameter value is accessible via `event.native`.
+* `options.hover.onHover` was removed, use `options.onHover`.
 
 #### Ticks
 

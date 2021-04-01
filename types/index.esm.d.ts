@@ -1343,13 +1343,6 @@ export interface CoreInteractionOptions {
   axis: 'x' | 'y' | 'xy';
 }
 
-export interface HoverInteractionOptions extends CoreInteractionOptions {
-  /**
-   * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
-   */
-  onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
-}
-
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
 
   datasets: {
@@ -1418,7 +1411,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
 
   interaction: CoreInteractionOptions;
 
-  hover: HoverInteractionOptions;
+  hover: CoreInteractionOptions;
 
   /**
    * The events option defines the browser events that the chart should listen to for tooltips and hovering.

@@ -550,8 +550,6 @@ BarController.overrides = {
     mode: 'index'
   },
 
-  hover: {},
-
   scales: {
     _index_: {
       type: 'category',
