@@ -114,6 +114,18 @@ module.exports = {
           ]
         },
         {
+          title: 'Scales',
+          children: [
+            'scales/linear-min-max',
+            'scales/linear-min-max-suggested',
+            'scales/linear-step-size',
+            'scales/log',
+            'scales/time-line',
+            'scales/time-max-span',
+            'scales/time-combo',
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',
