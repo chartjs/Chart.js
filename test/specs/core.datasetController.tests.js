@@ -881,4 +881,78 @@ describe('Chart.DatasetController', function() {
       });
     });
   });
+
+  describe('getContext', function() {
+    it('should reflect updated data', function() {
+      var chart = acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 1, y: 0}, {x: 2, y: '1'}]
+          }]
+        },
+      });
+      let meta = chart.getDatasetMeta(0);
+
+      expect(meta.controller.getContext(undefined, true, 'test')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        index: 0,
+        mode: 'test'
+      }));
+      expect(meta.controller.getContext(1, false, 'datatest')).toEqual(jasmine.objectContaining({
+        active: false,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 1,
+        element: meta.data[1],
+        index: 1,
+        parsed: {x: 2, y: 1},
+        raw: {x: 2, y: '1'},
+        mode: 'datatest'
+      }));
+
+      chart.data.datasets[0].data[1].y = 5;
+      chart.update();
+
+      expect(meta.controller.getContext(1, false, 'datatest')).toEqual(jasmine.objectContaining({
+        active: false,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 1,
+        element: meta.data[1],
+        index: 1,
+        parsed: {x: 2, y: 5},
+        raw: {x: 2, y: 5},
+        mode: 'datatest'
+      }));
+
+      chart.data.datasets = [{
+        data: [{x: 0, y: 0}, {x: 1, y: 1}]
+      }];
+      chart.update();
+      // meta is re-created when dataset is replaced
+      meta = chart.getDatasetMeta(0);
+
+      expect(meta.controller.getContext(undefined, false, 'test2')).toEqual(jasmine.objectContaining({
+        active: false,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        index: 0,
+        mode: 'test2'
+      }));
+      expect(meta.controller.getContext(1, true, 'datatest2')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 1,
+        element: meta.data[1],
+        index: 1,
+        parsed: {x: 1, y: 1},
+        raw: {x: 1, y: 1},
+        mode: 'datatest2'
+      }));
+    });
+  });
 });

@@ -151,11 +151,11 @@ function getFirstScaleId(chart, axis) {
   return Object.keys(scales).filter(key => scales[key].axis === axis).shift();
 }
 
-function createDatasetContext(parent, index, dataset) {
+function createDatasetContext(parent, index) {
   return Object.assign(Object.create(parent),
     {
       active: false,
-      dataset,
+      dataset: undefined,
       datasetIndex: index,
       index,
       mode: 'default',
@@ -164,12 +164,12 @@ function createDatasetContext(parent, index, dataset) {
   );
 }
 
-function createDataContext(parent, index, point, raw, element) {
+function createDataContext(parent, index, element) {
   return Object.assign(Object.create(parent), {
     active: false,
     dataIndex: index,
-    parsed: point,
-    raw,
+    parsed: undefined,
+    raw: undefined,
     element,
     index,
     mode: 'default',
@@ -704,9 +704,13 @@ export default class DatasetController {
     if (index >= 0 && index < me._cachedMeta.data.length) {
       const element = me._cachedMeta.data[index];
       context = element.$context ||
-				(element.$context = createDataContext(me.getContext(), index, me.getParsed(index), dataset.data[index], element));
+        (element.$context = createDataContext(me.getContext(), index, element));
+      context.parsed = me.getParsed(index);
+      context.raw = dataset.data[index];
     } else {
-      context = me.$context || (me.$context = createDatasetContext(me.chart.getContext(), me.index, dataset));
+      context = me.$context ||
+        (me.$context = createDatasetContext(me.chart.getContext(), me.index));
+      context.dataset = dataset;
     }
 
     context.active = !!active;
