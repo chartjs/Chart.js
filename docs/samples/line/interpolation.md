@@ -45,9 +45,9 @@ const config = {
         display: true,
         text: 'Chart.js Line Chart - Cubic interpolation mode'
       },
-      tooltip: {
-        mode: 'index'
-      }
+    },
+    interaction: {
+      intersect: false,
     },
     scales: {
       x: {

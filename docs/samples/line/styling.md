@@ -44,14 +44,10 @@ const config = {
         display: true,
         text: 'Chart.js Line Chart'
       },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-      }
     },
-    hover: {
-      mode: 'nearest',
-      intersect: true
+    interaction: {
+      mode: 'index',
+      intersect: false
     },
     scales: {
       x: {

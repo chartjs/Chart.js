@@ -48,7 +48,8 @@ const config = {
   options: {
     responsive: true,
     interaction: {
-      mode: 'index'
+      mode: 'index',
+      intersect: false,
     },
     stacked: false,
     plugins: {

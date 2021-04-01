@@ -29,6 +29,10 @@ const config = {
   data: data,
   options: {
     responsive: true,
+    interaction: {
+      intersect: false,
+      axis: 'x'
+    },
     plugins: {
       title: {
         display: true,
