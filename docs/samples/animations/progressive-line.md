@@ -20,7 +20,7 @@ const animation = {
     type: 'number',
     easing: 'linear',
     duration: delayBetweenPoints,
-    from: {},
+    from: NaN, // the point is initially skipped
     delay(ctx) {
       if (ctx.type !== 'data' || ctx.xStarted) {
         return 0;
