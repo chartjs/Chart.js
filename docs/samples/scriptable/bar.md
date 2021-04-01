@@ -16,7 +16,7 @@ const actions = [
     }
   },
 ];
-// </block>
+// </block:setup>
 
 // <block:data:1>
 function generateData() {
@@ -54,7 +54,6 @@ const config = {
   options: {
     plugins: {
       legend: false,
-      tooltip: false,
     },
     elements: {
       bar: {

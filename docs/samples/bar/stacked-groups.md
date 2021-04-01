@@ -55,12 +55,11 @@ const config = {
         display: true,
         text: 'Chart.js Bar Chart - Stacked'
       },
-      tooltip: {
-        mode: 'index',
-        intersect: false
-      }
     },
     responsive: true,
+    interaction: {
+      intersect: false,
+    },
     scales: {
       x: {
         stacked: true,

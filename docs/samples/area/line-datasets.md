@@ -1,7 +1,7 @@
 # Line Chart Datasets
 
 ```js chart-editor
-// <block:setup:1>
+// <block:setup:2>
 const inputs = {
   min: 20,
   max: 80,
@@ -17,8 +17,9 @@ const generateLabels = () => {
 const generateData = () => (Utils.numbers(inputs));
 
 Utils.srand(42);
+// </block:setup>
 
-const labels = Utils.months({count: 7});
+// <block:data:0>
 const data = {
   labels: generateLabels(),
   datasets: [
@@ -96,9 +97,9 @@ const data = {
     }
   ]
 };
-// </block:setup>
+// </block:data>
 
-// <block:actions:2>
+// <block:actions:3>
 let smooth = false;
 let propagate = false;
 
@@ -124,25 +125,18 @@ const actions = [
     name: 'Smooth',
     handler(chart) {
       smooth = !smooth;
-      chart.options.elements.line.tension = smooth ? 0.4 : 0.000001;
+      chart.options.elements.line.tension = smooth ? 0.4 : 0;
       chart.update();
     }
   }
 ];
 // </block:actions>
 
-// <block:config:0>
+// <block:config:1>
 const config = {
   type: 'line',
   data: data,
   options: {
-    maintainAspectRatio: false,
-    spanGaps: false,
-    elements: {
-      line: {
-        tension: 0.000001
-      }
-    },
     scales: {
       y: {
         stacked: true
@@ -155,7 +149,10 @@ const config = {
       'samples-filler-analyser': {
         target: 'chart-analyser'
       }
-    }
+    },
+    interaction: {
+      intersect: false,
+    },
   },
 };
 // </block:config>
@@ -165,3 +162,5 @@ module.exports = {
   config: config,
 };
 ```
+
+<div id="chart-analyser" class="analyser"></div>

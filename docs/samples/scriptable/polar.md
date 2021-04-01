@@ -16,7 +16,7 @@ const actions = [
     }
   },
 ];
-// </block>
+// </block:setup>
 
 // <block:data:1>
 function generateData() {

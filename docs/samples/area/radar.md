@@ -105,7 +105,7 @@ const actions = [
     name: 'Smooth',
     handler(chart) {
       smooth = !smooth;
-      chart.options.elements.line.tension = smooth ? 0.4 : 0.000001;
+      chart.options.elements.line.tension = smooth ? 0.4 : 0;
       chart.update();
     }
   }
@@ -117,20 +117,16 @@ const config = {
   type: 'radar',
   data: data,
   options: {
-    responsive: true,
-    spanGaps: false,
-    elements: {
-      line: {
-        tension: 0.000001
-      }
-    },
     plugins: {
       filler: {
         propagate: false
       },
       'samples-filler-analyser': {
-        target: 'chart-analyzer'
+        target: 'chart-analyser'
       }
+    },
+    interaction: {
+      intersect: false
     }
   }
 };
@@ -141,3 +137,5 @@ module.exports = {
   config: config
 };
 ```
+
+<div id="chart-analyser" class="analyser"></div>
