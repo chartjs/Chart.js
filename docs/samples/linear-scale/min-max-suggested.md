@@ -39,7 +39,7 @@ const config = {
     },
     scales: {
       y: {
-      	// the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
+        // the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
         suggestedMin: 30,
 
         // the data maximum used for determining the ticks is Math.max(dataMax, suggestedMax)
