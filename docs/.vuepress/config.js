@@ -161,6 +161,15 @@ module.exports = {
           ]
         },
         {
+          title: 'Animations',
+          children: [
+            'animations/delay',
+            'animations/drop',
+            'animations/loop',
+            'animations/progressive-line',
+          ]
+        },
+        {
           title: 'Advanced',
           children: [
             'advanced/progress-bar',
