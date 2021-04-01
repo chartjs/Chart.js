@@ -135,6 +135,14 @@ module.exports = {
           ]
         },
         {
+          title: 'Legend',
+          children: [
+            'legend/position',
+            'legend/title',
+            'legend/point-style',
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',
