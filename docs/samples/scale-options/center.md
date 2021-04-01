@@ -1,6 +1,6 @@
 # Center Positioning
 
-This samples show how to place the axis in the center of the chart area, instead of at the edges.
+This sample show how to place the axis in the center of the chart area, instead of at the edges.
 
 ```js chart-editor
 // <block:actions:2>
