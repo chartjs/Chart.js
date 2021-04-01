@@ -126,6 +126,15 @@ module.exports = {
           ]
         },
         {
+          title: 'Scale Options',
+          children: [
+            'scale-options/grid',
+            'scale-options/ticks',
+            'scale-options/titles',
+            'scale-options/center'
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',
