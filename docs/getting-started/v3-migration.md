@@ -121,7 +121,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * Horizontal Bar default tooltip mode was changed from `'index'` to `'nearest'` to match vertical bar charts
 * `legend`, `title` and `tooltip` namespaces were moved from `Chart.defaults` to `Chart.defaults.plugins`.
 * `elements.line.fill` default changed from `true` to `false`.
-* Bar/Line charts no longer override the default `interaction` mode. Default is changed from `'index'` to `'nearest'`.
+* Line charts no longer override the default `interaction` mode. Default is changed from `'index'` to `'nearest'`.
 
 #### Scales
 
