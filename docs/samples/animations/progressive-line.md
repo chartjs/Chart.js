@@ -61,6 +61,9 @@ const config = {
     interaction: {
       intersect: false
     },
+    plugins: {
+      legend: false
+    },
     scales: {
       x: {
         type: 'linear'
