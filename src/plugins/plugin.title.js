@@ -160,4 +160,9 @@ export default {
   defaultRoutes: {
     color: 'color'
   },
+
+  descriptors: {
+    _scriptable: true,
+    _indexable: false,
+  },
 };

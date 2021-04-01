@@ -155,5 +155,3 @@ export function newDate(days) {
 export function newDateString(days) {
   return DateTime.now().plus({days}).toISO();
 }
-
-export const colorHelper = colorLib;

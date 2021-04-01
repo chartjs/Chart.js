@@ -94,10 +94,11 @@ describe('Chart', function() {
     it('should initialize config with default interaction options', function() {
       var callback = function() {};
       var defaults = Chart.defaults;
-      var defaultMode = overrides.line.interaction.mode;
 
-      defaults.hover.onHover = callback;
-      overrides.line.interaction.mode = 'test';
+      defaults.onHover = callback;
+      overrides.line.interaction = {
+        mode: 'test'
+      };
 
       var chart = acquireChart({
         type: 'line'
@@ -105,19 +106,21 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.hover.onHover).toBe(callback);
+      expect(options.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
 
-      defaults.hover.onHover = null;
-      overrides.line.interaction.mode = defaultMode;
+      defaults.onHover = null;
+      delete overrides.line.interaction;
     });
 
     it('should initialize config with default hover options', function() {
       var callback = function() {};
       var defaults = Chart.defaults;
 
-      defaults.hover.onHover = callback;
-      overrides.line.hover.mode = 'test';
+      defaults.onHover = callback;
+      overrides.line.hover = {
+        mode: 'test'
+      };
 
       var chart = acquireChart({
         type: 'line'
@@ -125,11 +128,11 @@ describe('Chart', function() {
 
       var options = chart.options;
       expect(options.font.size).toBe(defaults.font.size);
-      expect(options.hover.onHover).toBe(callback);
+      expect(options.onHover).toBe(callback);
       expect(options.hover.mode).toBe('test');
 
-      defaults.hover.onHover = null;
-      delete overrides.line.hover.mode;
+      defaults.onHover = null;
+      delete overrides.line.hover;
     });
 
     it('should override default options', function() {
@@ -137,8 +140,10 @@ describe('Chart', function() {
       var defaults = Chart.defaults;
       var defaultSpanGaps = defaults.datasets.line.spanGaps;
 
-      defaults.hover.onHover = callback;
-      overrides.line.hover.mode = 'x-axis';
+      defaults.onHover = callback;
+      overrides.line.hover = {
+        mode: 'x-axis'
+      };
       defaults.datasets.line.spanGaps = true;
 
       var chart = acquireChart({
@@ -161,8 +166,8 @@ describe('Chart', function() {
       expect(options.hover.mode).toBe('dataset');
       expect(options.plugins.title.position).toBe('bottom');
 
-      defaults.hover.onHover = null;
-      delete overrides.line.hover.mode;
+      defaults.onHover = null;
+      delete overrides.line.hover;
       defaults.datasets.line.spanGaps = defaultSpanGaps;
     });
 

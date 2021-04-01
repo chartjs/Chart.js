@@ -144,6 +144,12 @@ module.exports = {
           ]
         },
         {
+          title: 'Title',
+          children: [
+            'title/alignment',
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',

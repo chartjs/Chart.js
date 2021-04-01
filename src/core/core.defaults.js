@@ -55,9 +55,7 @@ export class Defaults {
       lineHeight: 1.2,
       weight: null
     };
-    this.hover = {
-      onHover: null
-    };
+    this.hover = {};
     this.hoverBackgroundColor = (ctx, options) => getHoverColor(options.backgroundColor);
     this.hoverBorderColor = (ctx, options) => getHoverColor(options.borderColor);
     this.hoverColor = (ctx, options) => getHoverColor(options.color);

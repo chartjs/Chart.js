@@ -120,12 +120,6 @@ LineController.defaults = {
  * @type {any}
  */
 LineController.overrides = {
-  interaction: {
-    mode: 'index'
-  },
-
-  hover: {},
-
   scales: {
     _index_: {
       type: 'category',
