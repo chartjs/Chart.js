@@ -1107,7 +1107,7 @@ class Chart {
     me._lastEvent = null;
 
     // Invoke onHover hook
-    callCallback(options.onHover || hoverOptions.onHover, [e, active, me], me);
+    callCallback(options.onHover, [e, active, me], me);
 
     if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
       if (_isPointInArea(e, me.chartArea, me._minPadding)) {

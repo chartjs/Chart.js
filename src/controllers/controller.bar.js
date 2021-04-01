@@ -546,12 +546,6 @@ BarController.defaults = {
  * @type {any}
  */
 BarController.overrides = {
-  interaction: {
-    mode: 'index'
-  },
-
-  hover: {},
-
   scales: {
     _index_: {
       type: 'category',
