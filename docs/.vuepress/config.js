@@ -59,6 +59,7 @@ module.exports = {
       imports: [
         ['scripts/register.js'],
         ['scripts/utils.js', 'Utils'],
+        ['scripts/helpers.js', 'helpers'],
       ]
     },
     nav: [
@@ -162,6 +163,10 @@ module.exports = {
         {
           title: 'Advanced',
           children: [
+            'advanced/progress-bar',
+            'advanced/radial-gradient',
+            'advanced/linear-gradient',
+            'advanced/programmatic-events',
             'advanced/derived-axis-type',
             'advanced/derived-chart-type',
           ]
