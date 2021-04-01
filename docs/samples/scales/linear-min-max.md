@@ -1,4 +1,4 @@
-# Min-Max
+# Linear Scale - Min-Max
 
 ```js chart-editor
 // <block:setup:1>

@@ -1,4 +1,4 @@
-# Step Size
+# Linear Scale - Step Size
 
 ```js chart-editor
 // <block:actions:2>

@@ -1,4 +1,6 @@
 import colorLib from '@kurkle/color';
+import {DateTime} from 'luxon';
+import 'chartjs-adapter-luxon';
 import {valueOrDefault} from '../../dist/helpers.esm';
 
 // Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
@@ -144,4 +146,12 @@ const NAMED_COLORS = [
 
 export function namedColor(index) {
   return NAMED_COLORS[index % NAMED_COLORS.length];
+}
+
+export function newDate(days) {
+  return DateTime.now().plus({days}).toJSDate();
+}
+
+export function newDateString(days) {
+  return DateTime.now().plus({days}).toISO();
 }

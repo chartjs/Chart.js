@@ -114,11 +114,15 @@ module.exports = {
           ]
         },
         {
-          title: 'Linear scale',
+          title: 'Scales',
           children: [
-            'linear-scale/min-max',
-            'linear-scale/min-max-suggested',
-            'linear-scale/step-size'
+            'scales/linear-min-max',
+            'scales/linear-min-max-suggested',
+            'scales/linear-step-size',
+            'scales/log',
+            'scales/time-line',
+            'scales/time-max-span',
+            'scales/time-combo',
           ]
         },
         {
