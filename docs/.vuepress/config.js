@@ -171,14 +171,6 @@ module.exports = {
             'advanced/derived-chart-type',
           ]
         },
-        {
-          title: 'Linear scale',
-          children: [
-            'linear-scale/min-max',
-            'linear-scale/min-max-suggested',
-            'linear-scale/step-size'
-          ]
-        }
       ],
       '/': [
         '',
