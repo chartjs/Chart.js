@@ -60,6 +60,7 @@ module.exports = {
         ['scripts/register.js'],
         ['scripts/utils.js', 'Utils'],
         ['scripts/helpers.js', 'helpers'],
+        ['scripts/components.js', 'components']
       ]
     },
     nav: [
@@ -147,6 +148,16 @@ module.exports = {
           title: 'Title',
           children: [
             'title/alignment',
+          ]
+        },
+        {
+          title: 'Tooltip',
+          children: [
+            'tooltip/position',
+            'tooltip/interactions',
+            'tooltip/point-style',
+            'tooltip/content',
+            'tooltip/html',
           ]
         },
         {
