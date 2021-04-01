@@ -114,6 +114,14 @@ module.exports = {
           ]
         },
         {
+          title: 'Linear scale',
+          children: [
+            'linear-scale/min-max',
+            'linear-scale/min-max-suggested',
+            'linear-scale/step-size'
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',
