@@ -8,11 +8,21 @@ TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 
 VERSION=$1
 
+function move_sample_redirect {
+    local tag=$1
+
+    cp ../scripts/sample-redirect-template.html samples/$tag/index.html
+    sed -i -E "s/TAG/$tag/g" samples/$tag/index.html
+}
+
 function update_with_tag {
     local tag=$1
     rm -rf "docs/$tag"
     cp -r ../dist/docs docs/$tag
     rm -rf "samples/$tag"
+    mkdir "samples/$tag"
+
+    move_sample_redirect $tag
 
     deploy_versioned_files $tag
 }
