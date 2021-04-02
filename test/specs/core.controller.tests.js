@@ -480,7 +480,7 @@ describe('Chart', function() {
         responsive: false
       };
       chart.update();
-      expect(chart.options).toEqual(jasmine.objectContaining(options));
+      expect(chart.options).toEqualOptions(options);
     });
   });
 
