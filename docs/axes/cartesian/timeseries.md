@@ -20,4 +20,4 @@ var chart = new Chart(ctx, {
 
 ## More details
 
-Please see [the time scale documentation](./time.mdx) for all other details.
+Please see [the time scale documentation](./time.md) for all other details.

@@ -8,7 +8,7 @@ Namespace: `options.scales[scaleId].ticks`
 | `display` | `boolean` | | `true` | If true, show tick labels.
 | `color` | [`Color`](../general/colors.md) | Yes | `Chart.defaults.color` | Color of ticks.
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
-| `major` | `object` | | `{}` | [Major ticks configuration](./styling.mdx#major-tick-configuration).
+| `major` | `object` | | `{}` | [Major ticks configuration](./styling.md#major-tick-configuration).
 | `padding` | `number` | | `3` | Sets the offset of the tick labels from the axis
 | `textStrokeColor` | [`Color`](../general/colors.md) | Yes | `` | The color of the stroke around the text.
 | `textStrokeWidth` | `number` | Yes | `0` | Stroke width around the text.

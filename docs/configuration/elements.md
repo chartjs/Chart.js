@@ -62,7 +62,7 @@ Namespace: `options.elements.line`, global line options: `Chart.defaults.element
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
-| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](./charts/line.mdx/#cubicinterpolationmode)
+| `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](./charts/line.md/#cubicinterpolationmode)
 | `fill` | `boolean`\|`string` | `false` | How to fill the area under the line. See [area charts](../charts/area.md#filling-modes).
 | `stepped` | `boolean` | `false` | `true` to show the line as a stepped line (`tension` will be ignored).
 
