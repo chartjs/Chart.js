@@ -8,11 +8,11 @@ TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 
 VERSION=$1
 
-function move_sample_scripts {
-    local subdirectory=$1
-    for f in $(find ./samples/$subdirectory -name '*.html'); do
-       sed -i -E "s/((\.\.\/)+dist\/)/..\/\1$subdirectory\//" $f
-    done
+function move_sample_redirect {
+    local tag=$1
+
+    cp ../scripts/sample-redirect-template.html samples/$tag/index.html
+    sed -i -E "s/TAG/$tag/g" samples/$tag/index.html
 }
 
 function update_with_tag {
@@ -20,9 +20,9 @@ function update_with_tag {
     rm -rf "docs/$tag"
     cp -r ../dist/docs docs/$tag
     rm -rf "samples/$tag"
-    cp -r ../samples samples/$tag
+    mkdir "samples/$tag"
 
-    move_sample_scripts $tag
+    move_sample_redirect $tag
 
     deploy_versioned_files $tag
 }
@@ -30,7 +30,6 @@ function update_with_tag {
 # Note: this code also exists in docs-config.sh
 # tag is next|latest|master
 # https://www.chartjs.org/docs/$tag/
-# https://www.chartjs.org/samples/$tag/
 # https://www.chartjs.org/dist/$tag/chart.*js
 function update_tagged_files {
     if [ "$VERSION" == "master" ]; then

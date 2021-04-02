@@ -41,7 +41,7 @@
     "dev:ff": "karma start --auto-watch --no-single-run --browsers firefox --grep",
     "docs": "npm run build && vuepress build docs --no-cache",
     "docs:dev": "npm run build && vuepress dev docs --no-cache",
-    "lint-js": "eslint \"samples/**/*.html\" \"samples/**/*.js\" \"src/**/*.js\" \"test/**/*.js\"",
+    "lint-js": "eslint \"src/**/*.js\" \"test/**/*.js\" \"docs/**/*.js\"",
     "lint-md": "eslint \"**/*.md\"",
     "lint-tsc": "tsc",
     "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
