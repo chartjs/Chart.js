@@ -12,7 +12,7 @@ const actions = [
         if (i === 0) {
           data[0] = null;
         } else if (i === 1) {
-          data[Number.parseInt(data.length, 10)] = null;
+          data[Number.parseInt(data.length/2, 10)] = null;
         } else {
           data[data.length - 1] = null;
         }
@@ -35,7 +35,7 @@ const dataMiddleSkip = Utils.numbers(NUMBER_CFG);
 const dataLastSkip = Utils.numbers(NUMBER_CFG);
 
 dataFirstSkip[0] = null;
-dataMiddleSkip[Number.parseInt(dataMiddleSkip.length, 10)] = null;
+dataMiddleSkip[Number.parseInt(dataMiddleSkip.length/2, 10)] = null;
 dataLastSkip[dataLastSkip.length - 1] = null;
 
 const data = {
