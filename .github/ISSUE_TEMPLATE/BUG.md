@@ -11,7 +11,7 @@ labels: 'type: bug'
   Bug reports MUST be submitted with an interactive example:
   https://codepen.io/pen?template=JXVYzq
 
-  Chart.js 1.x is NOT supported anymore, new issues will be disregarded.
+  Chart.js versions lower then 3.x are NOT supported anymore, new issues will be disregarded.
 -->
 
 ## Expected Behavior
