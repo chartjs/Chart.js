@@ -7,9 +7,9 @@ The chart title defines text to draw at the top of the chart.
 Namespace: `options.plugins.title`, the global options for the chart title is defined in `Chart.defaults.plugins.title`.
 
 | Name | Type | Default | [Scriptable](../general/options.md#scriptable-options) | Description
-| ---- | ---- | ------- | -----------
+| ---- | ---- | ------- | :----: | -----------
 | `align` | `string` | `'center'` | Yes | Alignment of the title. [more...](#align)
-| `color` | [`Color`](../general/colors.md) | Yes | `Chart.defaults.color` | Color of text.
+| `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Yes | Color of text.
 | `display` | `boolean` | `false` | Yes | Is the title shown?
 | `fullSize` | `boolean` | `true` | Yes | Marks that this box should take the full width/height of the canvas. If `false`, the box is sized and placed above/beside the chart area.
 | `position` | `string` | `'top'` | Yes | Position of title. [more...](#position)
