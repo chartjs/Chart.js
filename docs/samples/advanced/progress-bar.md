@@ -23,7 +23,6 @@ const actions = [
         label: 'Dataset ' + (data.datasets.length + 1),
         backgroundColor: Utils.transparentize(dsColor, 0.5),
         borderColor: dsColor,
-        borderWidth: 1,
         data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
       };
       chart.data.datasets.push(newDataset);

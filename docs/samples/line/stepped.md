@@ -1,6 +1,56 @@
 # Stepped Line Charts
 
 ```js chart-editor
+// <block:actions:2>
+const actions = [
+  {
+    name: 'Step: false (default)',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.stepped = false;
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Step: true',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.stepped = true;
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Step: before',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.stepped = 'before';
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Step: after',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.stepped = 'after';
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Step: middle',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.stepped = 'middle';
+      });
+      chart.update();
+    }
+  }
+];
+// </block:actions>
+
 // <block:setup:1>
 const data = {
   labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'],
@@ -10,13 +60,6 @@ const data = {
       data: Utils.numbers({count: 6, min: -100, max: 100}),
       borderColor: Utils.CHART_COLORS.red,
       fill: false,
-
-      // Change the stepped mode to explore different stepped chart options
-      // false: no stepping
-      // true: stepped before interpolation
-      // 'before': step before interpolation
-      // 'after': step after interpolation
-      // 'middle': step middle interpolation
       stepped: true,
     }
   ]
@@ -44,7 +87,7 @@ const config = {
 // </block:config>
 
 module.exports = {
-  actions: [],
+  actions: actions,
   config: config,
 };
 ```
