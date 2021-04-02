@@ -275,7 +275,12 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
-  const set = new Set([value]);
+  const set = new Set();
+  if (!(prop in parentScopes[0])) {
+    // create an empty scope for possible stored values, so we always set the values in top scope.
+    set.add(parentScopes[0][prop] = {});
+  }
+  set.add(value);
   let key = addScopesFromKey(set, allScopes, prop, fallback || prop);
   if (key === null) {
     return false;
