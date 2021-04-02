@@ -14,6 +14,9 @@ module.exports = {
   plugins: [
     'tabs',
     ['flexsearch'],
+    ['@vuepress/html-redirect', {
+      duration: 0,
+    }],
     [
       '@vuepress/google-analytics',
       {
