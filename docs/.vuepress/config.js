@@ -13,6 +13,7 @@ module.exports = {
   ],
   plugins: [
     'tabs',
+    ['flexsearch'],
     [
       '@vuepress/google-analytics',
       {
