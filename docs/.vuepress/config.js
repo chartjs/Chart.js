@@ -13,12 +13,22 @@ module.exports = {
   ],
   plugins: [
     'tabs',
+    ['flexsearch'],
+    ['@vuepress/html-redirect', {
+      countdown: 0,
+    }],
     [
       '@vuepress/google-analytics',
       {
         'ga': 'UA-28909194-3'
       }
     ],
+    ['redirect', {
+      redirectors: [
+        // Default sample page when accessing /samples.
+        {base: '/samples', alternative: ['bar/vertical']},
+      ],
+    }],
     [
       'vuepress-plugin-typedoc',
       {
@@ -81,7 +91,6 @@ module.exports = {
         title: 'API'
       },
       '/samples/': [
-        '',
         {
           title: 'Bar Charts',
           children: [

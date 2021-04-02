@@ -472,7 +472,31 @@ describe('Chart.helpers.config', function() {
           'numbers',
         ]);
       });
+    });
+    describe('setting values', function() {
+      it('should set values to first scope', function() {
+        const defaults = {
+          value: true
+        };
+        const options = {};
+        const resolver = _createResolver([options, defaults]);
+        resolver.value = false;
+        expect(options.value).toBeFalse();
+        expect(defaults.value).toBeTrue();
+      });
 
+      it('should set values of sub-objects to first scope', function() {
+        const defaults = {
+          sub: {
+            value: true
+          }
+        };
+        const options = {};
+        const resolver = _createResolver([options, defaults]);
+        resolver.sub.value = false;
+        expect(options.sub.value).toBeFalse();
+        expect(defaults.sub.value).toBeTrue();
+      });
     });
   });
 

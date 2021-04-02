@@ -6,7 +6,7 @@ Padding values in Chart options can be supplied in couple of different formats.
 
 If this value is a number, it is applied to all sides (left, top, right, bottom).
 
-For exmaple, defining a 20px padding to all sides of chart:
+For example, defining a 20px padding to all sides of chart:
 
 ```javascript
 let chart = new Chart(ctx, {
