@@ -2208,15 +2208,16 @@ export interface TitleOptions {
   text: string | string[];
 }
 
-export type TooltipAlignment = 'start' | 'center' | 'end';
+export type TooltipXAlignment = 'left' | 'center' | 'right';
+export type TooltipYAlignment = 'top' | 'center' | 'bottom';
 
 export interface TooltipModel<TType extends ChartType> {
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
   dataPoints: TooltipItem<TType>[];
 
   // Positioning
-  xAlign: TooltipAlignment;
-  yAlign: TooltipAlignment;
+  xAlign: TooltipXAlignment;
+  yAlign: TooltipYAlignment;
 
   // X and Y properties are the top left of the tooltip
   x: number;
@@ -2331,9 +2332,9 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
    */
   enabled: Scriptable<boolean, ScriptableTooltipContext<TType>>;
   /**
-   *   See custom tooltip section.
+   *   See external tooltip section.
    */
-  custom(this: TooltipModel<TType>, args: { chart: Chart; tooltip: TooltipModel<TType> }): void;
+  external(this: TooltipModel<TType>, args: { chart: Chart; tooltip: TooltipModel<TType> }): void;
   /**
    * The mode for positioning the tooltip
    */
@@ -2342,8 +2343,8 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * Override the tooltip alignment calculations
    */
-  xAlign: Scriptable<TooltipAlignment, ScriptableTooltipContext<TType>>;
-  yAlign: Scriptable<TooltipAlignment, ScriptableTooltipContext<TType>>;
+  xAlign: Scriptable<TooltipXAlignment, ScriptableTooltipContext<TType>>;
+  yAlign: Scriptable<TooltipYAlignment, ScriptableTooltipContext<TType>>;
 
   /**
    * Sort tooltip items.
