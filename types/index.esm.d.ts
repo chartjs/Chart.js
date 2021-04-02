@@ -2795,12 +2795,12 @@ export type LinearScaleOptions = CartesianScaleOptions & {
 
   /**
    * Adjustment used when calculating the maximum data value.
-   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   * @see https://www.chartjs.org/docs/latest/axes/cartesian/linear#axis-range-settings
    */
   suggestedMin?: number;
   /**
    * Adjustment used when calculating the minimum data value.
-   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   * @see https://www.chartjs.org/docs/latest/axes/cartesian/linear#axis-range-settings
    */
   suggestedMax?: number;
 
@@ -2822,7 +2822,7 @@ export type LinearScaleOptions = CartesianScaleOptions & {
 
     /**
      * User defined fixed step size for the scale
-     * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#step-size
+     * @see https://www.chartjs.org/docs/latest/axes/cartesian/linear#step-size
      */
     stepSize: number;
 
@@ -2843,12 +2843,12 @@ export type LogarithmicScaleOptions = CartesianScaleOptions & {
 
   /**
    * Adjustment used when calculating the maximum data value.
-   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   * @see https://www.chartjs.org/docs/latest/axes/cartesian/linear#axis-range-settings
    */
   suggestedMin?: number;
   /**
    * Adjustment used when calculating the minimum data value.
-   * @see https://www.chartjs.org/docs/next/axes/cartesian/linear#axis-range-settings
+   * @see https://www.chartjs.org/docs/latest/axes/cartesian/linear#axis-range-settings
    */
   suggestedMax?: number;
 
@@ -2871,7 +2871,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
    * Scale boundary strategy (bypassed by min/max time options)
    * - `data`: make sure data are fully visible, ticks outside are removed
    * - `ticks`: make sure ticks are fully visible, data outside are truncated
-   * @see https://www.chartjs.org/docs/next/axes/cartesian/time#scale-bounds
+   * @see https://www.chartjs.org/docs/latest/axes/cartesian/time#scale-bounds
    * @since 2.7.0
    * @default 'data'
    */
@@ -2887,7 +2887,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
   time: {
     /**
      * Custom parser for dates.
-     * @see https://www.chartjs.org/docs/next/axes/cartesian/time#parser
+     * @see https://www.chartjs.org/docs/latest/axes/cartesian/time#parser
      */
     parser: string | ((v: unknown) => number);
     /**
@@ -2902,7 +2902,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
     isoWeekday: false | number;
     /**
      * Sets how different time units are displayed.
-     * @see https://www.chartjs.org/docs/next/axes/cartesian/time#display-formats
+     * @see https://www.chartjs.org/docs/latest/axes/cartesian/time#display-formats
      */
     displayFormats: {
       [key: string]: string;
@@ -2938,7 +2938,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
      * @see https://github.com/chartjs/Chart.js/pull/4507
      * @since 2.7.0
      * @default 'auto'
-     * @see https://www.chartjs.org/docs/next/axes/cartesian/time#ticks-source
+     * @see https://www.chartjs.org/docs/latest/axes/cartesian/time#ticks-source
      */
     source: 'labels' | 'auto' | 'data';
   };
@@ -3032,7 +3032,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      */
     color: Scriptable<Color, ScriptableScaleContext>;
     /**
-     * @see https://www.chartjs.org/docs/next/axes/general/fonts.md
+     * @see https://www.chartjs.org/docs/latest/axes/general/fonts.md
      */
     font: Scriptable<FontSpec, ScriptableScaleContext>;
 
