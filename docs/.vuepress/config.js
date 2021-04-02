@@ -19,10 +19,8 @@ module.exports = {
         'ga': 'UA-28909194-3'
       }
     ],
-    /* COMMENTED OUT FOR SAMPLES DEV, BECAUSE KEEPS CRASHING ON HOT RELOAD
     [
       'vuepress-plugin-typedoc',
-
       {
         entryPoints: ['../../types/index.esm.d.ts'],
         hideInPageTOC: true,
@@ -32,7 +30,7 @@ module.exports = {
           parentCategory: 'API',
         },
       },
-    ],*/
+    ],
   ],
   chainWebpack(config) {
     config.merge({
