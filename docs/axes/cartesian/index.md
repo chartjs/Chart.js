@@ -283,8 +283,8 @@ module.exports = {
 };
 ```
 
-::: tip Note
-The `crossAlign` setting is not used the the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.
+:::tip Note
+The `crossAlign` setting is not used the tick rotation is not `0`, the axis position is `'center'` or the position is with respect to a data value.
 :::
 
 ### Axis ID
