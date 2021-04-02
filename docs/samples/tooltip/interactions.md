@@ -8,6 +8,7 @@ const actions = [
   {
     name: 'Mode: index',
     handler(chart) {
+      chart.options.interaction.axis = 'xy';
       chart.options.interaction.mode = 'index';
       chart.update();
     }
@@ -15,6 +16,7 @@ const actions = [
   {
     name: 'Mode: dataset',
     handler(chart) {
+      chart.options.interaction.axis = 'xy';
       chart.options.interaction.mode = 'dataset';
       chart.update();
     }
@@ -22,6 +24,7 @@ const actions = [
   {
     name: 'Mode: point',
     handler(chart) {
+      chart.options.interaction.axis = 'xy';
       chart.options.interaction.mode = 'point';
       chart.update();
     }
@@ -29,6 +32,7 @@ const actions = [
   {
     name: 'Mode: nearest',
     handler(chart) {
+      chart.options.interaction.axis = 'xy';
       chart.options.interaction.mode = 'nearest';
       chart.update();
     }

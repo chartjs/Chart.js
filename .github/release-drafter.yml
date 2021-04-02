@@ -43,10 +43,10 @@ template: |
   # Essential Links
 
   * [npm](https://www.npmjs.com/package/chart.js)
-  * [Migration guide](https://www.chartjs.org/docs/next/getting-started/v3-migration)
-  * [Docs](https://www.chartjs.org/docs/next/)
-  * [API](https://www.chartjs.org/docs/next/api/)
-  * [Samples](https://www.chartjs.org/docs/next/samples/)
+  * [Migration guide](https://www.chartjs.org/docs/latest/getting-started/v3-migration)
+  * [Docs](https://www.chartjs.org/docs/latest/)
+  * [API](https://www.chartjs.org/docs/latest/api/)
+  * [Samples](https://www.chartjs.org/docs/latest/samples/)
 
   $CHANGES
 
