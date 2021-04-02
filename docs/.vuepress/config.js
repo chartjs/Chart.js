@@ -107,6 +107,21 @@ module.exports = {
           ]
         },
         {
+          title: 'Other charts',
+          children: [
+            'other-charts/bubble',
+            'other-charts/scatter',
+            'other-charts/scatter-multi-axis',
+            'other-charts/doughnut',
+            'other-charts/pie',
+            'other-charts/multi-series-pie',
+            'other-charts/polar-area',
+            'other-charts/radar',
+            'other-charts/radar-skip-points',
+            'other-charts/combo-bar-line',
+          ]
+        },
+        {
           title: 'Area charts',
           children: [
             'area/line-boundaries',
