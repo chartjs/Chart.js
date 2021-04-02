@@ -21,7 +21,6 @@ module.exports = {
     ],
     [
       'vuepress-plugin-typedoc',
-
       {
         entryPoints: ['../../types/index.esm.d.ts'],
         hideInPageTOC: true,
@@ -58,13 +57,15 @@ module.exports = {
       imports: [
         ['scripts/register.js'],
         ['scripts/utils.js', 'Utils'],
+        ['scripts/helpers.js', 'helpers'],
+        ['scripts/components.js', 'components']
       ]
     },
     nav: [
       {text: 'Home', link: '/'},
       {text: 'API', link: '/api/'},
       // TODO: Make local when samples moved to vuepress
-      {text: 'Samples', link: `https://www.chartjs.org/samples/${docsVersion}/`},
+      {text: 'Samples', link: `/samples/`},
       {
         text: 'Ecosystem',
         ariaLabel: 'Community Menu',
@@ -79,6 +80,131 @@ module.exports = {
       '/api/': {
         title: 'API'
       },
+      '/samples/': [
+        '',
+        {
+          title: 'Bar Charts',
+          children: [
+            'bar/vertical',
+            'bar/horizontal',
+            'bar/stacked',
+            'bar/stacked-groups',
+            'bar/floating',
+            'bar/border-radius',
+          ]
+        },
+        {
+          title: 'Line Charts',
+          children: [
+            'line/line',
+            'line/multi-axis',
+            'line/stepped',
+            'line/interpolation',
+            'line/styling',
+            // 'line/point-styling',
+          ]
+        },
+        {
+          title: 'Other charts',
+          children: [
+            'other-charts/bubble',
+            'other-charts/scatter',
+            'other-charts/scatter-multi-axis',
+            'other-charts/doughnut',
+            'other-charts/pie',
+            'other-charts/multi-series-pie',
+            'other-charts/polar-area',
+            'other-charts/radar',
+            'other-charts/radar-skip-points',
+            'other-charts/combo-bar-line',
+          ]
+        },
+        {
+          title: 'Area charts',
+          children: [
+            'area/line-boundaries',
+            'area/line-datasets',
+            'area/line-stacked',
+            'area/radar'
+          ]
+        },
+        {
+          title: 'Scales',
+          children: [
+            'scales/linear-min-max',
+            'scales/linear-min-max-suggested',
+            'scales/linear-step-size',
+            'scales/log',
+            'scales/time-line',
+            'scales/time-max-span',
+            'scales/time-combo',
+          ]
+        },
+        {
+          title: 'Scale Options',
+          children: [
+            'scale-options/grid',
+            'scale-options/ticks',
+            'scale-options/titles',
+            'scale-options/center'
+          ]
+        },
+        {
+          title: 'Legend',
+          children: [
+            'legend/position',
+            'legend/title',
+            'legend/point-style',
+          ]
+        },
+        {
+          title: 'Title',
+          children: [
+            'title/alignment',
+          ]
+        },
+        {
+          title: 'Tooltip',
+          children: [
+            'tooltip/position',
+            'tooltip/interactions',
+            'tooltip/point-style',
+            'tooltip/content',
+            'tooltip/html',
+          ]
+        },
+        {
+          title: 'Scriptable Options',
+          children: [
+            'scriptable/bar',
+            'scriptable/bubble',
+            'scriptable/pie',
+            'scriptable/line',
+            'scriptable/polar',
+            'scriptable/radar',
+          ]
+        },
+        {
+          title: 'Animations',
+          children: [
+            'animations/delay',
+            'animations/drop',
+            'animations/loop',
+            'animations/progressive-line',
+          ]
+        },
+        {
+          title: 'Advanced',
+          children: [
+            'advanced/progress-bar',
+            'advanced/radial-gradient',
+            'advanced/linear-gradient',
+            'advanced/programmatic-events',
+            'advanced/derived-axis-type',
+            'advanced/derived-chart-type',
+          ]
+        },
+      ],
       '/': [
         '',
         {

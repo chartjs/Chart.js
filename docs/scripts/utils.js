@@ -1,3 +1,6 @@
+import colorLib from '@kurkle/color';
+import {DateTime} from 'luxon';
+import 'chartjs-adapter-luxon';
 import {valueOrDefault} from '../../dist/helpers.esm';
 
 // Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
@@ -42,6 +45,13 @@ export function points(config) {
   const xs = this.numbers(config);
   const ys = this.numbers(config);
   return xs.map((x, i) => ({x, y: ys[i]}));
+}
+
+export function bubbles(config) {
+  return this.points(config).map(pt => {
+    pt.r = this.rand(config.rmin, config.rmax);
+    return pt;
+  });
 }
 
 export function labels(config) {
@@ -109,12 +119,12 @@ export function color(index) {
   return COLORS[index % COLORS.length];
 }
 
-export function transparentize(color, opacity) {
+export function transparentize(value, opacity) {
   var alpha = opacity === undefined ? 0.5 : 1 - opacity;
-  return Color(color).alpha(alpha).rgbString();
+  return colorLib(value).alpha(alpha).rgbString();
 }
 
-export const chartColors = {
+export const CHART_COLORS = {
   red: 'rgb(255, 99, 132)',
   orange: 'rgb(255, 159, 64)',
   yellow: 'rgb(255, 205, 86)',
@@ -123,3 +133,25 @@ export const chartColors = {
   purple: 'rgb(153, 102, 255)',
   grey: 'rgb(201, 203, 207)'
 };
+
+const NAMED_COLORS = [
+  CHART_COLORS.red,
+  CHART_COLORS.orange,
+  CHART_COLORS.yellow,
+  CHART_COLORS.green,
+  CHART_COLORS.blue,
+  CHART_COLORS.purple,
+  CHART_COLORS.grey,
+];
+
+export function namedColor(index) {
+  return NAMED_COLORS[index % NAMED_COLORS.length];
+}
+
+export function newDate(days) {
+  return DateTime.now().plus({days}).toJSDate();
+}
+
+export function newDateString(days) {
+  return DateTime.now().plus({days}).toISO();
+}
