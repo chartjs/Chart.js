@@ -115,7 +115,7 @@ These are the customisation options specific to Polar Area charts. These options
 | `animation.animateRotate` | `boolean` | `true` | If true, the chart will animate in with a rotation animation. This property is in the `options.animation` object.
 | `animation.animateScale` | `boolean` | `true` | If true, will animate scaling the chart from the center outwards.
 
-The polar area chart uses the [radialLinear](../axes/radial/linear.mdx) scale. Additional configuration is provided via the scale.
+The polar area chart uses the [radialLinear](../axes/radial/linear.md) scale. Additional configuration is provided via the scale.
 
 ## Default Options
 

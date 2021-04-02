@@ -26,7 +26,7 @@ myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's v
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
 
-A `mode` string can be provided to indicate transition configuration should be used. Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also a supported mode for skipping animations for single update. Please see [animations](../configuration/animations.mdx) docs for more details.
+A `mode` string can be provided to indicate transition configuration should be used. Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also a supported mode for skipping animations for single update. Please see [animations](../configuration/animations.md) docs for more details.
 
 Example:
 
@@ -154,7 +154,7 @@ var visible = chart.getDataVisibility(2);
 
 ## hide(datasetIndex)
 
-Sets the visibility for the given dataset to false. Updates the chart and animates the dataset with `'hide'` mode. This animation can be configured under the `hide` key in animation options. Please see [animations](../configuration/animations.mdx) docs for more details.
+Sets the visibility for the given dataset to false. Updates the chart and animates the dataset with `'hide'` mode. This animation can be configured under the `hide` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
 
 ```javascript
 chart.hide(1); // hides dataset at index 1 and does 'hide' animation.
@@ -162,7 +162,7 @@ chart.hide(1); // hides dataset at index 1 and does 'hide' animation.
 
 ## show(datasetIndex)
 
-Sets the visibility for the given dataset to true. Updates the chart and animates the dataset with `'show'` mode. This animation can be configured under the `show` key in animation options. Please see [animations](../configuration/animations.mdx) docs for more details.
+Sets the visibility for the given dataset to true. Updates the chart and animates the dataset with `'show'` mode. This animation can be configured under the `show` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
 
 ```javascript
 chart.show(1); // shows dataset at index 1 and does 'show' animation.

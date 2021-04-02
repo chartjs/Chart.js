@@ -25,7 +25,7 @@ Namespace: `options.scales[scaleId]`
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
-| `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](./index.mdx#scale-bounds)
+| `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](./index.md#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
 | `time.displayFormats` | `object` | | Sets how different time units are displayed. [more...](#display-formats)
 | `time.isoWeekday` | `boolean`\|`number` | `false` | If `boolean` and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday. If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday)
