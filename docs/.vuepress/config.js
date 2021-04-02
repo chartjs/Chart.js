@@ -19,10 +19,8 @@ module.exports = {
         'ga': 'UA-28909194-3'
       }
     ],
-    /* COMMENTED OUT FOR SAMPLES DEV, BECAUSE KEEPS CRASHING ON HOT RELOAD
     [
       'vuepress-plugin-typedoc',
-
       {
         entryPoints: ['../../types/index.esm.d.ts'],
         hideInPageTOC: true,
@@ -32,7 +30,7 @@ module.exports = {
           parentCategory: 'API',
         },
       },
-    ],*/
+    ],
   ],
   chainWebpack(config) {
     config.merge({
@@ -104,6 +102,21 @@ module.exports = {
             'line/interpolation',
             'line/styling',
             // 'line/point-styling',
+          ]
+        },
+        {
+          title: 'Other charts',
+          children: [
+            'other-charts/bubble',
+            'other-charts/scatter',
+            'other-charts/scatter-multi-axis',
+            'other-charts/doughnut',
+            'other-charts/pie',
+            'other-charts/multi-series-pie',
+            'other-charts/polar-area',
+            'other-charts/radar',
+            'other-charts/radar-skip-points',
+            'other-charts/combo-bar-line',
           ]
         },
         {
