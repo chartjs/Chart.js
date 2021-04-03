@@ -205,6 +205,7 @@ module.exports = {
         {
           title: 'Advanced',
           children: [
+            'advanced/data-decimation',
             'advanced/progress-bar',
             'advanced/radial-gradient',
             'advanced/linear-gradient',
