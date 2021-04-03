@@ -1,6 +1,6 @@
 # Data Decimation
 
-This example shows how to use the built-in data decimation to reduce the number of points drawn on the graph to improve performance.
+This example shows how to use the built-in data decimation to reduce the number of points drawn on the graph for improved performance.
 
 ```js chart-editor
 // <block:actions:3>
