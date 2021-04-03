@@ -141,6 +141,17 @@ function minMaxDecimation(data, availableWidth) {
   return decimated;
 }
 
+function cleanDecimatedData(chart) {
+  chart.data.datasets.forEach((dataset) => {
+    if (dataset._decimated) {
+      const data = dataset._data;
+      delete dataset._decimated;
+      delete dataset._data;
+      Object.defineProperty(dataset, 'data', {value: data});
+    }
+  });
+}
+
 export default {
   id: 'decimation',
 
@@ -151,6 +162,8 @@ export default {
 
   beforeElementsUpdate: (chart, args, options) => {
     if (!options.enabled) {
+      // The decimation plugin may have been previously enabled. Need to remove old `dataset._data` handlers
+      cleanDecimatedData(chart);
       return;
     }
 
@@ -224,13 +237,6 @@ export default {
   },
 
   destroy(chart) {
-    chart.data.datasets.forEach((dataset) => {
-      if (dataset._decimated) {
-        const data = dataset._data;
-        delete dataset._decimated;
-        delete dataset._data;
-        Object.defineProperty(dataset, 'data', {value: data});
-      }
-    });
+    cleanDecimatedData(chart);
   }
 };
