@@ -25,6 +25,7 @@ const data = {
 const config = {
   type: 'bubble',
   data: data,
+  options: {}
 };
 // </block:config>
 
@@ -34,18 +35,14 @@ module.exports = {
 };
 ```
 
-## Example Usage
-
-```javascript
-// For a bubble chart
-var myBubbleChart = new Chart(ctx, {
-    type: 'bubble',
-    data: data,
-    options: options
-});
-```
-
 ## Dataset Properties
+
+Namespaces:
+
+* `data.datasets[index]` - options for this dataset only
+* `options.datasets.bubble` - options for all bubble datasets
+* `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
+* `options` - options for the whole chart
 
 The bubble chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of the bubbles is generally set this way.
 
