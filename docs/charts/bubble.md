@@ -64,6 +64,8 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`rotation`](#styling) | `number` | Yes | Yes | `0`
 | [`radius`](#styling) | `number` | Yes | Yes | `3`
 
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
+
 ### General
 
 | Name | Description

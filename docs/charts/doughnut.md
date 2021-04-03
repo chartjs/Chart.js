@@ -118,6 +118,8 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`rotation`](#general) | `number` | - | - | `undefined`
 | [`weight`](#styling) | `number` | - | - | `1`
 
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
+
 ### General
 
 | Name | Description

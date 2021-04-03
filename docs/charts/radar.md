@@ -107,6 +107,8 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
 | [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
 
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
+
 ### General
 
 | Name | Description

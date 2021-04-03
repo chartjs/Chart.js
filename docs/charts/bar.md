@@ -118,7 +118,7 @@ data: {
 | ---- | ----
 | `base` | Base value for the bar in data units along the value axis. If not set, defaults to the value axis base value.
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
-| `groupes` | Should the bars be grouped on index axis. When `true`, all the datasets at same index value will be placed next to each other centering on that index value. When `false`, each bar is placed on its actual index-axis value.
+| `grouped` | Should the bars be grouped on index axis. When `true`, all the datasets at same index value will be placed next to each other centering on that index value. When `false`, each bar is placed on its actual index-axis value.
 | `indexAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
