@@ -67,7 +67,7 @@ In this mode, property name is used for `index` scale and value for `value` scal
 | `label` | `string` | The label for the dataset which appears in the legend and tooltips.
 | `clip` | `number`\|`object` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
 | `order` | `number` | The drawing order of dataset. Also affects order for stacking, tooltip and legend.
-| `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
+| `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). Defaults to dataset `type`.
 | `parsing` | `boolean`\|`object` | How to parse the dataset. The parsing can be disabled by specifying parsing: false at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 | `hidden`  | `boolean` | Configure the visibility of the dataset. Using `hidden: true` will hide the dataset from being rendered in the Chart.
 

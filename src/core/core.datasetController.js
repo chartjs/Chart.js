@@ -111,7 +111,7 @@ function isStacked(scale, meta) {
 }
 
 function getStackKey(indexScale, valueScale, meta) {
-  return indexScale.id + '.' + valueScale.id + '.' + meta.stack + '.' + meta.type;
+  return `${indexScale.id}.${valueScale.id}.${meta.stack || meta.type}`;
 }
 
 function getUserBounds(scale) {
