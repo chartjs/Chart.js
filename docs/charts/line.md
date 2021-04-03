@@ -30,17 +30,15 @@ module.exports = {
 };
 ```
 
-## Example Usage
-
-```javascript
-var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: options
-});
-```
-
 ## Dataset Properties
+
+Namespaces:
+
+* `data.datasets[index]` - options for this dataset only
+* `options.datasets.line` - options for all line datasets
+* `options.elements.line` - options for all [line elements](../configuration/elements.md#line-configuration)
+* `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
+* `options` - options for the whole chart
 
 The line chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
@@ -54,7 +52,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
-| [`data`](#data-structure) | `object`\|`object[]`\|`number[]`\|`string[]` | - | - | **required**
+| [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
@@ -81,9 +79,12 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
 | [`showLine`](#line-styling) | `boolean` | - | - | `true`
 | [`spanGaps`](#line-styling) | `boolean`\|`number` | - | - | `undefined`
+| [`stack`](#general) | `string` | - | - | `'line'` |
 | [`stepped`](#stepped) | `boolean`\|`string` | - | - | `false`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
+
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
 ### General
 
@@ -93,6 +94,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | `indexAxis` | The base axis of the dataset. `'x'` for horizontal lines and `'y'` for vertical lines.
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
+| `stack` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). [more](#stacked-area-charts)
 | `xAxisID` | The ID of the x-axis to plot this dataset on.
 | `yAxisID` | The ID of the y-axis to plot this dataset on.
 
@@ -167,15 +169,6 @@ The following values are supported for `stepped`.
 * `'middle'`: Step-middle Interpolation
 
 If the `stepped` value is set to anything other than false, `tension` will be ignored.
-
-## Configuration Options
-
-The line chart defines the following configuration options. These options are looked up on access, and form together with the global chart configuration, `Chart.defaults`, the options of the chart.
-
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `showLine` | `boolean` | `true` | If false, the lines between points are not drawn.
-| `spanGaps` | `boolean`\|`number` | `false` | If true, lines will be drawn between points with no or null data. If false, points with `null` data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
 
 ## Default Options
 
@@ -267,18 +260,6 @@ module.exports = {
   actions: [],
   config: config,
 };
-```
-
-## Example
-
-```javascript
-var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-      indexAxis: 'y'
-    }
-});
 ```
 
 ### Config Options

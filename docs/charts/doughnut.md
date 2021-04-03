@@ -90,6 +90,14 @@ module.exports = {
 
 ## Dataset Properties
 
+Namespaces:
+
+* `data.datasets[index]` - options for this dataset only
+* `options.datasets.doughnut` - options for all doughnut datasets
+* `options.datasets.pie` - options for all pie datasets
+* `options.elements.arc` - options for all [arc elements](../configuration/elements.md#arc-configuration)
+* `options` - options for the whole chart
+
 The doughnut/pie chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colours of the dataset's arcs are generally set this way.
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
@@ -109,6 +117,8 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
 | [`rotation`](#general) | `number` | - | - | `undefined`
 | [`weight`](#styling) | `number` | - | - | `1`
+
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
 ### General
 
