@@ -99,6 +99,15 @@ describe('Chart.helpers.config', function() {
       expect(resolver.getter).toEqual('options getter');
     });
 
+    it('should not fail on when options are frozen', function() {
+      function create() {
+        const defaults = Object.freeze({default: true});
+        const options = Object.freeze({value: true});
+        return _createResolver([options, defaults]);
+      }
+      expect(create).not.toThrow();
+    });
+
     describe('_fallback', function() {
       it('should follow simple _fallback', function() {
         const defaults = {
@@ -496,6 +505,16 @@ describe('Chart.helpers.config', function() {
         resolver.sub.value = false;
         expect(options.sub.value).toBeFalse();
         expect(defaults.sub.value).toBeTrue();
+      });
+
+      it('should throw when setting a value and options is frozen', function() {
+        const defaults = Object.freeze({default: true});
+        const options = Object.freeze({value: true});
+        const resolver = _createResolver([options, defaults]);
+        function set() {
+          resolver.value = false;
+        }
+        expect(set).toThrow();
       });
     });
   });
