@@ -90,6 +90,9 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // Fill style of the legend box
     fillStyle: Color,
 
+    // Text color
+    fontColor: Color,
+
     // If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
     hidden: boolean,
 
