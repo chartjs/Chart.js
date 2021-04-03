@@ -107,8 +107,8 @@ function clickHandler(evt) {
 
     if (points.length) {
         const firstPoint = points[0];
-        var label = myChart.data.labels[firstPoint._index];
-        var value = myChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
+        var label = myChart.data.labels[firstPoint.index];
+        var value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
     }
 }
 ```
