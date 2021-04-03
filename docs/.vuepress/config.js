@@ -133,6 +133,7 @@ module.exports = {
           children: [
             'area/line-boundaries',
             'area/line-datasets',
+            'area/line-drawtime',
             'area/line-stacked',
             'area/radar'
           ]

@@ -1956,6 +1956,7 @@ export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
 export const Filler: Plugin;
 export interface FillerOptions {
+  drawTime: 'beforeDatasetDraw' | 'beforeDatasetsDraw';
   propagate: boolean;
 }
 
