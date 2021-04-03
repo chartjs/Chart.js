@@ -3,6 +3,8 @@ function getLabels(scale) {
 }
 
 describe('Logarithmic Scale tests', function() {
+  describe('auto', jasmine.fixture.specs('scale.logarithmic'));
+
   it('should register', function() {
     var Constructor = Chart.registry.getScale('logarithmic');
     expect(Constructor).not.toBe(undefined);
