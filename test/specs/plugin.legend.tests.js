@@ -62,6 +62,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -76,6 +77,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: true,
       lineCap: undefined,
       lineDash: undefined,
@@ -90,6 +92,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset3',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -135,6 +138,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'round',
       lineDash: [2, 2],
@@ -149,6 +153,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: true,
       lineCap: 'butt',
       lineDash: [],
@@ -163,6 +168,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset3',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'butt',
       lineDash: [],
@@ -215,6 +221,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset3',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'butt',
       lineDash: [],
@@ -229,6 +236,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: true,
       lineCap: 'butt',
       lineDash: [],
@@ -243,6 +251,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'round',
       lineDash: [2, 2],
@@ -300,6 +309,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -314,6 +324,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset3',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -370,6 +381,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset3',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'butt',
       lineDash: [],
@@ -384,6 +396,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: true,
       lineCap: 'butt',
       lineDash: [],
@@ -398,6 +411,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: 'round',
       lineDash: [2, 2],
@@ -529,6 +543,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -571,6 +586,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: 'rgb(50, 0, 0)',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -628,6 +644,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -642,6 +659,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -700,6 +718,7 @@ describe('Legend block tests', function() {
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
       fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,
@@ -714,6 +733,7 @@ describe('Legend block tests', function() {
     }, {
       text: 'dataset2',
       fillStyle: '#f31',
+      fontColor: '#666',
       hidden: false,
       lineCap: undefined,
       lineDash: undefined,

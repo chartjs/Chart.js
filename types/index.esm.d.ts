@@ -2003,6 +2003,12 @@ export interface LegendItem {
   fillStyle?: Color;
 
   /**
+   * Font color for the text
+   * Defaults to LegendOptions.labels.color
+   */
+  fontColor?: Color;
+
+  /**
    * If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
    */
   hidden?: boolean;
