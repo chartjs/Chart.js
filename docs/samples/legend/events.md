@@ -1,6 +1,6 @@
 # Events
 
-This sample demonstrates how to use the event hooks to highlight chart chart elements.
+This sample demonstrates how to use the event hooks to highlight chart elements.
 
 ```js chart-editor
 
@@ -17,7 +17,7 @@ const data = {
 // </block:data>
 
 // <block:handleHover:1>
-// Append '4d' to the colors (alpha channel), expect for the hovered index
+// Append '4d' to the colors (alpha channel), except for the hovered index
 function handleHover(evt, item, legend) {
   legend.chart.data.datasets[0].backgroundColor.forEach((color, index, colors) => {
     colors[index] = index === item.index || color.length === 9 ? color : color + '4D';
