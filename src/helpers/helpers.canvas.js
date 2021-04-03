@@ -377,3 +377,36 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
 
   ctx.restore();
 }
+
+/**
+ * Add a path of a rectangle with rounded corners to the current sub-path
+ * @param {CanvasRenderingContext2D} ctx Context
+ * @param {*} rect Bounding rect
+ */
+export function addRoundedRectPath(ctx, rect) {
+  const {x, y, w, h, radius} = rect;
+
+  // top left arc
+  ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
+
+  // line from top left to bottom left
+  ctx.lineTo(x, y + h - radius.bottomLeft);
+
+  // bottom left arc
+  ctx.arc(x + radius.bottomLeft, y + h - radius.bottomLeft, radius.bottomLeft, PI, HALF_PI, true);
+
+  // line from bottom left to bottom right
+  ctx.lineTo(x + w - radius.bottomRight, y + h);
+
+  // bottom right arc
+  ctx.arc(x + w - radius.bottomRight, y + h - radius.bottomRight, radius.bottomRight, HALF_PI, 0, true);
+
+  // line from bottom right to top right
+  ctx.lineTo(x + w, y + radius.topRight);
+
+  // top right arc
+  ctx.arc(x + w - radius.topRight, y + radius.topRight, radius.topRight, 0, -HALF_PI, true);
+
+  // line from top right to top left
+  ctx.lineTo(x + radius.topLeft, y);
+}
