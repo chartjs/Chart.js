@@ -1604,6 +1604,13 @@ export interface ArcProps {
   circumference: number;
 }
 
+export interface ArcBorderRadius {
+  outerStart: number;
+  outerEnd: number;
+  innerStart: number;
+  innerEnd: number;
+}
+
 export interface ArcOptions extends CommonElementOptions {
   /**
    * Arc stroke alignment.
@@ -1613,6 +1620,11 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc offset (in pixels).
    */
   offset: number;
+  /**
+   * Sets the border radius for arcs
+   * @default 0
+   */
+  borderRadius: number | ArcBorderRadius;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

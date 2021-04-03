@@ -97,6 +97,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`circumference`](#general) | `number` | - | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
@@ -139,6 +140,10 @@ The following values are supported for `borderAlign`.
 * `'inner'`
 
 When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all borders will not overlap.
+
+### Border Radius
+
+If this value is a number, it is applied to all corners of the arc (outerStart, outerEnd, innerStart, innerRight). If this value is an object, the `outerStart` property defines the outer-start corner's border radius. Similarly, the `outerEnd`, `innerStart`, and `innerEnd` properties can also be specified.
 
 ### Interactions
 

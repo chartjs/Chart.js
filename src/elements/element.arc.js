@@ -1,5 +1,7 @@
 import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
+import {_limitValue} from '../helpers/helpers.math';
+import {_readValueToProps} from '../helpers/helpers.options';
 
 function clipArc(ctx, element) {
   const {startAngle, endAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
@@ -19,15 +21,134 @@ function clipArc(ctx, element) {
   ctx.clip();
 }
 
+function toRadiusCorners(value) {
+  return _readValueToProps(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
+}
 
+/**
+ * Parse border radius from the provided options
+ * @param {ArcElement} arc
+ * @param {number} innerRadius
+ * @param {number} outerRadius
+ * @param {number} angleDelta Arc circumference in radians
+ * @returns
+ */
+function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
+  const o = toRadiusCorners(arc.options.borderRadius);
+  const halfThickness = (outerRadius - innerRadius) / 2;
+  const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
+
+  // Outer limits are complicated. We want to compute the available angular distance at
+  // a radius of outerRadius - borderRadius because for small angular distances, this term limits.
+  // We compute at r = outerRadius - borderRadius because this circle defines the center of the border corners.
+  //
+  // If the borderRadius is large, that value can become negative.
+  // This causes the outer borders to lose their radius entirely, which is rather unexpected. To solve that, if borderRadius > outerRadius
+  // we know that the thickness term will dominate and compute the limits at that point
+  const computeOuterLimit = (val) => {
+    const outerArcLimit = (outerRadius - Math.min(halfThickness, val)) * angleDelta / 2;
+    return _limitValue(val, 0, Math.min(halfThickness, outerArcLimit));
+  };
+
+  return {
+    outerStart: computeOuterLimit(o.outerStart),
+    outerEnd: computeOuterLimit(o.outerEnd),
+    innerStart: _limitValue(o.innerStart, 0, innerLimit),
+    innerEnd: _limitValue(o.innerEnd, 0, innerLimit),
+  };
+}
+
+/**
+ * Convert (r, 𝜃) to (x, y)
+ * @param {number} r Radius from center point
+ * @param {number} theta Angle in radians
+ * @param {number} x Center X coordinate
+ * @param {number} y Center Y coordinate
+ * @returns {{ x: number; y: number }} Rectangular coordinate point
+ */
+function rThetaToXY(r, theta, x, y) {
+  return {
+    x: x + r * Math.cos(theta),
+    y: y + r * Math.sin(theta),
+  };
+}
+
+
+/**
+ * Path the arc, respecting the border radius
+ *
+ * 8 points of interest exist around the arc segment.
+ * These points define the intersection of the arc edges and the corners.
+ *
+ *   Start      End
+ *
+ *    1---------2    Outer
+ *   /           \
+ *   8           3
+ *   |           |
+ *   |           |
+ *   7           4
+ *   \           /
+ *    6---------5    Inner
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {ArcElement} element
+ */
 function pathArc(ctx, element) {
   const {x, y, startAngle, endAngle, pixelMargin} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
+  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
+
+  const outerStartAdjustedRadius = outerRadius - outerStart;
+  const outerEndAdjustedRadius = outerRadius - outerEnd;
+  const outerStartAdjustedAngle = startAngle + outerStart / outerStartAdjustedRadius;
+  const outerEndAdjustedAngle = endAngle - outerEnd / outerEndAdjustedRadius;
+
+  const innerStartAdjustedRadius = innerRadius + innerStart;
+  const innerEndAdjustedRadius = innerRadius + innerEnd;
+  const innerStartAdjustedAngle = startAngle + innerStart / innerStartAdjustedRadius;
+  const innerEndAdjustedAngle = endAngle - innerEnd / innerEndAdjustedRadius;
 
   ctx.beginPath();
-  ctx.arc(x, y, outerRadius, startAngle, endAngle);
-  ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+
+  // The first arc segment from point 1 to point 2
+  ctx.arc(x, y, outerRadius, outerStartAdjustedAngle, outerEndAdjustedAngle);
+
+  // The corner segment from point 2 to point 3
+  if (outerEnd > 0) {
+    const pCenter = rThetaToXY(outerEndAdjustedRadius, outerEndAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + HALF_PI);
+  }
+
+  // The line from point 3 to point 4
+  const p4 = rThetaToXY(innerEndAdjustedRadius, endAngle, x, y);
+  ctx.lineTo(p4.x, p4.y);
+
+  // The corner segment from point 4 to point 5
+  if (innerEnd > 0) {
+    const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
+  }
+
+  // The inner arc from point 5 to point 6
+  ctx.arc(x, y, innerRadius, endAngle - (innerEnd / innerRadius), startAngle + (innerStart / innerRadius), true);
+
+  // The corner segment from point 6 to point 7
+  if (innerStart > 0) {
+    const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - HALF_PI);
+  }
+
+  // The line from point 7 to point 8
+  const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
+  ctx.lineTo(p8.x, p8.y);
+
+  // The corner segment from point 8 to point 1
+  if (outerStart > 0) {
+    const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
+    ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - HALF_PI, outerStartAdjustedAngle);
+  }
+
   ctx.closePath();
 }
 
@@ -80,9 +201,7 @@ function drawFullCircleBorders(ctx, element, inner) {
 }
 
 function drawBorder(ctx, element) {
-  const {x, y, startAngle, endAngle, pixelMargin, options} = element;
-  const outerRadius = element.outerRadius;
-  const innerRadius = element.innerRadius + pixelMargin;
+  const {options} = element;
   const inner = options.borderAlign === 'inner';
 
   if (!options.borderWidth) {
@@ -105,10 +224,7 @@ function drawBorder(ctx, element) {
     clipArc(ctx, element);
   }
 
-  ctx.beginPath();
-  ctx.arc(x, y, outerRadius, startAngle, endAngle);
-  ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
-  ctx.closePath();
+  pathArc(ctx, element);
   ctx.stroke();
 }
 
@@ -215,9 +331,10 @@ ArcElement.id = 'arc';
 ArcElement.defaults = {
   borderAlign: 'center',
   borderColor: '#fff',
+  borderRadius: 0,
   borderWidth: 2,
   offset: 0,
-  angle: undefined
+  angle: undefined,
 };
 
 /**
