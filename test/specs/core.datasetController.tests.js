@@ -539,11 +539,11 @@ describe('Chart.DatasetController', function() {
     });
 
     expect(chart._stacks).toEqual({
-      'x.y.1.bar': {
+      'x.y.1': {
         0: {0: 1, 2: 3},
         1: {0: 10, 2: 30}
       },
-      'x.y.2.bar': {
+      'x.y.2': {
         0: {1: 2},
         1: {1: 20}
       }
@@ -553,11 +553,11 @@ describe('Chart.DatasetController', function() {
     chart.update();
 
     expect(chart._stacks).toEqual({
-      'x.y.1.bar': {
+      'x.y.1': {
         0: {0: 1},
         1: {0: 10}
       },
-      'x.y.2.bar': {
+      'x.y.2': {
         0: {1: 2, 2: 3},
         1: {1: 20, 2: 30}
       }
@@ -583,11 +583,11 @@ describe('Chart.DatasetController', function() {
     });
 
     expect(chart._stacks).toEqual({
-      'x.y.1.bar': {
+      'x.y.1': {
         0: {0: 1, 2: 3},
         1: {0: 10, 2: 30}
       },
-      'x.y.2.bar': {
+      'x.y.2': {
         0: {1: 2},
         1: {1: 20}
       }
@@ -597,11 +597,11 @@ describe('Chart.DatasetController', function() {
     chart.update();
 
     expect(chart._stacks).toEqual({
-      'x.y.1.bar': {
+      'x.y.1': {
         0: {0: 1, 2: 4},
         1: {0: 10}
       },
-      'x.y.2.bar': {
+      'x.y.2': {
         0: {1: 2},
         1: {1: 20}
       }

@@ -286,7 +286,7 @@ The following dataset properties are specific to stacked bar charts.
 
 | Name | Type | Description
 | ---- | ---- | -----------
-| `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack).
+| `stack` | `string` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). Defaults to `bar`.
 
 ## Horizontal Bar Chart
 

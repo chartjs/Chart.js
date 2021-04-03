@@ -126,6 +126,7 @@ module.exports = {
             'other-charts/radar',
             'other-charts/radar-skip-points',
             'other-charts/combo-bar-line',
+            'other-charts/stacked-bar-line',
           ]
         },
         {
