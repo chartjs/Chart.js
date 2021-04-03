@@ -167,6 +167,7 @@ module.exports = {
             'legend/title',
             'legend/point-style',
             'legend/events',
+            'legend/html',
           ]
         },
         {
