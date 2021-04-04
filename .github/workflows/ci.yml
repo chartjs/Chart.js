@@ -9,6 +9,7 @@ on:
     branches:
       - master
       - "2.9"
+  workflow_dispatch:
 
 jobs:
   build:
