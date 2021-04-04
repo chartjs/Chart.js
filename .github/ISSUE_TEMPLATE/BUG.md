@@ -9,7 +9,7 @@ labels: 'type: bug'
   Head to https://stackoverflow.com/questions/tagged/chart.js
 
   Bug reports MUST be submitted with an interactive example:
-  https://codepen.io/pen?template=JXVYzq
+  https://codepen.io/pen?template=BapRepQ
 
   Chart.js versions lower then 3.x are NOT supported anymore, new issues will be disregarded.
 -->
@@ -29,7 +29,7 @@ labels: 'type: bug'
 ## Steps to Reproduce
 <!--
   Provide a link to a live example. Bug reports MUST be submitted with an
-  interactive example (https://codepen.io/pen?template=JXVYzq).
+  interactive example (https://codepen.io/pen/?template=BapRepQ).
 
   If filing a bug against `master`, you may reference the latest code via
   https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
