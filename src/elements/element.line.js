@@ -280,6 +280,7 @@ export default class LineElement extends Element {
     const me = this;
     me._points = points;
     delete me._segments;
+    delete me._styleSegments;
     delete me._path;
     me._pointsUpdated = false;
   }
