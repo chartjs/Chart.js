@@ -46,7 +46,7 @@ cd $TARGET_DIR
 git checkout $TARGET_BRANCH
 
 # https://www.chartjs.org/dist/$VERSION
-if [["$VERSION" != "$TAG"]] then
+if [["$VERSION" != "$TAG"]]; then
   deploy_versioned_files $VERSION
 fi
 
