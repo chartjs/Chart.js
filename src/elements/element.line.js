@@ -395,22 +395,6 @@ export default class LineElement extends Element {
     return !!loop;
   }
 
-  _drawSegments(ctx, start, count) {
-    const me = this;
-    const segments = me.segments;
-    const segmentMethod = _getSegmentMethod(me);
-
-    start = start || 0;
-    count = count || (me.points.length - start);
-
-    for (const segment of segments) {
-      setStyle(ctx, me.options, segment.style);
-      ctx.beginPath();
-      segmentMethod(ctx, me, segment, {start, end: start + count - 1});
-      ctx.stroke();
-    }
-  }
-
   /**
 	 * Draw
 	 * @param {CanvasRenderingContext2D} ctx

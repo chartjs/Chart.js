@@ -257,17 +257,23 @@ function splitByStyles(segments, points, styleSpecs = []) {
     return segments;
   }
   const styleSegments = [];
+  let gapStart;
   for (const segment of segments) {
     let start = segment.start;
     let prev = points[start];
     let style = null;
     let i;
+
+    if (start > gapStart) {
+      styleSegments.push({start: gapStart, end: start, loop: false, style: 'gap'});
+    }
+
     for (i = segment.start + 1; i <= segment.end; i++) {
       const pt = points[i];
       const s = slope(prev, pt);
       let curStyle;
       for (const spec of styleSpecs) {
-        if (spec.slope(s)) {
+        if (spec.slope && spec.slope(s)) {
           curStyle = spec.id;
           break;
         }
@@ -284,6 +290,7 @@ function splitByStyles(segments, points, styleSpecs = []) {
     if (start < i) {
       styleSegments.push({start, end: i, loop: segment.loop, style});
     }
+    gapStart = i - 1;
   }
   return styleSegments;
 }
