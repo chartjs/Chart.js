@@ -2,11 +2,15 @@
 
 set -e
 
+source utils.sh
+
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
 TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
 
 VERSION=$1
+MODE=$2
+TAG=$(tag_from_version "$VERSION" "$MODE")
 
 function move_sample_redirect {
     local tag=$1
@@ -15,7 +19,7 @@ function move_sample_redirect {
     sed -i -E "s/TAG/$tag/g" samples/$tag/index.html
 }
 
-function update_with_tag {
+function deploy_tagged_files {
     local tag=$1
     rm -rf "docs/$tag"
     cp -r ../dist/docs docs/$tag
@@ -25,20 +29,6 @@ function update_with_tag {
     move_sample_redirect $tag
 
     deploy_versioned_files $tag
-}
-
-# Note: this code also exists in docs-config.sh
-# tag is next|latest|master
-# https://www.chartjs.org/docs/$tag/
-# https://www.chartjs.org/dist/$tag/chart.*js
-function update_tagged_files {
-    if [ "$VERSION" == "master" ]; then
-        update_with_tag master
-    elif [[ "$VERSION" =~ ^[^-]+$ ]]; then
-        update_with_tag latest
-    else
-        update_with_tag next
-    fi
 }
 
 function deploy_versioned_files {
@@ -55,10 +45,15 @@ git clone $TARGET_REPO_URL $TARGET_DIR
 cd $TARGET_DIR
 git checkout $TARGET_BRANCH
 
-# Copy distribution files
-deploy_versioned_files $VERSION
+# https://www.chartjs.org/dist/$VERSION
+if [["$VERSION" != "$TAG"]] then
+  deploy_versioned_files $VERSION
+fi
 
-update_tagged_files
+# https://www.chartjs.org/dist/$TAG
+# https://www.chartjs.org/docs/$TAG
+# https://www.chartjs.org/samples/$TAG
+deploy_tagged_files $TAG
 
 git add --all
 

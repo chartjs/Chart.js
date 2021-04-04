@@ -1,7 +1,4 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
-
-name: Node.js Package
+name: Release
 
 on:
   release:
@@ -18,19 +15,8 @@ jobs:
         env:
           TAG: ${{ github.event.release.tag_name }}
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-    - name: Test
-      run: |
-        npm ci
-        xvfb-run --auto-servernum npm test
-
-  publish-npm:
-    needs: [test, setup]
+  release:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -45,7 +31,7 @@ jobs:
           json -I -f package.json -e "this.version=\"$VERSION\""
           json -I -f package-lock.json -e "this.version=\"$VERSION\""
           npm run build
-          ./scripts/docs-config.sh "${VERSION}"
+          ./scripts/docs-config.sh "$VERSION" release
           npm run docs
           npm pack
         env:
@@ -56,7 +42,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Deploy Docs
-        run: ./scripts/deploy-docs.sh "$VERSION"
+        run: ./scripts/deploy-docs.sh "$VERSION" release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
           GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
@@ -72,3 +58,30 @@ jobs:
           asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
           asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
           asset_content_type: application/gzip
+  release-tag:
+    needs: [setup,release]
+    runs-on: ubuntu-latest
+    if: "!github.event.release.prerelease"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+          registry-url: https://registry.npmjs.org/
+      - name: Setup and build
+        run: |
+          npm ci
+          npm install -g json
+          json -I -f package.json -e "this.version=\"$VERSION\""
+          json -I -f package-lock.json -e "this.version=\"$VERSION\""
+          npm run build
+          ./scripts/docs-config.sh "$VERSION"
+          npm run docs
+        env:
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Deploy Docs
+        run: ./scripts/deploy-docs.sh "$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
+          GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
+          VERSION: ${{ needs.setup.outputs.version }}
