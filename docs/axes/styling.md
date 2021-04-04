@@ -8,12 +8,12 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 
 | Name | Type | Scriptable | Indexable | Default | Description
 | ---- | ---- | :-------------------------------: | :-----------------------------: | ------- | -----------
-| `borderColor` | [`Color`](../general/colors.md) | | | | If set, used as the color of the border line. If unset, the first `color` option is resolved and used.
-| `borderWidth` | `number` | | | | If set, used as the width of the border line. If unset, the first `lineWidth` option is resolved and used.
+| `borderColor` | [`Color`](../general/colors.md) | | | `Chart.defaults.borderColor` | The color of the border line.
+| `borderWidth` | `number` | | | `1` | The width of the border line.
 | `borderDash` | `number[]` | | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | Yes | | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `circular` | `boolean` | | | `false` | If true, gridlines are circular (on radar chart only).
-| `color` | [`Color`](../general/colors.md)  | Yes | Yes | `'rgba(0, 0, 0, 0.1)'` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
+| `color` | [`Color`](../general/colors.md)  | Yes | Yes | `Chart.defaults.borderColor` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
 | `display` | `boolean` | | | `true` | If false, do not display grid lines for this axis.
 | `drawBorder` | `boolean` | | | `true` | If true, draw a border at the edge between the axis and the chart area.
 | `drawOnChartArea` | `boolean` | | | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.
