@@ -26,6 +26,7 @@
                     "max": 100,
                     "grid": {
                         "color": "red",
+                        "borderColor": "red",
                         "drawOnChartArea": false
                     },
                     "ticks": {
@@ -39,6 +40,7 @@
                     "max": 100,
                     "grid": {
                         "color": "red",
+                        "borderColor": "red",
                         "drawOnChartArea": false
                     },
                     "ticks": {
