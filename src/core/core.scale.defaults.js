@@ -35,8 +35,7 @@ defaults.set('scale', {
     offset: false,
     borderDash: [],
     borderDashOffset: 0.0,
-    borderColor: (_ctx, options) => options.color,
-    borderWidth: (_ctx, options) => options.lineWidth
+    borderWidth: 1
   },
 
   // scale title
@@ -77,6 +76,7 @@ defaults.set('scale', {
 
 defaults.route('scale.ticks', 'color', '', 'color');
 defaults.route('scale.grid', 'color', '', 'borderColor');
+defaults.route('scale.grid', 'borderColor', '', 'borderColor');
 defaults.route('scale.title', 'color', '', 'color');
 
 defaults.describe('scale', {

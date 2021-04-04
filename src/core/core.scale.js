@@ -1356,7 +1356,7 @@ export default class Scale extends Element {
     const grid = me.options.grid;
     const ctx = me.ctx;
     const chart = me.chart;
-    const borderOpts = grid.setContext(me.getContext(0));
+    const borderOpts = grid.setContext(me.getContext());
     const axisWidth = grid.drawBorder ? borderOpts.borderWidth : 0;
     const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
     let i, ilen;
@@ -1407,8 +1407,7 @@ export default class Scale extends Element {
 
     if (axisWidth) {
       // Draw the line at the edge of the axis
-      const edgeOpts = grid.setContext(me.getContext(me._ticksLength - 1));
-      const lastLineWidth = edgeOpts.lineWidth;
+      const lastLineWidth = borderOpts.lineWidth;
       const borderValue = me._borderValue;
       let x1, x2, y1, y2;
 
@@ -1424,7 +1423,7 @@ export default class Scale extends Element {
       drawLine(
         {x: x1, y: y1},
         {x: x2, y: y2},
-        {width: axisWidth, color: edgeOpts.borderColor});
+        {width: axisWidth, color: borderOpts.borderColor});
     }
   }
 
