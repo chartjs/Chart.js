@@ -2,7 +2,7 @@
 
 set -e
 
-source utils.sh
+source ./scripts/utils.sh
 
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
