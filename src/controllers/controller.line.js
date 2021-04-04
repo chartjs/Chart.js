@@ -33,9 +33,10 @@ export default class LineController extends DatasetController {
     if (!me.options.showLine) {
       options.borderWidth = 0;
     }
+    options.segments = me.options.segments;
     me.updateElement(line, undefined, {
       animated: !animationsDisabled,
-      options
+      options,
     }, mode);
 
     // Update Points
@@ -62,6 +63,7 @@ export default class LineController extends DatasetController {
       const y = properties.y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed, _stacked) : parsed.y, i);
       properties.skip = isNaN(x) || isNaN(y);
       properties.stop = i > 0 && (parsed.x - prevParsed.x) > maxGapLength;
+      properties.parsed = parsed;
 
       if (includeOptions) {
         properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);

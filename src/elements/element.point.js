@@ -14,6 +14,7 @@ export default class PointElement extends Element {
     super();
 
     this.options = undefined;
+    this.parsed = undefined;
     this.skip = undefined;
     this.stop = undefined;
 
