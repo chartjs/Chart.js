@@ -2,7 +2,7 @@
 
 set -e
 
-source utils.sh
+source ./scripts/utils.sh
 
 VERSION=$1
 MODE=$2
