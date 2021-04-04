@@ -3,6 +3,8 @@ import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
 /**
  * @typedef { import("../elements/element.line").default } LineElement
  * @typedef { import("../elements/element.point").default } PointElement
+ * @typedef {{start: number, end: number, loop: boolean, style?: string}} Segment
+ * @typedef {{id: string, slope?: function, range?: {x?: {min?: number, max?: number}, y?: {min?: number, max?: number}}}} StyleSpec
  */
 
 function propertyFn(property) {
@@ -221,8 +223,8 @@ function solidSegments(points, start, max, loop) {
  * Compute the continuous segments that define the whole line
  * There can be skipped points within a segment, if spanGaps is true.
  * @param {LineElement} line
- * @param {{id: string, slope?: function}[]} styleSpecs
- * @return {{start: number, end: number, loop: boolean, style?: string}[]}
+ * @param {StyleSpec[]} styleSpecs
+ * @return {Segment[]}
  * @private
  */
 export function _computeSegments(line, styleSpecs) {
@@ -247,15 +249,18 @@ export function _computeSegments(line, styleSpecs) {
 }
 
 /**
- * @param {{start: number, end: number, loop: boolean, style?: string}[]} segments
+ * @param {Segment[]} segments
  * @param {PointElement[]} points
- * @param {{id: string, slope?: function}[]} styleSpecs
- * @return {{start: number, end: number, loop: boolean, style?: string}[]}
+ * @param {StyleSpec[]} styleSpecs
+ * @return {Segment[]}
  */
-function splitByStyles(segments, points, styleSpecs = []) {
+function splitByStyles(segments, points, styleSpecs = []) { // eslint-disable-line complexity, max-statements
   if (!styleSpecs.length) {
     return segments;
   }
+  const nonGapSpecs = styleSpecs.filter(s => s.id !== 'gap');
+  const hasGap = nonGapSpecs.length < styleSpecs.length;
+  const hasSlopes = anySlopeSpecs(nonGapSpecs);
   const styleSegments = [];
   let gapStart;
   for (const segment of segments) {
@@ -264,16 +269,16 @@ function splitByStyles(segments, points, styleSpecs = []) {
     let style = null;
     let i;
 
-    if (start > gapStart) {
+    if (hasGap && start > gapStart) {
       styleSegments.push({start: gapStart, end: start, loop: false, style: 'gap'});
     }
 
     for (i = segment.start + 1; i <= segment.end; i++) {
       const pt = points[i];
-      const s = slope(prev, pt);
+      const s = hasSlopes && slope(prev, pt);
       let curStyle;
-      for (const spec of styleSpecs) {
-        if (spec.slope && spec.slope(s)) {
+      for (const spec of nonGapSpecs) {
+        if (slopeMatch(spec, s) || inRange(spec, pt)) {
           curStyle = spec.id;
           break;
         }
@@ -297,4 +302,39 @@ function splitByStyles(segments, points, styleSpecs = []) {
 
 function slope(pt1, pt2) {
   return (pt1.y - pt2.y) / (pt2.x - pt1.x);
+}
+
+
+/**
+ * @param {StyleSpec[]} styleSpecs
+ * @return {boolean}
+ */
+function anySlopeSpecs(styleSpecs) {
+  return styleSpecs.filter(s => s.slope).length > 0;
+}
+
+/**
+ * @param {StyleSpec} spec
+ * @param {number} value
+ * @return {boolean}
+ */
+function slopeMatch(spec, value) {
+  return spec.slope && spec.slope(value);
+}
+
+
+/**
+ * @param {StyleSpec} spec
+ * @param {PointElement} pt
+ * @return {boolean}
+ */
+function inRange(spec, pt) {
+  const range = spec.range;
+  const parsed = pt.parsed;
+  return !!range && compareRange(range.x, parsed.x) && compareRange(range.y, parsed.y);
+}
+
+function compareRange(range = {}, value) {
+  const {min = -Infinity, max = Infinity} = range;
+  return (value >= min && value <= max);
 }
