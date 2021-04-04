@@ -18,6 +18,15 @@ Creation of this tag triggers a new build:
 
 Finally, [cdnjs](https://cdnjs.com/libraries/Chart.js) is automatically updated from the npm release.
 
+### Releasing a patch version
+
+If there is a need to create a patch version for an older release:
+
+1. Create a branch for the patch version (without the `v` prefix)
+2. Cherry pick the needed commit(s) to that new branch from master
+3. Trigger the release-drafter workflow on that branch from the actions.
+4. Follow the procedure for [Releasing a New Version](#releasing-a-new-version)
+
 ### Further Reading
 
 * [GitHub Action releases](https://github.com/chartjs/Chart.js/pull/7891)
