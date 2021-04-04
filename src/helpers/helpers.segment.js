@@ -221,9 +221,11 @@ function solidSegments(points, start, max, loop) {
  * Compute the continuous segments that define the whole line
  * There can be skipped points within a segment, if spanGaps is true.
  * @param {LineElement} line
+ * @param {{id: string, slope?: function}[]} styleSpecs
+ * @return {{start: number, end: number, loop: boolean, style?: string}[]}
  * @private
  */
-export function _computeSegments(line) {
+export function _computeSegments(line, styleSpecs) {
   const points = line.points;
   const spanGaps = line.options.spanGaps;
   const count = points.length;
@@ -236,10 +238,56 @@ export function _computeSegments(line) {
   const {start, end} = findStartAndEnd(points, count, loop, spanGaps);
 
   if (spanGaps === true) {
-    return [{start, end, loop}];
+    return splitByStyles([{start, end, loop}], points, styleSpecs);
   }
 
   const max = end < start ? end + count : end;
   const completeLoop = !!line._fullLoop && start === 0 && end === count - 1;
-  return solidSegments(points, start, max, completeLoop);
+  return splitByStyles(solidSegments(points, start, max, completeLoop), points, styleSpecs);
+}
+
+/**
+ * @param {{start: number, end: number, loop: boolean, style?: string}[]} segments
+ * @param {PointElement[]} points
+ * @param {{id: string, slope?: function}[]} styleSpecs
+ * @return {{start: number, end: number, loop: boolean, style?: string}[]}
+ */
+function splitByStyles(segments, points, styleSpecs = []) {
+  if (!styleSpecs.length) {
+    return segments;
+  }
+  const styleSegments = [];
+  for (const segment of segments) {
+    let start = segment.start;
+    let prev = points[start];
+    let style = null;
+    let i;
+    for (i = segment.start + 1; i <= segment.end; i++) {
+      const pt = points[i];
+      const s = slope(prev, pt);
+      let curStyle;
+      for (const spec of styleSpecs) {
+        if (spec.slope(s)) {
+          curStyle = spec.id;
+          break;
+        }
+      }
+      if (curStyle !== style) {
+        if (style !== null) {
+          styleSegments.push({start, end: i - 1, loop: segment.loop, style});
+          start = i - 1;
+        }
+        style = curStyle;
+      }
+      prev = pt;
+    }
+    if (start < i) {
+      styleSegments.push({start, end: i, loop: segment.loop, style});
+    }
+  }
+  return styleSegments;
+}
+
+function slope(pt1, pt2) {
+  return (pt1.y - pt2.y) / (pt2.x - pt1.x);
 }
