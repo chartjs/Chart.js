@@ -11,7 +11,7 @@ function tag_from_version {
     if [ "$version" == "master" ]; then
         tag=master
     elif [[ "$version" =~ ^[^-]+$ ]]; then
-      if [[ "$mode" == "release" ]]
+      if [[ "$mode" == "release" ]]; then
         tag=$version
       else
         tag=latest
