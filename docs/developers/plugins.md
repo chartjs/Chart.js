@@ -141,3 +141,9 @@ Plugins are notified during throughout the update process.
 Plugins can interact with the chart throughout the render process. The rendering process is documented in the flowchart below. Each of the green processes is a plugin notification. The red lines indicate how cancelling part of the render process can occur when a plugin returns `false` from a hook. Not all hooks are cancelable, however, in general most `before*` hooks can be cancelled.
 
 ![Chart.js render pipeline flowchart](./render_flowchart.png)
+
+### Event Handling
+
+Plugins can interact with the chart during the event handling process. The event handling flow is documented in the flowchart below. Each of the green processes is a plugin notification. If a plugin makes changes that require a re-render, the plugin can set `args.changed` to `true` to indicate that a render is needed. The built-in tooltip plugin uses this method to indicate when the tooltip has changed.
+
+![Chart.js event handling flowchart](./event_flowchart.png)
