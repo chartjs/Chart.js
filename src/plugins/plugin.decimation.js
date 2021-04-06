@@ -1,6 +1,7 @@
 import {isNullOrUndef, resolve} from '../helpers';
+import {getStartAndCountOfVisiblePoints} from '../controllers/controller.line';
 
-function lttbDecimation(data, availableWidth, options) {
+function lttbDecimation(data, start, count, availableWidth, options) {
   /**
    * Implementation of the Largest Triangle Three Buckets algorithm.
    *
@@ -12,9 +13,11 @@ function lttbDecimation(data, availableWidth, options) {
   const samples = options.samples || availableWidth;
   const decimated = [];
 
-  const bucketWidth = (data.length - 2) / (samples - 2);
+  const bucketWidth = (count - 2) / (samples - 2);
   let sampledIndex = 0;
-  let a = 0;
+  const endIndex = start + count - 1;
+  // Starting from offset
+  let a = start;
   let i, maxAreaPoint, maxArea, area, nextA;
   decimated[sampledIndex++] = data[a];
 
@@ -22,8 +25,10 @@ function lttbDecimation(data, availableWidth, options) {
     let avgX = 0;
     let avgY = 0;
     let j;
-    const avgRangeStart = Math.floor((i + 1) * bucketWidth) + 1;
-    const avgRangeEnd = Math.min(Math.floor((i + 2) * bucketWidth) + 1, data.length);
+
+    // Adding offset
+    const avgRangeStart = Math.floor((i + 1) * bucketWidth) + 1 + start;
+    const avgRangeEnd = Math.min(Math.floor((i + 2) * bucketWidth) + 1, count) + start;
     const avgRangeLength = avgRangeEnd - avgRangeStart;
 
     for (j = avgRangeStart; j < avgRangeEnd; j++) {
@@ -34,8 +39,9 @@ function lttbDecimation(data, availableWidth, options) {
     avgX /= avgRangeLength;
     avgY /= avgRangeLength;
 
-    const rangeOffs = Math.floor(i * bucketWidth) + 1;
-    const rangeTo = Math.floor((i + 1) * bucketWidth) + 1;
+    // Adding offset
+    const rangeOffs = Math.floor(i * bucketWidth) + 1 + start;
+    const rangeTo = Math.floor((i + 1) * bucketWidth) + 1 + start;
     const {x: pointAx, y: pointAy} = data[a];
 
     // Note that this is changed from the original algorithm which initializes these
@@ -63,22 +69,23 @@ function lttbDecimation(data, availableWidth, options) {
   }
 
   // Include the last point
-  decimated[sampledIndex++] = data[data.length - 1];
+  decimated[sampledIndex++] = data[endIndex];
 
   return decimated;
 }
 
-function minMaxDecimation(data, availableWidth) {
+function minMaxDecimation(data, start, count, availableWidth) {
   let avgX = 0;
   let countX = 0;
   let i, point, x, y, prevX, minIndex, maxIndex, startIndex, minY, maxY;
   const decimated = [];
+  const endIndex = start + count - 1;
 
-  const xMin = data[0].x;
-  const xMax = data[data.length - 1].x;
+  const xMin = data[start].x;
+  const xMax = data[endIndex].x;
   const dx = xMax - xMin;
 
-  for (i = 0; i < data.length; ++i) {
+  for (i = start; i < start + count; ++i) {
     point = data[i];
     x = (point.x - xMin) / dx * availableWidth;
     y = point.y;
@@ -196,7 +203,11 @@ export default {
         return;
       }
 
-      if (data.length <= 4 * availableWidth) {
+      // We know that the diagram is a line type
+      const animationsDisabled = chart._animationsDisabled;
+      let {start, count} = getStartAndCountOfVisiblePoints(meta, data, animationsDisabled);
+
+      if (count <= 4 * availableWidth) {
         // No decimation is required until we are above this threshold
         return;
       }
@@ -223,10 +234,10 @@ export default {
       let decimated;
       switch (options.algorithm) {
       case 'lttb':
-        decimated = lttbDecimation(data, availableWidth, options);
+        decimated = lttbDecimation(data, start, count, availableWidth, options);
         break;
       case 'min-max':
-        decimated = minMaxDecimation(data, availableWidth);
+        decimated = minMaxDecimation(data, start, count, availableWidth);
         break;
       default:
         throw new Error(`Unsupported decimation algorithm '${options.algorithm}'`);
