@@ -186,7 +186,7 @@ export default class LinearScaleBase extends Scale {
 
   getTickLimit() {
     const me = this;
-    const tickOpts = me.options.ticks.setContext(me.getContext());
+    const tickOpts = me.options.ticks;
     // eslint-disable-next-line prefer-const
     let {maxTicksLimit, stepSize} = tickOpts;
     let maxTicks;
@@ -215,7 +215,7 @@ export default class LinearScaleBase extends Scale {
   buildTicks() {
     const me = this;
     const opts = me.options;
-    const tickOpts = opts.ticks.setContext(me.getContext());
+    const tickOpts = opts.ticks;
 
     // Figure out what the max number of ticks we can support it is based on the size of
     // the axis area. For now, we say that the minimum tick spacing in pixels must be 40

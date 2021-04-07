@@ -237,7 +237,7 @@ export default class Scale extends Element {
 	 */
   init(options) {
     const me = this;
-    me.options = options;
+    me.options = options.setContext(me.getContext());
 
     me.axis = options.axis;
 
@@ -429,7 +429,7 @@ export default class Scale extends Element {
 
     // Auto-skip
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
-      me.ticks = autoSkip(me, me.ticks, me.getContext());
+      me.ticks = autoSkip(me, me.ticks);
       me._labelSizes = null;
     }
 

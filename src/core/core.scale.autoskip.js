@@ -11,12 +11,11 @@ import {_factorize} from '../helpers/helpers.math';
  * Returns a subset of ticks to be plotted to avoid overlapping labels.
  * @param {import('./core.scale').default} scale
  * @param {Tick[]} ticks
- * @paran {Object} context
  * @return {Tick[]}
  * @private
  */
-export function autoSkip(scale, ticks, context) {
-  const tickOpts = scale.options.ticks.setContext(context);
+export function autoSkip(scale, ticks) {
+  const tickOpts = scale.options.ticks;
   const ticksLimit = tickOpts.maxTicksLimit || determineMaxTicks(scale);
   const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
   const numMajorIndices = majorIndices.length;

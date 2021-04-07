@@ -99,13 +99,7 @@ describe('Test tick generators', function() {
 
   describe('formatters.numeric', function() {
     it('should not fail on empty or 1 item array', function() {
-      const getContext = ()=>{
-        return {};
-      };
-      const setContext = ()=>{
-        return {ticks: {format: {}}};
-      };
-      const scale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {}, setContext}}, getContext};
+      const scale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {}}}};
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, []])).toEqual('1');
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}]])).toEqual('1');
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
