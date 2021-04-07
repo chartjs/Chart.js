@@ -40,5 +40,14 @@ describe('helpers.segments', function() {
     it('should find segment from after the line', function() {
       expect(_boundSegment(segment, points, {property: 'x', start: 25, end: 35})).toEqual([{start: 1, end: 2, loop: false}]);
     });
+
+    it('should find multiple segments', function() {
+      const points2 = [{x: 0, y: 100}, {x: 1, y: 50}, {x: 2, y: 70}, {x: 4, y: 80}, {x: 5, y: -100}];
+      expect(_boundSegment({start: 0, end: 4, loop: false}, points2, {property: 'y', start: 60, end: 60})).toEqual([
+        {start: 0, end: 1, loop: false},
+        {start: 1, end: 2, loop: false},
+        {start: 3, end: 4, loop: false},
+      ]);
+    });
   });
 });

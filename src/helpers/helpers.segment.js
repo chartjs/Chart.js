@@ -14,7 +14,7 @@ function propertyFn(property) {
     };
   }
   return {
-    between: (n, s, e) => n >= s && n <= e,
+    between: (n, s, e) => n >= Math.min(s, e) && n <= Math.max(e, s),
     compare: (a, b) => a - b,
     normalize: x => x
   };
