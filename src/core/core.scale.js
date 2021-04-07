@@ -237,7 +237,7 @@ export default class Scale extends Element {
 	 */
   init(options) {
     const me = this;
-    me.options = options;
+    me.options = options.setContext(me.getContext());
 
     me.axis = options.axis;
 
