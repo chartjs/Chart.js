@@ -1,8 +1,8 @@
 # Canvas background
 
-In some use cases you would want a background image or color over the whole canvas. There is no build in support for this, the way you can achieve this is by writing a custom plugin.
+In some use cases you would want a background image or color over the whole canvas. There is no built-in support for this, the way you can achieve this is by writing a custom plugin.
 
-In the two example plugins underneath here you can see how you can draw an color or image to the canvas as background. This way of giving the chart a background is only necessary if you want to export the chart with that specific background.
+In the two example plugins underneath here you can see how you can draw a color or image to the canvas as background. This way of giving the chart a background is only necessary if you want to export the chart with that specific background.
 For normal use you can set the background more easily with [CSS](https://www.w3schools.com/cssref/css3_pr_background.asp).
 
 :::: tabs
