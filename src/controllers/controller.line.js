@@ -36,7 +36,7 @@ export default class LineController extends DatasetController {
     options.segments = me.options.segments;
     me.updateElement(line, undefined, {
       animated: !animationsDisabled,
-      options,
+      options
     }, mode);
 
     // Update Points
