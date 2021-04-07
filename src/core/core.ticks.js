@@ -48,7 +48,8 @@ const formatters = {
     const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0); // toFixed has a max of 20 decimal places
 
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
-    Object.assign(options, this.options.ticks.format);
+    const tickOpts = this.options.ticks.setContext(this.getContext());
+    Object.assign(options, tickOpts.format);
 
     return formatNumber(tickValue, locale, options);
   },
