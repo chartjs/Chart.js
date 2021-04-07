@@ -21,34 +21,34 @@ describe('Plugin.decimation', function() {
         data: {
           datasets: [{
             data: originalData,
-            label: 'dataset1',
-          }],
+            label: 'dataset1'
+          }]
         },
         scales: {
           x: {
             type: 'linear',
             min: 0,
-            max: 9,
-          },
+            max: 9
+          }
         },
         options: {
           plugins: {
             decimation: {
               enabled: true,
               algorithm: 'lttb',
-              samples: 100,
-            },
-          },
-        },
+              samples: 100
+            }
+          }
+        }
       }, {
         canvas: {
           height: 1,
-          width: 1,
+          width: 1
         },
         wrapper: {
           height: 1,
-          width: 1,
-        },
+          width: 1
+        }
       });
 
       expect(chart.data.datasets[0].data.length).toBe(10);
@@ -60,8 +60,8 @@ describe('Plugin.decimation', function() {
         data: {
           datasets: [{
             data: originalData,
-            label: 'dataset1',
-          }],
+            label: 'dataset1'
+          }]
         },
         options: {
           parsing: false,
@@ -69,26 +69,26 @@ describe('Plugin.decimation', function() {
             x: {
               type: 'linear',
               min: 0,
-              max: 9,
-            },
+              max: 9
+            }
           },
           plugins: {
             decimation: {
               enabled: true,
               algorithm: 'lttb',
-              samples: 7,
-            },
-          },
-        },
+              samples: 7
+            }
+          }
+        }
       }, {
         canvas: {
           height: 1,
-          width: 1,
+          width: 1
         },
         wrapper: {
           height: 1,
-          width: 1,
-        },
+          width: 1
+        }
       });
 
       expect(chart.data.datasets[0].data.length).toBe(7);
@@ -100,8 +100,8 @@ describe('Plugin.decimation', function() {
         data: {
           datasets: [{
             data: originalData,
-            label: 'dataset1',
-          }],
+            label: 'dataset1'
+          }]
         },
         options: {
           parsing: false,
@@ -109,26 +109,26 @@ describe('Plugin.decimation', function() {
             x: {
               type: 'linear',
               min: 3,
-              max: 6,
-            },
+              max: 6
+            }
           },
           plugins: {
             decimation: {
               enabled: true,
               algorithm: 'lttb',
-              samples: 7,
-            },
-          },
-        },
+              samples: 7
+            }
+          }
+        }
       }, {
         canvas: {
           height: 1,
-          width: 1,
+          width: 1
         },
         wrapper: {
           height: 1,
-          width: 1,
-        },
+          width: 1
+        }
       });
 
       // Data range is 4 (3->6) and the first point is added
