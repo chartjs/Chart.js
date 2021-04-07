@@ -516,12 +516,25 @@ function doFill(ctx, cfg) {
   ctx.restore();
 }
 
+function drawfill(ctx, source, area) {
+  const target = getTarget(source);
+  const {line, scale} = source;
+  const lineOpts = line.options;
+  const fillOption = lineOpts.fill;
+  const color = lineOpts.backgroundColor;
+  const {above = color, below = color} = fillOption || {};
+  if (target && line.points.length) {
+    clipArea(ctx, area);
+    doFill(ctx, {line, target, above, below, area, scale});
+    unclipArea(ctx);
+  }
+}
+
 export default {
   id: 'filler',
 
   afterDatasetsUpdate(chart, _args, options) {
     const count = (chart.data.datasets || []).length;
-    const propagate = options.propagate;
     const sources = [];
     let meta, i, line, source;
 
@@ -537,7 +550,7 @@ export default {
           fill: decodeFill(line, i, count),
           chart,
           scale: meta.vScale,
-          line
+          line,
         };
       }
 
@@ -551,47 +564,39 @@ export default {
         continue;
       }
 
-      source.fill = resolveTarget(sources, i, propagate);
+      source.fill = resolveTarget(sources, i, options.propagate);
     }
   },
 
-  beforeDatasetsDraw(chart) {
+  beforeDatasetsDraw(chart, _args, options) {
     const metasets = chart.getSortedVisibleDatasetMetas();
     const area = chart.chartArea;
-    let i, meta;
 
-    for (i = metasets.length - 1; i >= 0; --i) {
-      meta = metasets[i].$filler;
+    for (let i = metasets.length - 1; i >= 0; --i) {
+      const source = metasets[i].$filler;
 
-      if (meta) {
-        meta.line.updateControlPoints(area);
+      if (source) {
+        source.line.updateControlPoints(area);
+
+        if (options.drawTime === 'beforeDatasetsDraw') {
+          drawfill(chart.ctx, source, area);
+        }
       }
     }
   },
 
-  beforeDatasetDraw(chart, args) {
-    const area = chart.chartArea;
-    const ctx = chart.ctx;
+  beforeDatasetDraw(chart, args, options) {
     const source = args.meta.$filler;
 
-    if (!source || source.fill === false) {
+    if (!source || source.fill === false || options.drawTime !== 'beforeDatasetDraw') {
       return;
     }
 
-    const target = getTarget(source);
-    const {line, scale} = source;
-    const lineOpts = line.options;
-    const fillOption = lineOpts.fill;
-    const color = lineOpts.backgroundColor;
-    const {above = color, below = color} = fillOption || {};
-    if (target && line.points.length) {
-      clipArea(ctx, area);
-      doFill(ctx, {line, target, above, below, area, scale});
-      unclipArea(ctx);
-    }
+    drawfill(chart.ctx, source, chart.chartArea);
   },
 
   defaults: {
-    propagate: true
+    propagate: true,
+    drawTime: 'beforeDatasetDraw'
   }
 };

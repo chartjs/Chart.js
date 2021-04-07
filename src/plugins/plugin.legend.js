@@ -300,8 +300,6 @@ export class Legend extends Element {
     ctx.textAlign = rtlHelper.textAlign('left');
     ctx.textBaseline = 'middle';
     ctx.lineWidth = 0.5;
-    ctx.strokeStyle = fontColor; // for strikethrough effect
-    ctx.fillStyle = fontColor; // render in correct colour
     ctx.font = labelFont.string;
 
     const {boxWidth, boxHeight, itemHeight} = getBoxSize(labelOpts, fontSize);
@@ -381,6 +379,10 @@ export class Legend extends Element {
 
     const lineHeight = itemHeight + padding;
     me.legendItems.forEach((legendItem, i) => {
+      // TODO: Remove fallbacks at v4
+      ctx.strokeStyle = legendItem.fontColor || fontColor; // for strikethrough effect
+      ctx.fillStyle = legendItem.fontColor || fontColor; // render in correct colour
+
       const textWidth = ctx.measureText(legendItem.text).width;
       const textAlign = rtlHelper.textAlign(legendItem.textAlign || (legendItem.textAlign = labelOpts.textAlign));
       const width = boxWidth + (fontSize / 2) + textWidth;
@@ -631,7 +633,7 @@ export default {
       // lineWidth :
       generateLabels(chart) {
         const datasets = chart.data.datasets;
-        const {labels: {usePointStyle, pointStyle, textAlign}} = chart.legend.options;
+        const {labels: {usePointStyle, pointStyle, textAlign, color}} = chart.legend.options;
 
         return chart._getSortedDatasetMetas().map((meta) => {
           const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
@@ -640,6 +642,7 @@ export default {
           return {
             text: datasets[meta.index].label,
             fillStyle: style.backgroundColor,
+            fontColor: color,
             hidden: !meta.visible,
             lineCap: style.borderCapStyle,
             lineDash: style.borderDash,

@@ -8,7 +8,7 @@ Namespace: `options.plugins.decimation`, the global options for the plugin are d
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `enabled` | `boolean` | `true` | Is decimation enabled?
+| `enabled` | `boolean` | `false` | Is decimation enabled?
 | `algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
 | `samples` | `number` | | If the `'lttb'` algorithm is used, this is the number of samples in the output dataset. Defaults to the canvas width to pick 1 sample per pixel.
 
@@ -35,3 +35,7 @@ To use the decimation plugin, the following requirements must be met:
 2. The dataset must be a line
 3. The X axis for the dataset must be either a `'linear'` or `'time'` type axis
 4. The dataset object must be mutable. The plugin stores the original data as `dataset._data` and then defines a new `data` property on the dataset.
+
+## Related Samples
+
+* [Data Decimation Sample](../samples/advanced/data-decimation)

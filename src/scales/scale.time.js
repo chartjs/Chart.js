@@ -1,5 +1,5 @@
 import adapters from '../core/core.adapters';
-import {isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
+import {callback as call, isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
 import {toRadians, isNumber, _limitValue} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
@@ -468,7 +468,7 @@ export default class TimeScale extends Scale {
     const major = majorUnit && majorFormat && tick && tick.major;
     const label = me._adapter.format(time, format || (major ? majorFormat : minorFormat));
     const formatter = options.ticks.callback;
-    return formatter ? formatter(label, index, ticks) : label;
+    return formatter ? call(formatter, [label, index, ticks], me) : label;
   }
 
   /**

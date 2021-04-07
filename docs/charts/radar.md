@@ -60,19 +60,15 @@ module.exports = {
 };
 ```
 
-<ExampleChart/>
-
-## Example Usage
-
-```javascript
-var myRadarChart = new Chart(ctx, {
-    type: 'radar',
-    data: data,
-    options: options
-});
-```
-
 ## Dataset Properties
+
+Namespaces:
+
+* `data.datasets[index]` - options for this dataset only
+* `options.datasets.line` - options for all line datasets
+* `options.elements.line` - options for all [line elements](../configuration/elements.md#line-configuration)
+* `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
+* `options` - options for the whole chart
 
 The radar chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colour of a line is generally set this way.
 
@@ -110,6 +106,8 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
 | [`spanGaps`](#line-styling) | `boolean` | - | - | `undefined`
+
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
 ### General
 
@@ -164,14 +162,6 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderColor` | Point border color when hovered.
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
-
-## Configuration Options
-
-The radar chart defines the following configuration options. These options are looked up on access, and form together with the global chart configuration, `Chart.defaults`, the options of the chart.
-
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| `spanGaps` | `boolean` | `false` | If false, `null` data causes a break in the line.
 
 ## Scale Options
 

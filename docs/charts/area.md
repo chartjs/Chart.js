@@ -64,9 +64,12 @@ new Chart(ctx, {
 
 ## Configuration
 
+Namespace: `options.plugins.filler`
+
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| [`plugins.filler.propagate`](#propagate) | `boolean` | `true` | Fill propagation when target is hidden.
+| `drawTime` | `string` | `beforeDatasetDraw` | Filler draw time. Supported values: `'beforeDatasetDraw'`, `'beforeDatasetsDraw'`
+| [`propagate`](#propagate) | `boolean` | `true` | Fill propagation when target is hidden.
 
 ### propagate
 

@@ -413,7 +413,7 @@ describe('Chart', function() {
       });
 
       expect(chart.scales.x.type).toBe('logarithmic');
-      expect(chart.scales.x.options).toBe(chart.options.scales.x);
+      expect(chart.scales.x.options).toEqual(chart.options.scales.x);
       expect(chart.scales.x.options).toEqual(
         jasmine.objectContaining({
           _jasmineCheckA: 'a0',
@@ -423,7 +423,7 @@ describe('Chart', function() {
         }));
 
       expect(chart.scales.y.type).toBe('time');
-      expect(chart.scales.y.options).toBe(chart.options.scales.y);
+      expect(chart.scales.y.options).toEqual(chart.options.scales.y);
       expect(chart.scales.y.options).toEqual(
         jasmine.objectContaining({
           _jasmineCheckA: 'a0',

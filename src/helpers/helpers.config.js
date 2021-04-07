@@ -6,10 +6,11 @@ import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} f
  * @param {string[]} [prefixes] - The prefixes for values, in resolution order.
  * @param {object[]} [rootScopes] - The root option scopes
  * @param {string|boolean} [fallback] - Parent scopes fallback
+ * @param {function} [getTarget] - callback for getting the target for changed values
  * @returns Proxy
  * @private
  */
-export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback) {
+export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback, getTarget = () => scopes[0]) {
   if (!defined(fallback)) {
     fallback = _resolve('_fallback', scopes);
   }
@@ -19,6 +20,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
     _scopes: scopes,
     _rootScopes: rootScopes,
     _fallback: fallback,
+    _getTarget: getTarget,
     override: (scope) => _createResolver([scope, ...scopes], prefixes, rootScopes, fallback),
   };
   return new Proxy(cache, {
@@ -73,7 +75,8 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
      * A trap for setting property values.
      */
     set(target, prop, value) {
-      scopes[0][prop] = value; // set to top level scope
+      const storage = target._storage || (target._storage = getTarget());
+      storage[prop] = value; // set to top level scope
       delete target[prop]; // remove from cache
       delete target._keys; // remove cached keys
       return true;
@@ -276,11 +279,6 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
   const set = new Set();
-  const firstParent = parentScopes[0];
-  if (isObject(firstParent) && !(prop in firstParent)) {
-    // create an empty scope for possible stored values, so we always set the values in top scope.
-    set.add(firstParent[prop] = {});
-  }
   set.add(value);
   let key = addScopesFromKey(set, allScopes, prop, fallback || prop);
   if (key === null) {
@@ -292,7 +290,13 @@ function createSubResolver(parentScopes, resolver, prop, value) {
       return false;
     }
   }
-  return _createResolver([...set], [''], rootScopes, fallback);
+  return _createResolver([...set], [''], rootScopes, fallback, () => {
+    const parent = resolver._getTarget();
+    if (!(prop in parent)) {
+      parent[prop] = {};
+    }
+    return parent[prop];
+  });
 }
 
 function addScopesFromKey(set, allScopes, key, fallback) {

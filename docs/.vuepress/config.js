@@ -126,6 +126,7 @@ module.exports = {
             'other-charts/radar',
             'other-charts/radar-skip-points',
             'other-charts/combo-bar-line',
+            'other-charts/stacked-bar-line',
           ]
         },
         {
@@ -133,6 +134,7 @@ module.exports = {
           children: [
             'area/line-boundaries',
             'area/line-datasets',
+            'area/line-drawtime',
             'area/line-stacked',
             'area/radar'
           ]
@@ -164,6 +166,8 @@ module.exports = {
             'legend/position',
             'legend/title',
             'legend/point-style',
+            'legend/events',
+            'legend/html',
           ]
         },
         {
@@ -205,6 +209,7 @@ module.exports = {
         {
           title: 'Advanced',
           children: [
+            'advanced/data-decimation',
             'advanced/progress-bar',
             'advanced/radial-gradient',
             'advanced/linear-gradient',

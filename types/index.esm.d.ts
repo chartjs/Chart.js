@@ -1604,6 +1604,13 @@ export interface ArcProps {
   circumference: number;
 }
 
+export interface ArcBorderRadius {
+  outerStart: number;
+  outerEnd: number;
+  innerStart: number;
+  innerEnd: number;
+}
+
 export interface ArcOptions extends CommonElementOptions {
   /**
    * Arc stroke alignment.
@@ -1613,6 +1620,11 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc offset (in pixels).
    */
   offset: number;
+  /**
+   * Sets the border radius for arcs
+   * @default 0
+   */
+  borderRadius: number | ArcBorderRadius;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
@@ -1944,6 +1956,7 @@ export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
 export const Filler: Plugin;
 export interface FillerOptions {
+  drawTime: 'beforeDatasetDraw' | 'beforeDatasetsDraw';
   propagate: boolean;
 }
 
@@ -1988,6 +2001,12 @@ export interface LegendItem {
    * Fill style of the legend box
    */
   fillStyle?: Color;
+
+  /**
+   * Font color for the text
+   * Defaults to LegendOptions.labels.color
+   */
+  fontColor?: Color;
 
   /**
    * If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect

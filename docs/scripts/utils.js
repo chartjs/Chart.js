@@ -155,3 +155,7 @@ export function newDate(days) {
 export function newDateString(days) {
   return DateTime.now().plus({days}).toISO();
 }
+
+export function parseISODate(str) {
+  return DateTime.fromISO(str);
+}

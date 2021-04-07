@@ -90,6 +90,14 @@ module.exports = {
 
 ## Dataset Properties
 
+Namespaces:
+
+* `data.datasets[index]` - options for this dataset only
+* `options.datasets.doughnut` - options for all doughnut datasets
+* `options.datasets.pie` - options for all pie datasets
+* `options.elements.arc` - options for all [arc elements](../configuration/elements.md#arc-configuration)
+* `options` - options for the whole chart
+
 The doughnut/pie chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colours of the dataset's arcs are generally set this way.
 
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
@@ -97,6 +105,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`circumference`](#general) | `number` | - | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
@@ -108,6 +117,8 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
 | [`rotation`](#general) | `number` | - | - | `undefined`
 | [`weight`](#styling) | `number` | - | - | `1`
+
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
 ### General
 
@@ -139,6 +150,10 @@ The following values are supported for `borderAlign`.
 * `'inner'`
 
 When `'center'` is set, the borders of arcs next to each other will overlap. When `'inner'` is set, it is guaranteed that all borders will not overlap.
+
+### Border Radius
+
+If this value is a number, it is applied to all corners of the arc (outerStart, outerEnd, innerStart, innerRight). If this value is an object, the `outerStart` property defines the outer-start corner's border radius. Similarly, the `outerEnd`, `innerStart`, and `innerEnd` properties can also be specified.
 
 ### Interactions
 
