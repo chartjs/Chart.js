@@ -140,6 +140,7 @@ function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
     const {iScale, _parsed} = meta;
     const axis = iScale.axis;
     const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+
     if (minDefined) {
       start = _limitValue(Math.min(
         _lookupByKey(_parsed, iScale.axis, min).lo,

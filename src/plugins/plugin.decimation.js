@@ -1,5 +1,4 @@
-import {isNullOrUndef, resolve} from '../helpers';
-import {getStartAndCountOfVisiblePoints} from '../controllers/controller.line';
+import {_limitValue, _lookupByKey, isNullOrUndef, resolve} from '../helpers';
 
 function lttbDecimation(data, start, count, availableWidth, options) {
   /**
@@ -11,6 +10,11 @@ function lttbDecimation(data, start, count, availableWidth, options) {
    * The original implementation is MIT licensed.
    */
   const samples = options.samples || availableWidth;
+  // There is less points than the threshold, returning the whole array
+  if (samples >= count) {
+    return data.slice(start, start + count);
+  }
+
   const decimated = [];
 
   const bucketWidth = (count - 2) / (samples - 2);
@@ -18,7 +22,12 @@ function lttbDecimation(data, start, count, availableWidth, options) {
   const endIndex = start + count - 1;
   // Starting from offset
   let a = start;
-  let i, maxAreaPoint, maxArea, area, nextA;
+  let i,
+    maxAreaPoint,
+    maxArea,
+    area,
+    nextA;
+
   decimated[sampledIndex++] = data[a];
 
   for (i = 0; i < samples - 2; i++) {
@@ -54,7 +63,7 @@ function lttbDecimation(data, start, count, availableWidth, options) {
     for (j = rangeOffs; j < rangeTo; j++) {
       area = 0.5 * Math.abs(
         (pointAx - avgX) * (data[j].y - pointAy) -
-        (pointAx - data[j].x) * (avgY - pointAy)
+        (pointAx - data[j].x) * (avgY - pointAy),
       );
 
       if (area > maxArea) {
@@ -77,7 +86,16 @@ function lttbDecimation(data, start, count, availableWidth, options) {
 function minMaxDecimation(data, start, count, availableWidth) {
   let avgX = 0;
   let countX = 0;
-  let i, point, x, y, prevX, minIndex, maxIndex, startIndex, minY, maxY;
+  let i,
+    point,
+    x,
+    y,
+    prevX,
+    minIndex,
+    maxIndex,
+    startIndex,
+    minY,
+    maxY;
   const decimated = [];
   const endIndex = start + count - 1;
 
@@ -124,7 +142,7 @@ function minMaxDecimation(data, start, count, availableWidth) {
         if (intermediateIndex2 !== startIndex && intermediateIndex2 !== lastIndex) {
           decimated.push({
             ...data[intermediateIndex2],
-            x: avgX
+            x: avgX,
           });
         }
       }
@@ -157,6 +175,32 @@ function cleanDecimatedData(chart) {
       Object.defineProperty(dataset, 'data', {value: data});
     }
   });
+}
+
+function getStartAndCountOfVisiblePointsSimplified(meta, points, animationsDisabled) {
+  const pointCount = points.length;
+
+  let start = 0;
+  let count;
+
+  const {iScale} = meta;
+  const axis = iScale.axis;
+  const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+
+  if (minDefined) {
+    start = _limitValue(Math.min(
+      _lookupByKey(points, iScale.axis, min).lo,
+      animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo), 0, pointCount - 1);
+  }
+  if (maxDefined) {
+    count = _limitValue(Math.max(
+      _lookupByKey(points, iScale.axis, max).hi + 1,
+      animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1), start, pointCount) - start;
+  } else {
+    count = pointCount - start;
+  }
+
+  return {start, count};
 }
 
 export default {
@@ -205,8 +249,7 @@ export default {
 
       // We know that the diagram is a line type
       const animationsDisabled = chart._animationsDisabled;
-      let {start, count} = getStartAndCountOfVisiblePoints(meta, data, animationsDisabled);
-
+      let {start, count} = getStartAndCountOfVisiblePointsSimplified(meta, data, animationsDisabled);
       if (count <= 4 * availableWidth) {
         // No decimation is required until we are above this threshold
         return;
@@ -226,7 +269,7 @@ export default {
           },
           set: function(d) {
             this._data = d;
-          }
+          },
         });
       }
 
@@ -249,5 +292,5 @@ export default {
 
   destroy(chart) {
     cleanDecimatedData(chart);
-  }
+  },
 };
