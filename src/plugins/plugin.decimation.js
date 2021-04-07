@@ -32,8 +32,8 @@ function lttbDecimation(data, start, count, availableWidth, options) {
     const avgRangeLength = avgRangeEnd - avgRangeStart;
 
     for (j = avgRangeStart; j < avgRangeEnd; j++) {
-      avgX = data[j].x;
-      avgY = data[j].y;
+      avgX += data[j].x;
+      avgY += data[j].y;
     }
 
     avgX /= avgRangeLength;
