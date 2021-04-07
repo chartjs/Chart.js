@@ -429,7 +429,7 @@ export default class Scale extends Element {
 
     // Auto-skip
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
-      me.ticks = autoSkip(me, me.ticks);
+      me.ticks = autoSkip(me, me.ticks, me.getContext());
       me._labelSizes = null;
     }
 
