@@ -4,7 +4,7 @@
 
 // <block:segmentUtils:1>
 const skipped = (ctx, value) => ctx.p1.skip || ctx.p2.skip ? value : undefined;
-const down = (ctx, value) => ctx.p1.y < ctx.p2.y ? value : undefined;
+const down = (ctx, value) => ctx.p1.parsed.y > ctx.p2.parsed.y ? value : undefined;
 // </block:segmentUtils>
 
 // <block:genericOptions:2>
