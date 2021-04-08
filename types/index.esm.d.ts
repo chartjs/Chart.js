@@ -2821,6 +2821,10 @@ export type LinearScaleOptions = CartesianScaleOptions & {
    * Adjustment used when calculating the minimum data value.
    */
   suggestedMax?: number;
+  /**
+  * Percentage (string ending with %) or amount (number) for added room in the scale range above and below data.
+  */
+  grace?: string | number;
 
   ticks: {
     /**
