@@ -253,12 +253,21 @@ export function _computeSegments(line, segmentOptions) {
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function splitByStyles(segments, points, segmentOptions) { // eslint-disable-line complexity, max-statements
-  const count = points.length;
-  if (!segmentOptions || !segmentOptions.setContext || !count) {
+function splitByStyles(segments, points, segmentOptions) {
+  if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
+  return doSplitByStyles(segments, points, segmentOptions);
+}
 
+/**
+ * @param {Segment[]} segments
+ * @param {PointElement[]} points
+ * @param {object} [segmentOptions]
+ * @return {Segment[]}
+ */
+function doSplitByStyles(segments, points, segmentOptions) {
+  const count = points.length;
   const result = [];
   let start = segments[0].start;
   let i = start;
