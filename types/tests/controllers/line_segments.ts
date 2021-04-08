@@ -6,9 +6,9 @@ const chart = new Chart('id', {
     labels: [],
     datasets: [{
       data: [],
-      segments: {
-        borderColor: ctx => ctx.p1.skip ? 'gray' : undefined,
-        borderWidth: ctx => ctx.p2.parsed.y > 10 ? 5 : undefined,
+      segment: {
+        borderColor: ctx => ctx.p0.skip ? 'gray' : undefined,
+        borderWidth: ctx => ctx.p1.parsed.y > 10 ? 5 : undefined,
       }
     }]
   },

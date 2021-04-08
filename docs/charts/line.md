@@ -76,7 +76,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
-| [`segments`](#segments) | `object` | - | - | `undefined`
+| [`segment`](#segment) | `object` | - | - | `undefined`
 | [`showLine`](#line-styling) | `boolean` | - | - | `true`
 | [`spanGaps`](#line-styling) | `boolean`\|`number` | - | - | `undefined`
 | [`stack`](#general) | `string` | - | - | `'line'` |
@@ -159,9 +159,9 @@ The `'monotone'` algorithm is more suited to `y = f(x)` datasets: it preserves m
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
 
-### Segments
+### Segment
 
-Line segment styles can be overridde by scriptable options in the `segments` object. Currently all of the `border*` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
+Line segment styles can be overridde by scriptable options in the `segment` object. Currently all of the `border*` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
 
 Context for the scriptable segment contains the following properties:
 

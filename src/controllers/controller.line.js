@@ -33,7 +33,7 @@ export default class LineController extends DatasetController {
     if (!me.options.showLine) {
       options.borderWidth = 0;
     }
-    options.segments = me.options.segments;
+    options.segment = me.options.segment;
     me.updateElement(line, undefined, {
       animated: !animationsDisabled,
       options

@@ -1,5 +1,5 @@
-function slope({p1, p2}) {
-  return (p1.y - p2.y) / (p2.x - p1.x);
+function slope({p0, p1}) {
+  return (p0.y - p1.y) / (p1.x - p0.x);
 }
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
       datasets: [{
         data: [1, 2, 3, 3, 2, 1],
         borderColor: 'black',
-        segments: {
+        segment: {
           borderColor: ctx => slope(ctx) > 0 ? 'green' : slope(ctx) < 0 ? 'red' : undefined,
           borderDash: ctx => slope(ctx) < 0 ? [5, 5] : undefined
         }

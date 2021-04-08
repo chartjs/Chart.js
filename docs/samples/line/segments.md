@@ -3,8 +3,8 @@
 ```js chart-editor
 
 // <block:segmentUtils:1>
-const skipped = (ctx, value) => ctx.p1.skip || ctx.p2.skip ? value : undefined;
-const down = (ctx, value) => ctx.p1.parsed.y > ctx.p2.parsed.y ? value : undefined;
+const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
 // </block:segmentUtils>
 
 // <block:genericOptions:2>
@@ -26,7 +26,7 @@ const config = {
       label: 'My First Dataset',
       data: [65, 59, NaN, 48, 56, 57, 40],
       borderColor: 'rgb(75, 192, 192)',
-      segments: {
+      segment: {
         borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || down(ctx, 'rgb(192,75,75)'),
         borderDash: ctx => skipped(ctx, [6, 6]),
       }

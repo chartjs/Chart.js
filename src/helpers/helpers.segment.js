@@ -276,8 +276,8 @@ function doSplitByStyles(segments, points, segmentOptions) {
     let prev = points[start % count];
     for (i = start + 1; i <= segment.end; i++) {
       const pt = points[i % count];
-      style = readStyle(segmentOptions.setContext({type: 'segment', p1: prev, p2: pt}));
-      if (prevStyle && !compareStyle(style, prevStyle)) {
+      style = readStyle(segmentOptions.setContext({type: 'segment', p0: prev, p1: pt}));
+      if (styleChanged(style, prevStyle)) {
         result.push({start: start, end: i - 1, loop: segment.loop, style: prevStyle});
         prevStyle = style;
         start = i - 1;
@@ -305,6 +305,6 @@ function readStyle(options) {
   };
 }
 
-function compareStyle(style1, style2) {
-  return JSON.stringify(style1) === JSON.stringify(style2);
+function styleChanged(style, prevStyle) {
+  return prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle);
 }

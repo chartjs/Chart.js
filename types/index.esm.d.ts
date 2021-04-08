@@ -27,8 +27,8 @@ export interface ScriptableContext<TType extends ChartType> {
 
 export interface ScriptableLineSegmentContext {
   type: 'segment',
-  p1: PointElement,
-  p2: PointElement
+  p0: PointElement,
+  p1: PointElement
 }
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext) => T);
@@ -1690,7 +1690,7 @@ export interface LineOptions extends CommonElementOptions {
    */
   stepped: 'before' | 'after' | 'middle' | boolean;
 
-  segments: {
+  segment: {
     borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
     borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
     borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;

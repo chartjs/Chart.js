@@ -6,9 +6,9 @@ module.exports = {
       datasets: [{
         data: [1, 3, NaN, NaN, 2, 1],
         borderColor: 'black',
-        segments: {
-          borderColor: ctx => ctx.p1.skip || ctx.p2.skip ? 'red' : undefined,
-          borderDash: ctx => ctx.p1.skip || ctx.p2.skip ? [5, 5] : undefined
+        segment: {
+          borderColor: ctx => ctx.p0.skip || ctx.p1.skip ? 'red' : undefined,
+          borderDash: ctx => ctx.p0.skip || ctx.p1.skip ? [5, 5] : undefined
         }
       }]
     },

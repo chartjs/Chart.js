@@ -278,7 +278,7 @@ export default class LineElement extends Element {
   }
 
   get segments() {
-    return this._segments || (this._segments = _computeSegments(this, this.options.segments));
+    return this._segments || (this._segments = _computeSegments(this, this.options.segment));
   }
 
   /**
