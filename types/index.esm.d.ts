@@ -25,6 +25,12 @@ export interface ScriptableContext<TType extends ChartType> {
   raw: unknown;
 }
 
+export interface ScriptableLineSegmentContext {
+  type: 'segment',
+  p0: PointElement,
+  p1: PointElement
+}
+
 export type Scriptable<T, TContext> = T | ((ctx: TContext) => T);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
@@ -1683,6 +1689,15 @@ export interface LineOptions extends CommonElementOptions {
    * @default false
    */
   stepped: 'before' | 'after' | 'middle' | boolean;
+
+  segment: {
+    borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
+    borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
+    borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
+    borderDashOffset: Scriptable<number|undefined, ScriptableLineSegmentContext>;
+    borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
+    borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
+  };
 }
 
 export interface LineHoverOptions extends CommonHoverOptions {
@@ -1814,6 +1829,7 @@ export interface PointElement<T extends PointProps = PointProps, O extends Point
   extends Element<T, O>,
     VisualElement {
   readonly skip: boolean;
+  readonly parsed: CartesianParsedData;
 }
 
 export const PointElement: ChartComponent & {

@@ -3,18 +3,19 @@ import {_bezierInterpolation, _pointInLine, _steppedInterpolation} from '../help
 import {_computeSegments, _boundSegments} from '../helpers/helpers.segment';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve';
+import {valueOrDefault} from '../helpers';
 
 /**
  * @typedef { import("./element.point").default } PointElement
  */
 
-function setStyle(ctx, vm) {
-  ctx.lineCap = vm.borderCapStyle;
-  ctx.setLineDash(vm.borderDash);
-  ctx.lineDashOffset = vm.borderDashOffset;
-  ctx.lineJoin = vm.borderJoinStyle;
-  ctx.lineWidth = vm.borderWidth;
-  ctx.strokeStyle = vm.borderColor;
+function setStyle(ctx, options, style = options) {
+  ctx.lineCap = valueOrDefault(style.borderCapStyle, options.borderCapStyle);
+  ctx.setLineDash(valueOrDefault(style.borderDash, options.borderDash));
+  ctx.lineDashOffset = valueOrDefault(style.borderDashOffset, options.borderDashOffset);
+  ctx.lineJoin = valueOrDefault(style.borderJoinStyle, options.borderJoinStyle);
+  ctx.lineWidth = valueOrDefault(style.borderWidth, options.borderWidth);
+  ctx.strokeStyle = valueOrDefault(style.borderColor, options.borderColor);
 }
 
 function lineTo(ctx, previous, target) {
@@ -206,18 +207,33 @@ function strokePathWithCache(ctx, line, start, count) {
       path.closePath();
     }
   }
+  setStyle(ctx, line.options);
   ctx.stroke(path);
 }
+
 function strokePathDirect(ctx, line, start, count) {
-  ctx.beginPath();
-  if (line.path(ctx, start, count)) {
-    ctx.closePath();
+  const {segments, options} = line;
+  const segmentMethod = _getSegmentMethod(line);
+
+  for (const segment of segments) {
+    setStyle(ctx, options, segment.style);
+    ctx.beginPath();
+    if (segmentMethod(ctx, line, segment, {start, end: start + count - 1})) {
+      ctx.closePath();
+    }
+    ctx.stroke();
   }
-  ctx.stroke();
 }
 
 const usePath2D = typeof Path2D === 'function';
-const strokePath = usePath2D ? strokePathWithCache : strokePathDirect;
+
+function draw(ctx, line, start, count) {
+  if (usePath2D && line.segments.length === 1) {
+    strokePathWithCache(ctx, line, start, count);
+  } else {
+    strokePathDirect(ctx, line, start, count);
+  }
+}
 
 export default class LineElement extends Element {
 
@@ -262,7 +278,7 @@ export default class LineElement extends Element {
   }
 
   get segments() {
-    return this._segments || (this._segments = _computeSegments(this));
+    return this._segments || (this._segments = _computeSegments(this, this.options.segment));
   }
 
   /**
@@ -352,15 +368,14 @@ export default class LineElement extends Element {
   path(ctx, start, count) {
     const me = this;
     const segments = me.segments;
-    const ilen = segments.length;
     const segmentMethod = _getSegmentMethod(me);
     let loop = me._loop;
 
     start = start || 0;
     count = count || (me.points.length - start);
 
-    for (let i = 0; i < ilen; ++i) {
-      loop &= segmentMethod(ctx, me, segments[i], {start, end: start + count - 1});
+    for (const segment of segments) {
+      loop &= segmentMethod(ctx, me, segment, {start, end: start + count - 1});
     }
     return !!loop;
   }
@@ -383,9 +398,7 @@ export default class LineElement extends Element {
 
     ctx.save();
 
-    setStyle(ctx, options);
-
-    strokePath(ctx, me, start, count);
+    draw(ctx, me, start, count);
 
     ctx.restore();
 
