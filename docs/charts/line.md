@@ -166,8 +166,8 @@ Line segment styles can be overridden by scriptable options in the `segment` obj
 Context for the scriptable segment contains the following properties:
 
 * `type`: `'segment'`
-* `p1`: first point element
-* `p2`: second point element
+* `p0`: first point element
+* `p1`: second point element
 
 [Example usage](../samples/line/segments.md)
 
