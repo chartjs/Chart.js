@@ -1691,6 +1691,7 @@ export interface LineOptions extends CommonElementOptions {
   stepped: 'before' | 'after' | 'middle' | boolean;
 
   segment: {
+    backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
     borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
     borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
     borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
