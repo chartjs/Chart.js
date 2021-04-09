@@ -111,6 +111,7 @@ module.exports = {
             'line/interpolation',
             'line/styling',
             // 'line/point-styling',
+            'line/segments',
           ]
         },
         {

@@ -52,8 +52,8 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
-| [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
+| [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
@@ -64,7 +64,6 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`indexAxis`](#general) | `string` | - | - | `'x'`
 | [`label`](#general) | `string` | - | - | `''`
-| [`tension`](#line-styling) | `number` | - | - | `0`
 | [`order`](#general) | `number` | - | - | `0`
 | [`pointBackgroundColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`pointBorderColor`](#point-styling) | `Color` | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
@@ -77,10 +76,12 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
 | [`pointStyle`](#point-styling) | `string`\|`Image` | Yes | Yes | `'circle'`
+| [`segment`](#segment) | `object` | - | - | `undefined`
 | [`showLine`](#line-styling) | `boolean` | - | - | `true`
 | [`spanGaps`](#line-styling) | `boolean`\|`number` | - | - | `undefined`
 | [`stack`](#general) | `string` | - | - | `'line'` |
 | [`stepped`](#stepped) | `boolean`\|`string` | - | - | `false`
+| [`tension`](#line-styling) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 
@@ -157,6 +158,18 @@ The `'default'` algorithm uses a custom weighted cubic interpolation, which prod
 The `'monotone'` algorithm is more suited to `y = f(x)` datasets: it preserves monotonicity (or piecewise monotonicity) of the dataset being interpolated, and ensures local extremums (if any) stay at input data points.
 
 If left untouched (`undefined`), the global `options.elements.line.cubicInterpolationMode` property is used.
+
+### Segment
+
+Line segment styles can be overridden by scriptable options in the `segment` object. Currently all of the `border*` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
+
+Context for the scriptable segment contains the following properties:
+
+* `type`: `'segment'`
+* `p0`: first point element
+* `p1`: second point element
+
+[Example usage](../samples/line/segments.md)
 
 ### Stepped
 
