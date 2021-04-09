@@ -405,8 +405,7 @@ function _segments(line, target, property) {
   const tpoints = target.points;
   const parts = [];
 
-  for (let i = 0; i < segments.length; i++) {
-    const segment = segments[i];
+  for (const segment of segments) {
     const bounds = getBounds(property, points[segment.start], points[segment.end], segment.loop);
 
     if (!target.segments) {
@@ -422,24 +421,22 @@ function _segments(line, target, property) {
     }
 
     // Get all segments from `target` that intersect the bounds of current segment of `line`
-    const subs = _boundSegments(target, bounds);
+    const targetSegments = _boundSegments(target, bounds);
 
-    for (let j = 0; j < subs.length; ++j) {
-      const sub = subs[j];
-      const subBounds = getBounds(property, tpoints[sub.start], tpoints[sub.end], sub.loop);
+    for (const tgt of targetSegments) {
+      const subBounds = getBounds(property, tpoints[tgt.start], tpoints[tgt.end], tgt.loop);
       const fillSources = _boundSegment(segment, points, subBounds);
 
-      for (let k = 0; k < fillSources.length; k++) {
+      for (const fillSource of fillSources) {
         parts.push({
-          source: fillSources[k],
-          target: sub,
+          source: fillSource,
+          target: tgt,
           start: {
             [property]: _getEdge(bounds, subBounds, 'start', Math.max)
           },
           end: {
             [property]: _getEdge(bounds, subBounds, 'end', Math.min)
           }
-
         });
       }
     }
@@ -468,11 +465,10 @@ function _fill(ctx, cfg) {
   const {line, target, property, color, scale} = cfg;
   const segments = _segments(line, target, property);
 
-  ctx.fillStyle = color;
-  for (let i = 0, ilen = segments.length; i < ilen; ++i) {
-    const {source: src, target: tgt, start, end} = segments[i];
-
+  for (const {source: src, target: tgt, start, end} of segments) {
+    const {style: {backgroundColor = color} = {}} = src;
     ctx.save();
+    ctx.fillStyle = backgroundColor;
 
     clipBounds(ctx, scale, getBounds(property, start, end));
 
