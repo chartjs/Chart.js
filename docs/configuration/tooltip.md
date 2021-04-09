@@ -8,7 +8,7 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
 | `external` | `function` | `null` | See [external tooltip](#external-custom-tooltips) section.
-| `mode` | `string` | `interaction.mode` | Sets which elements appear in the tooltip. [more...](interactions/modes.md#interaction-modes).
+| `mode` | `string` | `interaction.mode` | Sets which elements appear in the tooltip. [more...](interactions.md#modes).
 | `intersect` | `boolean` | `interaction.intersect` | If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
 | `position` | `string` | `'average'` | The mode for positioning the tooltip. [more...](#position-modes)
 | `callbacks` | `object` | | See the [callbacks section](#tooltip-callbacks).
