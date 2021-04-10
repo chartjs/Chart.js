@@ -62,11 +62,11 @@ module.exports = {
             ]
           },
           {
-            text: 'Release notes',
+            text: 'Release notes (5 latest)',
             items: [
               {
                 type: 'versions',
-                exclude: '^[01]\\.|2\\.[0-8]\\.',
+                limit: 5,
                 target: '_blank',
                 group: 'patch',
                 link: 'https://github.com/chartjs/Chart.js/releases/tag/v{{version}}'
