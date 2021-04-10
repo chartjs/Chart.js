@@ -1018,10 +1018,11 @@ class Chart {
 	 * returned value can be used, for instance, to interrupt the current action.
 	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
 	 * @param {Object} [args] - Extra arguments to apply to the hook call.
+   * @param {import('./core.plugins').filterCallback} [filter] - Filtering function for limiting which plugins are notified
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
-  notifyPlugins(hook, args) {
-    return this._plugins.notify(this, hook, args);
+  notifyPlugins(hook, args, filter) {
+    return this._plugins.notify(this, hook, args, filter);
   }
 
   /**
@@ -1049,15 +1050,16 @@ class Chart {
   _eventHandler(e, replay) {
     const me = this;
     const args = {event: e, replay, cancelable: true};
+    const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.type);
 
-    if (me.notifyPlugins('beforeEvent', args) === false) {
+    if (me.notifyPlugins('beforeEvent', args, eventFilter) === false) {
       return;
     }
 
     const changed = me._handleEvent(e, replay);
 
     args.cancelable = false;
-    me.notifyPlugins('afterEvent', args);
+    me.notifyPlugins('afterEvent', args, eventFilter);
 
     if (changed || args.changed) {
       me.render();
