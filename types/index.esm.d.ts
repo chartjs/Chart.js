@@ -2434,7 +2434,7 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   titleColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * See Fonts
-   * @default {style: 'bold'}
+   * @default {weight: 'bold'}
    */
   titleFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
   /**
@@ -2489,7 +2489,7 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   footerColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
    * See Fonts
-   * @default {style: 'bold'}
+   * @default {weight: 'bold'}
    */
   footerFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
   /**

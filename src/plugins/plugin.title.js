@@ -148,7 +148,7 @@ export default {
     align: 'center',
     display: false,
     font: {
-      style: 'bold',
+      weight: 'bold',
     },
     fullSize: true,
     padding: 10,

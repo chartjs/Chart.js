@@ -43,7 +43,7 @@ const config = {
           font: {
             family: 'Comic Sans MS',
             size: 20,
-            style: 'bold',
+            weight: 'bold',
             lineHeight: 1.2,
           },
           padding: {top: 20, left: 0, right: 0, bottom: 0}
@@ -59,7 +59,7 @@ const config = {
             family: 'Times',
             size: 20,
             style: 'normal',
-            lineHeight: 1.2,
+            lineHeight: 1.2
           },
           padding: {top: 30, left: 0, right: 0, bottom: 0}
         }

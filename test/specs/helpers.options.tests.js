@@ -112,7 +112,7 @@ describe('Chart.helpers.options', function() {
       Object.assign(Chart.defaults.font, {
         family: 'foobar',
         size: 42,
-        style: 'xxxyyy',
+        style: 'oblique 9deg',
         lineHeight: 1.5
       });
 
@@ -120,8 +120,8 @@ describe('Chart.helpers.options', function() {
         family: 'foobar',
         lineHeight: 63,
         size: 42,
-        string: 'xxxyyy 42px foobar',
-        style: 'xxxyyy',
+        string: 'oblique 9deg 42px foobar',
+        style: 'oblique 9deg',
         weight: null
       });
 
@@ -132,13 +132,13 @@ describe('Chart.helpers.options', function() {
         family: 'bla',
         lineHeight: 8,
         size: 21,
-        style: 'zzz'
+        style: 'oblique -90deg'
       })).toEqual({
         family: 'bla',
         lineHeight: 8 * 21,
         size: 21,
-        string: 'zzz 21px bla',
-        style: 'zzz',
+        string: 'oblique -90deg 21px bla',
+        style: 'oblique -90deg',
         weight: null
       });
     });
@@ -147,13 +147,13 @@ describe('Chart.helpers.options', function() {
         family: 'bla',
         lineHeight: 8,
         size: '21',
-        style: 'zzz'
+        style: 'italic'
       })).toEqual({
         family: 'bla',
         lineHeight: 8 * 21,
         size: 21,
-        string: 'zzz 21px bla',
-        style: 'zzz',
+        string: 'italic 21px bla',
+        style: 'italic',
         weight: null
       });
     });
