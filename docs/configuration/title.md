@@ -13,7 +13,7 @@ Namespace: `options.plugins.title`, the global options for the chart title is de
 | `display` | `boolean` | `false` | Yes | Is the title shown?
 | `fullSize` | `boolean` | `true` | Yes | Marks that this box should take the full width/height of the canvas. If `false`, the box is sized and placed above/beside the chart area.
 | `position` | `string` | `'top'` | Yes | Position of title. [more...](#position)
-| `font` | `Font` | `{style: 'bold'}` | Yes | See [Fonts](../general/fonts.md)
+| `font` | `Font` | `{weight: 'bold'}` | Yes | See [Fonts](../general/fonts.md)
 | `padding` | [`Padding`](../general/padding.md) | `10` | Yes | Padding to apply around the title. Only `top` and `bottom` are implemented.
 | `text` | `string`\|`string[]` | `''` | Yes | Title text to display. If specified as an array, text is rendered on multiple lines.
 

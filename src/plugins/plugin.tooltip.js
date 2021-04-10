@@ -1143,7 +1143,7 @@ export default {
     backgroundColor: 'rgba(0,0,0,0.8)',
     titleColor: '#fff',
     titleFont: {
-      style: 'bold',
+      weight: 'bold',
     },
     titleSpacing: 2,
     titleMarginBottom: 6,
@@ -1157,7 +1157,7 @@ export default {
     footerSpacing: 2,
     footerMarginTop: 6,
     footerFont: {
-      style: 'bold',
+      weight: 'bold',
     },
     footerAlign: 'left',
     padding: 6,

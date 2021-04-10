@@ -147,7 +147,7 @@ options: {
         font: function(context) {
           if (context.tick && context.tick.major) {
             return {
-              style: 'bold',
+              weight: 'bold',
               color: '#FF0000'
             };
           }
@@ -186,7 +186,7 @@ options: {
         font: function(context) {
           if (context.tick && context.tick.major) {
             return {
-              style: 'bold'
+              weight: 'bold'
             };
           }
         }

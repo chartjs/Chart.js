@@ -14,7 +14,7 @@ describe('Plugin.title', function() {
       fullSize: true,
       weight: 2000,
       font: {
-        style: 'bold'
+        weight: 'bold'
       },
       padding: 10,
       text: ''
@@ -139,7 +139,7 @@ describe('Plugin.title', function() {
       args: [0]
     }, {
       name: 'setFont',
-      args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']
@@ -200,7 +200,7 @@ describe('Plugin.title', function() {
       args: [-0.5 * Math.PI]
     }, {
       name: 'setFont',
-      args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']
@@ -242,7 +242,7 @@ describe('Plugin.title', function() {
       args: [0.5 * Math.PI]
     }, {
       name: 'setFont',
-      args: ["bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']

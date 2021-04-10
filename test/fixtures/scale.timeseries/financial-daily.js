@@ -27,7 +27,7 @@ module.exports = {
               enabled: true,
             },
             font: function(context) {
-              return context.tick && context.tick.major ? {style: 'bold'} : undefined;
+              return context.tick && context.tick.major ? {weight: 'bold'} : undefined;
             },
             source: 'data',
             autoSkip: true,
