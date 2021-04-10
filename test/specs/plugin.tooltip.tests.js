@@ -156,10 +156,18 @@ describe('Plugin.Tooltip', function() {
         footer: [],
         labelColors: [{
           borderColor: defaults.borderColor,
-          backgroundColor: defaults.backgroundColor
+          backgroundColor: defaults.backgroundColor,
+          borderWidth: 1,
+          borderDash: undefined,
+          borderDashOffset: undefined,
+          borderRadius: 0,
         }, {
           borderColor: defaults.borderColor,
-          backgroundColor: defaults.backgroundColor
+          backgroundColor: defaults.backgroundColor,
+          borderWidth: 1,
+          borderDash: undefined,
+          borderDashOffset: undefined,
+          borderRadius: 0,
         }]
       }));
 
@@ -307,7 +315,11 @@ describe('Plugin.Tooltip', function() {
 
     expect(tooltip.labelColors).toEqual([{
       borderColor: defaults.borderColor,
-      backgroundColor: defaults.backgroundColor
+      backgroundColor: defaults.backgroundColor,
+      borderWidth: 1,
+      borderDash: undefined,
+      borderDashOffset: undefined,
+      borderRadius: 0,
     }]);
 
     expect(tooltip.x).toBeCloseToPixel(267);
@@ -460,10 +472,18 @@ describe('Plugin.Tooltip', function() {
       labelTextColors: ['labelTextColor', 'labelTextColor'],
       labelColors: [{
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }, {
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }],
       labelPointStyles: [{
         pointStyle: 'labelPointStyle',
@@ -573,10 +593,18 @@ describe('Plugin.Tooltip', function() {
       footer: [],
       labelColors: [{
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }, {
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }]
     }));
 
@@ -641,10 +669,18 @@ describe('Plugin.Tooltip', function() {
       footer: [],
       labelColors: [{
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }, {
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }]
     }));
 
@@ -710,10 +746,18 @@ describe('Plugin.Tooltip', function() {
       footer: [],
       labelColors: [{
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }, {
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }]
     }));
 
@@ -778,7 +822,11 @@ describe('Plugin.Tooltip', function() {
       footer: [],
       labelColors: [{
         borderColor: defaults.borderColor,
-        backgroundColor: defaults.backgroundColor
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
       }]
     }));
   });
