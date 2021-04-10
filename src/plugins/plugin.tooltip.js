@@ -723,8 +723,7 @@ export class Tooltip extends Element {
       const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
       const borderRadius = toTRBLCorners(labelColors.borderRadius);
 
-      if (Array.prototype.some.call(Object.values(borderRadius), v => v !== 0)) {
-        
+      if (Object.values(borderRadius).some(v => v !== 0)) {
         ctx.beginPath();
         ctx.fillStyle = options.multiKeyBackground;
         addRoundedRectPath(ctx, {
@@ -732,7 +731,7 @@ export class Tooltip extends Element {
           y: colorY,
           w: boxWidth,
           h: boxHeight,
-          radius: labelColors.borderRadius,
+          radius: borderRadius,
         });
         ctx.fill();
         ctx.stroke();
@@ -745,7 +744,7 @@ export class Tooltip extends Element {
           y: colorY + 1,
           w: boxWidth - 2,
           h: boxHeight - 2,
-          radius: labelColors.borderRadius,
+          radius: borderRadius,
         });
         ctx.fill();
       } else {
