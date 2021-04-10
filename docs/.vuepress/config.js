@@ -42,7 +42,9 @@ module.exports = {
       },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {
-      filters: 'version-filters.js',
+      filters: {
+        suffix: (v) => v ? ` (${v})` : ''
+      },
       menu: {
         items: [
           {
@@ -56,7 +58,7 @@ module.exports = {
                 type: 'versions',
                 text: '{{version}}{{tag|suffix}}',
                 link: '/docs/{{version}}/',
-                exclude: '^[01]\\.|2\\.[0-5]\\.',
+                exclude: /^[01]\.|2\.[0-5]\./,
                 group: 'minor',
               }
             ]
