@@ -412,6 +412,11 @@ export default class BarController extends DatasetController {
     let length = _stacked ? me.applyStack(vScale, parsed, _stacked) : value;
     let head, size;
 
+    if (isNullOrUndef(length)) {
+      // Occurs when a null value is present
+      length = 0;
+    }
+
     if (length !== value) {
       start = length - value;
       length = value;
