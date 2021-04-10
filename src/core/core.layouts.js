@@ -93,16 +93,15 @@ function updateDims(chartArea, params, layout) {
   const box = layout.box;
   const maxPadding = chartArea.maxPadding;
 
-  if (isObject(layout.pos)) {
-    // dynamically placed boxes are not considered
-    return {same: false, other: false};
+  // dynamically placed boxes size is not considered
+  if (!isObject(layout.pos)) {
+    if (layout.size) {
+      // this layout was already counted for, lets first reduce old size
+      chartArea[layout.pos] -= layout.size;
+    }
+    layout.size = layout.horizontal ? box.height : box.width;
+    chartArea[layout.pos] += layout.size;
   }
-  if (layout.size) {
-    // this layout was already counted for, lets first reduce old size
-    chartArea[layout.pos] -= layout.size;
-  }
-  layout.size = layout.horizontal ? box.height : box.width;
-  chartArea[layout.pos] += layout.size;
 
   if (box.getPadding) {
     updateMaxPadding(maxPadding, box.getPadding());
