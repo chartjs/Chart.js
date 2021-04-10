@@ -266,7 +266,8 @@ export default class BarController extends DatasetController {
     me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i++) {
-      const vpixels = reset ? {base, head: base} : me._calculateBarValuePixels(i);
+      const parsed = me.getParsed(i);
+      const vpixels = reset || isNullOrUndef(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
 
       const properties = {
