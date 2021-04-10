@@ -1,13 +1,14 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {drawPoint, renderText} from '../helpers/helpers.canvas';
+import {addRoundedRectPath, drawPoint, renderText} from '../helpers/helpers.canvas';
 import {
   callback as call, valueOrDefault, toFont,
   toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
   clipArea, unclipArea
 } from '../helpers/index';
 import {_toLeftRightCenter, _alignStartEnd, _textX} from '../helpers/helpers.extras';
+import {toTRBLCorners} from '../helpers/helpers.options';
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  */
@@ -341,10 +342,26 @@ export class Legend extends Element {
         // Draw box as legend symbol
         // Adjust position when boxHeight < fontSize (want it centered)
         const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
+        const xBoxLeft = rtlHelper.leftForLtr(x, boxWidth);
+        const borderRadius = toTRBLCorners(legendItem.borderRadius);
 
-        ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), yBoxTop, boxWidth, boxHeight);
+        ctx.beginPath();
+
+        if (Object.values(borderRadius).some(v => v !== 0)) {
+          addRoundedRectPath(ctx, {
+            x: xBoxLeft,
+            y: yBoxTop,
+            w: boxWidth,
+            h: boxHeight,
+            radius: borderRadius,
+          });
+        } else {
+          ctx.rect(xBoxLeft, yBoxTop, boxWidth, boxHeight);
+        }
+
+        ctx.fill();
         if (lineWidth !== 0) {
-          ctx.strokeRect(rtlHelper.leftForLtr(x, boxWidth), yBoxTop, boxWidth, boxHeight);
+          ctx.stroke();
         }
       }
 
@@ -653,6 +670,7 @@ export default {
             pointStyle: pointStyle || style.pointStyle,
             rotation: style.rotation,
             textAlign: textAlign || style.textAlign,
+            borderRadius: 0, // TODO: v4, default to style.borderRadius
 
             // Below is extra data used for toggling the datasets
             datasetIndex: meta.index

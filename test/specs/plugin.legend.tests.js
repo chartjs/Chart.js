@@ -61,6 +61,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -76,6 +77,7 @@ describe('Legend block tests', function() {
       datasetIndex: 0
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: true,
@@ -91,6 +93,7 @@ describe('Legend block tests', function() {
       datasetIndex: 1
     }, {
       text: 'dataset3',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -137,6 +140,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -152,6 +156,7 @@ describe('Legend block tests', function() {
       datasetIndex: 0
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: true,
@@ -167,6 +172,7 @@ describe('Legend block tests', function() {
       datasetIndex: 1
     }, {
       text: 'dataset3',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -220,6 +226,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset3',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -235,6 +242,7 @@ describe('Legend block tests', function() {
       datasetIndex: 2
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: true,
@@ -250,6 +258,7 @@ describe('Legend block tests', function() {
       datasetIndex: 1
     }, {
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -308,6 +317,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -323,6 +333,7 @@ describe('Legend block tests', function() {
       datasetIndex: 0
     }, {
       text: 'dataset3',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -380,6 +391,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset3',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -395,6 +407,7 @@ describe('Legend block tests', function() {
       datasetIndex: 2
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: true,
@@ -410,6 +423,7 @@ describe('Legend block tests', function() {
       datasetIndex: 1
     }, {
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -542,6 +556,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -585,6 +600,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: 'rgb(50, 0, 0)',
       fontColor: '#666',
       hidden: false,
@@ -643,6 +659,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -658,6 +675,7 @@ describe('Legend block tests', function() {
       datasetIndex: 0
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
@@ -717,6 +735,7 @@ describe('Legend block tests', function() {
 
     expect(chart.legend.legendItems).toEqual([{
       text: 'dataset1',
+      borderRadius: 0,
       fillStyle: 'rgba(0,0,0,0.1)',
       fontColor: '#666',
       hidden: false,
@@ -732,6 +751,7 @@ describe('Legend block tests', function() {
       datasetIndex: 0
     }, {
       text: 'dataset2',
+      borderRadius: 0,
       fillStyle: '#f31',
       fontColor: '#666',
       hidden: false,
