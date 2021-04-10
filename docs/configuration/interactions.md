@@ -18,8 +18,8 @@ Namespace: `options`
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `events` | `string[]` | `['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']` | The `events` option defines the browser events that the chart should listen to for. Each of these events trigger hover and are passed to plugins. [more...](#event-option)
-| `onHover` | `function` | `null` | Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
-| `onClick` | `function` | `null` | Called if the event is of type `'mouseup'` or `'click'`. Passed the event, an array of active elements, and the chart.
+| `onHover` | `function` | `null` | Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.
+| `onClick` | `function` | `null` | Called if the event is of type `'mouseup'`, `'click'` or '`'contextmenu'` over chartArea. Passed the event, an array of active elements, and the chart.
 
 ### Event Option
 

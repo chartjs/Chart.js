@@ -1108,11 +1108,11 @@ class Chart {
     // This prevents recursion if the handler calls chart.update()
     me._lastEvent = null;
 
-    // Invoke onHover hook
-    callCallback(options.onHover, [e, active, me], me);
+    if (_isPointInArea(e, me.chartArea, me._minPadding)) {
+      // Invoke onHover hook
+      callCallback(options.onHover, [e, active, me], me);
 
-    if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
-      if (_isPointInArea(e, me.chartArea, me._minPadding)) {
+      if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
         callCallback(options.onClick, [e, active, me], me);
       }
     }
