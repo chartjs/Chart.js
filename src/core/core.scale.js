@@ -640,7 +640,7 @@ export default class Scale extends Element {
 
         if (isHorizontal) {
         // A horizontal axis is more constrained by the height.
-          const labelHeight = sin * widest.width + cos * highest.height;
+          const labelHeight = tickOpts.mirror ? 0 : sin * widest.width + cos * highest.height;
           minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
         } else {
         // A vertical axis is more constrained by the width. Labels are the
@@ -1122,26 +1122,27 @@ export default class Scale extends Element {
     const {position, ticks: optionTicks} = options;
     const isHorizontal = me.isHorizontal();
     const ticks = me.ticks;
-    const {align, crossAlign, padding} = optionTicks;
+    const {align, crossAlign, padding, mirror} = optionTicks;
     const tl = getTickMarkLength(options.grid);
     const tickAndPadding = tl + padding;
+    const hTickAndPadding = mirror ? -padding : tickAndPadding;
     const rotation = -toRadians(me.labelRotation);
     const items = [];
     let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
     let textBaseline = 'middle';
 
     if (position === 'top') {
-      y = me.bottom - tickAndPadding;
+      y = me.bottom - hTickAndPadding;
       textAlign = me._getXAxisLabelAlignment();
     } else if (position === 'bottom') {
-      y = me.top + tickAndPadding;
+      y = me.top + hTickAndPadding;
       textAlign = me._getXAxisLabelAlignment();
     } else if (position === 'left') {
-      const ret = this._getYAxisLabelAlignment(tl);
+      const ret = me._getYAxisLabelAlignment(tl);
       textAlign = ret.textAlign;
       x = ret.x;
     } else if (position === 'right') {
-      const ret = this._getYAxisLabelAlignment(tl);
+      const ret = me._getYAxisLabelAlignment(tl);
       textAlign = ret.textAlign;
       x = ret.x;
     } else if (axis === 'x') {
@@ -1161,7 +1162,7 @@ export default class Scale extends Element {
         const value = position[positionAxisID];
         x = me.chart.scales[positionAxisID].getPixelForValue(value);
       }
-      textAlign = this._getYAxisLabelAlignment(tl).textAlign;
+      textAlign = me._getYAxisLabelAlignment(tl).textAlign;
     }
 
     if (axis === 'y') {
@@ -1206,6 +1207,9 @@ export default class Scale extends Element {
           } else {
             textOffset = labelSizes.highest.height - lineCount * lineHeight;
           }
+        }
+        if (mirror) {
+          textOffset *= -1;
         }
       } else {
         y = pixel;
@@ -1262,7 +1266,7 @@ export default class Scale extends Element {
     if (position === 'left') {
       if (mirror) {
         textAlign = 'left';
-        x = me.right - padding;
+        x = me.right + padding;
       } else {
         x = me.right - tickAndPadding;
 
