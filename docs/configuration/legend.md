@@ -84,6 +84,10 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // Label that will be displayed
     text: string,
 
+    // Border radius of the legend item.
+    // Introduced in 3.1.0
+    borderRadius?: number | BorderRadius,
+
     // Index of the associated dataset
     datasetIndex: number,
 

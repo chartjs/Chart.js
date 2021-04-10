@@ -2010,6 +2010,12 @@ export interface LegendItem {
   text: string;
 
   /**
+   * Border radius of the legend box
+   * @since 3.1.0
+   */
+  borderRadius?: number | BorderRadius;
+
+  /**
    * Index of the associated dataset
    */
   datasetIndex: number;
