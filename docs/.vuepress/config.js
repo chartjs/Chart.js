@@ -42,6 +42,7 @@ module.exports = {
       },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {
+      filters: 'version-filters.js',
       menu: {
         items: [
           {
@@ -53,16 +54,10 @@ module.exports = {
               },
               {
                 type: 'versions',
-                exclude: '^[0-2]\\.',
+                text: '{{version}}{{tag|suffix}}',
+                link: '/docs/{{version}}/',
+                exclude: '^[01]\\.|2\\.[0-5]\\.',
                 group: 'minor',
-                text: '{{version}} (latest)',
-                link: '/docs/{{version}}/'
-              },
-              {
-                type: 'versions',
-                exclude: '^[013]\\.|2\\.[0-5]\\.',
-                group: 'minor',
-                link: '/docs/{{version}}/'
               }
             ]
           },
