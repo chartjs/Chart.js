@@ -1,4 +1,5 @@
 import DatasetController from '../core/core.datasetController';
+import {isNullOrUndef} from '../helpers';
 import {_limitValue, isNumber} from '../helpers/helpers.math';
 import {_lookupByKey} from '../helpers/helpers.collection';
 
@@ -59,9 +60,10 @@ export default class LineController extends DatasetController {
       const point = points[i];
       const parsed = me.getParsed(i);
       const properties = directUpdate ? point : {};
+      const nullData = isNullOrUndef(parsed.y);
       const x = properties.x = xScale.getPixelForValue(parsed.x, i);
-      const y = properties.y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed, _stacked) : parsed.y, i);
-      properties.skip = isNaN(x) || isNaN(y);
+      const y = properties.y = reset || nullData ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed, _stacked) : parsed.y, i);
+      properties.skip = isNaN(x) || isNaN(y) || nullData;
       properties.stop = i > 0 && (parsed.x - prevParsed.x) > maxGapLength;
       properties.parsed = parsed;
 

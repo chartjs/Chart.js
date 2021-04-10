@@ -917,4 +917,25 @@ describe('Chart.controllers.line', function() {
     }
     expect(createChart).not.toThrow();
   });
+
+  it('should set skipped points to the reset state', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [10, null, 0, -4],
+          label: 'dataset1',
+          pointBorderWidth: [1, 2, 3, 4]
+        }],
+        labels: ['label1', 'label2', 'label3', 'label4']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var point = meta.data[1];
+    var {x, y} = point.getProps(['x', 'y'], true);
+    expect(point.skip).toBe(true);
+    expect(isNaN(x)).toBe(false);
+    expect(isNaN(y)).toBe(false);
+  });
 });

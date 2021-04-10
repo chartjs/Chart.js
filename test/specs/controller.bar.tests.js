@@ -30,6 +30,26 @@ describe('Chart.controllers.bar', function() {
     expect(meta.controller.index).toBe(0);
   });
 
+  it('should set null bars to the reset state', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [10, null, 0, -4],
+          label: 'dataset1',
+        }],
+        labels: ['label1', 'label2', 'label3', 'label4']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var bar = meta.data[1];
+    var {x, y, base} = bar.getProps(['x', 'y', 'base'], true);
+    expect(isNaN(x)).toBe(false);
+    expect(isNaN(y)).toBe(false);
+    expect(isNaN(base)).toBe(false);
+  });
+
   it('should use the first scale IDs if the dataset does not specify them', function() {
     var chart = window.acquireChart({
       type: 'bar',
