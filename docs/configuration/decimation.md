@@ -31,10 +31,11 @@ Decimation algorithm to use for data. Options are:
 
 To use the decimation plugin, the following requirements must be met:
 
-1. The dataset must have an `indexAxis` of `'x'`
+1. The dataset must have an [`indexAxis`](../charts/line.md#general) of `'x'`
 2. The dataset must be a line
-3. The X axis for the dataset must be either a `'linear'` or `'time'` type axis
-4. The dataset object must be mutable. The plugin stores the original data as `dataset._data` and then defines a new `data` property on the dataset.
+3. The X axis for the dataset must be either a [`'linear'`](../axes/cartesian/linear.md) or [`'time'`](../axes/cartesian/time.md) type axis
+4. Data must not need parsing, i.e. [`parsing`](../general/data-structures.md#dataset-configuration) must be `false`
+5. The dataset object must be mutable. The plugin stores the original data as `dataset._data` and then defines a new `data` property on the dataset.
 
 ## Related Samples
 
