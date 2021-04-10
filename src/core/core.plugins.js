@@ -7,6 +7,16 @@ import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helper
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 
+/**
+ * @callback filterCallback
+ * @param {{plugin: object, options: object}} value
+ * @param {number} [index]
+ * @param {array} [array]
+ * @param {object} [thisArg]
+ * @return {boolean}
+ */
+
+
 export default class PluginService {
   constructor() {
     this._init = [];
@@ -19,9 +29,10 @@ export default class PluginService {
 	 * @param {Chart} chart - The chart instance for which plugins should be called.
 	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
 	 * @param {object} [args] - Extra arguments to apply to the hook call.
+   * @param {filterCallback} [filter] - Filtering function for limiting which plugins are notified
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
-  notify(chart, hook, args) {
+  notify(chart, hook, args, filter) {
     const me = this;
 
     if (hook === 'beforeInit') {
@@ -29,7 +40,7 @@ export default class PluginService {
       me._notify(me._init, chart, 'install');
     }
 
-    const descriptors = me._descriptors(chart);
+    const descriptors = filter ? me._descriptors(chart).filter(filter) : me._descriptors(chart);
     const result = me._notify(descriptors, chart, hook, args);
 
     if (hook === 'destroy') {

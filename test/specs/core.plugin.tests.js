@@ -393,5 +393,32 @@ describe('Chart.plugins', function() {
         plugins: [plugin]
       });
     });
+
+    it('should filter event callbacks by plugin events array', async function() {
+      const results = [];
+      const chart = window.acquireChart({
+        options: {
+          events: ['mousemove', 'test', 'test2'],
+          plugins: {
+            testPlugin: {
+              events: ['test']
+            }
+          }
+        },
+        plugins: [{
+          id: 'testPlugin',
+          beforeEvent: function(_chart, args) {
+            results.push('before' + args.event.type);
+          },
+          afterEvent: function(_chart, args) {
+            results.push('after' + args.event.type);
+          }
+        }]
+      });
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 0, y: 0});
+      await jasmine.triggerMouseEvent(chart, 'test', {x: 0, y: 0});
+      await jasmine.triggerMouseEvent(chart, 'test2', {x: 0, y: 0});
+      expect(results).toEqual(['beforetest', 'aftertest']);
+    });
   });
 });
