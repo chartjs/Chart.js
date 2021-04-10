@@ -153,7 +153,7 @@ var chart = new Chart(ctx, {
 
 ### Label Color Callback
 
-For example, to return a red box for each item in the tooltip you could do:
+For example, to return a red box with a blue dashed border that has a border radius for each item in the tooltip you could do:
 
 ```javascript
 var chart = new Chart(ctx, {
@@ -165,8 +165,11 @@ var chart = new Chart(ctx, {
                 callbacks: {
                     labelColor: function(context) {
                         return {
-                            borderColor: 'rgb(255, 0, 0)',
-                            backgroundColor: 'rgb(255, 0, 0)'
+                            borderColor: 'rgb(0, 0, 255)',
+                            backgroundColor: 'rgb(255, 0, 0)',
+                            borderWidth: 2,
+                            borderDash: [2, 2],
+                            borderRadius: 2,
                         };
                     },
                     labelTextColor: function(context) {

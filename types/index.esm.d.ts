@@ -2246,7 +2246,34 @@ export interface TitleOptions {
 
 export type TooltipXAlignment = 'left' | 'center' | 'right';
 export type TooltipYAlignment = 'top' | 'center' | 'bottom';
+export interface TooltipLabelStyle {
+  borderColor: Color;
+  backgroundColor: Color;
 
+  /**
+   * Width of border line
+   * @since 3.1.0
+   */
+  borderWidth?: number;
+
+  /**
+   * Border dash
+   * @since 3.1.0
+   */
+  borderDash?: [number, number];
+
+  /**
+   * Border dash offset
+   * @since 3.1.0
+   */
+  borderDashOffset?: number;
+
+  /**
+   * borderRadius
+   * @since 3.1.0
+   */
+  borderRadius?: number | BorderRadius;
+}
 export interface TooltipModel<TType extends ChartType> {
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
   dataPoints: TooltipItem<TType>[];
@@ -2284,8 +2311,8 @@ export interface TooltipModel<TType extends ChartType> {
   // lines of text that form the footer
   footer: string[];
 
-  // colors to render for each item in body[]. This is the color of the squares in the tooltip
-  labelColors: Color[];
+  // Styles to render for each item in body[]. This is the styling of the squares in the tooltip
+  labelColors: TooltipLabelStyle[];
   labelTextColors: Color[];
   labelPointStyles: { pointStyle: PointStyle; rotation: number }[];
 
@@ -2321,7 +2348,7 @@ export interface TooltipCallbacks<
   label(this: Model, tooltipItem: Item): string | string[];
   afterLabel(this: Model, tooltipItem: Item): string | string[];
 
-  labelColor(this: Model, tooltipItem: Item): { borderColor: Color; backgroundColor: Color };
+  labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle;
   labelTextColor(this: Model, tooltipItem: Item): Color;
   labelPointStyle(this: Model, tooltipItem: Item): { pointStyle: PointStyle; rotation: number };
 
