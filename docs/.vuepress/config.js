@@ -41,6 +41,43 @@ module.exports = {
         },
       },
     ],
+    ['@simonbrunel/vuepress-plugin-versions', {
+      filters: {
+        suffix: (v) => v ? ` (${v})` : ''
+      },
+      menu: {
+        items: [
+          {
+            text: 'Documentation',
+            items: [
+              {
+                text: 'Development (master)',
+                link: '/docs/master/',
+              },
+              {
+                type: 'versions',
+                text: '{{version}}{{tag|suffix}}',
+                link: '/docs/{{version}}/',
+                exclude: /^[01]\.|2\.[0-5]\./,
+                group: 'minor',
+              }
+            ]
+          },
+          {
+            text: 'Release notes (5 latest)',
+            items: [
+              {
+                type: 'versions',
+                limit: 5,
+                target: '_blank',
+                group: 'patch',
+                link: 'https://github.com/chartjs/Chart.js/releases/tag/v{{version}}'
+              }
+            ]
+          }
+        ]
+      },
+    }],
   ],
   chainWebpack(config) {
     config.merge({
