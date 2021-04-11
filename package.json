@@ -54,7 +54,7 @@
     "@rollup/plugin-inject": "^4.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
-    "@simonbrunel/vuepress-plugin-versions": "^0.1.0",
+    "@simonbrunel/vuepress-plugin-versions": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "@vuepress/plugin-google-analytics": "1.8.2",
