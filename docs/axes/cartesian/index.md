@@ -307,12 +307,16 @@ var myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            'first-y-axis': {
-                type: 'linear'
-            },
-            'second-y-axis': {
-                type: 'linear'
-            }]
+            yAxes : [
+              {
+                  id :  'first-y-axis
+                  type: 'linear'
+              },
+              'second-y-axis': {
+                  id :  'second-y-axis'
+                  type: 'linear'
+              },
+            ]
         }
     }
 });
@@ -345,14 +349,18 @@ var myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            'left-y-axis': {
-                type: 'linear',
-                position: 'left'
-            },
-            'right-y-axis': {
-                type: 'linear',
-                position: 'right'
-            }]
+             yAxes :[
+               {
+                  id : 'first-y-axis
+                  type: 'linear',
+                  position: 'left'
+              },
+              {
+                  id : 'first-y-axis
+                  type: 'linear',
+                  position: 'right'
+              },
+            ]
         }
     }
 });
