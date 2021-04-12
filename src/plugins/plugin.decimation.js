@@ -153,14 +153,18 @@ function minMaxDecimation(data, start, count, availableWidth) {
   return decimated;
 }
 
+function cleanDecimatedDataset(dataset) {
+  if (dataset._decimated) {
+    const data = dataset._data;
+    delete dataset._decimated;
+    delete dataset._data;
+    Object.defineProperty(dataset, 'data', {value: data});
+  }
+}
+
 function cleanDecimatedData(chart) {
   chart.data.datasets.forEach((dataset) => {
-    if (dataset._decimated) {
-      const data = dataset._data;
-      delete dataset._decimated;
-      delete dataset._data;
-      Object.defineProperty(dataset, 'data', {value: data});
-    }
+    cleanDecimatedDataset(dataset);
   });
 }
 
@@ -250,7 +254,7 @@ export default {
       let {start, count} = getStartAndCountOfVisiblePointsSimplified(meta, data);
       if (count <= 4 * availableWidth) {
         // No decimation is required until we are above this threshold
-        cleanDecimatedData(chart);
+        cleanDecimatedDataset(dataset);
         return;
       }
 
