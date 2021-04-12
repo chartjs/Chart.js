@@ -250,7 +250,7 @@ export default {
       let {start, count} = getStartAndCountOfVisiblePointsSimplified(meta, data);
       if (count <= 4 * availableWidth) {
         // No decimation is required until we are above this threshold
-        dataset._decimated = data.slice(start, start + count);
+        cleanDecimatedData(chart);
         return;
       }
 
