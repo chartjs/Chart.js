@@ -1,6 +1,6 @@
 const path = require('path');
 const docsVersion = "VERSION";
-const base = process.env.NODE_ENV === "development" ? '' : `/docs/${docsVersion}/`;
+const base = process.env.NODE_ENV === "development" ? '/docs/master/' : `/docs/${docsVersion}/`;
 
 module.exports = {
   title: 'Chart.js',
@@ -43,9 +43,11 @@ module.exports = {
     ],
     ['@simonbrunel/vuepress-plugin-versions', {
       filters: {
-        suffix: (v) => v ? ` (${v})` : ''
+        suffix: (tag) => tag ? ` (${tag})` : '',
+        title: (v, vars) => window.location.href.includes('master') ? 'Development (master)' : v + (vars.tag ? ` (${tag})` : ''),
       },
       menu: {
+        text: '{{version|title}}',
         items: [
           {
             text: 'Documentation',
