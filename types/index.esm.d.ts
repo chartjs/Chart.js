@@ -2696,7 +2696,7 @@ export interface TickOptions {
   /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
-  callback: (tickValue: number | string, index: number, ticks: Tick[]) => string;
+  callback: (tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
   /**
    * If true, show tick labels.
    * @default true
