@@ -3257,7 +3257,7 @@ export interface ChartTypeRegistry {
   };
   scatter: {
     chartOptions: ScatterControllerChartOptions;
-    datasetOptions: ScatterControllerDatasetOptions;
+    datasetOptions: ScatterControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: ScatterDataPoint | number | null;
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
