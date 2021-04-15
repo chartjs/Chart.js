@@ -1,7 +1,7 @@
 import Animations from '../core/core.animations';
 import Element from '../core/core.element';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, valueOrDefault} from '../helpers/helpers.core';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
@@ -14,9 +14,6 @@ import {drawPoint} from '../helpers';
 const positioners = {
   /**
 	 * Average mode places the tooltip at the average position of the elements shown
-	 * @function Chart.Tooltip.positioners.average
-	 * @param items {object[]} the items being displayed in the tooltip
-	 * @returns {object} tooltip position. false if no position
 	 */
   average(items) {
     if (!items.length) {
@@ -46,10 +43,6 @@ const positioners = {
 
   /**
 	 * Gets the tooltip position nearest of the item nearest to the event position
-	 * @function Chart.Tooltip.positioners.nearest
-	 * @param items {object[]} the tooltip items
-	 * @param eventPosition {object} the position of the event in canvas coordinates
-	 * @returns {object} the tooltip position
 	 */
   nearest(items, eventPosition) {
     if (!items.length) {
@@ -1079,7 +1072,7 @@ export class Tooltip extends Element {
   _positionChanged(active, e) {
     const {caretX, caretY, options} = this;
     const position = positioners[options.position].call(this, active, e);
-    return caretX !== valueOrDefault(position.x, caretX) || caretY !== valueOrDefault(position.y, caretY);
+    return position !== false && (caretX !== position.x || caretY !== position.y);
   }
 }
 
