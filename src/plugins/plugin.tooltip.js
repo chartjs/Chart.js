@@ -14,9 +14,6 @@ import {drawPoint} from '../helpers';
 const positioners = {
   /**
 	 * Average mode places the tooltip at the average position of the elements shown
-	 * @function Chart.Tooltip.positioners.average
-	 * @param items {object[]} the items being displayed in the tooltip
-	 * @returns {object} tooltip position
 	 */
   average(items) {
     if (!items.length) {
@@ -46,12 +43,12 @@ const positioners = {
 
   /**
 	 * Gets the tooltip position nearest of the item nearest to the event position
-	 * @function Chart.Tooltip.positioners.nearest
-	 * @param items {object[]} the tooltip items
-	 * @param eventPosition {object} the position of the event in canvas coordinates
-	 * @returns {object} the tooltip position
 	 */
   nearest(items, eventPosition) {
+    if (!items.length) {
+      return false;
+    }
+
     let x = eventPosition.x;
     let y = eventPosition.y;
     let minDistance = Number.POSITIVE_INFINITY;
@@ -1073,9 +1070,9 @@ export class Tooltip extends Element {
 	 * @returns {boolean} True if the position has changed
 	 */
   _positionChanged(active, e) {
-    const me = this;
-    const position = positioners[me.options.position].call(me, active, e);
-    return me.caretX !== position.x || me.caretY !== position.y;
+    const {caretX, caretY, options} = this;
+    const position = positioners[options.position].call(this, active, e);
+    return position !== false && (caretX !== position.x || caretY !== position.y);
   }
 }
 

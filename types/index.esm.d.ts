@@ -2331,7 +2331,7 @@ export interface TooltipModel<TType extends ChartType> {
 
 export const Tooltip: Plugin & {
   readonly positioners: {
-    [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number };
+    [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
   };
 
   getActiveElements(): ActiveElement[];
