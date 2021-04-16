@@ -31,7 +31,7 @@ export interface ScriptableLineSegmentContext {
   p1: PointElement
 }
 
-export type Scriptable<T, TContext> = T | ((ctx: TContext) => T);
+export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
 export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
@@ -2331,7 +2331,7 @@ export interface TooltipModel<TType extends ChartType> {
 
 export const Tooltip: Plugin & {
   readonly positioners: {
-    [key: string]: (items: readonly Element[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
+    [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
   };
 
   getActiveElements(): ActiveElement[];
