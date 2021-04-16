@@ -113,7 +113,6 @@ module.exports = {
     nav: [
       {text: 'Home', link: '/'},
       {text: 'API', link: '/api/'},
-      // TODO: Make local when samples moved to vuepress
       {text: 'Samples', link: `/samples/`},
       {
         text: 'Ecosystem',
