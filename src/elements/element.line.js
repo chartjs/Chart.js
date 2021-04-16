@@ -34,17 +34,19 @@ function getLineMethod(options) {
   return lineTo;
 }
 
-function pathVars(points, segment, params) {
-  params = params || {};
+function pathVars(points, segment, params = {}) {
   const count = points.length;
-  const start = Math.max(params.start || 0, segment.start);
-  const end = Math.min(params.end || count - 1, segment.end);
+  const {start: paramsStart = 0, end: paramsEnd = count - 1} = params;
+  const {start: segmentStart, end: segmentEnd} = segment;
+  const start = Math.max(paramsStart, segmentStart);
+  const end = Math.min(paramsEnd, segmentEnd);
+  const outside = paramsStart < segmentStart && paramsEnd < segmentStart || paramsStart > segmentEnd && paramsEnd > segmentEnd;
 
   return {
     count,
     start,
     loop: segment.loop,
-    ilen: end < start ? count + end - start : end - start
+    ilen: end < start && !outside ? count + end - start : end - start
   };
 }
 
