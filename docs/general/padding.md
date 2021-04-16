@@ -13,7 +13,7 @@ let chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-        layout:
+        layout: {
             padding: 20
         }
     }
