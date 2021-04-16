@@ -55,10 +55,10 @@ module.exports = {
 
 Finally, render the chart using our configuration:
 
-```html  
+```html
 <script>
   // === include 'setup' then 'config' above ===
-  
+
   var myChart = new Chart(
     document.getElementById('myChart'),
     config
@@ -68,4 +68,4 @@ Finally, render the chart using our configuration:
 
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
-All our examples are [available online](https://www.chartjs.org/samples/latest/) but you can also download the `Chart.js.zip` archive attached to every [release](https://github.com/chartjs/Chart.js/releases) to experiment with our samples locally from the `/samples` folder.
+All our examples are [available online](/samples/) but you can also download the `Chart.js.zip` archive attached to every [release](https://github.com/chartjs/Chart.js/releases) to experiment with our samples locally from the `/samples` folder.

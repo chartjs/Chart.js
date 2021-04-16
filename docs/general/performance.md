@@ -16,7 +16,7 @@ Chart.js is fastest if you provide data with indices that are unique, sorted, an
 
 Decimating your data will achieve the best results. When there is a lot of data to display on the graph, it doesn't make sense to show tens of thousands of data points on a graph that is only a few hundred pixels wide.
 
-The [decimation plugin](./configuration/decimation.md) can be used with line charts to decimate data before the chart is rendered. This will provide the best performance since it will reduce the memory needed to render the chart.
+The [decimation plugin](/configuration/decimation.md) can be used with line charts to decimate data before the chart is rendered. This will provide the best performance since it will reduce the memory needed to render the chart.
 
 Line charts are able to do [automatic data decimation during draw](#automatic-data-decimation-during-draw), when certain conditions are met. You should still consider decimating data yourself before passing it in for maximum performance since the automatic decimation occurs late in the chart life cycle.
 
@@ -24,11 +24,11 @@ Line charts are able to do [automatic data decimation during draw](#automatic-da
 
 ### Rotation
 
-[Specify a rotation value](./axes/cartesian/index.md#tick-configuration) by setting `minRotation` and `maxRotation` to the same value, which avoids the chart from having to automatically determine a value to use.
+[Specify a rotation value](/axes/cartesian/index.md#tick-configuration) by setting `minRotation` and `maxRotation` to the same value, which avoids the chart from having to automatically determine a value to use.
 
 ### Sampling
 
-Set the [`ticks.sampleSize`](./axes/cartesian/index.md#tick-configuration) option. This will determine how large your labels are by looking at only a subset of them in order to render axes more quickly. This works best if there is not a large variance in the size of your labels.
+Set the [`ticks.sampleSize`](/axes/cartesian/index.md#tick-configuration) option. This will determine how large your labels are by looking at only a subset of them in order to render axes more quickly. This works best if there is not a large variance in the size of your labels.
 
 ## Disable Animations
 
