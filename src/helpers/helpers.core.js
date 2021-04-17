@@ -325,3 +325,18 @@ export function _capitalize(str) {
 export const defined = (value) => typeof value !== 'undefined';
 
 export const isFunction = (value) => typeof value === 'function';
+
+// Adapted from https://stackoverflow.com/questions/31128855/comparing-ecma6-sets-for-equality#31129384
+export const setsEqual = (a, b) => {
+  if (a.size !== b.size) {
+    return false;
+  }
+
+  for (const item of a) {
+    if (!b.has(item)) {
+      return false;
+    }
+  }
+
+  return true;
+};

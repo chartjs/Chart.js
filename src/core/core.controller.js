@@ -7,7 +7,7 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -479,6 +479,15 @@ class Chart {
 
     me.ensureScalesHaveIDs();
     me.buildOrUpdateScales();
+
+    const existingEvents = new Set(Object.keys(me._listeners));
+    const newEvents = new Set(me.options.events);
+
+    if (!setsEqual(existingEvents, newEvents)) {
+      // The events array has changed. Rebind it
+      me.unbindEvents();
+      me.bindEvents();
+    }
 
     // plugins options references might have change, let's invalidate the cache
     // https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
@@ -953,7 +962,7 @@ class Chart {
       return;
     }
 
-    delete me._listeners;
+    me._listeners = {};
     each(listeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
