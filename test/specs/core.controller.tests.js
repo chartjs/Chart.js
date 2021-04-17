@@ -291,6 +291,33 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
     });
 
+    it('should handle changing the events at runtime', async function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100]
+          }]
+        },
+        options: {
+          events: ['click']
+        }
+      });
+
+      var point1 = chart.getDatasetMeta(0).data[1];
+      var point2 = chart.getDatasetMeta(0).data[2];
+
+      await jasmine.triggerMouseEvent(chart, 'click', point1);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+
+      chart.options.events = ['mousemove'];
+      chart.update();
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point2);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 2, element: point2}]);
+    });
+
     it('should activate element on hover when minPadding pixels outside chart area', async function() {
       var chart = acquireChart({
         type: 'line',

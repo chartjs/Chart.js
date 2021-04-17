@@ -457,4 +457,15 @@ describe('Chart.helpers.core', function() {
       expect(() => helpers.resolveObjectKey({}, 1)).toThrow();
     });
   });
+
+  describe('setsEqual', function() {
+    it('should handle set comparison', function() {
+      var a = new Set([1]);
+      var b = new Set(['1']);
+      var c = new Set([1]);
+
+      expect(helpers.setsEqual(a, b)).toBeFalse();
+      expect(helpers.setsEqual(a, c)).toBeTrue();
+    });
+  });
 });
