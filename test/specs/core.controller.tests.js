@@ -230,6 +230,17 @@ describe('Chart', function() {
       expect(createChart).toThrow(new Error('"area" is not a registered controller.'));
     });
 
+    it('should initialize the data object', function() {
+      const chart = acquireChart({type: 'bar'});
+      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      chart.data = {};
+      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      chart.data = null;
+      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      chart.data = undefined;
+      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+    });
+
     describe('should disable hover', function() {
       it('when options.hover=false', function() {
         var chart = acquireChart({
