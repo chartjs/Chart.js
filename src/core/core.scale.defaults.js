@@ -71,6 +71,10 @@ defaults.set('scale', {
     major: {},
     align: 'center',
     crossAlign: 'near',
+
+    showLabelBackdrop: false,
+    backdropColor: 'rgba(255, 255, 255, 0.75)',
+    backdropPadding: 2,
   }
 });
 

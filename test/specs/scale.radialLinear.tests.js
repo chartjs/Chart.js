@@ -36,8 +36,6 @@ describe('Test the radial linear scale', function() {
       ticks: {
         color: Chart.defaults.color,
         showLabelBackdrop: true,
-        backdropColor: 'rgba(255,255,255,0.75)',
-        backdropPadding: 2,
         callback: defaultConfig.ticks.callback
       },
 

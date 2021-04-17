@@ -2694,6 +2694,17 @@ export interface GridLineOptions {
 
 export interface TickOptions {
   /**
+   * Color of label backdrops.
+   * @default 'rgba(255, 255, 255, 0.75)'
+   */
+  backdropColor: Scriptable<Color, ScriptableScaleContext>;
+  /**
+   * Padding of tick backdrop.
+   * @default 2
+   */
+  backdropPadding: number | ChartArea;
+
+  /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
   callback: (tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
@@ -2715,6 +2726,11 @@ export interface TickOptions {
    * Sets the offset of the tick labels from the axis
    */
   padding: number;
+  /**
+   * If true, draw a background behind the tick labels.
+   * @default false
+   */
+  showLabelBackdrop: Scriptable<boolean, ScriptableScaleContext>;
   /**
    * The color of the stroke around the text.
    * @default undefined
@@ -3117,17 +3133,6 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 
   ticks: TickOptions & {
     /**
-     * Color of label backdrops.
-     * @default 'rgba(255, 255, 255, 0.75)'
-     */
-    backdropColor: Scriptable<Color, ScriptableScaleContext>;
-    /**
-     * Padding of label backdrop.
-     * @default 2
-     */
-    backdropPadding: number | ChartArea;
-
-    /**
      * The Intl.NumberFormat options used by the default label formatter
      */
     format: Intl.NumberFormatOptions;
@@ -3152,12 +3157,6 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * User defined number of ticks
      */
     count: number;
-
-    /**
-     * If true, draw a background behind the tick labels.
-     * @default true
-     */
-    showLabelBackdrop: Scriptable<boolean, ScriptableScaleContext>;
   };
 };
 
