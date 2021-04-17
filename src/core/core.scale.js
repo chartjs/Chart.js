@@ -550,6 +550,14 @@ export default class Scale extends Element {
       tick = ticks[i];
       tick.label = call(tickOpts.callback, [tick.value, i, ticks], me);
     }
+    // Ticks should be skipped when callback returns null or undef, so lets remove those.
+    for (i = 0; i < ilen; i++) {
+      if (isNullOrUndef(ticks[i].label)) {
+        ticks.splice(i, 1);
+        ilen--;
+        i--;
+      }
+    }
   }
   afterTickToLabelConversion() {
     call(this.options.afterTickToLabelConversion, [this]);
