@@ -1,4 +1,5 @@
 module.exports = {
+  description: 'https://github.com/chartjs/Chart.js/issues/8912',
   config: {
     type: 'bar',
     data: {
