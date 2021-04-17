@@ -26,6 +26,7 @@ export class Animator {
 
     callbacks.forEach(fn => fn({
       chart,
+      initial: anims.initial,
       numSteps,
       currentStep: Math.min(date - anims.start, numSteps)
     }));
@@ -95,6 +96,7 @@ export class Animator {
       if (!items.length) {
         anims.running = false;
         me._notify(chart, anims, date, 'complete');
+        anims.initial = false;
       }
 
       remaining += items.length;
@@ -116,6 +118,7 @@ export class Animator {
     if (!anims) {
       anims = {
         running: false,
+        initial: true,
         items: [],
         listeners: {
           complete: [],
