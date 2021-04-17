@@ -252,14 +252,17 @@ The callback is passed the following object:
 
 ```javascript
 {
-    // Chart object
-    chart: Chart,
+  // Chart object
+  chart: Chart,
 
-    // Number of animations still in progress
-    currentStep: number,
+  // Number of animations still in progress
+  currentStep: number,
 
-    // Total number of animations at the start of current animation
-    numSteps: number,
+  // `true` for the initial animation of the chart
+  initial: boolean,
+
+  // Total number of animations at the start of current animation
+  numSteps: number,
 }
 ```
 

@@ -1,5 +1,11 @@
 # Animation Progress Bar
 
+## Initial animation
+
+<progress id="initialProgress" max="1" value="0" style="width: 100%"></progress>
+
+## Other animations
+
 <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
 
 ```js chart-editor
@@ -67,6 +73,7 @@ const actions = [
 // </block:actions>
 
 // <block:setup:1>
+const initProgress = document.getElementById('initialProgress');
 const progress = document.getElementById('animationProgress');
 
 const DATA_COUNT = 7;
@@ -99,11 +106,19 @@ const config = {
   options: {
     animation: {
       duration: 2000,
-      onProgress: function(animation) {
-        progress.value = animation.currentStep / animation.numSteps;
+      onProgress: function(context) {
+        if (context.initial) {
+          initProgress.value = context.currentStep / context.numSteps;
+        } else {
+          progress.value = context.currentStep / context.numSteps;
+        }
       },
-      onComplete: function() {
-        //
+      onComplete: function(context) {
+        if (context.initial) {
+          console.log('Initial animation finished');
+        } else {
+          console.log('animation finished');
+        }
       }
     },
     interaction: {
@@ -124,5 +139,6 @@ const config = {
 module.exports = {
   actions: actions,
   config: config,
+  output: 'console.log output is displayed here'
 };
 ```
