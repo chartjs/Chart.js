@@ -257,6 +257,13 @@ module.exports = {
             'advanced/derived-chart-type',
           ]
         },
+        {
+          title: 'Plugins',
+          children: [
+            'plugins/chart-area-border',
+            'plugins/quadrants',
+          ]
+        },
       ],
       '/': [
         '',
