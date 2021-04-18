@@ -127,6 +127,11 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
   return subStack[indexValue] || (subStack[indexValue] = {});
 }
 
+function getLastIndexInStack(stack, positive) {
+  const items = Object.entries(stack).filter(([key, v]) => key !== '_top' && key !== '_bottom').filter(([dsIndex, value]) => positive ? value > 0 : value < 0).reverse();
+  return items.length ? parseInt(items[0][0], 10) : null;
+}
+
 function updateStacks(controller, parsed) {
   const {chart, _cachedMeta: meta} = controller;
   const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
@@ -143,6 +148,9 @@ function updateStacks(controller, parsed) {
     const itemStacks = item._stacks || (item._stacks = {});
     stack = itemStacks[vAxis] = getOrCreateStack(stacks, key, index);
     stack[datasetIndex] = value;
+
+    stack._top = getLastIndexInStack(stack, true);
+    stack._bottom = getLastIndexInStack(stack, false);
   }
 }
 
@@ -531,6 +539,15 @@ export default class DatasetController {
       values: parsed._stacks[scale.axis]
     };
     return applyStack(stack, value, meta.index, {mode});
+  }
+
+  /**
+   * @protected
+   */
+  getStack(index) {
+    const {iScale, vScale} = this._cachedMeta;
+    const key = getStackKey(iScale, vScale, this._cachedMeta);
+    return this.chart._stacks[key][index];
   }
 
   /**
