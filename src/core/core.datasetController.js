@@ -128,11 +128,11 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
 }
 
 function getLastIndexInStack(stack, vScale, positive) {
-  for (const meta of vScale.getMatchingVisibleMetas('bar').reverse()) { 
-    const value = stack[meta.index]; 
-    if ((positive && value > 0) || (!positive && value < 0)) { 
-      return meta.index; 
-    } 
+  for (const meta of vScale.getMatchingVisibleMetas('bar').reverse()) {
+    const value = stack[meta.index];
+    if ((positive && value > 0) || (!positive && value < 0)) {
+      return meta.index;
+    }
   }
 
   return null;

@@ -1,5 +1,5 @@
 import Element from '../core/core.element';
-import { isObject } from '../helpers';
+import {isObject} from '../helpers';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 
