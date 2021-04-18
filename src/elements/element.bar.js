@@ -82,27 +82,29 @@ function parseBorderWidth(bar, maxW, maxH) {
   };
 }
 
-function parseBorderRadius(bar, maxW, maxH, endOfStack) {
+function parseBorderRadius(bar, maxW, maxH) {
+  const {endOfStack, float} = bar.getProps(['endOfStack', 'float']);
   const value = bar.options.borderRadius;
   const o = toTRBLCorners(value);
   const maxR = Math.min(maxW, maxH);
   const skip = parseBorderSkipped(bar);
 
+  const enableBorder = endOfStack || float;
+
   return {
-    topLeft: skipOrLimit(!endOfStack || skip.top || skip.left, o.topLeft, 0, maxR),
-    topRight: skipOrLimit(!endOfStack || skip.top || skip.right, o.topRight, 0, maxR),
-    bottomLeft: skipOrLimit(!endOfStack || skip.bottom || skip.left, o.bottomLeft, 0, maxR),
-    bottomRight: skipOrLimit(!endOfStack || skip.bottom || skip.right, o.bottomRight, 0, maxR)
+    topLeft: skipOrLimit(!enableBorder || skip.top || skip.left, o.topLeft, 0, maxR),
+    topRight: skipOrLimit(!enableBorder || skip.top || skip.right, o.topRight, 0, maxR),
+    bottomLeft: skipOrLimit(!enableBorder || skip.bottom || skip.left, o.bottomLeft, 0, maxR),
+    bottomRight: skipOrLimit(!enableBorder || skip.bottom || skip.right, o.bottomRight, 0, maxR)
   };
 }
 
 function boundingRects(bar) {
-  const {endOfStack} = bar.getProps(['endOfStack']);
   const bounds = getBarBounds(bar);
   const width = bounds.right - bounds.left;
   const height = bounds.bottom - bounds.top;
   const border = parseBorderWidth(bar, width / 2, height / 2);
-  const radius = parseBorderRadius(bar, width / 2, height / 2, endOfStack);
+  const radius = parseBorderRadius(bar, width / 2, height / 2);
 
   return {
     outer: {

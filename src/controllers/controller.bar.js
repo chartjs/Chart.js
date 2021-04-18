@@ -275,6 +275,7 @@ export default class BarController extends DatasetController {
         horizontal,
         base: vpixels.base,
         endOfStack: me.index === stack._top || me.index === stack._bottom,
+        float: isFloatBar(parsed._custom),
         x: horizontal ? vpixels.head : ipixels.center,
         y: horizontal ? ipixels.center : vpixels.head,
         height: horizontal ? ipixels.size : undefined,
