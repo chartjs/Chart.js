@@ -433,7 +433,7 @@ describe('Core.scale', function() {
   });
 
   describe('_layers', function() {
-    it('should default to one layer', function() {
+    it('should default to three layers', function() {
       var chart = window.acquireChart({
         type: 'line',
         options: {
@@ -446,7 +446,7 @@ describe('Core.scale', function() {
       });
 
       var scale = chart.scales.x;
-      expect(scale._layers().length).toEqual(1);
+      expect(scale._layers().length).toEqual(3);
     });
 
     it('should default to one layer for custom scales', function() {
@@ -482,30 +482,7 @@ describe('Core.scale', function() {
       expect(scale._layers()[0].z).toEqual(20);
     });
 
-    it('should default to one layer when z is equal between ticks and grid', function() {
-      var chart = window.acquireChart({
-        type: 'line',
-        options: {
-          scales: {
-            x: {
-              type: 'linear',
-              ticks: {
-                z: 10
-              },
-              grid: {
-                z: 10
-              }
-            }
-          }
-        }
-      });
-
-      var scale = chart.scales.x;
-      expect(scale._layers().length).toEqual(1);
-    });
-
-
-    it('should return 2 layers when z is not equal between ticks and grid', function() {
+    it('should return 3 layers when z is not equal between ticks and grid', function() {
       var chart = window.acquireChart({
         type: 'line',
         options: {
@@ -520,7 +497,7 @@ describe('Core.scale', function() {
         }
       });
 
-      expect(chart.scales.x._layers().length).toEqual(2);
+      expect(chart.scales.x._layers().length).toEqual(3);
 
       chart = window.acquireChart({
         type: 'line',
@@ -536,7 +513,7 @@ describe('Core.scale', function() {
         }
       });
 
-      expect(chart.scales.x._layers().length).toEqual(2);
+      expect(chart.scales.x._layers().length).toEqual(3);
 
       chart = window.acquireChart({
         type: 'line',
@@ -555,7 +532,7 @@ describe('Core.scale', function() {
         }
       });
 
-      expect(chart.scales.x._layers().length).toEqual(2);
+      expect(chart.scales.x._layers().length).toEqual(3);
 
     });
 

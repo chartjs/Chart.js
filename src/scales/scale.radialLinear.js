@@ -509,6 +509,11 @@ export default class RadialLinearScale extends LinearScaleBase {
   /**
 	 * @protected
 	 */
+  drawBorder() {}
+
+  /**
+	 * @protected
+	 */
   drawLabels() {
     const me = this;
     const ctx = me.ctx;
