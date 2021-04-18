@@ -699,6 +699,29 @@ describe('Chart.DatasetController', function() {
     Chart.defaults.parsing = originalDefault;
   });
 
+  it('should not fail to produce stacks when parsing is off', function() {
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [{x: 1, y: 10}]
+        }, {
+          data: [{x: 1, y: 20}]
+        }]
+      },
+      options: {
+        parsing: false,
+        scales: {
+          x: {stacked: true},
+          y: {stacked: true}
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20}}));
+  });
+
   describe('resolveDataElementOptions', function() {
     it('should cache options when possible', function() {
       const chart = acquireChart({
