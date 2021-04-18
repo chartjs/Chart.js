@@ -390,7 +390,7 @@ export default class DatasetController {
     let i, cur, parsed;
 
     if (me._parsing === false) {
-      meta._parsed = data;
+      meta._parsed = parsed = data;
       meta._sorted = true;
     } else {
       if (isArray(data[start])) {
