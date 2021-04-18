@@ -392,6 +392,7 @@ export default class DatasetController {
     if (me._parsing === false) {
       meta._parsed = data;
       meta._sorted = true;
+      parsed = data;
     } else {
       if (isArray(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
