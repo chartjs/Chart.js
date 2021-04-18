@@ -19,6 +19,14 @@ import {toTRBL} from '../helpers/helpers.options';
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
+const BORDER_COORDS = {
+  top: ['left', 'top', 'right', 'top'],
+  right: ['right', 'top', 'right', 'bottom'],
+  bottom: ['right', 'bottom', 'left', 'bottom'],
+  left: ['left', 'bottom', 'left', 'top']
+};
+const BORDER_ADJUST = {top: 0.5, right: -0.5, bottom: -0.5, left: 0.5};
+
 function positionIsHorizontal(position, axis) {
   return position === 'top' || position === 'bottom' || (KNOWN_POSITIONS.indexOf(position) === -1 && axis === 'x');
 }
@@ -675,7 +683,6 @@ class Chart {
   _drawLayoutBorder() {
     const me = this;
     const {ctx, chartArea, options: {layout}} = me;
-    const {top, right, bottom, left} = chartArea;
     const width = toTRBL(layout.borderWidth);
     ctx.save();
     clipArea(ctx, chartArea);
@@ -687,26 +694,16 @@ class Chart {
       ctx.lineTo(_alignPixel(me, x1, 1), _alignPixel(me, y1, 1));
       ctx.stroke();
     };
-    if (width.top) {
-      const w2 = width.top / 2;
-      ctx.lineWidth = width.top;
-      draw(left, top + w2, right, top + w2);
-    }
-    if (width.right) {
-      const w2 = width.right / 2;
-      ctx.lineWidth = width.right;
-      draw(right - w2, top, right - w2, bottom);
-    }
-    if (width.bottom) {
-      const w2 = width.bottom / 2;
-      ctx.lineWidth = width.bottom;
-      draw(right, bottom - w2, left, bottom - w2);
-    }
-    if (width.left) {
-      const w2 = width.left / 2;
-      ctx.lineWidth = width.left;
-      draw(left + w2, bottom, left + w2, top);
-    }
+
+    each(BORDER_COORDS, (args, key) => {
+      const w = width[key];
+      if (!w) {
+        return;
+      }
+      ctx.lineWidth = w;
+      draw.apply(null, args.map(side => chartArea[side] + (BORDER_ADJUST[key] * width[side])));
+    });
+
     ctx.restore();
   }
 
