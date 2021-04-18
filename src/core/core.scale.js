@@ -773,7 +773,7 @@ export default class Scale extends Element {
   }
 
   /**
-	 * @return {{ first: object, last: object, widest: object, highest: object }}
+	 * @return {{ first: object, last: object, widest: object, highest: object, widths: Array, heights: array }}
 	 * @private
 	 */
   _getLabelSizes() {
@@ -796,7 +796,7 @@ export default class Scale extends Element {
   /**
 	 * Returns {width, height, offset} objects for the first, last, widest, highest tick
 	 * labels where offset indicates the anchor point offset from the top in pixels.
-	 * @return {{ first: object, last: object, widest: object, highest: object }}
+	 * @return {{ first: object, last: object, widest: object, highest: object, widths: Array, heights: array }}
 	 * @private
 	 */
   _computeLabelSizes(ticks, length) {
@@ -845,7 +845,9 @@ export default class Scale extends Element {
       first: valueAt(0),
       last: valueAt(length - 1),
       widest: valueAt(widest),
-      highest: valueAt(highest)
+      highest: valueAt(highest),
+      widths,
+      heights,
     };
   }
 
@@ -1226,6 +1228,48 @@ export default class Scale extends Element {
         textOffset = (1 - lineCount) * lineHeight / 2;
       }
 
+      let backdrop;
+
+      if (optsAtIndex.showLabelBackdrop) {
+        const labelPadding = toPadding(optsAtIndex.backdropPadding);
+        const height = labelSizes.heights[i];
+        const width = labelSizes.widths[i];
+
+        let top = y + textOffset - labelPadding.top;
+        let left = x - labelPadding.left;
+
+        switch (textBaseline) {
+        case 'middle':
+          top -= height / 2;
+          break;
+        case 'bottom':
+          top -= height;
+          break;
+        default:
+          break;
+        }
+
+        switch (textAlign) {
+        case 'center':
+          left -= width / 2;
+          break;
+        case 'right':
+          left -= width;
+          break;
+        default:
+          break;
+        }
+
+        backdrop = {
+          left,
+          top,
+          width: width + labelPadding.width,
+          height: height + labelPadding.height,
+
+          color: optsAtIndex.backdropColor,
+        };
+      }
+
       items.push({
         rotation,
         label,
@@ -1236,7 +1280,8 @@ export default class Scale extends Element {
         textOffset,
         textAlign,
         textBaseline,
-        translation: [x, y]
+        translation: [x, y],
+        backdrop,
       });
     }
 
@@ -1466,6 +1511,12 @@ export default class Scale extends Element {
       const item = items[i];
       const tickFont = item.font;
       const label = item.label;
+
+      if (item.backdrop) {
+        ctx.fillStyle = item.backdrop.color;
+        ctx.fillRect(item.backdrop.left, item.backdrop.top, item.backdrop.width, item.backdrop.height);
+      }
+
       let y = item.textOffset;
       renderText(ctx, label, 0, y, tickFont, item);
     }

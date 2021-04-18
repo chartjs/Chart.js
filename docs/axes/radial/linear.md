@@ -28,14 +28,11 @@ Namespace: `options.scales[scaleId].ticks`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
-| `backdropColor` | [`Color`](../../general/colors.md) | Yes | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
-| `backdropPadding` | [`Padding`](../../general/padding.md) | Yes | `2` | Padding of label backdrop.
 | `count` | `number` | Yes | `undefined` | The number of ticks to generate. If specified, this overrides the automatic generation.
 | `format` | `object` | Yes | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 | `maxTicksLimit` | `number` | Yes | `11` | Maximum number of ticks and gridlines to show.
 | `precision` | `number` | Yes | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | Yes | | User defined fixed step size for the scale. [more...](#step-size)
-| `showLabelBackdrop` | `boolean` | Yes | `true` | If true, draw a background behind the tick labels.
 
 !!!include(axes/_common_ticks.md)!!!
 

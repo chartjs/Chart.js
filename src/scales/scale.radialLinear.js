@@ -594,12 +594,6 @@ RadialLinearScale.defaults = {
     // Boolean - Show a backdrop to the scale label
     showLabelBackdrop: true,
 
-    // String - The colour of the label backdrop
-    backdropColor: 'rgba(255,255,255,0.75)',
-
-    // Number/Object - The backdrop padding of the label in pixels
-    backdropPadding: 2,
-
     callback: Ticks.formatters.numeric
   },
 
