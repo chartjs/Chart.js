@@ -274,8 +274,7 @@ export default class BarController extends DatasetController {
       const properties = {
         horizontal,
         base: vpixels.base,
-        endOfStack: me.index === stack._top || me.index === stack._bottom,
-        float: isFloatBar(parsed._custom),
+        enableBorderRadius: isFloatBar(parsed._custom) || (me.index === stack._top || me.index === stack._bottom),
         x: horizontal ? vpixels.head : ipixels.center,
         y: horizontal ? ipixels.center : vpixels.head,
         height: horizontal ? ipixels.size : undefined,

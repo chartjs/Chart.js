@@ -1,4 +1,5 @@
 import Element from '../core/core.element';
+import { isObject } from '../helpers';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 
@@ -83,13 +84,15 @@ function parseBorderWidth(bar, maxW, maxH) {
 }
 
 function parseBorderRadius(bar, maxW, maxH) {
-  const {endOfStack, float} = bar.getProps(['endOfStack', 'float']);
+  const {enableBorderRadius} = bar.getProps(['enableBorderRadius']);
   const value = bar.options.borderRadius;
   const o = toTRBLCorners(value);
   const maxR = Math.min(maxW, maxH);
   const skip = parseBorderSkipped(bar);
 
-  const enableBorder = endOfStack || float;
+  // If the value is an object, assume the user knows what they are doing
+  // and apply as directed.
+  const enableBorder = enableBorderRadius || isObject(value);
 
   return {
     topLeft: skipOrLimit(!enableBorder || skip.top || skip.left, o.topLeft, 0, maxR),
@@ -227,7 +230,7 @@ BarElement.defaults = {
   borderSkipped: 'start',
   borderWidth: 0,
   borderRadius: 0,
-  endOfStack: false,
+  enableBorderRadius: true,
   pointStyle: undefined
 };
 
