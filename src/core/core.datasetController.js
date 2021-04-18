@@ -127,9 +127,25 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
   return subStack[indexValue] || (subStack[indexValue] = {});
 }
 
-function getLastIndexInStack(stack, positive) {
-  const items = Object.entries(stack).filter(([key, v]) => key !== '_top' && key !== '_bottom').filter(([dsIndex, value]) => positive ? value > 0 : value < 0).reverse();
-  return items.length ? parseInt(items[0][0], 10) : null;
+function getLastIndexInStack(stack, chart, positive) {
+  const items = Object.entries(stack).filter(
+    ([key, v]) => key !== '_top' && key !== '_bottom'
+  ).map(
+    // Make datasetIndex keys into ints
+    ([k, v]) => [parseInt(k, 10), v]
+  ).filter(
+    ([dsIndex, value]) => positive ? value > 0 : value < 0
+  ).sort((a, b) => {
+    const ds1 = chart.data.datasets[a[0]];
+    const ds2 = chart.data.datasets[b[0]];
+
+    // Sort in descending order so that the first item
+    // is the one drawn last
+    return ds1.order === ds2.order
+      ? b[0] - a[0]
+      : ds2.order - ds1.order;
+  });
+  return items.length ? items[0][0] : null;
 }
 
 function updateStacks(controller, parsed) {
@@ -149,8 +165,8 @@ function updateStacks(controller, parsed) {
     stack = itemStacks[vAxis] = getOrCreateStack(stacks, key, index);
     stack[datasetIndex] = value;
 
-    stack._top = getLastIndexInStack(stack, true);
-    stack._bottom = getLastIndexInStack(stack, false);
+    stack._top = getLastIndexInStack(stack, chart, true);
+    stack._bottom = getLastIndexInStack(stack, chart, false);
   }
 }
 
