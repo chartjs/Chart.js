@@ -558,15 +558,6 @@ export default class DatasetController {
   }
 
   /**
-   * @protected
-   */
-  getStack(index) {
-    const {iScale, vScale} = this._cachedMeta;
-    const key = getStackKey(iScale, vScale, this._cachedMeta);
-    return this.chart._stacks[key][index];
-  }
-
-  /**
 	 * @protected
 	 */
   updateRangeFromParsed(range, scale, parsed, stack) {

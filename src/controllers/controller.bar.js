@@ -269,7 +269,7 @@ export default class BarController extends DatasetController {
       const parsed = me.getParsed(i);
       const vpixels = reset || isNullOrUndef(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
-      const stack = me.getStack(i);
+      const stack = parsed._stacks[vScale.axis];
 
       const properties = {
         horizontal,
