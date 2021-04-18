@@ -8,10 +8,11 @@ import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual} from '../helpers/helpers.core';
-import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
+import {clearCanvas, clipArea, unclipArea, _alignPixel, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras';
+import {toTRBL} from '../helpers/helpers.options';
 
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
@@ -652,6 +653,7 @@ class Chart {
       return;
     }
 
+    me._drawLayoutBorder();
     // Because of plugin hooks (before/afterDatasetsDraw), datasets can't
     // currently be part of layers. Instead, we draw
     // layers <= 0 before(default, backward compat), and the rest after
@@ -668,6 +670,44 @@ class Chart {
     }
 
     me.notifyPlugins('afterDraw');
+  }
+
+  _drawLayoutBorder() {
+    const me = this;
+    const {ctx, chartArea, options: {layout}} = me;
+    const {top, right, bottom, left} = chartArea;
+    const width = toTRBL(layout.borderWidth);
+    ctx.save();
+    clipArea(ctx, chartArea);
+    ctx.strokeStyle = layout.borderColor;
+    ctx.lineCap = 'square';
+    const draw = (x0, y0, x1, y1) => {
+      ctx.beginPath();
+      ctx.moveTo(_alignPixel(me, x0, 1), _alignPixel(me, y0, 1));
+      ctx.lineTo(_alignPixel(me, x1, 1), _alignPixel(me, y1, 1));
+      ctx.stroke();
+    };
+    if (width.top) {
+      const w2 = width.top / 2;
+      ctx.lineWidth = width.top;
+      draw(left, top + w2, right, top + w2);
+    }
+    if (width.right) {
+      const w2 = width.right / 2;
+      ctx.lineWidth = width.right;
+      draw(right - w2, top, right - w2, bottom);
+    }
+    if (width.bottom) {
+      const w2 = width.bottom / 2;
+      ctx.lineWidth = width.bottom;
+      draw(right, bottom - w2, left, bottom - w2);
+    }
+    if (width.left) {
+      const w2 = width.left / 2;
+      ctx.lineWidth = width.left;
+      draw(left + w2, bottom, left + w2, top);
+    }
+    ctx.restore();
   }
 
   /**

@@ -226,6 +226,12 @@ module.exports = {
           ]
         },
         {
+          title: 'Layout',
+          children: [
+            'layout/border'
+          ]
+        },
+        {
           title: 'Scriptable Options',
           children: [
             'scriptable/bar',

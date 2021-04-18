@@ -1,4 +1,5 @@
 describe('Chart', function() {
+  describe('auto', jasmine.fixture.specs('core.controller'));
 
   const overrides = Chart.overrides;
 
