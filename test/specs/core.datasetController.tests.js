@@ -540,12 +540,12 @@ describe('Chart.DatasetController', function() {
 
     expect(chart._stacks).toEqual({
       'x.y.1': {
-        0: {0: 1, 2: 3},
-        1: {0: 10, 2: 30}
+        0: {0: 1, 2: 3, _top: 2, _bottom: null},
+        1: {0: 10, 2: 30, _top: 2, _bottom: null}
       },
       'x.y.2': {
-        0: {1: 2},
-        1: {1: 20}
+        0: {1: 2, _top: 1, _bottom: null},
+        1: {1: 20, _top: 1, _bottom: null}
       }
     });
 
@@ -554,12 +554,12 @@ describe('Chart.DatasetController', function() {
 
     expect(chart._stacks).toEqual({
       'x.y.1': {
-        0: {0: 1},
-        1: {0: 10}
+        0: {0: 1, _top: 2, _bottom: null},
+        1: {0: 10, _top: 2, _bottom: null}
       },
       'x.y.2': {
-        0: {1: 2, 2: 3},
-        1: {1: 20, 2: 30}
+        0: {1: 2, 2: 3, _top: 2, _bottom: null},
+        1: {1: 20, 2: 30, _top: 2, _bottom: null}
       }
     });
   });
@@ -584,12 +584,12 @@ describe('Chart.DatasetController', function() {
 
     expect(chart._stacks).toEqual({
       'x.y.1': {
-        0: {0: 1, 2: 3},
-        1: {0: 10, 2: 30}
+        0: {0: 1, 2: 3, _top: 2, _bottom: null},
+        1: {0: 10, 2: 30, _top: 2, _bottom: null}
       },
       'x.y.2': {
-        0: {1: 2},
-        1: {1: 20}
+        0: {1: 2, _top: 1, _bottom: null},
+        1: {1: 20, _top: 1, _bottom: null}
       }
     });
 
@@ -598,12 +598,12 @@ describe('Chart.DatasetController', function() {
 
     expect(chart._stacks).toEqual({
       'x.y.1': {
-        0: {0: 1, 2: 4},
-        1: {0: 10}
+        0: {0: 1, 2: 4, _top: 2, _bottom: null},
+        1: {0: 10, _top: 2, _bottom: null}
       },
       'x.y.2': {
-        0: {1: 2},
-        1: {1: 20}
+        0: {1: 2, _top: 1, _bottom: null},
+        1: {1: 20, _top: 1, _bottom: null}
       }
     });
   });
@@ -719,7 +719,7 @@ describe('Chart.DatasetController', function() {
     });
 
     var meta = chart.getDatasetMeta(0);
-    expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20}}));
+    expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20, _top: null, _bottom: null}}));
   });
 
   describe('resolveDataElementOptions', function() {
