@@ -1,1 +1,1 @@
-export * from '../types/helpers/index';
+export * from '../types/helpers';
