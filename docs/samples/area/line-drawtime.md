@@ -26,7 +26,7 @@ const data = {
       label: 'Dataset 1',
       data: generateData(),
       borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red),
+      backgroundColor: Utils.CHART_COLORS.red,
       fill: true
     },
     {
@@ -55,6 +55,13 @@ const actions = [
     name: 'drawTime: beforeDatasetsDraw',
     handler: (chart) => {
       chart.options.plugins.filler.drawTime = 'beforeDatasetsDraw';
+      chart.update();
+    }
+  },
+  {
+    name: 'drawTime: beforeDraw',
+    handler: (chart) => {
+      chart.options.plugins.filler.drawTime = 'beforeDraw';
       chart.update();
     }
   },

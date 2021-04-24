@@ -68,7 +68,7 @@ Namespace: `options.plugins.filler`
 
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `drawTime` | `string` | `beforeDatasetDraw` | Filler draw time. Supported values: `'beforeDatasetDraw'`, `'beforeDatasetsDraw'`
+| `drawTime` | `string` | `beforeDatasetDraw` | Filler draw time. Supported values: `'beforeDraw'`, `'beforeDatasetDraw'`, `'beforeDatasetsDraw'`
 | [`propagate`](#propagate) | `boolean` | `true` | Fill propagation when target is hidden.
 
 ### propagate
