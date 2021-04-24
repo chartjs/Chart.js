@@ -565,19 +565,32 @@ export default {
     }
   },
 
-  beforeDatasetsDraw(chart, _args, options) {
+  beforeDraw(chart, _args, options) {
+    const draw = options.drawTime === 'beforeDraw';
     const metasets = chart.getSortedVisibleDatasetMetas();
     const area = chart.chartArea;
-
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
+      if (!source) {
+        continue;
+      }
 
+      source.line.updateControlPoints(area);
+      if (draw) {
+        drawfill(chart.ctx, source, area);
+      }
+    }
+  },
+
+  beforeDatasetsDraw(chart, _args, options) {
+    if (options.drawTime !== 'beforeDatasetsDraw') {
+      return;
+    }
+    const metasets = chart.getSortedVisibleDatasetMetas();
+    for (let i = metasets.length - 1; i >= 0; --i) {
+      const source = metasets[i].$filler;
       if (source) {
-        source.line.updateControlPoints(area);
-
-        if (options.drawTime === 'beforeDatasetsDraw') {
-          drawfill(chart.ctx, source, area);
-        }
+        drawfill(chart.ctx, source, chart.chartArea);
       }
     }
   },
