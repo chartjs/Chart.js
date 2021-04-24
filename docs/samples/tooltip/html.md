@@ -106,7 +106,7 @@ const externalTooltipHandler = (context) => {
   tooltipEl.style.left = positionX + tooltip.caretX + 'px';
   tooltipEl.style.top = positionY + tooltip.caretY + 'px';
   tooltipEl.style.font = tooltip.options.bodyFont.string;
-  tooltipEl.style.padding = tooltip.padding + 'px ' + tooltip.padding + 'px';
+  tooltipEl.style.padding = tooltip.options.padding + 'px ' + tooltip.options.padding + 'px';
 };
 // </block:external>
 
