@@ -102,7 +102,7 @@ function generateTicks(generationOptions, dataRange) {
       j++;
     }
     // If the next nice tick is close to min, skip that too
-    if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, spacing / 10)) {
+    if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, spacing / 3)) {
       j++;
     }
   }
@@ -113,7 +113,7 @@ function generateTicks(generationOptions, dataRange) {
 
   if (maxDefined) {
     // If the previous tick is close to max, replace it with max, else add max
-    if (almostEquals(ticks[ticks.length - 1].value, max, spacing / 10)) {
+    if (almostEquals(ticks[ticks.length - 1].value, max, spacing / 3)) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
