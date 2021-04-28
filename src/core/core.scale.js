@@ -1658,4 +1658,13 @@ export default class Scale extends Element {
     const opts = this.options.ticks.setContext(this.getContext(index));
     return toFont(opts.font);
   }
+
+  /**
+   * @protected
+   */
+  _maxDigits() {
+    const me = this;
+    const fontSize = me._resolveTickFontOptions(0).lineHeight;
+    return me.isHorizontal() ? me.width / fontSize / 0.7 : me.height / fontSize;
+  }
 }

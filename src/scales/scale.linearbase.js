@@ -29,13 +29,14 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {step, min, max, precision, count, maxTicks} = generationOptions;
+  const {step, min, max, precision, count, maxTicks, maxDigits, horizontal} = generationOptions;
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
+  const minSpacing = (rmax - rmin) / maxDigits;
   let spacing = niceNum((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
 
@@ -102,7 +103,7 @@ function generateTicks(generationOptions, dataRange) {
       j++;
     }
     // If the next nice tick is close to min, skip that too
-    if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, spacing / 10)) {
+    if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, minSpacing * (horizontal ? ('' + min).length : 1))) {
       j++;
     }
   }
@@ -113,7 +114,7 @@ function generateTicks(generationOptions, dataRange) {
 
   if (maxDefined) {
     // If the previous tick is close to max, replace it with max, else add max
-    if (almostEquals(ticks[ticks.length - 1].value, max, spacing / 10)) {
+    if (almostEquals(ticks[ticks.length - 1].value, max, minSpacing * (horizontal ? ('' + max).length : 1))) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
@@ -230,6 +231,8 @@ export default class LinearScaleBase extends Scale {
       precision: tickOpts.precision,
       step: tickOpts.stepSize,
       count: tickOpts.count,
+      maxDigits: me._maxDigits(),
+      horizontal: me.isHorizontal()
     };
     const dataRange = me._range || me;
     const ticks = generateTicks(numericGeneratorOptions, dataRange);
