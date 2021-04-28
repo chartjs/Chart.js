@@ -393,7 +393,6 @@ export default class Scale extends Element {
     me.setDimensions();
     me.afterSetDimensions();
 
-    me._length = me.isHorizontal() ? me.width : me.height;
     me._maxLength = me.isHorizontal()
       ? me.width + margins.left + margins.right
       : me.height + margins.top + margins.bottom;
