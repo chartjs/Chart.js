@@ -114,7 +114,7 @@ function generateTicks(generationOptions, dataRange) {
 
   if (maxDefined) {
     // If the previous tick is close to max, replace it with max, else add max
-    if (almostEquals(ticks[ticks.length - 1].value, max, minSpacing* (horizontal ? ('' + max).length : 1))) {
+    if (almostEquals(ticks[ticks.length - 1].value, max, minSpacing * (horizontal ? ('' + max).length : 1))) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
