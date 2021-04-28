@@ -1,7 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {
   clipArea, unclipArea, _arrayUnique, isArray, isNullOrUndef,
-  valueOrDefault, resolveObjectKey, sign
+  valueOrDefault, resolveObjectKey, sign, defined
 } from '../helpers';
 
 function getAllScaleValues(scale) {
@@ -26,7 +26,14 @@ function computeMinSampleSize(scale) {
   let min = scale._length;
   let i, ilen, curr, prev;
   const updateMinAndPrev = () => {
-    min = Math.min(min, i && Math.abs(curr - prev) || min);
+    if (curr === 32767 || curr === -32768) {
+      // Ingnore truncated pixels
+      return;
+    }
+    if (defined(prev)) {
+      // curr - prev === 0 is ignored
+      min = Math.min(min, Math.abs(curr - prev) || min);
+    }
     prev = curr;
   };
 
@@ -35,6 +42,7 @@ function computeMinSampleSize(scale) {
     updateMinAndPrev();
   }
 
+  prev = undefined;
   for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
     curr = scale.getPixelForTick(i);
     updateMinAndPrev();
