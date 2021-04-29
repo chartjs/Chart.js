@@ -34,7 +34,7 @@ const htmlLegendPlugin = {
     }
 
     // Reuse the built-in legendItems generator
-    const items = chart.options.plugins.legend.labels.generateLabels(chart);
+    const items = chart.options.legend.labels.generateLabels(chart);
 
     items.forEach(item => {
       const li = document.createElement('li');
