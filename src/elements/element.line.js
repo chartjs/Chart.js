@@ -27,7 +27,7 @@ function getLineMethod(options) {
     return _steppedLineTo;
   }
 
-  if (options.tension) {
+  if (options.tension || options.cubicInterpolationMode === 'monotone') {
     return _bezierCurveTo;
   }
 
@@ -182,7 +182,7 @@ function fastPathSegment(ctx, line, segment, params) {
 function _getSegmentMethod(line) {
   const opts = line.options;
   const borderDash = opts.borderDash && opts.borderDash.length;
-  const useFastPath = !line._decimated && !line._loop && !opts.tension && !opts.stepped && !borderDash;
+  const useFastPath = !line._decimated && !line._loop && !opts.tension && opts.cubicInterpolationMode !== 'monotone' && !opts.stepped && !borderDash;
   return useFastPath ? fastPathSegment : pathSegment;
 }
 
@@ -194,7 +194,7 @@ function _getInterpolationMethod(options) {
     return _steppedInterpolation;
   }
 
-  if (options.tension) {
+  if (options.tension || options.cubicInterpolationMode === 'monotone') {
     return _bezierInterpolation;
   }
 
@@ -260,7 +260,7 @@ export default class LineElement extends Element {
   updateControlPoints(chartArea) {
     const me = this;
     const options = me.options;
-    if (options.tension && !options.stepped && !me._pointsUpdated) {
+    if ((options.tension || options.cubicInterpolationMode === 'monotone') && !options.stepped && !me._pointsUpdated) {
       const loop = options.spanGaps ? me._loop : me._fullLoop;
       _updateBezierControlPoints(me._points, options, chartArea, loop);
       me._pointsUpdated = true;
