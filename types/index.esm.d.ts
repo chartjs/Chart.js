@@ -604,7 +604,7 @@ export interface DatasetControllerChartComponent extends ChartComponent {
   };
 }
 
-export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions, PluginChartOptions<ChartType> {
+export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType> {
 
   scale: ScaleOptionsByType;
   scales: {
@@ -641,7 +641,7 @@ export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptio
 export type Overrides = {
   [key in ChartType]:
     CoreChartOptions<key> &
-    ElementChartOptions &
+    ElementChartOptions<key> &
     PluginChartOptions<key> &
     DatasetChartOptions<ChartType> &
     ScaleChartOptions<key> &
@@ -1887,15 +1887,16 @@ export const BarElement: ChartComponent & {
   new (cfg: AnyObject): BarElement;
 };
 
-export interface ElementOptionsByType {
-  arc: ArcOptions & ArcHoverOptions;
-  bar: BarOptions & BarHoverOptions;
-  line: LineOptions & LineHoverOptions;
-  point: PointOptions & PointHoverOptions;
+export interface ElementOptionsByType<TType extends ChartType> {
+  arc: ScriptableAndArrayOptions<ArcOptions & ArcHoverOptions, ScriptableContext<TType>>;
+  bar: ScriptableAndArrayOptions<BarOptions & BarHoverOptions, ScriptableContext<TType>>;
+  line: ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<TType>>;
+  point: ScriptableAndArrayOptions<PointOptions & PointHoverOptions, ScriptableContext<TType>>;
 }
-export interface ElementChartOptions {
-  elements: Partial<ElementOptionsByType>;
-}
+
+export type ElementChartOptions<TType extends ChartType = ChartType> = {
+  elements: ElementOptionsByType<TType>
+};
 
 export class BasePlatform {
   /**
@@ -3321,7 +3322,7 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 
 export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
   CoreChartOptions<TType> &
-  ElementChartOptions &
+  ElementChartOptions<TType> &
   PluginChartOptions<TType> &
   DatasetChartOptions<TType> &
   ScaleChartOptions<TType> &
