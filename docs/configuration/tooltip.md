@@ -17,16 +17,16 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | `backgroundColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0.8)'` | Background color of the tooltip.
 | `titleColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of title text.
 | `titleFont` | `Font` | `{weight: 'bold'}` | See [Fonts](../general/fonts.md).
-| `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#alignment)
+| `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#text-alignment)
 | `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
 | `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
 | `bodyColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of body text.
 | `bodyFont` | `Font` | `{}` | See [Fonts](../general/fonts.md).
-| `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#alignment)
+| `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#text-alignment)
 | `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
 | `footerColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of footer text.
 | `footerFont` | `Font` | `{weight: 'bold'}` | See [Fonts](../general/fonts.md).
-| `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#alignment)
+| `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#text-alignment)
 | `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
 | `padding` | [`Padding`](../general/padding.md) | `6` | Padding inside the tooltip.
@@ -42,6 +42,8 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | `borderWidth` | `number` | `0` | Size of the border.
 | `rtl` | `boolean` | | `true` for rendering the tooltip from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl' or 'ltr` on the canvas for rendering the tooltips, regardless of the css specified on the canvas
+| `xAlign` | `string` | `undefined` | Position of the tooltip caret in the X direction. [more](#tooltip-alignment)
+| `yAlign` | `string` | `undefined` | Position of the tooltip caret in the Y direction. [more](#tooltip-alignment)
 
 ### Position Modes
 
@@ -78,7 +80,23 @@ tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition)
 };
 ```
 
-### Alignment
+### Tooltip Alignment
+
+The `xAlign` and `yAlign` options define the position of the tooltip caret. If these parameters are unset, the optimal caret position is determined.
+
+The following values for the `xAlign` setting are supported.
+
+* `'left'`
+* `'center'`
+* `'right'`
+
+The following values for the `yAlign` setting are supported.
+
+* `'top'`
+* `'center'`
+* `'bottom'`
+
+### Text Alignment
 
 The `titleAlign`, `bodyAlign` and `footerAlign` options define the horizontal position of the text lines with respect to the tooltip box. The following values are supported.
 
