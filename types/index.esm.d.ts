@@ -1961,12 +1961,12 @@ interface BaseDecimationOptions {
 }
 
 interface LttbDecimationOptions extends BaseDecimationOptions {
-  algorithm: DecimationAlgorithm.lttb;
+  algorithm: DecimationAlgorithm.lttb | 'lttb';
   samples?: number;
 }
 
 interface MinMaxDecimationOptions extends BaseDecimationOptions {
-  algorithm: DecimationAlgorithm.minmax;
+  algorithm: DecimationAlgorithm.minmax | 'min-max';
 }
 
 export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
