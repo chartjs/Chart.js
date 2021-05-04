@@ -107,10 +107,8 @@ function generateTicks(generationOptions, dataRange) {
       if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, minSpacing * (horizontal ? ('' + min).length : 1))) {
         j++;
       }
-    } else {
-      if (niceMin < min) {
-        j++;
-      }
+    } else if (niceMin < min) {
+      j++;
     }
   }
 
@@ -125,7 +123,7 @@ function generateTicks(generationOptions, dataRange) {
     } else {
       ticks.push({value: max});
     }
-  } else if(!maxDefined || niceMax === max) {
+  } else if (!maxDefined || niceMax === max) {
     ticks.push({value: niceMax});
   }
 
