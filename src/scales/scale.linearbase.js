@@ -96,15 +96,21 @@ function generateTicks(generationOptions, dataRange) {
   niceMax = Math.round(niceMax * factor) / factor;
 
   let j = 0;
-  if (minDefined && includeBounds) {
-    ticks.push({value: min});
-    // If the niceMin is smaller or equal to min, skip it
-    if (niceMin <= min) {
-      j++;
-    }
-    // If the next nice tick is close to min, skip that too
-    if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, minSpacing * (horizontal ? ('' + min).length : 1))) {
-      j++;
+  if (minDefined) {
+    if (includeBounds) {
+      ticks.push({value: min});
+      // If the niceMin is smaller or equal to min, skip it
+      if (niceMin <= min) {
+        j++;
+      }
+      // If the next nice tick is close to min, skip that too
+      if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, minSpacing * (horizontal ? ('' + min).length : 1))) {
+        j++;
+      }
+    } else {
+      if (niceMin < min) {
+        j++;
+      }
     }
   }
 
@@ -119,7 +125,7 @@ function generateTicks(generationOptions, dataRange) {
     } else {
       ticks.push({value: max});
     }
-  } else {
+  } else if(!maxDefined || niceMax === max) {
     ticks.push({value: niceMax});
   }
 
