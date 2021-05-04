@@ -29,7 +29,7 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {step, min, max, precision, count, maxTicks, maxDigits, horizontal} = generationOptions;
+  const {step, min, max, precision, count, maxTicks, maxDigits, horizontal, includeBounds} = generationOptions;
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
@@ -96,7 +96,7 @@ function generateTicks(generationOptions, dataRange) {
   niceMax = Math.round(niceMax * factor) / factor;
 
   let j = 0;
-  if (minDefined) {
+  if (minDefined && includeBounds) {
     ticks.push({value: min});
     // If the niceMin is smaller or equal to min, skip it
     if (niceMin <= min) {
@@ -112,7 +112,7 @@ function generateTicks(generationOptions, dataRange) {
     ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
   }
 
-  if (maxDefined) {
+  if (maxDefined && includeBounds) {
     // If the previous tick is close to max, replace it with max, else add max
     if (almostEquals(ticks[ticks.length - 1].value, max, minSpacing * (horizontal ? ('' + max).length : 1))) {
       ticks[ticks.length - 1].value = max;
@@ -232,7 +232,8 @@ export default class LinearScaleBase extends Scale {
       step: tickOpts.stepSize,
       count: tickOpts.count,
       maxDigits: me._maxDigits(),
-      horizontal: me.isHorizontal()
+      horizontal: me.isHorizontal(),
+      includeBounds: tickOpts.includeBounds !== false
     };
     const dataRange = me._range || me;
     const ticks = generateTicks(numericGeneratorOptions, dataRange);
