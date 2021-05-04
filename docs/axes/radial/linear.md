@@ -123,7 +123,7 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `display` | `boolean` | | `true` | if true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
-| `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](./general/fonts.md)
+| `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
 
 The scriptable context is described in [Options](../../general/options.md#scale) section.
