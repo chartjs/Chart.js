@@ -99,11 +99,11 @@ function generateTicks(generationOptions, dataRange) {
   if (minDefined) {
     if (includeBounds && niceMin !== min) {
       ticks.push({value: min});
-      // If the niceMin is smaller or equal to min, skip it
+
       if (niceMin < min) {
-        j++;
+        j++; // Skip niceMin
       }
-      // If the next nice tick is close to min, skip that too
+      // If the next nice tick is close to min, skip it
       if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, minSpacing, generationOptions))) {
         j++;
       }
@@ -117,7 +117,7 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   if (maxDefined && includeBounds && niceMax !== max) {
-    // If the previous tick is close to max, replace it with max, else add max
+    // If the previous tick is too close to max, replace it with max, else add max
     if (almostEquals(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
       ticks[ticks.length - 1].value = max;
     } else {
