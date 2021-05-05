@@ -339,6 +339,7 @@ module.exports = {
             {
               title: 'Radial',
               children: [
+                'axes/radial/',
                 'axes/radial/linear'
               ],
             },
