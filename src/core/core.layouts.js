@@ -309,8 +309,8 @@ export default {
     }
 
     const padding = toPadding(chart.options.layout.padding);
-    const availableWidth = width - padding.width;
-    const availableHeight = height - padding.height;
+    const availableWidth = Math.max(width - padding.width, 0);
+    const availableHeight = Math.max(height - padding.height, 0);
     const boxes = buildLayoutBoxes(chart.boxes);
     const verticalBoxes = boxes.vertical;
     const horizontalBoxes = boxes.horizontal;
