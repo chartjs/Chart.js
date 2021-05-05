@@ -103,7 +103,7 @@ To get an item that was clicked on, `getElementsAtEventForMode` can be used.
 
 ```javascript
 function clickHandler(evt) {
-    const points = myChart.getElementAtEventForMode(evt, 'nearest', { intersect: true }, true);
+    const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
     if (points.length) {
         const firstPoint = points[0];
