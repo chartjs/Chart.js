@@ -100,6 +100,11 @@ export function _boundSegment(segment, points, bounds) {
     }
 
     value = normalize(point[property]);
+
+    if (value === prevValue) {
+      continue;
+    }
+
     inside = between(value, startBound, endBound);
 
     if (subStart === null && shouldStart()) {
