@@ -50,7 +50,7 @@ const htmlLegendPlugin = {
           // Pie and doughnut charts only have a single dataset and visibility is per item
           chart.toggleDataVisibility(item.index);
         } else {
-          chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex)); 
+          chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
         }
         chart.update();
       };
