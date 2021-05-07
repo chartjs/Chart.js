@@ -1953,7 +1953,7 @@ export class BasePlatform {
 export class BasicPlatform extends BasePlatform {}
 export class DomPlatform extends BasePlatform {}
 
-export declare enum DecimationAlgorithm {
+export const enum DecimationAlgorithm {
   lttb = 'lttb',
   minmax = 'min-max',
 }
