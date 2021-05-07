@@ -340,10 +340,3 @@ export const setsEqual = (a, b) => {
 
   return true;
 };
-
-export const setsDifference = (a, b) => {
-  for (const item of b) {
-    a.delete(item);
-  }
-  return a;
-};
