@@ -194,6 +194,12 @@ describe('Linear Scale', function() {
     chart.scales.y.options.stacked = true;
     chart.update();
 
+    expect(chart.scales.y.min).toBe(30);
+    expect(chart.scales.y.max).toBe(90);
+
+    chart.scales.y.options.beginAtZero = true;
+    chart.update();
+
     expect(chart.scales.y.min).toBe(0);
     expect(chart.scales.y.max).toBe(90);
   });
