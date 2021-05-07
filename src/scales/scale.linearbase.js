@@ -168,14 +168,14 @@ export default class LinearScaleBase extends Scale {
 
   handleTickRangeOptions() {
     const me = this;
-    const {beginAtZero, stacked} = me.options;
+    const {beginAtZero} = me.options;
     const {minDefined, maxDefined} = me.getUserBounds();
     let {min, max} = me;
 
     const setMin = v => (min = minDefined ? min : v);
     const setMax = v => (max = maxDefined ? max : v);
 
-    if (beginAtZero || stacked) {
+    if (beginAtZero) {
       const minSign = sign(min);
       const maxSign = sign(max);
 
