@@ -468,4 +468,19 @@ describe('Chart.helpers.core', function() {
       expect(helpers.setsEqual(a, c)).toBeTrue();
     });
   });
+
+  describe('setsDifference', function() {
+    it('removes items from sets', function() {
+      var a = new Set([1, 2]);
+      helpers.setsDifference(a, [2]);
+      expect(a.has(1)).toBeTrue();
+      expect(a.has(2)).toBeFalse();
+    });
+    it('does nothing if a set already doesn\'t contain items', function() {
+      var a = new Set([1]);
+      helpers.setsDifference(a, [2]);
+      expect(a.has(1)).toBeTrue();
+      expect(a.has(2)).toBeFalse();
+    });
+  });
 });

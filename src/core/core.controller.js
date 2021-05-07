@@ -7,7 +7,7 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, setsDifference} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -16,6 +16,8 @@ import {debounce} from '../helpers/helpers.extras';
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
  */
+
+const INTERNAL_EVENTS = ['resize', 'attach', 'detach'];
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
@@ -116,7 +118,10 @@ class Chart {
     this.chartArea = undefined;
     this._active = [];
     this._lastEvent = undefined;
-    /** @type {{attach?: function, detach?: function, resize?: function}} */
+    /**
+     * Handlers for this.options.events plus INTERNAL_EVENTS
+     * @type {{attach?: function, detach?: function, resize?: function}}
+     */
     this._listeners = {};
     this._sortedMetasets = [];
     this.scales = {};
@@ -480,7 +485,7 @@ class Chart {
     me.ensureScalesHaveIDs();
     me.buildOrUpdateScales();
 
-    const existingEvents = new Set(Object.keys(me._listeners));
+    const existingEvents = setsDifference(new Set(Object.keys(me._listeners)), INTERNAL_EVENTS);
     const newEvents = new Set(me.options.events);
 
     if (!setsEqual(existingEvents, newEvents)) {

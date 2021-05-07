@@ -138,3 +138,4 @@ export function mergeIf<T>(target: T, source: AnyObject[]): AnyObject;
 export function resolveObjectKey(obj: AnyObject, key: string): AnyObject;
 
 export function setsEqual(a: Set<unknown>, b: Set<unknown>): boolean;
+export function setsDifference<T>(a: Set<T>, b: Iterable<T>): Set<T>;
