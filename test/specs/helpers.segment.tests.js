@@ -49,5 +49,13 @@ describe('helpers.segments', function() {
         {start: 3, end: 4, loop: false, style: undefined},
       ]);
     });
+
+    it('should find correct segments when there are multiple points with same property value', function() {
+      const repeatedPoints = [{x: 1, y: 5}, {x: 1, y: 6}, {x: 2, y: 5}, {x: 2, y: 6}, {x: 3, y: 5}, {x: 3, y: 6}, {x: 3, y: 7}];
+      expect(_boundSegment({start: 0, end: 6, loop: false}, repeatedPoints, {property: 'x', start: 1, end: 1.1})).toEqual([{start: 0, end: 2, loop: false, style: undefined}]);
+      expect(_boundSegment({start: 0, end: 6, loop: false}, repeatedPoints, {property: 'x', start: 2, end: 2.1})).toEqual([{start: 2, end: 4, loop: false, style: undefined}]);
+      expect(_boundSegment({start: 0, end: 6, loop: false}, repeatedPoints, {property: 'x', start: 2, end: 3.1})).toEqual([{start: 2, end: 6, loop: false, style: undefined}]);
+      expect(_boundSegment({start: 0, end: 6, loop: false}, repeatedPoints, {property: 'x', start: 0, end: 8})).toEqual([{start: 0, end: 6, loop: false, style: undefined}]);
+    });
   });
 });
