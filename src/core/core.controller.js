@@ -983,19 +983,16 @@ class Chart {
 	 */
   unbindEvents() {
     const me = this;
-    const listeners = me._listeners;
 
-    me._listeners = {};
-    each(listeners, (listener, type) => {
+    each(me._listeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
+    me._listeners = {};
 
-    if (me._responsiveListeners) {
-      each(me._responsiveListeners, (listener, type) => {
-        me.platform.removeEventListener(me, type, listener);
-      });
-      me._responsiveListeners = undefined;
-    }
+    each(me._responsiveListeners, (listener, type) => {
+      me.platform.removeEventListener(me, type, listener);
+    });
+    me._responsiveListeners = undefined;
   }
 
   updateHoverStyle(items, mode, enabled) {
