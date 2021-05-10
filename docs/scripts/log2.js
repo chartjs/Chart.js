@@ -21,8 +21,8 @@ export default class Log2Axis extends Scale {
   buildTicks() {
     const ticks = [];
 
-    let power = Math.floor(Math.log2(this.min));
-    let maxPower = Math.ceil(Math.log2(this.max));
+    let power = Math.floor(Math.log2(this.min || 1));
+    let maxPower = Math.ceil(Math.log2(this.max || 2));
     while (power <= maxPower) {
       ticks.push({value: Math.pow(2, power)});
       power += 1;
