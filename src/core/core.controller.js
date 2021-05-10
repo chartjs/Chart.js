@@ -116,8 +116,9 @@ class Chart {
     this.chartArea = undefined;
     this._active = [];
     this._lastEvent = undefined;
-    /** @type {{attach?: function, detach?: function, resize?: function}} */
     this._listeners = {};
+    /** @type {?{attach?: function, detach?: function, resize?: function}} */
+    this._responsiveListeners = undefined;
     this._sortedMetasets = [];
     this.scales = {};
     this.scale = undefined;
@@ -478,8 +479,8 @@ class Chart {
     const existingEvents = new Set(Object.keys(me._listeners));
     const newEvents = new Set(me.options.events);
 
-    if (!setsEqual(existingEvents, newEvents)) {
-      // The events array has changed. Rebind it
+    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== me.options.responsive) {
+      // The configured events have changed. Rebind.
       me.unbindEvents();
       me.bindEvents();
     }
@@ -889,8 +890,45 @@ class Chart {
 	 * @private
 	 */
   bindEvents() {
+    this.bindUserEvents();
+    if (this.options.responsive) {
+      this.bindResponsiveEvents();
+    } else {
+      this.attached = true;
+    }
+  }
+
+  /**
+   * @private
+   */
+  bindUserEvents() {
     const me = this;
     const listeners = me._listeners;
+    const platform = me.platform;
+
+    const _add = (type, listener) => {
+      platform.addEventListener(me, type, listener);
+      listeners[type] = listener;
+    };
+
+    const listener = function(e, x, y) {
+      e.offsetX = x;
+      e.offsetY = y;
+      me._eventHandler(e);
+    };
+
+    each(me.options.events, (type) => _add(type, listener));
+  }
+
+  /**
+   * @private
+   */
+  bindResponsiveEvents() {
+    const me = this;
+    if (!me._responsiveListeners) {
+      me._responsiveListeners = {};
+    }
+    const listeners = me._responsiveListeners;
     const platform = me.platform;
 
     const _add = (type, listener) => {
@@ -904,46 +942,34 @@ class Chart {
       }
     };
 
-    let listener = function(e, x, y) {
-      e.offsetX = x;
-      e.offsetY = y;
-      me._eventHandler(e);
+    const listener = (width, height) => {
+      if (me.canvas) {
+        me.resize(width, height);
+      }
     };
 
-    each(me.options.events, (type) => _add(type, listener));
+    let detached; // eslint-disable-line prefer-const
+    const attached = () => {
+      _remove('attach', attached);
 
-    if (me.options.responsive) {
-      listener = (width, height) => {
-        if (me.canvas) {
-          me.resize(width, height);
-        }
-      };
-
-      let detached; // eslint-disable-line prefer-const
-      const attached = () => {
-        _remove('attach', attached);
-
-        me.attached = true;
-        me.resize();
-
-        _add('resize', listener);
-        _add('detach', detached);
-      };
-
-      detached = () => {
-        me.attached = false;
-
-        _remove('resize', listener);
-        _add('attach', attached);
-      };
-
-      if (platform.isAttached(me.canvas)) {
-        attached();
-      } else {
-        detached();
-      }
-    } else {
       me.attached = true;
+      me.resize();
+
+      _add('resize', listener);
+      _add('detach', detached);
+    };
+
+    detached = () => {
+      me.attached = false;
+
+      _remove('resize', listener);
+      _add('attach', attached);
+    };
+
+    if (platform.isAttached(me.canvas)) {
+      attached();
+    } else {
+      detached();
     }
   }
 
@@ -952,15 +978,16 @@ class Chart {
 	 */
   unbindEvents() {
     const me = this;
-    const listeners = me._listeners;
-    if (!listeners) {
-      return;
-    }
 
-    me._listeners = {};
-    each(listeners, (listener, type) => {
+    each(me._listeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
+    me._listeners = {};
+
+    each(me._responsiveListeners, (listener, type) => {
+      me.platform.removeEventListener(me, type, listener);
+    });
+    me._responsiveListeners = undefined;
   }
 
   updateHoverStyle(items, mode, enabled) {
