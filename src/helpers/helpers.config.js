@@ -295,7 +295,12 @@ function createSubResolver(parentScopes, resolver, prop, value) {
     if (!(prop in parent)) {
       parent[prop] = {};
     }
-    return parent[prop];
+    const target = parent[prop];
+    if (isArray(target) && isObject(value)) {
+      // For array of objects, the object is used to store updated values
+      return value;
+    }
+    return target;
   });
 }
 
