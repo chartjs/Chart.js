@@ -752,6 +752,23 @@ describe('Chart.helpers.config', function() {
       expect(fn()).toEqual('ok');
     });
 
+    it('should properly set value to object in array of objects', function() {
+      const defaults = {};
+      const options = {
+        annotations: [{
+          value: 10
+        }, {
+          value: 20
+        }]
+      };
+      const resolver = _attachContext(_createResolver([options, defaults]), {test: true});
+      expect(resolver.annotations[0].value).toEqual(10);
+
+      resolver.annotations[0].value = 15;
+      expect(options.annotations[0].value).toEqual(15);
+      expect(options.annotations[1].value).toEqual(20);
+    });
+
     describe('_indexable and _scriptable', function() {
       it('should default to true', function() {
         const options = {

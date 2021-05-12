@@ -290,13 +290,8 @@ function createSubResolver(parentScopes, resolver, prop, value) {
       return false;
     }
   }
-  return _createResolver([...set], [''], rootScopes, fallback, () => {
-    const parent = resolver._getTarget();
-    if (!(prop in parent)) {
-      parent[prop] = {};
-    }
-    return parent[prop];
-  });
+  return _createResolver([...set], [''], rootScopes, fallback,
+    () => subGetTarget(resolver, prop, value));
 }
 
 function addScopesFromKey(set, allScopes, key, fallback) {
@@ -304,6 +299,19 @@ function addScopesFromKey(set, allScopes, key, fallback) {
     key = addScopes(set, allScopes, key, fallback);
   }
   return key;
+}
+
+function subGetTarget(resolver, prop, value) {
+  const parent = resolver._getTarget();
+  if (!(prop in parent)) {
+    parent[prop] = {};
+  }
+  const target = parent[prop];
+  if (isArray(target) && isObject(value)) {
+    // For array of objects, the object is used to store updated values
+    return value;
+  }
+  return target;
 }
 
 function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
