@@ -31,4 +31,4 @@ export interface MonotoneSplinePoint extends SplinePoint {
  * between the dataset discrete points due to the interpolation.
  * @see https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
  */
-export function splineCurveMonotone(points: readonly MonotoneSplinePoint[]): void;
+export function splineCurveMonotone(points: readonly MonotoneSplinePoint[], indexAxis?: 'x' | 'y'): void;

@@ -575,7 +575,7 @@ export default {
         continue;
       }
 
-      source.line.updateControlPoints(area);
+      source.line.updateControlPoints(area, source.axis);
       if (draw) {
         drawfill(chart.ctx, source, area);
       }
