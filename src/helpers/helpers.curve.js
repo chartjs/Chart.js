@@ -86,17 +86,17 @@ function monotoneCompute(points, mK, indexAxis = 'x') {
       continue;
     }
 
-    const iValue = pointCurrent[indexAxis];
-    const vValue = pointCurrent[valueAxis];
+    const iPixel = pointCurrent[indexAxis];
+    const vPixel = pointCurrent[valueAxis];
     if (pointBefore) {
-      delta = (iValue - pointBefore[indexAxis]) / 3;
-      pointCurrent[`cp1${indexAxis}`] = iValue - delta;
-      pointCurrent[`cp1${valueAxis}`] = vValue - delta * mK[i];
+      delta = (iPixel - pointBefore[indexAxis]) / 3;
+      pointCurrent[`cp1${indexAxis}`] = iPixel - delta;
+      pointCurrent[`cp1${valueAxis}`] = vPixel - delta * mK[i];
     }
     if (pointAfter) {
-      delta = (pointAfter[indexAxis] - iValue) / 3;
-      pointCurrent[`cp2${indexAxis}`] = iValue + delta;
-      pointCurrent[`cp2${valueAxis}`] = vValue + delta * mK[i];
+      delta = (pointAfter[indexAxis] - iPixel) / 3;
+      pointCurrent[`cp2${indexAxis}`] = iPixel + delta;
+      pointCurrent[`cp2${valueAxis}`] = vPixel + delta * mK[i];
     }
   }
 }
