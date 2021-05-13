@@ -47,10 +47,12 @@ export default class LineController extends DatasetController {
   updateElements(points, start, count, mode) {
     const me = this;
     const reset = mode === 'reset';
-    const {xScale, yScale, _stacked} = me._cachedMeta;
+    const {iScale, vScale, _stacked} = me._cachedMeta;
     const firstOpts = me.resolveDataElementOptions(start, mode);
     const sharedOptions = me.getSharedOptions(firstOpts);
     const includeOptions = me.includeOptions(mode, sharedOptions);
+    const iAxis = iScale.axis;
+    const vAxis = vScale.axis;
     const spanGaps = me.options.spanGaps;
     const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
     const directUpdate = me.chart._animationsDisabled || reset || mode === 'none';
@@ -60,11 +62,12 @@ export default class LineController extends DatasetController {
       const point = points[i];
       const parsed = me.getParsed(i);
       const properties = directUpdate ? point : {};
-      const nullData = isNullOrUndef(parsed.y);
-      const x = properties.x = xScale.getPixelForValue(parsed.x, i);
-      const y = properties.y = reset || nullData ? yScale.getBasePixel() : yScale.getPixelForValue(_stacked ? me.applyStack(yScale, parsed, _stacked) : parsed.y, i);
-      properties.skip = isNaN(x) || isNaN(y) || nullData;
-      properties.stop = i > 0 && (parsed.x - prevParsed.x) > maxGapLength;
+      const nullData = isNullOrUndef(parsed[vAxis]);
+      const iPixel = properties[iAxis] = iScale.getPixelForValue(parsed[iAxis], i);
+      const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? me.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
+
+      properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
+      properties.stop = i > 0 && (parsed[iAxis] - prevParsed[iAxis]) > maxGapLength;
       properties.parsed = parsed;
 
       if (includeOptions) {

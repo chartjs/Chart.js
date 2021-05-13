@@ -69,21 +69,21 @@ export default class BubbleController extends DatasetController {
   updateElements(points, start, count, mode) {
     const me = this;
     const reset = mode === 'reset';
-    const {xScale, yScale} = me._cachedMeta;
+    const {iScale, vScale} = me._cachedMeta;
     const firstOpts = me.resolveDataElementOptions(start, mode);
     const sharedOptions = me.getSharedOptions(firstOpts);
     const includeOptions = me.includeOptions(mode, sharedOptions);
+    const iAxis = iScale.axis;
+    const vAxis = vScale.axis;
 
     for (let i = start; i < start + count; i++) {
       const point = points[i];
       const parsed = !reset && me.getParsed(i);
-      const x = reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(parsed.x);
-      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
-      const properties = {
-        x,
-        y,
-        skip: isNaN(x) || isNaN(y)
-      };
+      const properties = {};
+      const iPixel = properties[iAxis] = reset ? iScale.getPixelForDecimal(0.5) : iScale.getPixelForValue(parsed[iAxis]);
+      const vPixel = properties[vAxis] = reset ? vScale.getBasePixel() : vScale.getPixelForValue(parsed[vAxis]);
+
+      properties.skip = isNaN(iPixel) || isNaN(vPixel);
 
       if (includeOptions) {
         properties.options = me.resolveDataElementOptions(i, mode);
