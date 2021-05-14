@@ -3,6 +3,7 @@ import {_isPointInArea} from './helpers.canvas';
 
 const EPSILON = Number.EPSILON || 1e-14;
 const getPoint = (points, i) => i < points.length && !points[i].skip && points[i];
+const getValueAxis = (indexAxis) => indexAxis === 'x' ? 'y' : 'x';
 
 export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
   // Props to Rob Spencer at scaled innovation for his post on splining between points
@@ -71,9 +72,10 @@ function monotoneAdjust(points, deltaK, mK) {
   }
 }
 
-function monotoneCompute(points, mK) {
+function monotoneCompute(points, mK, indexAxis = 'x') {
+  const valueAxis = getValueAxis(indexAxis);
   const pointsLen = points.length;
-  let deltaX, pointBefore, pointCurrent;
+  let delta, pointBefore, pointCurrent;
   let pointAfter = getPoint(points, 0);
 
   for (let i = 0; i < pointsLen; ++i) {
@@ -84,16 +86,17 @@ function monotoneCompute(points, mK) {
       continue;
     }
 
-    const {x, y} = pointCurrent;
+    const iPixel = pointCurrent[indexAxis];
+    const vPixel = pointCurrent[valueAxis];
     if (pointBefore) {
-      deltaX = (x - pointBefore.x) / 3;
-      pointCurrent.cp1x = x - deltaX;
-      pointCurrent.cp1y = y - deltaX * mK[i];
+      delta = (iPixel - pointBefore[indexAxis]) / 3;
+      pointCurrent[`cp1${indexAxis}`] = iPixel - delta;
+      pointCurrent[`cp1${valueAxis}`] = vPixel - delta * mK[i];
     }
     if (pointAfter) {
-      deltaX = (pointAfter.x - x) / 3;
-      pointCurrent.cp2x = x + deltaX;
-      pointCurrent.cp2y = y + deltaX * mK[i];
+      delta = (pointAfter[indexAxis] - iPixel) / 3;
+      pointCurrent[`cp2${indexAxis}`] = iPixel + delta;
+      pointCurrent[`cp2${valueAxis}`] = vPixel + delta * mK[i];
     }
   }
 }
@@ -113,8 +116,10 @@ function monotoneCompute(points, mK) {
  * cp2x?: number,
  * cp2y?: number,
  * }[]} points
+ * @param {string} indexAxis
  */
-export function splineCurveMonotone(points) {
+export function splineCurveMonotone(points, indexAxis = 'x') {
+  const valueAxis = getValueAxis(indexAxis);
   const pointsLen = points.length;
   const deltaK = Array(pointsLen).fill(0);
   const mK = Array(pointsLen);
@@ -132,10 +137,10 @@ export function splineCurveMonotone(points) {
     }
 
     if (pointAfter) {
-      const slopeDeltaX = (pointAfter.x - pointCurrent.x);
+      const slopeDelta = pointAfter[indexAxis] - pointCurrent[indexAxis];
 
       // In the case of two points that appear at the same x pixel, slopeDeltaX is 0
-      deltaK[i] = slopeDeltaX !== 0 ? (pointAfter.y - pointCurrent.y) / slopeDeltaX : 0;
+      deltaK[i] = slopeDelta !== 0 ? (pointAfter[valueAxis] - pointCurrent[valueAxis]) / slopeDelta : 0;
     }
     mK[i] = !pointBefore ? deltaK[i]
       : !pointAfter ? deltaK[i - 1]
@@ -145,7 +150,7 @@ export function splineCurveMonotone(points) {
 
   monotoneAdjust(points, deltaK, mK);
 
-  monotoneCompute(points, mK);
+  monotoneCompute(points, mK, indexAxis);
 }
 
 function capControlPoint(pt, min, max) {
@@ -177,7 +182,7 @@ function capBezierPoints(points, area) {
 /**
  * @private
  */
-export function _updateBezierControlPoints(points, options, area, loop) {
+export function _updateBezierControlPoints(points, options, area, loop, indexAxis) {
   let i, ilen, point, controlPoints;
 
   // Only consider points that are drawn in case the spanGaps option is used
@@ -186,7 +191,7 @@ export function _updateBezierControlPoints(points, options, area, loop) {
   }
 
   if (options.cubicInterpolationMode === 'monotone') {
-    splineCurveMonotone(points);
+    splineCurveMonotone(points, indexAxis);
   } else {
     let prev = loop ? points[points.length - 1] : points[0];
     for (i = 0, ilen = points.length; i < ilen; ++i) {

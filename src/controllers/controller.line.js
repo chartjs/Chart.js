@@ -102,7 +102,8 @@ export default class LineController extends DatasetController {
   }
 
   draw() {
-    this._cachedMeta.dataset.updateControlPoints(this.chart.chartArea);
+    const meta = this._cachedMeta;
+    meta.dataset.updateControlPoints(this.chart.chartArea, meta.iScale.axis);
     super.draw();
   }
 }
