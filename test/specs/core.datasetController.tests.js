@@ -976,6 +976,59 @@ describe('Chart.DatasetController', function() {
         raw: {x: 1, y: 1},
         mode: 'datatest2'
       }));
+
+      chart.data.datasets[0].data.unshift({x: -1, y: -1});
+      chart.update();
+      expect(meta.controller.getContext(0, true, 'unshift')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 0,
+        element: meta.data[0],
+        index: 0,
+        parsed: {x: -1, y: -1},
+        raw: {x: -1, y: -1},
+        mode: 'unshift'
+      }));
+      expect(meta.controller.getContext(2, true, 'unshift2')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 2,
+        element: meta.data[2],
+        index: 2,
+        parsed: {x: 1, y: 1},
+        raw: {x: 1, y: 1},
+        mode: 'unshift2'
+      }));
+
+      chart.data.datasets.unshift({data: [{x: 10, y: 20}]});
+      chart.update();
+      meta = chart.getDatasetMeta(0);
+      expect(meta.controller.getContext(0, true, 'unshift3')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 0,
+        dataset: chart.data.datasets[0],
+        dataIndex: 0,
+        element: meta.data[0],
+        index: 0,
+        parsed: {x: 10, y: 20},
+        raw: {x: 10, y: 20},
+        mode: 'unshift3'
+      }));
+
+      meta = chart.getDatasetMeta(1);
+      expect(meta.controller.getContext(2, true, 'unshift4')).toEqual(jasmine.objectContaining({
+        active: true,
+        datasetIndex: 1,
+        dataset: chart.data.datasets[1],
+        dataIndex: 2,
+        element: meta.data[2],
+        index: 2,
+        parsed: {x: 1, y: 1},
+        raw: {x: 1, y: 1},
+        mode: 'unshift4'
+      }));
     });
   });
 });
