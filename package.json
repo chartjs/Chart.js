@@ -69,7 +69,7 @@
     "eslint-config-chartjs": "^0.3.0",
     "eslint-plugin-es": "^4.1.0",
     "eslint-plugin-html": "^6.1.2",
-    "eslint-plugin-markdown": "^2.0.1",
+    "eslint-plugin-markdown": "^2.1.0",
     "glob": "^7.1.6",
     "jasmine": "^3.7.0",
     "jasmine-core": "^3.7.1",
