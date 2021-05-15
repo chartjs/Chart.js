@@ -268,6 +268,7 @@ describe('Chart.DatasetController', function() {
     last = meta.data[5];
     data.push(6, 7, 8);
     data.push(9);
+    chart.update();
     expect(meta.data.length).toBe(10);
     expect(meta.data[0]).toBe(first);
     expect(meta.data[5]).toBe(last);
@@ -275,6 +276,7 @@ describe('Chart.DatasetController', function() {
 
     last = meta.data[9];
     data.pop();
+    chart.update();
     expect(meta.data.length).toBe(9);
     expect(meta.data[0]).toBe(first);
     expect(meta.data.indexOf(last)).toBe(-1);
@@ -284,6 +286,7 @@ describe('Chart.DatasetController', function() {
     data.shift();
     data.shift();
     data.shift();
+    chart.update();
     expect(meta.data.length).toBe(6);
     expect(meta.data.indexOf(first)).toBe(-1);
     expect(meta.data[5]).toBe(last);
@@ -293,6 +296,7 @@ describe('Chart.DatasetController', function() {
     second = meta.data[1];
     last = meta.data[5];
     data.splice(1, 4, 10, 11);
+    chart.update();
     expect(meta.data.length).toBe(4);
     expect(meta.data[0]).toBe(first);
     expect(meta.data[3]).toBe(last);
@@ -301,6 +305,7 @@ describe('Chart.DatasetController', function() {
 
     data.unshift(12, 13, 14, 15);
     data.unshift(16, 17);
+    chart.update();
     expect(meta.data.length).toBe(10);
     expect(meta.data[6]).toBe(first);
     expect(meta.data[9]).toBe(last);
@@ -333,12 +338,14 @@ describe('Chart.DatasetController', function() {
     last = controller.getParsed(5);
     data.push({x: 6, y: 6}, {x: 7, y: 7}, {x: 8, y: 8});
     data.push({x: 9, y: 9});
+    chart.update();
     expect(meta.data.length).toBe(10);
     expect(controller.getParsed(0)).toBe(first);
     expect(controller.getParsed(5)).toBe(last);
 
     last = controller.getParsed(9);
     data.pop();
+    chart.update();
     expect(meta.data.length).toBe(9);
     expect(controller.getParsed(0)).toBe(first);
     expect(controller.getParsed(9)).toBe(undefined);
@@ -348,12 +355,14 @@ describe('Chart.DatasetController', function() {
     data.shift();
     data.shift();
     data.shift();
+    chart.update();
     expect(meta.data.length).toBe(6);
     expect(controller.getParsed(5)).toBe(last);
 
     first = controller.getParsed(0);
     last = controller.getParsed(5);
     data.splice(1, 4, {x: 10, y: 10}, {x: 11, y: 11});
+    chart.update();
     expect(meta.data.length).toBe(4);
     expect(controller.getParsed(0)).toBe(first);
     expect(controller.getParsed(3)).toBe(last);
@@ -361,6 +370,7 @@ describe('Chart.DatasetController', function() {
 
     data.unshift({x: 12, y: 12}, {x: 13, y: 13}, {x: 14, y: 14}, {x: 15, y: 15});
     data.unshift({x: 16, y: 16}, {x: 17, y: 17});
+    chart.update();
     expect(meta.data.length).toBe(10);
     expect(controller.getParsed(6)).toBe(first);
     expect(controller.getParsed(9)).toBe(last);
@@ -390,6 +400,7 @@ describe('Chart.DatasetController', function() {
     expect(meta._parsed.map(p => p.y)).toEqual(data1);
 
     data1.push(9);
+    chart.update();
     expect(meta.data.length).toBe(4);
 
     chart.data.datasets[0].data = data0;
