@@ -165,8 +165,7 @@ The interaction with each point can be controlled with the following properties:
 
 ## Scale Options
 
-The radar chart supports only a single scale. The options for this scale are defined in the `scale` property.
-The options for this scale are defined in the `scale` property, which can be referenced from the [Linear Radial Axis page](../axes/radial/linear).
+The radar chart supports only a single scale. The options for this scale are defined in the `scales.r` property, which can be referenced from the [Linear Radial Axis page](../axes/radial/linear).
 
 ```javascript
 options = {
