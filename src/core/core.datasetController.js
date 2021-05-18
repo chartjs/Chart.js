@@ -332,16 +332,15 @@ export default class DatasetController {
       if (_data) {
         // This case happens when the user replaced the data array instance.
         unlistenArrayEvents(_data, me);
-        // Discard old elements, parsed data and stacks
+        // Discard old parsed data and stacks
         const meta = me._cachedMeta;
         clearStacks(meta);
         meta._parsed = [];
-        meta.data = [];
       }
       if (data && Object.isExtensible(data)) {
         listenArrayEvents(data, me);
-        me._syncList = [];
       }
+      me._syncList = [];
       me._data = data;
     }
   }
@@ -933,7 +932,8 @@ export default class DatasetController {
       me._insertElements(numMeta, numData - numMeta, resetNewElements);
     } else if (numData < numMeta) {
       me._removeElements(numData, numMeta - numData);
-    } else if (count) {
+    }
+    if (count) {
       // TODO: It is not optimal to always parse the old data
       // This is done because we are not detecting direct assignments:
       // chart.data.datasets[0].data[5] = 10;
