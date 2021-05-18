@@ -392,12 +392,14 @@ describe('Chart.DatasetController', function() {
 
     expect(meta.data.length).toBe(6);
     expect(meta._parsed.map(p => p.y)).toEqual(data0);
+    const point0 = meta.data[0];
 
     chart.data.datasets[0].data = data1;
     chart.update();
 
     expect(meta.data.length).toBe(3);
     expect(meta._parsed.map(p => p.y)).toEqual(data1);
+    expect(meta.data[0]).toEqual(point0);
 
     data1.push(9);
     chart.update();
