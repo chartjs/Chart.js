@@ -91,7 +91,11 @@ function generateTicks(generationOptions, dataRange) {
 
   // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
   // until this point
-  factor = Math.pow(10, isNullOrUndef(precision) ? _decimalPlaces(spacing) : precision);
+  const decimalPlaces = Math.max(
+    _decimalPlaces(spacing),
+    _decimalPlaces(niceMin),
+  );
+  factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
 

@@ -46,7 +46,7 @@ const formatters = {
 
     const logDelta = log10(Math.abs(delta));
     const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0); // toFixed has a max of 20 decimal places
-
+    
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
     Object.assign(options, this.options.ticks.format);
 
@@ -82,7 +82,7 @@ function calculateDelta(tickValue, ticks) {
   let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
   // If we have a number like 2.5 as the delta, figure out how many decimal places we need
-  if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
+  if (Math.abs(delta) >= 1 && tickValue !== Math.floor(tickValue)) {
     // not an integer
     delta = tickValue - Math.floor(tickValue);
   }
