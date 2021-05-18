@@ -148,7 +148,7 @@ export function _normalizeAngle(a) {
 /**
  * @private
  */
-export function _angleBetween(angle, start, end) {
+export function _angleBetween(angle, start, end, sameAngleIsFullCircle) {
   const a = _normalizeAngle(angle);
   const s = _normalizeAngle(start);
   const e = _normalizeAngle(end);
@@ -156,7 +156,8 @@ export function _angleBetween(angle, start, end) {
   const angleToEnd = _normalizeAngle(e - a);
   const startToAngle = _normalizeAngle(a - s);
   const endToAngle = _normalizeAngle(a - e);
-  return a === s || a === e || (angleToStart > angleToEnd && startToAngle < endToAngle);
+  return a === s || a === e || (sameAngleIsFullCircle && s === e)
+    || (angleToStart > angleToEnd && startToAngle < endToAngle);
 }
 
 /**
