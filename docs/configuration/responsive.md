@@ -6,6 +6,7 @@ The following examples **do not work**:
 
 - `<canvas height="40vh" width="80vw">`: **invalid** values, the canvas doesn't resize ([example](https://codepen.io/chartjs/pen/oWLZaR))
 - `<canvas style="height:40vh; width:80vw">`: **invalid** behavior, the canvas is resized but becomes blurry ([example](https://codepen.io/chartjs/pen/WjxpmO))
+- `<canvas style="margin: 0 auto;">`: **invalid** behavior, the canvas continually shrinks. Chart.js needs a dedicated container for each canvas and this styling should be applied there.
 
 Chart.js provides a [few options](#configuration-options) to enable responsiveness and control the resize behavior of charts by detecting when the canvas *display* size changes and update the *render* size accordingly.
 
