@@ -176,7 +176,7 @@ var newLegendClickHandler = function (e, legendItem, legend) {
 
     if (index > 1) {
         // Do the original logic
-        defaultLegendClickHandler(e, legendItem);
+        defaultLegendClickHandler(e, legendItem, legend);
     } else {
         let ci = legend.chart;
         [
