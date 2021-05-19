@@ -24,8 +24,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 214,
-      width: 537
+      height: 200,
+      width: 557
     }
   }
 };

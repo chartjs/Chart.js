@@ -18,7 +18,7 @@ module.exports = {
           min: 230,
           ticks: {
             autoSkip: false,
-            minRotation: 35
+            minRotation: 67.5
           }
         }
       }
@@ -27,8 +27,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 216,
-      width: 520
+      height: 234,
+      width: 224
     }
   }
 };
