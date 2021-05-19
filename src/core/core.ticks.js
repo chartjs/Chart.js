@@ -82,7 +82,7 @@ function calculateDelta(tickValue, ticks) {
   let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
 
   // If we have a number like 2.5 as the delta, figure out how many decimal places we need
-  if (Math.abs(delta) > 1 && tickValue !== Math.floor(tickValue)) {
+  if (Math.abs(delta) >= 1 && tickValue !== Math.floor(tickValue)) {
     // not an integer
     delta = tickValue - Math.floor(tickValue);
   }
