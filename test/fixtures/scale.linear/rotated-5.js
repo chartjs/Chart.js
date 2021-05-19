@@ -1,6 +1,6 @@
 module.exports = {
   description: 'https://github.com/chartjs/Chart.js/issues/9025',
-  threshold: 0.15,
+  threshold: 0.2,
   config: {
     type: 'scatter',
     options: {
