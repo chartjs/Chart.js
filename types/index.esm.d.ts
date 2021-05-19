@@ -742,7 +742,7 @@ export const layouts: {
   update(chart: Chart, width: number, height: number): void;
 };
 
-export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> extends ExtendedPlugin<TType> {
+export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> extends ExtendedPlugin<TType, O> {
   id: string;
 
   /**
