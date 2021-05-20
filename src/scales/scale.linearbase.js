@@ -36,7 +36,7 @@ function generateTicks(generationOptions, dataRange) {
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
-  const minSpacing = (rmax - rmin) / maxDigits;
+  const minSpacing = (rmax - rmin) / (maxDigits + 1);
   let spacing = niceNum((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
 
@@ -135,12 +135,10 @@ function generateTicks(generationOptions, dataRange) {
 }
 
 function relativeLabelSize(value, minSpacing, {horizontal, minRotation}) {
-  const rot = toRadians(minRotation);
-  const useLength = (horizontal && minRotation <= 45) || (!horizontal && minRotation >= 45);
-  const l = useLength ? minSpacing * ('' + value).length : 0;
-  const sin = Math.sin(rot);
-  const cos = Math.cos(rot);
-  return horizontal ? cos * l + sin * minSpacing : sin * l + cos * minSpacing;
+  const rad = toRadians(minRotation);
+  const ratio = (horizontal ? Math.sin(rad) : Math.cos(rad)) || 0.001;
+  const length = 0.75 * minSpacing * ('' + value).length;
+  return Math.min(minSpacing / ratio, length);
 }
 
 export default class LinearScaleBase extends Scale {

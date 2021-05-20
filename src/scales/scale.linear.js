@@ -1,6 +1,7 @@
 import {isFinite} from '../helpers/helpers.core';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
+import {toRadians} from '../helpers';
 
 export default class LinearScale extends LinearScaleBase {
 
@@ -21,12 +22,12 @@ export default class LinearScale extends LinearScaleBase {
  	 */
   computeTickLimit() {
     const me = this;
-
-    if (me.isHorizontal()) {
-      return Math.ceil(me.width / 40);
-    }
+    const horizontal = me.isHorizontal();
+    const length = horizontal ? me.width : me.height;
+    const minRotation = toRadians(me.options.ticks.minRotation);
+    const ratio = (horizontal ? Math.sin(minRotation) : Math.cos(minRotation)) || 0.001;
     const tickFont = me._resolveTickFontOptions(0);
-    return Math.ceil(me.height / tickFont.lineHeight);
+    return Math.ceil(length / Math.min(40, tickFont.lineHeight / ratio));
   }
 
   // Utils

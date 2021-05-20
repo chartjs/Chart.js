@@ -1665,6 +1665,6 @@ export default class Scale extends Element {
   _maxDigits() {
     const me = this;
     const fontSize = me._resolveTickFontOptions(0).lineHeight;
-    return me.isHorizontal() ? me.width / fontSize / 0.7 : me.height / fontSize;
+    return (me.isHorizontal() ? me.width : me.height) / fontSize;
   }
 }

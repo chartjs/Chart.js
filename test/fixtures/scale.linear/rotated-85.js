@@ -6,19 +6,19 @@ module.exports = {
     options: {
       scales: {
         y: {
-          max: 1069,
-          min: 230,
+          min: 0,
+          max: 500000,
           ticks: {
-            autoSkip: false,
-            minRotation: 22.5
+            minRotation: 85,
+            maxRotation: 85,
           }
         },
         x: {
-          max: 1069,
-          min: 230,
+          min: 0,
+          max: 500000,
           ticks: {
-            autoSkip: false,
-            minRotation: 67.5
+            minRotation: 85,
+            maxRotation: 85,
           }
         }
       }
@@ -27,8 +27,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 232,
-      width: 222
+      height: 350,
+      width: 350
     }
   }
 };

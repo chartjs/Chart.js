@@ -1,6 +1,6 @@
 module.exports = {
   description: 'https://github.com/chartjs/Chart.js/issues/9025',
-  threshold: 0.15,
+  threshold: 0.2,
   config: {
     type: 'scatter',
     options: {
@@ -18,7 +18,7 @@ module.exports = {
           min: 230,
           ticks: {
             autoSkip: false,
-            minRotation: 35
+            minRotation: 67.5
           }
         }
       }
@@ -27,8 +27,8 @@ module.exports = {
   options: {
     spriteText: true,
     canvas: {
-      height: 216,
-      width: 520
+      height: 234,
+      width: 224
     }
   }
 };
