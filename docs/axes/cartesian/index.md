@@ -312,7 +312,7 @@ var myChart = new Chart(ctx, {
             },
             'second-y-axis': {
                 type: 'linear'
-            }]
+            }
         }
     }
 });
@@ -352,7 +352,7 @@ var myChart = new Chart(ctx, {
             'right-y-axis': {
                 type: 'linear',
                 position: 'right'
-            }]
+            }
         }
     }
 });
