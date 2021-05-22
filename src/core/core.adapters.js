@@ -8,7 +8,7 @@
  * @return {*}
  */
 function abstract() {
-  throw new Error('This method is not implemented: either no adapter can be found or an incomplete integration was provided.');
+  throw new Error('This method is not implemented: Check that a complete date adapter is provided.');
 }
 
 /**
