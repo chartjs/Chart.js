@@ -278,15 +278,16 @@ export default class ArcElement extends Element {
 	 * @param {boolean} [useFinalPosition]
 	 */
   getCenterPoint(useFinalPosition) {
-    const {x, y, startAngle, endAngle, innerRadius, outerRadius} = this.getProps([
+    const {x, y, startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
       'x',
       'y',
       'startAngle',
       'endAngle',
       'innerRadius',
-      'outerRadius'
+      'outerRadius',
+      'circumference'
     ], useFinalPosition);
-    const halfAngle = (startAngle + endAngle) / 2;
+    const halfAngle = isNaN(circumference) ? (startAngle + endAngle) / 2 : startAngle + circumference / 2;
     const halfRadius = (innerRadius + outerRadius) / 2;
     return {
       x: x + Math.cos(halfAngle) * halfRadius,
