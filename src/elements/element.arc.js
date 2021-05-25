@@ -3,7 +3,7 @@ import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
 import {PI, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
 
-function clipArc(ctx, element, endAngle = element.endAngle) {
+function clipArc(ctx, element, endAngle) {
   const {startAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
   let angleMargin = pixelMargin / outerRadius;
 
@@ -93,7 +93,7 @@ function rThetaToXY(r, theta, x, y) {
  * @param {CanvasRenderingContext2D} ctx
  * @param {ArcElement} element
  */
-function pathArc(ctx, element, offset, end = element.endAngle) {
+function pathArc(ctx, element, offset, end) {
   const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
 
   const outerRadius = Math.max(element.outerRadius + offset - pixelMargin, 0);
@@ -226,7 +226,7 @@ function drawBorder(ctx, element, offset, endAngle) {
   }
 
   if (inner) {
-    clipArc(ctx, element);
+    clipArc(ctx, element, element.endAngle);
   }
 
   pathArc(ctx, element, offset, endAngle);
