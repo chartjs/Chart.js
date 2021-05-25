@@ -182,25 +182,25 @@ function drawArc(ctx, element, offset) {
 }
 
 function drawFullCircleBorders(ctx, element, inner) {
-  const {x, y, startAngle, pixelMargin} = element;
+  const {x, y, startAngle, pixelMargin, fullCircles} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
 
   let i;
 
   if (inner) {
-    clipArc(ctx, element, element.startAngle + TAU);
+    clipArc(ctx, element, startAngle + TAU);
   }
 
   ctx.beginPath();
   ctx.arc(x, y, innerRadius, startAngle + TAU, startAngle, true);
-  for (i = 0; i < element.fullCircles; ++i) {
+  for (i = 0; i < fullCircles; ++i) {
     ctx.stroke();
   }
 
   ctx.beginPath();
   ctx.arc(x, y, outerRadius, startAngle, startAngle + TAU);
-  for (i = 0; i < element.fullCircles; ++i) {
+  for (i = 0; i < fullCircles; ++i) {
     ctx.stroke();
   }
 }
