@@ -66,7 +66,7 @@ describe('Arc element tests', function() {
     expect(center.y).toBeCloseTo(0.5, 6);
   });
 
-  it ('should get the center of full circle using endAngle', function() {
+  it ('should get the center of full circle before and after draw', function() {
     // Mock out the arc as if the controller put it there
     var arc = new Chart.elements.ArcElement({
       startAngle: 0,
@@ -74,27 +74,18 @@ describe('Arc element tests', function() {
       x: 2,
       y: 2,
       innerRadius: 0,
-      outerRadius: 2
+      outerRadius: 2,
+      options: {}
     });
 
     var center = arc.getCenterPoint();
     expect(center.x).toBeCloseTo(1, 6);
     expect(center.y).toBeCloseTo(2, 6);
-  });
 
-  it ('should get the center of full circle using circumference', function() {
-    // Mock out the arc as if the controller put it there
-    var arc = new Chart.elements.ArcElement({
-      startAngle: 0,
-      endAngle: 0,
-      x: 2,
-      y: 2,
-      innerRadius: 0,
-      outerRadius: 2,
-      circumference: Math.PI * 2
-    });
+    var ctx = window.createMockContext();
+    arc.draw(ctx);
 
-    var center = arc.getCenterPoint();
+    center = arc.getCenterPoint();
     expect(center.x).toBeCloseTo(1, 6);
     expect(center.y).toBeCloseTo(2, 6);
   });
