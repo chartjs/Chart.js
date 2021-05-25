@@ -226,7 +226,7 @@ function drawBorder(ctx, element, offset, endAngle) {
   }
 
   if (inner) {
-    clipArc(ctx, element, element.endAngle);
+    clipArc(ctx, element, endAngle);
   }
 
   pathArc(ctx, element, offset, endAngle);
