@@ -264,6 +264,7 @@ module.exports = {
             'plugins/quadrants',
           ]
         },
+        'utils'
       ],
       '/': [
         '',
