@@ -166,6 +166,9 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
     }
 
     const center = element.getCenterPoint(useFinalPosition);
+    if (!_isPointInArea(center, chart.chartArea, chart._minPadding)) {
+      return;
+    }
     const distance = distanceMetric(position, center);
     if (distance < minDistance) {
       items = [{element, datasetIndex, index}];
