@@ -1953,6 +1953,8 @@ export class BasePlatform {
 export class BasicPlatform extends BasePlatform {}
 export class DomPlatform extends BasePlatform {}
 
+export const Decimation: Plugin;
+
 export const enum DecimationAlgorithm {
   lttb = 'lttb',
   minmax = 'min-max',
