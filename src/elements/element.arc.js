@@ -93,17 +93,29 @@ function rThetaToXY(r, theta, x, y) {
  * @param {CanvasRenderingContext2D} ctx
  * @param {ArcElement} element
  */
-function pathArc(ctx, element, offset, end) {
+function pathArc(ctx, element, offset, spacing, end) {
   const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
 
-  const outerRadius = Math.max(element.outerRadius + offset - pixelMargin, 0);
-  const innerRadius = innerR > 0 ? innerR + offset + pixelMargin : 0;
+  const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
+  const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+
+  let spacingOffset = 0;
+
+  if (spacing) {
+    const noSpacingAngle = end - start;
+    const noSpacingInnerRadius = innerR > 0 ? innerR - spacing : 0;
+    const noSpacingOuterRadius = outerRadius > 0 ? outerRadius - spacing : 0;
+    const avNogSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
+    const adjustedAngle = avNogSpacingRadius !== 0 ? (noSpacingAngle * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : noSpacingAngle;
+    spacingOffset = (noSpacingAngle - adjustedAngle) / 2;
+  }
+
   const alpha = end - start;
   const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
   const angleOffset = (alpha - beta) / 2;
-  const startAngle = start + angleOffset;
-  const endAngle = end - angleOffset;
-  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
+  const startAngle = start + angleOffset + spacingOffset;
+  const endAngle = end - angleOffset - spacingOffset;
+  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, end - start);
 
   const outerStartAdjustedRadius = outerRadius - outerStart;
   const outerEndAdjustedRadius = outerRadius - outerEnd;
@@ -158,11 +170,11 @@ function pathArc(ctx, element, offset, end) {
   ctx.closePath();
 }
 
-function drawArc(ctx, element, offset) {
+function drawArc(ctx, element, offset, spacing) {
   const {fullCircles, startAngle, circumference} = element;
   let endAngle = element.endAngle;
   if (fullCircles) {
-    pathArc(ctx, element, offset, startAngle + TAU);
+    pathArc(ctx, element, offset, spacing, startAngle + TAU);
 
     for (let i = 0; i < fullCircles; ++i) {
       ctx.fill();
@@ -176,7 +188,7 @@ function drawArc(ctx, element, offset) {
     }
   }
 
-  pathArc(ctx, element, offset, endAngle);
+  pathArc(ctx, element, offset, spacing, endAngle);
   ctx.fill();
   return endAngle;
 }
@@ -205,7 +217,7 @@ function drawFullCircleBorders(ctx, element, inner) {
   }
 }
 
-function drawBorder(ctx, element, offset, endAngle) {
+function drawBorder(ctx, element, offset, spacing, endAngle) {
   const {options} = element;
   const inner = options.borderAlign === 'inner';
 
@@ -229,7 +241,7 @@ function drawBorder(ctx, element, offset, endAngle) {
     clipArc(ctx, element, endAngle);
   }
 
-  pathArc(ctx, element, offset, endAngle);
+  pathArc(ctx, element, offset, spacing, endAngle);
   ctx.stroke();
 }
 
@@ -305,6 +317,7 @@ export default class ArcElement extends Element {
     const me = this;
     const {options, circumference} = me;
     const offset = (options.offset || 0) / 2;
+    const spacing = (options.spacing || 0) / 2;
     me.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
     me.fullCircles = circumference > TAU ? Math.floor(circumference / TAU) : 0;
 
@@ -327,8 +340,8 @@ export default class ArcElement extends Element {
     ctx.fillStyle = options.backgroundColor;
     ctx.strokeStyle = options.borderColor;
 
-    const endAngle = drawArc(ctx, me, radiusOffset);
-    drawBorder(ctx, me, radiusOffset, endAngle);
+    const endAngle = drawArc(ctx, me, offset, spacing);
+    drawBorder(ctx, me, offset, spacing, endAngle);
 
     ctx.restore();
   }
@@ -345,6 +358,7 @@ ArcElement.defaults = {
   borderRadius: 0,
   borderWidth: 2,
   offset: 0,
+  spacing: 0,
   angle: undefined,
 };
 
