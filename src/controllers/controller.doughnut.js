@@ -344,7 +344,9 @@ DoughnutController.defaults = {
   spacing: 0,
 
   indexAxis: 'r',
+};
 
+DoughnutController.descriptors = {
   _scriptable: (name) => name !== 'spacing',
   _indexable: (name) => name !== 'spacing',
 };
