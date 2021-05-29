@@ -29,7 +29,7 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {step, min, max, precision, count, maxTicks, maxDigits, includeBounds} = generationOptions;
+  const {bounds, step, min, max, precision, count, maxTicks, maxDigits, includeBounds} = generationOptions;
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
@@ -58,8 +58,13 @@ function generateTicks(generationOptions, dataRange) {
     spacing = Math.ceil(spacing * factor) / factor;
   }
 
-  niceMin = Math.floor(rmin / spacing) * spacing;
-  niceMax = Math.ceil(rmax / spacing) * spacing;
+  if (bounds === 'ticks') {
+    niceMin = Math.floor(rmin / spacing) * spacing;
+    niceMax = Math.ceil(rmax / spacing) * spacing;
+  } else {
+    niceMin = rmin;
+    niceMax = rmax;
+  }
 
   if (minDefined && maxDefined && step && almostWhole((max - min) / step, spacing / 1000)) {
     // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
@@ -241,6 +246,7 @@ export default class LinearScaleBase extends Scale {
 
     const numericGeneratorOptions = {
       maxTicks,
+      bounds: opts.bounds,
       min: opts.min,
       max: opts.max,
       precision: tickOpts.precision,
