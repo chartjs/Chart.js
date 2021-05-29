@@ -10,6 +10,10 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: 5,
       outerRadius: 10,
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     expect(arc.inRange(2, 2)).toBe(false);
@@ -17,6 +21,25 @@ describe('Arc element tests', function() {
     expect(arc.inRange(0, 11)).toBe(false);
     expect(arc.inRange(Math.sqrt(32), Math.sqrt(32))).toBe(true);
     expect(arc.inRange(-1.0 * Math.sqrt(7), Math.sqrt(7))).toBe(false);
+  });
+
+  it ('should include spacing for in range check', function() {
+    // Mock out the arc as if the controller put it there
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: Math.PI / 2,
+      x: 0,
+      y: 0,
+      innerRadius: 5,
+      outerRadius: 10,
+      options: {
+        spacing: 10,
+        offset: 0,
+      }
+    });
+
+    expect(arc.inRange(7, 0)).toBe(false);
+    expect(arc.inRange(15, 0)).toBe(true);
   });
 
   it ('should determine if in range, when full circle', function() {
@@ -28,7 +51,11 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: 0,
       outerRadius: 10,
-      circumference: Math.PI * 2
+      circumference: Math.PI * 2,
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     expect(arc.inRange(7, 7)).toBe(true);
@@ -43,6 +70,10 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: 0,
       outerRadius: Math.sqrt(2),
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     var pos = arc.tooltipPosition();
@@ -59,11 +90,35 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: 0,
       outerRadius: Math.sqrt(2),
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     var center = arc.getCenterPoint();
     expect(center.x).toBeCloseTo(0.5, 6);
     expect(center.y).toBeCloseTo(0.5, 6);
+  });
+
+  it ('should get the center with offset and spacing', function() {
+    // Mock out the arc as if the controller put it there
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: Math.PI / 2,
+      x: 0,
+      y: 0,
+      innerRadius: 0,
+      outerRadius: Math.sqrt(2),
+      options: {
+        spacing: 10,
+        offset: 10,
+      }
+    });
+
+    var center = arc.getCenterPoint();
+    expect(center.x).toBeCloseTo(7.57, 1);
+    expect(center.y).toBeCloseTo(7.57, 1);
   });
 
   it ('should get the center of full circle before and after draw', function() {
@@ -75,7 +130,10 @@ describe('Arc element tests', function() {
       y: 2,
       innerRadius: 0,
       outerRadius: 2,
-      options: {}
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     var center = arc.getCenterPoint();
@@ -100,7 +158,10 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: -0.1,
       outerRadius: Math.sqrt(2),
-      options: {}
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     arc.draw(ctx);
@@ -114,7 +175,10 @@ describe('Arc element tests', function() {
       y: 0,
       innerRadius: 0,
       outerRadius: -1,
-      options: {}
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
     });
 
     arc.draw(ctx);

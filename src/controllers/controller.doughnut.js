@@ -340,7 +340,13 @@ DoughnutController.defaults = {
   // The outr radius of the chart
   radius: '100%',
 
+  // Spacing between arcs
+  spacing: 0,
+
   indexAxis: 'r',
+
+  _scriptable: (name) => name !== 'spacing',
+  _indexable: (name) => name !== 'spacing',
 };
 
 /**

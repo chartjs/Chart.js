@@ -100,22 +100,24 @@ function pathArc(ctx, element, offset, spacing, end) {
   const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
 
   let spacingOffset = 0;
+  const alpha = end - start;
 
   if (spacing) {
-    const noSpacingAngle = end - start;
+    // When spacing is present, it is the same for all items
+    // So we adjust the start and end angle of the arc such that
+    // the distance is the same as it would be without the spacing
     const noSpacingInnerRadius = innerR > 0 ? innerR - spacing : 0;
     const noSpacingOuterRadius = outerRadius > 0 ? outerRadius - spacing : 0;
     const avNogSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
-    const adjustedAngle = avNogSpacingRadius !== 0 ? (noSpacingAngle * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : noSpacingAngle;
-    spacingOffset = (noSpacingAngle - adjustedAngle) / 2;
+    const adjustedAngle = avNogSpacingRadius !== 0 ? (alpha * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : alpha;
+    spacingOffset = (alpha - adjustedAngle) / 2;
   }
 
-  const alpha = end - start;
   const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
   const angleOffset = (alpha - beta) / 2;
   const startAngle = start + angleOffset + spacingOffset;
   const endAngle = end - angleOffset - spacingOffset;
-  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, end - start);
+  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
 
   const outerStartAdjustedRadius = outerRadius - outerStart;
   const outerEndAdjustedRadius = outerRadius - outerEnd;
@@ -279,8 +281,9 @@ export default class ArcElement extends Element {
       'outerRadius',
       'circumference'
     ], useFinalPosition);
+    const rAdjust = this.options.spacing / 2;
     const betweenAngles = circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
-    const withinRadius = (distance >= innerRadius && distance <= outerRadius);
+    const withinRadius = (distance >= innerRadius + rAdjust && distance <= outerRadius + rAdjust);
 
     return (betweenAngles && withinRadius);
   }
@@ -296,10 +299,11 @@ export default class ArcElement extends Element {
       'endAngle',
       'innerRadius',
       'outerRadius',
-      'circumference'
+      'circumference',
     ], useFinalPosition);
+    const {offset, spacing} = this.options;
     const halfAngle = (startAngle + endAngle) / 2;
-    const halfRadius = (innerRadius + outerRadius) / 2;
+    const halfRadius = (innerRadius + outerRadius + spacing + offset) / 2;
     return {
       x: x + Math.cos(halfAngle) * halfRadius,
       y: y + Math.sin(halfAngle) * halfRadius
@@ -340,8 +344,8 @@ export default class ArcElement extends Element {
     ctx.fillStyle = options.backgroundColor;
     ctx.strokeStyle = options.borderColor;
 
-    const endAngle = drawArc(ctx, me, offset, spacing);
-    drawBorder(ctx, me, offset, spacing, endAngle);
+    const endAngle = drawArc(ctx, me, radiusOffset, spacing);
+    drawBorder(ctx, me, radiusOffset, spacing, endAngle);
 
     ctx.restore();
   }
