@@ -2,7 +2,6 @@ import {isNullOrUndef} from '../helpers/helpers.core';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import {formatNumber} from '../helpers/helpers.intl';
-import {_filterBetween} from '../helpers';
 
 /**
  * Generate a set of linear ticks for an axis
