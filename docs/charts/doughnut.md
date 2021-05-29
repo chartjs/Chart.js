@@ -116,6 +116,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
 | [`rotation`](#general) | `number` | - | - | `undefined`
+| [`spacing](#styling) | `number` | - | - | `0`
 | [`weight`](#styling) | `number` | - | - | `1`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
@@ -138,6 +139,7 @@ The style of each arc can be controlled with the following properties:
 | `borderColor` | arc border color.
 | `borderWidth` | arc border width (in pixels).
 | `offset` | arc offset (in pixels).
+| `spacing` | Fixed arc offset (in pixels). Similar to `offset` but applies to all arcs.
 | `weight` | The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
