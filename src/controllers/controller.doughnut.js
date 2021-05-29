@@ -110,7 +110,7 @@ export default class DoughnutController extends DatasetController {
     const {chartArea} = chart;
     const meta = me._cachedMeta;
     const arcs = meta.data;
-    const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
+    const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs) + me.options.spacing;
     const maxSize = Math.max((Math.min(chartArea.width, chartArea.height) - spacing) / 2, 0);
     const cutout = Math.min(toPercentage(me.options.cutout, maxSize), 1);
     const chartWeight = me._getRingWeight(me.index);
@@ -325,7 +325,7 @@ DoughnutController.defaults = {
   animations: {
     numbers: {
       type: 'number',
-      properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth']
+      properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth', 'spacing']
     },
   },
   // The percentage of the chart that we cut out of the middle.
@@ -340,7 +340,15 @@ DoughnutController.defaults = {
   // The outr radius of the chart
   radius: '100%',
 
+  // Spacing between arcs
+  spacing: 0,
+
   indexAxis: 'r',
+};
+
+DoughnutController.descriptors = {
+  _scriptable: (name) => name !== 'spacing',
+  _indexable: (name) => name !== 'spacing',
 };
 
 /**
