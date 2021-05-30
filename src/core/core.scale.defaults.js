@@ -94,6 +94,6 @@ defaults.describe('scales', {
 });
 
 defaults.describe('scale.ticks', {
-  _scriptable: (name) => name !== 'backdropPadding',
+  _scriptable: (name) => name !== 'backdropPadding' && name !== 'callback',
   _indexable: (name) => name !== 'backdropPadding',
 });
