@@ -92,3 +92,8 @@ defaults.describe('scale', {
 defaults.describe('scales', {
   _fallback: 'scale',
 });
+
+defaults.describe('scale.ticks', {
+  _scriptable: (name) => name !== 'backdropPadding',
+  _indexable: (name) => name !== 'backdropPadding',
+});

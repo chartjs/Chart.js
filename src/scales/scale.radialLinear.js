@@ -635,5 +635,5 @@ RadialLinearScale.defaultRoutes = {
 RadialLinearScale.descriptors = {
   angleLines: {
     _fallback: 'grid'
-  }
+  },
 };
