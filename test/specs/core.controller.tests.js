@@ -1778,6 +1778,33 @@ describe('Chart', function() {
       expect(metasets[2].order).toEqual(4);
       expect(metasets[3].order).toEqual(3);
     });
+    it('should update properly when dataset locations are swapped', function() {
+      const orig = this.chart.data.datasets;
+      this.chart.data.datasets = [orig[0], orig[2], orig[1], orig[3]];
+      this.chart.update();
+      let metasets = this.chart._metasets;
+      expect(metasets[0].label).toEqual('1');
+      expect(metasets[1].label).toEqual('3');
+      expect(metasets[2].label).toEqual('2');
+      expect(metasets[3].label).toEqual('4');
+
+      this.chart.data.datasets = [{label: 'new', order: 10}, orig[3], orig[2], orig[1], orig[0]];
+      this.chart.update();
+      metasets = this.chart._metasets;
+      expect(metasets[0].label).toEqual('new');
+      expect(metasets[1].label).toEqual('4');
+      expect(metasets[2].label).toEqual('3');
+      expect(metasets[3].label).toEqual('2');
+      expect(metasets[4].label).toEqual('1');
+
+      this.chart.data.datasets = [orig[3], orig[2], orig[1], {label: 'new', order: 10}];
+      this.chart.update();
+      metasets = this.chart._metasets;
+      expect(metasets[0].label).toEqual('4');
+      expect(metasets[1].label).toEqual('3');
+      expect(metasets[2].label).toEqual('2');
+      expect(metasets[3].label).toEqual('new');
+    });
   });
 
   describe('data visibility', function() {
