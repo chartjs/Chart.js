@@ -5,7 +5,7 @@ Namespace: `options.scales[scaleId].ticks`
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | :-------------------------------: | ------- | -----------
 | `backdropColor` | [`Color`](../../general/colors.md) | Yes | `'rgba(255, 255, 255, 0.75)'` | Color of label backdrops.
-| `backdropPadding` | [`Padding`](../../general/padding.md) | Yes | `2` | Padding of label backdrop.
+| `backdropPadding` | [`Padding`](../../general/padding.md) | | `2` | Padding of label backdrop.
 | `callback` | `function` | | | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](/axes/labelling.md#creating-custom-tick-formats).
 | `display` | `boolean` | | `true` | If true, show tick labels.
 | `color` | [`Color`](/general/colors.md) | Yes | `Chart.defaults.color` | Color of ticks.
