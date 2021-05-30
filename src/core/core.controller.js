@@ -348,23 +348,6 @@ class Chart {
   }
 
   /**
-	 * Updates the given metaset with the given dataset index. Ensures it's stored at that index
-	 * in the _metasets array by swapping with the metaset at that index if necessary.
-	 * @param {Object} meta - the dataset metadata
-	 * @param {number} index - the dataset index
-	 * @private
-	 */
-  _updateMetasetIndex(meta, index) {
-    const metasets = this._metasets;
-    const oldIndex = meta.index;
-    if (oldIndex !== index) {
-      metasets[oldIndex] = metasets[index];
-      metasets[index] = meta;
-      meta.index = index;
-    }
-  }
-
-  /**
 	 * @private
 	 */
   _updateMetasets() {
@@ -373,6 +356,7 @@ class Chart {
     const numData = me.data.datasets.length;
     const numMeta = metasets.length;
 
+    metasets.sort((a, b) => a.index - b.index);
     if (numMeta > numData) {
       for (let i = numData; i < numMeta; ++i) {
         me._destroyDatasetMeta(i);
@@ -418,7 +402,7 @@ class Chart {
       meta.type = type;
       meta.indexAxis = dataset.indexAxis || getIndexAxis(type, me.options);
       meta.order = dataset.order || 0;
-      me._updateMetasetIndex(meta, i);
+      meta.index = i;
       meta.label = '' + dataset.label;
       meta.visible = me.isDatasetVisible(i);
 
@@ -764,7 +748,7 @@ class Chart {
     let meta = metasets.filter(x => x && x._dataset === dataset).pop();
 
     if (!meta) {
-      meta = metasets[datasetIndex] = {
+      meta = {
         type: null,
         data: [],
         dataset: null,
@@ -778,6 +762,7 @@ class Chart {
         _parsed: [],
         _sorted: false
       };
+      metasets.push(meta);
     }
 
     return meta;
