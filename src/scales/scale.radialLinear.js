@@ -6,12 +6,14 @@ import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
 import {toFont, toPadding} from '../helpers/helpers.options';
 
-function getTickBackdropHeight(opts) {
-  const tickOpts = opts.ticks;
+function getTickBackdropHeight(scale) {
+  const tickOpts = scale.options.ticks;
 
-  if (tickOpts.display && opts.display) {
-    const padding = toPadding(tickOpts.backdropPadding);
-    return valueOrDefault(tickOpts.font && tickOpts.font.size, defaults.font.size) + padding.height;
+  if (tickOpts.display && scale.options.display) {
+    const index = Math.max((scale.ticks || []).length - 1, 0);
+    const optsAtIndex = tickOpts.setContext(scale.getContext(index));
+    const padding = toPadding(optsAtIndex.backdropPadding);
+    return valueOrDefault(optsAtIndex.font && optsAtIndex.font.size, defaults.font.size) + padding.height;
   }
   return 0;
 }
@@ -137,7 +139,7 @@ function fitWithPointLabels(scale) {
 
   // Now that text size is determined, compute the full positions
   const opts = scale.options;
-  const tickBackdropHeight = getTickBackdropHeight(opts);
+  const tickBackdropHeight = getTickBackdropHeight(scale);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
   for (i = 0; i < valueCount; i++) {
@@ -293,7 +295,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     // Set the unconstrained dimension before label rotation
     me.width = me.maxWidth;
     me.height = me.maxHeight;
-    me.paddingTop = getTickBackdropHeight(me.options) / 2;
+    me.paddingTop = getTickBackdropHeight(me) / 2;
     me.xCenter = Math.floor(me.width / 2);
     me.yCenter = Math.floor((me.height - me.paddingTop) / 2);
     me.drawingArea = Math.min(me.height - me.paddingTop, me.width) / 2;
@@ -315,7 +317,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @protected
 	 */
   computeTickLimit() {
-    return Math.ceil(this.drawingArea / getTickBackdropHeight(this.options));
+    return Math.ceil(this.drawingArea / getTickBackdropHeight(this));
   }
 
   generateTickLabels(ticks) {
