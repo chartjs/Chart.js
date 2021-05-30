@@ -933,17 +933,18 @@ export default class DatasetController {
     const numData = data.length;
     const count = Math.min(numData, numMeta);
 
-    if (numData > numMeta) {
-      me._insertElements(numMeta, numData - numMeta, resetNewElements);
-    } else if (numData < numMeta) {
-      me._removeElements(numData, numMeta - numData);
-    }
     if (count) {
       // TODO: It is not optimal to always parse the old data
       // This is done because we are not detecting direct assignments:
       // chart.data.datasets[0].data[5] = 10;
       // chart.data.datasets[0].data[5].y = 10;
       me.parse(0, count);
+    }
+
+    if (numData > numMeta) {
+      me._insertElements(numMeta, numData - numMeta, resetNewElements);
+    } else if (numData < numMeta) {
+      me._removeElements(numData, numMeta - numData);
     }
   }
 
