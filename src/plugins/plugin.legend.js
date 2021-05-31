@@ -371,7 +371,7 @@ export class Legend extends Element {
     const fillText = function(x, y, legendItem) {
       renderText(ctx, legendItem.text, x, y + (itemHeight / 2), labelFont, {
         strikethrough: legendItem.hidden,
-        textAlign: legendItem.textAlign
+        textAlign: rtlHelper.textAlign(legendItem.textAlign)
       });
     };
 
@@ -424,7 +424,7 @@ export class Legend extends Element {
 
       drawLegendBox(realX, y, legendItem);
 
-      x = _textX(textAlign, x + boxWidth + halfFontSize, me.right);
+      x = _textX(textAlign, x + boxWidth + halfFontSize, me.right, opts.rtl);
 
       // Fill the actual label
       fillText(rtlHelper.x(x), y, legendItem);

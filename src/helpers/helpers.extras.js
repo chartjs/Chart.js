@@ -81,6 +81,10 @@ export const _alignStartEnd = (align, start, end) => align === 'start' ? start :
  * @param {string} align start, end, center
  * @param {number} left value for start
  * @param {number} right value for end
+ * @param {boolean} rtl Is this an RTL draw
  * @private
  */
-export const _textX = (align, left, right) => align === 'right' ? right : align === 'center' ? (left + right) / 2 : left;
+export const _textX = (align, left, right, rtl) => {
+  const check = rtl ? 'left' : 'right';
+  return align === check ? right : align === 'center' ? (left + right) / 2 : left;
+};
