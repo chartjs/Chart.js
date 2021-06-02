@@ -171,12 +171,19 @@ Lets say we wanted instead to link the display of the first two datasets. We cou
 
 ```javascript
 var defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
+var pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
 var newLegendClickHandler = function (e, legendItem, legend) {
     var index = legendItem.datasetIndex;
+    var type = legend.chart.config.type;
 
     if (index > 1) {
         // Do the original logic
-        defaultLegendClickHandler(e, legendItem, legend);
+        if (type === 'pie' || type === 'doughnut') {
+            pieDoughnutLegendClickHandler(e, legendItem, legend)
+        } else {
+            defaultLegendClickHandler(e, legendItem, legend);
+        }
+
     } else {
         let ci = legend.chart;
         [
