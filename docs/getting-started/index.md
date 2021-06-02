@@ -69,3 +69,5 @@ Finally, render the chart using our configuration:
 It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
 
 All our examples are [available online](/samples/) but you can also download the `Chart.js.zip` archive attached to every [release](https://github.com/chartjs/Chart.js/releases) to experiment with our samples locally from the `/samples` folder.
+
+To run the samples locally you first have to install all the necessary packages using the `npm ci` command, after this you can run `npm run docs:dev` to build the documentation. As soon as the build is done, you can go to [http://localhost:8080/samples/](http://localhost:8080/samples/) to see the samples.
