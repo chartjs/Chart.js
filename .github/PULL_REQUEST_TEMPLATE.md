@@ -1,7 +1,7 @@
 <!--
 Please consider the following before submitting a pull request:
 
-Guidelines for contributing: https://github.com/chartjs/Chart.js/blob/master/docs/docs/developers/contributing.md
+Guidelines for contributing: https://github.com/chartjs/Chart.js/blob/master/docs/developers/contributing.md
 
 Example of changes on an interactive website such as the following:
 - https://jsbin.com/
