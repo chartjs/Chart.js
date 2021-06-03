@@ -2121,6 +2121,14 @@ export interface LegendOptions {
    */
   align: 'start' | 'center' | 'end';
   /**
+   * Maximum height of the legend, in pixels
+   */
+  maxHeight: number;
+  /**
+   * Maximum width of the legend, in pixels
+   */
+  maxWidth: number;
+  /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
    * @default true
    */
@@ -2200,6 +2208,15 @@ export interface LegendOptions {
      */
     usePointStyle: boolean;
   };
+  /**
+   * true for rendering the legends from right to left.
+   */
+  rtl: boolean;
+  /**
+   * This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
+   * @default canvas' default
+   */
+  textDirection: string;
 
   title: {
     /**
