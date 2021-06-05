@@ -350,7 +350,7 @@ var myPieChart = new Chart(ctx, {
 });
 ```
 
-See [samples](/samples/tooltip/html) for examples on how to get started with external tooltips.
+See [samples](/samples/tooltip/html.md) for examples on how to get started with external tooltips.
 
 ## Tooltip Model
 
