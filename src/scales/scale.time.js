@@ -487,6 +487,15 @@ export default class TimeScale extends Scale {
       tick = ticks[i];
       tick.label = this._tickFormatFunction(tick.value, i, ticks);
     }
+
+    // Ticks should be skipped when callback returns null or undef, so lets remove those.
+    for (i = 0; i < ilen; i++) {
+      if (isNullOrUndef(ticks[i].label)) {
+        ticks.splice(i, 1);
+        ilen--;
+        i--;
+      }
+    }
   }
 
   /**
