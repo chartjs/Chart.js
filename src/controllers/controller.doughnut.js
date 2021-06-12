@@ -186,7 +186,7 @@ export default class DoughnutController extends DatasetController {
         innerRadius
       };
       if (includeOptions) {
-        properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
+        properties.options = sharedOptions || me.resolveDataElementOptions(i, arc.active ? 'active' : mode);
       }
       startAngle += circumference;
 

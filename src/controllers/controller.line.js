@@ -71,7 +71,7 @@ export default class LineController extends DatasetController {
       properties.parsed = parsed;
 
       if (includeOptions) {
-        properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
+        properties.options = sharedOptions || me.resolveDataElementOptions(i, point.active ? 'active' : mode);
       }
 
       if (!directUpdate) {

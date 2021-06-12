@@ -290,7 +290,7 @@ export default class BarController extends DatasetController {
       };
 
       if (includeOptions) {
-        properties.options = sharedOptions || me.resolveDataElementOptions(i, mode);
+        properties.options = sharedOptions || me.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
       }
       me.updateElement(bars[i], i, properties, mode);
     }
