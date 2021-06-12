@@ -154,9 +154,5 @@ export function _arrayUnique(items) {
     return items;
   }
 
-  const result = [];
-  set.forEach(item => {
-    result.push(item);
-  });
-  return result;
+  return Array.from(set);
 }
