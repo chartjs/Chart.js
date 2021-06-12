@@ -91,7 +91,7 @@ export default class PolarAreaController extends DatasetController {
         outerRadius,
         startAngle,
         endAngle,
-        options: me.resolveDataElementOptions(i, mode)
+        options: me.resolveDataElementOptions(i, arc.active ? 'active' : mode)
       };
 
       me.updateElement(arc, i, properties, mode);

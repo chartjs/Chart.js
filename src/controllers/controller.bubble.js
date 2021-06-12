@@ -86,7 +86,7 @@ export default class BubbleController extends DatasetController {
       properties.skip = isNaN(iPixel) || isNaN(vPixel);
 
       if (includeOptions) {
-        properties.options = me.resolveDataElementOptions(i, mode);
+        properties.options = me.resolveDataElementOptions(i, point.active ? 'active' : mode);
 
         if (reset) {
           properties.options.radius = 0;

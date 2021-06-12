@@ -53,7 +53,7 @@ export default class RadarController extends DatasetController {
 
     for (let i = start; i < start + count; i++) {
       const point = points[i];
-      const options = me.resolveDataElementOptions(i, mode);
+      const options = me.resolveDataElementOptions(i, point.active ? 'active' : mode);
       const pointPosition = scale.getPointPositionForValue(i, dataset.data[i]);
 
       const x = reset ? scale.xCenter : pointPosition.x;
