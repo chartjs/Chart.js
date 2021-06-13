@@ -29,6 +29,7 @@ module.exports = {
         {base: '/samples', alternative: ['bar/vertical']},
       ],
     }],
+    ['vuepress-plugin-code-copy', true],
     [
       'vuepress-plugin-typedoc',
       {
