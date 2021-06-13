@@ -1219,7 +1219,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
    * @param {number} [index]
    * @return {number}
    */
-  getPixelForValue(value: number, index: number): number;
+  getPixelForValue(value: number, index?: number): number;
 
   /**
    * Used to get the data value from a given pixel. This is the inverse of getPixelForValue

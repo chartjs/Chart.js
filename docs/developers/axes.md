@@ -90,9 +90,8 @@ To work with Chart.js, custom scale types must implement the following interface
 
     // Get the pixel (x coordinate for horizontal axis, y coordinate for vertical axis) for a given value
     // @param value : the value to get the pixel for
-    // @param index : index into the data array of the value
-    // @param datasetIndex : index of the dataset the value comes from
-    getPixelForValue: function(value, index, datasetIndex) {},
+    // @param [index] : index into the data array of the value
+    getPixelForValue: function(value, index) {},
 
     // Get the value for a given pixel (x coordinate for horizontal axis, y coordinate for vertical axis)
     // @param pixel : pixel value
