@@ -467,7 +467,7 @@ The APIs listed in this section have changed in signature or behaviour from vers
 #### Changed in Scales
 
 * `Scale.getLabelForIndex` was replaced by `scale.getLabelForValue`
-* `Scale.getPixelForValue` now has only one parameter. For the `TimeScale` that parameter must be millis since the epoch
+* `Scale.getPixelForValue` now only requires one parameter. For the `TimeScale` that parameter must be millis since the epoch. As a performance optimization, it may take an optional second parameter, giving the index of the data point.
 
 ##### Changed in Ticks
 
