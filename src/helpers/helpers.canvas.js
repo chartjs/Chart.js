@@ -310,28 +310,8 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
   let i, line;
 
   ctx.save();
-
-  if (opts.translation) {
-    ctx.translate(opts.translation[0], opts.translation[1]);
-  }
-
-  if (!isNullOrUndef(opts.rotation)) {
-    ctx.rotate(opts.rotation);
-  }
-
   ctx.font = font.string;
-
-  if (opts.color) {
-    ctx.fillStyle = opts.color;
-  }
-
-  if (opts.textAlign) {
-    ctx.textAlign = opts.textAlign;
-  }
-
-  if (opts.textBaseline) {
-    ctx.textBaseline = opts.textBaseline;
-  }
+  setRenderOpts(ctx, opts);
 
   for (i = 0; i < lines.length; ++i) {
     line = lines[i];
@@ -349,33 +329,59 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
     }
 
     ctx.fillText(line, x, y, opts.maxWidth);
+    decorateText(ctx, x, y, line, opts);
 
-    if (opts.strikethrough || opts.underline) {
-      /**
-			 * Now that IE11 support has been dropped, we can use more
-			 * of the TextMetrics object. The actual bounding boxes
-			 * are unflagged in Chrome, Firefox, Edge, and Safari so they
-			 * can be safely used.
-			 * See https://developer.mozilla.org/en-US/docs/Web/API/TextMetrics#Browser_compatibility
-			 */
-      const metrics = ctx.measureText(line);
-      const left = x - metrics.actualBoundingBoxLeft;
-      const right = x + metrics.actualBoundingBoxRight;
-      const top = y - metrics.actualBoundingBoxAscent;
-      const bottom = y + metrics.actualBoundingBoxDescent;
-      const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
-
-      ctx.strokeStyle = ctx.fillStyle;
-      ctx.beginPath();
-      ctx.lineWidth = opts.decorationWidth || 2;
-      ctx.moveTo(left, yDecoration);
-      ctx.lineTo(right, yDecoration);
-      ctx.stroke();
-    }
     y += font.lineHeight;
   }
 
   ctx.restore();
+}
+
+function setRenderOpts(ctx, opts) {
+  if (opts.translation) {
+    ctx.translate(opts.translation[0], opts.translation[1]);
+  }
+
+  if (!isNullOrUndef(opts.rotation)) {
+    ctx.rotate(opts.rotation);
+  }
+
+  if (opts.color) {
+    ctx.fillStyle = opts.color;
+  }
+
+  if (opts.textAlign) {
+    ctx.textAlign = opts.textAlign;
+  }
+
+  if (opts.textBaseline) {
+    ctx.textBaseline = opts.textBaseline;
+  }
+}
+
+function decorateText(ctx, x, y, line, opts) {
+  if (opts.strikethrough || opts.underline) {
+    /**
+     * Now that IE11 support has been dropped, we can use more
+     * of the TextMetrics object. The actual bounding boxes
+     * are unflagged in Chrome, Firefox, Edge, and Safari so they
+     * can be safely used.
+     * See https://developer.mozilla.org/en-US/docs/Web/API/TextMetrics#Browser_compatibility
+     */
+    const metrics = ctx.measureText(line);
+    const left = x - metrics.actualBoundingBoxLeft;
+    const right = x + metrics.actualBoundingBoxRight;
+    const top = y - metrics.actualBoundingBoxAscent;
+    const bottom = y + metrics.actualBoundingBoxDescent;
+    const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
+
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.beginPath();
+    ctx.lineWidth = opts.decorationWidth || 2;
+    ctx.moveTo(left, yDecoration);
+    ctx.lineTo(right, yDecoration);
+    ctx.stroke();
+  }
 }
 
 /**

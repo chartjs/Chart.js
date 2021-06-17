@@ -8,9 +8,12 @@ plugins:
   fixme:
     enabled: true
 checks:
+  argument-count:
+    config:
+      threshold: 5
   method-complexity:
     config:
-      threshold: 6
+      threshold: 7
 exclude_patterns:
   - "dist/"
   - "docs/"
