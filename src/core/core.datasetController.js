@@ -51,7 +51,8 @@ function toClip(value) {
     top: t,
     right: r,
     bottom: b,
-    left: l
+    left: l,
+    disabled: value === false
   };
 }
 

@@ -706,6 +706,7 @@ class Chart {
     const me = this;
     const ctx = me.ctx;
     const clip = meta._clip;
+    const useClip = !clip.disabled;
     const area = me.chartArea;
     const args = {
       meta,
@@ -717,16 +718,20 @@ class Chart {
       return;
     }
 
-    clipArea(ctx, {
-      left: clip.left === false ? 0 : area.left - clip.left,
-      right: clip.right === false ? me.width : area.right + clip.right,
-      top: clip.top === false ? 0 : area.top - clip.top,
-      bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
-    });
+    if (useClip) {
+      clipArea(ctx, {
+        left: clip.left === false ? 0 : area.left - clip.left,
+        right: clip.right === false ? me.width : area.right + clip.right,
+        top: clip.top === false ? 0 : area.top - clip.top,
+        bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
+      });
+    }
 
     meta.controller.draw();
 
-    unclipArea(ctx);
+    if (useClip) {
+      unclipArea(ctx);
+    }
 
     args.cancelable = false;
     me.notifyPlugins('afterDatasetDraw', args);

@@ -1628,4 +1628,31 @@ describe('Chart.controllers.bar', function() {
       expect(chart.scales.y.getMinMax()).toEqual({min: -10, max: 10});
     });
   });
+
+  describe('clip', function() {
+    it('Should not use ctx.clip when clip=false', function() {
+      var ctx = window.createMockContext();
+      ctx.resetTransform = function() {};
+
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{
+            data: [1, 2, 3],
+            clip: false
+          }]
+        }
+      });
+      var orig = chart.ctx;
+
+      // Draw on mock context
+      chart.ctx = ctx;
+      chart.draw();
+
+      chart.ctx = orig;
+
+      expect(ctx.getCalls().filter(x => x.name === 'clip').length).toEqual(0);
+    });
+  });
 });

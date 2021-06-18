@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {
-  clipArea, unclipArea, _arrayUnique, isArray, isNullOrUndef,
+  _arrayUnique, isArray, isNullOrUndef,
   valueOrDefault, resolveObjectKey, sign, defined
 } from '../helpers';
 
@@ -222,6 +222,14 @@ export default class BarController extends DatasetController {
       range.min = Math.min(range.min, custom.min);
       range.max = Math.max(range.max, custom.max);
     }
+  }
+
+  /**
+	 * @return {number|boolean}
+	 * @protected
+	 */
+  getMaxOverflow() {
+    return 0;
   }
 
   /**
@@ -514,22 +522,17 @@ export default class BarController extends DatasetController {
 
   draw() {
     const me = this;
-    const chart = me.chart;
     const meta = me._cachedMeta;
     const vScale = meta.vScale;
     const rects = meta.data;
     const ilen = rects.length;
     let i = 0;
 
-    clipArea(chart.ctx, chart.chartArea);
-
     for (; i < ilen; ++i) {
       if (me.getParsed(i)[vScale.axis] !== null) {
         rects[i].draw(me._ctx);
       }
     }
-
-    unclipArea(chart.ctx);
   }
 
 }
