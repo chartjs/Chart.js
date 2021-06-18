@@ -1702,6 +1702,10 @@ export interface LineOptions extends CommonElementOptions {
    * @default false
    */
   stepped: 'before' | 'after' | 'middle' | boolean;
+  /**
+   * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
+   */
+  fill: FillTarget | ComplexFillTarget;
 
   segment: {
     backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
@@ -3330,7 +3334,7 @@ export interface ChartTypeRegistry {
   };
   radar: {
     chartOptions: RadarControllerChartOptions;
-    datasetOptions: RadarControllerDatasetOptions;
+    datasetOptions: RadarControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: number | null;
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
