@@ -16,17 +16,11 @@ function getTickBackdropHeight(opts) {
   return 0;
 }
 
-function measureLabelSize(ctx, lineHeight, label) {
-  if (isArray(label)) {
-    return {
-      w: _longestText(ctx, ctx.font, label),
-      h: label.length * lineHeight
-    };
-  }
-
+function measureLabelSize(ctx, font, label) {
+  label = isArray(label) ? label : [label];
   return {
-    w: ctx.measureText(label).width,
-    h: lineHeight
+    w: _longestText(ctx, font.string, label),
+    h: label.length * font.lineHeight
   };
 }
 
@@ -89,22 +83,18 @@ function fitWithPointLabels(scale) {
     b: scale.height - scale.paddingTop
   };
   const furthestAngles = {};
-  let i, textSize, pointPosition;
-
   const labelSizes = [];
   const padding = [];
 
   const valueCount = scale.getLabels().length;
-  for (i = 0; i < valueCount; i++) {
+  for (let i = 0; i < valueCount; i++) {
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
     padding[i] = opts.padding;
-    pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
+    const pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
     const plFont = toFont(opts.font);
-    scale.ctx.font = plFont.string;
-    textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale._pointLabels[i]);
+    const textSize = measureLabelSize(scale.ctx, plFont, scale._pointLabels[i]);
     labelSizes[i] = textSize;
 
-    // Add quarter circle to make degree 0 mean top of circle
     const angleRadians = scale.getIndexAngle(i);
     const angle = toDegrees(angleRadians);
     const hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
@@ -133,50 +123,43 @@ function fitWithPointLabels(scale) {
 
   scale._setReductions(scale.drawingArea, furthestLimits, furthestAngles);
 
-  scale._pointLabelItems = [];
-
   // Now that text size is determined, compute the full positions
+  scale._pointLabelItems = buildPointLabelItems(scale, labelSizes, padding);
+}
+
+function buildPointLabelItems(scale, labelSizes, padding) {
+  const items = [];
+  const valueCount = scale.getLabels().length;
   const opts = scale.options;
   const tickBackdropHeight = getTickBackdropHeight(opts);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
 
-  for (i = 0; i < valueCount; i++) {
+  for (let i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
-
     const angle = toDegrees(scale.getIndexAngle(i));
     const size = labelSizes[i];
-    adjustPointPositionForLabelHeight(angle, size, pointLabelPosition);
-
+    const y = yForAngle(pointLabelPosition.y, size.h, angle);
     const textAlign = getTextAlignForAngle(angle);
-    let left;
+    const left = leftForTextAlign(pointLabelPosition.x, size.w, textAlign);
 
-    if (textAlign === 'left') {
-      left = pointLabelPosition.x;
-    } else if (textAlign === 'center') {
-      left = pointLabelPosition.x - (size.w / 2);
-    } else {
-      left = pointLabelPosition.x - size.w;
-    }
-
-    const right = left + size.w;
-
-    scale._pointLabelItems[i] = {
+    items.push({
       // Text position
       x: pointLabelPosition.x,
-      y: pointLabelPosition.y,
+      y,
 
       // Text rendering data
       textAlign,
 
       // Bounding box
       left,
-      top: pointLabelPosition.y,
-      right,
-      bottom: pointLabelPosition.y + size.h,
-    };
+      top: y,
+      right: left + size.w,
+      bottom: y + size.h
+    });
   }
+  return items;
 }
 
 function getTextAlignForAngle(angle) {
@@ -189,12 +172,22 @@ function getTextAlignForAngle(angle) {
   return 'right';
 }
 
-function adjustPointPositionForLabelHeight(angle, textSize, position) {
-  if (angle === 90 || angle === 270) {
-    position.y -= (textSize.h / 2);
-  } else if (angle > 270 || angle < 90) {
-    position.y -= textSize.h;
+function leftForTextAlign(x, w, align) {
+  if (align === 'right') {
+    x -= w;
+  } else if (align === 'center') {
+    x -= (w / 2);
   }
+  return x;
+}
+
+function yForAngle(y, h, angle) {
+  if (angle === 90 || angle === 270) {
+    y -= (h / 2);
+  } else if (angle > 270 || angle < 90) {
+    y -= h;
+  }
+  return y;
 }
 
 function drawPointLabels(scale, labelCount) {
@@ -543,6 +536,7 @@ export default class RadialLinearScale extends LinearScaleBase {
       offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
 
       if (optsAtIndex.showLabelBackdrop) {
+        ctx.font = tickFont.string;
         width = ctx.measureText(tick.label).width;
         ctx.fillStyle = optsAtIndex.backdropColor;
 

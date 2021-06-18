@@ -132,14 +132,14 @@ describe('Plugin.title', function() {
       name: 'save',
       args: []
     }, {
+      name: 'setFont',
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+    }, {
       name: 'translate',
       args: [300, 67.2]
     }, {
       name: 'rotate',
       args: [0]
-    }, {
-      name: 'setFont',
-      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']
@@ -193,14 +193,14 @@ describe('Plugin.title', function() {
       name: 'save',
       args: []
     }, {
+      name: 'setFont',
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+    }, {
       name: 'translate',
       args: [117.2, 250]
     }, {
       name: 'rotate',
       args: [-0.5 * Math.PI]
-    }, {
-      name: 'setFont',
-      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']
@@ -235,14 +235,14 @@ describe('Plugin.title', function() {
       name: 'save',
       args: []
     }, {
+      name: 'setFont',
+      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
+    }, {
       name: 'translate',
       args: [117.2, 250]
     }, {
       name: 'rotate',
       args: [0.5 * Math.PI]
-    }, {
-      name: 'setFont',
-      args: ["normal bold 12px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"],
     }, {
       name: 'setFillStyle',
       args: ['#666']

@@ -317,14 +317,14 @@ describe('Chart.helpers.canvas', function() {
         name: 'save',
         args: [],
       }, {
+        name: 'setFont',
+        args: ['12px arial'],
+      }, {
         name: 'translate',
         args: [10, 20],
       }, {
         name: 'rotate',
         args: [90],
-      }, {
-        name: 'setFont',
-        args: ['12px arial'],
       }, {
         name: 'fillText',
         args: ['foo', 0, 0, undefined],
