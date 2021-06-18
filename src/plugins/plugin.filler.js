@@ -172,13 +172,24 @@ function computeBoundary(source) {
   return computeLinearBoundary(source);
 }
 
+function findSegmentEnd(start, end, points) {
+  for (;end > start; end--) {
+    const point = points[end];
+    if (!isNaN(point.x) && !isNaN(point.y)) {
+      break;
+    }
+  }
+  return end;
+}
+
 function pointsFromSegments(boundary, line) {
   const {x = null, y = null} = boundary || {};
   const linePoints = line.points;
   const points = [];
-  line.segments.forEach((segment) => {
-    const first = linePoints[segment.start];
-    const last = linePoints[segment.end];
+  line.segments.forEach(({start, end}) => {
+    end = findSegmentEnd(start, end, linePoints);
+    const first = linePoints[start];
+    const last = linePoints[end];
     if (y !== null) {
       points.push({x: first.x, y});
       points.push({x: last.x, y});
@@ -406,7 +417,10 @@ function _segments(line, target, property) {
   const parts = [];
 
   for (const segment of segments) {
-    const bounds = getBounds(property, points[segment.start], points[segment.end], segment.loop);
+    let {start, end} = segment;
+    end = findSegmentEnd(start, end, points);
+
+    const bounds = getBounds(property, points[start], points[end], segment.loop);
 
     if (!target.segments) {
       // Special case for boundary not supporting `segments` (simpleArc)
@@ -414,8 +428,8 @@ function _segments(line, target, property) {
       parts.push({
         source: segment,
         target: bounds,
-        start: points[segment.start],
-        end: points[segment.end]
+        start: points[start],
+        end: points[end]
       });
       continue;
     }
