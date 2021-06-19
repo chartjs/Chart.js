@@ -1,4 +1,4 @@
-import { Chart } from '../dist/chart.esm';
+import { Chart } from '../types/index.esm';
 
-export * from '../dist/chart.esm';
+export * from '../types/index.esm';
 export default Chart;
