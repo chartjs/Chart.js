@@ -88,11 +88,11 @@ export class Legend extends Element {
 
     if (me.isHorizontal()) {
       me.width = me.maxWidth;
-      me.left = 0;
+      me.left = me._margins.left;
       me.right = me.width;
     } else {
       me.height = me.maxHeight;
-      me.top = 0;
+      me.top = me._margins.top;
       me.bottom = me.height;
     }
   }
@@ -199,29 +199,26 @@ export class Legend extends Element {
     let currentColHeight = 0;
 
     let left = 0;
-    let top = 0;
     let col = 0;
 
     me.legendItems.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
       // If too tall, go to new column
-      if (i > 0 && currentColHeight + fontSize + 2 * padding > heightLimit) {
+      if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
         totalWidth += currentColWidth + padding;
         columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
         left += currentColWidth + padding;
         col++;
-        top = 0;
         currentColWidth = currentColHeight = 0;
       }
 
+      // Store the hitbox width and height here. Final position will be updated in `draw`
+      hitboxes[i] = {left, top: currentColHeight, col, width: itemWidth, height: itemHeight};
+
       // Get max width
       currentColWidth = Math.max(currentColWidth, itemWidth);
-      currentColHeight += fontSize + padding;
-
-      // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left, top, col, width: itemWidth, height: itemHeight};
-      top += itemHeight + padding;
+      currentColHeight += itemHeight + padding;
     });
 
     totalWidth += currentColWidth;
