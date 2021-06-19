@@ -200,7 +200,7 @@ function placeBoxes(boxes, chartArea, params) {
       box.left = x;
       box.right = x + box.width;
       box.top = box.fullSize ? userPadding.top : chartArea.top;
-      box.bottom = box.fullSize ? params.outerHeight - userPadding.right : chartArea.top + chartArea.h;
+      box.bottom = box.fullSize ? params.outerHeight - userPadding.bottom : chartArea.top + chartArea.h;
       box.height = box.bottom - box.top;
       x = box.right;
     }
