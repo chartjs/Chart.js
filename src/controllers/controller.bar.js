@@ -324,6 +324,10 @@ export default class BarController extends DatasetController {
     for (i = 0; i < ilen; ++i) {
       item = metasets[i];
 
+      if (!item.controller.options.grouped) {
+        continue;
+      }
+
       if (typeof dataIndex !== 'undefined') {
         const val = item.controller.getParsed(dataIndex)[
           item.controller._cachedMeta.vScale.axis
