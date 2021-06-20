@@ -56,6 +56,30 @@ var chart = new Chart(ctx, {
 });
 ```
 
+Events that do not fire over chartArea, like `mouseout`, can be captured using a simple plugin:
+
+```javascript
+var chart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    // these are the default events:
+    // events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+  },
+  plugins: [{
+    id: 'myEventCatcher',
+    beforeEvent(chart, args, pluginOptions) {
+      const event = args.event;
+      if (event.type === 'mouseout') {
+        // process the event
+      }
+    }
+  }]
+});
+```
+
+For more information about plugins, see [Plugins](../developers/plugins.md)
+
 ### Converting Events to Data Values
 
 A common occurrence is taking an event, such as a click, and finding the data coordinates on the chart where the event occurred. Chart.js provides helpers that make this a straightforward process.
