@@ -1,6 +1,8 @@
 import {Title} from './plugin.title';
 import layouts from '../core/core.layouts';
 
+const map = new WeakMap();
+
 export default {
   id: 'subtitle',
 
@@ -13,16 +15,16 @@ export default {
 
     layouts.configure(chart, title, options);
     layouts.addBox(chart, title);
-    this._title = title;
+    map.set(chart, title);
   },
 
   stop(chart) {
-    layouts.removeBox(chart, this.title);
-    delete this._title;
+    layouts.removeBox(chart, map.get(chart));
+    map.delete(chart);
   },
 
   beforeUpdate(chart, _args, options) {
-    const title = this._title;
+    const title = map.get(chart);
     layouts.configure(chart, title, options);
     title.options = options;
   },
