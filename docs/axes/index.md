@@ -157,8 +157,8 @@ Namespace: `options.scales[scaleId]`
 | `afterBuildTicks` | `axis` | Callback that runs after ticks are created. Useful for filtering ticks.
 | `beforeTickToLabelConversion` | `axis` | Callback that runs before ticks are converted into strings.
 | `afterTickToLabelConversion` | `axis` | Callback that runs after ticks are converted into strings.
-| `beforeCalculateTickRotation` | `axis` | Callback that runs before tick rotation is determined.
-| `afterCalculateTickRotation` | `axis` | Callback that runs after tick rotation is determined.
+| `beforeCalculateLabelRotation` | `axis` | Callback that runs before tick rotation is determined.
+| `afterCalculateLabelRotation` | `axis` | Callback that runs after tick rotation is determined.
 | `beforeFit` | `axis` | Callback that runs before the scale fits to the canvas.
 | `afterFit` | `axis` | Callback that runs after the scale fits to the canvas.
 | `afterUpdate` | `axis` | Callback that runs at the end of the update process.
