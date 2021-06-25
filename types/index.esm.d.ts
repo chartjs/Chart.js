@@ -1137,11 +1137,11 @@ export interface CoreScaleOptions {
   /**
    * Callback that runs before tick rotation is determined.
    */
-  beforeCalculateTickRotation(axis: Scale): void;
+  beforeCalculateLabelRotation(axis: Scale): void;
   /**
    * Callback that runs after tick rotation is determined.
    */
-  afterCalculateTickRotation(axis: Scale): void;
+  afterCalculateLabelRotation(axis: Scale): void;
   /**
    * Callback that runs before the scale fits to the canvas.
    */
