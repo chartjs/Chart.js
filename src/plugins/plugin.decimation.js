@@ -234,7 +234,8 @@ export default {
       }
 
       let {start, count} = getStartAndCountOfVisiblePointsSimplified(meta, data);
-      if (count <= 4 * availableWidth) {
+      const threshold = options.threshold || 4 * availableWidth;
+      if (count <= threshold) {
         // No decimation is required until we are above this threshold
         cleanDecimatedDataset(dataset);
         return;
