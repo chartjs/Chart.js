@@ -3025,7 +3025,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
      * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
      * @default false
      */
-    isoWeekday: false | number;
+    isoWeekday: boolean | number;
     /**
      * Sets how different time units are displayed.
      */
