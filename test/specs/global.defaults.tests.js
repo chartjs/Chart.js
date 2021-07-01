@@ -103,7 +103,8 @@ describe('Default Configs', function() {
         index: 0,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }, {
         text: 'label2',
         fillStyle: 'green',
@@ -111,7 +112,8 @@ describe('Default Configs', function() {
         index: 1,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }, {
         text: 'label3',
         fillStyle: 'blue',
@@ -119,7 +121,8 @@ describe('Default Configs', function() {
         index: 2,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }];
       expect(chart.legend.legendItems).toEqual(expected);
     });
@@ -197,7 +200,8 @@ describe('Default Configs', function() {
         index: 0,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }, {
         text: 'label2',
         fillStyle: 'green',
@@ -205,7 +209,8 @@ describe('Default Configs', function() {
         index: 1,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }, {
         text: 'label3',
         fillStyle: 'blue',
@@ -213,7 +218,8 @@ describe('Default Configs', function() {
         index: 2,
         strokeStyle: '#000',
         textAlign: undefined,
-        lineWidth: 2
+        lineWidth: 2,
+        pointStyle: undefined
       }];
       expect(chart.legend.legendItems).toEqual(expected);
     });
