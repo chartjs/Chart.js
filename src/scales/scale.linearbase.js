@@ -70,7 +70,8 @@ function generateTicks(generationOptions, dataRange) {
     // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
     // spacing = step;
     // numSpaces = (max - min) / spacing;
-    numSpaces = Math.min((max - min) / spacing, maxTicks);
+    // Note that we round here to handle the case where almostWhole translated an FP error
+    numSpaces = Math.round(Math.min((max - min) / spacing, maxTicks));
     spacing = (max - min) / numSpaces;
     niceMin = min;
     niceMax = max;
