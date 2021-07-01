@@ -996,5 +996,41 @@ describe('Legend block tests', function() {
       await jasmine.triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
       expect(leaveItem).toBe(chart.legend.legendItems[0]);
     });
+
+    it('should call onClick for the correct item when in RTL mode', async function() {
+      var clickItem = null;
+
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100],
+            label: 'dataset 1'
+          }, {
+            data: [10, 20, 30, 100],
+            label: 'dataset 2'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              onClick: function(_, item) {
+                clickItem = item;
+              },
+            }
+          }
+        }
+      });
+
+      var hb = chart.legend.legendHitBoxes[0];
+      var el = {
+        x: hb.left + (hb.width / 2),
+        y: hb.top + (hb.height / 2)
+      };
+
+      await jasmine.triggerMouseEvent(chart, 'click', el);
+      expect(clickItem).toBe(chart.legend.legendItems[0]);
+    });
   });
 });
