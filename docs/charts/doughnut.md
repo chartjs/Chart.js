@@ -116,7 +116,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
 | [`rotation`](#general) | `number` | - | - | `undefined`
-| [`spacing](#styling) | `number` | - | - | `0`
+| [`spacing`](#styling) | `number` | - | - | `0`
 | [`weight`](#styling) | `number` | - | - | `1`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
