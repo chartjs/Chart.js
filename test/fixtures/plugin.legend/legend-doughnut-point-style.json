@@ -13,9 +13,9 @@
 			"plugins": {
 				"legend": {
 					"labels": {
-                        "pointStyle": "triangle",
-                        "usePointStyle": true
-                    }
+						"pointStyle": "triangle",
+						"usePointStyle": true
+					}
 				}
 			}
 		}
