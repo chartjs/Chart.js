@@ -23,7 +23,7 @@ export const sign = Math.sign;
  */
 export function niceNum(range) {
   const niceRange = Math.pow(10, Math.floor(log10(range)));
-  const fraction = range / niceRange;
+  const fraction = range / niceRange - 0.000001;
   const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
   return niceFraction * niceRange;
 }
