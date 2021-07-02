@@ -1,6 +1,5 @@
 import TimeScale from './scale.time';
 import {_lookup} from '../helpers/helpers.collection';
-import {isNullOrUndef} from '../helpers/helpers.core';
 
 /**
  * Linearly interpolates the given source `val` using the table. If value is out of bounds, values
@@ -11,20 +10,31 @@ import {isNullOrUndef} from '../helpers/helpers.core';
  * @return {object}
  */
 function interpolate(table, val, reverse) {
+  const maxIndex = table.length - 1;
   let prevSource, nextSource, prevTarget, nextTarget;
 
   // Note: the lookup table ALWAYS contains at least 2 items (min and max)
   if (reverse) {
-    prevSource = Math.floor(val);
-    nextSource = Math.ceil(val);
+    prevSource = 0;
+    nextSource = maxIndex;
+    if (val > prevSource && val < nextSource) {
+      prevSource = Math.floor(val);
+      nextSource = prevSource === val ? val + 1 : Math.ceil(val);
+    }
     prevTarget = table[prevSource];
     nextTarget = table[nextSource];
   } else {
-    const result = _lookup(table, val);
-    prevTarget = result.lo;
-    nextTarget = result.hi;
-    prevSource = table[prevTarget];
-    nextSource = table[nextTarget];
+    prevTarget = 0;
+    nextTarget = maxIndex;
+    prevSource = table[0];
+    nextSource = table[maxIndex];
+    if (val >= prevSource && val <= nextSource) {
+      const result = _lookup(table, val);
+      prevTarget = result.lo;
+      nextTarget = result.hi;
+      prevSource = table[prevTarget];
+      nextSource = table[nextTarget];
+    }
   }
 
   const span = nextSource - prevSource;
@@ -42,7 +52,9 @@ class TimeSeriesScale extends TimeScale {
     /** @type {object[]} */
     this._table = [];
     /** @type {number} */
-    this._maxIndex = undefined;
+    this._minPos = undefined;
+    /** @type {number} */
+    this._tableRange = undefined;
   }
 
   /**
@@ -51,8 +63,9 @@ class TimeSeriesScale extends TimeScale {
   initOffsets() {
     const me = this;
     const timestamps = me._getTimestampsForTable();
-    me._table = me.buildLookupTable(timestamps);
-    me._maxIndex = me._table.length - 1;
+    const table = me._table = me.buildLookupTable(timestamps);
+    me._minPos = interpolate(table, me.min);
+    me._tableRange = interpolate(table, me.max) - me._minPos;
     super.initOffsets(timestamps);
   }
 
@@ -70,24 +83,20 @@ class TimeSeriesScale extends TimeScale {
   buildLookupTable(timestamps) {
     const me = this;
     const {min, max} = me;
-    if (!timestamps.length) {
-      return [
-        {time: min, pos: 0},
-        {time: max, pos: 1}
-      ];
-    }
-
-    const items = [min];
+    const items = [];
     let i, ilen, curr;
 
     for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
       curr = timestamps[i];
-      if (curr > min && curr < max) {
+      if (curr >= min && curr <= max) {
         items.push(curr);
       }
     }
 
-    items.push(max);
+    if (items.length < 2) {
+      // In case there is less that 2 timestamps between min and max, the scale is defined by min and max
+      return [min, max];
+    }
 
     return items;
   }
@@ -121,23 +130,10 @@ class TimeSeriesScale extends TimeScale {
 
   /**
 	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
-	 * @param {number} [index]
-	 * @return {number}
-	 */
-  getPixelForValue(value, index) {
-    const me = this;
-    const offsets = me._offsets;
-    const pos = me._normalized && me._maxIndex > 0 && !isNullOrUndef(index)
-      ? index / me._maxIndex : me.getDecimalForValue(value);
-    return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
-  }
-
-  /**
-	 * @param {number} value - Milliseconds since epoch (1 January 1970 00:00:00 UTC)
 	 * @return {number}
 	 */
   getDecimalForValue(value) {
-    return interpolate(this._table, value) / this._maxIndex;
+    return (interpolate(this._table, value) - this._minPos) / this._tableRange;
   }
 
   /**
@@ -148,7 +144,7 @@ class TimeSeriesScale extends TimeScale {
     const me = this;
     const offsets = me._offsets;
     const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-    return interpolate(me._table, decimal * this._maxIndex, true);
+    return interpolate(me._table, decimal * me._tableRange + me._minPos, true);
   }
 }
 

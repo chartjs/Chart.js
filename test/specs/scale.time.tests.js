@@ -764,7 +764,7 @@ describe('Time scale tests', function() {
           var start = scale.left;
           var slice = scale.width / 5;
 
-          expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(start + slice);
+          expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(86);
           expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(start + slice * 5);
         });
         it ('should add a step after if scale.max is after the last data', function() {
@@ -776,10 +776,9 @@ describe('Time scale tests', function() {
           chart.update();
 
           var start = scale.left;
-          var slice = scale.width / 5;
 
           expect(scale.getPixelForValue(moment('2017').valueOf(), 0)).toBeCloseToPixel(start);
-          expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * 4);
+          expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(388);
         });
         it ('should add steps before and after if scale.min/max are outside the data range', function() {
           var chart = this.chart;
@@ -790,11 +789,8 @@ describe('Time scale tests', function() {
           options.max = '2050';
           chart.update();
 
-          var start = scale.left;
-          var slice = scale.width / 6;
-
-          expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(start + slice);
-          expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(start + slice * 5);
+          expect(scale.getPixelForValue(moment('2017').valueOf(), 1)).toBeCloseToPixel(71);
+          expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(401);
         });
       });
       describe('is "time"', function() {
