@@ -1,40 +1,34 @@
 import TimeScale from './scale.time';
-import {_lookup} from '../helpers/helpers.collection';
+import {_lookupByKey} from '../helpers/helpers.collection';
 
 /**
  * Linearly interpolates the given source `val` using the table. If value is out of bounds, values
- * at index [0, 1] or [n - 1, n] are used for the interpolation.
+ * at edges are used for the interpolation.
  * @param {object} table
  * @param {number} val
  * @param {boolean} [reverse] lookup time based on position instead of vice versa
  * @return {object}
  */
 function interpolate(table, val, reverse) {
-  const maxIndex = table.length - 1;
-  let prevSource, nextSource, prevTarget, nextTarget;
-
-  // Note: the lookup table ALWAYS contains at least 2 items (min and max)
+  let lo = 0;
+  let hi = table.length - 1;
+  let prevSource, nextSource, prevTarget, nextTarget, min, max
   if (reverse) {
-    prevSource = 0;
-    nextSource = maxIndex;
-    if (val > prevSource && val < nextSource) {
-      prevSource = Math.floor(val);
-      nextSource = prevSource === val ? val + 1 : Math.ceil(val);
+    min = table[lo].pos;
+    max = table[hi].pos;
+    if (val >= min && val <= max) {
+      ({lo, hi} = _lookupByKey(table, 'pos', val));
     }
-    prevTarget = table[prevSource];
-    nextTarget = table[nextSource];
+    ({pos: prevSource, time: prevTarget} = table[lo]);
+    ({pos: nextSource, time: nextTarget} = table[hi]);
   } else {
-    prevTarget = 0;
-    nextTarget = maxIndex;
-    prevSource = table[0];
-    nextSource = table[maxIndex];
-    if (val >= prevSource && val <= nextSource) {
-      const result = _lookup(table, val);
-      prevTarget = result.lo;
-      nextTarget = result.hi;
-      prevSource = table[prevTarget];
-      nextSource = table[nextTarget];
+    min = table[lo].time;
+    max = table[hi].time;
+    if (val >= min && val <= max) {
+      ({lo, hi} = _lookupByKey(table, 'time', val));
     }
+    ({time: prevSource, pos: prevTarget} = table[lo]);
+    ({time: nextSource, pos: nextTarget} = table[hi]);
   }
 
   const span = nextSource - prevSource;
@@ -84,7 +78,8 @@ class TimeSeriesScale extends TimeScale {
     const me = this;
     const {min, max} = me;
     const items = [];
-    let i, ilen, curr;
+    const table = [];
+    let i, ilen, prev, curr, next;
 
     for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
       curr = timestamps[i];
@@ -95,10 +90,23 @@ class TimeSeriesScale extends TimeScale {
 
     if (items.length < 2) {
       // In case there is less that 2 timestamps between min and max, the scale is defined by min and max
-      return [min, max];
+      return [
+        {time: min, pos: 0},
+        {time: max, pos: 1}
+      ];
     }
 
-    return items;
+    for (i = 0, ilen = items.length; i < ilen; ++i) {
+      next = items[i + 1];
+      prev = items[i - 1];
+      curr = items[i];
+
+      // only add points that breaks the scale linearity
+      if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
+        table.push({time: curr, pos: i / (ilen - 1)});
+      }
+    }
+    return table;
   }
 
   /**
