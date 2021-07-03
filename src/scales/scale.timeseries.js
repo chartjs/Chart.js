@@ -12,19 +12,15 @@ import {_lookupByKey} from '../helpers/helpers.collection';
 function interpolate(table, val, reverse) {
   let lo = 0;
   let hi = table.length - 1;
-  let prevSource, nextSource, prevTarget, nextTarget, min, max
+  let prevSource, nextSource, prevTarget, nextTarget;
   if (reverse) {
-    min = table[lo].pos;
-    max = table[hi].pos;
-    if (val >= min && val <= max) {
+    if (val >= table[lo].pos && val <= table[hi].pos) {
       ({lo, hi} = _lookupByKey(table, 'pos', val));
     }
     ({pos: prevSource, time: prevTarget} = table[lo]);
     ({pos: nextSource, time: nextTarget} = table[hi]);
   } else {
-    min = table[lo].time;
-    max = table[hi].time;
-    if (val >= min && val <= max) {
+    if (val >= table[lo].time && val <= table[hi].time) {
       ({lo, hi} = _lookupByKey(table, 'time', val));
     }
     ({time: prevSource, pos: prevTarget} = table[lo]);
