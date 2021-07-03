@@ -71,8 +71,7 @@ class TimeSeriesScale extends TimeScale {
 	 * @protected
 	 */
   buildLookupTable(timestamps) {
-    const me = this;
-    const {min, max} = me;
+    const {min, max} = this;
     const items = [];
     const table = [];
     let i, ilen, prev, curr, next;
@@ -98,7 +97,7 @@ class TimeSeriesScale extends TimeScale {
       curr = items[i];
 
       // only add points that breaks the scale linearity
-      if (prev === undefined || next === undefined || Math.round((next + prev) / 2) !== curr) {
+      if (Math.round((next + prev) / 2) !== curr) {
         table.push({time: curr, pos: i / (ilen - 1)});
       }
     }
