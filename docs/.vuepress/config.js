@@ -35,7 +35,7 @@ module.exports = {
       {
         entryPoints: ['../../types/index.esm.d.ts'],
         hideInPageTOC: true,
-        tsconfig: '../../tsconfig.json',
+        tsconfig: 'tsconfig.json',
         sidebar: {
           fullNames: true,
           parentCategory: 'API',
