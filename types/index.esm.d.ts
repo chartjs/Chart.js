@@ -1991,6 +1991,7 @@ export const enum DecimationAlgorithm {
 }
 interface BaseDecimationOptions {
   enabled: boolean;
+  threshold?: number;
 }
 
 interface LttbDecimationOptions extends BaseDecimationOptions {

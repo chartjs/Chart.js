@@ -11,6 +11,7 @@ Namespace: `options.plugins.decimation`, the global options for the plugin are d
 | `enabled` | `boolean` | `false` | Is decimation enabled?
 | `algorithm` | `string` | `'min-max'` | Decimation algorithm to use. See the [more...](#decimation-algorithms)
 | `samples` | `number` | | If the `'lttb'` algorithm is used, this is the number of samples in the output dataset. Defaults to the canvas width to pick 1 sample per pixel.
+| `threshold` | `number` | | If the number of samples in the current axis range is above this value, the decimation will be triggered. Defaults to 4 times the canvas width.<br />The number of point after decimation can be higher than the `threshold` value.
 
 ## Decimation Algorithms
 
