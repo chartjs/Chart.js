@@ -2011,7 +2011,7 @@ export interface FillerOptions {
   propagate: boolean;
 }
 
-export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | boolean;
+export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | 'shape' | boolean;
 
 export interface ComplexFillTarget {
   /**
