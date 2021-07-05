@@ -16,6 +16,7 @@ This feature is implemented by the [`filler` plugin](https://github.com/chartjs/
 | Disabled <sup>1</sup> | `boolean` | `false` |
 | Stacked value below | `string` | `'stack'` |
 | Axis value | `object` | `{ value: number; }` |
+| Shape (fill inside line) | `string` | `'shape'` |
 
 > <sup>1</sup> for backward compatibility, `fill: true` is equivalent to `fill: 'origin'`<br/>
 
