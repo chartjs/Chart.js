@@ -179,5 +179,41 @@ describe('Plugin.decimation', function() {
       expect(chart.data.datasets[0].data[3].x).toBe(originalData[5].x);
       expect(chart.data.datasets[0].data[4].x).toBe(originalData[6].x);
     });
+
+    it('should not crash with uneven points', function() {
+      const data = [];
+      for (let i = 0; i < 15552; i++) {
+        data.push({x: i, y: i});
+      }
+
+      function createChart() {
+        return window.acquireChart({
+          type: 'line',
+          data: {
+            datasets: [{
+              data
+            }]
+          },
+          options: {
+            devicePixelRatio: 1.25,
+            parsing: false,
+            scales: {
+              x: {
+                type: 'linear'
+              }
+            },
+            plugins: {
+              decimation: {
+                enabled: true,
+                algorithm: 'lttb'
+              }
+            }
+          }
+        }, {
+          canvas: {width: 511, height: 511},
+        });
+      }
+      expect(createChart).not.toThrow();
+    });
   });
 });
