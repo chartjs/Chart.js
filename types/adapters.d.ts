@@ -3,7 +3,7 @@ export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'w
 export interface DateAdapter {
 	// Override one or multiple of the methods to adjust to the logic of the current date library.
 	override(members: Partial<DateAdapter>): void;
-	readonly options: any;
+	readonly options: unknown;
 
 	/**
 	 * Returns a map of time formats for the supported formatting units defined
@@ -13,10 +13,10 @@ export interface DateAdapter {
 	formats(): { [key: string]: string };
 	/**
 	 * Parses the given `value` and return the associated timestamp.
-	 * @param {any} value - the value to parse (usually comes from the data)
+	 * @param {unknown} value - the value to parse (usually comes from the data)
 	 * @param {string} [format] - the expected data format
 	 */
-	parse(value: any, format?: TimeUnit): number | null;
+	parse(value: unknown, format?: TimeUnit): number | null;
 	/**
 	 * Returns the formatted date in the specified `format` for a given `timestamp`.
 	 * @param {number} timestamp - the timestamp to format
