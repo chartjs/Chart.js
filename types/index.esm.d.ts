@@ -2450,7 +2450,7 @@ export interface ScriptableTooltipContext<TType extends ChartType> {
   tooltipItems: TooltipItem<TType>[];
 }
 
-export interface TooltipOptions<TType extends ChartType> extends CoreInteractionOptions {
+export interface TooltipOptions<TType extends ChartType = ChartType> extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
@@ -2474,9 +2474,9 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * Sort tooltip items.
    */
-  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>, data: ChartData) => number;
+  itemSort: (a: TooltipItem<TType>, b: TooltipItem<TType>, data: ChartData) => number;
 
-  filter: (e: TooltipItem<ChartType>, index: number, array: TooltipItem<ChartType>[], data: ChartData) => boolean;
+  filter: (e: TooltipItem<TType>, index: number, array: TooltipItem<TType>[], data: ChartData) => boolean;
 
   /**
    * Background color of the tooltip.
@@ -2653,7 +2653,7 @@ export interface TooltipItem<TType extends ChartType> {
   /**
    * The dataset the item comes from
    */
-  dataset: ChartDataset;
+  dataset: UnionToIntersection<ChartDataset<TType>>;
 
   /**
    * Index of the dataset the item comes from
