@@ -2120,14 +2120,14 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement extends Element, LayoutItem {
-  chart: Chart;
+export interface LegendElement<TType extends ChartType> extends Element, LayoutItem {
+  chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
-  options: LegendOptions;
+  options: LegendOptions<TType>;
 }
 
-export interface LegendOptions {
+export interface LegendOptions<TType extends ChartType> {
   /**
    * Is the legend shown?
    * @default true
@@ -2164,15 +2164,15 @@ export interface LegendOptions {
   /**
    * A callback that is called when a click event is registered on a label item.
    */
-  onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
-  onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
 
   labels: {
     /**
@@ -2674,7 +2674,7 @@ export interface TooltipItem<TType extends ChartType> {
 export interface PluginOptionsByType<TType extends ChartType> {
   decimation: DecimationOptions;
   filler: FillerOptions;
-  legend: LegendOptions;
+  legend: LegendOptions<TType>;
   title: TitleOptions;
   tooltip: TooltipOptions<TType>;
 }
