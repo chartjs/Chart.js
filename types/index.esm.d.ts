@@ -2120,7 +2120,12 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement extends Element, LayoutItem {}
+export interface LegendElement extends Element, LayoutItem {
+  chart: Chart;
+  ctx: CanvasRenderingContext2D;
+  legendItems?: LegendItem[];
+  options: LegendOptions;
+}
 
 export interface LegendOptions {
   /**
