@@ -46,7 +46,7 @@ function lttbDecimation(data, start, count, availableWidth, options) {
 
     // Adding offset
     const rangeOffs = Math.floor(i * bucketWidth) + 1 + start;
-    const rangeTo = Math.floor((i + 1) * bucketWidth) + 1 + start;
+    const rangeTo = Math.min(Math.floor((i + 1) * bucketWidth) + 1, count) + start;
     const {x: pointAx, y: pointAy} = data[a];
 
     // Note that this is changed from the original algorithm which initializes these
