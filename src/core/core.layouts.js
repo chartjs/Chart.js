@@ -1,5 +1,5 @@
 import defaults from './core.defaults';
-import {each, isObject} from '../helpers/helpers.core';
+import {defined, each, isObject} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
 /**
@@ -28,17 +28,19 @@ function sortByWeight(array, reverse) {
 
 function wrapBoxes(boxes) {
   const layoutBoxes = [];
-  let i, ilen, box;
+  let i, ilen, box, pos, stack, stackWeight;
 
   for (i = 0, ilen = (boxes || []).length; i < ilen; ++i) {
     box = boxes[i];
+    ({position: pos, options: {stack, stackWeight = 1}} = box);
     layoutBoxes.push({
       index: i,
       box,
-      pos: box.position,
+      pos,
       horizontal: box.isHorizontal(),
       weight: box.weight,
-      stack: box.stack
+      stack: stack && (pos + stack),
+      stackWeight
     });
   }
   return layoutBoxes;
@@ -47,30 +49,35 @@ function wrapBoxes(boxes) {
 function buildStacks(layouts) {
   const stacks = {};
   for (const wrap of layouts) {
-    const {stack, pos} = wrap;
+    const {stack, pos, stackWeight} = wrap;
     if (!stack || !STATIC_POSITIONS.includes(pos)) {
       continue;
     }
-    const _stack = stacks[pos + stack] || (stacks[pos + stack] = {count: 0, placed: 0});
+    const _stack = stacks[stack] || (stacks[stack] = {count: 0, placed: 0, weight: 0, size: 0});
     _stack.count++;
+    _stack.weight += stackWeight;
   }
   return stacks;
 }
 
+/**
+ * store dimensions used instead of available chartArea in fitBoxes
+ **/
 function setLayoutDims(layouts, params) {
   const stacks = buildStacks(layouts);
+  const {vBoxMaxWidth, hBoxMaxHeight} = params;
   let i, ilen, layout;
   for (i = 0, ilen = layouts.length; i < ilen; ++i) {
     layout = layouts[i];
-    // store dimensions used instead of available chartArea in fitBoxes
-    const stack = stacks[layout.pos + layout.stack];
-    const div = stack && stack.count;
+    const {fullSize} = layout.box;
+    const stack = stacks[layout.stack];
+    const factor = stack && layout.stackWeight / stack.weight;
     if (layout.horizontal) {
-      layout.width = div ? params.vBoxMaxWidth / div : layout.box.fullSize && params.availableWidth;
-      layout.height = params.hBoxMaxHeight;
+      layout.width = factor ? factor * vBoxMaxWidth : fullSize && params.availableWidth;
+      layout.height = hBoxMaxHeight;
     } else {
-      layout.width = params.vBoxMaxWidth;
-      layout.height = div ? params.hBoxMaxHeight / div : layout.box.fullSize && params.availableHeight;
+      layout.width = vBoxMaxWidth;
+      layout.height = factor ? factor * hBoxMaxHeight : fullSize && params.availableHeight;
     }
   }
   return stacks;
@@ -92,7 +99,8 @@ function buildLayoutBoxes(boxes) {
     rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
     chartArea: filterByPosition(layoutBoxes, 'chartArea'),
     vertical: left.concat(right).concat(centerVertical),
-    horizontal: top.concat(bottom).concat(centerHorizontal)
+    horizontal: top.concat(bottom).concat(centerHorizontal),
+    all: layoutBoxes
   };
 }
 
@@ -108,18 +116,19 @@ function updateMaxPadding(maxPadding, boxPadding) {
 }
 
 function updateDims(chartArea, params, layout, stacks) {
-  const box = layout.box;
+  const {pos, box} = layout;
   const maxPadding = chartArea.maxPadding;
 
   // dynamically placed boxes size is not considered
-  if (!isObject(layout.pos)) {
+  if (!isObject(pos)) {
     if (layout.size) {
       // this layout was already counted for, lets first reduce old size
-      chartArea[layout.pos] -= layout.size;
+      chartArea[pos] -= layout.size;
     }
-    const stack = stacks[layout.pos + layout.stack] || {count: 1};
-    layout.size = (layout.horizontal ? box.height : box.width) / stack.count;
-    chartArea[layout.pos] += layout.size;
+    const stack = stacks[layout.stack] || {size: 0, count: 1};
+    stack.size = Math.max(stack.size, layout.horizontal ? box.height : box.width);
+    layout.size = stack.size / stack.count;
+    chartArea[pos] += layout.size;
   }
 
   if (box.getPadding) {
@@ -199,38 +208,50 @@ function fitBoxes(boxes, chartArea, params, stacks) {
   return refit && fitBoxes(refitBoxes, chartArea, params, stacks) || changed;
 }
 
+function setBoxDims(box, left, top, width, height) {
+  box.top = top;
+  box.left = left;
+  box.right = left + width;
+  box.bottom = top + height;
+  box.width = width;
+  box.height = height;
+}
+
 function placeBoxes(boxes, chartArea, params, stacks) {
   const userPadding = params.padding;
-  let x = chartArea.x;
-  let y = chartArea.y;
-  let i, ilen, layout, box, stack;
+  let {x, y} = chartArea;
 
-  for (i = 0, ilen = boxes.length; i < ilen; ++i) {
-    layout = boxes[i];
-    box = layout.box;
-    stack = stacks[layout.pos + layout.stack] || {count: 1, placed: 0};
+  for (const layout of boxes) {
+    const box = layout.box;
+    const stack = stacks[layout.stack] || {count: 1, placed: 0, weight: 1};
     if (layout.horizontal) {
-      const width = chartArea.w / stack.count;
-      box.left = box.fullSize ? userPadding.left : chartArea.left + width * stack.placed;
-      box.right = box.fullSize ? params.outerWidth - userPadding.right : box.left + width;
-      box.top = y;
-      box.bottom = y + box.height;
-      box.width = box.right - box.left;
-      stack.placed++;
-      if (stack.placed === stack.count) {
-        y = box.bottom;
+      const width = chartArea.w / stack.weight * layout.stackWeight;
+      const height = stack.size || box.height;
+      if (defined(stack.start)) {
+        y = stack.start;
       }
+      if (box.fullSize) {
+        setBoxDims(box, userPadding.left, y, params.outerWidth - userPadding.right - userPadding.left, height);
+      } else {
+        setBoxDims(box, chartArea.left + stack.placed, y, width, height);
+      }
+      stack.start = y;
+      stack.placed += width;
+      y = box.bottom;
     } else {
-      const height = chartArea.h / stack.count;
-      box.left = x;
-      box.right = x + box.width;
-      box.top = box.fullSize ? userPadding.top : chartArea.top + height * stack.placed;
-      box.bottom = box.fullSize ? params.outerHeight - userPadding.bottom : box.top + height;
-      box.height = box.bottom - box.top;
-      stack.placed++;
-      if (stack.placed === stack.count) {
-        x = box.right;
+      const height = chartArea.h / stack.weight * layout.stackWeight;
+      const width = stack.size || box.width;
+      if (defined(stack.start)) {
+        x = stack.start;
       }
+      if (box.fullSize) {
+        setBoxDims(box, x, userPadding.top, width, params.outerHeight - userPadding.bottom - userPadding.top);
+      } else {
+        setBoxDims(box, x, chartArea.top + stack.placed, width, height);
+      }
+      stack.start = x;
+      stack.placed += height;
+      x = box.right;
     }
   }
 
@@ -253,7 +274,6 @@ defaults.set('layout', {
  * @prop {string} position - The position of the item in the chart layout. Possible values are
  * 'left', 'top', 'right', 'bottom', and 'chartArea'
  * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
- * @prop {string} [stack] - The stack group of the boxes in the same position
  * @prop {boolean} fullSize - if true, and the item is horizontal, then push vertical boxes down
  * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
  * @prop {function} update - Takes two parameters: width and height. Returns size of item
@@ -322,7 +342,6 @@ export default {
     item.fullSize = options.fullSize;
     item.position = options.position;
     item.weight = options.weight;
-    item.stack = options.stack;
   },
 
   /**
