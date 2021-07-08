@@ -99,8 +99,7 @@ function buildLayoutBoxes(boxes) {
     rightAndBottom: right.concat(centerVertical).concat(bottom).concat(centerHorizontal),
     chartArea: filterByPosition(layoutBoxes, 'chartArea'),
     vertical: left.concat(right).concat(centerVertical),
-    horizontal: top.concat(bottom).concat(centerHorizontal),
-    all: layoutBoxes
+    horizontal: top.concat(bottom).concat(centerHorizontal)
   };
 }
 
