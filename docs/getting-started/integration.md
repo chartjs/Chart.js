@@ -49,7 +49,8 @@ import {
   Filler,
   Legend,
   Title,
-  Tooltip
+  Tooltip,
+  SubTitle
 } from 'chart.js';
 
 Chart.register(
@@ -75,7 +76,8 @@ Chart.register(
   Filler,
   Legend,
   Title,
-  Tooltip
+  Tooltip,
+  SubTitle
 );
 
 var myChart = new Chart(ctx, {...});
