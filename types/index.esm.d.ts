@@ -2275,6 +2275,7 @@ export interface LegendOptions<TType extends ChartType> {
   };
 }
 
+export const SubTitle: Plugin;
 export const Title: Plugin;
 
 export interface TitleOptions {
