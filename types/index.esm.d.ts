@@ -1278,6 +1278,14 @@ export interface ScriptableScaleContext {
   tick: Tick;
 }
 
+export interface ScriptableScalePointLabelContext {
+  chart: Chart;
+  scale: Scale;
+  index: number;
+  label: string;
+}
+
+
 export const Ticks: {
   formatters: {
     /**
@@ -3157,12 +3165,12 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Background color of the point label.
      * @default undefined
      */
-    backdropColor: Scriptable<Color, ScriptableScaleContext>;
+    backdropColor: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      * Padding of label backdrop.
      * @default 2
      */
-    backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
+    backdropPadding: Scriptable<number | ChartArea, ScriptableScalePointLabelContext>;
 
     /**
      * if true, point labels are shown.
@@ -3173,10 +3181,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Color of label
      * @see Defaults.color
      */
-    color: Scriptable<Color, ScriptableScaleContext>;
+    color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: Scriptable<FontSpec, ScriptableScaleContext>;
+    font: Scriptable<FontSpec, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.

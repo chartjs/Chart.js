@@ -118,6 +118,7 @@ There are multiple levels of context objects:
     * `data`
   * `scale`
     * `tick`
+    * `pointLabel` (only used in the radial linear scale)
   * `tooltip`
 
 Each level inherits its parent(s) and any contextual information stored in the parent is available through the child.
