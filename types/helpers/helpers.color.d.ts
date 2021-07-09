@@ -1,5 +1,12 @@
 export function color(value: CanvasGradient): CanvasGradient;
 export function color(value: CanvasPattern): CanvasPattern;
+export function color(
+	value:
+		| string
+		| { r: number; g: number; b: number; a: number }
+		| [number, number, number]
+		| [number, number, number, number]
+): ColorModel;
 
 export interface ColorModel {
 	rgbString(): string;
@@ -20,13 +27,6 @@ export interface ColorModel {
 	desaturate(ratio: number): ColorModel;
 	rotate(deg: number): this;
 }
-export function color(
-	value:
-		| string
-		| { r: number; g: number; b: number; a: number }
-		| [number, number, number]
-		| [number, number, number, number]
-): ColorModel;
 
 export function getHoverColor(value: CanvasGradient): CanvasGradient;
 export function getHoverColor(value: CanvasPattern): CanvasPattern;

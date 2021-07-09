@@ -1156,7 +1156,7 @@ export interface CoreScaleOptions {
   afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<{}, O>, LayoutItem {
+export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<unknown, O>, LayoutItem {
   readonly id: string;
   readonly type: string;
   readonly ctx: CanvasRenderingContext2D;
@@ -1680,7 +1680,9 @@ export const ArcElement: ChartComponent & {
   new (cfg: AnyObject): ArcElement;
 };
 
-export interface LineProps {}
+export interface LineProps {
+  points: Point[]
+}
 
 export interface LineOptions extends CommonElementOptions {
   /**

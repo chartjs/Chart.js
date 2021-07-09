@@ -1,5 +1,5 @@
 export function log10(x: number): number;
-export function isNumber(v: any): boolean;
+export function isNumber(v: unknown): boolean;
 export function almostEquals(x: number, y: number, epsilon: number): boolean;
 export function almostWhole(x: number, epsilon: number): number;
 export function sign(x: number): number;
