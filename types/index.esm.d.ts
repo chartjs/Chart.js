@@ -2130,7 +2130,7 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement<TType extends ChartType> extends Element, LayoutItem {
+export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
   chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
