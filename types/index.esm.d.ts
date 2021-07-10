@@ -2275,6 +2275,7 @@ export interface LegendOptions<TType extends ChartType> {
   };
 }
 
+export const SubTitle: Plugin;
 export const Title: Plugin;
 
 export interface TitleOptions {
@@ -2685,6 +2686,7 @@ export interface PluginOptionsByType<TType extends ChartType> {
   decimation: DecimationOptions;
   filler: FillerOptions;
   legend: LegendOptions<TType>;
+  subtitle: TitleOptions;
   title: TitleOptions;
   tooltip: TooltipOptions<TType>;
 }
