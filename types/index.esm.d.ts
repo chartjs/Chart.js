@@ -2829,6 +2829,18 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    * Position of the axis.
    */
   position: 'left' | 'top' | 'right' | 'bottom' | 'center' | { [scale: string]: number };
+
+  /**
+   * Stack group. Axes at the same `position` with same `stack` are stacked.
+   */
+  stack?: string;
+
+  /**
+   * Weight of the scale in stack group. Used to determine the amount of allocated space for the scale within the group.
+   * @default 1
+   */
+  stackWeight?: number;
+
   /**
    *   Which type of axis this is. Possible values are: 'x', 'y'. If not set, this is inferred from the first character of the ID which should be 'x' or 'y'.
    */

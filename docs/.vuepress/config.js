@@ -189,6 +189,7 @@ module.exports = {
             'scales/time-line',
             'scales/time-max-span',
             'scales/time-combo',
+            'scales/stacked'
           ]
         },
         {
