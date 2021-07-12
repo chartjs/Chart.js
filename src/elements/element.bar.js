@@ -1,5 +1,5 @@
 import Element from '../core/core.element';
-import {isObject, valueOrDefault, _limitValue} from '../helpers';
+import {isObject, _limitValue} from '../helpers';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 
@@ -190,7 +190,7 @@ export default class BarElement extends Element {
     const options = this.options;
     const {inner, outer} = boundingRects(this);
     const addRectPath = hasRadius(outer.radius) ? addRoundedRectPath : addNormalRectPath;
-    const inflateAmount = valueOrDefault(options.inflateAmount, 0.33);
+    const inflateAmount = 0.33;
 
     ctx.save();
 
