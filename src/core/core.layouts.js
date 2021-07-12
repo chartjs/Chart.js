@@ -223,9 +223,9 @@ function placeBoxes(boxes, chartArea, params, stacks) {
   for (const layout of boxes) {
     const box = layout.box;
     const stack = stacks[layout.stack] || {count: 1, placed: 0, weight: 1};
-    const weight = (stack.weight * layout.stackWeight) || 1;
+    const weight = (layout.stackWeight / stack.weight) || 1;
     if (layout.horizontal) {
-      const width = chartArea.w / weight;
+      const width = chartArea.w * weight;
       const height = stack.size || box.height;
       if (defined(stack.start)) {
         y = stack.start;
@@ -239,7 +239,7 @@ function placeBoxes(boxes, chartArea, params, stacks) {
       stack.placed += width;
       y = box.bottom;
     } else {
-      const height = chartArea.h / weight;
+      const height = chartArea.h * weight;
       const width = stack.size || box.width;
       if (defined(stack.start)) {
         x = stack.start;
