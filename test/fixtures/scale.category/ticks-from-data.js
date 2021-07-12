@@ -4,19 +4,13 @@ module.exports = {
     type: 'bar',
     data: {
       datasets: [{
-        data: [10, 5, 0, 25, 78]
+        data: [10, 5, 0, 25, 78],
+        backgroundColor: 'transparent'
       }],
       labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
     },
     options: {
       indexAxis: 'y',
-      elements: {
-        bar: {
-          backgroundColor: '#AAAAAA80',
-          borderColor: '#80808080',
-          borderWidth: {bottom: 6, left: 15, top: 6, right: 15}
-        }
-      },
       scales: {
         x: {display: false},
         y: {display: true}
@@ -24,6 +18,10 @@ module.exports = {
     }
   },
   options: {
-    spriteText: true
+    spriteText: true,
+    canvas: {
+      width: 128,
+      height: 256
+    }
   }
 };
