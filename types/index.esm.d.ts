@@ -1412,6 +1412,11 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * @default true
    */
   maintainAspectRatio: boolean;
+  /**
+   * Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.
+   * @default 0
+   */
+  resizeDelay: number;
 
   /**
    * Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.
