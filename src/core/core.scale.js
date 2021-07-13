@@ -132,13 +132,24 @@ function titleAlign(align, position, reverse) {
 }
 
 function titleArgs(scale, offset, position, align) {
-  const {top, left, bottom, right} = scale;
+  const {top, left, bottom, right, chart} = scale;
+  const {chartArea, scales} = chart;
   let rotation = 0;
   let maxWidth, titleX, titleY;
+  const height = bottom - top;
 
   if (scale.isHorizontal()) {
     titleX = _alignStartEnd(align, left, right);
+
+    if (isObject(position)) {
+      const positionAxisID = Object.keys(position)[0];
+      const value = position[positionAxisID];
+      titleY = scales[positionAxisID].getPixelForValue(value) + height - offset;
+    } else if (position === 'center') {
+      titleY = (chartArea.bottom + chartArea.top) / 2 + height - offset;
+    } else {
     titleY = offsetFromEdge(scale, position, offset);
+    }
     maxWidth = right - left;
   } else {
     titleX = offsetFromEdge(scale, position, offset);
@@ -1557,7 +1568,7 @@ export default class Scale extends Element {
     const align = title.align;
     let offset = font.lineHeight / 2;
 
-    if (position === 'bottom') {
+    if (position === 'bottom' || position === 'center' || isObject(position)) {
       offset += padding.bottom;
       if (isArray(title.text)) {
         offset += font.lineHeight * (title.text.length - 1);
