@@ -593,8 +593,8 @@ export default class Scale extends Element {
 				- tickOpts.padding - getTitleHeight(options.title, me.chart.options.font);
       maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
       labelRotation = toDegrees(Math.min(
-        Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
-        Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
+        Math.asin(_limitValue((labelSizes.highest.height + 6) / tickWidth, -1, 1)),
+        Math.asin(_limitValue(maxHeight / maxLabelDiagonal, -1, 1)) - Math.asin(_limitValue(maxLabelHeight / maxLabelDiagonal, -1, 1))
       ));
       labelRotation = Math.max(minRotation, Math.min(maxRotation, labelRotation));
     }
