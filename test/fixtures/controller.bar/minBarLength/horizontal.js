@@ -7,7 +7,9 @@ module.exports = {
         {
           data: [0, -0.01, 0.01, 30, -30],
           backgroundColor: '#00ff00',
-          borderWidth: 0,
+          borderColor: '#000',
+          borderSkipped: ctx => ctx.raw === 0 ? false : 'start',
+          borderWidth: 4,
           minBarLength: 20
         }
       ]

@@ -7,7 +7,8 @@ module.exports = {
         {
           data: [0, -0.01, -30],
           backgroundColor: '#00ff00',
-          borderWidth: 0,
+          borderColor: '#000',
+          borderWidth: 4,
           minBarLength: 20
         }
       ]
