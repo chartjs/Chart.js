@@ -1620,7 +1620,7 @@ export default class Scale extends Element {
         me.drawTitle();
       }
     }, {
-      z: gz + 1, // TODO, v4 move border options to its own object and add z
+      z: gz, // TODO, v4 move border options to its own object and add z
       draw() {
         me.drawBorder();
       }
