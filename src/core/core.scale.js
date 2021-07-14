@@ -1619,8 +1619,8 @@ export default class Scale extends Element {
   _layers() {
     const me = this;
     const opts = me.options;
-    const tz = opts.ticks && opts.ticks.z || -1;
-    const gz = opts.grid && opts.grid.z || -1;
+    const tz = opts.ticks && opts.ticks.z || 0;
+    const gz = valueOrDefault(opts.grid && opts.grid.z, -1);
 
     if (!me._isVisible() || me.draw !== Scale.prototype.draw) {
       // backward compatibility: draw has been overridden by custom scale
