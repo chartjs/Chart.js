@@ -21,11 +21,19 @@ module.exports = {
         y: {
           ticks: {
             display: false
+          },
+          grid: {
+            borderColor: 'red',
+            borderWidth: 5
           }
         },
         x: {
           ticks: {
             display: false
+          },
+          grid: {
+            borderColor: 'red',
+            borderWidth: 5
           }
         }
       }
