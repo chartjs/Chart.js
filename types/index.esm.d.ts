@@ -2831,6 +2831,15 @@ export interface TickOptions {
 
 export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
+   * Scale boundary strategy (bypassed by min/max time options)
+   * - `data`: make sure data are fully visible, ticks outside are removed
+   * - `ticks`: make sure ticks are fully visible, data outside are truncated
+   * @since 2.7.0
+   * @default 'ticks'
+   */
+  bounds: 'ticks' | 'data';
+
+  /**
    * Position of the axis.
    */
   position: 'left' | 'top' | 'right' | 'bottom' | 'center' | { [scale: string]: number };
