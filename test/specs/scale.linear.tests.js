@@ -482,6 +482,56 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.max).toBe(1);
   });
 
+  it('Should ensure that the scale has a max and min that are not equal - large positive numbers', function() {
+    // https://github.com/chartjs/Chart.js/issues/9377
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          // Value larger than Number.MAX_SAFE_INTEGER
+          data: [10000000000000000]
+        }],
+        labels: ['a']
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y).not.toEqual(undefined); // must construct
+    expect(chart.scales.y.min).toBe(10000000000000000 * 0.95);
+    expect(chart.scales.y.max).toBe(10000000000000000 * 1.05);
+  });
+
+  it('Should ensure that the scale has a max and min that are not equal - large negative numbers', function() {
+    // https://github.com/chartjs/Chart.js/issues/9377
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          // Value larger than Number.MAX_SAFE_INTEGER
+          data: [-10000000000000000]
+        }],
+        labels: ['a']
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y).not.toEqual(undefined); // must construct
+    expect(chart.scales.y.max).toBe(-10000000000000000 * 0.95);
+    expect(chart.scales.y.min).toBe(-10000000000000000 * 1.05);
+  });
+
   it('Should ensure that the scale has a max and min that are not equal when beginAtZero is set', function() {
     var chart = window.acquireChart({
       type: 'bar',
