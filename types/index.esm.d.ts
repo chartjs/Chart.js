@@ -327,11 +327,16 @@ export const DoughnutController: ChartComponent & {
   new (chart: Chart, datasetIndex: number): DoughnutController;
 };
 
+export interface DoughnutMetaExtensions {
+  total: number;
+}
+
 export type PieControllerDatasetOptions = DoughnutControllerDatasetOptions;
 export type PieControllerChartOptions = DoughnutControllerChartOptions;
 export type PieAnimationOptions = DoughnutAnimationOptions;
 
 export type PieDataPoint = DoughnutDataPoint;
+export type PieMetaExtensions = DoughnutMetaExtensions;
 
 export type PieController = DoughnutController
 export const PieController: ChartComponent & {
@@ -401,7 +406,7 @@ export const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
-export interface ChartMeta<TElement extends Element = Element, TDatasetElement extends Element = Element> {
+interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement extends Element = Element> {
   type: string;
   controller: DatasetController;
   order: number;
@@ -435,6 +440,16 @@ export interface ChartMeta<TElement extends Element = Element, TDatasetElement e
   _stacked: boolean | 'single';
   _parsed: unknown[];
 }
+
+export type ChartMeta<
+  TElement extends Element = Element,
+  TDatasetElement extends Element = Element,
+  // TODO - V4, move this to the first parameter.
+  // When this was introduced, doing so was a breaking change
+  TType extends ChartType = ChartType,
+> = DeepPartial<
+  { [key in ChartType]: ChartTypeRegistry[key]['metaExtensions'] }[TType]
+> & ChartMetaCommon<TElement, TDatasetElement>;
 
 export interface ActiveDataPoint {
   datasetIndex: number;
@@ -547,7 +562,7 @@ export class DatasetController<
 
   readonly chart: Chart;
   readonly index: number;
-  readonly _cachedMeta: ChartMeta<TElement, TDatasetElement>;
+  readonly _cachedMeta: ChartMeta<TElement, TDatasetElement, TType>;
   enableOptionSharing: boolean;
 
   linkScales(): void;
@@ -560,7 +575,7 @@ export class DatasetController<
   draw(): void;
   reset(): void;
   getDataset(): ChartDataset;
-  getMeta(): ChartMeta<TElement, TDatasetElement>;
+  getMeta(): ChartMeta<TElement, TDatasetElement, TType>;
   getScaleForId(scaleID: string): Scale | undefined;
   configure(): void;
   initialize(): void;
@@ -596,9 +611,9 @@ export class DatasetController<
   setHoverStyle(element: TElement, datasetIndex: number, index: number): void;
 
   parse(start: number, count: number): void;
-  protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
   protected getParsed(index: number): TParsedData;
   protected applyStack(scale: Scale, parsed: unknown[]): number;
   protected updateRangeFromParsed(
@@ -3344,6 +3359,7 @@ export interface ChartTypeRegistry {
     chartOptions: BarControllerChartOptions;
     datasetOptions: BarControllerDatasetOptions;
     defaultDataPoint: number;
+    metaExtensions: {};
     parsedDataType: BarParsedData,
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3351,6 +3367,7 @@ export interface ChartTypeRegistry {
     chartOptions: LineControllerChartOptions;
     datasetOptions: LineControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: ScatterDataPoint | number | null;
+    metaExtensions: {};
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3358,6 +3375,7 @@ export interface ChartTypeRegistry {
     chartOptions: ScatterControllerChartOptions;
     datasetOptions: ScatterControllerDatasetOptions;
     defaultDataPoint: ScatterDataPoint | number | null;
+    metaExtensions: {};
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3365,6 +3383,7 @@ export interface ChartTypeRegistry {
     chartOptions: unknown;
     datasetOptions: BubbleControllerDatasetOptions;
     defaultDataPoint: BubbleDataPoint;
+    metaExtensions: {};
     parsedDataType: BubbleParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3372,6 +3391,7 @@ export interface ChartTypeRegistry {
     chartOptions: PieControllerChartOptions;
     datasetOptions: PieControllerDatasetOptions;
     defaultDataPoint: PieDataPoint;
+    metaExtensions: PieMetaExtensions;
     parsedDataType: number;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3379,6 +3399,7 @@ export interface ChartTypeRegistry {
     chartOptions: DoughnutControllerChartOptions;
     datasetOptions: DoughnutControllerDatasetOptions;
     defaultDataPoint: DoughnutDataPoint;
+    metaExtensions: DoughnutMetaExtensions;
     parsedDataType: number;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3386,6 +3407,7 @@ export interface ChartTypeRegistry {
     chartOptions: PolarAreaControllerChartOptions;
     datasetOptions: PolarAreaControllerDatasetOptions;
     defaultDataPoint: number;
+    metaExtensions: {};
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
   };
@@ -3393,6 +3415,7 @@ export interface ChartTypeRegistry {
     chartOptions: RadarControllerChartOptions;
     datasetOptions: RadarControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: number | null;
+    metaExtensions: {};
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
   };
