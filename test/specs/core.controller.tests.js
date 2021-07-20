@@ -1935,4 +1935,14 @@ describe('Chart', function() {
       expect(active[0].element).toBe(meta.data[0]);
     });
   });
+
+  describe('platform', function() {
+    it('should use the platform constructor provided in config', function() {
+      const chart = acquireChart({
+        platform: Chart.platforms.BasicPlatform,
+        type: 'line',
+      });
+      expect(chart.platform).toBeInstanceOf(Chart.platforms.BasicPlatform);
+    });
+  });
 });
