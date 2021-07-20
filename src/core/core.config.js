@@ -128,6 +128,10 @@ export default class Config {
     this._resolverCache = new Map();
   }
 
+  get platform() {
+    return this._config.platform;
+  }
+
   get type() {
     return this._config.type;
   }

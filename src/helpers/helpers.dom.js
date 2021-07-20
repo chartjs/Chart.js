@@ -3,6 +3,13 @@ import {INFINITY} from './helpers.math';
 /**
  * @private
  */
+export function _isDomSupported() {
+  return typeof window !== 'undefined' && typeof document !== 'undefined';
+}
+
+/**
+ * @private
+ */
 export function _getParentNode(domNode) {
   let parent = domNode.parentNode;
   if (parent && parent.toString() === '[object ShadowRoot]') {

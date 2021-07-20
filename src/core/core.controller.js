@@ -2,11 +2,11 @@ import animator from './core.animator';
 import defaults, {overrides} from './core.defaults';
 import Interaction from './core.interaction';
 import layouts from './core.layouts';
-import {BasicPlatform, DomPlatform} from '../platform';
+import {_detectPlatform} from '../platform';
 import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
-import {retinaScale} from '../helpers/helpers.dom';
+import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
@@ -44,16 +44,12 @@ function onAnimationProgress(context) {
   callCallback(animationOptions && animationOptions.onProgress, [context], chart);
 }
 
-function isDomSupported() {
-  return typeof window !== 'undefined' && typeof document !== 'undefined';
-}
-
 /**
  * Chart.js can take a string id of a canvas element, a 2d context, or a canvas element itself.
  * Attempt to unwrap the item passed into the chart constructor so that it is a canvas element (if possible).
  */
 function getCanvas(item) {
-  if (isDomSupported() && typeof item === 'string') {
+  if (_isDomSupported() && typeof item === 'string') {
     item = document.getElementById(item);
   } else if (item && item.length) {
     // Support for array based queries (such as jQuery)
@@ -76,10 +72,10 @@ const getChart = (key) => {
 class Chart {
 
   // eslint-disable-next-line max-statements
-  constructor(item, config) {
+  constructor(item, userConfig) {
     const me = this;
 
-    this.config = config = new Config(config);
+    const config = this.config = new Config(userConfig);
     const initialCanvas = getCanvas(item);
     const existingChart = getChart(initialCanvas);
     if (existingChart) {
@@ -91,7 +87,7 @@ class Chart {
 
     const options = config.createResolver(config.chartOptionScopes(), me.getContext());
 
-    this.platform = me._initializePlatform(initialCanvas, config);
+    this.platform = new (config.platform || _detectPlatform(initialCanvas))();
 
     const context = me.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
@@ -204,18 +200,6 @@ class Chart {
     me.notifyPlugins('afterInit');
 
     return me;
-  }
-
-  /**
-	 * @private
-	 */
-  _initializePlatform(canvas, config) {
-    if (config.platform) {
-      return new config.platform();
-    } else if (!isDomSupported() || (typeof OffscreenCanvas !== 'undefined' && canvas instanceof OffscreenCanvas)) {
-      return new BasicPlatform();
-    }
-    return new DomPlatform();
   }
 
   clear() {
