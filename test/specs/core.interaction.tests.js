@@ -1,7 +1,6 @@
-// Tests of the interaction handlers in Core.Interaction
-
-// Test the rectangle element
 describe('Core.Interaction', function() {
+  describe('auto', jasmine.fixture.specs('core.interaction'));
+
   describe('point mode', function() {
     beforeEach(function() {
       this.chart = window.acquireChart({
