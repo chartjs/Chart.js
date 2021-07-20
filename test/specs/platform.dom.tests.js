@@ -408,17 +408,22 @@ describe('Platform.dom', function() {
       var platform = new DomPlatform();
       var canvas = document.createElement('canvas');
       var div = document.createElement('div');
+      var anotherDiv = document.createElement('div');
 
       expect(platform.isAttached(canvas)).toEqual(false);
       div.appendChild(canvas);
       expect(platform.isAttached(canvas)).toEqual(false);
-      document.body.appendChild(div);
+      anotherDiv.appendChild(div);
+      expect(platform.isAttached(canvas)).toEqual(false);
+      document.body.appendChild(anotherDiv);
 
       expect(platform.isAttached(canvas)).toEqual(true);
 
+      anotherDiv.removeChild(div);
+      expect(platform.isAttached(canvas)).toEqual(false);
       div.removeChild(canvas);
       expect(platform.isAttached(canvas)).toEqual(false);
-      document.body.removeChild(div);
+      document.body.removeChild(anotherDiv);
       expect(platform.isAttached(canvas)).toEqual(false);
     });
   });
