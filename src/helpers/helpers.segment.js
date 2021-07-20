@@ -244,14 +244,15 @@ export function _computeSegments(line, segmentOptions) {
 
   const loop = !!line._loop;
   const {start, end} = findStartAndEnd(points, count, loop, spanGaps);
+  const baseStyle = readStyle(line.options);
 
   if (spanGaps === true) {
-    return splitByStyles([{start, end, loop}], points, segmentOptions);
+    return splitByStyles([{start, end, loop}], points, baseStyle, segmentOptions);
   }
 
   const max = end < start ? end + count : end;
   const completeLoop = !!line._fullLoop && start === 0 && end === count - 1;
-  return splitByStyles(solidSegments(points, start, max, completeLoop), points, segmentOptions);
+  return splitByStyles(solidSegments(points, start, max, completeLoop), points, baseStyle, segmentOptions);
 }
 
 /**
@@ -260,11 +261,11 @@ export function _computeSegments(line, segmentOptions) {
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function splitByStyles(segments, points, segmentOptions) {
+function splitByStyles(segments, points, baseStyle, segmentOptions) {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
-  return doSplitByStyles(segments, points, segmentOptions);
+  return doSplitByStyles(segments, points, baseStyle, segmentOptions);
 }
 
 /**
@@ -273,14 +274,15 @@ function splitByStyles(segments, points, segmentOptions) {
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function doSplitByStyles(segments, points, segmentOptions) {
+function doSplitByStyles(segments, points, baseStyle, segmentOptions) {
   const count = points.length;
   const result = [];
   let start = segments[0].start;
   let i = start;
   for (const segment of segments) {
-    let prevStyle, style;
+    let prevStyle = baseStyle;
     let prev = points[start % count];
+    let style;
     for (i = start + 1; i <= segment.end; i++) {
       const pt = points[i % count];
       style = readStyle(segmentOptions.setContext({type: 'segment', p0: prev, p1: pt}));
