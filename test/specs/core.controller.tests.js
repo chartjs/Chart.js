@@ -1707,6 +1707,23 @@ describe('Chart', function() {
         'before-0', 'after-0'
       ]);
     });
+
+    it('should not crash when accessing options of a blank inline plugin', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {datasets: [{}]},
+        plugins: [{}],
+      });
+
+      function iterateOptions() {
+        for (const plugin of chart._plugins._init) {
+          // triggering bug https://github.com/chartjs/Chart.js/issues/9368
+          expect(Object.getPrototypeOf(plugin.options)).toBeNull();
+        }
+      }
+
+      expect(iterateOptions).not.toThrow();
+    });
   });
 
   describe('metasets', function() {

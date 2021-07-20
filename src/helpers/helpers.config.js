@@ -54,7 +54,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
      * A trap for Object.getPrototypeOf.
      */
     getPrototypeOf() {
-      return Reflect.getPrototypeOf(scopes[0]);
+      return Reflect.getPrototypeOf(scopes[0] || Object.create(null));
     },
 
     /**
