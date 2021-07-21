@@ -508,8 +508,8 @@ export declare class Chart<
   setDatasetVisibility(datasetIndex: number, visible: boolean): void;
   toggleDataVisibility(index: number): void;
   getDataVisibility(index: number): boolean;
-  hide(datasetIndex: number): void;
-  show(datasetIndex: number): void;
+  hide(datasetIndex: number, dataIndex?: number): void;
+  show(datasetIndex: number, dataIndex?: number): void;
 
   getActiveElements(): ActiveElement[];
   setActiveElements(active: ActiveDataPoint[]): void;
