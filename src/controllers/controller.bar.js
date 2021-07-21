@@ -177,6 +177,72 @@ function barSign(size, vScale, actualBase) {
   return (vScale.isHorizontal() ? 1 : -1) * (vScale.min >= actualBase ? 1 : -1);
 }
 
+function borderProps(properties) {
+  let reverse, start, end, top, bottom;
+  if (properties.horizontal) {
+    reverse = properties.base > properties.x;
+    start = 'left';
+    end = 'right';
+  } else {
+    reverse = properties.base < properties.y;
+    start = 'bottom';
+    end = 'top';
+  }
+  if (reverse) {
+    top = 'end';
+    bottom = 'start';
+  } else {
+    top = 'start';
+    bottom = 'end';
+  }
+  return {start, end, reverse, top, bottom};
+}
+
+function setBorderSkipped(properties, options, stack, index) {
+  let edge = options.borderSkipped;
+  const res = {};
+
+  if (!edge) {
+    properties.borderSkipped = res;
+    return;
+  }
+
+  const {start, end, reverse, top, bottom} = borderProps(properties);
+
+  if (edge === 'middle' && stack) {
+    properties.enableBorderRadius = true;
+    if ((stack._top || 0) === index) {
+      edge = top;
+    } else if ((stack._bottom || 0) === index) {
+      edge = bottom;
+    } else {
+      res[parseEdge(bottom, start, end, reverse)] = true;
+      edge = top;
+    }
+  }
+
+  res[parseEdge(edge, start, end, reverse)] = true;
+  properties.borderSkipped = res;
+}
+
+function parseEdge(edge, a, b, reverse) {
+  if (reverse) {
+    edge = swap(edge, a, b);
+    edge = startEnd(edge, b, a);
+  } else {
+    edge = startEnd(edge, a, b);
+  }
+  return edge;
+}
+
+function swap(orig, v1, v2) {
+  return orig === v1 ? v2 : orig === v2 ? v1 : orig;
+}
+
+function startEnd(v, start, end) {
+  return v === 'start' ? start : v === 'end' ? end : v;
+}
+
 export default class BarController extends DatasetController {
 
   /**
@@ -278,7 +344,7 @@ export default class BarController extends DatasetController {
   updateElements(bars, start, count, mode) {
     const me = this;
     const reset = mode === 'reset';
-    const vScale = me._cachedMeta.vScale;
+    const {index, _cachedMeta: {vScale}} = me;
     const base = vScale.getBasePixel();
     const horizontal = vScale.isHorizontal();
     const ruler = me._getRuler();
@@ -297,7 +363,7 @@ export default class BarController extends DatasetController {
       const properties = {
         horizontal,
         base: vpixels.base,
-        enableBorderRadius: !stack || isFloatBar(parsed._custom) || (me.index === stack._top || me.index === stack._bottom),
+        enableBorderRadius: !stack || isFloatBar(parsed._custom) || (index === stack._top || index === stack._bottom),
         x: horizontal ? vpixels.head : ipixels.center,
         y: horizontal ? ipixels.center : vpixels.head,
         height: horizontal ? ipixels.size : Math.abs(vpixels.size),
@@ -307,6 +373,7 @@ export default class BarController extends DatasetController {
       if (includeOptions) {
         properties.options = sharedOptions || me.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
       }
+      setBorderSkipped(properties, properties.options || bars[i].options, stack, index);
       me.updateElement(bars[i], i, properties, mode);
     }
   }
