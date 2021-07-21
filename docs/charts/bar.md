@@ -157,6 +157,7 @@ Options are:
 
 * `'start'`
 * `'end'`
+* `'middle'` (only valid on stacked bars: the borders between bars are skipped)
 * `'bottom'`
 * `'left'`
 * `'top'`

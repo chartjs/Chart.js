@@ -32,47 +32,13 @@ function getBarBounds(bar, useFinalPosition) {
   return {left, top, right, bottom};
 }
 
-function parseBorderSkipped(bar) {
-  let edge = bar.options.borderSkipped;
-  const res = {};
-
-  if (!edge) {
-    return res;
-  }
-
-  edge = bar.horizontal
-    ? parseEdge(edge, 'left', 'right', bar.base > bar.x)
-    : parseEdge(edge, 'bottom', 'top', bar.base < bar.y);
-
-  res[edge] = true;
-  return res;
-}
-
-function parseEdge(edge, a, b, reverse) {
-  if (reverse) {
-    edge = swap(edge, a, b);
-    edge = startEnd(edge, b, a);
-  } else {
-    edge = startEnd(edge, a, b);
-  }
-  return edge;
-}
-
-function swap(orig, v1, v2) {
-  return orig === v1 ? v2 : orig === v2 ? v1 : orig;
-}
-
-function startEnd(v, start, end) {
-  return v === 'start' ? start : v === 'end' ? end : v;
-}
-
 function skipOrLimit(skip, value, min, max) {
   return skip ? 0 : _limitValue(value, min, max);
 }
 
 function parseBorderWidth(bar, maxW, maxH) {
   const value = bar.options.borderWidth;
-  const skip = parseBorderSkipped(bar);
+  const skip = bar.borderSkipped;
   const o = toTRBL(value);
 
   return {
@@ -88,7 +54,7 @@ function parseBorderRadius(bar, maxW, maxH) {
   const value = bar.options.borderRadius;
   const o = toTRBLCorners(value);
   const maxR = Math.min(maxW, maxH);
-  const skip = parseBorderSkipped(bar);
+  const skip = bar.borderSkipped;
 
   // If the value is an object, assume the user knows what they are doing
   // and apply as directed.
