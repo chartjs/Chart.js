@@ -77,7 +77,7 @@ Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.
 | `backgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.backgroundColor` | Bar fill color.
 | `borderWidth` | `number` | `0` | Bar stroke width.
 | `borderColor` | [`Color`](/general/colors.md) | `Chart.defaults.borderColor` | Bar stroke color.
-| `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'bottom'`, `'left'`, `'top'` or `'right'`.
+| `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'middle'`, `'bottom'`, `'left'`, `'top'`, `'right'` or `false`.
 | `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
 | [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Style of the point for legend.
 
