@@ -145,7 +145,7 @@ export default class DoughnutController extends DatasetController {
     const opts = me.options;
     const meta = me._cachedMeta;
     const circumference = me._getCircumference();
-    if ((reset && opts.animation.animateRotate) || !this.chart.getDataVisibility(i) || meta._parsed[i] === null) {
+    if ((reset && opts.animation.animateRotate) || !this.chart.getDataVisibility(i) || meta._parsed[i] === null || meta.data[i].hidden) {
       return 0;
     }
     return me.calculateCircumference(meta._parsed[i] * circumference / TAU);
@@ -203,7 +203,7 @@ export default class DoughnutController extends DatasetController {
 
     for (i = 0; i < metaData.length; i++) {
       const value = meta._parsed[i];
-      if (value !== null && !isNaN(value) && this.chart.getDataVisibility(i)) {
+      if (value !== null && !isNaN(value) && this.chart.getDataVisibility(i) && !metaData[i].hidden) {
         total += Math.abs(value);
       }
     }

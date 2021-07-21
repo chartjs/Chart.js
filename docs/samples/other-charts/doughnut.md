@@ -49,6 +49,30 @@ const actions = [
     }
   },
   {
+    name: 'Hide(0)',
+    handler(chart) {
+      chart.hide(0);
+    }
+  },
+  {
+    name: 'Show(0)',
+    handler(chart) {
+      chart.show(0);
+    }
+  },
+  {
+    name: 'Hide (0, 1)',
+    handler(chart) {
+      chart.hide(0, 1);
+    }
+  },
+  {
+    name: 'Show (0, 1)',
+    handler(chart) {
+      chart.show(0, 1);
+    }
+  },
+  {
     name: 'Remove Dataset',
     handler(chart) {
       chart.data.datasets.pop();

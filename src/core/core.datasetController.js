@@ -701,6 +701,9 @@ export default class DatasetController {
 
     for (i = start; i < start + count; ++i) {
       const element = elements[i];
+      if (element.hidden) {
+        continue;
+      }
       if (element.active) {
         active.push(element);
       } else {
