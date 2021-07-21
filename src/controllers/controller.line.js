@@ -27,6 +27,7 @@ export default class LineController extends DatasetController {
     }
 
     // Update Line
+    line._datasetIndex = me.index;
     line._decimated = !!_dataset._decimated;
     line.points = points;
 
