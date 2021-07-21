@@ -177,15 +177,7 @@ function barSign(size, vScale, actualBase) {
   return (vScale.isHorizontal() ? 1 : -1) * (vScale.min >= actualBase ? 1 : -1);
 }
 
-function setBorderSkipped(properties, options, stack, index) {
-  let edge = options.borderSkipped;
-  const res = {};
-
-  if (!edge) {
-    properties.borderSkipped = res;
-    return;
-  }
-
+function borderProps(properties) {
   let reverse, start, end, top, bottom;
   if (properties.horizontal) {
     reverse = properties.base > properties.x;
@@ -203,6 +195,19 @@ function setBorderSkipped(properties, options, stack, index) {
     top = 'start';
     bottom = 'end';
   }
+  return {start, end, reverse, top, bottom};
+}
+
+function setBorderSkipped(properties, options, stack, index) {
+  let edge = options.borderSkipped;
+  const res = {};
+
+  if (!edge) {
+    properties.borderSkipped = res;
+    return;
+  }
+
+  const {start, end, reverse, top, bottom} = borderProps(properties);
 
   if (edge === 'middle' && stack) {
     properties.enableBorderRadius = true;
