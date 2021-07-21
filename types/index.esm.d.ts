@@ -28,7 +28,10 @@ export interface ScriptableContext<TType extends ChartType> {
 export interface ScriptableLineSegmentContext {
   type: 'segment',
   p0: PointElement,
-  p1: PointElement
+  p1: PointElement,
+  p0DataIndex: number,
+  p1DataIndex: number,
+  datasetIndex: number
 }
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T);

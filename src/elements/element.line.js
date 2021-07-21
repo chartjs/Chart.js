@@ -251,6 +251,7 @@ export default class LineElement extends Element {
     this._segments = undefined;
     this._decimated = false;
     this._pointsUpdated = false;
+    this._datasetIndex = undefined;
 
     if (cfg) {
       Object.assign(this, cfg);

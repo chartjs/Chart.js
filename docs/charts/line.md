@@ -168,6 +168,9 @@ Context for the scriptable segment contains the following properties:
 * `type`: `'segment'`
 * `p0`: first point element
 * `p1`: second point element
+* `p0DataIndex`: index of first point in the data array
+* `p1DataIndex`: index of second point in the data array
+* `datasetIndex`: dataset index
 
 [Example usage](../samples/line/segments.md)
 
