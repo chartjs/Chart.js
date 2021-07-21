@@ -152,20 +152,26 @@ Returns the stored visibility state of an data index for all datasets. Set by [t
 var visible = chart.getDataVisibility(2);
 ```
 
-## hide(datasetIndex)
+## hide(datasetIndex, dataIndex?)
 
-Sets the visibility for the given dataset to false. Updates the chart and animates the dataset with `'hide'` mode. This animation can be configured under the `hide` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
+If dataIndex is not specified, sets the visibility for the given dataset to false. Updates the chart and animates the dataset with `'hide'` mode. This animation can be configured under the `hide` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
+
+If dataIndex is specified, sets the hidden flag of that element to true and updates the chart.
 
 ```javascript
 chart.hide(1); // hides dataset at index 1 and does 'hide' animation.
+chart.hide(0, 2); // hides the data element at index 2 of the first dataset.
 ```
 
-## show(datasetIndex)
+## show(datasetIndex, dataIndex?)
 
-Sets the visibility for the given dataset to true. Updates the chart and animates the dataset with `'show'` mode. This animation can be configured under the `show` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
+If dataIndex is not specified, sets the visibility for the given dataset to true. Updates the chart and animates the dataset with `'show'` mode. This animation can be configured under the `show` key in animation options. Please see [animations](../configuration/animations.md) docs for more details.
+
+If dataIndex is specified, sets the hidden flag of that element to false and updates the chart.
 
 ```javascript
 chart.show(1); // shows dataset at index 1 and does 'show' animation.
+chart.show(0, 2); // shows the data element at index 2 of the first dataset.
 ```
 
 ## setActiveElements(activeElements)

@@ -7,7 +7,7 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -794,25 +794,29 @@ class Chart {
   /**
 	 * @private
 	 */
-  _updateDatasetVisibility(datasetIndex, visible) {
+  _updateVisibility(datasetIndex, dataIndex, visible) {
     const me = this;
     const mode = visible ? 'show' : 'hide';
     const meta = me.getDatasetMeta(datasetIndex);
     const anims = meta.controller._resolveAnimations(undefined, mode);
-    me.setDatasetVisibility(datasetIndex, visible);
 
-    // Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
-    anims.update(meta, {visible});
-
-    me.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
+    if (defined(dataIndex)) {
+      meta.data[dataIndex].hidden = !visible;
+      me.update();
+    } else {
+      me.setDatasetVisibility(datasetIndex, visible);
+      // Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
+      anims.update(meta, {visible});
+      me.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
+    }
   }
 
-  hide(datasetIndex) {
-    this._updateDatasetVisibility(datasetIndex, false);
+  hide(datasetIndex, dataIndex) {
+    this._updateVisibility(datasetIndex, dataIndex, false);
   }
 
-  show(datasetIndex) {
-    this._updateDatasetVisibility(datasetIndex, true);
+  show(datasetIndex, dataIndex) {
+    this._updateVisibility(datasetIndex, dataIndex, true);
   }
 
   /**
