@@ -19,7 +19,7 @@ Namespace: `options.elements.point`, global point options: `Chart.defaults.eleme
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `radius` | `number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Point style.
+| [`pointStyle`](#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | Point style.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
@@ -43,7 +43,7 @@ The following values are supported:
 - `'star'`
 - `'triangle'`
 
-If the value is an image, that image is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
+If the value is an image or a canvas element, that image or canvas element is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
 ## Line Configuration
 
@@ -79,7 +79,7 @@ Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.
 | `borderColor` | [`Color`](/general/colors.md) | `Chart.defaults.borderColor` | Bar stroke color.
 | `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'middle'`, `'bottom'`, `'left'`, `'top'`, `'right'` or `false`.
 | `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
-| [`pointStyle`](#point-styles) | `string`\|`Image` | `'circle'` | Style of the point for legend.
+| [`pointStyle`](#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | Style of the point for legend.
 
 ## Arc Configuration
 

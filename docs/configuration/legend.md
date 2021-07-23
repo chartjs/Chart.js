@@ -59,7 +59,7 @@ Namespace: `options.plugins.legend.labels`
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
 | `sort` | `function` | `null` | Sorts legend items. Receives 3 parameters, two [Legend Items](#legend-item-interface) and the chart data.
-| [`pointStyle`](elements.md#point-styles) | `string`\|`Image` | `'circle'` | If specified, this style of point is used for the legend. Only used if `usePointStyle` is true.
+| [`pointStyle`](elements.md#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | If specified, this style of point is used for the legend. Only used if `usePointStyle` is true.
 | `textAlign` | `string` | `'center'` | Horizontal alignment of the label text. Options are: `'left'`, `'right'` or `'center'`.
 | `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the minimum value between boxWidth and font.size).
 
@@ -119,7 +119,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     strokeStyle: Color,
 
     // Point style of the legend box (only used if usePointStyle is true)
-    pointStyle: string | Image,
+    pointStyle: string | Image | HTMLCanvasElement,
 
     // Rotation of the point in degrees (only used if usePointStyle is true)
     rotation: number
