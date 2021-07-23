@@ -377,10 +377,8 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableOptions<PointPrefixedOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<LineOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<LineHoverOptions, ScriptableContext<'radar'>>,
+    ScriptableAndArrayOptions<PointOptions & PointHoverOptions & PointPrefixedOptions & PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
+    ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<'radar'>>,
     AnimationOptions<'radar'> {
         /**
    * The ID of the x axis to plot this dataset on.
