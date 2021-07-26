@@ -2,7 +2,7 @@
 
 There are special global settings that can change all of the fonts on the chart. These options are in `Chart.defaults.font`. The global font settings only apply when more specific options are not included in the config.
 
-For example, in this chart the text will all be red except for the labels in the legend.
+For example, in this chart the text will have a font size of 16px except for the labels in the legend.
 
 ```javascript
 Chart.defaults.font.size = 16;
