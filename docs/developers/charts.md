@@ -107,7 +107,7 @@ class Custom extends BubbleController {
         ctx.strokeRect(x - radius, y - radius, 2 * radius, 2 * radius);
         ctx.restore();
     }
-});
+};
 Custom.id = 'derivedBubble';
 Custom.defaults = BubbleController.defaults;
 
