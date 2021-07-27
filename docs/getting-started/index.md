@@ -42,7 +42,7 @@ const data = {
 // <block:config:0>
 const config = {
   type: 'line',
-  data,
+  data: data,
   options: {}
 };
 // </block:config>
