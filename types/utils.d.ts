@@ -19,12 +19,3 @@ export type DistributiveArray<T> = [T] extends [unknown] ? Array<T> : never
 // https://stackoverflow.com/a/50375286
 export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
-// https://stackoverflow.com/a/59463385
-type TupleKeys<T extends unknown> = Exclude<keyof T, keyof []>
-type Foo<T extends unknown> = {
-    [K in TupleKeys<T>]: {foo: T[K]}
-}
-type Values<T> = T[keyof T]
-type Unfoo<T> = T extends { foo: unknown } ? T['foo'] : never;
-
-export type IntersectItems<T extends unknown> = Unfoo<UnionToIntersection<Values<Foo<T>>>>;
