@@ -1,4 +1,4 @@
-import { DeepPartial, DistributiveArray, IntersectItems, UnionToIntersection } from './utils';
+import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
@@ -17,7 +17,7 @@ export { LayoutItem, LayoutPosition } from './layout';
 
 export interface ScriptableContext<TType extends ChartType> {
   active: boolean;
-  chart: IntersectItems<Chart<TType>>;
+  chart: Chart;
   dataIndex: number;
   dataset: UnionToIntersection<ChartDataset<TType>>;
   datasetIndex: number;

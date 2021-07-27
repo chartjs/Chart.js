@@ -10,9 +10,9 @@ interface test {
 }
 
 const testImpl: test = {
-  pie: (ctx) => ctx.parsed,
+  pie: (ctx) => ctx.parsed + ctx.chart.width,
   line: (ctx) => ctx.parsed.x + ctx.parsed.y,
-  testA: (ctx) => ctx.parsed,
+  testA: (ctx) => ctx.parsed + ctx.dataset.data[0],
   testB: (ctx) => ctx.parsed.x + ctx.parsed.y,
   // @ts-expect-error combined type should not be any
   testC: (ctx) => ctx.fail,
