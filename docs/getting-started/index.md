@@ -29,7 +29,7 @@ const labels = [
   'June',
 ];
 const data = {
-  labels,
+  labels: labels,
   datasets: [{
     label: 'My First dataset',
     backgroundColor: 'rgb(255, 99, 132)',
@@ -42,7 +42,7 @@ const data = {
 // <block:config:0>
 const config = {
   type: 'line',
-  data,
+  data: data,
   options: {}
 };
 // </block:config>
