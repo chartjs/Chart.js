@@ -480,6 +480,8 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
+  readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
+
   data: ChartData<TType, TData, TLabel>;
   options: ChartOptions<TType>;
 
