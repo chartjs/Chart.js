@@ -24,6 +24,9 @@ describe('Chart.helpers.canvas', function() {
   });
 
   describe('isPointInArea', function() {
+    it('should return true when no area is provided', function() {
+      expect(helpers._isPointInArea({x: 1, y: 1})).toBe(true);
+    });
     it('should determine if a point is in the area', function() {
       var isPointInArea = helpers._isPointInArea;
       var area = {left: 0, top: 0, right: 512, bottom: 256};

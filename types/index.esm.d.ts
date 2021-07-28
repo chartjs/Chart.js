@@ -1629,7 +1629,7 @@ export interface FontSpec {
 export type TextAlign = 'left' | 'center' | 'right';
 
 export interface VisualElement {
-  draw(ctx: CanvasRenderingContext2D): void;
+  draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;
   inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
   inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
   inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
