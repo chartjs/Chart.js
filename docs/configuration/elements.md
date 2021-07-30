@@ -19,7 +19,7 @@ Namespace: `options.elements.point`, global point options: `Chart.defaults.eleme
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `radius` | `number` | `3` | Point radius.
-| [`pointStyle`](#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | Point style.
+| [`pointStyle`](#point-styles) | [`pointStyle`](#types) | `'circle'` | Point style.
 | `rotation` | `number` | `0` | Point rotation (in degrees).
 | `backgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.backgroundColor` | Point fill color.
 | `borderWidth` | `number` | `1` | Point stroke width.
@@ -30,7 +30,12 @@ Namespace: `options.elements.point`, global point options: `Chart.defaults.eleme
 
 ### Point Styles
 
-The following values are supported:
+#### Types
+
+The `pointStyle` argument accepts the following type of inputs: `string`, `Image` and `HTMLCanvasElement`
+
+#### Info
+When a string is provided, the following values are supported:
 
 - `'circle'`
 - `'cross'`

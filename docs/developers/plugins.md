@@ -122,7 +122,7 @@ var chart = new Chart(ctx, {
 
 ## Plugin Core API
 
-Read more about the [existing plugin extension hooks](../api/interfaces/plugin).
+Read more about the [existing plugin extension hooks](../api/interfaces/Plugin).
 
 ### Chart Initialization
 

@@ -75,7 +75,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`pointHoverRadius`](#interactions) | `number` | Yes | Yes | `4`
 | [`pointRadius`](#point-styling) | `number` | Yes | Yes | `3`
 | [`pointRotation`](#point-styling) | `number` | Yes | Yes | `0`
-| [`pointStyle`](#point-styling) | `string`\|`Image`\|`HTMLCanvasElement` | Yes | Yes | `'circle'`
+| [`pointStyle`](#point-styling) | [`pointStyle`](../configuration/elements.md#types) | Yes | Yes | `'circle'`
 | [`segment`](#segment) | `object` | - | - | `undefined`
 | [`showLine`](#line-styling) | `boolean` | - | - | `true`
 | [`spanGaps`](#line-styling) | `boolean`\|`number` | - | - | `undefined`
