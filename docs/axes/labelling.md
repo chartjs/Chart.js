@@ -20,7 +20,7 @@ Namespace: `options.scales[scaleId].title`, it defines options for the scale tit
 It is also common to want to change the tick marks to include information about the data type. For example, adding a dollar sign ('$').
 To do this, you need to override the `ticks.callback` method in the axis configuration.
 
-The method receiver 3 arguments:
+The method receives 3 arguments:
 
 * `value` - the tick value in the **internal data format** of the associated scale.
 * `index` - the tick index in the ticks array.
