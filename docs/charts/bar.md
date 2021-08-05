@@ -121,9 +121,9 @@ data: {
 | `grouped` | Should the bars be grouped on index axis. When `true`, all the datasets at same index value will be placed next to each other centering on that index value. When `false`, each bar is placed on its actual index-axis value.
 | `indexAxis` | The base axis of the dataset. `'x'` for vertical bars and `'y'` for horizontal bars.
 | `label` | The label for the dataset which appears in the legend and tooltips.
-| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend. [more](mixed.md#drawing-order)
 | `skipNull` | If `true`, null or undefined values will not be used for spacing calculations when determining bar size.
-| `stack` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). [more](#stacked-bar-charts)
+| `stack` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). [more](#stacked-bar-chart)
 | `xAxisID` | The ID of the x-axis to plot this dataset on.
 | `yAxisID` | The ID of the y-axis to plot this dataset on.
 
