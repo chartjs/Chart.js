@@ -376,6 +376,48 @@ describe('Chart.DatasetController', function() {
     expect(controller.getParsed(9)).toBe(last);
   });
 
+  it('should synchronize insert before removal when parsing is off', function() {
+    // https://github.com/chartjs/Chart.js/issues/9511
+    const data = [{x: 0, y: 1}, {x: 2, y: 7}, {x: 3, y: 5}];
+    var chart = acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: data,
+        }],
+      },
+      options: {
+        parsing: false,
+        scales: {
+          x: {
+            type: 'linear',
+            min: 0,
+            max: 10,
+          },
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 10,
+          },
+        },
+      },
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var controller = meta.controller;
+
+    data.push({
+      x: 10,
+      y: 6
+    });
+    data.splice(0, 1);
+    chart.update();
+
+    expect(meta.data.length).toBe(3);
+    expect(controller.getParsed(0)).toBe(data[0]);
+    expect(controller.getParsed(2)).toBe(data[2]);
+  });
+
   it('should re-synchronize metadata when the data object reference changes', function() {
     var data0 = [0, 1, 2, 3, 4, 5];
     var data1 = [6, 7, 8];

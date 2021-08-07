@@ -422,9 +422,11 @@ export default class DatasetController {
     let i, cur, parsed;
 
     if (me._parsing === false) {
-      meta._parsed = data;
+      for (i = 0; i < count; ++i) {
+        meta._parsed[i + start] = cur = data[i];
+      }
       meta._sorted = true;
-      parsed = data;
+      parsed = meta._parsed;
     } else {
       if (isArray(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
@@ -994,11 +996,9 @@ export default class DatasetController {
   _removeElements(start, count) {
     const me = this;
     const meta = me._cachedMeta;
-    if (me._parsing) {
-      const removed = meta._parsed.splice(start, count);
-      if (meta._stacked) {
-        clearStacks(meta, removed);
-      }
+    const removed = meta._parsed.splice(start, count);
+    if (me._parsing && meta._stacked) {
+      clearStacks(meta, removed);
     }
     meta.data.splice(start, count);
   }
