@@ -94,8 +94,8 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
 | `indexAxis` | The base axis of the dataset. `'x'` for horizontal lines and `'y'` for vertical lines.
 | `label` | The label for the dataset which appears in the legend and tooltips.
-| `order` | The drawing order of dataset. Also affects order for stacking, tooltip, and legend.
-| `stack` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). [more](#stacked-area-charts)
+| `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend. [more](mixed.md#drawing-order)
+| `stack` | The ID of the group to which this dataset belongs to (when stacked, each group will be a separate stack). [more](#stacked-area-chart)
 | `xAxisID` | The ID of the x-axis to plot this dataset on.
 | `yAxisID` | The ID of the y-axis to plot this dataset on.
 

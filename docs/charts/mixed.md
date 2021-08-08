@@ -73,6 +73,8 @@ module.exports = {
 
  By default, datasets are drawn such that the first one is top-most. This can be altered by specifying `order` option to datasets. `order` defaults to `0`. Note that this also affects stacking, legend, and tooltip. So it's essentially the same as reordering the datasets.
 
+The `order` property behaves like a weight instead of a specific order, so the higher the number, the sooner that dataset is drawn on the canvas and thus other datasets with a lower order number will get drawn over it.
+
  ```javascript
 var mixedChart = new Chart(ctx, {
     type: 'bar',
