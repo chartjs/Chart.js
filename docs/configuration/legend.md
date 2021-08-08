@@ -58,7 +58,7 @@ Namespace: `options.plugins.legend.labels`
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
-| `sort` | `function` | `null` | Sorts legend items. Receives 3 parameters, two [Legend Items](#legend-item-interface) and the chart data.
+| `sort` | `function` | `null` | Sorts legend items. Type is : `sort(a: LegendItem, b: LegendItem, data: ChartData): number;`. Receives 3 parameters, two [Legend Items](#legend-item-interface) and the chart data. The return value of the function is a number that indicates the order of the two legend item parameters. The ordering matches the [return value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description) of `Array.prototype.sort()` 
 | [`pointStyle`](elements.md#point-styles) | [`pointStyle`](elements.md#types) | `'circle'` | If specified, this style of point is used for the legend. Only used if `usePointStyle` is true.
 | `textAlign` | `string` | `'center'` | Horizontal alignment of the label text. Options are: `'left'`, `'right'` or `'center'`.
 | `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on the minimum value between boxWidth and font.size).
