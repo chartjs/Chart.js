@@ -16,3 +16,5 @@ Namespace: `options.scales[scaleId].ticks`
 | `textStrokeColor` | [`Color`](/general/colors.md) | Yes | `` | The color of the stroke around the text.
 | `textStrokeWidth` | `number` | Yes | `0` | Stroke width around the text.
 | `z` | `number` | | `0` | z-index of tick layer. Useful when ticks are drawn on chart area. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
+| `maxRotation` | `number` | Yes | | Maximum rotation (deg) of tick text  |
+| `minRotation` | `number` | Yes | | Minimum rotation (deg) of tick text  |
