@@ -170,7 +170,9 @@ export class Legend extends Element {
     let row = -1;
     let top = -lineHeight;
     me.legendItems.forEach((legendItem, i) => {
-      const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+      const pointStyle = legendItem?.pointStyle;
+      const pointWidth = pointStyle?.offsetWidth || pointStyle?.width || boxWidth;
+      const itemWidth = pointWidth + fontSize / 2 + ctx.measureText(legendItem.text).width;
 
       if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
         totalHeight += lineHeight;
@@ -202,7 +204,8 @@ export class Legend extends Element {
     let col = 0;
 
     me.legendItems.forEach((legendItem, i) => {
-      const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+      const pointWidth = legendItem?.pointStyle?.offsetWidth || boxWidth;
+      const itemWidth = pointWidth + fontSize / 2 + ctx.measureText(legendItem.text).width;
 
       // If too tall, go to new column
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
@@ -327,7 +330,7 @@ export class Legend extends Element {
         // Recalculate x and y for drawPoint() because its expecting
         // x and y to be center of figure (instead of top left)
         const drawOptions = {
-          radius: boxWidth * Math.SQRT2 / 2,
+          radius: (legendItem.boxWidth) || boxWidth * Math.SQRT2 / 2,
           pointStyle: legendItem.pointStyle,
           rotation: legendItem.rotation,
           borderWidth: lineWidth
@@ -340,8 +343,8 @@ export class Legend extends Element {
       } else {
         // Draw box as legend symbol
         // Adjust position when boxHeight < fontSize (want it centered)
-        const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
-        const xBoxLeft = rtlHelper.leftForLtr(x, boxWidth);
+        const yBoxTop = y + Math.max((fontSize - (legendItem.boxHeight || boxHeight)) / 2, 0);
+        const xBoxLeft = rtlHelper.leftForLtr(x, legendItem.boxWidth || boxWidth);
         const borderRadius = toTRBLCorners(legendItem.borderRadius);
 
         ctx.beginPath();
@@ -350,9 +353,9 @@ export class Legend extends Element {
           addRoundedRectPath(ctx, {
             x: xBoxLeft,
             y: yBoxTop,
-            w: boxWidth,
-            h: boxHeight,
-            radius: borderRadius,
+            w: legendItem.boxWidth || boxWidth,
+            h: legendItem.boxHeight || boxHeight,
+            radius: borderRadius
           });
         } else {
           ctx.rect(xBoxLeft, yBoxTop, boxWidth, boxHeight);
@@ -401,7 +404,8 @@ export class Legend extends Element {
 
       const textWidth = ctx.measureText(legendItem.text).width;
       const textAlign = rtlHelper.textAlign(legendItem.textAlign || (legendItem.textAlign = labelOpts.textAlign));
-      const width = boxWidth + halfFontSize + textWidth;
+      const pointerWidth = legendItem.pointStyle?.offsetWidth || legendItem.pointStyle?.width || boxWidth;
+      const width = pointerWidth + halfFontSize + textWidth;
       let x = cursor.x;
       let y = cursor.y;
 
@@ -423,7 +427,7 @@ export class Legend extends Element {
 
       drawLegendBox(realX, y, legendItem);
 
-      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : me.right, opts.rtl);
+      x = _textX(textAlign, x + pointerWidth + halfFontSize, isHorizontal ? x + width : me.right, opts.rtl);
 
       // Fill the actual label
       fillText(rtlHelper.x(x), y, legendItem);
