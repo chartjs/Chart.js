@@ -1,7 +1,11 @@
 extends:
   - chartjs
-  - plugin:es/no-new-in-es2019
+  - plugin:es/restrict-to-es2018
   - plugin:markdown/recommended
+
+settings:
+  es:
+    aggressive: true
 
 env:
   es6: true
@@ -9,7 +13,7 @@ env:
   node: true
 
 parserOptions:
-  ecmaVersion: 2018
+  ecmaVersion: 2021
   sourceType: module
   ecmaFeatures:
     impliedStrict: true
