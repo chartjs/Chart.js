@@ -422,11 +422,9 @@ export default class DatasetController {
     let i, cur, parsed;
 
     if (me._parsing === false) {
-      for (i = 0; i < count; ++i) {
-        meta._parsed[i + start] = cur = data[i];
-      }
+      meta._parsed = data;
       meta._sorted = true;
-      parsed = meta._parsed;
+      parsed = data;
     } else {
       if (isArray(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
@@ -996,11 +994,22 @@ export default class DatasetController {
   _removeElements(start, count) {
     const me = this;
     const meta = me._cachedMeta;
-    const removed = meta._parsed.splice(start, count);
-    if (me._parsing && meta._stacked) {
-      clearStacks(meta, removed);
+    if (me._parsing) {
+      const removed = meta._parsed.splice(start, count);
+      if (meta._stacked) {
+        clearStacks(meta, removed);
+      }
     }
     meta.data.splice(start, count);
+  }
+
+  _sync(args) {
+    if (this._parsing) {
+      this._syncList.push(args);
+    } else {
+      const [method, arg1, arg2] = args;
+      this[method](arg1, arg2);
+    }
   }
 
 
@@ -1009,36 +1018,36 @@ export default class DatasetController {
 	 */
   _onDataPush() {
     const count = arguments.length;
-    this._syncList.push(['_insertElements', this.getDataset().data.length - count, count]);
+    this._sync(['_insertElements', this.getDataset().data.length - count, count]);
   }
 
   /**
 	 * @private
 	 */
   _onDataPop() {
-    this._syncList.push(['_removeElements', this._cachedMeta.data.length - 1, 1]);
+    this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
   }
 
   /**
 	 * @private
 	 */
   _onDataShift() {
-    this._syncList.push(['_removeElements', 0, 1]);
+    this._sync(['_removeElements', 0, 1]);
   }
 
   /**
 	 * @private
 	 */
   _onDataSplice(start, count) {
-    this._syncList.push(['_removeElements', start, count]);
-    this._syncList.push(['_insertElements', start, arguments.length - 2]);
+    this._sync(['_removeElements', start, count]);
+    this._sync(['_insertElements', start, arguments.length - 2]);
   }
 
   /**
 	 * @private
 	 */
   _onDataUnshift() {
-    this._syncList.push(['_insertElements', 0, arguments.length]);
+    this._sync(['_insertElements', 0, arguments.length]);
   }
 }
 
