@@ -2901,7 +2901,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     text: string | string[];
     color: Color;
     font: FontSpec;
-    padding: {
+    padding: number | {
       top: number;
       bottom: number;
     };
