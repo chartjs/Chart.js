@@ -2781,6 +2781,10 @@ export interface GridLineOptions {
    * @default false
    */
   offset: boolean;
+  /**
+   * @default 0
+   */
+  z: number;
 }
 
 export interface TickOptions {
