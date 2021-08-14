@@ -1,5 +1,9 @@
 @require '~vuepress-plugin-tabs/dist/themes/default.styl'
 
+.theme-default-content
+  &:not(.custom)
+    max-width: unset
+
 .sidebar-group.is-sub-group.depth-1
   > .sidebar-group-items
     border-left 1px solid rgba($accentColor, 0.25)
