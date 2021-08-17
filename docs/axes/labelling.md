@@ -24,7 +24,7 @@ The method receives 3 arguments:
 
 * `value` - the tick value in the **internal data format** of the associated scale.
 * `index` - the tick index in the ticks array.
-* `ticks` - the array containing all of the [tick objects](../api/interfaces/tick).
+* `ticks` - the array containing all of the [tick objects](../api/interfaces/Tick).
 
 The call to the method is scoped to the scale. `this` inside the method is the scale object.
 
