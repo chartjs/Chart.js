@@ -1344,8 +1344,17 @@ export default class Scale extends Element {
 
     if (position === 'left') {
       if (mirror) {
-        textAlign = 'left';
         x = me.right + padding;
+
+        if (crossAlign === 'near') {
+          textAlign = 'left';
+        } else if (crossAlign === 'center') {
+          textAlign = 'center';
+          x += (widest / 2);
+        } else {
+          textAlign = 'right';
+          x += widest;
+        }
       } else {
         x = me.right - tickAndPadding;
 
@@ -1361,8 +1370,17 @@ export default class Scale extends Element {
       }
     } else if (position === 'right') {
       if (mirror) {
-        textAlign = 'right';
         x = me.left + padding;
+
+        if (crossAlign === 'near') {
+          textAlign = 'right';
+        } else if (crossAlign === 'center') {
+          textAlign = 'center';
+          x -= (widest / 2);
+        } else {
+          textAlign = 'left';
+          x -= widest;
+        }
       } else {
         x = me.left + tickAndPadding;
 
