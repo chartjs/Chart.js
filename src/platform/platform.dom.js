@@ -116,18 +116,14 @@ function fromNativeEvent(event, chart) {
 
 function createAttachObserver(chart, type, listener) {
   const canvas = chart.canvas;
-  const container = canvas && _getParentNode(canvas);
-  const element = container || canvas;
   const observer = new MutationObserver(entries => {
-    const parent = _getParentNode(element);
-    entries.forEach(entry => {
-      for (let i = 0; i < entry.addedNodes.length; i++) {
-        const added = entry.addedNodes[i];
-        if (added === element || added === parent) {
-          listener(entry.target);
+    for (const entry of entries) {
+      for (const node of entry.addedNodes) {
+        if (node === canvas || node.contains(canvas)) {
+          return listener();
         }
       }
-    });
+    }
   });
   observer.observe(document, {childList: true, subtree: true});
   return observer;
@@ -135,21 +131,16 @@ function createAttachObserver(chart, type, listener) {
 
 function createDetachObserver(chart, type, listener) {
   const canvas = chart.canvas;
-  const container = canvas && _getParentNode(canvas);
-  if (!container) {
-    return;
-  }
   const observer = new MutationObserver(entries => {
-    entries.forEach(entry => {
-      for (let i = 0; i < entry.removedNodes.length; i++) {
-        if (entry.removedNodes[i] === canvas) {
-          listener();
-          break;
+    for (const entry of entries) {
+      for (const node of entry.removedNodes) {
+        if (node === canvas || node.contains(canvas)) {
+          return listener();
         }
       }
-    });
+    }
   });
-  observer.observe(container, {childList: true});
+  observer.observe(document, {childList: true, subtree: true});
   return observer;
 }
 

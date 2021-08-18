@@ -1029,8 +1029,10 @@ describe('Chart', function() {
       });
 
       parent.removeChild(wrapper);
-      parent.appendChild(wrapper);
-      wrapper.style.height = '355px';
+      setTimeout(() => {
+        parent.appendChild(wrapper);
+        wrapper.style.height = '355px';
+      }, 0);
     });
 
     // https://github.com/chartjs/Chart.js/issues/4737
@@ -1074,6 +1076,47 @@ describe('Chart', function() {
         });
         canvas.parentNode.style.width = '455px';
       });
+    });
+
+    it('should resize the canvas if attached to the DOM after construction with mutiple parents', function(done) {
+      var canvas = document.createElement('canvas');
+      var wrapper = document.createElement('div');
+      var wrapper2 = document.createElement('div');
+      var wrapper3 = document.createElement('div');
+      var body = window.document.body;
+
+      var chart = new Chart(canvas, {
+        type: 'line',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+
+      expect(chart).toBeChartOfSize({
+        dw: 0, dh: 0,
+        rw: 0, rh: 0,
+      });
+      expect(chart.chartArea).toBeUndefined();
+
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 455, dh: 355,
+          rw: 455, rh: 355,
+        });
+
+        expect(chart.chartArea).not.toBeUndefined();
+
+        body.removeChild(wrapper3);
+        chart.destroy();
+        done();
+      });
+
+      wrapper3.appendChild(wrapper2);
+      wrapper2.appendChild(wrapper);
+      wrapper.style.cssText = 'width: 455px; height: 355px';
+      wrapper.appendChild(canvas);
+      body.appendChild(wrapper3);
     });
   });
 

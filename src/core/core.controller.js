@@ -123,7 +123,7 @@ class Chart {
     this.attached = false;
     this._animationsDisabled = undefined;
     this.$context = undefined;
-    this._doResize = debounce(() => this.update('resize'), options.resizeDelay || 0);
+    this._doResize = debounce(mode => this.update(mode), options.resizeDelay || 0);
 
     // Add the chart instance to the global namespace
     instances[me.id] = me;
@@ -231,6 +231,7 @@ class Chart {
     const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
     const newSize = me.platform.getMaximumSize(canvas, width, height, aspectRatio);
     const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
+    const mode = me.width ? 'resize' : 'attach';
 
     me.width = newSize.width;
     me.height = newSize.height;
@@ -244,7 +245,7 @@ class Chart {
     callCallback(options.onResize, [me, newSize], me);
 
     if (me.attached) {
-      if (me._doResize()) {
+      if (me._doResize(mode)) {
         // The resize update is delayed, only draw without updating.
         me.render();
       }
@@ -831,19 +832,22 @@ class Chart {
     }
   }
 
-  destroy() {
+  _stop() {
     const me = this;
-    const {canvas, ctx} = me;
     let i, ilen;
-
     me.stop();
     animator.remove(me);
 
-    // dataset controllers need to cleanup associated data
     for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
       me._destroyDatasetMeta(i);
     }
+  }
 
+  destroy() {
+    const me = this;
+    const {canvas, ctx} = me;
+
+    me._stop();
     me.config.clearCache();
 
     if (canvas) {
@@ -940,6 +944,11 @@ class Chart {
       me.attached = false;
 
       _remove('resize', listener);
+
+      // Stop animating and remove metasets, so when re-attached, the animations start from begining.
+      me._stop();
+      me._resize(0, 0);
+
       _add('attach', attached);
     };
 
