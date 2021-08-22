@@ -15,3 +15,4 @@ export function retinaScale(
   forceRatio: number,
   forceStyle?: boolean
 ): void;
+export function readUsedSize(element: HTMLElement, property: 'width' | 'height'): number | undefined;

@@ -1,6 +1,6 @@
 import { PointStyle } from '../index.esm';
 import { Color } from '../color';
-import { ChartArea } from '../geometric';
+import { ChartArea, RoundedRect } from '../geometric';
 import { CanvasFontSpec } from './helpers.options';
 
 export function clearCanvas(canvas: HTMLCanvasElement, ctx?: CanvasRenderingContext2D): void;
@@ -97,3 +97,5 @@ export function renderText(
 	font: CanvasFontSpec,
 	opts?: RenderTextOpts
 ): void;
+
+export function addRoundedRectPath(ctx: CanvasRenderingContext2D, rect: RoundedRect): void;

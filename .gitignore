@@ -27,3 +27,6 @@ docs/api
 *.log
 *.swp
 *.stackdump
+
+# Generated
+/types/tests/autogen*.ts
