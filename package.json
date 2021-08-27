@@ -4,6 +4,11 @@
   "description": "Simple HTML5 charts using the canvas element.",
   "version": "3.5.1",
   "license": "MIT",
+  "type": "module",
+  "exports": {
+    "import": "./dist/chart.esm.js",
+    "require": "./dist/chart.js"
+  },
   "jsdelivr": "dist/chart.min.js",
   "unpkg": "dist/chart.min.js",
   "main": "dist/chart.js",
