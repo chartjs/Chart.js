@@ -7,11 +7,11 @@ import {
 function getAllScaleValues(meta) {
   let scale = meta.iScale;
   if (!scale._cache.$bar) {
-    const visiblemetas = scale.getMatchingVisibleMetas(meta._type);
+    const visibleMetas = scale.getMatchingVisibleMetas(meta._type);
     let values = [];
 
-    for (let i = 0, ilen = visiblemetas.length; i < ilen; i++) {
-      values = values.concat(visiblemetas[i].controller.getAllParsedValues(scale));
+    for (let i = 0, ilen = visibleMetas.length; i < ilen; i++) {
+      values = values.concat(visibleMetas[i].controller.getAllParsedValues(scale));
     }
     scale._cache.$bar = _arrayUnique(values.sort((a, b) => a - b));
   }
