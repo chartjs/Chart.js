@@ -416,15 +416,18 @@ export default class DatasetController {
     let prev = start > 0 && meta._parsed[start - 1];
     let i, cur, parsed;
 
-    if (this._parsing === false) {
+    if (me._parsing === false) {
+      iScale.getLabels().splice(0);
       meta._parsed = data;
       meta._sorted = true;
       parsed = data;
     } else {
       if (isArray(data[start])) {
-        parsed = this.parseArrayData(meta, data, start, count);
+        iScale.getLabels().splice(0);
+        parsed = me.parseArrayData(meta, data, start, count);
       } else if (isObject(data[start])) {
-        parsed = this.parseObjectData(meta, data, start, count);
+        iScale.getLabels().splice(0);
+        parsed = me.parseObjectData(meta, data, start, count);
       } else {
         parsed = this.parsePrimitiveData(meta, data, start, count);
       }
