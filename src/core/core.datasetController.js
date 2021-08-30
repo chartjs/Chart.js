@@ -367,7 +367,12 @@ export default class DatasetController {
     const dataset = this.getDataset();
     let stackChanged = false;
 
-    this._dataCheck();
+    let labels = me.chart.data.labels;
+    if (labels && labels.length && (me._parsing === false || isObject(me._parsing))) {
+      labels.splice(0);
+    }
+
+    me._dataCheck();
 
     // make sure cached _stacked status is current
     const oldStacked = meta._stacked;
