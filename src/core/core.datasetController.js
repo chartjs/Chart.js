@@ -422,11 +422,12 @@ export default class DatasetController {
       meta._sorted = true;
       parsed = data;
     } else {
-      if (isArray(data[start])) {
+      if (isObject(me._parsing)) {
         iScale.getLabels().splice(0);
+      }
+      if (isArray(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
       } else if (isObject(data[start])) {
-        iScale.getLabels().splice(0);
         parsed = me.parseObjectData(meta, data, start, count);
       } else {
         parsed = this.parsePrimitiveData(meta, data, start, count);
