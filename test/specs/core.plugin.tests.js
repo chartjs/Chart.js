@@ -398,10 +398,10 @@ describe('Chart.plugins', function() {
       const results = [];
       const chart = window.acquireChart({
         options: {
-          events: ['mousemove', 'test', 'test2'],
+          events: ['mousemove', 'test', 'test2', 'pointerleave'],
           plugins: {
             testPlugin: {
-              events: ['test']
+              events: ['test', 'pointerleave']
             }
           }
         },
@@ -418,7 +418,8 @@ describe('Chart.plugins', function() {
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 0, y: 0});
       await jasmine.triggerMouseEvent(chart, 'test', {x: 0, y: 0});
       await jasmine.triggerMouseEvent(chart, 'test2', {x: 0, y: 0});
-      expect(results).toEqual(['beforetest', 'aftertest']);
+      await jasmine.triggerMouseEvent(chart, 'pointerleave', {x: 0, y: 0});
+      expect(results).toEqual(['beforetest', 'aftertest', 'beforemouseout', 'aftermouseout']);
     });
   });
 });
