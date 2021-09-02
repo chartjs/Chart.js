@@ -4,10 +4,9 @@ import {
   valueOrDefault, resolveObjectKey, sign, defined
 } from '../helpers';
 
-function getAllScaleValues(meta) {
-  let scale = meta.iScale;
+function getAllScaleValues(scale, type) {
   if (!scale._cache.$bar) {
-    const visibleMetas = scale.getMatchingVisibleMetas(meta._type);
+    const visibleMetas = scale.getMatchingVisibleMetas(type);
     let values = [];
 
     for (let i = 0, ilen = visibleMetas.length; i < ilen; i++) {
@@ -24,7 +23,7 @@ function getAllScaleValues(meta) {
  */
 function computeMinSampleSize(meta) {
   const scale = meta.iScale;
-  const values = getAllScaleValues(meta);
+  const values = getAllScaleValues(scale, meta.type);
   let min = scale._length;
   let i, ilen, curr, prev;
   const updateMinAndPrev = () => {
