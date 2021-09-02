@@ -1,3 +1,4 @@
+import { TRBL, TRBLCorners } from '../geometric';
 import { FontSpec } from '../index.esm';
 
 export interface CanvasFontSpec extends FontSpec {
@@ -19,6 +20,9 @@ export function toFont(options: Partial<FontSpec>): CanvasFontSpec;
  * @since 2.7.0
  */
 export function toLineHeight(value: string, size: number): number;
+
+export function toTRBL(value: number | Partial<TRBL>): TRBL;
+export function toTRBLCorners(value: number | Partial<TRBLCorners>): TRBLCorners;
 
 /**
  * Converts the given value into a padding object with pre-computed width/height.

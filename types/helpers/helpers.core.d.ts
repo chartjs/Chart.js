@@ -38,6 +38,15 @@ export function isObject(value: unknown): value is AnyObject;
  * @returns {boolean}
  */
 export function isFinite(value: unknown): value is number;
+
+/**
+ * Returns `value` if finite, else returns `defaultValue`.
+ * @param {*} value - The value to return if defined.
+ * @param {*} defaultValue - The value to return if `value` is not finite.
+ * @returns {*}
+ */
+export function finiteOrDefault(value: unknown, defaultValue: number): number;
+
 /**
  * Returns `value` if defined, else returns `defaultValue`.
  * @param {*} value - The value to return if defined.
@@ -45,6 +54,10 @@ export function isFinite(value: unknown): value is number;
  * @returns {*}
  */
 export function valueOrDefault<T>(value: T | undefined, defaultValue: T): T;
+
+export function toPercentage(value: number | string, dimesion: number): number;
+export function toDimension(value: number | string, dimension: number): number;
+
 /**
  * Calls `fn` with the given `args` in the scope defined by `thisArg` and returns the
  * value returned by `fn`. If `fn` is not a function, this method returns undefined.
@@ -136,5 +149,9 @@ export function mergeIf<T, S1, S2, S3, S4>(target: T, source: [S1, S2, S3, S4]):
 export function mergeIf<T>(target: T, source: AnyObject[]): AnyObject;
 
 export function resolveObjectKey(obj: AnyObject, key: string): AnyObject;
+
+export function defined(value: unknown): boolean;
+
+export function isFunction(value: unknown): boolean;
 
 export function setsEqual(a: Set<unknown>, b: Set<unknown>): boolean;

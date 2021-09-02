@@ -44,7 +44,7 @@
     "lint-js": "eslint \"src/**/*.js\" \"test/**/*.js\" \"docs/**/*.js\"",
     "lint-md": "eslint \"**/*.md\"",
     "lint-tsc": "tsc",
-    "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
+    "lint-types": "eslint \"types/**/*.ts\" && node -r esm types/tests/autogen.js && tsc -p types/tests/",
     "lint": "concurrently \"npm:lint-*\"",
     "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
   },
@@ -70,6 +70,7 @@
     "eslint-plugin-es": "^4.1.0",
     "eslint-plugin-html": "^6.1.2",
     "eslint-plugin-markdown": "^2.1.0",
+    "esm": "^3.2.25",
     "glob": "^7.1.6",
     "jasmine": "^3.7.0",
     "jasmine-core": "^3.7.1",
