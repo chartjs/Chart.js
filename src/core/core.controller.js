@@ -1067,7 +1067,7 @@ class Chart {
   _eventHandler(e, replay) {
     const me = this;
     const args = {event: e, replay, cancelable: true};
-    const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.type);
+    const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.native.type);
 
     if (me.notifyPlugins('beforeEvent', args, eventFilter) === false) {
       return;

@@ -61,7 +61,7 @@
     "@vuepress/plugin-html-redirect": "^0.1.2",
     "chartjs-adapter-luxon": "^1.0.0",
     "chartjs-adapter-moment": "^1.0.0",
-    "chartjs-test-utils": "^0.3.0",
+    "chartjs-test-utils": "^0.3.1",
     "concurrently": "^6.0.1",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.3",
