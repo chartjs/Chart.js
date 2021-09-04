@@ -537,11 +537,9 @@ export const registerables: readonly ChartComponentLike[];
 export declare type ChartItem =
   | string
   | CanvasRenderingContext2D
-  | OffscreenCanvasRenderingContext2D
   | HTMLCanvasElement
-  | OffscreenCanvas
-  | { canvas: HTMLCanvasElement | OffscreenCanvas }
-  | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement | OffscreenCanvas>;
+  | { canvas: HTMLCanvasElement }
+  | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
 export declare enum UpdateModeEnum {
   resize = 'resize',
