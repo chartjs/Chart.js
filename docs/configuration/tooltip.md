@@ -32,7 +32,7 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | `padding` | [`Padding`](../general/padding.md) | `6` | Padding inside the tooltip.
 | `caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
 | `caretSize` | `number` | `5` | Size, in px, of the tooltip arrow.
-| `cornerRadius` | `number` | `6` | Radius of tooltip corner curves.
+| `cornerRadius` | `number`\|`object` | `6` | Radius of tooltip corner curves.
 | `multiKeyBackground` | [`Color`](../general/colors.md) | `'#fff'` | Color to draw behind the colored boxes when multiple items are in the tooltip.
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
 | `boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
