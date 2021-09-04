@@ -829,7 +829,7 @@ describe('Chart.DatasetController', function() {
     });
 
     var meta = chart.getDatasetMeta(0);
-    expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20, _top: null, _bottom: null}}));
+    expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20, _top: 1, _bottom: null}}));
   });
 
   describe('resolveDataElementOptions', function() {

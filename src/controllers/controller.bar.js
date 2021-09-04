@@ -4,13 +4,13 @@ import {
   valueOrDefault, resolveObjectKey, sign, defined
 } from '../helpers';
 
-function getAllScaleValues(scale) {
+function getAllScaleValues(scale, type) {
   if (!scale._cache.$bar) {
-    const metas = scale.getMatchingVisibleMetas('bar');
+    const visibleMetas = scale.getMatchingVisibleMetas(type);
     let values = [];
 
-    for (let i = 0, ilen = metas.length; i < ilen; i++) {
-      values = values.concat(metas[i].controller.getAllParsedValues(scale));
+    for (let i = 0, ilen = visibleMetas.length; i < ilen; i++) {
+      values = values.concat(visibleMetas[i].controller.getAllParsedValues(scale));
     }
     scale._cache.$bar = _arrayUnique(values.sort((a, b) => a - b));
   }
@@ -21,8 +21,9 @@ function getAllScaleValues(scale) {
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
  * @private
  */
-function computeMinSampleSize(scale) {
-  const values = getAllScaleValues(scale);
+function computeMinSampleSize(meta) {
+  const scale = meta.iScale;
+  const values = getAllScaleValues(scale, meta.type);
   let min = scale._length;
   let i, ilen, curr, prev;
   const updateMinAndPrev = () => {
@@ -479,7 +480,7 @@ export default class BarController extends DatasetController {
     }
 
     const barThickness = opts.barThickness;
-    const min = barThickness || computeMinSampleSize(iScale);
+    const min = barThickness || computeMinSampleSize(meta);
 
     return {
       min,
