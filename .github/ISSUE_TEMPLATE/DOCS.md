@@ -21,5 +21,5 @@ Documentation Is:
 ### Example
 <!--
   Provide a link to a live example demonstrating the issue or feature to be documented:
-  https://codepen.io/pen?template=JXVYzq
+  https://codepen.io/pen?template=wvezeOq
 -->

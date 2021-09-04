@@ -7,5 +7,5 @@ Example of changes on an interactive website such as the following:
 - https://jsbin.com/
 - https://jsfiddle.net/
 - https://codepen.io/pen/
-- Premade template: https://codepen.io/pen?template=JXVYzq
+- Premade template: https://codepen.io/pen?template=wvezeOq
 -->
