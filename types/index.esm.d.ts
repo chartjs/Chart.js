@@ -2604,7 +2604,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * Radius of tooltip corner curves.
    * @default 6
    */
-  cornerRadius: Scriptable<number, ScriptableTooltipContext<TType>>;
+  cornerRadius: Scriptable<number | BorderRadius, ScriptableTooltipContext<TType>>;
   /**
    * Color to draw behind the colored boxes when multiple items are in the tooltip.
    * @default '#fff'
