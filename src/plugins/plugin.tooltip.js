@@ -187,7 +187,7 @@ function getTooltipSize(tooltip, options) {
   each(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
 
   // Body lines may include some extra width due to the color box
-  widthPadding = options.displayColors ? (boxWidth + 2) : 0;
+  widthPadding = options.displayColors ? (boxWidth + 2 + options.boxPadding) : 0;
   each(body, (bodyItem) => {
     each(bodyItem.before, maxLineWidth);
     each(bodyItem.lines, maxLineWidth);
@@ -681,7 +681,7 @@ export class Tooltip extends Element {
     const me = this;
     const labelColors = me.labelColors[i];
     const labelPointStyle = me.labelPointStyles[i];
-    const {boxHeight, boxWidth} = options;
+    const {boxHeight, boxWidth, boxPadding} = options;
     const bodyFont = toFont(options.bodyFont);
     const colorX = getAlignedX(me, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
@@ -717,8 +717,8 @@ export class Tooltip extends Element {
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
 
       // Fill a white rect so that colours merge nicely if the opacity is < 1
-      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
-      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
+      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth - boxPadding);
+      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - boxPadding - 2);
       const borderRadius = toTRBLCorners(labelColors.borderRadius);
 
       if (Object.values(borderRadius).some(v => v !== 0)) {
@@ -763,7 +763,7 @@ export class Tooltip extends Element {
   drawBody(pt, ctx, options) {
     const me = this;
     const {body} = me;
-    const {bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth} = options;
+    const {bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth, boxPadding} = options;
     const bodyFont = toFont(options.bodyFont);
     let bodyLineHeight = bodyFont.lineHeight;
     let xLinePadding = 0;
@@ -789,7 +789,7 @@ export class Tooltip extends Element {
     each(me.beforeBody, fillLineOfText);
 
     xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
-      ? bodyAlign === 'center' ? (boxWidth / 2 + 1) : (boxWidth + 2)
+      ? bodyAlign === 'center' ? (boxWidth / 2 + boxPadding) : (boxWidth + 2 + boxPadding)
       : 0;
 
     // Draw body lines now
@@ -1166,6 +1166,7 @@ export default {
     boxWidth: (ctx, opts) => opts.bodyFont.size,
     multiKeyBackground: '#fff',
     displayColors: true,
+    boxPadding: 0,
     borderColor: 'rgba(0,0,0,0)',
     borderWidth: 0,
     animation: {
