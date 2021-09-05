@@ -49,6 +49,22 @@ options: {
 }
 ```
 
+When using the pie/doughnut chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
+
+```javascript
+type: 'doughnut',
+data: {
+    datasets: [{
+        data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
+    }]
+},
+options: {
+    parsing: {
+        key: 'nested.value'
+    }
+}
+```
+
 ## Object
 
 ```javascript
