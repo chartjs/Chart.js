@@ -37,6 +37,7 @@ Namespace: `options.plugins.tooltip`, the global options for the chart tooltips 
 | `displayColors` | `boolean` | `true` | If true, color boxes are shown in the tooltip.
 | `boxWidth` | `number` | `bodyFont.size` | Width of the color box if displayColors is true.
 | `boxHeight` | `number` | `bodyFont.size` | Height of the color box if displayColors is true.
+| `boxPadding` | `number` | `1` | Padding between the color box and the text.
 | `usePointStyle` | `boolean` | `false` | Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
 | `borderColor` | [`Color`](../general/colors.md) | `'rgba(0, 0, 0, 0)'` | Color of the border.
 | `borderWidth` | `number` | `0` | Size of the border.
