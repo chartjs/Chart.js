@@ -498,6 +498,49 @@ describe('Chart', function() {
       expect(Chart.defaults.scales.linear._jasmineCheck).not.toBeDefined();
       expect(Chart.defaults.scales.category._jasmineCheck).not.toBeDefined();
     });
+
+    it('should ignore proxy passed as scale options', function() {
+      let failure = false;
+      const chart = acquireChart({
+        type: 'line',
+        data: [],
+        options: {
+          scales: {
+            x: {
+              grid: {
+                color: ctx => {
+                  if (!ctx.tick) {
+                    failure = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+      chart.options.scales = {
+        x: chart.options.scales.x,
+        y: {
+          type: 'linear',
+          position: 'right'
+        }
+      };
+      chart.update();
+      expect(failure).toEqual(false);
+    });
+
+    it('should ignore array passed as scale options', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: [],
+        options: {
+          scales: {
+            xAxes: [{id: 'xAxes', type: 'category'}]
+          }
+        }
+      });
+      expect(chart.scales.xAxes).not.toBeDefined();
+    });
   });
 
   describe('Updating options', function() {
