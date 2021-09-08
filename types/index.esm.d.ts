@@ -2905,6 +2905,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
 
   title: {
     display: boolean;
+    align: 'start' | 'center' | 'end';
     text: string | string[];
     color: Color;
     font: FontSpec;
