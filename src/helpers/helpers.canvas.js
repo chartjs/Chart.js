@@ -135,7 +135,7 @@ export function drawPoint(ctx, options, x, y) {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rad);
-      ctx.drawImage(style, -style.width / 2, -style.height / 2, style.width, style.height);
+      ctx.drawImage(style, 0, -style.height / 2, style.width, style.height);
       ctx.restore();
       return;
     }
