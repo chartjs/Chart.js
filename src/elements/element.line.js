@@ -230,7 +230,7 @@ function strokePathDirect(ctx, line, start, count) {
 const usePath2D = typeof Path2D === 'function';
 
 function draw(ctx, line, start, count) {
-  if (usePath2D && line.segments.length === 1) {
+  if (usePath2D && !line.options.segment) {
     strokePathWithCache(ctx, line, start, count);
   } else {
     strokePathDirect(ctx, line, start, count);

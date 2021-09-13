@@ -10,7 +10,8 @@ module.exports = {
         fill: true,
         segment: {
           backgroundColor: ctx => ctx.p0.skip || ctx.p1.skip ? 'red' : undefined,
-        }
+        },
+        spanGaps: true
       }]
     },
     options: {

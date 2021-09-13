@@ -9,7 +9,8 @@ module.exports = {
         segment: {
           borderColor: ctx => ctx.p0.skip || ctx.p1.skip ? 'red' : undefined,
           borderDash: ctx => ctx.p0.skip || ctx.p1.skip ? [5, 5] : undefined
-        }
+        },
+        spanGaps: true
       }]
     },
     options: {

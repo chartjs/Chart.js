@@ -163,6 +163,10 @@ If left untouched (`undefined`), the global `options.elements.line.cubicInterpol
 
 Line segment styles can be overridden by scriptable options in the `segment` object. Currently all of the `border*` and `backgroundColor` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
 
+:::tip
+To be able to style gaps, you need the [`spanGaps`](#line-styling) option enabled.
+:::
+
 Context for the scriptable segment contains the following properties:
 
 * `type`: `'segment'`
