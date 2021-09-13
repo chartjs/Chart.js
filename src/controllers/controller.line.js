@@ -11,15 +11,14 @@ export default class LineController extends DatasetController {
   }
 
   update(mode) {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const {dataset: line, data: points = [], _dataset} = meta;
     // @ts-ignore
-    const animationsDisabled = me.chart._animationsDisabled;
+    const animationsDisabled = this.chart._animationsDisabled;
     let {start, count} = getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
 
-    me._drawStart = start;
-    me._drawCount = count;
+    this._drawStart = start;
+    this._drawCount = count;
 
     if (scaleRangesChanged(meta)) {
       start = 0;
@@ -27,78 +26,76 @@ export default class LineController extends DatasetController {
     }
 
     // Update Line
-    line._datasetIndex = me.index;
+    line._datasetIndex = this.index;
     line._decimated = !!_dataset._decimated;
     line.points = points;
 
-    const options = me.resolveDatasetElementOptions(mode);
-    if (!me.options.showLine) {
+    const options = this.resolveDatasetElementOptions(mode);
+    if (!this.options.showLine) {
       options.borderWidth = 0;
     }
-    options.segment = me.options.segment;
-    me.updateElement(line, undefined, {
+    options.segment = this.options.segment;
+    this.updateElement(line, undefined, {
       animated: !animationsDisabled,
       options
     }, mode);
 
     // Update Points
-    me.updateElements(points, start, count, mode);
+    this.updateElements(points, start, count, mode);
   }
 
   updateElements(points, start, count, mode) {
-    const me = this;
     const reset = mode === 'reset';
-    const {iScale, vScale, _stacked} = me._cachedMeta;
-    const firstOpts = me.resolveDataElementOptions(start, mode);
-    const sharedOptions = me.getSharedOptions(firstOpts);
-    const includeOptions = me.includeOptions(mode, sharedOptions);
+    const {iScale, vScale, _stacked} = this._cachedMeta;
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const sharedOptions = this.getSharedOptions(firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
-    const spanGaps = me.options.spanGaps;
+    const spanGaps = this.options.spanGaps;
     const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
-    const directUpdate = me.chart._animationsDisabled || reset || mode === 'none';
-    let prevParsed = start > 0 && me.getParsed(start - 1);
+    const directUpdate = this.chart._animationsDisabled || reset || mode === 'none';
+    let prevParsed = start > 0 && this.getParsed(start - 1);
 
     for (let i = start; i < start + count; ++i) {
       const point = points[i];
-      const parsed = me.getParsed(i);
+      const parsed = this.getParsed(i);
       const properties = directUpdate ? point : {};
       const nullData = isNullOrUndef(parsed[vAxis]);
       const iPixel = properties[iAxis] = iScale.getPixelForValue(parsed[iAxis], i);
-      const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? me.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
+      const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? this.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
 
       properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
       properties.stop = i > 0 && (parsed[iAxis] - prevParsed[iAxis]) > maxGapLength;
       properties.parsed = parsed;
 
       if (includeOptions) {
-        properties.options = sharedOptions || me.resolveDataElementOptions(i, point.active ? 'active' : mode);
+        properties.options = sharedOptions || this.resolveDataElementOptions(i, point.active ? 'active' : mode);
       }
 
       if (!directUpdate) {
-        me.updateElement(point, i, properties, mode);
+        this.updateElement(point, i, properties, mode);
       }
 
       prevParsed = parsed;
     }
 
-    me.updateSharedOptions(sharedOptions, mode, firstOpts);
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   /**
 	 * @protected
 	 */
   getMaxOverflow() {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const dataset = meta.dataset;
     const border = dataset.options && dataset.options.borderWidth || 0;
     const data = meta.data || [];
     if (!data.length) {
       return border;
     }
-    const firstPoint = data[0].size(me.resolveDataElementOptions(0));
-    const lastPoint = data[data.length - 1].size(me.resolveDataElementOptions(data.length - 1));
+    const firstPoint = data[0].size(this.resolveDataElementOptions(0));
+    const lastPoint = data[data.length - 1].size(this.resolveDataElementOptions(data.length - 1));
     return Math.max(border, firstPoint, lastPoint) / 2;
   }
 

@@ -6,14 +6,13 @@ import {toRadians} from '../helpers';
 export default class LinearScale extends LinearScaleBase {
 
   determineDataLimits() {
-    const me = this;
-    const {min, max} = me.getMinMax(true);
+    const {min, max} = this.getMinMax(true);
 
-    me.min = isFinite(min) ? min : 0;
-    me.max = isFinite(max) ? max : 1;
+    this.min = isFinite(min) ? min : 0;
+    this.max = isFinite(max) ? max : 1;
 
     // Common base implementation to handle min, max, beginAtZero
-    me.handleTickRangeOptions();
+    this.handleTickRangeOptions();
   }
 
   /**
@@ -21,12 +20,11 @@ export default class LinearScale extends LinearScaleBase {
 	 * @protected
  	 */
   computeTickLimit() {
-    const me = this;
-    const horizontal = me.isHorizontal();
-    const length = horizontal ? me.width : me.height;
-    const minRotation = toRadians(me.options.ticks.minRotation);
+    const horizontal = this.isHorizontal();
+    const length = horizontal ? this.width : this.height;
+    const minRotation = toRadians(this.options.ticks.minRotation);
     const ratio = (horizontal ? Math.sin(minRotation) : Math.cos(minRotation)) || 0.001;
-    const tickFont = me._resolveTickFontOptions(0);
+    const tickFont = this._resolveTickFontOptions(0);
     return Math.ceil(length / Math.min(40, tickFont.lineHeight / ratio));
   }
 

@@ -392,19 +392,18 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _resolveAnimations() {
-    const me = this;
-    const cached = me._cachedAnimations;
+    const cached = this._cachedAnimations;
 
     if (cached) {
       return cached;
     }
 
-    const chart = me._chart;
-    const options = me.options.setContext(me.getContext());
+    const chart = this._chart;
+    const options = this.options.setContext(this.getContext());
     const opts = options.enabled && chart.options.animation && options.animations;
-    const animations = new Animations(me._chart, opts);
+    const animations = new Animations(this._chart, opts);
     if (opts._cacheable) {
-      me._cachedAnimations = Object.freeze(animations);
+      this._cachedAnimations = Object.freeze(animations);
     }
 
     return animations;
@@ -414,18 +413,16 @@ export class Tooltip extends Element {
 	 * @protected
 	 */
   getContext() {
-    const me = this;
-    return me.$context ||
-			(me.$context = createTooltipContext(me._chart.getContext(), me, me._tooltipItems));
+    return this.$context ||
+			(this.$context = createTooltipContext(this._chart.getContext(), this, this._tooltipItems));
   }
 
   getTitle(context, options) {
-    const me = this;
     const {callbacks} = options;
 
-    const beforeTitle = callbacks.beforeTitle.apply(me, [context]);
-    const title = callbacks.title.apply(me, [context]);
-    const afterTitle = callbacks.afterTitle.apply(me, [context]);
+    const beforeTitle = callbacks.beforeTitle.apply(this, [context]);
+    const title = callbacks.title.apply(this, [context]);
+    const afterTitle = callbacks.afterTitle.apply(this, [context]);
 
     let lines = [];
     lines = pushOrConcat(lines, splitNewlines(beforeTitle));
@@ -440,7 +437,6 @@ export class Tooltip extends Element {
   }
 
   getBody(tooltipItems, options) {
-    const me = this;
     const {callbacks} = options;
     const bodyItems = [];
 
@@ -451,9 +447,9 @@ export class Tooltip extends Element {
         after: []
       };
       const scoped = overrideCallbacks(callbacks, context);
-      pushOrConcat(bodyItem.before, splitNewlines(scoped.beforeLabel.call(me, context)));
-      pushOrConcat(bodyItem.lines, scoped.label.call(me, context));
-      pushOrConcat(bodyItem.after, splitNewlines(scoped.afterLabel.call(me, context)));
+      pushOrConcat(bodyItem.before, splitNewlines(scoped.beforeLabel.call(this, context)));
+      pushOrConcat(bodyItem.lines, scoped.label.call(this, context));
+      pushOrConcat(bodyItem.after, splitNewlines(scoped.afterLabel.call(this, context)));
 
       bodyItems.push(bodyItem);
     });
@@ -467,12 +463,11 @@ export class Tooltip extends Element {
 
   // Get the footer and beforeFooter and afterFooter lines
   getFooter(tooltipItems, options) {
-    const me = this;
     const {callbacks} = options;
 
-    const beforeFooter = callbacks.beforeFooter.apply(me, [tooltipItems]);
-    const footer = callbacks.footer.apply(me, [tooltipItems]);
-    const afterFooter = callbacks.afterFooter.apply(me, [tooltipItems]);
+    const beforeFooter = callbacks.beforeFooter.apply(this, [tooltipItems]);
+    const footer = callbacks.footer.apply(this, [tooltipItems]);
+    const afterFooter = callbacks.afterFooter.apply(this, [tooltipItems]);
 
     let lines = [];
     lines = pushOrConcat(lines, splitNewlines(beforeFooter));
@@ -486,9 +481,8 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _createItems(options) {
-    const me = this;
-    const active = me._active;
-    const data = me._chart.data;
+    const active = this._active;
+    const data = this._chart.data;
     const labelColors = [];
     const labelPointStyles = [];
     const labelTextColors = [];
@@ -496,7 +490,7 @@ export class Tooltip extends Element {
     let i, len;
 
     for (i = 0, len = active.length; i < len; ++i) {
-      tooltipItems.push(createTooltipItem(me._chart, active[i]));
+      tooltipItems.push(createTooltipItem(this._chart, active[i]));
     }
 
     // If the user provided a filter function, use it to modify the tooltip items
@@ -512,48 +506,47 @@ export class Tooltip extends Element {
     // Determine colors for boxes
     each(tooltipItems, (context) => {
       const scoped = overrideCallbacks(options.callbacks, context);
-      labelColors.push(scoped.labelColor.call(me, context));
-      labelPointStyles.push(scoped.labelPointStyle.call(me, context));
-      labelTextColors.push(scoped.labelTextColor.call(me, context));
+      labelColors.push(scoped.labelColor.call(this, context));
+      labelPointStyles.push(scoped.labelPointStyle.call(this, context));
+      labelTextColors.push(scoped.labelTextColor.call(this, context));
     });
 
-    me.labelColors = labelColors;
-    me.labelPointStyles = labelPointStyles;
-    me.labelTextColors = labelTextColors;
-    me.dataPoints = tooltipItems;
+    this.labelColors = labelColors;
+    this.labelPointStyles = labelPointStyles;
+    this.labelTextColors = labelTextColors;
+    this.dataPoints = tooltipItems;
     return tooltipItems;
   }
 
   update(changed, replay) {
-    const me = this;
-    const options = me.options.setContext(me.getContext());
-    const active = me._active;
+    const options = this.options.setContext(this.getContext());
+    const active = this._active;
     let properties;
     let tooltipItems = [];
 
     if (!active.length) {
-      if (me.opacity !== 0) {
+      if (this.opacity !== 0) {
         properties = {
           opacity: 0
         };
       }
     } else {
-      const position = positioners[options.position].call(me, active, me._eventPosition);
-      tooltipItems = me._createItems(options);
+      const position = positioners[options.position].call(this, active, this._eventPosition);
+      tooltipItems = this._createItems(options);
 
-      me.title = me.getTitle(tooltipItems, options);
-      me.beforeBody = me.getBeforeBody(tooltipItems, options);
-      me.body = me.getBody(tooltipItems, options);
-      me.afterBody = me.getAfterBody(tooltipItems, options);
-      me.footer = me.getFooter(tooltipItems, options);
+      this.title = this.getTitle(tooltipItems, options);
+      this.beforeBody = this.getBeforeBody(tooltipItems, options);
+      this.body = this.getBody(tooltipItems, options);
+      this.afterBody = this.getAfterBody(tooltipItems, options);
+      this.footer = this.getFooter(tooltipItems, options);
 
-      const size = me._size = getTooltipSize(me, options);
+      const size = this._size = getTooltipSize(this, options);
       const positionAndSize = Object.assign({}, position, size);
-      const alignment = determineAlignment(me._chart, options, positionAndSize);
-      const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, me._chart);
+      const alignment = determineAlignment(this._chart, options, positionAndSize);
+      const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, this._chart);
 
-      me.xAlign = alignment.xAlign;
-      me.yAlign = alignment.yAlign;
+      this.xAlign = alignment.xAlign;
+      this.yAlign = alignment.yAlign;
 
       properties = {
         opacity: 1,
@@ -566,15 +559,15 @@ export class Tooltip extends Element {
       };
     }
 
-    me._tooltipItems = tooltipItems;
-    me.$context = undefined;
+    this._tooltipItems = tooltipItems;
+    this.$context = undefined;
 
     if (properties) {
-      me._resolveAnimations().update(me, properties);
+      this._resolveAnimations().update(this, properties);
     }
 
     if (changed && options.external) {
-      options.external.call(me, {chart: me._chart, tooltip: me, replay});
+      options.external.call(this, {chart: this._chart, tooltip: this, replay});
     }
   }
 
@@ -644,15 +637,14 @@ export class Tooltip extends Element {
   }
 
   drawTitle(pt, ctx, options) {
-    const me = this;
-    const title = me.title;
+    const title = this.title;
     const length = title.length;
     let titleFont, titleSpacing, i;
 
     if (length) {
-      const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
+      const rtlHelper = getRtlAdapter(options.rtl, this.x, this.width);
 
-      pt.x = getAlignedX(me, options.titleAlign, options);
+      pt.x = getAlignedX(this, options.titleAlign, options);
 
       ctx.textAlign = rtlHelper.textAlign(options.titleAlign);
       ctx.textBaseline = 'middle';
@@ -678,12 +670,11 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _drawColorBox(ctx, pt, i, rtlHelper, options) {
-    const me = this;
-    const labelColors = me.labelColors[i];
-    const labelPointStyle = me.labelPointStyles[i];
+    const labelColors = this.labelColors[i];
+    const labelPointStyle = this.labelPointStyles[i];
     const {boxHeight, boxWidth, boxPadding} = options;
     const bodyFont = toFont(options.bodyFont);
-    const colorX = getAlignedX(me, 'left', options);
+    const colorX = getAlignedX(this, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
     const yOffSet = boxHeight < bodyFont.lineHeight ? (bodyFont.lineHeight - boxHeight) / 2 : 0;
     const colorY = pt.y + yOffSet;
@@ -757,18 +748,17 @@ export class Tooltip extends Element {
     }
 
     // restore fillStyle
-    ctx.fillStyle = me.labelTextColors[i];
+    ctx.fillStyle = this.labelTextColors[i];
   }
 
   drawBody(pt, ctx, options) {
-    const me = this;
-    const {body} = me;
+    const {body} = this;
     const {bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth, boxPadding} = options;
     const bodyFont = toFont(options.bodyFont);
     let bodyLineHeight = bodyFont.lineHeight;
     let xLinePadding = 0;
 
-    const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
+    const rtlHelper = getRtlAdapter(options.rtl, this.x, this.width);
 
     const fillLineOfText = function(line) {
       ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
@@ -782,11 +772,11 @@ export class Tooltip extends Element {
     ctx.textBaseline = 'middle';
     ctx.font = bodyFont.string;
 
-    pt.x = getAlignedX(me, bodyAlignForCalculation, options);
+    pt.x = getAlignedX(this, bodyAlignForCalculation, options);
 
     // Before body lines
     ctx.fillStyle = options.bodyColor;
-    each(me.beforeBody, fillLineOfText);
+    each(this.beforeBody, fillLineOfText);
 
     xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
       ? bodyAlign === 'center' ? (boxWidth / 2 + boxPadding) : (boxWidth + 2 + boxPadding)
@@ -795,7 +785,7 @@ export class Tooltip extends Element {
     // Draw body lines now
     for (i = 0, ilen = body.length; i < ilen; ++i) {
       bodyItem = body[i];
-      textColor = me.labelTextColors[i];
+      textColor = this.labelTextColors[i];
 
       ctx.fillStyle = textColor;
       each(bodyItem.before, fillLineOfText);
@@ -803,7 +793,7 @@ export class Tooltip extends Element {
       lines = bodyItem.lines;
       // Draw Legend-like boxes if needed
       if (displayColors && lines.length) {
-        me._drawColorBox(ctx, pt, i, rtlHelper, options);
+        this._drawColorBox(ctx, pt, i, rtlHelper, options);
         bodyLineHeight = Math.max(bodyFont.lineHeight, boxHeight);
       }
 
@@ -821,20 +811,19 @@ export class Tooltip extends Element {
     bodyLineHeight = bodyFont.lineHeight;
 
     // After body lines
-    each(me.afterBody, fillLineOfText);
+    each(this.afterBody, fillLineOfText);
     pt.y -= bodySpacing; // Remove last body spacing
   }
 
   drawFooter(pt, ctx, options) {
-    const me = this;
-    const footer = me.footer;
+    const footer = this.footer;
     const length = footer.length;
     let footerFont, i;
 
     if (length) {
-      const rtlHelper = getRtlAdapter(options.rtl, me.x, me.width);
+      const rtlHelper = getRtlAdapter(options.rtl, this.x, this.width);
 
-      pt.x = getAlignedX(me, options.footerAlign, options);
+      pt.x = getAlignedX(this, options.footerAlign, options);
       pt.y += options.footerMarginTop;
 
       ctx.textAlign = rtlHelper.textAlign(options.footerAlign);
@@ -898,50 +887,48 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _updateAnimationTarget(options) {
-    const me = this;
-    const chart = me._chart;
-    const anims = me.$animations;
+    const chart = this._chart;
+    const anims = this.$animations;
     const animX = anims && anims.x;
     const animY = anims && anims.y;
     if (animX || animY) {
-      const position = positioners[options.position].call(me, me._active, me._eventPosition);
+      const position = positioners[options.position].call(this, this._active, this._eventPosition);
       if (!position) {
         return;
       }
-      const size = me._size = getTooltipSize(me, options);
-      const positionAndSize = Object.assign({}, position, me._size);
+      const size = this._size = getTooltipSize(this, options);
+      const positionAndSize = Object.assign({}, position, this._size);
       const alignment = determineAlignment(chart, options, positionAndSize);
       const point = getBackgroundPoint(options, positionAndSize, alignment, chart);
       if (animX._to !== point.x || animY._to !== point.y) {
-        me.xAlign = alignment.xAlign;
-        me.yAlign = alignment.yAlign;
-        me.width = size.width;
-        me.height = size.height;
-        me.caretX = position.x;
-        me.caretY = position.y;
-        me._resolveAnimations().update(me, point);
+        this.xAlign = alignment.xAlign;
+        this.yAlign = alignment.yAlign;
+        this.width = size.width;
+        this.height = size.height;
+        this.caretX = position.x;
+        this.caretY = position.y;
+        this._resolveAnimations().update(this, point);
       }
     }
   }
 
   draw(ctx) {
-    const me = this;
-    const options = me.options.setContext(me.getContext());
-    let opacity = me.opacity;
+    const options = this.options.setContext(this.getContext());
+    let opacity = this.opacity;
 
     if (!opacity) {
       return;
     }
 
-    me._updateAnimationTarget(options);
+    this._updateAnimationTarget(options);
 
     const tooltipSize = {
-      width: me.width,
-      height: me.height
+      width: this.width,
+      height: this.height
     };
     const pt = {
-      x: me.x,
-      y: me.y
+      x: this.x,
+      y: this.y
     };
 
     // IE11/Edge does not like very small opacities, so snap to 0
@@ -950,27 +937,27 @@ export class Tooltip extends Element {
     const padding = toPadding(options.padding);
 
     // Truthy/falsey value for empty tooltip
-    const hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
+    const hasTooltipContent = this.title.length || this.beforeBody.length || this.body.length || this.afterBody.length || this.footer.length;
 
     if (options.enabled && hasTooltipContent) {
       ctx.save();
       ctx.globalAlpha = opacity;
 
       // Draw Background
-      me.drawBackground(pt, ctx, tooltipSize, options);
+      this.drawBackground(pt, ctx, tooltipSize, options);
 
       overrideTextDirection(ctx, options.textDirection);
 
       pt.y += padding.top;
 
       // Titles
-      me.drawTitle(pt, ctx, options);
+      this.drawTitle(pt, ctx, options);
 
       // Body
-      me.drawBody(pt, ctx, options);
+      this.drawBody(pt, ctx, options);
 
       // Footer
-      me.drawFooter(pt, ctx, options);
+      this.drawFooter(pt, ctx, options);
 
       restoreTextDirection(ctx, options.textDirection);
 
@@ -992,10 +979,9 @@ export class Tooltip extends Element {
 	 * @param {object} eventPosition Synthetic event position used in positioning
 	 */
   setActiveElements(activeElements, eventPosition) {
-    const me = this;
-    const lastActive = me._active;
+    const lastActive = this._active;
     const active = activeElements.map(({datasetIndex, index}) => {
-      const meta = me._chart.getDatasetMeta(datasetIndex);
+      const meta = this._chart.getDatasetMeta(datasetIndex);
 
       if (!meta) {
         throw new Error('Cannot find a dataset at index ' + datasetIndex);
@@ -1008,12 +994,12 @@ export class Tooltip extends Element {
       };
     });
     const changed = !_elementsEqual(lastActive, active);
-    const positionChanged = me._positionChanged(active, eventPosition);
+    const positionChanged = this._positionChanged(active, eventPosition);
 
     if (changed || positionChanged) {
-      me._active = active;
-      me._eventPosition = eventPosition;
-      me.update(true);
+      this._active = active;
+      this._eventPosition = eventPosition;
+      this.update(true);
     }
   }
 
@@ -1024,15 +1010,14 @@ export class Tooltip extends Element {
 	 * @returns {boolean} true if the tooltip changed
 	 */
   handleEvent(e, replay) {
-    const me = this;
-    const options = me.options;
-    const lastActive = me._active || [];
+    const options = this.options;
+    const lastActive = this._active || [];
     let changed = false;
     let active = [];
 
     // Find Active Elements for tooltips
     if (e.type !== 'mouseout') {
-      active = me._chart.getElementsAtEventForMode(e, options.mode, options, replay);
+      active = this._chart.getElementsAtEventForMode(e, options.mode, options, replay);
       if (options.reverse) {
         active.reverse();
       }
@@ -1041,22 +1026,22 @@ export class Tooltip extends Element {
     // When there are multiple items shown, but the tooltip position is nearest mode
     // an update may need to be made because our position may have changed even though
     // the items are the same as before.
-    const positionChanged = me._positionChanged(active, e);
+    const positionChanged = this._positionChanged(active, e);
 
     // Remember Last Actives
     changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
 
     // Only handle target event on tooltip change
     if (changed) {
-      me._active = active;
+      this._active = active;
 
       if (options.enabled || options.external) {
-        me._eventPosition = {
+        this._eventPosition = {
           x: e.x,
           y: e.y
         };
 
-        me.update(true, replay);
+        this.update(true, replay);
       }
     }
 

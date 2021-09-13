@@ -259,21 +259,19 @@ export default class LineElement extends Element {
   }
 
   updateControlPoints(chartArea, indexAxis) {
-    const me = this;
-    const options = me.options;
-    if ((options.tension || options.cubicInterpolationMode === 'monotone') && !options.stepped && !me._pointsUpdated) {
-      const loop = options.spanGaps ? me._loop : me._fullLoop;
-      _updateBezierControlPoints(me._points, options, chartArea, loop, indexAxis);
-      me._pointsUpdated = true;
+    const options = this.options;
+    if ((options.tension || options.cubicInterpolationMode === 'monotone') && !options.stepped && !this._pointsUpdated) {
+      const loop = options.spanGaps ? this._loop : this._fullLoop;
+      _updateBezierControlPoints(this._points, options, chartArea, loop, indexAxis);
+      this._pointsUpdated = true;
     }
   }
 
   set points(points) {
-    const me = this;
-    me._points = points;
-    delete me._segments;
-    delete me._path;
-    me._pointsUpdated = false;
+    this._points = points;
+    delete this._segments;
+    delete this._path;
+    this._pointsUpdated = false;
   }
 
   get points() {
@@ -313,11 +311,10 @@ export default class LineElement extends Element {
 	 * @returns {PointElement|undefined}
 	 */
   interpolate(point, property) {
-    const me = this;
-    const options = me.options;
+    const options = this.options;
     const value = point[property];
-    const points = me.points;
-    const segments = _boundSegments(me, {property, start: value, end: value});
+    const points = this.points;
+    const segments = _boundSegments(this, {property, start: value, end: value});
 
     if (!segments.length) {
       return;
@@ -369,16 +366,15 @@ export default class LineElement extends Element {
 	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
 	 */
   path(ctx, start, count) {
-    const me = this;
-    const segments = me.segments;
-    const segmentMethod = _getSegmentMethod(me);
-    let loop = me._loop;
+    const segments = this.segments;
+    const segmentMethod = _getSegmentMethod(this);
+    let loop = this._loop;
 
     start = start || 0;
-    count = count || (me.points.length - start);
+    count = count || (this.points.length - start);
 
     for (const segment of segments) {
-      loop &= segmentMethod(ctx, me, segment, {start, end: start + count - 1});
+      loop &= segmentMethod(ctx, this, segment, {start, end: start + count - 1});
     }
     return !!loop;
   }
@@ -391,22 +387,21 @@ export default class LineElement extends Element {
 	 * @param {number} [count]
 	 */
   draw(ctx, chartArea, start, count) {
-    const me = this;
-    const options = me.options || {};
-    const points = me.points || [];
+    const options = this.options || {};
+    const points = this.points || [];
 
     if (points.length && options.borderWidth) {
       ctx.save();
 
-      draw(ctx, me, start, count);
+      draw(ctx, this, start, count);
 
       ctx.restore();
     }
 
-    if (me.animated) {
+    if (this.animated) {
       // When line is animated, the control points and path are not cached.
-      me._pointsUpdated = false;
-      me._path = undefined;
+      this._pointsUpdated = false;
+      this._path = undefined;
     }
   }
 }

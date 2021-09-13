@@ -44,10 +44,9 @@ export default class BubbleController extends DatasetController {
 	 * @protected
 	 */
   getLabelAndValue(index) {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const {xScale, yScale} = meta;
-    const parsed = me.getParsed(index);
+    const parsed = this.getParsed(index);
     const x = xScale.getLabelForValue(parsed.x);
     const y = yScale.getLabelForValue(parsed.y);
     const r = parsed._custom;
@@ -59,26 +58,24 @@ export default class BubbleController extends DatasetController {
   }
 
   update(mode) {
-    const me = this;
-    const points = me._cachedMeta.data;
+    const points = this._cachedMeta.data;
 
     // Update Points
-    me.updateElements(points, 0, points.length, mode);
+    this.updateElements(points, 0, points.length, mode);
   }
 
   updateElements(points, start, count, mode) {
-    const me = this;
     const reset = mode === 'reset';
-    const {iScale, vScale} = me._cachedMeta;
-    const firstOpts = me.resolveDataElementOptions(start, mode);
-    const sharedOptions = me.getSharedOptions(firstOpts);
-    const includeOptions = me.includeOptions(mode, sharedOptions);
+    const {iScale, vScale} = this._cachedMeta;
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const sharedOptions = this.getSharedOptions(firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
 
     for (let i = start; i < start + count; i++) {
       const point = points[i];
-      const parsed = !reset && me.getParsed(i);
+      const parsed = !reset && this.getParsed(i);
       const properties = {};
       const iPixel = properties[iAxis] = reset ? iScale.getPixelForDecimal(0.5) : iScale.getPixelForValue(parsed[iAxis]);
       const vPixel = properties[vAxis] = reset ? vScale.getBasePixel() : vScale.getPixelForValue(parsed[vAxis]);
@@ -86,17 +83,17 @@ export default class BubbleController extends DatasetController {
       properties.skip = isNaN(iPixel) || isNaN(vPixel);
 
       if (includeOptions) {
-        properties.options = me.resolveDataElementOptions(i, point.active ? 'active' : mode);
+        properties.options = this.resolveDataElementOptions(i, point.active ? 'active' : mode);
 
         if (reset) {
           properties.options.radius = 0;
         }
       }
 
-      me.updateElement(point, i, properties, mode);
+      this.updateElement(point, i, properties, mode);
     }
 
-    me.updateSharedOptions(sharedOptions, mode, firstOpts);
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   /**

@@ -122,11 +122,10 @@ export class Registry {
 	 * @private
 	 */
   _each(method, args, typedRegistry) {
-    const me = this;
     [...args].forEach(arg => {
-      const reg = typedRegistry || me._getRegistryForType(arg);
-      if (typedRegistry || reg.isForType(arg) || (reg === me.plugins && arg.id)) {
-        me._exec(method, reg, arg);
+      const reg = typedRegistry || this._getRegistryForType(arg);
+      if (typedRegistry || reg.isForType(arg) || (reg === this.plugins && arg.id)) {
+        this._exec(method, reg, arg);
       } else {
         // Handle loopable args
         // Use case:
@@ -139,8 +138,8 @@ export class Registry {
           //  import * as treemap from 'chartjs-chart-treemap';
           //  Chart.register(treemap);
 
-          const itemReg = typedRegistry || me._getRegistryForType(item);
-          me._exec(method, itemReg, item);
+          const itemReg = typedRegistry || this._getRegistryForType(item);
+          this._exec(method, itemReg, item);
         });
       }
     });

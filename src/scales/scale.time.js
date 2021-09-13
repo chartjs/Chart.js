@@ -262,12 +262,11 @@ export default class TimeScale extends Scale {
   }
 
   determineDataLimits() {
-    const me = this;
-    const options = me.options;
-    const adapter = me._adapter;
+    const options = this.options;
+    const adapter = this._adapter;
     const unit = options.time.unit || 'day';
     // eslint-disable-next-line prefer-const
-    let {min, max, minDefined, maxDefined} = me.getUserBounds();
+    let {min, max, minDefined, maxDefined} = this.getUserBounds();
 
     /**
 		 * @param {object} bounds
@@ -284,12 +283,12 @@ export default class TimeScale extends Scale {
     // If we have user provided `min` and `max` labels / data bounds can be ignored
     if (!minDefined || !maxDefined) {
       // Labels are always considered, when user did not force bounds
-      _applyBounds(me._getLabelBounds());
+      _applyBounds(this._getLabelBounds());
 
       // If `bounds` is `'ticks'` and `ticks.source` is `'labels'`,
       // data bounds are ignored (and don't need to be determined)
       if (options.bounds !== 'ticks' || options.ticks.source !== 'labels') {
-        _applyBounds(me.getMinMax(false));
+        _applyBounds(this.getMinMax(false));
       }
     }
 
@@ -297,8 +296,8 @@ export default class TimeScale extends Scale {
     max = isFinite(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
 
     // Make sure that max is strictly higher than min (required by the timeseries lookup table)
-    me.min = Math.min(min, max - 1);
-    me.max = Math.max(min + 1, max);
+    this.min = Math.min(min, max - 1);
+    this.max = Math.max(min + 1, max);
   }
 
   /**
@@ -320,37 +319,36 @@ export default class TimeScale extends Scale {
 	 * @return {object[]}
 	 */
   buildTicks() {
-    const me = this;
-    const options = me.options;
+    const options = this.options;
     const timeOpts = options.time;
     const tickOpts = options.ticks;
-    const timestamps = tickOpts.source === 'labels' ? me.getLabelTimestamps() : me._generate();
+    const timestamps = tickOpts.source === 'labels' ? this.getLabelTimestamps() : this._generate();
 
     if (options.bounds === 'ticks' && timestamps.length) {
-      me.min = me._userMin || timestamps[0];
-      me.max = me._userMax || timestamps[timestamps.length - 1];
+      this.min = this._userMin || timestamps[0];
+      this.max = this._userMax || timestamps[timestamps.length - 1];
     }
 
-    const min = me.min;
-    const max = me.max;
+    const min = this.min;
+    const max = this.max;
 
     const ticks = _filterBetween(timestamps, min, max);
 
     // PRIVATE
     // determineUnitForFormatting relies on the number of ticks so we don't use it when
     // autoSkip is enabled because we don't yet know what the final number of ticks will be
-    me._unit = timeOpts.unit || (tickOpts.autoSkip
-      ? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me._getLabelCapacity(min))
-      : determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
-    me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
-      : determineMajorUnit(me._unit);
-    me.initOffsets(timestamps);
+    this._unit = timeOpts.unit || (tickOpts.autoSkip
+      ? determineUnitForAutoTicks(timeOpts.minUnit, this.min, this.max, this._getLabelCapacity(min))
+      : determineUnitForFormatting(this, ticks.length, timeOpts.minUnit, this.min, this.max));
+    this._majorUnit = !tickOpts.major.enabled || this._unit === 'year' ? undefined
+      : determineMajorUnit(this._unit);
+    this.initOffsets(timestamps);
 
     if (options.reverse) {
       ticks.reverse();
     }
 
-    return ticksFromTimestamps(me, ticks, me._majorUnit);
+    return ticksFromTimestamps(this, ticks, this._majorUnit);
   }
 
   /**
@@ -363,30 +361,29 @@ export default class TimeScale extends Scale {
 	 * @protected
 	 */
   initOffsets(timestamps) {
-    const me = this;
     let start = 0;
     let end = 0;
     let first, last;
 
-    if (me.options.offset && timestamps.length) {
-      first = me.getDecimalForValue(timestamps[0]);
+    if (this.options.offset && timestamps.length) {
+      first = this.getDecimalForValue(timestamps[0]);
       if (timestamps.length === 1) {
         start = 1 - first;
       } else {
-        start = (me.getDecimalForValue(timestamps[1]) - first) / 2;
+        start = (this.getDecimalForValue(timestamps[1]) - first) / 2;
       }
-      last = me.getDecimalForValue(timestamps[timestamps.length - 1]);
+      last = this.getDecimalForValue(timestamps[timestamps.length - 1]);
       if (timestamps.length === 1) {
         end = last;
       } else {
-        end = (last - me.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
+        end = (last - this.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
       }
     }
     const limit = timestamps.length < 3 ? 0.5 : 0.25;
     start = _limitValue(start, 0, limit);
     end = _limitValue(end, 0, limit);
 
-    me._offsets = {start, end, factor: 1 / (start + 1 + end)};
+    this._offsets = {start, end, factor: 1 / (start + 1 + end)};
   }
 
   /**
@@ -397,14 +394,13 @@ export default class TimeScale extends Scale {
 	 * @private
 	 */
   _generate() {
-    const me = this;
-    const adapter = me._adapter;
-    const min = me.min;
-    const max = me.max;
-    const options = me.options;
+    const adapter = this._adapter;
+    const min = this.min;
+    const max = this.max;
+    const options = this.options;
     const timeOpts = options.time;
     // @ts-ignore
-    const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, me._getLabelCapacity(min));
+    const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, this._getLabelCapacity(min));
     const stepSize = valueOrDefault(timeOpts.stepSize, 1);
     const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
     const hasWeekday = isNumber(weekday) || weekday === true;
@@ -425,7 +421,7 @@ export default class TimeScale extends Scale {
       throw new Error(min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor);
     }
 
-    const timestamps = options.ticks.source === 'data' && me.getDataTimestamps();
+    const timestamps = options.ticks.source === 'data' && this.getDataTimestamps();
     for (time = first, count = 0; time < max; time = +adapter.add(time, stepSize, minor), count++) {
       addTick(ticks, time, timestamps);
     }
@@ -443,9 +439,8 @@ export default class TimeScale extends Scale {
 	 * @return {string}
 	 */
   getLabelForValue(value) {
-    const me = this;
-    const adapter = me._adapter;
-    const timeOpts = me.options.time;
+    const adapter = this._adapter;
+    const timeOpts = this.options.time;
 
     if (timeOpts.tooltipFormat) {
       return adapter.format(value, timeOpts.tooltipFormat);
@@ -463,18 +458,17 @@ export default class TimeScale extends Scale {
 	 * @private
 	 */
   _tickFormatFunction(time, index, ticks, format) {
-    const me = this;
-    const options = me.options;
+    const options = this.options;
     const formats = options.time.displayFormats;
-    const unit = me._unit;
-    const majorUnit = me._majorUnit;
+    const unit = this._unit;
+    const majorUnit = this._majorUnit;
     const minorFormat = unit && formats[unit];
     const majorFormat = majorUnit && formats[majorUnit];
     const tick = ticks[index];
     const major = majorUnit && majorFormat && tick && tick.major;
-    const label = me._adapter.format(time, format || (major ? majorFormat : minorFormat));
+    const label = this._adapter.format(time, format || (major ? majorFormat : minorFormat));
     const formatter = options.ticks.callback;
-    return formatter ? call(formatter, [label, index, ticks], me) : label;
+    return formatter ? call(formatter, [label, index, ticks], this) : label;
   }
 
   /**
@@ -494,8 +488,7 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
   getDecimalForValue(value) {
-    const me = this;
-    return value === null ? NaN : (value - me.min) / (me.max - me.min);
+    return value === null ? NaN : (value - this.min) / (this.max - this.min);
   }
 
   /**
@@ -503,10 +496,9 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
   getPixelForValue(value) {
-    const me = this;
-    const offsets = me._offsets;
-    const pos = me.getDecimalForValue(value);
-    return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
+    const offsets = this._offsets;
+    const pos = this.getDecimalForValue(value);
+    return this.getPixelForDecimal((offsets.start + pos) * offsets.factor);
   }
 
   /**
@@ -514,10 +506,9 @@ export default class TimeScale extends Scale {
 	 * @return {number}
 	 */
   getValueForPixel(pixel) {
-    const me = this;
-    const offsets = me._offsets;
-    const pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-    return me.min + pos * (me.max - me.min);
+    const offsets = this._offsets;
+    const pos = this.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+    return this.min + pos * (this.max - this.min);
   }
 
   /**
@@ -526,13 +517,12 @@ export default class TimeScale extends Scale {
 	 * @private
 	 */
   _getLabelSize(label) {
-    const me = this;
-    const ticksOpts = me.options.ticks;
-    const tickLabelWidth = me.ctx.measureText(label).width;
-    const angle = toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
+    const ticksOpts = this.options.ticks;
+    const tickLabelWidth = this.ctx.measureText(label).width;
+    const angle = toRadians(this.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
     const cosRotation = Math.cos(angle);
     const sinRotation = Math.sin(angle);
-    const tickFontSize = me._resolveTickFontOptions(0).size;
+    const tickFontSize = this._resolveTickFontOptions(0).size;
 
     return {
       w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
@@ -546,17 +536,16 @@ export default class TimeScale extends Scale {
 	 * @private
 	 */
   _getLabelCapacity(exampleTime) {
-    const me = this;
-    const timeOpts = me.options.time;
+    const timeOpts = this.options.time;
     const displayFormats = timeOpts.displayFormats;
 
     // pick the longest format (milliseconds) for guestimation
     const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
-    const exampleLabel = me._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
-    const size = me._getLabelSize(exampleLabel);
+    const exampleLabel = this._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(this, [exampleTime], this._majorUnit), format);
+    const size = this._getLabelSize(exampleLabel);
     // subtract 1 - if offset then there's one less label than tick
     // if not offset then one half label padding is added to each end leaving room for one less label
-    const capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h) - 1;
+    const capacity = Math.floor(this.isHorizontal() ? this.width / size.w : this.height / size.h) - 1;
     return capacity > 0 ? capacity : 1;
   }
 
@@ -564,45 +553,43 @@ export default class TimeScale extends Scale {
 	 * @protected
 	 */
   getDataTimestamps() {
-    const me = this;
-    let timestamps = me._cache.data || [];
+    let timestamps = this._cache.data || [];
     let i, ilen;
 
     if (timestamps.length) {
       return timestamps;
     }
 
-    const metas = me.getMatchingVisibleMetas();
+    const metas = this.getMatchingVisibleMetas();
 
-    if (me._normalized && metas.length) {
-      return (me._cache.data = metas[0].controller.getAllParsedValues(me));
+    if (this._normalized && metas.length) {
+      return (this._cache.data = metas[0].controller.getAllParsedValues(this));
     }
 
     for (i = 0, ilen = metas.length; i < ilen; ++i) {
-      timestamps = timestamps.concat(metas[i].controller.getAllParsedValues(me));
+      timestamps = timestamps.concat(metas[i].controller.getAllParsedValues(this));
     }
 
-    return (me._cache.data = me.normalize(timestamps));
+    return (this._cache.data = this.normalize(timestamps));
   }
 
   /**
 	 * @protected
 	 */
   getLabelTimestamps() {
-    const me = this;
-    const timestamps = me._cache.labels || [];
+    const timestamps = this._cache.labels || [];
     let i, ilen;
 
     if (timestamps.length) {
       return timestamps;
     }
 
-    const labels = me.getLabels();
+    const labels = this.getLabels();
     for (i = 0, ilen = labels.length; i < ilen; ++i) {
-      timestamps.push(parse(me, labels[i]));
+      timestamps.push(parse(this, labels[i]));
     }
 
-    return (me._cache.labels = me._normalized ? timestamps : me.normalize(timestamps));
+    return (this._cache.labels = this._normalized ? timestamps : this.normalize(timestamps));
   }
 
   /**

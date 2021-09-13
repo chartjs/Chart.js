@@ -44,60 +44,57 @@ export default class Animation {
   }
 
   update(cfg, to, date) {
-    const me = this;
-    if (me._active) {
-      me._notify(false);
+    if (this._active) {
+      this._notify(false);
 
-      const currentValue = me._target[me._prop];
-      const elapsed = date - me._start;
-      const remain = me._duration - elapsed;
-      me._start = date;
-      me._duration = Math.floor(Math.max(remain, cfg.duration));
-      me._total += elapsed;
-      me._loop = !!cfg.loop;
-      me._to = resolve([cfg.to, to, currentValue, cfg.from]);
-      me._from = resolve([cfg.from, currentValue, to]);
+      const currentValue = this._target[this._prop];
+      const elapsed = date - this._start;
+      const remain = this._duration - elapsed;
+      this._start = date;
+      this._duration = Math.floor(Math.max(remain, cfg.duration));
+      this._total += elapsed;
+      this._loop = !!cfg.loop;
+      this._to = resolve([cfg.to, to, currentValue, cfg.from]);
+      this._from = resolve([cfg.from, currentValue, to]);
     }
   }
 
   cancel() {
-    const me = this;
-    if (me._active) {
+    if (this._active) {
       // update current evaluated value, for smoother animations
-      me.tick(Date.now());
-      me._active = false;
-      me._notify(false);
+      this.tick(Date.now());
+      this._active = false;
+      this._notify(false);
     }
   }
 
   tick(date) {
-    const me = this;
-    const elapsed = date - me._start;
-    const duration = me._duration;
-    const prop = me._prop;
-    const from = me._from;
-    const loop = me._loop;
-    const to = me._to;
+    const elapsed = date - this._start;
+    const duration = this._duration;
+    const prop = this._prop;
+    const from = this._from;
+    const loop = this._loop;
+    const to = this._to;
     let factor;
 
-    me._active = from !== to && (loop || (elapsed < duration));
+    this._active = from !== to && (loop || (elapsed < duration));
 
-    if (!me._active) {
-      me._target[prop] = to;
-      me._notify(true);
+    if (!this._active) {
+      this._target[prop] = to;
+      this._notify(true);
       return;
     }
 
     if (elapsed < 0) {
-      me._target[prop] = from;
+      this._target[prop] = from;
       return;
     }
 
     factor = (elapsed / duration) % 2;
     factor = loop && factor > 1 ? 2 - factor : factor;
-    factor = me._easing(Math.min(1, Math.max(0, factor)));
+    factor = this._easing(Math.min(1, Math.max(0, factor)));
 
-    me._target[prop] = me._fn(from, to, factor);
+    this._target[prop] = this._fn(from, to, factor);
   }
 
   wait() {

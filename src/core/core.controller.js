@@ -73,8 +73,6 @@ class Chart {
 
   // eslint-disable-next-line max-statements
   constructor(item, userConfig) {
-    const me = this;
-
     const config = this.config = new Config(userConfig);
     const initialCanvas = getCanvas(item);
     const existingChart = getChart(initialCanvas);
@@ -85,11 +83,11 @@ class Chart {
       );
     }
 
-    const options = config.createResolver(config.chartOptionScopes(), me.getContext());
+    const options = config.createResolver(config.chartOptionScopes(), this.getContext());
 
     this.platform = new (config.platform || _detectPlatform(initialCanvas))();
 
-    const context = me.platform.acquireContext(initialCanvas, options.aspectRatio);
+    const context = this.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
     const height = canvas && canvas.height;
     const width = canvas && canvas.width;
@@ -126,7 +124,7 @@ class Chart {
     this._doResize = debounce(mode => this.update(mode), options.resizeDelay || 0);
 
     // Add the chart instance to the global namespace
-    instances[me.id] = me;
+    instances[this.id] = this;
 
     if (!context || !canvas) {
       // The given item is not a compatible context2d element, let's return before finalizing
@@ -137,12 +135,12 @@ class Chart {
       return;
     }
 
-    animator.listen(me, 'complete', onAnimationsComplete);
-    animator.listen(me, 'progress', onAnimationProgress);
+    animator.listen(this, 'complete', onAnimationsComplete);
+    animator.listen(this, 'progress', onAnimationProgress);
 
-    me._initialize();
-    if (me.attached) {
-      me.update();
+    this._initialize();
+    if (this.attached) {
+      this.update();
     }
   }
 
@@ -182,23 +180,21 @@ class Chart {
 	 * @private
 	 */
   _initialize() {
-    const me = this;
-
     // Before init plugin notification
-    me.notifyPlugins('beforeInit');
+    this.notifyPlugins('beforeInit');
 
-    if (me.options.responsive) {
-      me.resize();
+    if (this.options.responsive) {
+      this.resize();
     } else {
-      retinaScale(me, me.options.devicePixelRatio);
+      retinaScale(this, this.options.devicePixelRatio);
     }
 
-    me.bindEvents();
+    this.bindEvents();
 
     // After init plugin notification
-    me.notifyPlugins('afterInit');
+    this.notifyPlugins('afterInit');
 
-    return me;
+    return this;
   }
 
   clear() {
@@ -225,29 +221,28 @@ class Chart {
   }
 
   _resize(width, height) {
-    const me = this;
-    const options = me.options;
-    const canvas = me.canvas;
-    const aspectRatio = options.maintainAspectRatio && me.aspectRatio;
-    const newSize = me.platform.getMaximumSize(canvas, width, height, aspectRatio);
-    const newRatio = options.devicePixelRatio || me.platform.getDevicePixelRatio();
-    const mode = me.width ? 'resize' : 'attach';
+    const options = this.options;
+    const canvas = this.canvas;
+    const aspectRatio = options.maintainAspectRatio && this.aspectRatio;
+    const newSize = this.platform.getMaximumSize(canvas, width, height, aspectRatio);
+    const newRatio = options.devicePixelRatio || this.platform.getDevicePixelRatio();
+    const mode = this.width ? 'resize' : 'attach';
 
-    me.width = newSize.width;
-    me.height = newSize.height;
-    me._aspectRatio = me.aspectRatio;
-    if (!retinaScale(me, newRatio, true)) {
+    this.width = newSize.width;
+    this.height = newSize.height;
+    this._aspectRatio = this.aspectRatio;
+    if (!retinaScale(this, newRatio, true)) {
       return;
     }
 
-    me.notifyPlugins('resize', {size: newSize});
+    this.notifyPlugins('resize', {size: newSize});
 
-    callCallback(options.onResize, [me, newSize], me);
+    callCallback(options.onResize, [this, newSize], this);
 
-    if (me.attached) {
-      if (me._doResize(mode)) {
+    if (this.attached) {
+      if (this._doResize(mode)) {
         // The resize update is delayed, only draw without updating.
-        me.render();
+        this.render();
       }
     }
   }
@@ -265,10 +260,9 @@ class Chart {
 	 * Builds a map of scale ID to scale object for future lookup.
 	 */
   buildOrUpdateScales() {
-    const me = this;
-    const options = me.options;
+    const options = this.options;
     const scaleOpts = options.scales;
-    const scales = me.scales;
+    const scales = this.scales;
     const updated = Object.keys(scales).reduce((obj, id) => {
       obj[id] = false;
       return obj;
@@ -310,8 +304,8 @@ class Chart {
         scale = new scaleClass({
           id,
           type: scaleType,
-          ctx: me.ctx,
-          chart: me
+          ctx: this.ctx,
+          chart: this
         });
         scales[scale.id] = scale;
       }
@@ -326,8 +320,8 @@ class Chart {
     });
 
     each(scales, (scale) => {
-      layouts.configure(me, scale, scale.options);
-      layouts.addBox(me, scale);
+      layouts.configure(this, scale, scale.options);
+      layouts.addBox(this, scale);
     });
   }
 
@@ -335,60 +329,57 @@ class Chart {
 	 * @private
 	 */
   _updateMetasets() {
-    const me = this;
-    const metasets = me._metasets;
-    const numData = me.data.datasets.length;
+    const metasets = this._metasets;
+    const numData = this.data.datasets.length;
     const numMeta = metasets.length;
 
     metasets.sort((a, b) => a.index - b.index);
     if (numMeta > numData) {
       for (let i = numData; i < numMeta; ++i) {
-        me._destroyDatasetMeta(i);
+        this._destroyDatasetMeta(i);
       }
       metasets.splice(numData, numMeta - numData);
     }
-    me._sortedMetasets = metasets.slice(0).sort(compare2Level('order', 'index'));
+    this._sortedMetasets = metasets.slice(0).sort(compare2Level('order', 'index'));
   }
 
   /**
 	 * @private
 	 */
   _removeUnreferencedMetasets() {
-    const me = this;
-    const {_metasets: metasets, data: {datasets}} = me;
+    const {_metasets: metasets, data: {datasets}} = this;
     if (metasets.length > datasets.length) {
-      delete me._stacks;
+      delete this._stacks;
     }
     metasets.forEach((meta, index) => {
       if (datasets.filter(x => x === meta._dataset).length === 0) {
-        me._destroyDatasetMeta(index);
+        this._destroyDatasetMeta(index);
       }
     });
   }
 
   buildOrUpdateControllers() {
-    const me = this;
     const newControllers = [];
-    const datasets = me.data.datasets;
+    const datasets = this.data.datasets;
     let i, ilen;
 
-    me._removeUnreferencedMetasets();
+    this._removeUnreferencedMetasets();
 
     for (i = 0, ilen = datasets.length; i < ilen; i++) {
       const dataset = datasets[i];
-      let meta = me.getDatasetMeta(i);
-      const type = dataset.type || me.config.type;
+      let meta = this.getDatasetMeta(i);
+      const type = dataset.type || this.config.type;
 
       if (meta.type && meta.type !== type) {
-        me._destroyDatasetMeta(i);
-        meta = me.getDatasetMeta(i);
+        this._destroyDatasetMeta(i);
+        meta = this.getDatasetMeta(i);
       }
       meta.type = type;
-      meta.indexAxis = dataset.indexAxis || getIndexAxis(type, me.options);
+      meta.indexAxis = dataset.indexAxis || getIndexAxis(type, this.options);
       meta.order = dataset.order || 0;
       meta.index = i;
       meta.label = '' + dataset.label;
-      meta.visible = me.isDatasetVisible(i);
+      meta.visible = this.isDatasetVisible(i);
 
       if (meta.controller) {
         meta.controller.updateIndex(i);
@@ -400,12 +391,12 @@ class Chart {
           dataElementType: registry.getElement(dataElementType),
           datasetElementType: datasetElementType && registry.getElement(datasetElementType)
         });
-        meta.controller = new ControllerClass(me, i);
+        meta.controller = new ControllerClass(this, i);
         newControllers.push(meta.controller);
       }
     }
 
-    me._updateMetasets();
+    this._updateMetasets();
     return newControllers;
   }
 
@@ -414,10 +405,9 @@ class Chart {
 	 * @private
 	 */
   _resetElements() {
-    const me = this;
-    each(me.data.datasets, (dataset, datasetIndex) => {
-      me.getDatasetMeta(datasetIndex).controller.reset();
-    }, me);
+    each(this.data.datasets, (dataset, datasetIndex) => {
+      this.getDatasetMeta(datasetIndex).controller.reset();
+    }, this);
   }
 
   /**
@@ -429,55 +419,54 @@ class Chart {
   }
 
   update(mode) {
-    const me = this;
-    const config = me.config;
+    const config = this.config;
 
     config.update();
-    me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
+    this._options = config.createResolver(config.chartOptionScopes(), this.getContext());
 
-    each(me.scales, (scale) => {
-      layouts.removeBox(me, scale);
+    each(this.scales, (scale) => {
+      layouts.removeBox(this, scale);
     });
 
-    const animsDisabled = me._animationsDisabled = !me.options.animation;
+    const animsDisabled = this._animationsDisabled = !this.options.animation;
 
-    me.ensureScalesHaveIDs();
-    me.buildOrUpdateScales();
+    this.ensureScalesHaveIDs();
+    this.buildOrUpdateScales();
 
-    const existingEvents = new Set(Object.keys(me._listeners));
-    const newEvents = new Set(me.options.events);
+    const existingEvents = new Set(Object.keys(this._listeners));
+    const newEvents = new Set(this.options.events);
 
-    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== me.options.responsive) {
+    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== this.options.responsive) {
       // The configured events have changed. Rebind.
-      me.unbindEvents();
-      me.bindEvents();
+      this.unbindEvents();
+      this.bindEvents();
     }
 
     // plugins options references might have change, let's invalidate the cache
     // https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
-    me._plugins.invalidate();
+    this._plugins.invalidate();
 
-    if (me.notifyPlugins('beforeUpdate', {mode, cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeUpdate', {mode, cancelable: true}) === false) {
       return;
     }
 
     // Make sure dataset controllers are updated and new controllers are reset
-    const newControllers = me.buildOrUpdateControllers();
+    const newControllers = this.buildOrUpdateControllers();
 
-    me.notifyPlugins('beforeElementsUpdate');
+    this.notifyPlugins('beforeElementsUpdate');
 
     // Make sure all dataset controllers have correct meta data counts
     let minPadding = 0;
-    for (let i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
-      const {controller} = me.getDatasetMeta(i);
+    for (let i = 0, ilen = this.data.datasets.length; i < ilen; i++) {
+      const {controller} = this.getDatasetMeta(i);
       const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
       // New controllers will be reset after the layout pass, so we only want to modify
       // elements added to new datasets
       controller.buildOrUpdateElements(reset);
       minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
     }
-    me._minPadding = minPadding;
-    me._updateLayout(minPadding);
+    this._minPadding = minPadding;
+    this._updateLayout(minPadding);
 
     // Only reset the controllers if we have animations
     if (!animsDisabled) {
@@ -488,19 +477,19 @@ class Chart {
       });
     }
 
-    me._updateDatasets(mode);
+    this._updateDatasets(mode);
 
     // Do this before render so that any plugins that need final scale updates can use it
-    me.notifyPlugins('afterUpdate', {mode});
+    this.notifyPlugins('afterUpdate', {mode});
 
-    me._layers.sort(compare2Level('z', '_idx'));
+    this._layers.sort(compare2Level('z', '_idx'));
 
     // Replay last event from before update
-    if (me._lastEvent) {
-      me._eventHandler(me._lastEvent, true);
+    if (this._lastEvent) {
+      this._eventHandler(this._lastEvent, true);
     }
 
-    me.render();
+    this.render();
   }
 
   /**
@@ -509,19 +498,17 @@ class Chart {
 	 * @private
 	 */
   _updateLayout(minPadding) {
-    const me = this;
-
-    if (me.notifyPlugins('beforeLayout', {cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeLayout', {cancelable: true}) === false) {
       return;
     }
 
-    layouts.update(me, me.width, me.height, minPadding);
+    layouts.update(this, this.width, this.height, minPadding);
 
-    const area = me.chartArea;
+    const area = this.chartArea;
     const noArea = area.width <= 0 || area.height <= 0;
 
-    me._layers = [];
-    each(me.boxes, (box) => {
+    this._layers = [];
+    each(this.boxes, (box) => {
       if (noArea && box.position === 'chartArea') {
         // Skip drawing and configuring chartArea boxes when chartArea is zero or negative
         return;
@@ -532,14 +519,14 @@ class Chart {
       if (box.configure) {
         box.configure();
       }
-      me._layers.push(...box._layers());
-    }, me);
+      this._layers.push(...box._layers());
+    }, this);
 
-    me._layers.forEach((item, index) => {
+    this._layers.forEach((item, index) => {
       item._idx = index;
     });
 
-    me.notifyPlugins('afterLayout');
+    this.notifyPlugins('afterLayout');
   }
 
   /**
@@ -548,18 +535,17 @@ class Chart {
 	 * @private
 	 */
   _updateDatasets(mode) {
-    const me = this;
     const isFunction = typeof mode === 'function';
 
-    if (me.notifyPlugins('beforeDatasetsUpdate', {mode, cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeDatasetsUpdate', {mode, cancelable: true}) === false) {
       return;
     }
 
-    for (let i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-      me._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
+    for (let i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
+      this._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
     }
 
-    me.notifyPlugins('afterDatasetsUpdate', {mode});
+    this.notifyPlugins('afterDatasetsUpdate', {mode});
   }
 
   /**
@@ -568,78 +554,74 @@ class Chart {
 	 * @private
 	 */
   _updateDataset(index, mode) {
-    const me = this;
-    const meta = me.getDatasetMeta(index);
+    const meta = this.getDatasetMeta(index);
     const args = {meta, index, mode, cancelable: true};
 
-    if (me.notifyPlugins('beforeDatasetUpdate', args) === false) {
+    if (this.notifyPlugins('beforeDatasetUpdate', args) === false) {
       return;
     }
 
     meta.controller._update(mode);
 
     args.cancelable = false;
-    me.notifyPlugins('afterDatasetUpdate', args);
+    this.notifyPlugins('afterDatasetUpdate', args);
   }
 
   render() {
-    const me = this;
-    if (me.notifyPlugins('beforeRender', {cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeRender', {cancelable: true}) === false) {
       return;
     }
 
-    if (animator.has(me)) {
-      if (me.attached && !animator.running(me)) {
-        animator.start(me);
+    if (animator.has(this)) {
+      if (this.attached && !animator.running(this)) {
+        animator.start(this);
       }
     } else {
-      me.draw();
-      onAnimationsComplete({chart: me});
+      this.draw();
+      onAnimationsComplete({chart: this});
     }
   }
 
   draw() {
-    const me = this;
     let i;
-    if (me._resizeBeforeDraw) {
-      const {width, height} = me._resizeBeforeDraw;
-      me._resize(width, height);
-      me._resizeBeforeDraw = null;
+    if (this._resizeBeforeDraw) {
+      const {width, height} = this._resizeBeforeDraw;
+      this._resize(width, height);
+      this._resizeBeforeDraw = null;
     }
-    me.clear();
+    this.clear();
 
-    if (me.width <= 0 || me.height <= 0) {
+    if (this.width <= 0 || this.height <= 0) {
       return;
     }
 
-    if (me.notifyPlugins('beforeDraw', {cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeDraw', {cancelable: true}) === false) {
       return;
     }
 
     // Because of plugin hooks (before/afterDatasetsDraw), datasets can't
     // currently be part of layers. Instead, we draw
     // layers <= 0 before(default, backward compat), and the rest after
-    const layers = me._layers;
+    const layers = this._layers;
     for (i = 0; i < layers.length && layers[i].z <= 0; ++i) {
-      layers[i].draw(me.chartArea);
+      layers[i].draw(this.chartArea);
     }
 
-    me._drawDatasets();
+    this._drawDatasets();
 
     // Rest of layers
     for (; i < layers.length; ++i) {
-      layers[i].draw(me.chartArea);
+      layers[i].draw(this.chartArea);
     }
 
-    me.notifyPlugins('afterDraw');
+    this.notifyPlugins('afterDraw');
   }
 
   /**
 	 * @private
 	 */
   _getSortedDatasetMetas(filterVisible) {
-    const me = this;
-    const metasets = me._sortedMetasets;
+    const metasets = this._sortedMetasets;
     const result = [];
     let i, ilen;
 
@@ -667,18 +649,16 @@ class Chart {
 	 * @private
 	 */
   _drawDatasets() {
-    const me = this;
-
-    if (me.notifyPlugins('beforeDatasetsDraw', {cancelable: true}) === false) {
+    if (this.notifyPlugins('beforeDatasetsDraw', {cancelable: true}) === false) {
       return;
     }
 
-    const metasets = me.getSortedVisibleDatasetMetas();
+    const metasets = this.getSortedVisibleDatasetMetas();
     for (let i = metasets.length - 1; i >= 0; --i) {
-      me._drawDataset(metasets[i]);
+      this._drawDataset(metasets[i]);
     }
 
-    me.notifyPlugins('afterDatasetsDraw');
+    this.notifyPlugins('afterDatasetsDraw');
   }
 
   /**
@@ -687,27 +667,26 @@ class Chart {
 	 * @private
 	 */
   _drawDataset(meta) {
-    const me = this;
-    const ctx = me.ctx;
+    const ctx = this.ctx;
     const clip = meta._clip;
     const useClip = !clip.disabled;
-    const area = me.chartArea;
+    const area = this.chartArea;
     const args = {
       meta,
       index: meta.index,
       cancelable: true
     };
 
-    if (me.notifyPlugins('beforeDatasetDraw', args) === false) {
+    if (this.notifyPlugins('beforeDatasetDraw', args) === false) {
       return;
     }
 
     if (useClip) {
       clipArea(ctx, {
         left: clip.left === false ? 0 : area.left - clip.left,
-        right: clip.right === false ? me.width : area.right + clip.right,
+        right: clip.right === false ? this.width : area.right + clip.right,
         top: clip.top === false ? 0 : area.top - clip.top,
-        bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
+        bottom: clip.bottom === false ? this.height : area.bottom + clip.bottom
       });
     }
 
@@ -718,7 +697,7 @@ class Chart {
     }
 
     args.cancelable = false;
-    me.notifyPlugins('afterDatasetDraw', args);
+    this.notifyPlugins('afterDatasetDraw', args);
   }
 
   getElementsAtEventForMode(e, mode, options, useFinalPosition) {
@@ -731,9 +710,8 @@ class Chart {
   }
 
   getDatasetMeta(datasetIndex) {
-    const me = this;
-    const dataset = me.data.datasets[datasetIndex];
-    const metasets = me._metasets;
+    const dataset = this.data.datasets[datasetIndex];
+    const metasets = this._metasets;
     let meta = metasets.filter(x => x && x._dataset === dataset).pop();
 
     if (!meta) {
@@ -795,19 +773,18 @@ class Chart {
 	 * @private
 	 */
   _updateVisibility(datasetIndex, dataIndex, visible) {
-    const me = this;
     const mode = visible ? 'show' : 'hide';
-    const meta = me.getDatasetMeta(datasetIndex);
+    const meta = this.getDatasetMeta(datasetIndex);
     const anims = meta.controller._resolveAnimations(undefined, mode);
 
     if (defined(dataIndex)) {
       meta.data[dataIndex].hidden = !visible;
-      me.update();
+      this.update();
     } else {
-      me.setDatasetVisibility(datasetIndex, visible);
+      this.setDatasetVisibility(datasetIndex, visible);
       // Animate visible state, so hide animation can be seen. This could be handled better if update / updateDataset returned a Promise.
       anims.update(meta, {visible});
-      me.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
+      this.update((ctx) => ctx.datasetIndex === datasetIndex ? mode : undefined);
     }
   }
 
@@ -823,44 +800,41 @@ class Chart {
 	 * @private
 	 */
   _destroyDatasetMeta(datasetIndex) {
-    const me = this;
-    const meta = me._metasets && me._metasets[datasetIndex];
+    const meta = this._metasets && this._metasets[datasetIndex];
 
     if (meta && meta.controller) {
       meta.controller._destroy();
-      delete me._metasets[datasetIndex];
+      delete this._metasets[datasetIndex];
     }
   }
 
   _stop() {
-    const me = this;
     let i, ilen;
-    me.stop();
-    animator.remove(me);
+    this.stop();
+    animator.remove(this);
 
-    for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
-      me._destroyDatasetMeta(i);
+    for (i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
+      this._destroyDatasetMeta(i);
     }
   }
 
   destroy() {
-    const me = this;
-    const {canvas, ctx} = me;
+    const {canvas, ctx} = this;
 
-    me._stop();
-    me.config.clearCache();
+    this._stop();
+    this.config.clearCache();
 
     if (canvas) {
-      me.unbindEvents();
+      this.unbindEvents();
       clearCanvas(canvas, ctx);
-      me.platform.releaseContext(ctx);
-      me.canvas = null;
-      me.ctx = null;
+      this.platform.releaseContext(ctx);
+      this.canvas = null;
+      this.ctx = null;
     }
 
-    me.notifyPlugins('destroy');
+    this.notifyPlugins('destroy');
 
-    delete instances[me.id];
+    delete instances[this.id];
   }
 
   toBase64Image(...args) {
@@ -883,49 +857,47 @@ class Chart {
    * @private
    */
   bindUserEvents() {
-    const me = this;
-    const listeners = me._listeners;
-    const platform = me.platform;
+    const listeners = this._listeners;
+    const platform = this.platform;
 
     const _add = (type, listener) => {
-      platform.addEventListener(me, type, listener);
+      platform.addEventListener(this, type, listener);
       listeners[type] = listener;
     };
 
-    const listener = function(e, x, y) {
+    const listener = (e, x, y) => {
       e.offsetX = x;
       e.offsetY = y;
-      me._eventHandler(e);
+      this._eventHandler(e);
     };
 
-    each(me.options.events, (type) => _add(type, listener));
+    each(this.options.events, (type) => _add(type, listener));
   }
 
   /**
    * @private
    */
   bindResponsiveEvents() {
-    const me = this;
-    if (!me._responsiveListeners) {
-      me._responsiveListeners = {};
+    if (!this._responsiveListeners) {
+      this._responsiveListeners = {};
     }
-    const listeners = me._responsiveListeners;
-    const platform = me.platform;
+    const listeners = this._responsiveListeners;
+    const platform = this.platform;
 
     const _add = (type, listener) => {
-      platform.addEventListener(me, type, listener);
+      platform.addEventListener(this, type, listener);
       listeners[type] = listener;
     };
     const _remove = (type, listener) => {
       if (listeners[type]) {
-        platform.removeEventListener(me, type, listener);
+        platform.removeEventListener(this, type, listener);
         delete listeners[type];
       }
     };
 
     const listener = (width, height) => {
-      if (me.canvas) {
-        me.resize(width, height);
+      if (this.canvas) {
+        this.resize(width, height);
       }
     };
 
@@ -933,26 +905,26 @@ class Chart {
     const attached = () => {
       _remove('attach', attached);
 
-      me.attached = true;
-      me.resize();
+      this.attached = true;
+      this.resize();
 
       _add('resize', listener);
       _add('detach', detached);
     };
 
     detached = () => {
-      me.attached = false;
+      this.attached = false;
 
       _remove('resize', listener);
 
       // Stop animating and remove metasets, so when re-attached, the animations start from begining.
-      me._stop();
-      me._resize(0, 0);
+      this._stop();
+      this._resize(0, 0);
 
       _add('attach', attached);
     };
 
-    if (platform.isAttached(me.canvas)) {
+    if (platform.isAttached(this.canvas)) {
       attached();
     } else {
       detached();
@@ -963,17 +935,15 @@ class Chart {
 	 * @private
 	 */
   unbindEvents() {
-    const me = this;
-
-    each(me._listeners, (listener, type) => {
-      me.platform.removeEventListener(me, type, listener);
+    each(this._listeners, (listener, type) => {
+      this.platform.removeEventListener(this, type, listener);
     });
-    me._listeners = {};
+    this._listeners = {};
 
-    each(me._responsiveListeners, (listener, type) => {
-      me.platform.removeEventListener(me, type, listener);
+    each(this._responsiveListeners, (listener, type) => {
+      this.platform.removeEventListener(this, type, listener);
     });
-    me._responsiveListeners = undefined;
+    this._responsiveListeners = undefined;
   }
 
   updateHoverStyle(items, mode, enabled) {
@@ -1007,10 +977,9 @@ class Chart {
 	 * @param {array} activeElements New active data points
 	 */
   setActiveElements(activeElements) {
-    const me = this;
-    const lastActive = me._active || [];
+    const lastActive = this._active || [];
     const active = activeElements.map(({datasetIndex, index}) => {
-      const meta = me.getDatasetMeta(datasetIndex);
+      const meta = this.getDatasetMeta(datasetIndex);
       if (!meta) {
         throw new Error('No dataset found at index ' + datasetIndex);
       }
@@ -1024,8 +993,8 @@ class Chart {
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
-      me._active = active;
-      me._updateHoverStyles(active, lastActive);
+      this._active = active;
+      this._updateHoverStyles(active, lastActive);
     }
   }
 
@@ -1046,18 +1015,17 @@ class Chart {
 	 * @private
 	 */
   _updateHoverStyles(active, lastActive, replay) {
-    const me = this;
-    const hoverOptions = me.options.hover;
+    const hoverOptions = this.options.hover;
     const diff = (a, b) => a.filter(x => !b.some(y => x.datasetIndex === y.datasetIndex && x.index === y.index));
     const deactivated = diff(lastActive, active);
     const activated = replay ? active : diff(active, lastActive);
 
     if (deactivated.length) {
-      me.updateHoverStyle(deactivated, hoverOptions.mode, false);
+      this.updateHoverStyle(deactivated, hoverOptions.mode, false);
     }
 
     if (activated.length && hoverOptions.mode) {
-      me.updateHoverStyle(activated, hoverOptions.mode, true);
+      this.updateHoverStyle(activated, hoverOptions.mode, true);
     }
   }
 
@@ -1065,24 +1033,23 @@ class Chart {
 	 * @private
 	 */
   _eventHandler(e, replay) {
-    const me = this;
     const args = {event: e, replay, cancelable: true};
     const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.native.type);
 
-    if (me.notifyPlugins('beforeEvent', args, eventFilter) === false) {
+    if (this.notifyPlugins('beforeEvent', args, eventFilter) === false) {
       return;
     }
 
-    const changed = me._handleEvent(e, replay);
+    const changed = this._handleEvent(e, replay);
 
     args.cancelable = false;
-    me.notifyPlugins('afterEvent', args, eventFilter);
+    this.notifyPlugins('afterEvent', args, eventFilter);
 
     if (changed || args.changed) {
-      me.render();
+      this.render();
     }
 
-    return me;
+    return this;
   }
 
   /**
@@ -1093,8 +1060,7 @@ class Chart {
 	 * @private
 	 */
   _handleEvent(e, replay) {
-    const me = this;
-    const {_active: lastActive = [], options} = me;
+    const {_active: lastActive = [], options} = this;
     const hoverOptions = options.hover;
 
     // If the event is replayed from `update`, we should evaluate with the final positions.
@@ -1118,29 +1084,29 @@ class Chart {
 
     // Find Active Elements for hover and tooltips
     if (e.type !== 'mouseout') {
-      active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
-      lastEvent = e.type === 'click' ? me._lastEvent : e;
+      active = this.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
+      lastEvent = e.type === 'click' ? this._lastEvent : e;
     }
     // Set _lastEvent to null while we are processing the event handlers.
     // This prevents recursion if the handler calls chart.update()
-    me._lastEvent = null;
+    this._lastEvent = null;
 
-    if (_isPointInArea(e, me.chartArea, me._minPadding)) {
+    if (_isPointInArea(e, this.chartArea, this._minPadding)) {
       // Invoke onHover hook
-      callCallback(options.onHover, [e, active, me], me);
+      callCallback(options.onHover, [e, active, this], this);
 
       if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
-        callCallback(options.onClick, [e, active, me], me);
+        callCallback(options.onClick, [e, active, this], this);
       }
     }
 
     changed = !_elementsEqual(active, lastActive);
     if (changed || replay) {
-      me._active = active;
-      me._updateHoverStyles(active, lastActive, replay);
+      this._active = active;
+      this._updateHoverStyles(active, lastActive, replay);
     }
 
-    me._lastEvent = lastEvent;
+    this._lastEvent = lastEvent;
 
     return changed;
   }
