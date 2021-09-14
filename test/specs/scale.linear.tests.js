@@ -51,6 +51,29 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.max).toBe(150);
   });
 
+  it('Should handle when only a max value is provided', () => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          yAxisID: 'y',
+          data: [200]
+        }],
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            max: 150
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y).not.toEqual(undefined); // must construct
+    expect(chart.scales.y.max).toBe(150);
+  });
+
   it('Should correctly determine the max & min of string data values', function() {
     var chart = window.acquireChart({
       type: 'bar',
