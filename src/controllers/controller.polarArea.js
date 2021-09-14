@@ -12,9 +12,8 @@ export default class PolarAreaController extends DatasetController {
   }
 
   getLabelAndValue(index) {
-    const me = this;
-    const meta = me._cachedMeta;
-    const chart = me.chart;
+    const meta = this._cachedMeta;
+    const chart = this.chart;
     const labels = chart.data.labels || [];
     const value = formatNumber(meta._parsed[index].r, chart.options.locale);
 
@@ -35,8 +34,7 @@ export default class PolarAreaController extends DatasetController {
 	 * @private
 	 */
   _updateRadius() {
-    const me = this;
-    const chart = me.chart;
+    const chart = this.chart;
     const chartArea = chart.chartArea;
     const opts = chart.options;
     const minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
@@ -45,33 +43,32 @@ export default class PolarAreaController extends DatasetController {
     const innerRadius = Math.max(opts.cutoutPercentage ? (outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
     const radiusLength = (outerRadius - innerRadius) / chart.getVisibleDatasetCount();
 
-    me.outerRadius = outerRadius - (radiusLength * me.index);
-    me.innerRadius = me.outerRadius - radiusLength;
+    this.outerRadius = outerRadius - (radiusLength * this.index);
+    this.innerRadius = this.outerRadius - radiusLength;
   }
 
   updateElements(arcs, start, count, mode) {
-    const me = this;
     const reset = mode === 'reset';
-    const chart = me.chart;
-    const dataset = me.getDataset();
+    const chart = this.chart;
+    const dataset = this.getDataset();
     const opts = chart.options;
     const animationOpts = opts.animation;
-    const scale = me._cachedMeta.rScale;
+    const scale = this._cachedMeta.rScale;
     const centerX = scale.xCenter;
     const centerY = scale.yCenter;
     const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
 
-    const defaultAngle = 360 / me.countVisibleElements();
+    const defaultAngle = 360 / this.countVisibleElements();
 
     for (i = 0; i < start; ++i) {
-      angle += me._computeAngle(i, mode, defaultAngle);
+      angle += this._computeAngle(i, mode, defaultAngle);
     }
     for (i = start; i < start + count; i++) {
       const arc = arcs[i];
       let startAngle = angle;
-      let endAngle = angle + me._computeAngle(i, mode, defaultAngle);
+      let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
       let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
       angle = endAngle;
 
@@ -91,10 +88,10 @@ export default class PolarAreaController extends DatasetController {
         outerRadius,
         startAngle,
         endAngle,
-        options: me.resolveDataElementOptions(i, arc.active ? 'active' : mode)
+        options: this.resolveDataElementOptions(i, arc.active ? 'active' : mode)
       };
 
-      me.updateElement(arc, i, properties, mode);
+      this.updateElement(arc, i, properties, mode);
     }
   }
 

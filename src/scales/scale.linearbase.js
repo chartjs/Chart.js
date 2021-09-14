@@ -175,10 +175,9 @@ export default class LinearScaleBase extends Scale {
   }
 
   handleTickRangeOptions() {
-    const me = this;
-    const {beginAtZero} = me.options;
-    const {minDefined, maxDefined} = me.getUserBounds();
-    let {min, max} = me;
+    const {beginAtZero} = this.options;
+    const {minDefined, maxDefined} = this.getUserBounds();
+    let {min, max} = this;
 
     const setMin = v => (min = minDefined ? min : v);
     const setMax = v => (max = maxDefined ? max : v);
@@ -211,21 +210,20 @@ export default class LinearScaleBase extends Scale {
         setMin(min - offset);
       }
     }
-    me.min = min;
-    me.max = max;
+    this.min = min;
+    this.max = max;
   }
 
   getTickLimit() {
-    const me = this;
-    const tickOpts = me.options.ticks;
+    const tickOpts = this.options.ticks;
     // eslint-disable-next-line prefer-const
     let {maxTicksLimit, stepSize} = tickOpts;
     let maxTicks;
 
     if (stepSize) {
-      maxTicks = Math.ceil(me.max / stepSize) - Math.floor(me.min / stepSize) + 1;
+      maxTicks = Math.ceil(this.max / stepSize) - Math.floor(this.min / stepSize) + 1;
     } else {
-      maxTicks = me.computeTickLimit();
+      maxTicks = this.computeTickLimit();
       maxTicksLimit = maxTicksLimit || 11;
     }
 
@@ -244,15 +242,14 @@ export default class LinearScaleBase extends Scale {
   }
 
   buildTicks() {
-    const me = this;
-    const opts = me.options;
+    const opts = this.options;
     const tickOpts = opts.ticks;
 
     // Figure out what the max number of ticks we can support it is based on the size of
     // the axis area. For now, we say that the minimum tick spacing in pixels must be 40
     // We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
     // the graph. Make sure we always have at least 2 ticks
-    let maxTicks = me.getTickLimit();
+    let maxTicks = this.getTickLimit();
     maxTicks = Math.max(2, maxTicks);
 
     const numericGeneratorOptions = {
@@ -263,28 +260,28 @@ export default class LinearScaleBase extends Scale {
       precision: tickOpts.precision,
       step: tickOpts.stepSize,
       count: tickOpts.count,
-      maxDigits: me._maxDigits(),
-      horizontal: me.isHorizontal(),
+      maxDigits: this._maxDigits(),
+      horizontal: this.isHorizontal(),
       minRotation: tickOpts.minRotation || 0,
       includeBounds: tickOpts.includeBounds !== false
     };
-    const dataRange = me._range || me;
+    const dataRange = this._range || this;
     const ticks = generateTicks(numericGeneratorOptions, dataRange);
 
     // At this point, we need to update our max and min given the tick values,
     // since we probably have expanded the range of the scale
     if (opts.bounds === 'ticks') {
-      _setMinAndMaxByKey(ticks, me, 'value');
+      _setMinAndMaxByKey(ticks, this, 'value');
     }
 
     if (opts.reverse) {
       ticks.reverse();
 
-      me.start = me.max;
-      me.end = me.min;
+      this.start = this.max;
+      this.end = this.min;
     } else {
-      me.start = me.min;
-      me.end = me.max;
+      this.start = this.min;
+      this.end = this.max;
     }
 
     return ticks;
@@ -294,21 +291,20 @@ export default class LinearScaleBase extends Scale {
 	 * @protected
 	 */
   configure() {
-    const me = this;
-    const ticks = me.ticks;
-    let start = me.min;
-    let end = me.max;
+    const ticks = this.ticks;
+    let start = this.min;
+    let end = this.max;
 
     super.configure();
 
-    if (me.options.offset && ticks.length) {
+    if (this.options.offset && ticks.length) {
       const offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;
       start -= offset;
       end += offset;
     }
-    me._startValue = start;
-    me._endValue = end;
-    me._valueRange = end - start;
+    this._startValue = start;
+    this._endValue = end;
+    this._valueRange = end - start;
   }
 
   getLabelForValue(value) {

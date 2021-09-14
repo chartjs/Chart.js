@@ -29,15 +29,14 @@ export default class Element {
 	 * @return {object}
 	 */
   getProps(props, final) {
-    const me = this;
     const anims = this.$animations;
     if (!final || !anims) {
       // let's not create an object, if not needed
-      return me;
+      return this;
     }
     const ret = {};
     props.forEach(prop => {
-      ret[prop] = anims[prop] && anims[prop].active() ? anims[prop]._to : me[prop];
+      ret[prop] = anims[prop] && anims[prop].active() ? anims[prop]._to : this[prop];
     });
     return ret;
   }

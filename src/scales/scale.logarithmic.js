@@ -68,24 +68,22 @@ export default class LogarithmicScale extends Scale {
   }
 
   determineDataLimits() {
-    const me = this;
-    const {min, max} = me.getMinMax(true);
+    const {min, max} = this.getMinMax(true);
 
-    me.min = isFinite(min) ? Math.max(0, min) : null;
-    me.max = isFinite(max) ? Math.max(0, max) : null;
+    this.min = isFinite(min) ? Math.max(0, min) : null;
+    this.max = isFinite(max) ? Math.max(0, max) : null;
 
-    if (me.options.beginAtZero) {
-      me._zero = true;
+    if (this.options.beginAtZero) {
+      this._zero = true;
     }
 
-    me.handleTickRangeOptions();
+    this.handleTickRangeOptions();
   }
 
   handleTickRangeOptions() {
-    const me = this;
-    const {minDefined, maxDefined} = me.getUserBounds();
-    let min = me.min;
-    let max = me.max;
+    const {minDefined, maxDefined} = this.getUserBounds();
+    let min = this.min;
+    let max = this.max;
 
     const setMin = v => (min = minDefined ? min : v);
     const setMax = v => (max = maxDefined ? max : v);
@@ -108,37 +106,36 @@ export default class LogarithmicScale extends Scale {
     }
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
-    if (me._zero && me.min !== me._suggestedMin && min === exp(me.min, 0)) {
+    if (this._zero && this.min !== this._suggestedMin && min === exp(this.min, 0)) {
       setMin(exp(min, -1));
     }
-    me.min = min;
-    me.max = max;
+    this.min = min;
+    this.max = max;
   }
 
   buildTicks() {
-    const me = this;
-    const opts = me.options;
+    const opts = this.options;
 
     const generationOptions = {
-      min: me._userMin,
-      max: me._userMax
+      min: this._userMin,
+      max: this._userMax
     };
-    const ticks = generateTicks(generationOptions, me);
+    const ticks = generateTicks(generationOptions, this);
 
     // At this point, we need to update our max and min given the tick values,
     // since we probably have expanded the range of the scale
     if (opts.bounds === 'ticks') {
-      _setMinAndMaxByKey(ticks, me, 'value');
+      _setMinAndMaxByKey(ticks, this, 'value');
     }
 
     if (opts.reverse) {
       ticks.reverse();
 
-      me.start = me.max;
-      me.end = me.min;
+      this.start = this.max;
+      this.end = this.min;
     } else {
-      me.start = me.min;
-      me.end = me.max;
+      this.start = this.min;
+      this.end = this.max;
     }
 
     return ticks;
@@ -156,32 +153,29 @@ export default class LogarithmicScale extends Scale {
 	 * @protected
 	 */
   configure() {
-    const me = this;
-    const start = me.min;
+    const start = this.min;
 
     super.configure();
 
-    me._startValue = log10(start);
-    me._valueRange = log10(me.max) - log10(start);
+    this._startValue = log10(start);
+    this._valueRange = log10(this.max) - log10(start);
   }
 
   getPixelForValue(value) {
-    const me = this;
     if (value === undefined || value === 0) {
-      value = me.min;
+      value = this.min;
     }
     if (value === null || isNaN(value)) {
       return NaN;
     }
-    return me.getPixelForDecimal(value === me.min
+    return this.getPixelForDecimal(value === this.min
       ? 0
-      : (log10(value) - me._startValue) / me._valueRange);
+      : (log10(value) - this._startValue) / this._valueRange);
   }
 
   getValueForPixel(pixel) {
-    const me = this;
-    const decimal = me.getDecimalForPixel(pixel);
-    return Math.pow(10, me._startValue + decimal * me._valueRange);
+    const decimal = this.getDecimalForPixel(pixel);
+    return Math.pow(10, this._startValue + decimal * this._valueRange);
   }
 }
 

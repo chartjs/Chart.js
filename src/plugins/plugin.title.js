@@ -27,28 +27,27 @@ export class Title extends Element {
   }
 
   update(maxWidth, maxHeight) {
-    const me = this;
-    const opts = me.options;
+    const opts = this.options;
 
-    me.left = 0;
-    me.top = 0;
+    this.left = 0;
+    this.top = 0;
 
     if (!opts.display) {
-      me.width = me.height = me.right = me.bottom = 0;
+      this.width = this.height = this.right = this.bottom = 0;
       return;
     }
 
-    me.width = me.right = maxWidth;
-    me.height = me.bottom = maxHeight;
+    this.width = this.right = maxWidth;
+    this.height = this.bottom = maxHeight;
 
     const lineCount = isArray(opts.text) ? opts.text.length : 1;
-    me._padding = toPadding(opts.padding);
-    const textSize = lineCount * toFont(opts.font).lineHeight + me._padding.height;
+    this._padding = toPadding(opts.padding);
+    const textSize = lineCount * toFont(opts.font).lineHeight + this._padding.height;
 
-    if (me.isHorizontal()) {
-      me.height = textSize;
+    if (this.isHorizontal()) {
+      this.height = textSize;
     } else {
-      me.width = textSize;
+      this.width = textSize;
     }
   }
 
@@ -83,9 +82,8 @@ export class Title extends Element {
   }
 
   draw() {
-    const me = this;
-    const ctx = me.ctx;
-    const opts = me.options;
+    const ctx = this.ctx;
+    const opts = this.options;
 
     if (!opts.display) {
       return;
@@ -93,8 +91,8 @@ export class Title extends Element {
 
     const fontOpts = toFont(opts.font);
     const lineHeight = fontOpts.lineHeight;
-    const offset = lineHeight / 2 + me._padding.top;
-    const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
+    const offset = lineHeight / 2 + this._padding.top;
+    const {titleX, titleY, maxWidth, rotation} = this._drawArgs(offset);
 
     renderText(ctx, opts.text, 0, 0, fontOpts, {
       color: opts.color,

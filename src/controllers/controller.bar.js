@@ -310,10 +310,9 @@ export default class BarController extends DatasetController {
 	 * @protected
 	 */
   getLabelAndValue(index) {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const {iScale, vScale} = meta;
-    const parsed = me.getParsed(index);
+    const parsed = this.getParsed(index);
     const custom = parsed._custom;
     const value = isFloatBar(custom)
       ? '[' + custom.start + ', ' + custom.end + ']'
@@ -326,39 +325,35 @@ export default class BarController extends DatasetController {
   }
 
   initialize() {
-    const me = this;
-    me.enableOptionSharing = true;
+    this.enableOptionSharing = true;
 
     super.initialize();
 
-    const meta = me._cachedMeta;
-    meta.stack = me.getDataset().stack;
+    const meta = this._cachedMeta;
+    meta.stack = this.getDataset().stack;
   }
 
   update(mode) {
-    const me = this;
-    const meta = me._cachedMeta;
-
-    me.updateElements(meta.data, 0, meta.data.length, mode);
+    const meta = this._cachedMeta;
+    this.updateElements(meta.data, 0, meta.data.length, mode);
   }
 
   updateElements(bars, start, count, mode) {
-    const me = this;
     const reset = mode === 'reset';
-    const {index, _cachedMeta: {vScale}} = me;
+    const {index, _cachedMeta: {vScale}} = this;
     const base = vScale.getBasePixel();
     const horizontal = vScale.isHorizontal();
-    const ruler = me._getRuler();
-    const firstOpts = me.resolveDataElementOptions(start, mode);
-    const sharedOptions = me.getSharedOptions(firstOpts);
-    const includeOptions = me.includeOptions(mode, sharedOptions);
+    const ruler = this._getRuler();
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const sharedOptions = this.getSharedOptions(firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions);
 
-    me.updateSharedOptions(sharedOptions, mode, firstOpts);
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i++) {
-      const parsed = me.getParsed(i);
-      const vpixels = reset || isNullOrUndef(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
-      const ipixels = me._calculateBarIndexPixels(i, ruler);
+      const parsed = this.getParsed(i);
+      const vpixels = reset || isNullOrUndef(parsed[vScale.axis]) ? {base, head: base} : this._calculateBarValuePixels(i);
+      const ipixels = this._calculateBarIndexPixels(i, ruler);
       const stack = (parsed._stacks || {})[vScale.axis];
 
       const properties = {
@@ -372,10 +367,10 @@ export default class BarController extends DatasetController {
       };
 
       if (includeOptions) {
-        properties.options = sharedOptions || me.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
+        properties.options = sharedOptions || this.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
       }
       setBorderSkipped(properties, properties.options || bars[i].options, stack, index);
-      me.updateElement(bars[i], i, properties, mode);
+      this.updateElement(bars[i], i, properties, mode);
     }
   }
 
@@ -387,10 +382,9 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _getStacks(last, dataIndex) {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const iScale = meta.iScale;
-    const metasets = iScale.getMatchingVisibleMetas(me._type);
+    const metasets = iScale.getMatchingVisibleMetas(this._type);
     const stacked = iScale.options.stacked;
     const ilen = metasets.length;
     const stacks = [];
@@ -468,15 +462,14 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _getRuler() {
-    const me = this;
-    const opts = me.options;
-    const meta = me._cachedMeta;
+    const opts = this.options;
+    const meta = this._cachedMeta;
     const iScale = meta.iScale;
     const pixels = [];
     let i, ilen;
 
     for (i = 0, ilen = meta.data.length; i < ilen; ++i) {
-      pixels.push(iScale.getPixelForValue(me.getParsed(i)[iScale.axis], i));
+      pixels.push(iScale.getPixelForValue(this.getParsed(i)[iScale.axis], i));
     }
 
     const barThickness = opts.barThickness;
@@ -487,7 +480,7 @@ export default class BarController extends DatasetController {
       pixels,
       start: iScale._startPixel,
       end: iScale._endPixel,
-      stackCount: me._getStackCount(),
+      stackCount: this._getStackCount(),
       scale: iScale,
       grouped: opts.grouped,
       // bar thickness ratio used for non-grouped bars
@@ -500,15 +493,14 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _calculateBarValuePixels(index) {
-    const me = this;
-    const {_cachedMeta: {vScale, _stacked}, options: {base: baseValue, minBarLength}} = me;
+    const {_cachedMeta: {vScale, _stacked}, options: {base: baseValue, minBarLength}} = this;
     const actualBase = baseValue || 0;
-    const parsed = me.getParsed(index);
+    const parsed = this.getParsed(index);
     const custom = parsed._custom;
     const floating = isFloatBar(custom);
     let value = parsed[vScale.axis];
     let start = 0;
-    let length = _stacked ? me.applyStack(vScale, parsed, _stacked) : value;
+    let length = _stacked ? this.applyStack(vScale, parsed, _stacked) : value;
     let head, size;
 
     if (length !== value) {
@@ -529,7 +521,7 @@ export default class BarController extends DatasetController {
     const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
     let base = vScale.getPixelForValue(startValue);
 
-    if (me.chart.getDataVisibility(index)) {
+    if (this.chart.getDataVisibility(index)) {
       head = vScale.getPixelForValue(start + length);
     } else {
       // When not visible, no height
@@ -564,24 +556,23 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _calculateBarIndexPixels(index, ruler) {
-    const me = this;
     const scale = ruler.scale;
-    const options = me.options;
+    const options = this.options;
     const skipNull = options.skipNull;
     const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
     let center, size;
     if (ruler.grouped) {
-      const stackCount = skipNull ? me._getStackCount(index) : ruler.stackCount;
+      const stackCount = skipNull ? this._getStackCount(index) : ruler.stackCount;
       const range = options.barThickness === 'flex'
         ? computeFlexCategoryTraits(index, ruler, options, stackCount)
         : computeFitCategoryTraits(index, ruler, options, stackCount);
 
-      const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack, skipNull ? index : undefined);
+      const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined);
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
     } else {
       // For non-grouped bar charts, exact pixel values are used
-      center = scale.getPixelForValue(me.getParsed(index)[scale.axis], index);
+      center = scale.getPixelForValue(this.getParsed(index)[scale.axis], index);
       size = Math.min(maxBarThickness, ruler.min * ruler.ratio);
     }
 
@@ -594,16 +585,15 @@ export default class BarController extends DatasetController {
   }
 
   draw() {
-    const me = this;
-    const meta = me._cachedMeta;
+    const meta = this._cachedMeta;
     const vScale = meta.vScale;
     const rects = meta.data;
     const ilen = rects.length;
     let i = 0;
 
     for (; i < ilen; ++i) {
-      if (me.getParsed(i)[vScale.axis] !== null) {
-        rects[i].draw(me._ctx);
+      if (this.getParsed(i)[vScale.axis] !== null) {
+        rects[i].draw(this._ctx);
       }
     }
   }

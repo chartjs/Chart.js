@@ -33,19 +33,17 @@ export default class PluginService {
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
   notify(chart, hook, args, filter) {
-    const me = this;
-
     if (hook === 'beforeInit') {
-      me._init = me._createDescriptors(chart, true);
-      me._notify(me._init, chart, 'install');
+      this._init = this._createDescriptors(chart, true);
+      this._notify(this._init, chart, 'install');
     }
 
-    const descriptors = filter ? me._descriptors(chart).filter(filter) : me._descriptors(chart);
-    const result = me._notify(descriptors, chart, hook, args);
+    const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
+    const result = this._notify(descriptors, chart, hook, args);
 
     if (hook === 'destroy') {
-      me._notify(descriptors, chart, 'stop');
-      me._notify(me._init, chart, 'uninstall');
+      this._notify(descriptors, chart, 'stop');
+      this._notify(this._init, chart, 'uninstall');
     }
     return result;
   }

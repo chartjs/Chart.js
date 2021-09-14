@@ -51,17 +51,16 @@ export default class PointElement extends Element {
   }
 
   draw(ctx, area) {
-    const me = this;
-    const options = me.options;
+    const options = this.options;
 
-    if (me.skip || options.radius < 0.1 || !_isPointInArea(me, area, me.size(options) / 2)) {
+    if (this.skip || options.radius < 0.1 || !_isPointInArea(this, area, this.size(options) / 2)) {
       return;
     }
 
     ctx.strokeStyle = options.borderColor;
     ctx.lineWidth = options.borderWidth;
     ctx.fillStyle = options.backgroundColor;
-    drawPoint(ctx, options, me.x, me.y);
+    drawPoint(ctx, options, this.x, this.y);
   }
 
   getRange() {

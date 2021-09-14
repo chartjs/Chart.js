@@ -318,14 +318,13 @@ export default class ArcElement extends Element {
   }
 
   draw(ctx) {
-    const me = this;
-    const {options, circumference} = me;
+    const {options, circumference} = this;
     const offset = (options.offset || 0) / 2;
     const spacing = (options.spacing || 0) / 2;
-    me.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
-    me.fullCircles = circumference > TAU ? Math.floor(circumference / TAU) : 0;
+    this.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
+    this.fullCircles = circumference > TAU ? Math.floor(circumference / TAU) : 0;
 
-    if (circumference === 0 || me.innerRadius < 0 || me.outerRadius < 0) {
+    if (circumference === 0 || this.innerRadius < 0 || this.outerRadius < 0) {
       return;
     }
 
@@ -334,9 +333,9 @@ export default class ArcElement extends Element {
     let radiusOffset = 0;
     if (offset) {
       radiusOffset = offset / 2;
-      const halfAngle = (me.startAngle + me.endAngle) / 2;
+      const halfAngle = (this.startAngle + this.endAngle) / 2;
       ctx.translate(Math.cos(halfAngle) * radiusOffset, Math.sin(halfAngle) * radiusOffset);
-      if (me.circumference >= PI) {
+      if (this.circumference >= PI) {
         radiusOffset = offset;
       }
     }
@@ -344,8 +343,8 @@ export default class ArcElement extends Element {
     ctx.fillStyle = options.backgroundColor;
     ctx.strokeStyle = options.borderColor;
 
-    const endAngle = drawArc(ctx, me, radiusOffset, spacing);
-    drawBorder(ctx, me, radiusOffset, spacing, endAngle);
+    const endAngle = drawArc(ctx, this, radiusOffset, spacing);
+    drawBorder(ctx, this, radiusOffset, spacing, endAngle);
 
     ctx.restore();
   }

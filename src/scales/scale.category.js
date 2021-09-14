@@ -37,36 +37,34 @@ export default class CategoryScale extends Scale {
   }
 
   determineDataLimits() {
-    const me = this;
-    const {minDefined, maxDefined} = me.getUserBounds();
-    let {min, max} = me.getMinMax(true);
+    const {minDefined, maxDefined} = this.getUserBounds();
+    let {min, max} = this.getMinMax(true);
 
-    if (me.options.bounds === 'ticks') {
+    if (this.options.bounds === 'ticks') {
       if (!minDefined) {
         min = 0;
       }
       if (!maxDefined) {
-        max = me.getLabels().length - 1;
+        max = this.getLabels().length - 1;
       }
     }
 
-    me.min = min;
-    me.max = max;
+    this.min = min;
+    this.max = max;
   }
 
   buildTicks() {
-    const me = this;
-    const min = me.min;
-    const max = me.max;
-    const offset = me.options.offset;
+    const min = this.min;
+    const max = this.max;
+    const offset = this.options.offset;
     const ticks = [];
-    let labels = me.getLabels();
+    let labels = this.getLabels();
 
     // If we are viewing some subset of labels, slice the original array
     labels = (min === 0 && max === labels.length - 1) ? labels : labels.slice(min, max + 1);
 
-    me._valueRange = Math.max(labels.length - (offset ? 0 : 1), 1);
-    me._startValue = me.min - (offset ? 0.5 : 0);
+    this._valueRange = Math.max(labels.length - (offset ? 0 : 1), 1);
+    this._startValue = this.min - (offset ? 0.5 : 0);
 
     for (let value = min; value <= max; value++) {
       ticks.push({value});
@@ -75,8 +73,7 @@ export default class CategoryScale extends Scale {
   }
 
   getLabelForValue(value) {
-    const me = this;
-    const labels = me.getLabels();
+    const labels = this.getLabels();
 
     if (value >= 0 && value < labels.length) {
       return labels[value];
@@ -88,41 +85,35 @@ export default class CategoryScale extends Scale {
 	 * @protected
 	 */
   configure() {
-    const me = this;
-
     super.configure();
 
-    if (!me.isHorizontal()) {
+    if (!this.isHorizontal()) {
       // For backward compatibility, vertical category scale reverse is inverted.
-      me._reversePixels = !me._reversePixels;
+      this._reversePixels = !this._reversePixels;
     }
   }
 
   // Used to get data value locations. Value can either be an index or a numerical value
   getPixelForValue(value) {
-    const me = this;
-
     if (typeof value !== 'number') {
-      value = me.parse(value);
+      value = this.parse(value);
     }
 
-    return value === null ? NaN : me.getPixelForDecimal((value - me._startValue) / me._valueRange);
+    return value === null ? NaN : this.getPixelForDecimal((value - this._startValue) / this._valueRange);
   }
 
   // Must override base implementation because it calls getPixelForValue
   // and category scale can have duplicate values
   getPixelForTick(index) {
-    const me = this;
-    const ticks = me.ticks;
+    const ticks = this.ticks;
     if (index < 0 || index > ticks.length - 1) {
       return null;
     }
-    return me.getPixelForValue(ticks[index].value);
+    return this.getPixelForValue(ticks[index].value);
   }
 
   getValueForPixel(pixel) {
-    const me = this;
-    return Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
+    return Math.round(this._startValue + this.getDecimalForPixel(pixel) * this._valueRange);
   }
 
   getBasePixel() {

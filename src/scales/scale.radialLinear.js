@@ -289,26 +289,23 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   setDimensions() {
-    const me = this;
-
     // Set the unconstrained dimension before label rotation
-    me.width = me.maxWidth;
-    me.height = me.maxHeight;
-    me.paddingTop = getTickBackdropHeight(me.options) / 2;
-    me.xCenter = Math.floor(me.width / 2);
-    me.yCenter = Math.floor((me.height - me.paddingTop) / 2);
-    me.drawingArea = Math.min(me.height - me.paddingTop, me.width) / 2;
+    this.width = this.maxWidth;
+    this.height = this.maxHeight;
+    this.paddingTop = getTickBackdropHeight(this.options) / 2;
+    this.xCenter = Math.floor(this.width / 2);
+    this.yCenter = Math.floor((this.height - this.paddingTop) / 2);
+    this.drawingArea = Math.min(this.height - this.paddingTop, this.width) / 2;
   }
 
   determineDataLimits() {
-    const me = this;
-    const {min, max} = me.getMinMax(false);
+    const {min, max} = this.getMinMax(false);
 
-    me.min = isFinite(min) && !isNaN(min) ? min : 0;
-    me.max = isFinite(max) && !isNaN(max) ? max : 0;
+    this.min = isFinite(min) && !isNaN(min) ? min : 0;
+    this.max = isFinite(max) && !isNaN(max) ? max : 0;
 
     // Common base implementation to handle min, max, beginAtZero
-    me.handleTickRangeOptions();
+    this.handleTickRangeOptions();
   }
 
   /**
@@ -320,25 +317,22 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   generateTickLabels(ticks) {
-    const me = this;
-
-    LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
+    LinearScaleBase.prototype.generateTickLabels.call(this, ticks);
 
     // Point labels
-    me._pointLabels = me.getLabels().map((value, index) => {
-      const label = callCallback(me.options.pointLabels.callback, [value, index], me);
+    this._pointLabels = this.getLabels().map((value, index) => {
+      const label = callCallback(this.options.pointLabels.callback, [value, index], this);
       return label || label === 0 ? label : '';
     });
   }
 
   fit() {
-    const me = this;
-    const opts = me.options;
+    const opts = this.options;
 
     if (opts.display && opts.pointLabels.display) {
-      fitWithPointLabels(me);
+      fitWithPointLabels(this);
     } else {
-      me.setCenterPoint(0, 0, 0, 0);
+      this.setCenterPoint(0, 0, 0, 0);
     }
   }
 
@@ -347,32 +341,30 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @private
 	 */
   _setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
-    const me = this;
     let radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
-    let radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
+    let radiusReductionRight = Math.max(furthestLimits.r - this.width, 0) / Math.sin(furthestAngles.r);
     let radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
-    let radiusReductionBottom = -Math.max(furthestLimits.b - (me.height - me.paddingTop), 0) / Math.cos(furthestAngles.b);
+    let radiusReductionBottom = -Math.max(furthestLimits.b - (this.height - this.paddingTop), 0) / Math.cos(furthestAngles.b);
 
     radiusReductionLeft = numberOrZero(radiusReductionLeft);
     radiusReductionRight = numberOrZero(radiusReductionRight);
     radiusReductionTop = numberOrZero(radiusReductionTop);
     radiusReductionBottom = numberOrZero(radiusReductionBottom);
 
-    me.drawingArea = Math.max(largestPossibleRadius / 2, Math.min(
+    this.drawingArea = Math.max(largestPossibleRadius / 2, Math.min(
       Math.floor(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
       Math.floor(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2)));
-    me.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
+    this.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
   }
 
   setCenterPoint(leftMovement, rightMovement, topMovement, bottomMovement) {
-    const me = this;
-    const maxRight = me.width - rightMovement - me.drawingArea;
-    const maxLeft = leftMovement + me.drawingArea;
-    const maxTop = topMovement + me.drawingArea;
-    const maxBottom = (me.height - me.paddingTop) - bottomMovement - me.drawingArea;
+    const maxRight = this.width - rightMovement - this.drawingArea;
+    const maxLeft = leftMovement + this.drawingArea;
+    const maxTop = topMovement + this.drawingArea;
+    const maxBottom = (this.height - this.paddingTop) - bottomMovement - this.drawingArea;
 
-    me.xCenter = Math.floor(((maxLeft + maxRight) / 2) + me.left);
-    me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
+    this.xCenter = Math.floor(((maxLeft + maxRight) / 2) + this.left);
+    this.yCenter = Math.floor(((maxTop + maxBottom) / 2) + this.top + this.paddingTop);
   }
 
   getIndexAngle(index) {
@@ -382,18 +374,16 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   getDistanceFromCenterForValue(value) {
-    const me = this;
-
     if (isNullOrUndef(value)) {
       return NaN;
     }
 
     // Take into account half font size + the yPadding of the top value
-    const scalingFactor = me.drawingArea / (me.max - me.min);
-    if (me.options.reverse) {
-      return (me.max - value) * scalingFactor;
+    const scalingFactor = this.drawingArea / (this.max - this.min);
+    if (this.options.reverse) {
+      return (this.max - value) * scalingFactor;
     }
-    return (value - me.min) * scalingFactor;
+    return (value - this.min) * scalingFactor;
   }
 
   getValueForDistanceFromCenter(distance) {
@@ -401,27 +391,24 @@ export default class RadialLinearScale extends LinearScaleBase {
       return NaN;
     }
 
-    const me = this;
-    const scaledDistance = distance / (me.drawingArea / (me.max - me.min));
-    return me.options.reverse ? me.max - scaledDistance : me.min + scaledDistance;
+    const scaledDistance = distance / (this.drawingArea / (this.max - this.min));
+    return this.options.reverse ? this.max - scaledDistance : this.min + scaledDistance;
   }
 
   getPointLabelContext(index) {
-    const me = this;
-    const pointLabels = me._pointLabels || [];
+    const pointLabels = this._pointLabels || [];
 
     if (index >= 0 && index < pointLabels.length) {
       const pointLabel = pointLabels[index];
-      return createPointLabelContext(me.getContext(), index, pointLabel);
+      return createPointLabelContext(this.getContext(), index, pointLabel);
     }
   }
 
   getPointPosition(index, distanceFromCenter) {
-    const me = this;
-    const angle = me.getIndexAngle(index) - HALF_PI;
+    const angle = this.getIndexAngle(index) - HALF_PI;
     return {
-      x: Math.cos(angle) * distanceFromCenter + me.xCenter,
-      y: Math.sin(angle) * distanceFromCenter + me.yCenter,
+      x: Math.cos(angle) * distanceFromCenter + this.xCenter,
+      y: Math.sin(angle) * distanceFromCenter + this.yCenter,
       angle
     };
   }
@@ -448,13 +435,12 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @protected
 	 */
   drawBackground() {
-    const me = this;
-    const {backgroundColor, grid: {circular}} = me.options;
+    const {backgroundColor, grid: {circular}} = this.options;
     if (backgroundColor) {
-      const ctx = me.ctx;
+      const ctx = this.ctx;
       ctx.save();
       ctx.beginPath();
-      pathRadiusLine(me, me.getDistanceFromCenterForValue(me._endValue), circular, me.getLabels().length);
+      pathRadiusLine(this, this.getDistanceFromCenterForValue(this._endValue), circular, this.getLabels().length);
       ctx.closePath();
       ctx.fillStyle = backgroundColor;
       ctx.fill();
@@ -466,24 +452,23 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @protected
 	 */
   drawGrid() {
-    const me = this;
-    const ctx = me.ctx;
-    const opts = me.options;
+    const ctx = this.ctx;
+    const opts = this.options;
     const {angleLines, grid} = opts;
-    const labelCount = me.getLabels().length;
+    const labelCount = this.getLabels().length;
 
     let i, offset, position;
 
     if (opts.pointLabels.display) {
-      drawPointLabels(me, labelCount);
+      drawPointLabels(this, labelCount);
     }
 
     if (grid.display) {
-      me.ticks.forEach((tick, index) => {
+      this.ticks.forEach((tick, index) => {
         if (index !== 0) {
-          offset = me.getDistanceFromCenterForValue(tick.value);
-          const optsAtIndex = grid.setContext(me.getContext(index - 1));
-          drawRadiusLine(me, optsAtIndex, offset, labelCount);
+          offset = this.getDistanceFromCenterForValue(tick.value);
+          const optsAtIndex = grid.setContext(this.getContext(index - 1));
+          drawRadiusLine(this, optsAtIndex, offset, labelCount);
         }
       });
     }
@@ -491,8 +476,8 @@ export default class RadialLinearScale extends LinearScaleBase {
     if (angleLines.display) {
       ctx.save();
 
-      for (i = me.getLabels().length - 1; i >= 0; i--) {
-        const optsAtIndex = angleLines.setContext(me.getPointLabelContext(i));
+      for (i = this.getLabels().length - 1; i >= 0; i--) {
+        const optsAtIndex = angleLines.setContext(this.getPointLabelContext(i));
         const {color, lineWidth} = optsAtIndex;
 
         if (!lineWidth || !color) {
@@ -505,10 +490,10 @@ export default class RadialLinearScale extends LinearScaleBase {
         ctx.setLineDash(optsAtIndex.borderDash);
         ctx.lineDashOffset = optsAtIndex.borderDashOffset;
 
-        offset = me.getDistanceFromCenterForValue(opts.ticks.reverse ? me.min : me.max);
-        position = me.getPointPosition(i, offset);
+        offset = this.getDistanceFromCenterForValue(opts.ticks.reverse ? this.min : this.max);
+        position = this.getPointPosition(i, offset);
         ctx.beginPath();
-        ctx.moveTo(me.xCenter, me.yCenter);
+        ctx.moveTo(this.xCenter, this.yCenter);
         ctx.lineTo(position.x, position.y);
         ctx.stroke();
       }
@@ -526,32 +511,31 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @protected
 	 */
   drawLabels() {
-    const me = this;
-    const ctx = me.ctx;
-    const opts = me.options;
+    const ctx = this.ctx;
+    const opts = this.options;
     const tickOpts = opts.ticks;
 
     if (!tickOpts.display) {
       return;
     }
 
-    const startAngle = me.getIndexAngle(0);
+    const startAngle = this.getIndexAngle(0);
     let offset, width;
 
     ctx.save();
-    ctx.translate(me.xCenter, me.yCenter);
+    ctx.translate(this.xCenter, this.yCenter);
     ctx.rotate(startAngle);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    me.ticks.forEach((tick, index) => {
+    this.ticks.forEach((tick, index) => {
       if (index === 0 && !opts.reverse) {
         return;
       }
 
-      const optsAtIndex = tickOpts.setContext(me.getContext(index));
+      const optsAtIndex = tickOpts.setContext(this.getContext(index));
       const tickFont = toFont(optsAtIndex.font);
-      offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
+      offset = this.getDistanceFromCenterForValue(this.ticks[index].value);
 
       if (optsAtIndex.showLabelBackdrop) {
         ctx.font = tickFont.string;

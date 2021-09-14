@@ -22,18 +22,17 @@ export default class TypedRegistry {
 	 * @returns {string} The scope where items defaults were registered to.
 	 */
   register(item) {
-    const me = this;
     const proto = Object.getPrototypeOf(item);
     let parentScope;
 
     if (isIChartComponent(proto)) {
       // Make sure the parent is registered and note the scope where its defaults are.
-      parentScope = me.register(proto);
+      parentScope = this.register(proto);
     }
 
-    const items = me.items;
+    const items = this.items;
     const id = item.id;
-    const scope = me.scope + '.' + id;
+    const scope = this.scope + '.' + id;
 
     if (!id) {
       throw new Error('class does not have id: ' + item);
@@ -46,7 +45,7 @@ export default class TypedRegistry {
 
     items[id] = item;
     registerDefaults(item, scope, parentScope);
-    if (me.override) {
+    if (this.override) {
       defaults.override(item.id, item.overrides);
     }
 

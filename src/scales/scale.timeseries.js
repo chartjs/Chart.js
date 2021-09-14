@@ -51,11 +51,10 @@ class TimeSeriesScale extends TimeScale {
 	 * @protected
 	 */
   initOffsets() {
-    const me = this;
-    const timestamps = me._getTimestampsForTable();
-    const table = me._table = me.buildLookupTable(timestamps);
-    me._minPos = interpolate(table, me.min);
-    me._tableRange = interpolate(table, me.max) - me._minPos;
+    const timestamps = this._getTimestampsForTable();
+    const table = this._table = this.buildLookupTable(timestamps);
+    this._minPos = interpolate(table, this.min);
+    this._tableRange = interpolate(table, this.max) - this._minPos;
     super.initOffsets(timestamps);
   }
 
@@ -110,23 +109,22 @@ class TimeSeriesScale extends TimeScale {
 	 * @private
 	 */
   _getTimestampsForTable() {
-    const me = this;
-    let timestamps = me._cache.all || [];
+    let timestamps = this._cache.all || [];
 
     if (timestamps.length) {
       return timestamps;
     }
 
-    const data = me.getDataTimestamps();
-    const label = me.getLabelTimestamps();
+    const data = this.getDataTimestamps();
+    const label = this.getLabelTimestamps();
     if (data.length && label.length) {
       // If combining labels and data (data might not contain all labels),
       // we need to recheck uniqueness and sort
-      timestamps = me.normalize(data.concat(label));
+      timestamps = this.normalize(data.concat(label));
     } else {
       timestamps = data.length ? data : label;
     }
-    timestamps = me._cache.all = timestamps;
+    timestamps = this._cache.all = timestamps;
 
     return timestamps;
   }
@@ -144,10 +142,9 @@ class TimeSeriesScale extends TimeScale {
 	 * @return {number}
 	 */
   getValueForPixel(pixel) {
-    const me = this;
-    const offsets = me._offsets;
-    const decimal = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
-    return interpolate(me._table, decimal * me._tableRange + me._minPos, true);
+    const offsets = this._offsets;
+    const decimal = this.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+    return interpolate(this._table, decimal * this._tableRange + this._minPos, true);
   }
 }
 
