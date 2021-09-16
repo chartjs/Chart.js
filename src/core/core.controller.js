@@ -800,12 +800,11 @@ class Chart {
 	 * @private
 	 */
   _destroyDatasetMeta(datasetIndex) {
-    const meta = this._metasets && this._metasets[datasetIndex];
-
+    const meta = this._metasets[datasetIndex];
     if (meta && meta.controller) {
       meta.controller._destroy();
-      delete this._metasets[datasetIndex];
     }
+    delete this._metasets[datasetIndex];
   }
 
   _stop() {
