@@ -86,6 +86,7 @@ Only the `data` option needs to be specified in the dataset namespace.
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
 | [`hoverBorderRadius`](#interactions) | `number` | Yes | Yes | `0`
 | [`indexAxis`](#general) | `string` | - | - | `'x'`
+| [`inflateAmount`](#inflateamount) | `number`\|`'auto'` | Yes | Yes | `'auto'`
 | [`maxBarThickness`](#maxbarthickness) | `number` | - | - | |
 | [`minBarLength`](#styling) | `number` | - | - | |
 | [`label`](#general) | `string` | - | - | `''`
@@ -175,6 +176,10 @@ If this value is a number, it is applied to all corners of the rectangle (topLef
 :::tip Stacked Charts
 When the border radius is supplied as a number and the chart is stacked, the radius will only be applied to the bars that are at the edges of the stack or where the bar is floating. The object syntax can be used to override this behavior.
 :::
+
+#### inflateAmount
+
+This option can be used to inflate the rects that are used to draw the bars. This can be used to hide artifacts between bars when `barPercentage`(#barpercentage) * `categoryPercentage`(#categorypercentage) is 1. The default value `'auto'` should work in most cases.
 
 ### Interactions
 
