@@ -639,6 +639,29 @@ describe('Linear Scale', function() {
     expect(getLabels(chart.scales.y)).toEqual(['1', '3', '5', '7', '9', '11']);
   });
 
+  it('Should not generate insane amounts of ticks with small stepSize and large range', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 1,
+            max: 1E10,
+            ticks: {
+              stepSize: 2,
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.min).toBe(1);
+    expect(chart.scales.y.max).toBe(1E10);
+    expect(chart.scales.y.ticks.length).toBeLessThanOrEqual(1000);
+  });
+
   it('Should create decimal steps if stepSize is a decimal number', function() {
     var chart = window.acquireChart({
       type: 'bar',
