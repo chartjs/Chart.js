@@ -47,7 +47,7 @@ let width, height, gradient;
 function getGradient(ctx, chartArea) {
   const chartWidth = chartArea.right - chartArea.left;
   const chartHeight = chartArea.bottom - chartArea.top;
-  if (gradient === null || width !== chartWidth || height !== chartHeight) {
+  if (!gradient || width !== chartWidth || height !== chartHeight) {
     // Create the gradient because this is either the first render
     // or the size of the chart has changed
     width = chartWidth;
@@ -79,7 +79,7 @@ const data = {
 
         if (!chartArea) {
           // This case happens on initial chart load
-          return null;
+          return;
         }
         return getGradient(ctx, chartArea);
       },

@@ -26,6 +26,14 @@ const chart = new Chart('test', {
           // @ts-expect-error Type 'string' is not assignable to type 'false | "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter" | "year" | undefined'.
           unit: 'year'
         }
+      },
+      y: {
+        ticks: {
+          callback(tickValue) {
+            const value = this.getLabelForValue(tickValue as number);
+            return '$' + value;
+          }
+        }
       }
     }
   }

@@ -34,7 +34,7 @@ export interface ScriptableLineSegmentContext {
   datasetIndex: number
 }
 
-export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T);
+export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T | undefined);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
 export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
@@ -1402,22 +1402,22 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base color
    * @see Defaults.color
    */
-  color: Color;
+  color: Scriptable<Color, ScriptableContext<TType>>;
   /**
    * base background color
    * @see Defaults.backgroundColor
    */
-  backgroundColor: Color;
+  backgroundColor: Scriptable<Color, ScriptableContext<TType>>;
   /**
    * base border color
    * @see Defaults.borderColor
    */
-  borderColor: Color;
+  borderColor: Scriptable<Color, ScriptableContext<TType>>;
   /**
    * base font
    * @see Defaults.font
    */
-  font: FontSpec;
+  font: Scriptable<Partial<FontSpec>, ScriptableContext<TType>>;
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
@@ -2805,7 +2805,7 @@ export interface TickOptions {
   /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
-  callback: (tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
+  callback: (this: Scale, tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
   /**
    * If true, show tick labels.
    * @default true

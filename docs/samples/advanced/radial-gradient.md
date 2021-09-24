@@ -30,7 +30,7 @@ function createRadialGradient3(context, c1, c2, c3) {
   const chartArea = context.chart.chartArea;
   if (!chartArea) {
     // This case happens on initial chart load
-    return null;
+    return;
   }
 
   const chartWidth = chartArea.right - chartArea.left;
