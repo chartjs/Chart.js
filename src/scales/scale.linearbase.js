@@ -222,6 +222,10 @@ export default class LinearScaleBase extends Scale {
 
     if (stepSize) {
       maxTicks = Math.ceil(this.max / stepSize) - Math.floor(this.min / stepSize) + 1;
+      if (maxTicks > 1000) {
+        console.warn(`scales.${this.id}.ticks.stepSize: ${stepSize} would result generating up to ${maxTicks} ticks. Limiting to 1000.`);
+        maxTicks = 1000;
+      }
     } else {
       maxTicks = this.computeTickLimit();
       maxTicksLimit = maxTicksLimit || 11;
