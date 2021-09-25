@@ -244,6 +244,12 @@ function startEnd(v, start, end) {
   return v === 'start' ? start : v === 'end' ? end : v;
 }
 
+function setInflateAmount(properties, {inflateAmount}, ratio) {
+  properties.inflateAmount = inflateAmount === 'auto'
+    ? ratio === 1 ? 0.33 : 0
+    : inflateAmount;
+}
+
 export default class BarController extends DatasetController {
 
   /**
@@ -369,7 +375,9 @@ export default class BarController extends DatasetController {
       if (includeOptions) {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
       }
-      setBorderSkipped(properties, properties.options || bars[i].options, stack, index);
+      const options = properties.options || bars[i].options;
+      setBorderSkipped(properties, options, stack, index);
+      setInflateAmount(properties, options, ruler.ratio);
       this.updateElement(bars[i], i, properties, mode);
     }
   }

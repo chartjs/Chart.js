@@ -1915,7 +1915,7 @@ export interface BarOptions extends CommonElementOptions {
   base: number;
 
   /**
-   *   Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top' or false (none).
+   * Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top' or false (none).
    * @default 'start'
    */
   borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | false;
@@ -1925,6 +1925,13 @@ export interface BarOptions extends CommonElementOptions {
    * @default 0
    */
   borderRadius: number | BorderRadius;
+
+  /**
+   * Amount to inflate the rectangle(s). This can be used to hide artifacts between bars.
+   * Unit is pixels. 'auto' translates to 0.33 pixels when barPercentage * categoryPercentage is 1, else 0.
+   * @default 'auto'
+   */
+  inflateAmount: number | 'auto';
 }
 
 export interface BorderRadius {
