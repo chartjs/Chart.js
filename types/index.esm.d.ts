@@ -2917,7 +2917,9 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     font: FontSpec;
     /** Padding to apply around scale labels. */
     padding: number | {
+      /** Padding on the (relative) top side of this axis label. */
       top: number;
+      /** Padding on the (relative) bottom side of this axis label. */
       bottom: number;
     };
   };
