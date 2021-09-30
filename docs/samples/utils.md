@@ -12,3 +12,10 @@ Because of this please don't rely on this file in production environments.
 
 [File on github](https://github.com/chartjs/Chart.js/blob/master/docs/scripts/utils.js)
 
+## Components
+
+Some of the samples make reference to a `components` object. This is an artifact of using a module bundler to build the samples. The creation of that components object is shown below. If chart.js is included as a browser script, these items are accessible via the `Chart` object, i.e `Chart.Tooltip`.
+
+<<< @/docs/scripts/components.js
+
+[File on github](https://github.com/chartjs/Chart.js/blob/master/docs/scripts/components.js)
