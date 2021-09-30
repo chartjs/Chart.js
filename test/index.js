@@ -14,14 +14,14 @@ injectWrapperCSS();
 
 jasmine.fixture = {
   specs: specsFromFixtures
-};
+    };
 
-jasmine.triggerMouseEvent = triggerMouseEvent;
+        jasmine.triggerMouseEvent = triggerMouseEvent;
 
-beforeEach(function() {
-  addMatchers();
-});
+        beforeEach(function() {
+          addMatchers();
+    });
 
-afterEach(function() {
+        afterEach(function() {
   releaseCharts();
 });
