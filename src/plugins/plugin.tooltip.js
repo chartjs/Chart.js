@@ -306,9 +306,9 @@ function getBackgroundPoint(options, size, alignment, chart) {
       x -= paddingAndSize;
     }
   } else if (xAlign === 'left') {
-    x -= Math.max(topLeft, bottomLeft) + caretPadding;
+    x -= Math.max(topLeft, bottomLeft) + caretSize;
   } else if (xAlign === 'right') {
-    x += Math.max(topRight, bottomRight) + caretPadding;
+    x += Math.max(topRight, bottomRight) + caretSize;
   }
 
   return {
