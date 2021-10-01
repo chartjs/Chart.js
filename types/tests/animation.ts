@@ -40,3 +40,31 @@ const chart = new Chart('id', {
     }
   },
 });
+
+
+const pie = new Chart('id', {
+  type: 'pie',
+  data: {
+    labels: [],
+    datasets: [{
+      data: []
+    }]
+  },
+  options: {
+    animation: false,
+  }
+});
+
+
+const polarArea = new Chart('id', {
+  type: 'polarArea',
+  data: {
+    labels: [],
+    datasets: [{
+      data: []
+    }]
+  },
+  options: {
+    animation: false,
+  }
+});

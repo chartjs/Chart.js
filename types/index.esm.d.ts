@@ -310,7 +310,7 @@ export interface DoughnutControllerChartOptions {
    */
   spacing: number;
 
-  animation: DoughnutAnimationOptions;
+  animation: false | DoughnutAnimationOptions;
 }
 
 export type DoughnutDataPoint = number;
@@ -364,7 +364,7 @@ export interface PolarAreaControllerChartOptions {
    */
   startAngle: number;
 
-  animation: PolarAreaAnimationOptions;
+  animation: false | PolarAreaAnimationOptions;
 }
 
 export interface PolarAreaController extends DoughnutController {
