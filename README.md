@@ -13,7 +13,7 @@
 
 ## Documentation
 
-All the links point to the new version 3 of the lib.
+Each link points to the newly released version 3 of the lib.
 
 * [Introduction](https://www.chartjs.org/docs/latest/)
 * [Getting Started](https://www.chartjs.org/docs/latest/getting-started/index)
@@ -25,11 +25,11 @@ All the links point to the new version 3 of the lib.
 * [Popular Extensions](https://github.com/chartjs/awesome)
 * [Samples](https://www.chartjs.org/samples/)
 
-In case you are looking for the docs of version 2, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
+Specifically, if you're looking for the documents for version 2, you'll have to specify the version in the URL like: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
 ## Contributing
 
-Instructions on building and testing Chart.js can be found in [the documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs) with the `chartjs` tag.
+[The documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing) includes instructions for building and testing Chart.js. Please review the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) before submitting an issue or a pull request. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs) with the `chartjs` tag.
 
 ## License
 
