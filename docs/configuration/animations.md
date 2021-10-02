@@ -185,7 +185,7 @@ Namespace: `options.transitions[mode]`
 | `'show'` | animations.colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], from: 'transparent' }` | Colors are faded in from transparent when dataset is shown using legend / [api](../developers/api.md#showdatasetIndex).
 | `'show'` | animations.visible | `{ type: 'boolean', duration: 0 }` | Dataset visiblity is immediately changed to true so the color transition from transparent is visible.
 | `'hide'` | animations.colors | `{ type: 'color', properties: ['borderColor', 'backgroundColor'], to: 'transparent' }` | Colors are faded to transparent when dataset id hidden using legend / [api](../developers/api.md#hidedatasetIndex).
-| `'hide'` | animations.visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation
+| `'hide'` | animations.visible | `{ type: 'boolean', easing: 'easeInExpo' }` | Visibility is changed to false at a very late phase of animation.
 
 ## Disabling animation
 

@@ -4,7 +4,7 @@ Subtitle is a second title placed under the main title, by default. It has exact
 
 ## Subtitle Configuration
 
-Namespace: `options.plugins.subtitle`. The global defaults for subtitle are configured in `Chart.defaults.plugins.subtitle`.
+Namespace: `options.plugins.subtitle`. The global defaults for subtitle are configured in `Chart.defaults.plugins.subtitle`
 
 Excactly the same configuration options with [title](./title.md) are available for subtitle, the namespaces only differ.
 

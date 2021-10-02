@@ -12,7 +12,7 @@ Namespace: `options.scales[scaleId]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre
+| `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre.
 | `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
 | `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
@@ -29,9 +29,9 @@ Namespace: `options.scales[scaleId].ticks`
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
 | `count` | `number` | Yes | `undefined` | The number of ticks to generate. If specified, this overrides the automatic generation.
-| `format` | `object` | Yes | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
+| `format` | `object` | Yes | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter.
 | `maxTicksLimit` | `number` | Yes | `11` | Maximum number of ticks and gridlines to show.
-| `precision` | `number` | Yes | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
+| `precision` | `number` | Yes | | If defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | Yes | | User defined fixed step size for the scale. [more...](#step-size)
 
 !!!include(axes/_common_ticks.md)!!!
@@ -123,11 +123,11 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `display` | `boolean` | | `true` | if true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
-| `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
+| `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md).
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
 
 The scriptable context is described in [Options](../../general/options.md#scale) section.
 
 ## Internal data format
 
-Internally, the linear radial scale uses numeric data
+Internally, the linear radial scale uses numeric data.

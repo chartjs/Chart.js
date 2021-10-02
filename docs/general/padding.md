@@ -23,7 +23,7 @@ let chart = new Chart(ctx, {
 ## {top, left, bottom, right} object
 
 If this value is an object, the `left` property defines the left padding. Similarly the `right`, `top` and `bottom` properties can also be specified.
-Omitted properties default to `0`.
+Omitted properties default to `0`
 
 Lets say you wanted to add 50px of padding to the left side of the chart canvas, you would do:
 

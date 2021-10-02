@@ -78,7 +78,7 @@ var chart = new Chart(ctx, {
 });
 ```
 
-For more information about plugins, see [Plugins](../developers/plugins.md)
+For more information about plugins, see [Plugins](../developers/plugins.md).
 
 ### Converting Events to Data Values
 

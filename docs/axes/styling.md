@@ -21,7 +21,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | `lineWidth` | `number` | Yes | Yes | `1` | Stroke width of grid lines.
 | `offset` | `boolean` | | | `false` | If true, grid lines will be shifted to be between labels. This is set to `true` for a bar chart by default.
 | `tickBorderDash` | `number[]` | | | | Length and spacing of the tick mark line. If not set, defaults to the grid line `borderDash` value.
-| `tickBorderDashOffset` | `number` | Yes | Yes |  | Offset for the line dash of the tick mark. If unset, defaults to the grid line `borderDashOffset` value
+| `tickBorderDashOffset` | `number` | Yes | Yes |  | Offset for the line dash of the tick mark. If unset, defaults to the grid line `borderDashOffset` value.
 | `tickColor` | [`Color`](../general/colors.md) | Yes | Yes | | Color of the tick line. If unset, defaults to the grid line color.
 | `tickLength` | `number` | | | `8` | Length in pixels that the grid lines will draw into the axis area.
 | `tickWidth` | `number` | Yes | Yes | | Width of the tick mark in pixels. If unset, defaults to the grid line width.

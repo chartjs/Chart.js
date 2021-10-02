@@ -38,7 +38,7 @@ See [Updating Charts](updates.md) for more details.
 
 ## .reset()
 
-Reset the chart to its state before the initial animation. A new animation can then be triggered using `update`.
+Reset the chart to its state before the initial animation. A new animation can then be triggered using `update`
 
 ```javascript
 myLineChart.reset();

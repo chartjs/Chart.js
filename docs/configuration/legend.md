@@ -11,8 +11,8 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `display` | `boolean` | `true` | Is the legend shown?
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
 | `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
-| `maxHeight` | `number` | | Maximum height of the legend, in pixels
-| `maxWidth` | `number` | | Maximum width of the legend, in pixels
+| `maxHeight` | `number` | | Maximum height of the legend, in pixels.
+| `maxWidth` | `number` | | Maximum width of the legend, in pixels.
 | `fullSize` | `boolean` | `true` | Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
@@ -20,7 +20,7 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
-| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
+| `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas.
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 ## Position
@@ -54,7 +54,7 @@ Namespace: `options.plugins.legend.labels`
 | `boxWidth` | `number` | `40` | Width of coloured box.
 | `boxHeight` | `number` | `font.size` | Height of the coloured box.
 | `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of label and the strikethrough.
-| `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
+| `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md).
 | `padding` | `number` | `10` | Padding between rows of colored boxes.
 | `generateLabels` | `function` | | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#legend-item-interface) for details.
 | `filter` | `function` | `null` | Filters legend items out of the legend. Receives 2 parameters, a [Legend Item](#legend-item-interface) and the chart data.
@@ -71,7 +71,7 @@ Namespace: `options.plugins.legend.title`
 | ---- | ---- | ------- | -----------
 | `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of text.
 | `display` | `boolean` | `false` | Is the legend title displayed.
-| `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
+| `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md).
 | `padding` | [`Padding`](../general/padding.md) | `0` | Padding around the title.
 | `text` | `string` | | The string title.
 

@@ -62,7 +62,7 @@ function updateConfigAsNewObject(chart) {
 Scales can be updated separately without changing other options.
 To update the scales, pass in an object containing all the customization including those unchanged ones.
 
-Variables referencing any one from `chart.scales` would be lost after updating scales with a new `id` or the changed `type`.
+Variables referencing any one from `chart.scales` would be lost after updating scales with a new `id` or the changed `type`
 
 ```javascript
 function updateScales(chart) {

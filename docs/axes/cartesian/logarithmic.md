@@ -16,7 +16,7 @@ Namespace: `options.scales[scaleId]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
+| `format` | `object` | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter.
 
 !!!include(axes/cartesian/_common_ticks.md)!!!
 

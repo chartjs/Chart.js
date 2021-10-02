@@ -106,4 +106,4 @@ new Chart(ctx, {
 -if dataset 2 and 1 are hidden, dataset 4 will fill to `'origin'`
 
 `propagate: false`:
--if dataset 2 and/or 4 are hidden, dataset 4 will not be filled
+-if dataset 2 and/or 4 are hidden, dataset 4 will not be filled.

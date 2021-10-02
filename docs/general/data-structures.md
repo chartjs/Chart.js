@@ -74,7 +74,7 @@ data: {
 }
 ```
 
-In this mode, property name is used for `index` scale and value for `value` scale. For vertical charts, index scale is `x` and value scale is `y`.
+In this mode, property name is used for `index` scale and value for `value` scale. For vertical charts, index scale is `x` and value scale is `y`
 
 ## Dataset Configuration
 

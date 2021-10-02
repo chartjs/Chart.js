@@ -85,7 +85,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
 
-All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
+All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options).
 
 ### General
 
