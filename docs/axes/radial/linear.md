@@ -14,7 +14,7 @@ Namespace: `options.scales[scaleId]`
 | ---- | ---- | ------- | -----------
 | `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre.
 | `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
-| `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
+| `beginAtZero` | `boolean` | `false` | If true, scale will include 0 if it is not already included.
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
 | `startAngle` | `number` | `0` | Starting angle of the scale. In degrees, 0 is at top.
 

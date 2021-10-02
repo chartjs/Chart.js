@@ -62,10 +62,10 @@ Plugins must define a unique id in order to be configurable.
 
 This id should follow the [npm package name convention](https://docs.npmjs.com/files/package.json#name):
 
-- can't start with a dot or an underscore
-- can't contain any non-URL-safe characters
-- can't contain uppercase letters
-- should be something short, but also reasonably descriptive
+- Can't start with a dot or an underscore
+- Can't contain any non-URL-safe characters
+- Can't contain uppercase letters
+- Should be something short, but also reasonably descriptive
 
 If a plugin is intended to be released publicly, you may want to check the [registry](https://www.npmjs.com/search?q=chartjs-plugin-) to see if there's something by that name already. Note that in this case, the package name should be prefixed by `chartjs-plugin-` to appear in Chart.js plugin registry.
 
