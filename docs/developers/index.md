@@ -6,8 +6,8 @@ Developer features allow extending and enhancing Chart.js in many different ways
 
 Latest documentation and samples, including unreleased features, are available at:
 
-- <https://www.chartjs.org/docs/master/>
-- <https://www.chartjs.org/samples/master/>
+- <https://www.chartjs.org/docs/master>
+- <https://www.chartjs.org/samples/master>
 
 ## Development releases
 
