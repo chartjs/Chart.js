@@ -39,7 +39,7 @@ export default {
     padding: 0,
     position: 'top',
     text: '',
-    weight: 1500         // by default greater than legend (1000) and smaller that title (2000)
+    weight: 1500         // by default greater than legend (1000) and smaller than title (2000)
   },
 
   defaultRoutes: {
