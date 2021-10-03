@@ -28,7 +28,7 @@ function computeMinSampleSize(meta) {
   let i, ilen, curr, prev;
   const updateMinAndPrev = () => {
     if (curr === 32767 || curr === -32768) {
-      // Ingnore truncated pixels
+      // Ignore truncated pixels
       return;
     }
     if (defined(prev)) {
