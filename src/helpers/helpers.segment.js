@@ -157,7 +157,7 @@ function findStartAndEnd(points, count, loop, spanGaps) {
   let end = count - 1;
 
   if (loop && !spanGaps) {
-    // loop and not spaning gaps, first find a gap to start from
+    // loop and not spanning gaps, first find a gap to start from
     while (start < count && !points[start].skip) {
       start++;
     }
