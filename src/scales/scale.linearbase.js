@@ -128,7 +128,7 @@ function generateTicks(generationOptions, dataRange) {
 
   if (maxDefined && includeBounds && niceMax !== max) {
     // If the previous tick is too close to max, replace it with max, else add max
-    if (almostEquals(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
+    if (ticks.length && almostEquals(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
