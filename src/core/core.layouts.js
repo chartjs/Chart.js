@@ -260,6 +260,7 @@ function placeBoxes(boxes, chartArea, params, stacks) {
 }
 
 defaults.set('layout', {
+  autoPadding: true,
   padding: {
     top: 0,
     right: 0,

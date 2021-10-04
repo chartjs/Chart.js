@@ -422,21 +422,21 @@ class Chart {
     const config = this.config;
 
     config.update();
-    this._options = config.createResolver(config.chartOptionScopes(), this.getContext());
+    const options = this._options = config.createResolver(config.chartOptionScopes(), this.getContext());
 
     each(this.scales, (scale) => {
       layouts.removeBox(this, scale);
     });
 
-    const animsDisabled = this._animationsDisabled = !this.options.animation;
+    const animsDisabled = this._animationsDisabled = !options.animation;
 
     this.ensureScalesHaveIDs();
     this.buildOrUpdateScales();
 
     const existingEvents = new Set(Object.keys(this._listeners));
-    const newEvents = new Set(this.options.events);
+    const newEvents = new Set(options.events);
 
-    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== this.options.responsive) {
+    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== options.responsive) {
       // The configured events have changed. Rebind.
       this.unbindEvents();
       this.bindEvents();
@@ -465,7 +465,7 @@ class Chart {
       controller.buildOrUpdateElements(reset);
       minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
     }
-    this._minPadding = minPadding;
+    minPadding = this._minPadding = options.layout.autoPadding ? minPadding : 0;
     this._updateLayout(minPadding);
 
     // Only reset the controllers if we have animations
