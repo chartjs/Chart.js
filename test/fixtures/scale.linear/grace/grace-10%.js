@@ -2,9 +2,9 @@ module.exports = {
   config: {
     type: 'bar',
     data: {
-      labels: ['a'],
+      labels: ['a', 'b'],
       datasets: [{
-        data: [0.18],
+        data: [90, -10],
       }],
     },
     options: {
@@ -14,7 +14,7 @@ module.exports = {
           display: false
         },
         x: {
-          grace: '5%'
+          grace: '10%'
         }
       }
     }

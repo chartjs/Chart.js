@@ -172,12 +172,15 @@ export function resolve(inputs, context, index, info) {
 /**
  * @param {{min: number, max: number}} minmax
  * @param {number|string} grace
+ * @param {boolean} beginAtZero
  * @private
  */
-export function _addGrace(minmax, grace) {
+export function _addGrace(minmax, grace, beginAtZero) {
   const {min, max} = minmax;
+  const change = toDimension(grace, (max - min) / 2);
+  const keepZero = (value, add) => beginAtZero && value === 0 ? 0 : value + add;
   return {
-    min: min - Math.abs(toDimension(grace, min)),
-    max: max + toDimension(grace, max)
+    min: keepZero(min, -Math.abs(change)),
+    max: keepZero(max, change)
   };
 }

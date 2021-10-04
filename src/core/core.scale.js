@@ -387,7 +387,7 @@ export default class Scale extends Element {
 	 *     - thickness of scales or legends in another orientation
 	 */
   update(maxWidth, maxHeight, margins) {
-    const tickOpts = this.options.ticks;
+    const {beginAtZero, grace, ticks: tickOpts} = this.options;
     const sampleSize = tickOpts.sampleSize;
 
     // Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
@@ -422,7 +422,7 @@ export default class Scale extends Element {
       this.beforeDataLimits();
       this.determineDataLimits();
       this.afterDataLimits();
-      this._range = _addGrace(this, this.options.grace);
+      this._range = _addGrace(this, grace, beginAtZero);
       this._dataLimitsCached = true;
     }
 

@@ -4,7 +4,12 @@ module.exports = {
     data: {
       labels: ['a', 'b'],
       datasets: [{
-        data: [1.2, -0.2],
+        data: [100, 0],
+        backgroundColor: 'blue'
+      }, {
+        xAxisID: 'x2',
+        data: [0, 100],
+        backgroundColor: 'red'
       }],
     },
     options: {
@@ -14,7 +19,15 @@ module.exports = {
           display: false
         },
         x: {
-          grace: 0.3
+          position: 'top',
+          beginAtZero: true,
+          grace: '10%',
+        },
+        x2: {
+          position: 'bottom',
+          type: 'linear',
+          beginAtZero: false,
+          grace: '10%',
         }
       }
     }
