@@ -323,6 +323,10 @@ export default class Scale extends Element {
       }
     }
 
+    // Make sure min <= max when only min or max is defined by user and the data is outside that range
+    min = maxDefined && min > max ? max : min;
+    max = minDefined && min > max ? min : max;
+
     return {
       min: finiteOrDefault(min, finiteOrDefault(max, min)),
       max: finiteOrDefault(max, finiteOrDefault(min, max))
