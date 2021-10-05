@@ -20,7 +20,7 @@ Namespace: `options.scales[scaleId]`
 
 !!!include(axes/_common.md)!!!
 
-## Tick Configuration
+# Tick Configuration
 
 ### Linear Radial Axis specific tick options
 
