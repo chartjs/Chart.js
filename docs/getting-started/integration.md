@@ -15,7 +15,21 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 
 Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
 
-For all available imports see the example below.
+Until you are working on bundle optimization, the following snippet will ensure all features are available:
+
+```javascript
+import Chart from 'chart.js/auto';
+var myChart = new Chart(ctx, {...});
+```
+
+You can achieve the same thing while explicitly calling `register()` as follows:
+
+```javascript
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+```
+
+And you can achieve the same while listing all possible imports as follows:
 
 ```javascript
 import {
@@ -72,22 +86,42 @@ Chart.register(
   Tooltip,
   SubTitle
 );
-
-const myChart = new Chart(ctx, {...});
 ```
 
-A short registration format is also available to quickly register everything.
+### How to choose the imports you require.
 
-```javascript
-import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
-```
+The options are categorised (inspect `registerables`) into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller and a suitable element):
 
-And finally there is a separate path to do just the above for you, in one line:
+* Bar chart
+   * `BarController`
+   * `BarElement`
+   * `CategoryScale`
+   * One of `LinearScale` (default) or `LogarithmicScale`
+* Pie chart
+   * `PieController`
+   * `ArcElement`
+* Doughnut chart
+   * `DoughnutController`
+   * `ArcElement`
+* ...@todo...
 
-```javascript
-import Chart from 'chart.js/auto';
-```
+The plugin imports are
+
+* [`Decimation`](../configuration/decimation.md)
+* `Filler` - used to fill the area under the line, see [Area charts](../charts/area.md)
+* `Legend`
+* `Title`
+* `Tooltip`
+* `SubTitle`
+
+The scale imports are:
+
+* `CategoryScale`
+* `LinearScale` default scale, you probably want this
+* `LogarithmicScale`
+* `RadialLinearScale`
+* `TimeScale`
+* `TimeSeriesScale`
 
 ## CommonJS
 
