@@ -207,22 +207,3 @@ data = {
     ]
 };
 ```
-
-## Tree shaking
-
-If you want to [use tree shaking](https://www.chartjs.org/docs/latest/getting-started/integration.html#bundlers-webpack-rollup-etc) to reduce bundle size (because you won't need all the chart types offered), you will need to import and register the following in order to use these charts:
-
-```javascript
-import {
-  Chart,
-  DoughnutController, // or PieController
-  ArcElement,
-  Legend,  // optional
-  Tooltip, // optional
-  }
-Chart.register(
-  DoughnutController, // or PieController
-  Legend,
-  Tooltip,
-  );
-```
