@@ -218,11 +218,11 @@ import {
   DoughnutController, // or PieController
   ArcElement,
   Legend,  // optional
-  Tooltip, // optional
+  Tooltip // optional
   }
 Chart.register(
   DoughnutController, // or PieController
   Legend,
-  Tooltip,
+  Tooltip
   );
 ```
