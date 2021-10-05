@@ -115,7 +115,7 @@ The options are categorised (inspect `registerables`) into controllers, elements
 The plugin imports are
 
 * [`Decimation`](../configuration/decimation.md)
-* `Filler` (@todo not sure what this is used for)
+* `Filler` - used to fill the area under the line, see [Area charts](../charts/area.md)
 * `Legend`
 * `Title`
 * `Tooltip`
