@@ -32,7 +32,7 @@ Options are resolved from top to bottom, using a context dependent route.
 
 ### Dataset element level options
 
-Each scope is looked up with `elementType` prefix in the option name first, then wihtout the prefix. For example, `radius` for `point` element is looked up using `pointRadius` and if that does not hit, then `radius`.
+Each scope is looked up with `elementType` prefix in the option name first, then without the prefix. For example, `radius` for `point` element is looked up using `pointRadius` and if that does not hit, then `radius`.
 
 * dataset
 * options.datasets[`dataset.type`]
