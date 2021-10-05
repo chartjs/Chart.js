@@ -356,20 +356,3 @@ The configuration options for the horizontal bar chart are the same as for the [
 ## Internal data format
 
 `{x, y, _custom}` where `_custom` is an optional object defining stacked bar properties: `{start, end, barStart, barEnd, min, max}`. `start` and `end` are the input values. Those two are repeated in `barStart` (closer to origin), `barEnd` (further from origin), `min` and `max`.
-
-## Tree shaking
-
-If you want to [use tree shaking](https://www.chartjs.org/docs/latest/getting-started/integration.html#bundlers-webpack-rollup-etc) to reduce bundle size (because you won't need all the chart types offered), you will need to import and register the following in order to use bar charts:
-
-```javascript
-import {
-  Chart,
-  BarElement,
-  BarController,
-  CategoryScale,
-  LinearScale,
-  Tooltip, // optional
-  Legend,  // optional
-  }
-Chart.register(BarController, BarElement, LinearScale, CategoryScale, Tooltip);
-```
