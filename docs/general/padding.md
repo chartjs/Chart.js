@@ -43,7 +43,7 @@ let chart = new Chart(ctx, {
 
 ## {x, y} object
 
-This is a shorthand for defining left/right and top/bottom to same values.
+This is a shorthand for defining left/right and top/bottom to the same values.
 
 For example, 10px left / right and 4px top / bottom padding on a Radial Linear Axis [tick backdropPadding](../axes/radial/linear.md#linear-radial-axis-specific-tick-options):
 
