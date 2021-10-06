@@ -11,3 +11,5 @@ const chart = new Chart('id', {
 });
 
 const tooltip = chart.tooltip;
+
+const active = tooltip && tooltip.getActiveElements();

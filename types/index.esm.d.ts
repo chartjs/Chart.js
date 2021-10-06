@@ -2427,15 +2427,15 @@ export interface TooltipModel<TType extends ChartType> {
 
   // tooltip options
   options: TooltipOptions<TType>;
+
+  getActiveElements(): ActiveElement[];
+  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 }
 
 export const Tooltip: Plugin & {
   readonly positioners: {
     [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
   };
-
-  getActiveElements(): ActiveElement[];
-  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 };
 
 export interface TooltipCallbacks<
