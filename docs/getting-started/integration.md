@@ -96,6 +96,20 @@ And finally there is an separate path to do just the above for you, in one line:
 import Chart from 'chart.js/auto';
 ```
 
+## Dynamic import (via Skypack)
+
+Chart.js may be [imported dynamically](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#dynamic_import) as a promise from [Skypack](https://www.skypack.dev/).
+
+```javascript
+async function dynamicImport() {
+  const mod = await import("https://cdn.skypack.dev/chart.js");
+
+  await mod.Chart.register(...mod.registerables);
+
+  const Chart = mod.Chart;
+}
+```
+
 ### Helper functions
 
 If you want to use the helper functions, you will need to import these separately from the helpers package and use them as stand-alone functions.
