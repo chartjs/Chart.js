@@ -7,7 +7,7 @@ Utils.srand(110);
 
 const actions = [
   {
-    name: 'Randomize',
+    name: "Randomize",
     handler(chart) {
       chart.data.datasets.forEach(dataset => {
         dataset.data = generateData();
@@ -16,12 +16,12 @@ const actions = [
     }
   },
   {
-    name: 'Toggle Doughnut View',
+    name: "Toggle Doughnut View",
     handler(chart) {
       if (chart.options.cutout) {
         chart.options.cutout = 0;
       } else {
-        chart.options.cutout = '50%';
+        chart.options.cutout = "50%";
       }
       chart.update();
     }
@@ -39,19 +39,26 @@ function generateData() {
 }
 
 const data = {
-  datasets: [{
-    data: generateData()
-  }]
+  datasets: [
+    {
+      data: generateData()
+    }
+  ]
 };
 // </block:data>
 
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
   const v = ctx.parsed;
+<<<<<<< HEAD
   const c = v < -50 ? '#D60000'
     : v < 0 ? '#F46300'
     : v < 50 ? '#0358B6'
     : '#44DE28';
+=======
+  const c =
+    v < -50 ? "#D60000" : v < 0 ? "#F46300" : v < 50 ? "#0358B6" : "#44DE28";
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 
   const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
 
@@ -63,12 +70,12 @@ function hoverColorize(ctx) {
 }
 
 const config = {
-  type: 'pie',
+  type: "pie",
   data: data,
   options: {
     plugins: {
       legend: false,
-      tooltip: false,
+      tooltip: false
     },
     elements: {
       arc: {
@@ -82,6 +89,6 @@ const config = {
 
 module.exports = {
   actions,
-  config,
+  config
 };
 ```

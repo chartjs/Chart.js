@@ -44,6 +44,10 @@ const data = {
 
 // <block:config:0>
 let delayed;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 const config = {
   type: 'bar',
   data: data,

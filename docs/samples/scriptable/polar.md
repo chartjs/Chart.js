@@ -7,14 +7,14 @@ Utils.srand(110);
 
 const actions = [
   {
-    name: 'Randomize',
+    name: "Randomize",
     handler(chart) {
       chart.data.datasets.forEach(dataset => {
         dataset.data = generateData();
       });
       chart.update();
     }
-  },
+  }
 ];
 // </block:setup>
 
@@ -28,20 +28,27 @@ function generateData() {
 }
 
 const data = {
-  labels: Utils.months({count: DATA_COUNT}),
-  datasets: [{
-    data: generateData()
-  }]
+  labels: Utils.months({ count: DATA_COUNT }),
+  datasets: [
+    {
+      data: generateData()
+    }
+  ]
 };
 // </block:data>
 
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
   const v = ctx.raw;
+<<<<<<< HEAD
   const c = v < 35 ? '#D60000'
     : v < 55 ? '#F46300'
     : v < 75 ? '#0358B6'
     : '#44DE28';
+=======
+  const c =
+    v < 35 ? "#D60000" : v < 55 ? "#F46300" : v < 75 ? "#0358B6" : "#44DE28";
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 
   const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
 
@@ -53,12 +60,12 @@ function hoverColorize(ctx) {
 }
 
 const config = {
-  type: 'polarArea',
+  type: "polarArea",
   data: data,
   options: {
     plugins: {
       legend: false,
-      tooltip: false,
+      tooltip: false
     },
     elements: {
       arc: {
@@ -72,6 +79,6 @@ const config = {
 
 module.exports = {
   actions,
-  config,
+  config
 };
 ```

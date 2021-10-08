@@ -7,14 +7,14 @@ Utils.srand(110);
 
 const actions = [
   {
-    name: 'Randomize',
+    name: "Randomize",
     handler(chart) {
       chart.data.datasets.forEach(dataset => {
         dataset.data = generateData();
       });
       chart.update();
     }
-  },
+  }
 ];
 // </block:setup>
 
@@ -28,10 +28,20 @@ function generateData() {
 }
 
 const data = {
-  labels: [['Eating', 'Dinner'], ['Drinking', 'Water'], 'Sleeping', ['Designing', 'Graphics'], 'Coding', 'Cycling', 'Running'],
-  datasets: [{
-    data: generateData()
-  }]
+  labels: [
+    ["Eating", "Dinner"],
+    ["Drinking", "Water"],
+    "Sleeping",
+    ["Designing", "Graphics"],
+    "Coding",
+    "Cycling",
+    "Running"
+  ],
+  datasets: [
+    {
+      data: generateData()
+    }
+  ]
 };
 // </block:data>
 
@@ -42,7 +52,11 @@ function getLineColor(ctx) {
 
 function alternatePointStyles(ctx) {
   const index = ctx.dataIndex;
+<<<<<<< HEAD
   return index % 2 === 0 ? 'circle' : 'rect';
+=======
+  return index % 2 === 0 ? "circle" : "rect";
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 }
 
 function makeHalfAsOpaque(ctx) {
@@ -55,32 +69,36 @@ function make20PercentOpaque(ctx) {
 
 function adjustRadiusBasedOnData(ctx) {
   const v = ctx.parsed.y;
+<<<<<<< HEAD
   return v < 10 ? 5
     : v < 25 ? 7
     : v < 50 ? 9
     : v < 75 ? 11
     : 15;
+=======
+  return v < 10 ? 5 : v < 25 ? 7 : v < 50 ? 9 : v < 75 ? 11 : 15;
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 }
 
 const config = {
-  type: 'radar',
+  type: "radar",
   data: data,
   options: {
     plugins: {
       legend: false,
-      tooltip: false,
+      tooltip: false
     },
     elements: {
       line: {
         backgroundColor: make20PercentOpaque,
-        borderColor: getLineColor,
+        borderColor: getLineColor
       },
       point: {
         backgroundColor: getLineColor,
         hoverBackgroundColor: makeHalfAsOpaque,
         radius: adjustRadiusBasedOnData,
         pointStyle: alternatePointStyles,
-        hoverRadius: 15,
+        hoverRadius: 15
       }
     }
   }
@@ -89,6 +107,6 @@ const config = {
 
 module.exports = {
   actions,
-  config,
+  config
 };
 ```

@@ -31,7 +31,7 @@ A `mode` string can be provided to indicate transition configuration should be u
 Example:
 
 ```javascript
-myChart.update('active');
+myChart.update("active");
 ```
 
 See [Updating Charts](updates.md) for more details.
@@ -91,7 +91,7 @@ This returns a base 64 encoded string of the chart in its current state.
 myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
 
-myLineChart.toBase64Image('image/jpeg', 1)
+myLineChart.toBase64Image("image/jpeg", 1);
 // => returns a jpeg data url in the highest quality of the canvas
 ```
 
@@ -103,6 +103,7 @@ To get an item that was clicked on, `getElementsAtEventForMode` can be used.
 
 ```javascript
 function clickHandler(evt) {
+<<<<<<< HEAD
     const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
     if (points.length) {
@@ -110,6 +111,21 @@ function clickHandler(evt) {
         const label = myChart.data.labels[firstPoint.index];
         const value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
     }
+=======
+  const points = myChart.getElementsAtEventForMode(
+    evt,
+    "nearest",
+    { intersect: true },
+    true
+  );
+
+  if (points.length) {
+    const firstPoint = points[0];
+    const label = myChart.data.labels[firstPoint.index];
+    const value =
+      myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+  }
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
 }
 ```
 
@@ -179,9 +195,7 @@ chart.show(0, 2); // shows the data element at index 2 of the first dataset.
 Sets the active (hovered) elements for the chart. See the "Programmatic Events" sample file to see this in action.
 
 ```javascript
-chart.setActiveElements([
-    {datasetIndex: 0, index: 1},
-]);
+chart.setActiveElements([{ datasetIndex: 0, index: 1 }]);
 ```
 
 ## Static: getChart(key)

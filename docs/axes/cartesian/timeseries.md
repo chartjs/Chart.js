@@ -6,6 +6,7 @@ The time series scale extends from the time scale and supports all the same opti
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< HEAD
     type: 'line',
     data: data,
     options: {
@@ -14,7 +15,17 @@ const chart = new Chart(ctx, {
                 type: 'timeseries',
             }
         }
+=======
+  type: "line",
+  data: data,
+  options: {
+    scales: {
+      x: {
+        type: "timeseries"
+      }
+>>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
     }
+  }
 });
 ```
 
