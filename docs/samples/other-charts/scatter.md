@@ -33,7 +33,7 @@ const actions = [
       const data = chart.data;
       if (data.datasets.length > 0) {
 
-        for (var index = 0; index < data.datasets.length; ++index) {
+        for (let index = 0; index < data.datasets.length; ++index) {
           data.datasets[index].data.push(Utils.bubbles({count: 1, rmin: 1, rmax: 1, min: 0, max: 100})[0]);
         }
 

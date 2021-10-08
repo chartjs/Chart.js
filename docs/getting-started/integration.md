@@ -7,15 +7,15 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 ```html
 <script src="path/to/chartjs/dist/chart.js"></script>
 <script>
-    var myChart = new Chart(ctx, {...});
+    const myChart = new Chart(ctx, {...});
 </script>
 ```
 
 ## Common JS
 
 ```javascript
-var Chart = require('chart.js');
-var myChart = new Chart(ctx, {...});
+const Chart = require('chart.js');
+const myChart = new Chart(ctx, {...});
 ```
 
 ## Bundlers (Webpack, Rollup, etc.)
@@ -80,7 +80,7 @@ Chart.register(
   SubTitle
 );
 
-var myChart = new Chart(ctx, {...});
+const myChart = new Chart(ctx, {...});
 ```
 
 A short registration format is also available to quickly register everything.
@@ -127,7 +127,7 @@ const chart = new Chart(ctx, {
 
 ```javascript
 require(['path/to/chartjs/dist/chart.min.js'], function(Chart){
-    var myChart = new Chart(ctx, {...});
+    const myChart = new Chart(ctx, {...});
 });
 ```
 

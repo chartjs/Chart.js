@@ -7,19 +7,19 @@ Plugins are the most efficient way to customize or change the default behavior o
 Plugins can be shared between chart instances:
 
 ```javascript
-var plugin = { /* plugin implementation */ };
+const plugin = { /* plugin implementation */ };
 
 // chart1 and chart2 use "plugin"
-var chart1 = new Chart(ctx, {
+const chart1 = new Chart(ctx, {
     plugins: [plugin]
 });
 
-var chart2 = new Chart(ctx, {
+const chart2 = new Chart(ctx, {
     plugins: [plugin]
 });
 
 // chart3 doesn't use "plugin"
-var chart3 = new Chart(ctx, {});
+const chart3 = new Chart(ctx, {});
 ```
 
 Plugins can also be defined directly in the chart `plugins` config (a.k.a. *inline plugins*):
@@ -29,7 +29,7 @@ Plugins can also be defined directly in the chart `plugins` config (a.k.a. *inli
 :::
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     plugins: [{
         beforeInit: function(chart, args, options) {
             //..
@@ -74,7 +74,7 @@ If a plugin is intended to be released publicly, you may want to check the [regi
 Plugin options are located under the `options.plugins` config and are scoped by the plugin ID: `options.plugins.{plugin-id}`.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     options: {
         foo: { ... },           // chart 'foo' option
         plugins: {
@@ -101,7 +101,7 @@ Chart.register({
     // ...
 });
 
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     options: {
         plugins: {
             p1: false   // disable plugin 'p1' for this instance
@@ -113,7 +113,7 @@ var chart = new Chart(ctx, {
 To disable all plugins for a specific chart instance, set `options.plugins` to `false`:
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     options: {
         plugins: false // all plugins are disabled for this instance
     }

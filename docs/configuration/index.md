@@ -14,13 +14,13 @@ The following example would set the interaction mode to 'nearest' for all charts
 Chart.defaults.interaction.mode = 'nearest';
 
 // Interaction mode is set to nearest because it was not overridden here
-var chartInteractionModeNearest = new Chart(ctx, {
+const chartInteractionModeNearest = new Chart(ctx, {
     type: 'line',
     data: data
 });
 
 // This chart would have the interaction mode that was passed in
-var chartDifferentInteractionMode = new Chart(ctx, {
+const chartDifferentInteractionMode = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -43,7 +43,7 @@ The following example would set the `showLine` option to 'false' for all line da
 Chart.defaults.datasets.line.showLine = false;
 
 // This chart would show a line only for the third dataset
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{

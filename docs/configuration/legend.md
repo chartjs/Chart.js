@@ -131,7 +131,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 The following example will create a chart with the legend enabled and turn all of the text red in color.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'bar',
     data: data,
     options: {
@@ -170,11 +170,11 @@ function(e, legendItem, legend) {
 Lets say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
 
 ```javascript
-var defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
-var pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
-var newLegendClickHandler = function (e, legendItem, legend) {
-    var index = legendItem.datasetIndex;
-    var type = legend.chart.config.type;
+const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
+const pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
+const newLegendClickHandler = function (e, legendItem, legend) {
+    const index = legendItem.datasetIndex;
+    const type = legend.chart.config.type;
 
     if (index > 1) {
         // Do the original logic
@@ -196,7 +196,7 @@ var newLegendClickHandler = function (e, legendItem, legend) {
     }
 };
 
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {

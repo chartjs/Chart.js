@@ -269,7 +269,7 @@ The callback is passed the following object:
 The following example fills a progress bar during the chart animation.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
