@@ -8,7 +8,11 @@ title: Installation
 [![npm](https://img.shields.io/npm/dm/chart.js.svg?style=flat-square&maxAge=600)](https://npmjs.com/package/chart.js)
 
 ```sh
+// with npm
 npm install chart.js
+
+// with yarn
+yarn add chart.js
 ```
 
 ## CDN

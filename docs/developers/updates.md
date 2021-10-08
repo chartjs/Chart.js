@@ -8,19 +8,19 @@ Adding and removing data is supported by changing the data array. To add data, j
 
 ```javascript
 function addData(chart, label, data) {
-    chart.data.labels.push(label);
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.push(data);
-    });
-    chart.update();
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach(dataset => {
+    dataset.data.push(data);
+  });
+  chart.update();
 }
 
 function removeData(chart) {
-    chart.data.labels.pop();
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.pop();
-    });
-    chart.update();
+  chart.data.labels.pop();
+  chart.data.datasets.forEach(dataset => {
+    dataset.data.pop();
+  });
+  chart.update();
 }
 ```
 
@@ -33,29 +33,29 @@ To update the options, mutating the options property in place or passing in a ne
 
 ```javascript
 function updateConfigByMutating(chart) {
-    chart.options.plugins.title.text = 'new title';
-    chart.update();
+  chart.options.plugins.title.text = "new title";
+  chart.update();
 }
 
 function updateConfigAsNewObject(chart) {
-    chart.options = {
-        responsive: true,
-        plugins: {
-            title: {
-                display: true,
-                text: 'Chart.js'
-            }
-        },
-        scales: {
-            x: {
-                display: true
-            },
-            y: {
-                display: true
-            }
-        }
-    };
-    chart.update();
+  chart.options = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "Chart.js"
+      }
+    },
+    scales: {
+      x: {
+        display: true
+      },
+      y: {
+        display: true
+      }
+    }
+  };
+  chart.update();
 }
 ```
 
@@ -66,21 +66,21 @@ Variables referencing any one from `chart.scales` would be lost after updating s
 
 ```javascript
 function updateScales(chart) {
-    var xScale = chart.scales.x;
-    var yScale = chart.scales.y;
-    chart.options.scales = {
-        newId: {
-            display: true
-        },
-        y: {
-            display: true,
-            type: 'logarithmic'
-        }
-    };
-    chart.update();
-    // need to update the reference
-    xScale = chart.scales.newId;
-    yScale = chart.scales.y;
+  const xScale = chart.scales.x;
+  const yScale = chart.scales.y;
+  chart.options.scales = {
+    newId: {
+      display: true
+    },
+    y: {
+      display: true,
+      type: "logarithmic"
+    }
+  };
+  chart.update();
+  // need to update the reference
+  xScale = chart.scales.newId;
+  yScale = chart.scales.y;
 }
 ```
 
@@ -88,10 +88,10 @@ You can also update a specific scale either by its id.
 
 ```javascript
 function updateScale(chart) {
-    chart.options.scales.y = {
-        type: 'logarithmic'
-    };
-    chart.update();
+  chart.options.scales.y = {
+    type: "logarithmic"
+  };
+  chart.update();
 }
 ```
 

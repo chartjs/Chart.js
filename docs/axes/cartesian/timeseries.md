@@ -5,16 +5,16 @@ The time series scale extends from the time scale and supports all the same opti
 ## Example
 
 ```javascript
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        scales: {
-            x: {
-                type: 'timeseries',
-            }
-        }
+const chart = new Chart(ctx, {
+  type: "line",
+  data: data,
+  options: {
+    scales: {
+      x: {
+        type: "timeseries"
+      }
     }
+  }
 });
 ```
 

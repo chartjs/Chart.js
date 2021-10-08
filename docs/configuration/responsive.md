@@ -47,7 +47,7 @@ CSS media queries allow changing styles when printing a page. The CSS applied fr
 
 ```javascript
 function beforePrintHandler () {
-    for (var id in Chart.instances) {
+    for (let id in Chart.instances) {
         Chart.instances[id].resize();
     }
 }

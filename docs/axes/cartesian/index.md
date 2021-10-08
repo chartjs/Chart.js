@@ -2,21 +2,21 @@
 
 Axes that follow a cartesian grid are known as 'Cartesian Axes'. Cartesian axes are used for line, bar, and bubble charts. Four cartesian axes are included in Chart.js by default.
 
-* [linear](./linear.md)
-* [logarithmic](./logarithmic.md)
-* [category](./category.md)
-* [time](./time.md)
-* [timeseries](./timeseries.md)
+- [linear](./linear.md)
+- [logarithmic](./logarithmic.md)
+- [category](./category.md)
+- [time](./time.md)
+- [timeseries](./timeseries.md)
 
 ## Visual Components
 
 A cartesian axis is composed of visual components that can be individually configured. These components are:
 
-* [border](#border)
-* [grid lines](#grid-lines)
-* [tick](#ticks-and-tick-marks)
-* [tick mark](#ticks-and-tick-marks)
-* [title](#title)
+- [border](#border)
+- [grid lines](#grid-lines)
+- [tick](#ticks-and-tick-marks)
+- [tick mark](#ticks-and-tick-marks)
+- [title](#title)
 
 ### Border
 
@@ -24,28 +24,30 @@ The axis border is drawn at the edge of the axis, beside the chart area. In the 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({count: 7});
+const labels = Utils.months({ count: 7 });
 const data = {
   labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-    borderColor: 'rgb(54, 162, 235)',
-    borderWidth: 1,
-    data: [10, 20, 30, 40, 50, 0, 5],
-  }]
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: "rgba(54, 162, 235, 0.5)",
+      borderColor: "rgb(54, 162, 235)",
+      borderWidth: 1,
+      data: [10, 20, 30, 40, 50, 0, 5]
+    }
+  ]
 };
 // </block:setup>
 
 // <block:config:0>
 const config = {
-  type: 'line',
+  type: "line",
   data,
   options: {
     scales: {
       x: {
         grid: {
-          borderColor: 'red'
+          borderColor: "red"
         }
       }
     }
@@ -55,7 +57,7 @@ const config = {
 
 module.exports = {
   actions: [],
-  config: config,
+  config: config
 };
 ```
 
@@ -65,30 +67,32 @@ The grid lines for an axis are drawn on the chart area. In the image below, they
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({count: 7});
+const labels = Utils.months({ count: 7 });
 const data = {
   labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-    borderColor: 'rgb(54, 162, 235)',
-    borderWidth: 1,
-    data: [10, 20, 30, 40, 50, 0, 5],
-  }]
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: "rgba(54, 162, 235, 0.5)",
+      borderColor: "rgb(54, 162, 235)",
+      borderWidth: 1,
+      data: [10, 20, 30, 40, 50, 0, 5]
+    }
+  ]
 };
 // </block:setup>
 
 // <block:config:0>
 const config = {
-  type: 'line',
+  type: "line",
   data,
   options: {
     scales: {
       x: {
         grid: {
-          color: 'red',
-          borderColor: 'grey',
-          tickColor: 'grey'
+          color: "red",
+          borderColor: "grey",
+          tickColor: "grey"
         }
       }
     }
@@ -98,7 +102,7 @@ const config = {
 
 module.exports = {
   actions: [],
-  config: config,
+  config: config
 };
 ```
 
@@ -109,31 +113,33 @@ In this example, the tick mark is drawn in red while the tick label is drawn in 
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({count: 7});
+const labels = Utils.months({ count: 7 });
 const data = {
   labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-    borderColor: 'rgb(54, 162, 235)',
-    borderWidth: 1,
-    data: [10, 20, 30, 40, 50, 0, 5],
-  }]
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: "rgba(54, 162, 235, 0.5)",
+      borderColor: "rgb(54, 162, 235)",
+      borderWidth: 1,
+      data: [10, 20, 30, 40, 50, 0, 5]
+    }
+  ]
 };
 // </block:setup>
 
 // <block:config:0>
 const config = {
-  type: 'line',
+  type: "line",
   data,
   options: {
     scales: {
       x: {
         grid: {
-          tickColor: 'red'
+          tickColor: "red"
         },
         ticks: {
-          color: 'blue',
+          color: "blue"
         }
       }
     }
@@ -143,7 +149,7 @@ const config = {
 
 module.exports = {
   actions: [],
-  config: config,
+  config: config
 };
 ```
 
@@ -153,30 +159,32 @@ The title component of the axis is used to label the data. In the example below,
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({count: 7});
+const labels = Utils.months({ count: 7 });
 const data = {
   labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-    borderColor: 'rgb(54, 162, 235)',
-    borderWidth: 1,
-    data: [10, 20, 30, 40, 50, 0, 5],
-  }]
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: "rgba(54, 162, 235, 0.5)",
+      borderColor: "rgb(54, 162, 235)",
+      borderWidth: 1,
+      data: [10, 20, 30, 40, 50, 0, 5]
+    }
+  ]
 };
 // </block:setup>
 
 // <block:config:0>
 const config = {
-  type: 'line',
+  type: "line",
   data,
   options: {
     scales: {
       x: {
         title: {
-          color: 'red',
+          color: "red",
           display: true,
-          text: 'Month'
+          text: "Month"
         }
       }
     }
@@ -186,15 +194,15 @@ const config = {
 
 module.exports = {
   actions: [],
-  config: config,
+  config: config
 };
 ```
 
 ## Common Configuration
 
-!!!include(axes/cartesian/_common.md)!!!
+!!!include(axes/cartesian/\_common.md)!!!
 
-!!!include(axes/_common.md)!!!
+!!!include(axes/\_common.md)!!!
 
 ### Axis Position
 
@@ -206,7 +214,7 @@ To position the axis with respect to a data value, set the `position` option to 
 
 ```javascript
 {
-    x: -20
+  x: -20;
 }
 ```
 
@@ -216,14 +224,14 @@ This will position the axis at a value of -20 on the axis with ID "x". For carte
 
 The `bounds` property controls the scale boundary strategy (bypassed by `min`/`max` options).
 
-* `'data'`: makes sure data are fully visible, labels outside are removed
-* `'ticks'`: makes sure ticks are fully visible, data outside are truncated
+- `'data'`: makes sure data are fully visible, labels outside are removed
+- `'ticks'`: makes sure ticks are fully visible, data outside are truncated
 
 ### Tick Configuration
 
-!!!include(axes/cartesian/_common_ticks.md)!!!
+!!!include(axes/cartesian/\_common_ticks.md)!!!
 
-!!!include(axes/_common_ticks.md)!!!
+!!!include(axes/\_common_ticks.md)!!!
 
 ### Tick Alignment
 
@@ -231,45 +239,47 @@ The alignment of ticks is primarily controlled using two settings on the tick co
 
 ```js chart-editor
 // <block:setup:1>
-const labels = Utils.months({count: 7});
+const labels = Utils.months({ count: 7 });
 const data = {
   labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(255, 159, 64, 0.2)',
-      'rgba(255, 205, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(201, 203, 207, 0.2)'
-    ],
-    borderColor: [
-      'rgb(255, 99, 132)',
-      'rgb(255, 159, 64)',
-      'rgb(255, 205, 86)',
-      'rgb(75, 192, 192)',
-      'rgb(54, 162, 235)',
-      'rgb(153, 102, 255)',
-      'rgb(201, 203, 207)'
-    ],
-    borderWidth: 1,
-    data: [65, 59, 80, 81, 56, 55, 40],
-  }]
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: [
+        "rgba(255, 99, 132, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+        "rgba(255, 205, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(201, 203, 207, 0.2)"
+      ],
+      borderColor: [
+        "rgb(255, 99, 132)",
+        "rgb(255, 159, 64)",
+        "rgb(255, 205, 86)",
+        "rgb(75, 192, 192)",
+        "rgb(54, 162, 235)",
+        "rgb(153, 102, 255)",
+        "rgb(201, 203, 207)"
+      ],
+      borderWidth: 1,
+      data: [65, 59, 80, 81, 56, 55, 40]
+    }
+  ]
 };
 // </block:setup>
 
 // <block:config:0>
 const config = {
-  type: 'bar',
+  type: "bar",
   data,
   options: {
-    indexAxis: 'y',
+    indexAxis: "y",
     scales: {
       y: {
         ticks: {
-          crossAlign: 'far',
+          crossAlign: "far"
         }
       }
     }
@@ -279,42 +289,46 @@ const config = {
 
 module.exports = {
   actions: [],
-  config: config,
+  config: config
 };
 ```
 
 :::tip Note
 The `crossAlign` setting is only effective when these preconditions are met:
-  * tick rotation is `0`
-  * axis position is `'top'`, '`left'`, `'bottom'` or `'right'`
-:::
+
+- tick rotation is `0`
+- axis position is `'top'`, '`left'`, `'bottom'` or `'right'`
+  :::
 
 ### Axis ID
 
 The properties `dataset.xAxisID` or `dataset.yAxisID` have to match to `scales` property. This is especially needed if multi-axes charts are used.
 
 ```javascript
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        datasets: [{
-            // This dataset appears on the first axis
-            yAxisID: 'first-y-axis'
-        }, {
-            // This dataset appears on the second axis
-            yAxisID: 'second-y-axis'
-        }]
-    },
-    options: {
-        scales: {
-            'first-y-axis': {
-                type: 'linear'
-            },
-            'second-y-axis': {
-                type: 'linear'
-            }
-        }
+const myChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    datasets: [
+      {
+        // This dataset appears on the first axis
+        yAxisID: "first-y-axis"
+      },
+      {
+        // This dataset appears on the second axis
+        yAxisID: "second-y-axis"
+      }
+    ]
+  },
+  options: {
+    scales: {
+      "first-y-axis": {
+        type: "linear"
+      },
+      "second-y-axis": {
+        type: "linear"
+      }
     }
+  }
 });
 ```
 
@@ -325,35 +339,38 @@ With cartesian axes, it is possible to create multiple X and Y axes. To do so, y
 In the example below, we are creating two Y axes. We then use the `yAxisID` property to map the datasets to their correct axes.
 
 ```javascript
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        datasets: [{
-            data: [20, 50, 100, 75, 25, 0],
-            label: 'Left dataset',
+const myChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    datasets: [
+      {
+        data: [20, 50, 100, 75, 25, 0],
+        label: "Left dataset",
 
-            // This binds the dataset to the left y axis
-            yAxisID: 'left-y-axis'
-        }, {
-            data: [0.1, 0.5, 1.0, 2.0, 1.5, 0],
-            label: 'Right dataset',
+        // This binds the dataset to the left y axis
+        yAxisID: "left-y-axis"
+      },
+      {
+        data: [0.1, 0.5, 1.0, 2.0, 1.5, 0],
+        label: "Right dataset",
 
-            // This binds the dataset to the right y axis
-            yAxisID: 'right-y-axis'
-        }],
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-    },
-    options: {
-        scales: {
-            'left-y-axis': {
-                type: 'linear',
-                position: 'left'
-            },
-            'right-y-axis': {
-                type: 'linear',
-                position: 'right'
-            }
-        }
+        // This binds the dataset to the right y axis
+        yAxisID: "right-y-axis"
+      }
+    ],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+  },
+  options: {
+    scales: {
+      "left-y-axis": {
+        type: "linear",
+        position: "left"
+      },
+      "right-y-axis": {
+        type: "linear",
+        position: "right"
+      }
     }
+  }
 });
 ```

@@ -7,34 +7,38 @@ Plugins are the most efficient way to customize or change the default behavior o
 Plugins can be shared between chart instances:
 
 ```javascript
-var plugin = { /* plugin implementation */ };
+const plugin = {
+  /* plugin implementation */
+};
 
 // chart1 and chart2 use "plugin"
-var chart1 = new Chart(ctx, {
-    plugins: [plugin]
+const chart1 = new Chart(ctx, {
+  plugins: [plugin]
 });
 
-var chart2 = new Chart(ctx, {
-    plugins: [plugin]
+const chart2 = new Chart(ctx, {
+  plugins: [plugin]
 });
 
 // chart3 doesn't use "plugin"
-var chart3 = new Chart(ctx, {});
+const chart3 = new Chart(ctx, {});
 ```
 
-Plugins can also be defined directly in the chart `plugins` config (a.k.a. *inline plugins*):
+Plugins can also be defined directly in the chart `plugins` config (a.k.a. _inline plugins_):
 
 :::warning
-*inline* plugins are not registered. Some plugins require registering, i.e. can't be used *inline*.
+_inline_ plugins are not registered. Some plugins require registering, i.e. can't be used _inline_.
 :::
 
 ```javascript
-var chart = new Chart(ctx, {
-    plugins: [{
-        beforeInit: function(chart, args, options) {
-            //..
-        }
-    }]
+const chart = new Chart(ctx, {
+  plugins: [
+    {
+      beforeInit: function(chart, args, options) {
+        //..
+      }
+    }
+  ]
 });
 ```
 
@@ -42,16 +46,16 @@ However, this approach is not ideal when the customization needs to apply to man
 
 ## Global plugins
 
-Plugins can be registered globally to be applied on all charts (a.k.a. *global plugins*):
+Plugins can be registered globally to be applied on all charts (a.k.a. _global plugins_):
 
 ```javascript
 Chart.register({
-    // plugin implementation
+  // plugin implementation
 });
 ```
 
 :::warning
-*inline* plugins can't be registered globally.
+_inline_ plugins can't be registered globally.
 :::
 
 ## Configuration
@@ -74,7 +78,7 @@ If a plugin is intended to be released publicly, you may want to check the [regi
 Plugin options are located under the `options.plugins` config and are scoped by the plugin ID: `options.plugins.{plugin-id}`.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     options: {
         foo: { ... },           // chart 'foo' option
         plugins: {
@@ -97,26 +101,26 @@ To disable a global plugin for a specific chart instance, the plugin options mus
 
 ```javascript
 Chart.register({
-    id: 'p1',
-    // ...
+  id: "p1"
+  // ...
 });
 
-var chart = new Chart(ctx, {
-    options: {
-        plugins: {
-            p1: false   // disable plugin 'p1' for this instance
-        }
+const chart = new Chart(ctx, {
+  options: {
+    plugins: {
+      p1: false // disable plugin 'p1' for this instance
     }
+  }
 });
 ```
 
 To disable all plugins for a specific chart instance, set `options.plugins` to `false`:
 
 ```javascript
-var chart = new Chart(ctx, {
-    options: {
-        plugins: false // all plugins are disabled for this instance
-    }
+const chart = new Chart(ctx, {
+  options: {
+    plugins: false // all plugins are disabled for this instance
+  }
 });
 ```
 

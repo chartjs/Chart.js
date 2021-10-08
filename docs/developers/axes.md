@@ -4,9 +4,9 @@ Axes in Chart.js can be individually extended. Axes should always derive from `C
 
 ```javascript
 class MyScale extends Chart.Scale {
-    /* extensions ... */
+  /* extensions ... */
 }
-MyScale.id = 'myScale';
+MyScale.id = "myScale";
 MyScale.defaults = defaultConfigObject;
 
 // MyScale is now derived from Chart.Scale
@@ -26,16 +26,16 @@ Chart.register(MyScale);
 To use the new scale, simply pass in the string key to the config when creating a chart.
 
 ```javascript
-var lineChart = new Chart(ctx, {
-    data: data,
-    type: 'line',
-    options: {
-        scales: {
-            y: {
-                type: 'myScale' // this is the same id that was set on the scale
-            }
-        }
+const lineChart = new Chart(ctx, {
+  data: data,
+  type: "line",
+  options: {
+    scales: {
+      y: {
+        type: "myScale" // this is the same id that was set on the scale
+      }
     }
+  }
 });
 ```
 

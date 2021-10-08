@@ -4,7 +4,7 @@ For each chart, there are a set of global prototype methods on the shared chart 
 
 ```javascript
 // For example:
-var myLineChart = new Chart(ctx, config);
+const myLineChart = new Chart(ctx, config);
 ```
 
 ## .destroy()
@@ -31,7 +31,7 @@ A `mode` string can be provided to indicate transition configuration should be u
 Example:
 
 ```javascript
-myChart.update('active');
+myChart.update("active");
 ```
 
 See [Updating Charts](updates.md) for more details.
@@ -91,7 +91,7 @@ This returns a base 64 encoded string of the chart in its current state.
 myLineChart.toBase64Image();
 // => returns png data url of the image on the canvas
 
-myLineChart.toBase64Image('image/jpeg', 1)
+myLineChart.toBase64Image("image/jpeg", 1);
 // => returns a jpeg data url in the highest quality of the canvas
 ```
 
@@ -103,13 +103,19 @@ To get an item that was clicked on, `getElementsAtEventForMode` can be used.
 
 ```javascript
 function clickHandler(evt) {
-    const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+  const points = myChart.getElementsAtEventForMode(
+    evt,
+    "nearest",
+    { intersect: true },
+    true
+  );
 
-    if (points.length) {
-        const firstPoint = points[0];
-        var label = myChart.data.labels[firstPoint.index];
-        var value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
-    }
+  if (points.length) {
+    const firstPoint = points[0];
+    const label = myChart.data.labels[firstPoint.index];
+    const value =
+      myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+  }
 }
 ```
 
@@ -122,8 +128,8 @@ The `data` property of the metadata will contain information about each point, b
 Extensive examples of usage are available in the [Chart.js tests](https://github.com/chartjs/Chart.js/tree/master/test).
 
 ```javascript
-var meta = myChart.getDatasetMeta(0);
-var x = meta.data[0].x;
+const meta = myChart.getDatasetMeta(0);
+const x = meta.data[0].x;
 ```
 
 ## setDatasetVisibility(datasetIndex, visibility)
@@ -149,7 +155,7 @@ chart.update(); // chart now renders with item hidden
 Returns the stored visibility state of an data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset controller should use this method to determine if an item should not be visible.
 
 ```javascript
-var visible = chart.getDataVisibility(2);
+const visible = chart.getDataVisibility(2);
 ```
 
 ## hide(datasetIndex, dataIndex?)
@@ -179,9 +185,7 @@ chart.show(0, 2); // shows the data element at index 2 of the first dataset.
 Sets the active (hovered) elements for the chart. See the "Programmatic Events" sample file to see this in action.
 
 ```javascript
-chart.setActiveElements([
-    {datasetIndex: 0, index: 1},
-]);
+chart.setActiveElements([{ datasetIndex: 0, index: 1 }]);
 ```
 
 ## Static: getChart(key)
