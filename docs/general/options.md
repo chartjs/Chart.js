@@ -78,14 +78,14 @@ Example:
 
 ```javascript
 color: function(context) {
-    var index = context.dataIndex;
-    var value = context.dataset.data[index];
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
     return value < 0 ? 'red' :  // draw negative values in red
         index % 2 ? 'blue' :    // else, alternate values in blue and green
         'green';
 },
 borderColor: function(context, options) {
-    var color = options.color; // resolve the value of another scriptable option: 'red', 'blue' or 'green'
+    const color = options.color; // resolve the value of another scriptable option: 'red', 'blue' or 'green'
     return Chart.helpers.color(color).lighten(0.2);
 }
 ```

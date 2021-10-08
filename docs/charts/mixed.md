@@ -5,7 +5,7 @@ With Chart.js, it is possible to create mixed charts that are a combination of t
 When creating a mixed chart, we specify the chart type on each dataset.
 
 ```javascript
-var mixedChart = new Chart(ctx, {
+const mixedChart = new Chart(ctx, {
     data: {
         datasets: [{
             type: 'bar',
@@ -76,7 +76,7 @@ module.exports = {
 The `order` property behaves like a weight instead of a specific order, so the higher the number, the sooner that dataset is drawn on the canvas and thus other datasets with a lower order number will get drawn over it.
 
  ```javascript
-var mixedChart = new Chart(ctx, {
+const mixedChart = new Chart(ctx, {
     type: 'bar',
     data: {
         datasets: [{

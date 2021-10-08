@@ -37,13 +37,13 @@ const data = {
 
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
-  var v = ctx.raw;
-  var c = v < 35 ? '#D60000'
+  const v = ctx.raw;
+  const c = v < 35 ? '#D60000'
     : v < 55 ? '#F46300'
     : v < 75 ? '#0358B6'
     : '#44DE28';
 
-  var opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
+  const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
 
   return opaque ? c : Utils.transparentize(c, opacity);
 }

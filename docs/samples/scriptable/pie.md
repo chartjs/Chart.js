@@ -47,13 +47,13 @@ const data = {
 
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
-  var v = ctx.parsed;
-  var c = v < -50 ? '#D60000'
+  const v = ctx.parsed;
+  const c = v < -50 ? '#D60000'
     : v < 0 ? '#F46300'
     : v < 50 ? '#0358B6'
     : '#44DE28';
 
-  var opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
+  const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
 
   return opaque ? c : Utils.transparentize(c, opacity);
 }

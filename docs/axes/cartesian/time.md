@@ -57,7 +57,7 @@ The following time measurements are supported. The names can be passed as string
 For example, to create a chart with a time scale that always displayed units per month, the following config could be used.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -92,7 +92,7 @@ The format string used as a value depends on the date adapter you chose to use.
 For example, to set the display format for the `quarter` unit to show the month and year, the following config might be passed to the chart constructor.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {

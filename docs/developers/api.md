@@ -4,7 +4,7 @@ For each chart, there are a set of global prototype methods on the shared chart 
 
 ```javascript
 // For example:
-var myLineChart = new Chart(ctx, config);
+const myLineChart = new Chart(ctx, config);
 ```
 
 ## .destroy()
@@ -107,8 +107,8 @@ function clickHandler(evt) {
 
     if (points.length) {
         const firstPoint = points[0];
-        var label = myChart.data.labels[firstPoint.index];
-        var value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+        const label = myChart.data.labels[firstPoint.index];
+        const value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
     }
 }
 ```
@@ -122,8 +122,8 @@ The `data` property of the metadata will contain information about each point, b
 Extensive examples of usage are available in the [Chart.js tests](https://github.com/chartjs/Chart.js/tree/master/test).
 
 ```javascript
-var meta = myChart.getDatasetMeta(0);
-var x = meta.data[0].x;
+const meta = myChart.getDatasetMeta(0);
+const x = meta.data[0].x;
 ```
 
 ## setDatasetVisibility(datasetIndex, visibility)
@@ -149,7 +149,7 @@ chart.update(); // chart now renders with item hidden
 Returns the stored visibility state of an data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset controller should use this method to determine if an item should not be visible.
 
 ```javascript
-var visible = chart.getDataVisibility(2);
+const visible = chart.getDataVisibility(2);
 ```
 
 ## hide(datasetIndex, dataIndex?)
