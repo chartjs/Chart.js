@@ -306,7 +306,10 @@ The properties `dataset.xAxisID` or `dataset.yAxisID` have to match to `scales` 
 
 ```javascript
 const myChart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: {
         datasets: [{
@@ -362,7 +365,10 @@ In the example below, we are creating two Y axes. We then use the `yAxisID` prop
 
 ```javascript
 const myChart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: {
         datasets: [{

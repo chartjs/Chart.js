@@ -15,7 +15,10 @@ In this example, we create a bar chart for a single dataset and render that in o
 ```html
 <canvas id="myChart" width="400" height="400"></canvas>
 <script>
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'bar',

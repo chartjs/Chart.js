@@ -44,10 +44,13 @@ const data = {
 
 // <block:config:0>
 let delayed;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 
 >>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
+=======
+>>>>>>> Stashed changes
 const config = {
   type: 'bar',
   data: data,

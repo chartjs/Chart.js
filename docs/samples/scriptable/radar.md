@@ -52,7 +52,10 @@ function getLineColor(ctx) {
 
 function alternatePointStyles(ctx) {
   const index = ctx.dataIndex;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   return index % 2 === 0 ? 'circle' : 'rect';
 =======
   return index % 2 === 0 ? "circle" : "rect";
@@ -69,7 +72,10 @@ function make20PercentOpaque(ctx) {
 
 function adjustRadiusBasedOnData(ctx) {
   const v = ctx.parsed.y;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   return v < 10 ? 5
     : v < 25 ? 7
     : v < 50 ? 9

@@ -46,11 +46,15 @@ const actions = [
       if (data.datasets.length > 0) {
         data.labels = Utils.months({ count: data.labels.length + 1 });
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
         for (let index = 0; index < data.datasets.length; ++index) {
 =======
         for (const index = 0; index < data.datasets.length; ++index) {
 >>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
+=======
+        for (let index = 0; index < data.datasets.length; ++index) {
+>>>>>>> Stashed changes
           data.datasets[index].data.push(Utils.rand(-100, 100));
         }
 

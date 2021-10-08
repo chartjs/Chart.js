@@ -283,7 +283,10 @@ Bar charts can be configured into stacked bar charts by changing the settings on
 
 ```javascript
 const stackedBar = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'bar',
     data: data,
     options: {

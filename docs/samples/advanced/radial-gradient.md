@@ -57,7 +57,10 @@ function createRadialGradient3(context, c1, c2, c3) {
       (chartArea.bottom - chartArea.top) / 2
     );
     const ctx = context.chart.ctx;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
 =======
     gradient = ctx.createRadialGradient(

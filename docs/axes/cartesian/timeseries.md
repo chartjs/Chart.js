@@ -6,7 +6,10 @@ The time series scale extends from the time scale and supports all the same opti
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {

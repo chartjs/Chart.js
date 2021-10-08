@@ -6,7 +6,10 @@ When creating a mixed chart, we specify the chart type on each dataset.
 
 ```javascript
 const mixedChart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     data: {
         datasets: [{
             type: 'bar',

@@ -17,7 +17,10 @@ An alternative option is to pass a [CanvasPattern](https://developer.mozilla.org
 For example, if you wanted to fill a dataset with a pattern from an image you could do the following.
 
 ```javascript
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 const img = new Image();
 img.src = 'https://example.com/my_image.png';
 img.onload = function() {
@@ -25,6 +28,7 @@ img.onload = function() {
     const fillPattern = ctx.createPattern(img, 'repeat');
 
     const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 =======
 let img = new Image();
 img.src = 'https://example.com/my_image.png';
@@ -34,6 +38,8 @@ img.onload = function() {
 
     let chart = new Chart(ctx, {
 >>>>>>> 9e2c13b9b99a77009b14a7e73eb303ae5aa1b086
+=======
+>>>>>>> Stashed changes
         data: {
             labels: ['Item 1', 'Item 2', 'Item 3'],
             datasets: [{

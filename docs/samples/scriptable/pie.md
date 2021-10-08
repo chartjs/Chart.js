@@ -50,7 +50,10 @@ const data = {
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
   const v = ctx.parsed;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   const c = v < -50 ? '#D60000'
     : v < 0 ? '#F46300'
     : v < 50 ? '#0358B6'

@@ -7,7 +7,10 @@ Plugins are the most efficient way to customize or change the default behavior o
 Plugins can be shared between chart instances:
 
 ```javascript
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 const plugin = { /* plugin implementation */ };
 
 // chart1 and chart2 use "plugin"
@@ -44,7 +47,10 @@ _inline_ plugins are not registered. Some plugins require registering, i.e. can'
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     plugins: [{
         beforeInit: function(chart, args, options) {
             //..
@@ -126,7 +132,10 @@ Chart.register({
 });
 
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     options: {
         plugins: {
             p1: false   // disable plugin 'p1' for this instance
@@ -145,7 +154,10 @@ To disable all plugins for a specific chart instance, set `options.plugins` to `
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     options: {
         plugins: false // all plugins are disabled for this instance
     }

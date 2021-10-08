@@ -40,7 +40,10 @@ const data = {
 // <block:options:0>
 function colorize(opaque, hover, ctx) {
   const v = ctx.raw;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   const c = v < 35 ? '#D60000'
     : v < 55 ? '#F46300'
     : v < 75 ? '#0358B6'

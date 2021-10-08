@@ -27,7 +27,10 @@ To use the new scale, simply pass in the string key to the config when creating 
 
 ```javascript
 const lineChart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     data: data,
     type: 'line',
     options: {

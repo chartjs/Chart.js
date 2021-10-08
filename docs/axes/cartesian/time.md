@@ -58,7 +58,10 @@ For example, to create a chart with a time scale that always displayed units per
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {
@@ -106,7 +109,10 @@ For example, to set the display format for the `quarter` unit to show the month 
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {

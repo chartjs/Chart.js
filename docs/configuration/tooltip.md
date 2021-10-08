@@ -163,7 +163,10 @@ The `label` callback can change the text that displays for a given data point. A
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {
@@ -217,7 +220,10 @@ For example, to return a red box with a blue dashed border that has a border rad
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {
@@ -271,7 +277,10 @@ For example, to draw triangles instead of the regular color box for each item in
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {
@@ -350,7 +359,10 @@ External tooltips allow you to hook into the tooltip rendering process so that y
 
 ```javascript
 const myPieChart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'pie',
     data: data,
     options: {

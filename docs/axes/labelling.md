@@ -38,7 +38,10 @@ In the following example, every label of the Y-axis would be displayed with a do
 
 ```javascript
 const chart = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {

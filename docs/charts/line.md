@@ -212,7 +212,10 @@ Line charts can be configured into stacked area charts by changing the settings 
 
 ```javascript
 const stackedLine = new Chart(ctx, {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     type: 'line',
     data: data,
     options: {

@@ -66,7 +66,10 @@ Variables referencing any one from `chart.scales` would be lost after updating s
 
 ```javascript
 function updateScales(chart) {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     const xScale = chart.scales.x;
     const yScale = chart.scales.y;
     chart.options.scales = {

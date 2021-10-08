@@ -54,7 +54,10 @@ Finally, render the chart using our configuration:
 <script>
   // === include 'setup' then 'config' above ===
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   const myChart = new Chart(
     document.getElementById('myChart'),
     config
