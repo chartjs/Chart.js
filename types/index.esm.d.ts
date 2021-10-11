@@ -2016,6 +2016,11 @@ export class BasePlatform {
    * @returns {boolean} true if the canvas is attached to the platform, false if not.
    */
   isAttached(canvas: HTMLCanvasElement): boolean;
+  /**
+   * Updates config with platform specific requirements
+   * @param {ChartConfiguration} config
+   */
+  updateConfig(config: ChartConfiguration): void;
 }
 
 export class BasicPlatform extends BasePlatform {}
