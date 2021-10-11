@@ -86,6 +86,7 @@ class Chart {
     const options = config.createResolver(config.chartOptionScopes(), this.getContext());
 
     this.platform = new (config.platform || _detectPlatform(initialCanvas))();
+    this.platform.updateConfig(config);
 
     const context = this.platform.acquireContext(initialCanvas, options.aspectRatio);
     const canvas = context && context.canvas;
