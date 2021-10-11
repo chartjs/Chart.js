@@ -92,7 +92,7 @@ const config = {
     type: 'line',
     data: data
     options: {
-		animation: false // Make sure animations are set to false, otherwise chart wont render
+        animation: false // Make sure animations are set to false, otherwise chart wont render
     }
   };
 const canvas = new HTMLCanvasElement();
