@@ -33,4 +33,4 @@ Instructions on building and testing Chart.js can be found in [the documentation
 
 ## License
 
-Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](LICENSE.md).
