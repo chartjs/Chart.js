@@ -72,6 +72,14 @@ export default class BasePlatform {
   isAttached(canvas) { // eslint-disable-line no-unused-vars
     return true;
   }
+
+  /**
+   * Updates config with platform specific requirements
+   * @param {import("../core/core.config").default} config
+   */
+  updateConfig(config) { // eslint-disable-line no-unused-vars
+    // no-op
+  }
 }
 
 /**

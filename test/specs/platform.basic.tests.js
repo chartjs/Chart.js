@@ -8,6 +8,15 @@ describe('Platform.basic', function() {
     chart.destroy();
   });
 
+  it('should disable animations', function() {
+    const chart = acquireChart({type: 'line', options: {animation: {}}}, {useOffscreenCanvas: true});
+
+    expect(chart.options.animation).toEqual(false);
+
+    chart.destroy();
+  });
+
+
   it('supports choosing the BasicPlatform in a web worker', function(done) {
     const canvas = document.createElement('canvas');
     if (!canvas.transferControlToOffscreen) {
