@@ -82,12 +82,19 @@ By moving all Chart.js calculations onto a separate thread, the main thread can 
 * You can't transfer functions between threads, so if your config object includes functions you'll have to strip them out before transferring and then add them back later.
 * You can't access the DOM from worker threads, so Chart.js plugins that use the DOM (including any mouse interactions) will likely not work.
 * Ensure that you have a fallback if you support browsers other than the most modern Chromium browsers.
+* Animations won't work so they have to be disabled for the chart to render correctly. 
 * Resizing the chart must be done manually. See an example in the worker code below.
 
 Example main thread code:
 
 ```javascript
-const config = {};
+const config = {
+    type: 'line',
+    data: data
+    options: {
+		animation: false // Make sure animations are set to false, otherwise chart wont render
+    }
+  };
 const canvas = new HTMLCanvasElement();
 const offscreenCanvas = canvas.transferControlToOffscreen();
 
