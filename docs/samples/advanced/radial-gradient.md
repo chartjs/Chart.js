@@ -38,7 +38,7 @@ function createRadialGradient3(context, c1, c2, c3) {
   if (width !== chartWidth || height !== chartHeight) {
     cache.clear();
   }
-  const gradient = cache.get(c1 + c2 + c3);
+  let gradient = cache.get(c1 + c2 + c3);
   if (!gradient) {
     // Create the gradient because this is either the first render
     // or the size of the chart has changed
