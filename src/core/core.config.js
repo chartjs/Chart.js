@@ -371,7 +371,8 @@ function getResolver(resolverCache, scopes, prefixes) {
   return cached;
 }
 
-const hasFunction = obj => Object.keys(obj).reduce((acc, key) => acc || isFunction(obj[key]), false);
+const hasFunction = value => isObject(value)
+  && Object.keys(value).reduce((acc, key) => acc || isFunction(value[key]), false);
 
 function needContext(proxy, names) {
   const {isScriptable, isIndexable} = _descriptors(proxy);
@@ -380,7 +381,7 @@ function needContext(proxy, names) {
     const scriptable = isScriptable(prop);
     const indexable = isIndexable(prop);
     const value = (indexable || scriptable) && proxy[prop];
-    if ((scriptable && (isFunction(value) || (isObject(value) && hasFunction(value))))
+    if ((scriptable && (isFunction(value) || hasFunction(value)))
       || (indexable && isArray(value))) {
       return true;
     }
