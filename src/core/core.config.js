@@ -371,12 +371,17 @@ function getResolver(resolverCache, scopes, prefixes) {
   return cached;
 }
 
+const hasFunction = obj => Object.keys(obj).reduce((acc, key) => acc || isFunction(obj[key]), false);
+
 function needContext(proxy, names) {
   const {isScriptable, isIndexable} = _descriptors(proxy);
 
   for (const prop of names) {
-    if ((isScriptable(prop) && isFunction(proxy[prop]))
-      || (isIndexable(prop) && isArray(proxy[prop]))) {
+    const scriptable = isScriptable(prop);
+    const indexable = isIndexable(prop);
+    const value = (indexable || scriptable) && proxy[prop];
+    if ((scriptable && (isFunction(value) || (isObject(value) && hasFunction(value))))
+      || (indexable && isArray(value))) {
       return true;
     }
   }
