@@ -7,7 +7,7 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -536,14 +536,12 @@ class Chart {
 	 * @private
 	 */
   _updateDatasets(mode) {
-    const isFunction = typeof mode === 'function';
-
     if (this.notifyPlugins('beforeDatasetsUpdate', {mode, cancelable: true}) === false) {
       return;
     }
 
     for (let i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
-      this._updateDataset(i, isFunction ? mode({datasetIndex: i}) : mode);
+      this._updateDataset(i, isFunction(mode) ? mode({datasetIndex: i}) : mode);
     }
 
     this.notifyPlugins('afterDatasetsUpdate', {mode});
