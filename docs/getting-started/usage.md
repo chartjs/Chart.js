@@ -12,10 +12,10 @@ To create a chart, we need to instantiate the `Chart` class. To do this, we need
 
 ```javascript
 // Any of the following formats may be used
-var ctx = document.getElementById('myChart');
-var ctx = document.getElementById('myChart').getContext('2d');
-var ctx = $('#myChart');
-var ctx = 'myChart';
+const ctx = document.getElementById('myChart');
+const ctx = document.getElementById('myChart').getContext('2d');
+const ctx = $('#myChart');
+const ctx = 'myChart';
 ```
 
 Once you have the element or context, you're ready to instantiate a pre-defined chart-type or create your own!
@@ -25,8 +25,8 @@ The following example instantiates a bar chart showing the number of votes for d
 ```html
 <canvas id="myChart" width="400" height="400"></canvas>
 <script>
-var ctx = document.getElementById('myChart');
-var myChart = new Chart(ctx, {
+const ctx = document.getElementById('myChart');
+const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],

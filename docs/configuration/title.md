@@ -39,7 +39,7 @@ Alignment of the title. Options are:
 The example below would enable a title of 'Custom Chart Title' on the chart that is created.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -56,7 +56,7 @@ var chart = new Chart(ctx, {
 This example shows how to specify separate top and bottom title text padding:
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {

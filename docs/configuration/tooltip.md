@@ -70,7 +70,7 @@ Example:
 const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition) {
     /** @type {Tooltip} */
-    var tooltip = this;
+    const tooltip = this;
 
     /* ... */
 
@@ -145,7 +145,7 @@ A [tooltip item context](#tooltip-item-context) is generated for each item that 
 The `label` callback can change the text that displays for a given data point. A common example to show a unit. The example below puts a `'$'` before every row.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -153,7 +153,7 @@ var chart = new Chart(ctx, {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        var label = context.dataset.label || '';
+                        const label = context.dataset.label || '';
 
                         if (label) {
                             label += ': ';
@@ -175,7 +175,7 @@ var chart = new Chart(ctx, {
 For example, to return a red box with a blue dashed border that has a border radius for each item in the tooltip you could do:
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -206,7 +206,7 @@ var chart = new Chart(ctx, {
 For example, to draw triangles instead of the regular color box for each item in the tooltip you could do:
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -267,7 +267,7 @@ The tooltip items passed to the tooltip callbacks implement the following interf
 External tooltips allow you to hook into the tooltip rendering process so that you can render the tooltip in your own custom way. Generally this is used to create an HTML tooltip instead of an on-canvas tooltip. The `external` option takes a function which is passed a context parameter containing the `chart` and `tooltip`. You can enable external tooltips in the global or chart configuration like so:
 
 ```javascript
-var myPieChart = new Chart(ctx, {
+const myPieChart = new Chart(ctx, {
     type: 'pie',
     data: data,
     options: {
@@ -278,7 +278,7 @@ var myPieChart = new Chart(ctx, {
 
                 external: function(context) {
                     // Tooltip Element
-                    var tooltipEl = document.getElementById('chartjs-tooltip');
+                    const tooltipEl = document.getElementById('chartjs-tooltip');
 
                     // Create element on first render
                     if (!tooltipEl) {
@@ -289,7 +289,7 @@ var myPieChart = new Chart(ctx, {
                     }
 
                     // Hide if no tooltip
-                    var tooltipModel = context.tooltip;
+                    const tooltipModel = context.tooltip;
                     if (tooltipModel.opacity === 0) {
                         tooltipEl.style.opacity = 0;
                         return;
@@ -309,10 +309,10 @@ var myPieChart = new Chart(ctx, {
 
                     // Set Text
                     if (tooltipModel.body) {
-                        var titleLines = tooltipModel.title || [];
-                        var bodyLines = tooltipModel.body.map(getBody);
+                        const titleLines = tooltipModel.title || [];
+                        const bodyLines = tooltipModel.body.map(getBody);
 
-                        var innerHtml = '<thead>';
+                        const innerHtml = '<thead>';
 
                         titleLines.forEach(function(title) {
                             innerHtml += '<tr><th>' + title + '</th></tr>';
@@ -320,21 +320,21 @@ var myPieChart = new Chart(ctx, {
                         innerHtml += '</thead><tbody>';
 
                         bodyLines.forEach(function(body, i) {
-                            var colors = tooltipModel.labelColors[i];
-                            var style = 'background:' + colors.backgroundColor;
+                            const colors = tooltipModel.labelColors[i];
+                            const style = 'background:' + colors.backgroundColor;
                             style += '; border-color:' + colors.borderColor;
                             style += '; border-width: 2px';
-                            var span = '<span style="' + style + '"></span>';
+                            const span = '<span style="' + style + '"></span>';
                             innerHtml += '<tr><td>' + span + body + '</td></tr>';
                         });
                         innerHtml += '</tbody>';
 
-                        var tableRoot = tooltipEl.querySelector('table');
+                        const tableRoot = tooltipEl.querySelector('table');
                         tableRoot.innerHTML = innerHtml;
                     }
 
-                    var position = context.chart.canvas.getBoundingClientRect();
-                    var bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+                    const position = context.chart.canvas.getBoundingClientRect();
+                    const bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
 
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;

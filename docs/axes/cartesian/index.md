@@ -294,7 +294,7 @@ The `crossAlign` setting is only effective when these preconditions are met:
 The properties `dataset.xAxisID` or `dataset.yAxisID` have to match to `scales` property. This is especially needed if multi-axes charts are used.
 
 ```javascript
-var myChart = new Chart(ctx, {
+const myChart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
@@ -325,7 +325,7 @@ With cartesian axes, it is possible to create multiple X and Y axes. To do so, y
 In the example below, we are creating two Y axes. We then use the `yAxisID` property to map the datasets to their correct axes.
 
 ```javascript
-var myChart = new Chart(ctx, {
+const myChart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{

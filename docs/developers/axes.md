@@ -26,7 +26,7 @@ Chart.register(MyScale);
 To use the new scale, simply pass in the string key to the config when creating a chart.
 
 ```javascript
-var lineChart = new Chart(ctx, {
+const lineChart = new Chart(ctx, {
     data: data,
     type: 'line',
     options: {

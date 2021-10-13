@@ -66,8 +66,8 @@ Variables referencing any one from `chart.scales` would be lost after updating s
 
 ```javascript
 function updateScales(chart) {
-    var xScale = chart.scales.x;
-    var yScale = chart.scales.y;
+    const xScale = chart.scales.x;
+    const yScale = chart.scales.y;
     chart.options.scales = {
         newId: {
             display: true
