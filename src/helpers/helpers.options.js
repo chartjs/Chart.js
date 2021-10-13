@@ -184,3 +184,13 @@ export function _addGrace(minmax, grace, beginAtZero) {
     max: keepZero(max, change)
   };
 }
+
+/**
+ * Create a context inheriting parentContext
+ * @param {object|null} parentContext
+ * @param {object} context
+ * @returns {object}
+ */
+export function createContext(parentContext, context) {
+  return Object.assign(Object.create(parentContext), context);
+}

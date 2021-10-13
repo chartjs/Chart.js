@@ -1,4 +1,5 @@
 import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
+import {createContext} from './helpers.options';
 
 /**
  * @typedef { import("../elements/element.line").default } LineElement
@@ -275,6 +276,7 @@ function splitByStyles(line, segments, points, segmentOptions) {
  * @return {Segment[]}
  */
 function doSplitByStyles(line, segments, points, segmentOptions) {
+  const chartContext = line._chart.getContext();
   const baseStyle = readStyle(line.options);
   const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
   const count = points.length;
@@ -309,14 +311,14 @@ function doSplitByStyles(line, segments, points, segmentOptions) {
     let style;
     for (i = start + 1; i <= segment.end; i++) {
       const pt = points[i % count];
-      style = readStyle(segmentOptions.setContext({
+      style = readStyle(segmentOptions.setContext(createContext(chartContext, {
         type: 'segment',
         p0: prev,
         p1: pt,
         p0DataIndex: (i - 1) % count,
         p1DataIndex: i % count,
         datasetIndex
-      }));
+      })));
       if (styleChanged(style, prevStyle)) {
         addStyle(start, i - 1, segment.loop, prevStyle);
       }

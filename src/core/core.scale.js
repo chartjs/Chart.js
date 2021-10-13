@@ -3,7 +3,7 @@ import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../he
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
 import {toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
 import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
-import {toFont, toPadding, _addGrace} from '../helpers/helpers.options';
+import {createContext, toFont, toPadding, _addGrace} from '../helpers/helpers.options';
 
 import './core.scale.defaults';
 
@@ -109,14 +109,14 @@ function getTitleHeight(options, fallback) {
 }
 
 function createScaleContext(parent, scale) {
-  return Object.assign(Object.create(parent), {
+  return createContext(parent, {
     scale,
     type: 'scale'
   });
 }
 
 function createTickContext(parent, index, tick) {
-  return Object.assign(Object.create(parent), {
+  return createContext(parent, {
     tick,
     index,
     type: 'tick'
