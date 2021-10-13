@@ -59,6 +59,32 @@ describe('Chart.controllers.line', function() {
     expect(createChart).not.toThrow();
   });
 
+  it('should find min and max for stacked chart', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [10, 11, 12, 13]
+        }, {
+          data: [1, 2, 3, 4]
+        }],
+        labels: ['a', 'b', 'c', 'd']
+      },
+      options: {
+        scales: {
+          y: {
+            stacked: true
+          }
+        }
+      }
+    });
+    expect(chart.getDatasetMeta(0).controller.getMinMax(chart.scales.y, true)).toEqual({min: 10, max: 13});
+    expect(chart.getDatasetMeta(1).controller.getMinMax(chart.scales.y, true)).toEqual({min: 11, max: 17});
+    chart.hide(0);
+    expect(chart.getDatasetMeta(0).controller.getMinMax(chart.scales.y, true)).toEqual({min: 10, max: 13});
+    expect(chart.getDatasetMeta(1).controller.getMinMax(chart.scales.y, true)).toEqual({min: 1, max: 4});
+  });
+
   it('Should create line elements and point elements for each data item during initialization', function() {
     var chart = window.acquireChart({
       type: 'line',
