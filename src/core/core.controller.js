@@ -916,7 +916,7 @@ class Chart {
 
       _remove('resize', listener);
 
-      // Stop animating and remove metasets, so when re-attached, the animations start from begining.
+      // Stop animating and remove metasets, so when re-attached, the animations start from beginning.
       this._stop();
       this._resize(0, 0);
 
