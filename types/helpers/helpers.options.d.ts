@@ -52,3 +52,10 @@ export function resolve<T, C>(
 	index?: number,
 	info?: { cacheable?: boolean }
 ): T | undefined;
+
+
+/**
+ * Create a context inheriting parentContext
+ * @since 3.6.0
+ */
+export function createContext<P, T>(parentContext: P, context: T): P extends null ? T : P & T;
