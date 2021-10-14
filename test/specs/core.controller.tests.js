@@ -1926,7 +1926,7 @@ describe('Chart', function() {
     });
     it('cleans up metasets when the chart is destroyed', function() {
       this.chart.destroy();
-      expect(this.chart._metasets).toEqual([]);
+      expect(this.chart._metasets).toEqual([undefined, undefined, undefined, undefined]);
     });
   });
 
