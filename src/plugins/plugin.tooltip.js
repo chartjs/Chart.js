@@ -5,7 +5,7 @@ import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/hel
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
-import {drawPoint} from '../helpers';
+import {createContext, drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
@@ -335,7 +335,7 @@ function getBeforeAfterBodyLines(callback) {
 }
 
 function createTooltipContext(parent, tooltip, tooltipItems) {
-  return Object.assign(Object.create(parent), {
+  return createContext(parent, {
     tooltip,
     tooltipItems,
     type: 'tooltip'

@@ -244,6 +244,7 @@ export default class LineElement extends Element {
 
     this.animated = true;
     this.options = undefined;
+    this._chart = undefined;
     this._loop = undefined;
     this._fullLoop = undefined;
     this._path = undefined;

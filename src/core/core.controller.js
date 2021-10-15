@@ -8,7 +8,7 @@ import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction} from '../helpers/helpers.core';
-import {clearCanvas, clipArea, unclipArea, _isPointInArea} from '../helpers/helpers.canvas';
+import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers';
 // @ts-ignore
 import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras';
@@ -735,7 +735,7 @@ class Chart {
   }
 
   getContext() {
-    return this.$context || (this.$context = {chart: this, type: 'chart'});
+    return this.$context || (this.$context = createContext(null, {chart: this, type: 'chart'}));
   }
 
   getVisibleDatasetCount() {

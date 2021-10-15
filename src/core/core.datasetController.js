@@ -2,7 +2,7 @@ import Animations from './core.animations';
 import defaults from './core.defaults';
 import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
-import {sign} from '../helpers/helpers.math';
+import {createContext, sign} from '../helpers';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -167,7 +167,7 @@ function getFirstScaleId(chart, axis) {
 }
 
 function createDatasetContext(parent, index) {
-  return Object.assign(Object.create(parent),
+  return createContext(parent,
     {
       active: false,
       dataset: undefined,
@@ -180,7 +180,7 @@ function createDatasetContext(parent, index) {
 }
 
 function createDataContext(parent, index, element) {
-  return Object.assign(Object.create(parent), {
+  return createContext(parent, {
     active: false,
     dataIndex: index,
     parsed: undefined,

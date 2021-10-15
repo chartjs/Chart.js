@@ -26,6 +26,7 @@ export default class LineController extends DatasetController {
     }
 
     // Update Line
+    line._chart = this.chart;
     line._datasetIndex = this.index;
     line._decimated = !!_dataset._decimated;
     line.points = points;
@@ -46,13 +47,13 @@ export default class LineController extends DatasetController {
 
   updateElements(points, start, count, mode) {
     const reset = mode === 'reset';
-    const {iScale, vScale, _stacked} = this._cachedMeta;
+    const {iScale, vScale, _stacked, _dataset} = this._cachedMeta;
     const firstOpts = this.resolveDataElementOptions(start, mode);
     const sharedOptions = this.getSharedOptions(firstOpts);
     const includeOptions = this.includeOptions(mode, sharedOptions);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
-    const spanGaps = this.options.spanGaps;
+    const {spanGaps, segment} = this.options;
     const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
     const directUpdate = this.chart._animationsDisabled || reset || mode === 'none';
     let prevParsed = start > 0 && this.getParsed(start - 1);
@@ -67,7 +68,10 @@ export default class LineController extends DatasetController {
 
       properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
       properties.stop = i > 0 && (parsed[iAxis] - prevParsed[iAxis]) > maxGapLength;
-      properties.parsed = parsed;
+      if (segment) {
+        properties.parsed = parsed;
+        properties.raw = _dataset.data[i];
+      }
 
       if (includeOptions) {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, point.active ? 'active' : mode);
