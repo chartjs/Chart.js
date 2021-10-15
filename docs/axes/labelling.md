@@ -37,7 +37,7 @@ The [category axis](../axes/cartesian/category), which is the default x-axis for
 In the following example, every label of the Y-axis would be displayed with a dollar sign at the front.
 
 ```javascript
-var chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: data,
     options: {

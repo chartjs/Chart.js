@@ -59,7 +59,7 @@ Finally, render the chart using our configuration:
 <script>
   // === include 'setup' then 'config' above ===
 
-  var myChart = new Chart(
+  const myChart = new Chart(
     document.getElementById('myChart'),
     config
   );

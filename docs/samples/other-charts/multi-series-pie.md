@@ -44,7 +44,7 @@ const config = {
             const labelsOriginal = original.call(this, chart);
 
             // Build an array of colors used in the datasets of the chart
-            var datasetColors = chart.data.datasets.map(function(e) {
+            let datasetColors = chart.data.datasets.map(function(e) {
               return e.backgroundColor;
             });
             datasetColors = datasetColors.flat();

@@ -67,7 +67,7 @@ function getSortedDatasetIndices(chart, filterVisible) {
   return keys;
 }
 
-function applyStack(stack, value, dsIndex, options) {
+function applyStack(stack, value, dsIndex, options = {}) {
   const keys = stack.keys;
   const singleMode = options.mode === 'single';
   let i, ilen, datasetIndex, otherValue;
@@ -212,6 +212,8 @@ function clearStacks(meta, items) {
 
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
 const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
+const createStack = (canStack, meta, chart) => canStack && !meta.hidden && meta._stacked
+  && {keys: getSortedDatasetIndices(chart, true), values: null};
 
 export default class DatasetController {
 
@@ -567,11 +569,7 @@ export default class DatasetController {
     const values = stack && parsed._stacks[scale.axis];
     if (stack && values) {
       stack.values = values;
-      // Need to consider individual stack values for data range,
-      // in addition to the stacked value
-      range.min = Math.min(range.min, value);
-      range.max = Math.max(range.max, value);
-      value = applyStack(stack, parsedValue, this._cachedMeta.index, {all: true});
+      value = applyStack(stack, parsedValue, this._cachedMeta.index);
     }
     range.min = Math.min(range.min, value);
     range.max = Math.max(range.max, value);
@@ -586,16 +584,15 @@ export default class DatasetController {
     const sorted = meta._sorted && scale === meta.iScale;
     const ilen = _parsed.length;
     const otherScale = this._getOtherScale(scale);
-    const stack = canStack && meta._stacked && {keys: getSortedDatasetIndices(this.chart, true), values: null};
+    const stack = createStack(canStack, meta, this.chart);
     const range = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY};
     const {min: otherMin, max: otherMax} = getUserBounds(otherScale);
-    let i, value, parsed, otherValue;
+    let i, parsed;
 
     function _skip() {
       parsed = _parsed[i];
-      value = parsed[scale.axis];
-      otherValue = parsed[otherScale.axis];
-      return !isFinite(value) || otherMin > otherValue || otherMax < otherValue;
+      const otherValue = parsed[otherScale.axis];
+      return !isFinite(parsed[scale.axis]) || otherMin > otherValue || otherMax < otherValue;
     }
 
     for (i = 0; i < ilen; ++i) {

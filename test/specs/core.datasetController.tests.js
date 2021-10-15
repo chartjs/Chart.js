@@ -897,6 +897,52 @@ describe('Chart.DatasetController', function() {
       expect(opts0.$shared).not.toBeTrue();
       expect(Object.isFrozen(opts0)).toBeFalse();
     });
+
+    it('should support nested scriptable options', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [100, 120, 130],
+            fill: {
+              value: (ctx) => ctx.type === 'dataset' ? 75 : 0
+            }
+          }]
+        },
+      });
+
+      const controller = chart.getDatasetMeta(0).controller;
+      const opts = controller.resolveDatasetElementOptions();
+      expect(opts).toEqualOptions({
+        fill: {
+          value: 75
+        }
+      });
+    });
+
+    it('should support nested scriptable defaults', function() {
+      Chart.defaults.datasets.line.fill = {
+        value: (ctx) => ctx.type === 'dataset' ? 75 : 0
+      };
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [100, 120, 130],
+          }]
+        },
+      });
+
+      const controller = chart.getDatasetMeta(0).controller;
+      const opts = controller.resolveDatasetElementOptions();
+      expect(opts).toEqualOptions({
+        fill: {
+          value: 75
+        }
+      });
+      delete Chart.defaults.datasets.line.fill;
+    });
+
   });
 
   describe('_resolveAnimations', function() {

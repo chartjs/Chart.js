@@ -2,7 +2,7 @@
 
 ```js chart-editor
 // <block:setup:2>
-var DATA_COUNT = 16;
+const DATA_COUNT = 16;
 Utils.srand(110);
 
 const actions = [
@@ -38,8 +38,8 @@ const data = {
 // <block:options:0>
 function colorize(opaque) {
   return (ctx) => {
-    var v = ctx.parsed.y;
-    var c = v < -50 ? '#D60000'
+    const v = ctx.parsed.y;
+    const c = v < -50 ? '#D60000'
       : v < 0 ? '#F46300'
       : v < 50 ? '#0358B6'
       : '#44DE28';

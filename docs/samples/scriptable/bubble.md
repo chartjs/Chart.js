@@ -22,8 +22,8 @@ const actions = [
 
 // <block:data:1>
 function generateData() {
-  var data = [];
-  var i;
+  const data = [];
+  let i;
 
   for (i = 0; i < DATA_COUNT; ++i) {
     data.push({
@@ -51,13 +51,13 @@ function channelValue(x, y, values) {
 }
 
 function colorize(opaque, context) {
-  var value = context.raw;
-  var x = value.x / 100;
-  var y = value.y / 100;
-  var r = channelValue(x, y, [250, 150, 50, 0]);
-  var g = channelValue(x, y, [0, 50, 150, 250]);
-  var b = channelValue(x, y, [0, 150, 150, 250]);
-  var a = opaque ? 1 : 0.5 * value.v / 1000;
+  const value = context.raw;
+  const x = value.x / 100;
+  const y = value.y / 100;
+  const r = channelValue(x, y, [250, 150, 50, 0]);
+  const g = channelValue(x, y, [0, 50, 150, 250]);
+  const b = channelValue(x, y, [0, 150, 150, 250]);
+  const a = opaque ? 1 : 0.5 * value.v / 1000;
 
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
@@ -92,8 +92,8 @@ const config = {
         },
 
         radius: function(context) {
-          var size = context.chart.width;
-          var base = Math.abs(context.raw.v) / 1000;
+          const size = context.chart.width;
+          const base = Math.abs(context.raw.v) / 1000;
           return (size / 24) * base;
         }
       }
