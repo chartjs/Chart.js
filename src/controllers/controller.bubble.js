@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {resolveObjectKey, valueOrDefault} from '../helpers/helpers.core';
+import {valueOrDefault} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
   initialize() {
@@ -8,21 +8,39 @@ export default class BubbleController extends DatasetController {
   }
 
   /**
+	 * Parse array of primitive values
+	 * @protected
+	 */
+  parsePrimitiveData(meta, data, start, count) {
+    const parsed = super.parsePrimitiveData(meta, data, start, count);
+    for (let i = 0; i < parsed.length; i++) {
+      parsed[i]._custom = this.resolveDataElementOptions(i + start).radius;
+    }
+    return parsed;
+  }
+
+  /**
+	 * Parse array of arrays
+	 * @protected
+	 */
+  parseArrayData(meta, data, start, count) {
+    const parsed = super.parseArrayData(meta, data, start, count);
+    for (let i = 0; i < parsed.length; i++) {
+      const item = data[start + i];
+      parsed[i]._custom = valueOrDefault(item[2], this.resolveDataElementOptions(i + start).radius);
+    }
+    return parsed;
+  }
+
+  /**
 	 * Parse array of objects
 	 * @protected
 	 */
   parseObjectData(meta, data, start, count) {
-    const {xScale, yScale} = meta;
-    const {xAxisKey = 'x', yAxisKey = 'y'} = this._parsing;
-    const parsed = [];
-    let i, ilen, item;
-    for (i = start, ilen = start + count; i < ilen; ++i) {
-      item = data[i];
-      parsed.push({
-        x: xScale.parse(resolveObjectKey(item, xAxisKey), i),
-        y: yScale.parse(resolveObjectKey(item, yAxisKey), i),
-        _custom: item && item.r && +item.r
-      });
+    const parsed = super.parseObjectData(meta, data, start, count);
+    for (let i = 0; i < parsed.length; i++) {
+      const item = data[start + i];
+      parsed[i]._custom = valueOrDefault(item && item.r && +item.r, this.resolveDataElementOptions(i + start).radius);
     }
     return parsed;
   }
@@ -31,11 +49,11 @@ export default class BubbleController extends DatasetController {
 	 * @protected
 	 */
   getMaxOverflow() {
-    const {data, _parsed} = this._cachedMeta;
+    const data = this._cachedMeta.data;
 
     let max = 0;
     for (let i = data.length - 1; i >= 0; --i) {
-      max = Math.max(max, data[i].size() / 2, _parsed[i]._custom);
+      max = Math.max(max, data[i].size(this.resolveDataElementOptions(i)) / 2);
     }
     return max > 0 && max;
   }
