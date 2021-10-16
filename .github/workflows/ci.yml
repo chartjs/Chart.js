@@ -10,7 +10,6 @@ on:
       - master
       - "2.9"
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -24,80 +23,80 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14'
-    - uses: dorny/paths-filter@v2
-      id: changes
-      with:
-        filters: |
-          docs:
-            - 'docs/**'
-            - 'package.json'
-            - 'tsconfig.json'
-          src:
-            - 'src/**'
-            - 'package.json'
-          test:
-            - 'test/**'
-            - 'karma.conf.js'
-            - 'package.json'
-          types:
-            - 'types/**'
-            - 'package.json'
-            - 'tsconfig.json'
-    - name: Install
-      run: npm ci
-    - name: Build
-      run: npm run build
-    - name: Test
-      if: |
-        steps.changes.outputs.src == 'true' ||
-        steps.changes.outputs.test == 'true'
-      run: |
-        npm run build
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          npm test
-        elif [ "${{ runner.os }}" == "macOS" ]; then
-          npm test --browsers chrome,safari
-        else
-          xvfb-run --auto-servernum npm test
-        fi
-      shell: bash
-    - name: Lint
-      run: npm run lint
-    - name: Package
-      if: steps.changes.outputs.docs == 'true'
-      run: |
-        npm run docs
-        npm pack
-    - name: Coveralls Parallel - Chrome
-      if: steps.changes.outputs.src == 'true'
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        path-to-lcov: './coverage/chrome/lcov.info'
-        flag-name: ${{ matrix.os }}-chrome
-        parallel: true
-    - name: Coveralls Parallel - Firefox
-      if: steps.changes.outputs.src == 'true'
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        path-to-lcov: './coverage/firefox/lcov.info'
-        flag-name: ${{ matrix.os }}-firefox
-        parallel: true
-
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: npm
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'package.json'
+              - 'tsconfig.json'
+            src:
+              - 'src/**'
+              - 'package.json'
+            test:
+              - 'test/**'
+              - 'karma.conf.js'
+              - 'package.json'
+            types:
+              - 'types/**'
+              - 'package.json'
+              - 'tsconfig.json'
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Test
+        if: |
+          steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true'
+        run: |
+          npm run build
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            npm test
+          elif [ "${{ runner.os }}" == "macOS" ]; then
+            npm test --browsers chrome,safari
+          else
+            xvfb-run --auto-servernum npm test
+          fi
+        shell: bash
+      - name: Lint
+        run: npm run lint
+      - name: Package
+        if: steps.changes.outputs.docs == 'true'
+        run: |
+          npm run docs
+          npm pack
+      - name: Coveralls Parallel - Chrome
+        if: steps.changes.outputs.src == 'true'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: './coverage/chrome/lcov.info'
+          flag-name: ${{ matrix.os }}-chrome
+          parallel: true
+      - name: Coveralls Parallel - Firefox
+        if: steps.changes.outputs.src == 'true'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: './coverage/firefox/lcov.info'
+          flag-name: ${{ matrix.os }}-firefox
+          parallel: true
 
   finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Coveralls Finished
-      if: needs.build.outputs.coveralls == 'true'
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+      - name: Coveralls Finished
+        if: needs.build.outputs.coveralls == 'true'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true

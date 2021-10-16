@@ -20,10 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           registry-url: https://registry.npmjs.org/
+          cache: npm
       - name: Setup and build
         run: |
           npm ci
@@ -59,15 +60,16 @@ jobs:
           asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
           asset_content_type: application/gzip
   release-tag:
-    needs: [setup,release]
+    needs: [setup, release]
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
           registry-url: https://registry.npmjs.org/
+          cache: npm
       - name: Setup and build
         run: |
           npm ci
