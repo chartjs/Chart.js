@@ -1,5 +1,7 @@
 <p align="center">
-    <img src="https://www.chartjs.org/media/logo-title.svg"><br/>
+  <a href="https://www.chartjs.org/" target="_blank">
+    <img src="https://www.chartjs.org/media/logo-title.svg" alt="https://www.chartjs.org/"><br/>
+  </a>
     Simple yet flexible JavaScript charting for designers & developers
 </p>
 
