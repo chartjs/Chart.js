@@ -9,7 +9,7 @@ on:
     branches:
       - master
       - "2.9"
-  workflow_dispatch: null
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -27,7 +27,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: '14'
           cache: npm
       - uses: dorny/paths-filter@v2
         id: changes
@@ -78,7 +78,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: "./coverage/chrome/lcov.info"
+          path-to-lcov: './coverage/chrome/lcov.info'
           flag-name: ${{ matrix.os }}-chrome
           parallel: true
       - name: Coveralls Parallel - Firefox
@@ -86,7 +86,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: "./coverage/firefox/lcov.info"
+          path-to-lcov: './coverage/firefox/lcov.info'
           flag-name: ${{ matrix.os }}-firefox
           parallel: true
 
