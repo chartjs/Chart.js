@@ -10,7 +10,7 @@ function lttbDecimation(data, start, count, availableWidth, options) {
    * The original implementation is MIT licensed.
    */
   const samples = options.samples || availableWidth;
-  // There is less points than the threshold, returning the whole array
+  // There are less points than the threshold, returning the whole array
   if (samples >= count) {
     return data.slice(start, start + count);
   }
