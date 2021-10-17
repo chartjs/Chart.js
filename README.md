@@ -15,7 +15,9 @@
 
 ## Documentation
 
-All the links point to the new version 3 of the lib.
+All the links point to the new version 3 of the lib. 
+
+ My first  pull request thanks  #hacktoberfest 
 
 * [Introduction](https://www.chartjs.org/docs/latest/)
 * [Getting Started](https://www.chartjs.org/docs/latest/getting-started/index)
