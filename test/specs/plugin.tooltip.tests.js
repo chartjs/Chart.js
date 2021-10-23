@@ -1555,6 +1555,48 @@ describe('Plugin.Tooltip', function() {
       chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], {x: 0, y: 0});
       expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
     });
+
+    it('should update active elements when datasets are removed and added', async function() {
+      var dataset = {
+        label: 'Dataset 1',
+        data: [10, 20, 30],
+        pointHoverBorderColor: 'rgb(255, 0, 0)',
+        pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+      };
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [dataset],
+          labels: ['Point 1', 'Point 2', 'Point 3']
+        },
+        options: {
+          plugins: {
+            tooltip: {
+              mode: 'nearest',
+              intersect: true
+            }
+          }
+        }
+      });
+
+      var meta = chart.getDatasetMeta(0);
+      var point = meta.data[1];
+      var expectedPoint = jasmine.objectContaining({datasetIndex: 0, index: 1});
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+      expect(chart.tooltip.getActiveElements()).toEqual([expectedPoint]);
+
+      chart.data.datasets = [];
+      chart.update();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+
+      chart.data.datasets = [dataset];
+      chart.update();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([expectedPoint]);
+    });
   });
 
   describe('events', function() {

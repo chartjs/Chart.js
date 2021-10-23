@@ -1121,7 +1121,7 @@ describe('Chart', function() {
       });
     });
 
-    it('should resize the canvas if attached to the DOM after construction with mutiple parents', function(done) {
+    it('should resize the canvas if attached to the DOM after construction with multiple parents', function(done) {
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
       var wrapper2 = document.createElement('div');
@@ -1848,7 +1848,7 @@ describe('Chart', function() {
       expect(metasets[2].order).toEqual(3);
       expect(metasets[3].order).toEqual(4);
     });
-    it('should be moved when datasets are removed from begining', function() {
+    it('should be moved when datasets are removed from beginning', function() {
       this.chart.data.datasets.splice(0, 2);
       this.chart.update();
       const metasets = this.chart._metasets;
@@ -1907,6 +1907,26 @@ describe('Chart', function() {
       expect(metasets[1].label).toEqual('3');
       expect(metasets[2].label).toEqual('2');
       expect(metasets[3].label).toEqual('new');
+    });
+  });
+
+  describe('_destroyDatasetMeta', function() {
+    beforeEach(function() {
+      this.chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [
+            {label: '1', order: 2},
+            {label: '2', order: 1},
+            {label: '3', order: 4},
+            {label: '4', order: 3},
+          ]
+        }
+      });
+    });
+    it('cleans up metasets when the chart is destroyed', function() {
+      this.chart.destroy();
+      expect(this.chart._metasets).toEqual([undefined, undefined, undefined, undefined]);
     });
   });
 

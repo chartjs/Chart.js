@@ -799,12 +799,11 @@ class Chart {
 	 * @private
 	 */
   _destroyDatasetMeta(datasetIndex) {
-    const meta = this._metasets && this._metasets[datasetIndex];
-
+    const meta = this._metasets[datasetIndex];
     if (meta && meta.controller) {
       meta.controller._destroy();
-      delete this._metasets[datasetIndex];
     }
+    delete this._metasets[datasetIndex];
   }
 
   _stop() {
@@ -916,7 +915,7 @@ class Chart {
 
       _remove('resize', listener);
 
-      // Stop animating and remove metasets, so when re-attached, the animations start from begining.
+      // Stop animating and remove metasets, so when re-attached, the animations start from beginning.
       this._stop();
       this._resize(0, 0);
 
