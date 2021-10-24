@@ -6,6 +6,10 @@ The chart legend displays data about the datasets that are appearing on the char
 
 Namespace: `options.plugins.legend`, the global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
 
+:::warning
+The bubble, doughnut, pie, and polar area charts override the tooltip defaults. To change the overrides for those chart types, the options are defined in `Chart.overrides[type].plugins.tooltip`. 
+:::
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | Is the legend shown?
