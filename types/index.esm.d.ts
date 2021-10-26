@@ -1908,7 +1908,7 @@ export interface BarProps {
   height: number;
 }
 
-export interface BarOptions extends CommonElementOptions {
+export interface BarOptions extends Omit<CommonElementOptions, 'borderWidth'> {
   /**
    * The base value for the bar in data units along the value axis.
    */
@@ -1932,6 +1932,12 @@ export interface BarOptions extends CommonElementOptions {
    * @default 'auto'
    */
   inflateAmount: number | 'auto';
+
+  /**
+   * Width of the border, number for all sides, object to specify width for each side specifically
+   * @default 0
+   */
+  borderWidth: number | { top?: number, right?: number, bottom?: number, left?: number };
 }
 
 export interface BorderRadius {
