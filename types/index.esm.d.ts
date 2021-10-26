@@ -1638,7 +1638,7 @@ export interface VisualElement {
 }
 
 export interface CommonElementOptions {
-  borderWidth: number;
+  borderWidth: number | { top?: number, right?: number, bottom?:number, left?:number };
   borderColor: Color;
   backgroundColor: Color;
 }
@@ -1686,6 +1686,10 @@ export interface ArcOptions extends CommonElementOptions {
    * @default 0
    */
   borderRadius: number | ArcBorderRadius;
+  /**
+   * Override borderWidth so it only accepts a number
+   */
+  borderWidth: number;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
@@ -1760,6 +1764,10 @@ export interface LineOptions extends CommonElementOptions {
     borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
     borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
   };
+  /**
+   * Override borderWidth so it only accepts a number
+   */
+  borderWidth: number;
 }
 
 export interface LineHoverOptions extends CommonHoverOptions {
@@ -1827,6 +1835,10 @@ export interface PointOptions extends CommonElementOptions {
    * @default 0
    */
   rotation: number;
+  /**
+   * Override borderWidth so it only accepts a number
+   */
+  borderWidth: number;
 }
 
 export interface PointHoverOptions extends CommonHoverOptions {
