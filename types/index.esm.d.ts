@@ -1937,7 +1937,7 @@ export interface BarOptions extends Omit<CommonElementOptions, 'borderWidth'> {
    * Width of the border, number for all sides, object to specify width for each side specifically
    * @default 0
    */
-  borderWidth: number | { top?: number, right?: number, bottom?:number, left?:number };
+  borderWidth: number | { top?: number, right?: number, bottom?: number, left?: number };
 }
 
 export interface BorderRadius {
