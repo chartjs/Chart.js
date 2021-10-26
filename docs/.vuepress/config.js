@@ -250,6 +250,7 @@ module.exports = {
             'animations/drop',
             'animations/loop',
             'animations/progressive-line',
+            'animations/progressive-line-easing',
           ]
         },
         {
