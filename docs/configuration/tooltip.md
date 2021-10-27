@@ -157,7 +157,7 @@ const chart = new Chart(ctx, {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        const label = context.dataset.label || '';
+                        let label = context.dataset.label || '';
 
                         if (label) {
                             label += ': ';
