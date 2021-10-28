@@ -367,7 +367,7 @@ export default class DatasetController {
     const dataset = this.getDataset();
     let stackChanged = false;
 
-    let labels = me.chart.data.labels;
+    let labels = meta.iScale ? meta.iScale.getLabels() : null;
     if (labels && labels.length && (me._parsing === false || isObject(me._parsing))) {
       labels.splice(0);
     }
