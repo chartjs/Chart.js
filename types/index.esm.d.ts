@@ -1417,7 +1417,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base font
    * @see Defaults.font
    */
-  font: Scriptable<Partial<FontSpec>, ScriptableContext<TType>>;
+  font: Partial<FontSpec>;
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
