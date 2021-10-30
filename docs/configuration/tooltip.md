@@ -5,7 +5,7 @@
 Namespace: `options.plugins.tooltip`, the global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
 :::warning
-The bubble, doughnut, pie, polar area, and scatter charts override the tooltip defaults. To change the overrides for those chart types, the options are defined in `Chart.overrides[type].plugins.tooltip`. 
+The bubble, doughnut, pie, polar area, and scatter charts override the tooltip defaults. To change the overrides for those chart types, the options are defined in `Chart.overrides[type].plugins.tooltip`.
 :::
 
 | Name | Type | Default | Description
@@ -157,7 +157,7 @@ const chart = new Chart(ctx, {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        const label = context.dataset.label || '';
+                        let label = context.dataset.label || '';
 
                         if (label) {
                             label += ': ';
@@ -282,7 +282,7 @@ const myPieChart = new Chart(ctx, {
 
                 external: function(context) {
                     // Tooltip Element
-                    const tooltipEl = document.getElementById('chartjs-tooltip');
+                    let tooltipEl = document.getElementById('chartjs-tooltip');
 
                     // Create element on first render
                     if (!tooltipEl) {
@@ -316,7 +316,7 @@ const myPieChart = new Chart(ctx, {
                         const titleLines = tooltipModel.title || [];
                         const bodyLines = tooltipModel.body.map(getBody);
 
-                        const innerHtml = '<thead>';
+                        let innerHtml = '<thead>';
 
                         titleLines.forEach(function(title) {
                             innerHtml += '<tr><th>' + title + '</th></tr>';
@@ -325,7 +325,7 @@ const myPieChart = new Chart(ctx, {
 
                         bodyLines.forEach(function(body, i) {
                             const colors = tooltipModel.labelColors[i];
-                            const style = 'background:' + colors.backgroundColor;
+                            let style = 'background:' + colors.backgroundColor;
                             style += '; border-color:' + colors.borderColor;
                             style += '; border-width: 2px';
                             const span = '<span style="' + style + '"></span>';
@@ -333,7 +333,7 @@ const myPieChart = new Chart(ctx, {
                         });
                         innerHtml += '</tbody>';
 
-                        const tableRoot = tooltipEl.querySelector('table');
+                        let tableRoot = tooltipEl.querySelector('table');
                         tableRoot.innerHTML = innerHtml;
                     }
 
