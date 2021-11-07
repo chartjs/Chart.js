@@ -249,6 +249,69 @@ describe('Chart.DatasetController', function() {
     expect(parsedYValues).toEqual([20, 30]);
   });
 
+  it('should synchronize labels array with X values when chart existing dataset is updated and parsing is off', function() {
+    const chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {x: 'One', y: 1},
+            {x: 'Two', y: 2}
+          ]
+        }]
+      },
+      options: {
+        parsing: false
+      }
+    });
+
+    const newData = [
+      {x: 'Three', y: 3},
+      {x: 'Four', y: 4},
+      {x: 'Five', y: 5}
+    ];
+
+    chart.data.datasets[0].data = newData;
+    chart.update();
+
+    const meta = chart.getDatasetMeta(0);
+    const labels = meta.iScale.getLabels();
+    expect(labels).toEqual(newData.map(n => n.x));
+  });
+
+  it('should synchronize labels array with X values when chart existing dataset is updated and parsing has provided keys', function() {
+    const chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {name: 'One', num: 1},
+            {name: 'Two', num: 2}
+          ]
+        }]
+      },
+      options: {
+        parsing: {
+          xAxisKey: 'name',
+          yAxisKey: 'num'
+        }
+      }
+    });
+
+    const newData = [
+      {name: 'Three', num: 3},
+      {name: 'Four', num: 4},
+      {name: 'Five', num: 5}
+    ];
+
+    chart.data.datasets[0].data = newData;
+    chart.update();
+
+    const meta = chart.getDatasetMeta(0);
+    const labels = meta.iScale.getLabels();
+    expect(labels).toEqual(newData.map(n => n.name));
+  });
+
   it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
     const data = [0, 1, 2, 3, 4, 5];
     const chart = acquireChart({
