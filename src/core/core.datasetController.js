@@ -368,11 +368,11 @@ export default class DatasetController {
     let stackChanged = false;
 
     let labels = meta.iScale ? meta.iScale.getLabels() : null;
-    if (labels && labels.length && (me._parsing === false || isObject(me._parsing))) {
+    if (labels && labels.length && (this._parsing === false || isObject(this._parsing))) {
       labels.splice(0);
     }
 
-    me._dataCheck();
+    this._dataCheck();
 
     // make sure cached _stacked status is current
     const oldStacked = meta._stacked;
