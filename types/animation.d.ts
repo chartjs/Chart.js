@@ -12,6 +12,7 @@ export class Animation {
 export interface AnimationEvent {
 	chart: Chart;
 	numSteps: number;
+	initial: boolean;
 	currentState: number;
 }
 
