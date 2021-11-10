@@ -312,6 +312,6 @@ export default class LinearScaleBase extends Scale {
   }
 
   getLabelForValue(value) {
-    return formatNumber(value, this.chart.options.locale);
+    return formatNumber(value, this.chart.options.locale, this.options.ticks.format);
   }
 }
