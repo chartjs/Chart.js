@@ -13,7 +13,7 @@ export interface AnimationEvent {
 	chart: Chart;
 	numSteps: number;
 	initial: boolean;
-	currentState: number;
+	currentStep: number;
 }
 
 export class Animator {
