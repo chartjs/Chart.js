@@ -10,6 +10,8 @@ extends:
 rules:
   # Replace stock eslint rules with typescript-eslint equivalents for proper
   # TypeScript support.
+  indent: "off"
+  "@typescript-eslint/indent": ["error", 2]
   no-use-before-define: "off"
   '@typescript-eslint/no-use-before-define': "error"
   no-shadow: "off"

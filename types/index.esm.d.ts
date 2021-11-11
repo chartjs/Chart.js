@@ -87,9 +87,9 @@ export interface ControllerDatasetOptions extends ParsingOptions {
 
 export interface BarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar'>>,
-    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>>,
-    AnimationOptions<'bar'> {
+  ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar'>>,
+  ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>>,
+  AnimationOptions<'bar'> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -147,8 +147,8 @@ export const BarController: ChartComponent & {
 
 export interface BubbleControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
-    ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
+  ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
+  ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
 
 export interface BubbleDataPoint {
   /**
@@ -175,11 +175,11 @@ export const BubbleController: ChartComponent & {
 
 export interface LineControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<'line'>>,
-    ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<'line'>>,
-    ScriptableOptions<LineOptions, ScriptableContext<'line'>>,
-    ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>>,
-    AnimationOptions<'line'> {
+  ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<'line'>>,
+  ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<'line'>>,
+  ScriptableOptions<LineOptions, ScriptableContext<'line'>>,
+  ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>>,
+  AnimationOptions<'line'> {
   /**
    * The ID of the x axis to plot this dataset on.
    */
@@ -234,9 +234,9 @@ export const ScatterController: ChartComponent & {
 
 export interface DoughnutControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<ArcOptions, ScriptableContext<'doughnut'>>,
-    ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>>,
-    AnimationOptions<'doughnut'> {
+  ScriptableAndArrayOptions<ArcOptions, ScriptableContext<'doughnut'>>,
+  ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>>,
+  AnimationOptions<'doughnut'> {
 
   /**
    * Sweep to allow arcs to cover.
@@ -377,10 +377,10 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableAndArrayOptions<PointOptions & PointHoverOptions & PointPrefixedOptions & PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
-    ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<'radar'>>,
-    AnimationOptions<'radar'> {
-        /**
+  ScriptableAndArrayOptions<PointOptions & PointHoverOptions & PointPrefixedOptions & PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
+  ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<'radar'>>,
+  AnimationOptions<'radar'> {
+  /**
    * The ID of the x axis to plot this dataset on.
    */
   xAxisID: string;
@@ -449,7 +449,7 @@ export type ChartMeta<
   // When this was introduced, doing so was a breaking change
   TType extends ChartType = ChartType,
 > = DeepPartial<
-  { [key in ChartType]: ChartTypeRegistry[key]['metaExtensions'] }[TType]
+{ [key in ChartType]: ChartTypeRegistry[key]['metaExtensions'] }[TType]
 > & ChartMetaCommon<TElement, TDatasetElement>;
 
 export interface ActiveDataPoint {
@@ -465,7 +465,7 @@ export declare class Chart<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,
   TLabel = unknown
-  > {
+> {
   readonly platform: BasePlatform;
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
@@ -669,12 +669,12 @@ export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptio
 
 export type Overrides = {
   [key in ChartType]:
-    CoreChartOptions<key> &
-    ElementChartOptions<key> &
-    PluginChartOptions<key> &
-    DatasetChartOptions<ChartType> &
-    ScaleChartOptions<key> &
-    ChartTypeRegistry[key]['chartOptions'];
+  CoreChartOptions<key> &
+  ElementChartOptions<key> &
+  PluginChartOptions<key> &
+  DatasetChartOptions<ChartType> &
+  ScaleChartOptions<key> &
+  ChartTypeRegistry[key]['chartOptions'];
 }
 
 export const defaults: Defaults;
@@ -1341,18 +1341,18 @@ export interface TypedRegistry<T> {
 
 export interface ChartEvent {
   type:
-    | 'contextmenu'
-    | 'mouseenter'
-    | 'mousedown'
-    | 'mousemove'
-    | 'mouseup'
-    | 'mouseout'
-    | 'click'
-    | 'dblclick'
-    | 'keydown'
-    | 'keypress'
-    | 'keyup'
-    | 'resize';
+  | 'contextmenu'
+  | 'mouseenter'
+  | 'mousedown'
+  | 'mousemove'
+  | 'mouseup'
+  | 'mouseout'
+  | 'click'
+  | 'dblclick'
+  | 'keydown'
+  | 'keypress'
+  | 'keyup'
+  | 'resize';
   native: Event | null;
   x: number | null;
   y: number | null;
@@ -1694,7 +1694,7 @@ export interface ArcHoverOptions extends CommonHoverOptions {
 
 export interface ArcElement<T extends ArcProps = ArcProps, O extends ArcOptions = ArcOptions>
   extends Element<T, O>,
-    VisualElement {}
+  VisualElement {}
 
 export const ArcElement: ChartComponent & {
   prototype: ArcElement;
@@ -1771,7 +1771,7 @@ export interface LineHoverOptions extends CommonHoverOptions {
 
 export interface LineElement<T extends LineProps = LineProps, O extends LineOptions = LineOptions>
   extends Element<T, O>,
-    VisualElement {
+  VisualElement {
   updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void;
   points: Point[];
   readonly segments: Segment[];
@@ -1889,7 +1889,7 @@ export interface PointPrefixedHoverOptions {
 
 export interface PointElement<T extends PointProps = PointProps, O extends PointOptions = PointOptions>
   extends Element<T, O>,
-    VisualElement {
+  VisualElement {
   readonly skip: boolean;
   readonly parsed: CartesianParsedData;
 }
@@ -3472,12 +3472,12 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
 };
 
 export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
-  CoreChartOptions<TType> &
-  ElementChartOptions<TType> &
-  PluginChartOptions<TType> &
-  DatasetChartOptions<TType> &
-  ScaleChartOptions<TType> &
-  ChartTypeRegistry[TType]['chartOptions']
+CoreChartOptions<TType> &
+ElementChartOptions<TType> &
+PluginChartOptions<TType> &
+DatasetChartOptions<TType> &
+ScaleChartOptions<TType> &
+ChartTypeRegistry[TType]['chartOptions']
 >;
 
 export type DefaultDataPoint<TType extends ChartType> = DistributiveArray<ChartTypeRegistry[TType]['defaultDataPoint']>;
@@ -3493,7 +3493,7 @@ export type ChartDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
 > = DeepPartial<
-  { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
 
 export interface ChartData<

@@ -10,8 +10,8 @@ export function toDegrees(radians: number): number;
  * Gets the angle from vertical upright to the point about a centre.
  */
 export function getAngleFromPoint(
-	centrePoint: { x: number; y: number },
-	anglePoint: { x: number; y: number }
+  centrePoint: { x: number; y: number },
+  anglePoint: { x: number; y: number }
 ): { angle: number; distance: number };
 
 export function distanceBetweenPoints(pt1: { x: number; y: number }, pt2: { x: number; y: number }): number;

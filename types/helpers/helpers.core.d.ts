@@ -67,9 +67,9 @@ export function toDimension(value: number | string, dimension: number): number;
  * @returns {*}
  */
 export function callback<T extends (this: TA, ...args: unknown[]) => R, TA, R>(
-	fn: T | undefined,
-	args: unknown[],
-	thisArg?: TA
+  fn: T | undefined,
+  args: unknown[],
+  thisArg?: TA
 ): R | undefined;
 
 /**
@@ -82,10 +82,10 @@ export function callback<T extends (this: TA, ...args: unknown[]) => R, TA, R>(
  * @param [reverse] - If true, iterates backward on the loopable.
  */
 export function each<T, TA>(
-	loopable: T[],
-	fn: (this: TA, v: T, i: number) => void,
-	thisArg?: TA,
-	reverse?: boolean
+  loopable: T[],
+  fn: (this: TA, v: T, i: number) => void,
+  thisArg?: TA,
+  reverse?: boolean
 ): void;
 /**
  * Note(SB) for performance sake, this method should only be used when loopable type
@@ -97,10 +97,10 @@ export function each<T, TA>(
  * @param [reverse] - If true, iterates backward on the loopable.
  */
 export function each<T, TA>(
-	loopable: { [key: string]: T },
-	fn: (this: TA, v: T, k: string) => void,
-	thisArg?: TA,
-	reverse?: boolean
+  loopable: { [key: string]: T },
+  fn: (this: TA, v: T, k: string) => void,
+  thisArg?: TA,
+  reverse?: boolean
 ): void;
 
 /**
@@ -110,7 +110,7 @@ export function each<T, TA>(
 export function clone<T>(source: T): T;
 
 export interface MergeOptions {
-	merger?: (key: string, target: AnyObject, source: AnyObject, options: AnyObject) => AnyObject;
+  merger?: (key: string, target: AnyObject, source: AnyObject, options: AnyObject) => AnyObject;
 }
 /**
  * Recursively deep copies `source` properties into `target` with the given `options`.
@@ -127,9 +127,9 @@ export function merge<T, S1>(target: T, source: [S1], options?: MergeOptions): T
 export function merge<T, S1, S2>(target: T, source: [S1, S2], options?: MergeOptions): T & S1 & S2;
 export function merge<T, S1, S2, S3>(target: T, source: [S1, S2, S3], options?: MergeOptions): T & S1 & S2 & S3;
 export function merge<T, S1, S2, S3, S4>(
-	target: T,
-	source: [S1, S2, S3, S4],
-	options?: MergeOptions
+  target: T,
+  source: [S1, S2, S3, S4],
+  options?: MergeOptions
 ): T & S1 & S2 & S3 & S4;
 export function merge<T>(target: T, source: AnyObject[], options?: MergeOptions): AnyObject;
 
