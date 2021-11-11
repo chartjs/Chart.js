@@ -10,10 +10,10 @@ export class Animation {
 }
 
 export interface AnimationEvent {
-	chart: Chart;
-	numSteps: number;
-	initial: boolean;
-	currentStep: number;
+  chart: Chart;
+  numSteps: number;
+  initial: boolean;
+  currentStep: number;
 }
 
 export class Animator {

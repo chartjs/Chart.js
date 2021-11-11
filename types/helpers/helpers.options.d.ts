@@ -2,7 +2,7 @@ import { TRBL, TRBLCorners } from '../geometric';
 import { FontSpec } from '../index.esm';
 
 export interface CanvasFontSpec extends FontSpec {
-	string: string;
+  string: string;
 }
 /**
  * Parses font options and returns the font object.
@@ -47,10 +47,10 @@ export function toPadding(
  * @since 2.7.0
  */
 export function resolve<T, C>(
-	inputs: undefined | T | ((c: C) => T) | readonly T[],
-	context?: C,
-	index?: number,
-	info?: { cacheable?: boolean }
+  inputs: undefined | T | ((c: C) => T) | readonly T[],
+  context?: C,
+  index?: number,
+  info?: { cacheable?: boolean }
 ): T | undefined;
 
 
