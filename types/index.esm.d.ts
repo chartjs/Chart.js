@@ -1491,6 +1491,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
+    autoPadding: boolean;
     padding: Scriptable<number | Partial<ChartArea>, ScriptableContext<TType>>;
   };
 }
