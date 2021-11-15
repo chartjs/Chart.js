@@ -1060,7 +1060,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
   uninstall?(chart: Chart, args: EmptyObject, options: O): void;
 }
 
-export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent };
+export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent } | Plugin | Plugin[];
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -1491,7 +1491,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   layout: {
-    padding: Scriptable<number | ChartArea, ScriptableContext<TType>>;
+    padding: Scriptable<number | Partial<ChartArea>, ScriptableContext<TType>>;
   };
 }
 
@@ -2538,6 +2538,11 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * @default 'rgba(0, 0, 0, 0.8)'
    */
   backgroundColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
+  /**
+   * Padding between the color box and the text.
+   * @default 1
+   */
+  boxPadding: number;
   /**
    * Color of title
    * @default '#fff'

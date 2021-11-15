@@ -20,3 +20,11 @@ Chart.defaults.font = {
   family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
   size: 10
 };
+
+Chart.defaults.layout = {
+  padding: {
+    bottom: 10,
+  },
+};
+
+Chart.defaults.plugins.tooltip.boxPadding = 3;
