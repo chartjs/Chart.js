@@ -549,7 +549,6 @@ class Chart {
     if (_dataChanges.length) {
       this._dataChanges = [];
       const datasetCount = this.data.datasets.length;
-
       const makeSet = (idx) => new Set(
         _dataChanges
           .filter(c => c[0] === idx)
@@ -562,7 +561,7 @@ class Chart {
           return;
         }
       }
-      return [...changeSet];
+      return Array.from(changeSet);
     }
   }
 
