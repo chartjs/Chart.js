@@ -514,18 +514,16 @@ class Chart {
   _updateHiddenIndices() {
     const {_hiddenIndices} = this;
     const changes = this._getUniformDataChanges() || [];
-    for (const change of changes) {
-      const args = change.split(',');
-      const start = +args[2];
-      const count = (args[1] === '_removeElements' ? -1 : 1) * +args[3];
+    for (const {method, start, count} of changes) {
+      const move = method === '_removeElements' ? -count : count;
       const keys = Object.keys(_hiddenIndices);
       for (const key of keys) {
         const intKey = +key;
         if (intKey >= start) {
           delete _hiddenIndices[key];
-        }
-        if (intKey > start || (intKey === start && count > 0)) {
-          _hiddenIndices[intKey + count] = true;
+          if (move > 0 || intKey > start) {
+            _hiddenIndices[intKey + move] = true;
+          }
         }
       }
     }
@@ -554,7 +552,9 @@ class Chart {
         return;
       }
     }
-    return Array.from(changeSet);
+    return Array.from(changeSet)
+      .map(c => c.split(','))
+      .map(a => ({method: a[1], start: +a[2], count: +a[3]}));
   }
 
   /**
