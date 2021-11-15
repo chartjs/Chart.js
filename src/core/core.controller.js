@@ -69,6 +69,21 @@ const getChart = (key) => {
   return Object.values(instances).filter((c) => c.canvas === canvas).pop();
 };
 
+function moveNumericKeys(obj, start, move) {
+  const keys = Object.keys(obj);
+  for (const key of keys) {
+    const intKey = +key;
+    if (intKey >= start) {
+      const value = obj[key];
+      delete obj[key];
+      if (move > 0 || intKey > start) {
+        obj[intKey + move] = value;
+      }
+    }
+  }
+}
+
+
 class Chart {
 
   // eslint-disable-next-line max-statements
@@ -516,16 +531,7 @@ class Chart {
     const changes = this._getUniformDataChanges() || [];
     for (const {method, start, count} of changes) {
       const move = method === '_removeElements' ? -count : count;
-      const keys = Object.keys(_hiddenIndices);
-      for (const key of keys) {
-        const intKey = +key;
-        if (intKey >= start) {
-          delete _hiddenIndices[key];
-          if (move > 0 || intKey > start) {
-            _hiddenIndices[intKey + move] = true;
-          }
-        }
-      }
+      moveNumericKeys(_hiddenIndices, start, move);
     }
   }
 
