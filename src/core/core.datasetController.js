@@ -1022,7 +1022,9 @@ export default class DatasetController {
 	 * @private
 	 */
   _onDataSplice(start, count) {
-    this._sync(['_removeElements', start, count]);
+    if (count) {
+      this._sync(['_removeElements', start, count]);
+    }
     const newCount = arguments.length - 2;
     if (newCount) {
       this._sync(['_insertElements', start, newCount]);

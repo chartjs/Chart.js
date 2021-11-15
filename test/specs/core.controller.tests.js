@@ -2022,6 +2022,16 @@ describe('Chart', function() {
       expect(chart.getDataVisibility(2)).toBe(true);
       expect(chart.getDataVisibility(3)).toBe(true);
 
+      chart.toggleDataVisibility(1);
+      chart.data.labels.splice(1, 0, 'b');
+      chart.data.datasets[0].data.splice(1, 0, 1);
+      chart.data.datasets[1].data.splice(1, 0, 1);
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(false);
+      expect(chart.getDataVisibility(3)).toBe(true);
     });
 
     it('should leave data visibility indices intact when data changes in non-uniform way', function() {

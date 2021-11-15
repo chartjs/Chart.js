@@ -517,25 +517,15 @@ class Chart {
     for (const change of changes) {
       const args = change.split(',');
       const start = +args[2];
-      const count = +args[3];
+      const count = (args[1] === '_removeElements' ? -1 : 1) * +args[3];
       const keys = Object.keys(_hiddenIndices);
-      if (args[1] === '_removeElements') {
-        for (const key of keys) {
-          const intKey = +key;
-          if (intKey >= start) {
-            delete _hiddenIndices[key];
-          }
-          if (intKey > start) {
-            _hiddenIndices[intKey - count] = true;
-          }
+      for (const key of keys) {
+        const intKey = +key;
+        if (intKey >= start) {
+          delete _hiddenIndices[key];
         }
-      } else {
-        for (const key of keys) {
-          const intKey = +key;
-          if (intKey >= start) {
-            delete _hiddenIndices[key];
-            _hiddenIndices[intKey + count] = true;
-          }
+        if (intKey > start || (intKey === start && count > 0)) {
+          _hiddenIndices[intKey + count] = true;
         }
       }
     }
@@ -546,23 +536,25 @@ class Chart {
    */
   _getUniformDataChanges() {
     const _dataChanges = this._dataChanges;
-    if (_dataChanges.length) {
-      this._dataChanges = [];
-      const datasetCount = this.data.datasets.length;
-      const makeSet = (idx) => new Set(
-        _dataChanges
-          .filter(c => c[0] === idx)
-          .map((c, i) => i + ',' + c.splice(1).join(','))
-      );
-
-      const changeSet = makeSet(0);
-      for (let i = 1; i < datasetCount; i++) {
-        if (!setsEqual(changeSet, makeSet(i))) {
-          return;
-        }
-      }
-      return Array.from(changeSet);
+    if (!_dataChanges || !_dataChanges.length) {
+      return;
     }
+
+    this._dataChanges = [];
+    const datasetCount = this.data.datasets.length;
+    const makeSet = (idx) => new Set(
+      _dataChanges
+        .filter(c => c[0] === idx)
+        .map((c, i) => i + ',' + c.splice(1).join(','))
+    );
+
+    const changeSet = makeSet(0);
+    for (let i = 1; i < datasetCount; i++) {
+      if (!setsEqual(changeSet, makeSet(i))) {
+        return;
+      }
+    }
+    return Array.from(changeSet);
   }
 
   /**
