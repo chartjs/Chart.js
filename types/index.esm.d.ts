@@ -1490,9 +1490,10 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    */
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
-  layout: {
+  layout: Partial<{
+    autoPadding: boolean;
     padding: Scriptable<number | Partial<ChartArea>, ScriptableContext<TType>>;
-  };
+  }>;
 }
 
 export type EasingFunction =
