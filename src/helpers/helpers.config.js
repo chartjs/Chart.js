@@ -178,7 +178,8 @@ export function _descriptors(proxy, defaults = {scriptable: true, indexable: tru
 }
 
 const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
-const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters';
+const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters' &&
+  (Object.getPrototypeOf(value) === null || value.constructor === Object);
 
 function _cached(target, prop, resolve) {
   if (Object.prototype.hasOwnProperty.call(target, prop)) {
@@ -218,7 +219,7 @@ function _resolveScriptable(prop, value, target, receiver) {
   _stack.add(prop);
   value = value(_context, _subProxy || receiver);
   _stack.delete(prop);
-  if (isObject(value)) {
+  if (needsSubResolver(prop, value)) {
     // When scriptable option returns an object, create a resolver on that.
     value = createSubResolver(_proxy._scopes, _proxy, prop, value);
   }
