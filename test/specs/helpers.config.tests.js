@@ -752,6 +752,29 @@ describe('Chart.helpers.config', function() {
       expect(fn()).toEqual('ok');
     });
 
+    it('should not create proxy for objects with custom constructor', function() {
+      class MyClass {
+        constructor() {
+          this.string = 'test string';
+        }
+        method(arg) {
+          return arg === undefined ? 'ok' : 'fail';
+        }
+      }
+
+      const defaults = {
+        test: new MyClass()
+      };
+
+      const resolver = _createResolver([{}, defaults]);
+      const opts = _attachContext(resolver, {index: 1});
+      const fn = opts.test.method;
+      expect(typeof fn).toBe('function');
+      expect(fn()).toEqual('ok');
+      expect(opts.test.string).toEqual('test string');
+      expect(opts.test.constructor).toEqual(MyClass);
+    });
+
     it('should properly set value to object in array of objects', function() {
       const defaults = {};
       const options = {
