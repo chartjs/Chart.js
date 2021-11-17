@@ -69,6 +69,21 @@ const getChart = (key) => {
   return Object.values(instances).filter((c) => c.canvas === canvas).pop();
 };
 
+function moveNumericKeys(obj, start, move) {
+  const keys = Object.keys(obj);
+  for (const key of keys) {
+    const intKey = +key;
+    if (intKey >= start) {
+      const value = obj[key];
+      delete obj[key];
+      if (move > 0 || intKey > start) {
+        obj[intKey + move] = value;
+      }
+    }
+  }
+}
+
+
 class Chart {
 
   // eslint-disable-next-line max-statements
@@ -123,6 +138,7 @@ class Chart {
     this._animationsDisabled = undefined;
     this.$context = undefined;
     this._doResize = debounce(mode => this.update(mode), options.resizeDelay || 0);
+    this._dataChanges = [];
 
     // Add the chart instance to the global namespace
     instances[this.id] = this;
@@ -424,24 +440,11 @@ class Chart {
 
     config.update();
     const options = this._options = config.createResolver(config.chartOptionScopes(), this.getContext());
-
-    each(this.scales, (scale) => {
-      layouts.removeBox(this, scale);
-    });
-
     const animsDisabled = this._animationsDisabled = !options.animation;
 
-    this.ensureScalesHaveIDs();
-    this.buildOrUpdateScales();
-
-    const existingEvents = new Set(Object.keys(this._listeners));
-    const newEvents = new Set(options.events);
-
-    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== options.responsive) {
-      // The configured events have changed. Rebind.
-      this.unbindEvents();
-      this.bindEvents();
-    }
+    this._updateScales();
+    this._checkEventBindings();
+    this._updateHiddenIndices();
 
     // plugins options references might have change, let's invalidate the cache
     // https://github.com/chartjs/Chart.js/issues/5111#issuecomment-355934167
@@ -491,6 +494,73 @@ class Chart {
     }
 
     this.render();
+  }
+
+  /**
+   * @private
+   */
+  _updateScales() {
+    each(this.scales, (scale) => {
+      layouts.removeBox(this, scale);
+    });
+
+    this.ensureScalesHaveIDs();
+    this.buildOrUpdateScales();
+  }
+
+  /**
+   * @private
+   */
+  _checkEventBindings() {
+    const options = this.options;
+    const existingEvents = new Set(Object.keys(this._listeners));
+    const newEvents = new Set(options.events);
+
+    if (!setsEqual(existingEvents, newEvents) || !!this._responsiveListeners !== options.responsive) {
+      // The configured events have changed. Rebind.
+      this.unbindEvents();
+      this.bindEvents();
+    }
+  }
+
+  /**
+   * @private
+   */
+  _updateHiddenIndices() {
+    const {_hiddenIndices} = this;
+    const changes = this._getUniformDataChanges() || [];
+    for (const {method, start, count} of changes) {
+      const move = method === '_removeElements' ? -count : count;
+      moveNumericKeys(_hiddenIndices, start, move);
+    }
+  }
+
+  /**
+   * @private
+   */
+  _getUniformDataChanges() {
+    const _dataChanges = this._dataChanges;
+    if (!_dataChanges || !_dataChanges.length) {
+      return;
+    }
+
+    this._dataChanges = [];
+    const datasetCount = this.data.datasets.length;
+    const makeSet = (idx) => new Set(
+      _dataChanges
+        .filter(c => c[0] === idx)
+        .map((c, i) => i + ',' + c.splice(1).join(','))
+    );
+
+    const changeSet = makeSet(0);
+    for (let i = 1; i < datasetCount; i++) {
+      if (!setsEqual(changeSet, makeSet(i))) {
+        return;
+      }
+    }
+    return Array.from(changeSet)
+      .map(c => c.split(','))
+      .map(a => ({method: a[1], start: +a[2], count: +a[3]}));
   }
 
   /**

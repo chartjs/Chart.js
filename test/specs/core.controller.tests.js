@@ -1966,6 +1966,99 @@ describe('Chart', function() {
       chart.update();
       expect(chart.getDataVisibility(1)).toBe(false);
     });
+
+    it('should maintain data visibility indices when data changes', function() {
+      var chart = acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['0', '1', '2', '3'],
+          datasets: [{
+            data: [0, 1, 2, 3]
+          }, {
+            data: [0, 1, 2, 3]
+          }]
+        }
+      });
+
+      chart.toggleDataVisibility(3);
+
+      chart.data.labels.splice(1, 1);
+      chart.data.datasets[0].data.splice(1, 1);
+      chart.data.datasets[1].data.splice(1, 1);
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(false);
+
+      chart.data.labels.unshift('-1', '-2');
+      chart.data.datasets[0].data.unshift(-1, -2);
+      chart.data.datasets[1].data.unshift(-1, -2);
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(true);
+      expect(chart.getDataVisibility(3)).toBe(true);
+      expect(chart.getDataVisibility(4)).toBe(false);
+
+      chart.data.labels.shift();
+      chart.data.datasets[0].data.shift();
+      chart.data.datasets[1].data.shift();
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(true);
+      expect(chart.getDataVisibility(3)).toBe(false);
+
+      chart.data.labels.pop();
+      chart.data.datasets[0].data.pop();
+      chart.data.datasets[1].data.pop();
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(true);
+      expect(chart.getDataVisibility(3)).toBe(true);
+
+      chart.toggleDataVisibility(1);
+      chart.data.labels.splice(1, 0, 'b');
+      chart.data.datasets[0].data.splice(1, 0, 1);
+      chart.data.datasets[1].data.splice(1, 0, 1);
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(true);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(false);
+      expect(chart.getDataVisibility(3)).toBe(true);
+    });
+
+    it('should leave data visibility indices intact when data changes in non-uniform way', function() {
+      var chart = acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['0', '1', '2', '3'],
+          datasets: [{
+            data: [0, 1, 2, 3]
+          }, {
+            data: [0, 1, 2, 3]
+          }]
+        }
+      });
+
+      chart.toggleDataVisibility(0);
+
+      chart.data.labels.push('a');
+      chart.data.datasets[0].data.pop();
+      chart.data.datasets[1].data.push(5);
+      chart.update();
+
+      expect(chart.getDataVisibility(0)).toBe(false);
+      expect(chart.getDataVisibility(1)).toBe(true);
+      expect(chart.getDataVisibility(2)).toBe(true);
+      expect(chart.getDataVisibility(3)).toBe(true);
+    });
   });
 
   describe('isDatasetVisible', function() {

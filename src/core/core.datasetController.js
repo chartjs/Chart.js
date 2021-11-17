@@ -982,6 +982,9 @@ export default class DatasetController {
     meta.data.splice(start, count);
   }
 
+  /**
+	 * @private
+   */
   _sync(args) {
     if (this._parsing) {
       this._syncList.push(args);
@@ -989,8 +992,8 @@ export default class DatasetController {
       const [method, arg1, arg2] = args;
       this[method](arg1, arg2);
     }
+    this.chart._dataChanges.push([this.index, ...args]);
   }
-
 
   /**
 	 * @private
@@ -1018,8 +1021,13 @@ export default class DatasetController {
 	 * @private
 	 */
   _onDataSplice(start, count) {
-    this._sync(['_removeElements', start, count]);
-    this._sync(['_insertElements', start, arguments.length - 2]);
+    if (count) {
+      this._sync(['_removeElements', start, count]);
+    }
+    const newCount = arguments.length - 2;
+    if (newCount) {
+      this._sync(['_insertElements', start, newCount]);
+    }
   }
 
   /**
