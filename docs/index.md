@@ -6,6 +6,8 @@
 
 You can get the latest version of Chart.js from [npm](https://npmjs.com/package/chart.js), the [GitHub releases](https://github.com/chartjs/Chart.js/releases/latest), or use a [Chart.js CDN](https://www.jsdelivr.com/package/npm/chart.js). Detailed installation instructions can be found on the [installation](./getting-started/installation.md) page.
 
+If you're using a front-end framework (e.g., React, Angular, or Vue), please check [available integrations](https://github.com/chartjs/awesome#integrations).
+
 ## Creating a Chart
 
 It's easy to get started with Chart.js. All that's required is the script included in your page along with a single `<canvas>` node to render the chart.
