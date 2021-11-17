@@ -23,6 +23,39 @@ describe('Arc element tests', function() {
     expect(arc.inRange(-1.0 * Math.sqrt(7), Math.sqrt(7))).toBe(false);
   });
 
+  it ('should determine if in range when full circle', function() {
+    // Mock out the arc as if the controller put it there
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: Math.PI * 2,
+      x: 0,
+      y: 0,
+      innerRadius: 5,
+      outerRadius: 10,
+      options: {
+        spacing: 0,
+        offset: 0,
+      }
+    });
+
+    for (const radius of [5, 7.5, 10]) {
+      for (let angle = 0; angle <= 360; angle += 22.5) {
+        const rad = angle / 180 * Math.PI;
+        const x = Math.sin(rad) * radius;
+        const y = Math.cos(rad) * radius;
+        expect(arc.inRange(x, y)).withContext(`radius: ${radius}, angle: ${angle}`).toBeTrue();
+      }
+    }
+    for (const radius of [4, 11]) {
+      for (let angle = 0; angle <= 360; angle += 22.5) {
+        const rad = angle / 180 * Math.PI;
+        const x = Math.sin(rad) * radius;
+        const y = Math.cos(rad) * radius;
+        expect(arc.inRange(x, y)).withContext(`radius: ${radius}, angle: ${angle}`).toBeFalse();
+      }
+    }
+  });
+
   it ('should include spacing for in range check', function() {
     // Mock out the arc as if the controller put it there
     var arc = new Chart.elements.ArcElement({

@@ -173,6 +173,21 @@ export function _limitValue(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+/**
+ * @param {number} value
+ * @private
+ */
 export function _int16Range(value) {
   return _limitValue(value, -32768, 32767);
+}
+
+/**
+ * @param {number} value
+ * @param {number} start
+ * @param {number} end
+ * @param {number} [epsilon]
+ * @private
+ */
+export function _isBetween(value, start, end, epsilon = 1e-6) {
+  return value >= Math.min(start, end) - epsilon && value <= Math.max(start, end) + epsilon;
 }

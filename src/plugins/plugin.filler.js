@@ -8,7 +8,7 @@ import LineElement from '../elements/element.line';
 import {_boundSegment, _boundSegments} from '../helpers/helpers.segment';
 import {clipArea, unclipArea} from '../helpers/helpers.canvas';
 import {isArray, isFinite, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {TAU, _normalizeAngle} from '../helpers/helpers.math';
+import {TAU, _isBetween, _normalizeAngle} from '../helpers/helpers.math';
 
 /**
  * @typedef { import('../core/core.controller').default } Chart
@@ -293,7 +293,7 @@ function findPoint(line, sourcePoint, property) {
     const segment = segments[i];
     const firstValue = linePoints[segment.start][property];
     const lastValue = linePoints[segment.end][property];
-    if (pointValue >= firstValue && pointValue <= lastValue) {
+    if (_isBetween(pointValue, firstValue, lastValue)) {
       first = pointValue === firstValue;
       last = pointValue === lastValue;
       break;
