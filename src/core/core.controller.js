@@ -541,6 +541,10 @@ class Chart {
     }
 
     for (let i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
+      this.getDatasetMeta(i).controller.configure();
+    }
+
+    for (let i = 0, ilen = this.data.datasets.length; i < ilen; ++i) {
       this._updateDataset(i, isFunction(mode) ? mode({datasetIndex: i}) : mode);
     }
 
