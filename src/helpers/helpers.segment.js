@@ -1,4 +1,4 @@
-import {_angleBetween, _angleDiff, _normalizeAngle} from './helpers.math';
+import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math';
 import {createContext} from './helpers.options';
 
 /**
@@ -16,7 +16,7 @@ function propertyFn(property) {
     };
   }
   return {
-    between: (n, s, e) => n >= Math.min(s, e) && n <= Math.max(e, s),
+    between: _isBetween,
     compare: (a, b) => a - b,
     normalize: x => x
   };

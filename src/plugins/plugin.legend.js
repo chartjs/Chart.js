@@ -5,7 +5,7 @@ import {addRoundedRectPath, drawPoint, renderText} from '../helpers/helpers.canv
 import {
   callback as call, valueOrDefault, toFont,
   toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
-  clipArea, unclipArea
+  clipArea, unclipArea, _isBetween
 } from '../helpers/index';
 import {_toLeftRightCenter, _alignStartEnd, _textX} from '../helpers/helpers.extras';
 import {toTRBLCorners} from '../helpers/helpers.options';
@@ -493,13 +493,15 @@ export class Legend extends Element {
   _getLegendItemAt(x, y) {
     let i, hitBox, lh;
 
-    if (x >= this.left && x <= this.right && y >= this.top && y <= this.bottom) {
+    if (_isBetween(x, this.left, this.right)
+      && _isBetween(y, this.top, this.bottom)) {
       // See if we are touching one of the dataset boxes
       lh = this.legendHitBoxes;
       for (i = 0; i < lh.length; ++i) {
         hitBox = lh[i];
 
-        if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
+        if (_isBetween(x, hitBox.left, hitBox.left + hitBox.width)
+          && _isBetween(y, hitBox.top, hitBox.top + hitBox.height)) {
           // Touching an element
           return this.legendItems[i];
         }

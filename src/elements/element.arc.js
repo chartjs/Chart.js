@@ -1,6 +1,6 @@
 import Element from '../core/core.element';
-import {_angleBetween, getAngleFromPoint, TAU, HALF_PI} from '../helpers/index';
-import {PI, _limitValue} from '../helpers/helpers.math';
+import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index';
+import {PI, _isBetween, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
 
 function clipArc(ctx, element, endAngle) {
@@ -282,8 +282,9 @@ export default class ArcElement extends Element {
       'circumference'
     ], useFinalPosition);
     const rAdjust = this.options.spacing / 2;
-    const betweenAngles = circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
-    const withinRadius = (distance >= innerRadius + rAdjust && distance <= outerRadius + rAdjust);
+    const _circumference = valueOrDefault(circumference, endAngle - startAngle);
+    const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
+    const withinRadius = _isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
 
     return (betweenAngles && withinRadius);
   }

@@ -1,5 +1,5 @@
 import Element from '../core/core.element';
-import {isObject, _limitValue} from '../helpers';
+import {isObject, _isBetween, _limitValue} from '../helpers';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 
@@ -105,8 +105,8 @@ function inRange(bar, x, y, useFinalPosition) {
   const bounds = bar && !skipBoth && getBarBounds(bar, useFinalPosition);
 
   return bounds
-		&& (skipX || x >= bounds.left && x <= bounds.right)
-		&& (skipY || y >= bounds.top && y <= bounds.bottom);
+		&& (skipX || _isBetween(x, bounds.left, bounds.right))
+		&& (skipY || _isBetween(y, bounds.top, bounds.bottom));
 }
 
 function hasRadius(radius) {
