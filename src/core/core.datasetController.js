@@ -401,6 +401,7 @@ export default class DatasetController {
     const scopes = config.getOptionScopes(this.getDataset(), scopeKeys, true);
     this.options = config.createResolver(scopes, this.getContext());
     this._parsing = this.options.parsing;
+    this._cachedDataOpts = {};
   }
 
   /**
@@ -659,8 +660,6 @@ export default class DatasetController {
 	 */
   _update(mode) {
     const meta = this._cachedMeta;
-    this.configure();
-    this._cachedDataOpts = {};
     this.update(mode || 'default');
     meta._clip = toClip(valueOrDefault(this.options.clip, defaultClip(meta.xScale, meta.yScale, this.getMaxOverflow())));
   }

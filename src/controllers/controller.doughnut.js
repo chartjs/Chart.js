@@ -250,9 +250,6 @@ export default class DoughnutController extends DatasetController {
           meta = chart.getDatasetMeta(i);
           arcs = meta.data;
           controller = meta.controller;
-          if (controller !== this) {
-            controller.configure();
-          }
           break;
         }
       }
