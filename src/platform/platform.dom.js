@@ -114,15 +114,32 @@ function fromNativeEvent(event, chart) {
   };
 }
 
+function wasAttached(entry, canvas) {
+  for (const node of entry.addedNodes) {
+    if (node === canvas || node.contains(canvas)) {
+      return true;
+    }
+  }
+}
+
+function wasDetached(entry, canvas) {
+  for (const node of entry.removedNodes) {
+    if (node === canvas || node.contains(canvas)) {
+      return true;
+    }
+  }
+}
+
 function createAttachObserver(chart, type, listener) {
   const canvas = chart.canvas;
   const observer = new MutationObserver(entries => {
+    let trigger = false;
     for (const entry of entries) {
-      for (const node of entry.addedNodes) {
-        if (node === canvas || node.contains(canvas)) {
-          return listener();
-        }
-      }
+      trigger = trigger || wasAttached(entry, canvas);
+      trigger = trigger && !wasDetached(entry, canvas);
+    }
+    if (trigger) {
+      listener();
     }
   });
   observer.observe(document, {childList: true, subtree: true});
@@ -132,12 +149,13 @@ function createAttachObserver(chart, type, listener) {
 function createDetachObserver(chart, type, listener) {
   const canvas = chart.canvas;
   const observer = new MutationObserver(entries => {
+    let trigger = false;
     for (const entry of entries) {
-      for (const node of entry.removedNodes) {
-        if (node === canvas || node.contains(canvas)) {
-          return listener();
-        }
-      }
+      trigger = trigger || wasDetached(entry, canvas);
+      trigger = trigger && wasAttached(entry, canvas);
+    }
+    if (trigger) {
+      listener();
     }
   });
   observer.observe(document, {childList: true, subtree: true});
