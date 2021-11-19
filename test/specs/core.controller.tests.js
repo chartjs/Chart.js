@@ -1079,7 +1079,7 @@ describe('Chart', function() {
     });
 
     // https://github.com/chartjs/Chart.js/issues/9875
-    it('should resize the canvas after the wrapper has been re-attached to the DOM (in one frame)', function(done) {
+    it('should detect detach/attach in series', function(done) {
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1094,38 +1094,90 @@ describe('Chart', function() {
         }
       });
 
-      expect(chart).toBeChartOfSize({
-        dw: 320, dh: 350,
-        rw: 320, rh: 350,
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 320, dh: 350,
+          rw: 320, rh: 350,
+        });
+
+        done();
+      });
+
+      parent.removeChild(wrapper);
+      parent.appendChild(wrapper);
+    });
+
+    it('should detect detach/attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
       });
 
       var wrapper = chart.canvas.parentNode;
       var parent = wrapper.parentNode;
 
       waitForResize(chart, function() {
-        expect(chart).toBeChartOfSize({
-          dw: 320, dh: 340,
-          rw: 320, rh: 340,
-        });
-
-        waitForResize(chart, function() {
-          expect(chart).toBeChartOfSize({
-            dw: 455, dh: 355,
-            rw: 455, rh: 355,
-          });
-
-          done();
-        });
-
-        parent.removeChild(wrapper);
-        wrapper.style.height = '355px';
-        parent.appendChild(wrapper);
-        wrapper.style.width = '455px';
+        fail();
       });
 
-      wrapper.style.height = '340px';
       parent.removeChild(wrapper);
       parent.appendChild(wrapper);
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+        done();
+      }, 100);
+    });
+
+    it('should detect attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+
+        waitForResize(chart, function() {
+          fail();
+        });
+
+        parent.appendChild(wrapper);
+        parent.removeChild(wrapper);
+
+        setTimeout(function() {
+          expect(chart.attached).toBeFalse();
+
+          done();
+        }, 100);
+      }, 100);
     });
 
     // https://github.com/chartjs/Chart.js/issues/4737

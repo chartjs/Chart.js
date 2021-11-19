@@ -152,7 +152,7 @@ function createDetachObserver(chart, type, listener) {
     let trigger = false;
     for (const entry of entries) {
       trigger = trigger || wasDetached(entry, canvas);
-      trigger = trigger && wasAttached(entry, canvas);
+      trigger = trigger && !wasAttached(entry, canvas);
     }
     if (trigger) {
       listener();
