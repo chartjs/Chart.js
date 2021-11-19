@@ -1078,6 +1078,95 @@ describe('Chart', function() {
       }, 0);
     });
 
+    // https://github.com/chartjs/Chart.js/issues/9875
+    it('should detect detach/attach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      parent.removeChild(wrapper);
+      parent.appendChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeTrue();
+        done();
+      }, 0);
+    });
+
+    it('should detect detach/attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      parent.removeChild(wrapper);
+      parent.appendChild(wrapper);
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+        done();
+      }, 0);
+    });
+
+    it('should detect attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+
+        parent.appendChild(wrapper);
+        parent.removeChild(wrapper);
+
+        setTimeout(function() {
+          expect(chart.attached).toBeFalse();
+          done();
+        }, 0);
+      }, 0);
+    });
+
     // https://github.com/chartjs/Chart.js/issues/4737
     it('should resize the canvas when re-creating the chart', function(done) {
       var chart = acquireChart({

@@ -806,6 +806,9 @@ class Chart {
     delete this._metasets[datasetIndex];
   }
 
+  /**
+	 * @private
+	 */
   _stop() {
     let i, ilen;
     this.stop();
@@ -893,33 +896,27 @@ class Chart {
       }
     };
 
-    const listener = (width, height) => {
+    const resizeListener = (width, height) => {
       if (this.canvas) {
         this.resize(width, height);
       }
     };
 
-    let detached; // eslint-disable-line prefer-const
     const attached = () => {
-      _remove('attach', attached);
-
       this.attached = true;
       this.resize();
 
-      _add('resize', listener);
-      _add('detach', detached);
+      _add('resize', resizeListener);
     };
 
-    detached = () => {
+    const detached = () => {
       this.attached = false;
 
-      _remove('resize', listener);
+      _remove('resize', resizeListener);
 
       // Stop animating and remove metasets, so when re-attached, the animations start from beginning.
       this._stop();
       this._resize(0, 0);
-
-      _add('attach', attached);
     };
 
     if (platform.isAttached(this.canvas)) {
@@ -927,6 +924,7 @@ class Chart {
     } else {
       detached();
     }
+    _add('mutate', {attached, detached});
   }
 
   /**

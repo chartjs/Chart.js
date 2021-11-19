@@ -114,29 +114,23 @@ function fromNativeEvent(event, chart) {
   };
 }
 
-function createAttachObserver(chart, type, listener) {
-  const canvas = chart.canvas;
-  const observer = new MutationObserver(entries => {
-    for (const entry of entries) {
-      for (const node of entry.addedNodes) {
-        if (node === canvas || node.contains(canvas)) {
-          return listener();
-        }
-      }
+function nodeListContains(nodeList, canvas) {
+  for (const node of nodeList) {
+    if (node === canvas || node.contains(canvas)) {
+      return true;
     }
-  });
-  observer.observe(document, {childList: true, subtree: true});
-  return observer;
+  }
 }
 
-function createDetachObserver(chart, type, listener) {
+function createMutationObserver(chart, _type, {attached, detached}) {
   const canvas = chart.canvas;
   const observer = new MutationObserver(entries => {
     for (const entry of entries) {
-      for (const node of entry.removedNodes) {
-        if (node === canvas || node.contains(canvas)) {
-          return listener();
-        }
+      if (nodeListContains(entry.removedNodes, canvas)) {
+        detached();
+      }
+      if (nodeListContains(entry.addedNodes, canvas)) {
+        attached();
       }
     }
   });
@@ -323,8 +317,7 @@ export default class DomPlatform extends BasePlatform {
 
     const proxies = chart.$proxies || (chart.$proxies = {});
     const handlers = {
-      attach: createAttachObserver,
-      detach: createDetachObserver,
+      mutate: createMutationObserver,
       resize: createResizeObserver
     };
     const handler = handlers[type] || createProxyAndListen;
@@ -345,8 +338,7 @@ export default class DomPlatform extends BasePlatform {
     }
 
     const handlers = {
-      attach: releaseObserver,
-      detach: releaseObserver,
+      mutate: releaseObserver,
       resize: releaseObserver
     };
     const handler = handlers[type] || removeListener;
