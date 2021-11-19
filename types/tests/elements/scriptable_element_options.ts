@@ -43,6 +43,7 @@ const chart3 = new Chart('id', {
     elements: {
       arc: {
         borderWidth: (ctx) => 3,
+        borderJoinStyle: (ctx) => 'miter'
       }
     }
   }

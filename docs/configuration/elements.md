@@ -97,6 +97,7 @@ Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.
 | ---- | ---- | ------- | -----------
 | `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
 | `backgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.backgroundColor` | Arc fill color.
-| `borderAlign` | `string` | `'center'` | Arc stroke alignment.
+| `borderAlign` | `'center'`\|`'inner'` | `'center'` | Arc stroke alignment.
 | `borderColor` | [`Color`](/general/colors.md) | `'#fff'` | Arc stroke color.
+| `borderJoinStyle` | `string` | `'bevel'`\|`'round'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin). The default is `'round'` when `borderAlign` is `'inner'`
 | `borderWidth`| `number` | `2` | Arc stroke width.
