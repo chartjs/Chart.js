@@ -114,16 +114,8 @@ function fromNativeEvent(event, chart) {
   };
 }
 
-function wasAttached(entry, canvas) {
-  for (const node of entry.addedNodes) {
-    if (node === canvas || node.contains(canvas)) {
-      return true;
-    }
-  }
-}
-
-function wasDetached(entry, canvas) {
-  for (const node of entry.removedNodes) {
+function nodeListContains(nodeList, canvas) {
+  for (const node of nodeList) {
     if (node === canvas || node.contains(canvas)) {
       return true;
     }
@@ -135,8 +127,8 @@ function createAttachObserver(chart, type, listener) {
   const observer = new MutationObserver(entries => {
     let trigger = false;
     for (const entry of entries) {
-      trigger = trigger || wasAttached(entry, canvas);
-      trigger = trigger && !wasDetached(entry, canvas);
+      trigger = trigger || nodeListContains(entry.addedNodes, canvas);
+      trigger = trigger && !nodeListContains(entry.removedNodes, canvas);
     }
     if (trigger) {
       listener();
@@ -151,8 +143,8 @@ function createDetachObserver(chart, type, listener) {
   const observer = new MutationObserver(entries => {
     let trigger = false;
     for (const entry of entries) {
-      trigger = trigger || wasDetached(entry, canvas);
-      trigger = trigger && !wasAttached(entry, canvas);
+      trigger = trigger || nodeListContains(entry.removedNodes, canvas);
+      trigger = trigger && !nodeListContains(entry.addedNodes, canvas);
     }
     if (trigger) {
       listener();
