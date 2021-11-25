@@ -43,7 +43,7 @@ Version 3 has a largely different API than earlier versions.
 
 Most earlier version options have current equivalents or are the same.
 
-Please note - documentation for previous versions are available online or in the GitHub repo.
+Please note - documentation for previous versions is available online or in the GitHub repo.
 
 - [2.9.4 Documentation](https://www.chartjs.org/docs/2.9.4/)
 - [1.x Documentation](https://github.com/chartjs/Chart.js/tree/v1.1.1/docs)
