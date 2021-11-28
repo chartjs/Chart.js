@@ -460,7 +460,7 @@ export default {
     each(boxes.chartArea, (layout) => {
       const box = layout.box;
       Object.assign(box, chart.chartArea);
-      box.update(chartArea.w, chartArea.h);
+      box.update(chartArea.w, chartArea.h, {left: 0, top: 0, right: 0, bottom: 0});
     });
   }
 };
