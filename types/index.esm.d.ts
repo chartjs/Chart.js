@@ -3512,6 +3512,11 @@ export type ChartDataset<
 { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
 
+/**
+ * TData represents the data point type. If unspecified, a default is provided
+ *   based on the chart type.
+ * TLabel represents the label type
+ */
 export interface ChartData<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,
