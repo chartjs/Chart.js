@@ -245,6 +245,11 @@ export interface DoughnutControllerDatasetOptions
   circumference: number;
 
   /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
+
+  /**
    * Starting angle to draw this dataset from.
    * @default 0
    */
@@ -291,6 +296,11 @@ export interface DoughnutControllerChartOptions {
    * @default 50
    */
   cutout: Scriptable<number | string, ScriptableContext<'doughnut'>>;
+
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 
   /**
    * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
