@@ -678,8 +678,9 @@ export default class DatasetController {
     const active = [];
     const start = this._drawStart || 0;
     const count = this._drawCount || (elements.length - start);
+    const drawActiveElementsOnTop = this.options.drawActiveElementsOnTop;
     let i;
-
+console.log(drawActiveElementsOnTop)
     if (meta.dataset) {
       meta.dataset.draw(ctx, area, start, count);
     }
@@ -689,16 +690,18 @@ export default class DatasetController {
       if (element.hidden) {
         continue;
       }
-      if (element.active) {
+      if (element.active && drawActiveElementsOnTop) {
         active.push(element);
       } else {
         element.draw(ctx, area);
       }
     }
 
-    for (i = 0; i < active.length; ++i) {
-      active[i].draw(ctx, area);
-    }
+    if (drawActiveElementsOnTop) {
+      for (i = 0; i < active.length; ++i) {
+        active[i].draw(ctx, area);
+      }
+    } 
   }
 
   /**
