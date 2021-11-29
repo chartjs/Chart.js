@@ -264,7 +264,7 @@ describe('Chart.DatasetController', function() {
       false,
       {
         xAxisKey: 'name',
-        yAxisKey: 'num'
+        yAxisKey: 'value'
       }
     ].forEach(function(parsing) {
       describe('when parsing is ' + JSON.stringify(parsing), function() {
