@@ -157,11 +157,11 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
   function evaluationFunc(element, datasetIndex, index) {
     const {startAngle, endAngle} = element.getProps(['startAngle', 'endAngle'], useFinalPosition);
     const {angle} = getAngleFromPoint(element, {x: position.x, y: position.y});
-  
+
     if (_angleBetween(angle, startAngle, endAngle)) {
       items.push({element, datasetIndex, index});
     }
-  };
+  }
 
   optimizedEvaluateItems(chart, axis, position, evaluationFunc);
   return items;
@@ -201,7 +201,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
       // Can have multiple items at the same distance in which case we sort by size
       items.push({element, datasetIndex, index});
     }
-  };
+  }
 
   optimizedEvaluateItems(chart, axis, position, evaluationFunc);
   return items;
