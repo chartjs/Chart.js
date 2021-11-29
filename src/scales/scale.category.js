@@ -1,14 +1,20 @@
 import Scale from '../core/core.scale';
 import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers';
 
-const addIfString = (labels, raw, index) => typeof raw === 'string'
-  ? labels.push(raw) - 1
-  : isNaN(raw) ? null : index;
+const addIfString = (labels, raw, index, addedLabels) => {
+  if (typeof raw === 'string') {
+    index = labels.push(raw) - 1;
+    addedLabels.unshift({index, label: raw});
+  } else if (isNaN(raw)) {
+    index = null;
+  }
+  return index;
+};
 
-function findOrAddLabel(labels, raw, index) {
+function findOrAddLabel(labels, raw, index, addedLabels) {
   const first = labels.indexOf(raw);
   if (first === -1) {
-    return addIfString(labels, raw, index);
+    return addIfString(labels, raw, index, addedLabels);
   }
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;
@@ -24,6 +30,21 @@ export default class CategoryScale extends Scale {
     /** @type {number} */
     this._startValue = undefined;
     this._valueRange = 0;
+    this._addedLabels = [];
+  }
+
+  init(scaleOptions) {
+    const added = this._addedLabels;
+    if (added.length) {
+      const labels = this.getLabels();
+      for (const {index, label} of added) {
+        if (labels[index] === label) {
+          labels.splice(index, 1);
+        }
+      }
+      this._addedLabels = [];
+    }
+    super.init(scaleOptions);
   }
 
   parse(raw, index) {
@@ -32,7 +53,7 @@ export default class CategoryScale extends Scale {
     }
     const labels = this.getLabels();
     index = isFinite(index) && labels[index] === raw ? index
-      : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
+      : findOrAddLabel(labels, raw, valueOrDefault(index, raw), this._addedLabels);
     return validIndex(index, labels.length - 1);
   }
 
