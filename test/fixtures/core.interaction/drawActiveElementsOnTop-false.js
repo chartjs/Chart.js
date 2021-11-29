@@ -1,5 +1,4 @@
 module.exports = {
-  tolerance: 0.002,
   config: {
     type: 'bubble',
     data: {
@@ -15,6 +14,14 @@ module.exports = {
       }]
     },
     options: {
+      scales: {
+        x: {
+          display: false
+        },
+        y: {
+          display: false
+        },
+      },
       plugins: {
         tooltip: false,
         legend: false
@@ -23,8 +30,8 @@ module.exports = {
   },
   options: {
     canvas: {
-      width: 600,
-      height: 400
+      width: 256,
+      height: 256
     },
     async run(chart) {
       const point = chart.getDatasetMeta(0).data[0];
