@@ -2937,15 +2937,26 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
 
   grid: GridLineOptions;
 
+  /** Options for the scale title. */
   title: {
+    /** If true, displays the axis title. */
     display: boolean;
+    /** Alignment of the axis title. */
     align: 'start' | 'center' | 'end';
+    /** The text for the title, e.g. "# of People" or "Response Choices". */
     text: string | string[];
+    /** Color of the axis label. */
     color: Color;
+    /** Information about the axis title font. */
     font: FontSpec;
+    /** Padding to apply around scale labels. */
     padding: number | {
+      /** Padding on the (relative) top side of this axis label. */
       top: number;
+      /** Padding on the (relative) bottom side of this axis label. */
       bottom: number;
+      /** This is a shorthand for defining top/bottom to the same values. */
+      y: number;
     };
   };
 
