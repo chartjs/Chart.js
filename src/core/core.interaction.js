@@ -1,6 +1,7 @@
 import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 import {getRelativePosition as helpersGetRelativePosition} from '../helpers/helpers.dom';
+import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -152,34 +153,51 @@ function getIntersectItems(chart, position, axis, useFinalPosition) {
  * @return {InteractionItem[]} the nearest items
  */
 function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
-  const distanceMetric = getDistanceMetricForAxis(axis);
-  let minDistance = Number.POSITIVE_INFINITY;
   let items = [];
 
   if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
     return items;
   }
 
-  const evaluationFunc = function(element, datasetIndex, index) {
-    if (intersect && !element.inRange(position.x, position.y, useFinalPosition)) {
-      return;
+  function getEvaluationFunc() {
+    if (axis === 'r' && !intersect) {
+      return function(element, datasetIndex, index) {
+        const {startAngle, endAngle} = element.getProps(['startAngle', 'endAngle'], useFinalPosition);
+        const {angle} = getAngleFromPoint(element, {x: position.x, y: position.y});
+
+        if (_angleBetween(angle, startAngle, endAngle)) {
+          items = [{element, datasetIndex, index}];
+        }
+      };
     }
 
-    const center = element.getCenterPoint(useFinalPosition);
-    if (!_isPointInArea(center, chart.chartArea, chart._minPadding) && !element.inRange(position.x, position.y, useFinalPosition)) {
-      return;
-    }
-    const distance = distanceMetric(position, center);
-    if (distance < minDistance) {
-      items = [{element, datasetIndex, index}];
-      minDistance = distance;
-    } else if (distance === minDistance) {
-      // Can have multiple items at the same distance in which case we sort by size
-      items.push({element, datasetIndex, index});
-    }
-  };
+    const distanceMetric = getDistanceMetricForAxis(axis);
+    let minDistance = Number.POSITIVE_INFINITY;
 
-  optimizedEvaluateItems(chart, axis, position, evaluationFunc);
+    return function(element, datasetIndex, index) {
+      const inRange = element.inRange(position.x, position.y, useFinalPosition);
+      if (intersect && !inRange) {
+        return;
+      }
+
+      const center = element.getCenterPoint(useFinalPosition);
+      const pointInArea = _isPointInArea(center, chart.chartArea, chart._minPadding);
+      if (!pointInArea && !inRange) {
+        return;
+      }
+
+      const distance = distanceMetric(position, center);
+      if (distance < minDistance) {
+        items = [{element, datasetIndex, index}];
+        minDistance = distance;
+      } else if (distance === minDistance) {
+        // Can have multiple items at the same distance in which case we sort by size
+        items.push({element, datasetIndex, index});
+      }
+    };
+  }
+
+  optimizedEvaluateItems(chart, axis, position, getEvaluationFunc());
   return items;
 }
 
