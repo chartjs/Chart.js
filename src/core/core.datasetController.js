@@ -680,7 +680,7 @@ export default class DatasetController {
     const count = this._drawCount || (elements.length - start);
     const drawActiveElementsOnTop = this.options.drawActiveElementsOnTop;
     let i;
-console.log(drawActiveElementsOnTop)
+
     if (meta.dataset) {
       meta.dataset.draw(ctx, area, start, count);
     }
