@@ -1,4 +1,5 @@
 module.exports = {
+  tolerance: 0.002,
   config: {
     type: 'bubble',
     data: {
