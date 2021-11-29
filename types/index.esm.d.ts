@@ -2921,6 +2921,8 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
       top: number;
       /** Padding on the (relative) bottom side of this axis label. */
       bottom: number;
+      /** This is a shorthand for defining top/bottom to the same values. */
+      y: number;
     };
   };
 
