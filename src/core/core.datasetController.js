@@ -697,11 +697,9 @@ export default class DatasetController {
       }
     }
 
-    if (drawActiveElementsOnTop) {
-      for (i = 0; i < active.length; ++i) {
-        active[i].draw(ctx, area);
-      }
-    } 
+    for (i = 0; i < active.length; ++i) {
+      active[i].draw(ctx, area);
+    }
   }
 
   /**
