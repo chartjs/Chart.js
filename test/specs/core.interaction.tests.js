@@ -348,8 +348,16 @@ describe('Core.Interaction', function() {
           type: 'polarArea',
           data: {
             datasets: [{
-              data: [0.1, 0.4, 0.3],
+              data: [1, 9, 5]
             }],
+            labels: ['Point 1', 'Point 2', 'Point 3']
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false
+              },
+            },
           }
         });
       });
@@ -496,7 +504,7 @@ describe('Core.Interaction', function() {
       });
 
       describe('axis: r', function() {
-        it ('should return item with value 0.3', function() {
+        it ('should return item with value 9', function() {
           var chart = this.polarChart;
           var meta0 = chart.getDatasetMeta(0);
 
@@ -504,12 +512,12 @@ describe('Core.Interaction', function() {
             type: 'click',
             chart: chart,
             native: true, // Needed, otherwise assumed to be a DOM event
-            x: 256,
-            y: 265,
+            x: chart.width / 2,
+            y: chart.height / 2 + 5,
           };
 
           var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'r', intersect: false}).map(item => item.element);
-          expect(elements).toEqual([meta0.data[2]]);
+          expect(elements).toEqual([meta0.data[1]]);
         });
       });
     });
