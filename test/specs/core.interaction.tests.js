@@ -516,8 +516,24 @@ describe('Core.Interaction', function() {
             y: chart.height / 2 + 5,
           };
 
-          var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'r', intersect: false}).map(item => item.element);
+          var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'r'}).map(item => item.element);
           expect(elements).toEqual([meta0.data[1]]);
+        });
+
+        it ('should return item with value 1 when clicked outside of it', function() {
+          var chart = this.polarChart;
+          var meta0 = chart.getDatasetMeta(0);
+
+          var evt = {
+            type: 'click',
+            chart: chart,
+            native: true, // Needed, otherwise assumed to be a DOM event
+            x: chart.width,
+            y: 0,
+          };
+
+          var elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'r', intersect: false}).map(item => item.element);
+          expect(elements).toEqual([meta0.data[0]]);
         });
       });
     });
