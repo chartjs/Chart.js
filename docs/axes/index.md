@@ -93,9 +93,17 @@ let chart = new Chart(ctx, {
 
 ## Common Configuration
 
+:::tip Note
+These are only the common options supported by all axes. Please see specific axis documentation for all of the available options for that axis.
+:::
+
 !!!include(axes/_common.md)!!!
 
 ## Tick Configuration
+
+:::tip Note
+These are only the common tick options supported by all axes. Please see specific axis documentation for all of the available tick options for that axis.
+:::
 
 !!!include(axes/_common_ticks.md)!!!
 
