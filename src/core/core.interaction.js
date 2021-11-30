@@ -58,7 +58,7 @@ function evaluateAllVisibleItems(chart, handler) {
 function binarySearch(metaset, axis, value, intersect) {
   const {controller, data, _sorted} = metaset;
   const iScale = controller._cachedMeta.iScale;
-  if (iScale && axis === iScale.axis && _sorted && data.length) {
+  if (iScale && axis === iScale.axis && axis !== 'r' && _sorted && data.length) {
     const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
     if (!intersect) {
       return lookupMethod(data, axis, value);
