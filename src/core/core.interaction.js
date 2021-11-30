@@ -50,7 +50,7 @@ function evaluateAllVisibleItems(chart, handler) {
 /**
  * Helper function to do binary search when possible
  * @param {object} metaset - the dataset meta
- * @param {string} axis - the axis mide. x|y|xy
+ * @param {string} axis - the axis mode. x|y|xy|r
  * @param {number} value - the value to find
  * @param {boolean} [intersect] - should the element intersect
  * @returns {{lo:number, hi:number}} indices to search data array between
@@ -82,7 +82,7 @@ function binarySearch(metaset, axis, value, intersect) {
 /**
  * Helper function to get items using binary search, when the data is sorted.
  * @param {Chart} chart - the chart
- * @param {string} axis - the axis mode. x|y|xy
+ * @param {string} axis - the axis mode. x|y|xy|r
  * @param {object} position - the point to be nearest to
  * @param {function} handler - the callback to execute for each visible item
  * @param {boolean} [intersect] - consider intersecting items
@@ -105,7 +105,7 @@ function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
 /**
  * Get a distance metric function for two points based on the
  * axis mode setting
- * @param {string} axis - the axis mode. x|y|xy
+ * @param {string} axis - the axis mode. x|y|xy|r
  */
 function getDistanceMetricForAxis(axis) {
   const useX = axis.indexOf('x') !== -1;
@@ -122,7 +122,7 @@ function getDistanceMetricForAxis(axis) {
  * Helper function to get the items that intersect the event position
  * @param {Chart} chart - the chart
  * @param {object} position - the point to be nearest to
- * @param {string} axis - the axis mode. x|y|xy
+ * @param {string} axis - the axis mode. x|y|xy|r
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
