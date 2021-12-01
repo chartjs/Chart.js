@@ -906,6 +906,7 @@ class Chart {
     }
 
     this.notifyPlugins('destroy');
+    this.notifyPlugins('afterDestroy');
 
     delete instances[this.id];
   }
