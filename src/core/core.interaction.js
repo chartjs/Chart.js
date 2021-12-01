@@ -322,8 +322,7 @@ export default {
 		 * @return {InteractionItem[]} - items that are found
 		 */
     x(chart, e, options, useFinalPosition) {
-      options.axis = 'x';
-      return getAxisItems(chart, e, options, useFinalPosition);
+      return getAxisItems(chart, e, {axis: 'x', intersect: options.intersect}, useFinalPosition);
     },
 
     /**
@@ -336,8 +335,7 @@ export default {
 		 * @return {InteractionItem[]} - items that are found
 		 */
     y(chart, e, options, useFinalPosition) {
-      options.axis = 'y';
-      return getAxisItems(chart, e, options, useFinalPosition);
+      return getAxisItems(chart, e, {axis: 'y', intersect: options.intersect}, useFinalPosition);
     }
   }
 };
