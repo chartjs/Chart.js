@@ -905,10 +905,12 @@ class Chart {
       this.ctx = null;
     }
 
+    // TODO V4: delete destroy hook and reference to it in plugin flowchart
     this.notifyPlugins('destroy');
-    this.notifyPlugins('afterDestroy');
 
     delete instances[this.id];
+
+    this.notifyPlugins('afterDestroy');
   }
 
   toBase64Image(...args) {

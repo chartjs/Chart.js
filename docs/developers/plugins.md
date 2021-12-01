@@ -148,7 +148,6 @@ Plugins can interact with the chart during the event handling process. The event
 
 ![Chart.js event handling flowchart](./event_flowchart.png)
 
-
 ### Chart destroy
 
 Plugins are notified during the destroy process. These hooks can be used to destroy things that the plugin made and used during its life.
