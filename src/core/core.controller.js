@@ -891,6 +891,7 @@ class Chart {
   }
 
   destroy() {
+    this.notifyPlugins('beforeDestroy')
     const {canvas, ctx} = this;
 
     this._stop();

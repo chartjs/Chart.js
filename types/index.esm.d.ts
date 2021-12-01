@@ -1054,6 +1054,13 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    */
   resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
   /**
+   * Called before the chart is being destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {object} options - The plugin options.
+   */
+   beforeDestroy?(chart: Chart, args: EmptyObject, options: O): void;
+  /**
    * Called after the chart has been destroyed.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
