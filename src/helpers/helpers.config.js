@@ -76,8 +76,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
      */
     set(target, prop, value) {
       const storage = target._storage || (target._storage = getTarget());
-      storage[prop] = value; // set to top level scope
-      delete target[prop]; // remove from cache
+      target[prop] = storage[prop] = value; // set to top level scope + cache
       delete target._keys; // remove cached keys
       return true;
     }

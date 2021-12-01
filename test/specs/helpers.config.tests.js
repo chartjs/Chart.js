@@ -492,6 +492,7 @@ describe('Chart.helpers.config', function() {
         resolver.value = false;
         expect(options.value).toBeFalse();
         expect(defaults.value).toBeTrue();
+        expect(resolver.value).toBeFalse();
       });
 
       it('should set values of sub-objects to first scope', function() {
@@ -505,6 +506,7 @@ describe('Chart.helpers.config', function() {
         resolver.sub.value = false;
         expect(options.sub.value).toBeFalse();
         expect(defaults.sub.value).toBeTrue();
+        expect(resolver.sub.value).toBeFalse();
       });
 
       it('should throw when setting a value and options is frozen', function() {
