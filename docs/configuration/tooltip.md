@@ -69,10 +69,11 @@ Example:
  * @function Tooltip.positioners.myCustomPositioner
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
+ * @param chart {Chart} the chart
  * @returns {Point} the tooltip position
  */
 const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition) {
+tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition, chart) {
     /** @type {Tooltip} */
     const tooltip = this;
 

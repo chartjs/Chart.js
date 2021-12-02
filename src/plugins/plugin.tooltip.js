@@ -531,7 +531,7 @@ export class Tooltip extends Element {
         };
       }
     } else {
-      const position = positioners[options.position].call(this, active, this._eventPosition);
+      const position = positioners[options.position].call(this, active, this._eventPosition, this._chart);
       tooltipItems = this._createItems(options);
 
       this.title = this.getTitle(tooltipItems, options);
@@ -892,7 +892,7 @@ export class Tooltip extends Element {
     const animX = anims && anims.x;
     const animY = anims && anims.y;
     if (animX || animY) {
-      const position = positioners[options.position].call(this, this._active, this._eventPosition);
+      const position = positioners[options.position].call(this, this._active, this._eventPosition, chart);
       if (!position) {
         return;
       }
@@ -1057,7 +1057,7 @@ export class Tooltip extends Element {
 	 */
   _positionChanged(active, e) {
     const {caretX, caretY, options} = this;
-    const position = positioners[options.position].call(this, active, e);
+    const position = positioners[options.position].call(this, active, e, this._chart);
     return position !== false && (caretX !== position.x || caretY !== position.y);
   }
 }

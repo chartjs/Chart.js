@@ -2451,7 +2451,7 @@ export interface TooltipModel<TType extends ChartType> {
   options: TooltipOptions<TType>;
 
   getActiveElements(): ActiveElement[];
-  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
+  setActiveElements(active: ActiveDataPoint[], eventPosition: Point): void;
 }
 
 export interface TooltipPosition {
@@ -2461,19 +2461,21 @@ export interface TooltipPosition {
   yAlign?: TooltipYAlignment;
 }
 
-export type TooltipPositionFunction = (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => TooltipPosition | false;
+export type TooltipPositionerFunction = (
+  items: readonly ActiveElement[],
+  eventPosition: Point,
+  chart: Chart
+) => TooltipPosition | false;
 
 export interface TooltipPositionerMap {
-  average: TooltipPositionFunction;
-  nearest: TooltipPositionFunction;
+  average: TooltipPositionerFunction;
+  nearest: TooltipPositionerFunction;
 }
 
 export type TooltipPositioner = keyof TooltipPositionerMap;
 
 export const Tooltip: Plugin & {
-  readonly positioners: {
-    [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => TooltipPosition | false;
-  };
+  readonly positioners: TooltipPositionerMap;
 };
 
 export interface TooltipCallbacks<
