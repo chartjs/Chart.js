@@ -81,6 +81,7 @@ tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition)
     return {
         x: 0,
         y: 0
+        // You may also include xAlign and yAlign to override those tooltip options.
     };
 };
 ```

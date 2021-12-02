@@ -2454,9 +2454,25 @@ export interface TooltipModel<TType extends ChartType> {
   setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
 }
 
+export interface TooltipPosition {
+  x: number;
+  y: number;
+  xAlign?: TooltipXAlignment;
+  yAlign?: TooltipYAlignment;
+}
+
+export type TooltipPositionFunction = (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => TooltipPosition | false;
+
+export interface TooltipPositionerMap {
+  average: TooltipPositionFunction;
+  nearest: TooltipPositionFunction;
+}
+
+export type TooltipPositioner = keyof TooltipPositionerMap;
+
 export const Tooltip: Plugin & {
   readonly positioners: {
-    [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
+    [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => TooltipPosition | false;
   };
 };
 
@@ -2529,7 +2545,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
   /**
    * The mode for positioning the tooltip
    */
-  position: Scriptable<'average' | 'nearest', ScriptableTooltipContext<TType>>
+  position: Scriptable<TooltipPositioner, ScriptableTooltipContext<TType>>
 
   /**
    * Override the tooltip alignment calculations
@@ -2590,7 +2606,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   bodyColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
-   *   See Fonts.
+   * See Fonts.
    * @default {}
    */
   bodyFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
@@ -2630,7 +2646,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   padding: Scriptable<number | ChartArea, ScriptableTooltipContext<TType>>;
   /**
-   *   Extra distance to move the end of the tooltip arrow away from the tooltip point.
+   * Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
    */
   caretPadding: Scriptable<number, ScriptableTooltipContext<TType>>;
