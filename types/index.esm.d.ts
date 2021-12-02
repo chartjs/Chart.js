@@ -2402,7 +2402,9 @@ export interface TooltipLabelStyle {
    */
   borderRadius?: number | BorderRadius;
 }
-export interface TooltipModel<TType extends ChartType> {
+export interface TooltipModel<TType extends ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
+  readonly chart: Chart<TType>;
+
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
   dataPoints: TooltipItem<TType>[];
 
@@ -2461,22 +2463,24 @@ export interface TooltipPosition {
   yAlign?: TooltipYAlignment;
 }
 
-export type TooltipPositionerFunction = (
+export type TooltipPositionerFunction<TType extends ChartType> = (
+  this: TooltipModel<TType>,
   items: readonly ActiveElement[],
-  eventPosition: Point,
-  chart: Chart
+  eventPosition: Point
 ) => TooltipPosition | false;
 
 export interface TooltipPositionerMap {
-  average: TooltipPositionerFunction;
-  nearest: TooltipPositionerFunction;
+  average: TooltipPositionerFunction<ChartType>;
+  nearest: TooltipPositionerFunction<ChartType>;
 }
 
 export type TooltipPositioner = keyof TooltipPositionerMap;
 
-export const Tooltip: Plugin & {
+export interface Tooltip extends Plugin {
   readonly positioners: TooltipPositionerMap;
-};
+}
+
+export const Tooltip: Tooltip;
 
 export interface TooltipCallbacks<
   TType extends ChartType,

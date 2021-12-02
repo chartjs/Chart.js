@@ -1419,7 +1419,7 @@ describe('Plugin.Tooltip', function() {
 
     var mockContext = window.createMockContext();
     var tooltip = new Tooltip({
-      _chart: {
+      chart: {
         getContext: () => ({}),
         options: {
           plugins: {

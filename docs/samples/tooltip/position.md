@@ -63,11 +63,13 @@ components.Tooltip.positioners.bottom = function(items) {
     return false;
   }
 
-  const chart = this._chart;
+  const chart = this.chart;
 
   return {
     x: pos.x,
     y: chart.chartArea.bottom,
+    xAlign: 'center',
+    yAlign: 'bottom',
   };
 };
 
