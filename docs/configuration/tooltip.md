@@ -403,7 +403,6 @@ import { Tooltip } from 'chart.js';
  * @function Tooltip.positioners.myCustomPositioner
  * @param elements {Chart.Element[]} the tooltip elements
  * @param eventPosition {Point} the position of the event in canvas coordinates
- * @param chart {Chart} the chart
  * @returns {TooltipPosition} the tooltip position
  */
 Tooltip.positioners.myCustomPositioner = function(elements, eventPosition, chart) {
