@@ -87,6 +87,7 @@
         "luxon": "^1.26.0",
         "markdown-it-include": "^2.0.0",
         "moment": "^2.29.1",
+        "moment-timezone": "^0.5.34",
         "pixelmatch": "^5.2.1",
         "rollup": "^2.44.0",
         "rollup-plugin-analyzer": "^4.0.0",
