@@ -1,10 +1,10 @@
 import defaults from '../core/core.defaults';
 import {_longestText, renderText} from '../helpers/helpers.canvas';
-import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
+import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {createContext, toFont, toPadding} from '../helpers/helpers.options';
+import {toFont, toPadding} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
@@ -133,12 +133,19 @@ function buildPointLabelItems(scale, labelSizes, padding) {
   const opts = scale.options;
   const tickBackdropHeight = getTickBackdropHeight(opts);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+  const pointLableOpts = opts.pointLabels;
+  // const flag = pointLableOpts.polarChartLabel;
+  const additionalAngle = pointLableOpts.polarChartLabel ? PI / valueCount : 0;
+  // const additionalAngle = 0;
 
   for (let i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
-    const angle = toDegrees(scale.getIndexAngle(i));
+    // const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], {additionalAngle});
+    // const angle = toDegrees(scale.getIndexAngle(i));
+    // const angle = toDegrees(scale.getIndexAngle(i, {additionalAngle}));
+    const angle = toDegrees(pointLabelPosition.angle + HALF_PI);
     const size = labelSizes[i];
     const y = yForAngle(pointLabelPosition.y, size.h, angle);
     const textAlign = getTextAlignForAngle(angle);
@@ -265,7 +272,7 @@ function numberOrZero(param) {
 }
 
 function createPointLabelContext(parent, index, label) {
-  return createContext(parent, {
+  return Object.assign(Object.create(parent), {
     label,
     index,
     type: 'pointLabel'
@@ -368,8 +375,12 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   getIndexAngle(index) {
+    // getIndexAngle(index, {additionalAngle = 0} = {}) {
     const angleMultiplier = TAU / this.getLabels().length;
     const startAngle = this.options.startAngle || 0;
+    // const pointLableOpts = this.options.pointLabels;
+    // const additionalAngle = pointLableOpts.polarChartLabel ? PI / this.getLabels().length : 0;
+    // return _normalizeAngle(index * angleMultiplier + toRadians(startAngle) + additionalAngle);
     return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
   }
 
@@ -404,8 +415,14 @@ export default class RadialLinearScale extends LinearScaleBase {
     }
   }
 
-  getPointPosition(index, distanceFromCenter) {
-    const angle = this.getIndexAngle(index) - HALF_PI;
+  // getPointPosition(index, distanceFromCenter) {
+  getPointPosition(index, distanceFromCenter, {additionalAngle = 0} = {}) {
+    // distanceFromCenter /= 2;
+    // const angle = this.getIndexAngle(index) - HALF_PI;
+    // const angleMultiplierHalf = PI / this.getLabels().length;
+    // const pointLableOpts = this.options.pointLabels;
+    // const additionalAngle = pointLableOpts.polarChartLabel ? PI / this.getLabels().length : 0;
+    const angle = this.getIndexAngle(index) - HALF_PI + additionalAngle;
     return {
       x: Math.cos(angle) * distanceFromCenter + this.xCenter,
       y: Math.sin(angle) * distanceFromCenter + this.yCenter,
@@ -618,7 +635,10 @@ RadialLinearScale.defaults = {
     },
 
     // Number - Additionl padding between scale and pointLabel
-    padding: 5
+    padding: 5,
+
+    // Boolean - if true, center point labels to slices in polar chart
+    polarChartLabel: false
   }
 };
 
