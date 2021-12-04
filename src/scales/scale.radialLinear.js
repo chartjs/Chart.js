@@ -134,17 +134,12 @@ function buildPointLabelItems(scale, labelSizes, padding) {
   const tickBackdropHeight = getTickBackdropHeight(opts);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
   const pointLableOpts = opts.pointLabels;
-  // const flag = pointLableOpts.polarChartLabel;
   const additionalAngle = pointLableOpts.polarChartLabel ? PI / valueCount : 0;
-  // const additionalAngle = 0;
 
   for (let i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    // const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], {additionalAngle});
-    // const angle = toDegrees(scale.getIndexAngle(i));
-    // const angle = toDegrees(scale.getIndexAngle(i, {additionalAngle}));
     const angle = toDegrees(pointLabelPosition.angle + HALF_PI);
     const size = labelSizes[i];
     const y = yForAngle(pointLabelPosition.y, size.h, angle);
@@ -375,12 +370,8 @@ export default class RadialLinearScale extends LinearScaleBase {
   }
 
   getIndexAngle(index) {
-    // getIndexAngle(index, {additionalAngle = 0} = {}) {
     const angleMultiplier = TAU / this.getLabels().length;
     const startAngle = this.options.startAngle || 0;
-    // const pointLableOpts = this.options.pointLabels;
-    // const additionalAngle = pointLableOpts.polarChartLabel ? PI / this.getLabels().length : 0;
-    // return _normalizeAngle(index * angleMultiplier + toRadians(startAngle) + additionalAngle);
     return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
   }
 
@@ -415,13 +406,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     }
   }
 
-  // getPointPosition(index, distanceFromCenter) {
   getPointPosition(index, distanceFromCenter, {additionalAngle = 0} = {}) {
-    // distanceFromCenter /= 2;
-    // const angle = this.getIndexAngle(index) - HALF_PI;
-    // const angleMultiplierHalf = PI / this.getLabels().length;
-    // const pointLableOpts = this.options.pointLabels;
-    // const additionalAngle = pointLableOpts.polarChartLabel ? PI / this.getLabels().length : 0;
     const angle = this.getIndexAngle(index) - HALF_PI + additionalAngle;
     return {
       x: Math.cos(angle) * distanceFromCenter + this.xCenter,
