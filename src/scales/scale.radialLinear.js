@@ -133,8 +133,7 @@ function buildPointLabelItems(scale, labelSizes, padding) {
   const opts = scale.options;
   const tickBackdropHeight = getTickBackdropHeight(opts);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-  const pointLableOpts = opts.pointLabels;
-  const additionalAngle = pointLableOpts.polarChartLabel ? PI / valueCount : 0;
+  const additionalAngle = opts.pointLabels.polarChartLabel ? PI / valueCount : 0;
 
   for (let i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
