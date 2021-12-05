@@ -405,7 +405,7 @@ import { Tooltip } from 'chart.js';
  * @param eventPosition {Point} the position of the event in canvas coordinates
  * @returns {TooltipPosition} the tooltip position
  */
-Tooltip.positioners.myCustomPositioner = function(elements, eventPosition, chart) {
+Tooltip.positioners.myCustomPositioner = function(elements, eventPosition) {
     // A reference to the tooltip model
     const tooltip = this;
 

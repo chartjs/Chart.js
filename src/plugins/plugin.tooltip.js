@@ -10,6 +10,7 @@ import {createContext, drawPoint} from '../helpers';
 /**
  * @typedef { import("../platform/platform.base").Chart } Chart
  * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ActiveElement } ActiveElement
  */
 
 const positioners = {
@@ -112,7 +113,7 @@ function splitNewlines(str) {
 /**
  * Private helper to create a tooltip item model
  * @param {Chart} chart
- * @param item - {element, index, datasetIndex} to create the tooltip item for
+ * @param {ActiveElement} item - {element, index, datasetIndex} to create the tooltip item for
  * @return new tooltip item
  */
 function createTooltipItem(chart, item) {
@@ -361,7 +362,9 @@ export class Tooltip extends Element {
     this._tooltipItems = [];
     this.$animations = undefined;
     this.$context = undefined;
-    this.chart = config.chart;
+    // TODO: V4, remove config._chart and this._chart backward compatibility aliases
+    this.chart = config.chart || config._chart;
+    this._chart = this.chart;
     this.options = config.options;
     this.dataPoints = undefined;
     this.title = undefined;
@@ -382,8 +385,6 @@ export class Tooltip extends Element {
     this.labelColors = undefined;
     this.labelPointStyles = undefined;
     this.labelTextColors = undefined;
-    // TODO: V4, remove this backward compatibility alias
-    this._chart = this.chart;
   }
 
   initialize(options) {
