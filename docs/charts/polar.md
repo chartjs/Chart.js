@@ -56,13 +56,15 @@ The following options can be included in a polar area chart dataset to configure
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
+| [`borderAlign`](#border-alignment) | `'center'`\|`'inner'` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderJoinStyle`](#styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
@@ -81,6 +83,7 @@ The style of each arc can be controlled with the following properties:
 | ---- | ----
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
+| `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
@@ -102,6 +105,7 @@ The interaction with each arc can be controlled with the following properties:
 | ---- | -----------
 | `hoverBackgroundColor` | arc background color when hovered.
 | `hoverBorderColor` | arc border color when hovered.
+| `hoverBorderJoinStyle` | arc border join style when hovered. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `hoverBorderWidth` | arc border width when hovered (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.

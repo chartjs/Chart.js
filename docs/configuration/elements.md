@@ -65,7 +65,7 @@ Namespace: `options.elements.line`, global line options: `Chart.defaults.element
 | `borderCapStyle` | `string` | `'butt'` | Line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap).
 | `borderDash` | `number[]` | `[]` | Line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | `0.0` | Line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
-| `borderJoinStyle` | `string` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
+| `borderJoinStyle` | `'round'`\|`'bevel'`\|`'miter'` | `'miter'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `capBezierPoints` | `boolean` | `true` | `true` to keep Bézier control inside the chart, `false` for no restriction.
 | `cubicInterpolationMode` | `string` | `'default'` |  Interpolation mode to apply. [See more...](/charts/line.md#cubicinterpolationmode)
 | `fill` | `boolean`\|`string` | `false` | How to fill the area under the line. See [area charts](/charts/area.md#filling-modes).
@@ -97,6 +97,7 @@ Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.
 | ---- | ---- | ------- | -----------
 | `angle` - for polar only | `number` | `circumference / (arc count)` | Arc angle to cover.
 | `backgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.backgroundColor` | Arc fill color.
-| `borderAlign` | `string` | `'center'` | Arc stroke alignment.
+| `borderAlign` | `'center'`\|`'inner'` | `'center'` | Arc stroke alignment.
 | `borderColor` | [`Color`](/general/colors.md) | `'#fff'` | Arc stroke color.
+| `borderJoinStyle` | `'round'`\|`'bevel'`\|`'miter'` | `'bevel'`\|`'round'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin). The default is `'round'` when `borderAlign` is `'inner'`
 | `borderWidth`| `number` | `2` | Arc stroke width.

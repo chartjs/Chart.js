@@ -1688,15 +1688,22 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
+
   /**
-   * Arc offset (in pixels).
+   * Line join style. See MDN. Default is 'round' when `borderAlign` is 'inner', else 'bevel'.
    */
-  offset: number;
+  borderJoinStyle: CanvasLineJoin;
+
   /**
    * Sets the border radius for arcs
    * @default 0
    */
   borderRadius: number | ArcBorderRadius;
+
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

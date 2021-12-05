@@ -221,18 +221,19 @@ function drawFullCircleBorders(ctx, element, inner) {
 
 function drawBorder(ctx, element, offset, spacing, endAngle) {
   const {options} = element;
+  const {borderWidth, borderJoinStyle} = options;
   const inner = options.borderAlign === 'inner';
 
-  if (!options.borderWidth) {
+  if (!borderWidth) {
     return;
   }
 
   if (inner) {
-    ctx.lineWidth = options.borderWidth * 2;
-    ctx.lineJoin = 'round';
+    ctx.lineWidth = borderWidth * 2;
+    ctx.lineJoin = borderJoinStyle || 'round';
   } else {
-    ctx.lineWidth = options.borderWidth;
-    ctx.lineJoin = 'bevel';
+    ctx.lineWidth = borderWidth;
+    ctx.lineJoin = borderJoinStyle || 'bevel';
   }
 
   if (element.fullCircles) {
@@ -359,6 +360,7 @@ ArcElement.id = 'arc';
 ArcElement.defaults = {
   borderAlign: 'center',
   borderColor: '#fff',
+  borderJoinStyle: undefined,
   borderRadius: 0,
   borderWidth: 2,
   offset: 0,
