@@ -7,6 +7,8 @@ The provides labels can be of the type string or number to be rendered correctly
 
 ## Primitive[]
 
+Namespace: `data.datasets[]`
+
 ```javascript
 data: [20, 10],
 labels: ['a', 'b']
@@ -15,6 +17,8 @@ labels: ['a', 'b']
 When the `data` is an array of numbers, values from `labels` array at the same index are used for the index axis (`x` for vertical, `y` for horizontal charts).
 
 ## Object[]
+
+Namespace: `data.datasets[]`
 
 ```javascript
 data: [{x: 10, y: 20}, {x: 15, y: null}, {x: 20, y: 10}]
@@ -68,9 +72,14 @@ options: {
 ## Object
 
 ```javascript
+type: 'pie',
 data: {
-    January: 10,
-    February: 20
+    datasets: [{
+      data: {
+          January: 10,
+          February: 20
+      }
+    }]
 }
 ```
 
