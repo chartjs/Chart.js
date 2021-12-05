@@ -1845,6 +1845,11 @@ export interface PointOptions extends CommonElementOptions {
    * @default 0
    */
   rotation: number;
+  /**
+   * Draw the active elements over the other elements of the dataset,
+   * @default true
+   */
+  drawActiveElementsOnTop: boolean;
 }
 
 export interface PointHoverOptions extends CommonHoverOptions {
