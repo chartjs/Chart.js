@@ -1391,9 +1391,9 @@ export interface CoreInteractionOptions {
   intersect: boolean;
 
   /**
-   * Can be set to 'x', 'y', or 'xy' to define which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
+   * Can be set to 'x', 'y', 'xy' or 'r' to define which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
    */
-  axis: 'x' | 'y' | 'xy';
+  axis: 'x' | 'y' | 'xy' | 'r';
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
