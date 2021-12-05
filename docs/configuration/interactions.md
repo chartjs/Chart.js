@@ -108,6 +108,8 @@ When configuring the interaction with the graph via `interaction`, `hover` or `t
 
 The modes are detailed below and how they behave in conjunction with the `intersect` setting.
 
+See how different modes work with the tooltip in [tooltip interactions sample](../samples/tooltip/interactions.md )
+
 ### point
 
 Finds all of the items that intersect the point.
@@ -126,7 +128,7 @@ const chart = new Chart(ctx, {
 
 ### nearest
 
-Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). You can use the `axis` setting to define which directions are used in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
+Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). You can use the `axis` setting to define which coordinates are considered in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
 
 ```javascript
 const chart = new Chart(ctx, {
