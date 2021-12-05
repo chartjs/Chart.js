@@ -30,7 +30,7 @@ const actions = [
     }
   },
   {
-    name: 'Mode: nearest, axis: yx',
+    name: 'Mode: nearest, axis: xy',
     handler(chart) {
       chart.options.interaction.axis = 'xy';
       chart.options.interaction.mode = 'nearest';

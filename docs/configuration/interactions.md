@@ -108,7 +108,7 @@ When configuring the interaction with the graph via `interaction`, `hover` or `t
 
 The modes are detailed below and how they behave in conjunction with the `intersect` setting.
 
-See how different modes work with tooltip in [tooltip interactions sample](../samples/tooltip/interactions.md )
+See how different modes work with the tooltip in [tooltip interactions sample](../samples/tooltip/interactions.md )
 
 ### point
 

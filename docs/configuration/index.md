@@ -31,7 +31,7 @@ Majority of the documentation talks about these options.
 
 ### plugins
 
-Inline plugines can be included in this array. It is an alternative way of adding plugins for single chart (vs registering the plugin globally).
+Inline plugins can be included in this array. It is an alternative way of adding plugins for single chart (vs registering the plugin globally).
 More about plugins in the [developers section](../developers/plugins.md).
 
 ## Global Configuration
