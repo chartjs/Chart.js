@@ -1054,12 +1054,27 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    */
   resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
   /**
+   * Called before the chart is being destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {object} options - The plugin options.
+   */
+  beforeDestroy?(chart: Chart, args: EmptyObject, options: O): void;
+  /**
+   * Called after the chart has been destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {object} options - The plugin options.
+   * @deprecated since version 3.7.0 in favour of afterDestroy
+   */
+  destroy?(chart: Chart, args: EmptyObject, options: O): void;
+  /**
    * Called after the chart has been destroyed.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  destroy?(chart: Chart, args: EmptyObject, options: O): void;
+  afterDestroy?(chart: Chart, args: EmptyObject, options: O): void;
   /**
    * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
    * @param {Chart} chart - The chart instance.

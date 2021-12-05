@@ -147,3 +147,10 @@ Plugins can interact with the chart throughout the render process. The rendering
 Plugins can interact with the chart during the event handling process. The event handling flow is documented in the flowchart below. Each of the green processes is a plugin notification. If a plugin makes changes that require a re-render, the plugin can set `args.changed` to `true` to indicate that a render is needed. The built-in tooltip plugin uses this method to indicate when the tooltip has changed.
 
 ![Chart.js event handling flowchart](./event_flowchart.png)
+
+### Chart destroy
+
+Plugins are notified during the destroy process. These hooks can be used to destroy things that the plugin made and used during its life.
+The `destroy` hook has been deprecated since Chart.js version 3.7.0, use the `afterDestroy` hook instead.
+
+![Chart.js destroy flowchart](./destroy_flowchart.png)

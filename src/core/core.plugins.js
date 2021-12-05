@@ -41,7 +41,7 @@ export default class PluginService {
     const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
     const result = this._notify(descriptors, chart, hook, args);
 
-    if (hook === 'destroy') {
+    if (hook === 'afterDestroy') {
       this._notify(descriptors, chart, 'stop');
       this._notify(this._init, chart, 'uninstall');
     }
