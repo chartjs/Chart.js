@@ -2851,7 +2851,7 @@ export interface TickOptions {
   /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
-  callback: (this: Scale, tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
+  callback: (this: Scale, tickValue: number | string, index: number, ticks: Tick[]) => string | string[] | number | number[] | null | undefined;
   /**
    * If true, show tick labels.
    * @default true
@@ -3302,7 +3302,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
      */
-    callback: (label: string, index: number) => string;
+    callback: (label: string, index: number) => string | string[] | number | number[];
   };
 
   /**
