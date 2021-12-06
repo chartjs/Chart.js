@@ -82,6 +82,7 @@ module.exports = function(karma) {
       {pattern: 'test/fixtures/**/*.json', included: false},
       {pattern: 'test/fixtures/**/*.png', included: false},
       'node_modules/moment/min/moment.min.js',
+      'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
       {pattern: 'test/index.js', watched: false},
       {pattern: 'test/BasicChartWebWorker.js', included: false},
       {pattern: 'src/index.js', watched: false},
