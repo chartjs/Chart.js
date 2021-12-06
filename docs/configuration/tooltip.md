@@ -59,31 +59,7 @@ Possible modes are:
 
 `'average'` mode will place the tooltip at the average position of the items displayed in the tooltip. `'nearest'` will place the tooltip at the position of the element closest to the event position.
 
-New modes can be defined by adding functions to the `Chart.Tooltip.positioners` map.
-
-Example:
-
-```javascript
-/**
- * Custom positioner
- * @function Tooltip.positioners.myCustomPositioner
- * @param elements {Chart.Element[]} the tooltip elements
- * @param eventPosition {Point} the position of the event in canvas coordinates
- * @returns {Point} the tooltip position
- */
-const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-tooltipPlugin.positioners.myCustomPositioner = function(elements, eventPosition) {
-    /** @type {Tooltip} */
-    const tooltip = this;
-
-    /* ... */
-
-    return {
-        x: 0,
-        y: 0
-    };
-};
-```
+You can also define [custom position modes](#custom-position-modes).
 
 ### Tooltip Alignment
 
@@ -363,6 +339,8 @@ The tooltip model contains parameters that can be used to render the tooltip.
 
 ```javascript
 {
+    chart: Chart,
+
     // The items that we are rendering in the tooltip. See Tooltip Item Interface section
     dataPoints: TooltipItem[],
 
@@ -407,6 +385,60 @@ The tooltip model contains parameters that can be used to render the tooltip.
     opacity: number,
 
     // tooltip options
-    options : Object
+    options: Object
+}
+```
+
+## Custom Position Modes
+
+New modes can be defined by adding functions to the `Chart.Tooltip.positioners` map.
+
+Example:
+
+```javascript
+import { Tooltip } from 'chart.js';
+
+/**
+ * Custom positioner
+ * @function Tooltip.positioners.myCustomPositioner
+ * @param elements {Chart.Element[]} the tooltip elements
+ * @param eventPosition {Point} the position of the event in canvas coordinates
+ * @returns {TooltipPosition} the tooltip position
+ */
+Tooltip.positioners.myCustomPositioner = function(elements, eventPosition) {
+    // A reference to the tooltip model
+    const tooltip = this;
+
+    /* ... */
+
+    return {
+        x: 0,
+        y: 0
+        // You may also include xAlign and yAlign to override those tooltip options.
+    };
+};
+
+// Then, to use it...
+new Chart.js(ctx, {
+    data,
+    options: {
+        plugins: {
+            tooltip: {
+                position: 'myCustomPositioner'
+            }
+        }
+    }
+})
+```
+
+See [samples](/samples/tooltip/position.md) for a more detailed example.
+
+If you're using TypeScript, you'll also need to register the new mode:
+
+```typescript
+declare module 'chart.js' {
+  interface TooltipPositionerMap {
+    myCustomPositioner: TooltipPositionerFunction<ChartType>;
+  }
 }
 ```
