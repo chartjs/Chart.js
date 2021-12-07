@@ -275,8 +275,8 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
-  const set = new Set([value]);
-
+  const set = new Set();
+  set.add(value);
   let key = addScopesFromKey(set, allScopes, prop, fallback || prop, value);
   if (key === null) {
     return false;
@@ -291,9 +291,9 @@ function createSubResolver(parentScopes, resolver, prop, value) {
     () => subGetTarget(resolver, prop, value));
 }
 
-function addScopesFromKey(set, allScopes, key, fallbackKey, item) {
+function addScopesFromKey(set, allScopes, key, fallback, item) {
   while (key) {
-    key = addScopes(set, allScopes, key, fallbackKey, item);
+    key = addScopes(set, allScopes, key, fallback, item);
   }
   return key;
 }
