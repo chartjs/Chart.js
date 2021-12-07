@@ -254,7 +254,7 @@ const getScope = (key, parent) => key === true ? parent
 function addScopes(set, parentScopes, key, parentFallback, value) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
-    if (isObject(scope)) {
+    if (scope) {
       set.add(scope);
       const fallback = resolveFallback(scope._fallback, key, value);
       if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
@@ -277,25 +277,25 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const allScopes = [...parentScopes, ...rootScopes];
   const set = new Set([value]);
 
-  function addScopesFromKey(key, fallbackKey, item) {
-    while (key) {
-      key = addScopes(set, allScopes, key, fallbackKey, item);
-    }
-    return key;
-  }
-
-  let key = addScopesFromKey(prop, fallback || prop, value);
+  let key = addScopesFromKey(set, allScopes, prop, fallback || prop, value);
   if (key === null) {
     return false;
   }
   if (defined(fallback) && fallback !== prop) {
-    key = addScopesFromKey(fallback, key, value);
+    key = addScopesFromKey(set, allScopes, fallback, key, value);
     if (key === null) {
       return false;
     }
   }
   return _createResolver(Array.from(set), [''], rootScopes, fallback,
     () => subGetTarget(resolver, prop, value));
+}
+
+function addScopesFromKey(set, allScopes, key, fallbackKey, item) {
+  while (key) {
+    key = addScopes(set, allScopes, key, fallbackKey, item);
+  }
+  return key;
 }
 
 function subGetTarget(resolver, prop, value) {
