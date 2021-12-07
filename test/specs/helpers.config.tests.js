@@ -662,8 +662,9 @@ describe('Chart.helpers.config', function() {
       const options = {
         items: [{test: true}]
       };
-      const resolver = _attachContext(_createResolver([options, descriptors]), {dymmy: true});
-      const item0 = resolver.items[0];
+      const resolver = _createResolver([options, descriptors]);
+      const opts = _attachContext(resolver, {dymmy: true});
+      const item0 = opts.items[0];
       expect(item0.test).toEqual(true);
       expect(spy).toHaveBeenCalledWith('items', options.items[0]);
     });
@@ -684,7 +685,6 @@ describe('Chart.helpers.config', function() {
         items: [{test: true}]
       };
       const resolver = _createResolver([options, defaults, descriptors]);
-      // console.warn(resolver.items[0]);
       const opts = _attachContext(resolver, {dymmy: true});
       const item0 = opts.items[0];
       console.warn(opts._proxy._scopes);
