@@ -251,12 +251,12 @@ function resolveFallback(fallback, prop, value) {
 const getScope = (key, parent) => key === true ? parent
   : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
 
-function addScopes(set, parentScopes, key, parentFallback) {
+function addScopes(set, parentScopes, key, parentFallback, value) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
-    if (scope) {
+    if (isObject(scope)) {
       set.add(scope);
-      const fallback = resolveFallback(scope._fallback, key, scope);
+      const fallback = resolveFallback(scope._fallback, key, value);
       if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
         // When we reach the descriptor that defines a new _fallback, return that.
         // The fallback will resume to that new scope.
@@ -275,27 +275,27 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
-  const set = new Set();
-  set.add(value);
-  let key = addScopesFromKey(set, allScopes, prop, fallback || prop);
+  const set = new Set([value]);
+
+  function addScopesFromKey(key, fallbackKey, item) {
+    while (key) {
+      key = addScopes(set, allScopes, key, fallbackKey, item);
+    }
+    return key;
+  }
+
+  let key = addScopesFromKey(prop, fallback || prop, value);
   if (key === null) {
     return false;
   }
   if (defined(fallback) && fallback !== prop) {
-    key = addScopesFromKey(set, allScopes, fallback, key);
+    key = addScopesFromKey(fallback, key, value);
     if (key === null) {
       return false;
     }
   }
   return _createResolver(Array.from(set), [''], rootScopes, fallback,
     () => subGetTarget(resolver, prop, value));
-}
-
-function addScopesFromKey(set, allScopes, key, fallback) {
-  while (key) {
-    key = addScopes(set, allScopes, key, fallback);
-  }
-  return key;
 }
 
 function subGetTarget(resolver, prop, value) {
