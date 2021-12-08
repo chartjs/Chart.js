@@ -83,6 +83,22 @@ function moveNumericKeys(obj, start, move) {
   }
 }
 
+/**
+ * @param {ChartEvent} e
+ * @param {ChartEvent|null} lastEvent
+ * @param {boolean} inChartArea
+ * @param {boolean} isClick
+ * @returns {ChartEvent|null}
+ */
+function determineLastEvent(e, lastEvent, inChartArea, isClick) {
+  if (!inChartArea || e.type === 'mouseout') {
+    return null;
+  }
+  if (isClick) {
+    return lastEvent;
+  }
+  return e;
+}
 
 class Chart {
 
@@ -1159,16 +1175,10 @@ class Chart {
     // - it would be expensive.
     const useFinalPosition = replay;
     const active = this._getActiveElements(e, lastActive, inChartArea, useFinalPosition);
-    let lastEvent = null;
+    const isClick = _isClickEvent(e);
+    const lastEvent = determineLastEvent(e, this._lastEvent, inChartArea, isClick);
 
     if (inChartArea) {
-      const isClick = _isClickEvent(e);
-
-      if (e.type !== 'mouseout') {
-        // This event should be replayed in subsequent update
-        lastEvent = isClick ? this._lastEvent : e;
-      }
-
       // Set _lastEvent to null while we are processing the event handlers.
       // This prevents recursion if the handler calls chart.update()
       this._lastEvent = null;
