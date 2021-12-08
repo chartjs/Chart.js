@@ -7,14 +7,14 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers';
 // @ts-ignore
 import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras';
 
 /**
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -83,6 +83,22 @@ function moveNumericKeys(obj, start, move) {
   }
 }
 
+/**
+ * @param {ChartEvent} e
+ * @param {ChartEvent|null} lastEvent
+ * @param {boolean} inChartArea
+ * @param {boolean} isClick
+ * @returns {ChartEvent|null}
+ */
+function determineLastEvent(e, lastEvent, inChartArea, isClick) {
+  if (!inChartArea || e.type === 'mouseout') {
+    return null;
+  }
+  if (isClick) {
+    return lastEvent;
+  }
+  return e;
+}
 
 class Chart {
 
@@ -1109,14 +1125,19 @@ class Chart {
 	 * @private
 	 */
   _eventHandler(e, replay) {
-    const args = {event: e, replay, cancelable: true};
+    const args = {
+      event: e,
+      replay,
+      cancelable: true,
+      inChartArea: _isPointInArea(e, this.chartArea, this._minPadding)
+    };
     const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.native.type);
 
     if (this.notifyPlugins('beforeEvent', args, eventFilter) === false) {
       return;
     }
 
-    const changed = this._handleEvent(e, replay);
+    const changed = this._handleEvent(e, replay, args.inChartArea);
 
     args.cancelable = false;
     this.notifyPlugins('afterEvent', args, eventFilter);
@@ -1132,12 +1153,12 @@ class Chart {
 	 * Handle an event
 	 * @param {ChartEvent} e the event to handle
 	 * @param {boolean} [replay] - true if the event was replayed by `update`
+   * @param {boolean} [inChartArea] - true if the event is inside chartArea
 	 * @return {boolean} true if the chart needs to re-render
 	 * @private
 	 */
-  _handleEvent(e, replay) {
+  _handleEvent(e, replay, inChartArea) {
     const {_active: lastActive = [], options} = this;
-    const hoverOptions = options.hover;
 
     // If the event is replayed from `update`, we should evaluate with the final positions.
     //
@@ -1153,30 +1174,24 @@ class Chart {
     // This is done so we do not have to evaluate the active elements each animation frame
     // - it would be expensive.
     const useFinalPosition = replay;
+    const active = this._getActiveElements(e, lastActive, inChartArea, useFinalPosition);
+    const isClick = _isClickEvent(e);
+    const lastEvent = determineLastEvent(e, this._lastEvent, inChartArea, isClick);
 
-    let active = [];
-    let changed = false;
-    let lastEvent = null;
+    if (inChartArea) {
+      // Set _lastEvent to null while we are processing the event handlers.
+      // This prevents recursion if the handler calls chart.update()
+      this._lastEvent = null;
 
-    // Find Active Elements for hover and tooltips
-    if (e.type !== 'mouseout') {
-      active = this.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
-      lastEvent = e.type === 'click' ? this._lastEvent : e;
-    }
-    // Set _lastEvent to null while we are processing the event handlers.
-    // This prevents recursion if the handler calls chart.update()
-    this._lastEvent = null;
-
-    if (_isPointInArea(e, this.chartArea, this._minPadding)) {
       // Invoke onHover hook
       callCallback(options.onHover, [e, active, this], this);
 
-      if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
+      if (isClick) {
         callCallback(options.onClick, [e, active, this], this);
       }
     }
 
-    changed = !_elementsEqual(active, lastActive);
+    const changed = !_elementsEqual(active, lastActive);
     if (changed || replay) {
       this._active = active;
       this._updateHoverStyles(active, lastActive, replay);
@@ -1185,6 +1200,28 @@ class Chart {
     this._lastEvent = lastEvent;
 
     return changed;
+  }
+
+  /**
+   * @param {ChartEvent} e - The event
+   * @param {import('../../types/index.esm').ActiveElement[]} lastActive - Previously active elements
+   * @param {boolean} inChartArea - Is the envent inside chartArea
+   * @param {boolean} useFinalPosition - Should the evaluation be done with current or final (after animation) element positions
+   * @returns {import('../../types/index.esm').ActiveElement[]} - The active elements
+   * @pravate
+   */
+  _getActiveElements(e, lastActive, inChartArea, useFinalPosition) {
+    if (e.type === 'mouseout') {
+      return [];
+    }
+
+    if (!inChartArea) {
+      // Let user control the active elements outside chartArea. Eg. using Legend.
+      return lastActive;
+    }
+
+    const hoverOptions = this.options.hover;
+    return this.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions, useFinalPosition);
   }
 }
 

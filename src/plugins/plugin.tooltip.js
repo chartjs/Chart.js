@@ -9,7 +9,7 @@ import {createContext, drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").Chart } Chart
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef { import("../../types/index.esm").ActiveElement } ActiveElement
  */
 
@@ -1012,21 +1012,13 @@ export class Tooltip extends Element {
 	 * Handle an event
 	 * @param {ChartEvent} e - The event to handle
 	 * @param {boolean} [replay] - This is a replayed event (from update)
+   * @param {boolean} [inChartArea] - The event is indide chartArea
 	 * @returns {boolean} true if the tooltip changed
 	 */
-  handleEvent(e, replay) {
+  handleEvent(e, replay, inChartArea = true) {
     const options = this.options;
     const lastActive = this._active || [];
-    let changed = false;
-    let active = [];
-
-    // Find Active Elements for tooltips
-    if (e.type !== 'mouseout') {
-      active = this.chart.getElementsAtEventForMode(e, options.mode, options, replay);
-      if (options.reverse) {
-        active.reverse();
-      }
-    }
+    const active = this._getActiveElements(e, lastActive, replay, inChartArea);
 
     // When there are multiple items shown, but the tooltip position is nearest mode
     // an update may need to be made because our position may have changed even though
@@ -1034,7 +1026,7 @@ export class Tooltip extends Element {
     const positionChanged = this._positionChanged(active, e);
 
     // Remember Last Actives
-    changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
+    const changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
 
     // Only handle target event on tooltip change
     if (changed) {
@@ -1051,6 +1043,37 @@ export class Tooltip extends Element {
     }
 
     return changed;
+  }
+
+  /**
+	 * Helper for determining the active elements for event
+	 * @param {ChartEvent} e - The event to handle
+   * @param {Element[]} lastActive - Previously active elements
+	 * @param {boolean} [replay] - This is a replayed event (from update)
+   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @returns {Element[]} - Active elements
+   * @private
+	 */
+  _getActiveElements(e, lastActive, replay, inChartArea) {
+    const options = this.options;
+
+    if (e.type === 'mouseout') {
+      return [];
+    }
+
+    if (!inChartArea) {
+      // Let user control the active elements outside chartArea. Eg. using Legend.
+      return lastActive;
+    }
+
+    // Find Active Elements for tooltips
+    const active = this.chart.getElementsAtEventForMode(e, options.mode, options, replay);
+
+    if (options.reverse) {
+      active.reverse();
+    }
+
+    return active;
   }
 
   /**
@@ -1117,7 +1140,7 @@ export default {
     if (chart.tooltip) {
       // If the event is replayed from `update`, we should evaluate with the final positions.
       const useFinalPosition = args.replay;
-      if (chart.tooltip.handleEvent(args.event, useFinalPosition)) {
+      if (chart.tooltip.handleEvent(args.event, useFinalPosition, args.inChartArea)) {
         // notify chart about the change, so it will render
         args.changed = true;
       }

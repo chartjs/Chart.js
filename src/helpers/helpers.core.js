@@ -340,3 +340,12 @@ export const setsEqual = (a, b) => {
 
   return true;
 };
+
+/**
+ * @param {import('../../types/index.esm').ChartEvent} e - The event
+ * @returns {boolean}
+ * @private
+ */
+export function _isClickEvent(e) {
+  return e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu';
+}

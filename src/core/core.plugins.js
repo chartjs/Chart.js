@@ -3,7 +3,7 @@ import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helper
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 
