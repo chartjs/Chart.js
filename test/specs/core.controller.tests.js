@@ -361,6 +361,39 @@ describe('Chart', function() {
       await jasmine.triggerMouseEvent(chart, 'mousemove', point);
       expect(chart.getActiveElements()).toEqual([]);
     });
+
+    it('should not change the active elements when outside chartArea, except for mouseout', async function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100],
+            hoverRadius: 0
+          }],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          },
+          layout: {
+            padding: 5
+          }
+        }
+      });
+
+      var point = chart.getDatasetMeta(0).data[0];
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+    });
   });
 
   describe('when merging scale options', function() {
