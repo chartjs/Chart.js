@@ -9,7 +9,7 @@ import {createContext, drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").Chart } Chart
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef { import("../../types/index.esm").ActiveElement } ActiveElement
  */
 

@@ -5,7 +5,7 @@ import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean}} InteractionOptions
  * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
  */

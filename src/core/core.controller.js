@@ -7,14 +7,14 @@ import PluginService from './core.plugins';
 import registry from './core.registry';
 import Config, {determineAxis, getIndexAxis} from './core.config';
 import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction} from '../helpers/helpers.core';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core';
 import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers';
 // @ts-ignore
 import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras';
 
 /**
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -1162,9 +1162,11 @@ class Chart {
     let lastEvent = null;
 
     if (inChartArea) {
+      const isClick = _isClickEvent(e);
+
       if (e.type !== 'mouseout') {
         // This event should be replayed in subsequent update
-        lastEvent = e.type === 'click' ? this._lastEvent : e;
+        lastEvent = isClick ? this._lastEvent : e;
       }
 
       // Set _lastEvent to null while we are processing the event handlers.
@@ -1174,7 +1176,7 @@ class Chart {
       // Invoke onHover hook
       callCallback(options.onHover, [e, active, this], this);
 
-      if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
+      if (isClick) {
         callCallback(options.onClick, [e, active, this], this);
       }
     }
