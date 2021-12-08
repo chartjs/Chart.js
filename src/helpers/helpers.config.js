@@ -250,12 +250,12 @@ function resolveFallback(fallback, prop, value) {
 const getScope = (key, parent) => key === true ? parent
   : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
 
-function addScopes(set, parentScopes, key, parentFallback) {
+function addScopes(set, parentScopes, key, parentFallback, value) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
     if (scope) {
       set.add(scope);
-      const fallback = resolveFallback(scope._fallback, key, scope);
+      const fallback = resolveFallback(scope._fallback, key, value);
       if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
         // When we reach the descriptor that defines a new _fallback, return that.
         // The fallback will resume to that new scope.
@@ -276,12 +276,12 @@ function createSubResolver(parentScopes, resolver, prop, value) {
   const allScopes = [...parentScopes, ...rootScopes];
   const set = new Set();
   set.add(value);
-  let key = addScopesFromKey(set, allScopes, prop, fallback || prop);
+  let key = addScopesFromKey(set, allScopes, prop, fallback || prop, value);
   if (key === null) {
     return false;
   }
   if (defined(fallback) && fallback !== prop) {
-    key = addScopesFromKey(set, allScopes, fallback, key);
+    key = addScopesFromKey(set, allScopes, fallback, key, value);
     if (key === null) {
       return false;
     }
@@ -290,9 +290,9 @@ function createSubResolver(parentScopes, resolver, prop, value) {
     () => subGetTarget(resolver, prop, value));
 }
 
-function addScopesFromKey(set, allScopes, key, fallback) {
+function addScopesFromKey(set, allScopes, key, fallback, item) {
   while (key) {
-    key = addScopes(set, allScopes, key, fallback);
+    key = addScopes(set, allScopes, key, fallback, item);
   }
   return key;
 }
