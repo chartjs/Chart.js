@@ -73,6 +73,7 @@ export class Defaults {
     this.scale = undefined;
     this.scales = {};
     this.showLine = true;
+    this.drawActiveElementsOnTop = true;
 
     this.describe(_descriptors);
   }

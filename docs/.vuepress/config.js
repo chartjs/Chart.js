@@ -26,7 +26,7 @@ module.exports = {
     ['redirect', {
       redirectors: [
         // Default sample page when accessing /samples.
-        {base: '/samples', alternative: ['bar/vertical']},
+        {base: '/samples', alternative: ['information']},
       ],
     }],
     ['vuepress-plugin-code-copy', true],
@@ -130,6 +130,7 @@ module.exports = {
         title: 'API'
       },
       '/samples/': [
+        'information',
         {
           title: 'Bar Charts',
           children: [

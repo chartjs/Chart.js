@@ -63,6 +63,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`pointStyle`](#styling) | [`pointStyle`](../configuration/elements.md#types) | Yes | Yes | `'circle'`
 | [`rotation`](#styling) | `number` | Yes | Yes | `0`
 | [`radius`](#styling) | `number` | Yes | Yes | `3`
+| [`drawActiveElementsOnTop`](#styling) | `boolean` | Yes | Yes | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -86,6 +87,7 @@ The style of each bubble can be controlled with the following properties:
 | `pointStyle` | bubble [shape style](../configuration/elements.md#point-styles).
 | `rotation` | bubble rotation (in degrees).
 | `radius` | bubble radius (in pixels).
+| `drawActiveElementsOnTop` | Draw the active bubbles of a dataset over the other bubbles of the dataset
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 

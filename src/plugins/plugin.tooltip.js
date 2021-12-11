@@ -8,7 +8,9 @@ import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
 import {createContext, drawPoint} from '../helpers';
 
 /**
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../platform/platform.base").Chart } Chart
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ActiveElement } ActiveElement
  */
 
 const positioners = {
@@ -110,7 +112,8 @@ function splitNewlines(str) {
 
 /**
  * Private helper to create a tooltip item model
- * @param item - {element, index, datasetIndex} to create the tooltip item for
+ * @param {Chart} chart
+ * @param {ActiveElement} item - {element, index, datasetIndex} to create the tooltip item for
  * @return new tooltip item
  */
 function createTooltipItem(chart, item) {
@@ -135,7 +138,7 @@ function createTooltipItem(chart, item) {
  * Get the size of the tooltip
  */
 function getTooltipSize(tooltip, options) {
-  const ctx = tooltip._chart.ctx;
+  const ctx = tooltip.chart.ctx;
   const {body, footer, title} = tooltip;
   const {boxWidth, boxHeight} = options;
   const bodyFont = toFont(options.bodyFont);
@@ -256,10 +259,10 @@ function determineXAlign(chart, options, size, yAlign) {
  * Helper to get the alignment of a tooltip given the size
  */
 function determineAlignment(chart, options, size) {
-  const yAlign = options.yAlign || determineYAlign(chart, size);
+  const yAlign = size.yAlign || options.yAlign || determineYAlign(chart, size);
 
   return {
-    xAlign: options.xAlign || determineXAlign(chart, options, size, yAlign),
+    xAlign: size.xAlign || options.xAlign || determineXAlign(chart, options, size, yAlign),
     yAlign
   };
 }
@@ -306,9 +309,9 @@ function getBackgroundPoint(options, size, alignment, chart) {
       x -= paddingAndSize;
     }
   } else if (xAlign === 'left') {
-    x -= Math.max(topLeft, bottomLeft) + caretPadding;
+    x -= Math.max(topLeft, bottomLeft) + caretSize;
   } else if (xAlign === 'right') {
-    x += Math.max(topRight, bottomRight) + caretPadding;
+    x += Math.max(topRight, bottomRight) + caretSize;
   }
 
   return {
@@ -353,13 +356,15 @@ export class Tooltip extends Element {
 
     this.opacity = 0;
     this._active = [];
-    this._chart = config._chart;
     this._eventPosition = undefined;
     this._size = undefined;
     this._cachedAnimations = undefined;
     this._tooltipItems = [];
     this.$animations = undefined;
     this.$context = undefined;
+    // TODO: V4, remove config._chart and this._chart backward compatibility aliases
+    this.chart = config.chart || config._chart;
+    this._chart = this.chart;
     this.options = config.options;
     this.dataPoints = undefined;
     this.title = undefined;
@@ -398,10 +403,10 @@ export class Tooltip extends Element {
       return cached;
     }
 
-    const chart = this._chart;
+    const chart = this.chart;
     const options = this.options.setContext(this.getContext());
     const opts = options.enabled && chart.options.animation && options.animations;
-    const animations = new Animations(this._chart, opts);
+    const animations = new Animations(this.chart, opts);
     if (opts._cacheable) {
       this._cachedAnimations = Object.freeze(animations);
     }
@@ -414,7 +419,7 @@ export class Tooltip extends Element {
 	 */
   getContext() {
     return this.$context ||
-			(this.$context = createTooltipContext(this._chart.getContext(), this, this._tooltipItems));
+			(this.$context = createTooltipContext(this.chart.getContext(), this, this._tooltipItems));
   }
 
   getTitle(context, options) {
@@ -482,7 +487,7 @@ export class Tooltip extends Element {
 	 */
   _createItems(options) {
     const active = this._active;
-    const data = this._chart.data;
+    const data = this.chart.data;
     const labelColors = [];
     const labelPointStyles = [];
     const labelTextColors = [];
@@ -490,7 +495,7 @@ export class Tooltip extends Element {
     let i, len;
 
     for (i = 0, len = active.length; i < len; ++i) {
-      tooltipItems.push(createTooltipItem(this._chart, active[i]));
+      tooltipItems.push(createTooltipItem(this.chart, active[i]));
     }
 
     // If the user provided a filter function, use it to modify the tooltip items
@@ -542,8 +547,8 @@ export class Tooltip extends Element {
 
       const size = this._size = getTooltipSize(this, options);
       const positionAndSize = Object.assign({}, position, size);
-      const alignment = determineAlignment(this._chart, options, positionAndSize);
-      const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, this._chart);
+      const alignment = determineAlignment(this.chart, options, positionAndSize);
+      const backgroundPoint = getBackgroundPoint(options, positionAndSize, alignment, this.chart);
 
       this.xAlign = alignment.xAlign;
       this.yAlign = alignment.yAlign;
@@ -567,7 +572,7 @@ export class Tooltip extends Element {
     }
 
     if (changed && options.external) {
-      options.external.call(this, {chart: this._chart, tooltip: this, replay});
+      options.external.call(this, {chart: this.chart, tooltip: this, replay});
     }
   }
 
@@ -887,7 +892,7 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _updateAnimationTarget(options) {
-    const chart = this._chart;
+    const chart = this.chart;
     const anims = this.$animations;
     const animX = anims && anims.x;
     const animY = anims && anims.y;
@@ -981,7 +986,7 @@ export class Tooltip extends Element {
   setActiveElements(activeElements, eventPosition) {
     const lastActive = this._active;
     const active = activeElements.map(({datasetIndex, index}) => {
-      const meta = this._chart.getDatasetMeta(datasetIndex);
+      const meta = this.chart.getDatasetMeta(datasetIndex);
 
       if (!meta) {
         throw new Error('Cannot find a dataset at index ' + datasetIndex);
@@ -1007,21 +1012,13 @@ export class Tooltip extends Element {
 	 * Handle an event
 	 * @param {ChartEvent} e - The event to handle
 	 * @param {boolean} [replay] - This is a replayed event (from update)
+   * @param {boolean} [inChartArea] - The event is indide chartArea
 	 * @returns {boolean} true if the tooltip changed
 	 */
-  handleEvent(e, replay) {
+  handleEvent(e, replay, inChartArea = true) {
     const options = this.options;
     const lastActive = this._active || [];
-    let changed = false;
-    let active = [];
-
-    // Find Active Elements for tooltips
-    if (e.type !== 'mouseout') {
-      active = this._chart.getElementsAtEventForMode(e, options.mode, options, replay);
-      if (options.reverse) {
-        active.reverse();
-      }
-    }
+    const active = this._getActiveElements(e, lastActive, replay, inChartArea);
 
     // When there are multiple items shown, but the tooltip position is nearest mode
     // an update may need to be made because our position may have changed even though
@@ -1029,7 +1026,7 @@ export class Tooltip extends Element {
     const positionChanged = this._positionChanged(active, e);
 
     // Remember Last Actives
-    changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
+    const changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
 
     // Only handle target event on tooltip change
     if (changed) {
@@ -1046,6 +1043,37 @@ export class Tooltip extends Element {
     }
 
     return changed;
+  }
+
+  /**
+	 * Helper for determining the active elements for event
+	 * @param {ChartEvent} e - The event to handle
+   * @param {Element[]} lastActive - Previously active elements
+	 * @param {boolean} [replay] - This is a replayed event (from update)
+   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @returns {Element[]} - Active elements
+   * @private
+	 */
+  _getActiveElements(e, lastActive, replay, inChartArea) {
+    const options = this.options;
+
+    if (e.type === 'mouseout') {
+      return [];
+    }
+
+    if (!inChartArea) {
+      // Let user control the active elements outside chartArea. Eg. using Legend.
+      return lastActive;
+    }
+
+    // Find Active Elements for tooltips
+    const active = this.chart.getElementsAtEventForMode(e, options.mode, options, replay);
+
+    if (options.reverse) {
+      active.reverse();
+    }
+
+    return active;
   }
 
   /**
@@ -1074,7 +1102,7 @@ export default {
 
   afterInit(chart, _args, options) {
     if (options) {
-      chart.tooltip = new Tooltip({_chart: chart, options});
+      chart.tooltip = new Tooltip({chart, options});
     }
   },
 
@@ -1112,7 +1140,7 @@ export default {
     if (chart.tooltip) {
       // If the event is replayed from `update`, we should evaluate with the final positions.
       const useFinalPosition = args.replay;
-      if (chart.tooltip.handleEvent(args.event, useFinalPosition)) {
+      if (chart.tooltip.handleEvent(args.event, useFinalPosition, args.inChartArea)) {
         // notify chart about the change, so it will render
         args.changed = true;
       }

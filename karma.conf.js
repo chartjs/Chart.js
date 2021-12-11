@@ -1,3 +1,4 @@
+const jasmineSeedReporter = require('./test/seed-reporter');
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
 const json = require('@rollup/plugin-json');
@@ -30,7 +31,8 @@ module.exports = function(karma) {
 
   karma.set({
     frameworks: ['jasmine'],
-    reporters: ['spec', 'kjhtml'],
+    plugins: ['karma-*', jasmineSeedReporter],
+    reporters: ['spec', 'kjhtml', 'jasmine-seed'],
     browsers: (args.browsers || 'chrome,firefox').split(','),
     logLevel: karma.LOG_INFO,
 
@@ -82,6 +84,7 @@ module.exports = function(karma) {
       {pattern: 'test/fixtures/**/*.json', included: false},
       {pattern: 'test/fixtures/**/*.png', included: false},
       'node_modules/moment/min/moment.min.js',
+      'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
       {pattern: 'test/index.js', watched: false},
       {pattern: 'test/BasicChartWebWorker.js', included: false},
       {pattern: 'src/index.js', watched: false},

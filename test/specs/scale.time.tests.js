@@ -450,8 +450,11 @@ describe('Time scale tests', function() {
         datasets: [{
           xAxisID: 'x',
           data: [
-            {t: +new Date('2018-01-08 05:14:23.234'), y: 10},
-            {t: +new Date('2018-01-09 06:17:43.426'), y: 3}
+            // Normally (at least with the moment.js adapter), times would be in
+            // the user's local time zone.  To allow for more stable tests, our
+            // tests/index.js sets moment.js to use UTC; use `Z` here to match.
+            {t: +new Date('2018-01-08 05:14:23.234Z'), y: 10},
+            {t: +new Date('2018-01-09 06:17:43.426Z'), y: 3}
           ]
         }],
       },
@@ -1175,7 +1178,7 @@ describe('Time scale tests', function() {
           }
         });
 
-        // NOTE: built-in adapter uses moment
+        // NOTE: the test suite is configured to use moment
         var expected = {
           datetime: 'MMM D, YYYY, h:mm:ss a',
           millisecond: 'h:mm:ss.SSS a',
@@ -1213,7 +1216,7 @@ describe('Time scale tests', function() {
           }
         });
 
-        // NOTE: built-in adapter uses moment
+        // NOTE: the test suite is configured to use moment
         var expected = {
           datetime: 'MMM D, YYYY, h:mm:ss a',
           millisecond: 'foo',

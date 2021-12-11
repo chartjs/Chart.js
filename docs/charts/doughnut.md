@@ -103,8 +103,9 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
 | ---- | ---- | :----: | :----: | ----
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`borderAlign`](#border-alignment) | `string` | Yes | Yes | `'center'`
+| [`borderAlign`](#border-alignment) | `'center'`\|`'inner'` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderJoinStyle`](#styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
 | [`circumference`](#general) | `number` | - | - | `undefined`
@@ -112,6 +113,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 | [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
 | [`offset`](#styling) | `number` | Yes | Yes | `0`
@@ -137,6 +139,7 @@ The style of each arc can be controlled with the following properties:
 | ---- | ----
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
+| `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
 | `offset` | arc offset (in pixels).
 | `spacing` | Fixed arc offset (in pixels). Similar to `offset` but applies to all arcs.
@@ -165,6 +168,7 @@ The interaction with each arc can be controlled with the following properties:
 | ---- | -----------
 | `hoverBackgroundColor` | arc background color when hovered.
 | `hoverBorderColor` | arc border color when hovered.
+| `hoverBorderJoinStyle` | arc border join style when hovered. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `hoverBorderWidth` | arc border width when hovered (in pixels).
 | `hoverOffset` | arc offset when hovered (in pixels).
 

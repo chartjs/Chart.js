@@ -2,6 +2,38 @@
 
 The configuration is used to change how the chart behaves. There are properties to control styling, fonts, the legend, etc.
 
+## Cofiguration object structure
+
+The top level structure of Chart.js configuration:
+
+```javascript
+const config = {
+  type: 'line'
+  data: {}
+  options: {}
+  plugins: []
+}
+```
+
+### type
+
+Chart type determines the main type of the chart.
+
+**note** A dataset can override the `type`, this is how mixed charts are constructed.
+
+### data
+
+See [Data Structures](../general/data-structures) for details.
+
+### options
+
+Majority of the documentation talks about these options.
+
+### plugins
+
+Inline plugins can be included in this array. It is an alternative way of adding plugins for single chart (vs registering the plugin globally).
+More about plugins in the [developers section](../developers/plugins.md).
+
 ## Global Configuration
 
 This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.

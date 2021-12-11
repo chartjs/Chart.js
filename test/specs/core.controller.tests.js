@@ -361,6 +361,39 @@ describe('Chart', function() {
       await jasmine.triggerMouseEvent(chart, 'mousemove', point);
       expect(chart.getActiveElements()).toEqual([]);
     });
+
+    it('should not change the active elements when outside chartArea, except for mouseout', async function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100],
+            hoverRadius: 0
+          }],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          },
+          layout: {
+            padding: 5
+          }
+        }
+      });
+
+      var point = chart.getDatasetMeta(0).data[0];
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+    });
   });
 
   describe('when merging scale options', function() {
@@ -1076,6 +1109,108 @@ describe('Chart', function() {
         parent.appendChild(wrapper);
         wrapper.style.height = '355px';
       }, 0);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/9875
+    it('should detect detach/attach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 320, dh: 350,
+          rw: 320, rh: 350,
+        });
+
+        done();
+      });
+
+      parent.removeChild(wrapper);
+      parent.appendChild(wrapper);
+    });
+
+    it('should detect detach/attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      waitForResize(chart, function() {
+        fail();
+      });
+
+      parent.removeChild(wrapper);
+      parent.appendChild(wrapper);
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+        done();
+      }, 100);
+    });
+
+    it('should detect attach/detach in series', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 320px; height: 350px'
+        }
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      var parent = wrapper.parentNode;
+
+      parent.removeChild(wrapper);
+
+      setTimeout(function() {
+        expect(chart.attached).toBeFalse();
+
+        waitForResize(chart, function() {
+          fail();
+        });
+
+        parent.appendChild(wrapper);
+        parent.removeChild(wrapper);
+
+        setTimeout(function() {
+          expect(chart.attached).toBeFalse();
+
+          done();
+        }, 100);
+      }, 100);
     });
 
     // https://github.com/chartjs/Chart.js/issues/4737

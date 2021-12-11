@@ -192,6 +192,10 @@ module.exports = {
 
 ## Common Configuration
 
+:::tip Note
+These are only the common options supported by all cartesian axes. Please see the specific axis documentation for all the available options for that axis.
+:::
+
 !!!include(axes/cartesian/_common.md)!!!
 
 !!!include(axes/_common.md)!!!
@@ -220,6 +224,10 @@ The `bounds` property controls the scale boundary strategy (bypassed by `min`/`m
 * `'ticks'`: makes sure ticks are fully visible, data outside are truncated
 
 ### Tick Configuration
+
+:::tip Note
+These are only the common tick options supported by all cartesian axes. Please see specific axis documentation for all of the available options for that axis.
+:::
 
 !!!include(axes/cartesian/_common_ticks.md)!!!
 
@@ -285,8 +293,9 @@ module.exports = {
 
 :::tip Note
 The `crossAlign` setting is only effective when these preconditions are met:
-  * tick rotation is `0`
-  * axis position is `'top'`, '`left'`, `'bottom'` or `'right'`
+
+* tick rotation is `0`
+* axis position is `'top'`, '`left'`, `'bottom'` or `'right'`
 :::
 
 ### Axis ID

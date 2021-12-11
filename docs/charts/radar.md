@@ -79,14 +79,14 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`borderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `'rgba(0, 0, 0, 0.1)'`
 | [`borderDash`](#line-styling) | `number[]` | Yes | - | `[]`
 | [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
-| [`borderJoinStyle`](#line-styling) | `string` | Yes | - | `'miter'`
+| [`borderJoinStyle`](#line-styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
 | [`hoverBorderColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderDash`](#line-styling) | `number[]` | Yes | - | `undefined`
 | [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
-| [`hoverBorderJoinStyle`](#line-styling) | `string` | Yes | - | `undefined`
+| [`hoverBorderJoinStyle`](#line-styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | - | `undefined`
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**

@@ -1419,7 +1419,7 @@ describe('Plugin.Tooltip', function() {
 
     var mockContext = window.createMockContext();
     var tooltip = new Tooltip({
-      _chart: {
+      chart: {
         getContext: () => ({}),
         options: {
           plugins: {
@@ -1554,6 +1554,38 @@ describe('Plugin.Tooltip', function() {
       const meta = chart.getDatasetMeta(0);
       chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], {x: 0, y: 0});
       expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
+    });
+
+    it('should not change the active elements on events outside chartArea, except for mouseout', async function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100]
+          }],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          },
+          layout: {
+            padding: 5
+          }
+        }
+      });
+
+      var point = chart.getDatasetMeta(0).data[0];
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
     });
 
     it('should update active elements when datasets are removed and added', async function() {

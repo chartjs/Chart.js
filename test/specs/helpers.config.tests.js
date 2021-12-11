@@ -492,6 +492,7 @@ describe('Chart.helpers.config', function() {
         resolver.value = false;
         expect(options.value).toBeFalse();
         expect(defaults.value).toBeTrue();
+        expect(resolver.value).toBeFalse();
       });
 
       it('should set values of sub-objects to first scope', function() {
@@ -505,6 +506,7 @@ describe('Chart.helpers.config', function() {
         resolver.sub.value = false;
         expect(options.sub.value).toBeFalse();
         expect(defaults.sub.value).toBeTrue();
+        expect(resolver.sub.value).toBeFalse();
       });
 
       it('should throw when setting a value and options is frozen', function() {
@@ -650,6 +652,46 @@ describe('Chart.helpers.config', function() {
           }
         ]
       });
+    });
+
+    it('should call _fallback with proper value from array when descriptor is object', function() {
+      const spy = jasmine.createSpy('fallback');
+      const descriptors = {
+        items: {
+          _fallback: spy
+        }
+      };
+      const options = {
+        items: [{test: true}]
+      };
+      const resolver = _createResolver([options, descriptors]);
+      const opts = _attachContext(resolver, {dymmy: true});
+      const item0 = opts.items[0];
+      expect(item0.test).toEqual(true);
+      expect(spy).toHaveBeenCalledWith('items', options.items[0]);
+    });
+
+    it('should call _fallback with proper value from array when descriptor and defaults are objects', function() {
+      const spy = jasmine.createSpy('fallback');
+      const descriptors = {
+        items: {
+          _fallback: spy
+        }
+      };
+      const defaults = {
+        items: {
+          type: 'defaultType'
+        }
+      };
+      const options = {
+        items: [{test: true}]
+      };
+      const resolver = _createResolver([options, defaults, descriptors]);
+      const opts = _attachContext(resolver, {dymmy: true});
+      const item0 = opts.items[0];
+      console.warn(opts._proxy._scopes);
+      expect(item0.test).toEqual(true);
+      expect(spy).toHaveBeenCalledWith('items', options.items[0]);
     });
 
     it('should support overriding options', function() {

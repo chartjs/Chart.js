@@ -3,7 +3,7 @@ import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helper
 
 /**
  * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../platform/platform.base").ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
  */
 
@@ -41,7 +41,7 @@ export default class PluginService {
     const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
     const result = this._notify(descriptors, chart, hook, args);
 
-    if (hook === 'destroy') {
+    if (hook === 'afterDestroy') {
       this._notify(descriptors, chart, 'stop');
       this._notify(this._init, chart, 'uninstall');
     }

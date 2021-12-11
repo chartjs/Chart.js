@@ -245,6 +245,11 @@ export interface DoughnutControllerDatasetOptions
   circumference: number;
 
   /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
+
+  /**
    * Starting angle to draw this dataset from.
    * @default 0
    */
@@ -291,6 +296,11 @@ export interface DoughnutControllerChartOptions {
    * @default 50
    */
   cutout: Scriptable<number | string, ScriptableContext<'doughnut'>>;
+
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 
   /**
    * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
@@ -1021,9 +1031,10 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {ChartEvent} args.event - The event object.
    * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
+   * @param {boolean} args.inChartArea - The event position is inside chartArea
    * @param {object} options - The plugin options.
    */
-  beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, cancelable: true }, options: O): boolean | void;
+  beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, cancelable: true, inChartArea: boolean }, options: O): boolean | void;
   /**
    * @desc Called after the `event` has been consumed. Note that this hook
    * will not be called if the `event` has been previously discarded.
@@ -1031,10 +1042,11 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {ChartEvent} args.event - The event object.
    * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
+   * @param {boolean} args.inChartArea - The event position is inside chartArea
    * @param {boolean} [args.changed] - Set to true if the plugin needs a render. Should only be changed to true, because this args object is passed through all plugins.
    * @param {object} options - The plugin options.
    */
-  afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean, cancelable: false }, options: O): void;
+  afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean, cancelable: false, inChartArea: boolean }, options: O): void;
   /**
    * @desc Called after the chart as been resized.
    * @param {Chart} chart - The chart instance.
@@ -1044,12 +1056,27 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    */
   resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
   /**
+   * Called before the chart is being destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {object} options - The plugin options.
+   */
+  beforeDestroy?(chart: Chart, args: EmptyObject, options: O): void;
+  /**
+   * Called after the chart has been destroyed.
+   * @param {Chart} chart - The chart instance.
+   * @param {object} args - The call arguments.
+   * @param {object} options - The plugin options.
+   * @deprecated since version 3.7.0 in favour of afterDestroy
+   */
+  destroy?(chart: Chart, args: EmptyObject, options: O): void;
+  /**
    * Called after the chart has been destroyed.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  destroy?(chart: Chart, args: EmptyObject, options: O): void;
+  afterDestroy?(chart: Chart, args: EmptyObject, options: O): void;
   /**
    * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
    * @param {Chart} chart - The chart instance.
@@ -1381,9 +1408,9 @@ export interface CoreInteractionOptions {
   intersect: boolean;
 
   /**
-   * Can be set to 'x', 'y', or 'xy' to define which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
+   * Can be set to 'x', 'y', 'xy' or 'r' to define which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
    */
-  axis: 'x' | 'y' | 'xy';
+  axis: 'x' | 'y' | 'xy' | 'r';
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
@@ -1678,15 +1705,22 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
+
   /**
-   * Arc offset (in pixels).
+   * Line join style. See MDN. Default is 'round' when `borderAlign` is 'inner', else 'bevel'.
    */
-  offset: number;
+  borderJoinStyle: CanvasLineJoin;
+
   /**
    * Sets the border radius for arcs
    * @default 0
    */
   borderRadius: number | ArcBorderRadius;
+
+  /**
+   * Arc offset (in pixels).
+   */
+  offset: number;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
@@ -1828,6 +1862,11 @@ export interface PointOptions extends CommonElementOptions {
    * @default 0
    */
   rotation: number;
+  /**
+   * Draw the active elements over the other elements of the dataset,
+   * @default true
+   */
+  drawActiveElementsOnTop: boolean;
 }
 
 export interface PointHoverOptions extends CommonHoverOptions {
@@ -2392,7 +2431,9 @@ export interface TooltipLabelStyle {
    */
   borderRadius?: number | BorderRadius;
 }
-export interface TooltipModel<TType extends ChartType> {
+export interface TooltipModel<TType extends ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
+  readonly chart: Chart<TType>;
+
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
   dataPoints: TooltipItem<TType>[];
 
@@ -2441,14 +2482,34 @@ export interface TooltipModel<TType extends ChartType> {
   options: TooltipOptions<TType>;
 
   getActiveElements(): ActiveElement[];
-  setActiveElements(active: ActiveDataPoint[], eventPosition: { x: number, y: number }): void;
+  setActiveElements(active: ActiveDataPoint[], eventPosition: Point): void;
 }
 
-export const Tooltip: Plugin & {
-  readonly positioners: {
-    [key: string]: (items: readonly ActiveElement[], eventPosition: { x: number; y: number }) => { x: number; y: number } | false;
-  };
-};
+export interface TooltipPosition {
+  x: number;
+  y: number;
+  xAlign?: TooltipXAlignment;
+  yAlign?: TooltipYAlignment;
+}
+
+export type TooltipPositionerFunction<TType extends ChartType> = (
+  this: TooltipModel<TType>,
+  items: readonly ActiveElement[],
+  eventPosition: Point
+) => TooltipPosition | false;
+
+export interface TooltipPositionerMap {
+  average: TooltipPositionerFunction<ChartType>;
+  nearest: TooltipPositionerFunction<ChartType>;
+}
+
+export type TooltipPositioner = keyof TooltipPositionerMap;
+
+export interface Tooltip extends Plugin {
+  readonly positioners: TooltipPositionerMap;
+}
+
+export const Tooltip: Tooltip;
 
 export interface TooltipCallbacks<
   TType extends ChartType,
@@ -2519,7 +2580,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
   /**
    * The mode for positioning the tooltip
    */
-  position: Scriptable<'average' | 'nearest', ScriptableTooltipContext<TType>>
+  position: Scriptable<TooltipPositioner, ScriptableTooltipContext<TType>>
 
   /**
    * Override the tooltip alignment calculations
@@ -2580,7 +2641,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   bodyColor: Scriptable<Color, ScriptableTooltipContext<TType>>;
   /**
-   *   See Fonts.
+   * See Fonts.
    * @default {}
    */
   bodyFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
@@ -2620,7 +2681,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   padding: Scriptable<number | ChartArea, ScriptableTooltipContext<TType>>;
   /**
-   *   Extra distance to move the end of the tooltip arrow away from the tooltip point.
+   * Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
    */
   caretPadding: Scriptable<number, ScriptableTooltipContext<TType>>;
@@ -2829,7 +2890,7 @@ export interface TickOptions {
   /**
    * Returns the string representation of the tick value as it should be displayed on the chart. See callback.
    */
-  callback: (this: Scale, tickValue: number | string, index: number, ticks: Tick[]) => string | number | null | undefined;
+  callback: (this: Scale, tickValue: number | string, index: number, ticks: Tick[]) => string | string[] | number | number[] | null | undefined;
   /**
    * If true, show tick labels.
    * @default true
@@ -2927,15 +2988,26 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
 
   grid: GridLineOptions;
 
+  /** Options for the scale title. */
   title: {
+    /** If true, displays the axis title. */
     display: boolean;
+    /** Alignment of the axis title. */
     align: 'start' | 'center' | 'end';
+    /** The text for the title, e.g. "# of People" or "Response Choices". */
     text: string | string[];
+    /** Color of the axis label. */
     color: Color;
+    /** Information about the axis title font. */
     font: FontSpec;
+    /** Padding to apply around scale labels. */
     padding: number | {
+      /** Padding on the (relative) top side of this axis label. */
       top: number;
+      /** Padding on the (relative) bottom side of this axis label. */
       bottom: number;
+      /** This is a shorthand for defining top/bottom to the same values. */
+      y: number;
     };
   };
 
@@ -3269,7 +3341,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
      */
-    callback: (label: string, index: number) => string;
+    callback: (label: string, index: number) => string | string[] | number | number[];
   };
 
   /**
@@ -3502,6 +3574,11 @@ export type ChartDataset<
 { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
 
+/**
+ * TData represents the data point type. If unspecified, a default is provided
+ *   based on the chart type.
+ * TLabel represents the label type
+ */
 export interface ChartData<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,

@@ -81,14 +81,3 @@ export default class BasePlatform {
     // no-op
   }
 }
-
-/**
- * @interface ChartEvent
- * @typedef {object} ChartEvent
- * @prop {string} type - The event type name, possible values are:
- * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
- * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
- * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
- * @prop {number} x - The mouse x position, relative to the canvas (null for incompatible events)
- * @prop {number} y - The mouse y position, relative to the canvas (null for incompatible events)
- */

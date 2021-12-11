@@ -249,6 +249,124 @@ describe('Chart.DatasetController', function() {
     expect(parsedYValues).toEqual([20, 30]);
   });
 
+  describe('labels array synchronization', function() {
+    const data1 = [
+      {x: 'One', name: 'One', y: 1, value: 1},
+      {x: 'Two', name: 'Two', y: 2, value: 2}
+    ];
+    const data2 = [
+      {x: 'Three', name: 'Three', y: 3, value: 3},
+      {x: 'Four', name: 'Four', y: 4, value: 4},
+      {x: 'Five', name: 'Five', y: 5, value: 5}
+    ];
+    [
+      true,
+      false,
+      {
+        xAxisKey: 'name',
+        yAxisKey: 'value'
+      }
+    ].forEach(function(parsing) {
+      describe('when parsing is ' + JSON.stringify(parsing), function() {
+        it('should remove old labels when data is updated', function() {
+          const chart = acquireChart({
+            type: 'line',
+            data: {
+              datasets: [{
+                data: data1
+              }]
+            },
+            options: {
+              parsing
+            }
+          });
+
+          chart.data.datasets[0].data = data2;
+          chart.update();
+
+          const meta = chart.getDatasetMeta(0);
+          const labels = meta.iScale.getLabels();
+          expect(labels).toEqual(data2.map(n => n.x));
+        });
+
+        it('should not remove any user added labels', function() {
+          const chart = acquireChart({
+            type: 'line',
+            data: {
+              datasets: [{
+                data: data1
+              }]
+            },
+            options: {
+              parsing
+            }
+          });
+
+          chart.data.labels.push('user-added');
+          chart.data.datasets[0].data = [];
+          chart.update();
+
+          const meta = chart.getDatasetMeta(0);
+          const labels = meta.iScale.getLabels();
+          expect(labels).toEqual(['user-added']);
+        });
+
+        it('should not remove any user defined labels', function() {
+          const chart = acquireChart({
+            type: 'line',
+            data: {
+              datasets: [{
+                data: data1
+              }],
+              labels: ['user1', 'user2']
+            },
+            options: {
+              parsing
+            }
+          });
+
+          const meta = chart.getDatasetMeta(0);
+
+          expect(meta.iScale.getLabels()).toEqual(['user1', 'user2'].concat(data1.map(n => n.x)));
+
+          chart.data.datasets[0].data = data2;
+          chart.update();
+
+          expect(meta.iScale.getLabels()).toEqual(['user1', 'user2'].concat(data2.map(n => n.x)));
+        });
+
+        it('should keep up with multiple datasets', function() {
+          const chart = acquireChart({
+            type: 'line',
+            data: {
+              datasets: [{
+                data: data1
+              }, {
+                data: data2
+              }],
+              labels: ['One', 'Three']
+            },
+            options: {
+              parsing
+            }
+          });
+
+          const scale = chart.scales.x;
+
+          expect(scale.getLabels()).toEqual(['One', 'Three', 'Two', 'Four', 'Five']);
+
+          chart.data.datasets[0].data = data2;
+          chart.data.datasets[1].data = data1;
+          chart.update();
+
+          expect(scale.getLabels()).toEqual(['One', 'Three', 'Four', 'Five', 'Two']);
+        });
+
+      });
+    });
+  });
+
+
   it('should synchronize metadata when data are inserted or removed and parsing is on', function() {
     const data = [0, 1, 2, 3, 4, 5];
     const chart = acquireChart({
