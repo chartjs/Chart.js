@@ -49,7 +49,7 @@ describe('Test the radial linear scale', function() {
         },
         callback: defaultConfig.pointLabels.callback,
         padding: 5,
-        polarChartLabel: false
+        centerPointLabels: false
       }
     });
 
@@ -592,7 +592,7 @@ describe('Test the radial linear scale', function() {
     });
   });
 
-  it('should correctly get the point positions in polar area graph', function() {
+  it('should correctly get the point positions in center', function() {
     var chart = window.acquireChart({
       type: 'polarArea',
       data: {
@@ -606,10 +606,11 @@ describe('Test the radial linear scale', function() {
           r: {
             pointLabels: {
               display: true,
-              padding: 5
+              padding: 5,
+              centerPointLabels: true
             },
             ticks: {
-              display: false,
+              display: false
             }
           }
         }
@@ -639,7 +640,7 @@ describe('Test the radial linear scale', function() {
     for (var i = 0; i < 5; i++) {
       const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
       const pointLabelItem = pointLabelItems[i];
-      const pointPosition = chart.scales.r.getPointPosition(i, outerDistance + extra + padding, {additionalAngle});
+      const pointPosition = chart.scales.r.getPointPosition(i, outerDistance + extra + padding, additionalAngle);
       expect(pointLabelItem.x).toBe(pointPosition.x);
       expect(pointLabelItem.y).toBe(yForAngle(pointPosition.y, 12, toDegrees(pointPosition.angle + PI / 2)));
     }

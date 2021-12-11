@@ -205,8 +205,7 @@ PolarAreaController.overrides = {
         circular: true
       },
       pointLabels: {
-        display: false,
-        polarChartLabel: true
+        display: false
       },
       startAngle: 0
     }
