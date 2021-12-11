@@ -4,7 +4,7 @@ import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle, PI} from 
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {toFont, toPadding} from '../helpers/helpers.options';
+import {createContext, toFont, toPadding} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
@@ -266,7 +266,7 @@ function numberOrZero(param) {
 }
 
 function createPointLabelContext(parent, index, label) {
-  return Object.assign(Object.create(parent), {
+  return createContext(parent, {
     label,
     index,
     type: 'pointLabel'
