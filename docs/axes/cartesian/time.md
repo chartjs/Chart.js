@@ -128,7 +128,7 @@ If this is a function, it must return a type that can be handled by your date ad
 
 ## Min Max Configuration
 
-For both the `min` and `max` properties, the value must be `string` that is parsable by your date adapter or a number with the amount of miliseconds that have elapsed since UNIX epoch.
+For both the `min` and `max` properties, the value must be `string` that is parsable by your date adapter or a number with the amount of milliseconds that have elapsed since UNIX epoch.
 In the example below the x axis will start at 7 October 2021.
 
 ```javascript
