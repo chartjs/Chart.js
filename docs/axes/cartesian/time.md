@@ -24,8 +24,10 @@ Namespace: `options.scales[scaleId]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| `min` | `string`\|`number` | | The minimum item to display. [more...](#min-max-configuration)
-| `max` | `string`\|`number` | | The maximum item to display. [more...](#min-max-configuration)
+| `min` | `number`\|`string` | | The minimum item to display. [more...](#min-max-configuration)
+| `max` | `number`\|`string` | | The maximum item to display. [more...](#min-max-configuration)
+| `suggestedMin` | `number`\|`string` | | The minimum item to display if there is no datapoint before it. [more...](../index.md#axis-range-settings)
+| `suggestedMax` | `number`\|`string` | | The maximum item to display if there is no datapoint behind it. [more...](../index.md#axis-range-settings)
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
 | `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](./index.md#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)

@@ -3176,6 +3176,9 @@ export const LogarithmicScale: ChartComponent & {
 export type TimeScaleOptions = CartesianScaleOptions & {
   min: string | number;
   max: string | number;
+
+  suggestedMin: string | number;
+  suggestedMax: string | number;
   /**
    * Scale boundary strategy (bypassed by min/max time options)
    * - `data`: make sure data are fully visible, ticks outside are removed
