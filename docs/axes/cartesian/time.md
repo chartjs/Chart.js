@@ -24,6 +24,8 @@ Namespace: `options.scales[scaleId]`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
+| `min` | `string`\|`number` | | The minimum item to display. [more...](#min-max-configuration)
+| `max` | `string`\|`number` | | The maximum item to display. [more...](#min-max-configuration)
 | `adapters.date` | `object` | `{}` | Options for adapter for external date library if that adapter needs or supports options
 | `bounds` | `string` | `'data'` | Determines the scale bounds. [more...](./index.md#scale-bounds)
 | `ticks.source` | `string` | `'auto'` | How ticks are generated. [more...](#ticks-source)
@@ -123,6 +125,38 @@ The `ticks.source` property controls the ticks generation.
 If this property is defined as a string, it is interpreted as a custom format to be used by the date adapter to parse the date.
 
 If this is a function, it must return a type that can be handled by your date adapter's `parse` method.
+
+## Min Max Configuration
+
+For both the `min` and `max` properties, the value must be `string` that is parsable by your date adapter or a number with the amount of milliseconds that have elapsed since UNIX epoch.
+In the example below the x axis will start at 7 October 2021.
+
+```javascript
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            data: [{
+                x: '2021-11-06 23:39:30',
+                y: 50
+            }, {
+                x: '2021-11-07 01:00:28',
+                y: 60
+            }, {
+                x: '2021-11-07 09:00:28',
+                y: 20
+            }]
+        }],
+    },
+    options: {
+        scales: {
+            x: {
+                min: '2021-11-07 00:00:00',
+            }
+        }
+    }
+});
+```
 
 ## Internal data format
 
