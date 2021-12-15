@@ -55,6 +55,13 @@ const chart = new Chart(ctx, {
 });
 ```
 
+Keep in mind that overriding `ticks.callback` means that you are responsible for all formatting of the label. Depending on your use case, you may want to call the default formatter and then modify its output. In the example above, that would look like:
+
+```javascript
+                        // call the default formatter, forwarding `this`
+                        return '$' + Chart.Ticks.formatters.numeric.apply(this, [value, index, ticks]);
+```
+
 Related samples:
 
 * [Tick configuration sample](../samples/scale-options/ticks)
