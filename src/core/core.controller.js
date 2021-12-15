@@ -504,9 +504,12 @@ class Chart {
 
     this._layers.sort(compare2Level('z', '_idx'));
 
-    // Replay last event from before update
-    if (this._lastEvent) {
-      this._eventHandler(this._lastEvent, true);
+    // Replay last event from before update, or set hover styles on active elements
+    const {_active, _lastEvent} = this;
+    if (_lastEvent) {
+      this._eventHandler(_lastEvent, true);
+    } else if (_active.length) {
+      this._updateHoverStyles(_active, _active, true);
     }
 
     this.render();
@@ -1086,6 +1089,8 @@ class Chart {
 
     if (changed) {
       this._active = active;
+      // Make sure we don't use the previous mouse event to override the active elements in update.
+      this._lastEvent = null;
       this._updateHoverStyles(active, lastActive);
     }
   }
