@@ -1004,6 +1004,7 @@ export class Tooltip extends Element {
     if (changed || positionChanged) {
       this._active = active;
       this._eventPosition = eventPosition;
+      this._ignoreReplayEvents = true;
       this.update(true);
     }
   }
@@ -1016,6 +1017,11 @@ export class Tooltip extends Element {
 	 * @returns {boolean} true if the tooltip changed
 	 */
   handleEvent(e, replay, inChartArea = true) {
+    if (replay && this._ignoreReplayEvents) {
+      return false;
+    }
+    this._ignoreReplayEvents = false;
+
     const options = this.options;
     const lastActive = this._active || [];
     const active = this._getActiveElements(e, lastActive, replay, inChartArea);

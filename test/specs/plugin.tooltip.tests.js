@@ -1556,6 +1556,42 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
     });
 
+    it('should not replace the user set active elements by event replay', async function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Dataset 1',
+            data: [10, 20, 30],
+            pointHoverBorderColor: 'rgb(255, 0, 0)',
+            pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+          }],
+          labels: ['Point 1', 'Point 2', 'Point 3']
+        },
+        options: {
+          events: ['pointerdown', 'pointerup']
+        }
+      });
+
+      const meta = chart.getDatasetMeta(0);
+      const point0 = meta.data[0];
+      const point1 = meta.data[1];
+
+      await jasmine.triggerMouseEvent(chart, 'pointerdown', {x: point0.x, y: point0.y});
+      expect(chart.tooltip.opacity).toBe(1);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
+
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}]);
+      chart.update();
+      expect(chart.tooltip.opacity).toBe(1);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+
+      chart.tooltip.setActiveElements([]);
+      chart.update();
+      expect(chart.tooltip.opacity).toBe(0);
+      expect(chart.tooltip.getActiveElements().length).toBe(0);
+    });
+
     it('should not change the active elements on events outside chartArea, except for mouseout', async function() {
       var chart = acquireChart({
         type: 'line',

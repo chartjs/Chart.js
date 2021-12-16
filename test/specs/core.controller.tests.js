@@ -2287,6 +2287,42 @@ describe('Chart', function() {
     });
   });
 
+  it('should not replace the user set active elements by event replay', async function() {
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        labels: [1, 2, 3],
+        datasets: [{
+          data: [1, 2, 3],
+          borderColor: 'red',
+          hoverBorderColor: 'blue',
+        }]
+      }
+    });
+
+    const meta = chart.getDatasetMeta(0);
+    const point0 = meta.data[0];
+    const point1 = meta.data[1];
+
+    let props = meta.data[0].getProps(['borderColor']);
+    expect(props.options.borderColor).toEqual('red');
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point0.x, y: point0.y});
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
+    expect(point0.options.borderColor).toEqual('blue');
+    expect(point1.options.borderColor).toEqual('red');
+
+    chart.setActiveElements([{datasetIndex: 0, index: 1}]);
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+    expect(point0.options.borderColor).toEqual('red');
+    expect(point1.options.borderColor).toEqual('blue');
+
+    chart.update();
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+    expect(point0.options.borderColor).toEqual('red');
+    expect(point1.options.borderColor).toEqual('blue');
+  });
+
   describe('platform', function() {
     it('should use the platform constructor provided in config', function() {
       const chart = acquireChart({
