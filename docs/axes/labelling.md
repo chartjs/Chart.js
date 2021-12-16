@@ -45,7 +45,7 @@ const chart = new Chart(ctx, {
             y: {
                 ticks: {
                     // Include a dollar sign in the ticks
-                    callback: function(value, index, values) {
+                    callback: function(value, index, ticks) {
                         return '$' + value;
                     }
                 }
