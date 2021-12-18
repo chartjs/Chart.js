@@ -125,6 +125,7 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
+| `centerPointLabels` | `boolean` | | `false` | if true, point labels are centered.
 
 The scriptable context is described in [Options](../../general/options.md#scale) section.
 
