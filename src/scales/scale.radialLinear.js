@@ -1,6 +1,6 @@
 import defaults from '../core/core.defaults';
 import {_longestText, renderText} from '../helpers/helpers.canvas';
-import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle} from '../helpers/helpers.math';
+import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
@@ -133,12 +133,13 @@ function buildPointLabelItems(scale, labelSizes, padding) {
   const opts = scale.options;
   const tickBackdropHeight = getTickBackdropHeight(opts);
   const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+  const additionalAngle = opts.pointLabels.centerPointLabels ? PI / valueCount : 0;
 
   for (let i = 0; i < valueCount; i++) {
     // Extra pixels out for some label spacing
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
-    const angle = toDegrees(scale.getIndexAngle(i));
+    const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], additionalAngle);
+    const angle = toDegrees(pointLabelPosition.angle + HALF_PI);
     const size = labelSizes[i];
     const y = yForAngle(pointLabelPosition.y, size.h, angle);
     const textAlign = getTextAlignForAngle(angle);
@@ -404,8 +405,8 @@ export default class RadialLinearScale extends LinearScaleBase {
     }
   }
 
-  getPointPosition(index, distanceFromCenter) {
-    const angle = this.getIndexAngle(index) - HALF_PI;
+  getPointPosition(index, distanceFromCenter, additionalAngle = 0) {
+    const angle = this.getIndexAngle(index) - HALF_PI + additionalAngle;
     return {
       x: Math.cos(angle) * distanceFromCenter + this.xCenter,
       y: Math.sin(angle) * distanceFromCenter + this.yCenter,
@@ -618,7 +619,10 @@ RadialLinearScale.defaults = {
     },
 
     // Number - Additionl padding between scale and pointLabel
-    padding: 5
+    padding: 5,
+
+    // Boolean - if true, center point labels to slices in polar chart
+    centerPointLabels: false
   }
 };
 

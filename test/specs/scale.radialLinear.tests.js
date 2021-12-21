@@ -48,7 +48,8 @@ describe('Test the radial linear scale', function() {
           size: 10
         },
         callback: defaultConfig.pointLabels.callback,
-        padding: 5
+        padding: 5,
+        centerPointLabels: false
       }
     });
 
@@ -589,5 +590,60 @@ describe('Test the radial linear scale', function() {
         expect(x.args[2]).toBeCloseToPixel(expected.y[i]);
       });
     });
+  });
+
+  it('should correctly get the point positions in center', function() {
+    var chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [{
+          data: [10, 5, 0, 25, 78]
+        }],
+        labels: ['label1', 'label2', 'label3', 'label4', 'label5']
+      },
+      options: {
+        scales: {
+          r: {
+            pointLabels: {
+              display: true,
+              padding: 5,
+              centerPointLabels: true
+            },
+            ticks: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    const PI = Math.PI;
+    const lavelNum = 5;
+    const padding = 5;
+    const pointLabelItems = chart.scales.r._pointLabelItems;
+    const additionalAngle = PI / lavelNum;
+    const opts = chart.scales.r.options;
+    const outerDistance = chart.scales.r.getDistanceFromCenterForValue(opts.ticks.reverse ? chart.scales.r.min : chart.scales.r.max);
+    const tickBackdropHeight = 0;
+    const yForAngle = function(y, h, angle) {
+      if (angle === 90 || angle === 270) {
+        y -= (h / 2);
+      } else if (angle > 270 || angle < 90) {
+        y -= h;
+      }
+      return y;
+    };
+    const toDegrees = function(radians) {
+      return radians * (180 / PI);
+    };
+
+    for (var i = 0; i < 5; i++) {
+      const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+      const pointLabelItem = pointLabelItems[i];
+      const pointPosition = chart.scales.r.getPointPosition(i, outerDistance + extra + padding, additionalAngle);
+      expect(pointLabelItem.x).toBe(pointPosition.x);
+      expect(pointLabelItem.y).toBe(yForAngle(pointPosition.y, 12, toDegrees(pointPosition.angle + PI / 2)));
+    }
+
   });
 });
