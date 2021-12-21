@@ -8,7 +8,9 @@
     "noEmit": true,
     "alwaysStrict": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "types": ["offscreencanvas"],
+    "lib": ["es2018", "DOM"]
   },
   "typedocOptions": {
     "name": "Chart.js",

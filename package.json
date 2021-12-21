@@ -55,6 +55,7 @@
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^13.0.0",
         "@simonbrunel/vuepress-plugin-versions": "^0.2.0",
+        "@types/offscreencanvas": "^2019.6.4",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
         "@vuepress/plugin-google-analytics": "^1.8.3",
