@@ -369,6 +369,22 @@ describe('Test the radial linear scale', function() {
     expect(chart.scales.r._pointLabels).toEqual([0, '', '', '', '', '']);
   });
 
+  it('Should build point labels considering hidden data', function() {
+    const chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [{
+          data: [10, 5, 0, 25, 78, 20]
+        }],
+        labels: ['a', 'b', 'c', 'd', 'e', 'f']
+      }
+    });
+    chart.toggleDataVisibility(3);
+    chart.update();
+
+    expect(chart.scales.r._pointLabels).toEqual(['a', 'b', 'c', 'e', 'f']);
+  });
+
   it('should correctly set the center point', function() {
     var chart = window.acquireChart({
       type: 'radar',
