@@ -164,6 +164,7 @@ module.exports = {
             'other-charts/pie',
             'other-charts/multi-series-pie',
             'other-charts/polar-area',
+            'other-charts/polar-area-center-labels',
             'other-charts/radar',
             'other-charts/radar-skip-points',
             'other-charts/combo-bar-line',
