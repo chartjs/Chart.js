@@ -88,7 +88,7 @@ const config = {
       },
       title: {
         display: true,
-        text: 'Chart.js Polar Area Chart'
+        text: 'Chart.js Polar Area Chart With Centered Point Labels'
       }
     }
   },
