@@ -14,7 +14,7 @@ Namespace: `options.scales[scaleId]`
 | ---- | ---- | ------- | -----------
 | `animate` | `boolean` | `true` | Whether to animate scaling the chart from the centre
 | `angleLines` | `object` | | Angle line configuration. [more...](#angle-line-options)
-| `beginAtZero` | `boolean` | `false` | if true, scale will include 0 if it is not already included.
+| `beginAtZero` | `boolean` | `false` | If true, scale will include 0 if it is not already included.
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
 | `startAngle` | `number` | `0` | Starting angle of the scale. In degrees, 0 is at top.
 
@@ -31,7 +31,7 @@ Namespace: `options.scales[scaleId].ticks`
 | `count` | `number` | Yes | `undefined` | The number of ticks to generate. If specified, this overrides the automatic generation.
 | `format` | `object` | Yes | | The [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) options used by the default label formatter
 | `maxTicksLimit` | `number` | Yes | `11` | Maximum number of ticks and gridlines to show.
-| `precision` | `number` | Yes | | if defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
+| `precision` | `number` | Yes | | If defined and `stepSize` is not specified, the step size will be rounded to this many decimal places.
 | `stepSize` | `number` | Yes | | User defined fixed step size for the scale. [more...](#step-size)
 
 !!!include(axes/_common_ticks.md)!!!
@@ -101,7 +101,7 @@ Namespace: `options.scales[scaleId].angleLines`
 
 | Name | Type | Scriptable | Default | Description
 | ---- | ---- | ------- | ------- | -----------
-| `display` | `boolean` | | `true` | if true, angle lines are shown.
+| `display` | `boolean` | | `true` | If true, angle lines are shown.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.borderColor` | Color of angled lines.
 | `lineWidth` | `number` | Yes | `1` | Width of angled lines.
 | `borderDash` | `number[]` | Yes<sup>1</sup> | `[]` | Length and spacing of dashes on angled lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
@@ -120,12 +120,12 @@ Namespace: `options.scales[scaleId].pointLabels`
 | ---- | ---- | ------- | ------- | -----------
 | `backdropColor` | [`Color`](../../general/colors.md) | `true` | `undefined` | Background color of the point label.
 | `backdropPadding` | [`Padding`](../../general/padding.md) | | `2` | Padding of label backdrop.
-| `display` | `boolean` | | `true` | if true, point labels are shown.
+| `display` | `boolean` | | `true` | If true, point labels are shown.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
-| `centerPointLabels` | `boolean` | | `false` | if true, point labels are centered.
+| [`centerPointLabels`](../../samples/other-charts/polar-area-center-labels.md) | `boolean` | | `false` | If true, point labels are centered.
 
 The scriptable context is described in [Options](../../general/options.md#scale) section.
 
