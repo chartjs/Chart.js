@@ -322,11 +322,11 @@ export default class RadialLinearScale extends LinearScaleBase {
 
     // Point labels
     this._pointLabels = this.getLabels()
-      .filter((v, i) => this.chart.getDataVisibility(i))
       .map((value, index) => {
         const label = callCallback(this.options.pointLabels.callback, [value, index], this);
         return label || label === 0 ? label : '';
-      });
+      })
+      .filter((v, i) => this.chart.getDataVisibility(i));
   }
 
   fit() {
