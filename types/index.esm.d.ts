@@ -480,7 +480,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfiguration<TType, TData, TLabel>
+  readonly config: ChartConfiguration<TType, TData, TLabel>;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
