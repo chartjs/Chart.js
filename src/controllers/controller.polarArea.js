@@ -1,6 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {toRadians, PI} from '../helpers/index';
 import {formatNumber} from '../helpers/helpers.intl';
+import {isNumber} from '../helpers/helpers.math';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -57,7 +58,7 @@ export default class PolarAreaController extends DatasetController {
     const centerX = scale.xCenter;
     const centerY = scale.yCenter;
 
-    if (!isNaN(scale.getIndexAngle(0))) {
+    if (isNumber(scale.getIndexAngle(0))) {
       this._lastIndexAngle = scale.getIndexAngle(0);
     }
 
