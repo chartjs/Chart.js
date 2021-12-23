@@ -153,10 +153,10 @@ describe('Chart.controllers.radar', function() {
     chart.update();
 
     [
-      {x: 256, y: 120, cppx: 246, cppy: 120, cpnx: 272, cpny: 120},
-      {x: 459, y: 256, cppx: 459, cppy: 249, cpnx: 459, cpny: 262},
+      {x: 256, y: 122, cppx: 246, cppy: 122, cpnx: 272, cpny: 122},
+      {x: 457, y: 256, cppx: 457, cppy: 249, cpnx: 457, cpny: 262},
       {x: 256, y: 256, cppx: 277, cppy: 256, cpnx: 250, cpny: 256},
-      {x: 200, y: 256, cppx: 200, cppy: 260, cpnx: 200, cpny: 246},
+      {x: 202, y: 256, cppx: 202, cppy: 260, cpnx: 202, cpny: 246},
     ].forEach(function(expected, i) {
       expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
       expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
@@ -208,10 +208,10 @@ describe('Chart.controllers.radar', function() {
 
     // Since tension is now 0, we don't care about the control points
     [
-      {x: 256, y: 120},
-      {x: 459, y: 256},
+      {x: 256, y: 122},
+      {x: 457, y: 256},
       {x: 256, y: 256},
-      {x: 200, y: 256},
+      {x: 202, y: 256},
     ].forEach(function(expected, i) {
       expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
       expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
