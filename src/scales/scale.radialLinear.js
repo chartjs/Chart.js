@@ -373,7 +373,9 @@ export default class RadialLinearScale extends LinearScaleBase {
   getIndexAngle(index) {
     const angleMultiplier = TAU / this._pointLabels.length;
     const startAngle = this.options.startAngle || 0;
-    return _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
+    const indexAngle = _normalizeAngle(index * angleMultiplier + toRadians(startAngle));
+
+    return this._pointLabels.length === 0 ? startAngle : indexAngle;
   }
 
   getDistanceFromCenterForValue(value) {
