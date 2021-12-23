@@ -105,18 +105,18 @@ describe('Chart.controllers.polarArea', function() {
     expect(meta.data.length).toBe(4);
 
     [
-      {o: 177, s: -0.5 * Math.PI, e: 0},
-      {o: 240, s: 0, e: 0.5 * Math.PI},
+      {o: 174, s: -0.5 * Math.PI, e: 0},
+      {o: 236, s: 0, e: 0.5 * Math.PI},
       {o: 51, s: 0.5 * Math.PI, e: Math.PI},
       {o: 0, s: Math.PI, e: 1.5 * Math.PI}
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).toBeCloseToPixel(256);
-      expect(meta.data[i].y).toBeCloseToPixel(259);
-      expect(meta.data[i].innerRadius).toBeCloseToPixel(0);
-      expect(meta.data[i].outerRadius).toBeCloseToPixel(expected.o);
-      expect(meta.data[i].startAngle).toBe(expected.s);
-      expect(meta.data[i].endAngle).toBe(expected.e);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(256);
+      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(256);
+      expect(meta.data[i].innerRadius).withContext(i).toBeCloseToPixel(0);
+      expect(meta.data[i].outerRadius).withContext(i).toBeCloseToPixel(expected.o);
+      expect(meta.data[i].startAngle).withContext(i).toBe(expected.s);
+      expect(meta.data[i].endAngle).withContext(i).toBe(expected.e);
+      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 255, 0)',
         borderWidth: 1.2
@@ -139,9 +139,9 @@ describe('Chart.controllers.polarArea', function() {
     chart.update();
 
     expect(meta.data[0].x).toBeCloseToPixel(256);
-    expect(meta.data[0].y).toBeCloseToPixel(259);
+    expect(meta.data[0].y).toBeCloseToPixel(256);
     expect(meta.data[0].innerRadius).toBeCloseToPixel(0);
-    expect(meta.data[0].outerRadius).toBeCloseToPixel(177);
+    expect(meta.data[0].outerRadius).toBeCloseToPixel(174);
   });
 
   it('should update elements with start angle from options', function() {
@@ -179,18 +179,18 @@ describe('Chart.controllers.polarArea', function() {
     expect(meta.data.length).toBe(4);
 
     [
-      {o: 177, s: 0, e: 0.5 * Math.PI},
-      {o: 240, s: 0.5 * Math.PI, e: Math.PI},
+      {o: 174, s: 0, e: 0.5 * Math.PI},
+      {o: 236, s: 0.5 * Math.PI, e: Math.PI},
       {o: 51, s: Math.PI, e: 1.5 * Math.PI},
       {o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).toBeCloseToPixel(256);
-      expect(meta.data[i].y).toBeCloseToPixel(259);
-      expect(meta.data[i].innerRadius).toBeCloseToPixel(0);
-      expect(meta.data[i].outerRadius).toBeCloseToPixel(expected.o);
-      expect(meta.data[i].startAngle).toBe(expected.s);
-      expect(meta.data[i].endAngle).toBe(expected.e);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(256);
+      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(256);
+      expect(meta.data[i].innerRadius).withContext(i).toBeCloseToPixel(0);
+      expect(meta.data[i].outerRadius).withContext(i).toBeCloseToPixel(expected.o);
+      expect(meta.data[i].startAngle).withContext(i).toBe(expected.s);
+      expect(meta.data[i].endAngle).withContext(i).toBe(expected.e);
+      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 255, 0)',
         borderWidth: 1.2

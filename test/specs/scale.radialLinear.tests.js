@@ -407,9 +407,9 @@ describe('Test the radial linear scale', function() {
       }
     });
 
-    expect(chart.scales.r.drawingArea).toBe(227);
+    expect(chart.scales.r.drawingArea).toBe(215);
     expect(chart.scales.r.xCenter).toBe(256);
-    expect(chart.scales.r.yCenter).toBe(284);
+    expect(chart.scales.r.yCenter).toBe(280);
   });
 
   it('should correctly get the label for a given data index', function() {
@@ -459,16 +459,16 @@ describe('Test the radial linear scale', function() {
     });
 
     expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.min)).toBe(0);
-    expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.max)).toBe(227);
+    expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.max)).toBe(215);
 
     var position = chart.scales.r.getPointPositionForValue(1, 5);
-    expect(position.x).toBeCloseToPixel(270);
-    expect(position.y).toBeCloseToPixel(278);
+    expect(position.x).toBeCloseToPixel(269);
+    expect(position.y).toBeCloseToPixel(276);
 
     chart.scales.r.options.reverse = true;
     chart.update();
 
-    expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.min)).toBe(227);
+    expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.min)).toBe(215);
     expect(chart.scales.r.getDistanceFromCenterForValue(chart.scales.r.max)).toBe(0);
   });
 
@@ -495,7 +495,7 @@ describe('Test the radial linear scale', function() {
     });
 
     expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.min);
-    expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.max);
+    expect(chart.scales.r.getValueForDistanceFromCenter(215)).toBe(chart.scales.r.max);
 
     var dist = chart.scales.r.getDistanceFromCenterForValue(5);
     expect(chart.scales.r.getValueForDistanceFromCenter(dist)).toBe(5);
@@ -504,7 +504,7 @@ describe('Test the radial linear scale', function() {
     chart.update();
 
     expect(chart.scales.r.getValueForDistanceFromCenter(0)).toBe(chart.scales.r.max);
-    expect(chart.scales.r.getValueForDistanceFromCenter(227)).toBe(chart.scales.r.min);
+    expect(chart.scales.r.getValueForDistanceFromCenter(215)).toBe(chart.scales.r.min);
   });
 
   it('should correctly get angles for all points', function() {
@@ -578,15 +578,12 @@ describe('Test the radial linear scale', function() {
     [{
       startAngle: 30,
       textAlign: ['right', 'right', 'left', 'left', 'left'],
-      y: [82, 366, 506, 319, 53]
     }, {
       startAngle: -30,
       textAlign: ['right', 'right', 'left', 'left', 'right'],
-      y: [319, 506, 366, 82, 53]
     }, {
       startAngle: 750,
       textAlign: ['right', 'right', 'left', 'left', 'left'],
-      y: [82, 366, 506, 319, 53]
     }].forEach(function(expected) {
       scale.options.startAngle = expected.startAngle;
       chart.update();
@@ -598,12 +595,6 @@ describe('Test the radial linear scale', function() {
         return x.name === 'setTextAlign';
       }).forEach(function(x, i) {
         expect(x.args[0]).withContext('startAngle: ' + expected.startAngle + ', tick: ' + i).toBe(expected.textAlign[i]);
-      });
-
-      scale.ctx.getCalls().filter(function(x) {
-        return x.name === 'fillText';
-      }).map(function(x, i) {
-        expect(x.args[2]).toBeCloseToPixel(expected.y[i]);
       });
     });
   });
