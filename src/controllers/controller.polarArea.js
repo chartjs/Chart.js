@@ -56,7 +56,6 @@ export default class PolarAreaController extends DatasetController {
     const scale = this._cachedMeta.rScale;
     const centerX = scale.xCenter;
     const centerY = scale.yCenter;
-
     const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
