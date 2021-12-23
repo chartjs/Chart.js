@@ -121,8 +121,8 @@ describe('Chart.layouts', function() {
     expect(scale.left).toBeCloseToPixel(0);
     expect(scale.right).toBeCloseToPixel(512);
     expect(scale.top).toBeCloseToPixel(32);
-    expect(scale.width).toBeCloseToPixel(512);
-    expect(scale.height).toBeCloseToPixel(480);
+    expect(scale.width).toBeCloseToPixel(496);
+    expect(scale.height).toBeCloseToPixel(464);
   });
 
   it('should fit multiple axes in the same position', function() {

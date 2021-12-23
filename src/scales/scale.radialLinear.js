@@ -1,6 +1,6 @@
 import defaults from '../core/core.defaults';
 import {_longestText, renderText} from '../helpers/helpers.canvas';
-import {HALF_PI, isNumber, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
+import {HALF_PI, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
@@ -76,70 +76,77 @@ function fitWithPointLabels(scale) {
 
   // Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
   // Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
-  const furthestLimits = {
-    l: 0,
-    r: scale.width,
-    t: 0,
-    b: scale.height - scale.paddingTop
+  const orig = {
+    l: scale.left + scale._padding.left,
+    r: scale.right - scale._padding.right,
+    t: scale.top + scale._padding.top,
+    b: scale.bottom - scale._padding.bottom
   };
-  const furthestAngles = {};
+  const limits = Object.assign({}, orig);
   const labelSizes = [];
   const padding = [];
-
   const valueCount = scale._pointLabels.length;
+  const pointLabelOpts = scale.options.pointLabels;
+  const additionalAngle = pointLabelOpts.centerPointLabels ? PI / valueCount : 0;
+
   for (let i = 0; i < valueCount; i++) {
-    const opts = scale.options.pointLabels.setContext(scale.getPointLabelContext(i));
+    const opts = pointLabelOpts.setContext(scale.getPointLabelContext(i));
     padding[i] = opts.padding;
-    const pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
+    const pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i], additionalAngle);
     const plFont = toFont(opts.font);
     const textSize = measureLabelSize(scale.ctx, plFont, scale._pointLabels[i]);
     labelSizes[i] = textSize;
 
-    const angleRadians = scale.getIndexAngle(i);
-    const angle = toDegrees(angleRadians);
+    const angleRadians = _normalizeAngle(scale.getIndexAngle(i) + additionalAngle);
+    const angle = Math.round(toDegrees(angleRadians));
     const hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
     const vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
-
-    if (hLimits.start < furthestLimits.l) {
-      furthestLimits.l = hLimits.start;
-      furthestAngles.l = angleRadians;
-    }
-
-    if (hLimits.end > furthestLimits.r) {
-      furthestLimits.r = hLimits.end;
-      furthestAngles.r = angleRadians;
-    }
-
-    if (vLimits.start < furthestLimits.t) {
-      furthestLimits.t = vLimits.start;
-      furthestAngles.t = angleRadians;
-    }
-
-    if (vLimits.end > furthestLimits.b) {
-      furthestLimits.b = vLimits.end;
-      furthestAngles.b = angleRadians;
-    }
+    updateLimits(limits, orig, angleRadians, hLimits, vLimits);
   }
 
-  scale._setReductions(scale.drawingArea, furthestLimits, furthestAngles);
+  scale.setCenterPoint(
+    orig.l - limits.l,
+    limits.r - orig.r,
+    orig.t - limits.t,
+    limits.b - orig.b
+  );
 
   // Now that text size is determined, compute the full positions
   scale._pointLabelItems = buildPointLabelItems(scale, labelSizes, padding);
+}
+
+function updateLimits(limits, orig, angle, hLimits, vLimits) {
+  const sin = Math.abs(Math.sin(angle));
+  const cos = Math.abs(Math.cos(angle));
+  let x = 0;
+  let y = 0;
+  if (hLimits.start < orig.l) {
+    x = (orig.l - hLimits.start) / sin;
+    limits.l = Math.min(limits.l, orig.l - x);
+  } else if (hLimits.end > orig.r) {
+    x = (hLimits.end - orig.r) / sin;
+    limits.r = Math.max(limits.r, orig.r + x);
+  }
+  if (vLimits.start < orig.t) {
+    y = (orig.t - vLimits.start) / cos;
+    limits.t = Math.min(limits.t, orig.t - y);
+  } else if (vLimits.end > orig.b) {
+    y = (vLimits.end - orig.b) / cos;
+    limits.b = Math.max(limits.b, orig.b + y);
+  }
 }
 
 function buildPointLabelItems(scale, labelSizes, padding) {
   const items = [];
   const valueCount = scale._pointLabels.length;
   const opts = scale.options;
-  const tickBackdropHeight = getTickBackdropHeight(opts);
-  const outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+  const extra = getTickBackdropHeight(opts) / 2;
+  const outerDistance = scale.drawingArea;
   const additionalAngle = opts.pointLabels.centerPointLabels ? PI / valueCount : 0;
 
   for (let i = 0; i < valueCount; i++) {
-    // Extra pixels out for some label spacing
-    const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], additionalAngle);
-    const angle = toDegrees(pointLabelPosition.angle + HALF_PI);
+    const angle = Math.round(toDegrees(_normalizeAngle(pointLabelPosition.angle + HALF_PI)));
     const size = labelSizes[i];
     const y = yForAngle(pointLabelPosition.y, size.h, angle);
     const textAlign = getTextAlignForAngle(angle);
@@ -261,10 +268,6 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
   ctx.restore();
 }
 
-function numberOrZero(param) {
-  return isNumber(param) ? param : 0;
-}
-
 function createPointLabelContext(parent, index, label) {
   return createContext(parent, {
     label,
@@ -291,12 +294,12 @@ export default class RadialLinearScale extends LinearScaleBase {
 
   setDimensions() {
     // Set the unconstrained dimension before label rotation
-    this.width = this.maxWidth;
-    this.height = this.maxHeight;
-    this.paddingTop = getTickBackdropHeight(this.options) / 2;
-    this.xCenter = Math.floor(this.width / 2);
-    this.yCenter = Math.floor((this.height - this.paddingTop) / 2);
-    this.drawingArea = Math.min(this.height - this.paddingTop, this.width) / 2;
+    const padding = this._padding = toPadding(getTickBackdropHeight(this.options) / 2);
+    const w = this.width = this.maxWidth - padding.width;
+    const h = this.height = this.maxHeight - padding.height;
+    this.xCenter = Math.floor(this.left + w / 2 + padding.left);
+    this.yCenter = Math.floor(this.top + h / 2 + padding.top);
+    this.drawingArea = Math.floor(Math.min(w, h) / 2);
   }
 
   determineDataLimits() {
@@ -339,35 +342,10 @@ export default class RadialLinearScale extends LinearScaleBase {
     }
   }
 
-  /**
-	 * Set radius reductions and determine new radius and center point
-	 * @private
-	 */
-  _setReductions(largestPossibleRadius, furthestLimits, furthestAngles) {
-    let radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
-    let radiusReductionRight = Math.max(furthestLimits.r - this.width, 0) / Math.sin(furthestAngles.r);
-    let radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
-    let radiusReductionBottom = -Math.max(furthestLimits.b - (this.height - this.paddingTop), 0) / Math.cos(furthestAngles.b);
-
-    radiusReductionLeft = numberOrZero(radiusReductionLeft);
-    radiusReductionRight = numberOrZero(radiusReductionRight);
-    radiusReductionTop = numberOrZero(radiusReductionTop);
-    radiusReductionBottom = numberOrZero(radiusReductionBottom);
-
-    this.drawingArea = Math.max(largestPossibleRadius / 2, Math.min(
-      Math.floor(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
-      Math.floor(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2)));
-    this.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
-  }
-
   setCenterPoint(leftMovement, rightMovement, topMovement, bottomMovement) {
-    const maxRight = this.width - rightMovement - this.drawingArea;
-    const maxLeft = leftMovement + this.drawingArea;
-    const maxTop = topMovement + this.drawingArea;
-    const maxBottom = (this.height - this.paddingTop) - bottomMovement - this.drawingArea;
-
-    this.xCenter = Math.floor(((maxLeft + maxRight) / 2) + this.left);
-    this.yCenter = Math.floor(((maxTop + maxBottom) / 2) + this.top + this.paddingTop);
+    this.xCenter += Math.floor((leftMovement - rightMovement) / 2);
+    this.yCenter += Math.floor((topMovement - bottomMovement) / 2);
+    this.drawingArea -= Math.min(this.drawingArea / 2, Math.max(leftMovement, rightMovement, topMovement, bottomMovement));
   }
 
   getIndexAngle(index) {

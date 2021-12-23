@@ -133,14 +133,14 @@ describe('Chart.controllers.radar', function() {
     }));
 
     [
-      {x: 256, y: 260},
-      {x: 256, y: 260},
-      {x: 256, y: 260},
-      {x: 256, y: 260},
+      {x: 256, y: 256},
+      {x: 256, y: 256},
+      {x: 256, y: 256},
+      {x: 256, y: 256},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
         backgroundColor: Chart.defaults.backgroundColor,
         borderWidth: 1,
         borderColor: Chart.defaults.borderColor,
@@ -154,17 +154,17 @@ describe('Chart.controllers.radar', function() {
 
     [
       {x: 256, y: 120, cppx: 246, cppy: 120, cpnx: 272, cpny: 120},
-      {x: 464, y: 260, cppx: 464, cppy: 252, cpnx: 464, cpny: 266},
-      {x: 256, y: 260, cppx: 277, cppy: 260, cpnx: 250, cpny: 260},
-      {x: 200, y: 260, cppx: 200, cppy: 264, cpnx: 200, cpny: 250},
+      {x: 459, y: 256, cppx: 459, cppy: 249, cpnx: 459, cpny: 262},
+      {x: 256, y: 256, cppx: 277, cppy: 256, cpnx: 250, cpny: 256},
+      {x: 200, y: 256, cppx: 200, cppy: 260, cpnx: 200, cpny: 246},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].cp1x).toBeCloseToPixel(expected.cppx);
-      expect(meta.data[i].cp1y).toBeCloseToPixel(expected.cppy);
-      expect(meta.data[i].cp2x).toBeCloseToPixel(expected.cpnx);
-      expect(meta.data[i].cp2y).toBeCloseToPixel(expected.cpny);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].cp1x).withContext(i).toBeCloseToPixel(expected.cppx);
+      expect(meta.data[i].cp1y).withContext(i).toBeCloseToPixel(expected.cppy);
+      expect(meta.data[i].cp2x).withContext(i).toBeCloseToPixel(expected.cpnx);
+      expect(meta.data[i].cp2y).withContext(i).toBeCloseToPixel(expected.cpny);
+      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
         backgroundColor: Chart.defaults.backgroundColor,
         borderWidth: 1,
         borderColor: Chart.defaults.borderColor,
@@ -209,13 +209,13 @@ describe('Chart.controllers.radar', function() {
     // Since tension is now 0, we don't care about the control points
     [
       {x: 256, y: 120},
-      {x: 464, y: 260},
-      {x: 256, y: 260},
-      {x: 200, y: 260},
+      {x: 459, y: 256},
+      {x: 256, y: 256},
+      {x: 200, y: 256},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
         backgroundColor: 'rgb(128, 129, 130)',
         borderWidth: 1.123,
         borderColor: 'rgb(56, 57, 58)',
