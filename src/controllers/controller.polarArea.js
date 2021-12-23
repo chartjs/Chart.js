@@ -58,11 +58,10 @@ export default class PolarAreaController extends DatasetController {
     const centerY = scale.yCenter;
 
     if (!isNaN(scale.getIndexAngle(0))) {
-      this.lastIndexAngle = scale.getIndexAngle(0);
+      this._lastIndexAngle = scale.getIndexAngle(0);
     }
 
-    const datasetStartAngle = this.lastIndexAngle - 0.5 * PI;
-
+    const datasetStartAngle = this._lastIndexAngle - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
 
