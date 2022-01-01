@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-      Need help or support?
-      Please don't open an issue! Head to https://stackoverflow.com/questions/tagged/chart.js.
+        Need help or support?
+        Please don't open an issue! Head to https://stackoverflow.com/questions/tagged/chart.js.
   
   - type: markdown
     attributes:
@@ -35,13 +35,13 @@ body:
     attributes:
       label: Reproducable sample
       description: |
-      Please provide issue reproduction.
-      You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducable sample.
+        Please provide issue reproduction.
+        You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducable sample.
 
-      If filing a bug against `master`, you may reference the latest code via
-      https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
-      point at the file you need as appropriate). Do not rely on these files for
-      production purposes as they may be removed at any time.
+        If filing a bug against `master`, you may reference the latest code via
+        https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
+        point at the file you need as appropriate). Do not rely on these files for
+        production purposes as they may be removed at any time.
     validations:
       required: true
   
@@ -58,8 +58,8 @@ body:
     attributes:
       label: Context
       description: |
-      How has this issue affected you? What are you trying to accomplish?
-      Providing context helps us come up with a solution that is most useful in the real world.
+        How has this issue affected you? What are you trying to accomplish?
+        Providing context helps us come up with a solution that is most useful in the real world.
 
   - type: input
     attributes:
