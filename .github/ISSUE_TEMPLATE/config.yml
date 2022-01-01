@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support, Help, and Advice
+    url: https://stackoverflow.com/questions/tagged/chart.js
+    about: Need help or support? Head to https://stackoverflow.com/questions/tagged/chart.js

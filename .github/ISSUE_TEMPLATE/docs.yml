@@ -1,0 +1,33 @@
+name: Documentation
+description: Are the docs lacking or missing something?
+title: ""
+labels: ["documentation"]
+body:
+  - type: checkboxes
+    attributes:
+      label: "Documentation Is:"
+      options:
+        - label: Missing or needed?
+        - label: Confusing
+        - label: Not sure?
+
+  - type: textarea
+    attributes:
+      label: Please Explain in Detail...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Your Proposal for Changes
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Example
+      description: |
+      Provide a link to a live example demonstrating the issue or feature to be documented:
+      https://codepen.io/pen?template=BapRepQ
+    validations:
+      required: true
