@@ -21,12 +21,3 @@ body:
       label: Your Proposal for Changes
     validations:
       required: true
-
-  - type: textarea
-    attributes:
-      label: Example
-      description: |
-        Provide a link to a live example demonstrating the issue or feature to be documented:
-        https://codepen.io/pen?template=BapRepQ
-    validations:
-      required: true
