@@ -1,6 +1,5 @@
 name: Bug Report
 description: Something went awry
-title: ""
 labels: ["bug"]
 body:
   - type: markdown
