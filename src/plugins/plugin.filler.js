@@ -63,44 +63,52 @@ function decodeFill(line, index, count) {
   let target = parseFloat(fill);
 
   if (isFinite(target) && Math.floor(target) === target) {
-    if (fill[0] === '-' || fill[0] === '+') {
-      target = index + target;
-    }
-
-    if (target === index || target < 0 || target >= count) {
-      return false;
-    }
-
-    return target;
+    return decodeTargetIndex(fill[0], index, target, count);
   }
 
   return ['origin', 'start', 'end', 'stack', 'shape'].indexOf(fill) >= 0 && fill;
 }
 
-function computeLinearBoundary(source) {
-  const {scale = {}, fill} = source;
-  let target = null;
-  let horizontal;
-
-  if (fill === 'start') {
-    target = scale.bottom;
-  } else if (fill === 'end') {
-    target = scale.top;
-  } else if (isObject(fill)) {
-    target = scale.getPixelForValue(fill.value);
-  } else if (scale.getBasePixel) {
-    target = scale.getBasePixel();
+function decodeTargetIndex(firstCh, index, target, count) {
+  if (firstCh === '-' || firstCh === '+') {
+    target = index + target;
   }
 
-  if (isFinite(target)) {
-    horizontal = scale.isHorizontal();
+  if (target === index || target < 0 || target >= count) {
+    return false;
+  }
+
+  return target;
+}
+
+function computeLinearBoundary(source) {
+  const {scale = {}, fill} = source;
+  const pixel = getTargetPixel(fill, scale);
+
+  if (isFinite(pixel)) {
+    const horizontal = scale.isHorizontal();
+
     return {
-      x: horizontal ? target : null,
-      y: horizontal ? null : target
+      x: horizontal ? pixel : null,
+      y: horizontal ? null : pixel
     };
   }
 
   return null;
+}
+
+function getTargetPixel(fill, scale) {
+  let pixel = null;
+  if (fill === 'start') {
+    pixel = scale.bottom;
+  } else if (fill === 'end') {
+    pixel = scale.top;
+  } else if (isObject(fill)) {
+    pixel = scale.getPixelForValue(fill.value);
+  } else if (scale.getBasePixel) {
+    pixel = scale.getBasePixel();
+  }
+  return pixel;
 }
 
 // TODO: use elements.ArcElement instead
@@ -133,23 +141,12 @@ function computeCircularBoundary(source) {
   const {scale, fill} = source;
   const options = scale.options;
   const length = scale.getLabels().length;
-  const target = [];
   const start = options.reverse ? scale.max : scale.min;
-  const end = options.reverse ? scale.min : scale.max;
-  let i, center, value;
-
-  if (fill === 'start') {
-    value = start;
-  } else if (fill === 'end') {
-    value = end;
-  } else if (isObject(fill)) {
-    value = fill.value;
-  } else {
-    value = scale.getBaseValue();
-  }
+  const value = getTargetValue(fill, scale, start);
+  const target = [];
 
   if (options.grid.circular) {
-    center = scale.getPointPositionForValue(0, start);
+    const center = scale.getPointPositionForValue(0, start);
     return new simpleArc({
       x: center.x,
       y: center.y,
@@ -157,10 +154,25 @@ function computeCircularBoundary(source) {
     });
   }
 
-  for (i = 0; i < length; ++i) {
+  for (let i = 0; i < length; ++i) {
     target.push(scale.getPointPositionForValue(i, value));
   }
   return target;
+}
+
+function getTargetValue(fill, scale, startValue) {
+  let value;
+
+  if (fill === 'start') {
+    value = startValue;
+  } else if (fill === 'end') {
+    value = scale.options.reverse ? scale.min : scale.max;
+  } else if (isObject(fill)) {
+    value = fill.value;
+  } else {
+    value = scale.getBaseValue();
+  }
+  return value;
 }
 
 function computeBoundary(source) {
