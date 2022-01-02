@@ -1,6 +1,6 @@
 name: Documentation
 description: Are the docs lacking or missing something?
-labels: ["documentation"]
+labels: ["type: documentation"]
 body:
   - type: checkboxes
     attributes:
