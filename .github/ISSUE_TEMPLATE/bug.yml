@@ -1,0 +1,84 @@
+name: Bug Report
+description: Something went awry
+labels: ["type: bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Need help or support?
+        Please don't open an issue! Head to https://stackoverflow.com/questions/tagged/chart.js.
+  
+  - type: markdown
+    attributes:
+      value: "Bug reports MUST be submitted with an interactive example: https://codepen.io/pen?template=BapRepQ."
+
+  - type: markdown
+    attributes:
+      value: Chart.js versions lower then 3.x are NOT supported anymore, new issues will be disregarded.
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: Tell us what should happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: Tell us what happens instead of the expected behavior.
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Reproducible sample
+      description: |
+        Please provide issue reproduction.
+        You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducible sample.
+
+        Major framework wrappers for chart.js templates:
+        [vue-chart-3 sandbox (Vue)](https://codesandbox.io/s/vue-chart-3-chart-js-issue-template-bpg7k?file=/src/App.vue)
+        [ng2-charts sandbox (Angular)](https://codesandbox.io/s/ng2charts-chart-js-issue-template-fhezt?file=/src/app/app.component.ts)
+        [react-chartjs-2 sandbox (React)](https://codesandbox.io/s/react-chartjs-2-chart-js-issue-template-cg7b5?file=/src/App.tsx)
+
+        For typescript issues you can make use of [this TS Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgYQBYENZwL5wGZQQhwDkAxhrAHQBWAziQNwCwAUGwG6ZxkwAecALxwAJhDIBXEAFMAdjCoBzaTACiAG2kz5AIQCeASREAKAEQg9aTDFMBKOOjpwAEgBUAsgBlk6WVzoaWnIwLKxcUHAWVljCstIA7iiUMMa8fAA0iGxwOXAwemDSAFyk6sBxJOnZuSLoMOglCNW5ueroAEbS6nQlANqmAErSIqaZpjrqEtKjcKYAml3qEPEzpgDiUNJyqwAKElBgmqsA8lC+yqYAulWsLS219XQqPXC9Tbd3n22d6iUkAMRwCB4OAANQgMGkDBun0+DwarwAjAAmTKIgCcmQAzJkAKyZVFwLHXZp3bCXUnYGG5CBgGDACCyF7vT50MjoTTM0ktPiNbl3fk5KmCuB6PkfWFwEXYfkyiU4NjYWyMIA) to make a reproducible sample.
+
+        If filing a bug against `master`, you may reference the latest code via
+        https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
+        point at the file you need as appropriate). Do not rely on these files for
+        production purposes as they may be removed at any time.
+    validations:
+      required: true
+  
+  - type: textarea
+    attributes:
+      label: Optional extra steps/info to reproduce
+
+  - type: textarea
+    attributes:
+      label: Possible solution
+      description: If you have suggestions on a fix for the bug.
+
+  - type: textarea
+    attributes:
+      label: Context
+      description: |
+        How has this issue affected you? What are you trying to accomplish?
+        Providing context helps us come up with a solution that is most useful in the real world.
+
+  - type: input
+    attributes:
+      label: chart.js version
+      description: Which version of `chart.js` are you using?
+      placeholder: "v0.0.0"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Browser name and version
+
+  - type: input
+    attributes:
+      label: Link to your project
