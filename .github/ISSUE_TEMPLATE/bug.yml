@@ -37,8 +37,8 @@ body:
         Please provide issue reproduction.
         You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducible sample.
 
-        Major framework wrappers for chart.js template:
-        [vue-chart-3 (Vue)](https://codesandbox.io/s/vue-chart-3-chart-js-issue-template-bpg7k?file=/src/App.vue)
+        Major framework wrappers for chart.js templates:
+        [vue-chart-3 sandbox (Vue)](https://codesandbox.io/s/vue-chart-3-chart-js-issue-template-bpg7k?file=/src/App.vue)
         [ng2-charts sandbox (Angular)](https://codesandbox.io/s/ng2charts-chart-js-issue-template-fhezt?file=/src/app/app.component.ts)
         [react-chartjs-2 sandbox (React)](https://codesandbox.io/s/react-chartjs-2-chart-js-issue-template-cg7b5?file=/src/App.tsx)
 
