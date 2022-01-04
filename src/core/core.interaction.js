@@ -50,7 +50,7 @@ function binarySearch(metaset, axis, value, intersect) {
  * @param {function} handler - the callback to execute for each visible item
  * @param {boolean} [intersect] - consider intersecting items
  */
-function evaluateInteractionItems(chart, axis, position, handler, intersect) {
+export function evaluateInteractionItems(chart, axis, position, handler, intersect) {
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
@@ -89,7 +89,7 @@ function getDistanceMetricForAxis(axis) {
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-function getIntersectItems(chart, position, axis, useFinalPosition) {
+export function getIntersectItems(chart, position, axis, useFinalPosition) {
   const items = [];
 
   if (!chart.isPointInArea(position)) {
@@ -179,7 +179,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
+export function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
   if (!chart.isPointInArea(position)) {
     return [];
   }
@@ -198,7 +198,7 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
+export function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
   const items = [];
   const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
   let intersectsItem = false;
