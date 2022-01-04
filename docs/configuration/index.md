@@ -2,7 +2,7 @@
 
 The configuration is used to change how the chart behaves. There are properties to control styling, fonts, the legend, etc.
 
-## Cofiguration object structure
+## Configuration object structure
 
 The top level structure of Chart.js configuration:
 
