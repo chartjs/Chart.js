@@ -3,6 +3,7 @@ import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helper
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import("../../types/index.esm").Point } Point
  */
 
 /**
@@ -242,7 +243,7 @@ export function drawPoint(ctx, options, x, y) {
 
 /**
  * Returns true if the point is inside the rectangle
- * @param {object} point - The point to test
+ * @param {Point} point - The point to test
  * @param {object} area - The rectangle
  * @param {number} [margin] - allowed margin
  * @returns {boolean}

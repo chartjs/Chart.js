@@ -1,4 +1,3 @@
-import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 import {getRelativePosition} from '../helpers/helpers.dom';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
@@ -93,7 +92,7 @@ function getIntersectItems(chart, e, axis, useFinalPosition) {
   const position = getRelativePosition(e, chart);
   const items = [];
 
-  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
+  if (!chart.isPointInArea(position)) {
     return items;
   }
 
@@ -152,7 +151,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
     }
 
     const center = element.getCenterPoint(useFinalPosition);
-    const pointInArea = _isPointInArea(center, chart.chartArea, chart._minPadding);
+    const pointInArea = chart.isPointInArea(center);
     if (!pointInArea && !inRange) {
       return;
     }
@@ -182,7 +181,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
  */
 function getNearestItems(chart, e, axis, intersect, useFinalPosition) {
   const position = getRelativePosition(e, chart);
-  if (!_isPointInArea(position, chart.chartArea, chart._minPadding)) {
+  if (!chart.isPointInArea(position)) {
     return [];
   }
 

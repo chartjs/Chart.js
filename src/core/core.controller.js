@@ -15,6 +15,7 @@ import {debounce} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
+ * @typedef { import("../../types/index.esm").Point } Point
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -792,6 +793,16 @@ class Chart {
     this.notifyPlugins('afterDatasetDraw', args);
   }
 
+  /**
+   * Checks whether the given point is in the chart area.  Point coordinates are
+   * relative to the chart.  (getRelativePosition may be helpful.)
+   * @param {Point} point
+   * @returns {boolean}
+   */
+  isPointInArea(point) {
+    return _isPointInArea(point, this.chartArea, this._minPadding);
+  }
+
   getElementsAtEventForMode(e, mode, options, useFinalPosition) {
     const method = Interaction.modes[mode];
     if (typeof method === 'function') {
@@ -1134,7 +1145,7 @@ class Chart {
       event: e,
       replay,
       cancelable: true,
-      inChartArea: _isPointInArea(e, this.chartArea, this._minPadding)
+      inChartArea: this.isPointInArea(e)
     };
     const eventFilter = (plugin) => (plugin.options.events || this.options.events).includes(e.native.type);
 
