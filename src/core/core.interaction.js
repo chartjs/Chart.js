@@ -1,6 +1,6 @@
 import {_isPointInArea} from '../helpers/helpers.canvas';
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
-import {getRelativePosition as helpersGetRelativePosition} from '../helpers/helpers.dom';
+import {getRelativePosition} from '../helpers/helpers.dom';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
 
 /**
@@ -9,23 +9,6 @@ import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
  * @typedef {{axis?: string, intersect?: boolean}} InteractionOptions
  * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
  */
-
-/**
- * Helper function to get relative position for an event
- * @param {Event|ChartEvent} e - The event to get the position for
- * @param {Chart} chart - The chart
- * @returns {object} the event position
- */
-function getRelativePosition(e, chart) {
-  if ('native' in e) {
-    return {
-      x: e.x,
-      y: e.y
-    };
-  }
-
-  return helpersGetRelativePosition(e, chart);
-}
 
 /**
  * Helper function to do binary search when possible

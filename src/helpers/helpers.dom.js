@@ -59,8 +59,7 @@ function getPositionedStyle(styles, style, suffix) {
 
 const useOffsetPos = (x, y, target) => (x > 0 || y > 0) && (!target || !target.shadowRoot);
 
-function getCanvasPosition(evt, canvas) {
-  const e = evt.native || evt;
+function getCanvasPosition(e, canvas) {
   const touches = e.touches;
   const source = touches && touches.length ? touches[0] : e;
   const {offsetX, offsetY} = source;
@@ -79,6 +78,13 @@ function getCanvasPosition(evt, canvas) {
 }
 
 export function getRelativePosition(evt, chart) {
+  if ('native' in evt) {
+    return {
+      x: evt.x,
+      y: evt.y
+    };
+  }
+
   const {canvas, currentDevicePixelRatio} = chart;
   const style = getComputedStyle(canvas);
   const borderBox = style.boxSizing === 'border-box';
