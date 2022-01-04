@@ -28,26 +28,6 @@ function getRelativePosition(e, chart) {
 }
 
 /**
- * Helper function to traverse all of the visible elements in the chart
- * @param {Chart} chart - the chart
- * @param {function} handler - the callback to execute for each visible item
- */
-function evaluateAllVisibleItems(chart, handler) {
-  const metasets = chart.getSortedVisibleDatasetMetas();
-  let index, data, element;
-
-  for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
-    ({index, data} = metasets[i]);
-    for (let j = 0, jlen = data.length; j < jlen; ++j) {
-      element = data[j];
-      if (!element.skip) {
-        handler(element, index, j);
-      }
-    }
-  }
-}
-
-/**
  * Helper function to do binary search when possible
  * @param {object} metaset - the dataset meta
  * @param {string} axis - the axis mode. x|y|xy|r
@@ -235,7 +215,7 @@ function getAxisItems(chart, e, options, useFinalPosition) {
   const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
   let intersectsItem = false;
 
-  evaluateAllVisibleItems(chart, (element, datasetIndex, index) => {
+  optimizedEvaluateItems(chart, axis, position, (element, datasetIndex, index) => {
     if (element[rangeMethod](position[axis], useFinalPosition)) {
       items.push({element, datasetIndex, index});
     }
