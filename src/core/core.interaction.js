@@ -218,10 +218,7 @@ function getAxisItems(chart, e, options, useFinalPosition) {
   optimizedEvaluateItems(chart, axis, position, (element, datasetIndex, index) => {
     if (element[rangeMethod](position[axis], useFinalPosition)) {
       items.push({element, datasetIndex, index});
-    }
-
-    if (element.inRange(position.x, position.y, useFinalPosition)) {
-      intersectsItem = true;
+      intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
     }
   });
 
