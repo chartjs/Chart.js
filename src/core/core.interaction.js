@@ -7,6 +7,7 @@ import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
  * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean}} InteractionOptions
  * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
+ * @typedef { import("../../types/index.esm").Point } Point
  */
 
 /**
@@ -45,11 +46,11 @@ function binarySearch(metaset, axis, value, intersect) {
  * Helper function to get items using binary search, when the data is sorted.
  * @param {Chart} chart - the chart
  * @param {string} axis - the axis mode. x|y|xy|r
- * @param {object} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {function} handler - the callback to execute for each visible item
  * @param {boolean} [intersect] - consider intersecting items
  */
-function optimizedEvaluateItems(chart, axis, position, handler, intersect) {
+function evaluateInteractionItems(chart, axis, position, handler, intersect) {
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
@@ -102,7 +103,7 @@ function getIntersectItems(chart, e, axis, useFinalPosition) {
     }
   };
 
-  optimizedEvaluateItems(chart, axis, position, evaluationFunc, true);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc, true);
   return items;
 }
 
@@ -126,7 +127,7 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
     }
   }
 
-  optimizedEvaluateItems(chart, axis, position, evaluationFunc);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc);
   return items;
 }
 
@@ -166,7 +167,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
     }
   }
 
-  optimizedEvaluateItems(chart, axis, position, evaluationFunc);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc);
   return items;
 }
 
@@ -197,7 +198,7 @@ function getAxisItems(chart, e, options, useFinalPosition) {
   const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
   let intersectsItem = false;
 
-  optimizedEvaluateItems(chart, axis, position, (element, datasetIndex, index) => {
+  evaluateInteractionItems(chart, axis, position, (element, datasetIndex, index) => {
     if (element[rangeMethod](position[axis], useFinalPosition)) {
       items.push({element, datasetIndex, index});
       intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
