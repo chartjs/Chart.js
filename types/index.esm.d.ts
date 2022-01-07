@@ -3249,6 +3249,12 @@ export type TimeScaleOptions = CartesianScaleOptions & {
      * @default 'auto'
      */
     source: 'labels' | 'auto' | 'data';
+
+    /**
+     * Maximum number of ticks and gridlines to show.
+     * @default 11
+     */
+    maxTicksLimit: number;
   };
 };
 
