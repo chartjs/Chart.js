@@ -3078,6 +3078,11 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
      * @default 0
      */
     padding: number;
+    /**
+     * Maximum number of ticks and gridlines to show.
+     * @default 11
+     */
+    maxTicksLimit: number;
   };
 }
 
@@ -3120,11 +3125,6 @@ export type LinearScaleOptions = CartesianScaleOptions & {
      */
     format: Intl.NumberFormatOptions;
 
-    /**
-     * Maximum number of ticks and gridlines to show.
-     * @default 11
-     */
-    maxTicksLimit: number;
     /**
      * if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
      */
@@ -3249,12 +3249,6 @@ export type TimeScaleOptions = CartesianScaleOptions & {
      * @default 'auto'
      */
     source: 'labels' | 'auto' | 'data';
-
-    /**
-     * Maximum number of ticks and gridlines to show.
-     * @default 11
-     */
-    maxTicksLimit: number;
   };
 };
 
