@@ -15,3 +15,4 @@ Namespace: `options.scales[scaleId].ticks`
 | `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
 | `mirror` | `boolean` | `false` | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
 | `padding` | `number` | `0` | Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+| `maxTicksLimit` | `number` | `11` | Maximum number of ticks and gridlines to show.
