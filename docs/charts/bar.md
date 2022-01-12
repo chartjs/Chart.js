@@ -6,9 +6,9 @@ A bar chart provides a way of showing data values represented as vertical bars. 
 // <block:setup:1>
 const labels = Utils.months({count: 7});
 const data = {
-  labels: labels,
+  labels: 'My First Dataset',
   datasets: [{
-    label: 'My First Dataset',
+    label: labels,
     data: [65, 59, 80, 81, 56, 55, 40],
     backgroundColor: [
       'rgba(255, 99, 132, 0.2)',
