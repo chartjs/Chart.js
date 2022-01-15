@@ -1,1 +1,1 @@
-export type Color = string | CanvasGradient | CanvasPattern;
+export type Color = string | string[] | CanvasGradient | CanvasPattern;
