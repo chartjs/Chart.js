@@ -2819,7 +2819,7 @@ export interface GridLineOptions {
   /**
    * @default 'rgba(0, 0, 0, 0.1)'
    */
-  color: Scriptable<Color, ScriptableScaleContext> | readonly Color[];
+  color: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
    * @default []
    */
@@ -2831,7 +2831,7 @@ export interface GridLineOptions {
   /**
    * @default 1
    */
-  lineWidth: Scriptable<number, ScriptableScaleContext> | readonly number[];
+  lineWidth: ScriptableAndArray<number, ScriptableScaleContext>;
 
   /**
    * @default true
@@ -2856,7 +2856,7 @@ export interface GridLineOptions {
   /**
    * @default 'rgba(0, 0, 0, 0.1)'
    */
-  tickColor: Scriptable<Color, ScriptableScaleContext> | readonly Color[];
+  tickColor: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
    * @default 10
    */
