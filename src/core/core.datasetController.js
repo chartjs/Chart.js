@@ -475,7 +475,6 @@ export default class DatasetController {
         [vAxis]: vScale.parse(data[index], index)
       };
     }
-
     return parsed;
   }
 
