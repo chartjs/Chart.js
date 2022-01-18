@@ -1,8 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {toRadians, PI} from '../helpers/index';
-import {formatNumber} from '../helpers/helpers.intl';
-import {isObject} from '../helpers/helpers.core';
-import {resolveObjectKey} from '../helpers/helpers.core';
+import {toRadians, PI, formatNumber, isObject, resolveObjectKey} from '../helpers/index';
 
 export default class PolarAreaController extends DatasetController {
 
