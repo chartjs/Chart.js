@@ -1,6 +1,9 @@
 import DatasetController from '../core/core.datasetController';
 import {toRadians, PI} from '../helpers/index';
 import {formatNumber} from '../helpers/helpers.intl';
+import {updateStacks} from '../core/core.datasetController';
+import {isArray, isObject} from '../helpers/helpers.core';
+import {resolveObjectKey} from '../helpers/helpers.core';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -21,6 +24,63 @@ export default class PolarAreaController extends DatasetController {
       label: labels[index] || '',
       value,
     };
+  }
+
+  parse(start, count) {
+    const {_cachedMeta: meta, _data: data} = this;
+    const {iScale, _stacked} = meta;
+    const iAxis = iScale.axis;
+
+    let sorted = start === 0 && count === data.length ? true : meta._sorted;
+    let prev = start > 0 && meta._parsed[start - 1];
+    let i, cur, parsed;
+
+    if (this._parsing === false) {
+      meta._parsed = data;
+      meta._sorted = true;
+      parsed = data;
+    } else {
+      if (isArray(data[start])) {
+        parsed = this.parseArrayData(meta, data, start, count);
+      } else if (isObject(data[start])) {
+        parsed = this.parseObjectData(meta, data, start, count);
+      } else {
+        parsed = this.parsePrimitiveData(meta, data, start, count);
+      }
+
+      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
+      for (i = 0; i < count; ++i) {
+        meta._parsed[i + start] = cur = parsed[i];
+        if (sorted) {
+          if (isNotInOrderComparedToPrev()) {
+            sorted = false;
+          }
+          prev = cur;
+        }
+      }
+      meta._sorted = sorted;
+    }
+
+    if (_stacked) {
+      updateStacks(this, parsed);
+    }
+  }
+
+  parseObjectData(meta, data, start, count) {
+    const {iScale} = meta;
+    const {key = 'key'} = this._parsing;
+    const parsed = new Array(count);
+    let i, ilen, index, item;
+
+    for (i = 0, ilen = count; i < ilen; ++i) {
+      index = i + start;
+      item = data[index];
+      parsed[i] = {
+        r: iScale.parse(resolveObjectKey(item, key), index)
+      };
+    }
+
+    return parsed;
   }
 
   update(mode) {
@@ -59,6 +119,7 @@ export default class PolarAreaController extends DatasetController {
     const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
+    const {key = 'key'} = this._parsing;
 
     const defaultAngle = 360 / this.countVisibleElements();
 
@@ -67,9 +128,10 @@ export default class PolarAreaController extends DatasetController {
     }
     for (i = start; i < start + count; i++) {
       const arc = arcs[i];
+      const dataPoint = isObject(dataset.data[i]) ? resolveObjectKey(dataset.data[i], key) : dataset.data[i];
       let startAngle = angle;
       let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
-      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
+      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataPoint) : 0;
       angle = endAngle;
 
       if (reset) {
@@ -98,10 +160,11 @@ export default class PolarAreaController extends DatasetController {
   countVisibleElements() {
     const dataset = this.getDataset();
     const meta = this._cachedMeta;
+    const {key = 'key'} = this._parsing;
     let count = 0;
 
     meta.data.forEach((element, index) => {
-      if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
+      if ((!isNaN(dataset.data[index]) || (!isNaN(resolveObjectKey(dataset.data[index], key)))) && this.chart.getDataVisibility(index)) {
         count++;
       }
     });

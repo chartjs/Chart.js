@@ -139,7 +139,7 @@ function getLastIndexInStack(stack, vScale, positive, type) {
   return null;
 }
 
-function updateStacks(controller, parsed) {
+export function updateStacks(controller, parsed) {
   const {chart, _cachedMeta: meta} = controller;
   const stacks = chart._stacks || (chart._stacks = {}); // map structure is {stackKey: {datasetIndex: value}}
   const {iScale, vScale, index: datasetIndex} = meta;
@@ -475,6 +475,7 @@ export default class DatasetController {
         [vAxis]: vScale.parse(data[index], index)
       };
     }
+
     return parsed;
   }
 
