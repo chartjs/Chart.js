@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {toRadians, PI, formatNumber, isObject, resolveObjectKey} from '../helpers/index';
+import {toRadians, PI, formatNumber, resolveObjectKey} from '../helpers/index';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -66,7 +66,6 @@ export default class PolarAreaController extends DatasetController {
   updateElements(arcs, start, count, mode) {
     const reset = mode === 'reset';
     const chart = this.chart;
-    const dataset = this.getDataset();
     const opts = chart.options;
     const animationOpts = opts.animation;
     const scale = this._cachedMeta.rScale;
@@ -75,7 +74,6 @@ export default class PolarAreaController extends DatasetController {
     const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * PI;
     let angle = datasetStartAngle;
     let i;
-    const {key = 'key'} = this._parsing;
 
     const defaultAngle = 360 / this.countVisibleElements();
 
@@ -84,10 +82,9 @@ export default class PolarAreaController extends DatasetController {
     }
     for (i = start; i < start + count; i++) {
       const arc = arcs[i];
-      const dataPoint = isObject(dataset.data[i]) ? resolveObjectKey(dataset.data[i], key) : dataset.data[i];
       let startAngle = angle;
       let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
-      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataPoint) : 0;
+      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(this.getParsed(i).r) : 0;
       angle = endAngle;
 
       if (reset) {
@@ -114,13 +111,11 @@ export default class PolarAreaController extends DatasetController {
   }
 
   countVisibleElements() {
-    const dataset = this.getDataset();
     const meta = this._cachedMeta;
-    const {key = 'key'} = this._parsing;
     let count = 0;
 
     meta.data.forEach((element, index) => {
-      if ((!isNaN(dataset.data[index]) || (!isNaN(resolveObjectKey(dataset.data[index], key)))) && this.chart.getDataVisibility(index)) {
+      if (!isNaN(this.getParsed(index).r) && this.chart.getDataVisibility(index)) {
         count++;
       }
     });
