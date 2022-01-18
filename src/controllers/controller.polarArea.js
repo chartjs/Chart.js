@@ -1,8 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {toRadians, PI} from '../helpers/index';
 import {formatNumber} from '../helpers/helpers.intl';
-import {updateStacks} from '../core/core.datasetController';
-import {isArray, isObject} from '../helpers/helpers.core';
+import {isObject} from '../helpers/helpers.core';
 import {resolveObjectKey} from '../helpers/helpers.core';
 
 export default class PolarAreaController extends DatasetController {
@@ -24,46 +23,6 @@ export default class PolarAreaController extends DatasetController {
       label: labels[index] || '',
       value,
     };
-  }
-
-  parse(start, count) {
-    const {_cachedMeta: meta, _data: data} = this;
-    const {iScale, _stacked} = meta;
-    const iAxis = iScale.axis;
-
-    let sorted = start === 0 && count === data.length ? true : meta._sorted;
-    let prev = start > 0 && meta._parsed[start - 1];
-    let i, cur, parsed;
-
-    if (this._parsing === false) {
-      meta._parsed = data;
-      meta._sorted = true;
-      parsed = data;
-    } else {
-      if (isArray(data[start])) {
-        parsed = this.parseArrayData(meta, data, start, count);
-      } else if (isObject(data[start])) {
-        parsed = this.parseObjectData(meta, data, start, count);
-      } else {
-        parsed = this.parsePrimitiveData(meta, data, start, count);
-      }
-
-      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
-      for (i = 0; i < count; ++i) {
-        meta._parsed[i + start] = cur = parsed[i];
-        if (sorted) {
-          if (isNotInOrderComparedToPrev()) {
-            sorted = false;
-          }
-          prev = cur;
-        }
-      }
-      meta._sorted = sorted;
-    }
-
-    if (_stacked) {
-      updateStacks(this, parsed);
-    }
   }
 
   parseObjectData(meta, data, start, count) {
