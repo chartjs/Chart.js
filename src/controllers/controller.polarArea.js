@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {toRadians, PI, formatNumber, resolveObjectKey} from '../helpers/index';
+import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpers/index';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -23,20 +23,7 @@ export default class PolarAreaController extends DatasetController {
   }
 
   parseObjectData(meta, data, start, count) {
-    const {iScale} = meta;
-    const {key = 'key'} = this._parsing;
-    const parsed = new Array(count);
-    let i, ilen, index, item;
-
-    for (i = 0, ilen = count; i < ilen; ++i) {
-      index = i + start;
-      item = data[index];
-      parsed[i] = {
-        r: iScale.parse(resolveObjectKey(item, key), index)
-      };
-    }
-
-    return parsed;
+    return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }
 
   update(mode) {

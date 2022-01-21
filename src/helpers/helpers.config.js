@@ -351,3 +351,19 @@ function resolveKeysFromAllScopes(scopes) {
   }
   return Array.from(set);
 }
+
+export function _parseObjectDataRadialScale(meta, data, start, count) {
+  const {iScale} = meta;
+  const {key = 'r'} = this._parsing;
+  const parsed = new Array(count);
+  let i, ilen, index, item;
+
+  for (i = 0, ilen = count; i < ilen; ++i) {
+    index = i + start;
+    item = data[index];
+    parsed[i] = {
+      r: iScale.parse(resolveObjectKey(item, key), index)
+    };
+  }
+  return parsed;
+}

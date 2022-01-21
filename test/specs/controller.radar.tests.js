@@ -74,6 +74,32 @@ describe('Chart.controllers.radar', function() {
     expect(meta.data[3].draw.calls.count()).toBe(1);
   });
 
+  it('should draw all elements with object notation and default key', function() {
+    var chart = window.acquireChart({
+      type: 'radar',
+      data: {
+        datasets: [{
+          data: [{r: 10}, {r: 20}, {r: 15}]
+        }],
+        labels: ['label1', 'label2', 'label3']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+
+    spyOn(meta.dataset, 'draw');
+    spyOn(meta.data[0], 'draw');
+    spyOn(meta.data[1], 'draw');
+    spyOn(meta.data[2], 'draw');
+
+    chart.update();
+
+    expect(meta.dataset.draw.calls.count()).toBe(1);
+    expect(meta.data[0].draw.calls.count()).toBe(1);
+    expect(meta.data[1].draw.calls.count()).toBe(1);
+    expect(meta.data[2].draw.calls.count()).toBe(1);
+  });
+
   it('should update elements', function() {
     var chart = window.acquireChart({
       type: 'radar',

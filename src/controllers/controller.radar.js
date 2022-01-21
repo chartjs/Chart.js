@@ -1,4 +1,5 @@
 import DatasetController from '../core/core.datasetController';
+import {_parseObjectDataRadialScale} from '../helpers/index';
 
 export default class RadarController extends DatasetController {
 
@@ -13,6 +14,10 @@ export default class RadarController extends DatasetController {
       label: vScale.getLabels()[index],
       value: '' + vScale.getLabelForValue(parsed[vScale.axis])
     };
+  }
+
+  parseObjectData(meta, data, start, count) {
+    return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }
 
   update(mode) {
@@ -44,14 +49,13 @@ export default class RadarController extends DatasetController {
   }
 
   updateElements(points, start, count, mode) {
-    const dataset = this.getDataset();
     const scale = this._cachedMeta.rScale;
     const reset = mode === 'reset';
 
     for (let i = start; i < start + count; i++) {
       const point = points[i];
       const options = this.resolveDataElementOptions(i, point.active ? 'active' : mode);
-      const pointPosition = scale.getPointPositionForValue(i, dataset.data[i]);
+      const pointPosition = scale.getPointPositionForValue(i, this.getParsed(i).r);
 
       const x = reset ? scale.xCenter : pointPosition.x;
       const y = reset ? scale.yCenter : pointPosition.y;
