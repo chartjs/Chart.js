@@ -54,7 +54,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
-| [`drawActiveElementsOnTop`](#point-styling) | `boolean` | Yes | Yes | `true`
+| [`drawActiveElementsOnTop`](#general) | `boolean` | Yes | Yes | `true`
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
@@ -93,6 +93,7 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | Name | Description
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
+| `drawActiveElementsOnTop` | Draw the active points of a dataset over the other points of the dataset
 | `indexAxis` | The base axis of the dataset. `'x'` for horizontal lines and `'y'` for vertical lines.
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for stacking, tooltip and legend. [more](mixed.md#drawing-order)
@@ -106,7 +107,6 @@ The style of each point can be controlled with the following properties:
 
 | Name | Description
 | ---- | ----
-| `drawActiveElementsOnTop` | Draw the active points of a dataset over the other points of the dataset
 | `pointBackgroundColor` | The fill color for points.
 | `pointBorderColor` | The border color for points.
 | `pointBorderWidth` | The width of the point border in pixels.

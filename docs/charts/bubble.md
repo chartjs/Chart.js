@@ -53,7 +53,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
-| [`drawActiveElementsOnTop`](#styling) | `boolean` | Yes | Yes | `true`
+| [`drawActiveElementsOnTop`](#general) | `boolean` | Yes | Yes | `true`
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
@@ -72,6 +72,7 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | Name | Description
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
+| `drawActiveElementsOnTop` | Draw the active bubbles of a dataset over the other bubbles of the dataset
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for tooltip and legend. [more](mixed.md#drawing-order)
 
@@ -84,7 +85,6 @@ The style of each bubble can be controlled with the following properties:
 | `backgroundColor` | bubble background color.
 | `borderColor` | bubble border color.
 | `borderWidth` | bubble border width (in pixels).
-| `drawActiveElementsOnTop` | Draw the active bubbles of a dataset over the other bubbles of the dataset
 | `pointStyle` | bubble [shape style](../configuration/elements.md#point-styles).
 | `rotation` | bubble rotation (in degrees).
 | `radius` | bubble radius (in pixels).
