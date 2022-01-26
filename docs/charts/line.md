@@ -54,6 +54,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
+| [`drawActiveElementsOnTop`](#point-styling) | `boolean` | Yes | Yes | `true`
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`hoverBackgroundColor`](#line-styling) | [`Color`](../general/colors.md) | Yes | - | `undefined`
 | [`hoverBorderCapStyle`](#line-styling) | `string` | Yes | - | `undefined`
@@ -84,7 +85,6 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`tension`](#line-styling) | `number` | - | - | `0`
 | [`xAxisID`](#general) | `string` | - | - | first x axis
 | [`yAxisID`](#general) | `string` | - | - | first y axis
-| [`drawActiveElementsOnTop`](#point-styling) | `boolean` | Yes | Yes | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -106,6 +106,7 @@ The style of each point can be controlled with the following properties:
 
 | Name | Description
 | ---- | ----
+| `drawActiveElementsOnTop` | Draw the active points of a dataset over the other points of the dataset
 | `pointBackgroundColor` | The fill color for points.
 | `pointBorderColor` | The border color for points.
 | `pointBorderWidth` | The width of the point border in pixels.
@@ -113,7 +114,6 @@ The style of each point can be controlled with the following properties:
 | `pointRadius` | The radius of the point shape. If set to 0, the point is not rendered.
 | `pointRotation` | The rotation of the point in degrees.
 | `pointStyle` | Style of the point. [more...](../configuration/elements.md#point-styles)
-| `drawActiveElementsOnTop` | Draw the active points of a dataset over the other points of the dataset
 
 All these values, if `undefined`, fallback first to the dataset options then to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
