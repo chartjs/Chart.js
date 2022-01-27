@@ -453,7 +453,6 @@ export default class Scale extends Element {
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
       this.ticks = autoSkip(this, this.ticks);
       this._labelSizes = null;
-      this.afterAutoSkip();
     }
 
     if (samplingEnabled) {
@@ -620,7 +619,6 @@ export default class Scale extends Element {
   afterCalculateLabelRotation() {
     call(this.options.afterCalculateLabelRotation, [this]);
   }
-  afterAutoSkip() {}
 
   //
 
@@ -707,7 +705,7 @@ export default class Scale extends Element {
         paddingRight = last.width;
       } else if (align === 'end') {
         paddingLeft = first.width;
-      } else if (align !== 'inner') {
+      } else {
         paddingLeft = first.width / 2;
         paddingRight = last.width / 2;
       }
@@ -1213,13 +1211,11 @@ export default class Scale extends Element {
       if (isHorizontal) {
         x = pixel;
 
-        if (textAlign === 'inner') {
+        if (textAlign === 'left-right') {
           if (i === ilen - 1) {
-            tickTextAlign = !this.options.reverse ? 'right' : 'left';
-          } else if (i === 0) {
-            tickTextAlign = !this.options.reverse ? 'left' : 'right';
+            tickTextAlign = 'right';
           } else {
-            tickTextAlign = 'center';
+            tickTextAlign = 'left';
           }
         }
 
@@ -1323,8 +1319,8 @@ export default class Scale extends Element {
       align = 'left';
     } else if (ticks.align === 'end') {
       align = 'right';
-    } else if (ticks.align === 'inner') {
-      align = 'inner';
+    } else if (ticks.align === 'left-right') {
+      align = 'left-right';
     }
 
     return align;
