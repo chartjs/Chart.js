@@ -1206,9 +1206,19 @@ export default class Scale extends Element {
       const color = optsAtIndex.color;
       const strokeColor = optsAtIndex.textStrokeColor;
       const strokeWidth = optsAtIndex.textStrokeWidth;
+      let tickTextAlign = textAlign;
 
       if (isHorizontal) {
         x = pixel;
+
+        if (textAlign === 'left-right') {
+          if (i === ilen - 1) {
+            tickTextAlign = 'right';
+          } else {
+            tickTextAlign = 'left';
+          }
+        }
+
         if (position === 'top') {
           if (crossAlign === 'near' || rotation !== 0) {
             textOffset = -lineCount * lineHeight + lineHeight / 2;
@@ -1285,7 +1295,7 @@ export default class Scale extends Element {
         strokeColor,
         strokeWidth,
         textOffset,
-        textAlign,
+        textAlign: tickTextAlign,
         textBaseline,
         translation: [x, y],
         backdrop,
@@ -1309,6 +1319,8 @@ export default class Scale extends Element {
       align = 'left';
     } else if (ticks.align === 'end') {
       align = 'right';
+    } else if (ticks.align === 'left-right') {
+      align = 'left-right';
     }
 
     return align;
