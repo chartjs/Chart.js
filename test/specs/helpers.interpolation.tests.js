@@ -7,7 +7,7 @@ describe('helpers.interpolation', function() {
     expect(_pointInLine({x: 10, y: 10}, {x: 20, y: 20}, 1)).toEqual({x: 20, y: 20});
   });
 
-  it('Should intepolate a point in stepped line', function() {
+  it('Should interpolate a point in stepped line', function() {
     expect(_steppedInterpolation({x: 10, y: 10}, {x: 20, y: 20}, 0, 'before')).toEqual({x: 10, y: 10});
     expect(_steppedInterpolation({x: 10, y: 10}, {x: 20, y: 20}, 0.4, 'before')).toEqual({x: 14, y: 20});
     expect(_steppedInterpolation({x: 10, y: 10}, {x: 20, y: 20}, 0.5, 'before')).toEqual({x: 15, y: 20});

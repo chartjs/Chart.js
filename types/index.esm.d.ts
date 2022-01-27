@@ -927,7 +927,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    */
   afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
   /**
-   * @desc Called before scale bulds its ticks. This hook is called separately for each scale in the chart.
+   * @desc Called before scale builds its ticks. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {Scale} args.scale - The scale.

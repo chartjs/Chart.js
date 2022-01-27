@@ -252,7 +252,7 @@ describe('Chart', function() {
         expect(chart.options.hover).toBeFalse();
       });
 
-      it('when options.interation=false and options.hover is not defined', function() {
+      it('when options.interaction=false and options.hover is not defined', function() {
         var chart = acquireChart({
           type: 'line',
           options: {
@@ -262,7 +262,7 @@ describe('Chart', function() {
         expect(chart.options.hover).toBeFalse();
       });
 
-      it('when options.interation=false and options.hover is defined', function() {
+      it('when options.interaction=false and options.hover is defined', function() {
         var chart = acquireChart({
           type: 'line',
           options: {
