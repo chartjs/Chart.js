@@ -17,7 +17,7 @@ export const requestAnimFrame = (function() {
 
 /**
  * Throttles calling `fn` once per animation frame
- * Latest argments are used on the actual call
+ * Latest arguments are used on the actual call
  * @param {function} fn
  * @param {*} thisArg
  * @param {function} [updateFn]

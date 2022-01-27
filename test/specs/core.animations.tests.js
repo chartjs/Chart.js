@@ -44,7 +44,7 @@ describe('Chart.animations', function() {
     })).toBeUndefined();
   });
 
-  it('should assing options directly, if target does not have previous options', function() {
+  it('should assign options directly, if target does not have previous options', function() {
     const chart = {};
     const anims = new Chart.Animations(chart, {option: {duration: 200}});
     const target = {};

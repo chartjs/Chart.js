@@ -203,7 +203,7 @@ function _resolveWithContext(target, prop, receiver) {
     value = _resolveArray(prop, value, target, descriptors.isIndexable);
   }
   if (needsSubResolver(prop, value)) {
-    // if the resolved value is an object, crate a sub resolver for it
+    // if the resolved value is an object, create a sub resolver for it
     value = _attachContext(value, _context, _subProxy && _subProxy[prop], descriptors);
   }
   return value;

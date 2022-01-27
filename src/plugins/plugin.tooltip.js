@@ -1013,7 +1013,7 @@ export class Tooltip extends Element {
 	 * Handle an event
 	 * @param {ChartEvent} e - The event to handle
 	 * @param {boolean} [replay] - This is a replayed event (from update)
-   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @param {boolean} [inChartArea] - The event is inside chartArea
 	 * @returns {boolean} true if the tooltip changed
 	 */
   handleEvent(e, replay, inChartArea = true) {
@@ -1054,11 +1054,11 @@ export class Tooltip extends Element {
   /**
 	 * Helper for determining the active elements for event
 	 * @param {ChartEvent} e - The event to handle
-   * @param {Element[]} lastActive - Previously active elements
+	 * @param {Element[]} lastActive - Previously active elements
 	 * @param {boolean} [replay] - This is a replayed event (from update)
-   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @param {boolean} [inChartArea] - The event is inside chartArea
 	 * @returns {Element[]} - Active elements
-   * @private
+	 * @private
 	 */
   _getActiveElements(e, lastActive, replay, inChartArea) {
     const options = this.options;
