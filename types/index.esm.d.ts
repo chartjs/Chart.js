@@ -1655,7 +1655,7 @@ export interface FontSpec {
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
-export type AlignStartCenterEnd = 'start' | 'center' | 'end';
+export type Align = 'start' | 'center' | 'end';
 
 export interface VisualElement {
   draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;
@@ -2232,7 +2232,7 @@ export interface LegendOptions<TType extends ChartType> {
    * Alignment of the legend.
    * @default 'center'
    */
-  align: AlignStartCenterEnd;
+  align: Align;
   /**
    * Maximum height of the legend, in pixels
    */
@@ -2368,7 +2368,7 @@ export interface TitleOptions {
    * Alignment of the title.
    * @default 'center'
    */
-  align: AlignStartCenterEnd;
+  align: Align;
   /**
    * Is the title shown?
    * @default false
@@ -2994,7 +2994,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** If true, displays the axis title. */
     display: boolean;
     /** Alignment of the axis title. */
-    align: AlignStartCenterEnd;
+    align: Align;
     /** The text for the title, e.g. "# of People" or "Response Choices". */
     text: string | string[];
     /** Color of the axis label. */
@@ -3028,7 +3028,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
      * The label alignment
      * @default 'center'
      */
-    align: AlignStartCenterEnd;
+    align: Align;
     /**
      *   If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
      * @default true
