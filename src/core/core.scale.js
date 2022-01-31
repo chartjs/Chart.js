@@ -1211,10 +1211,10 @@ export default class Scale extends Element {
       if (isHorizontal) {
         x = pixel;
 
-        if (textAlign === 'left-right') {
+        if (textAlign === 'inner') {
           if (i === ilen - 1) {
             tickTextAlign = 'right';
-          } else {
+          } else if (i === 0) {
             tickTextAlign = 'left';
           }
         }
@@ -1319,8 +1319,8 @@ export default class Scale extends Element {
       align = 'left';
     } else if (ticks.align === 'end') {
       align = 'right';
-    } else if (ticks.align === 'left-right') {
-      align = 'left-right';
+    } else if (ticks.align === 'inner') {
+      align = 'inner';
     }
 
     return align;
