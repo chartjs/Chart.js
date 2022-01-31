@@ -1654,7 +1654,7 @@ export interface FontSpec {
   lineHeight: number | string;
 }
 
-export type TextAlign = 'left' | 'center' | 'right';
+export type TextAlign = 'left' | 'center' | 'right' | 'inner';
 
 export interface VisualElement {
   draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;
@@ -3027,7 +3027,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
      * The label alignment
      * @default 'center'
      */
-    align: 'start' | 'center' | 'end';
+    align: 'start' | 'center' | 'end' | 'inner';
     /**
      *   If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
      * @default true
