@@ -1654,7 +1654,7 @@ export interface FontSpec {
   lineHeight: number | string;
 }
 
-export type TextAlign = 'left' | 'center' | 'right' | 'inner';
+export type TextAlign = 'left' | 'center' | 'right';
 
 export interface VisualElement {
   draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;

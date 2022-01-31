@@ -15,11 +15,6 @@ module.exports = {
             maxRotation: 45,
             minRotation: 45
           },
-        },
-        y: {
-          ticks: {
-            align: 'inner',
-          }
         }
       }
     }

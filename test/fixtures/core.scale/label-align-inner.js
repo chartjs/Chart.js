@@ -13,11 +13,6 @@ module.exports = {
           ticks: {
             align: 'inner',
           },
-        },
-        y: {
-          ticks: {
-            align: 'inner',
-          }
         }
       }
     }
