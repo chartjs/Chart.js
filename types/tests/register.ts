@@ -22,6 +22,7 @@ import {
   Filler,
   Legend,
   Title,
+  SubTitle,
   Tooltip
 } from '../index.esm';
 
@@ -48,5 +49,6 @@ Chart.register(
   Filler,
   Legend,
   Title,
+  SubTitle,
   Tooltip
 );
