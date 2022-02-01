@@ -53,6 +53,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
+| [`drawActiveElementsOnTop`](#general) | `boolean` | Yes | Yes | `true`
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `1`
@@ -63,7 +64,6 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`pointStyle`](#styling) | [`pointStyle`](../configuration/elements.md#types) | Yes | Yes | `'circle'`
 | [`rotation`](#styling) | `number` | Yes | Yes | `0`
 | [`radius`](#styling) | `number` | Yes | Yes | `3`
-| [`drawActiveElementsOnTop`](#styling) | `boolean` | Yes | Yes | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -72,6 +72,7 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | Name | Description
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
+| `drawActiveElementsOnTop` | Draw the active bubbles of a dataset over the other bubbles of the dataset
 | `label` | The label for the dataset which appears in the legend and tooltips.
 | `order` | The drawing order of dataset. Also affects order for tooltip and legend. [more](mixed.md#drawing-order)
 
@@ -87,7 +88,6 @@ The style of each bubble can be controlled with the following properties:
 | `pointStyle` | bubble [shape style](../configuration/elements.md#point-styles).
 | `rotation` | bubble rotation (in degrees).
 | `radius` | bubble radius (in pixels).
-| `drawActiveElementsOnTop` | Draw the active bubbles of a dataset over the other bubbles of the dataset
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
@@ -97,11 +97,11 @@ The interaction with each bubble can be controlled with the following properties
 
 | Name | Description
 | ---- | -----------
+| `hitRadius` | bubble **additional** radius for hit detection (in pixels).
 | `hoverBackgroundColor` | bubble background color when hovered.
 | `hoverBorderColor` | bubble border color when hovered.
 | `hoverBorderWidth` | bubble border width when hovered (in pixels).
 | `hoverRadius` | bubble **additional** radius when hovered (in pixels).
-| `hitRadius` | bubble **additional** radius for hit detection (in pixels).
 
 All these values, if `undefined`, fallback to the associated [`elements.point.*`](../configuration/elements.md#point-configuration) options.
 
