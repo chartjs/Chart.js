@@ -1495,7 +1495,14 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   events: (
     'mousemove' |
     'mouseout' |
+    'mouseenter' |
+    'mouseleave' |
+    'mousedown' |
+    'mouseup' |
     'click' |
+    'dblclick' |
+    'mouseover' |
+    'contextmenu' |
     'touchstart' |
     'touchmove' |
     'touchend' |
