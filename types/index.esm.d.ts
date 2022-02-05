@@ -529,7 +529,7 @@ export declare class Chart<
   toBase64Image(type?: string, quality?: unknown): string;
   bindEvents(): void;
   unbindEvents(): void;
-  updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
+  updateHoverStyle(items: InteractionItem[], mode: 'dataset', enabled: boolean): void;
 
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
