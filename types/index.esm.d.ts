@@ -2902,7 +2902,7 @@ export interface TickOptions {
    * Color of tick
    * @see Defaults.color
    */
-  color: Scriptable<Color, ScriptableScaleContext>;
+  color: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
    * see Fonts
    */
