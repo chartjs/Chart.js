@@ -135,7 +135,7 @@ The style of the line can be controlled with the following properties:
 | `showLine` | If false, the line is not drawn for this dataset.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `null` data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
 
-If the value is `undefined`, `showLine` and `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 

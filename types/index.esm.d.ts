@@ -1787,6 +1787,10 @@ export interface LineOptions extends CommonElementOptions {
    * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
    */
   fill: FillTarget | ComplexFillTarget;
+  /**
+   * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
+   */
+  spanGaps: boolean | number;
 
   segment: {
     backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
