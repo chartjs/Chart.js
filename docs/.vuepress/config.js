@@ -272,6 +272,7 @@ module.exports = {
           children: [
             'plugins/chart-area-border',
             'plugins/quadrants',
+            'plugins/doughnut-empty-state',
           ]
         },
         'utils'
