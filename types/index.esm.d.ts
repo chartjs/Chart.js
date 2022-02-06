@@ -3088,7 +3088,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   };
 }
 
-export type CategoryScaleOptions = CartesianScaleOptions & {
+export type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   min: string | number;
   max: string | number;
   labels: string[] | string[][];
@@ -3107,7 +3107,6 @@ export type LinearScaleOptions = CartesianScaleOptions & {
    * @default true
    */
   beginAtZero: boolean;
-
   /**
    * Adjustment used when calculating the maximum data value.
    */
@@ -3151,7 +3150,6 @@ export const LinearScale: ChartComponent & {
 };
 
 export type LogarithmicScaleOptions = CartesianScaleOptions & {
-
   /**
    * Adjustment used when calculating the maximum data value.
    */
@@ -3175,10 +3173,9 @@ export const LogarithmicScale: ChartComponent & {
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
 
-export type TimeScaleOptions = CartesianScaleOptions & {
+export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   min: string | number;
   max: string | number;
-
   suggestedMin: string | number;
   suggestedMax: string | number;
   /**
