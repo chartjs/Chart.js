@@ -1430,17 +1430,17 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base color
    * @see Defaults.color
    */
-  color: Scriptable<Color, ScriptableContext<TType>>;
+  color: ScriptableAndArray<Color, ScriptableContext<TType>>;
   /**
    * base background color
    * @see Defaults.backgroundColor
    */
-  backgroundColor: Scriptable<Color, ScriptableContext<TType>>;
+  backgroundColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
   /**
    * base border color
    * @see Defaults.borderColor
    */
-  borderColor: Scriptable<Color, ScriptableContext<TType>>;
+  borderColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
   /**
    * base font
    * @see Defaults.font
@@ -2882,7 +2882,7 @@ export interface TickOptions {
    * Color of label backdrops.
    * @default 'rgba(255, 255, 255, 0.75)'
    */
-  backdropColor: Scriptable<Color, ScriptableScaleContext>;
+  backdropColor: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
    * Padding of tick backdrop.
    * @default 2
