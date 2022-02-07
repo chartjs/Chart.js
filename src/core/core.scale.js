@@ -705,7 +705,7 @@ export default class Scale extends Element {
         paddingRight = last.width;
       } else if (align === 'end') {
         paddingLeft = first.width;
-      } else {
+      } else if (align !== 'inner') {
         paddingLeft = first.width / 2;
         paddingRight = last.width / 2;
       }
