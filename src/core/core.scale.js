@@ -1213,9 +1213,19 @@ export default class Scale extends Element {
 
         if (textAlign === 'inner') {
           if (i === ilen - 1) {
-            tickTextAlign = 'right';
+            if (!this.options.reverse) {
+              tickTextAlign = 'right';
+            } else {
+              tickTextAlign = 'left';
+            }
           } else if (i === 0) {
-            tickTextAlign = 'left';
+            if (!this.options.reverse) {
+              tickTextAlign = 'left';
+            } else {
+              tickTextAlign = 'right';
+            }
+          } else {
+            tickTextAlign = 'center';
           }
         }
 
