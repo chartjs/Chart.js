@@ -5,7 +5,7 @@ module.exports = {
       datasets: [{
         data: [1, 2, 3],
       }],
-      labels: ['Label1', 'Label2', 'Label3']
+      labels: ['Label1_long', 'Label2_long', 'Label3_long']
     },
     options: {
       scales: {
