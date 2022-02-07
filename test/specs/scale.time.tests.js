@@ -286,7 +286,7 @@ describe('Time scale tests', function() {
     it('should have ticks with accurate labels', function() {
       var scale = this.scale;
       var ticks = scale.getTicks();
-      // pixelsPerTick is an aproximation which assumes same number of milliseconds per year (not true)
+      // pixelsPerTick is an approximation which assumes same number of milliseconds per year (not true)
       // we use a threshold of 1 day so that we still match these values
       var pixelsPerTick = scale.width / (ticks.length - 1);
 

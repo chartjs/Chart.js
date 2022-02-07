@@ -490,6 +490,7 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
+  readonly legend?: LegendElement<TType>; // Only available if legend plugin is registered and enabled
   readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
 
   data: ChartData<TType, TData, TLabel>;
@@ -528,7 +529,7 @@ export declare class Chart<
   toBase64Image(type?: string, quality?: unknown): string;
   bindEvents(): void;
   unbindEvents(): void;
-  updateHoverStyle(items: Element, mode: 'dataset', enabled: boolean): void;
+  updateHoverStyle(items: InteractionItem[], mode: 'dataset', enabled: boolean): void;
 
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
@@ -927,7 +928,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    */
   afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
   /**
-   * @desc Called before scale bulds its ticks. This hook is called separately for each scale in the chart.
+   * @desc Called before scale builds its ticks. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {Scale} args.scale - The scale.
@@ -1655,6 +1656,7 @@ export interface FontSpec {
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
+export type Align = 'start' | 'center' | 'end';
 
 export interface VisualElement {
   draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;
@@ -1785,6 +1787,10 @@ export interface LineOptions extends CommonElementOptions {
    * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
    */
   fill: FillTarget | ComplexFillTarget;
+  /**
+   * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
+   */
+  spanGaps: boolean | number;
 
   segment: {
     backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
@@ -2231,7 +2237,7 @@ export interface LegendOptions<TType extends ChartType> {
    * Alignment of the legend.
    * @default 'center'
    */
-  align: 'start' | 'center' | 'end';
+  align: Align;
   /**
    * Maximum height of the legend, in pixels
    */
@@ -2367,7 +2373,7 @@ export interface TitleOptions {
    * Alignment of the title.
    * @default 'center'
    */
-  align: 'start' | 'center' | 'end';
+  align: Align;
   /**
    * Is the title shown?
    * @default false
@@ -2900,7 +2906,7 @@ export interface TickOptions {
    * Color of tick
    * @see Defaults.color
    */
-  color: Scriptable<Color, ScriptableScaleContext>;
+  color: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
    * see Fonts
    */
@@ -2993,7 +2999,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** If true, displays the axis title. */
     display: boolean;
     /** Alignment of the axis title. */
-    align: 'start' | 'center' | 'end';
+    align: Align;
     /** The text for the title, e.g. "# of People" or "Response Choices". */
     text: string | string[];
     /** Color of the axis label. */
@@ -3086,7 +3092,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   };
 }
 
-export type CategoryScaleOptions = CartesianScaleOptions & {
+export type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   min: string | number;
   max: string | number;
   labels: string[] | string[][];
@@ -3105,7 +3111,6 @@ export type LinearScaleOptions = CartesianScaleOptions & {
    * @default true
    */
   beginAtZero: boolean;
-
   /**
    * Adjustment used when calculating the maximum data value.
    */
@@ -3149,7 +3154,6 @@ export const LinearScale: ChartComponent & {
 };
 
 export type LogarithmicScaleOptions = CartesianScaleOptions & {
-
   /**
    * Adjustment used when calculating the maximum data value.
    */
@@ -3173,10 +3177,9 @@ export const LogarithmicScale: ChartComponent & {
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
 
-export type TimeScaleOptions = CartesianScaleOptions & {
+export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   min: string | number;
   max: string | number;
-
   suggestedMin: string | number;
   suggestedMax: string | number;
   /**

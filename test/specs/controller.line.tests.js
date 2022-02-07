@@ -603,7 +603,7 @@ describe('Chart.controllers.line', function() {
       expect(options.cubicInterpolationMode).toBe('monotone');
     });
 
-    it('should be overriden by user-supplied values', function() {
+    it('should be overridden by user-supplied values', function() {
       Chart.helpers.merge(Chart.defaults.datasets.line, {
         spanGaps: true,
         tension: 0.231

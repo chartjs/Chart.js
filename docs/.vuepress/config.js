@@ -134,40 +134,40 @@ module.exports = {
         {
           title: 'Bar Charts',
           children: [
-            'bar/vertical',
+            'bar/border-radius',
+            'bar/floating',
             'bar/horizontal',
             'bar/stacked',
             'bar/stacked-groups',
-            'bar/floating',
-            'bar/border-radius',
+            'bar/vertical',
           ]
         },
         {
           title: 'Line Charts',
           children: [
+            'line/interpolation',
             'line/line',
             'line/multi-axis',
-            'line/stepped',
-            'line/interpolation',
-            'line/styling',
-            // 'line/point-styling',
+            'line/point-styling',
             'line/segments',
+            'line/stepped',
+            'line/styling',
           ]
         },
         {
           title: 'Other charts',
           children: [
             'other-charts/bubble',
-            'other-charts/scatter',
-            'other-charts/scatter-multi-axis',
+            'other-charts/combo-bar-line',
             'other-charts/doughnut',
-            'other-charts/pie',
             'other-charts/multi-series-pie',
+            'other-charts/pie',
             'other-charts/polar-area',
             'other-charts/polar-area-center-labels',
             'other-charts/radar',
             'other-charts/radar-skip-points',
-            'other-charts/combo-bar-line',
+            'other-charts/scatter',
+            'other-charts/scatter-multi-axis',
             'other-charts/stacked-bar-line',
           ]
         },
@@ -188,29 +188,29 @@ module.exports = {
             'scales/linear-min-max-suggested',
             'scales/linear-step-size',
             'scales/log',
+            'scales/stacked',
             'scales/time-line',
             'scales/time-max-span',
             'scales/time-combo',
-            'scales/stacked'
           ]
         },
         {
           title: 'Scale Options',
           children: [
+            'scale-options/center',
             'scale-options/grid',
             'scale-options/ticks',
             'scale-options/titles',
-            'scale-options/center'
           ]
         },
         {
           title: 'Legend',
           children: [
-            'legend/position',
-            'legend/title',
-            'legend/point-style',
             'legend/events',
             'legend/html',
+            'legend/point-style',
+            'legend/position',
+            'legend/title',
           ]
         },
         {
@@ -227,11 +227,11 @@ module.exports = {
         },        {
           title: 'Tooltip',
           children: [
-            'tooltip/position',
-            'tooltip/interactions',
-            'tooltip/point-style',
             'tooltip/content',
             'tooltip/html',
+            'tooltip/interactions',
+            'tooltip/point-style',
+            'tooltip/position',
           ]
         },
         {
@@ -239,8 +239,8 @@ module.exports = {
           children: [
             'scriptable/bar',
             'scriptable/bubble',
-            'scriptable/pie',
             'scriptable/line',
+            'scriptable/pie',
             'scriptable/polar',
             'scriptable/radar',
           ]
@@ -259,18 +259,19 @@ module.exports = {
           title: 'Advanced',
           children: [
             'advanced/data-decimation',
-            'advanced/progress-bar',
-            'advanced/radial-gradient',
-            'advanced/linear-gradient',
-            'advanced/programmatic-events',
             'advanced/derived-axis-type',
             'advanced/derived-chart-type',
+            'advanced/linear-gradient',
+            'advanced/programmatic-events',
+            'advanced/progress-bar',
+            'advanced/radial-gradient',
           ]
         },
         {
           title: 'Plugins',
           children: [
             'plugins/chart-area-border',
+            'plugins/doughnut-empty-state',
             'plugins/quadrants',
           ]
         },
@@ -291,11 +292,11 @@ module.exports = {
         {
           title: 'General',
           children: [
-            'general/data-structures',
             'general/accessibility',
-            'general/options',
             'general/colors',
+            'general/data-structures',
             'general/fonts',
+            'general/options',
             'general/padding',
             'general/performance'
           ]
@@ -304,33 +305,33 @@ module.exports = {
           title: 'Configuration',
           children: [
             'configuration/',
-            'configuration/responsive',
-            'configuration/device-pixel-ratio',
-            'configuration/locale',
-            'configuration/interactions',
-            'configuration/canvas-background',
             'configuration/animations',
+            'configuration/canvas-background',
+            'configuration/decimation',
+            'configuration/device-pixel-ratio',
+            'configuration/elements',
+            'configuration/interactions',
             'configuration/layout',
             'configuration/legend',
-            'configuration/title',
+            'configuration/locale',
+            'configuration/responsive',
             'configuration/subtitle',
+            'configuration/title',
             'configuration/tooltip',
-            'configuration/elements',
-            'configuration/decimation'
           ]
         },
         {
           title: 'Chart Types',
           children: [
-            'charts/line',
-            'charts/bar',
-            'charts/radar',
-            'charts/doughnut',
-            'charts/polar',
-            'charts/bubble',
-            'charts/scatter',
             'charts/area',
-            'charts/mixed'
+            'charts/bar',
+            'charts/bubble',
+            'charts/doughnut',
+            'charts/line',
+            'charts/mixed',
+            'charts/polar',
+            'charts/radar',
+            'charts/scatter',
           ]
         },
         {
@@ -364,13 +365,13 @@ module.exports = {
           children: [
             'developers/',
             'developers/api',
+            'developers/axes',
+            'developers/charts',
+            'developers/contributing',
+            'developers/plugins',
+            'developers/publishing',
             ['api/', 'TypeDoc'],
             'developers/updates',
-            'developers/plugins',
-            'developers/charts',
-            'developers/axes',
-            'developers/contributing',
-            'developers/publishing'
           ]
         },
       ],

@@ -150,7 +150,7 @@ The style of the line can be controlled with the following properties:
 | `tension` | Bezier curve tension of the line. Set to 0 to draw straight lines.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `null` data will create a break in the line.
 
-If the value is `undefined`, `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 

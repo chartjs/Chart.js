@@ -111,7 +111,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`circumference`](#general) | `number` | - | - | `undefined`
 | [`clip`](#general) | `number`\|`object` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
