@@ -1493,20 +1493,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * The events option defines the browser events that the chart should listen to for tooltips and hovering.
    * @default ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
    */
-  events: (
-    'mousemove' |
-    'mouseout' |
-    'click' |
-    'touchstart' |
-    'touchmove' |
-    'touchend' |
-    'pointerenter' |
-    'pointerdown' |
-    'pointermove' |
-    'pointerup' |
-    'pointerleave' |
-    'pointerout'
-  )[];
+  events: (keyof HTMLElementEventMap)[]
 
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
