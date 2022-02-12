@@ -69,7 +69,7 @@ options: {
 }
 ```
 
-When using the pie/doughnut chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
+When using the pie/doughnut, radar or polarArea chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
 
 ```javascript
 type: 'doughnut',
@@ -84,6 +84,11 @@ options: {
     }
 }
 ```
+
+:::warning
+When using object notation in a radar chart you still need a labels array with labels for the chart to show correctly.
+:::
+
 
 ## Object
 

@@ -1,6 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {toRadians, PI} from '../helpers/index';
-import {formatNumber} from '../helpers/helpers.intl';
+import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpers/index';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -21,6 +20,10 @@ export default class PolarAreaController extends DatasetController {
       label: labels[index] || '',
       value,
     };
+  }
+
+  parseObjectData(meta, data, start, count) {
+    return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }
 
   update(mode) {
@@ -50,7 +53,6 @@ export default class PolarAreaController extends DatasetController {
   updateElements(arcs, start, count, mode) {
     const reset = mode === 'reset';
     const chart = this.chart;
-    const dataset = this.getDataset();
     const opts = chart.options;
     const animationOpts = opts.animation;
     const scale = this._cachedMeta.rScale;
@@ -69,7 +71,7 @@ export default class PolarAreaController extends DatasetController {
       const arc = arcs[i];
       let startAngle = angle;
       let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
-      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(dataset.data[i]) : 0;
+      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(this.getParsed(i).r) : 0;
       angle = endAngle;
 
       if (reset) {
@@ -96,12 +98,11 @@ export default class PolarAreaController extends DatasetController {
   }
 
   countVisibleElements() {
-    const dataset = this.getDataset();
     const meta = this._cachedMeta;
     let count = 0;
 
     meta.data.forEach((element, index) => {
-      if (!isNaN(dataset.data[index]) && this.chart.getDataVisibility(index)) {
+      if (!isNaN(this.getParsed(index).r) && this.chart.getDataVisibility(index)) {
         count++;
       }
     });
