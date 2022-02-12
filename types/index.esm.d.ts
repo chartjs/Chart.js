@@ -3020,7 +3020,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
      * The label alignment
      * @default 'center'
      */
-    align: Align;
+    align: Align | 'inner';
     /**
      *   If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
      * @default true
