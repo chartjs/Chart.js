@@ -132,9 +132,15 @@ Plugins are notified during the initialization process. These hooks can be used 
 
 ### Chart Update
 
-Plugins are notified during throughout the update process.
+Plugins are notified throughout the update process.
 
 ![Chart.js update flowchart](./update_flowchart.png)
+
+### Scale Update
+
+Plugins are notified throughout the scale update process.
+
+![Chart.js scale update flowchart](./scale_flowchart.png)
 
 ### Rendering
 
