@@ -543,6 +543,11 @@ export default class BarController extends DatasetController {
       if (value === actualBase) {
         base -= size / 2;
       }
+      const startPixel = vScale.getPixelForDecimal(0);
+      const endPixel = vScale.getPixelForDecimal(1);
+      const min = Math.min(startPixel, endPixel);
+      const max = Math.max(startPixel, endPixel);
+      base = Math.max(Math.min(base, max), min);
       head = base + size;
     }
 
