@@ -63,6 +63,6 @@ For support using Chart.js, please post questions with the [`chartjs` tag on Sta
 
 ## License
 
-Chart.js is available under the [MIT license](https://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](https://github.com/chartjs/Chart.js/blob/master/LICENSE.md).
 
-Documentation is copyright © 2014-2021 Chart.js contributors.
+Documentation is copyright © 2014-2022 Chart.js contributors.
