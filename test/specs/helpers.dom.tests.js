@@ -449,6 +449,7 @@ describe('DOM helpers tests', function() {
       const nativeEvent = await jasmine.triggerMouseEvent(chart, 'mousemove', point);
       const nativePosition = Chart.helpers.getRelativePosition(nativeEvent, chart);
 
+      expect(chartPosition).not.toBeNull();
       expect(nativePosition).toEqual(chartPosition);
     });
   });

@@ -59,7 +59,13 @@ function getPositionedStyle(styles, style, suffix) {
 
 const useOffsetPos = (x, y, target) => (x > 0 || y > 0) && (!target || !target.shadowRoot);
 
+/**
+ * @param {Event} e
+ * @param {HTMLCanvasElement} canvas
+ * @returns {{x: number, y: number, box: boolean}}
+ */
 function getCanvasPosition(e, canvas) {
+  // @ts-ignore
   const touches = e.touches;
   const source = touches && touches.length ? touches[0] : e;
   const {offsetX, offsetY} = source;
