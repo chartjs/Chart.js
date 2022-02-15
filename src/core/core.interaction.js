@@ -43,14 +43,14 @@ function binarySearch(metaset, axis, value, intersect) {
 }
 
 /**
- * Helper function to get items using binary search, when the data is sorted.
+ * Helper function to select candidate elements for interaction
  * @param {Chart} chart - the chart
  * @param {string} axis - the axis mode. x|y|xy|r
  * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {function} handler - the callback to execute for each visible item
  * @param {boolean} [intersect] - consider intersecting items
  */
-export function evaluateInteractionItems(chart, axis, position, handler, intersect) {
+function evaluateInteractionItems(chart, axis, position, handler, intersect) {
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
@@ -89,7 +89,7 @@ function getDistanceMetricForAxis(axis) {
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-export function getIntersectItems(chart, position, axis, useFinalPosition) {
+function getIntersectItems(chart, position, axis, useFinalPosition) {
   const items = [];
 
   if (!chart.isPointInArea(position)) {
@@ -179,7 +179,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-export function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
+function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
   if (!chart.isPointInArea(position)) {
     return [];
   }
@@ -198,7 +198,7 @@ export function getNearestItems(chart, position, axis, intersect, useFinalPositi
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
  */
-export function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
+function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
   const items = [];
   const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
   let intersectsItem = false;
@@ -223,6 +223,9 @@ export function getAxisItems(chart, position, axis, intersect, useFinalPosition)
  * @namespace Chart.Interaction
  */
 export default {
+  // Part of the public API to facilitate developers creating their own modes
+  evaluateInteractionItems,
+
   // Helper function for different modes
   modes: {
     /**
