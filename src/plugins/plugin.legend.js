@@ -312,7 +312,7 @@ export class Legend extends Element {
 
       ctx.setLineDash(valueOrDefault(legendItem.lineDash, []));
 
-      if (labelOpts.usePointStyle) {
+      if (legendItem.usePointStyle) {
         // Recalculate x and y for drawPoint() because its expecting
         // x and y to be center of figure (instead of top left)
         const drawOptions = {
