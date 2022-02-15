@@ -794,9 +794,8 @@ class Chart {
   }
 
   /**
-   * Checks whether the given point is in the chart area.  Point coordinates are
-   * relative to the chart.  (getRelativePosition may be helpful.)
-   * @param {Point} point
+   * Checks whether the given point is in the chart area.
+   * @param {Point} point - in relative coordinates (see, e.g., getRelativePosition)
    * @returns {boolean}
    */
   isPointInArea(point) {

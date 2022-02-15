@@ -1,6 +1,14 @@
 import {INFINITY} from './helpers.math';
 
 /**
+ * Note: typedefs are auto-exported, so use a made-up `dom` namespace where
+ * necessary to avoid duplicates with `export * from './helpers`; see
+ * https://github.com/microsoft/TypeScript/issues/46011
+ * @typedef { import("../core/core.controller").default } dom.Chart
+ * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
+ */
+
+/**
  * @private
  */
 export function _isDomSupported() {
@@ -83,12 +91,15 @@ function getCanvasPosition(e, canvas) {
   return {x, y, box};
 }
 
+/**
+ * Gets an event's x, y coordinates, relative to the chart area
+ * @param {Event|ChartEvent} evt
+ * @param {dom.Chart} chart
+ * @returns {{x: number, y: number}}
+ */
 export function getRelativePosition(evt, chart) {
   if ('native' in evt) {
-    return {
-      x: evt.x,
-      y: evt.y
-    };
+    return evt;
   }
 
   const {canvas, currentDevicePixelRatio} = chart;

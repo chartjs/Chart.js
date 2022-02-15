@@ -84,7 +84,7 @@ function getDistanceMetricForAxis(axis) {
 /**
  * Helper function to get the items that intersect the event position
  * @param {Chart} chart - the chart
- * @param {Point} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axis mode. x|y|xy|r
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
@@ -109,7 +109,7 @@ export function getIntersectItems(chart, position, axis, useFinalPosition) {
 /**
  * Helper function to get the items nearest to the event position for a radial chart
  * @param {Chart} chart - the chart to look at elements from
- * @param {Point} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
  * @return {InteractionItem[]} the nearest items
@@ -133,7 +133,7 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
 /**
  * Helper function to get the items nearest to the event position for a cartesian chart
  * @param {Chart} chart - the chart to look at elements from
- * @param {Point} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
@@ -173,7 +173,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
 /**
  * Helper function to get the items nearest to the event position considering all visible items in the chart
  * @param {Chart} chart - the chart to look at elements from
- * @param {Point} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
@@ -192,7 +192,7 @@ export function getNearestItems(chart, position, axis, intersect, useFinalPositi
 /**
  * Helper function to get the items matching along the given X or Y axis
  * @param {Chart} chart - the chart to look at elements from
- * @param {Point} position - the point to be nearest to
+ * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axis to match
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position

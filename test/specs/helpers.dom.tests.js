@@ -450,7 +450,7 @@ describe('DOM helpers tests', function() {
       const nativePosition = Chart.helpers.getRelativePosition(nativeEvent, chart);
 
       expect(chartPosition).not.toBeNull();
-      expect(nativePosition).toEqual(chartPosition);
+      expect(nativePosition).toEqual({x: chartPosition.x, y: chartPosition.y});
     });
   });
 });
