@@ -7,7 +7,7 @@ const chart = new Chart('id', {
     datasets: [{
       data: [],
       backgroundColor: ['red', 'blue'],
-      borderColor: ['red', 'blue'],
+      hoverBackgroundColor: ['red', 'blue'],
     }]
   },
 });
