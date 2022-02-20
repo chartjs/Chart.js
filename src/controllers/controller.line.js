@@ -6,8 +6,9 @@ import {_lookupByKey} from '../helpers/helpers.collection';
 export default class LineController extends DatasetController {
 
   initialize() {
-    this.enableOptionSharing = true;
     super.initialize();
+    this.enableOptionSharing = true;
+    this.supportsDecimation = true;
   }
 
   update(mode) {

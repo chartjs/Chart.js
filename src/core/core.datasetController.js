@@ -249,6 +249,7 @@ export default class DatasetController {
     this.linkScales();
     meta._stacked = isStacked(meta.vScale, meta);
     this.addElements();
+    this.supportsDecimation = false;
   }
 
   updateIndex(datasetIndex) {
