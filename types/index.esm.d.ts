@@ -177,8 +177,10 @@ export interface LineControllerDatasetOptions
   extends ControllerDatasetOptions,
   ScriptableAndArrayOptions<PointPrefixedOptions, ScriptableContext<'line'>>,
   ScriptableAndArrayOptions<PointPrefixedHoverOptions, ScriptableContext<'line'>>,
-  ScriptableOptions<LineOptions, ScriptableContext<'line'>>,
-  ScriptableOptions<LineHoverOptions, ScriptableContext<'line'>>,
+  ScriptableOptions<Omit<LineOptions, keyof CommonElementOptions>, ScriptableContext<'line'>>,
+  ScriptableAndArrayOptions<CommonElementOptions, ScriptableContext<'line'>>,
+  ScriptableOptions<Omit<LineHoverOptions, keyof CommonHoverOptions>, ScriptableContext<'line'>>,
+  ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'line'>>,
   AnimationOptions<'line'> {
   /**
    * The ID of the x axis to plot this dataset on.
