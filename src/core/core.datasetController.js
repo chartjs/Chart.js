@@ -237,6 +237,7 @@ export default class DatasetController {
     this._drawStart = undefined;
     this._drawCount = undefined;
     this.enableOptionSharing = false;
+    this.supportsDecimation = false;
     this.$context = undefined;
     this._syncList = [];
 
@@ -249,7 +250,6 @@ export default class DatasetController {
     this.linkScales();
     meta._stacked = isStacked(meta.vScale, meta);
     this.addElements();
-    this.supportsDecimation = false;
   }
 
   updateIndex(datasetIndex) {
