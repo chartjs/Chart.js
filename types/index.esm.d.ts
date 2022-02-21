@@ -578,6 +578,10 @@ export class DatasetController<
   readonly index: number;
   readonly _cachedMeta: ChartMeta<TElement, TDatasetElement, TType>;
   enableOptionSharing: boolean;
+  // If true, the controller supports the decimation
+  // plugin. Defaults to `false` for all controllers
+  // except the LineController
+  supportsDecimation: boolean;
 
   linkScales(): void;
   getAllParsedValues(scale: Scale): number[];

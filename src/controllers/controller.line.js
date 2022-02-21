@@ -7,6 +7,7 @@ export default class LineController extends DatasetController {
 
   initialize() {
     this.enableOptionSharing = true;
+    this.supportsDecimation = true;
     super.initialize();
   }
 

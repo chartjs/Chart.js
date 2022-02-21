@@ -217,7 +217,7 @@ export default {
         return;
       }
 
-      if (meta.type !== 'line') {
+      if (!meta.controller.supportsDecimation) {
         // Only line datasets are supported
         return;
       }
