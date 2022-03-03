@@ -250,6 +250,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
   const circular = gridLineOpts.circular;
 
   const {color, lineWidth} = gridLineOpts;
+  ctx.fillStyle = 'rgba(192, 201, 213, 0.5)';
 
   if ((!circular && !labelCount) || !color || !lineWidth || radius < 0) {
     return;
@@ -263,6 +264,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
 
   ctx.beginPath();
   pathRadiusLine(scale, radius, circular, labelCount);
+  ctx.fill()
   ctx.closePath();
   ctx.stroke();
   ctx.restore();
