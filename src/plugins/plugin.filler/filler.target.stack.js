@@ -6,7 +6,7 @@
 
 import {LineElement} from '../../elements';
 import {_isBetween} from '../../helpers';
-import {_createBoundaryLine} from './filler.target';
+import {_createBoundaryLine} from './filler.helper';
 
 /**
  * @param {{ chart: Chart; scale: Scale; index: number; line: LineElement; }} source
