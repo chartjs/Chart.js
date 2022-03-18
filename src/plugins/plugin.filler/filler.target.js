@@ -1,7 +1,6 @@
-import {LineElement} from '../../elements';
-import {isArray, isFinite} from '../../helpers';
+import {isFinite} from '../../helpers';
+import {_createBoundaryLine} from './filler.helper';
 import {_getTargetPixel, _getTargetValue} from './filler.options';
-import {_pointsFromSegments} from './filler.segment';
 import {_buildStackLine} from './filler.target.stack';
 import {simpleArc} from './simpleArc';
 
@@ -33,31 +32,6 @@ export function _getTarget(source) {
   }
 
   return _createBoundaryLine(boundary, line);
-}
-
-/**
- * @param {PointElement[] | { x: number; y: number; }} boundary
- * @param {LineElement} line
- * @return {LineElement?}
- */
-export function _createBoundaryLine(boundary, line) {
-  let points = [];
-  let _loop = false;
-
-  if (isArray(boundary)) {
-    _loop = true;
-    // @ts-ignore
-    points = boundary;
-  } else {
-    points = _pointsFromSegments(boundary, line);
-  }
-
-  return points.length ? new LineElement({
-    points,
-    options: {tension: 0},
-    _loop,
-    _fullLoop: _loop
-  }) : null;
 }
 
 /**
