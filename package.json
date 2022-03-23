@@ -4,6 +4,7 @@
     "description": "Simple HTML5 charts using the canvas element.",
     "version": "3.7.1",
     "license": "MIT",
+    "sideEffects": false,
     "jsdelivr": "dist/chart.min.js",
     "unpkg": "dist/chart.min.js",
     "main": "dist/chart.js",
