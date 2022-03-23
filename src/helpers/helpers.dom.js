@@ -98,7 +98,7 @@ function getCanvasPosition(e, canvas) {
  * @returns {{x: number, y: number}}
  */
 export function getRelativePosition(evt, chart) {
-  if ('native' in evt) {
+  if (evt && ('native' in evt)) {
     return evt;
   }
 
