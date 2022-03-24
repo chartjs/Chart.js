@@ -21,6 +21,8 @@ export interface ScriptableContext<TType extends ChartType> {
   dataIndex: number;
   dataset: UnionToIntersection<ChartDataset<TType>>;
   datasetIndex: number;
+  type: string;
+  mode: string;
   parsed: UnionToIntersection<ParsedDataType<TType>>;
   raw: unknown;
 }
