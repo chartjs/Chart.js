@@ -514,6 +514,7 @@ export declare class Chart<
   render(): void;
   draw(): void;
 
+  isPointInArea(point: Point): boolean;
   getElementsAtEventForMode(e: Event, mode: string, options: InteractionOptions, useFinalPosition: boolean): InteractionItem[];
 
   getSortedVisibleDatasetMetas(): ChartMeta[];
@@ -750,6 +751,17 @@ export type InteractionMode = keyof InteractionModeMap;
 
 export const Interaction: {
   modes: InteractionModeMap;
+
+  /**
+   * Helper function to select candidate elements for interaction
+   */
+  evaluateInteractionItems(
+    chart: Chart,
+    axis: InteractionAxis,
+    position: Point,
+    handler: (element: Element & VisualElement, datasetIndex: number, index: number) => void,
+    intersect?: boolean
+  ): InteractionItem[];
 };
 
 export const layouts: {
@@ -1404,6 +1416,8 @@ export interface ChartComponent {
   afterUnregister?(): void;
 }
 
+export type InteractionAxis = 'x' | 'y' | 'xy' | 'r';
+
 export interface CoreInteractionOptions {
   /**
    * Sets which elements appear in the tooltip. See Interaction Modes for details.
@@ -1417,9 +1431,9 @@ export interface CoreInteractionOptions {
   intersect: boolean;
 
   /**
-   * Can be set to 'x', 'y', 'xy' or 'r' to define which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
+   * Defines which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
    */
-  axis: 'x' | 'y' | 'xy' | 'r';
+  axis: InteractionAxis;
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {

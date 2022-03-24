@@ -1,6 +1,14 @@
 import {INFINITY} from './helpers.math';
 
 /**
+ * Note: typedefs are auto-exported, so use a made-up `dom` namespace where
+ * necessary to avoid duplicates with `export * from './helpers`; see
+ * https://github.com/microsoft/TypeScript/issues/46011
+ * @typedef { import("../core/core.controller").default } dom.Chart
+ * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
+ */
+
+/**
  * @private
  */
 export function _isDomSupported() {
@@ -59,8 +67,13 @@ function getPositionedStyle(styles, style, suffix) {
 
 const useOffsetPos = (x, y, target) => (x > 0 || y > 0) && (!target || !target.shadowRoot);
 
-function getCanvasPosition(evt, canvas) {
-  const e = evt.native || evt;
+/**
+ * @param {Event} e
+ * @param {HTMLCanvasElement} canvas
+ * @returns {{x: number, y: number, box: boolean}}
+ */
+function getCanvasPosition(e, canvas) {
+  // @ts-ignore
   const touches = e.touches;
   const source = touches && touches.length ? touches[0] : e;
   const {offsetX, offsetY} = source;
@@ -78,7 +91,17 @@ function getCanvasPosition(evt, canvas) {
   return {x, y, box};
 }
 
+/**
+ * Gets an event's x, y coordinates, relative to the chart area
+ * @param {Event|ChartEvent} evt
+ * @param {dom.Chart} chart
+ * @returns {{x: number, y: number}}
+ */
 export function getRelativePosition(evt, chart) {
+  if ('native' in evt) {
+    return evt;
+  }
+
   const {canvas, currentDevicePixelRatio} = chart;
   const style = getComputedStyle(canvas);
   const borderBox = style.boxSizing === 'border-box';

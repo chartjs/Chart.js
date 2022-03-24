@@ -2,7 +2,11 @@ import {isArray, isNullOrUndef} from './helpers.core';
 import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * Note: typedefs are auto-exported, so use a made-up `canvas` namespace where
+ * necessary to avoid duplicates with `export * from './helpers`; see
+ * https://github.com/microsoft/TypeScript/issues/46011
+ * @typedef { import("../core/core.controller").default } canvas.Chart
+ * @typedef { import("../../types/index.esm").Point } Point
  */
 
 /**
@@ -94,7 +98,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 
 /**
  * Returns the aligned pixel value to avoid anti-aliasing blur
- * @param {Chart} chart - The chart instance.
+ * @param {canvas.Chart} chart - The chart instance.
  * @param {number} pixel - A pixel value.
  * @param {number} width - The width of the element.
  * @returns {number} The aligned pixel value.
@@ -242,7 +246,7 @@ export function drawPoint(ctx, options, x, y) {
 
 /**
  * Returns true if the point is inside the rectangle
- * @param {object} point - The point to test
+ * @param {Point} point - The point to test
  * @param {object} area - The rectangle
  * @param {number} [margin] - allowed margin
  * @returns {boolean}

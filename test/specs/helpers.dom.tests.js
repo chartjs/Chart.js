@@ -427,5 +427,30 @@ describe('DOM helpers tests', function() {
       expect(dataX).not.toEqual(NaN);
       expect(dataY).not.toEqual(NaN);
     });
+
+    it('Should give consistent results for native and chart events', async function() {
+      let chartPosition = null;
+      const chart = window.acquireChart(
+        {
+          type: 'bar',
+          data: {
+            datasets: [{
+              data: [{x: 'first', y: 10}, {x: 'second', y: 5}, {x: 'third', y: 15}]
+            }]
+          },
+          options: {
+            onHover: (chartEvent) => {
+              chartPosition = Chart.helpers.getRelativePosition(chartEvent, chart);
+            }
+          }
+        });
+
+      const point = chart.getDatasetMeta(0).data[1];
+      const nativeEvent = await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      const nativePosition = Chart.helpers.getRelativePosition(nativeEvent, chart);
+
+      expect(chartPosition).not.toBeNull();
+      expect(nativePosition).toEqual({x: chartPosition.x, y: chartPosition.y});
+    });
   });
 });
