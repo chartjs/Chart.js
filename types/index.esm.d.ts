@@ -3284,6 +3284,8 @@ export const TimeSeriesScale: ChartComponent & {
 export type RadialLinearScaleOptions = CoreScaleOptions & {
   animate: boolean;
 
+  startAngle: number;
+
   angleLines: {
     /**
      * if true, angle lines are shown.
