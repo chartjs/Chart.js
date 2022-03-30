@@ -42,6 +42,17 @@ const positioners = {
       y: y / count
     };
   },
+  
+  /**
+   * Gets the tooltip position directly by the mouse cursor
+  */
+  mouse(items, eventPosition) {
+
+    return {
+      x: eventPosition.x,
+      y: eventPosition.y
+    };
+  },
 
   /**
 	 * Gets the tooltip position nearest of the item nearest to the event position
