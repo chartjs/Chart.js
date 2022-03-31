@@ -6,7 +6,7 @@ const getPoint = (points, i) => i < points.length && !points[i].skip && points[i
 const getValueAxis = (indexAxis) => indexAxis === 'x' ? 'y' : 'x';
 
 export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
-  // Props to Rob Spencer at scaled innovation for his post on splining between points
+  // Props to Rob Spencer at scaled innovation for their post on splining between points
   // http://scaledinnovation.com/analytics/splines/aboutSplines.html
 
   // This function must also respect "skipped" points
