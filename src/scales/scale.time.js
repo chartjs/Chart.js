@@ -351,6 +351,14 @@ export default class TimeScale extends Scale {
     return ticksFromTimestamps(this, ticks, this._majorUnit);
   }
 
+  afterAutoSkip() {
+    // Offsets for bar charts need to be handled with the auto skipped
+    // ticks. Once ticks have been skipped, we re-compute the offsets.
+    if (this.options.offsetAfterAutoskip) {
+      this.initOffsets(this.ticks.map(tick => +tick.value));
+    }
+  }
+
   /**
 	 * Returns the start and end offsets from edges in the form of {start, end}
 	 * where each value is a relative width to the scale and ranges between 0 and 1.

@@ -3203,6 +3203,13 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   bounds: 'ticks' | 'data';
 
   /**
+   * If true, bar chart offsets are computed with skipped tick sizes
+   * @since 3.8.0
+   * @default false
+   */
+  offsetAfterAutoskip: boolean;
+
+  /**
    * options for creating a new adapter instance
    */
   adapters: {
