@@ -917,6 +917,14 @@ export class Tooltip extends Element {
     }
   }
 
+  /**
+   * Determine if the tooltip will draw anything
+   * @returns {boolean} True if the tooltip will render
+   */
+  _willRender() {
+    return !!this.opacity;
+  }
+
   draw(ctx) {
     const options = this.options.setContext(this.getContext());
     let opacity = this.opacity;
@@ -1127,19 +1135,19 @@ export default {
   afterDraw(chart) {
     const tooltip = chart.tooltip;
 
-    const args = {
-      tooltip
-    };
+    if (tooltip && tooltip._willRender()) {
+      const args = {
+        tooltip
+      };
 
-    if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
-      return;
-    }
+      if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
+        return;
+      }
 
-    if (tooltip) {
       tooltip.draw(chart.ctx);
-    }
 
-    chart.notifyPlugins('afterTooltipDraw', args);
+      chart.notifyPlugins('afterTooltipDraw', args);
+    }
   },
 
   afterEvent(chart, args) {
