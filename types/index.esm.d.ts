@@ -2954,6 +2954,74 @@ export interface TickOptions {
   };
 }
 
+export type CartesianTickOptions = TickOptions & {
+  /**
+   * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+   * @default ticks.length
+   */
+  sampleSize: number;
+  /**
+   * The label alignment
+   * @default 'center'
+   */
+  align: Align | 'inner';
+  /**
+   *   If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+   * @default true
+   */
+  autoSkip: boolean;
+  /**
+   * Padding between the ticks on the horizontal axis when autoSkip is enabled.
+   * @default 0
+   */
+  autoSkipPadding: number;
+
+  /**
+   * How is the label positioned perpendicular to the axis direction.
+   * This only applies when the rotation is 0 and the axis position is one of "top", "left", "right", or "bottom"
+   * @default 'near'
+   */
+  crossAlign: 'near' | 'center' | 'far';
+
+  /**
+   * Should the defined `min` and `max` values be presented as ticks even if they are not "nice".
+   * @default: true
+   */
+  includeBounds: boolean;
+
+  /**
+   * Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+   * @default 0
+   */
+  labelOffset: number;
+
+  /**
+   * Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+   * @default 0
+   */
+  minRotation: number;
+  /**
+   * Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+   * @default 50
+   */
+  maxRotation: number;
+  /**
+   * Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+   * @default false
+   */
+  mirror: boolean;
+  /**
+   *   Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+   * @default 0
+   */
+  padding: number;
+  /**
+   * Maximum number of ticks and gridlines to show.
+   * @default 11
+   */
+  maxTicksLimit: number;
+}
+
 export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
    * Scale boundary strategy (bypassed by min/max time options)
@@ -3032,73 +3100,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    */
   stacked?: boolean | 'single';
 
-  ticks: TickOptions & {
-    /**
-     * The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
-     * @default ticks.length
-     */
-    sampleSize: number;
-    /**
-     * The label alignment
-     * @default 'center'
-     */
-    align: Align | 'inner';
-    /**
-     *   If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
-     * @default true
-     */
-    autoSkip: boolean;
-    /**
-     * Padding between the ticks on the horizontal axis when autoSkip is enabled.
-     * @default 0
-     */
-    autoSkipPadding: number;
-
-    /**
-     * How is the label positioned perpendicular to the axis direction.
-     * This only applies when the rotation is 0 and the axis position is one of "top", "left", "right", or "bottom"
-     * @default 'near'
-     */
-    crossAlign: 'near' | 'center' | 'far';
-
-    /**
-     * Should the defined `min` and `max` values be presented as ticks even if they are not "nice".
-     * @default: true
-     */
-    includeBounds: boolean;
-
-    /**
-     * Distance in pixels to offset the label from the centre point of the tick (in the x direction for the x axis, and the y direction for the y axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
-     * @default 0
-     */
-    labelOffset: number;
-
-    /**
-     * Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
-     * @default 0
-     */
-    minRotation: number;
-    /**
-     * Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
-     * @default 50
-     */
-    maxRotation: number;
-    /**
-     * Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
-     * @default false
-     */
-    mirror: boolean;
-    /**
-     *   Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
-     * @default 0
-     */
-    padding: number;
-    /**
-     * Maximum number of ticks and gridlines to show.
-     * @default 11
-     */
-    maxTicksLimit: number;
-  };
+  ticks: CartesianTickOptions;
 }
 
 export type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
@@ -3281,6 +3283,34 @@ export const TimeSeriesScale: ChartComponent & {
   new <O extends TimeScaleOptions = TimeScaleOptions>(cfg: AnyObject): TimeSeriesScale<O>;
 };
 
+export type RadialTickOptions = TickOptions & {
+  /**
+   * The Intl.NumberFormat options used by the default label formatter
+   */
+  format: Intl.NumberFormatOptions;
+
+  /**
+   * Maximum number of ticks and gridlines to show.
+   * @default 11
+   */
+  maxTicksLimit: number;
+
+  /**
+   * if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
+   */
+  precision: number;
+
+  /**
+   * User defined fixed step size for the scale.
+   */
+  stepSize: number;
+
+  /**
+   * User defined number of ticks
+   */
+  count: number;
+}
+
 export type RadialLinearScaleOptions = CoreScaleOptions & {
   animate: boolean;
 
@@ -3378,33 +3408,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
    */
   suggestedMin: number;
 
-  ticks: TickOptions & {
-    /**
-     * The Intl.NumberFormat options used by the default label formatter
-     */
-    format: Intl.NumberFormatOptions;
-
-    /**
-     * Maximum number of ticks and gridlines to show.
-     * @default 11
-     */
-    maxTicksLimit: number;
-
-    /**
-     * if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
-     */
-    precision: number;
-
-    /**
-     * User defined fixed step size for the scale.
-     */
-    stepSize: number;
-
-    /**
-     * User defined number of ticks
-     */
-    count: number;
-  };
+  ticks: RadialTickOptions;
 };
 
 export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLinearScaleOptions> extends Scale<O> {
