@@ -1215,9 +1215,7 @@ export default class Scale extends Element {
           if (i === ilen - 1) {
             tickTextAlign = !this.options.reverse ? 'right' : 'left';
           } else if (i === 0) {
-            if (this.chart.options.layout.padding.left) {
-              x = this.chart.options.layout.padding.left;
-            }
+            x = this.chart.options.layout.padding && this.chart.options.layout.padding.left ? this.chart.options.layout.padding.left : x;
             tickTextAlign = !this.options.reverse ? 'left' : 'right';
           } else {
             tickTextAlign = 'center';
