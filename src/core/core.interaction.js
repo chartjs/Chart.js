@@ -97,6 +97,10 @@ function getIntersectItems(chart, position, axis, useFinalPosition) {
   }
 
   const evaluationFunc = function(element, datasetIndex, index) {
+    const chartArea = chart.chartArea;
+    if (element.x < chartArea.left || chartArea.right < element.x || element.y < chartArea.top || chartArea.bottom < element.y) {
+      return;
+    }
     if (element.inRange(position.x, position.y, useFinalPosition)) {
       items.push({element, datasetIndex, index});
     }
