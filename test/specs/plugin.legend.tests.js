@@ -997,6 +997,46 @@ describe('Legend block tests', function() {
       expect(leaveItem).toBe(chart.legend.legendItems[0]);
     });
 
+    it('should call onLeave when the mouse leaves the canvas', async function() {
+      var hoverItem = null;
+      var leaveItem = null;
+
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{
+            data: [10, 20, 30, 100]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              onHover: function(_, item) {
+                hoverItem = item;
+              },
+              onLeave: function(_, item) {
+                leaveItem = item;
+              }
+            }
+          }
+        }
+      });
+
+      var hb = chart.legend.legendHitBoxes[0];
+      var el = {
+        x: hb.left + (hb.width / 2),
+        y: hb.top + (hb.height / 2)
+      };
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', el);
+      expect(hoverItem).toBe(chart.legend.legendItems[0]);
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout');
+      expect(leaveItem).toBe(chart.legend.legendItems[0]);
+    });
+
+
     it('should call onClick for the correct item when in RTL mode', async function() {
       var clickItem = null;
 
