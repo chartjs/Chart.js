@@ -453,6 +453,7 @@ export default class Scale extends Element {
     if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
       this.ticks = autoSkip(this, this.ticks);
       this._labelSizes = null;
+      this.afterAutoSkip();
     }
 
     if (samplingEnabled) {
@@ -619,6 +620,7 @@ export default class Scale extends Element {
   afterCalculateLabelRotation() {
     call(this.options.afterCalculateLabelRotation, [this]);
   }
+  afterAutoSkip() {}
 
   //
 
