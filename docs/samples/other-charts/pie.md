@@ -110,3 +110,5 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Doughnut and Pie Charts](../../charts/doughnut.html)

@@ -113,3 +113,9 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Area](../../charts/area.html)
+  * [Configuration (`drawTime`)](../../charts/area.html#configuration)
+* [Line](../../charts/line.html)
+  * [Line Styling (`tension`)](../../charts/line.html#line-styling)
+* [Data structures (`labels`)](../../general/data-structures.html)

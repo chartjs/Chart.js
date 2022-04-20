@@ -89,3 +89,6 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Polar Area Chart](../../charts/polar.md)

@@ -121,3 +121,8 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Bar](../../charts/bar.html)
+  * [Horizontal Bar Chart](../../charts/bar.html#horizontal-bar-chart)
+
