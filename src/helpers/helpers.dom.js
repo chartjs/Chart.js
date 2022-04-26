@@ -194,7 +194,7 @@ export function retinaScale(chart, forceRatio, forceStyle) {
   chart.height = deviceHeight / pixelRatio;
   chart.width = deviceWidth / pixelRatio;
 
-  const canvas = chart.canvas;
+  let canvas = chart.canvas;
 
   // If no style has been set on the canvas, the render size is used as display size,
   // making the chart visually bigger, so let's enforce it to the "correct" values.
