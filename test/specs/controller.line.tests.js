@@ -970,8 +970,6 @@ describe('Chart.controllers.line', function() {
       type: 'line',
       data: {
         datasets: [{
-          xAxisKey: 'x',
-          yAxisKey: 'y',
           spanGaps: 10,
           data: [{x: 10, y: 123}, {x: 15, y: 124}, {x: 26, y: 125}, {x: 30, y: 126}, {x: 35, y: 127}],
           label: 'dataset1',
@@ -998,8 +996,6 @@ describe('Chart.controllers.line', function() {
       type: 'line',
       data: {
         datasets: [{
-          xAxisKey: 'x',
-          yAxisKey: 'y',
           spanGaps: 10,
           data: [{x: 35, y: 123}, {x: 30, y: 124}, {x: 26, y: 125}, {x: 15, y: 126}, {x: 10, y: 127}],
           label: 'dataset1',
