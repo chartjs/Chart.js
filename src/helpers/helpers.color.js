@@ -5,7 +5,7 @@ const isPatternOrGradient = (value) => {
     const type = value.toString();
     return type === '[object CanvasPattern]' || type === '[object CanvasGradient]';
   }
-  
+
   return false;
 };
 
