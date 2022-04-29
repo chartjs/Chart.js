@@ -1,6 +1,13 @@
 import colorLib from '@kurkle/color';
 
-const isPatternOrGradient = (value) => value instanceof CanvasGradient || value instanceof CanvasPattern;
+const isPatternOrGradient = (value) => {
+  if (value && typeof value === 'object') {
+    const type = value.toString();
+    return type === '[object CanvasPattern]' || type === '[object CanvasGradient]';
+  }
+  
+  return false;
+};
 
 export function color(value) {
   return isPatternOrGradient(value) ? value : colorLib(value);
