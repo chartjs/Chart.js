@@ -1,4 +1,4 @@
-import { AnyObject } from "../basic";
+import { AnyObject } from '../basic';
 
 export function color(value: CanvasGradient): CanvasGradient;
 export function color(value: CanvasPattern): CanvasPattern;
