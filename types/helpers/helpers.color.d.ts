@@ -1,3 +1,5 @@
+import { AnyObject } from '../basic';
+
 export function color(value: CanvasGradient): CanvasGradient;
 export function color(value: CanvasPattern): CanvasPattern;
 export function color(
@@ -7,6 +9,8 @@ export function color(
   | [number, number, number]
   | [number, number, number, number]
 ): ColorModel;
+
+export function isPatternOrGradient(value: string | AnyObject): boolean;
 
 export interface ColorModel {
   rgbString(): string;
