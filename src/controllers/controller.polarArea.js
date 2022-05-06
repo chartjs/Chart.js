@@ -34,8 +34,8 @@ export default class PolarAreaController extends DatasetController {
   }
 
   /**
-	 * @protected
-	 */
+   * @protected
+   */
   getMinMax() {
     const meta = this._cachedMeta;
     const range = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY};
