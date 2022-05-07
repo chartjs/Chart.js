@@ -1,6 +1,7 @@
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
 import {getRelativePosition} from '../helpers/helpers.dom';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
+import {_isPointInArea} from '../helpers';
 
 /**
  * @typedef { import("./core.controller").default } Chart
@@ -97,8 +98,7 @@ function getIntersectItems(chart, position, axis, useFinalPosition) {
   }
 
   const evaluationFunc = function(element, datasetIndex, index) {
-    const chartArea = chart.chartArea;
-    if (element.x < chartArea.left || chartArea.right < element.x || element.y < chartArea.top || chartArea.bottom < element.y) {
+    if (!_isPointInArea(element, chart.chartArea, 0)) {
       return;
     }
     if (element.inRange(position.x, position.y, useFinalPosition)) {

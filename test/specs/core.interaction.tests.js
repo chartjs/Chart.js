@@ -850,7 +850,7 @@ describe('Core.Interaction', function() {
         options: {
           scales: {
             x: {
-              min: 1
+              min: 2
             }
           }
         }
