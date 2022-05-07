@@ -3381,6 +3381,13 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     backdropPadding: Scriptable<number | ChartArea, ScriptableScalePointLabelContext>;
 
     /**
+     * Border radius
+     * @default 0
+     * @since 3.8.0
+     */
+    borderRadius: Scriptable<number | BorderRadius, ScriptableScalePointLabelContext>;
+
+    /**
      * if true, point labels are shown.
      * @default true
      */

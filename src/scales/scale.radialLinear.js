@@ -1,10 +1,10 @@
 import defaults from '../core/core.defaults';
-import {_longestText, renderText} from '../helpers/helpers.canvas';
+import {_longestText, addRoundedRectPath, renderText} from '../helpers/helpers.canvas';
 import {HALF_PI, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
 import LinearScaleBase from './scale.linearbase';
 import Ticks from '../core/core.ticks';
 import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {createContext, toFont, toPadding} from '../helpers/helpers.options';
+import {createContext, toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
@@ -208,9 +208,28 @@ function drawPointLabels(scale, labelCount) {
     const {backdropColor} = optsAtIndex;
 
     if (!isNullOrUndef(backdropColor)) {
+      const borderRadius = toTRBLCorners(optsAtIndex.borderRadius);
       const padding = toPadding(optsAtIndex.backdropPadding);
       ctx.fillStyle = backdropColor;
-      ctx.fillRect(left - padding.left, top - padding.top, right - left + padding.width, bottom - top + padding.height);
+
+      const backdropLeft = left - padding.left;
+      const backdropTop = top - padding.top;
+      const backdropWidth = right - left + padding.width;
+      const backdropHeight = bottom - top + padding.height;
+
+      if (Object.values(borderRadius).some(v => v !== 0)) {
+        ctx.beginPath();
+        addRoundedRectPath(ctx, {
+          x: backdropLeft,
+          y: backdropTop,
+          w: backdropWidth,
+          h: backdropHeight,
+          radius: borderRadius,
+        });
+        ctx.fill();
+      } else {
+        ctx.fillRect(backdropLeft, backdropTop, backdropWidth, backdropHeight);
+      }
     }
 
     renderText(
