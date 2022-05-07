@@ -834,4 +834,41 @@ describe('Core.Interaction', function() {
       expect(elements).toEqual([meta0.data[1], meta1.data[0], meta1.data[1], meta1.data[2]]);
     });
   });
+
+  describe('tooltip element of scatter chart', function() {
+    it ('out-of-range datapoints are not shown in tooltip', function() {
+      let data = [];
+      for (let i = 0; i < 1000; i++) {
+        data.push({x: i, y: i});
+      }
+
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{data}]
+        },
+        options: {
+          scales: {
+            x: {
+              min: 2
+            }
+          }
+        }
+      });
+
+      const meta0 = chart.getDatasetMeta(0);
+      const firstElement = meta0.data[0];
+
+      const evt = {
+        type: 'click',
+        chart: chart,
+        native: true, // needed otherwise things its a DOM event
+        x: firstElement.x,
+        y: firstElement.y
+      };
+
+      const elements = Chart.Interaction.modes.point(chart, evt, {intersect: true}).map(item => item.element);
+      expect(elements).not.toContain(firstElement);
+    });
+  });
 });
