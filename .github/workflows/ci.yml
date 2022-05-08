@@ -55,7 +55,8 @@ jobs:
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
-          steps.changes.outputs.test == 'true') && runner.os != 'Windows'
+          steps.changes.outputs.test == 'true') && 
+          runner.os != 'Windows'
         run: |
           npm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
