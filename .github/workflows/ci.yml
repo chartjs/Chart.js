@@ -54,13 +54,12 @@ jobs:
         run: npm run build
       - name: Test
         if: |
-          steps.changes.outputs.src == 'true' ||
-          steps.changes.outputs.test == 'true'
+          (steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true') && 
+          runner.os != 'Windows'
         run: |
           npm run build
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            npm test
-          elif [ "${{ runner.os }}" == "macOS" ]; then
+          if [ "${{ runner.os }}" == "macOS" ]; then
             npm test --browsers chrome,safari
           else
             xvfb-run --auto-servernum npm test
