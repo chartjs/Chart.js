@@ -1,7 +1,16 @@
 import { TRBL, TRBLCorners } from '../geometric';
-import { FontSpec } from '../index.esm';
 
-export interface CanvasFontSpec extends FontSpec {
+// Should be the same as FontSpec from the index.esm.ts
+// Duplicate because the default one is scriptable and this one is not
+interface NonScriptableFontSpec {
+  family: string;
+  size: number;
+  style: 'normal' | 'italic' | 'oblique' | 'initial' | 'inherit';
+  weight: string | null;
+  lineHeight: number | string;
+}
+
+export interface CanvasFontSpec extends NonScriptableFontSpec {
   string: string;
 }
 /**
@@ -9,7 +18,7 @@ export interface CanvasFontSpec extends FontSpec {
  * @param {object} options - A object that contains font options to be parsed.
  * @return {object} The font object.
  */
-export function toFont(options: Partial<FontSpec>): CanvasFontSpec;
+export function toFont(options: Partial<NonScriptableFontSpec>): CanvasFontSpec;
 
 /**
  * Converts the given line height `value` in pixels for a specific font `size`.
