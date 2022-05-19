@@ -1435,6 +1435,12 @@ export interface CoreInteractionOptions {
    * Defines which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
    */
   axis: InteractionAxis;
+
+  /**
+   * if true, the invisible points will also be included when evaluating interactions.
+   * @default false
+   */
+  includeInvisible: boolean;
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {

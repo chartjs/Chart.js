@@ -250,9 +250,10 @@ export default {
       const position = getRelativePosition(e, chart);
       // Default axis for index mode is 'x' to match old behaviour
       const axis = options.axis || 'x';
+      const includeInvisible = options.includeInvisible || false;
       const items = options.intersect
-        ? getIntersectItems(chart, position, axis, useFinalPosition)
-        : getNearestItems(chart, position, axis, false, useFinalPosition);
+        ? getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible)
+        : getNearestItems(chart, position, axis, false, useFinalPosition, includeInvisible);
       const elements = [];
 
       if (!items.length) {
@@ -315,7 +316,8 @@ export default {
     point(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'xy';
-      return getIntersectItems(chart, position, axis, useFinalPosition);
+      const includeInvisible = options.includeInvisible || false;
+      return getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible);
     },
 
     /**
@@ -330,7 +332,8 @@ export default {
     nearest(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'xy';
-      return getNearestItems(chart, position, axis, options.intersect, useFinalPosition);
+      const includeInvisible = options.includeInvisible || false;
+      return getNearestItems(chart, position, axis, options.intersect, useFinalPosition, includeInvisible);
     },
 
     /**
