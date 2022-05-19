@@ -1637,31 +1637,31 @@ export type AnimationOptions<TType extends ChartType> = {
   transitions: TransitionsSpec<TType>;
 };
 
-export interface FontSpec<ScriptableContext> {
+export interface FontSpec<ScriptableFontContext> {
   /**
    * Default font family for all text, follows CSS font-family options.
    * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
    */
-  family: Scriptable<string, ScriptableContext>;
+  family: Scriptable<string, ScriptableFontContext>;
   /**
    * Default font size (in px) for text. Does not apply to radialLinear scale point labels.
    * @default 12
    */
-  size: Scriptable<number, ScriptableContext>;
+  size: Scriptable<number, ScriptableFontContext>;
   /**
    * Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit)
    * @default 'normal'
    */
-  style: Scriptable<'normal' | 'italic' | 'oblique' | 'initial' | 'inherit', ScriptableContext>;
+  style: Scriptable<'normal' | 'italic' | 'oblique' | 'initial' | 'inherit', ScriptableFontContext>;
   /**
    * Default font weight (boldness). (see MDN).
    */
-  weight: Scriptable<string | null, ScriptableContext>;
+  weight: Scriptable<string | null, ScriptableFontContext>;
   /**
    * Height of an individual line of text (see MDN).
    * @default 1.2
    */
-  lineHeight: Scriptable<number | string, ScriptableContext>;
+  lineHeight: Scriptable<number | string, ScriptableFontContext>;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
