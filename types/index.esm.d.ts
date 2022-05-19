@@ -1467,7 +1467,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base font
    * @see Defaults.font
    */
-  font: Partial<FontSpec>;
+  font: Partial<FontSpec<ScriptableChartContext | ScriptableCartesianScaleContext>>;
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
@@ -1637,17 +1637,17 @@ export type AnimationOptions<TType extends ChartType> = {
   transitions: TransitionsSpec<TType>;
 };
 
-export interface FontSpec {
+export interface FontSpec<ScriptableContext> {
   /**
    * Default font family for all text, follows CSS font-family options.
    * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
    */
-  family: string;
+  family: Scriptable<string, ScriptableContext>;
   /**
    * Default font size (in px) for text. Does not apply to radialLinear scale point labels.
    * @default 12
    */
-  size: number;
+  size: Scriptable<number, ScriptableContext>;
   /**
    * Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit)
    * @default 'normal'
@@ -2303,7 +2303,7 @@ export interface LegendOptions<TType extends ChartType> {
      * Font of label
      * @see Defaults.font
      */
-    font: FontSpec;
+    font: Partial<FontSpec<ScriptableChartContext>>;
     /**
      * Padding between rows of colored boxes.
      * @default 10
@@ -2364,7 +2364,7 @@ export interface LegendOptions<TType extends ChartType> {
     /**
      * see Fonts
      */
-    font: FontSpec;
+    font: Partial<FontSpec<ScriptableChartContext>>;
     position: 'center' | 'start' | 'end';
     padding?: number | ChartArea;
     /**
@@ -2398,7 +2398,7 @@ export interface TitleOptions {
    * @see Defaults.color
    */
   color: Color;
-  font: FontSpec;
+  font: Partial<FontSpec<ScriptableChartContext>>;
 
   /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the
@@ -2629,7 +2629,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  titleFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  titleFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
@@ -2659,7 +2659,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts.
    * @default {}
    */
-  bodyFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  bodyFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
@@ -2684,7 +2684,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  footerFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  footerFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
@@ -2919,7 +2919,7 @@ export interface TickOptions {
   /**
    * see Fonts
    */
-  font: Scriptable<FontSpec, ScriptableScaleContext>;
+  font: Scriptable<Partial<FontSpec<ScriptableScaleContext>>, ScriptableScaleContext>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -3022,6 +3022,16 @@ export type CartesianTickOptions = TickOptions & {
   maxTicksLimit: number;
 }
 
+export interface ScriptableCartesianScaleContext {
+  scale: keyof CartesianScaleTypeRegistry;
+  type: string;
+}
+
+export interface ScriptableChartContext {
+  chart: Chart;
+  type: string;
+}
+
 export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
    * Scale boundary strategy (bypassed by min/max time options)
@@ -3082,7 +3092,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** Color of the axis label. */
     color: Color;
     /** Information about the axis title font. */
-    font: FontSpec;
+    font: Partial<FontSpec<ScriptableCartesianScaleContext>>;
     /** Padding to apply around scale labels. */
     padding: number | {
       /** Padding on the (relative) top side of this axis label. */
@@ -3399,7 +3409,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: Scriptable<FontSpec, ScriptableScalePointLabelContext>;
+    font: Scriptable<Partial<FontSpec<ScriptableScalePointLabelContext>>, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
