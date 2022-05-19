@@ -701,6 +701,7 @@ export const defaults: Defaults;
 export interface InteractionOptions {
   axis?: string;
   intersect?: boolean;
+  includeInvisible?: boolean;
 }
 
 export interface InteractionItem {
