@@ -1652,16 +1652,16 @@ export interface FontSpec<ScriptableContext> {
    * Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit)
    * @default 'normal'
    */
-  style: 'normal' | 'italic' | 'oblique' | 'initial' | 'inherit';
+  style: Scriptable<'normal' | 'italic' | 'oblique' | 'initial' | 'inherit', ScriptableContext>;
   /**
    * Default font weight (boldness). (see MDN).
    */
-  weight: string | null;
+  weight: Scriptable<string | null, ScriptableContext>;
   /**
    * Height of an individual line of text (see MDN).
    * @default 1.2
    */
-  lineHeight: number | string;
+  lineHeight: Scriptable<number | string, ScriptableContext>;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
