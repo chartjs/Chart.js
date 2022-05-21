@@ -1,5 +1,7 @@
 # Floating Bars
 
+Using `[number, number][]` as the type for `data` to define the beginning and end value for each bar. This is instead of having every bar start at 0.
+
 ```js chart-editor
 // <block:actions:2>
 const actions = [
@@ -67,3 +69,6 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Bar](../../charts/bar.html)
+* [Data structures (`labels`)](../../general/data-structures.html)

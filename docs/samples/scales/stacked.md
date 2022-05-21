@@ -69,3 +69,9 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Axes scales](../../axes/)
+  * [Stacking](../../axes/#stacking)
+* [Data structures (`labels`)](../../general/data-structures.html)

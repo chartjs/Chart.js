@@ -80,3 +80,9 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Bar](../../charts/bar.html)
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Time Scale](../../axes/cartesian/time.html)

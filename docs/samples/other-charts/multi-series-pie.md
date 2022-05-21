@@ -89,3 +89,8 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Doughnut and Pie Charts](../../charts/doughnut.html)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)

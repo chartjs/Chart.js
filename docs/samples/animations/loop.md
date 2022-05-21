@@ -123,3 +123,19 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Animations](../../configuration/animations.html)
+  * [animation](../../configuration/animations.html#animation)
+    * `duration`
+    * `easing`
+    * **`loop`**
+  * [Default animations (`radius`)](../../configuration/animations.html#default-animations)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Elements](../../configuration/elements.html)
+  * [Point Configuration](../../configuration/elements.html#point-configuration)
+    * `hoverRadius`
+    * `hoverBackgroundColor`
+* [Line](../../charts/line.html)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Tooltip (`enabled`)](../../configuration/tooltip.html)

@@ -84,3 +84,11 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Axes scales](../../axes/)
+* [Cartesian Axes](../../axes/cartesian/)
+  * [Axis Position](../../axes/cartesian/#axis-position)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.html)
+

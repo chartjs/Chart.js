@@ -170,3 +170,20 @@ module.exports = {
 };
 
 ```
+## Api 
+* [Chart](../../api/classes/Chart.md)
+  * [`getDatasetMeta`](../../api/classes/Chart.md#getdatasetmeta)
+* [Scale](../../api/classes/Scale.html)
+  * [`getPixelForValue`](../../api/classes/Scale.html#getpixelforvalue)
+## Docs
+* [Animations](../../configuration/animations.html)
+  * [animation](../../configuration/animations.html#animation)
+    * `delay`
+    * `duration`
+    * `easing`
+    * `loop`
+  * [Easing](../../configuration/animations.html#easing)
+* [Line](../../charts/line.html)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)
+    * [Data Context](../../general/options.html#data)

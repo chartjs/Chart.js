@@ -51,3 +51,10 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes scales](../../axes/)
+  * [Common options to all axes (`min`,`max`)](../../axes/#common-options-to-all-axes)
+ 

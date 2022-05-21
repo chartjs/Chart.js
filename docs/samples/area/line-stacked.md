@@ -170,3 +170,11 @@ module.exports = {
   config: config
 };
 ```
+
+## Docs
+* [Area](../../charts/area.html)
+  * [Filling modes](../../charts/area.htmll#filling-modes)
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes scales](../../axes/)
+  * [Common options to all axes (`stacked`)](../../axes/#common-options-to-all-axes)

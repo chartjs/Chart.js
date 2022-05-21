@@ -1,4 +1,5 @@
 # Line Segment Styling
+Using helper functions to style each segment. Gaps in the data ('skipped') are set to dashed lines and segments with values going 'down' are set to a different color.
 
 ```js chart-editor
 
@@ -42,3 +43,11 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.html)
+  * [Line Styling](../../charts/line.html#line-styling)
+  * [Segment](../../charts/line.html#segment)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)

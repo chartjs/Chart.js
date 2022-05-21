@@ -77,3 +77,11 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Animations](../../configuration/animations.html)
+  * [animation (`delay`)](../../configuration/animations.html#animation)
+  * [Animation Callbacks](../../configuration/animations.html#animation-callbacks)
+* [Bar](../../charts/bar.html)
+  * [Stacked Bar Chart](../../charts/bar.html#stacked-bar-chart)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)

@@ -123,3 +123,14 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Area](../../charts/area.html)
+* [Animations](../../configuration/animations.html)
+  * [animation (`easing`)](../../configuration/animations.html#animation)
+  * [animations (`from`)](../../configuration/animations.html#animations-2)
+* [Line](../../charts/line.html)
+  * [Line Styling](../../charts/line.html#line-styling)
+    * `fill`
+    * `tension`
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)

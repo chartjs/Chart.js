@@ -137,3 +137,12 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes scales](../../axes/)
+  * [Common options to all axes (`min`,`max`)](../../axes/#common-options-to-all-axes)
+* [Linear Axis](../../axes/cartesian/linear.html)
+  * [Linear Axis specific tick options (`stepSize`)](../../axes/cartesian/linear.html#linear-axis-specific-tick-options)
+  * [Step Size](../../axes/cartesian/linear.html#step-size)
