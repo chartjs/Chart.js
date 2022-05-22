@@ -1,6 +1,24 @@
 describe('Chart.controllers.polarArea', function() {
   describe('auto', jasmine.fixture.specs('controller.polarArea'));
 
+  it('should update the scale correctly when data visibility is changed', function() {
+    var expectedScaleMax = 1;
+    var chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [
+          {data: [100]}
+        ],
+        labels: ['x']
+      }
+    });
+
+    chart.toggleDataVisibility(0);
+    chart.update();
+
+    expect(chart.scales.r.max).toBe(expectedScaleMax);
+  });
+
   it('should be registered as dataset controller', function() {
     expect(typeof Chart.controllers.polarArea).toBe('function');
   });
