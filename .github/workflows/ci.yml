@@ -73,7 +73,9 @@ jobs:
           npm run docs
           npm pack
       - name: Coveralls Parallel - Chrome
-        if: steps.changes.outputs.src == 'true'
+        if: |
+          steps.changes.outputs.src == 'true' &&
+          runner.os != 'Windows'
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
@@ -81,7 +83,9 @@ jobs:
           flag-name: ${{ matrix.os }}-chrome
           parallel: true
       - name: Coveralls Parallel - Firefox
-        if: steps.changes.outputs.src == 'true'
+        if: |
+          steps.changes.outputs.src == 'true' &&
+          runner.os != 'Windows'
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
