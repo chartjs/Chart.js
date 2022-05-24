@@ -88,7 +88,7 @@ function getDistanceMetricForAxis(axis) {
  * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {string} axis - the axis mode. x|y|xy|r
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
- * @param {boolean} [includeInvisible] - include invisible points that outside the chart area
+ * @param {boolean} [includeInvisible] - include invisible points that are outside of the chart area
  * @return {InteractionItem[]} the nearest items
  */
 function getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible) {
@@ -142,7 +142,7 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
- * @param {boolean} [includeInvisible] - include invisible points that outside the chart area
+ * @param {boolean} [includeInvisible] - include invisible points that are outside of the chart area
  * @return {InteractionItem[]} the nearest items
  */
 function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
@@ -183,7 +183,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
  * @param {string} axis - the axes along which to measure distance
  * @param {boolean} [intersect] - if true, only consider items that intersect the position
  * @param {boolean} [useFinalPosition] - use the element's animation target instead of current position
- * @param {boolean} [includeInvisible] - include invisible points that outside the chart area
+ * @param {boolean} [includeInvisible] - include invisible points that are outside of the chart area
  * @return {InteractionItem[]} the nearest items
  */
 function getNearestItems(chart, position, axis, intersect, useFinalPosition, includeInvisible) {

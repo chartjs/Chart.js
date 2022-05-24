@@ -1437,7 +1437,7 @@ export interface CoreInteractionOptions {
   axis: InteractionAxis;
 
   /**
-   * if true, the invisible points that outside the chart area will also be included when evaluating interactions.
+   * if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.
    * @default false
    */
   includeInvisible: boolean;

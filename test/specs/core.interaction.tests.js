@@ -897,7 +897,7 @@ describe('Core.Interaction', function() {
       const evt = {
         type: 'click',
         chart: chart,
-        native: true, // needed otherwise things its a DOM event
+        native: true, // needed otherwise it thinks its a DOM event
         x: firstElement.x,
         y: firstElement.y
       };
