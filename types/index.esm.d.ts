@@ -38,6 +38,7 @@ export interface ScriptableLineSegmentContext {
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T | undefined);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
+export type ScriptableOrScriptableOptions<T, TContext> = Scriptable<T, TContext> | ScriptableOptions<T, TContext>;
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
 export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
 
@@ -1467,7 +1468,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base font
    * @see Defaults.font
    */
-  font: Partial<FontSpec<ScriptableChartContext | ScriptableCartesianScaleContext>>;
+  font: Partial<FontSpec>;
   /**
    * Resizes the chart canvas when its container does (important note...).
    * @default true
@@ -1637,31 +1638,31 @@ export type AnimationOptions<TType extends ChartType> = {
   transitions: TransitionsSpec<TType>;
 };
 
-export interface FontSpec<ScriptableFontContext> {
+export interface FontSpec{
   /**
    * Default font family for all text, follows CSS font-family options.
    * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
    */
-  family: Scriptable<string, ScriptableFontContext>;
+  family: string;
   /**
    * Default font size (in px) for text. Does not apply to radialLinear scale point labels.
    * @default 12
    */
-  size: Scriptable<number, ScriptableFontContext>;
+  size: number;
   /**
    * Default font style. Does not apply to tooltip title or footer. Does not apply to chart title. Follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit)
    * @default 'normal'
    */
-  style: Scriptable<'normal' | 'italic' | 'oblique' | 'initial' | 'inherit', ScriptableFontContext>;
+  style: 'normal' | 'italic' | 'oblique' | 'initial' | 'inherit';
   /**
    * Default font weight (boldness). (see MDN).
    */
-  weight: Scriptable<string | null, ScriptableFontContext>;
+  weight: string | null;
   /**
    * Height of an individual line of text (see MDN).
    * @default 1.2
    */
-  lineHeight: Scriptable<number | string, ScriptableFontContext>;
+  lineHeight: number | string;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
@@ -2303,7 +2304,7 @@ export interface LegendOptions<TType extends ChartType> {
      * Font of label
      * @see Defaults.font
      */
-    font: Partial<FontSpec<ScriptableChartContext>>;
+    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     /**
      * Padding between rows of colored boxes.
      * @default 10
@@ -2364,7 +2365,7 @@ export interface LegendOptions<TType extends ChartType> {
     /**
      * see Fonts
      */
-    font: Partial<FontSpec<ScriptableChartContext>>;
+    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     position: 'center' | 'start' | 'end';
     padding?: number | ChartArea;
     /**
@@ -2398,7 +2399,7 @@ export interface TitleOptions {
    * @see Defaults.color
    */
   color: Color;
-  font: Partial<FontSpec<ScriptableChartContext>>;
+  font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
 
   /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the
@@ -2629,7 +2630,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  titleFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
+  titleFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
@@ -2659,7 +2660,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts.
    * @default {}
    */
-  bodyFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
+  bodyFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
@@ -2684,7 +2685,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  footerFont: Scriptable<Partial<FontSpec<ScriptableTooltipContext<TType>>>, ScriptableTooltipContext<TType>>;
+  footerFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
@@ -2919,7 +2920,7 @@ export interface TickOptions {
   /**
    * see Fonts
    */
-  font: Scriptable<Partial<FontSpec<ScriptableScaleContext>>, ScriptableScaleContext>;
+  font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableScaleContext>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -3092,7 +3093,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** Color of the axis label. */
     color: Color;
     /** Information about the axis title font. */
-    font: Partial<FontSpec<ScriptableCartesianScaleContext>>;
+    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableCartesianScaleContext>;
     /** Padding to apply around scale labels. */
     padding: number | {
       /** Padding on the (relative) top side of this axis label. */
@@ -3409,7 +3410,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: Scriptable<Partial<FontSpec<ScriptableScalePointLabelContext>>, ScriptableScalePointLabelContext>;
+    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
