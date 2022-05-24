@@ -1638,7 +1638,7 @@ export type AnimationOptions<TType extends ChartType> = {
   transitions: TransitionsSpec<TType>;
 };
 
-export interface FontSpec{
+export interface FontSpec {
   /**
    * Default font family for all text, follows CSS font-family options.
    * @default "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
