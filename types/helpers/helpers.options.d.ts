@@ -9,7 +9,7 @@ export interface CanvasFontSpec extends FontSpec {
  * @param {object} options - A object that contains font options to be parsed.
  * @return {object} The font object.
  */
-export function toFont(options: Partial<CanvasFontSpec>): CanvasFontSpec;
+export function toFont(options: Partial<FontSpec>): CanvasFontSpec;
 
 /**
  * Converts the given line height `value` in pixels for a specific font `size`.
