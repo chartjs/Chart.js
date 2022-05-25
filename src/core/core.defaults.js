@@ -62,7 +62,8 @@ export class Defaults {
     this.indexAxis = 'x';
     this.interaction = {
       mode: 'nearest',
-      intersect: true
+      intersect: true,
+      includeInvisible: false
     };
     this.maintainAspectRatio = true;
     this.onHover = null;

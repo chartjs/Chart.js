@@ -7,6 +7,7 @@ Namespace: `options.interaction`, the global interaction configuration is at `Ch
 | `mode` | `string` | `'nearest'` | Sets which elements appear in the interaction. See [Interaction Modes](#modes) for details.
 | `intersect` | `boolean` | `true` | if true, the interaction mode only applies when the mouse position intersects an item on the chart.
 | `axis` | `string` | `'x'` | Can be set to `'x'`, `'y'`, `'xy'` or `'r'` to define which directions are used in calculating distances. Defaults to `'x'` for `'index'` mode and `'xy'` in `dataset` and `'nearest'` modes.
+| `includeInvisible` | `boolean` | `true` | if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.
 
 By default, these options apply to both the hover and tooltip interactions. The same options can be set in the `options.hover` namespace, in which case they will only affect the hover interaction. Similarly, the options can be set in the `options.plugins.tooltip` namespace to independently configure the tooltip interactions.
 
