@@ -38,7 +38,7 @@ export interface ScriptableLineSegmentContext {
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T | undefined);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
-export type ScriptableOrScriptableOptions<T, TContext> = Scriptable<T, TContext> | ScriptableOptions<T, TContext>;
+export type ScriptableAndScriptableOptions<T, TContext> = Scriptable<T, TContext> | ScriptableOptions<T, TContext>;
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
 export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
 
@@ -2304,7 +2304,7 @@ export interface LegendOptions<TType extends ChartType> {
      * Font of label
      * @see Defaults.font
      */
-    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     /**
      * Padding between rows of colored boxes.
      * @default 10
@@ -2365,7 +2365,7 @@ export interface LegendOptions<TType extends ChartType> {
     /**
      * see Fonts
      */
-    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     position: 'center' | 'start' | 'end';
     padding?: number | ChartArea;
     /**
@@ -2399,7 +2399,7 @@ export interface TitleOptions {
    * @see Defaults.color
    */
   color: Color;
-  font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
 
   /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the
@@ -2630,7 +2630,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  titleFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
+  titleFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
@@ -2660,7 +2660,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts.
    * @default {}
    */
-  bodyFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
+  bodyFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
@@ -2685,7 +2685,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  footerFont: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
+  footerFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
@@ -2920,7 +2920,7 @@ export interface TickOptions {
   /**
    * see Fonts
    */
-  font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableScaleContext>;
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableScaleContext>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -3093,7 +3093,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** Color of the axis label. */
     color: Color;
     /** Information about the axis title font. */
-    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableCartesianScaleContext>;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableCartesianScaleContext>;
     /** Padding to apply around scale labels. */
     padding: number | {
       /** Padding on the (relative) top side of this axis label. */
@@ -3410,7 +3410,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: ScriptableOrScriptableOptions<Partial<FontSpec>, ScriptableScalePointLabelContext>;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
