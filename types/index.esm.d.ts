@@ -485,7 +485,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfiguration<TType, TData, TLabel>;
+  readonly config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -501,7 +501,7 @@ export declare class Chart<
   data: ChartData<TType, TData, TLabel>;
   options: ChartOptions<TType>;
 
-  constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
+  constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
   clear(): this;
   stop(): this;
@@ -2087,9 +2087,9 @@ export class BasePlatform {
   isAttached(canvas: HTMLCanvasElement): boolean;
   /**
    * Updates config with platform specific requirements
-   * @param {ChartConfiguration} config
+   * @param {ChartConfiguration | ChartConfigurationCustomTypes} config
    */
-  updateConfig(config: ChartConfiguration): void;
+  updateConfig(config: ChartConfiguration | ChartConfigurationCustomTypesPerDataset): void;
 }
 
 export class BasicPlatform extends BasePlatform {}
@@ -3628,12 +3628,24 @@ export interface ChartDatasetProperties<TType extends ChartType, TData> {
   data: TData;
 }
 
+export interface ChartDatasetPropertiesCustomTypesPerDataset<TType extends ChartType, TData> {
+  type: TType;
+  data: TData;
+}
+
 export type ChartDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
 > = DeepPartial<
 { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
+
+export type ChartDatasetCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>
+> = DeepPartial<
+{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+> & ChartDatasetPropertiesCustomTypesPerDataset<TType, TData>;
 
 /**
  * TData represents the data point type. If unspecified, a default is provided
@@ -3649,6 +3661,15 @@ export interface ChartData<
   datasets: ChartDataset<TType, TData>[];
 }
 
+export interface ChartDataCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>,
+  TLabel = unknown
+> {
+  labels?: TLabel[];
+  datasets: ChartDatasetCustomTypesPerDataset<TType, TData>[];
+}
+
 export interface ChartConfiguration<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,
@@ -3656,6 +3677,16 @@ export interface ChartConfiguration<
 > {
   type: TType;
   data: ChartData<TType, TData, TLabel>;
+  options?: ChartOptions<TType>;
+  plugins?: Plugin<TType>[];
+}
+
+export interface ChartConfigurationCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>,
+  TLabel = unknown
+> {
+  data: ChartDataCustomTypesPerDataset<TType, TData, TLabel>;
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
 }
