@@ -113,6 +113,14 @@ function clickHandler(evt) {
 }
 ```
 
+## .getSortedVisibleDatasetMetas()
+
+Returns an array of all the dataset meta's in the order that they are drawn on the canvas that are not hidden.
+
+```javascript
+const visibleMetas = chart.getSortedVisibleDatasetMetas();
+```
+
 ## .getDatasetMeta(index)
 
 Looks for the dataset that matches the current index and returns that metadata. This returned data has all of the metadata that is used to construct the chart.
@@ -124,6 +132,14 @@ Extensive examples of usage are available in the [Chart.js tests](https://github
 ```javascript
 const meta = myChart.getDatasetMeta(0);
 const x = meta.data[0].x;
+```
+
+## getVisibleDatasetCount
+
+Returns the amount of datasets that are currently not hidden.
+
+```javascript
+const numberOfVisibleDatasets = chart.getVisibleDatasetCount();
 ```
 
 ## setDatasetVisibility(datasetIndex, visibility)
@@ -191,3 +207,17 @@ Finds the chart instance from the given key. If the key is a `string`, it is int
 ```javascript
 const chart = Chart.getChart("canvas-id");
 ```
+
+## Static: register(chartComponentLike)
+
+Used to register plugins, axis types or chart types globally to all your charts.
+
+```javascript
+import { Chart, Tooltip, LinearScale, PointElement, BubbleController } from 'chart.js';
+
+Chart.register(Tooltip, LinearScale, PointElement, BubbleController);
+```
+
+## Static: unregister(chartComponentLike)
+
+Used to unregister plugins, axis types or chart types globally from all your charts.
