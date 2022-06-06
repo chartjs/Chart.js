@@ -6,8 +6,13 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   correct_repository:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     steps:
       - name: fail on fork

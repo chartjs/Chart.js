@@ -2,10 +2,17 @@ name: Release
 
 on:
   release:
+    permissions:
+      contents: write  # for actions/upload-release-asset to upload release asset
     types: [published]
+
+permissions:
+  contents: read
 
 jobs:
   setup:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.trim.outputs.version }}
