@@ -674,6 +674,8 @@ export default class DatasetController {
     const ctx = this._ctx;
     const chart = this.chart;
     const meta = this._cachedMeta;
+    const scale = meta.rScale || {};
+    const scaleOptions = scale.options || {};
     const elements = meta.data || [];
     const area = chart.chartArea;
     const active = [];
@@ -694,12 +696,12 @@ export default class DatasetController {
       if (element.active && drawActiveElementsOnTop) {
         active.push(element);
       } else {
-        element.draw(ctx, area);
+        element.draw(ctx, area, scaleOptions);
       }
     }
 
     for (i = 0; i < active.length; ++i) {
-      active[i].draw(ctx, area);
+      active[i].draw(ctx, area, scaleOptions);
     }
   }
 
