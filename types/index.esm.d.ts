@@ -1349,6 +1349,7 @@ export interface ScriptableScalePointLabelContext {
   scale: Scale;
   index: number;
   label: string;
+  type: string;
 }
 
 
@@ -3423,6 +3424,12 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
      */
     callback: (label: string, index: number) => string | string[] | number | number[];
+
+    /**
+     * Padding around the pointLabels
+     * @default 5
+     */
+    padding: Scriptable<number, ScriptableScalePointLabelContext>;
 
     /**
      * if true, point labels are centered.
