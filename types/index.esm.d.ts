@@ -3429,7 +3429,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Padding around the pointLabels
      * @default 5
      */
-    padding: ScriptableAndScriptableOptions<number, ScriptableScalePointLabelContext>;
+    padding: Scriptable<number, ScriptableScalePointLabelContext>;
 
     /**
      * if true, point labels are centered.
