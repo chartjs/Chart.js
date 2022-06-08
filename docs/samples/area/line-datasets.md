@@ -167,7 +167,7 @@ module.exports = {
 
 ## Docs
 * [Area](../../charts/area.html)
-  * [Filling modes](../../charts/area.htmll#filling-modes)
+  * [Filling modes](../../charts/area.html#filling-modes)
 * [Line](../../charts/line.html)
 * [Data structures (`labels`)](../../general/data-structures.html)
 * [Axes scales](../../axes/)
