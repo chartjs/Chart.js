@@ -66,6 +66,7 @@ The following options can be included in a polar area chart dataset to configure
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+| [`circular`](#general) | `boolean` | - | - | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -74,6 +75,7 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | Name | Description
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
+| `circular` | By default Arc is curve. If `circular: false` Arc will be flat.
 
 ### Styling
 
