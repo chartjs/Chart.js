@@ -236,7 +236,12 @@ describe('Arc element tests', function() {
               circular: false,
             },
           },
-        }
+        },
+        elements: {
+          arc: {
+            circular: false
+          },
+        },
       }
     });
 
