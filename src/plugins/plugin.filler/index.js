@@ -6,6 +6,7 @@
 
 import LineElement from '../../elements/element.line';
 import {_drawfill} from './filler.drawing';
+import { _shouldApplyFill } from './filler.helper';
 import {_decodeFill, _resolveTarget} from './filler.options';
 
 export default {
@@ -53,7 +54,7 @@ export default {
     const area = chart.chartArea;
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
-      if (!source || source.fill === false) {
+      if (!_shouldApplyFill(source)) {
         continue;
       }
 
@@ -65,16 +66,15 @@ export default {
   },
 
   beforeDatasetsDraw(chart, _args, options) {
-    const source = args.meta.$filler;
-
-    if (!source || source.fill === false || options.drawTime !== 'beforeDatasetsDraw') {
+    if (options.drawTime !== 'beforeDatasetsDraw') {
       return;
     }
 
     const metasets = chart.getSortedVisibleDatasetMetas();
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
-      if (source) {
+      console.log(source)
+      if (_shouldApplyFill(source)) {
         _drawfill(chart.ctx, source, chart.chartArea);
       }
     }
@@ -83,7 +83,7 @@ export default {
   beforeDatasetDraw(chart, args, options) {
     const source = args.meta.$filler;
 
-    if (!source || source.fill === false || options.drawTime !== 'beforeDatasetDraw') {
+    if (!_shouldApplyFill(source) || options.drawTime !== 'beforeDatasetDraw') {
       return;
     }
 
