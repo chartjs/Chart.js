@@ -75,3 +75,9 @@ module.exports = {
   actions,
   config,
 };
+```
+
+## Docs
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Plugins](../../developers/plugins.html)
+* [Doughnut and Pie Charts](../../charts/doughnut.html)

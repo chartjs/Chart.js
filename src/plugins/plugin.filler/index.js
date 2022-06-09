@@ -53,7 +53,7 @@ export default {
     const area = chart.chartArea;
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
-      if (!source) {
+      if (!source || source.fill === false) {
         continue;
       }
 
@@ -65,9 +65,12 @@ export default {
   },
 
   beforeDatasetsDraw(chart, _args, options) {
-    if (options.drawTime !== 'beforeDatasetsDraw') {
+    const source = args.meta.$filler;
+
+    if (!source || source.fill === false || options.drawTime !== 'beforeDatasetsDraw') {
       return;
     }
+
     const metasets = chart.getSortedVisibleDatasetMetas();
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;

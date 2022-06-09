@@ -100,3 +100,7 @@ Code sample for updating options can be found in [toggle-scale-type.html](https:
 ## Preventing Animations
 
 Sometimes when a chart updates, you may not want an animation. To achieve this you can call `update` with `'none'` as mode.
+
+```javascript
+myChart.update('none');
+```

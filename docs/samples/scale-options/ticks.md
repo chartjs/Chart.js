@@ -92,3 +92,12 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)
+    * [Tick Context](../../general/options.html#tick)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes Styling](../../axes/styling.html)
+  * [Tick Configuration](../../axes/styling.html#tick-configuration)

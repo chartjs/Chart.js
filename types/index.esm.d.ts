@@ -38,6 +38,7 @@ export interface ScriptableLineSegmentContext {
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T | undefined);
 export type ScriptableOptions<T, TContext> = { [P in keyof T]: Scriptable<T[P], TContext> };
+export type ScriptableAndScriptableOptions<T, TContext> = Scriptable<T, TContext> | ScriptableOptions<T, TContext>;
 export type ScriptableAndArray<T, TContext> = readonly T[] | Scriptable<T, TContext>;
 export type ScriptableAndArrayOptions<T, TContext> = { [P in keyof T]: ScriptableAndArray<T[P], TContext> };
 
@@ -484,7 +485,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfiguration<TType, TData, TLabel>;
+  readonly config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -500,7 +501,7 @@ export declare class Chart<
   data: ChartData<TType, TData, TLabel>;
   options: ChartOptions<TType>;
 
-  constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel>);
+  constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
   clear(): this;
   stop(): this;
@@ -701,6 +702,7 @@ export const defaults: Defaults;
 export interface InteractionOptions {
   axis?: string;
   intersect?: boolean;
+  includeInvisible?: boolean;
 }
 
 export interface InteractionItem {
@@ -1347,6 +1349,7 @@ export interface ScriptableScalePointLabelContext {
   scale: Scale;
   index: number;
   label: string;
+  type: string;
 }
 
 
@@ -1434,6 +1437,12 @@ export interface CoreInteractionOptions {
    * Defines which directions are used in calculating distances. Defaults to 'x' for 'index' mode and 'xy' in dataset and 'nearest' modes.
    */
   axis: InteractionAxis;
+
+  /**
+   * if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.
+   * @default false
+   */
+  includeInvisible: boolean;
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
@@ -2079,9 +2088,9 @@ export class BasePlatform {
   isAttached(canvas: HTMLCanvasElement): boolean;
   /**
    * Updates config with platform specific requirements
-   * @param {ChartConfiguration} config
+   * @param {ChartConfiguration | ChartConfigurationCustomTypes} config
    */
-  updateConfig(config: ChartConfiguration): void;
+  updateConfig(config: ChartConfiguration | ChartConfigurationCustomTypesPerDataset): void;
 }
 
 export class BasicPlatform extends BasePlatform {}
@@ -2303,7 +2312,7 @@ export interface LegendOptions<TType extends ChartType> {
      * Font of label
      * @see Defaults.font
      */
-    font: FontSpec;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     /**
      * Padding between rows of colored boxes.
      * @default 10
@@ -2364,7 +2373,7 @@ export interface LegendOptions<TType extends ChartType> {
     /**
      * see Fonts
      */
-    font: FontSpec;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     position: 'center' | 'start' | 'end';
     padding?: number | ChartArea;
     /**
@@ -2398,7 +2407,7 @@ export interface TitleOptions {
    * @see Defaults.color
    */
   color: Color;
-  font: FontSpec;
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
 
   /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). If set to `false`, places the box above/beside the
@@ -2629,7 +2638,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  titleFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  titleFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Spacing to add to top and bottom of each title line.
    * @default 2
@@ -2659,7 +2668,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts.
    * @default {}
    */
-  bodyFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  bodyFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the body text lines.
    * @default 'left'
@@ -2684,7 +2693,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * See Fonts
    * @default {weight: 'bold'}
    */
-  footerFont: Scriptable<FontSpec, ScriptableTooltipContext<TType>>;
+  footerFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
    * Horizontal alignment of the footer text lines.
    * @default 'left'
@@ -2919,7 +2928,7 @@ export interface TickOptions {
   /**
    * see Fonts
    */
-  font: Scriptable<FontSpec, ScriptableScaleContext>;
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableScaleContext>;
   /**
    * Sets the offset of the tick labels from the axis
    */
@@ -3022,6 +3031,16 @@ export type CartesianTickOptions = TickOptions & {
   maxTicksLimit: number;
 }
 
+export interface ScriptableCartesianScaleContext {
+  scale: keyof CartesianScaleTypeRegistry;
+  type: string;
+}
+
+export interface ScriptableChartContext {
+  chart: Chart;
+  type: string;
+}
+
 export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
    * Scale boundary strategy (bypassed by min/max time options)
@@ -3082,7 +3101,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     /** Color of the axis label. */
     color: Color;
     /** Information about the axis title font. */
-    font: FontSpec;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableCartesianScaleContext>;
     /** Padding to apply around scale labels. */
     padding: number | {
       /** Padding on the (relative) top side of this axis label. */
@@ -3399,12 +3418,18 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: Scriptable<FontSpec, ScriptableScalePointLabelContext>;
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
      */
     callback: (label: string, index: number) => string | string[] | number | number[];
+
+    /**
+     * Padding around the pointLabels
+     * @default 5
+     */
+    padding: Scriptable<number, ScriptableScalePointLabelContext>;
 
     /**
      * if true, point labels are centered.
@@ -3610,12 +3635,24 @@ export interface ChartDatasetProperties<TType extends ChartType, TData> {
   data: TData;
 }
 
+export interface ChartDatasetPropertiesCustomTypesPerDataset<TType extends ChartType, TData> {
+  type: TType;
+  data: TData;
+}
+
 export type ChartDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
 > = DeepPartial<
 { [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
+
+export type ChartDatasetCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>
+> = DeepPartial<
+{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+> & ChartDatasetPropertiesCustomTypesPerDataset<TType, TData>;
 
 /**
  * TData represents the data point type. If unspecified, a default is provided
@@ -3631,6 +3668,15 @@ export interface ChartData<
   datasets: ChartDataset<TType, TData>[];
 }
 
+export interface ChartDataCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>,
+  TLabel = unknown
+> {
+  labels?: TLabel[];
+  datasets: ChartDatasetCustomTypesPerDataset<TType, TData>[];
+}
+
 export interface ChartConfiguration<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,
@@ -3638,6 +3684,16 @@ export interface ChartConfiguration<
 > {
   type: TType;
   data: ChartData<TType, TData, TLabel>;
+  options?: ChartOptions<TType>;
+  plugins?: Plugin<TType>[];
+}
+
+export interface ChartConfigurationCustomTypesPerDataset<
+  TType extends ChartType = ChartType,
+  TData = DefaultDataPoint<TType>,
+  TLabel = unknown
+> {
+  data: ChartDataCustomTypesPerDataset<TType, TData, TLabel>;
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
 }

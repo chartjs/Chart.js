@@ -211,7 +211,7 @@ function createResizeObserver(chart, type, listener) {
     const width = entry.contentRect.width;
     const height = entry.contentRect.height;
     // When its container's display is set to 'none' the callback will be called with a
-    // size of (0, 0), which will cause the chart to lost its original height, so skip
+    // size of (0, 0), which will cause the chart to lose its original height, so skip
     // resizing in such case.
     if (width === 0 && height === 0) {
       return;

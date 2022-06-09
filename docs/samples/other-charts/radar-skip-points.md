@@ -85,3 +85,6 @@ module.exports = {
 };
 ```
 
+## Docs
+* [Radar](../../charts/radar.html)
+* [Data structures (`labels`)](../../general/data-structures.html)

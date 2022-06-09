@@ -111,3 +111,8 @@ module.exports = {
   config: config,
 };
 ```
+## Docs
+* [Data Decimation](../../configuration/decimation.html)
+* [Line](../../charts/line.html)
+* [Time Scale](../../axes/cartesian/time.html)
+

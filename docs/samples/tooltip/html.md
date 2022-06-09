@@ -163,3 +163,10 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs 
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.html)
+* [Tooltip](../../configuration/tooltip.html)
+  * [External (Custom) Tooltips](../../configuration/tooltip.html#external-custom-tooltips)
+  

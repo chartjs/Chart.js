@@ -72,3 +72,8 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs 
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.html)
+* [Legend](../../configuration/legend.html)

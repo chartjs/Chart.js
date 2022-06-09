@@ -2,7 +2,7 @@
     "name": "chart.js",
     "homepage": "https://www.chartjs.org",
     "description": "Simple HTML5 charts using the canvas element.",
-    "version": "3.7.1",
+    "version": "3.8.0",
     "license": "MIT",
     "jsdelivr": "dist/chart.min.js",
     "unpkg": "dist/chart.min.js",
@@ -49,7 +49,7 @@
         "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
     },
     "devDependencies": {
-        "@kurkle/color": "^0.1.9",
+        "@kurkle/color": "^0.2.1",
         "@rollup/plugin-commonjs": "^21.0.1",
         "@rollup/plugin-inject": "^4.0.2",
         "@rollup/plugin-json": "^4.1.0",

@@ -111,3 +111,6 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Scatter](../../charts/scatter.html)

@@ -109,3 +109,7 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Radar](../../charts/radar.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
