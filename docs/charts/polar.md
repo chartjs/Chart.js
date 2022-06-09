@@ -66,7 +66,7 @@ The following options can be included in a polar area chart dataset to configure
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
-| [`circular`](#general) | `boolean` | Yes | Yes | `true`
+| [`circular`](#styling) | `boolean` | Yes | Yes | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -75,7 +75,6 @@ All these values, if `undefined`, fallback to the scopes described in [option re
 | Name | Description
 | ---- | ----
 | `clip` | How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. `0` = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
-| `circular` | By default the Arc is curved. If `circular: false` the Arc will be flat.
 
 ### Styling
 
@@ -87,6 +86,7 @@ The style of each arc can be controlled with the following properties:
 | `borderColor` | arc border color.
 | `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
+| `circular` | By default the Arc is curved. If `circular: false` the Arc will be flat.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 
