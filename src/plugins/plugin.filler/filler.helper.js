@@ -34,5 +34,5 @@ export function _createBoundaryLine(boundary, line) {
 }
 
 export function _shouldApplyFill(source) {
-  return source && source.fill !== false; 
+  return source && source.fill !== false;
 }

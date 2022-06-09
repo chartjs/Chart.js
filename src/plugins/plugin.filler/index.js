@@ -6,7 +6,7 @@
 
 import LineElement from '../../elements/element.line';
 import {_drawfill} from './filler.drawing';
-import { _shouldApplyFill } from './filler.helper';
+import {_shouldApplyFill} from './filler.helper';
 import {_decodeFill, _resolveTarget} from './filler.options';
 
 export default {
@@ -73,7 +73,7 @@ export default {
     const metasets = chart.getSortedVisibleDatasetMetas();
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
-      console.log(source)
+
       if (_shouldApplyFill(source)) {
         _drawfill(chart.ctx, source, chart.chartArea);
       }
