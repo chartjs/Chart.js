@@ -2,9 +2,17 @@ name: Compressed Size
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
+    permissions:
+      checks: write  # for preactjs/compressed-size-action to create and update the checks
+      contents: read  # for actions/checkout to fetch code
+      issues: write  # for preactjs/compressed-size-action to create comments
+      pull-requests: write  # for preactjs/compressed-size-action to write a PR review
     runs-on: ubuntu-latest
 
     steps:

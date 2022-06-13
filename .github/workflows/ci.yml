@@ -10,8 +10,15 @@ on:
       - master
       - "2.9"
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   build:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for dorny/paths-filter to fetch a list of changed files
+      pull-requests: read  # for dorny/paths-filter to read pull requests
     runs-on: ${{ matrix.os }}
 
     outputs:
@@ -94,6 +101,8 @@ jobs:
           parallel: true
 
   finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
     needs: build
     runs-on: ubuntu-latest
     steps:

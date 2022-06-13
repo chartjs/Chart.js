@@ -6,8 +6,13 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   correct_repository:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     steps:
     - name: fail on fork
@@ -15,6 +20,9 @@ jobs:
       run: exit 1
 
   update_release_draft:
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
     needs: correct_repository
     runs-on: ubuntu-latest
     steps:
