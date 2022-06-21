@@ -27,9 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
           registry-url: https://registry.npmjs.org/
           cache: npm
       - name: Setup and build
@@ -72,9 +71,8 @@ jobs:
     if: "!github.event.release.prerelease"
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
           registry-url: https://registry.npmjs.org/
           cache: npm
       - name: Setup and build
