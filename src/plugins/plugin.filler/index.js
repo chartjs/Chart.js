@@ -54,12 +54,12 @@ export default {
     const area = chart.chartArea;
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
-      if (!_shouldApplyFill(source)) {
+      if (!source) {
         continue;
       }
 
       source.line.updateControlPoints(area, source.axis);
-      if (draw) {
+      if (draw && source.fill) {
         _drawfill(chart.ctx, source, area);
       }
     }
