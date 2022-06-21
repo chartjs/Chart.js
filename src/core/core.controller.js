@@ -392,7 +392,7 @@ class Chart {
     });
   }
 
-  buildOrUpdateControllers() {
+  buildOrUpdateControllers(config) {
     const newControllers = [];
     const datasets = this.data.datasets;
     let i, ilen;
@@ -420,7 +420,7 @@ class Chart {
         meta.controller.linkScales();
       } else {
         const ControllerClass = registry.getController(type);
-        const {datasetElementType, dataElementType} = defaults.datasets[type];
+        const {datasetElementType, dataElementType} = config || defaults.datasets[type];
         Object.assign(ControllerClass.prototype, {
           dataElementType: registry.getElement(dataElementType),
           datasetElementType: datasetElementType && registry.getElement(datasetElementType)
