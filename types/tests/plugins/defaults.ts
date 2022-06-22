@@ -9,10 +9,3 @@ defaults.plugins.legend.labels.generateLabels = function(chart) {
     text: 'test'
   }];
 };
-
-// @ts-expect-error Type '{ text: string; }[]' is not assignable to type 'LegendItem[]'.
-defaults.plugins.legend.labels.generateLabels = function(chart) {
-  return [{
-    text: 'test'
-  }];
-};
