@@ -20,7 +20,7 @@ Namespace: `options`
 | `maintainAspectRatio` | `boolean` | `true` | Maintain the original canvas aspect ratio `(width / height)` when resizing.
 | `aspectRatio` | `number` | `2` | Canvas aspect ratio (i.e. `width / height`, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.
 | `onResize` | `function` | `null` | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
-| `resizeDelay` | `number` | `0` | Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.
+| `resizeDelay` | `number` | `0` | Delay the resize update by the given amount of milliseconds. This can ease the resize process by debouncing the update of the elements.
 
 ## Important Note
 
