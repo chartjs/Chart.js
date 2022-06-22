@@ -101,6 +101,8 @@ const chart = new Chart(ctx, {
 });
 ```
 
+When using a bundler, the helper functions have to be imported seperatly, for a full explanation of this please head over to the [integration](../getting-started/integration.md#helper-functions) page
+
 ## Modes
 
 When configuring the interaction with the graph via `interaction`, `hover` or `tooltips`, a number of different modes are available.
