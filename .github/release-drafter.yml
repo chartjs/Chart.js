@@ -22,6 +22,7 @@ categories:
   - title: 'Development'
     labels:
       - 'type: chore'
+      - 'dependencies'
 exclude-labels:
   - 'type: infrastructure'
 change-template: '- #$NUMBER $TITLE'
