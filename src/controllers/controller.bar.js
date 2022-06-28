@@ -350,11 +350,7 @@ export default class BarController extends DatasetController {
     const base = vScale.getBasePixel();
     const horizontal = vScale.isHorizontal();
     const ruler = this._getRuler();
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
-
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
 
     for (let i = start; i < start + count; i++) {
       const parsed = this.getParsed(i);
