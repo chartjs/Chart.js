@@ -45,7 +45,11 @@ module.exports = {
     ['@simonbrunel/vuepress-plugin-versions', {
       filters: {
         suffix: (tag) => tag ? ` (${tag})` : '',
-        title: (v, vars) => window.location.href.includes('master') ? 'Development (master)' : v + (vars.tag ? ` (${tag})` : ''),
+        title: (v, vars) => {
+          return window.location.href.includes('master') ? 'Development version' :
+                 window.location.href.includes('latest') ? 'Latest version' :
+                 v + (vars.tag ? ` (${tag})` : '') + ' (consider checking the latest version)';
+        },
       },
       menu: {
         text: '{{version|title}}',
@@ -54,8 +58,12 @@ module.exports = {
             text: 'Documentation',
             items: [
               {
-                text: 'Development (master)',
+                text: 'Development version',
                 link: '/docs/master/',
+              },
+              {
+                text: 'Latest version',
+                link: '/docs/latest/',
               },
               {
                 type: 'versions',
