@@ -48,7 +48,7 @@ module.exports = {
         title: (v, vars) => {
           return window.location.href.includes('master') ? 'Development version' :
                  vars.tag === 'latest' ? 'Latest version' :
-                 v + (vars.tag ? ` (${tag})` : '') + ' (consider checking the latest version)';
+                 v + (vars.tag ? ` (${tag})` : '') + ' (outdated)';
         },
       },
       menu: {
