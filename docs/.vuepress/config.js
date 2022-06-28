@@ -58,7 +58,7 @@ module.exports = {
             text: 'Documentation',
             items: [
               {
-                text: 'Development version',
+                text: 'Development (master)',
                 link: '/docs/master/',
               },
               {
