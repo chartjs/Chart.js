@@ -46,8 +46,8 @@ module.exports = {
       filters: {
         suffix: (tag) => tag ? ` (${tag})` : '',
         title: (v, vars) => {
-          return window.location.href.includes('master') ? 'Development version' :
-                 vars.tag === 'latest' ? 'Latest version' :
+          return window.location.href.includes('master') ? 'Development (master)' :
+                 vars.tag === 'latest' ? 'Latest (' + v + ')' :
                  v + (vars.tag ? ` (${tag})` : '') + ' (outdated)';
         },
       },
