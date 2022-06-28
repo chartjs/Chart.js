@@ -47,7 +47,7 @@ module.exports = {
         suffix: (tag) => tag ? ` (${tag})` : '',
         title: (v, vars) => {
           return window.location.href.includes('master') ? 'Development version' :
-                 window.location.href.includes('latest') ? 'Latest version' :
+                 vars.tag === 'latest' ? 'Latest version' :
                  v + (vars.tag ? ` (${tag})` : '') + ' (consider checking the latest version)';
         },
       },
