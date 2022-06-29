@@ -1,4 +1,4 @@
-import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
+import { ArrayElement, DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from './adapters';
 import { AnimationEvent } from './animation';
@@ -15,7 +15,7 @@ export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export { LayoutItem, LayoutPosition } from './layout';
 
-export interface ScriptableContext<TType extends ChartType> {
+export interface ScriptableContext<TType extends ChartType, TData = DefaultDataPoint<TType>> {
   active: boolean;
   chart: Chart;
   dataIndex: number;
@@ -24,7 +24,7 @@ export interface ScriptableContext<TType extends ChartType> {
   type: string;
   mode: string;
   parsed: UnionToIntersection<ParsedDataType<TType>>;
-  raw: unknown;
+  raw: ArrayElement<TData>;
 }
 
 export interface ScriptableLineSegmentContext {
@@ -88,10 +88,10 @@ export interface ControllerDatasetOptions extends ParsingOptions {
   hidden: boolean;
 }
 
-export interface BarControllerDatasetOptions
+export interface BarControllerDatasetOptions<TData = DefaultDataPoint<'bar'>>
   extends ControllerDatasetOptions,
-  ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar'>>,
-  ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar'>>,
+  ScriptableAndArrayOptions<BarOptions, ScriptableContext<'bar', TData>>,
+  ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'bar', TData>>,
   AnimationOptions<'bar'> {
   /**
    * The ID of the x axis to plot this dataset on.
@@ -3534,10 +3534,10 @@ interface RadialParsedData {
   r: number;
 }
 
-export interface ChartTypeRegistry {
+export interface ChartTypeRegistry<TData = unknown[]> {
   bar: {
     chartOptions: BarControllerChartOptions;
-    datasetOptions: BarControllerDatasetOptions;
+    datasetOptions: BarControllerDatasetOptions<TData>;
     defaultDataPoint: number;
     metaExtensions: {};
     parsedDataType: BarParsedData,
@@ -3610,9 +3610,9 @@ export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> =
 // Convenience alias for creating and manipulating scale options in user code
 export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<ScaleOptionsByType<TScale>>;
 
-export type DatasetChartOptions<TType extends ChartType = ChartType> = {
+export type DatasetChartOptions<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>> = {
   [key in TType]: {
-    datasets: ChartTypeRegistry[key]['datasetOptions'];
+    datasets: ChartTypeRegistry<TData>[key]['datasetOptions'];
   };
 };
 
@@ -3649,14 +3649,14 @@ export type ChartDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
 > = DeepPartial<
-{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+{ [key in ChartType]: { type: key } & ChartTypeRegistry<TData>[key]['datasetOptions'] }[TType]
 > & ChartDatasetProperties<TType, TData>;
 
 export type ChartDatasetCustomTypesPerDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
 > = DeepPartial<
-{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
+{ [key in ChartType]: { type: key } & ChartTypeRegistry<TData>[key]['datasetOptions'] }[TType]
 > & ChartDatasetPropertiesCustomTypesPerDataset<TType, TData>;
 
 /**

@@ -19,3 +19,5 @@ export type DistributiveArray<T> = [T] extends [unknown] ? Array<T> : never
 // https://stackoverflow.com/a/50375286
 export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
+export type ArrayElement<ArrayType> =
+  ArrayType extends (infer ElementType)[] ? ElementType : never;
