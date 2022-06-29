@@ -49,9 +49,7 @@ export default class LineController extends DatasetController {
   updateElements(points, start, count, mode) {
     const reset = mode === 'reset';
     const {iScale, vScale, _stacked, _dataset} = this._cachedMeta;
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
     const {spanGaps, segment} = this.options;
@@ -84,8 +82,6 @@ export default class LineController extends DatasetController {
 
       prevParsed = parsed;
     }
-
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   /**
