@@ -21,19 +21,3 @@ export function throttled(fn: (...args: unknown[]) => void, thisArg: unknown, up
  * @returns {function}
  */
 export function debounce(fn: () => void, delay: number): () => number;
-
-/**
- * Return start and count of visible points.
- * @param {object} meta - dataset meta.
- * @param {array} points - array of point elements.
- * @param {boolean} animationsDisabled - if true animation is disabled.
- * @returns {{start: number; count: number}}
- */
-export function getStartAndCountOfVisiblePoints(meta?: unknown, points?: unknown[], animationsDisabled?: boolean): {start: number; count: number};
-
-/**
- * Checks if the scale ranges have changed.
- * @param {object} meta - dataset meta.
- * @returns {boolean}
- */
-export function scaleRangesChanged(meta?: unknown): boolean;

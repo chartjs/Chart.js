@@ -1,7 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {isNullOrUndef} from '../helpers';
 import {isNumber} from '../helpers/helpers.math';
-import {getStartAndCountOfVisiblePoints, scaleRangesChanged} from '../helpers/helpers.extras';
+import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras';
 
 export default class LineController extends DatasetController {
 
@@ -16,12 +16,12 @@ export default class LineController extends DatasetController {
     const {dataset: line, data: points = [], _dataset} = meta;
     // @ts-ignore
     const animationsDisabled = this.chart._animationsDisabled;
-    let {start, count} = getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
+    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
 
     this._drawStart = start;
     this._drawCount = count;
 
-    if (scaleRangesChanged(meta)) {
+    if (_scaleRangesChanged(meta)) {
       start = 0;
       count = points.length;
     }

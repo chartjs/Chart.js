@@ -96,8 +96,9 @@ export const _textX = (align, left, right, rtl) => {
  * @param {array} points - array of point elements.
  * @param {boolean} animationsDisabled - if true animation is disabled.
  * @returns {{start: number; count: number}}
+ * @private
  */
-export function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
+export function _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
   const pointCount = points.length;
 
   let start = 0;
@@ -131,8 +132,9 @@ export function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled
  * Checks if the scale ranges have changed.
  * @param {object} meta - dataset meta.
  * @returns {boolean}
+ * @private
  */
-export function scaleRangesChanged(meta) {
+export function _scaleRangesChanged(meta) {
   const {xScale, yScale, _scaleRanges} = meta;
   const newRanges = {
     xmin: xScale.min,
