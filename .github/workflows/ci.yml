@@ -68,9 +68,9 @@ jobs:
         run: |
           npm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
-            npm test-ci --browsers chrome,safari
+            npm run test-ci --browsers chrome,safari
           else
-            xvfb-run --auto-servernum npm test-ci
+            xvfb-run --auto-servernum npm run test-ci
           fi
         shell: bash
       - name: Package
