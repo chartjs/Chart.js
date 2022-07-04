@@ -66,6 +66,7 @@ jobs:
           steps.changes.outputs.test == 'true') && 
           runner.os != 'Windows'
         run: |
+          npm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
             npm run test-ci --browsers chrome,safari
           else
