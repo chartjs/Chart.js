@@ -90,7 +90,7 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 ```
 
-And finally there is an separate path to do just the above for you, in one line:
+And finally there is a separate path to do just the above for you, in one line:
 
 ```javascript
 import Chart from 'chart.js/auto';
