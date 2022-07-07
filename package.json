@@ -46,7 +46,8 @@
         "lint-tsc": "tsc",
         "lint-types": "eslint \"types/**/*.ts\" && node -r esm types/tests/autogen.js && tsc -p types/tests/",
         "lint": "concurrently \"npm:lint-*\"",
-        "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
+        "test": "npm run lint && npm run test-ci",
+        "test-ci": "cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
     },
     "devDependencies": {
         "@kurkle/color": "^0.2.1",

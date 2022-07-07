@@ -56,6 +56,8 @@ jobs:
               - 'tsconfig.json'
       - name: Install
         run: npm ci
+      - name: Lint
+        run: npm run lint
       - name: Build
         run: npm run build
       - name: Test
@@ -66,13 +68,11 @@ jobs:
         run: |
           npm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
-            npm test --browsers chrome,safari
+            npm run test-ci --browsers chrome,safari
           else
-            xvfb-run --auto-servernum npm test
+            xvfb-run --auto-servernum npm run test-ci
           fi
         shell: bash
-      - name: Lint
-        run: npm run lint
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
