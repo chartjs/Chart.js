@@ -126,7 +126,11 @@ export function clearCanvas(canvas, ctx) {
   ctx.restore();
 }
 
-export function drawPoint(ctx, options, x, y, w) {
+export function drawPoint(ctx, options, x, y) {
+  drawPointLegend(ctx, options, x, y, null);
+}
+
+export function drawPointLegend(ctx, options, x, y, w) {
   let type, xOffset, yOffset, size, cornerRadius, width;
   const style = options.pointStyle;
   const rotation = options.rotation;

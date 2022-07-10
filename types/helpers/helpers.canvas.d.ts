@@ -18,6 +18,8 @@ export interface DrawPointOptions {
 
 export function drawPoint(ctx: CanvasRenderingContext2D, options: DrawPointOptions, x: number, y: number): void;
 
+export function drawPointLegend(ctx: CanvasRenderingContext2D, options: DrawPointOptions, x: number, y: number, w: number): void;
+
 /**
  * Converts the given font object into a CSS font string.
  * @param font a font object
