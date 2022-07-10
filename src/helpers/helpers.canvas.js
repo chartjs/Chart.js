@@ -126,8 +126,8 @@ export function clearCanvas(canvas, ctx) {
   ctx.restore();
 }
 
-export function drawPoint(ctx, options, x, y) {
-  let type, xOffset, yOffset, size, cornerRadius;
+export function drawPoint(ctx, options, x, y, w) {
+  let type, xOffset, yOffset, size, cornerRadius, width;
   const style = options.pointStyle;
   const rotation = options.rotation;
   const radius = options.radius;
@@ -154,7 +154,11 @@ export function drawPoint(ctx, options, x, y) {
   switch (style) {
   // Default includes circle
   default:
-    ctx.arc(x, y, radius, 0, TAU);
+    if (w) {
+      ctx.ellipse(x, y, w / 2, radius, 0, 0, TAU);
+    } else {
+      ctx.arc(x, y, radius, 0, TAU);
+    }
     ctx.closePath();
     break;
   case 'triangle':
@@ -186,7 +190,8 @@ export function drawPoint(ctx, options, x, y) {
   case 'rect':
     if (!rotation) {
       size = Math.SQRT1_2 * radius;
-      ctx.rect(x - size, y - size, 2 * size, 2 * size);
+      width = w ? w / 2 : size;
+      ctx.rect(x - width, y - size, 2 * width, 2 * size);
       break;
     }
     rad += QUARTER_PI;
@@ -227,7 +232,7 @@ export function drawPoint(ctx, options, x, y) {
     ctx.lineTo(x - yOffset, y + xOffset);
     break;
   case 'line':
-    xOffset = Math.cos(rad) * radius;
+    xOffset = w ? w / 2 : Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
     ctx.moveTo(x - xOffset, y - yOffset);
     ctx.lineTo(x + xOffset, y + yOffset);
