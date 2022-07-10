@@ -2,13 +2,21 @@ name: Compressed Size
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
+    permissions:
+      checks: write  # for preactjs/compressed-size-action to create and update the checks
+      contents: read  # for actions/checkout to fetch code
+      issues: write  # for preactjs/compressed-size-action to create comments
+      pull-requests: write  # for preactjs/compressed-size-action to write a PR review
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: preactjs/compressed-size-action@v2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"

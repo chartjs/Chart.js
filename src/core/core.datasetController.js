@@ -841,6 +841,18 @@ export default class DatasetController {
   }
 
   /**
+   * @todo v4, rename to getSharedOptions and remove excess functions
+   */
+  _getSharedOptions(start, mode) {
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const previouslySharedOptions = this._sharedOptions;
+    const sharedOptions = this.getSharedOptions(firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions) || (sharedOptions !== previouslySharedOptions);
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
+    return {sharedOptions, includeOptions};
+  }
+
+  /**
 	 * Utility for updating an element with new properties, using animations when appropriate.
 	 * @protected
 	 */

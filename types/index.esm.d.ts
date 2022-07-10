@@ -2165,7 +2165,12 @@ export interface LegendItem {
   /**
    * Index of the associated dataset
    */
-  datasetIndex: number;
+  datasetIndex?: number;
+
+  /**
+   * Index the associated label in the labels array
+   */
+  index?: number
 
   /**
    * Fill style of the legend box

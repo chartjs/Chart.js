@@ -1655,4 +1655,24 @@ describe('Chart.controllers.bar', function() {
       expect(ctx.getCalls().filter(x => x.name === 'clip').length).toEqual(0);
     });
   });
+
+  it('should not crash with skipNull and uneven datasets', function() {
+    function unevenChart() {
+      window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: [1, 2],
+          datasets: [
+            {data: [1, 2]},
+            {data: [1, 2, 3]},
+          ]
+        },
+        options: {
+          skipNull: true,
+        }
+      });
+    }
+
+    expect(unevenChart).not.toThrow();
+  });
 });

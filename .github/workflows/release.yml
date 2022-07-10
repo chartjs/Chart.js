@@ -2,10 +2,17 @@ name: Release
 
 on:
   release:
+    permissions:
+      contents: write  # for actions/upload-release-asset to upload release asset
     types: [published]
+
+permissions:
+  contents: read
 
 jobs:
   setup:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.trim.outputs.version }}
@@ -19,10 +26,9 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
           registry-url: https://registry.npmjs.org/
           cache: npm
       - name: Setup and build
@@ -64,10 +70,9 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
           registry-url: https://registry.npmjs.org/
           cache: npm
       - name: Setup and build

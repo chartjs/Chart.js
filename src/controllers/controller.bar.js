@@ -350,11 +350,7 @@ export default class BarController extends DatasetController {
     const base = vScale.getBasePixel();
     const horizontal = vScale.isHorizontal();
     const ruler = this._getRuler();
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
-
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
 
     for (let i = start; i < start + count; i++) {
       const parsed = this.getParsed(i);
@@ -390,29 +386,24 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _getStacks(last, dataIndex) {
-    const meta = this._cachedMeta;
-    const iScale = meta.iScale;
-    const metasets = iScale.getMatchingVisibleMetas(this._type);
+    const {iScale} = this._cachedMeta;
+    const metasets = iScale.getMatchingVisibleMetas(this._type)
+      .filter(meta => meta.controller.options.grouped);
     const stacked = iScale.options.stacked;
-    const ilen = metasets.length;
     const stacks = [];
-    let i, item;
 
-    for (i = 0; i < ilen; ++i) {
-      item = metasets[i];
+    const skipNull = (meta) => {
+      const parsed = meta.controller.getParsed(dataIndex);
+      const val = parsed && parsed[meta.vScale.axis];
 
-      if (!item.controller.options.grouped) {
-        continue;
+      if (isNullOrUndef(val) || isNaN(val)) {
+        return true;
       }
+    };
 
-      if (typeof dataIndex !== 'undefined') {
-        const val = item.controller.getParsed(dataIndex)[
-          item.controller._cachedMeta.vScale.axis
-        ];
-
-        if (isNullOrUndef(val) || isNaN(val)) {
-          continue;
-        }
+    for (const meta of metasets) {
+      if (dataIndex !== undefined && skipNull(meta)) {
+        continue;
       }
 
       // stacked   | meta.stack
@@ -420,11 +411,11 @@ export default class BarController extends DatasetController {
       // false     |   x   |     x     |     x
       // true      |       |     x     |
       // undefined |       |     x     |     x
-      if (stacked === false || stacks.indexOf(item.stack) === -1 ||
-				(stacked === undefined && item.stack === undefined)) {
-        stacks.push(item.stack);
+      if (stacked === false || stacks.indexOf(meta.stack) === -1 ||
+				(stacked === undefined && meta.stack === undefined)) {
+        stacks.push(meta.stack);
       }
-      if (item.index === last) {
+      if (meta.index === last) {
         break;
       }
     }

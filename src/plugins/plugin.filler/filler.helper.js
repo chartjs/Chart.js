@@ -32,3 +32,7 @@ export function _createBoundaryLine(boundary, line) {
     _fullLoop: _loop
   }) : null;
 }
+
+export function _shouldApplyFill(source) {
+  return source && source.fill !== false;
+}

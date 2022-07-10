@@ -10,8 +10,15 @@ on:
       - master
       - "2.9"
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   build:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for dorny/paths-filter to fetch a list of changed files
+      pull-requests: read  # for dorny/paths-filter to read pull requests
     runs-on: ${{ matrix.os }}
 
     outputs:
@@ -23,11 +30,10 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
           cache: npm
       - uses: dorny/paths-filter@v2
         id: changes
@@ -50,6 +56,8 @@ jobs:
               - 'tsconfig.json'
       - name: Install
         run: npm ci
+      - name: Lint
+        run: npm run lint
       - name: Build
         run: npm run build
       - name: Test
@@ -60,13 +68,11 @@ jobs:
         run: |
           npm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
-            npm test --browsers chrome,safari
+            npm run test-ci --browsers chrome,safari
           else
-            xvfb-run --auto-servernum npm test
+            xvfb-run --auto-servernum npm run test-ci
           fi
         shell: bash
-      - name: Lint
-        run: npm run lint
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
@@ -94,6 +100,8 @@ jobs:
           parallel: true
 
   finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
     needs: build
     runs-on: ubuntu-latest
     steps:
