@@ -5,15 +5,6 @@ import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/
 import registry from '../core/core.registry';
 
 export default class ScatterController extends DatasetController {
-  initialize() {
-    const {showLine} = this.getDataset();
-    if (!this.datasetElementType && showLine) {
-      this.datasetElementType = registry.getElement('line');
-    }
-
-    super.initialize();
-  }
-
   update(mode) {
     const meta = this._cachedMeta;
     const {data: points = []} = meta;
@@ -51,6 +42,16 @@ export default class ScatterController extends DatasetController {
 
     // Update Points
     this.updateElements(points, start, count, mode);
+  }
+
+  addElements() {
+    const {showLine} = this.options;
+
+    if (!this.datasetElementType && showLine) {
+      this.datasetElementType = registry.getElement('line');
+    }
+
+    super.addElements();
   }
 
   updateElements(points, start, count, mode) {
