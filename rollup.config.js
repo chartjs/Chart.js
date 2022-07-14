@@ -7,8 +7,8 @@ const pkg = require('./package.json');
 
 const input = 'src/index.js';
 const inputESM = {
-  'dist/chart.esm': 'src/index.esm.js',
-  'dist/helpers.esm': 'src/helpers/index.js'
+  'dist/chart': 'src/index.esm.js',
+  'dist/helpers': 'src/helpers/index.js'
 };
 
 const banner = `/*!
@@ -60,7 +60,7 @@ module.exports = [
   },
 
   // ES6 builds
-  // dist/chart.esm.js
+  // dist/chart.mjs
   // helpers/*.js
   {
     input: inputESM,
@@ -73,7 +73,8 @@ module.exports = [
     ],
     output: {
       dir: './',
-      chunkFileNames: 'dist/chunks/[name].js',
+      chunkFileNames: 'dist/chunks/[name].mjs',
+      entryFileNames: '[name].mjs',
       banner,
       format: 'esm',
       indent: false,

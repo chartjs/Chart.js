@@ -7,7 +7,7 @@
     "jsdelivr": "dist/chart.min.js",
     "unpkg": "dist/chart.min.js",
     "main": "dist/chart.js",
-    "module": "dist/chart.esm.js",
+    "module": "dist/chart.mjs",
     "types": "types/index.esm.d.ts",
     "keywords": [
         "canvas",
