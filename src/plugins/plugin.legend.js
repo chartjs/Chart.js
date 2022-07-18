@@ -1,7 +1,7 @@
 import defaults from '../core/core.defaults';
 import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
-import {addRoundedRectPath, drawPoint, renderText} from '../helpers/helpers.canvas';
+import {addRoundedRectPath, drawPointLegend, renderText} from '../helpers/helpers.canvas';
 import {
   callback as call, valueOrDefault, toFont,
   toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
@@ -18,7 +18,7 @@ const getBoxSize = (labelOpts, fontSize) => {
 
   if (labelOpts.usePointStyle) {
     boxHeight = Math.min(boxHeight, fontSize);
-    boxWidth = Math.min(boxWidth, fontSize);
+    boxWidth = labelOpts.pointStyleWidth || Math.min(boxWidth, fontSize);
   }
 
   return {
@@ -316,7 +316,7 @@ export class Legend extends Element {
         // Recalculate x and y for drawPoint() because its expecting
         // x and y to be center of figure (instead of top left)
         const drawOptions = {
-          radius: boxWidth * Math.SQRT2 / 2,
+          radius: boxHeight * Math.SQRT2 / 2,
           pointStyle: legendItem.pointStyle,
           rotation: legendItem.rotation,
           borderWidth: lineWidth
@@ -325,7 +325,7 @@ export class Legend extends Element {
         const centerY = y + halfFontSize;
 
         // Draw pointStyle as legend symbol
-        drawPoint(ctx, drawOptions, centerX, centerY);
+        drawPointLegend(ctx, drawOptions, centerX, centerY, boxWidth);
       } else {
         // Draw box as legend symbol
         // Adjust position when boxHeight < fontSize (want it centered)
