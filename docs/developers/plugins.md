@@ -120,6 +120,27 @@ const chart = new Chart(ctx, {
 });
 ```
 
+#### Plugin defaults
+
+You can set default values for your plugin options in the `defaults` entry of your plugin object. In the example below the canvas will always have a lightgreen backgroundColor unless the user overrides this option in `options.plugins.custom_canvas_background_color.color`.
+
+```javascript
+const plugin = {
+    id: 'custom_canvas_background_color',
+    beforeDraw: (chart, args, options) => {
+        const {ctx} = chart;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color;
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+    },
+    defaults: {
+        color: 'lightGreen'
+    }
+}
+```
+
 ## Plugin Core API
 
 Read more about the [existing plugin extension hooks](../api/interfaces/Plugin).

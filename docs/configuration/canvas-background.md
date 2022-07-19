@@ -35,7 +35,7 @@ const data = {
 const plugin = {
   id: 'custom_canvas_background_color',
   beforeDraw: (chart) => {
-    const ctx = chart.canvas.getContext('2d');
+    const {ctx} = chart;
     ctx.save();
     ctx.globalCompositeOperation = 'destination-over';
     ctx.fillStyle = 'lightGreen';
