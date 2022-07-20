@@ -67,7 +67,7 @@ export interface ControllerDatasetOptions extends ParsingOptions {
   /**
    * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
    */
-  clip: number | ChartArea;
+  clip: number | ChartArea | false;
   /**
    * The label for the dataset which appears in the legend and tooltips.
    */
@@ -1456,6 +1456,11 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * @default 'x'
    */
   indexAxis: 'x' | 'y';
+
+  /**
+   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
+   */
+  clip: number | ChartArea | false;
 
   /**
    * base color
