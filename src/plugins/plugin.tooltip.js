@@ -1,7 +1,7 @@
 import Animations from '../core/core.animations';
 import Element from '../core/core.element';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core';
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
@@ -707,7 +707,7 @@ export class Tooltip extends Element {
       drawPoint(ctx, drawOptions, centerX, centerY);
     } else {
       // Border
-      ctx.lineWidth = labelColors.borderWidth || 1; // TODO, v4 remove fallback
+      ctx.lineWidth = isObject(labelColors.borderWidth) ? Math.max(...Object.values(labelColors.borderWidth)) : (labelColors.borderWidth || 1); // TODO, v4 remove fallback
       ctx.strokeStyle = labelColors.borderColor;
       ctx.setLineDash(labelColors.borderDash || []);
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
