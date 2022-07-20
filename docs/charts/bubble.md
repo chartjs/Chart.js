@@ -51,7 +51,7 @@ The bubble chart allows a number of properties to be specified for each dataset.
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `3`
-| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
 | [`data`](#data-structure) | `object[]` | - | - | **required**
 | [`drawActiveElementsOnTop`](#general) | `boolean` | Yes | Yes | `true`
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
