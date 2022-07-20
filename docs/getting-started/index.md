@@ -101,6 +101,6 @@ module.exports = {
 As you can see, some of the boilerplate needed is not visible in our sample blocks, as the samples focus on the configuration options.
 :::
 
-All our examples are [available online](/samples/).
+All our examples are [available online](../samples/).
 
 To run the samples locally you first have to install all the necessary packages using the `npm ci` command, after this you can run `npm run docs:dev` to build the documentation. As soon as the build is done, you can go to [http://localhost:8080/samples/](http://localhost:8080/samples/) to see the samples.
