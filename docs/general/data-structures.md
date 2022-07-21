@@ -85,6 +85,20 @@ options: {
 }
 ```
 
+When using keys of the form `foo.bar`, you can allow for escaping dot symbol and add a double slash before the dot.
+
+```javascript
+type: 'doughnut',
+data: {
+    datasets: [{
+        data: [{ "data.key": "one", "data.value": 20 }, { "data.key": "two", "data.value": 30 }],
+    }]
+},
+options: {
+    parsing: { xAxisKey: "data\\.key", yAxisKey: "data\\.value"},
+}
+```
+
 :::warning
 When using object notation in a radar chart you still need a labels array with labels for the chart to show correctly.
 :::

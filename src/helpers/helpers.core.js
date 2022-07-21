@@ -304,6 +304,9 @@ export function resolveObjectKey(obj, key) {
   if (key === emptyString) {
     return obj;
   }
+  if (key.match(/[\\]/g)) {
+    return obj[key.replace(/[\\]/g, '')];
+  }
   let pos = 0;
   let idx = indexOfDotOrLength(key, pos);
   while (obj && idx > pos) {
