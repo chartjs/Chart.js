@@ -297,6 +297,78 @@ function createPointLabelContext(parent, index, label) {
 
 export default class RadialLinearScale extends LinearScaleBase {
 
+  static id = 'radialLinear';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    display: true,
+
+    // Boolean - Whether to animate scaling the chart from the centre
+    animate: true,
+    position: 'chartArea',
+
+    angleLines: {
+      display: true,
+      lineWidth: 1,
+      borderDash: [],
+      borderDashOffset: 0.0
+    },
+
+    grid: {
+      circular: false
+    },
+
+    startAngle: 0,
+
+    // label settings
+    ticks: {
+      // Boolean - Show a backdrop to the scale label
+      showLabelBackdrop: true,
+
+      callback: Ticks.formatters.numeric
+    },
+
+    pointLabels: {
+      backdropColor: undefined,
+
+      // Number - The backdrop padding above & below the label in pixels
+      backdropPadding: 2,
+
+      // Boolean - if true, show point labels
+      display: true,
+
+      // Number - Point label font size in pixels
+      font: {
+        size: 10
+      },
+
+      // Function - Used to convert point labels
+      callback(label) {
+        return label;
+      },
+
+      // Number - Additionl padding between scale and pointLabel
+      padding: 5,
+
+      // Boolean - if true, center point labels to slices in polar chart
+      centerPointLabels: false
+    }
+  };
+
+  static defaultRoutes = {
+    'angleLines.color': 'borderColor',
+    'pointLabels.color': 'color',
+    'ticks.color': 'color'
+  };
+
+  static descriptors = {
+    angleLines: {
+      _fallback: 'grid'
+    }
+  };
+
   constructor(cfg) {
     super(cfg);
 
@@ -565,75 +637,3 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 */
   drawTitle() {}
 }
-
-RadialLinearScale.id = 'radialLinear';
-
-/**
- * @type {any}
- */
-RadialLinearScale.defaults = {
-  display: true,
-
-  // Boolean - Whether to animate scaling the chart from the centre
-  animate: true,
-  position: 'chartArea',
-
-  angleLines: {
-    display: true,
-    lineWidth: 1,
-    borderDash: [],
-    borderDashOffset: 0.0
-  },
-
-  grid: {
-    circular: false
-  },
-
-  startAngle: 0,
-
-  // label settings
-  ticks: {
-    // Boolean - Show a backdrop to the scale label
-    showLabelBackdrop: true,
-
-    callback: Ticks.formatters.numeric
-  },
-
-  pointLabels: {
-    backdropColor: undefined,
-
-    // Number - The backdrop padding above & below the label in pixels
-    backdropPadding: 2,
-
-    // Boolean - if true, show point labels
-    display: true,
-
-    // Number - Point label font size in pixels
-    font: {
-      size: 10
-    },
-
-    // Function - Used to convert point labels
-    callback(label) {
-      return label;
-    },
-
-    // Number - Additionl padding between scale and pointLabel
-    padding: 5,
-
-    // Boolean - if true, center point labels to slices in polar chart
-    centerPointLabels: false
-  }
-};
-
-RadialLinearScale.defaultRoutes = {
-  'angleLines.color': 'borderColor',
-  'pointLabels.color': 'color',
-  'ticks.color': 'color'
-};
-
-RadialLinearScale.descriptors = {
-  angleLines: {
-    _fallback: 'grid'
-  }
-};

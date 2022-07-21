@@ -24,6 +24,7 @@ module.exports = [
       json(),
       resolve(),
       cleanup({
+        comments: ['some', /__PURE__/],
         sourcemap: true
       }),
       analyze({summaryOnly: true})
@@ -92,6 +93,7 @@ module.exports = [
       json(),
       resolve(),
       cleanup({
+        comments: ['some', /__PURE__/],
         sourcemap: true
       }),
     ],

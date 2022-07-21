@@ -218,6 +218,21 @@ const createStack = (canStack, meta, chart) => canStack && !meta.hidden && meta.
 export default class DatasetController {
 
   /**
+   * @type {any}
+   */
+  static defaults = {};
+
+  /**
+   * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
+   */
+  // datasetElementType;
+
+  /**
+   * Element type used to generate a meta data (e.g. Chart.element.PointElement).
+   */
+  // dataElementType;
+
+  /**
 	 * @param {Chart} chart
 	 * @param {number} datasetIndex
 	 */
@@ -358,7 +373,9 @@ export default class DatasetController {
 
     this._dataCheck();
 
+    // @ts-expect-error This property should be moved to static fields.
     if (this.datasetElementType) {
+      // @ts-expect-error This property should be moved to static fields.
       meta.dataset = new this.datasetElementType();
     }
   }
@@ -747,6 +764,7 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDatasetElementOptions(mode) {
+    // @ts-expect-error This property should be moved to static fields.
     return this._resolveElementOptions(this.datasetElementType.id, mode);
   }
 
@@ -756,6 +774,7 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDataElementOptions(index, mode) {
+    // @ts-expect-error This property should be moved to static fields.
     return this._resolveElementOptions(this.dataElementType.id, mode, index);
   }
 
@@ -967,6 +986,7 @@ export default class DatasetController {
     move(data);
 
     for (i = start; i < end; ++i) {
+      // @ts-expect-error This property should be moved to static fields.
       data[i] = new this.dataElementType();
     }
 
@@ -1051,18 +1071,3 @@ export default class DatasetController {
     this._sync(['_insertElements', 0, arguments.length]);
   }
 }
-
-/**
- * @type {any}
- */
-DatasetController.defaults = {};
-
-/**
- * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
- */
-DatasetController.prototype.datasetElementType = null;
-
-/**
- * Element type used to generate a meta data (e.g. Chart.element.PointElement).
- */
-DatasetController.prototype.dataElementType = null;

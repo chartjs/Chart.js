@@ -103,6 +103,23 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
 
 class Chart {
 
+  static defaults = defaults;
+  static instances = instances;
+  static overrides = overrides;
+  static registry = registry;
+  static version = version;
+  static getChart = getChart;
+
+  static register(...items) {
+    registry.add(...items);
+    invalidatePlugins();
+  }
+
+  static unregister(...items) {
+    registry.remove(...items);
+    invalidatePlugins();
+  }
+
   // eslint-disable-next-line max-statements
   constructor(item, userConfig) {
     const config = this.config = new Config(userConfig);
@@ -1241,50 +1258,8 @@ class Chart {
 }
 
 // @ts-ignore
-const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
-
-const enumerable = true;
-
-// These are available to both, UMD and ESM packages. Read Only!
-Object.defineProperties(Chart, {
-  defaults: {
-    enumerable,
-    value: defaults
-  },
-  instances: {
-    enumerable,
-    value: instances
-  },
-  overrides: {
-    enumerable,
-    value: overrides
-  },
-  registry: {
-    enumerable,
-    value: registry
-  },
-  version: {
-    enumerable,
-    value: version
-  },
-  getChart: {
-    enumerable,
-    value: getChart
-  },
-  register: {
-    enumerable,
-    value: (...items) => {
-      registry.add(...items);
-      invalidatePlugins();
-    }
-  },
-  unregister: {
-    enumerable,
-    value: (...items) => {
-      registry.remove(...items);
-      invalidatePlugins();
-    }
-  }
-});
+function invalidatePlugins() {
+  return each(Chart.instances, (chart) => chart._plugins.invalidate());
+}
 
 export default Chart;

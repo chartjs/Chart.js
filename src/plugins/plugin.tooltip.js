@@ -351,6 +351,12 @@ function overrideCallbacks(callbacks, context) {
 }
 
 export class Tooltip extends Element {
+
+  /**
+   * @namespace Chart.Tooltip.positioners
+   */
+  static positioners = positioners;
+
   constructor(config) {
     super();
 
@@ -1103,11 +1109,6 @@ export class Tooltip extends Element {
     return position !== false && (caretX !== position.x || caretY !== position.y);
   }
 }
-
-/**
- * @namespace Chart.Tooltip.positioners
- */
-Tooltip.positioners = positioners;
 
 export default {
   id: 'tooltip',

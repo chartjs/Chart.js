@@ -33,6 +33,13 @@ function interpolate(table, val, reverse) {
 
 class TimeSeriesScale extends TimeScale {
 
+  static id = 'timeseries';
+
+  /**
+   * @type {any}
+   */
+  static defaults = TimeScale.defaults;
+
   /**
 	 * @param {object} props
 	 */
@@ -147,12 +154,5 @@ class TimeSeriesScale extends TimeScale {
     return interpolate(this._table, decimal * this._tableRange + this._minPos, true);
   }
 }
-
-TimeSeriesScale.id = 'timeseries';
-
-/**
- * @type {any}
- */
-TimeSeriesScale.defaults = TimeScale.defaults;
 
 export default TimeSeriesScale;

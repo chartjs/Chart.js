@@ -5,6 +5,51 @@ import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/
 import registry from '../core/core.registry';
 
 export default class ScatterController extends DatasetController {
+
+  static id = 'scatter';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: false,
+    dataElementType: 'point',
+    showLine: false,
+    fill: false
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+
+    interaction: {
+      mode: 'point'
+    },
+
+    plugins: {
+      tooltip: {
+        callbacks: {
+          title() {
+            return '';     // doesn't make sense for scatter since data are formatted as a point
+          },
+          label(item) {
+            return '(' + item.label + ', ' + item.formattedValue + ')';
+          }
+        }
+      }
+    },
+
+    scales: {
+      x: {
+        type: 'linear'
+      },
+      y: {
+        type: 'linear'
+      }
+    }
+  };
+
   update(mode) {
     const meta = this._cachedMeta;
     const {data: points = []} = meta;
@@ -121,47 +166,3 @@ export default class ScatterController extends DatasetController {
     return Math.max(border, firstPoint, lastPoint) / 2;
   }
 }
-
-ScatterController.id = 'scatter';
-
-/**
- * @type {any}
- */
-ScatterController.defaults = {
-  datasetElementType: false,
-  dataElementType: 'point',
-  showLine: false,
-  fill: false
-};
-
-/**
- * @type {any}
- */
-ScatterController.overrides = {
-
-  interaction: {
-    mode: 'point'
-  },
-
-  plugins: {
-    tooltip: {
-      callbacks: {
-        title() {
-          return '';     // doesn't make sense for scatter since data are formatted as a point
-        },
-        label(item) {
-          return '(' + item.label + ', ' + item.formattedValue + ')';
-        }
-      }
-    }
-  },
-
-  scales: {
-    x: {
-      type: 'linear'
-    },
-    y: {
-      type: 'linear'
-    }
-  }
-};
