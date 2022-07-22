@@ -85,9 +85,7 @@ export default class BubbleController extends DatasetController {
   updateElements(points, start, count, mode) {
     const reset = mode === 'reset';
     const {iScale, vScale} = this._cachedMeta;
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
 
@@ -101,7 +99,7 @@ export default class BubbleController extends DatasetController {
       properties.skip = isNaN(iPixel) || isNaN(vPixel);
 
       if (includeOptions) {
-        properties.options = this.resolveDataElementOptions(i, point.active ? 'active' : mode);
+        properties.options = sharedOptions || this.resolveDataElementOptions(i, point.active ? 'active' : mode);
 
         if (reset) {
           properties.options.radius = 0;
@@ -110,8 +108,6 @@ export default class BubbleController extends DatasetController {
 
       this.updateElement(point, i, properties, mode);
     }
-
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   /**

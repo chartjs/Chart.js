@@ -39,7 +39,7 @@ export function isArray(value) {
     return true;
   }
   const type = Object.prototype.toString.call(value);
-  if (type.substr(0, 7) === '[object' && type.substr(-6) === 'Array]') {
+  if (type.slice(0, 7) === '[object' && type.slice(-6) === 'Array]') {
     return true;
   }
   return false;
@@ -307,7 +307,7 @@ export function resolveObjectKey(obj, key) {
   let pos = 0;
   let idx = indexOfDotOrLength(key, pos);
   while (obj && idx > pos) {
-    obj = obj[key.substr(pos, idx - pos)];
+    obj = obj[key.slice(pos, idx)];
     pos = idx + 1;
     idx = indexOfDotOrLength(key, pos);
   }

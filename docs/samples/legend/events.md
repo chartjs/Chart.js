@@ -55,3 +55,9 @@ module.exports = {
   config
 };
 ```
+
+## Docs
+* [Doughnut and Pie Charts](../../charts/doughnut.html)
+* [Legend](../../configuration/legend.html)
+  * `onHover`
+  * `onLeave`

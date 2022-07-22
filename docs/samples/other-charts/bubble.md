@@ -111,3 +111,6 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Bubble](../../charts/bubble.html)

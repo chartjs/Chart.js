@@ -1,7 +1,7 @@
 import Animations from '../core/core.animations';
 import Element from '../core/core.element';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual} from '../helpers/helpers.core';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core';
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
@@ -707,7 +707,7 @@ export class Tooltip extends Element {
       drawPoint(ctx, drawOptions, centerX, centerY);
     } else {
       // Border
-      ctx.lineWidth = labelColors.borderWidth || 1; // TODO, v4 remove fallback
+      ctx.lineWidth = isObject(labelColors.borderWidth) ? Math.max(...Object.values(labelColors.borderWidth)) : (labelColors.borderWidth || 1); // TODO, v4 remove fallback
       ctx.strokeStyle = labelColors.borderColor;
       ctx.setLineDash(labelColors.borderDash || []);
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
@@ -917,6 +917,14 @@ export class Tooltip extends Element {
     }
   }
 
+  /**
+   * Determine if the tooltip will draw anything
+   * @returns {boolean} True if the tooltip will render
+   */
+  _willRender() {
+    return !!this.opacity;
+  }
+
   draw(ctx) {
     const options = this.options.setContext(this.getContext());
     let opacity = this.opacity;
@@ -1013,7 +1021,7 @@ export class Tooltip extends Element {
 	 * Handle an event
 	 * @param {ChartEvent} e - The event to handle
 	 * @param {boolean} [replay] - This is a replayed event (from update)
-   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @param {boolean} [inChartArea] - The event is inside chartArea
 	 * @returns {boolean} true if the tooltip changed
 	 */
   handleEvent(e, replay, inChartArea = true) {
@@ -1054,11 +1062,11 @@ export class Tooltip extends Element {
   /**
 	 * Helper for determining the active elements for event
 	 * @param {ChartEvent} e - The event to handle
-   * @param {Element[]} lastActive - Previously active elements
+	 * @param {Element[]} lastActive - Previously active elements
 	 * @param {boolean} [replay] - This is a replayed event (from update)
-   * @param {boolean} [inChartArea] - The event is indide chartArea
+	 * @param {boolean} [inChartArea] - The event is inside chartArea
 	 * @returns {Element[]} - Active elements
-   * @private
+	 * @private
 	 */
   _getActiveElements(e, lastActive, replay, inChartArea) {
     const options = this.options;
@@ -1127,19 +1135,19 @@ export default {
   afterDraw(chart) {
     const tooltip = chart.tooltip;
 
-    const args = {
-      tooltip
-    };
+    if (tooltip && tooltip._willRender()) {
+      const args = {
+        tooltip
+      };
 
-    if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
-      return;
-    }
+      if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
+        return;
+      }
 
-    if (tooltip) {
       tooltip.draw(chart.ctx);
-    }
 
-    chart.notifyPlugins('afterTooltipDraw', args);
+      chart.notifyPlugins('afterTooltipDraw', args);
+    }
   },
 
   afterEvent(chart, args) {

@@ -74,3 +74,12 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes Styling](../../axes/styling.html)
+* [Cartesian Axes](../../axes/cartesian/)
+  * [Common options to all cartesian axes](../../axes/cartesian/#common-options-to-all-cartesian-axes)
+* [Labeling Axes](../../axes/labelling.html)
+  * [Scale Title Configuration](../../axes/labelling.html#scale-title-configuration)

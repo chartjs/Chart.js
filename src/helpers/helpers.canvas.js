@@ -2,7 +2,11 @@ import {isArray, isNullOrUndef} from './helpers.core';
 import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * Note: typedefs are auto-exported, so use a made-up `canvas` namespace where
+ * necessary to avoid duplicates with `export * from './helpers`; see
+ * https://github.com/microsoft/TypeScript/issues/46011
+ * @typedef { import("../core/core.controller").default } canvas.Chart
+ * @typedef { import("../../types/index.esm").Point } Point
  */
 
 /**
@@ -94,7 +98,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
 
 /**
  * Returns the aligned pixel value to avoid anti-aliasing blur
- * @param {Chart} chart - The chart instance.
+ * @param {canvas.Chart} chart - The chart instance.
  * @param {number} pixel - A pixel value.
  * @param {number} width - The width of the element.
  * @returns {number} The aligned pixel value.
@@ -123,7 +127,11 @@ export function clearCanvas(canvas, ctx) {
 }
 
 export function drawPoint(ctx, options, x, y) {
-  let type, xOffset, yOffset, size, cornerRadius;
+  drawPointLegend(ctx, options, x, y, null);
+}
+
+export function drawPointLegend(ctx, options, x, y, w) {
+  let type, xOffset, yOffset, size, cornerRadius, width;
   const style = options.pointStyle;
   const rotation = options.rotation;
   const radius = options.radius;
@@ -150,7 +158,11 @@ export function drawPoint(ctx, options, x, y) {
   switch (style) {
   // Default includes circle
   default:
-    ctx.arc(x, y, radius, 0, TAU);
+    if (w) {
+      ctx.ellipse(x, y, w / 2, radius, 0, 0, TAU);
+    } else {
+      ctx.arc(x, y, radius, 0, TAU);
+    }
     ctx.closePath();
     break;
   case 'triangle':
@@ -182,7 +194,8 @@ export function drawPoint(ctx, options, x, y) {
   case 'rect':
     if (!rotation) {
       size = Math.SQRT1_2 * radius;
-      ctx.rect(x - size, y - size, 2 * size, 2 * size);
+      width = w ? w / 2 : size;
+      ctx.rect(x - width, y - size, 2 * width, 2 * size);
       break;
     }
     rad += QUARTER_PI;
@@ -223,7 +236,7 @@ export function drawPoint(ctx, options, x, y) {
     ctx.lineTo(x - yOffset, y + xOffset);
     break;
   case 'line':
-    xOffset = Math.cos(rad) * radius;
+    xOffset = w ? w / 2 : Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
     ctx.moveTo(x - xOffset, y - yOffset);
     ctx.lineTo(x + xOffset, y + yOffset);
@@ -242,7 +255,7 @@ export function drawPoint(ctx, options, x, y) {
 
 /**
  * Returns true if the point is inside the rectangle
- * @param {object} point - The point to test
+ * @param {Point} point - The point to test
  * @param {object} area - The rectangle
  * @param {number} [margin] - allowed margin
  * @returns {boolean}

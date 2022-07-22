@@ -113,3 +113,7 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Bar](../../charts/bar.html)
+* [Data structures (`labels`)](../../general/data-structures.html)

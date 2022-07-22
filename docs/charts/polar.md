@@ -60,9 +60,9 @@ The following options can be included in a polar area chart dataset to configure
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
 | [`borderJoinStyle`](#styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
-| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interations) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`

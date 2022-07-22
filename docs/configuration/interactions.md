@@ -7,6 +7,7 @@ Namespace: `options.interaction`, the global interaction configuration is at `Ch
 | `mode` | `string` | `'nearest'` | Sets which elements appear in the interaction. See [Interaction Modes](#modes) for details.
 | `intersect` | `boolean` | `true` | if true, the interaction mode only applies when the mouse position intersects an item on the chart.
 | `axis` | `string` | `'x'` | Can be set to `'x'`, `'y'`, `'xy'` or `'r'` to define which directions are used in calculating distances. Defaults to `'x'` for `'index'` mode and `'xy'` in `dataset` and `'nearest'` modes.
+| `includeInvisible` | `boolean` | `false` | if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.
 
 By default, these options apply to both the hover and tooltip interactions. The same options can be set in the `options.hover` namespace, in which case they will only affect the hover interaction. Similarly, the options can be set in the `options.plugins.tooltip` namespace to independently configure the tooltip interactions.
 
@@ -99,6 +100,8 @@ const chart = new Chart(ctx, {
     }
 });
 ```
+
+When using a bundler, the helper functions have to be imported seperatly, for a full explanation of this please head over to the [integration](../getting-started/integration.md#helper-functions) page
 
 ## Modes
 
@@ -219,4 +222,57 @@ const chart = new Chart(ctx, {
         }
     }
 });
+```
+
+## Custom Interaction Modes
+
+New modes can be defined by adding functions to the `Chart.Interaction.modes` map.  You can use the `Chart.Interaction.evaluateInteractionItems` function to help implement these.
+
+Example:
+
+```javascript
+import { Interaction } from 'chart.js';
+import { getRelativePosition } from 'chart.js/helpers';
+
+/**
+ * Custom interaction mode
+ * @function Interaction.modes.myCustomMode
+ * @param {Chart} chart - the chart we are returning items from
+ * @param {Event} e - the event we are find things at
+ * @param {InteractionOptions} options - options to use
+ * @param {boolean} [useFinalPosition] - use final element position (animation target)
+ * @return {InteractionItem[]} - items that are found
+ */
+Interaction.modes.myCustomMode = function(chart, e, options, useFinalPosition) {
+  const position = getRelativePosition(e, chart);
+
+  const items = [];
+  Interaction.evaluateInteractionItems(chart, 'x', position, (element, datasetIndex, index) => {
+    if (element.inXRange(position.x, useFinalPosition) && myCustomLogic(element)) {
+      items.push({element, datasetIndex, index});
+    }
+  });
+  return items;
+};
+
+// Then, to use it...
+new Chart.js(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        interaction: {
+            mode: 'myCustomMode'
+        }
+    }
+})
+```
+
+If you're using TypeScript, you'll also need to register the new mode:
+
+```typescript
+declare module 'chart.js' {
+  interface InteractionModeMap {
+    myCustomMode: InteractionModeFunction;
+  }
+}
 ```

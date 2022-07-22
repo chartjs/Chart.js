@@ -54,3 +54,10 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs
+* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Axes scales](../../axes/)
+  * [Common options to all axes](../../axes/#common-options-to-all-axes)
+  * [Axis Range Settings](../../axes/#axis-range-settings)

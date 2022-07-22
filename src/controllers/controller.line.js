@@ -7,6 +7,7 @@ export default class LineController extends DatasetController {
 
   initialize() {
     this.enableOptionSharing = true;
+    this.supportsDecimation = true;
     super.initialize();
   }
 
@@ -48,9 +49,7 @@ export default class LineController extends DatasetController {
   updateElements(points, start, count, mode) {
     const reset = mode === 'reset';
     const {iScale, vScale, _stacked, _dataset} = this._cachedMeta;
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
     const {spanGaps, segment} = this.options;
@@ -67,7 +66,7 @@ export default class LineController extends DatasetController {
       const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? this.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
 
       properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
-      properties.stop = i > 0 && (parsed[iAxis] - prevParsed[iAxis]) > maxGapLength;
+      properties.stop = i > 0 && (Math.abs(parsed[iAxis] - prevParsed[iAxis])) > maxGapLength;
       if (segment) {
         properties.parsed = parsed;
         properties.raw = _dataset.data[i];
@@ -83,8 +82,6 @@ export default class LineController extends DatasetController {
 
       prevParsed = parsed;
     }
-
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   /**

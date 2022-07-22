@@ -603,7 +603,7 @@ describe('Chart.controllers.line', function() {
       expect(options.cubicInterpolationMode).toBe('monotone');
     });
 
-    it('should be overriden by user-supplied values', function() {
+    it('should be overridden by user-supplied values', function() {
       Chart.helpers.merge(Chart.defaults.datasets.line, {
         spanGaps: true,
         tension: 0.231
@@ -963,5 +963,57 @@ describe('Chart.controllers.line', function() {
     expect(point.skip).toBe(true);
     expect(isNaN(x)).toBe(false);
     expect(isNaN(y)).toBe(false);
+  });
+
+  it('should honor spangap interval forwards', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          spanGaps: 10,
+          data: [{x: 10, y: 123}, {x: 15, y: 124}, {x: 26, y: 125}, {x: 30, y: 126}, {x: 35, y: 127}],
+          label: 'dataset1',
+        }],
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    for (var i = 0; i < meta.data.length; ++i) {
+      var point = meta.data[i];
+      expect(point.stop).toBe(i === 2);
+    }
+  });
+
+  it('should honor spangap interval backwards', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          spanGaps: 10,
+          data: [{x: 35, y: 123}, {x: 30, y: 124}, {x: 26, y: 125}, {x: 15, y: 126}, {x: 10, y: 127}],
+          label: 'dataset1',
+        }],
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    for (var i = 0; i < meta.data.length; ++i) {
+      var point = meta.data[i];
+      expect(point.stop).toBe(i === 3);
+    }
   });
 });

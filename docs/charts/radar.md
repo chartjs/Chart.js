@@ -88,7 +88,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
 | [`hoverBorderJoinStyle`](#line-styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | - | `undefined`
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
-| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`label`](#general) | `string` | - | - | `''`
@@ -150,7 +150,7 @@ The style of the line can be controlled with the following properties:
 | `tension` | Bezier curve tension of the line. Set to 0 to draw straight lines.
 | `spanGaps` | If true, lines will be drawn between points with no or null data. If false, points with `null` data will create a break in the line.
 
-If the value is `undefined`, `spanGaps` fallback to the associated [chart configuration options](#configuration-options). The rest of the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
+If the value is `undefined`, the values fallback to the associated [`elements.line.*`](../configuration/elements.md#line-configuration) options.
 
 ### Interactions
 

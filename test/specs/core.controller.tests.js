@@ -32,7 +32,7 @@ describe('Chart', function() {
     expect(createChart).toThrow(new Error(
       'Canvas is already in use. ' +
 			'Chart with ID \'' + chart.id + '\'' +
-			' must be destroyed before the canvas can be reused.'
+			' must be destroyed before the canvas with ID \'' + chart.canvas.id + '\' can be reused.'
     ));
 
     chart.destroy();
@@ -252,7 +252,7 @@ describe('Chart', function() {
         expect(chart.options.hover).toBeFalse();
       });
 
-      it('when options.interation=false and options.hover is not defined', function() {
+      it('when options.interaction=false and options.hover is not defined', function() {
         var chart = acquireChart({
           type: 'line',
           options: {
@@ -262,7 +262,7 @@ describe('Chart', function() {
         expect(chart.options.hover).toBeFalse();
       });
 
-      it('when options.interation=false and options.hover is defined', function() {
+      it('when options.interaction=false and options.hover is defined', function() {
         var chart = acquireChart({
           type: 'line',
           options: {
@@ -1797,8 +1797,8 @@ describe('Chart', function() {
         'beforeDatasetDraw',
         'afterDatasetDraw',
         'afterDatasetsDraw',
-        'beforeTooltipDraw',
-        'afterTooltipDraw',
+        // 'beforeTooltipDraw',
+        // 'afterTooltipDraw',
         'afterDraw',
         'afterRender',
       ],

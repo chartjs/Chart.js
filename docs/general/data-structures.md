@@ -3,7 +3,7 @@
 The `data` property of a dataset can be passed in various formats. By default, that `data` is parsed using the associated chart type and scales.
 
 If the `labels` property of the main `data` property is used, it has to contain the same amount of elements as the dataset with the most values. These labels are used to label the index axis (default x axes). The values for the labels have to be provided in an array.
-The provides labels can be of the type string or number to be rendered correctly. In case you want multiline labels you can provide an array with each line as one entry in the array.
+The provided labels can be of the type string or number to be rendered correctly. In case you want multiline labels you can provide an array with each line as one entry in the array.
 
 ## Primitive[]
 
@@ -69,7 +69,7 @@ options: {
 }
 ```
 
-When using the pie/doughnut chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
+When using the pie/doughnut, radar or polarArea chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
 
 ```javascript
 type: 'doughnut',
@@ -84,6 +84,11 @@ options: {
     }
 }
 ```
+
+:::warning
+When using object notation in a radar chart you still need a labels array with labels for the chart to show correctly.
+:::
+
 
 ## Object
 

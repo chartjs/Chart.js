@@ -170,9 +170,7 @@ export default class DoughnutController extends DatasetController {
     const animateScale = reset && animationOpts.animateScale;
     const innerRadius = animateScale ? 0 : this.innerRadius;
     const outerRadius = animateScale ? 0 : this.outerRadius;
-    const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
-    const includeOptions = this.includeOptions(mode, sharedOptions);
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
     let startAngle = this._getRotation();
     let i;
 
@@ -199,7 +197,6 @@ export default class DoughnutController extends DatasetController {
 
       this.updateElement(arc, i, properties, mode);
     }
-    this.updateSharedOptions(sharedOptions, mode, firstOpts);
   }
 
   calculateTotal() {

@@ -203,7 +203,7 @@ function _resolveWithContext(target, prop, receiver) {
     value = _resolveArray(prop, value, target, descriptors.isIndexable);
   }
   if (needsSubResolver(prop, value)) {
-    // if the resolved value is an object, crate a sub resolver for it
+    // if the resolved value is an object, create a sub resolver for it
     value = _attachContext(value, _context, _subProxy && _subProxy[prop], descriptors);
   }
   return value;
@@ -350,4 +350,20 @@ function resolveKeysFromAllScopes(scopes) {
     }
   }
   return Array.from(set);
+}
+
+export function _parseObjectDataRadialScale(meta, data, start, count) {
+  const {iScale} = meta;
+  const {key = 'r'} = this._parsing;
+  const parsed = new Array(count);
+  let i, ilen, index, item;
+
+  for (i = 0, ilen = count; i < ilen; ++i) {
+    index = i + start;
+    item = data[index];
+    parsed[i] = {
+      r: iScale.parse(resolveObjectKey(item, key), index)
+    };
+  }
+  return parsed;
 }

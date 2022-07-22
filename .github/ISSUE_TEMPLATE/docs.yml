@@ -1,0 +1,31 @@
+name: Documentation
+description: Are the docs lacking or missing something?
+labels: ["type: documentation"]
+body:
+  - type: checkboxes
+    attributes:
+      label: "Documentation Is:"
+      options:
+        - label: Missing or needed?
+        - label: Confusing
+        - label: Not sure?
+
+  - type: textarea
+    attributes:
+      label: Please Explain in Detail...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Your Proposal for Changes
+    validations:
+      required: true
+  
+  - type: input
+    attributes:
+      label: Example
+      description: |
+        Provide a link to a live example demonstrating the issue or feature to be documented:
+        Normal: https://codepen.io/pen?template=BapRepQ
+        TS: [TS Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgYQBYENZwL5wGZQQhwDkAxhrAHQBWAziQNwCwAUGwG6ZxkwAecALxwAJhDIBXEAFMAdjCoBzaTACiAG2kz5AIQCeASREAKAEQg9aTDFMBKOOjpwAEgBUAsgBlk6WVzoaWnIwLKxcUHAWVljCstIA7iiUMMa8fAA0iGxwOXAwemDSAFyk6sBxJOnZuSLoMOglCNW5ueroAEbS6nQlANqmAErSIqaZpjrqEtKjcKYAml3qEPEzpgDiUNJyqwAKElBgmqsA8lC+yqYAulWsLS219XQqPXC9Tbd3n22d6iUkAMRwCB4OAANQgMGkDBun0+DwarwAjAAmTKIgCcmQAzJkAKyZVFwLHXZp3bCXUnYGG5CBgGDACCyF7vT50MjoTTM0ktPiNbl3fk5KmCuB6PkfWFwEXYfkyiU4NjYWyMIA)

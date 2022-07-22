@@ -128,3 +128,9 @@ module.exports = {
   config: config,
 };
 ```
+
+## Docs 
+* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.html)
+* [Tooltip](../../configuration/tooltip.html)
+* [Interactions](../../configuration/interactions.html)

@@ -114,3 +114,9 @@ module.exports = {
   config,
 };
 ```
+
+## Docs
+* [Polar Area Chart](../../charts/polar.md)
+  * [Styling](../../charts/polar.md#styling)
+* [Options](../../general/options.html)
+  * [Scriptable Options](../../general/options.html#scriptable-options)

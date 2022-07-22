@@ -237,6 +237,7 @@ export default class DatasetController {
     this._drawStart = undefined;
     this._drawCount = undefined;
     this.enableOptionSharing = false;
+    this.supportsDecimation = false;
     this.$context = undefined;
     this._syncList = [];
 
@@ -837,6 +838,18 @@ export default class DatasetController {
 	 */
   includeOptions(mode, sharedOptions) {
     return !sharedOptions || isDirectUpdateMode(mode) || this.chart._animationsDisabled;
+  }
+
+  /**
+   * @todo v4, rename to getSharedOptions and remove excess functions
+   */
+  _getSharedOptions(start, mode) {
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const previouslySharedOptions = this._sharedOptions;
+    const sharedOptions = this.getSharedOptions(firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions) || (sharedOptions !== previouslySharedOptions);
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
+    return {sharedOptions, includeOptions};
   }
 
   /**
