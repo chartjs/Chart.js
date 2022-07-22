@@ -225,12 +225,12 @@ export default class DatasetController {
   /**
    * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
    */
-  // datasetElementType;
+  static datasetElementType = null;
 
   /**
    * Element type used to generate a meta data (e.g. Chart.element.PointElement).
    */
-  // dataElementType;
+  static dataElementType = null;
 
   /**
 	 * @param {Chart} chart
@@ -255,6 +255,8 @@ export default class DatasetController {
     this.supportsDecimation = false;
     this.$context = undefined;
     this._syncList = [];
+    this.datasetElementType = new.target.datasetElementType;
+    this.dataElementType = new.target.dataElementType;
 
     this.initialize();
   }
@@ -373,9 +375,7 @@ export default class DatasetController {
 
     this._dataCheck();
 
-    // @ts-expect-error This property should be moved to static fields.
     if (this.datasetElementType) {
-      // @ts-expect-error This property should be moved to static fields.
       meta.dataset = new this.datasetElementType();
     }
   }
@@ -764,7 +764,6 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDatasetElementOptions(mode) {
-    // @ts-expect-error This property should be moved to static fields.
     return this._resolveElementOptions(this.datasetElementType.id, mode);
   }
 
@@ -774,7 +773,6 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDataElementOptions(index, mode) {
-    // @ts-expect-error This property should be moved to static fields.
     return this._resolveElementOptions(this.dataElementType.id, mode, index);
   }
 
@@ -986,7 +984,6 @@ export default class DatasetController {
     move(data);
 
     for (i = start; i < end; ++i) {
-      // @ts-expect-error This property should be moved to static fields.
       data[i] = new this.dataElementType();
     }
 

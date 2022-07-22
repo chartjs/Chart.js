@@ -438,7 +438,7 @@ class Chart {
       } else {
         const ControllerClass = registry.getController(type);
         const {datasetElementType, dataElementType} = defaults.datasets[type];
-        Object.assign(ControllerClass.prototype, {
+        Object.assign(ControllerClass, {
           dataElementType: registry.getElement(dataElementType),
           datasetElementType: datasetElementType && registry.getElement(datasetElementType)
         });
