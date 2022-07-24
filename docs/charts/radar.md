@@ -88,7 +88,7 @@ The radar chart allows a number of properties to be specified for each dataset. 
 | [`hoverBorderDashOffset`](#line-styling) | `number` | Yes | - | `undefined`
 | [`hoverBorderJoinStyle`](#line-styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | - | `undefined`
 | [`hoverBorderWidth`](#line-styling) | `number` | Yes | - | `undefined`
-| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`fill`](#line-styling) | `boolean`\|`string` | Yes | - | `false`
 | [`label`](#general) | `string` | - | - | `''`

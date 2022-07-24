@@ -6,9 +6,6 @@ on:
       contents: write  # for actions/upload-release-asset to upload release asset
     types: [published]
 
-permissions:
-  contents: read
-
 jobs:
   setup:
     permissions:

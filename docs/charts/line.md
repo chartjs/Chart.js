@@ -51,7 +51,7 @@ The line chart allows a number of properties to be specified for each dataset. T
 | [`borderDashOffset`](#line-styling) | `number` | Yes | - | `0.0`
 | [`borderJoinStyle`](#line-styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | - | `'miter'`
 | [`borderWidth`](#line-styling) | `number` | Yes | - | `3`
-| [`clip`](#general) | `number`\|`object` | - | - | `undefined`
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
 | [`cubicInterpolationMode`](#cubicinterpolationmode) | `string` | Yes | - | `'default'`
 | [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
 | [`drawActiveElementsOnTop`](#general) | `boolean` | Yes | Yes | `true`
