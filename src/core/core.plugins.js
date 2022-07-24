@@ -118,6 +118,7 @@ export default class PluginService {
  * @param {import("./core.config").default} config
  */
 function allPlugins(config) {
+  const localIds = {};
   const plugins = [];
   const keys = Object.keys(registry.plugins.items);
   for (let i = 0; i < keys.length; i++) {
@@ -130,10 +131,11 @@ function allPlugins(config) {
 
     if (plugins.indexOf(plugin) === -1) {
       plugins.push(plugin);
+      localIds[plugin.id] = true;
     }
   }
 
-  return plugins;
+  return {plugins, localIds};
 }
 
 function getOpts(options, all) {
@@ -146,12 +148,11 @@ function getOpts(options, all) {
   return options;
 }
 
-function createDescriptors(chart, plugins, options, all) {
+function createDescriptors(chart, {plugins, localIds}, options, all) {
   const result = [];
   const context = chart.getContext();
 
-  for (let i = 0; i < plugins.length; i++) {
-    const plugin = plugins[i];
+  for (const plugin of plugins) {
     const id = plugin.id;
     const opts = getOpts(options[id], all);
     if (opts === null) {
@@ -159,21 +160,24 @@ function createDescriptors(chart, plugins, options, all) {
     }
     result.push({
       plugin,
-      options: pluginOpts(chart.config, plugin, opts, context)
+      options: pluginOpts(chart.config, {plugin, local: localIds[id]}, opts, context)
     });
   }
 
   return result;
 }
 
-/**
- * @param {import("./core.config").default} config
- * @param {*} plugin
- * @param {*} opts
- * @param {*} context
- */
-function pluginOpts(config, plugin, opts, context) {
+function pluginOpts(config, {plugin, local}, opts, context) {
   const keys = config.pluginScopeKeys(plugin);
   const scopes = config.getOptionScopes(opts, keys);
-  return config.createResolver(scopes, context, [''], {scriptable: false, indexable: false, allKeys: true});
+  if (local && plugin.defaults) {
+    // make sure plugin defaults are in scopes for local (not registered) plugins
+    scopes.push(plugin.defaults);
+  }
+  return config.createResolver(scopes, context, [''], {
+    // These are just defaults that plugins can override
+    scriptable: false,
+    indexable: false,
+    allKeys: true
+  });
 }

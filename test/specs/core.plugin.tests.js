@@ -224,7 +224,7 @@ describe('Chart.plugins', function() {
       Chart.unregister(plugins.a);
     });
 
-    it('should not called plugins when config.options.plugins.{id} is FALSE', function() {
+    it('should not call plugins when config.options.plugins.{id} is FALSE', function() {
       var plugins = {
         a: {id: 'a', hook: function() {}},
         b: {id: 'b', hook: function() {}},
@@ -293,6 +293,29 @@ describe('Chart.plugins', function() {
 
       expect(plugin.hook).toHaveBeenCalled();
       expect(plugin.hook.calls.first().args[2]).toEqualOptions({a: 'foobar'});
+
+      Chart.unregister(plugin);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/10482
+    it('should resolve defaults for local plugins', function() {
+      var plugin = {id: 'a', hook: function() {}, defaults: {bar: 'bar'}};
+      var chart = window.acquireChart({
+        plugins: [plugin],
+        options: {
+          plugins: {
+            a: {
+              foo: 'foo'
+            }
+          }
+        },
+      });
+
+      spyOn(plugin, 'hook');
+      chart.notifyPlugins('hook');
+
+      expect(plugin.hook).toHaveBeenCalled();
+      expect(plugin.hook.calls.first().args[2]).toEqualOptions({foo: 'foo', bar: 'bar'});
 
       Chart.unregister(plugin);
     });
