@@ -85,10 +85,26 @@ options: {
 }
 ```
 
+If the key contains a dot, it needs to be escaped with a double slash:
+
+```javascript
+type: 'line',
+data: {
+    datasets: [{
+        data: [{ 'data.key': 'one', 'data.value': 20 }, { 'data.key': 'two', 'data.value': 30 }]
+    }]
+},
+options: {
+    parsing: {
+      xAxisKey: 'data\\.key',
+      yAxisKey: 'data\\.value'
+    }
+}
+```
+
 :::warning
 When using object notation in a radar chart you still need a labels array with labels for the chart to show correctly.
 :::
-
 
 ## Object
 
