@@ -31,7 +31,7 @@ The call to the method is scoped to the scale. `this` inside the method is the s
 If the callback returns `null` or `undefined` the associated grid line will be hidden.
 
 :::tip
-The [category axis](../axes/cartesian/category), which is the default x-axis for line and bar charts, uses the `index` as internal data format. For accessing the label, use `this.getLabelForValue(value)`. [API: getLabelForValue](../api/classes/scale.html#getlabelforvalue)
+The [category axis](../axes/cartesian/category), which is the default x-axis for line and bar charts, uses the `index` as internal data format. For accessing the label, use `this.getLabelForValue(value)`. [API: getLabelForValue](../api/classes/Scale.html#getlabelforvalue)
 :::
 
 In the following example, every label of the Y-axis would be displayed with a dollar sign at the front.
