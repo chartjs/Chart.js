@@ -456,6 +456,44 @@ describe('Chart.helpers.core', function() {
       expect(() => helpers.resolveObjectKey({}, true)).toThrow();
       expect(() => helpers.resolveObjectKey({}, 1)).toThrow();
     });
+    it('should allow escaping dot symbol', function() {
+      expect(helpers.resolveObjectKey({'test.dot': 10}, 'test\\.dot')).toEqual(10);
+      expect(helpers.resolveObjectKey({test: {dot: 10}}, 'test\\.dot')).toEqual(undefined);
+    });
+    it('should allow nested keys with a dot', function() {
+      expect(helpers.resolveObjectKey({
+        a: {
+          'bb.ccc': 'works',
+          bb: {
+            ccc: 'fails'
+          }
+        }
+      }, 'a.bb\\.ccc')).toEqual('works');
+    });
+
+  });
+
+  describe('_splitKey', function() {
+    it('should return array with one entry for string without a dot', function() {
+      expect(helpers._splitKey('')).toEqual(['']);
+      expect(helpers._splitKey('test')).toEqual(['test']);
+      const asciiWithoutDot = ' !"#$%&\'()*+,-/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+      expect(helpers._splitKey(asciiWithoutDot)).toEqual([asciiWithoutDot]);
+    });
+
+    it('should split on dot', function() {
+      expect(helpers._splitKey('test1.test2')).toEqual(['test1', 'test2']);
+      expect(helpers._splitKey('a.b.c')).toEqual(['a', 'b', 'c']);
+      expect(helpers._splitKey('a.b.')).toEqual(['a', 'b', '']);
+      expect(helpers._splitKey('a..c')).toEqual(['a', '', 'c']);
+    });
+
+    it('should preserve escaped dot', function() {
+      expect(helpers._splitKey('test1\\.test2')).toEqual(['test1.test2']);
+      expect(helpers._splitKey('a\\.b.c')).toEqual(['a.b', 'c']);
+      expect(helpers._splitKey('a.b\\.c')).toEqual(['a', 'b.c']);
+      expect(helpers._splitKey('a.\\.c')).toEqual(['a', '.c']);
+    });
   });
 
   describe('setsEqual', function() {

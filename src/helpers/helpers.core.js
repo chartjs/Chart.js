@@ -293,25 +293,52 @@ export function _deprecated(scope, value, previous, current) {
   }
 }
 
-const emptyString = '';
-const dot = '.';
-function indexOfDotOrLength(key, start) {
-  const idx = key.indexOf(dot, start);
-  return idx === -1 ? key.length : idx;
-}
+// resolveObjectKey resolver cache
+const keyResolvers = {
+  // Chart.helpers.core resolveObjectKey should resolve empty key to root object
+  '': v => v,
+  // default resolvers
+  x: o => o.x,
+  y: o => o.y
+};
 
 export function resolveObjectKey(obj, key) {
-  if (key === emptyString) {
+  const resolver = keyResolvers[key] || (keyResolvers[key] = _getKeyResolver(key));
+  return resolver(obj);
+}
+
+function _getKeyResolver(key) {
+  const keys = _splitKey(key);
+  return obj => {
+    for (const k of keys) {
+      if (k === '') {
+        // For backward compatibility:
+        // Chart.helpers.core resolveObjectKey should break at empty key
+        break;
+      }
+      obj = obj && obj[k];
+    }
     return obj;
+  };
+}
+
+/**
+ * @private
+ */
+export function _splitKey(key) {
+  const parts = key.split('.');
+  const keys = [];
+  let tmp = '';
+  for (const part of parts) {
+    tmp += part;
+    if (tmp.endsWith('\\')) {
+      tmp = tmp.slice(0, -1) + '.';
+    } else {
+      keys.push(tmp);
+      tmp = '';
+    }
   }
-  let pos = 0;
-  let idx = indexOfDotOrLength(key, pos);
-  while (obj && idx > pos) {
-    obj = obj[key.slice(pos, idx)];
-    pos = idx + 1;
-    idx = indexOfDotOrLength(key, pos);
-  }
-  return obj;
+  return keys;
 }
 
 /**
