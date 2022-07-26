@@ -2857,7 +2857,7 @@ export interface GridLineOptions {
   /**
    * @default []
    */
-  borderDash: number[];
+  borderDash: Scriptable<number[], ScriptableScaleContext>;
   /**
    * @default 0
    */

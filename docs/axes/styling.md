@@ -10,7 +10,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | ---- | ---- | :-------------------------------: | :-----------------------------: | ------- | -----------
 | `borderColor` | [`Color`](../general/colors.md) | | | `Chart.defaults.borderColor` | The color of the border line.
 | `borderWidth` | `number` | | | `1` | The width of the border line.
-| `borderDash` | `number[]` | | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDash` | `number[]` | Yes | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | Yes | | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `circular` | `boolean` | | | `false` | If true, gridlines are circular (on radar chart only).
 | `color` | [`Color`](../general/colors.md)  | Yes | Yes | `Chart.defaults.borderColor` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
