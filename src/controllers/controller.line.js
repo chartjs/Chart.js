@@ -153,8 +153,8 @@ function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
     }
     if (maxDefined) {
       count = _limitValue(Math.max(
-        _lookupByKey(_parsed, iScale.axis, max).hi + 1,
-        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max)).hi + 1),
+        _lookupByKey(_parsed, iScale.axis, max, true).hi + 1,
+        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1),
       start, pointCount) - start;
     } else {
       count = pointCount - start;
