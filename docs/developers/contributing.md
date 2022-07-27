@@ -66,7 +66,7 @@ When a test fails, the expected and actual images are shown. If you'd like to se
 
 ## Bugs and Issues
 
-Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chartjs`](https://stackoverflow.com/questions/tagged/chartjs) tag on Stack Overflow.
+Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chart.js`](https://stackoverflow.com/questions/tagged/chart.js) tag on Stack Overflow.
 
 Well structured, detailed bug reports are hugely valuable for the project.
 
