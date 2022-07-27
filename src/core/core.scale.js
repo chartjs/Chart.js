@@ -1085,7 +1085,7 @@ export default class Scale extends Element {
 
       const lineWidth = optsAtIndex.lineWidth;
       const lineColor = optsAtIndex.color;
-      const borderDash = grid.borderDash || [];
+      const borderDash = optsAtIndex.borderDash || [];
       const borderDashOffset = optsAtIndex.borderDashOffset;
 
       const tickWidth = optsAtIndex.tickWidth;
