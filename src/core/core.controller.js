@@ -111,7 +111,7 @@ class Chart {
     if (existingChart) {
       throw new Error(
         'Canvas is already in use. Chart with ID \'' + existingChart.id + '\'' +
-				' must be destroyed before the canvas can be reused.'
+				' must be destroyed before the canvas with ID \'' + existingChart.canvas.id + '\' can be reused.'
       );
     }
 

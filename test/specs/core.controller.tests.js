@@ -32,7 +32,7 @@ describe('Chart', function() {
     expect(createChart).toThrow(new Error(
       'Canvas is already in use. ' +
 			'Chart with ID \'' + chart.id + '\'' +
-			' must be destroyed before the canvas can be reused.'
+			' must be destroyed before the canvas with ID \'' + chart.canvas.id + '\' can be reused.'
     ));
 
     chart.destroy();

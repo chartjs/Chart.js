@@ -59,7 +59,7 @@ const myChart = new Chart(ctx, {
 
 Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](./developers/contributing.md) first.
 
-For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chartjs).
+For support using Chart.js, please post questions with the [`chart.js` tag on Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js).
 
 ## License
 

@@ -78,7 +78,7 @@ Only the `data` option needs to be specified in the dataset namespace.
 | [`borderWidth`](#borderwidth) | `number`\|`object` | Yes | Yes | `0`
 | [`borderRadius`](#borderradius) | `number`\|`object` | Yes | Yes | `0`
 | [`categoryPercentage`](#categorypercentage) | `number` | - | - | `0.8` |
-| [`clip`](#general) | `number`\|`object` | - | - |
+| [`clip`](#general) | `number`\|`object`\|`false` | - | - |
 | [`data`](#data-structure) | `object`\|`object[]`\| `number[]`\|`string[]` | - | - | **required**
 | [`grouped`](#general) | `boolean` | - | - | `true` |
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes |

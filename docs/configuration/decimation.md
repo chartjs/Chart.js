@@ -37,6 +37,7 @@ To use the decimation plugin, the following requirements must be met:
 3. The X axis for the dataset must be either a [`'linear'`](../axes/cartesian/linear.md) or [`'time'`](../axes/cartesian/time.md) type axis
 4. Data must not need parsing, i.e. [`parsing`](../general/data-structures.md#dataset-configuration) must be `false`
 5. The dataset object must be mutable. The plugin stores the original data as `dataset._data` and then defines a new `data` property on the dataset.
+6. There must be more points on the chart than the threshold value. Take a look at the Configuration Options for more information.
 
 ## Related Samples
 
