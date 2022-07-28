@@ -30,10 +30,13 @@ export function _lookup(table, value, cmp) {
  * @param {array} table - the table search. must be sorted!
  * @param {string} key - property name for the value in each entry
  * @param {number} value - value to find
+ * @param {boolean} [last] - lookup last index
  * @private
  */
-export const _lookupByKey = (table, key, value) =>
-  _lookup(table, value, index => table[index][key] < value);
+export const _lookupByKey = (table, key, value, last) =>
+  _lookup(table, value, last
+    ? index => table[index][key] <= value
+    : index => table[index][key] < value);
 
 /**
  * Reverse binary search

@@ -1016,4 +1016,51 @@ describe('Chart.controllers.line', function() {
       expect(point.stop).toBe(i === 3);
     }
   });
+
+  it('should correctly calc visible points on update', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {x: 10, y: 20},
+            {x: 15, y: 19},
+          ]
+        }],
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 25,
+          },
+          x: {
+            type: 'linear',
+            min: 0,
+            max: 50
+          },
+        }
+      }
+    });
+
+    chart.data.datasets[0].data = [
+      {x: 10, y: 20},
+      {x: 15, y: 19},
+      {x: 17, y: 12},
+      {x: 50, y: 9},
+      {x: 50, y: 9},
+      {x: 50, y: 9},
+    ];
+    chart.update();
+
+    var point = chart.getDatasetMeta(0).data[0];
+    var event = {
+      type: 'mousemove',
+      native: true,
+      ...point
+    };
+
+    chart._handleEvent(event, false, true);
+  }, 500);
 });
