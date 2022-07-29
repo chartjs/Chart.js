@@ -1982,7 +1982,7 @@ export interface BarOptions extends Omit<CommonElementOptions, 'borderWidth'> {
    * Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top', 'middle' or false (none).
    * @default 'start'
    */
-  borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | 'middle' | false;
+  borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | 'middle' | boolean;
 
   /**
    * Border radius
