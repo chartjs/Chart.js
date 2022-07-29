@@ -1236,23 +1236,15 @@ describe('Time scale tests', function() {
     });
   });
 
-  it('should pass default locale to date adapter', function() {
-    var chart = window.acquireChart({
-      type: 'line',
-      data: {},
-      options: {
-        scales: {
-          x: {
-            type: 'time'
-          },
-        }
+  it('should pass chart options to date adapter', function() {
+    let chartOptions;
+
+    Chart._adapters._date.override({
+      init(options) {
+        chartOptions = options;
       }
     });
 
-    expect(chart.scales.x._adapter.chartOptions.locale).toBe('en-US');
-  });
-
-  it('should pass locale to date adapter from options', function() {
     var chart = window.acquireChart({
       type: 'line',
       data: {},
@@ -1266,6 +1258,6 @@ describe('Time scale tests', function() {
       }
     });
 
-    expect(chart.scales.x._adapter.chartOptions.locale).toBe('es');
+    expect(chartOptions).toEqual(chart.options);
   });
 });
