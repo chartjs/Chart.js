@@ -161,6 +161,35 @@ let chart = new Chart(ctx, {
 });
 ```
 
+## Changing the scale type from Time scale to Logarithmic/Linear scale.
+
+When changing the scale type from Time scale to Logarithmic/Linear scale, you need to add `bounds: 'ticks'` to the scale options. Changing the `bounds` parameter is necessary because its default value is the `'data'` for the Time scale.
+
+Initial config:
+
+```javascript
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            x: {
+                type: 'time',
+            }
+        }
+    }
+});
+```
+
+Scale update:
+
+```javascript
+chart.options.scales.x = {
+    type: 'logarithmic',
+    bounds: 'ticks'
+};
+```
+
 ## Internal data format
 
 Internally time scale uses milliseconds since epoch
