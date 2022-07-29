@@ -26,8 +26,9 @@ function abstract() {
 
 export class DateAdapter {
 
-  constructor(options) {
+  constructor(options, chartOptions) {
     this.options = options || {};
+    this.chartOptions = chartOptions || {};
   }
 
   /**

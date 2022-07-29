@@ -4,6 +4,9 @@ export interface DateAdapter {
   // Override one or multiple of the methods to adjust to the logic of the current date library.
   override(members: Partial<DateAdapter>): void;
   readonly options: unknown;
+  readonly chartOptions: {
+    locale?: string;
+  };
 
   /**
    * Returns a map of time formats for the supported formatting units defined

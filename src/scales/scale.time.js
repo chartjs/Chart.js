@@ -221,7 +221,10 @@ export default class TimeScale extends Scale {
 
   init(scaleOpts, opts) {
     const time = scaleOpts.time || (scaleOpts.time = {});
-    const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
+    const adapterChartOpts = {
+      locale: opts.locale
+    };
+    const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date, adapterChartOpts);
 
     // Backward compatibility: before introducing adapter, `displayFormats` was
     // supposed to contain *all* unit/string pairs but this can't be resolved

@@ -1235,4 +1235,37 @@ describe('Time scale tests', function() {
       });
     });
   });
+
+  it('should pass default locale to date adapter', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {},
+      options: {
+        scales: {
+          x: {
+            type: 'time'
+          },
+        }
+      }
+    });
+
+    expect(chart.scales.x._adapter.chartOptions.locale).toBe('en-US');
+  });
+
+  it('should pass locale to date adapter from options', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {},
+      options: {
+        locale: 'es',
+        scales: {
+          x: {
+            type: 'time'
+          },
+        }
+      }
+    });
+
+    expect(chart.scales.x._adapter.chartOptions.locale).toBe('es');
+  });
 });
