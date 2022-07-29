@@ -36,8 +36,6 @@ export default class ScatterController extends DatasetController {
         animated: !animationsDisabled,
         options
       }, mode);
-    } else {
-      this.options.borderWidth = 0;
     }
 
     // Update Points
