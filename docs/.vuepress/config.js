@@ -94,7 +94,7 @@ module.exports = {
     config.merge({
       resolve: {
         alias: {
-          'chart.js': path.resolve(__dirname, '../../dist/chart.esm.js'),
+          'chart.js': path.resolve(__dirname, '../../dist/chart.mjs'),
         }
       }
     })

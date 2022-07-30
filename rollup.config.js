@@ -6,10 +6,6 @@ const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
-const inputESM = {
-  'dist/chart.esm': 'src/index.esm.js',
-  'dist/helpers.esm': 'src/helpers/index.js'
-};
 
 const banner = `/*!
  * Chart.js v${pkg.version}
@@ -60,10 +56,38 @@ module.exports = [
   },
 
   // ES6 builds
+  // dist/chart.mjs
+  // helpers/*.js
+  {
+    input: {
+      'dist/chart': 'src/index.esm.js',
+      'dist/helpers': 'src/helpers/index.js'
+    },
+    plugins: [
+      json(),
+      resolve(),
+      cleanup({
+        sourcemap: true
+      }),
+    ],
+    output: {
+      dir: './',
+      chunkFileNames: 'dist/chunks/[name].mjs',
+      entryFileNames: '[name].mjs',
+      banner,
+      format: 'esm',
+      indent: false,
+    },
+  },
+
+  // Legacy ES6 builds for backwards compatibility. Remove for Chart.js 4.0
   // dist/chart.esm.js
   // helpers/*.js
   {
-    input: inputESM,
+    input: {
+      'dist/chart.esm': 'src/index.esm.js',
+      'dist/helpers.esm': 'src/helpers/index.js'
+    },
     plugins: [
       json(),
       resolve(),
