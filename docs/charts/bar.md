@@ -74,7 +74,7 @@ Only the `data` option needs to be specified in the dataset namespace.
 | [`barPercentage`](#barpercentage) | `number` | - | - | `0.9` |
 | [`barThickness`](#barthickness) | `number`\|`string` | - | - | |
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`borderSkipped`](#borderskipped) | `string` | Yes | Yes | `'start'`
+| [`borderSkipped`](#borderskipped) | `string`\|`boolean` | Yes | Yes | `'start'`
 | [`borderWidth`](#borderwidth) | `number`\|`object` | Yes | Yes | `0`
 | [`borderRadius`](#borderradius) | `number`\|`object` | Yes | Yes | `0`
 | [`categoryPercentage`](#categorypercentage) | `number` | - | - | `0.8` |
@@ -163,7 +163,8 @@ Options are:
 * `'left'`
 * `'top'`
 * `'right'`
-* `false`
+* `false` (don't skip any borders)
+* `true` (skip all borders)
 
 #### borderWidth
 
