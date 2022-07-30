@@ -1235,4 +1235,29 @@ describe('Time scale tests', function() {
       });
     });
   });
+
+  it('should pass chart options to date adapter', function() {
+    let chartOptions;
+
+    Chart._adapters._date.override({
+      init(options) {
+        chartOptions = options;
+      }
+    });
+
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {},
+      options: {
+        locale: 'es',
+        scales: {
+          x: {
+            type: 'time'
+          },
+        }
+      }
+    });
+
+    expect(chartOptions).toEqual(chart.options);
+  });
 });

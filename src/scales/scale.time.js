@@ -223,6 +223,8 @@ export default class TimeScale extends Scale {
     const time = scaleOpts.time || (scaleOpts.time = {});
     const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
 
+    adapter.init(opts);
+
     // Backward compatibility: before introducing adapter, `displayFormats` was
     // supposed to contain *all* unit/string pairs but this can't be resolved
     // when loading the scale (adapters are loaded afterward), so let's populate
