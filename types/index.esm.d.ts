@@ -1746,6 +1746,12 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc offset (in pixels).
    */
   offset: number;
+
+  /**
+   * If false, Arc will be flat.
+   * @default true
+   */
+  circular: boolean;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

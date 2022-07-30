@@ -66,6 +66,7 @@ The following options can be included in a polar area chart dataset to configure
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
+| [`circular`](#styling) | `boolean` | Yes | Yes | `true`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 
@@ -85,6 +86,7 @@ The style of each arc can be controlled with the following properties:
 | `borderColor` | arc border color.
 | `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
+| `circular` | By default the Arc is curved. If `circular: false` the Arc will be flat.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
 

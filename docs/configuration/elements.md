@@ -101,3 +101,4 @@ Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.
 | `borderColor` | [`Color`](/general/colors.md) | `'#fff'` | Arc stroke color.
 | `borderJoinStyle` | `'round'`\|`'bevel'`\|`'miter'` | `'bevel'`\|`'round'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin). The default is `'round'` when `borderAlign` is `'inner'`
 | `borderWidth`| `number` | `2` | Arc stroke width.
+| `circular` | `boolean` | `true` | By default the Arc is curved. If `circular: false` the Arc will be flat
