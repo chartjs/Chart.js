@@ -232,6 +232,8 @@ export default class TimeScale extends Scale {
        */
       source: 'auto',
 
+      callback: false,
+
       major: {
         enabled: false
       }
@@ -510,6 +512,12 @@ export default class TimeScale extends Scale {
 	 */
   _tickFormatFunction(time, index, ticks, format) {
     const options = this.options;
+    const formatter = options.ticks.callback;
+
+    if (formatter) {
+      return call(formatter, [time, index, ticks], this);
+    }
+
     const formats = options.time.displayFormats;
     const unit = this._unit;
     const majorUnit = this._majorUnit;
@@ -517,9 +525,8 @@ export default class TimeScale extends Scale {
     const majorFormat = majorUnit && formats[majorUnit];
     const tick = ticks[index];
     const major = majorUnit && majorFormat && tick && tick.major;
-    const label = this._adapter.format(time, format || (major ? majorFormat : minorFormat));
-    const formatter = options.ticks.callback;
-    return formatter ? call(formatter, [label, index, ticks], this) : label;
+
+    return this._adapter.format(time, format || (major ? majorFormat : minorFormat));
   }
 
   /**
