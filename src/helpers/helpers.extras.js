@@ -1,3 +1,5 @@
+import {_limitValue} from './helpers.math';
+import {_lookupByKey} from './helpers.collection';
 
 export function fontString(pixelSize, fontStyle, fontFamily) {
   return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
@@ -87,3 +89,68 @@ export const _textX = (align, left, right, rtl) => {
   const check = rtl ? 'left' : 'right';
   return align === check ? right : align === 'center' ? (left + right) / 2 : left;
 };
+
+/**
+ * Return start and count of visible points.
+ * @param {object} meta - dataset meta.
+ * @param {array} points - array of point elements.
+ * @param {boolean} animationsDisabled - if true animation is disabled.
+ * @returns {{start: number; count: number}}
+ * @private
+ */
+export function _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
+  const pointCount = points.length;
+
+  let start = 0;
+  let count = pointCount;
+
+  if (meta._sorted) {
+    const {iScale, _parsed} = meta;
+    const axis = iScale.axis;
+    const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+
+    if (minDefined) {
+      start = _limitValue(Math.min(
+        _lookupByKey(_parsed, iScale.axis, min).lo,
+        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
+      0, pointCount - 1);
+    }
+    if (maxDefined) {
+      count = _limitValue(Math.max(
+        _lookupByKey(_parsed, iScale.axis, max, true).hi + 1,
+        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1),
+      start, pointCount) - start;
+    } else {
+      count = pointCount - start;
+    }
+  }
+
+  return {start, count};
+}
+
+/**
+ * Checks if the scale ranges have changed.
+ * @param {object} meta - dataset meta.
+ * @returns {boolean}
+ * @private
+ */
+export function _scaleRangesChanged(meta) {
+  const {xScale, yScale, _scaleRanges} = meta;
+  const newRanges = {
+    xmin: xScale.min,
+    xmax: xScale.max,
+    ymin: yScale.min,
+    ymax: yScale.max
+  };
+  if (!_scaleRanges) {
+    meta._scaleRanges = newRanges;
+    return true;
+  }
+  const changed = _scaleRanges.xmin !== xScale.min
+		|| _scaleRanges.xmax !== xScale.max
+		|| _scaleRanges.ymin !== yScale.min
+		|| _scaleRanges.ymax !== yScale.max;
+
+  Object.assign(_scaleRanges, newRanges);
+  return changed;
+}
