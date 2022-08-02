@@ -208,6 +208,11 @@ function setBorderSkipped(properties, options, stack, index) {
     return;
   }
 
+  if (edge === true) {
+    properties.borderSkipped = {top: true, right: true, bottom: true, left: true};
+    return;
+  }
+
   const {start, end, reverse, top, bottom} = borderProps(properties);
 
   if (edge === 'middle' && stack) {

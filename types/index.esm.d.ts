@@ -1746,6 +1746,12 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc offset (in pixels).
    */
   offset: number;
+
+  /**
+   * If false, Arc will be flat.
+   * @default true
+   */
+  circular: boolean;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
@@ -1984,10 +1990,10 @@ export interface BarOptions extends Omit<CommonElementOptions, 'borderWidth'> {
   base: number;
 
   /**
-   * Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top', 'middle' or false (none).
+   * Skipped (excluded) border: 'start', 'end', 'left',  'right', 'bottom', 'top', 'middle', false (none) or true (all).
    * @default 'start'
    */
-  borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | 'middle' | false;
+  borderSkipped: 'start' | 'end' | 'left' | 'right' | 'bottom' | 'top' | 'middle' | boolean;
 
   /**
    * Border radius

@@ -1,7 +1,7 @@
 import DatasetController from '../core/core.datasetController';
 import {isNullOrUndef} from '../helpers';
-import {_limitValue, isNumber} from '../helpers/helpers.math';
-import {_lookupByKey} from '../helpers/helpers.collection';
+import {isNumber} from '../helpers/helpers.math';
+import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras';
 
 export default class LineController extends DatasetController {
 
@@ -16,12 +16,12 @@ export default class LineController extends DatasetController {
     const {dataset: line, data: points = [], _dataset} = meta;
     // @ts-ignore
     const animationsDisabled = this.chart._animationsDisabled;
-    let {start, count} = getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
+    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
 
     this._drawStart = start;
     this._drawCount = count;
 
-    if (scaleRangesChanged(meta)) {
+    if (_scaleRangesChanged(meta)) {
       start = 0;
       count = points.length;
     }
@@ -133,54 +133,3 @@ LineController.overrides = {
     },
   }
 };
-
-function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
-  const pointCount = points.length;
-
-  let start = 0;
-  let count = pointCount;
-
-  if (meta._sorted) {
-    const {iScale, _parsed} = meta;
-    const axis = iScale.axis;
-    const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
-
-    if (minDefined) {
-      start = _limitValue(Math.min(
-        _lookupByKey(_parsed, iScale.axis, min).lo,
-        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
-      0, pointCount - 1);
-    }
-    if (maxDefined) {
-      count = _limitValue(Math.max(
-        _lookupByKey(_parsed, iScale.axis, max, true).hi + 1,
-        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1),
-      start, pointCount) - start;
-    } else {
-      count = pointCount - start;
-    }
-  }
-
-  return {start, count};
-}
-
-function scaleRangesChanged(meta) {
-  const {xScale, yScale, _scaleRanges} = meta;
-  const newRanges = {
-    xmin: xScale.min,
-    xmax: xScale.max,
-    ymin: yScale.min,
-    ymax: yScale.max
-  };
-  if (!_scaleRanges) {
-    meta._scaleRanges = newRanges;
-    return true;
-  }
-  const changed = _scaleRanges.xmin !== xScale.min
-		|| _scaleRanges.xmax !== xScale.max
-		|| _scaleRanges.ymin !== yScale.min
-		|| _scaleRanges.ymax !== yScale.max;
-
-  Object.assign(_scaleRanges, newRanges);
-  return changed;
-}

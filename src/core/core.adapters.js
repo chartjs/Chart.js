@@ -5,6 +5,10 @@
  */
 
 /**
+ * @typedef { import("../../types/index.esm").ChartOptions } ChartOptions
+ */
+
+/**
  * @return {*}
  */
 function abstract() {
@@ -29,6 +33,13 @@ export class DateAdapter {
   constructor(options) {
     this.options = options || {};
   }
+
+  /**
+   * Will called with chart options after adapter creation.
+   * @param {ChartOptions} chartOptions
+   */
+  // eslint-disable-next-line no-unused-vars
+  init(chartOptions) {}
 
   /**
 	 * Returns a map of time formats for the supported formatting units defined

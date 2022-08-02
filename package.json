@@ -7,7 +7,7 @@
     "jsdelivr": "dist/chart.min.js",
     "unpkg": "dist/chart.min.js",
     "main": "dist/chart.js",
-    "module": "dist/chart.esm.js",
+    "module": "dist/chart.mjs",
     "types": "types/index.esm.d.ts",
     "keywords": [
         "canvas",
@@ -25,16 +25,10 @@
         "url": "https://github.com/chartjs/Chart.js/issues"
     },
     "files": [
-        "auto/package.json",
-        "auto/**/*.js",
-        "auto/**/*.d.ts",
-        "dist/*.js",
-        "dist/chunks/*.js",
-        "types/*.d.ts",
-        "types/helpers/*.d.ts",
-        "helpers/package.json",
-        "helpers/**/*.js",
-        "helpers/**/*.d.ts"
+        "auto/**",
+        "dist/**",
+        "types/**",
+        "helpers/**"
     ],
     "scripts": {
         "autobuild": "rollup -c -w",

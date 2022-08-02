@@ -1,3 +1,5 @@
+import type { ChartOptions } from './index.esm';
+
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 export interface DateAdapter {
@@ -5,6 +7,11 @@ export interface DateAdapter {
   override(members: Partial<DateAdapter>): void;
   readonly options: unknown;
 
+  /**
+   * Will called with chart options after adapter creation.
+   * @param {ChartOptions} chartOptions
+   */
+  init(chartOptions: ChartOptions): void;
   /**
    * Returns a map of time formats for the supported formatting units defined
    * in Unit as well as 'datetime' representing a detailed date/time string.

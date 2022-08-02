@@ -61,4 +61,107 @@ describe('Chart.controllers.scatter', function() {
     await jasmine.triggerMouseEvent(chart, 'mousemove', point);
     expect(chart.tooltip.body.length).toEqual(1);
   });
+
+  it('should not create line element by default', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{
+            x: 10,
+            y: 15
+          },
+          {
+            x: 12,
+            y: 10
+          }],
+          label: 'dataset1'
+        },
+        {
+          data: [{
+            x: 20,
+            y: 10
+          },
+          {
+            x: 4,
+            y: 8
+          }],
+          label: 'dataset2'
+        }]
+      },
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.dataset instanceof Chart.elements.LineElement).toBe(false);
+  });
+
+  it('should create line element if showline is true at datasets options', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          showLine: true,
+          data: [{
+            x: 10,
+            y: 15
+          },
+          {
+            x: 12,
+            y: 10
+          }],
+          label: 'dataset1'
+        },
+        {
+          data: [{
+            x: 20,
+            y: 10
+          },
+          {
+            x: 4,
+            y: 8
+          }],
+          label: 'dataset2'
+        }]
+      },
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.dataset instanceof Chart.elements.LineElement).toBe(true);
+  });
+
+  it('should create line element if showline is true at root options', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{
+            x: 10,
+            y: 15
+          },
+          {
+            x: 12,
+            y: 10
+          }],
+          label: 'dataset1'
+        },
+        {
+          data: [{
+            x: 20,
+            y: 10
+          },
+          {
+            x: 4,
+            y: 8
+          }],
+          label: 'dataset2'
+        }]
+      },
+      options: {
+        showLine: true
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.dataset instanceof Chart.elements.LineElement).toBe(true);
+  });
 });

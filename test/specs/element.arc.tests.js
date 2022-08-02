@@ -218,4 +218,36 @@ describe('Arc element tests', function() {
 
     expect(ctx.getCalls().length).toBe(0);
   });
+
+  it('should draw when circular: false', function() {
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: Math.PI * 2,
+      x: 2,
+      y: 2,
+      innerRadius: 0,
+      outerRadius: 2,
+      options: {
+        spacing: 0,
+        offset: 0,
+        scales: {
+          r: {
+            grid: {
+              circular: false,
+            },
+          },
+        },
+        elements: {
+          arc: {
+            circular: false
+          },
+        },
+      }
+    });
+
+    var ctx = window.createMockContext();
+    arc.draw(ctx);
+
+    expect(ctx.getCalls().length).toBeGreaterThan(0);
+  });
 });

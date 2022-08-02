@@ -325,7 +325,7 @@ export class Legend extends Element {
         const centerY = y + halfFontSize;
 
         // Draw pointStyle as legend symbol
-        drawPointLegend(ctx, drawOptions, centerX, centerY, boxWidth);
+        drawPointLegend(ctx, drawOptions, centerX, centerY, labelOpts.pointStyleWidth && boxWidth);
       } else {
         // Draw box as legend symbol
         // Adjust position when boxHeight < fontSize (want it centered)

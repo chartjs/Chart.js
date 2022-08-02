@@ -1,4 +1,4 @@
-import {Chart, registerables} from '../../dist/chart.esm';
+import {Chart, registerables} from '../../dist/chart.mjs';
 import Log2Axis from './log2';
 import './derived-bubble';
 import analyzer from './analyzer';
