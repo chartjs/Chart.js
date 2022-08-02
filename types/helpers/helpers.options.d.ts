@@ -1,5 +1,5 @@
 import { TRBL, TRBLCorners } from '../geometric';
-import { FontSpec } from '../index.esm';
+import { FontSpec } from '..';
 
 export interface CanvasFontSpec extends FontSpec {
   string: string;

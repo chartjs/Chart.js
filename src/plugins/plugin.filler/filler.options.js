@@ -3,8 +3,8 @@ import {isObject, isFinite, valueOrDefault} from '../../helpers/helpers.core';
 /**
  * @typedef { import('../../core/core.scale').default } Scale
  * @typedef { import('../../elements/element.line').default } LineElement
- * @typedef { import('../../../types/index.esm').FillTarget } FillTarget
- * @typedef { import('../../../types/index.esm').ComplexFillTarget } ComplexFillTarget
+ * @typedef { import('../../../types').FillTarget } FillTarget
+ * @typedef { import('../../../types').ComplexFillTarget } ComplexFillTarget
  */
 
 export function _resolveTarget(sources, index, propagate) {

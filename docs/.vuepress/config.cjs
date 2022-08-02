@@ -33,7 +33,7 @@ module.exports = {
     [
       'vuepress-plugin-typedoc',
       {
-        entryPoints: ['../../types/index.esm.d.ts'],
+        entryPoints: ['../../types/index.d.ts'],
         hideInPageTOC: true,
         tsconfig: 'tsconfig.json',
         sidebar: {
@@ -94,7 +94,7 @@ module.exports = {
     config.merge({
       resolve: {
         alias: {
-          'chart.js': path.resolve(__dirname, '../../dist/chart.mjs'),
+          'chart.js': path.resolve(__dirname, '../../dist/chart.js'),
         }
       }
     })

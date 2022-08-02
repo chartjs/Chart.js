@@ -1,4 +1,4 @@
-import { Chart } from '../index.esm';
+import { Chart } from '..';
 
 Chart.overrides.bar.scales.x.type = 'time';
 

@@ -2,7 +2,8 @@
     "name": "chart.js-helpers",
     "private": true,
     "description": "helper package",
+    "type": "module",
     "main": "helpers.js",
-    "module": "helpers.mjs",
-    "types": "helpers.mts"
+    "exports": "./helpers.js",
+    "types": "helpers.d.ts"
 }

@@ -1,4 +1,4 @@
-import { Chart } from '../../../index.esm';
+import { Chart } from '../../..';
 
 const chart = new Chart('id', {
   type: 'bar',

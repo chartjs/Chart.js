@@ -1,4 +1,4 @@
-import { Chart, ChartMeta, Element } from '../../index.esm';
+import { Chart, ChartMeta, Element } from '../..';
 
 const chart = new Chart('id', {
   type: 'doughnut',

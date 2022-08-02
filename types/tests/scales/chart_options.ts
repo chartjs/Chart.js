@@ -1,4 +1,4 @@
-import { ChartOptions } from '../../index.esm';
+import { ChartOptions } from '../..';
 
 const chartOptions: ChartOptions<'line'> = {
   scales: {

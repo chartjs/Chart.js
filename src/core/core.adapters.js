@@ -5,7 +5,7 @@
  */
 
 /**
- * @typedef { import("../../types/index.esm").ChartOptions } ChartOptions
+ * @typedef { import("../../types").ChartOptions } ChartOptions
  */
 
 /**

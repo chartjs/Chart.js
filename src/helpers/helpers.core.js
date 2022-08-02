@@ -369,7 +369,7 @@ export const setsEqual = (a, b) => {
 };
 
 /**
- * @param {import('../../types/index.esm').ChartEvent} e - The event
+ * @param {import('../../types').ChartEvent} e - The event
  * @returns {boolean}
  * @private
  */

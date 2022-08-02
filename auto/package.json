@@ -2,7 +2,8 @@
     "name": "chart.js-auto",
     "private": true,
     "description": "auto registering package",
+    "type": "module",
     "main": "auto.js",
-    "module": "auto.mjs",
-    "types": "auto.mts"
+    "exports": "./auto.js",
+    "types": "auto.d.ts"
 }
