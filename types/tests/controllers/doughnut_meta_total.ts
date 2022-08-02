@@ -12,5 +12,5 @@ const chart = new Chart('id', {
 
 // A cast is required because the exact type of ChartMeta will vary with
 // mixed charts
-const meta = <ChartMeta<Element, Element, 'doughnut'>>chart.getDatasetMeta(0);
+const meta = <ChartMeta<'doughnut', Element, Element>>chart.getDatasetMeta(0);
 const total = meta.total;
