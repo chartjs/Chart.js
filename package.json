@@ -63,7 +63,7 @@
         "concurrently": "^6.0.1",
         "coveralls": "^3.1.0",
         "cross-env": "^7.0.3",
-        "eslint": "^8.5.0",
+        "eslint": "^8.4.0",
         "eslint-config-chartjs": "^0.3.0",
         "eslint-plugin-es": "^4.1.0",
         "eslint-plugin-html": "^6.1.2",
