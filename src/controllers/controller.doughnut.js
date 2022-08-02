@@ -2,6 +2,7 @@ import DatasetController from '../core/core.datasetController';
 import {isArray, isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
 import {formatNumber} from '../helpers/helpers.intl';
 import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
+import {_shouldSkipTooltipCallback} from '../helpers/helpers.extras';
 
 /**
  * @typedef { import("../core/core.controller").default } Chart
@@ -122,10 +123,18 @@ export default class DoughnutController extends DatasetController {
       },
       tooltip: {
         callbacks: {
-          title() {
+          title(tooltipItems) {
+            if (_shouldSkipTooltipCallback(tooltipItems[0])) {
+              return undefined;
+            }
+
             return '';
           },
           label(tooltipItem) {
+            if (_shouldSkipTooltipCallback(tooltipItem)) {
+              return undefined;
+            }
+
             let dataLabel = tooltipItem.label;
             const value = ': ' + tooltipItem.formattedValue;
 

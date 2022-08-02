@@ -1,5 +1,6 @@
 import DatasetController from '../core/core.datasetController';
 import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpers/index';
+import {_shouldSkipTooltipCallback} from '../helpers/helpers.extras';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -68,10 +69,18 @@ export default class PolarAreaController extends DatasetController {
       // Need to override these to give a nice default
       tooltip: {
         callbacks: {
-          title() {
+          title(tooltipItems) {
+            if (_shouldSkipTooltipCallback(tooltipItems[0])) {
+              return undefined;
+            }
+
             return '';
           },
           label(context) {
+            if (_shouldSkipTooltipCallback(context)) {
+              return undefined;
+            }
+
             return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
           }
         }

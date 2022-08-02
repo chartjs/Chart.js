@@ -154,3 +154,12 @@ export function _scaleRangesChanged(meta) {
   Object.assign(_scaleRanges, newRanges);
   return changed;
 }
+
+/**
+ * Returns true if chart has few datasets.
+ * @param {*} tooltipItem
+ * @returns {boolean}
+ */
+export function _shouldSkipTooltipCallback(tooltipItem) {
+  return tooltipItem && tooltipItem.chart.data.datasets.length > 1;
+}

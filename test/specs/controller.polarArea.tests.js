@@ -347,4 +347,52 @@ describe('Chart.controllers.polarArea', function() {
       expect(arc.options.borderWidth).toBe(2);
     });
   });
+
+  it('should not override tooltip title and label callback when multiple datasets', () => {
+    const chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        labels: ['Value1', 'Value2'],
+        datasets: [{
+          data: [21, 79],
+          label: 'd1'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+      }
+    });
+    const {tooltip} = chart;
+    const options = tooltip.options.setContext(tooltip.getContext());
+    const mockItems = [{
+      label: 'Label',
+      dataset: {
+        label: 'Dataset'
+      },
+      formattedValue: 'value',
+      dataIndex: 0,
+      chart
+    }];
+
+    expect(tooltip.getTitle(mockItems, options)).toEqual([]);
+    expect(tooltip.getBody(mockItems, options)).toEqual([{
+      before: [],
+      lines: ['Value1: value'],
+      after: []
+    }]);
+
+    chart.data.datasets.push({
+      data: [33, 67],
+      label: 'd2'
+    });
+    chart.update();
+
+    expect(tooltip.getTitle(mockItems, options)).toEqual(['Label']);
+    expect(tooltip.getBody(mockItems, options)).toEqual([{
+      before: [],
+      lines: ['Dataset: value'],
+      after: []
+    }]);
+  });
 });
