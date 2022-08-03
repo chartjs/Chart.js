@@ -11,3 +11,6 @@ A number of changes were made to the configuration options passed to the `Chart`
 #### Specific changes
 
 * The radialLinear grid indexable and scriptable options don't decrease the index of the specified grid line anymore.
+
+#### Type changes
+* The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`
