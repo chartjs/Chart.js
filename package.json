@@ -43,7 +43,9 @@
         "lint-types": "eslint \"types/**/*.ts\" && node -r esm types/tests/autogen.js && tsc -p types/tests/",
         "lint": "concurrently \"npm:lint-*\"",
         "test": "npm run lint && npm run test-ci",
-        "test-ci": "cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
+        "test-ci": "concurrently \"npm:test-ci-*\"",
+        "test-ci-karma": "cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
+        "test-ci-integration": "mocha --full-trace test/integration/*-test.js"
     },
     "devDependencies": {
         "@kurkle/color": "^0.2.1",
@@ -84,6 +86,7 @@
         "karma-spec-reporter": "0.0.32",
         "luxon": "^2.2.0",
         "markdown-it-include": "^2.0.0",
+        "mocha": "^10.0.0",
         "moment": "^2.29.1",
         "moment-timezone": "^0.5.34",
         "pixelmatch": "^5.2.1",
