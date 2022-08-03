@@ -2364,6 +2364,18 @@ export interface LegendOptions<TType extends ChartType> {
      * @default false
      */
     usePointStyle: boolean;
+
+    /**
+     * Label borderRadius will match coresponding borderRadius.
+     * @default false
+     */
+    useBorderRadius: boolean;
+
+    /**
+     * Override the borderRadius to use.
+     * @default undefined
+     */
+     borderRadius: number;
   };
   /**
    * true for rendering the legends from right to left.
