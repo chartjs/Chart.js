@@ -91,12 +91,10 @@ import Chart from 'chart.js/auto';
 
 ## CommonJS
 
-Due to Chart.js 4 is ESM-only, in CommonJS modules you should use dynamic `import`:
+Because Chart.js is an ESM library, in CommonJS modules you should use a dynamic `import`:
 
 ```javascript
-import('chart.js').then(({ Chart }) => {
-  const myChart = new Chart(ctx, {...});
-});
+const { Chart } = await import('chart.js');
 ```
 
 ### Helper functions
