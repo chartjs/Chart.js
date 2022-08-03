@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "description": "chart.js should work in Node",
+  "scripts": {
+    "test": "npm run test-cjs",
+    "test-cjs": "node test.cjs",
+    "test-mjs": "node test.mjs",
+    "TODO": "test-mjs should be enambled for chart.js v4"
+  },
+  "dependencies": {
+    "chart.js": "file:../package.tgz"
+  }
+}
