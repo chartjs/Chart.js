@@ -468,7 +468,7 @@ export default class RadialLinearScale extends LinearScaleBase {
       this.ticks.forEach((tick, index) => {
         if (index !== 0) {
           offset = this.getDistanceFromCenterForValue(tick.value);
-          const optsAtIndex = grid.setContext(this.getContext(index - 1));
+          const optsAtIndex = grid.setContext(this.getContext(index));
           drawRadiusLine(this, optsAtIndex, offset, labelCount);
         }
       });

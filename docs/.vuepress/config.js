@@ -294,7 +294,6 @@ module.exports = {
             'getting-started/installation',
             'getting-started/integration',
             'getting-started/usage',
-            'getting-started/v3-migration'
           ]
         },
         {
@@ -380,6 +379,13 @@ module.exports = {
             'developers/publishing',
             ['api/', 'TypeDoc'],
             'developers/updates',
+          ]
+        },
+        {
+          title: 'Migration',
+          children: [
+            'migration/v4-migration',
+            'migration/v3-migration',
           ]
         },
       ],
