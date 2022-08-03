@@ -640,10 +640,7 @@ export default {
 
         return chart._getSortedDatasetMetas().map((meta) => {
           const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-          console.log(style)
           const borderWidth = toPadding(style.borderWidth);
-
-          console.log(useBorderRadius, useBorderRadius && style.borderRadius)
 
           return {
             text: datasets[meta.index].label,

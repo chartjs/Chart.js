@@ -2375,7 +2375,7 @@ export interface LegendOptions<TType extends ChartType> {
      * Override the borderRadius to use.
      * @default undefined
      */
-     borderRadius: number;
+    borderRadius: number;
   };
   /**
    * true for rendering the legends from right to left.
