@@ -3,7 +3,6 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import * as helpers from '../../dist/helpers.js';
 
-// eslint-disable-next-line es/no-import-meta
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 let fd;

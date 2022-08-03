@@ -28,6 +28,7 @@ rules:
   no-empty-function: "off"
   no-use-before-define: ["error", { "functions": false }]
   # disable everything, except Rest/Spread Properties in ES2018
+  es/no-import-meta: "off"
   es/no-async-iteration: "error"
   es/no-malformed-template-literals: "error"
   es/no-regexp-lookbehind-assertions: "error"
