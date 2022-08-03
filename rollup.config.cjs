@@ -13,7 +13,7 @@ const banner = `/*!
 
 module.exports = [
   // UMD build
-  // dist/chart.min.js
+  // dist/chart.umd.js
   {
     input: 'src/index.umd.js',
     plugins: [
@@ -27,7 +27,7 @@ module.exports = [
     ],
     output: {
       name: 'Chart',
-      file: 'dist/chart.min.js',
+      file: 'dist/chart.umd.js',
       format: 'umd',
       indent: false,
     },
