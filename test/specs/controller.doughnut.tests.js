@@ -399,14 +399,17 @@ describe('Chart.controllers.doughnut', function() {
     });
   });
 
-  it('should not override tooltip title and label callback when multiple datasets', () => {
+  it('should not override tooltip title and label callbacks', async() => {
     const chart = window.acquireChart({
       type: 'doughnut',
       data: {
-        labels: ['Value1', 'Value2'],
+        labels: ['Label 1', 'Label 2'],
         datasets: [{
           data: [21, 79],
-          label: 'd1'
+          label: 'Dataset 1'
+        }, {
+          data: [33, 67],
+          label: 'Dataset 2'
         }]
       },
       options: {
@@ -415,33 +418,29 @@ describe('Chart.controllers.doughnut', function() {
       }
     });
     const {tooltip} = chart;
-    const options = tooltip.options.setContext(tooltip.getContext());
-    const mockItems = [{
-      label: 'Label',
-      dataset: {
-        label: 'Dataset'
-      },
-      formattedValue: 'value',
-      chart
-    }];
+    const point = chart.getDatasetMeta(0).data[0];
 
-    expect(tooltip.getTitle(mockItems, options)).toEqual([]);
-    expect(tooltip.getBody(mockItems, options)).toEqual([{
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(tooltip.title).toEqual(['Label 1']);
+    expect(tooltip.body).toEqual([{
       before: [],
-      lines: ['Label: value'],
+      lines: ['Dataset 1: 21'],
       after: []
     }]);
 
-    chart.data.datasets.push({
-      data: [33, 67],
-      label: 'd2'
-    });
+    chart.options.plugins.tooltip = {mode: 'dataset'};
     chart.update();
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
 
-    expect(tooltip.getTitle(mockItems, options)).toEqual(['Label']);
-    expect(tooltip.getBody(mockItems, options)).toEqual([{
+    expect(tooltip.title).toEqual(['Dataset 1']);
+    expect(tooltip.body).toEqual([{
       before: [],
-      lines: ['Dataset: value'],
+      lines: ['Label 1: 21'],
+      after: []
+    }, {
+      before: [],
+      lines: ['Label 2: 79'],
       after: []
     }]);
   });

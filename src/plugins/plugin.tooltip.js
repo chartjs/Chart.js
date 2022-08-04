@@ -428,7 +428,7 @@ const defaultCallbacks = {
 };
 
 /**
- * Invoke callback from object with contextn and arguments.
+ * Invoke callback from object with context and arguments.
  * If callback returns `undefined`, then will be invoked default callback.
  * @param {Record<keyof typeof defaultCallbacks, Function>} callbacks
  * @param {keyof typeof defaultCallbacks} name
