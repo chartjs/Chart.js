@@ -58,5 +58,5 @@ describe('Integration Tests', () => {
   }
 
   testOnNodeProject('node');
-  // testOnWebProject('web'); Enable after bug with helpers have been fixed
+  testOnWebProject('web');
 });
