@@ -22,7 +22,7 @@ function findOrAddLabel(labels, raw, index, addedLabels) {
 
 const validIndex = (index, max) => index === null ? null : _limitValue(Math.round(index), 0, max);
 
-function getLabelForValue(value) {
+function _getLabelForValue(value) {
   const labels = this.getLabels();
 
   if (value >= 0 && value < labels.length) {
@@ -40,7 +40,7 @@ export default class CategoryScale extends Scale {
    */
   static defaults = {
     ticks: {
-      callback: getLabelForValue
+      callback: _getLabelForValue
     }
   };
 
@@ -51,7 +51,6 @@ export default class CategoryScale extends Scale {
     this._startValue = undefined;
     this._valueRange = 0;
     this._addedLabels = [];
-    this.getLabelForValue = getLabelForValue;
   }
 
   init(scaleOptions) {
@@ -112,6 +111,10 @@ export default class CategoryScale extends Scale {
       ticks.push({value});
     }
     return ticks;
+  }
+
+  getLabelForValue(value) {
+    return _getLabelForValue.call(this, value);
   }
 
   /**
