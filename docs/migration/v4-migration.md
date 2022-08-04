@@ -11,6 +11,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 #### Specific changes
 
 * The radialLinear grid indexable and scriptable options don't decrease the index of the specified grid line anymore.
+* Ticks callback on time scale now receives timestamp instead of a formatted label.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`
