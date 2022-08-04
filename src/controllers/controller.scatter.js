@@ -2,7 +2,6 @@ import DatasetController from '../core/core.datasetController';
 import {isNullOrUndef} from '../helpers';
 import {isNumber} from '../helpers/helpers.math';
 import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras';
-import registry from '../core/core.registry';
 
 export default class ScatterController extends DatasetController {
 
@@ -91,7 +90,7 @@ export default class ScatterController extends DatasetController {
     const {showLine} = this.options;
 
     if (!this.datasetElementType && showLine) {
-      this.datasetElementType = registry.getElement('line');
+      this.datasetElementType = this.chart.registry.getElement('line');
     }
 
     super.addElements();

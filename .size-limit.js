@@ -7,7 +7,7 @@ function modifyWebpackConfig(config) {
 module.exports = [
   {
     path: 'dist/chart.js',
-    limit: '94.4 KB',
+    limit: '94.8 KB',
     webpack: false,
     running: false
   },
@@ -26,7 +26,7 @@ module.exports = [
   },
   {
     path: 'dist/chart.esm.js',
-    limit: '19.1 KB',
+    limit: '19.5 KB',
     import: '{ BarController, BubbleController, DoughnutController, LineController, PolarAreaController, PieController, RadarController, ScatterController }',
     running: false,
     modifyWebpackConfig

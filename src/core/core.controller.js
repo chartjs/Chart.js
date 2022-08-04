@@ -227,6 +227,10 @@ class Chart {
     this.config.options = options;
   }
 
+  get registry() {
+    return registry;
+  }
+
   /**
 	 * @private
 	 */
