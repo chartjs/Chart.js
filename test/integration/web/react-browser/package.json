@@ -10,10 +10,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "node ./setup-test.js",
-    "eject": "react-scripts eject"
+    "start-server": "react-scripts start",
+    "start": "node ./setup-test.js"
   },
   "eslintConfig": {
     "extends": [

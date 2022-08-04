@@ -11,7 +11,7 @@ function App() {
     new Chart('myChart', {
       type: 'doughnut',
       data: {
-        labels: ['FF', 'DD'],
+        labels: ['Chart', 'JS'],
         datasets: [{
           data: [2, 3]
         }]
