@@ -36,6 +36,115 @@ function getRatioAndOffset(rotation, circumference, cutout) {
 
 export default class DoughnutController extends DatasetController {
 
+  static id = 'doughnut';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: false,
+    dataElementType: 'arc',
+    animation: {
+      // Boolean - Whether we animate the rotation of the Doughnut
+      animateRotate: true,
+      // Boolean - Whether we animate scaling the Doughnut from the centre
+      animateScale: false
+    },
+    animations: {
+      numbers: {
+        type: 'number',
+        properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth', 'spacing']
+      },
+    },
+    // The percentage of the chart that we cut out of the middle.
+    cutout: '50%',
+
+    // The rotation of the chart, where the first data arc begins.
+    rotation: 0,
+
+    // The total circumference of the chart.
+    circumference: 360,
+
+    // The outr radius of the chart
+    radius: '100%',
+
+    // Spacing between arcs
+    spacing: 0,
+
+    indexAxis: 'r',
+  };
+
+  static descriptors = {
+    _scriptable: (name) => name !== 'spacing',
+    _indexable: (name) => name !== 'spacing',
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    aspectRatio: 1,
+
+    // Need to override these to give a nice default
+    plugins: {
+      legend: {
+        labels: {
+          generateLabels(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              const {labels: {pointStyle}} = chart.legend.options;
+
+              return data.labels.map((label, i) => {
+                const meta = chart.getDatasetMeta(0);
+                const style = meta.controller.getStyle(i);
+
+                return {
+                  text: label,
+                  fillStyle: style.backgroundColor,
+                  strokeStyle: style.borderColor,
+                  lineWidth: style.borderWidth,
+                  pointStyle: pointStyle,
+                  hidden: !chart.getDataVisibility(i),
+
+                  // Extra data used for toggling the correct item
+                  index: i
+                };
+              });
+            }
+            return [];
+          }
+        },
+
+        onClick(e, legendItem, legend) {
+          legend.chart.toggleDataVisibility(legendItem.index);
+          legend.chart.update();
+        }
+      },
+      tooltip: {
+        callbacks: {
+          title() {
+            return '';
+          },
+          label(tooltipItem) {
+            let dataLabel = tooltipItem.label;
+            const value = ': ' + tooltipItem.formattedValue;
+
+            if (isArray(dataLabel)) {
+              // show value on first line of multiline label
+              // need to clone because we are changing the value
+              dataLabel = dataLabel.slice();
+              dataLabel[0] += value;
+            } else {
+              dataLabel += value;
+            }
+
+            return dataLabel;
+          }
+        }
+      }
+    }
+  };
+
   constructor(chart, datasetIndex) {
     super(chart, datasetIndex);
 
@@ -306,112 +415,3 @@ export default class DoughnutController extends DatasetController {
     return this._getRingWeightOffset(this.chart.data.datasets.length) || 1;
   }
 }
-
-DoughnutController.id = 'doughnut';
-
-/**
- * @type {any}
- */
-DoughnutController.defaults = {
-  datasetElementType: false,
-  dataElementType: 'arc',
-  animation: {
-    // Boolean - Whether we animate the rotation of the Doughnut
-    animateRotate: true,
-    // Boolean - Whether we animate scaling the Doughnut from the centre
-    animateScale: false
-  },
-  animations: {
-    numbers: {
-      type: 'number',
-      properties: ['circumference', 'endAngle', 'innerRadius', 'outerRadius', 'startAngle', 'x', 'y', 'offset', 'borderWidth', 'spacing']
-    },
-  },
-  // The percentage of the chart that we cut out of the middle.
-  cutout: '50%',
-
-  // The rotation of the chart, where the first data arc begins.
-  rotation: 0,
-
-  // The total circumference of the chart.
-  circumference: 360,
-
-  // The outr radius of the chart
-  radius: '100%',
-
-  // Spacing between arcs
-  spacing: 0,
-
-  indexAxis: 'r',
-};
-
-DoughnutController.descriptors = {
-  _scriptable: (name) => name !== 'spacing',
-  _indexable: (name) => name !== 'spacing',
-};
-
-/**
- * @type {any}
- */
-DoughnutController.overrides = {
-  aspectRatio: 1,
-
-  // Need to override these to give a nice default
-  plugins: {
-    legend: {
-      labels: {
-        generateLabels(chart) {
-          const data = chart.data;
-          if (data.labels.length && data.datasets.length) {
-            const {labels: {pointStyle}} = chart.legend.options;
-
-            return data.labels.map((label, i) => {
-              const meta = chart.getDatasetMeta(0);
-              const style = meta.controller.getStyle(i);
-
-              return {
-                text: label,
-                fillStyle: style.backgroundColor,
-                strokeStyle: style.borderColor,
-                lineWidth: style.borderWidth,
-                pointStyle: pointStyle,
-                hidden: !chart.getDataVisibility(i),
-
-                // Extra data used for toggling the correct item
-                index: i
-              };
-            });
-          }
-          return [];
-        }
-      },
-
-      onClick(e, legendItem, legend) {
-        legend.chart.toggleDataVisibility(legendItem.index);
-        legend.chart.update();
-      }
-    },
-    tooltip: {
-      callbacks: {
-        title() {
-          return '';
-        },
-        label(tooltipItem) {
-          let dataLabel = tooltipItem.label;
-          const value = ': ' + tooltipItem.formattedValue;
-
-          if (isArray(dataLabel)) {
-            // show value on first line of multiline label
-            // need to clone because we are changing the value
-            dataLabel = dataLabel.slice();
-            dataLabel[0] += value;
-          } else {
-            dataLabel += value;
-          }
-
-          return dataLabel;
-        }
-      }
-    }
-  }
-};

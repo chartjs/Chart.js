@@ -3,6 +3,36 @@ import {_parseObjectDataRadialScale} from '../helpers/index';
 
 export default class RadarController extends DatasetController {
 
+  static id = 'radar';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: 'line',
+    dataElementType: 'point',
+    indexAxis: 'r',
+    showLine: true,
+    elements: {
+      line: {
+        fill: 'start'
+      }
+    },
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    aspectRatio: 1,
+
+    scales: {
+      r: {
+        type: 'radialLinear',
+      }
+    }
+  };
+
   /**
 	 * @protected
 	 */
@@ -72,33 +102,3 @@ export default class RadarController extends DatasetController {
     }
   }
 }
-
-RadarController.id = 'radar';
-
-/**
- * @type {any}
- */
-RadarController.defaults = {
-  datasetElementType: 'line',
-  dataElementType: 'point',
-  indexAxis: 'r',
-  showLine: true,
-  elements: {
-    line: {
-      fill: 'start'
-    }
-  },
-};
-
-/**
- * @type {any}
- */
-RadarController.overrides = {
-  aspectRatio: 1,
-
-  scales: {
-    r: {
-      type: 'radialLinear',
-    }
-  }
-};

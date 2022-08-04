@@ -239,6 +239,40 @@ function draw(ctx, line, start, count) {
 
 export default class LineElement extends Element {
 
+  static id = 'line';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    borderCapStyle: 'butt',
+    borderDash: [],
+    borderDashOffset: 0,
+    borderJoinStyle: 'miter',
+    borderWidth: 3,
+    capBezierPoints: true,
+    cubicInterpolationMode: 'default',
+    fill: false,
+    spanGaps: false,
+    stepped: false,
+    tension: 0,
+  };
+
+  /**
+   * @type {any}
+   */
+  static defaultRoutes = {
+    backgroundColor: 'backgroundColor',
+    borderColor: 'borderColor'
+  };
+
+
+  static descriptors = {
+    _scriptable: true,
+    _indexable: (name) => name !== 'borderDash' && name !== 'fill',
+  };
+
+
   constructor(cfg) {
     super();
 
@@ -406,36 +440,3 @@ export default class LineElement extends Element {
     }
   }
 }
-
-LineElement.id = 'line';
-
-/**
- * @type {any}
- */
-LineElement.defaults = {
-  borderCapStyle: 'butt',
-  borderDash: [],
-  borderDashOffset: 0,
-  borderJoinStyle: 'miter',
-  borderWidth: 3,
-  capBezierPoints: true,
-  cubicInterpolationMode: 'default',
-  fill: false,
-  spanGaps: false,
-  stepped: false,
-  tension: 0,
-};
-
-/**
- * @type {any}
- */
-LineElement.defaultRoutes = {
-  backgroundColor: 'backgroundColor',
-  borderColor: 'borderColor'
-};
-
-
-LineElement.descriptors = {
-  _scriptable: true,
-  _indexable: (name) => name !== 'borderDash' && name !== 'fill',
-};

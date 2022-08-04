@@ -30,6 +30,10 @@ function abstract() {
 
 export class DateAdapter {
 
+  static override(members) {
+    Object.assign(DateAdapter.prototype, members);
+  }
+
   constructor(options) {
     this.options = options || {};
   }
@@ -115,10 +119,6 @@ export class DateAdapter {
   }
 
 }
-
-DateAdapter.override = function(members) {
-  Object.assign(DateAdapter.prototype, members);
-};
 
 export default {
   _date: DateAdapter

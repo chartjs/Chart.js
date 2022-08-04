@@ -5,6 +5,18 @@ import {toRadians} from '../helpers';
 
 export default class LinearScale extends LinearScaleBase {
 
+  static id = 'linear';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    ticks: {
+      callback: Ticks.formatters.numeric
+    }
+  };
+
+
   determineDataLimits() {
     const {min, max} = this.getMinMax(true);
 
@@ -37,14 +49,3 @@ export default class LinearScale extends LinearScaleBase {
     return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
   }
 }
-
-LinearScale.id = 'linear';
-
-/**
- * @type {any}
- */
-LinearScale.defaults = {
-  ticks: {
-    callback: Ticks.formatters.numeric
-  }
-};

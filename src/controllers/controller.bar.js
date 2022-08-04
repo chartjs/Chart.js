@@ -257,6 +257,47 @@ function setInflateAmount(properties, {inflateAmount}, ratio) {
 
 export default class BarController extends DatasetController {
 
+  static id = 'bar';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: false,
+    dataElementType: 'bar',
+
+    categoryPercentage: 0.8,
+    barPercentage: 0.9,
+    grouped: true,
+
+    animations: {
+      numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'base', 'width', 'height']
+      }
+    }
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    scales: {
+      _index_: {
+        type: 'category',
+        offset: true,
+        grid: {
+          offset: true
+        }
+      },
+      _value_: {
+        type: 'linear',
+        beginAtZero: true,
+      }
+    }
+  };
+
+
   /**
 	 * Overriding primitive data parsing since we support mixed primitive/array
 	 * data for float bars
@@ -608,43 +649,3 @@ export default class BarController extends DatasetController {
   }
 
 }
-
-BarController.id = 'bar';
-
-/**
- * @type {any}
- */
-BarController.defaults = {
-  datasetElementType: false,
-  dataElementType: 'bar',
-
-  categoryPercentage: 0.8,
-  barPercentage: 0.9,
-  grouped: true,
-
-  animations: {
-    numbers: {
-      type: 'number',
-      properties: ['x', 'y', 'base', 'width', 'height']
-    }
-  }
-};
-
-/**
- * @type {any}
- */
-BarController.overrides = {
-  scales: {
-    _index_: {
-      type: 'category',
-      offset: true,
-      grid: {
-        offset: true
-      }
-    },
-    _value_: {
-      type: 'linear',
-      beginAtZero: true,
-    }
-  }
-};

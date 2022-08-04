@@ -2,6 +2,16 @@ import {isNumber} from '../helpers/helpers.math';
 
 export default class Element {
 
+  /**
+   * @type any
+   */
+  static defaults = {};
+
+  /**
+   * @type any
+   */
+  static defaultRoutes = undefined;
+
   constructor() {
     this.x = undefined;
     this.y = undefined;
@@ -41,13 +51,3 @@ export default class Element {
     return ret;
   }
 }
-
-/**
- * @type any
- */
-Element.defaults = {};
-
-/**
- * @type any
- */
-Element.defaultRoutes = undefined;
