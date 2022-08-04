@@ -218,6 +218,21 @@ const createStack = (canStack, meta, chart) => canStack && !meta.hidden && meta.
 export default class DatasetController {
 
   /**
+   * @type {any}
+   */
+  static defaults = {};
+
+  /**
+   * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
+   */
+  static datasetElementType = null;
+
+  /**
+   * Element type used to generate a meta data (e.g. Chart.element.PointElement).
+   */
+  static dataElementType = null;
+
+  /**
 	 * @param {Chart} chart
 	 * @param {number} datasetIndex
 	 */
@@ -240,6 +255,8 @@ export default class DatasetController {
     this.supportsDecimation = false;
     this.$context = undefined;
     this._syncList = [];
+    this.datasetElementType = new.target.datasetElementType;
+    this.dataElementType = new.target.dataElementType;
 
     this.initialize();
   }
@@ -1051,18 +1068,3 @@ export default class DatasetController {
     this._sync(['_insertElements', 0, arguments.length]);
   }
 }
-
-/**
- * @type {any}
- */
-DatasetController.defaults = {};
-
-/**
- * Element type used to generate a meta dataset (e.g. Chart.element.LineElement).
- */
-DatasetController.prototype.datasetElementType = null;
-
-/**
- * Element type used to generate a meta data (e.g. Chart.element.PointElement).
- */
-DatasetController.prototype.dataElementType = null;

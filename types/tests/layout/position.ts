@@ -1,4 +1,4 @@
-import { LayoutPosition } from '../../index.esm';
+import { LayoutPosition } from '../..';
 
 const left: LayoutPosition = 'left';
 const right: LayoutPosition = 'right';

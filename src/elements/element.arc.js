@@ -261,6 +261,30 @@ function drawBorder(ctx, element, offset, spacing, endAngle, circular) {
 
 export default class ArcElement extends Element {
 
+  static id = 'arc';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    borderAlign: 'center',
+    borderColor: '#fff',
+    borderJoinStyle: undefined,
+    borderRadius: 0,
+    borderWidth: 2,
+    offset: 0,
+    spacing: 0,
+    angle: undefined,
+    circular: true,
+  };
+
+  /**
+   * @type {any}
+   */
+  static defaultRoutes = {
+    backgroundColor: 'backgroundColor'
+  };
+
   constructor(cfg) {
     super();
 
@@ -358,27 +382,3 @@ export default class ArcElement extends Element {
     ctx.restore();
   }
 }
-
-ArcElement.id = 'arc';
-
-/**
- * @type {any}
- */
-ArcElement.defaults = {
-  borderAlign: 'center',
-  borderColor: '#fff',
-  borderJoinStyle: undefined,
-  borderRadius: 0,
-  borderWidth: 2,
-  offset: 0,
-  spacing: 0,
-  angle: undefined,
-  circular: true,
-};
-
-/**
- * @type {any}
- */
-ArcElement.defaultRoutes = {
-  backgroundColor: 'backgroundColor'
-};

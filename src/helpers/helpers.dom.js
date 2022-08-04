@@ -5,7 +5,7 @@ import {INFINITY} from './helpers.math';
  * necessary to avoid duplicates with `export * from './helpers`; see
  * https://github.com/microsoft/TypeScript/issues/46011
  * @typedef { import("../core/core.controller").default } dom.Chart
- * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
+ * @typedef { import('../../types').ChartEvent } ChartEvent
  */
 
 /**

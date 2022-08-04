@@ -197,6 +197,47 @@ function ticksFromTimestamps(scale, values, majorUnit) {
 
 export default class TimeScale extends Scale {
 
+  static id = 'time';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    /**
+     * Scale boundary strategy (bypassed by min/max time options)
+     * - `data`: make sure data are fully visible, ticks outside are removed
+     * - `ticks`: make sure ticks are fully visible, data outside are truncated
+     * @see https://github.com/chartjs/Chart.js/pull/4556
+     * @since 2.7.0
+     */
+    bounds: 'data',
+
+    adapters: {},
+    time: {
+      parser: false, // false == a pattern string from or a custom callback that converts its argument to a timestamp
+      unit: false, // false == automatic or override with week, month, year, etc.
+      round: false, // none, or override with week, month, year, etc.
+      isoWeekday: false, // override week start day
+      minUnit: 'millisecond',
+      displayFormats: {}
+    },
+    ticks: {
+      /**
+       * Ticks generation input values:
+       * - 'auto': generates "optimal" ticks based on scale size and time options.
+       * - 'data': generates ticks from data (including labels from data {t|x|y} objects).
+       * - 'labels': generates ticks from user given `data.labels` values ONLY.
+       * @see https://github.com/chartjs/Chart.js/pull/4507
+       * @since 2.7.0
+       */
+      source: 'auto',
+
+      major: {
+        enabled: false
+      }
+    }
+  };
+
   /**
 	 * @param {object} props
 	 */
@@ -611,44 +652,3 @@ export default class TimeScale extends Scale {
     return _arrayUnique(values.sort(sorter));
   }
 }
-
-TimeScale.id = 'time';
-
-/**
- * @type {any}
- */
-TimeScale.defaults = {
-  /**
-	 * Scale boundary strategy (bypassed by min/max time options)
-	 * - `data`: make sure data are fully visible, ticks outside are removed
-	 * - `ticks`: make sure ticks are fully visible, data outside are truncated
-	 * @see https://github.com/chartjs/Chart.js/pull/4556
-	 * @since 2.7.0
-	 */
-  bounds: 'data',
-
-  adapters: {},
-  time: {
-    parser: false, // false == a pattern string from or a custom callback that converts its argument to a timestamp
-    unit: false, // false == automatic or override with week, month, year, etc.
-    round: false, // none, or override with week, month, year, etc.
-    isoWeekday: false, // override week start day
-    minUnit: 'millisecond',
-    displayFormats: {}
-  },
-  ticks: {
-    /**
-		 * Ticks generation input values:
-		 * - 'auto': generates "optimal" ticks based on scale size and time options.
-		 * - 'data': generates ticks from data (including labels from data {t|x|y} objects).
-		 * - 'labels': generates ticks from user given `data.labels` values ONLY.
-		 * @see https://github.com/chartjs/Chart.js/pull/4507
-		 * @since 2.7.0
-		 */
-    source: 'auto',
-
-    major: {
-      enabled: false
-    }
-  }
-};

@@ -14,8 +14,8 @@ import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras';
 
 /**
- * @typedef { import('../../types/index.esm').ChartEvent } ChartEvent
- * @typedef { import("../../types/index.esm").Point } Point
+ * @typedef { import('../../types').ChartEvent } ChartEvent
+ * @typedef { import("../../types").Point } Point
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -102,6 +102,23 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
 }
 
 class Chart {
+
+  static defaults = defaults;
+  static instances = instances;
+  static overrides = overrides;
+  static registry = registry;
+  static version = version;
+  static getChart = getChart;
+
+  static register(...items) {
+    registry.add(...items);
+    invalidatePlugins();
+  }
+
+  static unregister(...items) {
+    registry.remove(...items);
+    invalidatePlugins();
+  }
 
   // eslint-disable-next-line max-statements
   constructor(item, userConfig) {
@@ -208,6 +225,10 @@ class Chart {
 
   set options(options) {
     this.config.options = options;
+  }
+
+  get registry() {
+    return registry;
   }
 
   /**
@@ -421,7 +442,7 @@ class Chart {
       } else {
         const ControllerClass = registry.getController(type);
         const {datasetElementType, dataElementType} = defaults.datasets[type];
-        Object.assign(ControllerClass.prototype, {
+        Object.assign(ControllerClass, {
           dataElementType: registry.getElement(dataElementType),
           datasetElementType: datasetElementType && registry.getElement(datasetElementType)
         });
@@ -1219,10 +1240,10 @@ class Chart {
 
   /**
    * @param {ChartEvent} e - The event
-   * @param {import('../../types/index.esm').ActiveElement[]} lastActive - Previously active elements
+   * @param {import('../../types').ActiveElement[]} lastActive - Previously active elements
    * @param {boolean} inChartArea - Is the envent inside chartArea
    * @param {boolean} useFinalPosition - Should the evaluation be done with current or final (after animation) element positions
-   * @returns {import('../../types/index.esm').ActiveElement[]} - The active elements
+   * @returns {import('../../types').ActiveElement[]} - The active elements
    * @pravate
    */
   _getActiveElements(e, lastActive, inChartArea, useFinalPosition) {
@@ -1241,50 +1262,8 @@ class Chart {
 }
 
 // @ts-ignore
-const invalidatePlugins = () => each(Chart.instances, (chart) => chart._plugins.invalidate());
-
-const enumerable = true;
-
-// These are available to both, UMD and ESM packages. Read Only!
-Object.defineProperties(Chart, {
-  defaults: {
-    enumerable,
-    value: defaults
-  },
-  instances: {
-    enumerable,
-    value: instances
-  },
-  overrides: {
-    enumerable,
-    value: overrides
-  },
-  registry: {
-    enumerable,
-    value: registry
-  },
-  version: {
-    enumerable,
-    value: version
-  },
-  getChart: {
-    enumerable,
-    value: getChart
-  },
-  register: {
-    enumerable,
-    value: (...items) => {
-      registry.add(...items);
-      invalidatePlugins();
-    }
-  },
-  unregister: {
-    enumerable,
-    value: (...items) => {
-      registry.remove(...items);
-      invalidatePlugins();
-    }
-  }
-});
+function invalidatePlugins() {
+  return each(Chart.instances, (chart) => chart._plugins.invalidate());
+}
 
 export default Chart;

@@ -458,11 +458,9 @@ interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement ex
 }
 
 export type ChartMeta<
+  TType extends ChartType = ChartType,
   TElement extends Element = Element,
   TDatasetElement extends Element = Element,
-  // TODO - V4, move this to the first parameter.
-  // When this was introduced, doing so was a breaking change
-  TType extends ChartType = ChartType,
 > = DeepPartial<
 { [key in ChartType]: ChartTypeRegistry[key]['metaExtensions'] }[TType]
 > & ChartMetaCommon<TElement, TDatasetElement>;
@@ -580,7 +578,7 @@ export class DatasetController<
 
   readonly chart: Chart;
   readonly index: number;
-  readonly _cachedMeta: ChartMeta<TElement, TDatasetElement, TType>;
+  readonly _cachedMeta: ChartMeta<TType, TElement, TDatasetElement>;
   enableOptionSharing: boolean;
   // If true, the controller supports the decimation
   // plugin. Defaults to `false` for all controllers
@@ -597,7 +595,7 @@ export class DatasetController<
   draw(): void;
   reset(): void;
   getDataset(): ChartDataset;
-  getMeta(): ChartMeta<TElement, TDatasetElement, TType>;
+  getMeta(): ChartMeta<TType, TElement, TDatasetElement>;
   getScaleForId(scaleID: string): Scale | undefined;
   configure(): void;
   initialize(): void;
@@ -633,9 +631,9 @@ export class DatasetController<
   setHoverStyle(element: TElement, datasetIndex: number, index: number): void;
 
   parse(start: number, count: number): void;
-  protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parsePrimitiveData(meta: ChartMeta<TType, TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseArrayData(meta: ChartMeta<TType, TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseObjectData(meta: ChartMeta<TType, TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
   protected getParsed(index: number): TParsedData;
   protected applyStack(scale: Scale, parsed: unknown[]): number;
   protected updateRangeFromParsed(

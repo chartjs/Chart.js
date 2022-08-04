@@ -154,7 +154,7 @@ export class Defaults {
 }
 
 // singleton instance
-export default new Defaults({
+export default /* #__PURE__ */ new Defaults({
   _scriptable: (name) => !name.startsWith('on'),
   _indexable: (name) => name !== 'events',
   hover: {
