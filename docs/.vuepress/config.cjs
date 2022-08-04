@@ -98,8 +98,6 @@ module.exports = {
         }
       }
     })
-
-    config.module.rule('js').test(/\.m?jsx?$/)
   },
   markdown: {
     extendMarkdown: md => {
