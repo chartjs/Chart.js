@@ -1,4 +1,4 @@
-import { EasingFunction } from '../index.esm';
+import { EasingFunction } from '..';
 
 export type EasingFunctionSignature = (t: number) => number;
 

@@ -1,4 +1,4 @@
-import { defaults } from '../../index.esm';
+import { defaults } from '../..';
 
 // https://github.com/chartjs/Chart.js/issues/8711
 const original = defaults.plugins.legend.labels.generateLabels;

@@ -6,7 +6,7 @@
 // Sends messages with data of types: { type: 'success' } | { type: 'error', errorMessage: string }
 
 // eslint-disable-next-line no-undef
-importScripts('../src/chart.js');
+importScripts('../src/chart.umd.js');
 
 onmessage = function(event) {
   try {

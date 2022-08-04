@@ -1,6 +1,6 @@
 import {
   Chart, ChartData, ChartConfiguration, Element
-} from '../index.esm';
+} from '..';
 
 const data: ChartData<'line'> = { datasets: [] };
 const chartItem = 'item';

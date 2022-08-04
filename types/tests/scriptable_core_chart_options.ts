@@ -1,4 +1,4 @@
-import { ChartConfiguration } from '../index.esm';
+import { ChartConfiguration } from '..';
 
 const getConfig = (): ChartConfiguration<'bar'> => {
   return {

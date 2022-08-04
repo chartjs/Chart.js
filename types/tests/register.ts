@@ -24,7 +24,7 @@ import {
   Title,
   SubTitle,
   Tooltip
-} from '../index.esm';
+} from '..';
 
 Chart.register(
   ArcElement,

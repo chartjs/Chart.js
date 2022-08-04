@@ -1,6 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as helpers from '../../src/helpers/index.js';
+import { fileURLToPath } from 'url';
+import * as helpers from '../../dist/helpers.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 let fd;
 

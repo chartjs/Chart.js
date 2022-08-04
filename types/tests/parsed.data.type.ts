@@ -1,4 +1,4 @@
-import { ParsedDataType } from '../index.esm';
+import { ParsedDataType } from '..';
 
 interface test {
   pie: ParsedDataType<'pie'>,

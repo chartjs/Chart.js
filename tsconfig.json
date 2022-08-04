@@ -14,7 +14,7 @@
   },
   "typedocOptions": {
     "name": "Chart.js",
-    "entryPoints": ["types/index.esm.d.ts"],
+    "entryPoints": ["types/index.d.ts"],
     "readme": "none",
     "excludeExternals": true,
     "includeVersion": true,

@@ -1,4 +1,4 @@
-import { Chart, ScaleOptions } from '../../index.esm';
+import { Chart, ScaleOptions } from '../..';
 
 const chart = new Chart('test', {
   type: 'bar',

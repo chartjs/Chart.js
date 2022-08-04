@@ -1,11 +1,8 @@
-const analyze = require('rollup-plugin-analyzer');
 const cleanup = require('rollup-plugin-cleanup');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
-
-const input = 'src/index.js';
 
 const banner = `/*!
  * Chart.js v${pkg.version}
@@ -15,30 +12,10 @@ const banner = `/*!
  */`;
 
 module.exports = [
-  // UMD builds
-  // dist/chart.min.js
-  // dist/chart.js
+  // UMD build
+  // dist/chart.umd.js
   {
-    input,
-    plugins: [
-      json(),
-      resolve(),
-      cleanup({
-        comments: ['some', /__PURE__/],
-        sourcemap: true
-      }),
-      analyze({summaryOnly: true})
-    ],
-    output: {
-      name: 'Chart',
-      file: 'dist/chart.js',
-      banner,
-      format: 'umd',
-      indent: false,
-    },
-  },
-  {
-    input,
+    input: 'src/index.umd.js',
     plugins: [
       json(),
       resolve(),
@@ -50,44 +27,19 @@ module.exports = [
     ],
     output: {
       name: 'Chart',
-      file: 'dist/chart.min.js',
+      file: 'dist/chart.umd.js',
       format: 'umd',
       indent: false,
     },
   },
 
   // ES6 builds
-  // dist/chart.mjs
+  // dist/chart.js
   // helpers/*.js
   {
     input: {
-      'dist/chart': 'src/index.esm.js',
+      'dist/chart': 'src/index.js',
       'dist/helpers': 'src/helpers/index.js'
-    },
-    plugins: [
-      json(),
-      resolve(),
-      cleanup({
-        sourcemap: true
-      }),
-    ],
-    output: {
-      dir: './',
-      chunkFileNames: 'dist/chunks/[name].mjs',
-      entryFileNames: '[name].mjs',
-      banner,
-      format: 'esm',
-      indent: false,
-    },
-  },
-
-  // Legacy ES6 builds for backwards compatibility. Remove for Chart.js 4.0
-  // dist/chart.esm.js
-  // helpers/*.js
-  {
-    input: {
-      'dist/chart.esm': 'src/index.esm.js',
-      'dist/helpers.esm': 'src/helpers/index.js'
     },
     plugins: [
       json(),
@@ -100,9 +52,10 @@ module.exports = [
     output: {
       dir: './',
       chunkFileNames: 'dist/chunks/[name].js',
+      entryFileNames: '[name].js',
       banner,
       format: 'esm',
       indent: false,
     },
-  },
+  }
 ];

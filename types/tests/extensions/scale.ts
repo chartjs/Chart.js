@@ -1,5 +1,5 @@
 import { AnyObject } from '../../basic';
-import { CartesianScaleOptions, Chart, Scale } from '../../index.esm';
+import { CartesianScaleOptions, Chart, Scale } from '../..';
 
 export type TestScaleOptions = CartesianScaleOptions & {
   testOption?: boolean
@@ -17,7 +17,7 @@ export class TestScale<O extends TestScaleOptions = TestScaleOptions> extends Sc
   }
 }
 
-declare module '../../index.esm' {
+declare module '../..' {
   interface CartesianScaleTypeRegistry {
     test: {
       options: TestScaleOptions
