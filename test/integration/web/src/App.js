@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import {Chart, DoughnutController, ArcElement} from 'chart.js';
+import {merge} from 'chart.js/helpers';
 
 Chart.register(DoughnutController, ArcElement);
 

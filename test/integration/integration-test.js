@@ -42,5 +42,21 @@ describe('Integration Tests', () => {
     }).timeout(5 * 60 * 1000);
   }
 
+  function testOnWebProject(projectName) {
+    const projectPath = path.join(__dirname, projectName);
+
+    const packageJSONPath = path.join(projectPath, 'package.json');
+    const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
+
+    it(packageJSON.description, () => {
+      const cwd = path.join(tmpDir, projectName);
+      fs.copySync(projectPath, cwd);
+
+      exec('npm --quiet install', {cwd, stdio: 'inherit'});
+      exec('npm --quiet test', {cwd, stdio: 'inherit'});
+    }).timeout(5 * 60 * 1000);    
+  }
+
   testOnNodeProject('node');
+  // testOnWebProject('web'); Enable after bug with helpers have been fixed
 });

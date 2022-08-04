@@ -1,17 +1,15 @@
 {
-  "name": "react-browser",
-  "version": "0.1.0",
   "private": true,
+  "description": "chart.js should work in Web",
   "dependencies": {
-    "chart.js": "^3.9.1",
+    "chart.js": "file:../package.tgz",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start-server": "react-scripts start",
-    "start": "node ./setup-test.js"
+    "test": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
