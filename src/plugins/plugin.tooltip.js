@@ -350,102 +350,6 @@ function overrideCallbacks(callbacks, context) {
   return override ? callbacks.override(override) : callbacks;
 }
 
-const defaultCallbacks = {
-  // Args are: (tooltipItems, data)
-  beforeTitle: noop,
-  title(tooltipItems) {
-    if (tooltipItems.length > 0) {
-      const item = tooltipItems[0];
-      const labels = item.chart.data.labels;
-      const labelCount = labels ? labels.length : 0;
-
-      if (this && this.options && this.options.mode === 'dataset') {
-        return item.dataset.label || '';
-      } else if (item.label) {
-        return item.label;
-      } else if (labelCount > 0 && item.dataIndex < labelCount) {
-        return labels[item.dataIndex];
-      }
-    }
-
-    return '';
-  },
-  afterTitle: noop,
-
-  // Args are: (tooltipItems, data)
-  beforeBody: noop,
-
-  // Args are: (tooltipItem, data)
-  beforeLabel: noop,
-  label(tooltipItem) {
-    if (this && this.options && this.options.mode === 'dataset') {
-      return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
-    }
-
-    let label = tooltipItem.dataset.label || '';
-
-    if (label) {
-      label += ': ';
-    }
-    const value = tooltipItem.formattedValue;
-    if (!isNullOrUndef(value)) {
-      label += value;
-    }
-    return label;
-  },
-  labelColor(tooltipItem) {
-    const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
-    const options = meta.controller.getStyle(tooltipItem.dataIndex);
-    return {
-      borderColor: options.borderColor,
-      backgroundColor: options.backgroundColor,
-      borderWidth: options.borderWidth,
-      borderDash: options.borderDash,
-      borderDashOffset: options.borderDashOffset,
-      borderRadius: 0,
-    };
-  },
-  labelTextColor() {
-    return this.options.bodyColor;
-  },
-  labelPointStyle(tooltipItem) {
-    const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
-    const options = meta.controller.getStyle(tooltipItem.dataIndex);
-    return {
-      pointStyle: options.pointStyle,
-      rotation: options.rotation,
-    };
-  },
-  afterLabel: noop,
-
-  // Args are: (tooltipItems, data)
-  afterBody: noop,
-
-  // Args are: (tooltipItems, data)
-  beforeFooter: noop,
-  footer: noop,
-  afterFooter: noop
-};
-
-/**
- * Invoke callback from object with context and arguments.
- * If callback returns `undefined`, then will be invoked default callback.
- * @param {Record<keyof typeof defaultCallbacks, Function>} callbacks
- * @param {keyof typeof defaultCallbacks} name
- * @param {*} ctx
- * @param {*} arg
- * @returns {any}
- */
-function invokeCallbackWithFallback(callbacks, name, ctx, arg) {
-  const result = callbacks[name].call(ctx, arg);
-
-  if (typeof result === 'undefined') {
-    return defaultCallbacks[name].call(ctx, arg);
-  }
-
-  return result;
-}
-
 export class Tooltip extends Element {
 
   /**
@@ -527,9 +431,9 @@ export class Tooltip extends Element {
   getTitle(context, options) {
     const {callbacks} = options;
 
-    const beforeTitle = invokeCallbackWithFallback(callbacks, 'beforeTitle', this, context);
-    const title = invokeCallbackWithFallback(callbacks, 'title', this, context);
-    const afterTitle = invokeCallbackWithFallback(callbacks, 'afterTitle', this, context);
+    const beforeTitle = callbacks.beforeTitle.apply(this, [context]);
+    const title = callbacks.title.apply(this, [context]);
+    const afterTitle = callbacks.afterTitle.apply(this, [context]);
 
     let lines = [];
     lines = pushOrConcat(lines, splitNewlines(beforeTitle));
@@ -540,9 +444,7 @@ export class Tooltip extends Element {
   }
 
   getBeforeBody(tooltipItems, options) {
-    return getBeforeAfterBodyLines(
-      invokeCallbackWithFallback(options.callbacks, 'beforeBody', this, tooltipItems)
-    );
+    return getBeforeAfterBodyLines(options.callbacks.beforeBody.apply(this, [tooltipItems]));
   }
 
   getBody(tooltipItems, options) {
@@ -556,9 +458,9 @@ export class Tooltip extends Element {
         after: []
       };
       const scoped = overrideCallbacks(callbacks, context);
-      pushOrConcat(bodyItem.before, splitNewlines(invokeCallbackWithFallback(scoped, 'beforeLabel', this, context)));
-      pushOrConcat(bodyItem.lines, invokeCallbackWithFallback(scoped, 'label', this, context));
-      pushOrConcat(bodyItem.after, splitNewlines(invokeCallbackWithFallback(scoped, 'afterLabel', this, context)));
+      pushOrConcat(bodyItem.before, splitNewlines(scoped.beforeLabel.call(this, context)));
+      pushOrConcat(bodyItem.lines, scoped.label.call(this, context));
+      pushOrConcat(bodyItem.after, splitNewlines(scoped.afterLabel.call(this, context)));
 
       bodyItems.push(bodyItem);
     });
@@ -567,18 +469,16 @@ export class Tooltip extends Element {
   }
 
   getAfterBody(tooltipItems, options) {
-    return getBeforeAfterBodyLines(
-      invokeCallbackWithFallback(options.callbacks, 'afterBody', this, tooltipItems)
-    );
+    return getBeforeAfterBodyLines(options.callbacks.afterBody.apply(this, [tooltipItems]));
   }
 
   // Get the footer and beforeFooter and afterFooter lines
   getFooter(tooltipItems, options) {
     const {callbacks} = options;
 
-    const beforeFooter = invokeCallbackWithFallback(callbacks, 'beforeFooter', this, tooltipItems);
-    const footer = invokeCallbackWithFallback(callbacks, 'footer', this, tooltipItems);
-    const afterFooter = invokeCallbackWithFallback(callbacks, 'afterFooter', this, tooltipItems);
+    const beforeFooter = callbacks.beforeFooter.apply(this, [tooltipItems]);
+    const footer = callbacks.footer.apply(this, [tooltipItems]);
+    const afterFooter = callbacks.afterFooter.apply(this, [tooltipItems]);
 
     let lines = [];
     lines = pushOrConcat(lines, splitNewlines(beforeFooter));
@@ -617,9 +517,9 @@ export class Tooltip extends Element {
     // Determine colors for boxes
     each(tooltipItems, (context) => {
       const scoped = overrideCallbacks(options.callbacks, context);
-      labelColors.push(invokeCallbackWithFallback(scoped, 'labelColor', this, context));
-      labelPointStyles.push(invokeCallbackWithFallback(scoped, 'labelPointStyle', this, context));
-      labelTextColors.push(invokeCallbackWithFallback(scoped, 'labelTextColor', this, context));
+      labelColors.push(scoped.labelColor.call(this, context));
+      labelPointStyles.push(scoped.labelPointStyle.call(this, context));
+      labelTextColors.push(scoped.labelTextColor.call(this, context));
     });
 
     this.labelColors = labelColors;
@@ -1311,7 +1211,82 @@ export default {
         duration: 200
       }
     },
-    callbacks: defaultCallbacks
+    callbacks: {
+      // Args are: (tooltipItems, data)
+      beforeTitle: noop,
+      title(tooltipItems) {
+        if (tooltipItems.length > 0) {
+          const item = tooltipItems[0];
+          const labels = item.chart.data.labels;
+          const labelCount = labels ? labels.length : 0;
+
+          if (this && this.options && this.options.mode === 'dataset') {
+            return item.dataset.label || '';
+          } else if (item.label) {
+            return item.label;
+          } else if (labelCount > 0 && item.dataIndex < labelCount) {
+            return labels[item.dataIndex];
+          }
+        }
+
+        return '';
+      },
+      afterTitle: noop,
+
+      // Args are: (tooltipItems, data)
+      beforeBody: noop,
+
+      // Args are: (tooltipItem, data)
+      beforeLabel: noop,
+      label(tooltipItem) {
+        if (this && this.options && this.options.mode === 'dataset') {
+          return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
+        }
+
+        let label = tooltipItem.dataset.label || '';
+
+        if (label) {
+          label += ': ';
+        }
+        const value = tooltipItem.formattedValue;
+        if (!isNullOrUndef(value)) {
+          label += value;
+        }
+        return label;
+      },
+      labelColor(tooltipItem) {
+        const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
+        const options = meta.controller.getStyle(tooltipItem.dataIndex);
+        return {
+          borderColor: options.borderColor,
+          backgroundColor: options.backgroundColor,
+          borderWidth: options.borderWidth,
+          borderDash: options.borderDash,
+          borderDashOffset: options.borderDashOffset,
+          borderRadius: 0,
+        };
+      },
+      labelTextColor() {
+        return this.options.bodyColor;
+      },
+      labelPointStyle(tooltipItem) {
+        const meta = tooltipItem.chart.getDatasetMeta(tooltipItem.datasetIndex);
+        const options = meta.controller.getStyle(tooltipItem.dataIndex);
+        return {
+          pointStyle: options.pointStyle,
+          rotation: options.rotation,
+        };
+      },
+      afterLabel: noop,
+
+      // Args are: (tooltipItems, data)
+      afterBody: noop,
+
+      // Args are: (tooltipItems, data)
+      beforeFooter: noop,
+      footer: noop,
+      afterFooter: noop
+    }
   },
 
   defaultRoutes: {
