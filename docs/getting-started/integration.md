@@ -15,121 +15,82 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 
 Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
 
-Until you are working on bundle optimization, the following snippet will ensure all features are available:
+### Quick start
+
+If you don't care about the bundle size, you can use the `auto` package ensuring all features are available:
 
 ```javascript
 import Chart from 'chart.js/auto';
-var myChart = new Chart(ctx, {...});
 ```
 
-You can achieve the same thing while explicitly calling `register()` as follows:
+Or if you are planning to optimize the bundle later, you can start by importing and registering `registrables`, which also ensures all features are available:
 
 ```javascript
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 ```
 
-And you can achieve the same while listing all possible imports as follows:
+### Bundle optimization
 
-```javascript
-import {
-  Chart,
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PieController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale,
-  TimeScale,
-  TimeSeriesScale,
-  Decimation,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-} from 'chart.js';
+When optimizing the bundle, instead of the `registrables`, you need to import and register the components that are needed in your application.
 
-Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PieController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale,
-  TimeScale,
-  TimeSeriesScale,
-  Decimation,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-);
-```
-
-### How to choose the imports you require.
-
-The options are categorised (inspect `registerables`) into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller and a suitable element):
+The options are categorised (inspect `registerables`) into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller, element(s) used by that controller and scale(s)):
 
 * Bar chart
-   * `BarController`
-   * `BarElement`
-   * `CategoryScale`
-   * One of `LinearScale` (default) or `LogarithmicScale`
-* Pie chart
-   * `PieController`
-   * `ArcElement`
+  * `BarController`
+  * `BarElement`
+  * Default scales: x: `CategoryScale`, y: `LinearScale`
+* Bubble chart
+  * `BubbleController`
+  * `PointElement`
+  * Default scales: x/y: `LinearScale`
 * Doughnut chart
-   * `DoughnutController`
-   * `ArcElement`
-* ...@todo...
+  * `DoughnutController`
+  * `ArcElement`
+  * Not using scales
+* Line chart
+  * `LineController`
+  * `LineElement`
+  * `PointElement`
+  * Default scales: x: `CategoryScale`, y: `LinearScale`
+* Pie chart
+  * `PieController`
+  * `ArcElement`
+  * Not using scales
+* PolarArea chart
+  * `PolarAreaController`
+  * `ArcElement`
+  * Default scale: r: `RadialLinearScale`
+* Radar chart
+  * `RadarController`
+  * `LineElement`
+  * `PointElement`
+  * Default scale: r: `RadialLinearScale`
+* Scatter chart
+  * `ScatterController`
+  * `PointElement`
+  * Default scales: x/y: `LinearScale`
 
-The plugin imports are
+The plugin imports are:
 
 * [`Decimation`](../configuration/decimation.md)
-* `Filler` - used to fill the area under the line, see [Area charts](../charts/area.md)
-* `Legend`
-* `Title`
-* `Tooltip`
-* `SubTitle`
+* `Filler` - used to fill area described by `LineElement`, see [Area charts](../charts/area.md)
+* [`Legend`](../configuration/legend.md)
+* [`SubTitle`](../configuration/subtitle.md)
+* [`Title`](../configuration/title.md)
+* [`Tooltip`](../configuration/tooltip.md)
 
-The scale imports are:
+Available scales:
 
-* `CategoryScale`
-* `LinearScale` default scale, you probably want this
-* `LogarithmicScale`
-* `RadialLinearScale`
-* `TimeScale`
-* `TimeSeriesScale`
+* Cartesian scales (x/y)
+  * [`CategoryScale`](../axes/cartesian/category.md)
+  * [`LinearScale`](../axes/cartesian/linear.md)
+  * [`LogarithmicScale`](../axes/cartesian/logarithmic.md)
+  * [`TimeScale`](../axes/cartesian/time.md)
+  * [`TimeSeriesScale`](../axes/cartesian/timeseries.md)
 
-## CommonJS
-
-Because Chart.js is an ESM library, in CommonJS modules you should use a dynamic `import`:
-
-```javascript
-const { Chart } = await import('chart.js');
-```
+* Radial scales (r)
+  * [`RadialLinearScale`](../axes/radial/linear.md)
 
 ### Helper functions
 
@@ -154,6 +115,14 @@ const chart = new Chart(ctx, {
     }
   }
 });
+```
+
+## CommonJS
+
+Because Chart.js is an ESM library, in CommonJS modules you should use a dynamic `import`:
+
+```javascript
+const { Chart } = await import('chart.js');
 ```
 
 ## Require JS
