@@ -20,7 +20,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | `tickColor` | [`Color`](../general/colors.md) | Yes | Yes | | Color of the tick line. If unset, defaults to the grid line color.
 | `tickLength` | `number` | | | `8` | Length in pixels that the grid lines will draw into the axis area.
 | `tickWidth` | `number` | Yes | Yes | | Width of the tick mark in pixels. If unset, defaults to the grid line width.
-| `z` | `number` | | | `0` | z-index of gridline layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
+| `z` | `number` | | | `-1` | z-index of the gridline layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
 
 The scriptable context is described in [Options](../general/options.md#tick) section.
 
@@ -49,3 +49,4 @@ Namespace: `options.scales[scaleId].border`, it defines options for the border t
 | `width` | `number` | | | `1` | The width of the border line.
 | `dash` | `number[]` | Yes | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `dashOffset` | `number` | Yes | | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
+| `z` | `number` | | | `0` | z-index of the border layer. Values &lt;= 0 are drawn under datasets, &gt; 0 on top.
