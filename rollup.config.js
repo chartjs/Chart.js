@@ -32,6 +32,7 @@ export default [
       file: 'dist/chart.umd.js',
       format: 'umd',
       indent: false,
+      sourcemap: true,
     },
   },
 
@@ -48,7 +49,6 @@ export default [
       resolve(),
       cleanup({
         comments: ['some', /__PURE__/],
-        sourcemap: true
       }),
     ],
     output: {
@@ -58,6 +58,7 @@ export default [
       banner,
       format: 'esm',
       indent: false,
+      sourcemap: true,
     },
   }
 ];
