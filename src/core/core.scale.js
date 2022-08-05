@@ -1648,7 +1648,7 @@ export default class Scale extends Element {
         this.drawTitle();
       }
     }, {
-      z: bz, // TODO, v4 move border options to its own object and add z
+      z: bz,
       draw: () => {
         this.drawBorder();
       }
