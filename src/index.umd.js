@@ -28,7 +28,7 @@ Chart.register(controllers, scales, elements, plugins);
 
 Chart.helpers = {...helpers};
 Chart._adapters = _adapters;
-Chart.Animation = Animation;
+Chart.SingleAnimation = Animation;
 Chart.Animations = Animations;
 Chart.animator = animator;
 Chart.controllers = registry.controllers.items;

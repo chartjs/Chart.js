@@ -1,3 +1,4 @@
+export {default as Animation} from './plugin.animation';
 export {default as Decimation} from './plugin.decimation';
 export {default as Filler} from './plugin.filler';
 export {default as Legend} from './plugin.legend';

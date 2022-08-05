@@ -1,5 +1,5 @@
 export {default as _adapters} from './core.adapters';
-export {default as Animation} from './core.animation';
+export {default as SingleAnimation} from './core.animation';
 export {default as Animations} from './core.animations';
 export {default as animator} from './core.animator';
 export {default as Chart} from './core.controller';

@@ -1,5 +1,4 @@
 import animator from './core.animator';
-import Animation from './core.animation';
 import defaults from './core.defaults';
 import {isArray, isObject} from '../helpers/helpers.core';
 
@@ -174,6 +173,7 @@ export default class Animations {
         continue;
       }
 
+      const Animation = this._chart.registry.getPlugin('animation').Animation;
       running[prop] = animation = new Animation(cfg, target, prop, value);
       animations.push(animation);
     }

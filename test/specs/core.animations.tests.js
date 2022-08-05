@@ -1,6 +1,8 @@
 describe('Chart.animations', function() {
   it('should override property collection with property', function() {
-    const chart = {};
+    const chart = {
+      registry: Chart.registry
+    };
     const anims = new Chart.Animations(chart, {
       collection1: {
         properties: ['property1', 'property2'],
@@ -15,7 +17,9 @@ describe('Chart.animations', function() {
   });
 
   it('should ignore duplicate definitions from collections', function() {
-    const chart = {};
+    const chart = {
+      registry: Chart.registry
+    };
     const anims = new Chart.Animations(chart, {
       collection1: {
         properties: ['property1'],
@@ -31,7 +35,9 @@ describe('Chart.animations', function() {
   });
 
   it('should not animate undefined options key', function() {
-    const chart = {};
+    const chart = {
+      registry: Chart.registry
+    };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
     const target = {
       value: 1,
@@ -45,14 +51,19 @@ describe('Chart.animations', function() {
   });
 
   it('should assign options directly, if target does not have previous options', function() {
-    const chart = {};
+    const chart = {
+      registry: Chart.registry
+    };
     const anims = new Chart.Animations(chart, {option: {duration: 200}});
     const target = {};
     expect(anims.update(target, {options: {option: 1}})).toBeUndefined();
   });
 
   it('should clone the target options, if those are shared and new options are not', function() {
-    const chart = {options: {}};
+    const chart = {
+      options: {},
+      registry: Chart.registry
+    };
     const anims = new Chart.Animations(chart, {option: {duration: 200}});
     const options = {option: 0, $shared: true};
     const target = {options};
@@ -64,7 +75,8 @@ describe('Chart.animations', function() {
   it('should assign shared options to target after animations complete', function(done) {
     const chart = {
       draw: function() {},
-      options: {}
+      options: {},
+      registry: Chart.registry
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 
@@ -96,7 +108,8 @@ describe('Chart.animations', function() {
   it('should not assign shared options to target when animations are cancelled', function(done) {
     const chart = {
       draw: function() {},
-      options: {}
+      options: {},
+      registry: Chart.registry
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 
@@ -133,7 +146,8 @@ describe('Chart.animations', function() {
   it('should assign final shared options to target after animations complete', function(done) {
     const chart = {
       draw: function() {},
-      options: {}
+      options: {},
+      registry: Chart.registry
     };
     const anims = new Chart.Animations(chart, {value: {duration: 100}, option: {duration: 200}});
 

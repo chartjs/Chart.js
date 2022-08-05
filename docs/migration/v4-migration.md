@@ -10,6 +10,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 #### Specific changes
 
+* Animations are now in an optional plugin. If you are using the registration feature, you will need to `register` the `Animation` plugin.
 * The radialLinear grid indexable and scriptable options don't decrease the index of the specified grid line anymore.
 * The `destroy` plugin hook has been removed and replaced with `afterDestroy`.
 * Ticks callback on time scale now receives timestamp instead of a formatted label.

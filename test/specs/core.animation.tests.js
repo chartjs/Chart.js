@@ -1,7 +1,7 @@
 describe('Chart.Animation', function() {
   it('should animate boolean', function() {
     const target = {prop: false};
-    const anim = new Chart.Animation({duration: 1000}, target, 'prop', true);
+    const anim = new Chart.SingleAnimation({duration: 1000}, target, 'prop', true);
     expect(anim.active()).toBeTrue();
 
     anim.tick(anim._start + 500);
@@ -24,7 +24,7 @@ describe('Chart.Animation', function() {
   describe('color', function() {
     it('should fall back to transparent', function() {
       const target = {};
-      const anim = new Chart.Animation({duration: 1000, type: 'color'}, target, 'color', 'red');
+      const anim = new Chart.SingleAnimation({duration: 1000, type: 'color'}, target, 'color', 'red');
       anim._from = undefined;
       anim.tick(anim._start + 500);
       expect(target.color).toEqual('#FF000080');
@@ -37,7 +37,7 @@ describe('Chart.Animation', function() {
 
     it('should not try to mix invalid color', function() {
       const target = {color: 'blue'};
-      const anim = new Chart.Animation({duration: 1000, type: 'color'}, target, 'color', 'invalid');
+      const anim = new Chart.SingleAnimation({duration: 1000, type: 'color'}, target, 'color', 'invalid');
       anim.tick(anim._start + 500);
       expect(target.color).toEqual('invalid');
     });
@@ -45,7 +45,7 @@ describe('Chart.Animation', function() {
 
   it('should loop', function() {
     const target = {value: 0};
-    const anim = new Chart.Animation({duration: 100, loop: true}, target, 'value', 10);
+    const anim = new Chart.SingleAnimation({duration: 100, loop: true}, target, 'value', 10);
     anim.tick(anim._start + 50);
     expect(target.value).toEqual(5);
     anim.tick(anim._start + 100);
@@ -58,7 +58,7 @@ describe('Chart.Animation', function() {
 
   it('should update', function() {
     const target = {testColor: 'transparent'};
-    const anim = new Chart.Animation({duration: 100, type: 'color'}, target, 'testColor', 'red');
+    const anim = new Chart.SingleAnimation({duration: 100, type: 'color'}, target, 'testColor', 'red');
 
     anim.tick(anim._start + 50);
     expect(target.testColor).toEqual('#FF000080');
@@ -73,7 +73,7 @@ describe('Chart.Animation', function() {
 
   it('should not update when finished', function() {
     const target = {testColor: 'transparent'};
-    const anim = new Chart.Animation({duration: 100, type: 'color'}, target, 'testColor', 'red');
+    const anim = new Chart.SingleAnimation({duration: 100, type: 'color'}, target, 'testColor', 'red');
 
     anim.tick(anim._start + 100);
     expect(target.testColor).toEqual('red');
