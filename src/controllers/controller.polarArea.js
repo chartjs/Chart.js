@@ -3,6 +3,99 @@ import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpe
 
 export default class PolarAreaController extends DatasetController {
 
+  static id = 'polarArea';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    dataElementType: 'arc',
+    animation: {
+      animateRotate: true,
+      animateScale: true
+    },
+    animations: {
+      numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
+      },
+    },
+    indexAxis: 'r',
+    startAngle: 0,
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    aspectRatio: 1,
+
+    plugins: {
+      legend: {
+        labels: {
+          generateLabels(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              const {labels: {pointStyle}} = chart.legend.options;
+
+              return data.labels.map((label, i) => {
+                const meta = chart.getDatasetMeta(0);
+                const style = meta.controller.getStyle(i);
+
+                return {
+                  text: label,
+                  fillStyle: style.backgroundColor,
+                  strokeStyle: style.borderColor,
+                  lineWidth: style.borderWidth,
+                  pointStyle: pointStyle,
+                  hidden: !chart.getDataVisibility(i),
+
+                  // Extra data used for toggling the correct item
+                  index: i
+                };
+              });
+            }
+            return [];
+          }
+        },
+
+        onClick(e, legendItem, legend) {
+          legend.chart.toggleDataVisibility(legendItem.index);
+          legend.chart.update();
+        }
+      },
+
+      // Need to override these to give a nice default
+      tooltip: {
+        callbacks: {
+          title() {
+            return '';
+          },
+          label(context) {
+            return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
+          }
+        }
+      }
+    },
+
+    scales: {
+      r: {
+        type: 'radialLinear',
+        angleLines: {
+          display: false
+        },
+        beginAtZero: true,
+        grid: {
+          circular: true
+        },
+        pointLabels: {
+          display: false
+        },
+        startAngle: 0
+      }
+    }
+  };
+
   constructor(chart, datasetIndex) {
     super(chart, datasetIndex);
 
@@ -143,96 +236,3 @@ export default class PolarAreaController extends DatasetController {
       : 0;
   }
 }
-
-PolarAreaController.id = 'polarArea';
-
-/**
- * @type {any}
- */
-PolarAreaController.defaults = {
-  dataElementType: 'arc',
-  animation: {
-    animateRotate: true,
-    animateScale: true
-  },
-  animations: {
-    numbers: {
-      type: 'number',
-      properties: ['x', 'y', 'startAngle', 'endAngle', 'innerRadius', 'outerRadius']
-    },
-  },
-  indexAxis: 'r',
-  startAngle: 0,
-};
-
-/**
- * @type {any}
- */
-PolarAreaController.overrides = {
-  aspectRatio: 1,
-
-  plugins: {
-    legend: {
-      labels: {
-        generateLabels(chart) {
-          const data = chart.data;
-          if (data.labels.length && data.datasets.length) {
-            const {labels: {pointStyle}} = chart.legend.options;
-
-            return data.labels.map((label, i) => {
-              const meta = chart.getDatasetMeta(0);
-              const style = meta.controller.getStyle(i);
-
-              return {
-                text: label,
-                fillStyle: style.backgroundColor,
-                strokeStyle: style.borderColor,
-                lineWidth: style.borderWidth,
-                pointStyle: pointStyle,
-                hidden: !chart.getDataVisibility(i),
-
-                // Extra data used for toggling the correct item
-                index: i
-              };
-            });
-          }
-          return [];
-        }
-      },
-
-      onClick(e, legendItem, legend) {
-        legend.chart.toggleDataVisibility(legendItem.index);
-        legend.chart.update();
-      }
-    },
-
-    // Need to override these to give a nice default
-    tooltip: {
-      callbacks: {
-        title() {
-          return '';
-        },
-        label(context) {
-          return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
-        }
-      }
-    }
-  },
-
-  scales: {
-    r: {
-      type: 'radialLinear',
-      angleLines: {
-        display: false
-      },
-      beginAtZero: true,
-      grid: {
-        circular: true
-      },
-      pointLabels: {
-        display: false
-      },
-      startAngle: 0
-    }
-  }
-};

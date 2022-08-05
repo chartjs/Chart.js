@@ -13,6 +13,7 @@ npm-debug.log*
 build/
 # generated typedocs
 docs/api
+docs/.vuepress/dist
 
 # Development
 .DS_Store

@@ -1,4 +1,4 @@
-import type { ChartOptions } from './index.esm';
+import type { ChartOptions } from '.';
 
 export type TimeUnit = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 

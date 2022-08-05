@@ -10,6 +10,29 @@ function inRange(el, pos, axis, useFinalPosition) {
 
 export default class PointElement extends Element {
 
+  static id = 'point';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    borderWidth: 1,
+    hitRadius: 1,
+    hoverBorderWidth: 1,
+    hoverRadius: 4,
+    pointStyle: 'circle',
+    radius: 3,
+    rotation: 0
+  };
+
+  /**
+   * @type {any}
+   */
+  static defaultRoutes = {
+    backgroundColor: 'backgroundColor',
+    borderColor: 'borderColor'
+  };
+
   constructor(cfg) {
     super();
 
@@ -68,26 +91,3 @@ export default class PointElement extends Element {
     return options.radius + options.hitRadius;
   }
 }
-
-PointElement.id = 'point';
-
-/**
- * @type {any}
- */
-PointElement.defaults = {
-  borderWidth: 1,
-  hitRadius: 1,
-  hoverBorderWidth: 1,
-  hoverRadius: 4,
-  pointStyle: 'circle',
-  radius: 3,
-  rotation: 0
-};
-
-/**
- * @type {any}
- */
-PointElement.defaultRoutes = {
-  backgroundColor: 'backgroundColor',
-  borderColor: 'borderColor'
-};

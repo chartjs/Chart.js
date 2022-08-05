@@ -1,9 +1,9 @@
-const jasmineSeedReporter = require('./test/seed-reporter');
+const jasmineSeedReporter = require('./test/seed-reporter.cjs');
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
-const builds = require('./rollup.config');
+const builds = require('./rollup.config.cjs');
 const yargs = require('yargs');
 
 module.exports = function(karma) {
@@ -18,8 +18,12 @@ module.exports = function(karma) {
   // we will prefer the unminified build which is easier to browse and works
   // better with source mapping. In other cases, pick the minified build to
   // make sure that the minification process (terser) doesn't break anything.
-  const regex = karma.autoWatch ? /chart\.js$/ : /chart\.min\.js$/;
+  const regex = /chart\.umd\.js$/;
   const build = builds.filter(v => v.output.file && v.output.file.match(regex))[0];
+
+  if (karma.autoWatch) {
+    build.plugins.pop();
+  }
 
   if (args.coverage) {
     build.plugins = [
@@ -87,14 +91,14 @@ module.exports = function(karma) {
       'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
       {pattern: 'test/index.js', watched: false},
       {pattern: 'test/BasicChartWebWorker.js', included: false},
-      {pattern: 'src/index.js', watched: false},
+      {pattern: 'src/index.umd.js', watched: false},
       'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js',
       {pattern: specPattern}
     ],
 
     preprocessors: {
       'test/index.js': ['rollup'],
-      'src/index.js': ['sources']
+      'src/index.umd.js': ['sources']
     },
 
     rollupPreprocessor: {

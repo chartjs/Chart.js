@@ -15,7 +15,7 @@ describe('Category scale tests', function() {
     var defaultConfig = Chart.defaults.scales.category;
     expect(defaultConfig).toEqual({
       ticks: {
-        callback: Chart.registry.getScale('category').prototype.getLabelForValue
+        callback: Chart.registry.getScale('category').defaults.ticks.callback
       }
     });
   });

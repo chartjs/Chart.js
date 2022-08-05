@@ -5,6 +5,33 @@ import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/
 
 export default class LineController extends DatasetController {
 
+  static id = 'line';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: 'line',
+    dataElementType: 'point',
+
+    showLine: true,
+    spanGaps: false,
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    scales: {
+      _index_: {
+        type: 'category',
+      },
+      _value_: {
+        type: 'linear',
+      },
+    }
+  };
+
   initialize() {
     this.enableOptionSharing = true;
     this.supportsDecimation = true;
@@ -106,30 +133,3 @@ export default class LineController extends DatasetController {
     super.draw();
   }
 }
-
-LineController.id = 'line';
-
-/**
- * @type {any}
- */
-LineController.defaults = {
-  datasetElementType: 'line',
-  dataElementType: 'point',
-
-  showLine: true,
-  spanGaps: false,
-};
-
-/**
- * @type {any}
- */
-LineController.overrides = {
-  scales: {
-    _index_: {
-      type: 'category',
-    },
-    _value_: {
-      type: 'linear',
-    },
-  }
-};

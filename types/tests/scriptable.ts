@@ -1,4 +1,4 @@
-import { ChartType, Scriptable, ScriptableContext } from '../index.esm';
+import { ChartType, Scriptable, ScriptableContext } from '..';
 
 interface test {
   pie?: Scriptable<number, ScriptableContext<'pie'>>,

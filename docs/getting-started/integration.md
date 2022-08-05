@@ -5,17 +5,10 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 ## Script Tag
 
 ```html
-<script src="path/to/chartjs/dist/chart.js"></script>
+<script src="path/to/chartjs/dist/chart.umd.js"></script>
 <script>
     const myChart = new Chart(ctx, {...});
 </script>
-```
-
-## Common JS
-
-```javascript
-const Chart = require('chart.js');
-const myChart = new Chart(ctx, {...});
 ```
 
 ## Bundlers (Webpack, Rollup, etc.)
@@ -96,6 +89,14 @@ And finally there is a separate path to do just the above for you, in one line:
 import Chart from 'chart.js/auto';
 ```
 
+## CommonJS
+
+Because Chart.js is an ESM library, in CommonJS modules you should use a dynamic `import`:
+
+```javascript
+const { Chart } = await import('chart.js');
+```
+
 ### Helper functions
 
 If you want to use the helper functions, you will need to import these separately from the helpers package and use them as stand-alone functions.
@@ -123,10 +124,10 @@ const chart = new Chart(ctx, {
 
 ## Require JS
 
-**Important:** RequireJS [can **not** load CommonJS module as is](https://requirejs.org/docs/commonjs.html#intro), so be sure to require one of the UMD builds instead (i.e. `dist/chart.js`, `dist/chart.min.js`, etc.).
+**Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.html), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.js`).
 
 ```javascript
-require(['path/to/chartjs/dist/chart.min.js'], function(Chart){
+require(['path/to/chartjs/dist/chart.umd.js'], function(Chart){
     const myChart = new Chart(ctx, {...});
 });
 ```

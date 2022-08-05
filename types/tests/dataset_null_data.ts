@@ -1,4 +1,4 @@
-import { ChartDataset } from '../index.esm';
+import { ChartDataset } from '..';
 
 const dataset: ChartDataset = {
   data: [10, null, 20],

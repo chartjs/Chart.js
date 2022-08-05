@@ -9,8 +9,8 @@ import {createContext, drawPoint} from '../helpers';
 
 /**
  * @typedef { import("../platform/platform.base").Chart } Chart
- * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
- * @typedef { import("../../types/index.esm").ActiveElement } ActiveElement
+ * @typedef { import("../../types").ChartEvent } ChartEvent
+ * @typedef { import("../../types").ActiveElement } ActiveElement
  */
 
 const positioners = {
@@ -351,6 +351,12 @@ function overrideCallbacks(callbacks, context) {
 }
 
 export class Tooltip extends Element {
+
+  /**
+   * @namespace Chart.Tooltip.positioners
+   */
+  static positioners = positioners;
+
   constructor(config) {
     super();
 
@@ -1103,11 +1109,6 @@ export class Tooltip extends Element {
     return position !== false && (caretX !== position.x || caretY !== position.y);
   }
 }
-
-/**
- * @namespace Chart.Tooltip.positioners
- */
-Tooltip.positioners = positioners;
 
 export default {
   id: 'tooltip',

@@ -1,4 +1,4 @@
-import { Chart, DecimationAlgorithm } from '../../../index.esm';
+import { Chart, DecimationAlgorithm } from '../../..';
 
 const chart = new Chart('id', {
   type: 'bubble',

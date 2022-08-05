@@ -1,4 +1,4 @@
-import { Chart } from '../index.esm';
+import { Chart } from '..';
 
 Chart.defaults.scales.time.time.minUnit = 'day';
 

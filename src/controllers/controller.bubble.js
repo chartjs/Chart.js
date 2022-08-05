@@ -2,6 +2,48 @@ import DatasetController from '../core/core.datasetController';
 import {valueOrDefault} from '../helpers/helpers.core';
 
 export default class BubbleController extends DatasetController {
+
+  static id = 'bubble';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    datasetElementType: false,
+    dataElementType: 'point',
+
+    animations: {
+      numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'borderWidth', 'radius']
+      }
+    }
+  };
+
+  /**
+   * @type {any}
+   */
+  static overrides = {
+    scales: {
+      x: {
+        type: 'linear'
+      },
+      y: {
+        type: 'linear'
+      }
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          title() {
+            // Title doesn't make sense for scatter since we format the data as a point
+            return '';
+          }
+        }
+      }
+    }
+  };
+
   initialize() {
     this.enableOptionSharing = true;
     super.initialize();
@@ -134,44 +176,3 @@ export default class BubbleController extends DatasetController {
     return values;
   }
 }
-
-BubbleController.id = 'bubble';
-
-/**
- * @type {any}
- */
-BubbleController.defaults = {
-  datasetElementType: false,
-  dataElementType: 'point',
-
-  animations: {
-    numbers: {
-      type: 'number',
-      properties: ['x', 'y', 'borderWidth', 'radius']
-    }
-  }
-};
-
-/**
- * @type {any}
- */
-BubbleController.overrides = {
-  scales: {
-    x: {
-      type: 'linear'
-    },
-    y: {
-      type: 'linear'
-    }
-  },
-  plugins: {
-    tooltip: {
-      callbacks: {
-        title() {
-          // Title doesn't make sense for scatter since we format the data as a point
-          return '';
-        }
-      }
-    }
-  }
-};

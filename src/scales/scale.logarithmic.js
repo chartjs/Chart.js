@@ -46,6 +46,21 @@ function generateTicks(generationOptions, dataRange) {
 
 export default class LogarithmicScale extends Scale {
 
+  static id = 'logarithmic';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    ticks: {
+      callback: Ticks.formatters.logarithmic,
+      major: {
+        enabled: true
+      }
+    }
+  };
+
+
   constructor(cfg) {
     super(cfg);
 
@@ -180,17 +195,3 @@ export default class LogarithmicScale extends Scale {
     return Math.pow(10, this._startValue + decimal * this._valueRange);
   }
 }
-
-LogarithmicScale.id = 'logarithmic';
-
-/**
- * @type {any}
- */
-LogarithmicScale.defaults = {
-  ticks: {
-    callback: Ticks.formatters.logarithmic,
-    major: {
-      enabled: true
-    }
-  }
-};

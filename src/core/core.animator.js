@@ -211,4 +211,4 @@ export class Animator {
 }
 
 // singleton instance
-export default new Animator();
+export default /* #__PURE__ */ new Animator();

@@ -33,7 +33,7 @@ module.exports = {
     [
       'vuepress-plugin-typedoc',
       {
-        entryPoints: ['../../types/index.esm.d.ts'],
+        entryPoints: ['../../types/index.d.ts'],
         hideInPageTOC: true,
         tsconfig: 'tsconfig.json',
         sidebar: {
@@ -94,7 +94,7 @@ module.exports = {
     config.merge({
       resolve: {
         alias: {
-          'chart.js': path.resolve(__dirname, '../../dist/chart.mjs'),
+          'chart.js': path.resolve(__dirname, '../../dist/chart.js'),
         }
       }
     })
@@ -294,7 +294,6 @@ module.exports = {
             'getting-started/installation',
             'getting-started/integration',
             'getting-started/usage',
-            'getting-started/v3-migration'
           ]
         },
         {
@@ -380,6 +379,13 @@ module.exports = {
             'developers/publishing',
             ['api/', 'TypeDoc'],
             'developers/updates',
+          ]
+        },
+        {
+          title: 'Migration',
+          children: [
+            'migration/v4-migration',
+            'migration/v3-migration',
           ]
         },
       ],

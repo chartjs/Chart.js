@@ -1,4 +1,4 @@
-import { Chart, ChartOptions } from '../../index.esm';
+import { Chart, ChartOptions } from '../..';
 
 const chart = new Chart('test', {
   type: 'bubble',

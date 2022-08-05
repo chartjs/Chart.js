@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "description": "chart.js should work in Node",
+  "type": "module",
+  "scripts": {
+    "test": "npm run test-mjs && npm run test-cjs",
+    "test-mjs": "node test.js",
+    "test-cjs": "node test.cjs"
+  },
+  "dependencies": {
+    "chart.js": "file:../package.tgz"
+  }
+}

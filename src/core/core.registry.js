@@ -183,4 +183,4 @@ export class Registry {
 }
 
 // singleton instance
-export default new Registry();
+export default /* #__PURE__ */ new Registry();
