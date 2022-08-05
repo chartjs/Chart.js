@@ -2,11 +2,13 @@ import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {terser} from 'rollup-plugin-terser';
-import * as packageJson from './package.json' assert {type: "json"};
+import { readFileSync } from "fs";
+
+const {version, homepage} = JSON.parse(readFileSync('./package.json'));
 
 const banner = `/*!
- * Chart.js v${packageJson.version}
- * ${packageJson.homepage}
+ * Chart.js v${version}
+ * ${homepage}
  * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
  */`;
