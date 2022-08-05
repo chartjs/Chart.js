@@ -73,6 +73,7 @@ describe('Time scale tests', function() {
       },
       ticks: {
         source: 'auto',
+        callback: false,
         major: {
           enabled: false
         }
@@ -353,8 +354,8 @@ describe('Time scale tests', function() {
                 }
               },
               ticks: {
-                callback: function(value) {
-                  return '<' + value + '>';
+                callback: function(_, i) {
+                  return '<' + i + '>';
                 }
               }
             }
@@ -368,21 +369,21 @@ describe('Time scale tests', function() {
       var labels = getLabels(this.scale);
 
       expect(labels.length).toEqual(21);
-      expect(labels[0]).toEqual('<8:00:00>');
-      expect(labels[labels.length - 1]).toEqual('<8:01:00>');
+      expect(labels[0]).toEqual('<0>');
+      expect(labels[labels.length - 1]).toEqual('<60>');
     });
 
     it('should update ticks.callback correctly', function() {
       var chart = this.chart;
-      chart.options.scales.x.ticks.callback = function(value) {
-        return '{' + value + '}';
+      chart.options.scales.x.ticks.callback = function(_, i) {
+        return '{' + i + '}';
       };
       chart.update();
 
       var labels = getLabels(this.scale);
       expect(labels.length).toEqual(21);
-      expect(labels[0]).toEqual('{8:00:00}');
-      expect(labels[labels.length - 1]).toEqual('{8:01:00}');
+      expect(labels[0]).toEqual('{0}');
+      expect(labels[labels.length - 1]).toEqual('{60}');
     });
   });
 
@@ -1259,5 +1260,34 @@ describe('Time scale tests', function() {
     });
 
     expect(chartOptions).toEqual(chart.options);
+  });
+
+  it('should pass timestamp to ticks callback', () => {
+    let callbackValue;
+    window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          data: [0, 0]
+        }],
+        labels: ['2015-01-01T20:00:00', '2015-01-01T20:01:00']
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            ticks: {
+              callback(value) {
+                callbackValue = value;
+                return value;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    expect(typeof callbackValue).toBe('number');
   });
 });

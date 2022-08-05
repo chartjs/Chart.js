@@ -22,7 +22,7 @@ To do this, you need to override the `ticks.callback` method in the axis configu
 
 The method receives 3 arguments:
 
-* `value` - the tick value in the **internal data format** of the associated scale.
+* `value` - the tick value in the **internal data format** of the associated scale. For time scale, it is a timestamp.
 * `index` - the tick index in the ticks array.
 * `ticks` - the array containing all of the [tick objects](../api/interfaces/Tick).
 

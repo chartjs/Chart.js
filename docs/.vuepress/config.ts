@@ -1,8 +1,11 @@
-const path = require('path');
-const docsVersion = "VERSION";
-const base = process.env.NODE_ENV === "development" ? '/docs/master/' : `/docs/${docsVersion}/`;
+import { DefaultThemeConfig, defineConfig, PluginTuple } from "vuepress/config";
+import * as path from 'path';
+import markdownItInclude from 'markdown-it-include';
 
-module.exports = {
+const docsVersion = "VERSION";
+const base: `/${string}/` = process.env.NODE_ENV === "development" ? '/docs/master/' : `/docs/${docsVersion}/`;
+
+export default defineConfig({
   title: 'Chart.js',
   description: 'Open source HTML5 Charts for your website',
   theme: 'chartjs',
@@ -30,16 +33,10 @@ module.exports = {
       ],
     }],
     ['vuepress-plugin-code-copy', true],
-    [
-      'vuepress-plugin-typedoc',
-      {
+    ['vuepress-plugin-typedoc', {
         entryPoints: ['../../types/index.d.ts'],
         hideInPageTOC: true,
         tsconfig: 'tsconfig.json',
-        sidebar: {
-          fullNames: true,
-          parentCategory: 'API',
-        },
       },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {
@@ -48,7 +45,7 @@ module.exports = {
         title: (v, vars) => {
           return window.location.href.includes('master') ? 'Development (master)' :
                  vars.tag === 'latest' ? 'Latest (' + v + ')' :
-                 v + (vars.tag ? ` (${tag})` : '') + ' (outdated)';
+                 v + (vars.tag ? ` (${vars.tag})` : '') + ' (outdated)';
         },
       },
       menu: {
@@ -89,7 +86,7 @@ module.exports = {
         ]
       },
     }],
-  ],
+  ] as PluginTuple[],
   chainWebpack(config) {
     config.merge({
       resolve: {
@@ -101,7 +98,7 @@ module.exports = {
   },
   markdown: {
     extendMarkdown: md => {
-      md.use(require('markdown-it-include'), path.resolve(__dirname, '../'));
+      md.use(markdownItInclude, path.resolve(__dirname, '../'));
     }
   },
   themeConfig: {
@@ -134,9 +131,7 @@ module.exports = {
       }
     ],
     sidebar: {
-      '/api/': {
-        title: 'API'
-      },
+      '/api/': 'API',
       '/samples/': [
         'information',
         {
@@ -389,6 +384,6 @@ module.exports = {
           ]
         },
       ],
-    }
-  }
-};
+    } as any
+  } as DefaultThemeConfig
+});

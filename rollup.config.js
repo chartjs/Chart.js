@@ -1,17 +1,17 @@
-const cleanup = require('rollup-plugin-cleanup');
-const json = require('@rollup/plugin-json');
-const resolve = require('@rollup/plugin-node-resolve').default;
-const terser = require('rollup-plugin-terser').terser;
-const pkg = require('./package.json');
+import cleanup from 'rollup-plugin-cleanup';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import {terser} from 'rollup-plugin-terser';
+import {version, homepage} from './package.json';
 
 const banner = `/*!
- * Chart.js v${pkg.version}
- * ${pkg.homepage}
+ * Chart.js v${version}
+ * ${homepage}
  * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
  */`;
 
-module.exports = [
+export default [
   // UMD build
   // dist/chart.umd.js
   {
