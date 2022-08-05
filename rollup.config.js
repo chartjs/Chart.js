@@ -2,7 +2,9 @@ import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {terser} from 'rollup-plugin-terser';
-import {version, homepage} from './package.json';
+import { readFileSync } from "fs";
+
+const {version, homepage} = JSON.parse(readFileSync('./package.json'));
 
 const banner = `/*!
  * Chart.js v${version}

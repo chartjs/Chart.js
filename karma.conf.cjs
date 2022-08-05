@@ -3,10 +3,11 @@ const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
 const json = require('@rollup/plugin-json');
 const resolve = require('@rollup/plugin-node-resolve').default;
-const builds = require('./rollup.config.cjs');
 const yargs = require('yargs');
 
-module.exports = function(karma) {
+module.exports = async function(karma) {
+  const builds  = (await import('./rollup.config.js')).default;
+
   const args = yargs
     .option('verbose', {default: false})
     .argv;

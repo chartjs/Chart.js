@@ -1088,14 +1088,6 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
-   * @deprecated since version 3.7.0 in favour of afterDestroy
-   */
-  destroy?(chart: Chart, args: EmptyObject, options: O): void;
-  /**
-   * Called after the chart has been destroyed.
-   * @param {Chart} chart - The chart instance.
-   * @param {object} args - The call arguments.
-   * @param {object} options - The plugin options.
    */
   afterDestroy?(chart: Chart, args: EmptyObject, options: O): void;
   /**

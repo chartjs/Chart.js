@@ -1806,7 +1806,8 @@ describe('Chart', function() {
         'resize'
       ],
       destroy: [
-        'destroy'
+        'beforeDestroy',
+        'afterDestroy'
       ]
     };
 
