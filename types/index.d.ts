@@ -65,7 +65,7 @@ export interface ControllerDatasetOptions extends ParsingOptions {
    */
   indexAxis: 'x' | 'y';
   /**
-   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
+   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
    */
   clip: number | ChartArea | false;
   /**
@@ -1456,7 +1456,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   indexAxis: 'x' | 'y';
 
   /**
-   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: clip: {left: 5, top: false, right: -2, bottom: 0}
+   * How to clip relative to chartArea. Positive value allows overflow, negative value clips that many pixels inside chartArea. 0 = clip at chartArea. Clipping can also be configured per side: `clip: {left: 5, top: false, right: -2, bottom: 0}`
    */
   clip: number | ChartArea | false;
 
@@ -3296,7 +3296,7 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
     /**
      * Ticks generation input values:
      * - 'auto': generates "optimal" ticks based on scale size and time options.
-     * - 'data': generates ticks from data (including labels from data {t|x|y} objects).
+     * - 'data': generates ticks from data (including labels from data `{t|x|y}` objects).
      * - 'labels': generates ticks from user given `data.labels` values ONLY.
      * @see https://github.com/chartjs/Chart.js/pull/4507
      * @since 2.7.0
