@@ -23,7 +23,7 @@ If you don't care about the bundle size, you can use the `auto` package ensuring
 import Chart from 'chart.js/auto';
 ```
 
-Or if you are planning to optimize the bundle later, you can start by importing and registering `registrables`, which also ensures all features are available:
+Or if you are planning to optimize the bundle later, you can start by importing and registering `registerables`, which also ensures all features are available:
 
 ```javascript
 import { Chart, registerables } from 'chart.js';
