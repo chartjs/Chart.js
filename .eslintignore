@@ -1,2 +1,2 @@
 dist/*
-test/integration/web/*
+test/integration/react-browser/*
