@@ -7,8 +7,7 @@
     "type": "module",
     "sideEffects": [
         "./auto/auto.js",
-        "./dist/chart.umd.js",
-        "./src/core/core.scale.defaults.js"
+        "./dist/chart.umd.js"
     ],
     "jsdelivr": "dist/chart.umd.js",
     "unpkg": "dist/chart.umd.js",
