@@ -15,9 +15,12 @@
                     "ticks": {
                         "display": false
                     },
+                    
+                    "border": {
+                        "display": false
+                    },
                     "grid":{
                         "drawOnChartArea": false,
-                        "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)",
                         "width": 1,
                         "tickColor": "rgba(255, 0, 0, 1)",
@@ -34,10 +37,12 @@
                     "ticks": {
                         "display": false
                     },
+                    "border": {
+                        "display": false
+                    },
                     "grid":{
                         "offset": false,
                         "drawOnChartArea": false,
-                        "drawBorder": false,
                         "color": "rgba(0, 0, 0, 1)",
                         "tickColor": "rgba(255, 0, 0, 1)",
                         "tickWidth": 5

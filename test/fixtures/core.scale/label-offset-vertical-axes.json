@@ -15,17 +15,21 @@
                         "display": false
                     },
                     "grid":{
-                        "display": false,
-                        "drawBorder": false
+                        "display": false
+                    },
+                    "border": {
+                        "display": false
                     }
                 },
                 "y": {
                     "ticks": {
                         "labelOffset": 25
                     },
+                    "border": {
+                        "display": false
+                    },
                     "grid":{
-                        "display": false,
-                        "drawBorder": false
+                        "display": false
                     }
                 }
             }

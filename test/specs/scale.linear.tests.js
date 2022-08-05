@@ -1119,7 +1119,9 @@ describe('Linear Scale', function() {
             type: 'linear',
             grid: {
               drawTicks: false,
-              drawBorder: false
+            },
+            border: {
+              display: false
             },
             title: {
               display: false,
