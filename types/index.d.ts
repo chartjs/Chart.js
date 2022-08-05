@@ -2546,24 +2546,24 @@ export interface TooltipCallbacks<
   Model = TooltipModel<TType>,
   Item = TooltipItem<TType>> {
 
-  beforeTitle(this: Model, tooltipItems: Item[]): string | string[];
-  title(this: Model, tooltipItems: Item[]): string | string[];
-  afterTitle(this: Model, tooltipItems: Item[]): string | string[];
+  beforeTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
+  title(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
 
-  beforeBody(this: Model, tooltipItems: Item[]): string | string[];
-  afterBody(this: Model, tooltipItems: Item[]): string | string[];
+  beforeBody(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterBody(this: Model, tooltipItems: Item[]): string | string[] | void;
 
-  beforeLabel(this: Model, tooltipItem: Item): string | string[];
-  label(this: Model, tooltipItem: Item): string | string[];
-  afterLabel(this: Model, tooltipItem: Item): string | string[];
+  beforeLabel(this: Model, tooltipItem: Item): string | string[] | void;
+  label(this: Model, tooltipItem: Item): string | string[] | void;
+  afterLabel(this: Model, tooltipItem: Item): string | string[] | void;
 
-  labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle;
-  labelTextColor(this: Model, tooltipItem: Item): Color;
-  labelPointStyle(this: Model, tooltipItem: Item): { pointStyle: PointStyle; rotation: number };
+  labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle | void;
+  labelTextColor(this: Model, tooltipItem: Item): Color | void;
+  labelPointStyle(this: Model, tooltipItem: Item): { pointStyle: PointStyle; rotation: number } | void;
 
-  beforeFooter(this: Model, tooltipItems: Item[]): string | string[];
-  footer(this: Model, tooltipItems: Item[]): string | string[];
-  afterFooter(this: Model, tooltipItems: Item[]): string | string[];
+  beforeFooter(this: Model, tooltipItems: Item[]): string | string[] | void;
+  footer(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterFooter(this: Model, tooltipItems: Item[]): string | string[] | void;
 }
 
 export interface ExtendedPlugin<

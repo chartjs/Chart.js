@@ -13,6 +13,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The radialLinear grid indexable and scriptable options don't decrease the index of the specified grid line anymore.
 * The `destroy` plugin hook has been removed and replaced with `afterDestroy`.
 * Ticks callback on time scale now receives timestamp instead of a formatted label.
+* If the tooltip callback returns `undefined`, then the default callback will be used.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`
