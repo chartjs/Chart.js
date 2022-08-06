@@ -5,6 +5,10 @@
     "version": "4.0.0-dev",
     "license": "MIT",
     "type": "module",
+    "sideEffects": [
+        "./auto/auto.js",
+        "./dist/chart.umd.js"
+    ],
     "jsdelivr": "dist/chart.umd.js",
     "unpkg": "dist/chart.umd.js",
     "main": "dist/chart.js",
