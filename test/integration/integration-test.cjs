@@ -7,6 +7,11 @@ const childProcess = require('child_process');
 
 const {describe, it} = require('mocha');
 
+const platforms = [
+  'node',
+  'react-browser'
+];
+
 function exec(command, options = {}) {
   const output = childProcess.execSync(command, {
     encoding: 'utf-8',
@@ -27,7 +32,7 @@ describe('Integration Tests', () => {
     path.join(tmpDir, 'package.tgz'),
   );
 
-  function testOnNodeProject(projectName) {
+  function testProjectOnPlatform(projectName) {
     const projectPath = path.join(__dirname, projectName);
 
     const packageJSONPath = path.join(projectPath, 'package.json');
@@ -42,5 +47,7 @@ describe('Integration Tests', () => {
     }).timeout(5 * 60 * 1000);
   }
 
-  testOnNodeProject('node');
+  for (const platform of platforms) {
+    testProjectOnPlatform(platform)
+  }
 });
