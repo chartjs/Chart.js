@@ -1,6 +1,8 @@
-import { DefaultThemeConfig, defineConfig, PluginTuple } from "vuepress/config";
 import * as path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import HtmlWebpackInlineSourcePlugin from 'html-webpack-inline-source-plugin';
 import markdownItInclude from 'markdown-it-include';
+import { DefaultThemeConfig, defineConfig, PluginTuple } from 'vuepress/config';
 
 const docsVersion = "VERSION";
 const base: `/${string}/` = process.env.NODE_ENV === "development" ? '/docs/master/' : `/docs/${docsVersion}/`;
@@ -14,6 +16,16 @@ export default defineConfig({
   head: [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
+  configureWebpack: (config, isServer) => {
+    configureWebpack: (config) => {
+      return {
+        plugins: [
+          new HtmlWebpackPlugin(),
+          new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+        ],
+      };
+    };
+  },
   plugins: [
     'tabs',
     ['flexsearch'],
@@ -36,7 +48,7 @@ export default defineConfig({
     ['vuepress-plugin-typedoc', {
         entryPoints: ['../../types/index.d.ts'],
         hideInPageTOC: true,
-        tsconfig: 'tsconfig.json',
+        tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
       },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {

@@ -8,6 +8,6 @@
     "test-cjs": "node test.cjs"
   },
   "dependencies": {
-    "chart.js": "file:../package.tgz"
+    "chart.js": "workspace:*"
   }
 }

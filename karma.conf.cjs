@@ -32,9 +32,21 @@ module.exports = async function(karma) {
     );
   }
 
+  // workaround a karma bug where it doesn't resolve dependencies correctly in
+  // the same way that Node does
+  // https://github.com/pnpm/pnpm/issues/720#issuecomment-954120387
+  const plugins = Object.keys(require('./package').devDependencies).flatMap(
+    (packageName) => {
+      if (!packageName.startsWith('karma-')) return []
+      return [require(packageName)]
+    }
+  );
+
+  plugins.push(jasmineSeedReporter);
+
   karma.set({
     frameworks: ['jasmine'],
-    plugins: ['karma-*', jasmineSeedReporter],
+    plugins,
     reporters: ['spec', 'kjhtml', 'jasmine-seed'],
     browsers: (args.browsers || 'chrome,firefox').split(','),
     logLevel: karma.LOG_INFO,

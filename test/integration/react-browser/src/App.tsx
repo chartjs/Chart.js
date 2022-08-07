@@ -11,6 +11,9 @@ function App() {
       c.destroy();
     }
 
+    merge({a: 1}, {b: 2});
+
+    // eslint-disable-next-line no-new
     new Chart('myChart', {
       type: 'doughnut',
       data: {
