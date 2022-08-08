@@ -2,7 +2,9 @@ import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {terser} from 'rollup-plugin-terser';
-import {version, homepage} from './package.json';
+import { readFileSync } from "fs";
+
+const {version, homepage} = JSON.parse(readFileSync('./package.json'));
 
 const banner = `/*!
  * Chart.js v${version}
@@ -30,6 +32,7 @@ export default [
       file: 'dist/chart.umd.js',
       format: 'umd',
       indent: false,
+      sourcemap: true,
     },
   },
 
@@ -46,7 +49,6 @@ export default [
       resolve(),
       cleanup({
         comments: ['some', /__PURE__/],
-        sourcemap: true
       }),
     ],
     output: {
@@ -56,6 +58,7 @@ export default [
       banner,
       format: 'esm',
       indent: false,
+      sourcemap: true,
     },
   }
 ];

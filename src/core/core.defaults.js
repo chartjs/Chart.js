@@ -1,5 +1,8 @@
 import {getHoverColor} from '../helpers/helpers.color';
 import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
+import {applyAnimationsDefaults} from './core.animations.defaults';
+import {applyLayoutsDefaults} from './core.layouts.defaults';
+import {applyScaleDefaults} from './core.scale.defaults';
 
 export const overrides = Object.create(null);
 export const descriptors = Object.create(null);
@@ -33,7 +36,7 @@ function set(root, scope, values) {
  * Note: class is exported for typedoc
  */
 export class Defaults {
-  constructor(_descriptors) {
+  constructor(_descriptors, _appliers) {
     this.animation = undefined;
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
@@ -77,6 +80,7 @@ export class Defaults {
     this.drawActiveElementsOnTop = true;
 
     this.describe(_descriptors);
+    this.apply(_appliers);
   }
 
   /**
@@ -151,6 +155,10 @@ export class Defaults {
       }
     });
   }
+
+  apply(appliers) {
+    appliers.forEach((apply) => apply(this));
+  }
 }
 
 // singleton instance
@@ -164,4 +172,4 @@ export default /* #__PURE__ */ new Defaults({
     _scriptable: false,
     _indexable: false,
   }
-});
+}, [applyAnimationsDefaults, applyLayoutsDefaults, applyScaleDefaults]);
