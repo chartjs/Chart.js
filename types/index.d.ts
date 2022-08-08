@@ -3539,7 +3539,7 @@ export interface ChartTypeRegistry {
   bar: {
     chartOptions: BarControllerChartOptions;
     datasetOptions: BarControllerDatasetOptions;
-    defaultDataPoint: number;
+    defaultDataPoint: number | null;
     metaExtensions: {};
     parsedDataType: BarParsedData,
     scales: keyof CartesianScaleTypeRegistry;
