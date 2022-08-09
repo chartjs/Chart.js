@@ -23,8 +23,8 @@ import Scale from './core/core.scale';
 import * as scales from './scales';
 import Ticks from './core/core.ticks';
 
-// Register built-ins
-Chart.register(controllers, scales, elements, plugins);
+  // Register built-ins
+  Chart.register(controllers, scales, elements, plugins);
 
 Chart.helpers = {...helpers};
 Chart._adapters = _adapters;
@@ -40,6 +40,13 @@ Chart.layouts = layouts;
 Chart.platforms = platforms;
 Chart.Scale = Scale;
 Chart.Ticks = Ticks;
+// Add missing registerables to UMD.
+Chart.registerables = [
+  controllers,
+  elements,
+  plugins,
+  scales,
+];
 
 // Compatibility with ESM extensions
 Object.assign(Chart, controllers, scales, elements, plugins, platforms);
