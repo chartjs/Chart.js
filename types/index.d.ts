@@ -153,7 +153,7 @@ export interface BubbleControllerDatasetOptions
   ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
   ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
 
-export interface BubbleDataPoint extends Point{
+export interface BubbleDataPoint extends Point {
   /**
    * Bubble radius in pixels (not scaled).
    */
@@ -2495,7 +2495,7 @@ export interface TooltipModel<TType extends ChartType> extends Element<AnyObject
   setActiveElements(active: ActiveDataPoint[], eventPosition: Point): void;
 }
 
-export interface TooltipPosition extends Point{
+export interface TooltipPosition extends Point {
   xAlign?: TooltipXAlignment;
   yAlign?: TooltipYAlignment;
 }
