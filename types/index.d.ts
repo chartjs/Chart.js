@@ -133,6 +133,12 @@ export interface BarControllerDatasetOptions
    * @default 'circle;
    */
   pointStyle: PointStyle;
+
+  /**
+   * Should the bars be grouped on index axis
+   * @default true
+   */
+  grouped: boolean;
 }
 
 export interface BarControllerChartOptions {
