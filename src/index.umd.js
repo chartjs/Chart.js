@@ -23,8 +23,8 @@ import Scale from './core/core.scale';
 import * as scales from './scales';
 import Ticks from './core/core.ticks';
 
-  // Register built-ins
-  Chart.register(controllers, scales, elements, plugins);
+// Register built-ins
+Chart.register(controllers, scales, elements, plugins);
 
 Chart.helpers = {...helpers};
 Chart._adapters = _adapters;
