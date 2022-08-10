@@ -194,15 +194,7 @@ export default class LinearScaleBase extends Scale {
     }
 
     if (min === max) {
-      let offset = 1;
-      if (max >= Number.MAX_SAFE_INTEGER || min <= Number.MIN_SAFE_INTEGER) {
-        // In this case, the magnitude of the number is so large that
-        // max === max + 1 due to how IEEE754 doubles work. We need to increase
-        // the range by a larger number. Let's be safe and make this 5% of the number
-        //
-        // TODO - V4, make this the new default behaviour and eliminate +1 in other cases
-        offset = Math.abs(max * 0.05);
-      }
+      let offset = max === 0 ? 1 : Math.abs(max * 0.05);
 
       setMax(max + offset);
 
