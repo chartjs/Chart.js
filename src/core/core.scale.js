@@ -1468,6 +1468,7 @@ export default class Scale extends Element {
     if (grid.display) {
       for (i = 0, ilen = items.length; i < ilen; ++i) {
         const item = items[i];
+        console.log(item)
 
         if (grid.drawOnChartArea) {
           drawLine(

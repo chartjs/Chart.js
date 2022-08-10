@@ -7,9 +7,11 @@ module.exports = {
           position: {y: 0},
           min: -10,
           max: 10,
+          border: {
+            color: 'black',
+            width: 5
+          },
           grid: {
-            borderColor: 'black',
-            borderWidth: 5,
             color: 'lightGray',
             lineWidth: 3,
           },
@@ -21,9 +23,11 @@ module.exports = {
           position: {x: 0},
           min: -10,
           max: 10,
+          border: {
+            color: 'black',
+            width: 5
+          },
           grid: {
-            borderColor: 'black',
-            borderWidth: 5,
             color: 'lightGray',
             lineWidth: 3,
           },

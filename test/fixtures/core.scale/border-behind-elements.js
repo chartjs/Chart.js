@@ -22,18 +22,18 @@ module.exports = {
           ticks: {
             display: false
           },
-          grid: {
-            borderColor: 'red',
-            borderWidth: 5
+          border: {
+            color: 'red',
+            width: 5
           }
         },
         x: {
           ticks: {
             display: false
           },
-          grid: {
-            borderColor: 'red',
-            borderWidth: 5
+          border: {
+            color: 'red',
+            width: 5
           }
         }
       }
