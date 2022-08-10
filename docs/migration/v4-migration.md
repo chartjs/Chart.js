@@ -13,11 +13,12 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The radialLinear grid indexable and scriptable options don't decrease the index of the specified grid line anymore.
 * The `destroy` plugin hook has been removed and replaced with `afterDestroy`.
 * Ticks callback on time scale now receives timestamp instead of a formatted label.
-* `scales[id].grid.drawBorder` has been renamed to `scales[id].border.display`
-* `scales[id].grid.borderWidth` has been renamed to `scales[id].border.width`
-* `scales[id].grid.borderColor` has been renamed to `scales[id].border.color`
-* `scales[id].grid.borderDash` has been renamed to `scales[id].border.dash`
-* `scales[id].grid.borderDashOffset` has been renamed to `scales[id].border.dashOffset`
+* `scales[id].grid.drawBorder` has been renamed to `scales[id].border.display`.
+* `scales[id].grid.borderWidth` has been renamed to `scales[id].border.width`.
+* `scales[id].grid.borderColor` has been renamed to `scales[id].border.color`.
+* `scales[id].grid.borderDash` has been renamed to `scales[id].border.dash`.
+* `scales[id].grid.borderDashOffset` has been renamed to `scales[id].border.dashOffset`.
+* The z index for the border of a scale is now configurable instead of being 1 higher as the grid z index.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`

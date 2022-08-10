@@ -1076,8 +1076,9 @@ export default class Scale extends Element {
     const limit = valueOrDefault(options.ticks.maxTicksLimit, ticksLength);
     const step = Math.max(1, Math.ceil(ticksLength / limit));
     for (i = 0; i < ticksLength; i += step) {
-      const optsAtIndex = grid.setContext(this.getContext(i));
-      const optsAtIndexBorder = border.setContext(this.getContext(i));
+      const context = this.getContext(i);
+      const optsAtIndex = grid.setContext(context);
+      const optsAtIndexBorder = border.setContext(context);
 
       const lineWidth = optsAtIndex.lineWidth;
       const lineColor = optsAtIndex.color;
@@ -1455,6 +1456,7 @@ export default class Scale extends Element {
       ctx.save();
       ctx.lineWidth = style.width;
       ctx.strokeStyle = style.color;
+      console.log(style.borderDash)
       ctx.setLineDash(style.borderDash || []);
       ctx.lineDashOffset = style.borderDashOffset;
 
@@ -1468,7 +1470,6 @@ export default class Scale extends Element {
     if (grid.display) {
       for (i = 0, ilen = items.length; i < ilen; ++i) {
         const item = items[i];
-        console.log(item)
 
         if (grid.drawOnChartArea) {
           drawLine(
