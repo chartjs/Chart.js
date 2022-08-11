@@ -11,7 +11,7 @@ export interface Element<T = AnyObject, O = AnyObject> {
   hasValue(): boolean;
   getProps<P extends (keyof T)[]>(props: P, final?: boolean): Pick<T, P[number]>;
 }
-export const Element: {
+export declare const Element: {
   prototype: Element;
   new <T = AnyObject, O = AnyObject>(): Element<T, O>;
 };

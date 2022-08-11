@@ -24,7 +24,7 @@ import {
   Title,
   SubTitle,
   Tooltip
-} from '..';
+} from '../../src/types';
 
 Chart.register(
   ArcElement,

@@ -1,4 +1,4 @@
-import { Chart, DecimationAlgorithm } from '../../..';
+import { Chart, DecimationAlgorithm } from '../../../../src/types';
 
 const chart = new Chart('id', {
   type: 'bubble',

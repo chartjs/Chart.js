@@ -1,4 +1,4 @@
-import { LayoutPosition } from '../..';
+import { LayoutPosition } from '../../../src/types';
 
 const left: LayoutPosition = 'left';
 const right: LayoutPosition = 'right';

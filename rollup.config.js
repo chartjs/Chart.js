@@ -1,8 +1,9 @@
 import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
+import {swc} from 'rollup-plugin-swc3';
 import {terser} from 'rollup-plugin-terser';
-import { readFileSync } from "fs";
+import {readFileSync} from 'fs';
 
 const {version, homepage} = JSON.parse(readFileSync('./package.json'));
 
@@ -12,21 +13,42 @@ const banner = `/*!
  * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
  */`;
+const extensions = ['.js', '.ts'];
+const plugins = (minify) =>
+  [
+    json(),
+    resolve({
+      extensions
+    }),
+    swc({
+      jsc: {
+        parser: {
+          syntax: 'typescript'
+        },
+        target: 'es2022'
+      },
+      module: {
+        type: 'es6'
+      },
+      sourceMaps: true
+    }),
+    minify
+      ? terser({
+        output: {
+          preamble: banner
+        }
+      })
+      : cleanup({
+        comments: ['some', /__PURE__/]
+      })
+  ];
 
 export default [
   // UMD build
   // dist/chart.umd.js
   {
-    input: 'src/index.umd.js',
-    plugins: [
-      json(),
-      resolve(),
-      terser({
-        output: {
-          preamble: banner
-        }
-      }),
-    ],
+    input: 'src/index.umd.ts',
+    plugins: plugins(true),
     output: {
       name: 'Chart',
       file: 'dist/chart.umd.js',
@@ -41,16 +63,10 @@ export default [
   // helpers/*.js
   {
     input: {
-      'dist/chart': 'src/index.js',
-      'dist/helpers': 'src/helpers/index.js'
+      'dist/chart': 'src/index.ts',
+      'dist/helpers': 'src/helpers/index.ts'
     },
-    plugins: [
-      json(),
-      resolve(),
-      cleanup({
-        comments: ['some', /__PURE__/],
-      }),
-    ],
+    plugins: plugins(),
     output: {
       dir: './',
       chunkFileNames: 'dist/chunks/[name].js',

@@ -1,4 +1,4 @@
-import { ParsedDataType } from '..';
+import { ParsedDataType } from '../../src/types';
 
 interface test {
   pie: ParsedDataType<'pie'>,

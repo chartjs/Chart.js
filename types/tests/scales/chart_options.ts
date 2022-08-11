@@ -1,4 +1,4 @@
-import { ChartOptions } from '../..';
+import { ChartOptions } from '../../../src/types';
 
 const chartOptions: ChartOptions<'line'> = {
   scales: {

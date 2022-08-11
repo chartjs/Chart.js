@@ -1,4 +1,4 @@
-import { defaults } from '../..';
+import { defaults } from '../../../src/types';
 
 // https://github.com/chartjs/Chart.js/issues/8711
 const original = defaults.plugins.legend.labels.generateLabels;

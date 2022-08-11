@@ -1,4 +1,4 @@
-import { Chart } from '..';
+import { Chart } from '../../src/types';
 
 Chart.overrides.bar.scales.x.type = 'time';
 

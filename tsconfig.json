@@ -1,16 +1,31 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "checkJs": true,
-    "noEmit": true,
+    /* Type Checking */
     "alwaysStrict": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
+    /* todo: uncomment after transition to TS */
+    // "noFallthroughCasesInSwitch": true,
+    // "noImplicitOverride": true,
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    /* Modules */
+    "moduleResolution": "Node",
     "types": ["offscreencanvas"],
-    "lib": ["es2018", "DOM"]
+    /* Emit */
+    "declaration": true,
+    "outDir": "dist",
+    /* JavaScript Support */
+    "allowJs": true,
+    "checkJs": true,
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,
+    /* Language and Environment */
+    "target": "ES6",
+    "lib": ["es2018", "DOM"],
+    /* Completeness */
+    "skipLibCheck": true
   },
   "typedocOptions": {
     "name": "Chart.js",
@@ -21,7 +36,7 @@
     "out": "./dist/docs/typedoc"
   },
   "include": [
-    "./src/**/*.js",
+    "./src/**/*",
     "./types"
   ],
   "exclude": [
