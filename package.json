@@ -42,7 +42,7 @@
     "scripts": {
         "autobuild": "rollup -c -w",
         "emitDeclarations": "tsc --emitDeclarationOnly",
-        "build": "rollup -c & npm run emitDeclarations",
+        "build": "rollup -c && npm run emitDeclarations",
         "dev": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers chrome --grep",
         "dev:ff": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers firefox --grep",
         "docs": "npm run build && vuepress build docs --no-cache",
