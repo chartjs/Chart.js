@@ -5,7 +5,7 @@ import Scale from '../core/core.scale';
 import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
 
 /**
- * @typedef { import("../core/core.adapters").Unit } Unit
+ * @typedef { import("../core/core.adapters").TimeUnit } Unit
  * @typedef {{common: boolean, size: number, steps?: number}} Interval
  */
 
@@ -58,7 +58,7 @@ function parse(scale, input) {
   // Only parse if its not a timestamp already
   if (!isFinite(value)) {
     value = typeof parser === 'string'
-      ? adapter.parse(value, parser)
+      ? adapter.parse(value, /** @type {Unit} */ (parser))
       : adapter.parse(value);
   }
 

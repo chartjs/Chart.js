@@ -1,0 +1,11 @@
+import { _adapters } from '../../src/types';
+
+_adapters._date.override<{myOption: boolean}>({
+  init() {
+    const booleanOption: boolean = this.options.myOption;
+  },
+  // @ts-expect-error Should return string.
+  format(timestamp) {
+    const numberArg: number = timestamp;
+  }
+});

@@ -1,3 +1,4 @@
+export type {DateAdapter, TimeUnit} from './core.adapters';
 export {default as _adapters} from './core.adapters';
 export {default as Animation} from './core.animation';
 export {default as Animations} from './core.animations';

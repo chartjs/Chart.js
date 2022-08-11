@@ -1,6 +1,6 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
-import { TimeUnit } from './adapters';
+import { TimeUnit } from '../src/core/core.adapters';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
@@ -8,7 +8,6 @@ import { Element } from './element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
-export { DateAdapter, TimeUnit, _adapters } from './adapters';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
 export { Element } from './element';

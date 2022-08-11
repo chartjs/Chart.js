@@ -24,7 +24,6 @@ export {
   Interaction,
   Scale,
   Ticks,
-  _adapters,
   defaults,
   layouts,
   registry,
