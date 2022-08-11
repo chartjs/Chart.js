@@ -55,3 +55,5 @@ overrides:
       '@typescript-eslint/no-use-before-define': "error"
       no-shadow: "off"
       '@typescript-eslint/no-shadow': "error"
+      space-before-function-paren: "off"
+      '@typescript-eslint/space-before-function-paren': [2, never]

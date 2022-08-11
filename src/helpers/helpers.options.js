@@ -40,6 +40,10 @@ export function toLineHeight(value, size) {
 
 const numberOrZero = v => +v || 0;
 
+/**
+ * @param {any} value
+ * @param {string[] | Record<string, string>} props
+ */
 export function _readValueToProps(value, props) {
   const ret = {};
   const objProps = isObject(props);

@@ -11,6 +11,7 @@ import {createContext, drawPoint} from '../helpers';
  * @typedef { import("../platform/platform.base").Chart } Chart
  * @typedef { import("../../types").ChartEvent } ChartEvent
  * @typedef { import("../../types").ActiveElement } ActiveElement
+ * @typedef { import("../core/core.interaction").InteractionItem } InteractionItem
  */
 
 const positioners = {
@@ -1168,10 +1169,10 @@ export class Tooltip extends Element {
   /**
 	 * Helper for determining the active elements for event
 	 * @param {ChartEvent} e - The event to handle
-	 * @param {Element[]} lastActive - Previously active elements
+	 * @param {InteractionItem[]} lastActive - Previously active elements
 	 * @param {boolean} [replay] - This is a replayed event (from update)
 	 * @param {boolean} [inChartArea] - The event is inside chartArea
-	 * @returns {Element[]} - Active elements
+	 * @returns {InteractionItem[]} - Active elements
 	 * @private
 	 */
   _getActiveElements(e, lastActive, replay, inChartArea) {
