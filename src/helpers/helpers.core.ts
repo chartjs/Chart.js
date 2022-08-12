@@ -328,7 +328,7 @@ export function _mergerIf(key: string, target: AnyObject, source: AnyObject) {
 export function _deprecated(scope: string, value: unknown, previous: string, current: string) {
   if (value !== undefined) {
     console.warn(scope + ': "' + previous +
-			'" is deprecated. Please use "' + current + '" instead');
+      '" is deprecated. Please use "' + current + '" instead');
   }
 }
 
