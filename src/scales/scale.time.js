@@ -7,6 +7,7 @@ import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collecti
 /**
  * @typedef { import("../core/core.adapters").TimeUnit } Unit
  * @typedef {{common: boolean, size: number, steps?: number}} Interval
+ * @typedef { import("../core/core.adapters").DateAdapter } DateAdapter
  */
 
 /**
@@ -264,6 +265,7 @@ export default class TimeScale extends Scale {
 
   init(scaleOpts, opts) {
     const time = scaleOpts.time || (scaleOpts.time = {});
+    /** @type {DateAdapter} */
     const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
 
     adapter.init(opts);
