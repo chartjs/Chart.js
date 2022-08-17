@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Chart from 'chart.js/auto';
 import {merge} from 'chart.js/helpers';
 
@@ -17,8 +17,8 @@ function AppAuto() {
           data: [2, 3]
         }]
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div className="App">
