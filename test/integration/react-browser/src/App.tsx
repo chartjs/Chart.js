@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Chart, DoughnutController, ArcElement} from 'chart.js';
 import {merge} from 'chart.js/helpers';
 
@@ -17,8 +17,8 @@ function App() {
           data: [2, 3]
         }]
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div className="App">
