@@ -93,7 +93,7 @@
         "karma-firefox-launcher": "^2.1.0",
         "karma-jasmine": "^4.0.1",
         "karma-jasmine-html-reporter": "^1.5.4",
-        "karma-rollup-preprocessor": "^7.0.7",
+        "karma-rollup-preprocessor": "7.0.7",
         "karma-safari-private-launcher": "^1.0.0",
         "karma-spec-reporter": "0.0.32",
         "luxon": "^2.2.0",
