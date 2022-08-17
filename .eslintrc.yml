@@ -13,7 +13,7 @@ env:
   node: true
 
 parserOptions:
-  ecmaVersion: 2021
+  ecmaVersion: 2022
   sourceType: module
   ecmaFeatures:
     impliedStrict: true
@@ -28,9 +28,11 @@ rules:
   no-empty-function: "off"
   no-use-before-define: ["error", { "functions": false }]
   # disable everything, except Rest/Spread Properties in ES2018
+  es/no-import-meta: "off"
   es/no-async-iteration: "error"
   es/no-malformed-template-literals: "error"
   es/no-regexp-lookbehind-assertions: "error"
   es/no-regexp-named-capture-groups: "error"
   es/no-regexp-s-flag: "error"
   es/no-regexp-unicode-property-escapes: "error"
+  es/no-dynamic-import: "off"

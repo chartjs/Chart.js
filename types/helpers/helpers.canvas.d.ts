@@ -1,4 +1,4 @@
-import { PointStyle } from '../index.esm';
+import { PointStyle } from '..';
 import { Color } from '../color';
 import { ChartArea, RoundedRect } from '../geometric';
 import { CanvasFontSpec } from './helpers.options';

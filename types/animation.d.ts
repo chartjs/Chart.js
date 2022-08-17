@@ -1,4 +1,4 @@
-import { Chart } from './index.esm';
+import { Chart } from '.';
 import { AnyObject } from './basic';
 
 export class Animation {

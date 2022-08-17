@@ -138,6 +138,27 @@ function inflateRect(rect, amount, refRect = {}) {
 
 export default class BarElement extends Element {
 
+  static id = 'bar';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    borderSkipped: 'start',
+    borderWidth: 0,
+    borderRadius: 0,
+    inflateAmount: 'auto',
+    pointStyle: undefined
+  };
+
+  /**
+   * @type {any}
+   */
+  static defaultRoutes = {
+    backgroundColor: 'backgroundColor',
+    borderColor: 'borderColor'
+  };
+
   constructor(cfg) {
     super();
 
@@ -201,24 +222,3 @@ export default class BarElement extends Element {
     return axis === 'x' ? this.width / 2 : this.height / 2;
   }
 }
-
-BarElement.id = 'bar';
-
-/**
- * @type {any}
- */
-BarElement.defaults = {
-  borderSkipped: 'start',
-  borderWidth: 0,
-  borderRadius: 0,
-  inflateAmount: 'auto',
-  pointStyle: undefined
-};
-
-/**
- * @type {any}
- */
-BarElement.defaultRoutes = {
-  backgroundColor: 'backgroundColor',
-  borderColor: 'borderColor'
-};

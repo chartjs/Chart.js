@@ -1,43 +1,23 @@
-const analyze = require('rollup-plugin-analyzer');
-const cleanup = require('rollup-plugin-cleanup');
-const json = require('@rollup/plugin-json');
-const resolve = require('@rollup/plugin-node-resolve').default;
-const terser = require('rollup-plugin-terser').terser;
-const pkg = require('./package.json');
+import cleanup from 'rollup-plugin-cleanup';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import {terser} from 'rollup-plugin-terser';
+import { readFileSync } from "fs";
 
-const input = 'src/index.js';
+const {version, homepage} = JSON.parse(readFileSync('./package.json'));
 
 const banner = `/*!
- * Chart.js v${pkg.version}
- * ${pkg.homepage}
+ * Chart.js v${version}
+ * ${homepage}
  * (c) ${(new Date(process.env.SOURCE_DATE_EPOCH ? (process.env.SOURCE_DATE_EPOCH * 1000) : new Date().getTime())).getFullYear()} Chart.js Contributors
  * Released under the MIT License
  */`;
 
-module.exports = [
-  // UMD builds
-  // dist/chart.min.js
-  // dist/chart.js
+export default [
+  // UMD build
+  // dist/chart.umd.js
   {
-    input,
-    plugins: [
-      json(),
-      resolve(),
-      cleanup({
-        sourcemap: true
-      }),
-      analyze({summaryOnly: true})
-    ],
-    output: {
-      name: 'Chart',
-      file: 'dist/chart.js',
-      banner,
-      format: 'umd',
-      indent: false,
-    },
-  },
-  {
-    input,
+    input: 'src/index.umd.js',
     plugins: [
       json(),
       resolve(),
@@ -49,58 +29,36 @@ module.exports = [
     ],
     output: {
       name: 'Chart',
-      file: 'dist/chart.min.js',
+      file: 'dist/chart.umd.js',
       format: 'umd',
       indent: false,
+      sourcemap: true,
     },
   },
 
   // ES6 builds
-  // dist/chart.mjs
+  // dist/chart.js
   // helpers/*.js
   {
     input: {
-      'dist/chart': 'src/index.esm.js',
+      'dist/chart': 'src/index.js',
       'dist/helpers': 'src/helpers/index.js'
     },
     plugins: [
       json(),
       resolve(),
       cleanup({
-        sourcemap: true
-      }),
-    ],
-    output: {
-      dir: './',
-      chunkFileNames: 'dist/chunks/[name].mjs',
-      entryFileNames: '[name].mjs',
-      banner,
-      format: 'esm',
-      indent: false,
-    },
-  },
-
-  // Legacy ES6 builds for backwards compatibility. Remove for Chart.js 4.0
-  // dist/chart.esm.js
-  // helpers/*.js
-  {
-    input: {
-      'dist/chart.esm': 'src/index.esm.js',
-      'dist/helpers.esm': 'src/helpers/index.js'
-    },
-    plugins: [
-      json(),
-      resolve(),
-      cleanup({
-        sourcemap: true
+        comments: ['some', /__PURE__/],
       }),
     ],
     output: {
       dir: './',
       chunkFileNames: 'dist/chunks/[name].js',
+      entryFileNames: '[name].js',
       banner,
       format: 'esm',
       indent: false,
+      sourcemap: true,
     },
-  },
+  }
 ];

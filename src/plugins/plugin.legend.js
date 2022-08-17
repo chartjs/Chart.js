@@ -10,7 +10,7 @@ import {
 import {_toLeftRightCenter, _alignStartEnd, _textX} from '../helpers/helpers.extras';
 import {toTRBLCorners} from '../helpers/helpers.options';
 /**
- * @typedef { import("../../types/index.esm").ChartEvent } ChartEvent
+ * @typedef { import("../../types").ChartEvent } ChartEvent
  */
 
 const getBoxSize = (labelOpts, fontSize) => {

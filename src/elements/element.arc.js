@@ -261,6 +261,30 @@ function drawBorder(ctx, element, offset, spacing, endAngle, circular) {
 
 export default class ArcElement extends Element {
 
+  static id = 'arc';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    borderAlign: 'center',
+    borderColor: '#fff',
+    borderJoinStyle: undefined,
+    borderRadius: 0,
+    borderWidth: 2,
+    offset: 0,
+    spacing: 0,
+    angle: undefined,
+    circular: true,
+  };
+
+  /**
+   * @type {any}
+   */
+  static defaultRoutes = {
+    backgroundColor: 'backgroundColor'
+  };
+
   constructor(cfg) {
     super();
 
@@ -332,7 +356,7 @@ export default class ArcElement extends Element {
 
   draw(ctx) {
     const {options, circumference} = this;
-    const offset = (options.offset || 0) / 2;
+    const offset = (options.offset || 0) / 4;
     const spacing = (options.spacing || 0) / 2;
     const circular = options.circular;
     this.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
@@ -344,15 +368,10 @@ export default class ArcElement extends Element {
 
     ctx.save();
 
-    let radiusOffset = 0;
-    if (offset) {
-      radiusOffset = offset / 2;
-      const halfAngle = (this.startAngle + this.endAngle) / 2;
-      ctx.translate(Math.cos(halfAngle) * radiusOffset, Math.sin(halfAngle) * radiusOffset);
-      if (this.circumference >= PI) {
-        radiusOffset = offset;
-      }
-    }
+    const halfAngle = (this.startAngle + this.endAngle) / 2;
+    ctx.translate(Math.cos(halfAngle) * offset, Math.sin(halfAngle) * offset);
+    const fix = 1 - Math.sin(Math.min(PI, circumference || 0));
+    const radiusOffset = offset * fix;
 
     ctx.fillStyle = options.backgroundColor;
     ctx.strokeStyle = options.borderColor;
@@ -363,27 +382,3 @@ export default class ArcElement extends Element {
     ctx.restore();
   }
 }
-
-ArcElement.id = 'arc';
-
-/**
- * @type {any}
- */
-ArcElement.defaults = {
-  borderAlign: 'center',
-  borderColor: '#fff',
-  borderJoinStyle: undefined,
-  borderRadius: 0,
-  borderWidth: 2,
-  offset: 0,
-  spacing: 0,
-  angle: undefined,
-  circular: true,
-};
-
-/**
- * @type {any}
- */
-ArcElement.defaultRoutes = {
-  backgroundColor: 'backgroundColor'
-};

@@ -1,4 +1,4 @@
-import { Chart, ChartMeta, Element } from '../../index.esm';
+import { Chart, ChartMeta, Element } from '../..';
 
 const chart = new Chart('id', {
   type: 'doughnut',
@@ -12,5 +12,5 @@ const chart = new Chart('id', {
 
 // A cast is required because the exact type of ChartMeta will vary with
 // mixed charts
-const meta = <ChartMeta<Element, Element, 'doughnut'>>chart.getDatasetMeta(0);
+const meta = <ChartMeta<'doughnut', Element, Element>>chart.getDatasetMeta(0);
 const total = meta.total;

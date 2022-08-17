@@ -1,1 +1,2 @@
-dist/*.js
+dist/*
+test/integration/react-browser/*

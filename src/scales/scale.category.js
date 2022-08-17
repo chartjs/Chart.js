@@ -22,7 +22,27 @@ function findOrAddLabel(labels, raw, index, addedLabels) {
 
 const validIndex = (index, max) => index === null ? null : _limitValue(Math.round(index), 0, max);
 
+function _getLabelForValue(value) {
+  const labels = this.getLabels();
+
+  if (value >= 0 && value < labels.length) {
+    return labels[value];
+  }
+  return value;
+}
+
 export default class CategoryScale extends Scale {
+
+  static id = 'category';
+
+  /**
+   * @type {any}
+   */
+  static defaults = {
+    ticks: {
+      callback: _getLabelForValue
+    }
+  };
 
   constructor(cfg) {
     super(cfg);
@@ -94,12 +114,7 @@ export default class CategoryScale extends Scale {
   }
 
   getLabelForValue(value) {
-    const labels = this.getLabels();
-
-    if (value >= 0 && value < labels.length) {
-      return labels[value];
-    }
-    return value;
+    return _getLabelForValue.call(this, value);
   }
 
   /**
@@ -141,14 +156,3 @@ export default class CategoryScale extends Scale {
     return this.bottom;
   }
 }
-
-CategoryScale.id = 'category';
-
-/**
- * @type {any}
- */
-CategoryScale.defaults = {
-  ticks: {
-    callback: CategoryScale.prototype.getLabelForValue
-  }
-};

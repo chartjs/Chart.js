@@ -1,8 +1,9 @@
 {
     "name": "chart.js-auto",
     "private": true,
-    "description": "auto registering package",
+    "description": "Auto registering package. Exists to support bundlers without exports support such as webpack 4.",
+    "type": "module",
     "main": "auto.js",
-    "module": "auto.mjs",
-    "types": "auto.mts"
+    "exports": "./auto.js",
+    "types": "auto.d.ts"
 }
