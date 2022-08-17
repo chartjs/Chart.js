@@ -90,7 +90,7 @@ export function applyScaleDefaults(defaults) {
   defaults.describe('scale', {
     _fallback: false,
     _scriptable: (name) => !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
-    _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash',
+    _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash' && name !== 'dash',
   });
 
   defaults.describe('scales', {

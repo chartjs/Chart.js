@@ -544,7 +544,7 @@ export default class RadialLinearScale extends LinearScaleBase {
           const optsAtIndex = grid.setContext(context);
           const optsAtIndexBorder = border.setContext(context);
 
-          drawRadiusLine(this, optsAtIndex, offset, labelCount, optsAtIndexBorder);
+          drawRadiusLine(this, optsAtIndex, offset, labelCount, border);
         }
       });
     }

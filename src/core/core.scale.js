@@ -1456,7 +1456,6 @@ export default class Scale extends Element {
       ctx.save();
       ctx.lineWidth = style.width;
       ctx.strokeStyle = style.color;
-      console.log(style.borderDash)
       ctx.setLineDash(style.borderDash || []);
       ctx.lineDashOffset = style.borderDashOffset;
 
