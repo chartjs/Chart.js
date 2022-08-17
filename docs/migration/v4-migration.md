@@ -15,4 +15,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * Ticks callback on time scale now receives timestamp instead of a formatted label.
 
 #### Type changes
-* The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`
+* The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
+
+### General
+* Removed fallback to `fontColor` for the legend text and strikethrough color.
