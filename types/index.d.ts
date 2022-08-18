@@ -4,13 +4,12 @@ import { TimeUnit } from '../src/core/core.adapters';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
-import { Element } from './element';
+import Element from '../src/core/core.element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
-export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export { LayoutItem, LayoutPosition } from './layout';
 

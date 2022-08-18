@@ -7,6 +7,7 @@ export declare class Animation {
   update(cfg: AnyObject, to: unknown, date: number): void;
   cancel(): void;
   tick(date: number): void;
+  readonly _to: unknown;
 }
 
 export interface AnimationEvent {

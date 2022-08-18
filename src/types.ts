@@ -20,7 +20,6 @@ export {
   Animations,
   Chart,
   DatasetController,
-  Element,
   Interaction,
   Scale,
   Ticks,
