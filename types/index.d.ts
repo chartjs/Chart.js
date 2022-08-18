@@ -5,7 +5,7 @@ import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
 import { Element } from './element';
-import { ChartArea, Point } from './geometric';
+import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
 export { DateAdapter, TimeUnit, _adapters } from './adapters';
@@ -153,17 +153,7 @@ export interface BubbleControllerDatasetOptions
   ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
   ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
 
-export interface BubbleDataPoint {
-  /**
-   * X Value
-   */
-  x: number;
-
-  /**
-   * Y Value
-   */
-  y: number;
-
+export interface BubbleDataPoint extends Point {
   /**
    * Bubble radius in pixels (not scaled).
    */
@@ -224,10 +214,7 @@ export const LineController: ChartComponent & {
 
 export type ScatterControllerDatasetOptions = LineControllerDatasetOptions;
 
-export interface ScatterDataPoint {
-  x: number;
-  y: number;
-}
+export interface ScatterDataPoint extends Point {}
 
 export type ScatterControllerChartOptions = LineControllerChartOptions;
 
@@ -1533,7 +1520,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
 
   layout: Partial<{
     autoPadding: boolean;
-    padding: Scriptable<number | Partial<ChartArea>, ScriptableContext<TType>>;
+    padding: Scriptable<Padding, ScriptableContext<TType>>;
   }>;
 }
 
@@ -1676,7 +1663,7 @@ export interface VisualElement {
   inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
   inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
   inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
-  getCenterPoint(useFinalPosition?: boolean): { x: number; y: number };
+  getCenterPoint(useFinalPosition?: boolean): Point;
   getRange?(axis: 'x' | 'y'): number;
 }
 
@@ -1698,9 +1685,7 @@ export interface Segment {
   loop: boolean;
 }
 
-export interface ArcProps {
-  x: number;
-  y: number;
+export interface ArcProps extends Point {
   startAngle: number;
   endAngle: number;
   innerRadius: number;
@@ -1847,10 +1832,7 @@ export const LineElement: ChartComponent & {
   new (cfg: AnyObject): LineElement;
 };
 
-export interface PointProps {
-  x: number;
-  y: number;
-}
+export interface PointProps extends Point {}
 
 export type PointStyle =
   | 'circle'
@@ -1964,9 +1946,7 @@ export const PointElement: ChartComponent & {
   new (cfg: AnyObject): PointElement;
 };
 
-export interface BarProps {
-  x: number;
-  y: number;
+export interface BarProps extends Point {
   base: number;
   horizontal: boolean;
   width: number;
@@ -2515,9 +2495,7 @@ export interface TooltipModel<TType extends ChartType> extends Element<AnyObject
   setActiveElements(active: ActiveDataPoint[], eventPosition: Point): void;
 }
 
-export interface TooltipPosition {
-  x: number;
-  y: number;
+export interface TooltipPosition extends Point {
   xAlign?: TooltipXAlignment;
   yAlign?: TooltipYAlignment;
 }
@@ -2709,7 +2687,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * Padding to add to the tooltip
    * @default 6
    */
-  padding: Scriptable<number | ChartArea, ScriptableTooltipContext<TType>>;
+  padding: Scriptable<Padding, ScriptableTooltipContext<TType>>;
   /**
    * Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
@@ -3500,10 +3478,7 @@ export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialSca
 
 export type ScaleType = keyof ScaleTypeRegistry;
 
-interface CartesianParsedData {
-  x: number;
-  y: number;
-
+interface CartesianParsedData extends Point {
   // Only specified when stacked bars are enabled
   _stacks?: {
     // Key is the stack ID which is generally the axis ID
