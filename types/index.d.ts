@@ -2356,7 +2356,7 @@ export interface LegendOptions<TType extends ChartType> {
     usePointStyle: boolean;
 
     /**
-     * Label borderRadius will match coresponding borderRadius.
+     * Label borderRadius will match corresponding borderRadius.
      * @default false
      */
     useBorderRadius: boolean;
