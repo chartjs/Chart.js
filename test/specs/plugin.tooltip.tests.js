@@ -1698,4 +1698,104 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.opacity).toEqual(1);
     });
   });
+
+  it('should use default callback if user callback returns undefined', async() => {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30],
+          pointHoverBorderColor: 'rgb(255, 0, 0)',
+          pointHoverBackgroundColor: 'rgb(0, 255, 0)'
+        }, {
+          label: 'Dataset 2',
+          data: [40, 40, 40],
+          pointHoverBorderColor: 'rgb(0, 0, 255)',
+          pointHoverBackgroundColor: 'rgb(0, 255, 255)'
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              beforeTitle() {
+                return undefined;
+              },
+              title() {
+                return undefined;
+              },
+              afterTitle() {
+                return undefined;
+              },
+              beforeBody() {
+                return undefined;
+              },
+              beforeLabel() {
+                return undefined;
+              },
+              label() {
+                return undefined;
+              },
+              afterLabel() {
+                return undefined;
+              },
+              afterBody() {
+                return undefined;
+              },
+              beforeFooter() {
+                return undefined;
+              },
+              footer() {
+                return undefined;
+              },
+              afterFooter() {
+                return undefined;
+              },
+              labelTextColor() {
+                return undefined;
+              },
+              labelPointStyle() {
+                return undefined;
+              }
+            }
+          }
+        }
+      }
+    });
+    const {defaults} = Chart;
+    const {tooltip} = chart;
+    const point = chart.getDatasetMeta(0).data[0];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(tooltip).toEqual(jasmine.objectContaining({
+      opacity: 1,
+
+      // Text
+      title: ['Point 1'],
+      beforeBody: [],
+      body: [{
+        before: [],
+        lines: ['Dataset 1: 10'],
+        after: []
+      }],
+      afterBody: [],
+      footer: [],
+      labelTextColors: ['#fff'],
+      labelColors: [{
+        borderColor: defaults.borderColor,
+        backgroundColor: defaults.backgroundColor,
+        borderWidth: 1,
+        borderDash: undefined,
+        borderDashOffset: undefined,
+        borderRadius: 0,
+      }],
+      labelPointStyles: [{
+        pointStyle: 'circle',
+        rotation: 0
+      }]
+    }));
+  });
 });

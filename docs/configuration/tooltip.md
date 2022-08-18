@@ -97,7 +97,7 @@ Allows filtering of [tooltip items](#tooltip-item-context). Must implement at mi
 
 ## Tooltip Callbacks
 
-Namespace: `options.plugins.tooltip.callbacks`, the tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor.
+Namespace: `options.plugins.tooltip.callbacks`, the tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor. If the callback returns `undefined`, then the default callback will be used. To remove things from the tooltip callback should return an empty string.
 
 Namespace: `data.datasets[].tooltip.callbacks`, items marked with `Yes` in the column `Dataset override` can be overridden per dataset.
 
@@ -105,20 +105,20 @@ A [tooltip item context](#tooltip-item-context) is generated for each item that 
 
 | Name | Arguments | Return Type | Dataset override | Description
 | ---- | --------- | ----------- | ---------------- | -----------
-| `beforeTitle` | `TooltipItem[]` | `string | string[]` | | Returns the text to render before the title.
-| `title` | `TooltipItem[]` | `string | string[]` | | Returns text to render as the title of the tooltip.
-| `afterTitle` | `TooltipItem[]` | `string | string[]` | | Returns text to render after the title.
-| `beforeBody` | `TooltipItem[]` | `string | string[]` | | Returns text to render before the body section.
-| `beforeLabel` | `TooltipItem` | `string | string[]` | Yes | Returns text to render before an individual label. This will be called for each item in the tooltip.
-| `label` | `TooltipItem` | `string | string[]` | Yes | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
-| `labelColor` | `TooltipItem` | `object` | Yes | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
-| `labelTextColor` | `TooltipItem` | `Color` | Yes | Returns the colors for the text of the label for the tooltip item.
-| `labelPointStyle` | `TooltipItem` | `object` | Yes | Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points. [more...](#label-point-style-callback)
-| `afterLabel` | `TooltipItem` | `string | string[]` | Yes | Returns text to render after an individual label.
-| `afterBody` | `TooltipItem[]` | `string | string[]` | | Returns text to render after the body section.
-| `beforeFooter` | `TooltipItem[]` | `string | string[]` | | Returns text to render before the footer section.
-| `footer` | `TooltipItem[]` | `string | string[]` | | Returns text to render as the footer of the tooltip.
-| `afterFooter` | `TooltipItem[]` | `string | string[]` | | Text to render after the footer section.
+| `beforeTitle` | `TooltipItem[]` | `string | string[] | undefined` | | Returns the text to render before the title.
+| `title` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render as the title of the tooltip.
+| `afterTitle` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render after the title.
+| `beforeBody` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render before the body section.
+| `beforeLabel` | `TooltipItem` | `string | string[] | undefined` | Yes | Returns text to render before an individual label. This will be called for each item in the tooltip.
+| `label` | `TooltipItem` | `string | string[] | undefined` | Yes | Returns text to render for an individual item in the tooltip. [more...](#label-callback)
+| `labelColor` | `TooltipItem` | `object | undefined` | Yes | Returns the colors to render for the tooltip item. [more...](#label-color-callback)
+| `labelTextColor` | `TooltipItem` | `Color | undefined` | Yes | Returns the colors for the text of the label for the tooltip item.
+| `labelPointStyle` | `TooltipItem` | `object | undefined` | Yes | Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points. [more...](#label-point-style-callback)
+| `afterLabel` | `TooltipItem` | `string | string[] | undefined` | Yes | Returns text to render after an individual label.
+| `afterBody` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render after the body section.
+| `beforeFooter` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render before the footer section.
+| `footer` | `TooltipItem[]` | `string | string[] | undefined` | | Returns text to render as the footer of the tooltip.
+| `afterFooter` | `TooltipItem[]` | `string | string[] | undefined` | | Text to render after the footer section.
 
 ### Label Callback
 
