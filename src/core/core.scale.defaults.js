@@ -34,7 +34,6 @@ export function applyScaleDefaults(defaults) {
       offset: false,
     },
 
-    // border settins
     border: {
       display: true,
       dash: [],
