@@ -4,6 +4,10 @@ Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amoun
 
 ## End user migration
 
+### Charts
+
+* Charts don't override the default tooltip callbacks, so all chart types have the same-looking tooltips.
+
 ### Options
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
@@ -19,6 +23,11 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales[id].grid.borderDash` has been renamed to `scales[id].border.dash`.
 * `scales[id].grid.borderDashOffset` has been renamed to `scales[id].border.dashOffset`.
 * The z index for the border of a scale is now configurable instead of being 1 higher as the grid z index.
+* Linear scales now add and subtracts `5%` of the max value to the range if the min and max are the same instead of `1`.
+* If the tooltip callback returns `undefined`, then the default callback will be used.
 
 #### Type changes
-* The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`
+* The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
+
+### General
+* Removed fallback to `fontColor` for the legend text and strikethrough color.

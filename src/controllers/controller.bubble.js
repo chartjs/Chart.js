@@ -31,16 +31,6 @@ export default class BubbleController extends DatasetController {
       y: {
         type: 'linear'
       }
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          title() {
-            // Title doesn't make sense for scatter since we format the data as a point
-            return '';
-          }
-        }
-      }
     }
   };
 
@@ -105,6 +95,7 @@ export default class BubbleController extends DatasetController {
 	 */
   getLabelAndValue(index) {
     const meta = this._cachedMeta;
+    const labels = this.chart.data.labels || [];
     const {xScale, yScale} = meta;
     const parsed = this.getParsed(index);
     const x = xScale.getLabelForValue(parsed.x);
@@ -112,7 +103,7 @@ export default class BubbleController extends DatasetController {
     const r = parsed._custom;
 
     return {
-      label: meta.label,
+      label: labels[index] || '',
       value: '(' + x + ', ' + y + (r ? ', ' + r : '') + ')'
     };
   }

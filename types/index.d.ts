@@ -5,7 +5,7 @@ import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
 import { Element } from './element';
-import { ChartArea, Point } from './geometric';
+import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
 export { DateAdapter, TimeUnit, _adapters } from './adapters';
@@ -133,6 +133,12 @@ export interface BarControllerDatasetOptions
    * @default 'circle;
    */
   pointStyle: PointStyle;
+
+  /**
+   * Should the bars be grouped on index axis
+   * @default true
+   */
+  grouped: boolean;
 }
 
 export interface BarControllerChartOptions {
@@ -153,17 +159,7 @@ export interface BubbleControllerDatasetOptions
   ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
   ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
 
-export interface BubbleDataPoint {
-  /**
-   * X Value
-   */
-  x: number;
-
-  /**
-   * Y Value
-   */
-  y: number;
-
+export interface BubbleDataPoint extends Point {
   /**
    * Bubble radius in pixels (not scaled).
    */
@@ -224,10 +220,7 @@ export const LineController: ChartComponent & {
 
 export type ScatterControllerDatasetOptions = LineControllerDatasetOptions;
 
-export interface ScatterDataPoint {
-  x: number;
-  y: number;
-}
+export interface ScatterDataPoint extends Point {}
 
 export type ScatterControllerChartOptions = LineControllerChartOptions;
 
@@ -1533,7 +1526,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
 
   layout: Partial<{
     autoPadding: boolean;
-    padding: Scriptable<number | Partial<ChartArea>, ScriptableContext<TType>>;
+    padding: Scriptable<Padding, ScriptableContext<TType>>;
   }>;
 }
 
@@ -1676,7 +1669,7 @@ export interface VisualElement {
   inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
   inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
   inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
-  getCenterPoint(useFinalPosition?: boolean): { x: number; y: number };
+  getCenterPoint(useFinalPosition?: boolean): Point;
   getRange?(axis: 'x' | 'y'): number;
 }
 
@@ -1698,9 +1691,7 @@ export interface Segment {
   loop: boolean;
 }
 
-export interface ArcProps {
-  x: number;
-  y: number;
+export interface ArcProps extends Point {
   startAngle: number;
   endAngle: number;
   innerRadius: number;
@@ -1847,10 +1838,7 @@ export const LineElement: ChartComponent & {
   new (cfg: AnyObject): LineElement;
 };
 
-export interface PointProps {
-  x: number;
-  y: number;
-}
+export interface PointProps extends Point {}
 
 export type PointStyle =
   | 'circle'
@@ -1964,9 +1952,7 @@ export const PointElement: ChartComponent & {
   new (cfg: AnyObject): PointElement;
 };
 
-export interface BarProps {
-  x: number;
-  y: number;
+export interface BarProps extends Point {
   base: number;
   horizontal: boolean;
   width: number;
@@ -2354,6 +2340,18 @@ export interface LegendOptions<TType extends ChartType> {
      * @default false
      */
     usePointStyle: boolean;
+
+    /**
+     * Label borderRadius will match corresponding borderRadius.
+     * @default false
+     */
+    useBorderRadius: boolean;
+
+    /**
+     * Override the borderRadius to use.
+     * @default undefined
+     */
+    borderRadius: number;
   };
   /**
    * true for rendering the legends from right to left.
@@ -2515,9 +2513,7 @@ export interface TooltipModel<TType extends ChartType> extends Element<AnyObject
   setActiveElements(active: ActiveDataPoint[], eventPosition: Point): void;
 }
 
-export interface TooltipPosition {
-  x: number;
-  y: number;
+export interface TooltipPosition extends Point {
   xAlign?: TooltipXAlignment;
   yAlign?: TooltipYAlignment;
 }
@@ -2546,24 +2542,24 @@ export interface TooltipCallbacks<
   Model = TooltipModel<TType>,
   Item = TooltipItem<TType>> {
 
-  beforeTitle(this: Model, tooltipItems: Item[]): string | string[];
-  title(this: Model, tooltipItems: Item[]): string | string[];
-  afterTitle(this: Model, tooltipItems: Item[]): string | string[];
+  beforeTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
+  title(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
 
-  beforeBody(this: Model, tooltipItems: Item[]): string | string[];
-  afterBody(this: Model, tooltipItems: Item[]): string | string[];
+  beforeBody(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterBody(this: Model, tooltipItems: Item[]): string | string[] | void;
 
-  beforeLabel(this: Model, tooltipItem: Item): string | string[];
-  label(this: Model, tooltipItem: Item): string | string[];
-  afterLabel(this: Model, tooltipItem: Item): string | string[];
+  beforeLabel(this: Model, tooltipItem: Item): string | string[] | void;
+  label(this: Model, tooltipItem: Item): string | string[] | void;
+  afterLabel(this: Model, tooltipItem: Item): string | string[] | void;
 
-  labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle;
-  labelTextColor(this: Model, tooltipItem: Item): Color;
-  labelPointStyle(this: Model, tooltipItem: Item): { pointStyle: PointStyle; rotation: number };
+  labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle | void;
+  labelTextColor(this: Model, tooltipItem: Item): Color | void;
+  labelPointStyle(this: Model, tooltipItem: Item): { pointStyle: PointStyle; rotation: number } | void;
 
-  beforeFooter(this: Model, tooltipItems: Item[]): string | string[];
-  footer(this: Model, tooltipItems: Item[]): string | string[];
-  afterFooter(this: Model, tooltipItems: Item[]): string | string[];
+  beforeFooter(this: Model, tooltipItems: Item[]): string | string[] | void;
+  footer(this: Model, tooltipItems: Item[]): string | string[] | void;
+  afterFooter(this: Model, tooltipItems: Item[]): string | string[] | void;
 }
 
 export interface ExtendedPlugin<
@@ -2709,7 +2705,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    * Padding to add to the tooltip
    * @default 6
    */
-  padding: Scriptable<number | ChartArea, ScriptableTooltipContext<TType>>;
+  padding: Scriptable<Padding, ScriptableTooltipContext<TType>>;
   /**
    * Extra distance to move the end of the tooltip arrow away from the tooltip point.
    * @default 2
@@ -2771,8 +2767,8 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   textDirection: Scriptable<string, ScriptableTooltipContext<TType>>;
 
-  animation: AnimationSpec<TType>;
-  animations: AnimationsSpec<TType>;
+  animation: AnimationSpec<TType> | false;
+  animations: AnimationsSpec<TType> | false;
   callbacks: TooltipCallbacks<TType>;
 }
 
@@ -3504,10 +3500,7 @@ export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialSca
 
 export type ScaleType = keyof ScaleTypeRegistry;
 
-interface CartesianParsedData {
-  x: number;
-  y: number;
-
+interface CartesianParsedData extends Point {
   // Only specified when stacked bars are enabled
   _stacks?: {
     // Key is the stack ID which is generally the axis ID
@@ -3543,7 +3536,7 @@ export interface ChartTypeRegistry {
   bar: {
     chartOptions: BarControllerChartOptions;
     datasetOptions: BarControllerDatasetOptions;
-    defaultDataPoint: number;
+    defaultDataPoint: number | null;
     metaExtensions: {};
     parsedDataType: BarParsedData,
     scales: keyof CartesianScaleTypeRegistry;

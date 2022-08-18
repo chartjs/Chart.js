@@ -63,18 +63,6 @@ export default class PolarAreaController extends DatasetController {
           legend.chart.toggleDataVisibility(legendItem.index);
           legend.chart.update();
         }
-      },
-
-      // Need to override these to give a nice default
-      tooltip: {
-        callbacks: {
-          title() {
-            return '';
-          },
-          label(context) {
-            return context.chart.data.labels[context.dataIndex] + ': ' + context.formattedValue;
-          }
-        }
       }
     },
 
