@@ -126,7 +126,7 @@ new Chart(ctx, {
 
 If you want your new chart type to be statically typed, you must provide a `.d.ts` TypeScript declaration file. Chart.js provides a way to augment built-in types with user-defined ones, by using the concept of "declaration merging".
 
-When adding a new chart type, `ChartTypeRegistry` must contains the declarations for the new type, either by extending an existing entry in `ChartTypeRegistry` or by creating a new one.
+When adding a new chart type, `ChartTypeRegistry` must contain the declarations for the new type, either by extending an existing entry in `ChartTypeRegistry` or by creating a new one.
 
 For example, to provide typings for a new chart type that extends from a bubble chart, you would add a `.d.ts` containing:
 
