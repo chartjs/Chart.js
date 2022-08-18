@@ -53,7 +53,7 @@ const config = {
     plugins: {
       color: 'lightGreen',
     }
-  }
+  },
   plugins: [plugin],
 };
 // </block:config>
