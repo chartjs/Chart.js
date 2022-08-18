@@ -61,16 +61,20 @@ const config = {
     },
     scales: {
       x: {
+        border: {
+          display: BORDER
+        },
         grid: {
           display: DISPLAY,
-          drawBorder: BORDER,
           drawOnChartArea: CHART_AREA,
           drawTicks: TICKS,
         }
       },
       y: {
+        border: {
+          display: false
+        },
         grid: {
-          drawBorder: false,
           color: function(context) {
             if (context.tick.value > 0) {
               return Utils.CHART_COLORS.green;

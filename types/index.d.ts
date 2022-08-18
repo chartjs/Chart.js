@@ -2831,13 +2831,28 @@ export interface PluginChartOptions<TType extends ChartType> {
   plugins: PluginOptionsByType<TType>;
 }
 
+export interface BorderOptions {
+  /**
+   * @default true
+   */
+  display: boolean
+  /**
+   * @default []
+   */
+  dash: Scriptable<number[], ScriptableScaleContext>;
+  /**
+   * @default 0
+   */
+  dashOffset: Scriptable<number, ScriptableScaleContext>;
+  color: Color;
+  width: number;
+}
+
 export interface GridLineOptions {
   /**
    * @default true
    */
   display: boolean;
-  borderColor: Color;
-  borderWidth: number;
   /**
    * @default false
    */
@@ -2847,22 +2862,9 @@ export interface GridLineOptions {
    */
   color: ScriptableAndArray<Color, ScriptableScaleContext>;
   /**
-   * @default []
-   */
-  borderDash: Scriptable<number[], ScriptableScaleContext>;
-  /**
-   * @default 0
-   */
-  borderDashOffset: Scriptable<number, ScriptableScaleContext>;
-  /**
    * @default 1
    */
   lineWidth: ScriptableAndArray<number, ScriptableScaleContext>;
-
-  /**
-   * @default true
-   */
-  drawBorder: boolean;
   /**
    * @default true
    */
@@ -3091,6 +3093,8 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   offset: boolean;
 
   grid: GridLineOptions;
+
+  border: BorderOptions;
 
   /** Options for the scale title. */
   title: {

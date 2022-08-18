@@ -7,6 +7,7 @@ Namespace: `options.scales[scaleId]`
 | `type` | `string` | | Type of scale being employed. Custom scales can be created and registered with a string key. This allows changing the type of an axis for a chart.
 | `alignToPixels` | `boolean` | `false` | Align pixel values to device pixels.
 | `backgroundColor` | [`Color`](/general/colors.md) | | Background color of the scale area.
+| `border` | `object` | | Border configuration. [more...](/axes/styling.md#border-configuration)
 | `display` | `boolean`\|`string` | `true` | Controls the axis global visibility (visible when `true`, hidden when `false`). When `display: 'auto'`, the axis is visible only if at least one associated dataset is visible.
 | `grid` | `object` | | Grid line configuration. [more...](/axes/styling.md#grid-line-configuration)
 | `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](/axes/index.md#axis-range-settings)

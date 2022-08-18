@@ -22,13 +22,16 @@
                     "axis": "x",
                     "min": -100,
                     "max": 100,
+                    "border": {
+                        "color": "red"
+                    },
                     "grid": {
                         "color": "red",
-                        "borderColor": "red",
                         "drawOnChartArea": false
                     },
                     "ticks": {
-                        "display": true
+                        "display": true,
+                        "color": "red"
                     }
                 },
                 "y": {
@@ -36,9 +39,11 @@
                     "axis": "y",
                     "min": -100,
                     "max": 100,
+                    "border": {
+                        "color": "red"
+                    },
                     "grid": {
                         "color": "red",
-                        "borderColor": "red",
                         "drawOnChartArea": false
                     },
                     "ticks": {

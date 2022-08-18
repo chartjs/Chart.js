@@ -46,8 +46,8 @@ module.exports = {
         },
         y: {
           type: 'linear',
-          grid: {
-            drawBorder: false
+          border: {
+            display: false
           }
         }
       }

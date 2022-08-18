@@ -26,16 +26,19 @@ export function applyScaleDefaults(defaults) {
     grid: {
       display: true,
       lineWidth: 1,
-      drawBorder: true,
       drawOnChartArea: true,
       drawTicks: true,
       tickLength: 8,
       tickWidth: (_ctx, options) => options.lineWidth,
       tickColor: (_ctx, options) => options.color,
       offset: false,
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderWidth: 1
+    },
+
+    border: {
+      display: true,
+      dash: [],
+      dashOffset: 0.0,
+      width: 1
     },
 
     // scale title
@@ -80,13 +83,13 @@ export function applyScaleDefaults(defaults) {
 
   defaults.route('scale.ticks', 'color', '', 'color');
   defaults.route('scale.grid', 'color', '', 'borderColor');
-  defaults.route('scale.grid', 'borderColor', '', 'borderColor');
+  defaults.route('scale.border', 'color', '', 'borderColor');
   defaults.route('scale.title', 'color', '', 'color');
 
   defaults.describe('scale', {
     _fallback: false,
     _scriptable: (name) => !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
-    _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash',
+    _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash' && name !== 'dash',
   });
 
   defaults.describe('scales', {

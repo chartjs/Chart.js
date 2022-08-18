@@ -19,8 +19,8 @@ module.exports = {
           stackWeight: 2,
           offset: true,
           bounds: 'data',
-          grid: {
-            borderColor: 'red'
+          border: {
+            color: 'red'
           },
           ticks: {
             autoSkip: false,
@@ -35,8 +35,8 @@ module.exports = {
           stackWeight: 2,
           offset: true,
           bounds: 'data',
-          grid: {
-            borderColor: 'green'
+          border: {
+            color: 'green'
           },
           ticks: {
             autoSkip: false,
@@ -51,8 +51,8 @@ module.exports = {
           stackWeight: 6,
           offset: true,
           bounds: 'data',
-          grid: {
-            borderColor: 'blue'
+          border: {
+            color: 'blue'
           },
           ticks: {
             autoSkip: false,
@@ -66,8 +66,8 @@ module.exports = {
           stack: '1',
           stackWeight: 2,
           offset: true,
-          grid: {
-            borderColor: 'red'
+          border: {
+            color: 'red'
           },
           ticks: {
             precision: 0
@@ -79,8 +79,8 @@ module.exports = {
           stack: '1',
           offset: true,
           stackWeight: 2,
-          grid: {
-            borderColor: 'green'
+          border: {
+            color: 'green'
           },
           ticks: {
             precision: 0
@@ -92,8 +92,8 @@ module.exports = {
           stack: '1',
           stackWeight: 3,
           offset: true,
-          grid: {
-            borderColor: 'blue'
+          border: {
+            color: 'blue'
           },
           ticks: {
             precision: 0

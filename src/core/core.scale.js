@@ -1004,7 +1004,7 @@ export default class Scale extends Element {
     const axis = this.axis;
     const chart = this.chart;
     const options = this.options;
-    const {grid, position} = options;
+    const {grid, position, border} = options;
     const offset = grid.offset;
     const isHorizontal = this.isHorizontal();
     const ticks = this.ticks;
@@ -1012,8 +1012,8 @@ export default class Scale extends Element {
     const tl = getTickMarkLength(grid);
     const items = [];
 
-    const borderOpts = grid.setContext(this.getContext());
-    const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
+    const borderOpts = border.setContext(this.getContext());
+    const axisWidth = borderOpts.display ? borderOpts.width : 0;
     const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
       return _alignPixel(chart, pixel, axisWidth);
@@ -1076,12 +1076,14 @@ export default class Scale extends Element {
     const limit = valueOrDefault(options.ticks.maxTicksLimit, ticksLength);
     const step = Math.max(1, Math.ceil(ticksLength / limit));
     for (i = 0; i < ticksLength; i += step) {
-      const optsAtIndex = grid.setContext(this.getContext(i));
+      const context = this.getContext(i);
+      const optsAtIndex = grid.setContext(context);
+      const optsAtIndexBorder = border.setContext(context);
 
       const lineWidth = optsAtIndex.lineWidth;
       const lineColor = optsAtIndex.color;
-      const borderDash = optsAtIndex.borderDash || [];
-      const borderDashOffset = optsAtIndex.borderDashOffset;
+      const borderDash = optsAtIndexBorder.dash || [];
+      const borderDashOffset = optsAtIndexBorder.dashOffset;
 
       const tickWidth = optsAtIndex.tickWidth;
       const tickColor = optsAtIndex.tickColor;
@@ -1496,9 +1498,9 @@ export default class Scale extends Element {
 	 * @protected
 	 */
   drawBorder() {
-    const {chart, ctx, options: {grid}} = this;
-    const borderOpts = grid.setContext(this.getContext());
-    const axisWidth = grid.drawBorder ? borderOpts.borderWidth : 0;
+    const {chart, ctx, options: {border, grid}} = this;
+    const borderOpts = border.setContext(this.getContext());
+    const axisWidth = border.display ? borderOpts.width : 0;
     if (!axisWidth) {
       return;
     }
@@ -1516,8 +1518,8 @@ export default class Scale extends Element {
       x1 = x2 = borderValue;
     }
     ctx.save();
-    ctx.lineWidth = borderOpts.borderWidth;
-    ctx.strokeStyle = borderOpts.borderColor;
+    ctx.lineWidth = borderOpts.width;
+    ctx.strokeStyle = borderOpts.color;
 
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -1622,6 +1624,7 @@ export default class Scale extends Element {
     const opts = this.options;
     const tz = opts.ticks && opts.ticks.z || 0;
     const gz = valueOrDefault(opts.grid && opts.grid.z, -1);
+    const bz = valueOrDefault(opts.border && opts.border.z, 0);
 
     if (!this._isVisible() || this.draw !== Scale.prototype.draw) {
       // backward compatibility: draw has been overridden by custom scale
@@ -1641,7 +1644,7 @@ export default class Scale extends Element {
         this.drawTitle();
       }
     }, {
-      z: gz + 1, // TODO, v4 move border options to its own object and add z
+      z: bz,
       draw: () => {
         this.drawBorder();
       }

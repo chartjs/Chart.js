@@ -264,7 +264,7 @@ function pathRadiusLine(scale, radius, circular, labelCount) {
   }
 }
 
-function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
+function drawRadiusLine(scale, gridLineOpts, radius, labelCount, borderOpts) {
   const ctx = scale.ctx;
   const circular = gridLineOpts.circular;
 
@@ -277,8 +277,8 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
   ctx.save();
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
-  ctx.setLineDash(gridLineOpts.borderDash);
-  ctx.lineDashOffset = gridLineOpts.borderDashOffset;
+  ctx.setLineDash(borderOpts.dash);
+  ctx.lineDashOffset = borderOpts.dashOffset;
 
   ctx.beginPath();
   pathRadiusLine(scale, radius, circular, labelCount);
@@ -527,7 +527,7 @@ export default class RadialLinearScale extends LinearScaleBase {
   drawGrid() {
     const ctx = this.ctx;
     const opts = this.options;
-    const {angleLines, grid} = opts;
+    const {angleLines, grid, border} = opts;
     const labelCount = this._pointLabels.length;
 
     let i, offset, position;
@@ -540,8 +540,11 @@ export default class RadialLinearScale extends LinearScaleBase {
       this.ticks.forEach((tick, index) => {
         if (index !== 0) {
           offset = this.getDistanceFromCenterForValue(tick.value);
-          const optsAtIndex = grid.setContext(this.getContext(index));
-          drawRadiusLine(this, optsAtIndex, offset, labelCount);
+          const context = this.getContext(index);
+          const optsAtIndex = grid.setContext(context);
+          const optsAtIndexBorder = border.setContext(context);
+
+          drawRadiusLine(this, optsAtIndex, offset, labelCount, optsAtIndexBorder);
         }
       });
     }

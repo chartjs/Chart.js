@@ -14,9 +14,11 @@ module.exports = {
           ticks: {
             display: false
           },
+          border: {
+            color: 'blue',
+            width: 2,
+          },
           grid: {
-            borderColor: 'blue',
-            borderWidth: 2,
             color: 'green',
             drawTicks: false,
           }
@@ -25,9 +27,11 @@ module.exports = {
           ticks: {
             display: false
           },
+          border: {
+            color: 'black',
+            width: 2,
+          },
           grid: {
-            borderColor: 'black',
-            borderWidth: 2,
             color: 'red',
             drawTicks: false,
           }
