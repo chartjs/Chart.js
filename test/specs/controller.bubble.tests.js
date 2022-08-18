@@ -359,4 +359,68 @@ describe('Chart.controllers.bubble', function() {
       expect(point.options.radius).toBe(20);
     });
   });
+
+  it('should not override tooltip title and label callbacks', async() => {
+    const chart = window.acquireChart({
+      type: 'bubble',
+      data: {
+        labels: ['Label 1', 'Label 2'],
+        datasets: [{
+          data: [{
+            x: 10,
+            y: 15,
+            r: 15
+          },
+          {
+            x: 12,
+            y: 10,
+            r: 10
+          }],
+          label: 'Dataset 1'
+        }, {
+          data: [{
+            x: 20,
+            y: 10,
+            r: 5
+          },
+          {
+            x: 4,
+            y: 8,
+            r: 30
+          }],
+          label: 'Dataset 2'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+      }
+    });
+    const {tooltip} = chart;
+    const point = chart.getDatasetMeta(0).data[0];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(tooltip.title).toEqual(['Label 1']);
+    expect(tooltip.body).toEqual([{
+      before: [],
+      lines: ['Dataset 1: (10, 15, 15)'],
+      after: []
+    }]);
+
+    chart.options.plugins.tooltip = {mode: 'dataset'};
+    chart.update();
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(tooltip.title).toEqual(['Dataset 1']);
+    expect(tooltip.body).toEqual([{
+      before: [],
+      lines: ['Label 1: (10, 15, 15)'],
+      after: []
+    }, {
+      before: [],
+      lines: ['Label 2: (12, 10, 10)'],
+      after: []
+    }]);
+  });
 });

@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController';
-import {isArray, isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
+import {isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
 import {formatNumber} from '../helpers/helpers.intl';
 import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
 
@@ -118,28 +118,6 @@ export default class DoughnutController extends DatasetController {
         onClick(e, legendItem, legend) {
           legend.chart.toggleDataVisibility(legendItem.index);
           legend.chart.update();
-        }
-      },
-      tooltip: {
-        callbacks: {
-          title() {
-            return '';
-          },
-          label(tooltipItem) {
-            let dataLabel = tooltipItem.label;
-            const value = ': ' + tooltipItem.formattedValue;
-
-            if (isArray(dataLabel)) {
-              // show value on first line of multiline label
-              // need to clone because we are changing the value
-              dataLabel = dataLabel.slice();
-              dataLabel[0] += value;
-            } else {
-              dataLabel += value;
-            }
-
-            return dataLabel;
-          }
         }
       }
     }

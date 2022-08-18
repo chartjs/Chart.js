@@ -26,19 +26,6 @@ export default class ScatterController extends DatasetController {
       mode: 'point'
     },
 
-    plugins: {
-      tooltip: {
-        callbacks: {
-          title() {
-            return '';     // doesn't make sense for scatter since data are formatted as a point
-          },
-          label(item) {
-            return '(' + item.label + ', ' + item.formattedValue + ')';
-          }
-        }
-      }
-    },
-
     scales: {
       x: {
         type: 'linear'
@@ -48,6 +35,23 @@ export default class ScatterController extends DatasetController {
       }
     }
   };
+
+  /**
+	 * @protected
+	 */
+  getLabelAndValue(index) {
+    const meta = this._cachedMeta;
+    const labels = this.chart.data.labels || [];
+    const {xScale, yScale} = meta;
+    const parsed = this.getParsed(index);
+    const x = xScale.getLabelForValue(parsed.x);
+    const y = yScale.getLabelForValue(parsed.y);
+
+    return {
+      label: labels[index] || '',
+      value: '(' + x + ', ' + y + ')'
+    };
+  }
 
   update(mode) {
     const meta = this._cachedMeta;

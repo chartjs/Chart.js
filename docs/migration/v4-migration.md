@@ -4,6 +4,10 @@ Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amoun
 
 ## End user migration
 
+### Charts
+
+* Charts don't override the default tooltip callbacks, so all chart types have the same-looking tooltips.
+
 ### Options
 
 A number of changes were made to the configuration options passed to the `Chart` constructor. Those changes are documented below.
