@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "jsx": "react",
+      "target": "ES6",
+      "moduleResolution": "Node",
+      "allowSyntheticDefaultImports": true,
+      "alwaysStrict": true,
+      "strict": true,
+      "noEmit": true
+    },
+    "include": [
+      "./**/*.tsx",
+    ]
+  }

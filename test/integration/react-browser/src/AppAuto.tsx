@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
-import {Chart, DoughnutController, ArcElement} from 'chart.js';
+import React, {useEffect} from 'react';
+import Chart from 'chart.js/auto';
 import {merge} from 'chart.js/helpers';
 
-Chart.register(DoughnutController, ArcElement);
-
-function App() {
+function AppAuto() {
   useEffect(() => {
     const c = Chart.getChart('myChart');
-    if(c) c.destroy();
+    if (c) { 
+      c.destroy();
+    }
 
     new Chart('myChart', {
       type: 'doughnut',
@@ -17,8 +17,8 @@ function App() {
           data: [2, 3]
         }]
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div className="App">
@@ -27,4 +27,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppAuto;
