@@ -4,12 +4,7 @@ import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUnde
 import {toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
 import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {createContext, toFont, toPadding, _addGrace} from '../helpers/helpers.options';
-
-import './core.scale.defaults';
-
-
 import {autoSkip} from './core.scale.autoskip';
-
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;

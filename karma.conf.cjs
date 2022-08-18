@@ -6,7 +6,7 @@ const resolve = require('@rollup/plugin-node-resolve').default;
 const yargs = require('yargs');
 
 module.exports = async function(karma) {
-  const builds  = (await import('./rollup.config.js')).default;
+  const builds = (await import('./rollup.config.js')).default;
 
   const args = yargs
     .option('verbose', {default: false})

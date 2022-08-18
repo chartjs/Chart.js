@@ -1,4 +1,3 @@
-import defaults from './core.defaults';
 import {defined, each, isObject} from '../helpers/helpers.core';
 import {toPadding} from '../helpers/helpers.options';
 
@@ -258,16 +257,6 @@ function placeBoxes(boxes, chartArea, params, stacks) {
   chartArea.x = x;
   chartArea.y = y;
 }
-
-defaults.set('layout', {
-  autoPadding: true,
-  padding: {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
-  }
-});
 
 /**
  * @interface LayoutItem

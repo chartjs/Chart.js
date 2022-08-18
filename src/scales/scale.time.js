@@ -27,7 +27,7 @@ const INTERVALS = {
 /**
  * @type {Unit[]}
  */
-const UNITS = /** @type Unit[] */(Object.keys(INTERVALS));
+const UNITS = /** @type Unit[] */ /* #__PURE__ */ (Object.keys(INTERVALS));
 
 /**
  * @param {number} a

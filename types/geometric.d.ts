@@ -35,3 +35,5 @@ export type RoundedRect = {
   h: number;
   radius?: CornerRadius
 }
+
+export type Padding = Partial<TRBL> | number | Point;
