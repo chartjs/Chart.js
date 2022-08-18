@@ -5,7 +5,7 @@ import {merge} from 'chart.js/helpers';
 function AppAuto() {
   useEffect(() => {
     const c = Chart.getChart('myChart');
-    if(c) { 
+    if (c) { 
       c.destroy();
     }
 

@@ -7,7 +7,7 @@ Chart.register(DoughnutController, ArcElement);
 function App() {
   useEffect(() => {
     const c = Chart.getChart('myChart');
-    if(c) {
+    if (c) {
       c.destroy();
     }
 
