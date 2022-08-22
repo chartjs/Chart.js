@@ -25,18 +25,18 @@ import Chart from 'chart.js/auto';
 
 ### Bundle optimization
 
-When optimizing the bundle, instead of the `registerables`, you need to import and register the components that are needed in your application.
+When optimizing the bundle, you need to import and register the components that are needed in your application.
 
 The options are categorized into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller, element(s) used by that controller and scale(s)):
 
 * Bar chart
   * `BarController`
   * `BarElement`
-  * Default scales: x: `CategoryScale`, y: `LinearScale`
+  * Default scales: `CategoryScale` (x), `LinearScale` (y)
 * Bubble chart
   * `BubbleController`
   * `PointElement`
-  * Default scales: x/y: `LinearScale`
+  * Default scales: `LinearScale` (x/y)
 * Doughnut chart
   * `DoughnutController`
   * `ArcElement`
@@ -45,7 +45,7 @@ The options are categorized into controllers, elements, plugins, scales. You can
   * `LineController`
   * `LineElement`
   * `PointElement`
-  * Default scales: x: `CategoryScale`, y: `LinearScale`
+  * Default scales: `CategoryScale` (x), `LinearScale` (y)
 * Pie chart
   * `PieController`
   * `ArcElement`
@@ -53,18 +53,18 @@ The options are categorized into controllers, elements, plugins, scales. You can
 * PolarArea chart
   * `PolarAreaController`
   * `ArcElement`
-  * Default scale: r: `RadialLinearScale`
+  * Default scale: `RadialLinearScale` (r)
 * Radar chart
   * `RadarController`
   * `LineElement`
   * `PointElement`
-  * Default scale: r: `RadialLinearScale`
+  * Default scale: `RadialLinearScale` (r)
 * Scatter chart
   * `ScatterController`
   * `PointElement`
-  * Default scales: x/y: `LinearScale`
+  * Default scales: `LinearScale` (x/y)
 
-The plugin imports are:
+Available plugins:
 
 * [`Decimation`](../configuration/decimation.md)
 * `Filler` - used to fill area described by `LineElement`, see [Area charts](../charts/area.md)
