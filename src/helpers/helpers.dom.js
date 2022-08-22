@@ -46,7 +46,7 @@ function parseMaxStyle(styleValue, node, parentProperty) {
   return valueInPixels;
 }
 
-const getComputedStyle = (element) => window.getComputedStyle(element, null);
+const getComputedStyle = (element) => element.ownerDocument.defaultView.getComputedStyle(element, null);
 
 export function getStyle(el, property) {
   return getComputedStyle(el).getPropertyValue(property);
