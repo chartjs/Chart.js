@@ -33,7 +33,7 @@ const data = {
 // <block:plugin:2>
 // Note: changes to the plugin code is not reflected to the chart, because the plugin is loaded at chart construction time and editor changes only trigger an chart.update().
 const plugin = {
-  id: 'custom_canvas_background_color',
+  id: 'customCanvasBackgroundColor',
   beforeDraw: (chart, args, options) => {
     const {ctx} = chart;
     ctx.save();
@@ -51,7 +51,9 @@ const config = {
   data: data,
   options: {
     plugins: {
-      color: 'lightGreen',
+      customCanvasBackgroundColor: {
+        color: 'lightGreen',
+      }
     }
   },
   plugins: [plugin],
@@ -95,7 +97,7 @@ const image = new Image();
 image.src = 'https://www.chartjs.org/img/chartjs-logo.svg';
 
 const plugin = {
-  id: 'custom_canvas_background_image',
+  id: 'customCanvasBackgroundImage',
   beforeDraw: (chart) => {
     if (image.complete) {
       const ctx = chart.ctx;
