@@ -45,17 +45,17 @@
         "build": "rollup -c && npm run emitDeclarations",
         "dev": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers chrome --grep",
         "dev:ff": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers firefox --grep",
-        "docs": "npm run build && vuepress build docs --no-cache",
-        "docs:dev": "npm run build && vuepress dev docs --no-cache",
+        "docs": "pnpm run build && pnpm --filter './docs/**' build",
+        "docs:dev": "pnpm run build && pnpm --filter './docs/**' dev",
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\"",
         "lint-md": "eslint \"**/*.md\"",
-        "lint-types": "eslint \"types/**/*.ts\" && npm run build && node types/tests/autogen.js && tsc -p types/tests/",
-        "lint": "concurrently \"npm:lint-*\"",
+        "lint-types": "eslint \"types/**/*.ts\" && pnpm run build && node types/tests/autogen.js && tsc -p types/tests/",
+        "lint": "concurrently \"pnpm:lint-*\"",
         "test-size": "size-limit",
-        "test": "npm run lint && npm run test-ci",
-        "test-ci": "concurrently \"npm:test-ci-*\"",
+        "test": "pnpm lint && pnpm test-ci",
+        "test-ci": "concurrently \"pnpm:test-ci-*\"",
         "test-ci-karma": "cross-env NODE_ENV=test karma start ./karma.conf.cjs --auto-watch --single-run --coverage --grep",
-        "test-ci-integration": "mocha --full-trace test/integration/*-test.cjs"
+        "test-ci-integration": "pnpm --filter './test/integration/**' test"
     },
     "devDependencies": {
         "@kurkle/color": "^0.2.1",
@@ -63,15 +63,12 @@
         "@rollup/plugin-inject": "^4.0.4",
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^13.3.0",
-        "@simonbrunel/vuepress-plugin-versions": "^0.2.0",
         "@size-limit/preset-big-lib": "^8.0.0",
         "@swc/core": "^1.2.224",
         "@types/estree": "^1.0.0",
         "@types/offscreencanvas": "^2019.7.0",
         "@typescript-eslint/eslint-plugin": "^5.32.0",
         "@typescript-eslint/parser": "^5.32.0",
-        "@vuepress/plugin-google-analytics": "^1.9.7",
-        "@vuepress/plugin-html-redirect": "^0.1.4",
         "chartjs-adapter-luxon": "^1.2.0",
         "chartjs-adapter-moment": "^1.0.0",
         "chartjs-test-utils": "^0.4.0",
@@ -98,8 +95,6 @@
         "karma-safari-private-launcher": "^1.0.0",
         "karma-spec-reporter": "0.0.32",
         "luxon": "^3.0.1",
-        "markdown-it-include": "^2.0.0",
-        "mocha": "^10.0.0",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.34",
         "pixelmatch": "^5.3.0",
@@ -109,18 +104,19 @@
         "rollup-plugin-swc3": "^0.3.0",
         "rollup-plugin-terser": "^7.0.2",
         "size-limit": "^8.0.0",
-        "typedoc": "^0.23.10",
-        "typedoc-plugin-markdown": "^3.13.4",
         "typescript": "^4.7.4",
-        "vue-tabs-component": "^1.5.0",
-        "vuepress": "^1.9.7",
-        "vuepress-plugin-code-copy": "^1.0.6",
-        "vuepress-plugin-flexsearch": "^0.3.0",
-        "vuepress-plugin-redirect": "^1.2.5",
-        "vuepress-plugin-tabs": "^0.3.0",
-        "vuepress-plugin-typedoc": "^0.11.0",
-        "vuepress-theme-chartjs": "^0.2.0",
-        "webpack": "^4.46.0",
         "yargs": "^17.5.1"
+    },
+    "engines": {
+        "pnpm": "^7.0.0"
+    },
+    "packageManager": "pnpm@7.9.0",
+    "pnpm": {
+        "overrides": {
+            "html-entities": "1.4.0"
+        },
+        "peerDependencyRules": {
+            "ignoreMissing": ["chart.js"]
+        }
     }
 }

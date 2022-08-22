@@ -24,20 +24,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.2
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
-          cache: npm
+          cache: pnpm
       - name: Setup and build
         run: |
-          npm ci
-          npm install -g json
+          pnpm install
+          pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
           json -I -f package-lock.json -e "this.version=\"$VERSION\""
-          npm run build
+          pnpm run build
           ./scripts/docs-config.sh "$VERSION" release
-          npm run docs
-          npm pack
+          pnpm run docs
+          pnpm pack
         env:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Publish to NPM
@@ -68,19 +69,20 @@ jobs:
     if: "!github.event.release.prerelease"
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.2
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
-          cache: npm
+          cache: pnpm
       - name: Setup and build
         run: |
-          npm ci
-          npm install -g json
+          pnpm install
+          pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
           json -I -f package-lock.json -e "this.version=\"$VERSION\""
-          npm run build
+          pnpm run build
           ./scripts/docs-config.sh "$VERSION"
-          npm run docs
+          pnpm run docs
         env:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Deploy Docs

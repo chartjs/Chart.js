@@ -1,0 +1,33 @@
+{
+    "name": "docs",
+    "private": "true",
+    "version": "4.0.0-dev",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "build": "vuepress build --no-cache",
+        "dev": "vuepress dev --no-cache"
+    },
+    "devDependencies": {
+        "@simonbrunel/vuepress-plugin-versions": "^0.2.0",
+        "@vuepress/plugin-google-analytics": "^1.9.7",
+        "@vuepress/plugin-html-redirect": "^0.1.2",
+        "html-webpack-inline-source-plugin": "^0.0.10",
+        "html-webpack-plugin": "^4.5.2",
+        "markdown-it": "^8.4.2",
+        "markdown-it-include": "^2.0.0",
+        "typedoc": "^0.23.10",
+        "typedoc-plugin-markdown": "^3.13.4",
+        "typescript": "^4.7.4",
+        "vue": "^2.6.14",
+        "vue-tabs-component": "^1.5.0",
+        "vuepress": "^1.9.7",
+        "vuepress-plugin-code-copy": "^1.0.6",
+        "vuepress-plugin-flexsearch": "^0.3.0",
+        "vuepress-plugin-redirect": "^1.2.5",
+        "vuepress-plugin-tabs": "^0.3.0",
+        "vuepress-plugin-typedoc": "^0.11.0",
+        "vuepress-theme-chartjs": "^0.2.0",
+        "webpack": "^4.46.0"
+    }
+}

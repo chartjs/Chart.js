@@ -24,17 +24,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.2
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          cache: npm
+          cache: pnpm
       - name: Package & Deploy Docs
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
           ./scripts/docs-config.sh "master"
-          npm run docs
-          npm pack
+          pnpm run docs
+          pnpm pack
           ./scripts/deploy-docs.sh "master"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}

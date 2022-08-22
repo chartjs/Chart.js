@@ -31,10 +31,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.2
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          cache: npm
+          cache: pnpm
       - uses: dorny/paths-filter@v2
         id: changes
         with:
@@ -55,29 +56,29 @@ jobs:
               - 'package.json'
               - 'tsconfig.json'
       - name: Install
-        run: npm ci
+        run: pnpm install
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
           steps.changes.outputs.test == 'true') && 
           runner.os != 'Windows'
         run: |
-          npm run build
+          pnpm run build
           if [ "${{ runner.os }}" == "macOS" ]; then
-            npm run test-ci --browsers chrome,safari
+            pnpm run test-ci --browsers chrome,safari
           else
-            xvfb-run --auto-servernum npm run test-ci
+            xvfb-run --auto-servernum pnpm run test-ci
           fi
         shell: bash
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
-          npm run docs
-          npm pack
+          pnpm run docs
+          pnpm pack
       - name: Coveralls Parallel - Chrome
         if: |
           steps.changes.outputs.src == 'true' &&
