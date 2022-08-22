@@ -51,7 +51,9 @@ const config = {
   data: data,
   options: {
     plugins: {
-      color: 'lightGreen',
+      custom_canvas_background_color: {
+        color: 'lightGreen',
+      }
     }
   },
   plugins: [plugin],
