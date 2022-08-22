@@ -31,3 +31,5 @@ A number of changes were made to the configuration options passed to the `Chart`
 
 ### General
 * Removed fallback to `fontColor` for the legend text and strikethrough color.
+* Removed `config._chart` fallback for `this.chart` in the filler plugin.
+* Removed `this._chart` in the filler plugin.
