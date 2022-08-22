@@ -2575,7 +2575,7 @@ export interface ExtendedPlugin<
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart tooltip drawing.
    */
-  beforeTooltipDraw?(chart: Chart, args: { tooltip: Model }, options: O): boolean | void;
+  beforeTooltipDraw?(chart: Chart, args: { tooltip: Model, cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after drawing the `tooltip`. Note that this hook will not
    * be called if the tooltip drawing has been previously cancelled.

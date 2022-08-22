@@ -1241,7 +1241,7 @@ export default {
         tooltip
       };
 
-      if (chart.notifyPlugins('beforeTooltipDraw', args) === false) {
+      if (chart.notifyPlugins('beforeTooltipDraw', {...args, cancelable: true}) === false) {
         return;
       }
 
