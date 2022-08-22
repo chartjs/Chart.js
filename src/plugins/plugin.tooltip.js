@@ -465,9 +465,7 @@ export class Tooltip extends Element {
     this._tooltipItems = [];
     this.$animations = undefined;
     this.$context = undefined;
-    // TODO: V4, remove config._chart and this._chart backward compatibility aliases
-    this.chart = config.chart || config._chart;
-    this._chart = this.chart;
+    this.chart = config.chart;
     this.options = config.options;
     this.dataPoints = undefined;
     this.title = undefined;
