@@ -13,7 +13,7 @@ Chart.js can be integrated with plain JavaScript or with different module loader
 
 ## Bundlers (Webpack, Rollup, etc.)
 
-Chart.js 3 is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
+Chart.js is tree-shakeable, so it is necessary to import and register the controllers, elements, scales and plugins you are going to use.
 
 ### Quick start
 
