@@ -27,7 +27,7 @@ import Chart from 'chart.js/auto';
 
 When optimizing the bundle, instead of the `registerables`, you need to import and register the components that are needed in your application.
 
-The options are categorised (inspect `registerables`) into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller, element(s) used by that controller and scale(s)):
+The options are categorized into controllers, elements, plugins, scales. You can pick and choose many of these, e.g. if you are not going to use tooltips, don't import and register the `Tooltip` plugin. But each type of chart has its own bare-minimum requirements (typically the type's controller, element(s) used by that controller and scale(s)):
 
 * Bar chart
   * `BarController`
