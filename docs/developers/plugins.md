@@ -181,3 +181,23 @@ Plugins are notified during the destroy process. These hooks can be used to dest
 The `destroy` hook has been deprecated since Chart.js version 3.7.0, use the `afterDestroy` hook instead.
 
 ![Chart.js destroy flowchart](./destroy_flowchart.png)
+
+## TypeScript Typings
+
+If you want your plugin to be statically typed, you must provide a `.d.ts` TypeScript declaration file. Chart.js provides a way to augment built-in types with user-defined ones, by using the concept of "declaration merging".
+
+When adding a plugin, `PluginOptionsByType` must contain the declarations for the plugin.
+
+For example, to provide typings for the [`canvas backgroundColor plugin`](../configuration/canvas-background.md), you would add a `.d.ts` containing:
+
+```ts
+import { ChartType, Plugin } from 'chart.js'
+
+declare module 'chart.js' {
+    interface PluginOptionsByType<TType extends ChartType> {
+        custom_canvas_background_color?: {
+            color?: string
+        }
+    }
+}
+```
