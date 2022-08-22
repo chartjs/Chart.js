@@ -191,13 +191,13 @@ When adding a plugin, `PluginOptionsByType` must contain the declarations for th
 For example, to provide typings for the [`canvas backgroundColor plugin`](../configuration/canvas-background.md), you would add a `.d.ts` containing:
 
 ```ts
-import { ChartType, Plugin } from 'chart.js'
+import {ChartType, Plugin} from 'chart.js';
 
 declare module 'chart.js' {
-    interface PluginOptionsByType<TType extends ChartType> {
-        custom_canvas_background_color?: {
-            color?: string
-        }
+  interface PluginOptionsByType<TType extends ChartType> {
+    custom_canvas_background_color?: {
+      color?: string
     }
+  }
 }
 ```
