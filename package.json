@@ -45,8 +45,8 @@
         "build": "rollup -c && npm run emitDeclarations",
         "dev": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers chrome --grep",
         "dev:ff": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers firefox --grep",
-        "docs": "pnpm run build && pnpm --filter './docs/**' build",
-        "docs:dev": "pnpm run build && pnpm --filter './docs/**' dev",
+        "docs": "pnpm run build && pnpm --filter \"./docs/**\" build",
+        "docs:dev": "pnpm run build && pnpm --filter \"./docs/**\" dev",
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\"",
         "lint-md": "eslint \"**/*.md\"",
         "lint-types": "eslint \"types/**/*.ts\" && pnpm run build && node types/tests/autogen.js && tsc -p types/tests/",
@@ -55,7 +55,7 @@
         "test": "pnpm lint && pnpm test-ci",
         "test-ci": "concurrently \"pnpm:test-ci-*\"",
         "test-ci-karma": "cross-env NODE_ENV=test karma start ./karma.conf.cjs --auto-watch --single-run --coverage --grep",
-        "test-ci-integration": "pnpm --filter './test/integration/**' test"
+        "test-ci-integration": "pnpm --filter \"./test/integration/**\" test"
     },
     "devDependencies": {
         "@kurkle/color": "^0.2.1",
