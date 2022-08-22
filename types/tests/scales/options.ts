@@ -1,4 +1,4 @@
-import { Chart, ScaleOptions } from '../..';
+import { Chart, ScaleOptions } from '../../../src/types';
 
 const chart = new Chart('test', {
   type: 'bar',

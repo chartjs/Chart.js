@@ -1,13 +1,10 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES6",
-    "moduleResolution": "Node",
-    "alwaysStrict": true,
-    "strict": true,
     "noEmit": true
   },
   "include": [
-    "./**/*.ts",
-    "../index.d.ts"
+    "../",
+    "../../src/"
   ]
 }

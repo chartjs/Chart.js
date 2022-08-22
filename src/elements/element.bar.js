@@ -3,6 +3,8 @@ import {isObject, _isBetween, _limitValue} from '../helpers';
 import {addRoundedRectPath} from '../helpers/helpers.canvas';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
 
+/** @typedef {{ x: number, y: number, base: number, horizontal: boolean, width: number, height: number }} BarProps */
+
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
  * @param {BarElement} bar the bar
@@ -11,7 +13,7 @@ import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
  * @private
  */
 function getBarBounds(bar, useFinalPosition) {
-  const {x, y, base, width, height} = bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition);
+  const {x, y, base, width, height} = /** @type {BarProps} */ (bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition));
 
   let left, right, top, bottom, half;
 
@@ -211,7 +213,7 @@ export default class BarElement extends Element {
   }
 
   getCenterPoint(useFinalPosition) {
-    const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition);
+    const {x, y, base, horizontal} = /** @type {BarProps} */ (this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition));
     return {
       x: horizontal ? (x + base) / 2 : x,
       y: horizontal ? y : (y + base) / 2

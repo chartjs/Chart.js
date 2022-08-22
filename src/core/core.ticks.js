@@ -14,7 +14,7 @@ const formatters = {
    * @return {string|string[]} the label to display
    */
   values(value) {
-    return isArray(value) ? value : '' + value;
+    return isArray(value) ? /** @type {string[]} */ (value) : '' + value;
   },
 
   /**

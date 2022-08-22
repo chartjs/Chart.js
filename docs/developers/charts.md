@@ -130,8 +130,8 @@ When adding a new chart type, `ChartTypeRegistry` must contains the declarations
 
 For example, to provide typings for a new chart type that extends from a bubble chart, you would add a `.d.ts` containing:
 
-```ts
-import { ChartTypeRegistry } from 'chart.js'
+```typescript
+import { ChartTypeRegistry } from 'chart.js';
 
 declare module 'chart.js' {
     interface ChartTypeRegistry {

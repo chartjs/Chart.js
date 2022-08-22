@@ -1,4 +1,4 @@
-import { Chart } from '..';
+import { Chart } from '../../src/types';
 
 Chart.defaults.scales.time.time.minUnit = 'day';
 

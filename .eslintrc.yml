@@ -36,3 +36,24 @@ rules:
   es/no-regexp-s-flag: "error"
   es/no-regexp-unicode-property-escapes: "error"
   es/no-dynamic-import: "off"
+
+overrides:
+  - files: ['**/*.ts']
+    parser: '@typescript-eslint/parser'
+    plugins:
+      - '@typescript-eslint'
+    extends:
+      - chartjs
+      - plugin:@typescript-eslint/recommended
+
+    rules:
+      # Replace stock eslint rules with typescript-eslint equivalents for proper
+      # TypeScript support.
+      indent: "off"
+      "@typescript-eslint/indent": ["error", 2]
+      no-use-before-define: "off"
+      '@typescript-eslint/no-use-before-define': "error"
+      no-shadow: "off"
+      '@typescript-eslint/no-shadow': "error"
+      space-before-function-paren: "off"
+      '@typescript-eslint/space-before-function-paren': [2, never]

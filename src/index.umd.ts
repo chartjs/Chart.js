@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
 /**
@@ -5,7 +6,7 @@
  */
 import Chart from './core/core.controller';
 
-import * as helpers from './helpers/index';
+import * as helpers from './helpers';
 import _adapters from './core/core.adapters';
 import Animation from './core/core.animation';
 import animator from './core/core.animator';
@@ -50,3 +51,4 @@ if (typeof window !== 'undefined') {
 }
 
 export default Chart;
+

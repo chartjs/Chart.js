@@ -1,4 +1,4 @@
-import {Chart} from '../types';
+import {Chart} from '../dist/types';
 
-export * from '../types';
+export * from '../dist/types';
 export default Chart;

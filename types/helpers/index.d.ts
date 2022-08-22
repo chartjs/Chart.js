@@ -1,7 +1,6 @@
 export * from './helpers.canvas';
 export * from './helpers.collection';
 export * from './helpers.color';
-export * from './helpers.core';
 export * from './helpers.curve';
 export * from './helpers.dom';
 export * from './helpers.easing';

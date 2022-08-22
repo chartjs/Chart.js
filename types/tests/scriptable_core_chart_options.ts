@@ -1,4 +1,4 @@
-import { ChartConfiguration } from '..';
+import { ChartConfiguration } from '../../src/types';
 
 const getConfig = (): ChartConfiguration<'bar'> => {
   return {

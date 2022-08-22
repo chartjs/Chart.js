@@ -48,7 +48,7 @@ export default class PointElement extends Element {
 
   inRange(mouseX, mouseY, useFinalPosition) {
     const options = this.options;
-    const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
+    const {x, y} = /** @type {{ x: number, y: number }} */ (this.getProps(['x', 'y'], useFinalPosition));
     return ((Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2)) < Math.pow(options.hitRadius + options.radius, 2));
   }
 

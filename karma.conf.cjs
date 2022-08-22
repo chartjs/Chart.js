@@ -27,11 +27,9 @@ module.exports = async function(karma) {
   }
 
   if (args.coverage) {
-    build.plugins = [
-      json(),
-      resolve(),
+    build.plugins.push(
       istanbul({exclude: ['node_modules/**/*.js', 'package.json']})
-    ];
+    );
   }
 
   karma.set({
@@ -92,14 +90,14 @@ module.exports = async function(karma) {
       'node_modules/moment-timezone/builds/moment-timezone-with-data.min.js',
       {pattern: 'test/index.js', watched: false},
       {pattern: 'test/BasicChartWebWorker.js', included: false},
-      {pattern: 'src/index.umd.js', watched: false},
+      {pattern: 'src/index.umd.ts', watched: false},
       'node_modules/chartjs-adapter-moment/dist/chartjs-adapter-moment.js',
       {pattern: specPattern}
     ],
 
     preprocessors: {
       'test/index.js': ['rollup'],
-      'src/index.umd.js': ['sources']
+      'src/index.umd.ts': ['sources']
     },
 
     rollupPreprocessor: {

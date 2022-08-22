@@ -44,6 +44,7 @@ export function _resolveTarget(sources, index, propagate) {
  * @param {number} count
  */
 export function _decodeFill(line, index, count) {
+  /** @type {string | {value: number}} */
   const fill = parseFillOption(line);
 
   if (isObject(fill)) {

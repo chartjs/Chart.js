@@ -1,17 +1,15 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
-import { TimeUnit } from './adapters';
+import { TimeUnit } from '../src/core/core.adapters';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
-import { Element } from './element';
+import Element from '../src/core/core.element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
-export { DateAdapter, TimeUnit, _adapters } from './adapters';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
-export { Element } from './element';
 export { ChartArea, Point } from './geometric';
 export { LayoutItem, LayoutPosition } from './layout';
 
@@ -149,7 +147,7 @@ export interface BarControllerChartOptions {
 }
 
 export type BarController = DatasetController
-export const BarController: ChartComponent & {
+export declare const BarController: ChartComponent & {
   prototype: BarController;
   new (chart: Chart, datasetIndex: number): BarController;
 };
@@ -167,7 +165,7 @@ export interface BubbleDataPoint extends Point {
 }
 
 export type BubbleController = DatasetController
-export const BubbleController: ChartComponent & {
+export declare const BubbleController: ChartComponent & {
   prototype: BubbleController;
   new (chart: Chart, datasetIndex: number): BubbleController;
 };
@@ -213,7 +211,7 @@ export interface LineControllerChartOptions {
 }
 
 export type LineController = DatasetController
-export const LineController: ChartComponent & {
+export declare const LineController: ChartComponent & {
   prototype: LineController;
   new (chart: Chart, datasetIndex: number): LineController;
 };
@@ -225,7 +223,7 @@ export interface ScatterDataPoint extends Point {}
 export type ScatterControllerChartOptions = LineControllerChartOptions;
 
 export type ScatterController = LineController
-export const ScatterController: ChartComponent & {
+export declare const ScatterController: ChartComponent & {
   prototype: ScatterController;
   new (chart: Chart, datasetIndex: number): ScatterController;
 };
@@ -333,7 +331,7 @@ export interface DoughnutController extends DatasetController {
   calculateCircumference(value: number): number;
 }
 
-export const DoughnutController: ChartComponent & {
+export declare const DoughnutController: ChartComponent & {
   prototype: DoughnutController;
   new (chart: Chart, datasetIndex: number): DoughnutController;
 };
@@ -350,7 +348,7 @@ export type PieDataPoint = DoughnutDataPoint;
 export type PieMetaExtensions = DoughnutMetaExtensions;
 
 export type PieController = DoughnutController
-export const PieController: ChartComponent & {
+export declare const PieController: ChartComponent & {
   prototype: PieController;
   new (chart: Chart, datasetIndex: number): PieController;
 };
@@ -378,7 +376,7 @@ export interface PolarAreaControllerChartOptions {
 export interface PolarAreaController extends DoughnutController {
   countVisibleElements(): number;
 }
-export const PolarAreaController: ChartComponent & {
+export declare const PolarAreaController: ChartComponent & {
   prototype: PolarAreaController;
   new (chart: Chart, datasetIndex: number): PolarAreaController;
 };
@@ -411,7 +409,7 @@ export interface RadarControllerDatasetOptions
 export type RadarControllerChartOptions = LineControllerChartOptions;
 
 export type RadarController = DatasetController
-export const RadarController: ChartComponent & {
+export declare const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
@@ -540,7 +538,7 @@ export declare class Chart<
   static unregister(...items: ChartComponentLike[]): void;
 }
 
-export const registerables: readonly ChartComponentLike[];
+export declare const registerables: readonly ChartComponentLike[];
 
 export declare type ChartItem =
   | string
@@ -561,7 +559,7 @@ export declare enum UpdateModeEnum {
 
 export type UpdateMode = keyof typeof UpdateModeEnum;
 
-export class DatasetController<
+export declare class DatasetController<
   TType extends ChartType = ChartType,
   TElement extends Element = Element,
   TDatasetElement extends Element = Element,
@@ -689,7 +687,7 @@ export type Overrides = {
   ChartTypeRegistry[key]['chartOptions'];
 }
 
-export const defaults: Defaults;
+export declare const defaults: Defaults;
 export interface InteractionOptions {
   axis?: string;
   intersect?: boolean;
@@ -742,7 +740,7 @@ export interface InteractionModeMap {
 
 export type InteractionMode = keyof InteractionModeMap;
 
-export const Interaction: {
+export declare const Interaction: {
   modes: InteractionModeMap;
 
   /**
@@ -757,7 +755,7 @@ export const Interaction: {
   ): InteractionItem[];
 };
 
-export const layouts: {
+export declare const layouts: {
   /**
    * Register a box to a chart.
    * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
@@ -1119,7 +1117,7 @@ export interface Registry {
   getScale(id: string): Scale | undefined;
 }
 
-export const registry: Registry;
+export declare const registry: Registry;
 
 export interface Tick {
   value: number;
@@ -1336,7 +1334,7 @@ export interface ScriptableScalePointLabelContext {
 }
 
 
-export const Ticks: {
+export declare const Ticks: {
   formatters: {
     /**
      * Formatter for value labels
@@ -1743,7 +1741,7 @@ export interface ArcElement<T extends ArcProps = ArcProps, O extends ArcOptions 
   extends Element<T, O>,
   VisualElement {}
 
-export const ArcElement: ChartComponent & {
+export declare const ArcElement: ChartComponent & {
   prototype: ArcElement;
   new (cfg: AnyObject): ArcElement;
 };
@@ -1833,7 +1831,7 @@ export interface LineElement<T extends LineProps = LineProps, O extends LineOpti
   path(ctx: CanvasRenderingContext2D): boolean;
 }
 
-export const LineElement: ChartComponent & {
+export declare const LineElement: ChartComponent & {
   prototype: LineElement;
   new (cfg: AnyObject): LineElement;
 };
@@ -1947,7 +1945,7 @@ export interface PointElement<T extends PointProps = PointProps, O extends Point
   readonly parsed: CartesianParsedData;
 }
 
-export const PointElement: ChartComponent & {
+export declare const PointElement: ChartComponent & {
   prototype: PointElement;
   new (cfg: AnyObject): PointElement;
 };
@@ -2007,7 +2005,7 @@ export interface BarElement<
   O extends BarOptions = BarOptions
 > extends Element<T, O>, VisualElement {}
 
-export const BarElement: ChartComponent & {
+export declare const BarElement: ChartComponent & {
   prototype: BarElement;
   new (cfg: AnyObject): BarElement;
 };
@@ -2023,7 +2021,7 @@ export type ElementChartOptions<TType extends ChartType = ChartType> = {
   elements: ElementOptionsByType<TType>
 };
 
-export class BasePlatform {
+export declare class BasePlatform {
   /**
    * Called at chart construction time, returns a context2d instance implementing
    * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
@@ -2080,12 +2078,12 @@ export class BasePlatform {
   updateConfig(config: ChartConfiguration | ChartConfigurationCustomTypesPerDataset): void;
 }
 
-export class BasicPlatform extends BasePlatform {}
-export class DomPlatform extends BasePlatform {}
+export declare class BasicPlatform extends BasePlatform {}
+export declare class DomPlatform extends BasePlatform {}
 
-export const Decimation: Plugin;
+export declare const Decimation: Plugin;
 
-export const enum DecimationAlgorithm {
+export declare const enum DecimationAlgorithm {
   lttb = 'lttb',
   minmax = 'min-max',
 }
@@ -2105,7 +2103,7 @@ interface MinMaxDecimationOptions extends BaseDecimationOptions {
 
 export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
-export const Filler: Plugin;
+export declare const Filler: Plugin;
 export interface FillerOptions {
   drawTime: 'beforeDatasetDraw' | 'beforeDatasetsDraw';
   propagate: boolean;
@@ -2135,7 +2133,7 @@ export interface FillerControllerDatasetOptions {
   fill: FillTarget | ComplexFillTarget;
 }
 
-export const Legend: Plugin;
+export declare const Legend: Plugin;
 
 export interface LegendItem {
   /**
@@ -2387,8 +2385,8 @@ export interface LegendOptions<TType extends ChartType> {
   };
 }
 
-export const SubTitle: Plugin;
-export const Title: Plugin;
+export declare const SubTitle: Plugin;
+export declare const Title: Plugin;
 
 export interface TitleOptions {
   /**
@@ -2535,7 +2533,7 @@ export interface Tooltip extends Plugin {
   readonly positioners: TooltipPositionerMap;
 }
 
-export const Tooltip: Tooltip;
+export declare const Tooltip: Tooltip;
 
 export interface TooltipCallbacks<
   TType extends ChartType,
@@ -3135,7 +3133,7 @@ export type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & 
 };
 
 export type CategoryScale<O extends CategoryScaleOptions = CategoryScaleOptions> = Scale<O>
-export const CategoryScale: ChartComponent & {
+export declare const CategoryScale: ChartComponent & {
   prototype: CategoryScale;
   new <O extends CategoryScaleOptions = CategoryScaleOptions>(cfg: AnyObject): CategoryScale<O>;
 };
@@ -3184,7 +3182,7 @@ export type LinearScaleOptions = CartesianScaleOptions & {
 };
 
 export type LinearScale<O extends LinearScaleOptions = LinearScaleOptions> = Scale<O>
-export const LinearScale: ChartComponent & {
+export declare const LinearScale: ChartComponent & {
   prototype: LinearScale;
   new <O extends LinearScaleOptions = LinearScaleOptions>(cfg: AnyObject): LinearScale<O>;
 };
@@ -3208,7 +3206,7 @@ export type LogarithmicScaleOptions = CartesianScaleOptions & {
 };
 
 export type LogarithmicScale<O extends LogarithmicScaleOptions = LogarithmicScaleOptions> = Scale<O>
-export const LogarithmicScale: ChartComponent & {
+export declare const LogarithmicScale: ChartComponent & {
   prototype: LogarithmicScale;
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
@@ -3304,13 +3302,13 @@ export interface TimeScale<O extends TimeScaleOptions = TimeScaleOptions> extend
   normalize(values: number[]): number[];
 }
 
-export const TimeScale: ChartComponent & {
+export declare const TimeScale: ChartComponent & {
   prototype: TimeScale;
   new <O extends TimeScaleOptions = TimeScaleOptions>(cfg: AnyObject): TimeScale<O>;
 };
 
 export type TimeSeriesScale<O extends TimeScaleOptions = TimeScaleOptions> = TimeScale<O>
-export const TimeSeriesScale: ChartComponent & {
+export declare const TimeSeriesScale: ChartComponent & {
   prototype: TimeSeriesScale;
   new <O extends TimeScaleOptions = TimeScaleOptions>(cfg: AnyObject): TimeSeriesScale<O>;
 };
@@ -3466,7 +3464,7 @@ export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLi
   getPointLabelPosition(index: number): ChartArea;
   getBasePosition(index: number): { x: number; y: number; angle: number };
 }
-export const RadialLinearScale: ChartComponent & {
+export declare const RadialLinearScale: ChartComponent & {
   prototype: RadialLinearScale;
   new <O extends RadialLinearScaleOptions = RadialLinearScaleOptions>(cfg: AnyObject): RadialLinearScale<O>;
 };

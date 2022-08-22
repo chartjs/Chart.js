@@ -3,6 +3,8 @@ import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '..
 import {PI, _isBetween, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
 
+/** @typedef {{ x: number, y: number, startAngle: number, endAngle: number, innerRadius: number, outerRadius: number, circumference: number }} ArcProps */
+
 function clipArc(ctx, element, endAngle) {
   const {startAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
   let angleMargin = pixelMargin / outerRadius;
@@ -310,13 +312,13 @@ export default class ArcElement extends Element {
   inRange(chartX, chartY, useFinalPosition) {
     const point = this.getProps(['x', 'y'], useFinalPosition);
     const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
-    const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
+    const {startAngle, endAngle, innerRadius, outerRadius, circumference} = /** @type {ArcProps} */ (this.getProps([
       'startAngle',
       'endAngle',
       'innerRadius',
       'outerRadius',
       'circumference'
-    ], useFinalPosition);
+    ], useFinalPosition));
     const rAdjust = this.options.spacing / 2;
     const _circumference = valueOrDefault(circumference, endAngle - startAngle);
     const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
@@ -329,7 +331,7 @@ export default class ArcElement extends Element {
 	 * @param {boolean} [useFinalPosition]
 	 */
   getCenterPoint(useFinalPosition) {
-    const {x, y, startAngle, endAngle, innerRadius, outerRadius} = this.getProps([
+    const {x, y, startAngle, endAngle, innerRadius, outerRadius} = /** @type {ArcProps} */ (this.getProps([
       'x',
       'y',
       'startAngle',
@@ -337,7 +339,7 @@ export default class ArcElement extends Element {
       'innerRadius',
       'outerRadius',
       'circumference',
-    ], useFinalPosition);
+    ], useFinalPosition));
     const {offset, spacing} = this.options;
     const halfAngle = (startAngle + endAngle) / 2;
     const halfRadius = (innerRadius + outerRadius + spacing + offset) / 2;
