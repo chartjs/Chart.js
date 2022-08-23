@@ -1,6 +1,4 @@
 import * as path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import HtmlWebpackInlineSourcePlugin from 'html-webpack-inline-source-plugin';
 import markdownItInclude from 'markdown-it-include';
 import { DefaultThemeConfig, defineConfig, PluginTuple } from 'vuepress/config';
 
@@ -16,16 +14,6 @@ export default defineConfig({
   head: [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
-  configureWebpack: (config, isServer) => {
-    configureWebpack: (config) => {
-      return {
-        plugins: [
-          new HtmlWebpackPlugin(),
-          new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-        ],
-      };
-    };
-  },
   plugins: [
     'tabs',
     ['flexsearch'],
@@ -107,6 +95,11 @@ export default defineConfig({
         }
       }
     })
+
+    config.module.rule('images').use('url-loader').tap(options => ({
+      ...options,
+      esModule: false
+    }))
   },
   markdown: {
     extendMarkdown: md => {
