@@ -17,11 +17,13 @@ export default defineConfig({
     ['link', {rel: 'icon', href: '/favicon.ico'}],
   ],
   configureWebpack: (config, isServer) => {
-    return {
-      plugins: [
-        new HtmlWebpackPlugin(),
-        new HtmlWebpackInlineSourcePlugin(),
-      ],
+    configureWebpack: (config) => {
+      return {
+        plugins: [
+          new HtmlWebpackPlugin(),
+          new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+        ],
+      };
     };
   },
   plugins: [
