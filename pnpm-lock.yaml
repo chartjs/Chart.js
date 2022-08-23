@@ -110,8 +110,6 @@ importers:
       '@simonbrunel/vuepress-plugin-versions': ^0.2.0
       '@vuepress/plugin-google-analytics': ^1.9.7
       '@vuepress/plugin-html-redirect': ^0.1.2
-      html-webpack-inline-source-plugin: ^0.0.10
-      html-webpack-plugin: ^4.5.2
       markdown-it: ^8.4.2
       markdown-it-include: ^2.0.0
       typedoc: ^0.23.10
@@ -131,8 +129,6 @@ importers:
       '@simonbrunel/vuepress-plugin-versions': 0.2.0
       '@vuepress/plugin-google-analytics': 1.9.7
       '@vuepress/plugin-html-redirect': 0.1.4
-      html-webpack-inline-source-plugin: 0.0.10
-      html-webpack-plugin: 4.5.2_webpack@4.46.0
       markdown-it: 8.4.2
       markdown-it-include: 2.0.0_markdown-it@8.4.2
       typedoc: 0.23.10_typescript@4.7.4
@@ -2646,10 +2642,6 @@ packages:
     resolution: {integrity: sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==}
     dev: true
 
-  /@types/html-minifier-terser/5.1.2:
-    resolution: {integrity: sha512-h4lTMgMJctJybDp8CQrxTUiiYmedihHWkjnF/8Pxseu2S6Nlfcy8kwboQ8yejh456rP2yWoEVm1sS/FVsfM48w==}
-    dev: true
-
   /@types/html-minifier-terser/6.1.0:
     resolution: {integrity: sha512-oh/6byDPnL1zeNXFrDXFLyZjkr1MsBG667IM792caf1L2UPOOMf65NFzjUH/ltyfwjAGfs1rsX1eftK0jC/KIg==}
     dev: false
@@ -4908,6 +4900,7 @@ packages:
     dependencies:
       pascal-case: 3.1.2
       tslib: 2.4.0
+    dev: false
 
   /camelcase-css/2.0.1:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
@@ -5249,11 +5242,6 @@ packages:
 
   /commander/2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
-
-  /commander/4.1.1:
-    resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
-    engines: {node: '>= 6'}
-    dev: true
 
   /commander/7.2.0:
     resolution: {integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==}
@@ -6614,6 +6602,7 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.4.0
+    dev: false
 
   /dot-prop/5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
@@ -8610,20 +8599,6 @@ packages:
   /html-escaper/2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
-  /html-minifier-terser/5.1.1:
-    resolution: {integrity: sha512-ZPr5MNObqnV/T9akshPKbVgyOqLmy+Bxo7juKCfTfnjNniTAMdy4hz21YQqoofMBJD2kdREaqPPdThoR78Tgxg==}
-    engines: {node: '>=6'}
-    hasBin: true
-    dependencies:
-      camel-case: 4.1.2
-      clean-css: 4.2.4
-      commander: 4.1.1
-      he: 1.2.0
-      param-case: 3.0.4
-      relateurl: 0.2.7
-      terser: 4.8.1
-    dev: true
-
   /html-minifier-terser/6.1.0:
     resolution: {integrity: sha512-YXxSlJBZTP7RS3tWnQw74ooKa6L9b9i9QYXY21eUEvhZ3u9XLfv6OnFsQq6RxkhHygsaUMvYsZRV5rU/OVNZxw==}
     engines: {node: '>=12'}
@@ -8660,32 +8635,6 @@ packages:
   /html-tags/3.2.0:
     resolution: {integrity: sha512-vy7ClnArOZwCnqZgvv+ddgHgJiAFXe3Ge9ML5/mBctVJoUoYPCdxVucOywjDARn6CVoh3dRSFdPHy2sX80L0Wg==}
     engines: {node: '>=8'}
-    dev: true
-
-  /html-webpack-inline-source-plugin/0.0.10:
-    resolution: {integrity: sha512-0ZNU57u7283vrXSF5a4VDnVOMWiSwypKIp1z/XfXWoVHLA1r3Xmyxx5+Lz+mnthz/UvxL1OAf41w5UIF68Jngw==}
-    dependencies:
-      escape-string-regexp: 1.0.5
-      slash: 1.0.0
-      source-map-url: 0.4.1
-    dev: true
-
-  /html-webpack-plugin/4.5.2_webpack@4.46.0:
-    resolution: {integrity: sha512-q5oYdzjKUIPQVjOosjgvCHQOv9Ett9CYYHlgvJeXG0qQvdSojnBq4vAdQBwn1+yGveAwHCoe/rMR86ozX3+c2A==}
-    engines: {node: '>=6.9'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      '@types/html-minifier-terser': 5.1.2
-      '@types/tapable': 1.0.8
-      '@types/webpack': 4.41.32
-      html-minifier-terser: 5.1.1
-      loader-utils: 1.4.0
-      lodash: 4.17.21
-      pretty-error: 2.1.2
-      tapable: 1.1.3
-      util.promisify: 1.0.0
-      webpack: 4.46.0
     dev: true
 
   /html-webpack-plugin/5.5.0_webpack@5.74.0:
@@ -10642,6 +10591,7 @@ packages:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
       tslib: 2.4.0
+    dev: false
 
   /lowercase-keys/1.0.1:
     resolution: {integrity: sha512-G2Lj61tXDnVFFOi8VZds+SoQjtQC3dgokKdDG2mTm1tx4m50NUHBOZSBwQQHyy0V12A0JTG4icfZQH+xPyh8VA==}
@@ -11183,6 +11133,7 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.4.0
+    dev: false
 
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -11631,6 +11582,7 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.4.0
+    dev: false
 
   /parent-module/1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -11690,6 +11642,7 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.4.0
+    dev: false
 
   /pascalcase/0.1.1:
     resolution: {integrity: sha512-XHXfu/yOQRy9vYOtUDVMN60OEJjW013GoObG1o+xwQTpB9eYJX/BjXMsdW13ZDPruFhYYn0AG22w0xgQMwl3Nw==}
