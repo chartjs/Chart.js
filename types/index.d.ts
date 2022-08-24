@@ -1,6 +1,7 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from '../src/core/core.adapters';
+import { EasingFunction } from '../src/helpers/helpers.easing';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
 import { Color } from './color';
@@ -8,6 +9,7 @@ import Element from '../src/core/core.element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
+export { EasingFunction } from '../src/helpers/helpers.easing';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
 export { ChartArea, Point } from './geometric';
@@ -1527,39 +1529,6 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
     padding: Scriptable<Padding, ScriptableContext<TType>>;
   }>;
 }
-
-export type EasingFunction =
-  | 'linear'
-  | 'easeInQuad'
-  | 'easeOutQuad'
-  | 'easeInOutQuad'
-  | 'easeInCubic'
-  | 'easeOutCubic'
-  | 'easeInOutCubic'
-  | 'easeInQuart'
-  | 'easeOutQuart'
-  | 'easeInOutQuart'
-  | 'easeInQuint'
-  | 'easeOutQuint'
-  | 'easeInOutQuint'
-  | 'easeInSine'
-  | 'easeOutSine'
-  | 'easeInOutSine'
-  | 'easeInExpo'
-  | 'easeOutExpo'
-  | 'easeInOutExpo'
-  | 'easeInCirc'
-  | 'easeOutCirc'
-  | 'easeInOutCirc'
-  | 'easeInElastic'
-  | 'easeOutElastic'
-  | 'easeInOutElastic'
-  | 'easeInBack'
-  | 'easeOutBack'
-  | 'easeInOutBack'
-  | 'easeInBounce'
-  | 'easeOutBounce'
-  | 'easeInOutBounce';
 
 export type AnimationSpec<TType extends ChartType> = {
   /**
