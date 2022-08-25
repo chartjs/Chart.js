@@ -12,7 +12,7 @@
         "@simonbrunel/vuepress-plugin-versions": "^0.2.0",
         "@vuepress/plugin-google-analytics": "^1.9.7",
         "@vuepress/plugin-html-redirect": "^0.1.2",
-        "markdown-it": "^8.4.2",
+        "markdown-it": "^12.3.2",
         "markdown-it-include": "^2.0.0",
         "typedoc": "^0.23.10",
         "typedoc-plugin-markdown": "^3.13.4",
