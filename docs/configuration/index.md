@@ -23,7 +23,7 @@ Chart type determines the main type of the chart.
 
 ### data
 
-See [Data Structures](../general/data-structures) for details.
+See [Data Structures](../general/data-structures.md) for details.
 
 ### options
 
