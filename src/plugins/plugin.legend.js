@@ -180,7 +180,7 @@ export class Legend extends Element {
     return totalHeight;
   }
 
-  _fitCols(titleHeight, fontSize, boxWidth, itemHeight) {
+  _fitCols(titleHeight, fontSize, boxWidth, _itemHeight, fontLineHeight = 1) {
     const {ctx, maxHeight, options: {labels: {padding}}} = this;
     const hitboxes = this.legendHitBoxes = [];
     const columnSizes = this.columnSizes = [];
@@ -195,6 +195,10 @@ export class Legend extends Element {
 
     this.legendItems.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+      let itemHeight = _itemHeight;
+      if (typeof legendItem.text !== 'string') {
+        itemHeight = this._calculateLegendItemHeight(legendItem, fontLineHeight);
+      }
 
       // If too tall, go to new column
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
@@ -418,12 +422,23 @@ export class Legend extends Element {
 
       if (isHorizontal) {
         cursor.x += width + padding;
+      } else if (typeof legendItem.text !== 'string') {
+        const fontLineHeight = labelFont.lineHeight;
+        cursor.y += this._calculateLegendItemHeight(legendItem, fontLineHeight);
       } else {
         cursor.y += lineHeight;
       }
     });
 
     restoreTextDirection(this.ctx, opts.textDirection);
+  }
+
+  /**
+   * @private
+   */
+  _calculateLegendItemHeight(legendItem, fontLineHeight) {
+    const labelHeight = legendItem.text ? legendItem.text.length + 0.5 : 0;
+    return fontLineHeight * labelHeight;
   }
 
   /**
