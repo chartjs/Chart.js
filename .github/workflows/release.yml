@@ -2,9 +2,10 @@ name: Release
 
 on:
   release:
-    permissions:
-      contents: write  # for actions/upload-release-asset to upload release asset
     types: [published]
+
+permissions:
+  contents: read
 
 jobs:
   setup:
@@ -20,6 +21,8 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
 
   release:
+    permissions:
+      contents: write  # for actions/upload-release-asset to upload release asset
     needs: setup
     runs-on: ubuntu-latest
     steps:
