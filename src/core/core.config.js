@@ -35,7 +35,7 @@ export function determineAxis(id, scaleOptions) {
   if (id === 'x' || id === 'y') {
     return id;
   }
-  return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
+  return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id;
 }
 
 function mergeScaleConfig(config, options) {

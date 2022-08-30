@@ -571,4 +571,80 @@ describe('Core.scale', function() {
       expect(chart.scales.y.max).toEqual(10);
     });
   });
+
+  describe('overrides', () => {
+    it('should create new scale', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            x2: {
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(chart.scales).sort()).toEqual(['x', 'x2', 'y']);
+    });
+
+    it('should override scale by axis', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            x2: {
+              axis: 'x',
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(chart.scales).sort()).toEqual(['x2', 'y']);
+    });
+
+    it('should override scale by position', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            x2: {
+              position: 'top',
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(chart.scales).sort()).toEqual(['x2', 'y']);
+    });
+  });
 });
