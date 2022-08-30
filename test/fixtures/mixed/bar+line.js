@@ -19,10 +19,10 @@ module.exports = {
     options: {
       indexAxis: 'y',
       scales: {
-        horz: {
+        x: {
           position: 'top'
         },
-        vert: {
+        y: {
           axis: 'y',
           labels: ['a', 'b', 'c', 'd']
         }

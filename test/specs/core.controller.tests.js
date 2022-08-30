@@ -423,18 +423,10 @@ describe('Chart', function() {
         type: 'line',
         options: {
           scales: {
-            xFoo0: {
-              axis: 'x'
-            },
-            xFoo1: {
-              axis: 'x'
-            },
-            yBar0: {
-              axis: 'y'
-            },
-            yBar1: {
-              axis: 'y'
-            },
+            xFoo0: {},
+            xFoo1: {},
+            yBar0: {},
+            yBar1: {},
           }
         }
       });
@@ -451,6 +443,7 @@ describe('Chart', function() {
         options: {
           scales: {
             foo: {
+              axis: 'x',
               type: 'logarithmic',
               _jasmineCheckC: 'c2',
               _jasmineCheckD: 'd2'

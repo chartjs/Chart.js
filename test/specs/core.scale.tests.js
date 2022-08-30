@@ -597,7 +597,7 @@ describe('Core.scale', function() {
       expect(Object.keys(chart.scales).sort()).toEqual(['x', 'x2', 'y']);
     });
 
-    it('should override scale by axis', () => {
+    it('should create new scale with custom name', () => {
       const chart = window.acquireChart({
         type: 'scatter',
         data: {
@@ -609,7 +609,7 @@ describe('Core.scale', function() {
         },
         options: {
           scales: {
-            x2: {
+            scaleX: {
               axis: 'x',
               type: 'linear',
               min: -20,
@@ -619,11 +619,11 @@ describe('Core.scale', function() {
         }
       });
 
-      expect(Object.keys(chart.scales).sort()).toEqual(['x2', 'y']);
+      expect(Object.keys(chart.scales).sort()).toEqual(['scaleX', 'x', 'y']);
     });
 
-    it('should override scale by position', () => {
-      const chart = window.acquireChart({
+    it('should throw error on scale with custom name without axis type', () => {
+      expect(() => window.acquireChart({
         type: 'scatter',
         data: {
           datasets: [{
@@ -634,17 +634,14 @@ describe('Core.scale', function() {
         },
         options: {
           scales: {
-            x2: {
-              position: 'top',
+            scaleX: {
               type: 'linear',
               min: -20,
               max: 20
             }
           }
         }
-      });
-
-      expect(Object.keys(chart.scales).sort()).toEqual(['x2', 'y']);
+      })).toThrow();
     });
   });
 });
