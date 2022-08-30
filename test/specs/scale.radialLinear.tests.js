@@ -148,7 +148,9 @@ describe('Test the radial linear scale', function() {
       },
       options: {
         scales: {
-          rScale: {}
+          rScale: {
+            axis: 'r'
+          }
         }
       }
     });

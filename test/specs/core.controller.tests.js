@@ -423,10 +423,18 @@ describe('Chart', function() {
         type: 'line',
         options: {
           scales: {
-            xFoo0: {},
-            xFoo1: {},
-            yBar0: {},
-            yBar1: {},
+            xFoo0: {
+              axis: 'x'
+            },
+            xFoo1: {
+              axis: 'x'
+            },
+            yBar0: {
+              axis: 'y'
+            },
+            yBar1: {
+              axis: 'y'
+            },
           }
         }
       });

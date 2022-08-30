@@ -181,6 +181,7 @@ describe('Chart.DatasetController', function() {
             labels: ['one', 'two', 'three', 'four', 'five', 'six']
           },
           x2: {
+            axis: 'x',
             type: 'logarithmic',
             labels: ['1', '10', '100', '1000', '2000']
           },
@@ -188,6 +189,7 @@ describe('Chart.DatasetController', function() {
             type: 'linear'
           },
           y2: {
+            axis: 'y',
             type: 'category',
             labels: ['a', 'b', 'c', 'd', 'e']
           }
