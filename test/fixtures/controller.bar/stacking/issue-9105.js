@@ -32,9 +32,11 @@ module.exports = {
       plugins: false,
       scales: {
         xaxis: {
+          axis: 'x',
           display: false,
         },
         'y-axis-1': {
+          axis: 'y',
           display: false
         }
       }

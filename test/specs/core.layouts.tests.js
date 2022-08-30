@@ -147,6 +147,7 @@ describe('Chart.layouts', function() {
             type: 'linear'
           },
           y2: {
+            axis: 'y',
             type: 'linear'
           }
         }
