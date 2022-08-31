@@ -5,4 +5,5 @@
 
 // export * from '.';
 export * from './helpers.core';
+export * from './helpers.easing';
 export * from '../../types/helpers';
