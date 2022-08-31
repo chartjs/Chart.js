@@ -110,7 +110,7 @@ importers:
       '@simonbrunel/vuepress-plugin-versions': ^0.2.0
       '@vuepress/plugin-google-analytics': ^1.9.7
       '@vuepress/plugin-html-redirect': ^0.1.2
-      markdown-it: ^8.4.2
+      markdown-it: ^12.3.2
       markdown-it-include: ^2.0.0
       typedoc: ^0.23.10
       typedoc-plugin-markdown: ^3.13.4
@@ -129,8 +129,8 @@ importers:
       '@simonbrunel/vuepress-plugin-versions': 0.2.0
       '@vuepress/plugin-google-analytics': 1.9.7
       '@vuepress/plugin-html-redirect': 0.1.4
-      markdown-it: 8.4.2
-      markdown-it-include: 2.0.0_markdown-it@8.4.2
+      markdown-it: 12.3.2
+      markdown-it-include: 2.0.0_markdown-it@12.3.2
       typedoc: 0.23.10_typescript@4.7.4
       typedoc-plugin-markdown: 3.13.4_typedoc@0.23.10
       typescript: 4.7.4
@@ -6763,6 +6763,10 @@ packages:
     resolution: {integrity: sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==}
     dev: true
 
+  /entities/2.1.0:
+    resolution: {integrity: sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==}
+    dev: true
+
   /entities/2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
 
@@ -10439,6 +10443,12 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
+  /linkify-it/3.0.3:
+    resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
+    dependencies:
+      uc.micro: 1.0.6
+    dev: true
+
   /load-script/1.0.0:
     resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
     dev: true
@@ -10694,18 +10704,29 @@ packages:
     resolution: {integrity: sha512-QCz3Hkd+r5gDYtS2xsFXmBYrgw6KuWcJZLCEkdfAuwzZbShCmCfta+hwAMq4NX/4xPzkSHduMKgMkkPUJxSXNg==}
     dev: true
 
-  /markdown-it-include/2.0.0_markdown-it@8.4.2:
+  /markdown-it-include/2.0.0_markdown-it@12.3.2:
     resolution: {integrity: sha512-wfgIX92ZEYahYWiCk6Jx36XmHvAimeHN420csOWgfyZjpf171Y0xREqZWcm/Rwjzyd0RLYryY+cbNmrkYW2MDw==}
     engines: {node: '>=10'}
     peerDependencies:
       markdown-it: '>=8.4.2'
     dependencies:
-      markdown-it: 8.4.2
+      markdown-it: 12.3.2
     dev: true
 
   /markdown-it-table-of-contents/0.4.4:
     resolution: {integrity: sha512-TAIHTHPwa9+ltKvKPWulm/beozQU41Ab+FIefRaQV1NRnpzwcV9QOe6wXQS5WLivm5Q/nlo0rl6laGkMDZE7Gw==}
     engines: {node: '>6.4.0'}
+    dev: true
+
+  /markdown-it/12.3.2:
+    resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+      entities: 2.1.0
+      linkify-it: 3.0.3
+      mdurl: 1.0.1
+      uc.micro: 1.0.6
     dev: true
 
   /markdown-it/8.4.2:
