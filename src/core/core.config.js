@@ -31,14 +31,14 @@ function axisFromPosition(position) {
   }
 }
 
-export function determineAxis(name, scaleOptions) {
-  let id = name[0].toLowerCase();
-
+export function determineAxis(id, scaleOptions) {
   if (id === 'x' || id === 'y' || id === 'r') {
     return id;
   }
 
-  id = scaleOptions.axis || axisFromPosition(scaleOptions.position);
+  id = scaleOptions.axis
+    || axisFromPosition(scaleOptions.position)
+    || id.length > 1 && determineAxis(id[0].toLowerCase(), scaleOptions);
 
   if (id) {
     return id;

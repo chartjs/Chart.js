@@ -643,5 +643,30 @@ describe('Core.scale', function() {
         }
       })).toThrow();
     });
+
+    it('should read options first to determine axis', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            xavier: {
+              axis: 'y',
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(chart.scales.xavier.axis).toBe('y');
+    });
   });
 });
