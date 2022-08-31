@@ -271,7 +271,7 @@ describe('Platform.dom', function() {
   });
 
   describe('config.options.responsive: true (maintainAspectRatio: true)', function() {
-    it('should fill parent width and use aspect ratio to calculate height', function() {
+    it('should fit parent using aspect ratio to calculate size', function() {
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -287,8 +287,8 @@ describe('Platform.dom', function() {
       });
 
       expect(chart).toBeChartOfSize({
-        dw: 300, dh: 490,
-        rw: 300, rh: 490,
+        dw: 214, dh: 350,
+        rw: 214, rh: 350,
       });
     });
   });

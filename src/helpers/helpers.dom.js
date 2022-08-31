@@ -174,6 +174,12 @@ export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
     // If the canvas has width, but no height, default to aspectRatio of 2 (canvas default)
     height = round1(width / 2);
   }
+
+  if (aspectRatio && height > containerSize.height) {
+    height = containerSize.height;
+    width = round1(Math.floor(height * aspectRatio));
+  }
+
   return {
     width,
     height
