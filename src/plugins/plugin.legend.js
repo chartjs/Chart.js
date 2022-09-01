@@ -194,7 +194,7 @@ export class Legend extends Element {
     let col = 0;
 
     this.legendItems.forEach((legendItem, i) => {
-      const {itemWidth, itemHeight} = this._calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
+      const {itemWidth, itemHeight} = calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
 
       // If too tall, go to new column
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
@@ -217,26 +217,6 @@ export class Legend extends Element {
     columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
 
     return totalWidth;
-  }
-
-  /**
-   * @private
-   */
-  _calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
-    const itemWidth = boxWidth + (labelFont.size / 2) + ctx.measureText(legendItem.text).width;
-    const itemHeight = this._calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
-    return {itemWidth, itemHeight};
-  }
-
-  /**
-   * @private
-   */
-  _calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
-    let itemHeight = _itemHeight;
-    if (typeof legendItem.text !== 'string') {
-      itemHeight = this._calculateLegendItemHeight(legendItem, fontLineHeight);
-    }
-    return itemHeight;
   }
 
   adjustHitBoxes() {
@@ -440,21 +420,13 @@ export class Legend extends Element {
         cursor.x += width + padding;
       } else if (typeof legendItem.text !== 'string') {
         const fontLineHeight = labelFont.lineHeight;
-        cursor.y += this._calculateLegendItemHeight(legendItem, fontLineHeight);
+        cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight);
       } else {
         cursor.y += lineHeight;
       }
     });
 
     restoreTextDirection(this.ctx, opts.textDirection);
-  }
-
-  /**
-   * @private
-   */
-  _calculateLegendItemHeight(legendItem, fontLineHeight) {
-    const labelHeight = legendItem.text ? legendItem.text.length + 0.5 : 0;
-    return fontLineHeight * labelHeight;
   }
 
   /**
@@ -570,6 +542,25 @@ export class Legend extends Element {
       call(opts.onClick, [e, hoveredItem, this], this);
     }
   }
+}
+
+function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
+  const itemWidth = boxWidth + (labelFont.size / 2) + ctx.measureText(legendItem.text).width;
+  const itemHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
+  return {itemWidth, itemHeight};
+}
+
+function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
+  let itemHeight = _itemHeight;
+  if (typeof legendItem.text !== 'string') {
+    itemHeight = calculateLegendItemHeight(legendItem, fontLineHeight);
+  }
+  return itemHeight;
+}
+
+function calculateLegendItemHeight(legendItem, fontLineHeight) {
+  const labelHeight = legendItem.text ? legendItem.text.length + 0.5 : 0;
+  return fontLineHeight * labelHeight;
 }
 
 function isListened(type, opts) {
