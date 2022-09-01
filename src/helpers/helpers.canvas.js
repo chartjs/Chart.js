@@ -131,7 +131,7 @@ export function drawPoint(ctx, options, x, y) {
 }
 
 export function drawPointLegend(ctx, options, x, y, w) {
-  let type, xOffset, yOffset, size, cornerRadius, width;
+  let type, xOffset, yOffset, size, cornerRadius, width, xOffsetW, yOffsetW;
   const style = options.pointStyle;
   const rotation = options.rotation;
   const radius = options.radius;
@@ -166,11 +166,12 @@ export function drawPointLegend(ctx, options, x, y, w) {
     ctx.closePath();
     break;
   case 'triangle':
-    ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+    width = w ? w / 2 : radius;
+    ctx.moveTo(x + Math.sin(rad) * width, y - Math.cos(rad) * radius);
     rad += TWO_THIRDS_PI;
-    ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+    ctx.lineTo(x + Math.sin(rad) * width, y - Math.cos(rad) * radius);
     rad += TWO_THIRDS_PI;
-    ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+    ctx.lineTo(x + Math.sin(rad) * width, y - Math.cos(rad) * radius);
     ctx.closePath();
     break;
   case 'rectRounded':
@@ -184,11 +185,13 @@ export function drawPointLegend(ctx, options, x, y, w) {
     cornerRadius = radius * 0.516;
     size = radius - cornerRadius;
     xOffset = Math.cos(rad + QUARTER_PI) * size;
+    xOffsetW = Math.cos(rad + QUARTER_PI) * (w ? w / 2 - cornerRadius : size);
     yOffset = Math.sin(rad + QUARTER_PI) * size;
-    ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
-    ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
-    ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
-    ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
+    yOffsetW = Math.sin(rad + QUARTER_PI) * (w ? w / 2 - cornerRadius : size);
+    ctx.arc(x - xOffsetW, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
+    ctx.arc(x + yOffsetW, y - xOffset, cornerRadius, rad - HALF_PI, rad);
+    ctx.arc(x + xOffsetW, y + yOffset, cornerRadius, rad, rad + HALF_PI);
+    ctx.arc(x - yOffsetW, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
     ctx.closePath();
     break;
   case 'rect':
@@ -201,39 +204,47 @@ export function drawPointLegend(ctx, options, x, y, w) {
     rad += QUARTER_PI;
     /* falls through */
   case 'rectRot':
+    xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
     xOffset = Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
+    yOffsetW = Math.sin(rad) * (w ? w / 2 : radius);
+    ctx.moveTo(x - xOffsetW, y - yOffset);
+    ctx.lineTo(x + yOffsetW, y - xOffset);
+    ctx.lineTo(x + xOffsetW, y + yOffset);
+    ctx.lineTo(x - yOffsetW, y + xOffset);
     ctx.closePath();
     break;
   case 'crossRot':
     rad += QUARTER_PI;
     /* falls through */
   case 'cross':
+    xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
     xOffset = Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
+    yOffsetW = Math.sin(rad) * (w ? w / 2 : radius);
+    ctx.moveTo(x - xOffsetW, y - yOffset);
+    ctx.lineTo(x + xOffsetW, y + yOffset);
+    ctx.moveTo(x + yOffsetW, y - xOffset);
+    ctx.lineTo(x - yOffsetW, y + xOffset);
     break;
   case 'star':
+    xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
     xOffset = Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
+    yOffsetW = Math.sin(rad) * (w ? w / 2 : radius);
+    ctx.moveTo(x - xOffsetW, y - yOffset);
+    ctx.lineTo(x + xOffsetW, y + yOffset);
+    ctx.moveTo(x + yOffsetW, y - xOffset);
+    ctx.lineTo(x - yOffsetW, y + xOffset);
     rad += QUARTER_PI;
+    xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
     xOffset = Math.cos(rad) * radius;
     yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
+    yOffsetW = Math.sin(rad) * (w ? w / 2 : radius);
+    ctx.moveTo(x - xOffsetW, y - yOffset);
+    ctx.lineTo(x + xOffsetW, y + yOffset);
+    ctx.moveTo(x + yOffsetW, y - xOffset);
+    ctx.lineTo(x - yOffsetW, y + xOffset);
     break;
   case 'line':
     xOffset = w ? w / 2 : Math.cos(rad) * radius;
@@ -243,7 +254,7 @@ export function drawPointLegend(ctx, options, x, y, w) {
     break;
   case 'dash':
     ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(rad) * radius, y + Math.sin(rad) * radius);
+    ctx.lineTo(x + Math.cos(rad) * (w ? w / 2 : radius), y + Math.sin(rad) * radius);
     break;
   }
 

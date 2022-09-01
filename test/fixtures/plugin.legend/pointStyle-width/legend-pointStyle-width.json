@@ -1,0 +1,112 @@
+ {
+    "config": {
+        "type": "line",
+        "data": {
+            "labels": ["A", "B", "C"],
+            "datasets": [{
+                "data": [10, 10, 10],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "line"
+            },
+			{
+                "data": [15, 15, 15],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "triangle"
+            },
+			{
+                "data": [20, 20, 20],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "rectRounded"
+            },
+			{
+                "data": [30, 30, 30],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": ""
+            },
+			{
+                "data": [40, 40, 40],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "rect"
+            },
+			{
+                "data": [25, 25, 25],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "rectRot"
+            },
+			{
+                "data": [35, 35, 35],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "crossRot"
+            },
+			{
+                "data": [45, 45, 45],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "cross"
+            },
+			{
+                "data": [50, 50, 50],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "star"
+            },
+			{
+                "data": [55, 55, 55],
+                "backgroundColor": "#00ff00",
+				"borderColor": "#ff0000",
+                "borderWidth": 1,
+                "label": "",
+                "pointStyle": "dash"
+            }]
+        },
+        "options": {
+            "plugins": {
+                "legend": {
+                    "display": true,
+                    "labels": {
+                        "usePointStyle": true,
+                        "pointStyleWidth": 75
+                    }
+                }
+            },
+            "scales": {
+                "x": {
+                    "display": false
+                },
+                "y": {
+                    "display": false
+                }
+            }
+        }
+    },
+    "options": {
+        "canvas": {
+            "height": 512,
+            "width": 1024
+        }
+    }
+}
