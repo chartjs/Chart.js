@@ -55,6 +55,14 @@ export function isObject(value: unknown): value is AnyObject {
 }
 
 /**
+ * Returns true if `value` is a javascript module, else returns false.
+ * @param value - The value to test.
+ */
+export function isModule(value: unknown): value is AnyObject {
+  return Object.prototype.toString.call(value) === '[object Module]';
+}
+
+/**
  * Returns true if `value` is a finite number, else returns false
  * @param value  - The value to test.
  */
@@ -149,7 +157,7 @@ export function each<T, TA>(
         fn.call(thisArg, loopable[i], i);
       }
     }
-  } else if (isObject(loopable)) {
+  } else if (isObject(loopable) || isModule(loopable)) {
     keys = Object.keys(loopable);
     len = keys.length;
     for (i = 0; i < len; i++) {
