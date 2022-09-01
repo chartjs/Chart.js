@@ -66,7 +66,7 @@ Namespace: `options.plugins.legend.labels`
 | [`pointStyle`](elements.md#point-styles) | [`pointStyle`](elements.md#types) | `'circle'` | If specified, this style of point is used for the legend. Only used if `usePointStyle` is true.
 | `textAlign` | `string` | `'center'` | Horizontal alignment of the label text. Options are: `'left'`, `'right'` or `'center'`.
 | `usePointStyle` | `boolean` | `false` | Label style will match corresponding point style (size is based on pointStyleWidth or the minimum value between boxWidth and font.size).
-| `pointStyleWidth` | `number` | `null` | If `usePointStyle` is true, the width of the point style used for the legend (only for `circle`, `rect` and `line` point stlye).
+| `pointStyleWidth` | `number` | `null` | If `usePointStyle` is true, the width of the point style used for the legend.
 | `useBorderRadius` | `boolean` | `false` | Label borderRadius will match coresponding borderRadius.
 | `borderRadius` | `number` | `undefined` | Override the borderRadius to use.
 
