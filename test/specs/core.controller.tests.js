@@ -1254,6 +1254,7 @@ describe('Chart', function() {
           done();
         });
         canvas.parentNode.style.width = '455px';
+        canvas.parentNode.style.height = '455px';
       });
     });
 
@@ -1341,7 +1342,7 @@ describe('Chart', function() {
       wrapper.style.width = '450px';
     });
 
-    it('should not resize the canvas when parent height changes', function(done) {
+    it('should maintain aspect ratio when parent height changes', function(done) {
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1370,8 +1371,8 @@ describe('Chart', function() {
 
         waitForResize(chart, function() {
           expect(chart).toBeChartOfSize({
-            dw: 320, dh: 160,
-            rw: 320, rh: 160,
+            dw: 300, dh: 150,
+            rw: 300, rh: 150,
           });
 
           done();
@@ -1857,6 +1858,7 @@ describe('Chart', function() {
         done();
       });
       chart.canvas.parentNode.style.width = '400px';
+      chart.canvas.parentNode.style.height = '400px';
     });
 
     it ('should notify initially disabled plugin in correct order', function() {

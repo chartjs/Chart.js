@@ -26,6 +26,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The z index for the border of a scale is now configurable instead of being 1 higher as the grid z index.
 * Linear scales now add and subtracts `5%` of the max value to the range if the min and max are the same instead of `1`.
 * If the tooltip callback returns `undefined`, then the default callback will be used.
+* `maintainAspectRatio` respects container height.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
