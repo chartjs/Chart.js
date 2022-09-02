@@ -443,6 +443,7 @@ describe('Chart', function() {
         options: {
           scales: {
             foo: {
+              axis: 'x',
               type: 'logarithmic',
               _jasmineCheckC: 'c2',
               _jasmineCheckD: 'd2'

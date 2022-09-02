@@ -7,6 +7,7 @@ Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amoun
 ### Charts
 
 * Charts don't override the default tooltip callbacks, so all chart types have the same-looking tooltips.
+* Default scale override has been removed if the configured scale starts with `x`/`y`. Defining `xAxes` in your config will now create a second scale instead of overriding the default `x` axis.
 
 ### Options
 

@@ -571,4 +571,102 @@ describe('Core.scale', function() {
       expect(chart.scales.y.max).toEqual(10);
     });
   });
+
+  describe('overrides', () => {
+    it('should create new scale', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            x2: {
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(chart.scales).sort()).toEqual(['x', 'x2', 'y']);
+    });
+
+    it('should create new scale with custom name', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            scaleX: {
+              axis: 'x',
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(chart.scales).sort()).toEqual(['scaleX', 'x', 'y']);
+    });
+
+    it('should throw error on scale with custom name without axis type', () => {
+      expect(() => window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            scaleX: {
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      })).toThrow();
+    });
+
+    it('should read options first to determine axis', () => {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 100, y: 100}, {x: -100, y: -100}]
+          }, {
+            data: [{x: 10, y: 10}, {x: -10, y: -10}]
+          }]
+        },
+        options: {
+          scales: {
+            xavier: {
+              axis: 'y',
+              type: 'linear',
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+
+      expect(chart.scales.xavier.axis).toBe('y');
+    });
+  });
 });

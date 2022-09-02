@@ -10,31 +10,31 @@ module.exports = {
           label: 'Dataset 1',
           data: [12, 19, 3, 5, 2, 3],
           stack: '0',
-          yAxisID: 'y-axis-1'
+          yAxisID: 'y'
         },
         {
           backgroundColor: 'rgba(54,162,235,0.8)',
           label: 'Dataset 2',
           data: [13, 19, 3, 5, 8, 3],
           stack: '0',
-          yAxisID: 'y-axis-1'
+          yAxisID: 'y'
         },
         {
           backgroundColor: 'rgba(75,192,192,0.8)',
           label: 'Dataset 3',
           data: [13, 19, 3, 5, 8, 3],
           stack: '0',
-          yAxisID: 'y-axis-1'
+          yAxisID: 'y'
         }
       ]
     },
     options: {
       plugins: false,
       scales: {
-        xaxis: {
+        x: {
           display: false,
         },
-        'y-axis-1': {
+        y: {
           display: false
         }
       }

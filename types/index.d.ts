@@ -3039,9 +3039,9 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   stackWeight?: number;
 
   /**
-   *   Which type of axis this is. Possible values are: 'x', 'y'. If not set, this is inferred from the first character of the ID which should be 'x' or 'y'.
+   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. If not set, this is inferred from the first character of the ID which should be 'x', 'y' or 'r'.
    */
-  axis: 'x' | 'y';
+  axis: 'x' | 'y' | 'r';
 
   /**
    * User defined minimum value for the scale, overrides minimum value from data.

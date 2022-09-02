@@ -17,11 +17,11 @@ module.exports = {
         title: false
       },
       scales: {
-        bottom: {
+        x: {
           type: 'category',
           position: 'bottom'
         },
-        top: {
+        x2: {
           type: 'category',
           position: 'top'
         }
