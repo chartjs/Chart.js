@@ -298,7 +298,7 @@ function addScopesFromKey(set, allScopes, key, fallback, item) {
 }
 
 function subGetTarget(resolver, prop, value) {
-  const parent = resolver._getTarget();
+  const parent = resolver._getTarget() || {};
   if (!(prop in parent)) {
     parent[prop] = {};
   }
