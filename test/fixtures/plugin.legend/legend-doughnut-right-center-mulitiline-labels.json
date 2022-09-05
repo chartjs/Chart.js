@@ -2,7 +2,7 @@
 	"config": {
 		"type": "doughnut",
 		"data": {
-			"labels": ["", ["", "", "", "", "", ""], "", "", ""],
+			"labels": ["", ["", "", "", "", ""], "", "", ""],
 			"datasets": [{
 				"data": [10, 20, 30, 40],
 				"backgroundColor": "#00ff00",
