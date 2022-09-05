@@ -38,7 +38,6 @@ Namespace: `options.scales[scaleId]`
 | `time.round` | `string` | `false` | If defined, dates will be rounded to the start of this unit. See [Time Units](#time-units) below for the allowed units.
 | `time.tooltipFormat` | `string` | | The format string to use for the tooltip.
 | `time.unit` | `string` | `false` | If defined, will force the unit to be a certain type. See [Time Units](#time-units) section below for details.
-| `time.stepSize` | `number` | `1` | The number of units between grid lines.
 | `time.minUnit` | `string` | `'millisecond'` | The minimum display format to be used for a time unit.
 
 !!!include(axes/cartesian/_common.md)!!!
