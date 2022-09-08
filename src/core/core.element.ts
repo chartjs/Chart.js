@@ -3,7 +3,7 @@ import type {Point} from '../../types/geometric';
 import type {Animation} from '../../types/animation';
 import {isNumber} from '../helpers/helpers.math';
 
-export default class Element<T extends AnyObject = AnyObject, O extends AnyObject = AnyObject> {
+export default class Element<T = AnyObject, O = AnyObject> {
 
   static defaults = {};
   static defaultRoutes = undefined;
@@ -28,16 +28,18 @@ export default class Element<T extends AnyObject = AnyObject, O extends AnyObjec
    * @param props - properties to get
    * @param [final] - get the final value (animation target)
    */
-  getProps<P extends (keyof T)[]>(props: P, final?: boolean): Pick<T, P[number]> {
+  getProps<P extends string>(props: P[], final?: boolean): Partial<Record<P, unknown>>;
+  getProps<P extends (keyof T)[]>(props: P, final?: boolean): Pick<T, P[number]>;
+  getProps(props: string[], final?: boolean): Partial<Record<string, unknown>> {
     const anims = this.$animations;
     if (!final || !anims) {
       // let's not create an object, if not needed
-      return this as Pick<T, P[number]>;
+      return this as Record<string, unknown>;
     }
-    const ret: Partial<Pick<T, P[number]>> = {};
+    const ret: Record<string, unknown> = {};
     props.forEach((prop) => {
       ret[prop] = anims[prop] && anims[prop].active() ? anims[prop]._to : this[prop as string];
     });
-    return ret as Pick<T, P[number]>;
+    return ret;
   }
 }

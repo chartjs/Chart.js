@@ -263,7 +263,7 @@ export default class TimeScale extends Scale {
     this._parseOpts = undefined;
   }
 
-  init(scaleOpts, opts) {
+  init(scaleOpts, opts = {}) {
     const time = scaleOpts.time || (scaleOpts.time = {});
     /** @type {DateAdapter} */
     const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
@@ -412,10 +412,9 @@ export default class TimeScale extends Scale {
 	 * They add extra margins on the both sides by scaling down the original scale.
 	 * Offsets are added when the `offset` option is true.
 	 * @param {number[]} timestamps
-	 * @return {object}
 	 * @protected
 	 */
-  initOffsets(timestamps) {
+  initOffsets(timestamps = []) {
     let start = 0;
     let end = 0;
     let first, last;

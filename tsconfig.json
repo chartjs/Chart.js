@@ -23,9 +23,7 @@
     "allowSyntheticDefaultImports": true,
     /* Language and Environment */
     "target": "ES6",
-    "lib": ["es2018", "DOM"],
-    /* Completeness */
-    "skipLibCheck": true
+    "lib": ["es2018", "DOM"]
   },
   "typedocOptions": {
     "name": "Chart.js",
