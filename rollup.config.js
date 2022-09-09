@@ -3,6 +3,7 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {swc} from 'rollup-plugin-swc3';
 import {terser} from 'rollup-plugin-terser';
+import dts from 'rollup-plugin-dts';
 import {readFileSync} from 'fs';
 
 const {version, homepage} = JSON.parse(readFileSync('./package.json'));
@@ -76,5 +77,22 @@ export default [
       indent: false,
       sourcemap: true,
     },
+  },
+
+  // Types
+  // dist/types.d.ts
+  // dist/helpers.d.ts
+  {
+    input: {
+      'dist/types': 'src/types.ts',
+      'dist/helpers': 'src/helpers/types.ts'
+    },
+    plugins: [dts()],
+    output: {
+      dir: './',
+      chunkFileNames: 'dist/chunks/[name].d.ts',
+      entryFileNames: '[name].d.ts',
+      format: 'es'
+    }
   }
 ];
