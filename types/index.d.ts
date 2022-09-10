@@ -3238,12 +3238,6 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
      * @default false
      */
     unit: false | TimeUnit;
-
-    /**
-     * The number of units between grid lines.
-     * @default 1
-     */
-    stepSize: number;
     /**
      * The minimum display format to be used for a time unit.
      * @default 'millisecond'

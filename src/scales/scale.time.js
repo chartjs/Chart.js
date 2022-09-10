@@ -455,7 +455,7 @@ export default class TimeScale extends Scale {
     const timeOpts = options.time;
     // @ts-ignore
     const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, this._getLabelCapacity(min));
-    const stepSize = valueOrDefault(timeOpts.stepSize, 1);
+    const stepSize = valueOrDefault(options.ticks.stepSize, 1);
     const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
     const hasWeekday = isNumber(weekday) || weekday === true;
     const ticks = {};

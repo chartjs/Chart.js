@@ -12,6 +12,8 @@ module.exports = {
           bounds: 'ticks',
           time: {
             unit: 'hour',
+          },
+          ticks: {
             stepSize: 2
           }
         },
