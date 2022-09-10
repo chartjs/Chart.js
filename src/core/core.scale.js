@@ -173,7 +173,7 @@ export default class Scale extends Element {
     this.id = cfg.id;
     /** @type {string} */
     this.type = cfg.type;
-    /** @type {object} */
+    /** @type {any} */
     this.options = undefined;
     /** @type {CanvasRenderingContext2D} */
     this.ctx = cfg.ctx;
@@ -248,7 +248,7 @@ export default class Scale extends Element {
   }
 
   /**
-	 * @param {object} options
+	 * @param {any} options
 	 * @since 3.0
 	 */
   init(options) {

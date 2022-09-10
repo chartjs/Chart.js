@@ -3,7 +3,6 @@ export * from './helpers.collection';
 export * from './helpers.color';
 export * from './helpers.curve';
 export * from './helpers.dom';
-export * from './helpers.easing';
 export * from './helpers.extras';
 export * from './helpers.interpolation';
 export * from './helpers.intl';
