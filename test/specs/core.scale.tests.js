@@ -54,7 +54,7 @@ describe('Core.scale', function() {
           }
         }
       });
-    } 
+    }
 
     function lastTick(chart) {
       var xAxis = chart.scales.x;
