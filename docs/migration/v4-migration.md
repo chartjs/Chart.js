@@ -28,6 +28,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * If the tooltip callback returns `undefined`, then the default callback will be used.
 * `maintainAspectRatio` respects container height.
 * Time and timeseries scales use `ticks.stepSize` instead of `time.stepSize`, which has been removed.
+* `maxTickslimit` wont be used for the ticks in `autoSkip` if the determined max ticks is less then the `maxTicksLimit`.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
