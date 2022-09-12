@@ -3,12 +3,20 @@ import Element from '../core/core.element';
 import layouts from '../core/core.layouts';
 import {addRoundedRectPath, drawPointLegend, renderText} from '../helpers/helpers.canvas';
 import {
-  callback as call, valueOrDefault, toFont,
-  toPadding, getRtlAdapter, overrideTextDirection, restoreTextDirection,
-  clipArea, unclipArea, _isBetween
+  _isBetween,
+  callback as call,
+  clipArea,
+  getRtlAdapter,
+  overrideTextDirection,
+  restoreTextDirection,
+  toFont,
+  toPadding,
+  unclipArea,
+  valueOrDefault,
 } from '../helpers/index';
-import {_toLeftRightCenter, _alignStartEnd, _textX} from '../helpers/helpers.extras';
+import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.extras';
 import {toTRBLCorners} from '../helpers/helpers.options';
+
 /**
  * @typedef { import("../../types").ChartEvent } ChartEvent
  */
@@ -545,9 +553,17 @@ export class Legend extends Element {
 }
 
 function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
-  const itemWidth = boxWidth + (labelFont.size / 2) + ctx.measureText(legendItem.text).width;
+  const itemWidth = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
   const itemHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
   return {itemWidth, itemHeight};
+}
+
+function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
+  let text = legendItem.text;
+  if (typeof legendItem.text !== 'string') {
+    text = legendItem.text.reduce((a, b) => a.length > b.length ? a : b);
+  }
+  return boxWidth + (labelFont.size / 2) + ctx.measureText(text).width;
 }
 
 function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
