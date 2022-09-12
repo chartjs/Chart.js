@@ -1051,6 +1051,9 @@ describe('Chart.controllers.line', function() {
       {x: 50, y: 9},
       {x: 50, y: 9},
       {x: 50, y: 9},
+      {x: 51, y: 9},
+      {x: 52, y: 9},
+      {x: 52, y: 9},
     ];
     chart.update();
 
@@ -1062,6 +1065,10 @@ describe('Chart.controllers.line', function() {
     };
 
     chart._handleEvent(event, false, true);
+
+    const visiblePoints = chart.getSortedVisibleDatasetMetas()[0].data.filter(_ => !_.skip);
+
+    expect(visiblePoints.length).toBe(6);
   }, 500);
 
   it('should not override tooltip title and label callbacks', async() => {

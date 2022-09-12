@@ -35,7 +35,10 @@ export function _lookup(table, value, cmp) {
  */
 export const _lookupByKey = (table, key, value, last) =>
   _lookup(table, value, last
-    ? index => table[index][key] <= value
+    ? index => {
+      const ti = table[index][key];
+      return ti < value || ti === value && table[index + 1][key] === value;
+    }
     : index => table[index][key] < value);
 
 /**
