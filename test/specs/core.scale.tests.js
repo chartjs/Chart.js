@@ -34,11 +34,43 @@ describe('Core.scale', function() {
       });
     }
 
+    function getChartBigData(maxTicksLimit) {
+      return window.acquireChart({
+        type: 'line',
+        data: {
+          labels: new Array(300).fill('red'),
+          datasets: [{
+            data: new Array(300).fill(5),
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit
+              }
+            }
+          }
+        }
+      });
+    }
+
     function lastTick(chart) {
       var xAxis = chart.scales.x;
       var ticks = xAxis.getTicks();
       return ticks[ticks.length - 1];
     }
+
+    it('should use autoSkip amount of ticks when maxTicksLimit is set to a larger number as autoSkip calculation', function() {
+      var chart = getChartBigData(300);
+      expect(chart.scales.x.ticks.length).toEqual(20);
+    });
+
+    it('should use maxTicksLimit amount of ticks when maxTicksLimit is set to a smaller number as autoSkip calculation', function() {
+      var chart = getChartBigData(3);
+      expect(chart.scales.x.ticks.length).toEqual(3);
+    });
 
     it('should display the last tick if it fits evenly with other ticks', function() {
       var chart = getChart({

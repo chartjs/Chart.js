@@ -16,7 +16,8 @@ import {_factorize} from '../helpers/helpers.math';
  */
 export function autoSkip(scale, ticks) {
   const tickOpts = scale.options.ticks;
-  const ticksLimit = tickOpts.maxTicksLimit || determineMaxTicks(scale);
+  const determinedMaxTicks = determineMaxTicks(scale);
+  const ticksLimit = Math.min(tickOpts.maxTicksLimit || determinedMaxTicks, determinedMaxTicks);
   const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
   const numMajorIndices = majorIndices.length;
   const first = majorIndices[0];
