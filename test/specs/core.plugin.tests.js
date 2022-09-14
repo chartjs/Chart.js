@@ -354,8 +354,23 @@ describe('Chart.plugins', function() {
     // https://github.com/chartjs/Chart.js/issues/10654
     it('should resolve options even if some subnodes are set as undefined', function() {
       var runtimeOptions;
-      var plugin = {id: 'a', afterUpdate: function(chart, args, options) { options.l1.l2.l3.display = true; runtimeOptions = options; }, defaults: {l1: {l2: {l3: {display: false}}}}};
-      var chart = window.acquireChart({
+      var plugin = {
+        id: 'a',
+        afterUpdate: function(chart, args, options) {
+          options.l1.l2.l3.display = true;
+          runtimeOptions = options;
+        },
+        defaults: {
+          l1: {
+            l2: {
+              l3: {
+                display: false
+              }
+            }
+          }
+        }
+      };
+      window.acquireChart({
         plugins: [plugin],
         options: {
           plugins: {
