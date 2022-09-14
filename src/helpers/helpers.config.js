@@ -298,7 +298,7 @@ function addScopesFromKey(set, allScopes, key, fallback, item) {
 }
 
 function subGetTarget(resolver, prop, value) {
-  const parent = resolver._getTarget() || {};
+  const parent = resolver._getTarget();
   if (!(prop in parent)) {
     parent[prop] = {};
   }
@@ -307,7 +307,7 @@ function subGetTarget(resolver, prop, value) {
     // For array of objects, the object is used to store updated values
     return value;
   }
-  return target;
+  return target || {};
 }
 
 function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
