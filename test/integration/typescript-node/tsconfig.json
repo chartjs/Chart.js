@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "lib": ["es2018", "DOM"]
+  },
+  "include": [
+    "./src/**/*.ts",
+  ]
+}
