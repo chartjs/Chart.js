@@ -351,6 +351,42 @@ describe('Chart.plugins', function() {
       expect(plugin.hook.calls.first().args[2]).toEqualOptions({bar: 'bar'});
     });
 
+    // https://github.com/chartjs/Chart.js/issues/10654
+    it('should resolve options even if some subnodes are set as undefined', function() {
+      var runtimeOptions;
+      var plugin = {
+        id: 'a',
+        afterUpdate: function(chart, args, options) {
+          options.l1.l2.l3.display = true;
+          runtimeOptions = options;
+        },
+        defaults: {
+          l1: {
+            l2: {
+              l3: {
+                display: false
+              }
+            }
+          }
+        }
+      };
+      window.acquireChart({
+        plugins: [plugin],
+        options: {
+          plugins: {
+            a: {
+              l1: {
+                l2: undefined
+              }
+            },
+          }
+        },
+      });
+
+      expect(runtimeOptions.l1.l2.l3.display).toBe(true);
+      Chart.unregister(plugin);
+    });
+
     it('should disable all plugins', function() {
       var plugin = {id: 'a', hook: function() {}};
       var chart = window.acquireChart({

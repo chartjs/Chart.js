@@ -307,7 +307,7 @@ function subGetTarget(resolver, prop, value) {
     // For array of objects, the object is used to store updated values
     return value;
   }
-  return target;
+  return target || {};
 }
 
 function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
