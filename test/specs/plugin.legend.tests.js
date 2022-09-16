@@ -507,6 +507,70 @@ describe('Legend block tests', function() {
     });
   });
 
+  it('should draw legend with multiline labels', function() {
+    const chart = window.acquireChart({
+      type: 'doughnut',
+      data: {
+        labels: [
+          'ABCDE',
+          [
+            'ABCDE',
+            'ABCDE',
+          ],
+          [
+            'Some Text',
+            'Some Text',
+            'Some Text',
+          ],
+          'ABCDE',
+        ],
+        datasets: [
+          {
+            label: 'test',
+            data: [
+              73.42,
+              18.13,
+              7.54,
+              0.9,
+              0.0025,
+              1.8e-5,
+            ],
+            backgroundColor: [
+              '#0078C2',
+              '#56CAF5',
+              '#B1E3F9',
+              '#FBBC8D',
+              '#F6A3BE',
+              '#4EC2C1',
+            ],
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'rect',
+            },
+            position: 'right',
+            align: 'center',
+            maxWidth: 860,
+          },
+        },
+        aspectRatio: 3,
+      },
+    });
+
+    // Check some basic assertions about the test setup
+    expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+    // Check whether any legend items reach outside the established bounds
+    chart.legend.legendHitBoxes.forEach(function(item) {
+      expect(item.left + item.width).toBeLessThanOrEqual(chart.width);
+    });
+  });
+
   it('should draw items with a custom boxHeight', function() {
     var chart = window.acquireChart(
       {
