@@ -10,7 +10,7 @@ export function color(
   | [number, number, number, number]
 ): ColorModel;
 
-export function isPatternOrGradient(value: string | AnyObject): boolean;
+export function isPatternOrGradient(value: unknown): value is CanvasPattern | CanvasGradient;
 
 export interface ColorModel {
   rgbString(): string;
