@@ -101,6 +101,20 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
   return e;
 }
 
+function getDatasetArea(meta) {
+  const {iScale, vScale} = meta;
+  if (iScale && vScale) {
+    const horScale = iScale.isHorizontal() ? iScale : vScale;
+    const verScale = iScale.isHorizontal() ? vScale : iScale;
+    return {
+      left: horScale.left,
+      right: horScale.right,
+      top: verScale.top,
+      bottom: verScale.bottom
+    };
+  }
+}
+
 class Chart {
 
   static defaults = defaults;
@@ -784,7 +798,7 @@ class Chart {
     const ctx = this.ctx;
     const clip = meta._clip;
     const useClip = !clip.disabled;
-    const area = this.chartArea;
+    const area = getDatasetArea(meta) || this.chartArea;
     const args = {
       meta,
       index: meta.index,
