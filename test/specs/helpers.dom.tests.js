@@ -487,4 +487,21 @@ describe('DOM helpers tests', function() {
 
     document.body.removeChild(container);
   });
+
+  it('should respect aspect ratio and skip container height', () => {
+    const container = document.createElement('div');
+    container.style.width = '500px';
+    container.style.height = '200px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '500px';
+    target.style.height = '500px';
+    container.appendChild(target);
+
+    expect(helpers.getMaximumSize(target, undefined, undefined, 1)).toEqual(jasmine.objectContaining({width: 500, height: 500}));
+
+    document.body.removeChild(container);
+  });
 });
