@@ -7,7 +7,7 @@ function modifyWebpackConfig(config) {
 module.exports = [
   {
     path: 'dist/chart.js',
-    limit: '77 KB',
+    limit: '77.2 KB',
     webpack: false,
     running: false
   },
@@ -41,7 +41,7 @@ module.exports = [
   },
   {
     path: 'dist/chart.js',
-    limit: '22.2 KB',
+    limit: '22.4 KB',
     import: '{ CategoryScale, LinearScale, LogarithmicScale, RadialLinearScale, TimeScale, TimeSeriesScale }',
     running: false,
     modifyWebpackConfig
