@@ -249,8 +249,8 @@ class Chart {
     // After init plugin notification
     this.notifyPlugins('afterInit');
 
-    if(this.options.fill && this._plugins._init.filter(p => p.plugin.id === 'filler').length === 0){
-      console.warn("Tried to use the 'fill' option without the 'Filler' plugin registerd. Please import and register the 'Filler' plugin")
+    if (this.options.fill && this._plugins._init.filter(p => p.plugin.id === 'filler').length === 0) {
+      console.warn("Tried to use the 'fill' option without the 'Filler' plugin registerd. Please import and register the 'Filler' plugin");
     }
 
     return this;
