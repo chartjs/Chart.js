@@ -530,6 +530,8 @@ export declare class Chart<
 
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
+  isPluginEnabled(pluginId: string): boolean;
+
   static readonly defaults: Defaults;
   static readonly overrides: Overrides;
   static readonly version: string;

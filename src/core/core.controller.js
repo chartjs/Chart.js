@@ -249,10 +249,6 @@ class Chart {
     // After init plugin notification
     this.notifyPlugins('afterInit');
 
-    if (this.options.fill && this._plugins._init.filter(p => p.plugin.id === 'filler').length === 0) {
-      console.warn("Tried to use the 'fill' option without the 'Filler' plugin registerd. Please import and register the 'Filler' plugin");
-    }
-
     return this;
   }
 
@@ -1138,6 +1134,15 @@ class Chart {
 	 */
   notifyPlugins(hook, args, filter) {
     return this._plugins.notify(this, hook, args, filter);
+  }
+
+  /**
+   * Check if a plugin with the specific ID is registered
+   * @param {string} pluginId - The ID of the plugin of which to check if it is enabled
+   * @returns {boolean}
+   */
+  isPluginEnabled(pluginId) {
+    return this._plugins._init.filter(p => p.plugin.id === pluginId).length === 1;
   }
 
   /**

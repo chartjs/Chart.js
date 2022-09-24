@@ -268,7 +268,7 @@ export default class DatasetController {
     meta._stacked = isStacked(meta.vScale, meta);
     this.addElements();
 
-    if (this.options.fill && this.chart._plugins._init.filter(p => p.plugin.id === 'filler').length === 0) {
+    if (this.options.fill && !this.chart.isPluginEnabled('filler')) {
       console.warn("Tried to use the 'fill' option without the 'Filler' plugin registerd. Please import and register the 'Filler' plugin");
     }
   }
