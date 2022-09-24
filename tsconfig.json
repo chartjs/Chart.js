@@ -38,6 +38,7 @@
     "./types"
   ],
   "exclude": [
-    "./types/tests"
+    "./types/tests",
+    "./dist/**"
   ]
 }
