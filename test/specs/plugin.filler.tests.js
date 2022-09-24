@@ -12,7 +12,6 @@ describe('Plugin.filler', function() {
 
   describe('dataset.fill', function() {
     it('Should show a warning when trying to use the filler plugin in the dataset when it\'s not registered', function() {
-      // jasmine.createSpy('warn');
       spyOn(console, 'warn');
       Chart.unregister(Chart.Filler);
       window.acquireChart({
