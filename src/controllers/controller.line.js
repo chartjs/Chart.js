@@ -82,12 +82,20 @@ export default class LineController extends DatasetController {
     const {spanGaps, segment} = this.options;
     const maxGapLength = isNumber(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
     const directUpdate = this.chart._animationsDisabled || reset || mode === 'none';
+    const end = start + count;
+    const pointsCount = points.length;
     let prevParsed = start > 0 && this.getParsed(start - 1);
 
-    for (let i = start; i < start + count; ++i) {
+    for (let i = 0; i < pointsCount; ++i) {
       const point = points[i];
-      const parsed = this.getParsed(i);
       const properties = directUpdate ? point : {};
+
+      if (i < start || i >= end) {
+        properties.skip = true;
+        continue;
+      }
+
+      const parsed = this.getParsed(i);
       const nullData = isNullOrUndef(parsed[vAxis]);
       const iPixel = properties[iAxis] = iScale.getPixelForValue(parsed[iAxis], i);
       const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? this.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
