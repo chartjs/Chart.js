@@ -205,7 +205,7 @@ chart.setActiveElements([
 Returns a boolean if a plugin with the given ID has been registered to the chart instance.
 
 ```javascript
-chart.isPluginEnabled('Filler');
+chart.isPluginEnabled('filler');
 ```
 
 ## Static: getChart(key)

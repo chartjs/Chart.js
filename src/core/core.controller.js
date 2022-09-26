@@ -1137,7 +1137,7 @@ class Chart {
   }
 
   /**
-   * Check if a plugin with the specific ID is registered
+   * Check if a plugin with the specific ID is registered and enabled
    * @param {string} pluginId - The ID of the plugin of which to check if it is enabled
    * @returns {boolean}
    */
