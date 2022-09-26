@@ -269,7 +269,7 @@ export default class DatasetController {
     this.addElements();
 
     if (this.options.fill && !this.chart.isPluginEnabled('filler')) {
-      console.warn("Tried to use the 'fill' option without the 'Filler' plugin registerd. Please import and register the 'Filler' plugin");
+      console.warn("Tried to use the 'fill' option without the 'Filler' plugin enabled. Please import and register the 'Filler' plugin and make sure it is not disabled in the options");
     }
   }
 
