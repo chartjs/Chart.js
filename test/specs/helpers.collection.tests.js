@@ -19,6 +19,16 @@ describe('helpers.collection', function() {
     expect(_lookupByKey(data, 'x', 9)).toEqual({lo: 2, hi: 3});
   });
 
+  it('Should do binary search by key with last', () => {
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 6}, {x: 9}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 9}, {x: 9}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 9}, {x: 9}, {x: 22}], 'x', 25, true)).toEqual({lo: 3, hi: 4});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 28}], 'x', 25, true)).toEqual({lo: 1, hi: 2});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 25}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 25}, {x: 28}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 25}, {x: 25}, {x: 28}, {x: 29}], 'x', 25, true)).toEqual({lo: 3, hi: 4});
+  });
+
   it('Should do reverse binary search by key', function() {
     const data = [{x: 10}, {x: 7}, {x: 3}, {x: 0}];
     expect(_rlookupByKey(data, 'x', 0)).toEqual({lo: 2, hi: 3});
