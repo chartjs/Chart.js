@@ -1142,7 +1142,7 @@ class Chart {
    * @returns {boolean}
    */
   isPluginEnabled(pluginId) {
-    return this._plugins._init.filter(p => p.plugin.id === pluginId).length === 1;
+    return this._plugins._cache.filter(p => p.plugin.id === pluginId).length === 1;
   }
 
   /**
