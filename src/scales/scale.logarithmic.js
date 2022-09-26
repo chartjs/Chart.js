@@ -67,19 +67,41 @@ export default class LogarithmicScale extends Scale {
 
   parse(raw, index) {
     const value = LinearScaleBase.prototype.parse.apply(this, [raw, index]);
-    if (isFinite(value)) {
-      if (value === 0) {
-        this._zero = true;
-      } else {
-        if (this._minNotZero === undefined) {
-          this._minNotZero = value;
-        }
-        this._minNotZero = Math.min(this._minNotZero, value);
-      }
-      return value;
-    } else {
-      return null;
+    return isFinite(value) && value >= 0 ? value : null;
+  }
+
+  getMinMax(canStack) {
+    let {min, max, minDefined, maxDefined} = this.getUserBounds();
+    let range;
+    this._zero = false;
+    if (minDefined && maxDefined) {
+      return {min, max};
     }
+    const metas = this.getMatchingVisibleMetas();
+    for (let i = 0, ilen = metas.length; i < ilen; ++i) {
+      range = metas[i].controller.getMinMax(this, canStack);
+      if (!minDefined) {
+        min = Math.min(min, range.min);
+      }
+      if (!maxDefined) {
+        max = Math.max(max, range.max);
+      } 
+      if (metas[i].hidden !== true && min === 0) {
+        this._zero = true;
+        this._minNotZero = max;
+        for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
+          if (metas[i]._dataset.data[j] > 0) {
+            this._minNotZero = Math.min(this._minNotZero, metas[i]._dataset.data[j]);
+          }
+        }
+      }
+    }
+    min = maxDefined && min > max ? max : min;
+    max = minDefined && min > max ? min : max;
+    return {
+      min: finiteOrDefault(min, finiteOrDefault(max, min)),
+      max: finiteOrDefault(max, finiteOrDefault(min, max))
+    };
   }
 
   determineDataLimits() {
