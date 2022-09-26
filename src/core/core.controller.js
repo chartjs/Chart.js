@@ -102,15 +102,13 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
 }
 
 function getDatasetArea(meta) {
-  const {iScale, vScale} = meta;
-  if (iScale && vScale) {
-    const horScale = iScale.isHorizontal() ? iScale : vScale;
-    const verScale = iScale.isHorizontal() ? vScale : iScale;
+  const {xScale, yScale} = meta;
+  if (xScale && yScale) {
     return {
-      left: horScale.left,
-      right: horScale.right,
-      top: verScale.top,
-      bottom: verScale.bottom
+      left: xScale.left,
+      right: xScale.right,
+      top: yScale.top,
+      bottom: yScale.bottom
     };
   }
 }
