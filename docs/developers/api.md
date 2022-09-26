@@ -200,6 +200,14 @@ chart.setActiveElements([
 ]);
 ```
 
+## isPluginEnabled(pluginId)
+
+Returns a boolean if a plugin with the given ID has been registered to the chart instance.
+
+```javascript
+chart.isPluginEnabled('filler');
+```
+
 ## Static: getChart(key)
 
 Finds the chart instance from the given key. If the key is a `string`, it is interpreted as the ID of the Canvas node for the Chart. The key can also be a `CanvasRenderingContext2D` or an `HTMLDOMElement`. This will return `undefined` if no Chart is found. To be found, the chart must have previously been created.

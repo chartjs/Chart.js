@@ -1,4 +1,5 @@
 describe('Plugin.filler', function() {
+  const fillerPluginRegisterWarning = 'Tried to use the \'fill\' option without the \'Filler\' plugin enabled. Please import and register the \'Filler\' plugin and make sure it is not disabled in the options';
   function decodedFillValues(chart) {
     return chart.data.datasets.map(function(dataset, index) {
       var meta = chart.getDatasetMeta(index) || {};
@@ -10,6 +11,43 @@ describe('Plugin.filler', function() {
   describe('auto', jasmine.fixture.specs('plugin.filler'));
 
   describe('dataset.fill', function() {
+    it('Should show a warning when trying to use the filler plugin in the dataset when it\'s not registered', function() {
+      spyOn(console, 'warn');
+      Chart.unregister(Chart.Filler);
+      window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            fill: true
+          }]
+        }
+      });
+
+      expect(console.warn).toHaveBeenCalledWith(fillerPluginRegisterWarning);
+
+      Chart.register(Chart.Filler);
+    });
+
+    it('Should show a warning when trying to use the filler plugin in the root options when it\'s not registered', function() {
+      // jasmine.createSpy('warn');
+      spyOn(console, 'warn');
+      Chart.unregister(Chart.Filler);
+      window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+          }]
+        },
+        options: {
+          fill: true
+        }
+      });
+
+      expect(console.warn).toHaveBeenCalledWith(fillerPluginRegisterWarning);
+
+      Chart.register(Chart.Filler);
+    });
+
     it('should support boundaries', function() {
       var chart = window.acquireChart({
         type: 'line',

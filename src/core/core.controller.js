@@ -1137,6 +1137,15 @@ class Chart {
   }
 
   /**
+   * Check if a plugin with the specific ID is registered and enabled
+   * @param {string} pluginId - The ID of the plugin of which to check if it is enabled
+   * @returns {boolean}
+   */
+  isPluginEnabled(pluginId) {
+    return this._plugins._cache.filter(p => p.plugin.id === pluginId).length === 1;
+  }
+
+  /**
 	 * @private
 	 */
   _updateHoverStyles(active, lastActive, replay) {
