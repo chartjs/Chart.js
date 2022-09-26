@@ -1,5 +1,5 @@
 describe('Plugin.filler', function() {
-  const fillerPluginRegisterWarning = 'Tried to use the \'fill\' option without the \'Filler\' plugin registerd. Please import and register the \'Filler\' plugin';
+  const fillerPluginRegisterWarning = 'Tried to use the \'fill\' option without the \'Filler\' plugin enabled. Please import and register the \'Filler\' plugin and make sure it is not disabled in the options';
   function decodedFillValues(chart) {
     return chart.data.datasets.map(function(dataset, index) {
       var meta = chart.getDatasetMeta(index) || {};
