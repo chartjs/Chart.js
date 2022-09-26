@@ -1,4 +1,4 @@
-import {finiteOrDefault, isFinite} from '../helpers/helpers.core';
+import {callback as call, finiteOrDefault, isFinite} from '../helpers/helpers.core';
 import {formatNumber} from '../helpers/helpers.intl';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
@@ -20,7 +20,14 @@ function generateTicks(generationOptions, dataRange) {
   const endExp = Math.floor(log10(dataRange.max));
   const endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
   const ticks = [];
-  let tickVal = finiteOrDefault(generationOptions.min, Math.pow(10, Math.floor(log10(dataRange.min))));
+  let tickVal;
+
+  if (dataRange._zero === true) {
+    tickVal = Math.pow(10, Math.floor(log10(dataRange._minNotZero)) - 1);
+  } else {
+    tickVal = finiteOrDefault(generationOptions.min, Math.pow(10, Math.floor(log10(dataRange.min))));
+  }
+
   let exp = Math.floor(log10(tickVal));
   let significand = Math.floor(tickVal / Math.pow(10, exp));
   let precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
@@ -60,11 +67,19 @@ export default class LogarithmicScale extends Scale {
 
   parse(raw, index) {
     const value = LinearScaleBase.prototype.parse.apply(this, [raw, index]);
-    if (value === 0) {
-      this._zero = true;
-      return undefined;
+    if (isFinite(value)) {
+      if (value === 0) {
+        this._zero = true;
+      } else {
+        if (this._minNotZero === undefined) {
+          this._minNotZero = value;
+        }
+        this._minNotZero = Math.min(this._minNotZero, value);
+      }
+      return value;
+    } else {
+      return null;
     }
-    return isFinite(value) && value > 0 ? value : null;
   }
 
   determineDataLimits() {
@@ -142,13 +157,27 @@ export default class LogarithmicScale extends Scale {
   }
 
   /**
+	 * Convert ticks to label strings
+	 */
+  generateTickLabels(ticks) {
+    const tickOpts = this.options.ticks;
+    let i, ilen, tick;
+    for (i = 0, ilen = ticks.length; i < ilen; i++) {
+      tick = ticks[i];
+      if (i === 0 && this._zero === true) {
+        tick.label = call(tickOpts.callback, [0, i, ticks], this);
+      } else {
+        tick.label = call(tickOpts.callback, [tick.value, i, ticks], this);
+      }
+    }
+  }
+
+  /**
 	 * @param {number} value
 	 * @return {string}
 	 */
   getLabelForValue(value) {
-    return value === undefined
-      ? '0'
-      : formatNumber(value, this.chart.options.locale, this.options.ticks.format);
+    return formatNumber(value, this.chart.options.locale, this.options.ticks.format);
   }
 
   /**
