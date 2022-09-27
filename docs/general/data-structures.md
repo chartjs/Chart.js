@@ -8,12 +8,14 @@ The provided labels can be of the type string or number to be rendered correctly
 ## Primitive[]
 
 ```javascript
-type: 'bar',
-data: {
+const cfg = {
+  type: 'bar',
+  data: {
     datasets: [{
       data: [20, 10],
     }],
     labels: ['a', 'b']
+  }
 }
 ```
 
@@ -22,29 +24,35 @@ When the `data` is an array of numbers, values from `labels` array at the same i
 ## Object[]
 
 ```javascript
-type: 'line',
-data: {
-  datasets: [{
-    data: [{x: 10, y: 20}, {x: 15, y: null}, {x: 20, y: 10}]
-  }]
+const cfg = {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [{x: 10, y: 20}, {x: 15, y: null}, {x: 20, y: 10}]
+    }]
+  }
 }
 ```
 
 ```javascript
-type: 'line',
-data: {
-  datasets: [{
-    data: [{x:'2016-12-25', y:20}, {x:'2016-12-26', y:10}]
-  }]
+const cfg = {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [{x: '2016-12-25', y: 20}, {x: '2016-12-26', y: 10}]
+    }]
+  }
 }
 ```
 
 ```javascript
-type: 'bar',
-data: {
-  datasets: [{
-    data: [{x:'Sales', y:20}, {x:'Revenue', y:10}]
-  }]
+const cfg = {
+  type: 'bar',
+  data: {
+    datasets: [{
+      data: [{x: 'Sales', y: 20}, {x: 'Revenue', y: 10}]
+    }]
+  }
 }
 ```
 
@@ -55,50 +63,56 @@ The values provided must be parsable by the associated scales or in the internal
 ## Object[] using custom properties
 
 ```javascript
-type: 'bar',
-data: {
+const cfg = {
+  type: 'bar',
+  data: {
     datasets: [{
-        data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
+      data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
     }]
-},
-options: {
+  },
+  options: {
     parsing: {
-        xAxisKey: 'id',
-        yAxisKey: 'nested.value'
+      xAxisKey: 'id',
+      yAxisKey: 'nested.value'
     }
+  }
 }
 ```
 
 When using the pie/doughnut, radar or polarArea chart type, the `parsing` object should have a `key` item that points to the value to look at. In this example, the doughnut chart will show two items with values 1500 and 500.
 
 ```javascript
-type: 'doughnut',
-data: {
+const cfg = {
+  type: 'doughnut',
+  data: {
     datasets: [{
-        data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
+      data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
     }]
-},
-options: {
+  },
+  options: {
     parsing: {
-        key: 'nested.value'
+      key: 'nested.value'
     }
+  }
 }
 ```
 
 If the key contains a dot, it needs to be escaped with a double slash:
 
 ```javascript
-type: 'line',
-data: {
+const cfg = {
+  type: 'line',
+  data: {
     datasets: [{
-        data: [{ 'data.key': 'one', 'data.value': 20 }, { 'data.key': 'two', 'data.value': 30 }]
+      data: [{'data.key': 'one', 'data.value': 20}, {'data.key': 'two', 'data.value': 30}]
     }]
-},
-options: {
+  },
+  options: {
     parsing: {
       xAxisKey: 'data\\.key',
       yAxisKey: 'data\\.value'
     }
+  }
 }
 ```
 
@@ -109,14 +123,16 @@ When using object notation in a radar chart you still need a labels array with l
 ## Object
 
 ```javascript
-type: 'pie',
-data: {
+const cfg = {
+  type: 'pie',
+  data: {
     datasets: [{
       data: {
-          January: 10,
-          February: 20
+        January: 10,
+        February: 20
       }
     }]
+  }
 }
 ```
 
@@ -138,28 +154,46 @@ In this mode, property name is used for `index` scale and value for `value` scal
 ```javascript
 const data = [{x: 'Jan', net: 100, cogs: 50, gm: 50}, {x: 'Feb', net: 120, cogs: 55, gm: 75}];
 const cfg = {
-    type: 'bar',
-    data: {
-        labels: ['Jan', 'Feb'],
-        datasets: [{
-            label: 'Net sales',
-            data: data,
-            parsing: {
-                yAxisKey: 'net'
-            }
-        }, {
-            label: 'Cost of goods sold',
-            data: data,
-            parsing: {
-                yAxisKey: 'cogs'
-            }
-        }, {
-            label: 'Gross margin',
-            data: data,
-            parsing: {
-                yAxisKey: 'gm'
-            }
-        }]
-    },
+  type: 'bar',
+  data: {
+    labels: ['Jan', 'Feb'],
+    datasets: [{
+      label: 'Net sales',
+      data: data,
+      parsing: {
+        yAxisKey: 'net'
+      }
+    }, {
+      label: 'Cost of goods sold',
+      data: data,
+      parsing: {
+        yAxisKey: 'cogs'
+      }
+    }, {
+      label: 'Gross margin',
+      data: data,
+      parsing: {
+        yAxisKey: 'gm'
+      }
+    }]
+  },
+};
+```
+
+## Typescript
+
+When using typescript, if you want to use a data structure that is not the default data structure, you will need to pass it to the type interface when instantiating the data variable.
+
+```ts
+import {ChartData} from 'chart.js';
+
+const datasets: ChartData <'bar', {key: string, value: number} [] > = {
+  datasets: [{
+    data: [{key: 'Sales', value: 20}, {key: 'Revenue', value: 10}],
+    parsing: {
+      xAxisKey: 'key',
+      yAxisKey: 'value'
+    }
+  }],
 };
 ```
