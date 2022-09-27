@@ -1093,6 +1093,11 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @since 3.0.0
    */
   uninstall?(chart: Chart, args: EmptyObject, options: O): void;
+
+  /**
+   * Default options used in the plugin
+   */
+  defaults?: Partial<O>;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent } | Plugin | Plugin[];
