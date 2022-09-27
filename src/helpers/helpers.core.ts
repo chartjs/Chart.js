@@ -390,7 +390,7 @@ export function _capitalize(str: string) {
 
 export const defined = (value: unknown) => typeof value !== 'undefined';
 
-export const isFunction = (value: unknown) => typeof value === 'function';
+export const isFunction = (value: unknown): value is (...args: any[]) => any => typeof value === 'function';
 
 // Adapted from https://stackoverflow.com/questions/31128855/comparing-ecma6-sets-for-equality#31129384
 export const setsEqual = <T>(a: Set<T>, b: Set<T>) => {
