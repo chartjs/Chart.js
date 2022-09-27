@@ -12,7 +12,7 @@ The logarithmic scale is used to chart numerical data. It can be placed on eithe
 
 ### Logarithmic Axis specific options
 
-Namespace: `options.scales[scaleId]`
+Namespace: `options.scales[scaleId].ticks`
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
