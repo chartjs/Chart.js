@@ -1,5 +1,4 @@
 import {callback as call, finiteOrDefault, isFinite} from '../helpers/helpers.core';
-import {formatNumber} from '../helpers/helpers.intl';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
 import Scale from '../core/core.scale';
 import LinearScaleBase from './scale.linearbase';
@@ -39,13 +38,7 @@ function startExp(min, max) {
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
  */
-function generateTicks(generationOptions, dataRange) {
-  let {min, max} = dataRange;
-  if (dataRange._zero === true) {
-    min = Math.pow(10, Math.floor(log10(dataRange._minNotZero)) - 1);
-  } else {
-    min = finiteOrDefault(generationOptions.min, min);
-  }
+function generateTicks(generationOptions, {min, max}) {
   const ticks = [];
   const minExp = log10Floor(min);
   let exp = startExp(min, max);
@@ -126,7 +119,7 @@ export default class LogarithmicScale extends Scale {
       }
       if (!maxDefined) {
         max = Math.max(max, range.max);
-      } 
+      }
       for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
         if (metas[i]._dataset.data[j] > 0) {
           this._minNotZero = Math.min(this._minNotZero, metas[i]._dataset.data[j]);
@@ -149,11 +142,11 @@ export default class LogarithmicScale extends Scale {
 
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
-    
-    if (this.min === 0 || this.options.beginAtZero) {
+
+    if (this.min === 0 || this.options.beginAtZero) {
       this._zero = true;
     }
-    
+
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
     if (this._zero && this.min !== this._suggestedMin && !isFinite(this._userMin)) {
@@ -199,7 +192,12 @@ export default class LogarithmicScale extends Scale {
       min: this._userMin,
       max: this._userMax
     };
-    const ticks = generateTicks(generationOptions, this);
+    const dataRange = {
+      min: this._zero ? Math.pow(10, Math.floor(log10(this._minNotZero)) - 1) : this.min,
+      max: this.max
+    };
+
+    const ticks = generateTicks(generationOptions, dataRange);
 
     // At this point, we need to update our max and min given the tick values,
     // since we probably have expanded the range of the scale
@@ -225,22 +223,8 @@ export default class LogarithmicScale extends Scale {
     let i, ilen, tick;
     for (i = 0, ilen = ticks.length; i < ilen; i++) {
       tick = ticks[i];
-      if (i === 0 && this._zero === true) {
-        tick.label = call(tickOpts.callback, [0, i, ticks], this);
-      } else {
-        tick.label = call(tickOpts.callback, [tick.value, i, ticks], this);
-      }
+      tick.label = call(tickOpts.callback, [i === 0 && this._zero ? 0 : tick.value, i, ticks], this);
     }
-  }
-
-  /**
-	 * @param {number} value
-	 * @return {string}
-	 */
-  getLabelForValue(value) {
-    return value === undefined
-      ? '0'
-      : formatNumber(value, this.chart.options.locale, this.options.ticks.format);
   }
 
   /**
