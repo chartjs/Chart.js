@@ -114,6 +114,7 @@ export default class LogarithmicScale extends Scale {
     let {min, max, minDefined, maxDefined} = this.getUserBounds();
     let range;
     this._zero = false;
+    this._minNotZero = min;
     if (minDefined && maxDefined) {
       return {min, max};
     }
@@ -126,13 +127,9 @@ export default class LogarithmicScale extends Scale {
       if (!maxDefined) {
         max = Math.max(max, range.max);
       } 
-      if (metas[i].hidden !== true && (min === 0 || this.options.beginAtZero)) {
-        this._zero = true;
-        this._minNotZero = max;
-        for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
-          if (metas[i]._dataset.data[j] > 0) {
-            this._minNotZero = Math.min(this._minNotZero, metas[i]._dataset.data[j]);
-          }
+      for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
+        if (metas[i]._dataset.data[j] > 0) {
+          this._minNotZero = Math.min(this._minNotZero, metas[i]._dataset.data[j]);
         }
       }
     }
@@ -152,7 +149,11 @@ export default class LogarithmicScale extends Scale {
 
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
-
+    
+    if (this.min === 0 || this.options.beginAtZero) {
+      this._zero = true;
+    }
+    
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
     if (this._zero && this.min !== this._suggestedMin && !isFinite(this._userMin)) {
