@@ -86,7 +86,7 @@ export default class LogarithmicScale extends Scale {
       if (!maxDefined) {
         max = Math.max(max, range.max);
       } 
-      if (metas[i].hidden !== true && min === 0) {
+      if (metas[i].hidden !== true && (min === 0 || this.options.beginAtZero)) {
         this._zero = true;
         this._minNotZero = max;
         for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
@@ -109,10 +109,6 @@ export default class LogarithmicScale extends Scale {
 
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
-
-    if (this.options.beginAtZero) {
-      this._zero = true;
-    }
 
     this.handleTickRangeOptions();
   }
