@@ -1,7 +1,7 @@
 
-const intlCache = new Map();
+const intlCache = new Map<string, Intl.NumberFormat>();
 
-function getNumberFormat(locale, options) {
+function getNumberFormat(locale: string, options?: Intl.NumberFormatOptions) {
   options = options || {};
   const cacheKey = locale + JSON.stringify(options);
   let formatter = intlCache.get(cacheKey);
@@ -12,6 +12,6 @@ function getNumberFormat(locale, options) {
   return formatter;
 }
 
-export function formatNumber(num, locale, options) {
+export function formatNumber(num: number, locale: string, options?: Intl.NumberFormatOptions) {
   return getNumberFormat(locale, options).format(num);
 }

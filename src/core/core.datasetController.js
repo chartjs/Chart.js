@@ -1030,31 +1030,19 @@ export default class DatasetController {
     this.chart._dataChanges.push([this.index, ...args]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataPush() {
     const count = arguments.length;
     this._sync(['_insertElements', this.getDataset().data.length - count, count]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataPop() {
     this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataShift() {
     this._sync(['_removeElements', 0, 1]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataSplice(start, count) {
     if (count) {
       this._sync(['_removeElements', start, count]);
@@ -1065,9 +1053,6 @@ export default class DatasetController {
     }
   }
 
-  /**
-	 * @private
-	 */
   _onDataUnshift() {
     this._sync(['_insertElements', 0, arguments.length]);
   }
