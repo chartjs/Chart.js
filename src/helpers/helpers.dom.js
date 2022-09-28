@@ -175,7 +175,9 @@ export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
     height = round1(width / 2);
   }
 
-  if (aspectRatio && height > containerSize.height) {
+  const maintainHeight = bbWidth !== undefined || bbHeight !== undefined;
+
+  if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height) {
     height = containerSize.height;
     width = round1(Math.floor(height * aspectRatio));
   }
