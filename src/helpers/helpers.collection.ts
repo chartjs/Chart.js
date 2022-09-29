@@ -8,6 +8,16 @@ import {_capitalize} from './helpers.core';
  * @private
  */
 export function _lookup(
+  table: number[],
+  value: number,
+  cmp?: (value: number) => boolean
+): {lo: number, hi: number};
+export function _lookup<T>(
+  table: T[],
+  value: number,
+  cmp: (value: number) => boolean
+): {lo: number, hi: number};
+export function _lookup(
   table: unknown[],
   value: number,
   cmp?: (value: number) => boolean
