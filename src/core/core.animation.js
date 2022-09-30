@@ -7,6 +7,11 @@ const interpolators = {
   boolean(from, to, factor) {
     return factor > 0.5 ? to : from;
   },
+  /**
+   * @param {string} from
+   * @param {string} to
+   * @param {number} factor
+   */
   color(from, to, factor) {
     const c0 = helpersColor(from || transparent);
     const c1 = c0.valid && helpersColor(to || transparent);

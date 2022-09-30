@@ -4,6 +4,12 @@
  */
 
 // export * from '.';
+export * from './helpers.color';
+export * from './helpers.collection';
 export * from './helpers.core';
 export * from './helpers.easing';
+export * from './helpers.interpolation';
+export * from './helpers.intl';
+export * from './helpers.math';
+export * from './helpers.rtl';
 export * from '../../types/helpers';
