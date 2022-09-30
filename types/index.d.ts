@@ -551,7 +551,7 @@ export declare type ChartItem =
   | { canvas: HTMLCanvasElement }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-export declare enum UpdateModeEnum {
+export const enum UpdateModeEnum {
   resize = 'resize',
   reset = 'reset',
   none = 'none',
