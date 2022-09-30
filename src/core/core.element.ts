@@ -28,8 +28,8 @@ export default class Element<T = AnyObject, O = AnyObject> {
    * @param props - properties to get
    * @param [final] - get the final value (animation target)
    */
-  getProps<P extends string>(props: P[], final?: boolean): Partial<Record<P, unknown>>;
   getProps<P extends (keyof T)[]>(props: P, final?: boolean): Pick<T, P[number]>;
+  getProps<P extends string>(props: P[], final?: boolean): Partial<Record<P, unknown>>;
   getProps(props: string[], final?: boolean): Partial<Record<string, unknown>> {
     const anims = this.$animations;
     if (!final || !anims) {

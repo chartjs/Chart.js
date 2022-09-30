@@ -1,6 +1,7 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from '../src/core/core.adapters';
+import PointElement from '../src/elements/element.point';
 import { EasingFunction } from '../src/helpers/helpers.easing';
 import { AnimationEvent } from './animation';
 import { AnyObject, EmptyObject } from './basic';
@@ -10,6 +11,7 @@ import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
 export { EasingFunction } from '../src/helpers/helpers.easing';
+export { default as PointElement, PointProps } from '../src/elements/element.point';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
 export { ChartArea, Point } from './geometric';
@@ -1821,8 +1823,6 @@ export declare const LineElement: ChartComponent & {
   new (cfg: AnyObject): LineElement;
 };
 
-export interface PointProps extends Point {}
-
 export type PointStyle =
   | 'circle'
   | 'cross'
@@ -1922,18 +1922,6 @@ export interface PointPrefixedHoverOptions {
    */
   pointHoverRadius: number;
 }
-
-export interface PointElement<T extends PointProps = PointProps, O extends PointOptions = PointOptions>
-  extends Element<T, O>,
-  VisualElement {
-  readonly skip: boolean;
-  readonly parsed: CartesianParsedData;
-}
-
-export declare const PointElement: ChartComponent & {
-  prototype: PointElement;
-  new (cfg: AnyObject): PointElement;
-};
 
 export interface BarProps extends Point {
   base: number;
@@ -3477,7 +3465,7 @@ export interface ScaleTypeRegistry extends CartesianScaleTypeRegistry, RadialSca
 
 export type ScaleType = keyof ScaleTypeRegistry;
 
-interface CartesianParsedData extends Point {
+export interface CartesianParsedData extends Point {
   // Only specified when stacked bars are enabled
   _stacks?: {
     // Key is the stack ID which is generally the axis ID
