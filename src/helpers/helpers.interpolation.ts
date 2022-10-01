@@ -1,5 +1,5 @@
 import type {Point} from '../../types/geometric';
-import type {MonotoneSplinePoint} from '../../types/helpers';
+import type {SplinePoint} from './helpers.curve';
 
 /**
  * @private
@@ -30,7 +30,7 @@ export function _steppedInterpolation(
 /**
  * @private
  */
-export function _bezierInterpolation(p1: MonotoneSplinePoint, p2: MonotoneSplinePoint, t: number, mode?) { // eslint-disable-line @typescript-eslint/no-unused-vars
+export function _bezierInterpolation(p1: SplinePoint, p2: SplinePoint, t: number, mode?) { // eslint-disable-line @typescript-eslint/no-unused-vars
   const cp1 = {x: p1.cp2x, y: p1.cp2y};
   const cp2 = {x: p2.cp1x, y: p2.cp1y};
   const a = _pointInLine(p1, cp1, t);
