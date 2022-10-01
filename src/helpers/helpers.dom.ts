@@ -1,3 +1,6 @@
+import {ChartArea, Scale} from '../../types';
+import Chart from '../core/core.controller';
+import {ChartEvent} from '../types';
 import {INFINITY} from './helpers.math';
 
 /**
@@ -11,33 +14,34 @@ import {INFINITY} from './helpers.math';
 /**
  * @private
  */
-export function _isDomSupported() {
+export function _isDomSupported(): boolean {
   return typeof window !== 'undefined' && typeof document !== 'undefined';
 }
 
 /**
  * @private
  */
-export function _getParentNode(domNode) {
+export function _getParentNode(domNode: HTMLCanvasElement): HTMLCanvasElement {
   let parent = domNode.parentNode;
   if (parent && parent.toString() === '[object ShadowRoot]') {
-    parent = parent.host;
+    parent = (parent as ShadowRoot).host;
   }
-  return parent;
+  return parent as HTMLCanvasElement;
 }
 
 /**
  * convert max-width/max-height values that may be percentages into a number
  * @private
  */
-function parseMaxStyle(styleValue, node, parentProperty) {
-  let valueInPixels;
+
+function parseMaxStyle(styleValue: string | number, node: HTMLElement, parentProperty: string) {
+  let valueInPixels: number;
   if (typeof styleValue === 'string') {
     valueInPixels = parseInt(styleValue, 10);
 
     if (styleValue.indexOf('%') !== -1) {
       // percentage * size in dimension
-      valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
+      valueInPixels = (valueInPixels / 100) * node.parentNode[parentProperty];
     }
   } else {
     valueInPixels = styleValue;
@@ -46,15 +50,16 @@ function parseMaxStyle(styleValue, node, parentProperty) {
   return valueInPixels;
 }
 
-const getComputedStyle = (element) => element.ownerDocument.defaultView.getComputedStyle(element, null);
+const getComputedStyle = (element: HTMLElement): CSSStyleDeclaration =>
+  element.ownerDocument.defaultView.getComputedStyle(element, null);
 
-export function getStyle(el, property) {
+export function getStyle(el: HTMLElement, property: string): string {
   return getComputedStyle(el).getPropertyValue(property);
 }
 
 const positions = ['top', 'right', 'bottom', 'left'];
-function getPositionedStyle(styles, style, suffix) {
-  const result = {};
+function getPositionedStyle(styles: CSSStyleDeclaration, style: string, suffix?: string): ChartArea {
+  const result = {} as ChartArea;
   suffix = suffix ? '-' + suffix : '';
   for (let i = 0; i < 4; i++) {
     const pos = positions[i];
@@ -65,18 +70,25 @@ function getPositionedStyle(styles, style, suffix) {
   return result;
 }
 
-const useOffsetPos = (x, y, target) => (x > 0 || y > 0) && (!target || !target.shadowRoot);
+const useOffsetPos = (x: number, y: number, target: HTMLElement | EventTarget) =>
+  (x > 0 || y > 0) && (!target || !(target as HTMLElement).shadowRoot);
 
 /**
- * @param {Event} e
- * @param {HTMLCanvasElement} canvas
- * @returns {{x: number, y: number, box: boolean}}
+ * @param e
+ * @param canvas
+ * @returns Canvas position
  */
-function getCanvasPosition(e, canvas) {
-  // @ts-ignore
-  const touches = e.touches;
-  const source = touches && touches.length ? touches[0] : e;
-  const {offsetX, offsetY} = source;
+function getCanvasPosition(
+  e: Event | TouchEvent | MouseEvent,
+  canvas: HTMLCanvasElement
+): {
+    x: number;
+    y: number;
+    box: boolean;
+  } {
+  const touches = (e as TouchEvent).touches;
+  const source = (touches && touches.length ? touches[0] : e) as MouseEvent;
+  const {offsetX, offsetY} = source as MouseEvent;
   let box = false;
   let x, y;
   if (useOffsetPos(offsetX, offsetY, e.target)) {
@@ -93,13 +105,17 @@ function getCanvasPosition(e, canvas) {
 
 /**
  * Gets an event's x, y coordinates, relative to the chart area
- * @param {Event|ChartEvent} evt
- * @param {dom.Chart} chart
- * @returns {{x: number, y: number}}
+ * @param event
+ * @param chart
+ * @returns x and y coordinates of the event
  */
-export function getRelativePosition(evt, chart) {
-  if ('native' in evt) {
-    return evt;
+
+export function getRelativePosition(
+  event: Event | ChartEvent | TouchEvent | MouseEvent,
+  chart: Chart
+): { x: number; y: number } {
+  if ('native' in event) {
+    return event;
   }
 
   const {canvas, currentDevicePixelRatio} = chart;
@@ -107,7 +123,7 @@ export function getRelativePosition(evt, chart) {
   const borderBox = style.boxSizing === 'border-box';
   const paddings = getPositionedStyle(style, 'padding');
   const borders = getPositionedStyle(style, 'border', 'width');
-  const {x, y, box} = getCanvasPosition(evt, canvas);
+  const {x, y, box} = getCanvasPosition(event, canvas);
   const xOffset = paddings.left + (box && borders.left);
   const yOffset = paddings.top + (box && borders.top);
 
@@ -122,8 +138,8 @@ export function getRelativePosition(evt, chart) {
   };
 }
 
-function getContainerSize(canvas, width, height) {
-  let maxWidth, maxHeight;
+function getContainerSize(canvas: HTMLCanvasElement, width: number, height: number): Partial<Scale> {
+  let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
     const container = _getParentNode(canvas);
@@ -149,9 +165,15 @@ function getContainerSize(canvas, width, height) {
   };
 }
 
-const round1 = v => Math.round(v * 10) / 10;
+const round1 = (v: number) => Math.round(v * 10) / 10;
 
-export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
+// eslint-disable-next-line complexity
+export function getMaximumSize(
+  canvas: HTMLCanvasElement,
+  bbWidth?: number,
+  bbHeight?: number,
+  aspectRatio?: number
+): { width: number; height: number } {
   const style = getComputedStyle(canvas);
   const margins = getPositionedStyle(style, 'margin');
   const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
@@ -182,19 +204,20 @@ export function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
     width = round1(Math.floor(height * aspectRatio));
   }
 
-  return {
-    width,
-    height
-  };
+  return {width, height};
 }
 
 /**
- * @param {import('../core/core.controller').default} chart
- * @param {number} [forceRatio]
- * @param {boolean} [forceStyle]
- * @returns {boolean} True if the canvas context size or transformation has changed.
+ * @param chart
+ * @param forceRatio
+ * @param forceStyle
+ * @returns True if the canvas context size or transformation has changed.
  */
-export function retinaScale(chart, forceRatio, forceStyle) {
+export function retinaScale(
+  chart: Chart,
+  forceRatio: number,
+  forceStyle?: boolean
+): boolean | void {
   const pixelRatio = forceRatio || 1;
   const deviceHeight = Math.floor(chart.height * pixelRatio);
   const deviceWidth = Math.floor(chart.width * pixelRatio);
@@ -237,10 +260,9 @@ export const supportsEventListenerOptions = (function() {
         passiveSupported = true;
         return false;
       }
-    };
-    // @ts-ignore
+    } as EventListenerOptions;
+
     window.addEventListener('test', null, options);
-    // @ts-ignore
     window.removeEventListener('test', null, options);
   } catch (e) {
     // continue regardless of error
@@ -255,9 +277,13 @@ export const supportsEventListenerOptions = (function() {
  * `element` has a size relative to its parent and this last one is not yet displayed,
  * for example because of `display: none` on a parent node.
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
- * @returns {number=} Size in pixels or undefined if unknown.
+ * @returns Size in pixels or undefined if unknown.
  */
-export function readUsedSize(element, property) {
+
+export function readUsedSize(
+  element: HTMLElement,
+  property: 'width' | 'height'
+): number | undefined {
   const value = getStyle(element, property);
   const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
   return matches ? +matches[1] : undefined;
