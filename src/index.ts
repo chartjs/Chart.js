@@ -23,3 +23,4 @@ export const registerables = [
   plugins,
   scales,
 ];
+
