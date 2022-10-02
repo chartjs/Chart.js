@@ -157,7 +157,16 @@ export declare const BarController: ChartComponent & {
 export interface BubbleControllerDatasetOptions
   extends ControllerDatasetOptions,
   ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
-  ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {}
+  ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {
+  /**
+   * The ID of the x axis to plot this dataset on.
+   */
+  xAxisID: string;
+  /**
+   * The ID of the y axis to plot this dataset on.
+   */
+  yAxisID: string;
+}
 
 export interface BubbleDataPoint extends Point {
   /**
