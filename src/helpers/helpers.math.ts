@@ -1,3 +1,4 @@
+import type {Point} from '../../types/geometric';
 import {isFinite as isFiniteNumber} from './helpers.core';
 
 /**
@@ -17,11 +18,14 @@ export const TWO_THIRDS_PI = PI * 2 / 3;
 export const log10 = Math.log10;
 export const sign = Math.sign;
 
+export function almostEquals(x: number, y: number, epsilon: number) {
+  return Math.abs(x - y) < epsilon;
+}
+
 /**
  * Implementation of the nice number algorithm used in determining where axis labels will go
- * @return {number}
  */
-export function niceNum(range) {
+export function niceNum(range: number) {
   const roundedRange = Math.round(range);
   range = almostEquals(range, roundedRange, range / 1000) ? roundedRange : range;
   const niceRange = Math.pow(10, Math.floor(log10(range)));
@@ -34,10 +38,10 @@ export function niceNum(range) {
  * Returns an array of factors sorted from 1 to sqrt(value)
  * @private
  */
-export function _factorize(value) {
-  const result = [];
+export function _factorize(value: number) {
+  const result: number[] = [];
   const sqrt = Math.sqrt(value);
-  let i;
+  let i: number;
 
   for (i = 1; i < sqrt; i++) {
     if (value % i === 0) {
@@ -53,15 +57,11 @@ export function _factorize(value) {
   return result;
 }
 
-export function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+export function isNumber(n: unknown): n is number {
+  return !isNaN(parseFloat(n as string)) && isFinite(n as number);
 }
 
-export function almostEquals(x, y, epsilon) {
-  return Math.abs(x - y) < epsilon;
-}
-
-export function almostWhole(x, epsilon) {
+export function almostWhole(x: number, epsilon: number) {
   const rounded = Math.round(x);
   return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 }
@@ -69,8 +69,12 @@ export function almostWhole(x, epsilon) {
 /**
  * @private
  */
-export function _setMinAndMaxByKey(array, target, property) {
-  let i, ilen, value;
+export function _setMinAndMaxByKey(
+  array: Record<string, number>[],
+  target: { min: number, max: number },
+  property: string
+) {
+  let i: number, ilen: number, value: number;
 
   for (i = 0, ilen = array.length; i < ilen; i++) {
     value = array[i][property];
@@ -81,22 +85,22 @@ export function _setMinAndMaxByKey(array, target, property) {
   }
 }
 
-export function toRadians(degrees) {
+export function toRadians(degrees: number) {
   return degrees * (PI / 180);
 }
 
-export function toDegrees(radians) {
+export function toDegrees(radians: number) {
   return radians * (180 / PI);
 }
 
 /**
  * Returns the number of decimal places
  * i.e. the number of digits after the decimal point, of the value of this Number.
- * @param {number} x - A number.
- * @returns {number} The number of decimal places.
+ * @param x - A number.
+ * @returns The number of decimal places.
  * @private
  */
-export function _decimalPlaces(x) {
+export function _decimalPlaces(x: number) {
   if (!isFiniteNumber(x)) {
     return;
   }
@@ -110,7 +114,10 @@ export function _decimalPlaces(x) {
 }
 
 // Gets the angle from vertical upright to the point about a centre.
-export function getAngleFromPoint(centrePoint, anglePoint) {
+export function getAngleFromPoint(
+  centrePoint: Point,
+  anglePoint: Point
+) {
   const distanceFromXCenter = anglePoint.x - centrePoint.x;
   const distanceFromYCenter = anglePoint.y - centrePoint.y;
   const radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
@@ -127,7 +134,7 @@ export function getAngleFromPoint(centrePoint, anglePoint) {
   };
 }
 
-export function distanceBetweenPoints(pt1, pt2) {
+export function distanceBetweenPoints(pt1: Point, pt2: Point) {
   return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 }
 
@@ -135,7 +142,7 @@ export function distanceBetweenPoints(pt1, pt2) {
  * Shortest distance between angles, in either direction.
  * @private
  */
-export function _angleDiff(a, b) {
+export function _angleDiff(a: number, b: number) {
   return (a - b + PITAU) % TAU - PI;
 }
 
@@ -143,14 +150,14 @@ export function _angleDiff(a, b) {
  * Normalize angle to be between 0 and 2*PI
  * @private
  */
-export function _normalizeAngle(a) {
+export function _normalizeAngle(a: number) {
   return (a % TAU + TAU) % TAU;
 }
 
 /**
  * @private
  */
-export function _angleBetween(angle, start, end, sameAngleIsFullCircle) {
+export function _angleBetween(angle: number, start: number, end: number, sameAngleIsFullCircle?: boolean) {
   const a = _normalizeAngle(angle);
   const s = _normalizeAngle(start);
   const e = _normalizeAngle(end);
@@ -164,12 +171,12 @@ export function _angleBetween(angle, start, end, sameAngleIsFullCircle) {
 
 /**
  * Limit `value` between `min` and `max`
- * @param {number} value
- * @param {number} min
- * @param {number} max
+ * @param value
+ * @param min
+ * @param max
  * @private
  */
-export function _limitValue(value, min, max) {
+export function _limitValue(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
@@ -177,17 +184,17 @@ export function _limitValue(value, min, max) {
  * @param {number} value
  * @private
  */
-export function _int16Range(value) {
+export function _int16Range(value: number) {
   return _limitValue(value, -32768, 32767);
 }
 
 /**
- * @param {number} value
- * @param {number} start
- * @param {number} end
- * @param {number} [epsilon]
+ * @param value
+ * @param start
+ * @param end
+ * @param [epsilon]
  * @private
  */
-export function _isBetween(value, start, end, epsilon = 1e-6) {
+export function _isBetween(value: number, start: number, end: number, epsilon = 1e-6) {
   return value >= Math.min(start, end) - epsilon && value <= Math.max(start, end) + epsilon;
 }

@@ -4,6 +4,7 @@ import {PI, _isBetween, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
 
 /** @typedef {{ x: number, y: number, startAngle: number, endAngle: number, innerRadius: number, outerRadius: number, circumference: number }} ArcProps */
+/** @typedef {import('../../types/geometric').Point} Point */
 
 function clipArc(ctx, element, endAngle) {
   const {startAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
@@ -310,7 +311,7 @@ export default class ArcElement extends Element {
 	 * @param {boolean} [useFinalPosition]
 	 */
   inRange(chartX, chartY, useFinalPosition) {
-    const point = this.getProps(['x', 'y'], useFinalPosition);
+    const point = /** @type {Point} */ (this.getProps(['x', 'y'], useFinalPosition));
     const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
     const {startAngle, endAngle, innerRadius, outerRadius, circumference} = /** @type {ArcProps} */ (this.getProps([
       'startAngle',

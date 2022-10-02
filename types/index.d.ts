@@ -551,7 +551,7 @@ export declare type ChartItem =
   | { canvas: HTMLCanvasElement }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-export declare enum UpdateModeEnum {
+export declare const enum UpdateModeEnum {
   resize = 'resize',
   reset = 'reset',
   none = 'none',
@@ -1093,6 +1093,11 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @since 3.0.0
    */
   uninstall?(chart: Chart, args: EmptyObject, options: O): void;
+
+  /**
+   * Default options used in the plugin
+   */
+  defaults?: Partial<O>;
 }
 
 export declare type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent } | Plugin | Plugin[];

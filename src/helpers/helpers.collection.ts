@@ -2,16 +2,30 @@ import {_capitalize} from './helpers.core';
 
 /**
  * Binary search
- * @param {array} table - the table search. must be sorted!
- * @param {number} value - value to find
- * @param {function} [cmp]
+ * @param table - the table search. must be sorted!
+ * @param value - value to find
+ * @param cmp
  * @private
  */
-export function _lookup(table, value, cmp) {
+export function _lookup(
+  table: number[],
+  value: number,
+  cmp?: (value: number) => boolean
+): {lo: number, hi: number};
+export function _lookup<T>(
+  table: T[],
+  value: number,
+  cmp: (value: number) => boolean
+): {lo: number, hi: number};
+export function _lookup(
+  table: unknown[],
+  value: number,
+  cmp?: (value: number) => boolean
+) {
   cmp = cmp || ((index) => table[index] < value);
   let hi = table.length - 1;
   let lo = 0;
-  let mid;
+  let mid: number;
 
   while (hi - lo > 1) {
     mid = (lo + hi) >> 1;
@@ -27,13 +41,18 @@ export function _lookup(table, value, cmp) {
 
 /**
  * Binary search
- * @param {array} table - the table search. must be sorted!
- * @param {string} key - property name for the value in each entry
- * @param {number} value - value to find
- * @param {boolean} [last] - lookup last index
+ * @param table - the table search. must be sorted!
+ * @param key - property name for the value in each entry
+ * @param value - value to find
+ * @param last - lookup last index
  * @private
  */
-export const _lookupByKey = (table, key, value, last) =>
+export const _lookupByKey = (
+  table: Record<string, number>[],
+  key: string,
+  value: number,
+  last?: boolean
+) =>
   _lookup(table, value, last
     ? index => {
       const ti = table[index][key];
@@ -43,22 +62,26 @@ export const _lookupByKey = (table, key, value, last) =>
 
 /**
  * Reverse binary search
- * @param {array} table - the table search. must be sorted!
- * @param {string} key - property name for the value in each entry
- * @param {number} value - value to find
+ * @param table - the table search. must be sorted!
+ * @param key - property name for the value in each entry
+ * @param value - value to find
  * @private
  */
-export const _rlookupByKey = (table, key, value) =>
+export const _rlookupByKey = (
+  table: Record<string, number>[],
+  key: string,
+  value: number
+) =>
   _lookup(table, value, index => table[index][key] >= value);
 
 /**
  * Return subset of `values` between `min` and `max` inclusive.
  * Values are assumed to be in sorted order.
- * @param {number[]} values - sorted array of values
- * @param {number} min - min value
- * @param {number} max - max value
+ * @param values - sorted array of values
+ * @param min - min value
+ * @param max - max value
  */
-export function _filterBetween(values, min, max) {
+export function _filterBetween(values: number[], min: number, max: number) {
   let start = 0;
   let end = values.length;
 
@@ -74,13 +97,22 @@ export function _filterBetween(values, min, max) {
     : values;
 }
 
-const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
+const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'] as const;
+
+export interface ArrayListener<T> {
+  _onDataPush?(...item: T[]): void;
+  _onDataPop?(): void;
+  _onDataShift?(): void;
+  _onDataSplice?(index: number, deleteCount: number, ...items: T[]): void;
+  _onDataUnshift?(...item: T[]): void;
+}
 
 /**
  * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
  * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
  * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
  */
+export function listenArrayEvents<T>(array: T[], listener: ArrayListener<T>): void;
 export function listenArrayEvents(array, listener) {
   if (array._chartjs) {
     array._chartjs.listeners.push(listener);
@@ -122,6 +154,7 @@ export function listenArrayEvents(array, listener) {
  * Removes the given array event listener and cleanup extra attached properties (such as
  * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
  */
+export function unlistenArrayEvents<T>(array: T[], listener: ArrayListener<T>): void;
 export function unlistenArrayEvents(array, listener) {
   const stub = array._chartjs;
   if (!stub) {
@@ -146,11 +179,11 @@ export function unlistenArrayEvents(array, listener) {
 }
 
 /**
- * @param {Array} items
+ * @param items
  */
-export function _arrayUnique(items) {
-  const set = new Set();
-  let i, ilen;
+export function _arrayUnique<T>(items: T[]) {
+  const set = new Set<T>();
+  let i: number, ilen: number;
 
   for (i = 0, ilen = items.length; i < ilen; ++i) {
     set.add(items[i]);
