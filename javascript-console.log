@@ -1,0 +1,2 @@
+const fruits = ["apple","mango","orange","banana"];
+console.log(fruits);
