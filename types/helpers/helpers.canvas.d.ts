@@ -1,7 +1,7 @@
 import { PointStyle } from '..';
 import { Color } from '../color';
 import { ChartArea, RoundedRect } from '../geometric';
-import { CanvasFontSpec } from './helpers.options';
+import { CanvasFontSpec } from '../../src/helpers/helpers.options';
 
 export function clearCanvas(canvas: HTMLCanvasElement, ctx?: CanvasRenderingContext2D): void;
 
