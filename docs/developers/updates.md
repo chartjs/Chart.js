@@ -95,7 +95,7 @@ function updateScale(chart) {
 }
 ```
 
-Code sample for updating options can be found in [toggle-scale-type.html](https://www.chartjs.org/samples/latest/scales/toggle-scale-type.html).
+Code sample for updating options can be found in the various [samples](https://www.chartjs.org/docs/latest/samples/information.html).
 
 ## Preventing Animations
 
