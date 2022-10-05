@@ -1252,9 +1252,13 @@ export default class Scale extends Element {
         const labelPadding = toPadding(optsAtIndex.backdropPadding);
         const height = labelSizes.heights[i];
         const width = labelSizes.widths[i];
+        const metrics = this.ctx.measureText(label);
 
-        let top = y + textOffset - labelPadding.top;
-        let left = x - labelPadding.left;
+        const labelX = metrics.actualBoundingBoxLeft;
+        const labelY = metrics.actualBoundingBoxAscent - tickAndPadding;
+
+        let top = labelY + textOffset - labelPadding.top;
+        let left = labelX - labelPadding.left;
 
         switch (textBaseline) {
         case 'middle':
@@ -1553,11 +1557,6 @@ export default class Scale extends Element {
       const item = items[i];
       const tickFont = item.font;
       const label = item.label;
-
-      if (item.backdrop) {
-        ctx.fillStyle = item.backdrop.color;
-        ctx.fillRect(item.backdrop.left, item.backdrop.top, item.backdrop.width, item.backdrop.height);
-      }
 
       let y = item.textOffset;
       renderText(ctx, label, 0, y, tickFont, item);

@@ -16,6 +16,7 @@ module.exports = {
           ticks: {
             display: true,
             showLabelBackdrop: true,
+            minRotation: 45,
             backdropColor: 'red',
             backdropPadding: 5,
             align: 'start',
@@ -30,8 +31,12 @@ module.exports = {
           ticks: {
             display: true,
             showLabelBackdrop: true,
+            minRotation: 90,
             backdropColor: 'green',
-            backdropPadding: 5,
+            backdropPadding: {
+              x: 2,
+              y: 5
+            },
             crossAlign: 'center',
           },
           grid,
@@ -44,9 +49,13 @@ module.exports = {
             display: true,
             showLabelBackdrop: true,
             backdropColor: 'blue',
-            backdropPadding: 5,
+            backdropPadding: {
+              x: 5,
+              y: 5
+            },
             align: 'end',
             crossAlign: 'far',
+            minRotation: 60,
           },
           grid,
           title
@@ -58,7 +67,10 @@ module.exports = {
             display: true,
             showLabelBackdrop: true,
             backdropColor: 'gray',
-            backdropPadding: 5,
+            backdropPadding: {
+              x: 6,
+              y: 8
+            },
           },
           grid,
           title
