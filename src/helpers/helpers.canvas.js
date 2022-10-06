@@ -256,6 +256,15 @@ export function drawPointLegend(ctx, options, x, y, w) {
     ctx.moveTo(x, y);
     ctx.lineTo(x + Math.cos(rad) * (w ? w / 2 : radius), y + Math.sin(rad) * radius);
     break;
+  // Radius 0 in Default case
+  case 'none':
+    if (w) {
+      ctx.ellipse(x, y, w / 2, 0, 0, 0, TAU);
+    } else {
+      ctx.arc(x, y, 0, 0, TAU);
+    }
+    ctx.closePath();
+    break;
   }
 
   ctx.fill();

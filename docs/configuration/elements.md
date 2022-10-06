@@ -47,6 +47,7 @@ When a string is provided, the following values are supported:
 - `'rectRot'`
 - `'star'`
 - `'triangle'`
+- `'none'`
 
 If the value is an image or a canvas element, that image or canvas element is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 

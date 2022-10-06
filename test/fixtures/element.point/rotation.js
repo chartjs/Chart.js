@@ -1,6 +1,6 @@
 var gradient;
 
-var datasets = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle'].map(function(style, y) {
+var datasets = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle', 'none'].map(function(style, y) {
   return {
     pointStyle: style,
     data: Array.apply(null, Array(17)).map(function(v, x) {

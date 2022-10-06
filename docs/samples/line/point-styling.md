@@ -92,6 +92,15 @@ const actions = [
       });
       chart.update();
     }
+  },
+  {
+    name: 'pointStyle: none',
+    handler: (chart) => {
+      chart.data.datasets.forEach(dataset => {
+        dataset.pointStyle = 'none';
+      });
+      chart.update();
+    }
   }
 ];
 // </block:actions>
