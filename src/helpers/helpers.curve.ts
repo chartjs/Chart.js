@@ -15,11 +15,6 @@ export interface SplinePoint {
   cp2y?: number;
 }
 
-/**
- * Keep for backwards compatibility
- */
-export type MonotoneSplinePoint = SplinePoint
-
 const EPSILON = Number.EPSILON || 1e-14;
 
 type OptionalSplinePoint = SplinePoint | false
