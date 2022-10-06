@@ -256,7 +256,7 @@ export function drawPointLegend(ctx, options, x, y, w) {
     ctx.moveTo(x, y);
     ctx.lineTo(x + Math.cos(rad) * (w ? w / 2 : radius), y + Math.sin(rad) * radius);
     break;
-  case 'false':
+  case false:
     ctx.closePath();
     break;
   }
