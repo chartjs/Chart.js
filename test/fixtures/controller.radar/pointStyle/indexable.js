@@ -16,7 +16,7 @@ module.exports = {
             'dash',
             'line',
             'rect',
-            'none'
+            'false'
           ]
         },
         {

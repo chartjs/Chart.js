@@ -94,10 +94,10 @@ const actions = [
     }
   },
   {
-    name: 'pointStyle: none',
+    name: 'pointStyle: false',
     handler: (chart) => {
       chart.data.datasets.forEach(dataset => {
-        dataset.pointStyle = 'none';
+        dataset.pointStyle = 'false';
       });
       chart.update();
     }
