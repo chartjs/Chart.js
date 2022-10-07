@@ -1,4 +1,4 @@
-import { Chart } from "../types";
+import {Chart} from '../types';
 
 const BORDER_COLORS = [
   '#36A2EB', // blue
