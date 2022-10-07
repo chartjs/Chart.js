@@ -311,6 +311,7 @@ export default class ArcElement extends Element {
 	 * @param {boolean} [useFinalPosition]
 	 */
   inRange(chartX, chartY, useFinalPosition) {
+    // @ts-ignore This will be fixed when the arc element is converted to TS
     const point = /** @type {Point} */ (this.getProps(['x', 'y'], useFinalPosition));
     const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
     const {startAngle, endAngle, innerRadius, outerRadius, circumference} = /** @type {ArcProps} */ (this.getProps([
