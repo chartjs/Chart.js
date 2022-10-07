@@ -101,7 +101,7 @@ const chart = new Chart(ctx, {
 });
 ```
 
-When using a bundler, the helper functions have to be imported seperatly, for a full explanation of this please head over to the [integration](../getting-started/integration.md#helper-functions) page
+When using a bundler, the helper functions have to be imported separately, for a full explanation of this please head over to the [integration](../getting-started/integration.md#helper-functions) page
 
 ## Modes
 
