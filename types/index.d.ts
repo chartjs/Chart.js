@@ -3075,7 +3075,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    */
   offset: boolean;
 
-  grid: GridLineOptions;
+  grid: Partial<GridLineOptions>;
 
   border: BorderOptions;
 
@@ -3359,7 +3359,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
    */
   beginAtZero: boolean;
 
-  grid: GridLineOptions;
+  grid: Partial<GridLineOptions>;
 
   /**
    * User defined minimum number for the scale, overrides minimum value from data.
