@@ -1,16 +1,29 @@
 import Element from '../core/core.element';
 import {drawPoint, _isPointInArea} from '../helpers/helpers.canvas';
+import {
+  type CartesianParsedData,
+  type ChartArea,
+  type Point,
+  type PointHoverOptions,
+  type PointOptions,
+} from '../../types';
 
-function inRange(el, pos, axis, useFinalPosition) {
+function inRange(el: PointElement, pos: number, axis: 'x' | 'y', useFinalPosition?: boolean) {
   const options = el.options;
   const {[axis]: value} = el.getProps([axis], useFinalPosition);
 
   return (Math.abs(pos - value) < options.radius + options.hitRadius);
 }
 
-export default class PointElement extends Element {
+export type PointProps = Point
+
+export default class PointElement extends Element<PointProps, PointOptions & PointHoverOptions> {
 
   static id = 'point';
+
+  parsed: CartesianParsedData;
+  skip?: boolean;
+  stop?: boolean;
 
   /**
    * @type {any}
@@ -46,26 +59,26 @@ export default class PointElement extends Element {
     }
   }
 
-  inRange(mouseX, mouseY, useFinalPosition) {
+  inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean) {
     const options = this.options;
-    const {x, y} = /** @type {{ x: number, y: number }} */ (this.getProps(['x', 'y'], useFinalPosition));
+    const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
     return ((Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2)) < Math.pow(options.hitRadius + options.radius, 2));
   }
 
-  inXRange(mouseX, useFinalPosition) {
+  inXRange(mouseX: number, useFinalPosition?: boolean) {
     return inRange(this, mouseX, 'x', useFinalPosition);
   }
 
-  inYRange(mouseY, useFinalPosition) {
+  inYRange(mouseY: number, useFinalPosition?: boolean) {
     return inRange(this, mouseY, 'y', useFinalPosition);
   }
 
-  getCenterPoint(useFinalPosition) {
+  getCenterPoint(useFinalPosition?: boolean) {
     const {x, y} = this.getProps(['x', 'y'], useFinalPosition);
     return {x, y};
   }
 
-  size(options) {
+  size(options?: Partial<PointOptions & PointHoverOptions>) {
     options = options || this.options || {};
     let radius = options.radius || 0;
     radius = Math.max(radius, radius && options.hoverRadius || 0);
@@ -73,7 +86,7 @@ export default class PointElement extends Element {
     return (radius + borderWidth) * 2;
   }
 
-  draw(ctx, area) {
+  draw(ctx: CanvasRenderingContext2D, area: ChartArea) {
     const options = this.options;
 
     if (this.skip || options.radius < 0.1 || !_isPointInArea(this, area, this.size(options) / 2)) {
@@ -88,6 +101,7 @@ export default class PointElement extends Element {
 
   getRange() {
     const options = this.options || {};
+    // @ts-expect-error Fallbacks should never be hit in practice
     return options.radius + options.hitRadius;
   }
 }

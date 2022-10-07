@@ -242,10 +242,7 @@ function createProxyAndListen(chart, type, listener) {
     if (chart.ctx !== null) {
       listener(fromNativeEvent(event, chart));
     }
-  }, chart, (args) => {
-    const event = args[0];
-    return [event, event.offsetX, event.offsetY];
-  });
+  }, chart);
 
   addListener(canvas, type, proxy);
 
