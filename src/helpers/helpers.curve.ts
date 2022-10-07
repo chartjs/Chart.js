@@ -1,11 +1,35 @@
 import {almostEquals, distanceBetweenPoints, sign} from './helpers.math';
 import {_isPointInArea} from './helpers.canvas';
+import {ChartArea} from '../../types';
+
+export interface SplinePoint {
+  x: number;
+  y: number;
+  skip?: boolean;
+
+  // Both Bezier and monotone interpolations have these fields
+  // but they are added in different spots
+  cp1x?: number;
+  cp1y?: number;
+  cp2x?: number;
+  cp2y?: number;
+}
 
 const EPSILON = Number.EPSILON || 1e-14;
-const getPoint = (points, i) => i < points.length && !points[i].skip && points[i];
-const getValueAxis = (indexAxis) => indexAxis === 'x' ? 'y' : 'x';
 
-export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
+type OptionalSplinePoint = SplinePoint | false
+const getPoint = (points: SplinePoint[], i: number): OptionalSplinePoint => i < points.length && !points[i].skip && points[i];
+const getValueAxis = (indexAxis: 'x' | 'y') => indexAxis === 'x' ? 'y' : 'x';
+
+export function splineCurve(
+  firstPoint: SplinePoint,
+  middlePoint: SplinePoint,
+  afterPoint: SplinePoint,
+  t: number
+): {
+    previous: SplinePoint
+    next: SplinePoint
+  } {
   // Props to Rob Spencer at scaled innovation for his post on splining between points
   // http://scaledinnovation.com/analytics/splines/aboutSplines.html
 
@@ -42,10 +66,10 @@ export function splineCurve(firstPoint, middlePoint, afterPoint, t) {
 /**
  * Adjust tangents to ensure monotonic properties
  */
-function monotoneAdjust(points, deltaK, mK) {
+function monotoneAdjust(points: SplinePoint[], deltaK: number[], mK: number[]) {
   const pointsLen = points.length;
 
-  let alphaK, betaK, tauK, squaredMagnitude, pointCurrent;
+  let alphaK: number, betaK: number, tauK: number, squaredMagnitude: number, pointCurrent: OptionalSplinePoint;
   let pointAfter = getPoint(points, 0);
   for (let i = 0; i < pointsLen - 1; ++i) {
     pointCurrent = pointAfter;
@@ -72,10 +96,10 @@ function monotoneAdjust(points, deltaK, mK) {
   }
 }
 
-function monotoneCompute(points, mK, indexAxis = 'x') {
+function monotoneCompute(points: SplinePoint[], mK: number[], indexAxis: 'x' | 'y' = 'x') {
   const valueAxis = getValueAxis(indexAxis);
   const pointsLen = points.length;
-  let delta, pointBefore, pointCurrent;
+  let delta: number, pointBefore: OptionalSplinePoint, pointCurrent: OptionalSplinePoint;
   let pointAfter = getPoint(points, 0);
 
   for (let i = 0; i < pointsLen; ++i) {
@@ -106,26 +130,15 @@ function monotoneCompute(points, mK, indexAxis = 'x') {
  * but preserves monotonicity of the provided data and ensures no local extremums are added
  * between the dataset discrete points due to the interpolation.
  * See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
- *
- * @param {{
- * x: number,
- * y: number,
- * skip?: boolean,
- * cp1x?: number,
- * cp1y?: number,
- * cp2x?: number,
- * cp2y?: number,
- * }[]} points
- * @param {string} indexAxis
  */
-export function splineCurveMonotone(points, indexAxis = 'x') {
+export function splineCurveMonotone(points: SplinePoint[], indexAxis: 'x' | 'y' = 'x') {
   const valueAxis = getValueAxis(indexAxis);
   const pointsLen = points.length;
-  const deltaK = Array(pointsLen).fill(0);
-  const mK = Array(pointsLen);
+  const deltaK: number[] = Array(pointsLen).fill(0);
+  const mK: number[] = Array(pointsLen);
 
   // Calculate slopes (deltaK) and initialize tangents (mK)
-  let i, pointBefore, pointCurrent;
+  let i, pointBefore: OptionalSplinePoint, pointCurrent: OptionalSplinePoint;
   let pointAfter = getPoint(points, 0);
 
   for (i = 0; i < pointsLen; ++i) {
@@ -144,8 +157,8 @@ export function splineCurveMonotone(points, indexAxis = 'x') {
     }
     mK[i] = !pointBefore ? deltaK[i]
       : !pointAfter ? deltaK[i - 1]
-      : (sign(deltaK[i - 1]) !== sign(deltaK[i])) ? 0
-      : (deltaK[i - 1] + deltaK[i]) / 2;
+        : (sign(deltaK[i - 1]) !== sign(deltaK[i])) ? 0
+          : (deltaK[i - 1] + deltaK[i]) / 2;
   }
 
   monotoneAdjust(points, deltaK, mK);
@@ -153,11 +166,11 @@ export function splineCurveMonotone(points, indexAxis = 'x') {
   monotoneCompute(points, mK, indexAxis);
 }
 
-function capControlPoint(pt, min, max) {
+function capControlPoint(pt: number, min: number, max: number) {
   return Math.max(Math.min(pt, max), min);
 }
 
-function capBezierPoints(points, area) {
+function capBezierPoints(points: SplinePoint[], area: ChartArea) {
   let i, ilen, point, inArea, inAreaPrev;
   let inAreaNext = _isPointInArea(points[0], area);
   for (i = 0, ilen = points.length; i < ilen; ++i) {
@@ -182,8 +195,14 @@ function capBezierPoints(points, area) {
 /**
  * @private
  */
-export function _updateBezierControlPoints(points, options, area, loop, indexAxis) {
-  let i, ilen, point, controlPoints;
+export function _updateBezierControlPoints(
+  points: SplinePoint[],
+  options,
+  area: ChartArea,
+  loop: boolean,
+  indexAxis: 'x' | 'y'
+) {
+  let i: number, ilen: number, point: SplinePoint, controlPoints: ReturnType<typeof splineCurve>;
 
   // Only consider points that are drawn in case the spanGaps option is used
   if (options.spanGaps) {

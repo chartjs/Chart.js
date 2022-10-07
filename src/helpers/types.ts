@@ -7,6 +7,7 @@
 export * from './helpers.color';
 export * from './helpers.collection';
 export * from './helpers.core';
+export * from './helpers.curve';
 export * from './helpers.easing';
 export * from './helpers.extras';
 export * from './helpers.interpolation';
