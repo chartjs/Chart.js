@@ -47,6 +47,8 @@ overrides:
       - plugin:@typescript-eslint/recommended
 
     rules:
+      complexity: ["warn", 10]
+      max-statements: ["warn", 30]
       # Replace stock eslint rules with typescript-eslint equivalents for proper
       # TypeScript support.
       indent: "off"
