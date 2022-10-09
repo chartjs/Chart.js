@@ -6,7 +6,7 @@ module.exports = {
       datasets: [
         {
           // option in dataset
-          data: [0, 5, 10, null, -10, -5, null],
+          data: [0, 5, 10, null, -10, -5, 0],
           pointBackgroundColor: '#ff0000',
           pointBorderColor: '#ff0000',
           pointStyle: [
@@ -16,12 +16,12 @@ module.exports = {
             'dash',
             'line',
             'rect',
-            false
+            'false'
           ]
         },
         {
           // option in element (fallback)
-          data: [4, -5, -10, null, 10, 5, null],
+          data: [4, -5, -10, null, 10, 5, -4],
         }
       ]
     },
