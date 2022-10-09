@@ -1,6 +1,6 @@
 # 4.x Migration Guide
 
-Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amount of breaking changes to a minimum. For some features and bug fixes it was necessary to break backwars compatibility, but we aimed to do so only when worth the benefit.
+Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amount of breaking changes to a minimum. For some features and bug fixes it was necessary to break backwards compatibility, but we aimed to do so only when worth the benefit.
 
 ## End user migration
 
