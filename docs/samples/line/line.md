@@ -23,7 +23,7 @@ const actions = [
         borderColor: dsColor,
         data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
       };
-      chart.data.datasets.push(newDataset);
+      data.datasets.push(newDataset);
       chart.update();
     }
   },
