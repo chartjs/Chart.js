@@ -2,7 +2,7 @@ import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index';
 import {PI, _isBetween, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
-import {type ArcOptions, type Point} from '../../types';
+import type {ArcOptions, Point} from '../../types';
 
 
 function clipArc(ctx: CanvasRenderingContext2D, element: ArcElement, endAngle: number) {
