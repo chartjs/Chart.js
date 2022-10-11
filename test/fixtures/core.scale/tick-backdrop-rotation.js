@@ -17,7 +17,7 @@ module.exports = {
             display: true,
             showLabelBackdrop: true,
             minRotation: 45,
-            backdropColor: 'red',
+            backdropColor: 'blue',
             backdropPadding: 5,
             align: 'start',
             crossAlign: 'near',
@@ -67,10 +67,6 @@ module.exports = {
             display: true,
             showLabelBackdrop: true,
             backdropColor: 'gray',
-            backdropPadding: {
-              x: 6,
-              y: 8
-            },
           },
           grid,
           title
@@ -83,6 +79,6 @@ module.exports = {
       height: 256,
       width: 256
     },
-    spriteText: false,
+    spriteText: true,
   }
 };

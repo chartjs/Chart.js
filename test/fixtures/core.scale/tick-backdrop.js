@@ -71,6 +71,6 @@ module.exports = {
       height: 256,
       width: 256
     },
-    spriteText: false,
+    spriteText: true,
   }
 };
