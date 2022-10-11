@@ -5,6 +5,7 @@ const title = {
   display: false,
 };
 module.exports = {
+  tolerance: 0.0016,
   config: {
     type: 'line',
     options: {
