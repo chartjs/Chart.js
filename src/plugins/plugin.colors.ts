@@ -3,10 +3,10 @@ import {Chart} from '../types';
 const BORDER_COLORS = [
   '#36A2EB', // blue
   '#FF6384', // red
-  '#FF9F40', // orange
   '#4BC0C0', // green
-  '#FFCD56', // yellow
+  '#FF9F40', // orange
   '#9966FF', // purple
+  '#FFCD56', // yellow
   '#C9CBCF', // grey
 ];
 
@@ -14,10 +14,10 @@ const BORDER_COLORS = [
 const BACKGROUND_COLORS = [
   '#9BD0F5', // blue
   '#FFB1C1', // red
-  '#FFCF9F', // orange
   '#A5DFDF', // green
-  '#FFE6AA', // yellow
+  '#FFCF9F', // orange
   '#CCB3FF', // purple
+  '#FFE6AA', // yellow
   '#E4E5E7', // grey
 ];
 
