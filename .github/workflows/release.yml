@@ -37,7 +37,6 @@ jobs:
           pnpm install
           pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
-          json -I -f package-lock.json -e "this.version=\"$VERSION\""
           pnpm run build
           ./scripts/docs-config.sh "$VERSION" release
           pnpm run docs
