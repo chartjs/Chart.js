@@ -2,11 +2,10 @@ import Element from '../core/core.element';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index';
 import {PI, _isBetween, _limitValue} from '../helpers/helpers.math';
 import {_readValueToProps} from '../helpers/helpers.options';
+import type {ArcOptions, Point} from '../../types';
 
-/** @typedef {{ x: number, y: number, startAngle: number, endAngle: number, innerRadius: number, outerRadius: number, circumference: number }} ArcProps */
-/** @typedef {import('../../types/geometric').Point} Point */
 
-function clipArc(ctx, element, endAngle) {
+function clipArc(ctx: CanvasRenderingContext2D, element: ArcElement, endAngle: number) {
   const {startAngle, pixelMargin, x, y, outerRadius, innerRadius} = element;
   let angleMargin = pixelMargin / outerRadius;
 
@@ -30,13 +29,8 @@ function toRadiusCorners(value) {
 
 /**
  * Parse border radius from the provided options
- * @param {ArcElement} arc
- * @param {number} innerRadius
- * @param {number} outerRadius
- * @param {number} angleDelta Arc circumference in radians
- * @returns
  */
-function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
+function parseBorderRadius(arc: ArcElement, innerRadius: number, outerRadius: number, angleDelta: number) {
   const o = toRadiusCorners(arc.options.borderRadius);
   const halfThickness = (outerRadius - innerRadius) / 2;
   const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
@@ -63,13 +57,8 @@ function parseBorderRadius(arc, innerRadius, outerRadius, angleDelta) {
 
 /**
  * Convert (r, 𝜃) to (x, y)
- * @param {number} r Radius from center point
- * @param {number} theta Angle in radians
- * @param {number} x Center X coordinate
- * @param {number} y Center Y coordinate
- * @returns {{ x: number; y: number }} Rectangular coordinate point
  */
-function rThetaToXY(r, theta, x, y) {
+function rThetaToXY(r: number, theta: number, x: number, y: number) {
   return {
     x: x + r * Math.cos(theta),
     y: y + r * Math.sin(theta),
@@ -93,10 +82,15 @@ function rThetaToXY(r, theta, x, y) {
  *   7           4
  *   \           /
  *    6---------5    Inner
- * @param {CanvasRenderingContext2D} ctx
- * @param {ArcElement} element
  */
-function pathArc(ctx, element, offset, spacing, end, circular) {
+function pathArc(
+  ctx: CanvasRenderingContext2D,
+  element: ArcElement,
+  offset: number,
+  spacing: number,
+  end: number,
+  circular: boolean,
+) {
   const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
 
   const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
@@ -187,7 +181,13 @@ function pathArc(ctx, element, offset, spacing, end, circular) {
   ctx.closePath();
 }
 
-function drawArc(ctx, element, offset, spacing, circular) {
+function drawArc(
+  ctx: CanvasRenderingContext2D,
+  element: ArcElement,
+  offset: number,
+  spacing: number,
+  circular: boolean,
+) {
   const {fullCircles, startAngle, circumference} = element;
   let endAngle = element.endAngle;
   if (fullCircles) {
@@ -209,7 +209,7 @@ function drawArc(ctx, element, offset, spacing, circular) {
   return endAngle;
 }
 
-function drawFullCircleBorders(ctx, element, inner) {
+function drawFullCircleBorders(ctx: CanvasRenderingContext2D, element: ArcElement, inner: boolean) {
   const {x, y, startAngle, pixelMargin, fullCircles} = element;
   const outerRadius = Math.max(element.outerRadius - pixelMargin, 0);
   const innerRadius = element.innerRadius + pixelMargin;
@@ -233,7 +233,14 @@ function drawFullCircleBorders(ctx, element, inner) {
   }
 }
 
-function drawBorder(ctx, element, offset, spacing, endAngle, circular) {
+function drawBorder(
+  ctx: CanvasRenderingContext2D,
+  element: ArcElement,
+  offset: number,
+  spacing: number,
+  endAngle: number,
+  circular: boolean,
+) {
   const {options} = element;
   const {borderWidth, borderJoinStyle} = options;
   const inner = options.borderAlign === 'inner';
@@ -262,13 +269,18 @@ function drawBorder(ctx, element, offset, spacing, endAngle, circular) {
   ctx.stroke();
 }
 
-export default class ArcElement extends Element {
+export interface ArcProps extends Point {
+  startAngle: number;
+  endAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  circumference: number;
+}
+
+export default class ArcElement extends Element<ArcProps, ArcOptions> {
 
   static id = 'arc';
 
-  /**
-   * @type {any}
-   */
   static defaults = {
     borderAlign: 'center',
     borderColor: '#fff',
@@ -281,12 +293,17 @@ export default class ArcElement extends Element {
     circular: true,
   };
 
-  /**
-   * @type {any}
-   */
   static defaultRoutes = {
     backgroundColor: 'backgroundColor'
   };
+
+  circumference: number;
+  endAngle: number;
+  fullCircles: number;
+  innerRadius: number;
+  outerRadius: number;
+  pixelMargin: number;
+  startAngle: number;
 
   constructor(cfg) {
     super();
@@ -305,22 +322,16 @@ export default class ArcElement extends Element {
     }
   }
 
-  /**
-	 * @param {number} chartX
-	 * @param {number} chartY
-	 * @param {boolean} [useFinalPosition]
-	 */
-  inRange(chartX, chartY, useFinalPosition) {
-    // @ts-ignore This will be fixed when the arc element is converted to TS
-    const point = /** @type {Point} */ (this.getProps(['x', 'y'], useFinalPosition));
+  inRange(chartX: number, chartY: number, useFinalPosition: boolean) {
+    const point = this.getProps(['x', 'y'], useFinalPosition);
     const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
-    const {startAngle, endAngle, innerRadius, outerRadius, circumference} = /** @type {ArcProps} */ (this.getProps([
+    const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
       'startAngle',
       'endAngle',
       'innerRadius',
       'outerRadius',
       'circumference'
-    ], useFinalPosition));
+    ], useFinalPosition);
     const rAdjust = this.options.spacing / 2;
     const _circumference = valueOrDefault(circumference, endAngle - startAngle);
     const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
@@ -329,11 +340,8 @@ export default class ArcElement extends Element {
     return (betweenAngles && withinRadius);
   }
 
-  /**
-	 * @param {boolean} [useFinalPosition]
-	 */
-  getCenterPoint(useFinalPosition) {
-    const {x, y, startAngle, endAngle, innerRadius, outerRadius} = /** @type {ArcProps} */ (this.getProps([
+  getCenterPoint(useFinalPosition: boolean) {
+    const {x, y, startAngle, endAngle, innerRadius, outerRadius} = this.getProps([
       'x',
       'y',
       'startAngle',
@@ -341,7 +349,7 @@ export default class ArcElement extends Element {
       'innerRadius',
       'outerRadius',
       'circumference',
-    ], useFinalPosition));
+    ], useFinalPosition);
     const {offset, spacing} = this.options;
     const halfAngle = (startAngle + endAngle) / 2;
     const halfRadius = (innerRadius + outerRadius + spacing + offset) / 2;
@@ -351,14 +359,11 @@ export default class ArcElement extends Element {
     };
   }
 
-  /**
-	 * @param {boolean} [useFinalPosition]
-	 */
-  tooltipPosition(useFinalPosition) {
+  tooltipPosition(useFinalPosition: boolean) {
     return this.getCenterPoint(useFinalPosition);
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     const {options, circumference} = this;
     const offset = (options.offset || 0) / 4;
     const spacing = (options.spacing || 0) / 2;

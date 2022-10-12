@@ -1,6 +1,7 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from '../src/core/core.adapters';
+import ArcElement from '../src/elements/element.arc';
 import PointElement from '../src/elements/element.point';
 import { EasingFunction } from '../src/helpers/helpers.easing';
 import { AnimationEvent } from './animation';
@@ -11,6 +12,7 @@ import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 
 export { EasingFunction } from '../src/helpers/helpers.easing';
+export { default as ArcElement, ArcProps } from '../src/elements/element.arc';
 export { default as PointElement, PointProps } from '../src/elements/element.point';
 export { Animation, Animations, Animator, AnimationEvent } from './animation';
 export { Color } from './color';
@@ -1676,14 +1678,6 @@ export interface Segment {
   loop: boolean;
 }
 
-export interface ArcProps extends Point {
-  startAngle: number;
-  endAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  circumference: number;
-}
-
 export interface ArcBorderRadius {
   outerStart: number;
   outerEnd: number;
@@ -1718,20 +1712,16 @@ export interface ArcOptions extends CommonElementOptions {
    * @default true
    */
   circular: boolean;
+
+  /**
+   * Spacing between arcs
+   */
+  spacing: number
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
   hoverOffset: number;
 }
-
-export interface ArcElement<T extends ArcProps = ArcProps, O extends ArcOptions = ArcOptions>
-  extends Element<T, O>,
-  VisualElement {}
-
-export declare const ArcElement: ChartComponent & {
-  prototype: ArcElement;
-  new (cfg: AnyObject): ArcElement;
-};
 
 export interface LineProps {
   points: Point[]
