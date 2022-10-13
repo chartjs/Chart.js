@@ -1,25 +1,19 @@
-import {Chart} from '../types';
+import type {Chart, ChartDataset} from '../types';
+
+type DatasetColorizer = (dataset: ChartDataset, i: number) => void;
 
 const BORDER_COLORS = [
-  '#36A2EB', // blue
-  '#FF6384', // red
-  '#4BC0C0', // green
-  '#FF9F40', // orange
-  '#9966FF', // purple
-  '#FFCD56', // yellow
-  '#C9CBCF', // grey
+  'rgb(54, 162, 235)', // blue
+  'rgb(255, 99, 132)', // red
+  'rgb(255, 159, 64)', // orange
+  'rgb(255, 205, 86)', // yellow
+  'rgb(75, 192, 192)', // green
+  'rgb(153, 102, 255)', // purple
+  'rgb(201, 203, 207)' // grey
 ];
 
-// Primary colors with 50% transparency, mixed with white
-const BACKGROUND_COLORS = [
-  '#9BD0F5', // blue
-  '#FFB1C1', // red
-  '#A5DFDF', // green
-  '#FFCF9F', // orange
-  '#CCB3FF', // purple
-  '#FFE6AA', // yellow
-  '#E4E5E7', // grey
-];
+// Primary colors with 50% transparency
+const BACKGROUND_COLORS = BORDER_COLORS.map(_ => _.replace(')', ', 0.5)'));
 
 function getBorderColor(i: number) {
   return BORDER_COLORS[i % BORDER_COLORS.length];
@@ -29,18 +23,50 @@ function getBackgroundColor(i: number) {
   return BACKGROUND_COLORS[i % BACKGROUND_COLORS.length];
 }
 
+function createDefaultDatasetColorizer() {
+  return (dataset: ChartDataset, i: number) => {
+    if (!dataset.borderColor && !dataset.backgroundColor) {
+      dataset.borderColor = getBorderColor(i);
+      dataset.backgroundColor = getBackgroundColor(i);
+    }
+  };
+}
+
+function createDoughnutDatasetColorizer() {
+  let i = 0;
+
+  return (dataset: ChartDataset) => {
+    if (!dataset.borderColor && !dataset.backgroundColor) {
+      dataset.backgroundColor = dataset.data.map(() => getBorderColor(i++));
+    }
+  };
+}
+
+function createPolarAreaDatasetColorizer() {
+  let i = 0;
+
+  return (dataset: ChartDataset) => {
+    if (!dataset.borderColor && !dataset.backgroundColor) {
+      dataset.backgroundColor = dataset.data.map(() => getBackgroundColor(i++));
+    }
+  };
+}
+
 export default {
   id: 'colors',
 
   beforeLayout(chart: Chart) {
-    chart.data.datasets.forEach((dataset, i) => {
-      if (!dataset.borderColor) {
-        dataset.borderColor = getBorderColor(i);
-      }
+    const {type} = chart.config;
+    let colorizer: DatasetColorizer;
 
-      if (!dataset.backgroundColor) {
-        dataset.backgroundColor = getBackgroundColor(i);
-      }
-    });
+    if (type === 'doughnut') {
+      colorizer = createDoughnutDatasetColorizer();
+    } else if (type === 'polarArea') {
+      colorizer = createPolarAreaDatasetColorizer();
+    } else {
+      colorizer = createDefaultDatasetColorizer();
+    }
+
+    chart.data.datasets.forEach(colorizer);
   },
 };
