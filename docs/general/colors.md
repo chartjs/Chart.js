@@ -62,7 +62,7 @@ If you don't have any preference for colors, you can use the built-in `Colors` p
 All you need is to import and register the plugin:
 
 ```javascript
-import { Colors } from `chart.js/plugins`;
+import { Colors } from 'chart.js';
 
 Chart.register(Colors);
 ```
