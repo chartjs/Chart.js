@@ -104,7 +104,7 @@ For example, you can fill a dataset with a pattern from an image.
 ```javascript
 const img = new Image();
 img.src = 'https://example.com/my_image.png';
-img.onload = function() {
+img.onload = () => {
   const ctx = document.getElementById('canvas').getContext('2d');
   const fillPattern = ctx.createPattern(img, 'repeat');
 
