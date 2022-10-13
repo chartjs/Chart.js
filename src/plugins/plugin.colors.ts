@@ -2,6 +2,11 @@ import type {Chart, ChartDataset} from '../types';
 
 type DatasetColorizer = (dataset: ChartDataset, i: number) => void;
 
+interface ColorsDescriptor {
+  backgroundColor?: unknown;
+  borderColor?: unknown;
+}
+
 const BORDER_COLORS = [
   'rgb(54, 162, 235)', // blue
   'rgb(255, 99, 132)', // red
@@ -25,10 +30,8 @@ function getBackgroundColor(i: number) {
 
 function createDefaultDatasetColorizer() {
   return (dataset: ChartDataset, i: number) => {
-    if (!dataset.borderColor && !dataset.backgroundColor) {
-      dataset.borderColor = getBorderColor(i);
-      dataset.backgroundColor = getBackgroundColor(i);
-    }
+    dataset.borderColor = getBorderColor(i);
+    dataset.backgroundColor = getBackgroundColor(i);
   };
 }
 
@@ -36,9 +39,7 @@ function createDoughnutDatasetColorizer() {
   let i = 0;
 
   return (dataset: ChartDataset) => {
-    if (!dataset.borderColor && !dataset.backgroundColor) {
-      dataset.backgroundColor = dataset.data.map(() => getBorderColor(i++));
-    }
+    dataset.backgroundColor = dataset.data.map(() => getBorderColor(i++));
   };
 }
 
@@ -46,18 +47,38 @@ function createPolarAreaDatasetColorizer() {
   let i = 0;
 
   return (dataset: ChartDataset) => {
-    if (!dataset.borderColor && !dataset.backgroundColor) {
-      dataset.backgroundColor = dataset.data.map(() => getBackgroundColor(i++));
-    }
+    dataset.backgroundColor = dataset.data.map(() => getBackgroundColor(i++));
   };
+}
+
+function containsColorsDefinitions(
+  descriptors: ColorsDescriptor[] | Record<string, ColorsDescriptor>
+) {
+  let k: number | string;
+
+  for (k in descriptors) {
+    if (descriptors[k].borderColor || descriptors[k].backgroundColor) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export default {
   id: 'colors',
 
   beforeLayout(chart: Chart) {
-    const {type} = chart.config;
+    const {
+      type,
+      options: {elements},
+      data: {datasets}
+    } = chart.config;
     let colorizer: DatasetColorizer;
+
+    if (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements)) {
+      return;
+    }
 
     if (type === 'doughnut') {
       colorizer = createDoughnutDatasetColorizer();
@@ -67,6 +88,6 @@ export default {
       colorizer = createDefaultDatasetColorizer();
     }
 
-    chart.data.datasets.forEach(colorizer);
-  },
+    datasets.forEach(colorizer);
+  }
 };
