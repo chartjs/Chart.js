@@ -1,5 +1,9 @@
 import type {Chart, ChartDataset} from '../types';
 
+export interface ColorsPluginOptions {
+  enabled?: boolean;
+}
+
 type DatasetColorizer = (dataset: ChartDataset, i: number) => void;
 
 interface ColorsDescriptor {
@@ -68,7 +72,15 @@ function containsColorsDefinitions(
 export default {
   id: 'colors',
 
-  beforeLayout(chart: Chart) {
+  defaults: {
+    enabled: true,
+  },
+
+  beforeLayout(chart: Chart, _args, options: ColorsPluginOptions) {
+    if (!options.enabled) {
+      return;
+    }
+
     const {
       type,
       options: {elements},

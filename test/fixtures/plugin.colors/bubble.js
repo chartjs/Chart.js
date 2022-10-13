@@ -7,6 +7,13 @@ module.exports = {
       }, {
         data: [{x: 18, y: 38, r: 25}]
       }]
+    },
+    options: {
+      plugins: {
+        colors: {
+          enabled: true
+        }
+      }
     }
   }
 };

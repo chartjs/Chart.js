@@ -12,6 +12,13 @@ module.exports = {
         pointRadius: 20,
         label: 'dataset2'
       }],
+    },
+    options: {
+      plugins: {
+        colors: {
+          enabled: true
+        }
+      }
     }
   }
 };

@@ -47,7 +47,7 @@ const data = {
 };
 ```
 
-However, setting colors for each dataset might require additional work that you'd rather not do. In that case, consider using the following plugins with pre-defined or generated palettes. 
+However, setting colors for each dataset might require additional work that you'd rather not do. In that case, consider using the following plugins with pre-defined or generated palettes.
 
 ### Default color series
 
@@ -66,6 +66,22 @@ import { Colors } from 'chart.js';
 
 Chart.register(Colors);
 ```
+
+:::tip Note
+
+If you are using UMD version of Chart.js, this plugin will be enabled by default. You can disable it by setting option `enabled` to `false`:
+
+```js
+const options = {
+  plugins: {
+    colors: {
+      enabled: false
+    }
+  }
+};
+```
+
+:::
 
 ### Advanced color series
 

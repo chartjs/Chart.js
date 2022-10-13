@@ -8,6 +8,13 @@ module.exports = {
           data: [0, 2, 4, null, 6, 8]
         }
       ]
+    },
+    options: {
+      plugins: {
+        colors: {
+          enabled: true
+        }
+      }
     }
   }
 };

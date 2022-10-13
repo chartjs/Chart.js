@@ -11,6 +11,13 @@ module.exports = {
           data: [10, 2, 3, null, 10, 5]
         }
       ]
+    },
+    options: {
+      plugins: {
+        colors: {
+          enabled: true
+        }
+      }
     }
   }
 };
