@@ -13,7 +13,7 @@ const BORDER_COLORS = [
 ];
 
 // Primary colors with 50% transparency
-const BACKGROUND_COLORS = BORDER_COLORS.map(_ => _.replace(')', ', 0.5)'));
+const BACKGROUND_COLORS = /* #__PURE__ */ BORDER_COLORS.map(_ => _.replace(')', ', 0.5)'));
 
 function getBorderColor(i: number) {
   return BORDER_COLORS[i % BORDER_COLORS.length];
