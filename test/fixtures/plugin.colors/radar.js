@@ -13,7 +13,18 @@ module.exports = {
       ]
     },
     options: {
+      scales: {
+        r: {
+          ticks: {
+            display: false
+          },
+          pointLabels: {
+            display: false,
+          }
+        }
+      },
       plugins: {
+        legend: false,
         colors: {
           enabled: true
         }

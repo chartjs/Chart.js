@@ -10,7 +10,15 @@ module.exports = {
       ]
     },
     options: {
+      scales: {
+        r: {
+          ticks: {
+            display: false
+          }
+        }
+      },
       plugins: {
+        legend: false,
         colors: {
           enabled: true
         }

@@ -14,10 +14,23 @@ module.exports = {
       }],
     },
     options: {
+      scales: {
+        x: {
+          ticks: {
+            display: false,
+          }
+        },
+        y: {
+          ticks: {
+            display: false,
+          }
+        }
+      },
       plugins: {
+        legend: false,
         colors: {
           enabled: true
-        }
+        },
       }
     }
   }

@@ -13,6 +13,7 @@ module.exports = {
     },
     options: {
       plugins: {
+        legend: false,
         colors: {
           enabled: true
         }
