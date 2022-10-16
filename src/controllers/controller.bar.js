@@ -55,7 +55,7 @@ function computeMinSampleSize(meta) {
 /**
  * Computes an "ideal" category based on the absolute bar thickness or, if undefined or null,
  * uses the smallest interval (see computeMinSampleSize) that prevents bar overlapping. This
- * mode currently always generates bars equally sized (until we introduce scriptable options?).
+ * mode currently always generates bars equally sized (until we introduce scriptable options).
  * @private
  */
 function computeFitCategoryTraits(index, ruler, options, stackCount) {
