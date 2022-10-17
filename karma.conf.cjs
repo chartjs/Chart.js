@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const jasmineSeedReporter = require('./test/seed-reporter.cjs');
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
@@ -37,8 +38,10 @@ module.exports = async function(karma) {
   // https://github.com/pnpm/pnpm/issues/720#issuecomment-954120387
   const plugins = Object.keys(require('./package').devDependencies).flatMap(
     (packageName) => {
-      if (!packageName.startsWith('karma-')) return []
-      return [require(packageName)]
+      if (!packageName.startsWith('karma-')) {
+        return [];
+      }
+      return [require(packageName)];
     }
   );
 
@@ -53,7 +56,7 @@ module.exports = async function(karma) {
 
     client: {
       jasmine: {
-        failFast: !!karma.autoWatch
+        stopOnSpecFailure: !!karma.autoWatch
       }
     },
 
