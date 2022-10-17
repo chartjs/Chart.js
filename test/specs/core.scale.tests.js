@@ -700,5 +700,35 @@ describe('Core.scale', function() {
 
       expect(chart.scales.xavier.axis).toBe('y');
     });
+    it('should center labels when rotated in x axis', () => {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3]
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                minRotation: 90,
+              }
+            }
+          }
+        }
+      });
+      const mapper = item => parseFloat(item.translation[0].toFixed(2));
+      const expected = [20.15, 113.6, 207.05, 300.5, 393.95, 487.4];
+      const actual = chart.scales.x._labelItems.map(mapper);
+      const len = expected.length;
+      for (let i = 0; i < len; ++i) {
+        const actualValue = actual[i];
+        const expectedValue = expected[i];
+        expect(actualValue).toBeCloseTo(expectedValue, 1);
+      }
+    });
   });
 });

@@ -1241,6 +1241,9 @@ export default class Scale extends Element {
         if (mirror) {
           textOffset *= -1;
         }
+        if (rotation !== 0 && !optsAtIndex.showLabelBackdrop) {
+          x += (lineHeight / 2) * Math.sin(rotation);
+        }
       } else {
         y = pixel;
         textOffset = (1 - lineCount) * lineHeight / 2;
