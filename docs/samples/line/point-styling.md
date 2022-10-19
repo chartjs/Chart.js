@@ -7,7 +7,7 @@ const actions = [
     name: 'pointStyle: circle (default)',
     handler: (chart) => {
       chart.data.datasets.forEach(dataset => {
-        dataset.pointStyle = 'cirlce';
+        dataset.pointStyle = 'circle';
       });
       chart.update();
     }
