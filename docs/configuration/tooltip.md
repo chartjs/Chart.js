@@ -304,8 +304,8 @@ const myPieChart = new Chart(ctx, {
                             let style = 'background:' + colors.backgroundColor;
                             style += '; border-color:' + colors.borderColor;
                             style += '; border-width: 2px';
-                            const span = '<span style="' + style + '"></span>';
-                            innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                            const span = '<span style="' + style + '">' + body + '</span>';
+                            innerHtml += '<tr><td>' + span + '</td></tr>';
                         });
                         innerHtml += '</tbody>';
 
