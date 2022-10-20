@@ -21,6 +21,7 @@ You can reset default colors by updating these properties of `Chart.defaults`:
 ```javascript
 Chart.defaults.backgroundColor = '#9BD0F5';
 Chart.defaults.borderColor = '#36A2EB';
+Chart.defaults.color = '#000';
 ```
 
 ### Per-dataset color settings
