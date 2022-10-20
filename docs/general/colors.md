@@ -50,9 +50,9 @@ const data = {
 
 However, setting colors for each dataset might require additional work that you'd rather not do. In that case, consider using the following plugins with pre-defined or generated palettes.
 
-### Default color series
+### Default color palette
 
-If you don't have any preference for colors, you can use the built-in `Colors` plugin. It will cycle through a series of seven Chart.js brand colors:
+If you don't have any preference for colors, you can use the built-in `Colors` plugin. It will cycle through a palette of seven Chart.js brand colors:
 
 <div style="max-width: 500px;">
 
@@ -84,23 +84,9 @@ const options = {
 
 :::
 
-### Advanced color series
+### Advanced color palettes
 
-If a limited-size series of colors is not enough, you can use [`chartjs-plugin-autocolors`](https://github.com/kurkle/chartjs-plugin-autocolors) that generates an unlimited number of distinct colors for every dataset or for every data point in every dataset:
-
-<div style="max-width: 500px;">
-
-![Autocolors plugin palette](./autocolors-plugin-palette.png)
-
-</div>
-
-You can also use [`chartjs-plugin-colorschemes`](https://github.com/nagix/chartjs-plugin-colorschemes) that comes with dozens of [pre-defined color series](https://nagix.github.io/chartjs-plugin-colorschemes/colorchart.html) from well-known tools like Tableau and Microsoft Office:
-
-<div style="max-width: 500px;">
-
-![Colorschemes plugin palette](./colorschemes-plugin-palette.png)
-
-</div>
+See the [awesome list](https://github.com/chartjs/awesome#plugins) for plugins that would give you more flexibility defining color palettes.
 
 ## Color formats
 
