@@ -86,11 +86,12 @@ export default {
       options: {elements},
       data: {datasets}
     } = chart.config;
-    let colorizer: DatasetColorizer;
 
     if (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements)) {
       return;
     }
+
+    let colorizer: DatasetColorizer;
 
     if (type === 'doughnut') {
       colorizer = createDoughnutDatasetColorizer();
