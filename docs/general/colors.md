@@ -69,7 +69,7 @@ Chart.register(Colors);
 
 :::tip Note
 
-If you are using UMD version of Chart.js, this plugin will be enabled by default. You can disable it by setting option `enabled` to `false`:
+If you are using the UMD version of Chart.js, this plugin will be enabled by default. You can disable it by setting the `enabled` option to `false`:
 
 ```js
 const options = {
