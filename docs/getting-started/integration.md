@@ -2,6 +2,8 @@
 
 Chart.js can be integrated with plain JavaScript or with different module loaders. The examples below show how to load Chart.js in different systems.
 
+If you're using a front-end framework (e.g., React, Angular, or Vue), please see [available integrations](https://github.com/chartjs/awesome#integrations).
+
 ## Script Tag
 
 ```html
@@ -118,7 +120,7 @@ Because Chart.js is an ESM library, in CommonJS modules you should use a dynamic
 const { Chart } = await import('chart.js');
 ```
 
-## Require JS
+## RequireJS
 
 **Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.html), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.js`).
 
@@ -128,7 +130,9 @@ require(['path/to/chartjs/dist/chart.umd.js'], function(Chart){
 });
 ```
 
-**Note:** in order to use the time scale, you need to make sure [one of the available date adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library are fully loaded **after** requiring Chart.js. For this you can use nested requires:
+:::tip Note
+
+In order to use the time scale, you need to make sure [one of the available date adapters](https://github.com/chartjs/awesome#adapters) and corresponding date library are fully loaded **after** requiring Chart.js. For this you can use nested requires:
 
 ```javascript
 require(['chartjs'], function(Chart) {
@@ -139,3 +143,4 @@ require(['chartjs'], function(Chart) {
     });
 });
 ```
+:::
