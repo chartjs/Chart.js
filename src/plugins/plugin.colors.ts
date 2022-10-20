@@ -21,8 +21,8 @@ const BORDER_COLORS = [
   'rgb(201, 203, 207)' // grey
 ];
 
-// Primary colors with 50% transparency
-const BACKGROUND_COLORS = /* #__PURE__ */ BORDER_COLORS.map(_ => _.replace(')', ', 0.5)'));
+// Border colors with 50% transparency
+const BACKGROUND_COLORS = /* #__PURE__ */ BORDER_COLORS.map(color => color.replace('rgb(', 'rgba(').replace(')', ', 0.5)'));
 
 function getBorderColor(i: number) {
   return BORDER_COLORS[i % BORDER_COLORS.length];
