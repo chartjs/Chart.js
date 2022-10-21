@@ -1,7 +1,3 @@
----
-title: Getting started
----
-
 # Getting Started
 
 Let's get started with Chart.js!
@@ -39,7 +35,7 @@ In this example, we create a bar chart for a single dataset and render it on an 
     options: {
       scales: {
         y: {
-            beginAtZero: true
+          beginAtZero: true
         }
       }
     }
@@ -86,7 +82,7 @@ Finally, we can create a chart. We add a script that acquires the `myChart` canv
     options: {
       scales: {
         y: {
-            beginAtZero: true
+          beginAtZero: true
         }
       }
     }

@@ -2,7 +2,7 @@
 
 You can navigate through the samples via the sidebar.
 
-Alternatively, you can run them locally. To do so, clone the [Chart.js repository](https://github.com/chartjs/Chart.js) from GitHub, run `npm ci` to install all packages, then run `npm run docs:dev` to build the documentation. As soon as the build is done, you can go to [localhost:8080/samples](http://localhost:8080/samples/) to see the samples.
+Alternatively, you can run them locally. To do so, clone the [Chart.js repository](https://github.com/chartjs/Chart.js) from GitHub, run `pnpm ci` to install all packages, then run `pnpm run docs:dev` to build the documentation. As soon as the build is done, you can go to [localhost:8080/samples](http://localhost:8080/samples/) to see the samples.
 
 ## Out of the box working samples
 These samples are made for demonstration purposes only. They won't work out of the box if you copy paste them into your own website. This is because of how the docs are getting built. Some boilerplate code gets hidden.
