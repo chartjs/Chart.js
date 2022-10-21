@@ -3651,6 +3651,7 @@ export interface ChartConfigurationCustomTypesPerDataset<
   TData = DefaultDataPoint<TType>,
   TLabel = unknown
 > {
+  type: TType;
   data: ChartDataCustomTypesPerDataset<TType, TData, TLabel>;
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];

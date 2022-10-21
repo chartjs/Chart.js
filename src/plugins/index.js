@@ -1,3 +1,4 @@
+export {default as Colors} from './plugin.colors';
 export {default as Decimation} from './plugin.decimation';
 export {default as Filler} from './plugin.filler';
 export {default as Legend} from './plugin.legend';
