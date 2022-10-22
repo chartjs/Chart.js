@@ -147,7 +147,7 @@ Read more about the [existing plugin extension hooks](../api/interfaces/Plugin).
 
 ### Chart Initialization
 
-Plugins are notified during the initialization process. These hooks can be used to setup data needed for the plugin to operate.
+Plugins are notified during the initialization process. These hooks can be used to set up data needed for the plugin to operate.
 
 ![Chart.js init flowchart](./init_flowchart.png)
 
