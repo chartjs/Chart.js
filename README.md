@@ -35,4 +35,13 @@ Instructions on building and testing Chart.js can be found in [the documentation
 
 ## License
 
-Chart.js is available under the [MIT license](LICENSE.md).
+Chart.js is available under the [MIT license](LICENSE.md).</br>
+## SOME LINKS</br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/auto">auto</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/docs">docs</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/helpers">helpers</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/scripts">scripts</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/src">src</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/test">test</a></br>
+<a href="https://github.com/chartjs/Chart.js/tree/master/types">types</a></br>
+
