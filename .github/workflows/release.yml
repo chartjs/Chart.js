@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.2.4
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
@@ -37,7 +37,6 @@ jobs:
           pnpm install
           pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
-          json -I -f package-lock.json -e "this.version=\"$VERSION\""
           pnpm run build
           ./scripts/docs-config.sh "$VERSION" release
           pnpm run docs
@@ -72,7 +71,7 @@ jobs:
     if: "!github.event.release.prerelease"
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2.2.4
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/

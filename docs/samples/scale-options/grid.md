@@ -42,7 +42,7 @@ const data = {
 
 // <block:config:0>
 // Change these settings to change the display for different parts of the X axis
-// grid configuiration
+// grid configuration
 const DISPLAY = true;
 const BORDER = true;
 const CHART_AREA = true;

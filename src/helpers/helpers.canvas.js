@@ -340,6 +340,10 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
   for (i = 0; i < lines.length; ++i) {
     line = lines[i];
 
+    if (opts.backdrop) {
+      drawBackdrop(ctx, opts.backdrop);
+    }
+
     if (stroke) {
       if (opts.strokeColor) {
         ctx.strokeStyle = opts.strokeColor;
@@ -406,6 +410,14 @@ function decorateText(ctx, x, y, line, opts) {
     ctx.lineTo(right, yDecoration);
     ctx.stroke();
   }
+}
+
+function drawBackdrop(ctx, opts) {
+  const oldColor = ctx.fillStyle;
+
+  ctx.fillStyle = opts.color;
+  ctx.fillRect(opts.left, opts.top, opts.width, opts.height);
+  ctx.fillStyle = oldColor;
 }
 
 /**

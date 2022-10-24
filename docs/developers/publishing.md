@@ -1,6 +1,6 @@
 # Publishing an extension
 
-If you are planning on publishing an extension for Chart.js, here are a some pointers.
+If you are planning on publishing an extension for Chart.js, here are some pointers.
 
 ## Awesome
 
@@ -10,7 +10,7 @@ Note the minimum extension age requirement of 30 days.
 
 ## ESM
 
-If you are utilizing ESM, you probably still want to publish an UMD bundle of your extension. Because Chart.js v3 is tree shakeable, the interface is a bit different.
+If you are utilizing ESM, you probably still want to publish a UMD bundle of your extension. Because Chart.js v3 is tree shakeable, the interface is a bit different.
 UMD package's global `Chart` includes everything, while ESM package exports all the things separately.
 Fortunately, most of the exports can be mapped automatically by the bundlers.
 
