@@ -4,7 +4,7 @@ Follow this guide to get familiar with all major concepts of Chart.js: chart typ
 
 We'll build a Chart.js data visualization with a couple of charts from scratch:
 
-![demo](./usage-images/image.png)
+<iframe src="../usage/9/" frameBorder="0" scrolling="no" width="825" height="925"></iframe>
 
 ## Build a new application with Chart.js
 
@@ -29,7 +29,7 @@ In a new folder, create the `package.json` file with the following contents:
 }
 ```
 
-Modern front-end applications often use JavaScript module bundlers, so we’ve picked [Parcel](https://parceljs.org) as a nice zero-configuration build tool. We’re also installing Chart.js v4 and a JavaScript client for [Cube](https://cube.dev), an open-source API for data apps we’ll use to fetch real-world data (more on that later).
+Modern front-end applications often use JavaScript module bundlers, so we’ve picked [Parcel](https://parceljs.org) as a nice zero-configuration build tool. We’re also installing Chart.js v4 and a JavaScript client for [Cube](https://cube.dev/?ref=eco-chartjs), an open-source API for data apps we’ll use to fetch real-world data (more on that later).
 
 Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies, then create the `src` folder. Inside that folder, we’ll need a very simple `index.html` file:
 
@@ -94,7 +94,7 @@ Let’s walk through this code:
 
 Time to run the example with `npm run dev`, `yarn dev`, or `pnpm dev` and navigate to [localhost:1234](http://localhost:1234) in your web browser:
 
-![Screenshot 2022-10-18 at 14.43.51.png](./usage-images/Screenshot_2022-10-18_at_14.43.51.png)
+<iframe src="../usage/1/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
 
 With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.html), [grid lines](../samples/scale-options/grid.html), [ticks](../samples/scale-options/ticks.html), and [tooltips](../configuration/tooltip.html) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.html#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets). 
 
@@ -138,6 +138,8 @@ As you can see, we’ve added the `options` property to the second argument—th
 The legend and tooltips are hidden with boolean flags provided under the respective sections in `plugins`. Note that some of Chart.js features are extracted into plugins: self-contained, separate pieces of code. A few of them are available as a part of [Chart.js distribution](https://github.com/chartjs/Chart.js/tree/master/src/plugins), other plugins are maintained independently and can be located in the [awesome list](https://github.com/chartjs/awesome) of plugins, framework integrations, and additional chart types.
 
 You should be able to see the updated minimalistic chart in your browser.
+
+<iframe src="../usage/2/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
 
 ### Real-world data
 
@@ -226,8 +228,8 @@ export async function getDimensions() {
 
 Let’s see what’s happening there:
 
-- We `import` the JavaScript client library for [Cube](https://cube.dev), an open-source API for data apps, configure it with the API URL (`apiUrl`) and the authentication token (`cubeToken`), and finally instantiate the client (`cubeApi`).
-- Cube API is hosted in [Cube Cloud](https://cube.dev/cloud) and connected to a database with a [public dataset](https://github.com/MuseumofModernArt/collection) of ~140,000 records representing all of the artworks in the collection of the [Museum of Modern Art](https://www.moma.org) in New York, USA. Certainly, a more real-world dataset than what we’ve got now.
+- We `import` the JavaScript client library for [Cube](https://cube.dev/?ref=eco-chartjs), an open-source API for data apps, configure it with the API URL (`apiUrl`) and the authentication token (`cubeToken`), and finally instantiate the client (`cubeApi`).
+- Cube API is hosted in [Cube Cloud](https://cube.dev/cloud/?ref=eco-chartjs) and connected to a database with a [public dataset](https://github.com/MuseumofModernArt/collection) of ~140,000 records representing all of the artworks in the collection of the [Museum of Modern Art](https://www.moma.org) in New York, USA. Certainly, a more real-world dataset than what we’ve got now.
 - We define a couple of asynchronous functions to fetch data from the API: `getAquisitionsByYear` and `getDimensions`. The first one returns the number of artworks by the year of acquisition, the other returns the number of artworks for every width-height pair (we’ll need it for another chart).
 - Let’s take a look at `getAquisitionsByYear`. First, we create a declarative, JSON-based query in the `acquisitionsByYearQuery` variable. As you can see, we specify that for every `yearAcquired` we’d like to get the `count` of artworks; `yearAcquired` has to be set (i.e., not undefined); the result set would be sorted by `yearAcquired` in the ascending order.
 - Second, we fetch the `resultSet` by calling `cubeApi.load` and map it to an array of objects with desired `year` and `count` properties.
@@ -244,7 +246,7 @@ const data = await getAquisitionsByYear();
 
 Done! Now, our chart with real-world data looks like this. Looks like something interesting happened in 1964, 1968, and 2008!
 
-![Screenshot 2022-10-19 at 11.59.01.png](./usage-images/Screenshot_2022-10-19_at_11.59.01.png)
+<iframe src="../usage/3/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
 
 We’re done with the bar chart. Let’s try another Chart.js chart type.
 
@@ -295,9 +297,9 @@ import { getDimensions } from './api'
 
 Probably, everything is pretty straightforward there: we get data from the API and render a new chart with the `bubble` type, passing three dimensions of data as `x`, `y`, and `r` (radius) properties.
 
-Now, start the application again with npm run dev, yarn dev, or pnpm dev. We can review the new chart now:
+Now, reset caches with `rm -rf .parcel-cache` and start the application again with `npm run dev`, `yarn dev`, or `pnpm dev`. We can review the new chart now:
 
-![Screenshot 2022-10-19 at 12.23.58.png](./usage-images/Screenshot_2022-10-19_at_12.23.58.png)
+<iframe src="../usage/4/" frameBorder="0" scrolling="no" width="825" height="275"></iframe>
 
 Well, it doesn’t look pretty.
 
@@ -319,14 +321,14 @@ First of all, the chart is not square. Artworks’ width and height are equally 
 
 Looks much better now:
 
-![Screenshot 2022-10-19 at 12.35.04.png](./usage-images/Screenshot_2022-10-19_at_12.35.04.png)
+<iframe src="../usage/5/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
 
 However, it’s still not ideal. The horizontal axis spans from 0 to 500 while the vertical axis spans from 0 to 450. By default, Chart.js automatically adjusts the range (minimum and maximum values) of the axes to the values provided in the dataset, so the chart “fits” your data. Apparently, MoMa collection doesn’t have artworks in the range of 450 to 500 cm in height. Let’s modify the [axes configuration](../axes/) for our chart to account for that:
 
 ```jsx
 // ...
 
-new Chart(
+  new Chart(
     document.getElementById('dimensions'),
     {
       type: 'bubble',
@@ -347,14 +349,14 @@ new Chart(
 
 Great! Behold the updated chart:
 
-![Screenshot 2022-10-19 at 12.41.27.png](./usage-images/Screenshot_2022-10-19_at_12.41.27.png)
+<iframe src="../usage/6/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
 
 However, there’s one more nitpick: what are these numbers? It’s not very obvious that the units are centimetres. Let’s apply a [custom tick format](../axes/labelling.html#creating-custom-tick-formats) to both axes to make things clear. We’ll provide a callback function that would be called to format each tick value. Here’s the updated axes configuration:
 
 ```jsx
 // ...
 
-new Chart(
+  new Chart(
     document.getElementById('dimensions'),
     {
       type: 'bubble',
@@ -381,7 +383,7 @@ new Chart(
 
 Perfect, now we have proper units on both axes:
 
-![Screenshot 2022-10-20 at 15.26.06.png](./usage-images/Screenshot_2022-10-20_at_15.26.06.png)
+<iframe src="../usage/7/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
 
 ### Multiple datasets
 
@@ -432,7 +434,7 @@ Here’s how we can do that. Replace the `datasets` with the following code:
 
 As you can see, we define three datasets with different labels. Each dataset gets its own slice of data extracted with `filter`. Now they are visually distinct and, as you already know, you can toggle their visibility independently.
 
-![Screenshot 2022-10-19 at 13.17.58.png](./usage-images/Screenshot_2022-10-19_at_13.17.58.png)
+<iframe src="../usage/8/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
 
 Here we rely on the default color palette. However, keep in mind every chart type supports a lot of [dataset options](../charts/bubble.html#dataset-properties) that you can feel free to customize.
 
@@ -484,17 +486,27 @@ As you can see, in this `chartAreaBorder` plugin, we acquire the canvas context,
 
 Our bubble chart looks fancier now:
 
-![Screenshot 2022-10-19 at 14.53.10.png](./usage-images/Screenshot_2022-10-19_at_14.53.10.png)
+<iframe src="../usage/9/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
 
 ### Tree-shaking
 
-In production, we strive to ship as little code as possible, so the end users can load our data applications faster and have better experience. For that, we’ll need to apply [tree-shaking](https://cube.dev/blog/how-to-build-tree-shakeable-javascript-libraries) which is fancy term for removing unused code from the JavaScript bundle.
+In production, we strive to ship as little code as possible, so the end users can load our data applications faster and have better experience. For that, we’ll need to apply [tree-shaking](https://cube.dev/blog/how-to-build-tree-shakeable-javascript-libraries/?ref=eco-chartjs) which is fancy term for removing unused code from the JavaScript bundle.
 
 Chart.js fully supports tree-shaking with its component design. You can register all Chart.js components at once (which is convenient when you’re prototyping) and get them bundled with your application. Or, you can register only necessary components and get a minimal bundle, much less in size.
 
-Let’s inspect our example application. What’s the bundle size? You can stop the `yarn dev` command and run `yarn build`. In a few moments, you’ll get something like this:
+Let’s inspect our example application. What’s the bundle size? You can stop the application and run `npm run build`, or `yarn build`, or `pnpm build`. In a few moments, you’ll get something like this:
 
-![Screenshot 2022-10-19 at 17.16.42.png](./usage-images/Screenshot_2022-10-19_at_17.16.42.png)
+```bash
+% yarn build
+yarn run v1.22.17
+$ parcel build src/index.html
+✨ Built in 88ms
+
+dist/index.html              381 B   164ms
+dist/index.74a47636.js   265.48 KB   1.25s
+dist/index.ba0c2e17.js       881 B    63ms
+✨ Done in 0.51s.
+```
 
 We can see that Chart.js and other dependencies were bundled together in a single 265 KB file.
 
@@ -505,6 +517,7 @@ Instead, let’s load only necessary components and “register” them with Cha
 ```jsx
 import {
   Chart,
+  Colors,
   BarController,
   CategoryScale,
   LinearScale,
@@ -513,6 +526,7 @@ import {
 } from 'chart.js'
 
 Chart.register(
+  Colors,
   BarController,
   BarElement,
   CategoryScale,
@@ -526,6 +540,7 @@ And here’s the snippet for `src/dimensions.js`:
 ```jsx
 import {
   Chart,
+  Colors,
   BubbleController,
   CategoryScale,
   LinearScale,
@@ -534,6 +549,7 @@ import {
 } from 'chart.js'
 
 Chart.register(
+  Colors,
   BubbleController,
   PointElement,
   CategoryScale,
@@ -544,15 +560,27 @@ Chart.register(
 
 You can see that, in addition to the `Chart` class, we’re also loading a controller for the chart type, scales, and other chart elements (e.g., bars or points). You can look all available components up in the [documentation](./integration.html#bundle-optimization).
 
-Alternatively, you can follow Chart.js advice in the console. For example, if you forget to import `BarController` for your bar chart, you’ll see the following message:
+Alternatively, you can follow Chart.js advice in the console. For example, if you forget to import `BarController` for your bar chart, you’ll see the following message in the browser console:
 
-![Screenshot 2022-10-19 at 17.29.52.png](./usage-images/Screenshot_2022-10-19_at_17.29.52.png)
+```
+Unhandled Promise Rejection: Error: "bar" is not a registered controller.
+```
 
 Remember to carefully check for imports from `chart.js/auto` when preparing your application for production. It takes only one import like this to effectively disable tree-shaking.
 
 Now, let’s inspect our application once again. Run `yarn build` and you’ll get something like this:
 
-![Screenshot 2022-10-19 at 17.35.50.png](./usage-images/Screenshot_2022-10-19_at_17.35.50.png)
+```bash
+% yarn build
+yarn run v1.22.17
+$ parcel build src/index.html
+✨ Built in 88ms
+
+dist/index.html              381 B   176ms
+dist/index.5888047.js    208.66 KB   1.23s
+dist/index.dcb2e865.js       932 B    58ms
+✨ Done in 0.51s.
+```
 
 By importing and registering only select components, we’ve removed more than 56 KB of unnecessary code. Given that other dependencies take ~50 KB in the bundle, tree-shaking helps remove ~25% of Chart.js code from the bundle for our example application. 
 
