@@ -4,7 +4,7 @@ Follow this guide to get familiar with all major concepts of Chart.js: chart typ
 
 We'll build a Chart.js data visualization with a couple of charts from scratch:
 
-<iframe src="../usage/9/" frameBorder="0" scrolling="no" width="825" height="925"></iframe>
+![result](./usage-8.png)
 
 ## Build a new application with Chart.js
 
@@ -23,8 +23,8 @@ In a new folder, create the `package.json` file with the following contents:
     "parcel": "^2.6.2"
   },
   "dependencies": {
-    "@cubejs-client/core": "^0.30.29",
-    "chart.js": "^4.0.0-alpha.2"
+    "@cubejs-client/core": "^0.31.0",
+    "chart.js": "^4.0.0"
   }
 }
 ```
@@ -94,7 +94,7 @@ Let’s walk through this code:
 
 Time to run the example with `npm run dev`, `yarn dev`, or `pnpm dev` and navigate to [localhost:1234](http://localhost:1234) in your web browser:
 
-<iframe src="../usage/1/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
+![result](./usage-1.png)
 
 With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.html), [grid lines](../samples/scale-options/grid.html), [ticks](../samples/scale-options/ticks.html), and [tooltips](../configuration/tooltip.html) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.html#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets). 
 
@@ -138,8 +138,6 @@ As you can see, we’ve added the `options` property to the second argument—th
 The legend and tooltips are hidden with boolean flags provided under the respective sections in `plugins`. Note that some of Chart.js features are extracted into plugins: self-contained, separate pieces of code. A few of them are available as a part of [Chart.js distribution](https://github.com/chartjs/Chart.js/tree/master/src/plugins), other plugins are maintained independently and can be located in the [awesome list](https://github.com/chartjs/awesome) of plugins, framework integrations, and additional chart types.
 
 You should be able to see the updated minimalistic chart in your browser.
-
-<iframe src="../usage/2/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
 
 ### Real-world data
 
@@ -246,7 +244,7 @@ const data = await getAquisitionsByYear();
 
 Done! Now, our chart with real-world data looks like this. Looks like something interesting happened in 1964, 1968, and 2008!
 
-<iframe src="../usage/3/" frameBorder="0" scrolling="no" width="825" height="425"></iframe>
+![result](./usage-2.png)
 
 We’re done with the bar chart. Let’s try another Chart.js chart type.
 
@@ -299,7 +297,7 @@ Probably, everything is pretty straightforward there: we get data from the API a
 
 Now, reset caches with `rm -rf .parcel-cache` and start the application again with `npm run dev`, `yarn dev`, or `pnpm dev`. We can review the new chart now:
 
-<iframe src="../usage/4/" frameBorder="0" scrolling="no" width="825" height="275"></iframe>
+![result](./usage-3.png)
 
 Well, it doesn’t look pretty.
 
@@ -321,7 +319,7 @@ First of all, the chart is not square. Artworks’ width and height are equally 
 
 Looks much better now:
 
-<iframe src="../usage/5/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
+![result](./usage-4.png)
 
 However, it’s still not ideal. The horizontal axis spans from 0 to 500 while the vertical axis spans from 0 to 450. By default, Chart.js automatically adjusts the range (minimum and maximum values) of the axes to the values provided in the dataset, so the chart “fits” your data. Apparently, MoMa collection doesn’t have artworks in the range of 450 to 500 cm in height. Let’s modify the [axes configuration](../axes/) for our chart to account for that:
 
@@ -349,7 +347,7 @@ However, it’s still not ideal. The horizontal axis spans from 0 to 500 while t
 
 Great! Behold the updated chart:
 
-<iframe src="../usage/6/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
+![result](./usage-5.png)
 
 However, there’s one more nitpick: what are these numbers? It’s not very obvious that the units are centimetres. Let’s apply a [custom tick format](../axes/labelling.html#creating-custom-tick-formats) to both axes to make things clear. We’ll provide a callback function that would be called to format each tick value. Here’s the updated axes configuration:
 
@@ -383,7 +381,7 @@ However, there’s one more nitpick: what are these numbers? It’s not very obv
 
 Perfect, now we have proper units on both axes:
 
-<iframe src="../usage/7/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
+![result](./usage-6.png)
 
 ### Multiple datasets
 
@@ -434,7 +432,7 @@ Here’s how we can do that. Replace the `datasets` with the following code:
 
 As you can see, we define three datasets with different labels. Each dataset gets its own slice of data extracted with `filter`. Now they are visually distinct and, as you already know, you can toggle their visibility independently.
 
-<iframe src="../usage/8/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
+![result](./usage-7.png)
 
 Here we rely on the default color palette. However, keep in mind every chart type supports a lot of [dataset options](../charts/bubble.html#dataset-properties) that you can feel free to customize.
 
@@ -486,7 +484,7 @@ As you can see, in this `chartAreaBorder` plugin, we acquire the canvas context,
 
 Our bubble chart looks fancier now:
 
-<iframe src="../usage/9/" frameBorder="0" scrolling="no" width="825" height="525"></iframe>
+![result](./usage-8.png)
 
 ### Tree-shaking
 
