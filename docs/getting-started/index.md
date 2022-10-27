@@ -45,7 +45,7 @@ In this example, we create a bar chart for a single dataset and render it on an 
 
 You should get a chart like this:
 
-<iframe src="../demo.html" frameBorder="0" scrolling="no" width="825" height="400"></iframe>
+![demo](./preview.png)
 
 Let's break this code down.
 
