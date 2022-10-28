@@ -1,0 +1,48 @@
+# NPM ignore:
+/docs
+/scripts
+/test
+/.github
+
+.browserslistrc
+.codeclimate.yml
+.editorconfig
+.eslintignore
+.eslintrc.yml
+.size-limit.cjs
+composer.json
+karma.conf.cjs
+MAINTAINING.md
+rollup.config.js
+tsconfig.json
+
+# Git ignore content:
+# Deployment
+/coverage
+/custom
+/gh-pages
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Docs
+.cache-loader
+build/
+
+# Development
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.idea
+.project
+.settings
+.vscode
+*.log
+*.swp
+*.stackdump
+
+# Generated
+/types/tests/autogen*.ts
