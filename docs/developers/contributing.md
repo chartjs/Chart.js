@@ -2,16 +2,16 @@
 
 New contributions to the library are welcome, but we ask that you please follow these guidelines:
 
-- Before opening a PR for major additions or changes, please discuss the expected API and/or implementation by [filing an issue](https://github.com/chartjs/Chart.js/issues) or asking about it in the [Chart.js Slack](https://chartjs-slack.herokuapp.com/) #dev channel. This will save you development time by getting feedback upfront and make review faster by giving the maintainers more context and details.
+- Before opening a PR for major additions or changes, please discuss the expected API and/or implementation by [filing an issue](https://github.com/chartjs/Chart.js/issues) or asking about it in the [Chart.js Slack](https://chartjs-slack.herokuapp.com/) #dev channel. This will save you development time by getting feedback upfront and make reviews faster by giving the maintainers more context and details.
 - Consider whether your changes are useful for all users, or if creating a Chart.js [plugin](plugins.md) would be more appropriate.
 - Check that your code will pass tests and `eslint` code standards. `pnpm test` will run both the linter and tests for you.
 - Add unit tests and document new functionality (in the `test/` and `docs/` directories respectively).
-- Avoid breaking changes unless there is an upcoming major release, which is infrequent. We encourage people to write plugins for most new advanced features, and care a lot about backwards compatibility.
-- We strongly prefer new methods to be added as private whenever possible. A method can be made private either by making a top-level `function` outside of a class or by prefixing it with `_` and adding `@private` JSDoc if inside a class. Public APIs take considerable time to review and become locked once implemented as we have limited ability to change them without breaking backwards compatibility. Private APIs allow the flexibility to address unforeseen cases.
+- Avoid breaking changes unless there is an upcoming major release, which is infrequent. We encourage people to write plugins for most new advanced features, and care a lot about backward compatibility.
+- We strongly prefer new methods to be added as private whenever possible. A method can be made private either by making a top-level `function` outside of a class or by prefixing it with `_` and adding `@private` JSDoc if inside a class. Public APIs take considerable time to review and become locked once implemented as we have limited ability to change them without breaking backward compatibility. Private APIs allow the flexibility to address unforeseen cases.
 
 ## Joining the project
 
-Active committers and contributors are invited to introduce yourself and request commit access to this project. We have a very active Slack community that you can join [here](https://chartjs-slack.herokuapp.com/). If you think you can help, we'd love to have you!
+Active committers and contributors are invited to introduce themselves and request commit access to this project. We have a very active Slack community that you can join [here](https://chartjs-slack.herokuapp.com/). If you think you can help, we'd love to have you!
 
 ## Building and Testing
 
@@ -60,7 +60,7 @@ You can create a new image-based test by following the steps below:
 - Refresh the browser page (`CTRL+R`): test should now pass
 - Verify test relevancy by changing the feature values *slightly* in the JSON file.
 
-Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them passing between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
+Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them to pass between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
 
 When a test fails, the expected and actual images are shown. If you'd like to see the images even when the tests pass, set `"debug": true` in the JSON file.
 

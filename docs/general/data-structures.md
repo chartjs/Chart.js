@@ -124,7 +124,7 @@ When using object notation in a radar chart you still need a labels array with l
 
 ```javascript
 const cfg = {
-  type: 'pie',
+  type: 'line',
   data: {
     datasets: [{
       data: {
@@ -187,7 +187,7 @@ When using typescript, if you want to use a data structure that is not the defau
 ```ts
 import {ChartData} from 'chart.js';
 
-const datasets: ChartData <'bar', {key: string, value: number} [] > = {
+const datasets: ChartData <'bar', {key: string, value: number} []> = {
   datasets: [{
     data: [{key: 'Sales', value: 20}, {key: 'Revenue', value: 10}],
     parsing: {
