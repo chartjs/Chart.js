@@ -44,20 +44,8 @@
     },
     "files": [
         "auto/**",
-        "dist/*.js",
-        "dist/*.ts",
-        "dist/*.map",
-        "dist/chunks/*.js",
-        "dist/chunks/*.ts",
-        "dist/chunks/*.map",
-        "dist/controllers/*.ts",
-        "dist/core/*.ts",
-        "dist/elements/*.ts",
-        "dist/helpers/*.ts",
-        "dist/platform/*.ts",
-        "dist/plugins/*.ts",
-        "dist/scales/*.ts",
-        "dist/chunks/*.map",
+        "dist/**",
+        "!dist/docs/**",
         "helpers/**"
     ],
     "scripts": {
