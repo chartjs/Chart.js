@@ -2,6 +2,7 @@
 /docs
 /scripts
 /test
+/dist/docs
 /.github
 
 .browserslistrc
