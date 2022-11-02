@@ -1,4 +1,4 @@
-import { PointStyle } from '..';
+import { PointStyle, Scriptable, ScriptableScaleContext } from '..';
 import { Color } from '../color';
 import { ChartArea, RoundedRect } from '../geometric';
 import { CanvasFontSpec } from './helpers.options';
@@ -89,6 +89,38 @@ export interface RenderTextOpts {
    * Underline the text
    */
   underline?: boolean;
+
+  /**
+   * Dimensions for drawing the label backdrop
+   */
+  backdrop?: BackdropOptions;
+}
+
+export interface BackdropOptions {
+  /**
+   * Left position of backdrop as pixel
+   */
+  left: number;
+
+  /**
+   * Top position of backdrop as pixel
+   */
+  top: number;
+
+  /**
+   * Width of backdrop in pixels
+   */
+  width: number;
+
+  /**
+   * Height of backdrop in pixels
+   */
+  height: number;
+
+  /**
+   * Color of label backdrops.
+   */
+  color: Scriptable<Color, ScriptableScaleContext>;
 }
 
 export function renderText(
