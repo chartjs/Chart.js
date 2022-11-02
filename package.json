@@ -45,6 +45,7 @@
     "files": [
         "auto/**",
         "dist/**",
+        "!dist/docs/**",
         "helpers/**"
     ],
     "scripts": {
