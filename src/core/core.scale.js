@@ -1308,7 +1308,6 @@ export default class Scale extends Element {
           color,
           strokeColor,
           strokeWidth,
-          textOffset,
           textAlign: tickTextAlign,
           textBaseline,
           translation: [x, y],
