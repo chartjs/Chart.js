@@ -40,7 +40,7 @@ export function toLineHeight(value: number | string, size: number): number {
   return size * value;
 }
 
-const numberOrZero = (v: number) => +v || 0;
+const numberOrZero = (v: unknown) => +v || 0;
 
 /**
  * @param value
@@ -96,7 +96,7 @@ export function toTRBLCorners(value: number | TRBLCorners) {
  * @since 2.7.0
  */
 export function toPadding(value?: number | TRBL): ChartArea {
-  const obj: ChartArea = {...toTRBL(value), width: 0, height: 0};
+  const obj = toTRBL(value) as ChartArea;
 
   obj.width = obj.left + obj.right;
   obj.height = obj.top + obj.bottom;
