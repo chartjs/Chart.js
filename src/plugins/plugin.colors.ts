@@ -93,7 +93,7 @@ export default {
 
     let colorizer: DatasetColorizer;
 
-    if (type === 'doughnut') {
+    if (type === 'doughnut' || type === 'pie') {
       colorizer = createDoughnutDatasetColorizer();
     } else if (type === 'polarArea') {
       colorizer = createPolarAreaDatasetColorizer();
