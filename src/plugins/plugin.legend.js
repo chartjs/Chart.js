@@ -286,7 +286,7 @@ export class Legend extends Element {
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
     const labelFont = toFont(labelOpts.font);
-    const {color: fontColor, padding} = labelOpts;
+    const {padding} = labelOpts;
     const fontSize = labelFont.size;
     const halfFontSize = fontSize / 2;
     let cursor;
@@ -392,8 +392,8 @@ export class Legend extends Element {
 
     const lineHeight = itemHeight + padding;
     this.legendItems.forEach((legendItem, i) => {
-      ctx.strokeStyle = legendItem.fontColor || fontColor; // for strikethrough effect
-      ctx.fillStyle = legendItem.fontColor || fontColor; // render in correct colour
+      ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
+      ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
       const textWidth = ctx.measureText(legendItem.text).width;
       const textAlign = rtlHelper.textAlign(legendItem.textAlign || (legendItem.textAlign = labelOpts.textAlign));

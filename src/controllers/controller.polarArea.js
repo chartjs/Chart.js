@@ -36,7 +36,7 @@ export default class PolarAreaController extends DatasetController {
           generateLabels(chart) {
             const data = chart.data;
             if (data.labels.length && data.datasets.length) {
-              const {labels: {pointStyle}} = chart.legend.options;
+              const {labels: {pointStyle, color}} = chart.legend.options;
 
               return data.labels.map((label, i) => {
                 const meta = chart.getDatasetMeta(0);
@@ -46,6 +46,7 @@ export default class PolarAreaController extends DatasetController {
                   text: label,
                   fillStyle: style.backgroundColor,
                   strokeStyle: style.borderColor,
+                  fontColor: color,
                   lineWidth: style.borderWidth,
                   pointStyle: pointStyle,
                   hidden: !chart.getDataVisibility(i),
