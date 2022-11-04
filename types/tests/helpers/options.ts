@@ -1,4 +1,4 @@
-import { createContext } from '../../helpers/helpers.options';
+import { createContext } from '../../../src/helpers/helpers.options';
 
 const context1 = createContext(null, { type: 'test1', parent: true });
 const context2 = createContext(context1, { type: 'test2' });
