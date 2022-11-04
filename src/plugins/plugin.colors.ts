@@ -55,6 +55,15 @@ function createPolarAreaDatasetColorizer() {
   };
 }
 
+function getColorizer(type: string) {
+  if (type === 'doughnut' || type === 'pie') {
+    return createDoughnutDatasetColorizer();
+  } else if (type === 'polarArea') {
+    return createPolarAreaDatasetColorizer();
+  }
+  return createDefaultDatasetColorizer();
+}
+
 function containsColorsDefinitions(
   descriptors: ColorsDescriptor[] | Record<string, ColorsDescriptor>
 ) {
@@ -91,16 +100,7 @@ export default {
       return;
     }
 
-    let colorizer: DatasetColorizer;
-
-    if (type === 'doughnut') {
-      colorizer = createDoughnutDatasetColorizer();
-    } else if (type === 'polarArea') {
-      colorizer = createPolarAreaDatasetColorizer();
-    } else {
-      colorizer = createDefaultDatasetColorizer();
-    }
-
+    const colorizer: DatasetColorizer = getColorizer(type);
     datasets.forEach(colorizer);
   }
 };
