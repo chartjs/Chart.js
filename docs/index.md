@@ -26,7 +26,7 @@ Chart.js comes with a sound default configuration, making it very easy to start 
 
 ### Integrations
 
-Chart.js comes with built-in TypeScript typings and is compatible with all popular [JavaScript frameworks](https://github.com/chartjs/awesome#javascript) including [React](https://github.com/reactchartjs/react-chartjs-2), [Vue](https://github.com/apertureless/vue-chartjs/), [Svelte](https://github.com/SauravKanchan/svelte-chartjs), and [Angular](https://github.com/valor-software/ng2-charts). You can use Chart.js directly or leverage on well-maintained wrapper packages that allow for a more native integration with your frameworks of choice.
+Chart.js comes with built-in TypeScript typings and is compatible with all popular [JavaScript frameworks](https://github.com/chartjs/awesome#javascript) including [React](https://github.com/reactchartjs/react-chartjs-2), [Vue](https://github.com/apertureless/vue-chartjs/), [Svelte](https://github.com/SauravKanchan/svelte-chartjs), and [Angular](https://github.com/valor-software/ng2-charts). You can use Chart.js directly or leverage well-maintained wrapper packages that allow for a more native integration with your frameworks of choice.
 
 ### Developer experience
 
@@ -34,13 +34,13 @@ Chart.js has very thorough documentation (yes, you're reading it), [API refere
 
 ### Canvas rendering
 
-Chart.js renders chart elements on a HTML5 canvas unlike several other, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you will have to use built-in options for that, or create a custom plugin or chart type to render everything to your liking.
+Chart.js renders chart elements on an HTML5 canvas unlike several other, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you will have to use built-in options for that, or create a custom plugin or chart type to render everything to your liking.
 
 ### Performance
 
 Chart.js is very well suited for large datasets. Such datasets can be efficiently ingested using the internal format so you can skip data [parsing](./general/performance.html#parsing) and [normalization](./general/performance.html#data-normalization). Alternatively, [data decimation](./configuration/decimation.html) can be configured to sample the dataset and reduce its size before rendering.
 
-In the end, Chart.js uses canvas for efficient rendering, reducing the toll on your DOM tree in comparison to SVG rendering. Also, tree-shaking support allows you to include minimal parts of Chart.js code into your bundle, reducing bundle size and page load time.
+In the end, the canvas rendering that Chart.js uses reduces the toll on your DOM tree in comparison to SVG rendering. Also, tree-shaking support allows you to include minimal parts of Chart.js code into your bundle, reducing bundle size and page load time.
 
 ### Community
 
