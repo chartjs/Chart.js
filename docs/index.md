@@ -18,15 +18,15 @@ Chart.js was created and [announced](https://twitter.com/_nnnick/status/31359920
 
 Chart.js provides a set of frequently used chart types, plugins, and customization options. In addition to a reasonable set of [built-in chart types](./charts/area.html), you can use additional community-maintained [chart types](https://github.com/chartjs/awesome#charts). On top of that, it’s possible to combine several chart types into a [mixed chart](./charts/mixed.html) (essentially, blending multiple chart types into one on the same canvas).
 
-There’s also a [plugin directory](https://github.com/chartjs/awesome#plugins) where you can find add-ons for annotations, zoom, or drag-and-drop.
+Chart.js is highly customizable with [custom plugins](https://github.com/chartjs/awesome#plugins) to create annotations, zoom, or drag-and-drop functionalities to name a few things.
 
 ### Defaults
 
-Chart.js comes with a sound default configuration, making it very easy to start with and get an app that is ready for production. Chances are you will get a very appealing chart even if you don’t specify any options at all. For instance, Chart.js has animations toggled on by default, so you can instantly bring attention to the story you’re telling with data.
+Chart.js comes with a sound default configuration, making it very easy to start with and get an app that is ready for production. Chances are you will get a very appealing chart even if you don’t specify any options at all. For instance, Chart.js has animations turned on by default, so you can instantly bring attention to the story you’re telling with the data.
 
 ### Integrations
 
-Chart.js comes with built-in TypeScript typings and is compatible with all popular [JavaScript frameworks](https://github.com/chartjs/awesome#javascript) including [React](https://github.com/reactchartjs/react-chartjs-2), [Vue](https://github.com/apertureless/vue-chartjs/), [Svelte](https://github.com/SauravKanchan/svelte-chartjs), and [Angular](https://github.com/valor-software/ng2-charts). You can use Chart.js directly or leverage well-maintained wrapper packages that allow for more native integration with your frameworks of choice.
+Chart.js comes with built-in TypeScript typings and is compatible with all popular [JavaScript frameworks](https://github.com/chartjs/awesome#javascript) including [React](https://github.com/reactchartjs/react-chartjs-2), [Vue](https://github.com/apertureless/vue-chartjs/), [Svelte](https://github.com/SauravKanchan/svelte-chartjs), and [Angular](https://github.com/valor-software/ng2-charts). You can use Chart.js directly or leverage on well-maintained wrapper packages that allow for a more native integration with your frameworks of choice.
 
 ### Developer experience
 
@@ -34,7 +34,7 @@ Chart.js has very thorough documentation (yes, you're reading it), [API refere
 
 ### Canvas rendering
 
-Chart.js renders chart elements on HTML5 canvas unlike several other, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you have to use built-in options for that.
+Chart.js renders chart elements on a HTML5 canvas unlike several other, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you will have to use built-in options for that, or create a custom plugin or chart type to render everything to your liking.
 
 ### Performance
 
