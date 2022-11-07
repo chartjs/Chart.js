@@ -28,7 +28,7 @@ The doughnut, pie, and polar area charts override the legend defaults. To change
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
 
 :::tip Note
-If you need more visual customizations, please use [HTML legend](../samples/legend/html.md).
+If you need more visual customizations, please use a [HTML legend](../samples/legend/html.md).
 :::
 
 ## Position
