@@ -51,7 +51,7 @@ The bubble, doughnut, pie, polar area, and scatter charts override the tooltip d
 | `yAlign` | `string` | `undefined` | Position of the tooltip caret in the Y direction. [more](#tooltip-alignment)
 
 :::tip Note
-If you need more visual customizations, please use a [HTML tooltip](../samples/tooltip/html.md).
+If you need more visual customizations, please use an [HTML tooltip](../samples/tooltip/html.md).
 :::
 
 ### Position Modes
