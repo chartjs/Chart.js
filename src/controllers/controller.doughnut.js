@@ -183,7 +183,7 @@ export default class DoughnutController extends DatasetController {
     let max = -TAU;
 
     for (let i = 0; i < this.chart.data.datasets.length; ++i) {
-      if (this.chart.isDatasetVisible(i)) {
+      if (this.chart.isDatasetVisible(i) && this.chart.getDatasetMeta(i).type === this._type) {
         const controller = this.chart.getDatasetMeta(i).controller;
         const rotation = controller._getRotation();
         const circumference = controller._getCircumference();
