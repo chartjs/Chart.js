@@ -1,4 +1,4 @@
-import type {Chart, ChartDataset} from '../types';
+import type {Chart, ChartConfiguration, ChartDataset} from '../types';
 
 export interface ColorsPluginOptions {
   enabled?: boolean;
@@ -94,7 +94,7 @@ export default {
       type,
       options: {elements},
       data: {datasets}
-    } = chart.config;
+    } = chart.config as ChartConfiguration;
 
     if (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements)) {
       return;
