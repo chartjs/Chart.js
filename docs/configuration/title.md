@@ -17,6 +17,10 @@ Namespace: `options.plugins.title`, the global options for the chart title is de
 | `padding` | [`Padding`](../general/padding.md) | `10` | Yes | Padding to apply around the title. Only `top` and `bottom` are implemented.
 | `text` | `string`\|`string[]` | `''` | Yes | Title text to display. If specified as an array, text is rendered on multiple lines.
 
+:::tip Note
+If you need more visual customizations, you can implement the title with HTML and CSS.
+:::
+
 ### Position
 
 Possible title position values are:
