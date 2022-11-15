@@ -44,7 +44,7 @@ template: |
   # Essential Links
 
   * [npm](https://www.npmjs.com/package/chart.js)
-  * [Migration guide](https://www.chartjs.org/docs/latest/getting-started/v3-migration)
+  * [Migration guide](https://www.chartjs.org/docs/latest/migration/v4-migration.html)
   * [Docs](https://www.chartjs.org/docs/latest/)
   * [API](https://www.chartjs.org/docs/latest/api/)
   * [Samples](https://www.chartjs.org/docs/latest/samples/)

@@ -15,7 +15,7 @@
 
 ## Documentation
 
-All the links point to the new version 3 of the lib.
+All the links point to the new version 4 of the lib.
 
 * [Introduction](https://www.chartjs.org/docs/latest/)
 * [Getting Started](https://www.chartjs.org/docs/latest/getting-started/index)
@@ -27,7 +27,7 @@ All the links point to the new version 3 of the lib.
 * [Popular Extensions](https://github.com/chartjs/awesome)
 * [Samples](https://www.chartjs.org/samples/)
 
-In case you are looking for the docs of version 2, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
+In case you are looking for an older version of the docs, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
 ## Contributing
 

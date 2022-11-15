@@ -14,7 +14,7 @@ body:
 
   - type: markdown
     attributes:
-      value: Chart.js versions lower then 3.x are NOT supported anymore, new issues will be disregarded.
+      value: Chart.js versions lower then 4.x are NOT supported anymore, new issues will be disregarded.
 
   - type: textarea
     attributes:
