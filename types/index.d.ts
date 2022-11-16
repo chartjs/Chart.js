@@ -1362,7 +1362,7 @@ export interface LabelItem {
   label: string | string[];
   font: CanvasFontSpec;
   textOffset: number;
-  renderTextOptions: RenderTextOpts;
+  options: RenderTextOpts;
 }
 
 export declare const Ticks: {

@@ -1303,7 +1303,7 @@ export default class Scale extends Element {
         label,
         font,
         textOffset,
-        renderTextOptions: {
+        options: {
           rotation,
           color,
           strokeColor,
@@ -1561,7 +1561,7 @@ export default class Scale extends Element {
 
     const items = this.getLabelItems(chartArea);
     for (const item of items) {
-      const renderTextOptions = item.renderTextOptions;
+      const renderTextOptions = item.options;
       const tickFont = item.font;
       const label = item.label;
       const y = item.textOffset;
