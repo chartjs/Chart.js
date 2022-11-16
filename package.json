@@ -14,16 +14,16 @@
     "main": "./dist/chart.js",
     "exports": {
         ".": {
-            "import": "./dist/chart.js",
-            "types": "./dist/types.d.ts"
+            "types": "./dist/types.d.ts",
+            "import": "./dist/chart.js"
         },
         "./auto": {
-            "import": "./auto/auto.js",
-            "types": "./auto/auto.d.ts"
+            "types": "./auto/auto.d.ts",
+            "import": "./auto/auto.js"
         },
         "./helpers": {
-            "import": "./helpers/helpers.js",
-            "types": "./helpers/helpers.d.ts"
+            "types": "./helpers/helpers.d.ts",
+            "import": "./helpers/helpers.js"
         }
     },
     "types": "./dist/types.d.ts",
