@@ -10,8 +10,7 @@ import { Color } from './color';
 import Element from '../src/core/core.element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
-import { RenderTextOpts } from './helpers/helpers.canvas';
-import { CanvasFontSpec } from './helpers/helpers.options';
+import { RenderTextOpts, CanvasFontSpec } from './helpers';
 
 export { EasingFunction } from '../src/helpers/helpers.easing';
 export { default as ArcElement, ArcProps } from '../src/elements/element.arc';
