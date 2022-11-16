@@ -1,4 +1,4 @@
-import type {Chart, ChartConfiguration, ChartDataset} from '../types';
+import type {Chart, ChartConfiguration, ChartDataset} from '../types.js';
 
 export interface ColorsPluginOptions {
   enabled?: boolean;

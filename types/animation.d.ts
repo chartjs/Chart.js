@@ -1,5 +1,5 @@
-import { Chart } from '.';
-import { AnyObject } from './basic';
+import { Chart } from './index.js';
+import { AnyObject } from './basic.js';
 
 export declare class Animation {
   constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);

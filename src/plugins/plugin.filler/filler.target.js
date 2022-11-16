@@ -1,13 +1,13 @@
-import {isFinite} from '../../helpers';
-import {_createBoundaryLine} from './filler.helper';
-import {_getTargetPixel, _getTargetValue} from './filler.options';
-import {_buildStackLine} from './filler.target.stack';
-import {simpleArc} from './simpleArc';
+import {isFinite} from '../../helpers/index.js';
+import {_createBoundaryLine} from './filler.helper.js';
+import {_getTargetPixel, _getTargetValue} from './filler.options.js';
+import {_buildStackLine} from './filler.target.stack.js';
+import {simpleArc} from './simpleArc.js';
 
 /**
- * @typedef { import('../../core/core.controller').default } Chart
- * @typedef { import('../../core/core.scale').default } Scale
- * @typedef { import('../../elements/element.point').default } PointElement
+ * @typedef { import('../../core/core.controller.js').default } Chart
+ * @typedef { import('../../core/core.scale.js').default } Scale
+ * @typedef { import('../../elements/element.point.js').default } PointElement
  */
 
 export function _getTarget(source) {

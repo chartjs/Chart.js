@@ -1,8 +1,8 @@
-import Element from '../core/core.element';
-import layouts from '../core/core.layouts';
-import {PI, isArray, toPadding, toFont} from '../helpers';
-import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras';
-import {renderText} from '../helpers/helpers.canvas';
+import Element from '../core/core.element.js';
+import layouts from '../core/core.layouts.js';
+import {PI, isArray, toPadding, toFont} from '../helpers/index.js';
+import {_toLeftRightCenter, _alignStartEnd} from '../helpers/helpers.extras.js';
+import {renderText} from '../helpers/helpers.canvas.js';
 
 export class Title extends Element {
   /**

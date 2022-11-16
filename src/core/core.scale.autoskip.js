@@ -1,15 +1,15 @@
-import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
-import {_factorize} from '../helpers/helpers.math';
+import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core.js';
+import {_factorize} from '../helpers/helpers.math.js';
 
 
 /**
- * @typedef { import("./core.controller").default } Chart
+ * @typedef { import('./core.controller.js').default } Chart
  * @typedef {{value:number | string, label?:string, major?:boolean, $context?:any}} Tick
  */
 
 /**
  * Returns a subset of ticks to be plotted to avoid overlapping labels.
- * @param {import('./core.scale').default} scale
+ * @param {import('./core.scale.js').default} scale
  * @param {Tick[]} ticks
  * @return {Tick[]}
  * @private

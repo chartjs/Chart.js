@@ -1,14 +1,14 @@
-import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection';
-import {getRelativePosition} from '../helpers/helpers.dom';
-import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math';
-import {_isPointInArea} from '../helpers';
+import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection.js';
+import {getRelativePosition} from '../helpers/helpers.dom.js';
+import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math.js';
+import {_isPointInArea} from '../helpers/index.js';
 
 /**
- * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../../types").ChartEvent } ChartEvent
+ * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean, includeInvisible?: boolean}} InteractionOptions
- * @typedef {{datasetIndex: number, index: number, element: import("./core.element").default}} InteractionItem
- * @typedef { import("../../types").Point } Point
+ * @typedef {{datasetIndex: number, index: number, element: import('./core.element.js').default}} InteractionItem
+ * @typedef { import('../../types/index.js').Point } Point
  */
 
 /**

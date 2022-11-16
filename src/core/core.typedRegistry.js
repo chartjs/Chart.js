@@ -1,5 +1,5 @@
-import {merge} from '../helpers';
-import defaults, {overrides} from './core.defaults';
+import {merge} from '../helpers/index.js';
+import defaults, {overrides} from './core.defaults.js';
 
 /**
  * @typedef {{id: string, defaults: any, overrides?: any, defaultRoutes: any}} IChartComponent

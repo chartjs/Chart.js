@@ -1,4 +1,4 @@
-import colorLib, {Color} from '@kurkle/color';
+import {Color} from '@kurkle/color';
 
 export function isPatternOrGradient(value: unknown): value is CanvasPattern | CanvasGradient {
   if (value && typeof value === 'object') {
@@ -19,7 +19,7 @@ export function color(
   | [number, number, number, number]
 ): Color;
 export function color(value) {
-  return isPatternOrGradient(value) ? value : colorLib(value);
+  return isPatternOrGradient(value) ? value : new Color(value);
 }
 
 export function getHoverColor(value: CanvasGradient): CanvasGradient;
@@ -28,5 +28,5 @@ export function getHoverColor(value: string): string;
 export function getHoverColor(value) {
   return isPatternOrGradient(value)
     ? value
-    : colorLib(value).saturate(0.5).darken(0.1).hexString();
+    : new Color(value).saturate(0.5).darken(0.1).hexString();
 }

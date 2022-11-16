@@ -1,6 +1,6 @@
-import defaults, {overrides, descriptors} from './core.defaults';
-import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core';
-import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config';
+import defaults, {overrides, descriptors} from './core.defaults.js';
+import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core.js';
+import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config.js';
 
 export function getIndexAxis(type, options) {
   const datasetDefaults = defaults.datasets[type] || {};

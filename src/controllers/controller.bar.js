@@ -1,8 +1,8 @@
-import DatasetController from '../core/core.datasetController';
+import DatasetController from '../core/core.datasetController.js';
 import {
   _arrayUnique, isArray, isNullOrUndef,
   valueOrDefault, resolveObjectKey, sign, defined
-} from '../helpers';
+} from '../helpers/index.js';
 
 function getAllScaleValues(scale, type) {
   if (!scale._cache.$bar) {

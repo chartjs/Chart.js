@@ -1,4 +1,4 @@
-import { Chart } from '../../../src/types';
+import { Chart } from '../../../src/types.js';
 
 Chart.register({
   id: 'my-plugin',

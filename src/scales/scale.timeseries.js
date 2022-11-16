@@ -1,5 +1,5 @@
-import TimeScale from './scale.time';
-import {_lookupByKey} from '../helpers/helpers.collection';
+import TimeScale from './scale.time.js';
+import {_lookupByKey} from '../helpers/helpers.collection.js';
 
 /**
  * Linearly interpolates the given source `val` using the table. If value is out of bounds, values

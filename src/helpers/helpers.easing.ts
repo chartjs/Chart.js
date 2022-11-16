@@ -1,4 +1,4 @@
-import {PI, TAU, HALF_PI} from './helpers.math';
+import {PI, TAU, HALF_PI} from './helpers.math.js';
 
 const atEdge = (t: number) => t === 0 || t === 1;
 const elasticIn = (t: number, s: number, p: number) => -(Math.pow(2, 10 * (t -= 1)) * Math.sin((t - s) * TAU / p));
