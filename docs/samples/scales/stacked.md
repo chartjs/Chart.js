@@ -45,8 +45,8 @@ const config = {
         position: 'left',
         stack: 'demo',
         stackWeight: 2,
-        grid: {
-          borderColor: Utils.CHART_COLORS.red
+        border: {
+          color: Utils.CHART_COLORS.red
         }
       },
       y2: {
@@ -56,8 +56,8 @@ const config = {
         position: 'left',
         stack: 'demo',
         stackWeight: 1,
-        grid: {
-          borderColor: Utils.CHART_COLORS.blue
+        border: {
+          color: Utils.CHART_COLORS.blue
         }
       }
     }

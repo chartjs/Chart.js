@@ -44,8 +44,8 @@ const config = {
   options: {
     scales: {
       x: {
-        grid: {
-          borderColor: 'red'
+        border: {
+          color: 'red'
         }
       }
     }
