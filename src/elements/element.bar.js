@@ -1,7 +1,7 @@
-import Element from '../core/core.element';
-import {isObject, _isBetween, _limitValue} from '../helpers';
-import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {toTRBL, toTRBLCorners} from '../helpers/helpers.options';
+import Element from '../core/core.element.js';
+import {isObject, _isBetween, _limitValue} from '../helpers/index.js';
+import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
+import {toTRBL, toTRBLCorners} from '../helpers/helpers.options.js';
 
 /** @typedef {{ x: number, y: number, base: number, horizontal: boolean, width: number, height: number }} BarProps */
 

@@ -1,3 +1,3 @@
-export * from './helpers.canvas';
-export * from './helpers.canvas';
-export * from './helpers.segment';
+export * from './helpers.canvas.js';
+export * from './helpers.canvas.js';
+export * from './helpers.segment.js';

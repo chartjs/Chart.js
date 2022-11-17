@@ -1,10 +1,10 @@
-import registry from './core.registry';
-import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core';
+import registry from './core.registry.js';
+import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core.js';
 
 /**
- * @typedef { import("./core.controller").default } Chart
- * @typedef { import("../../types").ChartEvent } ChartEvent
- * @typedef { import("../plugins/plugin.tooltip").default } Tooltip
+ * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../plugins/plugin.tooltip.js').default } Tooltip
  */
 
 /**
@@ -115,7 +115,7 @@ export default class PluginService {
 }
 
 /**
- * @param {import("./core.config").default} config
+ * @param {import('./core.config.js').default} config
  */
 function allPlugins(config) {
   const localIds = {};

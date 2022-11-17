@@ -4,10 +4,10 @@
  * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
  */
 
-import LineElement from '../../elements/element.line';
-import {_drawfill} from './filler.drawing';
-import {_shouldApplyFill} from './filler.helper';
-import {_decodeFill, _resolveTarget} from './filler.options';
+import LineElement from '../../elements/element.line.js';
+import {_drawfill} from './filler.drawing.js';
+import {_shouldApplyFill} from './filler.helper.js';
+import {_decodeFill, _resolveTarget} from './filler.options.js';
 
 export default {
   id: 'filler',

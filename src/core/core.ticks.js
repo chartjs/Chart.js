@@ -1,6 +1,6 @@
-import {isArray} from '../helpers/helpers.core';
-import {formatNumber} from '../helpers/helpers.intl';
-import {log10} from '../helpers/helpers.math';
+import {isArray} from '../helpers/helpers.core.js';
+import {formatNumber} from '../helpers/helpers.intl.js';
+import {log10} from '../helpers/helpers.math.js';
 
 /**
  * Namespace to hold formatters for different types of ticks

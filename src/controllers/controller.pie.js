@@ -1,4 +1,4 @@
-import DoughnutController from './controller.doughnut';
+import DoughnutController from './controller.doughnut.js';
 
 // Pie charts are Doughnut chart with different defaults
 export default class PieController extends DoughnutController {

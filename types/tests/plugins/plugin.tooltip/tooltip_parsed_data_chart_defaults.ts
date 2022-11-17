@@ -1,4 +1,4 @@
-import { Chart } from '../../../../src/types';
+import { Chart } from '../../../../src/types.js';
 
 Chart.overrides.bubble.plugins.tooltip.callbacks.label = (item) => {
   const { x, y, _custom: r } = item.parsed;

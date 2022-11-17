@@ -1,4 +1,4 @@
-import {_limitValue, _lookupByKey, isNullOrUndef, resolve} from '../helpers';
+import {_limitValue, _lookupByKey, isNullOrUndef, resolve} from '../helpers/index.js';
 
 function lttbDecimation(data, start, count, availableWidth, options) {
   /**

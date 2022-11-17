@@ -1,8 +1,8 @@
-import {getHoverColor} from '../helpers/helpers.color';
-import {isObject, merge, valueOrDefault} from '../helpers/helpers.core';
-import {applyAnimationsDefaults} from './core.animations.defaults';
-import {applyLayoutsDefaults} from './core.layouts.defaults';
-import {applyScaleDefaults} from './core.scale.defaults';
+import {getHoverColor} from '../helpers/helpers.color.js';
+import {isObject, merge, valueOrDefault} from '../helpers/helpers.core.js';
+import {applyAnimationsDefaults} from './core.animations.defaults.js';
+import {applyLayoutsDefaults} from './core.layouts.defaults.js';
+import {applyScaleDefaults} from './core.scale.defaults.js';
 
 export const overrides = Object.create(null);
 export const descriptors = Object.create(null);

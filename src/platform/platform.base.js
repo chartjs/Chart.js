@@ -1,6 +1,6 @@
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import('../core/core.controller.js').default } Chart
  */
 
 /**
@@ -75,7 +75,7 @@ export default class BasePlatform {
 
   /**
    * Updates config with platform specific requirements
-   * @param {import("../core/core.config").default} config
+   * @param {import('../core/core.config.js').default} config
    */
   updateConfig(config) { // eslint-disable-line no-unused-vars
     // no-op

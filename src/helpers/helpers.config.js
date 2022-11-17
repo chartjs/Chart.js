@@ -1,4 +1,4 @@
-import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core';
+import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core.js';
 
 /**
  * Creates a Proxy for resolving raw values for options.

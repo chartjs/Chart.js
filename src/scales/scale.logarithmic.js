@@ -1,9 +1,9 @@
-import {finiteOrDefault, isFinite} from '../helpers/helpers.core';
-import {formatNumber} from '../helpers/helpers.intl';
-import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math';
-import Scale from '../core/core.scale';
-import LinearScaleBase from './scale.linearbase';
-import Ticks from '../core/core.ticks';
+import {finiteOrDefault, isFinite} from '../helpers/helpers.core.js';
+import {formatNumber} from '../helpers/helpers.intl.js';
+import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math.js';
+import Scale from '../core/core.scale.js';
+import LinearScaleBase from './scale.linearbase.js';
+import Ticks from '../core/core.ticks.js';
 
 const log10Floor = v => Math.floor(log10(v));
 const changeExponent = (v, m) => Math.pow(10, log10Floor(v) + m);

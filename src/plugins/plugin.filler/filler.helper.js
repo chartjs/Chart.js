@@ -1,12 +1,12 @@
 /**
- * @typedef { import('../../core/core.controller').default } Chart
- * @typedef { import('../../core/core.scale').default } Scale
- * @typedef { import('../../elements/element.point').default } PointElement
+ * @typedef { import('../../core/core.controller.js').default } Chart
+ * @typedef { import('../../core/core.scale.js').default } Scale
+ * @typedef { import('../../elements/element.point.js').default } PointElement
  */
 
-import {LineElement} from '../../elements';
-import {isArray} from '../../helpers';
-import {_pointsFromSegments} from './filler.segment';
+import {LineElement} from '../../elements/index.js';
+import {isArray} from '../../helpers/index.js';
+import {_pointsFromSegments} from './filler.segment.js';
 
 /**
  * @param {PointElement[] | { x: number; y: number; }} boundary

@@ -11,10 +11,16 @@
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     /* Modules */
-    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "rootDir": "src",
     "types": ["offscreencanvas"],
     /* Emit */
     "declaration": true,
+    "importsNotUsedAsValues": "error",
+    "inlineSourceMap": true,
     "outDir": "dist",
     /* JavaScript Support */
     "allowJs": true,

@@ -3,17 +3,17 @@
  * After transition done need to remove it in favor of index.ts
  */
 
-// export * from '.';
-export * from './helpers.color';
-export * from './helpers.collection';
-export * from './helpers.core';
-export * from './helpers.curve';
-export * from './helpers.dom';
-export * from './helpers.easing';
-export * from './helpers.extras';
-export * from './helpers.interpolation';
-export * from './helpers.intl';
-export * from './helpers.math';
-export * from './helpers.options';
-export * from './helpers.rtl';
-export * from '../../types/helpers';
+// export * from '..js';
+export * from './helpers.color.js';
+export * from './helpers.collection.js';
+export * from './helpers.core.js';
+export * from './helpers.curve.js';
+export * from './helpers.dom.js';
+export * from './helpers.easing.js';
+export * from './helpers.extras.js';
+export * from './helpers.interpolation.js';
+export * from './helpers.intl.js';
+export * from './helpers.math.js';
+export * from './helpers.options.js';
+export * from './helpers.rtl.js';
+export * from '../../types/helpers/index.js';

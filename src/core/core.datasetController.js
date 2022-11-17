@@ -1,12 +1,12 @@
-import Animations from './core.animations';
-import defaults from './core.defaults';
-import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
-import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
-import {createContext, sign} from '../helpers';
+import Animations from './core.animations.js';
+import defaults from './core.defaults.js';
+import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core.js';
+import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
+import {createContext, sign} from '../helpers/index.js';
 
 /**
- * @typedef { import("./core.controller").default } Chart
- * @typedef { import("./core.scale").default } Scale
+ * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('./core.scale.js').default } Scale
  */
 
 function scaleClip(scale, allowedOverflow) {

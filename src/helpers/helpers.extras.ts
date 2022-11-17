@@ -1,7 +1,7 @@
-import {type ChartMeta, type PointElement} from '../../types';
+import type {ChartMeta, PointElement} from '../../types/index.js';
 
-import {_limitValue} from './helpers.math';
-import {_lookupByKey} from './helpers.collection';
+import {_limitValue} from './helpers.math.js';
+import {_lookupByKey} from './helpers.collection.js';
 
 export function fontString(pixelSize: number, fontStyle: string, fontFamily: string) {
   return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
@@ -50,7 +50,7 @@ export function debounce<TArgs extends Array<any>>(fn: (...args: TArgs) => void,
       clearTimeout(timeout);
       timeout = setTimeout(fn, delay, args);
     } else {
-      fn.apply<any, TArgs, void>(this, args);
+      fn.apply(this, args);
     }
     return delay;
   };

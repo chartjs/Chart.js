@@ -1,4 +1,4 @@
-import { Chart, ChartOptions } from '../../../src/types';
+import { Chart, ChartOptions } from '../../../src/types.js';
 
 const chart = new Chart('test', {
   type: 'bubble',

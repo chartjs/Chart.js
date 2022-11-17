@@ -1,10 +1,10 @@
-import DatasetController from '../core/core.datasetController';
-import {isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
-import {formatNumber} from '../helpers/helpers.intl';
-import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
+import DatasetController from '../core/core.datasetController.js';
+import {isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core.js';
+import {formatNumber} from '../helpers/helpers.intl.js';
+import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math.js';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import('../core/core.controller.js').default } Chart
  */
 
 function getRatioAndOffset(rotation, circumference, cutout) {

@@ -2,13 +2,13 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
-import BasePlatform from './platform.base';
-import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize, getMaximumSize} from '../helpers/helpers.dom';
-import {throttled} from '../helpers/helpers.extras';
-import {isNullOrUndef} from '../helpers/helpers.core';
+import BasePlatform from './platform.base.js';
+import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize, getMaximumSize} from '../helpers/helpers.dom.js';
+import {throttled} from '../helpers/helpers.extras.js';
+import {isNullOrUndef} from '../helpers/helpers.core.js';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import('../core/core.controller.js').default } Chart
  */
 
 const EXPANDO_KEY = '$chartjs';

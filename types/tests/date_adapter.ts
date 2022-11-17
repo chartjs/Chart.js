@@ -1,4 +1,4 @@
-import { _adapters } from '../../src/types';
+import { _adapters } from '../../src/types.js';
 
 _adapters._date.override<{myOption: boolean}>({
   init() {

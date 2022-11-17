@@ -1,13 +1,13 @@
-import {ChartArea, Scale} from '../../types';
-import Chart from '../core/core.controller';
-import {ChartEvent} from '../types';
-import {INFINITY} from './helpers.math';
+import type {ChartArea, Scale} from '../../types/index.js';
+import type Chart from '../core/core.controller.js';
+import type {ChartEvent} from '../types.js';
+import {INFINITY} from './helpers.math.js';
 
 /**
  * Note: typedefs are auto-exported, so use a made-up `dom` namespace where
  * necessary to avoid duplicates with `export * from './helpers`; see
  * https://github.com/microsoft/TypeScript/issues/46011
- * @typedef { import("../core/core.controller").default } dom.Chart
+ * @typedef { import('../core/core.controller.js').default } dom.Chart
  * @typedef { import('../../types').ChartEvent } ChartEvent
  */
 

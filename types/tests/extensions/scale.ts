@@ -1,5 +1,5 @@
-import { AnyObject } from '../../basic';
-import { CartesianScaleOptions, Chart, Scale } from '../../../src/types';
+import { AnyObject } from '../../basic.js';
+import { CartesianScaleOptions, Chart, Scale } from '../../../src/types.js';
 
 export type TestScaleOptions = CartesianScaleOptions & {
   testOption?: boolean

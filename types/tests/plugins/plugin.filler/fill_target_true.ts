@@ -1,4 +1,4 @@
-import { ChartDataset } from '../../../../src/types';
+import { ChartDataset } from '../../../../src/types.js';
 
 const dataset: ChartDataset = {
   data: [],

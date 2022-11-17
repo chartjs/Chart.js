@@ -1,5 +1,5 @@
-import Scale from '../core/core.scale';
-import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers';
+import Scale from '../core/core.scale.js';
+import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
 
 const addIfString = (labels, raw, index, addedLabels) => {
   if (typeof raw === 'string') {
