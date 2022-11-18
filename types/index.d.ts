@@ -1823,6 +1823,7 @@ export type PointStyle =
   | 'rectRot'
   | 'star'
   | 'triangle'
+  | false
   | HTMLImageElement
   | HTMLCanvasElement;
 
