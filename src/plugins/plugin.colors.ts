@@ -4,8 +4,6 @@ export interface ColorsPluginOptions {
   enabled?: boolean;
 }
 
-type DatasetColorizer = (dataset: ChartDataset, i: number) => void;
-
 interface ColorsDescriptor {
   backgroundColor?: unknown;
   borderColor?: unknown;
@@ -32,36 +30,39 @@ function getBackgroundColor(i: number) {
   return BACKGROUND_COLORS[i % BACKGROUND_COLORS.length];
 }
 
-function createDefaultDatasetColorizer() {
-  return (dataset: ChartDataset, i: number) => {
-    dataset.borderColor = getBorderColor(i);
-    dataset.backgroundColor = getBackgroundColor(i);
-  };
+function colorizeDefaultDataset(dataset: ChartDataset, i: number) {
+  dataset.borderColor = getBorderColor(i);
+  dataset.backgroundColor = getBackgroundColor(i);
+
+  return ++i;
 }
 
-function createDoughnutDatasetColorizer() {
+function colorizeDoughnutDataset(dataset: ChartDataset, i: number) {
+  dataset.backgroundColor = dataset.data.map(() => getBorderColor(i++));
+
+  return i;
+}
+
+function colorizePolarAreaDataset(dataset: ChartDataset, i: number) {
+  dataset.backgroundColor = dataset.data.map(() => getBackgroundColor(i++));
+
+  return i;
+}
+
+function getColorizer(chartType: string) {
   let i = 0;
 
   return (dataset: ChartDataset) => {
-    dataset.backgroundColor = dataset.data.map(() => getBorderColor(i++));
+    const type = dataset.type || chartType;
+
+    if (type === 'doughnut' || type === 'pie') {
+      i = colorizeDoughnutDataset(dataset, i);
+    } else if (type === 'polarArea') {
+      i = colorizePolarAreaDataset(dataset, i);
+    } else if (type) {
+      i = colorizeDefaultDataset(dataset, i);
+    }
   };
-}
-
-function createPolarAreaDatasetColorizer() {
-  let i = 0;
-
-  return (dataset: ChartDataset) => {
-    dataset.backgroundColor = dataset.data.map(() => getBackgroundColor(i++));
-  };
-}
-
-function getColorizer(type: string) {
-  if (type === 'doughnut' || type === 'pie') {
-    return createDoughnutDatasetColorizer();
-  } else if (type === 'polarArea') {
-    return createPolarAreaDatasetColorizer();
-  }
-  return createDefaultDatasetColorizer();
 }
 
 function containsColorsDefinitions(
@@ -100,7 +101,8 @@ export default {
       return;
     }
 
-    const colorizer: DatasetColorizer = getColorizer(type);
+    const colorizer = getColorizer(type);
+
     datasets.forEach(colorizer);
   }
 };
