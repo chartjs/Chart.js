@@ -799,7 +799,7 @@ export default class DatasetController {
     const names = Object.keys(defaults.elements[elementType]);
     // context is provided as a function, and is called only if needed,
     // so we don't create a context for each element if not needed.
-    const context = () => this.getContext(index, active);
+    const context = () => this.getContext(index, active, mode);
     const values = config.resolveNamedOptions(scopes, names, context, prefixes);
 
     if (values.$shared) {
