@@ -16,16 +16,20 @@ Latest builds are available for testing at:
 - <https://www.chartjs.org/dist/master/chart.js>
 - <https://www.chartjs.org/dist/master/chart.min.js>
 
-**WARNING: Development builds MUST not be used for production purposes or as replacement for CDN.**
+:::warning Warning
+
+Development builds **must not** be used for production purposes or as replacement for a CDN. See [available CDNs](../getting-started/installation.html#cdn).
+
+:::
 
 ## Browser support
 
 All modern and up-to-date browsers are supported, including, but not limited to:
 
-Chrome
-Edge
-Firefox
-Safari
+* Chrome
+* Edge
+* Firefox
+* Safari
 
 As of version 3, we have dropped Internet Explorer 11 support.
 

@@ -1,6 +1,4 @@
----
-title: Installation
----
+# Installation
 
 ## npm
 
@@ -29,7 +27,7 @@ Chart.js built files are also available through [jsDelivr](https://www.jsdelivr.
 
 <https://www.jsdelivr.com/package/npm/chart.js?path=dist>
 
-## Github
+## GitHub
 
 [![github](https://img.shields.io/github/release/chartjs/Chart.js.svg?style=flat-square&maxAge=600)](https://github.com/chartjs/Chart.js/releases/latest)
 

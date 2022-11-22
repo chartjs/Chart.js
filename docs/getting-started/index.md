@@ -1,6 +1,53 @@
 # Getting Started
 
-Let's get started using Chart.js!
+Let's get started with Chart.js!
+
+* **[Follow a step-by-step guide](./usage) to get up to speed with Chart.js**
+* [Install Chart.js](./installation) from npm or a CDN 
+* [Integrate Chart.js](./integration) with bundlers, loaders, and front-end frameworks
+
+Alternatively, see the example below or check [samples](../samples).
+
+## Create a Chart
+
+In this example, we create a bar chart for a single dataset and render it on an HTML page. Add this code snippet to your page:
+
+```html
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+```
+
+You should get a chart like this:
+
+![demo](./preview.png)
+
+Let's break this code down.
 
 First, we need to have a canvas in our page. It's recommended to give the chart its own container for [responsiveness](../configuration/responsive.md).
 
@@ -10,97 +57,37 @@ First, we need to have a canvas in our page. It's recommended to give the chart 
 </div>
 ```
 
-Now that we have a canvas we can use, we need to include Chart.js in our page.
+Now that we have a canvas, we can include Chart.js from a CDN.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 ```
 
-Now, we can create a chart. We add a script to our page:
+Finally, we can create a chart. We add a script that acquires the `myChart` canvas element and instantiates `new Chart` with desired configuration: `bar` chart type, labels, data points, and options. 
 
 ```html
 <script>
-  const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
+  const ctx = document.getElementById('myChart');
 
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-  };
-
-  const config = {
-    type: 'line',
-    data: data,
-    options: {}
-  };
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
 </script>
 ```
 
-Finally, render the chart using our configuration:
-
-```html
-<script>
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
-</script>
-```
-
-It's that easy to get started using Chart.js! From here you can explore the many options that can help you customise your charts with scales, tooltips, labels, colors, custom actions, and much more.
-
-Here the sample above is presented with our sample block:
-
-```js chart-editor
-// <block:setup:1>
-const labels = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-];
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgb(255, 99, 132)',
-    borderColor: 'rgb(255, 99, 132)',
-    data: [0, 10, 5, 2, 20, 30, 45],
-  }]
-};
-// </block:setup>
-
-// <block:config:0>
-const config = {
-  type: 'line',
-  data: data,
-  options: {}
-};
-// </block:config>
-
-module.exports = {
-  actions: [],
-  config: config,
-};
-```
-
-:::tip Note
-As you can see, some of the boilerplate needed is not visible in our sample blocks, as the samples focus on the configuration options.
-:::
-
-All our examples are [available online](../samples/).
-
-To run the samples locally you first have to install all the necessary packages using the `npm ci` command, after this you can run `npm run docs:dev` to build the documentation. As soon as the build is done, you can go to [http://localhost:8080/samples/](http://localhost:8080/samples/) to see the samples.
+You can see all the ways to use Chart.js in the [step-by-step guide](./usage).

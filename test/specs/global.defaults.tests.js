@@ -17,6 +17,7 @@ describe('Default Configs', function() {
       var expected = [{
         text: 'label1',
         fillStyle: 'red',
+        fontColor: '#666',
         hidden: false,
         index: 0,
         strokeStyle: '#000',
@@ -26,6 +27,7 @@ describe('Default Configs', function() {
       }, {
         text: 'label2',
         fillStyle: 'green',
+        fontColor: '#666',
         hidden: false,
         index: 1,
         strokeStyle: '#000',
@@ -35,6 +37,7 @@ describe('Default Configs', function() {
       }, {
         text: 'label3',
         fillStyle: 'blue',
+        fontColor: '#666',
         hidden: false,
         index: 2,
         strokeStyle: '#000',
@@ -90,6 +93,7 @@ describe('Default Configs', function() {
       var expected = [{
         text: 'label1',
         fillStyle: 'red',
+        fontColor: '#666',
         hidden: false,
         index: 0,
         strokeStyle: '#000',
@@ -99,6 +103,7 @@ describe('Default Configs', function() {
       }, {
         text: 'label2',
         fillStyle: 'green',
+        fontColor: '#666',
         hidden: false,
         index: 1,
         strokeStyle: '#000',
@@ -108,6 +113,7 @@ describe('Default Configs', function() {
       }, {
         text: 'label3',
         fillStyle: 'blue',
+        fontColor: '#666',
         hidden: false,
         index: 2,
         strokeStyle: '#000',
