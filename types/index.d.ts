@@ -1,7 +1,6 @@
 import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
 
 import { TimeUnit } from '../src/core/core.adapters';
-import ArcElement from '../src/elements/element.arc';
 import PointElement from '../src/elements/element.point';
 import { EasingFunction } from '../src/helpers/helpers.easing';
 import { AnimationEvent } from './animation';
@@ -11,7 +10,7 @@ import Element from '../src/core/core.element';
 import { ChartArea, Padding, Point } from './geometric';
 import { LayoutItem, LayoutPosition } from './layout';
 import { RenderTextOpts } from './helpers/helpers.canvas';
-import { CanvasFontSpec } from './helpers/helpers.options';
+import { CanvasFontSpec } from '../src/helpers/helpers.options';
 
 export { EasingFunction } from '../src/helpers/helpers.easing';
 export { default as ArcElement, ArcProps } from '../src/elements/element.arc';
