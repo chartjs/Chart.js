@@ -37,6 +37,13 @@ A number of changes were made to the configuration options passed to the `Chart`
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
 
 ### General
+* Chart.js becomes an [ESM-only package](https://nodejs.org/api/esm.html) ([the UMD bundle is still available](../getting-started/installation.md#cdn)). To use Chart.js, your project should also be an ES module. Make sure to have this in your `package.json`:
+  ```json
+  {
+    "type": "module"
+  }
+  ```
+  If you are experiencing problems with [Jest](https://jestjs.io), follow its [documentation](https://jestjs.io/docs/ecmascript-modules) to enable the ESM support. Or, we can recommend you migrating to [Vitest](https://vitest.dev/). Vitest has the ESM support out of the box and [almost the same API as Jest](https://vitest.dev/guide/migration.html#migrating-from-jest). See an [example of migration](https://github.com/reactchartjs/react-chartjs-2/commit/7f3ec96101d21e43cae8cbfe5e09a46a17cff1ef).
 * Removed fallback to `fontColor` for the legend text and strikethrough color.
 * Removed `config._chart` fallback for `this.chart` in the filler plugin.
 * Removed `this._chart` in the filler plugin.
