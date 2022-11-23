@@ -1,4 +1,4 @@
-import Ticks from './core.ticks';
+import Ticks from './core.ticks.js';
 
 export function applyScaleDefaults(defaults) {
   defaults.set('scale', {

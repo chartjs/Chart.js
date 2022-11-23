@@ -1,4 +1,4 @@
-import { Chart, ChartMeta, Element } from '../../../src/types';
+import { Chart, ChartMeta, Element } from '../../../src/types.js';
 
 const chart = new Chart('id', {
   type: 'doughnut',

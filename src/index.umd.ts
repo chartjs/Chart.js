@@ -4,25 +4,25 @@
 /**
  * @namespace Chart
  */
-import Chart from './core/core.controller';
+import Chart from './core/core.controller.js';
 
-import * as helpers from './helpers';
-import _adapters from './core/core.adapters';
-import Animation from './core/core.animation';
-import animator from './core/core.animator';
-import Animations from './core/core.animations';
-import * as controllers from './controllers';
-import DatasetController from './core/core.datasetController';
-import Element from './core/core.element';
-import * as elements from './elements/index';
-import Interaction from './core/core.interaction';
-import layouts from './core/core.layouts';
-import * as platforms from './platform/index';
-import * as plugins from './plugins';
-import registry from './core/core.registry';
-import Scale from './core/core.scale';
-import * as scales from './scales';
-import Ticks from './core/core.ticks';
+import * as helpers from './helpers/index.js';
+import _adapters from './core/core.adapters.js';
+import Animation from './core/core.animation.js';
+import animator from './core/core.animator.js';
+import Animations from './core/core.animations.js';
+import * as controllers from './controllers/index.js';
+import DatasetController from './core/core.datasetController.js';
+import Element from './core/core.element.js';
+import * as elements from './elements/index.js';
+import Interaction from './core/core.interaction.js';
+import layouts from './core/core.layouts.js';
+import * as platforms from './platform/index.js';
+import * as plugins from './plugins/index.js';
+import registry from './core/core.registry.js';
+import Scale from './core/core.scale.js';
+import * as scales from './scales/index.js';
+import Ticks from './core/core.ticks.js';
 
 // Register built-ins
 Chart.register(controllers, scales, elements, plugins);

@@ -1,5 +1,5 @@
-import type {Point} from '../../types/geometric';
-import type {SplinePoint} from './helpers.curve';
+import type {Point} from '../../types/geometric.js';
+import type {SplinePoint} from './helpers.curve.js';
 
 /**
  * @private

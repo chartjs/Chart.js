@@ -1,7 +1,7 @@
-import defaults from '../core/core.defaults';
-import Element from '../core/core.element';
-import layouts from '../core/core.layouts';
-import {addRoundedRectPath, drawPointLegend, renderText} from '../helpers/helpers.canvas';
+import defaults from '../core/core.defaults.js';
+import Element from '../core/core.element.js';
+import layouts from '../core/core.layouts.js';
+import {addRoundedRectPath, drawPointLegend, renderText} from '../helpers/helpers.canvas.js';
 import {
   _isBetween,
   callback as call,
@@ -13,12 +13,12 @@ import {
   toPadding,
   unclipArea,
   valueOrDefault,
-} from '../helpers/index';
-import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.extras';
-import {toTRBLCorners} from '../helpers/helpers.options';
+} from '../helpers/index.js';
+import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.extras.js';
+import {toTRBLCorners} from '../helpers/helpers.options.js';
 
 /**
- * @typedef { import("../../types").ChartEvent } ChartEvent
+ * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
  */
 
 const getBoxSize = (labelOpts, fontSize) => {

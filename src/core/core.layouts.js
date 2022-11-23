@@ -1,8 +1,8 @@
-import {defined, each, isObject} from '../helpers/helpers.core';
-import {toPadding} from '../helpers/helpers.options';
+import {defined, each, isObject} from '../helpers/helpers.core.js';
+import {toPadding} from '../helpers/helpers.options.js';
 
 /**
- * @typedef { import("./core.controller").default } Chart
+ * @typedef { import('./core.controller.js').default } Chart
  */
 
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];

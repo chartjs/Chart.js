@@ -1,4 +1,4 @@
-import { PointStyle, Scriptable, ScriptableScaleContext } from '..';
+import { PointStyle, Scriptable, ScriptableScaleContext } from '../index.js';
 import { Color } from '../color';
 import { ChartArea, RoundedRect } from '../geometric';
 import { CanvasFontSpec } from '../../src/helpers/helpers.options';

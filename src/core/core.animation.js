@@ -1,6 +1,6 @@
-import effects from '../helpers/helpers.easing';
-import {resolve} from '../helpers/helpers.options';
-import {color as helpersColor} from '../helpers/helpers.color';
+import effects from '../helpers/helpers.easing.js';
+import {resolve} from '../helpers/helpers.options.js';
+import {color as helpersColor} from '../helpers/helpers.color.js';
 
 const transparent = 'transparent';
 const interpolators = {

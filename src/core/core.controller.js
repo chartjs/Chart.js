@@ -1,21 +1,21 @@
-import animator from './core.animator';
-import defaults, {overrides} from './core.defaults';
-import Interaction from './core.interaction';
-import layouts from './core.layouts';
-import {_detectPlatform} from '../platform';
-import PluginService from './core.plugins';
-import registry from './core.registry';
-import Config, {determineAxis, getIndexAxis} from './core.config';
-import {retinaScale, _isDomSupported} from '../helpers/helpers.dom';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core';
-import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers';
+import animator from './core.animator.js';
+import defaults, {overrides} from './core.defaults.js';
+import Interaction from './core.interaction.js';
+import layouts from './core.layouts.js';
+import {_detectPlatform} from '../platform/index.js';
+import PluginService from './core.plugins.js';
+import registry from './core.registry.js';
+import Config, {determineAxis, getIndexAxis} from './core.config.js';
+import {retinaScale, _isDomSupported} from '../helpers/helpers.dom.js';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core.js';
+import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers/index.js';
 // @ts-ignore
 import {version} from '../../package.json';
-import {debounce} from '../helpers/helpers.extras';
+import {debounce} from '../helpers/helpers.extras.js';
 
 /**
- * @typedef { import('../../types').ChartEvent } ChartEvent
- * @typedef { import("../../types").Point } Point
+ * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../../types/index.js').Point } Point
  */
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
@@ -1141,7 +1141,7 @@ class Chart {
 	 * returned value can be used, for instance, to interrupt the current action.
 	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
 	 * @param {Object} [args] - Extra arguments to apply to the hook call.
-   * @param {import('./core.plugins').filterCallback} [filter] - Filtering function for limiting which plugins are notified
+   * @param {import('./core.plugins.js').filterCallback} [filter] - Filtering function for limiting which plugins are notified
 	 * @returns {boolean} false if any of the plugins return false, else returns true.
 	 */
   notifyPlugins(hook, args, filter) {
@@ -1258,10 +1258,10 @@ class Chart {
 
   /**
    * @param {ChartEvent} e - The event
-   * @param {import('../../types').ActiveElement[]} lastActive - Previously active elements
+   * @param {import('../../types/index.js').ActiveElement[]} lastActive - Previously active elements
    * @param {boolean} inChartArea - Is the envent inside chartArea
    * @param {boolean} useFinalPosition - Should the evaluation be done with current or final (after animation) element positions
-   * @returns {import('../../types').ActiveElement[]} - The active elements
+   * @returns {import('../../types/index.js').ActiveElement[]} - The active elements
    * @pravate
    */
   _getActiveElements(e, lastActive, inChartArea, useFinalPosition) {

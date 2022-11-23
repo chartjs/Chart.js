@@ -1,9 +1,9 @@
-import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math';
-import {createContext} from './helpers.options';
+import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
+import {createContext} from './helpers.options.js';
 
 /**
- * @typedef { import("../elements/element.line").default } LineElement
- * @typedef { import("../elements/element.point").default } PointElement
+ * @typedef { import('../elements/element.line.js').default } LineElement
+ * @typedef { import('../elements/element.point.js').default } PointElement
  * @typedef {{start: number, end: number, loop: boolean, style?: any}} Segment
  */
 

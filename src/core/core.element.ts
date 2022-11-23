@@ -1,7 +1,7 @@
-import type {AnyObject} from '../../types/basic';
-import type {Point} from '../../types/geometric';
-import type {Animation} from '../../types/animation';
-import {isNumber} from '../helpers/helpers.math';
+import type {AnyObject} from '../../types/basic.js';
+import type {Point} from '../../types/geometric.js';
+import type {Animation} from '../../types/animation.js';
+import {isNumber} from '../helpers/helpers.math.js';
 
 export default class Element<T = AnyObject, O = AnyObject> {
 

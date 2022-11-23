@@ -1,5 +1,5 @@
-import type {Point} from '../../types/geometric';
-import {isFinite as isFiniteNumber} from './helpers.core';
+import type {Point} from '../../types/geometric.js';
+import {isFinite as isFiniteNumber} from './helpers.core.js';
 
 /**
  * @alias Chart.helpers.math

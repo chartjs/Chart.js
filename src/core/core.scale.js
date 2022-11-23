@@ -1,16 +1,16 @@
-import Element from './core.element';
-import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas';
-import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core';
-import {toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math';
-import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras';
-import {createContext, toFont, toPadding, _addGrace} from '../helpers/helpers.options';
-import {autoSkip} from './core.scale.autoskip';
+import Element from './core.element.js';
+import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas.js';
+import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core.js';
+import {toDegrees, toRadians, _int16Range, _limitValue, HALF_PI} from '../helpers/helpers.math.js';
+import {_alignStartEnd, _toLeftRightCenter} from '../helpers/helpers.extras.js';
+import {createContext, toFont, toPadding, _addGrace} from '../helpers/helpers.options.js';
+import {autoSkip} from './core.scale.autoskip.js';
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
 
 /**
- * @typedef { import("./core.controller").default } Chart
+ * @typedef { import('./core.controller.js').default } Chart
  * @typedef {{value:number | string, label?:string, major?:boolean, $context?:any}} Tick
  */
 

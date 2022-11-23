@@ -1,10 +1,10 @@
-import defaults from '../core/core.defaults';
-import {_longestText, addRoundedRectPath, renderText} from '../helpers/helpers.canvas';
-import {HALF_PI, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math';
-import LinearScaleBase from './scale.linearbase';
-import Ticks from '../core/core.ticks';
-import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core';
-import {createContext, toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
+import defaults from '../core/core.defaults.js';
+import {_longestText, addRoundedRectPath, renderText} from '../helpers/helpers.canvas.js';
+import {HALF_PI, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math.js';
+import LinearScaleBase from './scale.linearbase.js';
+import Ticks from '../core/core.ticks.js';
+import {valueOrDefault, isArray, isFinite, callback as callCallback, isNullOrUndef} from '../helpers/helpers.core.js';
+import {createContext, toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
 
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;

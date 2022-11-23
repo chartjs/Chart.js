@@ -1,4 +1,4 @@
-import {_capitalize} from './helpers.core';
+import {_capitalize} from './helpers.core.js';
 
 /**
  * Binary search

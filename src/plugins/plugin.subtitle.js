@@ -1,5 +1,5 @@
-import {Title} from './plugin.title';
-import layouts from '../core/core.layouts';
+import {Title} from './plugin.title.js';
+import layouts from '../core/core.layouts.js';
 
 const map = new WeakMap();
 

@@ -1,6 +1,6 @@
-import {clipArea, unclipArea} from '../../helpers';
-import {_findSegmentEnd, _getBounds, _segments} from './filler.segment';
-import {_getTarget} from './filler.target';
+import {clipArea, unclipArea} from '../../helpers/index.js';
+import {_findSegmentEnd, _getBounds, _segments} from './filler.segment.js';
+import {_getTarget} from './filler.target.js';
 
 export function _drawfill(ctx, source, area) {
   const target = _getTarget(source);

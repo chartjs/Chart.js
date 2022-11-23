@@ -1,4 +1,4 @@
-const pointStyles = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle'];
+const pointStyles = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle', false];
 
 function newDataset(pointStyle, i) {
   return {

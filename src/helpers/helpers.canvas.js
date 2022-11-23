@@ -1,12 +1,12 @@
-import {isArray, isNullOrUndef} from './helpers.core';
-import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math';
+import {isArray, isNullOrUndef} from './helpers.core.js';
+import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math.js';
 
 /**
  * Note: typedefs are auto-exported, so use a made-up `canvas` namespace where
  * necessary to avoid duplicates with `export * from './helpers`; see
  * https://github.com/microsoft/TypeScript/issues/46011
- * @typedef { import("../core/core.controller").default } canvas.Chart
- * @typedef { import("../../types").Point } Point
+ * @typedef { import('../core/core.controller.js').default } canvas.Chart
+ * @typedef { import('../../types/index.js').Point } Point
  */
 
 /**
@@ -255,6 +255,9 @@ export function drawPointLegend(ctx, options, x, y, w) {
   case 'dash':
     ctx.moveTo(x, y);
     ctx.lineTo(x + Math.cos(rad) * (w ? w / 2 : radius), y + Math.sin(rad) * radius);
+    break;
+  case false:
+    ctx.closePath();
     break;
   }
 

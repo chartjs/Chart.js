@@ -3,7 +3,7 @@
  * After transition done need to remove it in favor of index.ts
  */
 
-export * from '.';
+export * from './index.js';
 /**
  * Explicitly re-exporting to resolve the ambiguity.
  */
@@ -46,5 +46,5 @@ export {
   TimeScale,
   TimeSeriesScale,
   registerables
-} from '../types';
-export * from '../types';
+} from '../types/index.js';
+export * from '../types/index.js';

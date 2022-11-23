@@ -1,4 +1,4 @@
-import { ChartType, Scriptable, ScriptableContext } from '../../src/types';
+import { ChartType, Scriptable, ScriptableContext } from '../../src/types.js';
 
 interface test {
   pie?: Scriptable<number, ScriptableContext<'pie'>>,

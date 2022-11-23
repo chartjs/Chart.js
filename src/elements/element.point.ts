@@ -1,12 +1,12 @@
-import Element from '../core/core.element';
-import {drawPoint, _isPointInArea} from '../helpers/helpers.canvas';
-import {
-  type CartesianParsedData,
-  type ChartArea,
-  type Point,
-  type PointHoverOptions,
-  type PointOptions,
-} from '../../types';
+import Element from '../core/core.element.js';
+import {drawPoint, _isPointInArea} from '../helpers/helpers.canvas.js';
+import type {
+  CartesianParsedData,
+  ChartArea,
+  Point,
+  PointHoverOptions,
+  PointOptions,
+} from '../../types/index.js';
 
 function inRange(el: PointElement, pos: number, axis: 'x' | 'y', useFinalPosition?: boolean) {
   const options = el.options;

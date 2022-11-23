@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ES6",
     "moduleResolution": "Node",
     "noEmit": true,
     "lib": ["es2018", "DOM"]

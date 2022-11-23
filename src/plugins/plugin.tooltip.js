@@ -1,17 +1,17 @@
-import Animations from '../core/core.animations';
-import Element from '../core/core.element';
-import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core';
-import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
-import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
-import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
-import {createContext, drawPoint} from '../helpers';
+import Animations from '../core/core.animations.js';
+import Element from '../core/core.element.js';
+import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core.js';
+import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
+import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl.js';
+import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math.js';
+import {createContext, drawPoint} from '../helpers/index.js';
 
 /**
- * @typedef { import("../platform/platform.base").Chart } Chart
- * @typedef { import("../../types").ChartEvent } ChartEvent
- * @typedef { import("../../types").ActiveElement } ActiveElement
- * @typedef { import("../core/core.interaction").InteractionItem } InteractionItem
+ * @typedef { import('../platform/platform.base.js').Chart } Chart
+ * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../../types/index.js').ActiveElement } ActiveElement
+ * @typedef { import('../core/core.interaction.js').InteractionItem } InteractionItem
  */
 
 const positioners = {

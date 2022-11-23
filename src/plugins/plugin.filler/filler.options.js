@@ -1,10 +1,10 @@
-import {isObject, isFinite, valueOrDefault} from '../../helpers/helpers.core';
+import {isObject, isFinite, valueOrDefault} from '../../helpers/helpers.core.js';
 
 /**
- * @typedef { import('../../core/core.scale').default } Scale
- * @typedef { import('../../elements/element.line').default } LineElement
- * @typedef { import('../../../types').FillTarget } FillTarget
- * @typedef { import('../../../types').ComplexFillTarget } ComplexFillTarget
+ * @typedef { import('../../core/core.scale.js').default } Scale
+ * @typedef { import('../../elements/element.line.js').default } LineElement
+ * @typedef { import('../../../types/index.js').FillTarget } FillTarget
+ * @typedef { import('../../../types/index.js').ComplexFillTarget } ComplexFillTarget
  */
 
 export function _resolveTarget(sources, index, propagate) {
