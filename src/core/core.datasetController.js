@@ -158,6 +158,9 @@ function updateStacks(controller, parsed) {
 
     stack._top = getLastIndexInStack(stack, vScale, true, meta.type);
     stack._bottom = getLastIndexInStack(stack, vScale, false, meta.type);
+
+    const visualValues = stack._visualValues || (stack._visualValues = {});
+    visualValues[datasetIndex] = value;
   }
 }
 
@@ -207,6 +210,9 @@ function clearStacks(meta, items) {
       return;
     }
     delete stacks[axis][datasetIndex];
+    if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
+      delete stacks[axis]._visualValues[datasetIndex];
+    }
   }
 }
 
@@ -578,7 +584,7 @@ export default class DatasetController {
     const value = parsed[scale.axis];
     const stack = {
       keys: getSortedDatasetIndices(chart, true),
-      values: parsed._stacks[scale.axis]
+      values: parsed._stacks[scale.axis]._visualValues
     };
     return applyStack(stack, value, meta.index, {mode});
   }

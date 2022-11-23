@@ -538,7 +538,7 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _calculateBarValuePixels(index) {
-    const {_cachedMeta: {vScale, _stacked}, options: {base: baseValue, minBarLength}} = this;
+    const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {base: baseValue, minBarLength}} = this;
     const actualBase = baseValue || 0;
     const parsed = this.getParsed(index);
     const custom = parsed._custom;
@@ -586,6 +586,11 @@ export default class BarController extends DatasetController {
       const max = Math.max(startPixel, endPixel);
       base = Math.max(Math.min(base, max), min);
       head = base + size;
+
+      if (_stacked && !floating) {
+        // visual data coordinates after applying minBarLength
+        parsed._stacks[vScale.axis]._visualValues[datasetIndex] = vScale.getValueForPixel(head) - vScale.getValueForPixel(base);
+      }
     }
 
     if (base === vScale.getPixelForValue(actualBase)) {
