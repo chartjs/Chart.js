@@ -17,6 +17,9 @@ const chart = new Chart('test', {
         type: 'time',
         time: {
           unit: 'year'
+        },
+        ticks: {
+          stepSzie: 1
         }
       },
       x1: {
