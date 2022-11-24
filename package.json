@@ -15,15 +15,15 @@
     "exports": {
         ".": {
             "types": "./dist/types.d.ts",
-            "import": "./dist/chart.js"
+            "default": "./dist/chart.js"
         },
         "./auto": {
             "types": "./auto/auto.d.ts",
-            "import": "./auto/auto.js"
+            "default": "./auto/auto.js"
         },
         "./helpers": {
             "types": "./helpers/helpers.d.ts",
-            "import": "./helpers/helpers.js"
+            "default": "./helpers/helpers.js"
         }
     },
     "types": "./dist/types.d.ts",
