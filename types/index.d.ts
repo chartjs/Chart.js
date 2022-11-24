@@ -3250,6 +3250,11 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
      * @default 'auto'
      */
     source: 'labels' | 'auto' | 'data';
+    /**
+     * The number of units between grid lines.
+     * @default 1
+     */
+    stepSize: number;
   };
 };
 
