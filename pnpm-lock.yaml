@@ -7,7 +7,7 @@ importers:
 
   .:
     specifiers:
-      '@kurkle/color': ^0.2.1
+      '@kurkle/color': ^0.3.0
       '@rollup/plugin-commonjs': ^23.0.2
       '@rollup/plugin-inject': ^5.0.2
       '@rollup/plugin-json': ^5.0.1
@@ -55,8 +55,9 @@ importers:
       size-limit: ^8.0.0
       typescript: ^4.7.4
       yargs: ^17.5.1
+    dependencies:
+      '@kurkle/color': 0.3.0
     devDependencies:
-      '@kurkle/color': 0.2.1
       '@rollup/plugin-commonjs': 23.0.2_rollup@3.3.0
       '@rollup/plugin-inject': 5.0.2_rollup@3.3.0
       '@rollup/plugin-json': 5.0.1_rollup@3.3.0
@@ -144,108 +145,6 @@ importers:
       vuepress-plugin-typedoc: 0.11.0_e6antoqkoip4fafe7ecefzcrwu
       vuepress-theme-chartjs: 0.2.0_vue@2.7.8
       webpack: 4.46.0
-
-  package:
-    specifiers:
-      '@kurkle/color': ^0.2.1
-      '@rollup/plugin-commonjs': ^23.0.2
-      '@rollup/plugin-inject': ^5.0.2
-      '@rollup/plugin-json': ^5.0.1
-      '@rollup/plugin-node-resolve': ^15.0.1
-      '@size-limit/preset-big-lib': ^8.0.0
-      '@swc/core': ^1.3.18
-      '@types/estree': ^1.0.0
-      '@types/offscreencanvas': ^2019.7.0
-      '@typescript-eslint/eslint-plugin': ^5.32.0
-      '@typescript-eslint/parser': ^5.32.0
-      chartjs-adapter-luxon: ^1.2.0
-      chartjs-adapter-moment: ^1.0.0
-      chartjs-test-utils: ^0.4.0
-      concurrently: ^7.3.0
-      coveralls: ^3.1.1
-      cross-env: ^7.0.3
-      eslint: ^8.21.0
-      eslint-config-chartjs: ^0.3.0
-      eslint-plugin-es: ^4.1.0
-      eslint-plugin-html: ^7.1.0
-      eslint-plugin-markdown: ^3.0.0
-      esm: ^3.2.25
-      glob: ^8.0.3
-      jasmine: ^3.7.0
-      jasmine-core: ^3.7.1
-      karma: ^6.3.2
-      karma-chrome-launcher: ^3.1.0
-      karma-coverage: ^2.0.3
-      karma-edge-launcher: ^0.4.2
-      karma-firefox-launcher: ^2.1.0
-      karma-jasmine: ^4.0.1
-      karma-jasmine-html-reporter: ^1.5.4
-      karma-rollup-preprocessor: 7.0.7
-      karma-safari-private-launcher: ^1.0.0
-      karma-spec-reporter: 0.0.32
-      luxon: ^3.0.1
-      moment: ^2.29.4
-      moment-timezone: ^0.5.34
-      pixelmatch: ^5.3.0
-      rollup: ^3.3.0
-      rollup-plugin-cleanup: ^3.2.1
-      rollup-plugin-dts: ^4.2.2
-      rollup-plugin-istanbul: ^4.0.0
-      rollup-plugin-swc3: ^0.7.0
-      rollup-plugin-terser: ^7.0.2
-      size-limit: ^8.0.0
-      typescript: ^4.7.4
-      yargs: ^17.5.1
-    devDependencies:
-      '@kurkle/color': 0.2.1
-      '@rollup/plugin-commonjs': 23.0.2_rollup@3.3.0
-      '@rollup/plugin-inject': 5.0.2_rollup@3.3.0
-      '@rollup/plugin-json': 5.0.1_rollup@3.3.0
-      '@rollup/plugin-node-resolve': 15.0.1_rollup@3.3.0
-      '@size-limit/preset-big-lib': 8.0.1_47jnvg6nx7r3rk772firp3f63y
-      '@swc/core': 1.3.18
-      '@types/estree': 1.0.0
-      '@types/offscreencanvas': 2019.7.0
-      '@typescript-eslint/eslint-plugin': 5.32.0_iosr3hrei2tubxveewluhu5lhy
-      '@typescript-eslint/parser': 5.32.0_qugx7qdu5zevzvxaiqyxfiwquq
-      chartjs-adapter-luxon: 1.2.0_luxon@3.0.1
-      chartjs-adapter-moment: 1.0.0_moment@2.29.4
-      chartjs-test-utils: 0.4.0_wlkifrf2gjdasqfukx67z26wni
-      concurrently: 7.3.0
-      coveralls: 3.1.1
-      cross-env: 7.0.3
-      eslint: 8.21.0
-      eslint-config-chartjs: 0.3.0
-      eslint-plugin-es: 4.1.0_eslint@8.21.0
-      eslint-plugin-html: 7.1.0
-      eslint-plugin-markdown: 3.0.0_eslint@8.21.0
-      esm: 3.2.25
-      glob: 8.0.3
-      jasmine: 3.99.0
-      jasmine-core: 3.99.1
-      karma: 6.4.0
-      karma-chrome-launcher: 3.1.1
-      karma-coverage: 2.2.0
-      karma-edge-launcher: 0.4.2_karma@6.4.0
-      karma-firefox-launcher: 2.1.2
-      karma-jasmine: 4.0.2_karma@6.4.0
-      karma-jasmine-html-reporter: 1.7.0_yivd6d3oqtt7z3iozna2k5bmk4
-      karma-rollup-preprocessor: 7.0.7_rollup@3.3.0
-      karma-safari-private-launcher: 1.0.0
-      karma-spec-reporter: 0.0.32_karma@6.4.0
-      luxon: 3.0.1
-      moment: 2.29.4
-      moment-timezone: 0.5.34
-      pixelmatch: 5.3.0
-      rollup: 3.3.0
-      rollup-plugin-cleanup: 3.2.1_rollup@3.3.0
-      rollup-plugin-dts: 4.2.2_ltfkimcuim2tiqojakuazqhfme
-      rollup-plugin-istanbul: 4.0.0_rollup@3.3.0
-      rollup-plugin-swc3: 0.7.0_e2f5yg54cs4fzvddguvwzmdrmi
-      rollup-plugin-terser: 7.0.2_rollup@3.3.0
-      size-limit: 8.0.1
-      typescript: 4.7.4
-      yargs: 17.5.1
 
   test/integration/node:
     specifiers:
@@ -2182,9 +2081,9 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  /@kurkle/color/0.2.1:
-    resolution: {integrity: sha512-zkMiuMMMQ92x16uBC2nkqTYDynCY9vhAxF0TH1vSMWKD0hnTGxnYtV1v+NEuVYuwYeA40jD4iuyz0ApcDJQstw==}
-    dev: true
+  /@kurkle/color/0.3.0:
+    resolution: {integrity: sha512-Luw5mZn6nHxbI111tiS/Ub21FcDe8eel2c5nnlRllWEH3k3QprlarJ4XJ+yHibqsJNXN8DrTrovciwbJ1euZ0w==}
+    dev: false
 
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
@@ -14083,20 +13982,6 @@ packages:
       rollup-pluginutils: 2.8.2
     dev: true
 
-  /rollup-plugin-dts/4.2.2_ltfkimcuim2tiqojakuazqhfme:
-    resolution: {integrity: sha512-A3g6Rogyko/PXeKoUlkjxkP++8UDVpgA7C+Tdl77Xj4fgEaIjPSnxRmR53EzvoYy97VMVwLAOcWJudaVAuxneQ==}
-    engines: {node: '>=v12.22.11'}
-    peerDependencies:
-      rollup: ^2.55
-      typescript: ^4.1
-    dependencies:
-      magic-string: 0.26.7
-      rollup: 3.3.0
-      typescript: 4.7.4
-    optionalDependencies:
-      '@babel/code-frame': 7.18.6
-    dev: true
-
   /rollup-plugin-istanbul/4.0.0_rollup@3.3.0:
     resolution: {integrity: sha512-AOauxxl4eAHWdvTnY/uwSrwMkbDymTWUhaD6aym8a4YJaO9hxK2U8bcuhZA0iravuOTUulqPWUbYP7mTV7i4oQ==}
     peerDependencies:
@@ -16664,7 +16549,7 @@ packages:
       '@webassemblyjs/wasm-parser': 1.11.1
       acorn: 8.8.0
       acorn-import-assertions: 1.8.0_acorn@8.8.0
-      browserslist: 4.21.4
+      browserslist: 4.21.3
       chrome-trace-event: 1.0.3
       enhanced-resolve: 5.10.0
       es-module-lexer: 0.9.3
