@@ -10,7 +10,7 @@ body:
   
   - type: markdown
     attributes:
-      value: "Bug reports MUST be submitted with an interactive example: https://codepen.io/pen?template=BapRepQ."
+      value: "Bug reports MUST be submitted with an interactive example: https://codepen.io/leelenaleee/pen/WNyJXEe."
 
   - type: markdown
     attributes:
@@ -35,7 +35,7 @@ body:
       label: Reproducible sample
       description: |
         Please provide issue reproduction.
-        You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducible sample.
+        You can use [this codepen](https://codepen.io/leelenaleee/pen/WNyJXEe) to make a reproducible sample.
 
         Major framework wrappers for chart.js templates:
         [vue-chart-3 sandbox (Vue)](https://codesandbox.io/s/vue-chart-3-chart-js-issue-template-bpg7k?file=/src/App.vue)
