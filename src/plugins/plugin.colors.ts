@@ -1,3 +1,4 @@
+import {DoughnutController, PolarAreaController} from '../index.js';
 import type {Chart, ChartConfiguration, ChartDataset} from '../types.js';
 
 export interface ColorsPluginOptions {
@@ -49,17 +50,17 @@ function colorizePolarAreaDataset(dataset: ChartDataset, i: number) {
   return i;
 }
 
-function getColorizer(chartType: string) {
+function getColorizer(chart: Chart) {
   let i = 0;
 
-  return (dataset: ChartDataset) => {
-    const type = dataset.type || chartType;
+  return (dataset: ChartDataset, datasetIndex: number) => {
+    const controller = chart.getDatasetMeta(datasetIndex).controller;
 
-    if (type === 'doughnut' || type === 'pie') {
+    if (controller instanceof DoughnutController) {
       i = colorizeDoughnutDataset(dataset, i);
-    } else if (type === 'polarArea') {
+    } else if (controller instanceof PolarAreaController) {
       i = colorizePolarAreaDataset(dataset, i);
-    } else if (type) {
+    } else if (controller) {
       i = colorizeDefaultDataset(dataset, i);
     }
   };
@@ -101,7 +102,7 @@ export default {
       return;
     }
 
-    const colorizer = getColorizer(type);
+    const colorizer = getColorizer(chart);
 
     datasets.forEach(colorizer);
   }
