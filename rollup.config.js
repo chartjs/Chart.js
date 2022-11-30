@@ -67,6 +67,7 @@ export default [
       'dist/helpers': 'src/helpers/index.ts'
     },
     plugins: plugins(),
+    external: _ => (/node_modules/).test(_),
     output: {
       dir: './',
       chunkFileNames: 'dist/chunks/[name].js',

@@ -68,8 +68,10 @@
         "test-ci-karma": "cross-env NODE_ENV=test karma start ./karma.conf.cjs --auto-watch --single-run --coverage --grep",
         "test-ci-integration": "pnpm --filter \"./test/integration/**\" test"
     },
+    "dependencies": {
+        "@kurkle/color": "^0.3.0"
+    },
     "devDependencies": {
-        "@kurkle/color": "^0.2.1",
         "@rollup/plugin-commonjs": "^23.0.2",
         "@rollup/plugin-inject": "^5.0.2",
         "@rollup/plugin-json": "^5.0.1",
