@@ -27,11 +27,12 @@ export function throttled<TArgs extends Array<any>>(
   fn: (...args: TArgs) => void,
   thisArg: any,
 ) {
+  let argsToUse = [] as TArgs;
   let ticking = false;
 
   return function(...args: TArgs) {
     // Save the args for use later
-    const argsToUse = Array.from(args) as TArgs;
+    argsToUse = Array.from(args) as TArgs;
     if (!ticking) {
       ticking = true;
       requestAnimFrame.call(window, () => {
