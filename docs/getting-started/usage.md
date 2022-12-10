@@ -54,7 +54,7 @@ As you can see, Chart.js requires minimal markup: a `canvas` tag with an `id` by
 Lastly, let’s create the `src/acquisitions.js` file with the following contents:
 
 ```jsx
-import { Chart } from 'chart.js/auto'
+import Chart from 'chart.js/auto'
 
 (async function() {
   const data = [
@@ -265,7 +265,7 @@ To create the chart, stop the already running application, then go to `src/index
 Then, create the `src/dimensions.js` file with the following contents:
 
 ```jsx
-import { Chart } from 'chart.js/auto'
+import Chart from 'chart.js/auto'
 import { getDimensions } from './api'
 
 (async function() {
@@ -508,7 +508,7 @@ dist/index.ba0c2e17.js       881 B    63ms
 
 We can see that Chart.js and other dependencies were bundled together in a single 265 KB file.
 
-To reduce the bundle size, we’ll need to apply a couple of changes to `src/acquisitions.js` and `src/dimensions.js`. First, we’ll need to remove the following import statement from both files: `import { Chart } from 'chart.js/auto'`.
+To reduce the bundle size, we’ll need to apply a couple of changes to `src/acquisitions.js` and `src/dimensions.js`. First, we’ll need to remove the following import statement from both files: `import Chart from 'chart.js/auto'`.
 
 Instead, let’s load only necessary components and “register” them with Chart.js using `Chart.register(...)`. Here’s what we need in `src/acquisitions.js`:
 
