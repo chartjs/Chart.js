@@ -4,7 +4,7 @@ Charts support three color options:
 * for geometric elements, you can change *background* and *border* colors;
 * for textual elements, you can change the *font* color.
 
-Also, you can change the whole [canvas background](.../configuration/canvas-background.html).
+Also, you can change the whole [canvas background](../configuration/canvas-background.html).
 
 ## Default colors
 
