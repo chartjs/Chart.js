@@ -17,7 +17,7 @@ export class TestScale<O extends TestScaleOptions = TestScaleOptions> extends Sc
   }
 }
 
-declare module '../..' {
+declare module '../../index.js' {
   interface CartesianScaleTypeRegistry {
     test: {
       options: TestScaleOptions

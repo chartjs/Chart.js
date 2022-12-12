@@ -19,14 +19,13 @@ const chart = new Chart('test', {
           unit: 'year'
         },
         ticks: {
-          stepSzie: 1
+          stepSize: 1
         }
       },
       x1: {
-        // @ts-expect-error Type '"linear"' is not assignable to type '"timeseries" | undefined'.
         type: 'linear',
+        // @ts-expect-error 'time' does not exist in 'linear' options
         time: {
-          // @ts-expect-error Type 'string' is not assignable to type 'false | "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter" | "year" | undefined'.
           unit: 'year'
         }
       },
