@@ -488,7 +488,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>;
+  readonly config: ChartConfigurationInstance;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -498,11 +498,11 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
-  readonly legend?: LegendElement<TType>; // Only available if legend plugin is registered and enabled
-  readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
+  readonly legend?: LegendElement; // Only available if legend plugin is registered and enabled
+  readonly tooltip?: TooltipModel; // Only available if tooltip plugin is registered and enabled
 
-  data: ChartData<TType, TData, TLabel>;
-  options: ChartOptions<TType>;
+  data: ChartData;
+  options: ChartOptions;
 
   constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
@@ -2186,7 +2186,7 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
+export interface LegendElement<TType extends ChartType = ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
   chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
@@ -2420,7 +2420,7 @@ export interface TooltipLabelStyle {
    */
   borderRadius?: number | BorderRadius;
 }
-export interface TooltipModel<TType extends ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
+export interface TooltipModel<TType extends ChartType = ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
   readonly chart: Chart<TType>;
 
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
@@ -3660,3 +3660,5 @@ export interface ChartConfigurationCustomTypesPerDataset<
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
 }
+
+export type ChartConfigurationInstance = ChartConfiguration | ChartConfigurationCustomTypesPerDataset & { type?: undefined }
