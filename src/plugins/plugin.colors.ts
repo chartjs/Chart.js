@@ -3,7 +3,7 @@ import type {Chart, ChartDataset} from '../types.js';
 
 export interface ColorsPluginOptions {
   enabled?: boolean;
-  forceColorsPlugin: boolean;
+  forceOverride?: boolean;
 }
 
 interface ColorsDescriptor {
@@ -86,10 +86,10 @@ export default {
 
   defaults: {
     enabled: true,
-    forceColorsPlugin: false
-  },
+    forceOverride: false
+  } as ColorsPluginOptions,
 
-  beforeDatasetsUpdate(chart: Chart, _args, options: ColorsPluginOptions) {
+  beforeLayout(chart: Chart, _args, options: ColorsPluginOptions) {
     if (!options.enabled) {
       return;
     }
@@ -99,7 +99,7 @@ export default {
       data: {datasets}
     } = chart.config;
 
-    if ((containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements)) && !options.forceColorsPlugin) {
+    if (!options.forceOverride && (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements))) {
       return;
     }
 
