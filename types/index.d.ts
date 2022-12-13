@@ -1,24 +1,24 @@
-import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils';
+import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils.js';
 
-import { TimeUnit } from '../src/core/core.adapters';
-import PointElement from '../src/elements/element.point';
-import { EasingFunction } from '../src/helpers/helpers.easing';
-import { AnimationEvent } from './animation';
-import { AnyObject, EmptyObject } from './basic';
-import { Color } from './color';
-import Element from '../src/core/core.element';
-import { ChartArea, Padding, Point } from './geometric';
-import { LayoutItem, LayoutPosition } from './layout';
-import { RenderTextOpts } from './helpers/helpers.canvas';
-import { CanvasFontSpec } from '../src/helpers/helpers.options';
+import { TimeUnit } from '../src/core/core.adapters.js';
+import PointElement from '../src/elements/element.point.js';
+import { EasingFunction } from '../src/helpers/helpers.easing.js';
+import { AnimationEvent } from './animation.js';
+import { AnyObject, EmptyObject } from './basic.js';
+import { Color } from './color.js';
+import Element from '../src/core/core.element.js';
+import { ChartArea, Padding, Point } from './geometric.js';
+import { LayoutItem, LayoutPosition } from './layout.js';
+import { RenderTextOpts } from './helpers/helpers.canvas.js';
+import { CanvasFontSpec } from '../src/helpers/helpers.options.js';
 
-export { EasingFunction } from '../src/helpers/helpers.easing';
-export { default as ArcElement, ArcProps } from '../src/elements/element.arc';
-export { default as PointElement, PointProps } from '../src/elements/element.point';
-export { Animation, Animations, Animator, AnimationEvent } from './animation';
-export { Color } from './color';
-export { ChartArea, Point } from './geometric';
-export { LayoutItem, LayoutPosition } from './layout';
+export { EasingFunction } from '../src/helpers/helpers.easing.js';
+export { default as ArcElement, ArcProps } from '../src/elements/element.arc.js';
+export { default as PointElement, PointProps } from '../src/elements/element.point.js';
+export { Animation, Animations, Animator, AnimationEvent } from './animation.js';
+export { Color } from './color.js';
+export { ChartArea, Point } from './geometric.js';
+export { LayoutItem, LayoutPosition } from './layout.js';
 
 export interface ScriptableContext<TType extends ChartType> {
   active: boolean;

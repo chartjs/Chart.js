@@ -360,7 +360,7 @@ export default class Scale extends Element {
   }
 
   /**
-   * @return {import('../types').LabelItem[]}
+   * @return {import('../types.js').LabelItem[]}
    */
   getLabelItems(chartArea = this.chart.chartArea) {
     const items = this._labelItems || (this._labelItems = this._computeLabelItems(chartArea));
