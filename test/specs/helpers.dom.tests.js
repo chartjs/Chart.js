@@ -254,6 +254,29 @@ describe('DOM helpers tests', function() {
     expect(canvas.style.width).toBe('400px');
   });
 
+  it ('retinaScale should not change chart size', function() {
+    const chartWidth = 800;
+    const chartHeight = 400;
+    let devicePixelRatio = 0.8999999761581421; // 1.7999999523162842;
+    var chart = window.acquireChart({}, {
+      canvas: {
+        width: chartWidth,
+        height: chartHeight,
+        style: `width: ${chartWidth}px; height: ${chartHeight}px;`
+      }
+    });
+
+    helpers.retinaScale(chart, devicePixelRatio, false);
+
+    var canvas = chart.canvas;
+
+    expect(canvas.width).toBe(Math.floor(chartWidth * devicePixelRatio));
+    expect(canvas.height).toBe(Math.floor(chartHeight * devicePixelRatio));
+
+    expect(chart.width).toBe(chartWidth);
+    expect(chart.height).toBe(chartHeight);
+  });
+
   describe('getRelativePosition', function() {
     it('should use offsetX/Y when available', function() {
       const event = {offsetX: 50, offsetY: 100};
