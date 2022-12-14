@@ -2,7 +2,7 @@
 
 New contributions to the library are welcome, but we ask that you please follow these guidelines:
 
-- Before opening a PR for major additions or changes, please discuss the expected API and/or implementation by [filing an issue](https://github.com/chartjs/Chart.js/issues) or asking about it in the [Chart.js Slack](https://chartjs-slack.herokuapp.com/) #dev channel. This will save you development time by getting feedback upfront and make reviews faster by giving the maintainers more context and details.
+- Before opening a PR for major additions or changes, please discuss the expected API and/or implementation by [filing an issue](https://github.com/chartjs/Chart.js/issues) or asking about it in the [Chart.js Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw) #dev channel. This will save you development time by getting feedback upfront and make reviews faster by giving the maintainers more context and details.
 - Consider whether your changes are useful for all users, or if creating a Chart.js [plugin](plugins.md) would be more appropriate.
 - Check that your code will pass tests and `eslint` code standards. `pnpm test` will run both the linter and tests for you.
 - Add unit tests and document new functionality (in the `test/` and `docs/` directories respectively).
@@ -11,7 +11,7 @@ New contributions to the library are welcome, but we ask that you please follow 
 
 ## Joining the project
 
-Active committers and contributors are invited to introduce themselves and request commit access to this project. We have a very active Slack community that you can join [here](https://chartjs-slack.herokuapp.com/). If you think you can help, we'd love to have you!
+Active committers and contributors are invited to introduce themselves and request commit access to this project. We have a very active Slack community that you can join [here](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw). If you think you can help, we'd love to have you!
 
 ## Building and Testing
 
