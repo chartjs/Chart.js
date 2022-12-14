@@ -1,8 +1,9 @@
 import {DoughnutController, PolarAreaController} from '../index.js';
-import type {Chart, ChartConfiguration, ChartDataset} from '../types.js';
+import type {Chart, ChartDataset} from '../types.js';
 
 export interface ColorsPluginOptions {
   enabled?: boolean;
+  forceOverride?: boolean;
 }
 
 interface ColorsDescriptor {
@@ -85,7 +86,8 @@ export default {
 
   defaults: {
     enabled: true,
-  },
+    forceOverride: false
+  } as ColorsPluginOptions,
 
   beforeLayout(chart: Chart, _args, options: ColorsPluginOptions) {
     if (!options.enabled) {
@@ -93,12 +95,11 @@ export default {
     }
 
     const {
-      type,
       options: {elements},
       data: {datasets}
-    } = chart.config as ChartConfiguration;
+    } = chart.config;
 
-    if (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements)) {
+    if (!options.forceOverride && (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements))) {
       return;
     }
 

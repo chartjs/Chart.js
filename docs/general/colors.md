@@ -84,6 +84,22 @@ const options = {
 
 :::
 
+### Dynamic datasets at runtime
+
+By default the colors plugin only works when you initialize the chart without any colors for the border or background specified. 
+If you want to force the colors plugin to always color your datasets, for example when using dynamic datasets at runtime you will need to set the `forceOverride` option to true:
+
+```js
+const options = {
+  plugins: {
+    colors: {
+      forceOverride: true
+    }
+  }
+};
+```
+
+
 ### Advanced color palettes
 
 See the [awesome list](https://github.com/chartjs/awesome#plugins) for plugins that would give you more flexibility defining color palettes.
