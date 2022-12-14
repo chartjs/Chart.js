@@ -12,7 +12,7 @@ npm-debug.log*
 .cache-loader
 build/
 
-# Generated typedocs
+# Generated type docs
 docs/api
 docs/.vuepress/dist
 
