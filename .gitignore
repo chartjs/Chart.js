@@ -31,3 +31,6 @@ docs/.vuepress/dist
 
 # Generated
 /types/tests/autogen*.ts
+
+# Eslint
+.eslintcache
