@@ -130,7 +130,7 @@ export default defineConfig({
         ariaLabel: 'Community Menu',
         items: [
           { text: 'Awesome', link: 'https://github.com/chartjs/awesome' },
-          { text: 'Slack', link: 'https://chartjs-slack.herokuapp.com/' },
+          { text: 'Slack', link: 'https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw' },
           { text: 'Stack Overflow', link: 'https://stackoverflow.com/questions/tagged/chart.js' }
         ]
       }
