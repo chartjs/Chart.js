@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "description": "chart.js should work in Node",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "chart.js": "workspace:*"
+  }
+}
