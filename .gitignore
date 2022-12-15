@@ -11,7 +11,8 @@ npm-debug.log*
 # Docs
 .cache-loader
 build/
-# generated typedocs
+
+# Generated type docs
 docs/api
 docs/.vuepress/dist
 
@@ -31,3 +32,6 @@ docs/.vuepress/dist
 
 # Generated
 /types/tests/autogen*.ts
+
+# Eslint
+.eslintcache

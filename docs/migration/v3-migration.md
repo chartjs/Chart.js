@@ -249,7 +249,7 @@ Animation system was completely rewritten in Chart.js v3. Each property can now 
 
 ## Developer migration
 
-While the end-user migration for Chart.js 3 is fairly straight-forward, the developer migration can be more complicated. Please reach out for help in the #dev [Slack](https://chartjs-slack.herokuapp.com/) channel if tips on migrating would be helpful.
+While the end-user migration for Chart.js 3 is fairly straight-forward, the developer migration can be more complicated. Please reach out for help in the #dev [Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw) channel if tips on migrating would be helpful.
 
 Some of the biggest things that have changed:
 
