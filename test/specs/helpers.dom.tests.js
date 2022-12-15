@@ -254,7 +254,7 @@ describe('DOM helpers tests', function() {
     expect(canvas.style.width).toBe('400px');
   });
 
-  it ('retinaScale should not change chart size', function() {
+  it ('should handle devicePixelRatio correctly', function() {
     const chartWidth = 800;
     const chartHeight = 400;
     let devicePixelRatio = 0.8999999761581421; // 1.7999999523162842;
@@ -262,19 +262,20 @@ describe('DOM helpers tests', function() {
       canvas: {
         width: chartWidth,
         height: chartHeight,
-        style: `width: ${chartWidth}px; height: ${chartHeight}px;`
       }
     });
 
-    helpers.retinaScale(chart, devicePixelRatio, false);
+    helpers.retinaScale(chart, devicePixelRatio, true);
 
     var canvas = chart.canvas;
-
     expect(canvas.width).toBe(Math.floor(chartWidth * devicePixelRatio));
     expect(canvas.height).toBe(Math.floor(chartHeight * devicePixelRatio));
 
     expect(chart.width).toBe(chartWidth);
     expect(chart.height).toBe(chartHeight);
+
+    expect(canvas.style.width).toBe(`${chartWidth}px`);
+    expect(canvas.style.height).toBe(`${chartHeight}px`);
   });
 
   describe('getRelativePosition', function() {
