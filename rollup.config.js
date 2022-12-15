@@ -77,5 +77,26 @@ export default [
       indent: false,
       sourcemap: true,
     },
+  },
+
+  // CommonJS builds
+  // dist/chart.js
+  // helpers/*.js
+  {
+    input: {
+      'dist/chart': 'src/index.ts',
+      'dist/helpers': 'src/helpers/index.ts'
+    },
+    plugins: plugins(),
+    external: _ => (/node_modules/).test(_),
+    output: {
+      dir: './',
+      chunkFileNames: 'dist/chunks/[name].cjs',
+      entryFileNames: '[name].cjs',
+      banner,
+      format: 'commonjs',
+      indent: false,
+      sourcemap: true,
+    },
   }
 ];

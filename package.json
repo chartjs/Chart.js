@@ -15,15 +15,18 @@
     "exports": {
         ".": {
             "types": "./dist/types.d.ts",
-            "import": "./dist/chart.js"
+            "import": "./dist/chart.js",
+            "require": "./dist/chart.cjs"
         },
         "./auto": {
             "types": "./auto/auto.d.ts",
-            "import": "./auto/auto.js"
+            "import": "./auto/auto.js",
+            "require": "./auto/auto.cjs"
         },
         "./helpers": {
             "types": "./helpers/helpers.d.ts",
-            "import": "./helpers/helpers.js"
+            "import": "./helpers/helpers.js",
+            "require": "./helpers/helpers.cjs"
         }
     },
     "types": "./dist/types.d.ts",

@@ -152,6 +152,12 @@ importers:
     dependencies:
       chart.js: link:../../..
 
+  test/integration/node-commonjs:
+    specifiers:
+      chart.js: workspace:*
+    dependencies:
+      chart.js: link:../../..
+
   test/integration/react-browser:
     specifiers:
       '@babel/core': ^7.0.0
