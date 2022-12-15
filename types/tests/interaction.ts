@@ -1,6 +1,6 @@
 import {
   Chart, ChartData, ChartConfiguration, Element
-} from '../../src/types';
+} from '../../src/types.js';
 
 const data: ChartData<'line'> = { datasets: [] };
 const chartItem = 'item';
