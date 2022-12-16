@@ -720,9 +720,9 @@ describe('Core.scale', function() {
           }
         }
       });
-      const mapper = item => parseFloat(item.translation[0].toFixed(2));
+      const mapper = item => parseFloat(item.options.translation[0].toFixed(2));
       const expected = [20.15, 113.6, 207.05, 300.5, 393.95, 487.4];
-      const actual = chart.scales.x._labelItems.map(mapper);
+      const actual = chart.scales.x.getLabelItems().map(mapper);
       const len = expected.length;
       for (let i = 0; i < len; ++i) {
         const actualValue = actual[i];

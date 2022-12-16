@@ -9,6 +9,8 @@ import { Color } from './color.js';
 import Element from '../src/core/core.element.js';
 import { ChartArea, Padding, Point } from './geometric.js';
 import { LayoutItem, LayoutPosition } from './layout.js';
+import { RenderTextOpts } from './helpers/helpers.canvas.js';
+import { CanvasFontSpec } from '../src/helpers/helpers.options.js';
 
 export { EasingFunction } from '../src/helpers/helpers.easing.js';
 export { default as ArcElement, ArcProps } from '../src/elements/element.arc.js';
@@ -1311,6 +1313,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
   getMinMax(canStack: boolean): { min: number; max: number };
   getTicks(): Tick[];
   getLabels(): string[];
+  getLabelItems(chartArea?: ChartArea): LabelItem[];
   beforeUpdate(): void;
   configure(): void;
   afterUpdate(): void;
@@ -1354,6 +1357,12 @@ export interface ScriptableScalePointLabelContext {
   type: string;
 }
 
+export interface LabelItem {
+  label: string | string[];
+  font: CanvasFontSpec;
+  textOffset: number;
+  options: RenderTextOpts;
+}
 
 export declare const Ticks: {
   formatters: {
