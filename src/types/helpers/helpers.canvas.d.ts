@@ -1,7 +1,7 @@
-import { PointStyle, Scriptable, ScriptableScaleContext } from '../index.js';
-import { Color } from '../color.js';
-import { ChartArea, RoundedRect } from '../geometric.js';
-import { CanvasFontSpec } from '../../src/helpers/helpers.options.js';
+import {PointStyle, Scriptable, ScriptableScaleContext} from '../index.js';
+import {Color} from '../color.js';
+import {ChartArea, RoundedRect} from '../geometric.js';
+import {CanvasFontSpec} from '../../helpers/helpers.options.js';
 
 export function clearCanvas(canvas: HTMLCanvasElement, ctx?: CanvasRenderingContext2D): void;
 

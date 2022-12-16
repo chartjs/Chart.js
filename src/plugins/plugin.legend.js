@@ -18,7 +18,7 @@ import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.ext
 import {toTRBLCorners} from '../helpers/helpers.options.js';
 
 /**
- * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../types/index.js').ChartEvent } ChartEvent
  */
 
 const getBoxSize = (labelOpts, fontSize) => {

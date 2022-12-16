@@ -1,4 +1,4 @@
-import type {Point} from '../../types/geometric.js';
+import type {Point} from '../types/geometric.js';
 import type {SplinePoint} from './helpers.curve.js';
 
 /**

@@ -1,24 +1,25 @@
-import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils.js';
+/* eslint-disable @typescript-eslint/ban-types */
+import {DeepPartial, DistributiveArray, UnionToIntersection} from './utils.js';
 
-import { TimeUnit } from '../src/core/core.adapters.js';
-import PointElement from '../src/elements/element.point.js';
-import { EasingFunction } from '../src/helpers/helpers.easing.js';
-import { AnimationEvent } from './animation.js';
-import { AnyObject, EmptyObject } from './basic.js';
-import { Color } from './color.js';
-import Element from '../src/core/core.element.js';
-import { ChartArea, Padding, Point } from './geometric.js';
-import { LayoutItem, LayoutPosition } from './layout.js';
-import { RenderTextOpts } from './helpers/helpers.canvas.js';
-import { CanvasFontSpec } from '../src/helpers/helpers.options.js';
+import {TimeUnit} from '../core/core.adapters.js';
+import PointElement from '../elements/element.point.js';
+import {EasingFunction} from '../helpers/helpers.easing.js';
+import {AnimationEvent} from './animation.js';
+import {AnyObject, EmptyObject} from './basic.js';
+import {Color} from './color.js';
+import Element from '../core/core.element.js';
+import {ChartArea, Padding, Point} from './geometric.js';
+import {LayoutItem, LayoutPosition} from './layout.js';
+import {RenderTextOpts} from './helpers/helpers.canvas.js';
+import {CanvasFontSpec} from '../helpers/helpers.options.js';
 
-export { EasingFunction } from '../src/helpers/helpers.easing.js';
-export { default as ArcElement, ArcProps } from '../src/elements/element.arc.js';
-export { default as PointElement, PointProps } from '../src/elements/element.point.js';
-export { Animation, Animations, Animator, AnimationEvent } from './animation.js';
-export { Color } from './color.js';
-export { ChartArea, Point } from './geometric.js';
-export { LayoutItem, LayoutPosition } from './layout.js';
+export {EasingFunction} from '../helpers/helpers.easing.js';
+export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
+export {default as PointElement, PointProps} from '../elements/element.point.js';
+export {Animation, Animations, Animator, AnimationEvent} from './animation.js';
+export {Color} from './color.js';
+export {ChartArea, Point} from './geometric.js';
+export {LayoutItem, LayoutPosition} from './layout.js';
 
 export interface ScriptableContext<TType extends ChartType> {
   active: boolean;
@@ -234,7 +235,7 @@ export declare const LineController: ChartComponent & {
 
 export type ScatterControllerDatasetOptions = LineControllerDatasetOptions;
 
-export interface ScatterDataPoint extends Point {}
+export type ScatterDataPoint = Point
 
 export type ScatterControllerChartOptions = LineControllerChartOptions;
 

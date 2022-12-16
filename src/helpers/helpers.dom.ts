@@ -1,4 +1,4 @@
-import type {ChartArea, Scale} from '../../types/index.js';
+import type {ChartArea, Scale} from '../types/index.js';
 import type Chart from '../core/core.controller.js';
 import type {ChartEvent} from '../types.js';
 import {INFINITY} from './helpers.math.js';

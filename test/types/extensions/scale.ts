@@ -1,4 +1,4 @@
-import { AnyObject } from '../../basic.js';
+import { AnyObject } from '../../../src/types/basic.js';
 import { CartesianScaleOptions, Chart, Scale } from '../../../src/types.js';
 
 export type TestScaleOptions = CartesianScaleOptions & {
@@ -17,7 +17,7 @@ export class TestScale<O extends TestScaleOptions = TestScaleOptions> extends Sc
   }
 }
 
-declare module '../../index.js' {
+declare module '../../../src/types/index.js' {
   interface CartesianScaleTypeRegistry {
     test: {
       options: TestScaleOptions

@@ -3,7 +3,7 @@ import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helper
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
- * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../types/index.js').ChartEvent } ChartEvent
  * @typedef { import('../plugins/plugin.tooltip.js').default } Tooltip
  */
 
