@@ -1,4 +1,4 @@
-import { ChartArea } from './geometric.js';
+import {ChartArea} from './geometric.js';
 
 export type LayoutPosition = 'left' | 'top' | 'right' | 'bottom' | 'center' | 'chartArea' | {[scaleId: string]: number};
 

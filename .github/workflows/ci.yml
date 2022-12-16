@@ -52,7 +52,6 @@ jobs:
               - 'karma.conf.js'
               - 'package.json'
             types:
-              - 'types/**'
               - 'package.json'
               - 'tsconfig.json'
       - name: Install
@@ -64,7 +63,7 @@ jobs:
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
-          steps.changes.outputs.test == 'true') && 
+          steps.changes.outputs.test == 'true') &&
           runner.os != 'Windows'
         run: |
           pnpm run build

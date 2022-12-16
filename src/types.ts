@@ -46,5 +46,5 @@ export {
   TimeScale,
   TimeSeriesScale,
   registerables
-} from '../types/index.js';
-export * from '../types/index.js';
+} from './types/index.js';
+export * from './types/index.js';

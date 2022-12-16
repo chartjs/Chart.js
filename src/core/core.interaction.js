@@ -5,10 +5,10 @@ import {_isPointInArea} from '../helpers/index.js';
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
- * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../types/index.js').ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean, includeInvisible?: boolean}} InteractionOptions
  * @typedef {{datasetIndex: number, index: number, element: import('./core.element.js').default}} InteractionItem
- * @typedef { import('../../types/index.js').Point } Point
+ * @typedef { import('../types/index.js').Point } Point
  */
 
 /**

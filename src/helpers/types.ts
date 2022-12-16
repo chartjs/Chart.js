@@ -16,4 +16,4 @@ export * from './helpers.intl.js';
 export * from './helpers.math.js';
 export * from './helpers.options.js';
 export * from './helpers.rtl.js';
-export * from '../../types/helpers/index.js';
+export * from '../types/helpers/index.js';

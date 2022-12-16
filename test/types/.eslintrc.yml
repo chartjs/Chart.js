@@ -1,6 +1,5 @@
 rules:
-  # These rules were set to warning to make the linting pass initially,
-  # without making any major changes to types.
+  '@typescript-eslint/no-unused-vars': 'off'
   object-curly-spacing: ["warn", "always"]
   '@typescript-eslint/no-empty-interface': "warn"
   '@typescript-eslint/ban-types': "warn"

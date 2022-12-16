@@ -1,4 +1,4 @@
-import type {ChartMeta, PointElement} from '../../types/index.js';
+import type {ChartMeta, PointElement} from '../types/index.js';
 
 import {_limitValue} from './helpers.math.js';
 import {_lookupByKey} from './helpers.collection.js';

@@ -1,8 +1,8 @@
 import defaults from '../core/core.defaults.js';
 import {isArray, isObject, toDimension, valueOrDefault} from './helpers.core.js';
 import {Point, toFontString} from './helpers.canvas.js';
-import type {ChartArea, FontSpec} from '../../types/index.js';
-import type {TRBL, TRBLCorners} from '../../types/geometric.js';
+import type {ChartArea, FontSpec} from '../types/index.js';
+import type {TRBL, TRBLCorners} from '../types/geometric.js';
 
 const LINE_HEIGHT = /^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/;
 const FONT_STYLE = /^(normal|italic|initial|inherit|unset|(oblique( -?[0-9]?[0-9]deg)?))$/;
