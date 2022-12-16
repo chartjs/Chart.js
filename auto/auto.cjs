@@ -1,6 +1,6 @@
-const exports = require('../dist/chart.cjs');
-const {Chart, registerables} = exports;
+const chartjs = require('../dist/chart.cjs');
+const {Chart, registerables} = chartjs;
 
 Chart.register(...registerables);
 
-module.exports = Object.assign(Chart, exports);
+module.exports = Object.assign(Chart, chartjs);
