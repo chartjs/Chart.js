@@ -7,6 +7,7 @@
     "type": "module",
     "sideEffects": [
         "./auto/auto.js",
+        "./auto/auto.cjs",
         "./dist/chart.umd.js"
     ],
     "jsdelivr": "./dist/chart.umd.js",
