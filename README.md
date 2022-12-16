@@ -11,8 +11,6 @@
     <a href="https://coveralls.io/github/chartjs/Chart.js?branch=master"><img src="https://img.shields.io/coveralls/chartjs/Chart.js.svg?style=flat-square&maxAge=600" alt="Coverage"></a>
     <a href="https://github.com/chartjs/awesome"><img src="https://awesome.re/badge-flat2.svg" alt="Awesome"></a>
     <a href="https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw"><img src="https://img.shields.io/badge/slack-chartjs-blue.svg?style=flat-square&maxAge=3600" alt="Slack"></a>
-    <br/><br/>
-    <a href="https://www.producthunt.com/posts/chart-js-4-0?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-chart&#0045;js&#0045;4&#0045;0" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=371192&theme=light" alt="Chart&#0046;js&#0032;4&#0046;0 - Open&#0032;source&#0032;JavaScript&#0032;charting&#0032;library&#0032;for&#0032;the&#0032;modern&#0032;web | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
 ## Documentation
