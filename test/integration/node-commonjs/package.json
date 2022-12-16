@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "description": "chart.js should work in Node",
+  "scripts": {
+    "test": "npm run test-index && npm run test-auto",
+    "test-index": "node test.js",
+    "test-auto": "node test-auto.js"
+  },
+  "dependencies": {
+    "chart.js": "workspace:*"
+  }
+}

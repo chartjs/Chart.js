@@ -2,7 +2,7 @@ import Element from '../core/core.element.js';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index.js';
 import {PI, _isBetween, _limitValue} from '../helpers/helpers.math.js';
 import {_readValueToProps} from '../helpers/helpers.options.js';
-import type {ArcOptions, Point} from '../../types/index.js';
+import type {ArcOptions, Point} from '../types/index.js';
 
 
 function clipArc(ctx: CanvasRenderingContext2D, element: ArcElement, endAngle: number) {

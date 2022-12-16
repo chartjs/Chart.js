@@ -6,7 +6,7 @@ import type {
   Point,
   PointHoverOptions,
   PointOptions,
-} from '../../types/index.js';
+} from '../types/index.js';
 
 function inRange(el: PointElement, pos: number, axis: 'x' | 'y', useFinalPosition?: boolean) {
   const options = el.options;

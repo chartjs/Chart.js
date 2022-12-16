@@ -1,22 +1,25 @@
-import { DeepPartial, DistributiveArray, UnionToIntersection } from './utils.js';
+/* eslint-disable @typescript-eslint/ban-types */
+import {DeepPartial, DistributiveArray, UnionToIntersection} from './utils.js';
 
-import { TimeUnit } from '../src/core/core.adapters.js';
-import PointElement from '../src/elements/element.point.js';
-import { EasingFunction } from '../src/helpers/helpers.easing.js';
-import { AnimationEvent } from './animation.js';
-import { AnyObject, EmptyObject } from './basic.js';
-import { Color } from './color.js';
-import Element from '../src/core/core.element.js';
-import { ChartArea, Padding, Point } from './geometric.js';
-import { LayoutItem, LayoutPosition } from './layout.js';
+import {TimeUnit} from '../core/core.adapters.js';
+import PointElement from '../elements/element.point.js';
+import {EasingFunction} from '../helpers/helpers.easing.js';
+import {AnimationEvent} from './animation.js';
+import {AnyObject, EmptyObject} from './basic.js';
+import {Color} from './color.js';
+import Element from '../core/core.element.js';
+import {ChartArea, Padding, Point} from './geometric.js';
+import {LayoutItem, LayoutPosition} from './layout.js';
+import {RenderTextOpts} from './helpers/helpers.canvas.js';
+import {CanvasFontSpec} from '../helpers/helpers.options.js';
 
-export { EasingFunction } from '../src/helpers/helpers.easing.js';
-export { default as ArcElement, ArcProps } from '../src/elements/element.arc.js';
-export { default as PointElement, PointProps } from '../src/elements/element.point.js';
-export { Animation, Animations, Animator, AnimationEvent } from './animation.js';
-export { Color } from './color.js';
-export { ChartArea, Point } from './geometric.js';
-export { LayoutItem, LayoutPosition } from './layout.js';
+export {EasingFunction} from '../helpers/helpers.easing.js';
+export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
+export {default as PointElement, PointProps} from '../elements/element.point.js';
+export {Animation, Animations, Animator, AnimationEvent} from './animation.js';
+export {Color} from './color.js';
+export {ChartArea, Point} from './geometric.js';
+export {LayoutItem, LayoutPosition} from './layout.js';
 
 export interface ScriptableContext<TType extends ChartType> {
   active: boolean;
@@ -232,7 +235,7 @@ export declare const LineController: ChartComponent & {
 
 export type ScatterControllerDatasetOptions = LineControllerDatasetOptions;
 
-export interface ScatterDataPoint extends Point {}
+export type ScatterDataPoint = Point
 
 export type ScatterControllerChartOptions = LineControllerChartOptions;
 
@@ -488,7 +491,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>;
+  readonly config: ChartConfigurationInstance;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -498,11 +501,11 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
-  readonly legend?: LegendElement<TType>; // Only available if legend plugin is registered and enabled
-  readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
+  readonly legend?: LegendElement; // Only available if legend plugin is registered and enabled
+  readonly tooltip?: TooltipModel; // Only available if tooltip plugin is registered and enabled
 
-  data: ChartData<TType, TData, TLabel>;
-  options: ChartOptions<TType>;
+  data: ChartData;
+  options: ChartOptions;
 
   constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
@@ -1311,6 +1314,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
   getMinMax(canStack: boolean): { min: number; max: number };
   getTicks(): Tick[];
   getLabels(): string[];
+  getLabelItems(chartArea?: ChartArea): LabelItem[];
   beforeUpdate(): void;
   configure(): void;
   afterUpdate(): void;
@@ -1354,6 +1358,12 @@ export interface ScriptableScalePointLabelContext {
   type: string;
 }
 
+export interface LabelItem {
+  label: string | string[];
+  font: CanvasFontSpec;
+  textOffset: number;
+  options: RenderTextOpts;
+}
 
 export declare const Ticks: {
   formatters: {
@@ -2186,7 +2196,7 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
+export interface LegendElement<TType extends ChartType = ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
   chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
@@ -2420,7 +2430,7 @@ export interface TooltipLabelStyle {
    */
   borderRadius?: number | BorderRadius;
 }
-export interface TooltipModel<TType extends ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
+export interface TooltipModel<TType extends ChartType = ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
   readonly chart: Chart<TType>;
 
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
@@ -3660,3 +3670,5 @@ export interface ChartConfigurationCustomTypesPerDataset<
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
 }
+
+export type ChartConfigurationInstance = ChartConfiguration | ChartConfigurationCustomTypesPerDataset & { type?: undefined }

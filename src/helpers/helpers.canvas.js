@@ -6,7 +6,7 @@ import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helper
  * necessary to avoid duplicates with `export * from './helpers`; see
  * https://github.com/microsoft/TypeScript/issues/46011
  * @typedef { import('../core/core.controller.js').default } canvas.Chart
- * @typedef { import('../../types/index.js').Point } Point
+ * @typedef { import('../types/index.js').Point } Point
  */
 
 /**

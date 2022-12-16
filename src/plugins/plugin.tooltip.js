@@ -9,8 +9,8 @@ import {createContext, drawPoint} from '../helpers/index.js';
 
 /**
  * @typedef { import('../platform/platform.base.js').Chart } Chart
- * @typedef { import('../../types/index.js').ChartEvent } ChartEvent
- * @typedef { import('../../types/index.js').ActiveElement } ActiveElement
+ * @typedef { import('../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../types/index.js').ActiveElement } ActiveElement
  * @typedef { import('../core/core.interaction.js').InteractionItem } InteractionItem
  */
 

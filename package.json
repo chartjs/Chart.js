@@ -7,6 +7,7 @@
     "type": "module",
     "sideEffects": [
         "./auto/auto.js",
+        "./auto/auto.cjs",
         "./dist/chart.umd.js"
     ],
     "jsdelivr": "./dist/chart.umd.js",
@@ -15,15 +16,18 @@
     "exports": {
         ".": {
             "types": "./dist/types.d.ts",
-            "import": "./dist/chart.js"
+            "import": "./dist/chart.js",
+            "require": "./dist/chart.cjs"
         },
         "./auto": {
             "types": "./auto/auto.d.ts",
-            "import": "./auto/auto.js"
+            "import": "./auto/auto.js",
+            "require": "./auto/auto.cjs"
         },
         "./helpers": {
             "types": "./helpers/helpers.d.ts",
-            "import": "./helpers/helpers.js"
+            "import": "./helpers/helpers.js",
+            "require": "./helpers/helpers.cjs"
         }
     },
     "types": "./dist/types.d.ts",
@@ -46,13 +50,11 @@
         "auto/**",
         "dist/**",
         "!dist/docs/**",
-        "helpers/**",
-        "types/**/*.ts",
-        "!types/tests/**"
+        "helpers/**"
     ],
     "scripts": {
         "autobuild": "rollup -c -w",
-        "emitDeclarations": "tsc --emitDeclarationOnly",
+        "emitDeclarations": "tsc --emitDeclarationOnly && cp -R ./src/types/ ./dist/types/",
         "build": "rollup -c && pnpm emitDeclarations",
         "dev": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers chrome --grep",
         "dev:ff": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers firefox --grep",
@@ -60,7 +62,7 @@
         "docs:dev": "pnpm run build && pnpm --filter \"./docs/**\" dev",
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\" --cache",
         "lint-md": "eslint \"**/*.md\" --cache",
-        "lint-types": "eslint \"types/**/*.ts\" --cache && pnpm build && node types/tests/autogen.js && tsc -p types/tests/",
+        "lint-types": "pnpm build && node test/types/autogen.js && tsc -p test/types",
         "lint": "concurrently \"pnpm:lint-*\"",
         "test-size": "size-limit",
         "test": "pnpm lint && pnpm test-ci",

@@ -1,7 +1,7 @@
-import { PointStyle } from '../index.js';
-import { Color } from '../color.js';
-import { ChartArea, RoundedRect } from '../geometric.js';
-import { CanvasFontSpec } from '../../src/helpers/helpers.options.js';
+import {PointStyle, Scriptable, ScriptableScaleContext} from '../index.js';
+import {Color} from '../color.js';
+import {ChartArea, RoundedRect} from '../geometric.js';
+import {CanvasFontSpec} from '../../helpers/helpers.options.js';
 
 export function clearCanvas(canvas: HTMLCanvasElement, ctx?: CanvasRenderingContext2D): void;
 
@@ -72,13 +72,13 @@ export interface RenderTextOpts {
    * The text alignment to use. If unset, the existing
    * textAlign property of the context is unchanged
    */
-  textAlign: CanvasTextAlign;
+  textAlign?: CanvasTextAlign;
 
   /**
    * The text baseline to use. If unset, the existing
    * textBaseline property of the context is unchanged
    */
-  textBaseline: CanvasTextBaseline;
+  textBaseline?: CanvasTextBaseline;
 
   /**
    * If specified, a translation to apply to the context
@@ -89,6 +89,38 @@ export interface RenderTextOpts {
    * Underline the text
    */
   underline?: boolean;
+
+  /**
+   * Dimensions for drawing the label backdrop
+   */
+  backdrop?: BackdropOptions;
+}
+
+export interface BackdropOptions {
+  /**
+   * Left position of backdrop as pixel
+   */
+  left: number;
+
+  /**
+   * Top position of backdrop as pixel
+   */
+  top: number;
+
+  /**
+   * Width of backdrop in pixels
+   */
+  width: number;
+
+  /**
+   * Height of backdrop in pixels
+   */
+  height: number;
+
+  /**
+   * Color of label backdrops.
+   */
+  color: Scriptable<Color, ScriptableScaleContext>;
 }
 
 export function renderText(

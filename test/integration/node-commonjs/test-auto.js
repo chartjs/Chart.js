@@ -1,4 +1,4 @@
-const {Chart} = require('chart.js');
+const Chart = require('chart.js/auto');
 const {valueOrDefault} = require('chart.js/helpers');
 
 Chart.register({
