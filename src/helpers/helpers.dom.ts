@@ -222,8 +222,8 @@ export function retinaScale(
   const deviceHeight = Math.floor(chart.height * pixelRatio);
   const deviceWidth = Math.floor(chart.width * pixelRatio);
 
-  chart.height = deviceHeight / pixelRatio;
-  chart.width = deviceWidth / pixelRatio;
+  chart.height = Math.floor(chart.height);
+  chart.width = Math.floor(chart.width);
 
   const canvas = chart.canvas;
 
