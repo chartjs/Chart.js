@@ -528,4 +528,21 @@ describe('DOM helpers tests', function() {
 
     document.body.removeChild(container);
   });
+
+  it('should round non-integer container dimensions', () => {
+    const container = document.createElement('div');
+    container.style.width = '799.999px';
+    container.style.height = '299.999px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '200px';
+    target.style.height = '100px';
+    container.appendChild(target);
+
+    expect(helpers.getMaximumSize(target, undefined, undefined, 2)).toEqual(jasmine.objectContaining({width: 800, height: 400}));
+
+    document.body.removeChild(container);
+  });
 });

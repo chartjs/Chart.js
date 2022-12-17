@@ -188,7 +188,7 @@ export function getMaximumSize(
     height -= paddings.height + borders.height;
   }
   width = Math.max(0, width - margins.width);
-  height = Math.max(0, aspectRatio ? Math.floor(width / aspectRatio) : height - margins.height);
+  height = Math.max(0, aspectRatio ? width / aspectRatio : height - margins.height);
   width = round1(Math.min(width, maxWidth, containerSize.maxWidth));
   height = round1(Math.min(height, maxHeight, containerSize.maxHeight));
   if (width && !height) {
