@@ -295,8 +295,8 @@ class Chart {
     const newRatio = options.devicePixelRatio || this.platform.getDevicePixelRatio();
     const mode = this.width ? 'resize' : 'attach';
 
-    this.width = newSize.width;
-    this.height = newSize.height;
+    this.width = Math.floor(newSize.width);
+    this.height = Math.floor(newSize.height);
     this._aspectRatio = this.aspectRatio;
     if (!retinaScale(this, newRatio, true)) {
       return;
