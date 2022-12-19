@@ -102,8 +102,10 @@ export default {
 
     const {
       options: {elements},
-      data: {datasets}
+      data: {datasets},
+      options
     } = chart.config;
+    const {elements} = options
 
     if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chart.config.options) || (elements && containsColorsDefinitions(elements)))) {
       return;
