@@ -84,7 +84,7 @@ function containsColorsDefinitions(
 function containsColorsDefinition(
   descriptor: ColorsDescriptor
 ) {
-  return descriptor && (descriptor.borderColor || descriptor.backgroundColor)
+  return descriptor && (descriptor.borderColor || descriptor.backgroundColor);
 }
 
 export default {
@@ -101,13 +101,12 @@ export default {
     }
 
     const {
-      options: {elements},
       data: {datasets},
-      options
+      options: chartOptions
     } = chart.config;
-    const {elements} = options
+    const {elements} = chartOptions;
 
-    if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(options) || (elements && containsColorsDefinitions(elements)))) {
+    if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || (elements && containsColorsDefinitions(elements)))) {
       return;
     }
 
