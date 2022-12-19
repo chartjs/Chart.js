@@ -54,7 +54,8 @@
     ],
     "scripts": {
         "autobuild": "rollup -c -w",
-        "emitDeclarations": "tsc --emitDeclarationOnly && cp -R ./src/types/ ./dist/types/",
+        "copyDeclarations": "node -e \"fs.cpSync('./src/types/', './dist/types/', {recursive:true})\"",
+        "emitDeclarations": "tsc --emitDeclarationOnly && pnpm copyDeclarations",
         "build": "rollup -c && pnpm emitDeclarations",
         "dev": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers chrome --grep",
         "dev:ff": "karma start ./karma.conf.cjs --auto-watch --no-single-run --browsers firefox --grep",
