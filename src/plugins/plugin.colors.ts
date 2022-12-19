@@ -81,6 +81,16 @@ function containsColorsDefinitions(
   return false;
 }
 
+function containsColorsDefinition(
+  descriptor: ColorsDescriptor
+) {
+  if (descriptor && descriptor.borderColor || descriptor.backgroundColor) {
+    return true;
+  }
+
+  return false;
+}
+
 export default {
   id: 'colors',
 
@@ -99,7 +109,7 @@ export default {
       data: {datasets}
     } = chart.config;
 
-    if (!options.forceOverride && (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements))) {
+    if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chart.config.options) || (elements && containsColorsDefinitions(elements)))) {
       return;
     }
 
