@@ -84,11 +84,7 @@ function containsColorsDefinitions(
 function containsColorsDefinition(
   descriptor: ColorsDescriptor
 ) {
-  if (descriptor && descriptor.borderColor || descriptor.backgroundColor) {
-    return true;
-  }
-
-  return false;
+  return descriptor && (descriptor.borderColor || descriptor.backgroundColor)
 }
 
 export default {
