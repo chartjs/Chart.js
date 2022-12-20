@@ -45,7 +45,7 @@ body:
         For typescript issues you can make use of [this TS Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgYQBYENZwL5wGZQQhwDkAxhrAHQBWAziQNwCwAUGwG6ZxkwAecALxwAJhDIBXEAFMAdjCoBzaTACiAG2kz5AIQCeASREAKAEQg9aTDFMBKOOjpwAEgBUAsgBlk6WVzoaWnIwLKxcUHAWVljCstIA7iiUMMa8fAA0iGxwOXAwemDSAFyk6sBxJOnZuSLoMOglCNW5ueroAEbS6nQlANqmAErSIqaZpjrqEtKjcKYAml3qEPEzpgDiUNJyqwAKElBgmqsA8lC+yqYAulWsLS219XQqPXC9Tbd3n22d6iUkAMRwCB4OAANQgMGkDBun0+DwarwAjAAmTKIgCcmQAzJkAKyZVFwLHXZp3bCXUnYGG5CBgGDACCyF7vT50MjoTTM0ktPiNbl3fk5KmCuB6PkfWFwEXYfkyiU4NjYWyMIA) to make a reproducible sample.
 
         If filing a bug against `master`, you may reference the latest code via
-        https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
+        https://www.chartjs.org/dist/master/chart.umd.js (changing the filename to
         point at the file you need as appropriate). Do not rely on these files for
         production purposes as they may be removed at any time.
     validations:
