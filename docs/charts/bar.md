@@ -180,7 +180,7 @@ When the border radius is supplied as a number and the chart is stacked, the rad
 
 #### inflateAmount
 
-This option can be used to inflate the rects that are used to draw the bars. This can be used to hide artifacts between bars when `barPercentage`(#barpercentage) * `categoryPercentage`(#categorypercentage) is 1. The default value `'auto'` should work in most cases.
+This option can be used to inflate the rects that are used to draw the bars. This can be used to hide artifacts between bars when [`barPercentage`](#barpercentage) * [`categoryPercentage`](#categorypercentage) is 1. The default value `'auto'` should work in most cases.
 
 ### Interactions
 
