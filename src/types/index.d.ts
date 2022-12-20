@@ -2817,6 +2817,7 @@ export interface BorderOptions {
   dashOffset: Scriptable<number, ScriptableScaleContext>;
   color: Color;
   width: number;
+  z: number;
 }
 
 export interface GridLineOptions {
