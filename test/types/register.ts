@@ -23,7 +23,8 @@ import {
   Legend,
   Title,
   SubTitle,
-  Tooltip
+  Tooltip,
+  Colors
 } from '../../src/types.js';
 
 Chart.register(
@@ -50,5 +51,6 @@ Chart.register(
   Legend,
   Title,
   SubTitle,
-  Tooltip
+  Tooltip,
+  Colors
 );
