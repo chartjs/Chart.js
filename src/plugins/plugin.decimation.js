@@ -158,7 +158,7 @@ function cleanDecimatedDataset(dataset) {
     const data = dataset._data;
     delete dataset._decimated;
     delete dataset._data;
-    Object.defineProperty(dataset, 'data', {value: data});
+    dataset.data = data;
   }
 }
 
