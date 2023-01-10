@@ -13,6 +13,7 @@
     "jsdelivr": "./dist/chart.umd.js",
     "unpkg": "./dist/chart.umd.js",
     "main": "./dist/chart.cjs",
+    "module": "./dist/chart.js",
     "exports": {
         ".": {
             "types": "./dist/types.d.ts",
