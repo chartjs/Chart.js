@@ -260,7 +260,7 @@ export interface DoughnutControllerDatasetOptions
   /**
    * Arc offset (in pixels).
    */
-  offset: number;
+  offset: number | number[];
 
   /**
    * Starting angle to draw this dataset from.
@@ -313,7 +313,7 @@ export interface DoughnutControllerChartOptions {
   /**
    * Arc offset (in pixels).
    */
-  offset: number;
+  offset: number | number[];
 
   /**
    * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
