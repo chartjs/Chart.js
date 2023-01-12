@@ -142,7 +142,7 @@ Namespace: `options.scales[scaleId].angleLines`
 
   1. the `borderDash` setting only accepts a static value or a function. Passing an array of arrays is not supported.
 
-The scriptable context is described in [Options](../../general/options.md#scale) section.
+The scriptable context is described in [Options](../../general/options.md#pointLabel) section.
 
 ## Point Label Options
 
@@ -161,7 +161,7 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
 | [`centerPointLabels`](../../samples/other-charts/polar-area-center-labels.md) | `boolean` | | `false` | If true, point labels are centered.
 
-The scriptable context is described in [Options](../../general/options.md#scale) section.
+The scriptable context is described in [Options](../../general/options.md#pointLabel) section.
 
 ## Internal data format
 

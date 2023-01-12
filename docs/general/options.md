@@ -168,6 +168,14 @@ In addition to [scale](#scale)
 * `index`: tick index
 * `type`: `'tick'`
 
+### pointLabel
+
+In addition to [scale](#scale)
+
+* `label`: the associated label value
+* `index`: label index
+* `type`: `'pointLabel'`
+
 ### tooltip
 
 In addition to [chart](#chart)
