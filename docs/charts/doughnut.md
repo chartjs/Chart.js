@@ -116,7 +116,7 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 | [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
-| [`offset`](#styling) | `number` | Yes | Yes | `0`
+| [`offset`](#styling) | `number`\|`number[]` | Yes | Yes | `0`
 | [`rotation`](#general) | `number` | - | - | `undefined`
 | [`spacing`](#styling) | `number` | - | - | `0`
 | [`weight`](#styling) | `number` | - | - | `1`
