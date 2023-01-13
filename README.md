@@ -15,9 +15,9 @@
 
 <p align="center">
   <br/>
-  Join Chart.js maintainers and community at the first Chart.js meetup in January 2023.
-  <br/>
-  <a href="https://cube.dev/events/chart-js-community-meetup" target="_blank">Check agenda and register</a>
+  <a href="https://cube.dev/events/chart-js-community-meetup?ref=chartjs-github" target="_blank">
+    <img src="https://ucarecdn.com/7733444d-5200-4b4b-9155-57e4311a6fa7/" width="700"/>
+  </a>
   <br/>
   <br/>
 </p>
