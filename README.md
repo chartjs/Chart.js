@@ -16,7 +16,7 @@
 <p align="center">
   <br/>
   <a href="https://cube.dev/events/chart-js-community-meetup?ref=chartjs-github" target="_blank">
-    <img src="https://ucarecdn.com/7733444d-5200-4b4b-9155-57e4311a6fa7/"/>
+    <img src="https://ucarecdn.com/7733444d-5200-4b4b-9155-57e4311a6fa7/" width="700"/>
   </a>
   <br/>
   <br/>
