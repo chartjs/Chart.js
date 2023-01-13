@@ -146,6 +146,13 @@ function isNotOverlapped(item, area) {
   return !apexesInArea;
 }
 
+function handleOverlapping(item, area, display) {
+  if (display === 'auto') {
+    item.visible = isNotOverlapped(item, area);
+    return item.visible ? item : area;
+  }
+}
+
 function buildPointLabelItems(scale, labelSizes, padding) {
   const items = [];
   const valueCount = scale._pointLabels.length;
@@ -182,12 +189,8 @@ function buildPointLabelItems(scale, labelSizes, padding) {
       bottom: y + size.h
     };
     items.push(item);
-    if (display === 'auto') {
-      item.visible = isNotOverlapped(item, area);
-      if (item.visible) {
-        area = item;
-      }
-    }
+    area = handleOverlapping(item, area, display);
+
   }
   return items;
 }
