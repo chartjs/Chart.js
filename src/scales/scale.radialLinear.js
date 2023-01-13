@@ -1,5 +1,5 @@
 import defaults from '../core/core.defaults.js';
-import {_longestText, addRoundedRectPath, renderText} from '../helpers/helpers.canvas.js';
+import {_longestText, addRoundedRectPath, renderText, _isPointInArea} from '../helpers/helpers.canvas.js';
 import {HALF_PI, TAU, toDegrees, toRadians, _normalizeAngle, PI} from '../helpers/helpers.math.js';
 import LinearScaleBase from './scale.linearbase.js';
 import Ticks from '../core/core.ticks.js';
@@ -136,13 +136,25 @@ function updateLimits(limits, orig, angle, hLimits, vLimits) {
   }
 }
 
+function isNotOverlapped(item, area) {
+  if (!area) {
+    return true;
+  }
+  const {left, top, right, bottom} = item;
+  const apexesInArea = _isPointInArea({x: left, y: top}, area) || _isPointInArea({x: left, y: bottom}, area) ||
+    _isPointInArea({x: right, y: top}, area) || _isPointInArea({x: right, y: bottom}, area);
+  return !apexesInArea;
+}
+
 function buildPointLabelItems(scale, labelSizes, padding) {
   const items = [];
   const valueCount = scale._pointLabels.length;
   const opts = scale.options;
+  const {centerPointLabels, display} = opts.pointLabels;
   const extra = getTickBackdropHeight(opts) / 2;
   const outerDistance = scale.drawingArea;
-  const additionalAngle = opts.pointLabels.centerPointLabels ? PI / valueCount : 0;
+  const additionalAngle = centerPointLabels ? PI / valueCount : 0;
+  let area;
 
   for (let i = 0; i < valueCount; i++) {
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], additionalAngle);
@@ -152,7 +164,10 @@ function buildPointLabelItems(scale, labelSizes, padding) {
     const textAlign = getTextAlignForAngle(angle);
     const left = leftForTextAlign(pointLabelPosition.x, size.w, textAlign);
 
-    items.push({
+    const item = {
+      // if to draw or overlapped
+      visible: true,
+
       // Text position
       x: pointLabelPosition.x,
       y,
@@ -165,7 +180,14 @@ function buildPointLabelItems(scale, labelSizes, padding) {
       top: y,
       right: left + size.w,
       bottom: y + size.h
-    });
+    };
+    items.push(item);
+    if (display === 'auto') {
+      item.visible = isNotOverlapped(item, area);
+      if (item.visible) {
+        area = item;
+      }
+    }
   }
   return items;
 }
@@ -202,6 +224,10 @@ function drawPointLabels(scale, labelCount) {
   const {ctx, options: {pointLabels}} = scale;
 
   for (let i = labelCount - 1; i >= 0; i--) {
+    if (!scale._pointLabelItems[i].visible) {
+      // overlapping
+      continue;
+    }
     const optsAtIndex = pointLabels.setContext(scale.getPointLabelContext(i));
     const plFont = toFont(optsAtIndex.font);
     const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelItems[i];

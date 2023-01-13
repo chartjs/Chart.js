@@ -154,7 +154,7 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `backdropColor` | [`Color`](../../general/colors.md) | `true` | `undefined` | Background color of the point label.
 | `backdropPadding` | [`Padding`](../../general/padding.md) | | `2` | Padding of label backdrop.
 | `borderRadius` | `number`\|`object` | `true` | `0` | Border radius of the point label
-| `display` | `boolean` | | `true` | If true, point labels are shown.
+| `display` | `boolean`\|`string` | | `true` | If true, point labels are shown.  When `display: 'auto'`, the label is hidden if it overlaps with another label.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
