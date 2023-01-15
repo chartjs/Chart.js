@@ -818,8 +818,8 @@ export class Tooltip extends Element {
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
 
       // Fill a white rect so that colours merge nicely if the opacity is < 1
-      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth - boxPadding);
-      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - boxPadding - 2);
+      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
+      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
       const borderRadius = toTRBLCorners(labelColors.borderRadius);
 
       if (Object.values(borderRadius).some(v => v !== 0)) {
