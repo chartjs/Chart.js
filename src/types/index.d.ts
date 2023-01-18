@@ -572,7 +572,7 @@ export declare const enum UpdateModeEnum {
   none = 'none',
   hide = 'hide',
   show = 'show',
-  normal = 'normal',
+  default = 'default',
   active = 'active'
 }
 
