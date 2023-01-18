@@ -81,6 +81,12 @@ function containsColorsDefinitions(
   return false;
 }
 
+function containsColorsDefinition(
+  descriptor: ColorsDescriptor
+) {
+  return descriptor && (descriptor.borderColor || descriptor.backgroundColor);
+}
+
 export default {
   id: 'colors',
 
@@ -95,11 +101,12 @@ export default {
     }
 
     const {
-      options: {elements},
-      data: {datasets}
+      data: {datasets},
+      options: chartOptions
     } = chart.config;
+    const {elements} = chartOptions;
 
-    if (!options.forceOverride && (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements))) {
+    if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || (elements && containsColorsDefinitions(elements)))) {
       return;
     }
 
