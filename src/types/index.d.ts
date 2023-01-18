@@ -1685,6 +1685,7 @@ export interface Segment {
   start: number;
   end: number;
   loop: boolean;
+  style?: AnyObject;
 }
 
 export interface ArcBorderRadius {
