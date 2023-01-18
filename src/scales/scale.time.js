@@ -503,6 +503,19 @@ export default class TimeScale extends Scale {
   }
 
   /**
+	 * @param {number} value
+	 * @param {string|undefined} format
+	 * @return {string}
+	 */
+  format(value, format) {
+    const options = this.options;
+    const formats = options.time.displayFormats;
+    const unit = this._unit;
+    const fmt = format || formats[unit];
+    return this._adapter.format(value, fmt);
+  }
+
+  /**
 	 * Function to format an individual tick mark
 	 * @param {number} time
 	 * @param {number} index
