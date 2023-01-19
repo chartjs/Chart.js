@@ -782,7 +782,7 @@ export class Tooltip extends Element {
   _drawColorBox(ctx, pt, i, rtlHelper, options) {
     const labelColors = this.labelColors[i];
     const labelPointStyle = this.labelPointStyles[i];
-    const {boxHeight, boxWidth, boxPadding} = options;
+    const {boxHeight, boxWidth} = options;
     const bodyFont = toFont(options.bodyFont);
     const colorX = getAlignedX(this, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
