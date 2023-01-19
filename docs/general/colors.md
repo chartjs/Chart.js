@@ -110,7 +110,7 @@ You can specify the color as a string in either of the following notations:
 
 | Notation | Example | Example with transparency
 | -------- | ------- | -------------------------
-| [Hexademical](https://developer.mozilla.org/en-US/docs/Web/CSS/hex-color) | `#36A2EB` | `#36A2EB80`
+| [Hexadecimal](https://developer.mozilla.org/en-US/docs/Web/CSS/hex-color) | `#36A2EB` | `#36A2EB80`
 | [RGB](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/rgb) or [RGBA](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/rgba) | `rgb(54, 162, 235)` | `rgba(54, 162, 235, 0.5)`
 | [HSL](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/hsl) or [HSLA](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/hsla) | `hsl(204, 82%, 57%)` | `hsla(204, 82%, 57%, 0.5)`
 
