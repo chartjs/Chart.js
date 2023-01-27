@@ -1685,7 +1685,7 @@ export interface Segment {
   start: number;
   end: number;
   loop: boolean;
-  style?: AnyObject;
+  style?: LineOptions['segment'];
 }
 
 export interface ArcBorderRadius {
@@ -1809,13 +1809,17 @@ export interface LineElement<T extends LineProps = LineProps, O extends LineOpti
   extends Element<T, O>,
   VisualElement {
   updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void;
-  points: Point[];
+  points: PointElement[];
   readonly segments: Segment[];
   first(): Point | false;
   last(): Point | false;
   interpolate(point: Point, property: 'x' | 'y'): undefined | Point | Point[];
   pathSegment(ctx: CanvasRenderingContext2D, segment: Segment, params: AnyObject): undefined | boolean;
   path(ctx: CanvasRenderingContext2D): boolean;
+  _loop: boolean;
+  _fullLoop: boolean;
+  _datasetIndex: number;
+  _chart: AnyObject;
 }
 
 export declare const LineElement: ChartComponent & {

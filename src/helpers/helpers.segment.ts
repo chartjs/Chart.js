@@ -270,7 +270,7 @@ export function _computeSegments(line: LineElement, segmentOptions: any) {
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: { setContext }) {
+function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: any) {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
@@ -284,7 +284,7 @@ function splitByStyles(line: LineElement, segments: Segment[], points: PointElem
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: { setContext: (arg0: any) => any; }) {
+function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: any) {
   const chartContext = line._chart.getContext();
   const baseStyle = readStyle(line.options);
   const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
@@ -294,7 +294,7 @@ function doSplitByStyles(line: LineElement, segments: Segment[], points: PointEl
   let start = segments[0].start;
   let i = start;
 
-  function addStyle(s: number, e: number, l: boolean, st: { backgroundColor: any; borderCapStyle: any; borderDash: any; borderDashOffset: any; borderJoinStyle: any; borderWidth: any; borderColor: any; }) {
+  function addStyle(s: number, e: number, l: boolean, st: Segment['style']) {
     const dir = spanGaps ? -1 : 1;
     if (s === e) {
       return;
@@ -342,7 +342,7 @@ function doSplitByStyles(line: LineElement, segments: Segment[], points: PointEl
   return result;
 }
 
-function readStyle(options: LineOptions) {
+function readStyle(options: LineOptions): Segment['style'] {
   return {
     backgroundColor: options.backgroundColor,
     borderCapStyle: options.borderCapStyle,
@@ -354,6 +354,6 @@ function readStyle(options: LineOptions) {
   };
 }
 
-function styleChanged(style, prevStyle) {
+function styleChanged(style: Segment['style'], prevStyle: Segment['style']) {
   return prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle);
 }
