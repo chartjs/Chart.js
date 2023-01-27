@@ -566,7 +566,17 @@ export declare type ChartItem =
   | { canvas: HTMLCanvasElement }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-export type UpdateMode = 'resize' | 'reset' | 'none' | 'hide' | 'show' | 'default' | 'active';
+export declare enum UpdateModeEnum {
+  resize = 'resize',
+  reset = 'reset',
+  none = 'none',
+  hide = 'hide',
+  show = 'show',
+  default = 'default',
+  active = 'active'
+}
+
+export type UpdateMode = keyof typeof UpdateModeEnum;
 
 export declare class DatasetController<
   TType extends ChartType = ChartType,
