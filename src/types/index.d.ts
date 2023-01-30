@@ -533,6 +533,7 @@ export declare class Chart<
   getDataVisibility(index: number): boolean;
   hide(datasetIndex: number, dataIndex?: number): void;
   show(datasetIndex: number, dataIndex?: number): void;
+  getContext(): ScriptableChartContext;
 
   getActiveElements(): ActiveElement[];
   setActiveElements(active: ActiveDataPoint[]): void;
