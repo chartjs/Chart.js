@@ -1819,7 +1819,7 @@ export interface LineElement<T extends LineProps = LineProps, O extends LineOpti
   _loop: boolean;
   _fullLoop: boolean;
   _datasetIndex: number;
-  _chart: AnyObject;
+  _chart: Chart;
 }
 
 export declare const LineElement: ChartComponent & {
