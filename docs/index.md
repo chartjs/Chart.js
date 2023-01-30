@@ -8,10 +8,6 @@ Welcome to Chart.js!
 * Post a question tagged with `chart.js` on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js)
 * [Contribute to Chart.js](./developers/contributing.html)
 
-<a href="https://cube.dev/events/chart-js-community-meetup?ref=chartjs-docs" target="_blank">
-  <img src="https://ucarecdn.com/7733444d-5200-4b4b-9155-57e4311a6fa7/" width="700"/>
-</a>
-
 ## Why Chart.js
 
 Among [many charting libraries](https://awesome.cube.dev/?tools=charts&ref=eco-chartjs) for JavaScript application developers, Chart.js is currently the most popular one according to [GitHub stars](https://github.com/chartjs/Chart.js) (~60,000) and [npm downloads](https://www.npmjs.com/package/chart.js) (~2,400,000 weekly).
