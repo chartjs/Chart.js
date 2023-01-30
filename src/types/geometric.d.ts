@@ -37,3 +37,16 @@ export type RoundedRect = {
 }
 
 export type Padding = Partial<TRBL> | number | Point;
+
+export interface SplinePoint {
+  x: number;
+  y: number;
+  skip?: boolean;
+
+  // Both Bezier and monotone interpolations have these fields
+  // but they are added in different spots
+  cp1x?: number;
+  cp1y?: number;
+  cp2x?: number;
+  cp2y?: number;
+}

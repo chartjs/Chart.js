@@ -22,6 +22,9 @@ function lineTo(ctx, previous, target) {
   ctx.lineTo(target.x, target.y);
 }
 
+/**
+ * @returns {any}
+ */
 function getLineMethod(options) {
   if (options.stepped) {
     return _steppedLineTo;

@@ -10,9 +10,7 @@ import {Color} from './color.js';
 import Element from '../core/core.element.js';
 import {ChartArea, Padding, Point} from './geometric.js';
 import {LayoutItem, LayoutPosition} from './layout.js';
-import {RenderTextOpts} from './helpers/helpers.canvas.js';
-import {CanvasFontSpec} from '../helpers/helpers.options.js';
-import type {ColorsPluginOptions} from '../plugins/plugin.colors.js';
+import {ColorsPluginOptions} from '../plugins/plugin.colors.js';
 
 export {EasingFunction} from '../helpers/helpers.easing.js';
 export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
@@ -547,6 +545,8 @@ export declare class Chart<
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
   isPluginEnabled(pluginId: string): boolean;
+
+  getContext(): { chart: Chart, type: string };
 
   static readonly defaults: Defaults;
   static readonly overrides: Overrides;
@@ -1359,6 +1359,102 @@ export interface ScriptableScalePointLabelContext {
   type: string;
 }
 
+export interface RenderTextOpts {
+  /**
+   * The fill color of the text. If unset, the existing
+   * fillStyle property of the canvas is unchanged.
+   */
+  color?: Color;
+
+  /**
+   * The width of the strikethrough / underline
+   * @default 2
+   */
+  decorationWidth?: number;
+
+  /**
+   * The max width of the text in pixels
+   */
+  maxWidth?: number;
+
+  /**
+   * A rotation to be applied to the canvas
+   * This is applied after the translation is applied
+   */
+  rotation?: number;
+
+  /**
+   * Apply a strikethrough effect to the text
+   */
+  strikethrough?: boolean;
+
+  /**
+   * The color of the text stroke. If unset, the existing
+   * strokeStyle property of the context is unchanged
+   */
+  strokeColor?: Color;
+
+  /**
+   * The text stroke width. If unset, the existing
+   * lineWidth property of the context is unchanged
+   */
+  strokeWidth?: number;
+
+  /**
+   * The text alignment to use. If unset, the existing
+   * textAlign property of the context is unchanged
+   */
+  textAlign?: CanvasTextAlign;
+
+  /**
+   * The text baseline to use. If unset, the existing
+   * textBaseline property of the context is unchanged
+   */
+  textBaseline?: CanvasTextBaseline;
+
+  /**
+   * If specified, a translation to apply to the context
+   */
+  translation?: [number, number];
+
+  /**
+   * Underline the text
+   */
+  underline?: boolean;
+
+  /**
+   * Dimensions for drawing the label backdrop
+   */
+  backdrop?: BackdropOptions;
+}
+
+export interface BackdropOptions {
+  /**
+   * Left position of backdrop as pixel
+   */
+  left: number;
+
+  /**
+   * Top position of backdrop as pixel
+   */
+  top: number;
+
+  /**
+   * Width of backdrop in pixels
+   */
+  width: number;
+
+  /**
+   * Height of backdrop in pixels
+   */
+  height: number;
+
+  /**
+   * Color of label backdrops.
+   */
+  color: Scriptable<Color, ScriptableScaleContext>;
+}
+
 export interface LabelItem {
   label: string | string[];
   font: CanvasFontSpec;
@@ -1656,6 +1752,10 @@ export interface FontSpec {
    * @default 1.2
    */
   lineHeight: number | string;
+}
+
+export interface CanvasFontSpec extends FontSpec {
+  string: string;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
@@ -3655,6 +3755,8 @@ export interface ChartData<
   TLabel = unknown
 > {
   labels?: TLabel[];
+  xLabels?: TLabel[];
+  yLabels?: TLabel[];
   datasets: ChartDataset<TType, TData>[];
 }
 
@@ -3664,6 +3766,8 @@ export interface ChartDataCustomTypesPerDataset<
   TLabel = unknown
 > {
   labels?: TLabel[];
+  xLabels?: TLabel[];
+  yLabels?: TLabel[];
   datasets: ChartDatasetCustomTypesPerDataset<TType, TData>[];
 }
 

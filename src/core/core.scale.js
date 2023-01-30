@@ -11,7 +11,7 @@ const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left
 const getTicksLimit = (ticksLength, maxTicksLimit) => Math.min(maxTicksLimit || ticksLength, ticksLength);
 
 /**
- * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('../types/index.js').Chart } Chart
  * @typedef {{value:number | string, label?:string, major?:boolean, $context?:any}} Tick
  */
 
@@ -120,6 +120,7 @@ function createTickContext(parent, index, tick) {
 }
 
 function titleAlign(align, position, reverse) {
+  /** @type {CanvasTextAlign} */
   let ret = _toLeftRightCenter(align);
   if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
     ret = reverseAlign(ret);
@@ -839,7 +840,7 @@ export default class Scale extends Element {
       } else if (isArray(label)) {
         // if it is an array let's measure each element
         for (j = 0, jlen = label.length; j < jlen; ++j) {
-          nestedLabel = label[j];
+          nestedLabel = /** @type {string} */ (label[j]);
           // Undefined labels and arrays should not be measured
           if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
             width = _measureText(ctx, cache.data, cache.gc, width, nestedLabel);
