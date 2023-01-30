@@ -1,5 +1,8 @@
+import type {Chart, ChartArea, FontSpec, Point} from 'src/types.js';
+import type { RoundedRect} from 'src/types/geometric.js';
 import {isArray, isNullOrUndef} from './helpers.core.js';
 import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math.js';
+import type {BackdropOptions, CanvasFontSpec, DrawPointOptions, RenderTextOpts, SplinePoint} from './types.js';
 
 /**
  * Note: typedefs are auto-exported, so use a made-up `canvas` namespace where
@@ -19,7 +22,7 @@ import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helper
  * @return {string|null} The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
  * @private
  */
-export function toFontString(font) {
+export function toFontString(font: FontSpec): string | null {
   if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
     return null;
   }
@@ -33,7 +36,7 @@ export function toFontString(font) {
 /**
  * @private
  */
-export function _measureText(ctx, data, gc, longest, string) {
+export function _measureText(ctx: CanvasRenderingContext2D, data, gc, longest: number, string) {
   let textWidth = data[string];
   if (!textWidth) {
     textWidth = data[string] = ctx.measureText(string).width;
@@ -48,7 +51,8 @@ export function _measureText(ctx, data, gc, longest, string) {
 /**
  * @private
  */
-export function _longestText(ctx, font, arrayOfThings, cache) {
+// eslint-disable-next-line complexity
+export function _longestText<T>(ctx: CanvasRenderingContext2D, font, arrayOfThings: T[], cache) {
   cache = cache || {};
   let data = cache.data = cache.data || {};
   let gc = cache.garbageCollect = cache.garbageCollect || [];
@@ -64,7 +68,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
   ctx.font = font;
   let longest = 0;
   const ilen = arrayOfThings.length;
-  let i, j, jlen, thing, nestedThing;
+  let i: number, j: number, jlen: number, thing: T, nestedThing;
   for (i = 0; i < ilen; i++) {
     thing = arrayOfThings[i];
 
@@ -104,7 +108,7 @@ export function _longestText(ctx, font, arrayOfThings, cache) {
  * @returns {number} The aligned pixel value.
  * @private
  */
-export function _alignPixel(chart, pixel, width) {
+export function _alignPixel(chart: Chart, pixel: number, width: number) {
   const devicePixelRatio = chart.currentDevicePixelRatio;
   const halfWidth = width !== 0 ? Math.max(width / 2, 0.5) : 0;
   return Math.round((pixel - halfWidth) * devicePixelRatio) / devicePixelRatio + halfWidth;
@@ -115,7 +119,7 @@ export function _alignPixel(chart, pixel, width) {
  * @param {HTMLCanvasElement} canvas
  * @param {CanvasRenderingContext2D} [ctx]
  */
-export function clearCanvas(canvas, ctx) {
+export function clearCanvas(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   ctx = ctx || canvas.getContext('2d');
 
   ctx.save();
@@ -126,12 +130,13 @@ export function clearCanvas(canvas, ctx) {
   ctx.restore();
 }
 
-export function drawPoint(ctx, options, x, y) {
+export function drawPoint(ctx: CanvasRenderingContext2D, options: DrawPointOptions, x: number, y: number) {
   drawPointLegend(ctx, options, x, y, null);
 }
 
-export function drawPointLegend(ctx, options, x, y, w) {
-  let type, xOffset, yOffset, size, cornerRadius, width, xOffsetW, yOffsetW;
+// eslint-disable-next-line complexity
+export function drawPointLegend(ctx: CanvasRenderingContext2D, options: DrawPointOptions, x: number, y: number, w: number) {
+  let type: string, xOffset: number, yOffset: number, size: number, cornerRadius: number, width: number, xOffsetW: number, yOffsetW: number;
   const style = options.pointStyle;
   const rotation = options.rotation;
   const radius = options.radius;
@@ -275,28 +280,28 @@ export function drawPointLegend(ctx, options, x, y, w) {
  * @returns {boolean}
  * @private
  */
-export function _isPointInArea(point, area, margin) {
+export function _isPointInArea(point: Point, area: ChartArea, margin: number) {
   margin = margin || 0.5; // margin - default is to match rounded decimals
 
   return !area || (point && point.x > area.left - margin && point.x < area.right + margin &&
 		point.y > area.top - margin && point.y < area.bottom + margin);
 }
 
-export function clipArea(ctx, area) {
+export function clipArea(ctx: CanvasRenderingContext2D, area: ChartArea) {
   ctx.save();
   ctx.beginPath();
   ctx.rect(area.left, area.top, area.right - area.left, area.bottom - area.top);
   ctx.clip();
 }
 
-export function unclipArea(ctx) {
+export function unclipArea(ctx: CanvasRenderingContext2D) {
   ctx.restore();
 }
 
 /**
  * @private
  */
-export function _steppedLineTo(ctx, previous, target, flip, mode) {
+export function _steppedLineTo(ctx: CanvasRenderingContext2D, previous: Point, target: Point, flip, mode) {
   if (!previous) {
     return ctx.lineTo(target.x, target.y);
   }
@@ -315,7 +320,7 @@ export function _steppedLineTo(ctx, previous, target, flip, mode) {
 /**
  * @private
  */
-export function _bezierCurveTo(ctx, previous, target, flip) {
+export function _bezierCurveTo(ctx: CanvasRenderingContext2D, previous: SplinePoint, target: SplinePoint, flip) {
   if (!previous) {
     return ctx.lineTo(target.x, target.y);
   }
@@ -331,10 +336,10 @@ export function _bezierCurveTo(ctx, previous, target, flip) {
 /**
  * Render text onto the canvas
  */
-export function renderText(ctx, text, x, y, font, opts = {}) {
+export function renderText(ctx: CanvasRenderingContext2D, text: string | string[], x: number, y: number, font: CanvasFontSpec, opts: RenderTextOpts = {}) {
   const lines = isArray(text) ? text : [text];
   const stroke = opts.strokeWidth > 0 && opts.strokeColor !== '';
-  let i, line;
+  let i: number, line: string;
 
   ctx.save();
   ctx.font = font.string;
@@ -368,7 +373,7 @@ export function renderText(ctx, text, x, y, font, opts = {}) {
   ctx.restore();
 }
 
-function setRenderOpts(ctx, opts) {
+function setRenderOpts(ctx: CanvasRenderingContext2D, opts: RenderTextOpts) {
   if (opts.translation) {
     ctx.translate(opts.translation[0], opts.translation[1]);
   }
@@ -390,7 +395,7 @@ function setRenderOpts(ctx, opts) {
   }
 }
 
-function decorateText(ctx, x, y, line, opts) {
+function decorateText(ctx: CanvasRenderingContext2D, x: number, y: number, line: string, opts: RenderTextOpts) {
   if (opts.strikethrough || opts.underline) {
     /**
      * Now that IE11 support has been dropped, we can use more
@@ -415,7 +420,7 @@ function decorateText(ctx, x, y, line, opts) {
   }
 }
 
-function drawBackdrop(ctx, opts) {
+function drawBackdrop(ctx: CanvasRenderingContext2D, opts: BackdropOptions) {
   const oldColor = ctx.fillStyle;
 
   ctx.fillStyle = opts.color;
@@ -428,7 +433,7 @@ function drawBackdrop(ctx, opts) {
  * @param {CanvasRenderingContext2D} ctx Context
  * @param {*} rect Bounding rect
  */
-export function addRoundedRectPath(ctx, rect) {
+export function addRoundedRectPath(ctx: CanvasRenderingContext2D, rect: RoundedRect) {
   const {x, y, w, h, radius} = rect;
 
   // top left arc
