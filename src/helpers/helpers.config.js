@@ -22,6 +22,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
     _fallback: fallback,
     _getTarget: getTarget,
     override: (scope) => _createResolver([scope, ...scopes], prefixes, rootScopes, fallback),
+    overridePrefixes: (pref) => _createResolver(scopes, pref, rootScopes, fallback)
   };
   return new Proxy(cache, {
     /**
@@ -83,6 +84,8 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
   });
 }
 
+const applyPrefixes = (proxy, prefixes) => prefixes && prefixes.length ? proxy.overridePrefixes(prefixes) : proxy;
+
 /**
  * Returns an Proxy for resolving option values with context.
  * @param {object} proxy - The Proxy returned by `_createResolver`
@@ -99,8 +102,8 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     _subProxy: subProxy,
     _stack: new Set(),
     _descriptors: _descriptors(proxy, descriptorDefaults),
-    setContext: (ctx) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
-    override: (scope) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
+    setContext: (ctx, prefixes) => _attachContext(applyPrefixes(proxy, prefixes), ctx, subProxy, descriptorDefaults),
+    override: (scope, prefixes) => _attachContext(applyPrefixes(proxy.override(scope), prefixes), context, subProxy, descriptorDefaults)
   };
   return new Proxy(cache, {
     /**
@@ -270,7 +273,7 @@ function addScopes(set, parentScopes, key, parentFallback, value) {
   return false;
 }
 
-function createSubResolver(parentScopes, resolver, prop, value) {
+function createSubResolver(parentScopes, resolver, prop, value, prefixes = ['']) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
@@ -286,7 +289,7 @@ function createSubResolver(parentScopes, resolver, prop, value) {
       return false;
     }
   }
-  return _createResolver(Array.from(set), [''], rootScopes, fallback,
+  return _createResolver(Array.from(set), prefixes, rootScopes, fallback,
     () => subGetTarget(resolver, prop, value));
 }
 
@@ -316,7 +319,7 @@ function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (defined(value)) {
       return needsSubResolver(prop, value)
-        ? createSubResolver(scopes, proxy, prop, value)
+        ? createSubResolver(scopes, proxy, prop, value, prefixes)
         : value;
     }
   }
