@@ -10,7 +10,8 @@ import type {
 import type {
   TRBL,
   SplinePoint,
-  RoundedRect
+  RoundedRect,
+  TRBLCorners
 } from '../types/geometric.js';
 import {isArray, isNullOrUndef} from './helpers.core.js';
 import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math.js';
@@ -490,12 +491,11 @@ export function renderText(
  * @param ctx - Context
  * @param rect - Bounding rect
  */
-export function addRoundedRectPath(ctx: CanvasRenderingContext2D, rect: RoundedRect) {
+export function addRoundedRectPath(
+  ctx: CanvasRenderingContext2D,
+  rect: RoundedRect & { radius: TRBLCorners }
+) {
   const {x, y, w, h, radius} = rect;
-
-  if (!radius || typeof radius === 'number') {
-    return;
-  }
 
   // top left arc
   ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
