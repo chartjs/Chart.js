@@ -1686,7 +1686,17 @@ export interface Segment {
   start: number;
   end: number;
   loop: boolean;
-  style?: LineOptions['segment'];
+  style?: SegmentStyle;
+}
+
+export interface SegmentStyle {
+  backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
+  borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
+  borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
+  borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
+  borderDashOffset: Scriptable<number|undefined, ScriptableLineSegmentContext>;
+  borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
+  borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
 }
 
 export interface ArcBorderRadius {
@@ -1788,15 +1798,7 @@ export interface LineOptions extends CommonElementOptions {
    */
   spanGaps: boolean | number;
 
-  segment: {
-    backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-    borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-    borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
-    borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
-    borderDashOffset: Scriptable<number|undefined, ScriptableLineSegmentContext>;
-    borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
-    borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
-  };
+  segment: SegmentStyle;
 }
 
 export interface LineHoverOptions extends CommonHoverOptions {

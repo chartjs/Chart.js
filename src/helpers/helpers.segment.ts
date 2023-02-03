@@ -1,7 +1,8 @@
 import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
 import {createContext} from './helpers.options.js';
-import type {LineElement, LineOptions, PointElement, Segment} from '../types/index.js';
+import type {LineElement, LineOptions, PointElement, Segment, SegmentStyle} from '../types/index.js';
 import type {Point} from '../types/geometric.js';
+import type { AnyObject } from 'src/types/basic.js';
 
 interface Bounds {
   property: string;
@@ -243,7 +244,7 @@ function solidSegments(points: PointElement[], start: number, max: number, loop:
  * @return {Segment[]}
  * @private
  */
-export function _computeSegments(line: LineElement, segmentOptions: any) {
+export function _computeSegments(line: LineElement, segmentOptions: AnyObject) {
   const points = line.points;
   const spanGaps = line.options.spanGaps;
   const count = points.length;
@@ -270,7 +271,7 @@ export function _computeSegments(line: LineElement, segmentOptions: any) {
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: any) {
+function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: AnyObject) {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
@@ -284,7 +285,7 @@ function splitByStyles(line: LineElement, segments: Segment[], points: PointElem
  * @param {object} [segmentOptions]
  * @return {Segment[]}
  */
-function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: any) {
+function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: AnyObject) {
   const chartContext = line._chart.getContext();
   const baseStyle = readStyle(line.options);
   const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
@@ -294,7 +295,7 @@ function doSplitByStyles(line: LineElement, segments: Segment[], points: PointEl
   let start = segments[0].start;
   let i = start;
 
-  function addStyle(s: number, e: number, l: boolean, st: Segment['style']) {
+  function addStyle(s: number, e: number, l: boolean, st: SegmentStyle) {
     const dir = spanGaps ? -1 : 1;
     if (s === e) {
       return;
@@ -317,7 +318,7 @@ function doSplitByStyles(line: LineElement, segments: Segment[], points: PointEl
   for (const segment of segments) {
     start = spanGaps ? start : segment.start;
     let prev = points[start % count];
-    let style: Segment['style'];
+    let style: SegmentStyle;
     for (i = start + 1; i <= segment.end; i++) {
       const pt = points[i % count];
       style = readStyle(segmentOptions.setContext(createContext(chartContext, {
@@ -342,7 +343,7 @@ function doSplitByStyles(line: LineElement, segments: Segment[], points: PointEl
   return result;
 }
 
-function readStyle(options: LineOptions): Segment['style'] {
+function readStyle(options: LineOptions): SegmentStyle {
   return {
     backgroundColor: options.backgroundColor,
     borderCapStyle: options.borderCapStyle,
@@ -354,6 +355,6 @@ function readStyle(options: LineOptions): Segment['style'] {
   };
 }
 
-function styleChanged(style: Segment['style'], prevStyle: Segment['style']) {
+function styleChanged(style: SegmentStyle, prevStyle: SegmentStyle) {
   return prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle);
 }
