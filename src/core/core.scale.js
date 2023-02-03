@@ -8,7 +8,7 @@ import {autoSkip} from './core.scale.autoskip.js';
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
-const getTicksLimit = (ticksLength, maxTicksLimit) => Math.min(Math.max(maxTicksLimit || ticksLength, 0), ticksLength);
+const getTicksLimit = (ticksLength, maxTicksLimit) => Math.min(maxTicksLimit || ticksLength, ticksLength);
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
