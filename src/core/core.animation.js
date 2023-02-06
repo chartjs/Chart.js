@@ -99,7 +99,7 @@ export default class Animation {
     factor = loop && factor > 1 ? 2 - factor : factor;
     factor = this._easing(Math.min(1, Math.max(0, factor)));
 
-    this._target[prop] = this._fn(from, to, factor);
+    this._target[prop] = this._fn(from, to, factor, prop);
   }
 
   wait() {

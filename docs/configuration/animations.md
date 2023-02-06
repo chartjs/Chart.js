@@ -153,7 +153,7 @@ Namespace: `options.animations[animation]`
 | `type` | `string` | `typeof property` | Type of property, determines the interpolator used. Possible values: `'number'`, `'color'` and `'boolean'`. Only really needed for `'color'`, because `typeof` does not get that right.
 | `from`  | `number`\|`Color`\|`boolean` | `undefined` | Start value for the animation. Current value is used when `undefined`
 | `to`  | `number`\|`Color`\|`boolean` | `undefined` | End value for the animation. Updated value is used when `undefined`
-| `fn` | <code>&lt;T&gt;(from: T, to: T, factor: number) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
+| `fn` | <code>&lt;T&gt;(from: T, to: T, factor: number, prop: string) => T;</code> | `undefined` | Optional custom interpolator, instead of using a predefined interpolator from `type` |
 
 ### Default animations
 
@@ -172,7 +172,7 @@ These default animations are overridden by most of the dataset controllers.
 
 The core transitions are `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`.
 A custom transition can be used by passing a custom `mode` to [update](../developers/api.md#updatemode).
-Transition extends the main [animation configuration](#animation-configuration) and [animations configuration](#animations-configuration).
+Transition extends the main [animation configuration](#animation-configuration) and [animations configuration](#animation-configuration).
 
 ### Default transitions
 

@@ -83,4 +83,18 @@ describe('Chart.Animation', function() {
     expect(anim._duration).toEqual(100);
     expect(anim._to).toEqual('red');
   });
+
+  it('should update by custom interpolator', function() {
+    const fn = function(from, to, factor, prop) {
+      expect(prop).toEqual('testColor');
+      return 'green';
+    };
+    const target = {testColor: 'transparent'};
+    const anim = new Chart.Animation({duration: 100, type: 'color', fn}, target, 'testColor', 'red');
+
+    anim.update({duration: 500}, 'blue', Date.now());
+    anim.tick(anim._start + 100);
+    expect(target.testColor).toEqual('green');
+  });
+
 });

@@ -1593,7 +1593,7 @@ export type AnimationsSpec<TType extends ChartType> = {
      */
     type: 'color' | 'number' | 'boolean';
 
-    fn: <T>(from: T, to: T, factor: number) => T;
+    fn: <T>(from: T, to: T, factor: number, prop: string) => T;
 
     /**
      * Start value for the animation. Current value is used when undefined
