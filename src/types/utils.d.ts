@@ -18,3 +18,13 @@ export type DistributiveArray<T> = [T] extends [unknown] ? Array<T> : never
 
 // https://stackoverflow.com/a/50375286
 export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+export type AllKeys<T> = T extends any ? keyof T : never;
+
+export type PickType<T, K extends AllKeys<T>> = T extends { [k in K]?: any }
+  ? T[K]
+  : undefined;
+
+export type Merge<T extends object> = {
+  [k in AllKeys<T>]: PickType<T, k>;
+};
