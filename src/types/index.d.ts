@@ -1690,13 +1690,19 @@ export interface Segment {
 }
 
 export interface SegmentStyle {
-  backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-  borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-  borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
-  borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
-  borderDashOffset: Scriptable<number|undefined, ScriptableLineSegmentContext>;
-  borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
-  borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
+  backgroundColor: Scriptable<Color | undefined, ScriptableLineSegmentContext>,
+  borderColor: Scriptable<Color | undefined, ScriptableLineSegmentContext>,
+  borderCapStyle: Scriptable<CanvasLineCap | undefined, ScriptableLineSegmentContext>;
+  borderDash: Scriptable<number[] | undefined, ScriptableLineSegmentContext>;
+  borderDashOffset: Scriptable<number | undefined, ScriptableLineSegmentContext>;
+  borderJoinStyle: Scriptable<CanvasLineJoin | undefined, ScriptableLineSegmentContext>;
+  borderWidth: Scriptable<number | undefined, ScriptableLineSegmentContext>;
+}
+
+export interface SegmentBounds {
+  property: string;
+  start: number;
+  end: number;
 }
 
 export interface ArcBorderRadius {

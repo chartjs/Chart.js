@@ -1,20 +1,8 @@
 import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
 import {createContext} from './helpers.options.js';
-import type {LineElement, LineOptions, PointElement, Segment, SegmentStyle} from '../types/index.js';
+import type {LineElement, LineOptions, PointElement, Segment, SegmentStyle, SegmentBounds} from '../types/index.js';
 import type {Point} from '../types/geometric.js';
-import type { AnyObject } from 'src/types/basic.js';
-
-interface Bounds {
-  property: string;
-  start: number;
-  end: number;
-}
-
-/**
- * @typedef { import('../elements/element.line.js').default } LineElement
- * @typedef { import('../elements/element.point.js').default } PointElement
- * @typedef {{start: number, end: number, loop: boolean, style?: any}} Segment
- */
+import type {AnyObject} from 'src/types/basic.js';
 
 function propertyFn(property: string) {
   if (property === 'angle') {
@@ -40,7 +28,7 @@ function normalizeSegment({start, end, count, loop, style}) {
   };
 }
 
-function getSegment(segment: Segment, points: Point[], bounds: Bounds) {
+function getSegment(segment: Segment, points: Point[], bounds: SegmentBounds) {
   const {property, start: startBound, end: endBound} = bounds;
   const {between, normalize} = propertyFn(property);
   const count = points.length;
@@ -83,7 +71,7 @@ function getSegment(segment: Segment, points: Point[], bounds: Bounds) {
  * @private
  **/
 // eslint-disable-next-line max-statements, complexity
-export function _boundSegment(segment: Segment, points: PointElement[], bounds: Bounds) {
+export function _boundSegment(segment: Segment, points: PointElement[], bounds: SegmentBounds) {
   if (!bounds) {
     return [segment];
   }
@@ -147,7 +135,7 @@ export function _boundSegment(segment: Segment, points: PointElement[], bounds: 
  * @param {number} bounds.end - end value of the `property`
  * @private
  */
-export function _boundSegments(line: LineElement, bounds: Bounds) {
+export function _boundSegments(line: LineElement, bounds: SegmentBounds) {
   const result = [];
   const segments = line.segments;
 
