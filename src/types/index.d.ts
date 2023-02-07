@@ -12,6 +12,7 @@ import {ChartArea, Padding, Point} from './geometric.js';
 import {LayoutItem, LayoutPosition} from './layout.js';
 import {RenderTextOpts} from './helpers/helpers.canvas.js';
 import {CanvasFontSpec} from '../helpers/helpers.options.js';
+import type {ColorsPluginOptions} from '../plugins/plugin.colors.js';
 
 export {EasingFunction} from '../helpers/helpers.easing.js';
 export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
@@ -2791,6 +2792,7 @@ export interface TooltipItem<TType extends ChartType> {
 }
 
 export interface PluginOptionsByType<TType extends ChartType> {
+  colors: ColorsPluginOptions;
   decimation: DecimationOptions;
   filler: FillerOptions;
   legend: LegendOptions<TType>;
