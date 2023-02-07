@@ -212,13 +212,13 @@ export function _descriptors(
 }
 
 const readKey = (prefix: string, name: string) => prefix ? prefix + _capitalize(name) : name;
-const needsSubResolver = (prop: string, value: any) => isObject(value) && prop !== 'adapters' &&
+const needsSubResolver = (prop: string, value: unknown) => isObject(value) && prop !== 'adapters' &&
   (Object.getPrototypeOf(value) === null || value.constructor === Object);
 
 function _cached(
   target: AnyObject,
   prop: string,
-  resolve: () => any
+  resolve: () => unknown
 ) {
   if (Object.prototype.hasOwnProperty.call(target, prop)) {
     return target[prop];
@@ -254,7 +254,7 @@ function _resolveWithContext(
 
 function _resolveScriptable(
   prop: string,
-  value: (ctx: AnyObject, sub: AnyObject) => any,
+  getValue: (ctx: AnyObject, sub: AnyObject) => unknown,
   target: ContextCache,
   receiver: AnyObject
 ) {
@@ -263,7 +263,7 @@ function _resolveScriptable(
     throw new Error('Recursion detected: ' + Array.from(_stack).join('->') + '->' + prop);
   }
   _stack.add(prop);
-  value = value(_context, _subProxy || receiver);
+  let value = getValue(_context, _subProxy || receiver);
   _stack.delete(prop);
   if (needsSubResolver(prop, value)) {
     // When scriptable option returns an object, create a resolver on that.
@@ -274,14 +274,14 @@ function _resolveScriptable(
 
 function _resolveArray(
   prop: string,
-  value: any,
+  value: unknown[],
   target: ContextCache,
   isIndexable: (key: string) => boolean
 ) {
   const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
 
   if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
-    value = value[_context.index % value.length];
+    return value[_context.index % value.length];
   } else if (isObject(value[0])) {
     // Array of objects, return array or resolvers
     const arr = value;
@@ -296,9 +296,9 @@ function _resolveArray(
 }
 
 function resolveFallback(
-  fallback: ResolverObjectKey | ((prop: ResolverObjectKey, value: any) => ResolverObjectKey),
+  fallback: ResolverObjectKey | ((prop: ResolverObjectKey, value: unknown) => ResolverObjectKey),
   prop: ResolverObjectKey,
-  value: any
+  value: unknown
 ) {
   return isFunction(fallback) ? fallback(prop, value) : fallback;
 }
@@ -311,7 +311,7 @@ function addScopes(
   parentScopes: AnyObject[],
   key: ResolverObjectKey,
   parentFallback: ResolverObjectKey,
-  value: any
+  value: unknown
 ) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
@@ -336,7 +336,7 @@ function createSubResolver(
   parentScopes: AnyObject[],
   resolver: ResolverCache,
   prop: ResolverObjectKey,
-  value: any
+  value: unknown
 ) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
@@ -354,7 +354,7 @@ function createSubResolver(
     }
   }
   return _createResolver(Array.from(set), [''], rootScopes, fallback,
-    () => subGetTarget(resolver, String(prop), value));
+    () => subGetTarget(resolver, prop as string, value));
 }
 
 function addScopesFromKey(
@@ -362,7 +362,7 @@ function addScopesFromKey(
   allScopes: AnyObject[],
   key: ResolverObjectKey,
   fallback: ResolverObjectKey,
-  item: any
+  item: unknown
 ) {
   while (key) {
     key = addScopes(set, allScopes, key, fallback, item);
@@ -373,7 +373,7 @@ function addScopesFromKey(
 function subGetTarget(
   resolver: ResolverCache,
   prop: string,
-  value: any
+  value: unknown
 ) {
   const parent = resolver._getTarget();
   if (!(prop in parent)) {
@@ -393,7 +393,7 @@ function _resolveWithPrefixes(
   scopes: AnyObject[],
   proxy: ResolverProxy
 ) {
-  let value: any;
+  let value: unknown;
   for (const prefix of prefixes) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (typeof value !== 'undefined') {
@@ -442,7 +442,7 @@ export function _parseObjectDataRadialScale(
 ) {
   const {iScale} = meta;
   const {key = 'r'} = this._parsing;
-  const parsed = new Array(count);
+  const parsed = new Array<{r: unknown}>(count);
   let i: number, ilen: number, index: number, item: AnyObject;
 
   for (i = 0, ilen = count; i < ilen; ++i) {
