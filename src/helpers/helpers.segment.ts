@@ -230,7 +230,6 @@ function solidSegments(points: PointElement[], start: number, max: number, loop:
  * There can be skipped points within a segment, if spanGaps is true.
  * @param line
  * @param segmentOptions
- * @return Segment[]
  * @private
  */
 export function _computeSegments(line: LineElement, segmentOptions: AnyObject) {
@@ -258,7 +257,6 @@ export function _computeSegments(line: LineElement, segmentOptions: AnyObject) {
  * @param segments
  * @param points
  * @param segmentOptions
- * @return Segment[]
  */
 function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: AnyObject) {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
@@ -272,7 +270,6 @@ function splitByStyles(line: LineElement, segments: Segment[], points: PointElem
  * @param segments
  * @param points
  * @param segmentOptions
- * @return Segment[]
  */
 function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions: AnyObject) {
   const chartContext = line._chart.getContext();
