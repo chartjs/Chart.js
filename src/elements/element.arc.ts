@@ -327,8 +327,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
       'startAngle',
       'endAngle',
       'innerRadius',
-      'outerRadius',
-      'circumference',
+      'outerRadius'
     ], useFinalPosition);
     const {offset, spacing} = this.options;
     const halfAngle = (startAngle + endAngle) / 2;
