@@ -213,12 +213,15 @@ function drawBorder(
   circular: boolean,
 ) {
   const {fullCircles, startAngle, circumference, options} = element;
-  const {borderWidth, borderJoinStyle} = options;
+  const {borderWidth, borderJoinStyle, borderDash, borderDashOffset} = options;
   const inner = options.borderAlign === 'inner';
 
   if (!borderWidth) {
     return;
   }
+
+  ctx.setLineDash(borderDash || []);
+  ctx.lineDashOffset = borderDashOffset;
 
   if (inner) {
     ctx.lineWidth = borderWidth * 2;
@@ -264,6 +267,8 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
   static defaults = {
     borderAlign: 'center',
     borderColor: '#fff',
+    borderDash: [],
+    borderDashOffset: 0,
     borderJoinStyle: undefined,
     borderRadius: 0,
     borderWidth: 2,
@@ -275,6 +280,11 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
 
   static defaultRoutes = {
     backgroundColor: 'backgroundColor'
+  };
+
+  static descriptors = {
+    _scriptable: true,
+    _indexable: (name) => name !== 'borderDash'
   };
 
   circumference: number;
