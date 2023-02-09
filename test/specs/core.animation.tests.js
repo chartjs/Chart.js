@@ -83,4 +83,20 @@ describe('Chart.Animation', function() {
     expect(anim._duration).toEqual(100);
     expect(anim._to).toEqual('red');
   });
+
+
+  it('should invoke out-of-the-box interpolator', function() {
+    const fn = function(from, to, factor) {
+      const val = Chart.Animation.interpolators.color(from, to, factor);
+      expect(val).toEqual('#00F3');
+      return 'green';
+    };
+    const target = {testColor: 'transparent'};
+    const anim = new Chart.Animation({duration: 100, type: 'color', fn}, target, 'testColor', 'red');
+
+    anim.update({duration: 500}, 'blue', Date.now());
+    anim.tick(anim._start + 100);
+    expect(target.testColor).toEqual('green');
+  });
+
 });

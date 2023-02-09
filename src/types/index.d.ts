@@ -4,7 +4,7 @@ import {DeepPartial, DistributiveArray, UnionToIntersection} from './utils.js';
 import {TimeUnit} from '../core/core.adapters.js';
 import PointElement from '../elements/element.point.js';
 import {EasingFunction} from '../helpers/helpers.easing.js';
-import {AnimationEvent} from './animation.js';
+import {AnimationEvent, Interpolator} from './animation.js';
 import {AnyObject, EmptyObject} from './basic.js';
 import {Color} from './color.js';
 import Element from '../core/core.element.js';
@@ -1594,7 +1594,7 @@ export type AnimationsSpec<TType extends ChartType> = {
      */
     type: 'color' | 'number' | 'boolean';
 
-    fn: <T>(from: T, to: T, factor: number) => T;
+    fn: Interpolator<any>;
 
     /**
      * Start value for the animation. Current value is used when undefined

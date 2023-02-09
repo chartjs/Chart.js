@@ -21,10 +21,13 @@ const interpolators = {
   },
   number(from, to, factor) {
     return from + (to - from) * factor;
-  }
+  },
 };
 
 export default class Animation {
+
+  static interpolators = Object.freeze(interpolators);
+
   constructor(cfg, target, prop, to) {
     const currentValue = target[prop];
 

@@ -1,5 +1,14 @@
 import {Chart} from './index.js';
 import {AnyObject} from './basic.js';
+import {Color} from './color.js';
+
+export type Interpolator<T> = (from: T, to: T, factor: number) => T;
+
+export interface InterpolatorsMap {
+  boolean: Interpolator<boolean>;
+  color: Interpolator<Color>;
+  number: Interpolator<number>;
+}
 
 export declare class Animation {
   constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);
@@ -8,6 +17,8 @@ export declare class Animation {
   cancel(): void;
   tick(date: number): void;
   readonly _to: unknown;
+
+  static readonly interpolators: InterpolatorsMap;
 }
 
 export interface AnimationEvent {

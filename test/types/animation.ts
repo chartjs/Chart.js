@@ -1,4 +1,4 @@
-import { Chart } from '../../src/types.js';
+import { Chart, Animation } from '../../src/types.js';
 
 const chart = new Chart('id', {
   type: 'bar',
@@ -20,7 +20,8 @@ const chart = new Chart('id', {
         delay: (ctx) => ctx.dataIndex * 100,
         duration: (ctx) => ctx.datasetIndex * 1000,
         loop: true,
-        easing: 'linear'
+        easing: 'linear',
+        fn: (from, to, factor) => Animation.interpolators.number(from, to, factor)
       }
     },
     transitions: {
