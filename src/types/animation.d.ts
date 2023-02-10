@@ -7,9 +7,9 @@ export type PretypedInterpolator<T> = (from: T, to: T, factor: number) => T;
 export type Interpolator = <T>(from: T, to: T, factor: number) => T;
 
 export interface InterpolatorsMap {
-  boolean: Interpolator<boolean>;
-  color: Interpolator<Color>;
-  number: Interpolator<number>;
+  boolean: PretypedInterpolator<boolean>;
+  color: PretypedInterpolator<Color>;
+  number: PretypedInterpolator<number>;
 }
 
 export declare class Animation {

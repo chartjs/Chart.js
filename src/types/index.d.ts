@@ -1594,7 +1594,7 @@ export type AnimationsSpec<TType extends ChartType> = {
      */
     type: 'color' | 'number' | 'boolean';
 
-    fn: Interpolator<any>;
+    fn: Interpolator;
 
     /**
      * Start value for the animation. Current value is used when undefined

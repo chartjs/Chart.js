@@ -21,7 +21,7 @@ const chart = new Chart('id', {
         duration: (ctx) => ctx.datasetIndex * 1000,
         loop: true,
         easing: 'linear',
-        fn: (from, to, factor) => Animation.interpolators.number(from, to, factor)
+        fn: (from: any, to: any, factor: number) => ({size: Animation.interpolators.number(0, 32, factor)} as any)
       }
     },
     transitions: {
@@ -41,7 +41,6 @@ const chart = new Chart('id', {
     }
   },
 });
-
 
 const pie = new Chart('id', {
   type: 'pie',
