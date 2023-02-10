@@ -21,7 +21,7 @@ const interpolators = {
   },
   number(from, to, factor) {
     return from + (to - from) * factor;
-  },
+  }
 };
 
 export default class Animation {
