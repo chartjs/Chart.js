@@ -84,7 +84,6 @@ describe('Chart.Animation', function() {
     expect(anim._to).toEqual('red');
   });
 
-
   it('should invoke out-of-the-box interpolator', function() {
     const fn = function(from, to, factor) {
       const val = Chart.Animation.interpolators.color(from, to, factor);
