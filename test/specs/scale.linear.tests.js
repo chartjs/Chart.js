@@ -684,6 +684,28 @@ describe('Linear Scale', function() {
     expect(getLabels(chart.scales.y)).toEqual(['1', '3', '5', '7', '9', '11']);
   });
 
+  it('Should not generate any ticks > max if max is specified', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 2.404e-8,
+            max: 2.4143e-8,
+            ticks: {
+              includeBounds: false,
+            },
+          },
+        },
+      },
+    });
+
+    expect(chart.scales.x.min).toBe(2.404e-8);
+    expect(chart.scales.x.max).toBe(2.4143e-8);
+    expect(chart.scales.x.ticks[chart.scales.x.ticks.length - 1].value).toBeLessThanOrEqual(2.4143e-8);
+  });
+
   it('Should not generate insane amounts of ticks with small stepSize and large range', function() {
     var chart = window.acquireChart({
       type: 'bar',
