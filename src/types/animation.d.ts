@@ -2,7 +2,9 @@ import {Chart} from './index.js';
 import {AnyObject} from './basic.js';
 import {Color} from './color.js';
 
-export type Interpolator<T> = (from: T, to: T, factor: number) => T;
+export type PretypedInterpolator<T> = (from: T, to: T, factor: number) => T;
+
+export type Interpolator = <T>(from: T, to: T, factor: number) => T;
 
 export interface InterpolatorsMap {
   boolean: Interpolator<boolean>;
