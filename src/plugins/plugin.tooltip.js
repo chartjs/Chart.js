@@ -782,7 +782,7 @@ export class Tooltip extends Element {
   _drawColorBox(ctx, pt, i, rtlHelper, options) {
     const labelColors = this.labelColors[i];
     const labelPointStyle = this.labelPointStyles[i];
-    const {boxHeight, boxWidth, boxPadding} = options;
+    const {boxHeight, boxWidth} = options;
     const bodyFont = toFont(options.bodyFont);
     const colorX = getAlignedX(this, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
@@ -818,8 +818,8 @@ export class Tooltip extends Element {
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
 
       // Fill a white rect so that colours merge nicely if the opacity is < 1
-      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth - boxPadding);
-      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - boxPadding - 2);
+      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
+      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
       const borderRadius = toTRBLCorners(labelColors.borderRadius);
 
       if (Object.values(borderRadius).some(v => v !== 0)) {
