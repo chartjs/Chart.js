@@ -42,6 +42,7 @@ const chart = new Chart('id', {
   },
 });
 
+
 const pie = new Chart('id', {
   type: 'pie',
   data: {
