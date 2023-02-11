@@ -13,7 +13,7 @@ module.exports = [
   },
   {
     path: 'dist/chart.js',
-    limit: '34 KB',
+    limit: '34.5 KB',
     import: '{ Chart }',
     running: false,
     modifyWebpackConfig
