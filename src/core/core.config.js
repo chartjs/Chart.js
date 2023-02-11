@@ -31,20 +31,28 @@ function axisFromPosition(position) {
   }
 }
 
-export function determineAxis(id, scaleOptions) {
+function getAxis(id, scaleOptions) {
   if (id === 'x' || id === 'y' || id === 'r') {
     return id;
   }
 
   id = scaleOptions.axis
     || axisFromPosition(scaleOptions.position)
-    || id.length > 1 && determineAxis(id[0].toLowerCase(), scaleOptions);
+    || id.length > 1 && getAxis(id[0].toLowerCase(), scaleOptions);
 
   if (id) {
     return id;
   }
+}
 
-  throw new Error(`Cannot determine type of '${name}' axis. Please provide 'axis' or 'position' option.`);
+export function determineAxis(id, ...scaleOptions) {
+  for (let i = 0, n = scaleOptions.length; i < n; i++) {
+    const axis = getAxis(id, scaleOptions[i]);
+    if (axis) {
+      return axis;
+    }
+  }
+  throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
 }
 
 function mergeScaleConfig(config, options) {
@@ -62,7 +70,7 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf);
+    const axis = determineAxis(id, scaleConf, defaults.scales[scaleConf.type]);
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
