@@ -481,6 +481,35 @@ describe('Core.scale', function() {
       expect(scale._layers().length).toEqual(3);
     });
 
+    it('should create the chart with custom scale ids without axis or position options', function() {
+      function createChart() {
+        return window.acquireChart({
+          type: 'scatter',
+          data: {
+            datasets: [{
+              data: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}],
+              xAxisID: 'customIDx',
+              yAxisID: 'customIDy'
+            }]
+          },
+          options: {
+            scales: {
+              customIDx: {
+                type: 'linear',
+                display: false
+              },
+              customIDy: {
+                type: 'linear',
+                display: false
+              }
+            }
+          }
+        });
+      }
+
+      expect(createChart).not.toThrow();
+    });
+
     it('should default to one layer for custom scales', function() {
       class CustomScale extends Chart.Scale {
         draw() {}

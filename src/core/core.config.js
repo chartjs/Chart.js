@@ -55,6 +55,22 @@ export function determineAxis(id, ...scaleOptions) {
   throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
 }
 
+function getScaleFromDataset(id, axis, dataset) {
+  if (dataset[axis + 'AxisID'] === id) {
+    return {axis};
+  }
+}
+
+function searchScaleIDs(id, config) {
+  if (config.data && config.data.datasets) {
+    const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
+    if (boundDs.length) {
+      return getScaleFromDataset(id, 'x', boundDs[0]) || getScaleFromDataset(id, 'y', boundDs[0]);
+    }
+  }
+  return {};
+}
+
 function mergeScaleConfig(config, options) {
   const chartDefaults = overrides[config.type] || {scales: {}};
   const configScales = options.scales || {};
@@ -70,7 +86,7 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf, defaults.scales[scaleConf.type]);
+    const axis = determineAxis(id, scaleConf, searchScaleIDs(id, config), defaults.scales[scaleConf.type]);
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
