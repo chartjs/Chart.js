@@ -22,6 +22,12 @@ function getDefaultScaleIDFromAxis(axis, indexAxis) {
   return axis === indexAxis ? '_index_' : '_value_';
 }
 
+function axisFromId(id) {
+  if (id === 'x' || id === 'y' || id === 'r') {
+    return id;
+  }
+}
+
 function axisFromPosition(position) {
   if (position === 'top' || position === 'bottom') {
     return 'x';
@@ -31,23 +37,15 @@ function axisFromPosition(position) {
   }
 }
 
-function getAxis(id, scaleOptions) {
-  if (id === 'x' || id === 'y' || id === 'r') {
-    return id;
-  }
-
-  id = scaleOptions.axis
-    || axisFromPosition(scaleOptions.position)
-    || id.length > 1 && getAxis(id[0].toLowerCase(), scaleOptions);
-
-  if (id) {
-    return id;
-  }
-}
-
 export function determineAxis(id, ...scaleOptions) {
+  if (axisFromId(id)) {
+    return id;
+  }
   for (let i = 0, n = scaleOptions.length; i < n; i++) {
-    const axis = getAxis(id, scaleOptions[i]);
+    const opts = scaleOptions[i];
+    const axis = opts.axis
+      || axisFromPosition(opts.position)
+      || id.length > 1 && axisFromId(id[0].toLowerCase());
     if (axis) {
       return axis;
     }
@@ -61,7 +59,7 @@ function getAxisFromDataset(id, axis, dataset) {
   }
 }
 
-function retrieveAxisOnDatasets(id, config) {
+function retrieveAxisFromDatasets(id, config) {
   if (config.data && config.data.datasets) {
     const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
     if (boundDs.length) {
@@ -86,7 +84,7 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf, retrieveAxisOnDatasets(id, config), defaults.scales[scaleConf.type]);
+    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config), defaults.scales[scaleConf.type]);
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
