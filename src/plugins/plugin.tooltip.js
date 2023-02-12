@@ -780,7 +780,7 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _drawColorBox(ctx, pt, i, rtlHelper, options) {
-    const labelColors = this.labelColors[i];
+    const labelColor = this.labelColors[i];
     const labelPointStyle = this.labelPointStyles[i];
     const {boxHeight, boxWidth} = options;
     const bodyFont = toFont(options.bodyFont);
@@ -807,20 +807,20 @@ export class Tooltip extends Element {
       drawPoint(ctx, drawOptions, centerX, centerY);
 
       // Draw the point
-      ctx.strokeStyle = labelColors.borderColor;
-      ctx.fillStyle = labelColors.backgroundColor;
+      ctx.strokeStyle = labelColor.borderColor;
+      ctx.fillStyle = labelColor.backgroundColor;
       drawPoint(ctx, drawOptions, centerX, centerY);
     } else {
       // Border
-      ctx.lineWidth = isObject(labelColors.borderWidth) ? Math.max(...Object.values(labelColors.borderWidth)) : (labelColors.borderWidth || 1); // TODO, v4 remove fallback
-      ctx.strokeStyle = labelColors.borderColor;
-      ctx.setLineDash(labelColors.borderDash || []);
-      ctx.lineDashOffset = labelColors.borderDashOffset || 0;
+      ctx.lineWidth = isObject(labelColor.borderWidth) ? Math.max(...Object.values(labelColor.borderWidth)) : (labelColor.borderWidth || 1); // TODO, v4 remove fallback
+      ctx.strokeStyle = labelColor.borderColor;
+      ctx.setLineDash(labelColor.borderDash || []);
+      ctx.lineDashOffset = labelColor.borderDashOffset || 0;
 
       // Fill a white rect so that colours merge nicely if the opacity is < 1
       const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
       const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
-      const borderRadius = toTRBLCorners(labelColors.borderRadius);
+      const borderRadius = toTRBLCorners(labelColor.borderRadius);
 
       if (Object.values(borderRadius).some(v => v !== 0)) {
         ctx.beginPath();
@@ -836,7 +836,7 @@ export class Tooltip extends Element {
         ctx.stroke();
 
         // Inner square
-        ctx.fillStyle = labelColors.backgroundColor;
+        ctx.fillStyle = labelColor.backgroundColor;
         ctx.beginPath();
         addRoundedRectPath(ctx, {
           x: innerX,
@@ -852,7 +852,7 @@ export class Tooltip extends Element {
         ctx.fillRect(outerX, colorY, boxWidth, boxHeight);
         ctx.strokeRect(outerX, colorY, boxWidth, boxHeight);
         // Inner square
-        ctx.fillStyle = labelColors.backgroundColor;
+        ctx.fillStyle = labelColor.backgroundColor;
         ctx.fillRect(innerX, colorY + 1, boxWidth - 2, boxHeight - 2);
       }
     }
