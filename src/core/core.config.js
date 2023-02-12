@@ -38,13 +38,12 @@ function axisFromPosition(position) {
 }
 
 export function determineAxis(id, ...scaleOptions) {
-  let axis = idMatchesAxis(id);
-  if (axis) {
-    return axis;
+  if (idMatchesAxis(id)) {
+    return id;
   }
   for (let i = 0, n = scaleOptions.length; i < n; i++) {
     const opts = scaleOptions[i];
-    axis = opts.axis
+    const axis = opts.axis
       || axisFromPosition(opts.position)
       || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
     if (axis) {
