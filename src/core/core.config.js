@@ -22,7 +22,7 @@ function getDefaultScaleIDFromAxis(axis, indexAxis) {
   return axis === indexAxis ? '_index_' : '_value_';
 }
 
-function axisFromId(id) {
+function idMatchesAxis(id) {
   if (id === 'x' || id === 'y' || id === 'r') {
     return id;
   }
@@ -38,14 +38,15 @@ function axisFromPosition(position) {
 }
 
 export function determineAxis(id, ...scaleOptions) {
-  if (axisFromId(id)) {
-    return id;
+  let axis = idMatchesAxis(id);
+  if (axis) {
+    return axis;
   }
   for (let i = 0, n = scaleOptions.length; i < n; i++) {
     const opts = scaleOptions[i];
-    const axis = opts.axis
+    axis = opts.axis
       || axisFromPosition(opts.position)
-      || id.length > 1 && axisFromId(id[0].toLowerCase());
+      || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
     if (axis) {
       return axis;
     }
