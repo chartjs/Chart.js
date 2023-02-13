@@ -41,8 +41,7 @@ export function determineAxis(id, ...scaleOptions) {
   if (idMatchesAxis(id)) {
     return id;
   }
-  for (let i = 0, n = scaleOptions.length; i < n; i++) {
-    const opts = scaleOptions[i];
+  for (const opts of scaleOptions) {
     const axis = opts.axis
       || axisFromPosition(opts.position)
       || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
