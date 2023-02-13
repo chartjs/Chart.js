@@ -204,7 +204,7 @@ export function _addGrace(minmax: { min: number; max: number; }, grace: number |
  * @returns
  */
 export function createContext<T extends object>(parentContext: null, context: T): T;
-export function createContext<T extends object, P extends T>(parentContext: P, context: T): P & T;
+export function createContext<T extends object, P extends object>(parentContext: P, context: T): P & T;
 export function createContext(parentContext: object, context: object) {
   return Object.assign(Object.create(parentContext), context);
 }

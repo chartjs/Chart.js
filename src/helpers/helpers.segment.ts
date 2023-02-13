@@ -206,7 +206,6 @@ function solidSegments(points: PointElement[], start: number, max: number, loop:
       if (!prev.skip) {
         loop = false;
         result.push({start: start % count, end: (end - 1) % count, loop});
-        // @ts-ignore
         start = last = cur.stop ? end : null;
       }
     } else {

@@ -1816,7 +1816,7 @@ export interface LineHoverOptions extends CommonHoverOptions {
 
 export interface LineElement<T extends LineProps = LineProps, O extends LineOptions = LineOptions>
   extends Element<T, O>,
-  VisualElement {
+  Pick<VisualElement, 'draw'> {
   updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void;
   points: PointElement[];
   readonly segments: Segment[];
