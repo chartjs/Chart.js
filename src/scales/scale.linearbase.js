@@ -123,7 +123,11 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   for (; j < numSpaces; ++j) {
-    ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
+    const tickValue = Math.round((niceMin + j * spacing) * factor) / factor;
+    if (maxDefined && tickValue > max) {
+      break;
+    }
+    ticks.push({value: tickValue});
   }
 
   if (maxDefined && includeBounds && niceMax !== max) {

@@ -1700,7 +1700,16 @@ export interface ArcOptions extends CommonElementOptions {
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
-
+  /**
+   * Line dash. See MDN.
+   * @default []
+   */
+  borderDash: number[];
+  /**
+   * Line dash offset. See MDN.
+   * @default 0.0
+   */
+  borderDashOffset: number;
   /**
    * Line join style. See MDN. Default is 'round' when `borderAlign` is 'inner', else 'bevel'.
    */
@@ -1730,6 +1739,8 @@ export interface ArcOptions extends CommonElementOptions {
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {
+  hoverBorderDash: number[];
+  hoverBorderDashOffset: number;
   hoverOffset: number;
 }
 

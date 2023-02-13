@@ -76,7 +76,7 @@ export default class DoughnutController extends DatasetController {
 
   static descriptors = {
     _scriptable: (name) => name !== 'spacing',
-    _indexable: (name) => name !== 'spacing',
+    _indexable: (name) => name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
   };
 
   /**

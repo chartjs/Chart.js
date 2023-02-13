@@ -105,6 +105,8 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
 | [`borderAlign`](#border-alignment) | `'center'`\|`'inner'` | Yes | Yes | `'center'`
 | [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderDash`](#styling) | `number[]` | Yes | - | `[]`
+| [`borderDashOffset`](#styling) | `number` | Yes | - | `0.0`
 | [`borderJoinStyle`](#styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
 | [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
@@ -113,6 +115,8 @@ The doughnut/pie chart allows a number of properties to be specified for each da
 | [`data`](#data-structure) | `number[]` | - | - | **required**
 | [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
 | [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderDash`](#interactions) | `number[]` | Yes | - | `undefined`
+| [`hoverBorderDashOffset`](#interactions) | `number` | Yes | - | `undefined`
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 | [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
@@ -139,6 +143,8 @@ The style of each arc can be controlled with the following properties:
 | ---- | ----
 | `backgroundColor` | arc background color.
 | `borderColor` | arc border color.
+| `borderDash` | arc border length and spacing of dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | arc border offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
 | `offset` | arc offset (in pixels).
@@ -168,6 +174,8 @@ The interaction with each arc can be controlled with the following properties:
 | ---- | -----------
 | `hoverBackgroundColor` | arc background color when hovered.
 | `hoverBorderColor` | arc border color when hovered.
+| `hoverBorderDash` | arc border length and spacing of dashes when hovered. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `hoverBorderDashOffset` | arc border offset for line dashes when hovered. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `hoverBorderJoinStyle` | arc border join style when hovered. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `hoverBorderWidth` | arc border width when hovered (in pixels).
 | `hoverOffset` | arc offset when hovered (in pixels).
