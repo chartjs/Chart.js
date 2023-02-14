@@ -377,9 +377,10 @@ The tooltip model contains parameters that can be used to render the tooltip.
     // lines of text that form the footer
     footer: string[],
 
-    // colors to render for each item in body[]. This is the color of the squares in the tooltip
-    labelColors: Color[],
+    // style to render for each item in body[]. This is the style of the squares in the tooltip
+    labelColors: TooltipLabelStyle[],
     labelTextColors: Color[],
+    labelPointStyles: { pointStyle: PointStyle; rotation: number }[],
 
     // 0 opacity is a hidden tooltip
     opacity: number,
