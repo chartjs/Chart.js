@@ -1,19 +1,7 @@
 import {almostEquals, distanceBetweenPoints, sign} from './helpers.math.js';
 import {_isPointInArea} from './helpers.canvas.js';
 import type {ChartArea} from '../types/index.js';
-
-export interface SplinePoint {
-  x: number;
-  y: number;
-  skip?: boolean;
-
-  // Both Bezier and monotone interpolations have these fields
-  // but they are added in different spots
-  cp1x?: number;
-  cp1y?: number;
-  cp2x?: number;
-  cp2y?: number;
-}
+import type {SplinePoint} from '../types/geometric.js';
 
 const EPSILON = Number.EPSILON || 1e-14;
 

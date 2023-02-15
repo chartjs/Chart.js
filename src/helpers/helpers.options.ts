@@ -1,7 +1,7 @@
 import defaults from '../core/core.defaults.js';
 import {isArray, isObject, toDimension, valueOrDefault} from './helpers.core.js';
-import {Point, toFontString} from './helpers.canvas.js';
-import type {ChartArea, FontSpec} from '../types/index.js';
+import {toFontString} from './helpers.canvas.js';
+import type {ChartArea, FontSpec, Point} from '../types/index.js';
 import type {TRBL, TRBLCorners} from '../types/geometric.js';
 
 const LINE_HEIGHT = /^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/;
@@ -102,10 +102,6 @@ export function toPadding(value?: number | TRBL): ChartArea {
   obj.height = obj.top + obj.bottom;
 
   return obj;
-}
-
-export interface CanvasFontSpec extends FontSpec {
-  string: string;
 }
 
 /**
