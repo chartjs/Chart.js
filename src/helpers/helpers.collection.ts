@@ -182,14 +182,9 @@ export function unlistenArrayEvents(array, listener) {
  * @param items
  */
 export function _arrayUnique<T>(items: T[]) {
-  const set = new Set<T>();
-  let i: number, ilen: number;
+  const set = new Set<T>(items);
 
-  for (i = 0, ilen = items.length; i < ilen; ++i) {
-    set.add(items[i]);
-  }
-
-  if (set.size === ilen) {
+  if (set.size === items.length) {
     return items;
   }
 
