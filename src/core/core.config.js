@@ -22,6 +22,12 @@ function getDefaultScaleIDFromAxis(axis, indexAxis) {
   return axis === indexAxis ? '_index_' : '_value_';
 }
 
+function idMatchesAxis(id) {
+  if (id === 'x' || id === 'y' || id === 'r') {
+    return id;
+  }
+}
+
 function axisFromPosition(position) {
   if (position === 'top' || position === 'bottom') {
     return 'x';
@@ -31,20 +37,35 @@ function axisFromPosition(position) {
   }
 }
 
-export function determineAxis(id, scaleOptions) {
-  if (id === 'x' || id === 'y' || id === 'r') {
+export function determineAxis(id, ...scaleOptions) {
+  if (idMatchesAxis(id)) {
     return id;
   }
-
-  id = scaleOptions.axis
-    || axisFromPosition(scaleOptions.position)
-    || id.length > 1 && determineAxis(id[0].toLowerCase(), scaleOptions);
-
-  if (id) {
-    return id;
+  for (const opts of scaleOptions) {
+    const axis = opts.axis
+      || axisFromPosition(opts.position)
+      || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
+    if (axis) {
+      return axis;
+    }
   }
+  throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
+}
 
-  throw new Error(`Cannot determine type of '${name}' axis. Please provide 'axis' or 'position' option.`);
+function getAxisFromDataset(id, axis, dataset) {
+  if (dataset[axis + 'AxisID'] === id) {
+    return {axis};
+  }
+}
+
+function retrieveAxisFromDatasets(id, config) {
+  if (config.data && config.data.datasets) {
+    const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
+    if (boundDs.length) {
+      return getAxisFromDataset(id, 'x', boundDs[0]) || getAxisFromDataset(id, 'y', boundDs[0]);
+    }
+  }
+  return {};
 }
 
 function mergeScaleConfig(config, options) {
@@ -62,7 +83,7 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf);
+    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config), defaults.scales[scaleConf.type]);
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
