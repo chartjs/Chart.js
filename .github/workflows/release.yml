@@ -31,6 +31,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
+          node-version: 16
           cache: pnpm
       - name: Setup and build
         run: |
@@ -75,6 +76,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
+          node-version: 16
           cache: pnpm
       - name: Setup and build
         run: |

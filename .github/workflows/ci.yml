@@ -35,6 +35,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
+          node-version: 16
           cache: pnpm
       - uses: dorny/paths-filter@v2
         id: changes
