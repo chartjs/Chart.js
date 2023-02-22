@@ -1,6 +1,6 @@
 # Scatter Chart
 
-Scatter charts are based on basic line charts with the x axis changed to a linear axis. To use a scatter chart, data must be passed as objects containing X and Y properties. The example below creates a scatter chart with 4 points. RUN PACKAGE CI
+Scatter charts are based on basic line charts with the x axis changed to a linear axis. To use a scatter chart, data must be passed as objects containing X and Y properties. The example below creates a scatter chart with 4 points.
 
 ```js chart-editor
 // <block:setup:1>
