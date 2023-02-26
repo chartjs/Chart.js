@@ -73,6 +73,7 @@ module.exports = async function(karma) {
     // Explicitly disable hardware acceleration to make image
     // diff more stable when ran on Travis and dev machine.
     // https://github.com/chartjs/Chart.js/pull/5629
+    // Since FF 110 https://github.com/chartjs/Chart.js/issues/11164
     customLaunchers: {
       chrome: {
         base: 'Chrome',
@@ -86,7 +87,8 @@ module.exports = async function(karma) {
       firefox: {
         base: 'Firefox',
         prefs: {
-          'layers.acceleration.disabled': true
+          'layers.acceleration.disabled': true,
+          'gfx.canvas.accelerated': false
         }
       },
       safari: {
