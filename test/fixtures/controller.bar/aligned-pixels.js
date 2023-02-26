@@ -11,7 +11,7 @@ module.exports = {
     },
     options: {
       indexAxis: 'y',
-      events: [],
+      events: ['none'],
       backgroundColor: 'navy',
       devicePixelRatio: 1.25,
       scales: {
