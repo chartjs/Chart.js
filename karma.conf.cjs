@@ -86,7 +86,8 @@ module.exports = async function(karma) {
       firefox: {
         base: 'Firefox',
         prefs: {
-          'layers.acceleration.disabled': true
+          'layers.acceleration.disabled': true,
+          'gfx.canvas.accelerated': true
         }
       },
       safari: {
