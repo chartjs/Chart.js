@@ -12,6 +12,7 @@ Namespace: `options.scales[scaleId]`
 | `grid` | `object` | | Grid line configuration. [more...](/axes/styling.md#grid-line-configuration)
 | `min` | `number` | | User defined minimum number for the scale, overrides minimum value from data. [more...](/axes/index.md#axis-range-settings)
 | `max` | `number` | | User defined maximum number for the scale, overrides maximum value from data. [more...](/axes/index.md#axis-range-settings)
+| `offset` | `boolean`  | `false` | If true, extra space is added to both edges and the axis is scaled to fit into chart area. This is set to `true` for a bar chart by default.
 | `reverse` | `boolean` | `false` | Reverse the scale.
 | `stacked` | `boolean`\|`string` | `false` | Should the data be stacked. [more...](/axes/index.md#stacking)
 | `suggestedMax` | `number` | | Adjustment used when calculating the maximum data value. [more...](/axes/index.md#axis-range-settings)
