@@ -35,14 +35,9 @@ export default class Animations {
         }
       });
     });
-    const pathAnimatedProps = this._pathProperties;
-    animatedProps.forEach(function(v, k) {
-      const value = parserPathOptions(k);
-      if (value) {
-        pathAnimatedProps.push(value);
-      }
-    });
 
+    const pathAnimatedProps = this._pathProperties;
+    loadPathOptions(animatedProps, pathAnimatedProps);
   }
 
   /**
@@ -154,6 +149,15 @@ export default class Animations {
   }
 }
 
+function loadPathOptions(props, pathProps) {
+  props.forEach(function(v, k) {
+    const value = parserPathOptions(k);
+    if (value) {
+      pathProps.push(value);
+    }
+  });
+}
+
 function awaitAll(animations, properties) {
   const running = [];
   const keys = Object.keys(properties);
@@ -216,16 +220,10 @@ function parseKeys(key, keys) {
 function getInnerObject(target, pathOpts) {
   let obj = target;
   for (const p of pathOpts.path) {
-    obj = checkAndGetObject(obj, p);
-    if (!obj) {
+    obj = obj[p];
+    if (!isObject(obj)) {
       return;
     }
   }
   return obj;
-}
-
-function checkAndGetObject(obj, key) {
-  if (isObject(obj[key])) {
-    return obj[key];
-  }
 }

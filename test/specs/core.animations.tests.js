@@ -93,7 +93,7 @@ describe('Chart.animations', function() {
     }, 300);
   });
 
-  it('should update path properties to target after animations complete', function(done) {
+  it('should update path properties to target during animation', function(done) {
     const chart = {
       draw: function() {},
       options: {
@@ -130,7 +130,85 @@ describe('Chart.animations', function() {
     }, 250);
   });
 
-  it('should update path properties to target options after animations complete', function(done) {
+  it('should not update path properties to target during animation because not an object', function() {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      level: from
+    };
+    expect(anims.update(target, {
+      level: to
+    })).toBeUndefined();
+  });
+
+  it('should not update path properties to target during animation because missing target', function() {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      foo: from
+    };
+
+    expect(anims.update(target, {
+      foo: to
+    })).toBeUndefined();
+  });
+
+  it('should update path (2 levels) properties to target during animation', function(done) {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level1.level2.value'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      level1: {
+        level2: {
+          value: from
+        }
+      }
+    };
+    expect(anims.update(target, {
+      level1: {
+        level2: {
+          value: to
+        }
+      }
+    })).toBeTrue();
+
+    const ended = function() {
+      const value = target.level1.level2.value;
+      expect(value === to).toBeTrue();
+      Chart.animator.remove(chart);
+      done();
+    };
+
+    Chart.animator.listen(chart, 'complete', ended);
+    Chart.animator.start(chart);
+    setTimeout(function() {
+      const value = target.level1.level2.value;
+      expect(value > from).toBeTrue();
+      expect(value < to).toBeTrue();
+    }, 250);
+  });
+
+  it('should update path properties to target options during animation', function(done) {
     const chart = {
       draw: function() {},
       options: {
