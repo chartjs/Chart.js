@@ -93,6 +93,84 @@ describe('Chart.animations', function() {
     }, 300);
   });
 
+  it('should update path properties to target after animations complete', function(done) {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      level: {
+        value: from
+      }
+    };
+    expect(anims.update(target, {
+      level: {
+        value: to
+      }
+    })).toBeTrue();
+
+    const ended = function() {
+      const value = target.level.value;
+      expect(value === to).toBeTrue();
+      Chart.animator.remove(chart);
+      done();
+    };
+
+    Chart.animator.listen(chart, 'complete', ended);
+    Chart.animator.start(chart);
+    setTimeout(function() {
+      const value = target.level.value;
+      expect(value > from).toBeTrue();
+      expect(value < to).toBeTrue();
+    }, 250);
+  });
+
+  it('should update path properties to target options after animations complete', function(done) {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      options: {
+        level: {
+          value: from
+        }
+      }
+    };
+    expect(anims.update(target, {
+      options: {
+        level: {
+          value: to
+        }
+      }
+    })).toBeTrue();
+
+    const ended = function() {
+      const value = target.options.level.value;
+      expect(value === to).toBeTrue();
+      Chart.animator.remove(chart);
+      done();
+    };
+
+    Chart.animator.listen(chart, 'complete', ended);
+    Chart.animator.start(chart);
+    setTimeout(function() {
+      const value = target.options.level.value;
+      expect(value > from).toBeTrue();
+      expect(value < to).toBeTrue();
+    }, 300);
+  });
+
   it('should not assign shared options to target when animations are cancelled', function(done) {
     const chart = {
       draw: function() {},
