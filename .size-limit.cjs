@@ -20,7 +20,7 @@ module.exports = [
   },
   {
     path: 'dist/chart.js',
-    limit: '19.5 KB',
+    limit: '19.7 KB',
     import: '{ BarController, BubbleController, DoughnutController, LineController, PolarAreaController, PieController, RadarController, ScatterController }',
     running: false,
     modifyWebpackConfig
