@@ -190,11 +190,7 @@ function resolveTargetOptions(target, newOptions) {
 
 function parserPathOptions(key) {
   if (key.includes('.')) {
-    const keys = _splitKey(key);
-    if (keys.length <= 1) {
-      return;
-    }
-    return parseKeys(key, keys);
+    return parseKeys(key, _splitKey(key));
   }
 }
 
