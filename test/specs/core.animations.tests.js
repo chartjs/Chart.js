@@ -136,7 +136,7 @@ describe('Chart.animations', function() {
       options: {
       }
     };
-    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number'}});
 
     const from = 0;
     const to = 100;
@@ -154,7 +154,7 @@ describe('Chart.animations', function() {
       options: {
       }
     };
-    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number', duration: 500}});
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value'], type: 'number'}});
 
     const from = 0;
     const to = 100;
@@ -173,7 +173,7 @@ describe('Chart.animations', function() {
       options: {
       }
     };
-    const anims = new Chart.Animations(chart, {value: {properties: ['.value', 'value.', 'value..end'], type: 'number', duration: 500}});
+    const anims = new Chart.Animations(chart, {value: {properties: ['.value', 'value.', 'value..end'], type: 'number'}});
     expect(anims._pathProperties.length === 0).toBeTrue();
   });
 
@@ -256,7 +256,7 @@ describe('Chart.animations', function() {
       const value = target.options.level.value;
       expect(value > from).toBeTrue();
       expect(value < to).toBeTrue();
-    }, 300);
+    }, 250);
   });
 
   it('should not assign shared options to target when animations are cancelled', function(done) {
