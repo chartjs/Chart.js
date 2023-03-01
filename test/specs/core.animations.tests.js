@@ -167,6 +167,16 @@ describe('Chart.animations', function() {
     })).toBeUndefined();
   });
 
+  it('should not update path properties to target during animation because properties not consistent', function() {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['.value', 'value.', 'value..end'], type: 'number', duration: 500}});
+    expect(anims._pathProperties.length === 0).toBeTrue();
+  });
+
   it('should update path (2 levels) properties to target during animation', function(done) {
     const chart = {
       draw: function() {},
