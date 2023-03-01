@@ -35,7 +35,7 @@ module.exports = [
   {
     path: 'dist/chart.js',
     limit: '27.5 KB',
-    import: '{ Decimation, Filler, Legend, SubTitle, Title, Tooltip }',
+    import: '{ Decimation, Filler, Legend, SubTitle, Title, Tooltip, Colors }',
     running: false,
     modifyWebpackConfig
   },
