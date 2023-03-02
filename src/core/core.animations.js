@@ -7,7 +7,7 @@ export default class Animations {
   constructor(chart, config) {
     this._chart = chart;
     this._properties = new Map();
-    this._pathProperties = [];
+    this._pathProperties = new Map();
     this.configure(config);
   }
 
@@ -110,9 +110,8 @@ export default class Animations {
         animations.push(...this._animateOptions(target, values));
         continue;
       }
-      const matched = pathAnimatedProps.filter(item => item.prop.startsWith(prop));
-      if (matched.length) {
-        matched.forEach(function(item) {
+      if (pathAnimatedProps.has(prop)) {
+        pathAnimatedProps.forEach(function(item) {
           const newTarget = getInnerObject(target, item);
           const newValues = getInnerObject(values, item);
           if (newTarget && newValues) {
@@ -153,7 +152,10 @@ function loadPathOptions(props, pathProps) {
   props.forEach(function(v, k) {
     const value = parserPathOptions(k);
     if (value) {
-      pathProps.push(value);
+      const mapKey = value.path[0];
+      const mapValue = pathProps.get(mapKey) || [];
+      mapValue.push(value);
+      pathProps.set(mapKey, value);
     }
   });
 }

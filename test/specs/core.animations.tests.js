@@ -174,7 +174,7 @@ describe('Chart.animations', function() {
       }
     };
     const anims = new Chart.Animations(chart, {value: {properties: ['.value', 'value.', 'value..end'], type: 'number'}});
-    expect(anims._pathProperties.length === 0).toBeTrue();
+    expect(anims._pathProperties.size === 0).toBeTrue();
   });
 
   it('should update path (2 levels) properties to target during animation', function(done) {
