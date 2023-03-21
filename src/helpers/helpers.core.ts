@@ -375,7 +375,7 @@ function _getKeyResolver(key: string) {
   };
 }
 
-export function resolveObjectKey(obj: AnyObject, key: string): AnyObject {
+export function resolveObjectKey(obj: AnyObject, key: string): any {
   const resolver = keyResolvers[key] || (keyResolvers[key] = _getKeyResolver(key));
   return resolver(obj);
 }
