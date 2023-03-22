@@ -8,9 +8,10 @@ import {autoSkip} from './core.scale.autoskip.js';
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
+const getTicksLimit = (ticksLength, maxTicksLimit) => Math.min(maxTicksLimit || ticksLength, ticksLength);
 
 /**
- * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('../types/index.js').Chart } Chart
  * @typedef {{value:number | string, label?:string, major?:boolean, $context?:any}} Tick
  */
 
@@ -119,6 +120,7 @@ function createTickContext(parent, index, tick) {
 }
 
 function titleAlign(align, position, reverse) {
+  /** @type {CanvasTextAlign} */
   let ret = _toLeftRightCenter(align);
   if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
     ret = reverseAlign(ret);
@@ -585,7 +587,7 @@ export default class Scale extends Element {
   calculateLabelRotation() {
     const options = this.options;
     const tickOpts = options.ticks;
-    const numTicks = this.ticks.length;
+    const numTicks = getTicksLimit(this.ticks.length, options.ticks.maxTicksLimit);
     const minRotation = tickOpts.minRotation || 0;
     const maxRotation = tickOpts.maxRotation;
     let labelRotation = minRotation;
@@ -803,7 +805,7 @@ export default class Scale extends Element {
         ticks = sample(ticks, sampleSize);
       }
 
-      this._labelSizes = labelSizes = this._computeLabelSizes(ticks, ticks.length);
+      this._labelSizes = labelSizes = this._computeLabelSizes(ticks, ticks.length, this.options.ticks.maxTicksLimit);
     }
 
     return labelSizes;
@@ -815,15 +817,16 @@ export default class Scale extends Element {
 	 * @return {{ first: object, last: object, widest: object, highest: object, widths: Array, heights: array }}
 	 * @private
 	 */
-  _computeLabelSizes(ticks, length) {
+  _computeLabelSizes(ticks, length, maxTicksLimit) {
     const {ctx, _longestTextCache: caches} = this;
     const widths = [];
     const heights = [];
+    const increment = Math.floor(length / getTicksLimit(length, maxTicksLimit));
     let widestLabelSize = 0;
     let highestLabelSize = 0;
     let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel;
 
-    for (i = 0; i < length; ++i) {
+    for (i = 0; i < length; i += increment) {
       label = ticks[i].label;
       tickFont = this._resolveTickFontOptions(i);
       ctx.font = fontString = tickFont.string;
@@ -837,7 +840,7 @@ export default class Scale extends Element {
       } else if (isArray(label)) {
         // if it is an array let's measure each element
         for (j = 0, jlen = label.length; j < jlen; ++j) {
-          nestedLabel = label[j];
+          nestedLabel = /** @type {string} */ (label[j]);
           // Undefined labels and arrays should not be measured
           if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
             width = _measureText(ctx, cache.data, cache.gc, width, nestedLabel);
