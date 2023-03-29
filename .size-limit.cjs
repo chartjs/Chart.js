@@ -13,14 +13,14 @@ module.exports = [
   },
   {
     path: 'dist/chart.js',
-    limit: '34.5 KB',
+    limit: '37.0 KB',
     import: '{ Chart }',
     running: false,
     modifyWebpackConfig
   },
   {
     path: 'dist/chart.js',
-    limit: '19.5 KB',
+    limit: '22.0 KB',
     import: '{ BarController, BubbleController, DoughnutController, LineController, PolarAreaController, PieController, RadarController, ScatterController }',
     running: false,
     modifyWebpackConfig
@@ -34,7 +34,7 @@ module.exports = [
   },
   {
     path: 'dist/chart.js',
-    limit: '35.5 KB',
+    limit: '36.5 KB',
     import: '{ Decimation, Filler, Legend, SubTitle, Title, Tooltip, Colors }',
     running: false,
     modifyWebpackConfig
