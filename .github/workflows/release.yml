@@ -28,6 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
@@ -73,6 +75,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
