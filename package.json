@@ -125,7 +125,7 @@
         "yargs": "^17.5.1"
     },
     "engines": {
-        "pnpm": "^7.0.0"
+        "pnpm": ">=7"
     },
     "packageManager": "pnpm@7.9.0",
     "pnpm": {
