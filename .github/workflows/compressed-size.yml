@@ -18,8 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: pnpm/action-setup@v2.2.4
-      with:
-        version: 8
     - uses: preactjs/compressed-size-action@v2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -29,8 +27,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: pnpm/action-setup@v2.2.4
-      with:
-        version: 8
     - uses: andresz1/size-limit-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
