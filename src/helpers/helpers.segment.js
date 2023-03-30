@@ -347,6 +347,18 @@ function readStyle(options) {
 }
 
 function styleChanged(style, prevStyle) {
-  const patternOrGradient = Object.values(style).filter(value => isPatternOrGradient(value));
-  return patternOrGradient.length || (prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle));
+  if (!prevStyle) {
+    return false;
+  }
+  const cache = [];
+  const replacer = function(key, value) {
+    if (isPatternOrGradient(value)) {
+      if (!cache.includes(value)) {
+        cache.push(value);
+      }
+      return cache.indexOf(value);
+    }
+    return value;
+  };
+  return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
