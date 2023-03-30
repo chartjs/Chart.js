@@ -352,13 +352,13 @@ function styleChanged(style, prevStyle) {
   }
   const cache = [];
   const replacer = function(key, value) {
-    if (isPatternOrGradient(value)) {
-      if (!cache.includes(value)) {
-        cache.push(value);
-      }
-      return cache.indexOf(value);
+    if (!isPatternOrGradient(value)) {
+      return value;
     }
-    return value;
+    if (!cache.includes(value)) {
+      cache.push(value);
+    }
+    return cache.indexOf(value);
   };
   return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
