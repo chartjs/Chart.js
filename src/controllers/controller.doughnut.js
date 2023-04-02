@@ -65,7 +65,7 @@ export default class DoughnutController extends DatasetController {
     // The total circumference of the chart.
     circumference: 360,
 
-    // The outr radius of the chart
+    // The outer radius of the chart
     radius: '100%',
 
     // Spacing between arcs
