@@ -51,9 +51,7 @@ const formatters = {
     // will make the number formatter throw. So instead we check for isNaN and use a fallback value.
     //
     // toFixed has a max of 20 decimal places
-    const numDecimal = isNaN(logDelta)
-      ? 1
-      : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
+    const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
 
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
     Object.assign(options, this.options.ticks.format);
