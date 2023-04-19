@@ -322,7 +322,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
       'outerRadius',
       'circumference'
     ], useFinalPosition);
-    const rAdjust = this.options.spacing / 2;
+    const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
     const _circumference = valueOrDefault(circumference, endAngle - startAngle);
     const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
     const withinRadius = _isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
