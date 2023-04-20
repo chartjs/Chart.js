@@ -26,7 +26,7 @@ Chart.defaults.color = '#000';
 
 ### Per-dataset color settings
 
-If your chart has multiple datasets, using default colors would make individual datasets indistiguishable. In that case, you can set `backgroundColor` and `borderColor` for each dataset:
+If your chart has multiple datasets, using default colors would make individual datasets indistinguishable. In that case, you can set `backgroundColor` and `borderColor` for each dataset:
 
 ```javascript
 const data = {

@@ -45,7 +45,13 @@ const formatters = {
     }
 
     const logDelta = log10(Math.abs(delta));
-    const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0); // toFixed has a max of 20 decimal places
+
+    // When datasets have values approaching Number.MAX_VALUE, the tick calculations might result in
+    // infinity and eventually NaN. Passing NaN for minimumFractionDigits or maximumFractionDigits
+    // will make the number formatter throw. So instead we check for isNaN and use a fallback value.
+    //
+    // toFixed has a max of 20 decimal places
+    const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
 
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
     Object.assign(options, this.options.ticks.format);

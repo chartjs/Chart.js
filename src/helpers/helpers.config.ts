@@ -1,33 +1,57 @@
-import {defined, isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core.js';
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import type {AnyObject} from '../types/basic.js';
+import type {ChartMeta} from '../types/index.js';
+import type {
+  ResolverObjectKey,
+  ResolverCache,
+  ResolverProxy,
+  DescriptorDefaults,
+  Descriptor,
+  ContextCache,
+  ContextProxy
+} from './helpers.config.types.js';
+import {isArray, isFunction, isObject, resolveObjectKey, _capitalize} from './helpers.core.js';
+
+export * from './helpers.config.types.js';
 
 /**
  * Creates a Proxy for resolving raw values for options.
- * @param {object[]} scopes - The option scopes to look for values, in resolution order
- * @param {string[]} [prefixes] - The prefixes for values, in resolution order.
- * @param {object[]} [rootScopes] - The root option scopes
- * @param {string|boolean} [fallback] - Parent scopes fallback
- * @param {function} [getTarget] - callback for getting the target for changed values
+ * @param scopes - The option scopes to look for values, in resolution order
+ * @param prefixes - The prefixes for values, in resolution order.
+ * @param rootScopes - The root option scopes
+ * @param fallback - Parent scopes fallback
+ * @param getTarget - callback for getting the target for changed values
  * @returns Proxy
  * @private
  */
-export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback, getTarget = () => scopes[0]) {
-  if (!defined(fallback)) {
+export function _createResolver<
+  T extends AnyObject[] = AnyObject[],
+  R extends AnyObject[] = T
+>(
+  scopes: T,
+  prefixes = [''],
+  rootScopes?: R,
+  fallback?: ResolverObjectKey,
+  getTarget = () => scopes[0]
+) {
+  const finalRootScopes = rootScopes || scopes;
+  if (typeof fallback === 'undefined') {
     fallback = _resolve('_fallback', scopes);
   }
-  const cache = {
+  const cache: ResolverCache<T, R> = {
     [Symbol.toStringTag]: 'Object',
     _cacheable: true,
     _scopes: scopes,
-    _rootScopes: rootScopes,
+    _rootScopes: finalRootScopes,
     _fallback: fallback,
     _getTarget: getTarget,
-    override: (scope) => _createResolver([scope, ...scopes], prefixes, rootScopes, fallback),
+    override: (scope: AnyObject) => _createResolver([scope, ...scopes], prefixes, finalRootScopes, fallback),
   };
   return new Proxy(cache, {
     /**
      * A trap for the delete operator.
      */
-    deleteProperty(target, prop) {
+    deleteProperty(target, prop: string) {
       delete target[prop]; // remove from cache
       delete target._keys; // remove cached keys
       delete scopes[0][prop]; // remove from top level scope
@@ -37,7 +61,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
     /**
      * A trap for getting property values.
      */
-    get(target, prop) {
+    get(target, prop: string) {
       return _cached(target, prop,
         () => _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
@@ -60,7 +84,7 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
     /**
      * A trap for the in operator.
      */
-    has(target, prop) {
+    has(target, prop: string) {
       return getKeysFromAllScopes(target).includes(prop);
     },
 
@@ -74,33 +98,41 @@ export function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fa
     /**
      * A trap for setting property values.
      */
-    set(target, prop, value) {
+    set(target, prop: string, value) {
       const storage = target._storage || (target._storage = getTarget());
       target[prop] = storage[prop] = value; // set to top level scope + cache
       delete target._keys; // remove cached keys
       return true;
     }
-  });
+  }) as ResolverProxy<T, R>;
 }
 
 /**
  * Returns an Proxy for resolving option values with context.
- * @param {object} proxy - The Proxy returned by `_createResolver`
- * @param {object} context - Context object for scriptable/indexable options
- * @param {object} [subProxy] - The proxy provided for scriptable options
- * @param {{scriptable: boolean, indexable: boolean, allKeys?: boolean}} [descriptorDefaults] - Defaults for descriptors
+ * @param proxy - The Proxy returned by `_createResolver`
+ * @param context - Context object for scriptable/indexable options
+ * @param subProxy - The proxy provided for scriptable options
+ * @param descriptorDefaults - Defaults for descriptors
  * @private
  */
-export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
-  const cache = {
+export function _attachContext<
+  T extends AnyObject[] = AnyObject[],
+  R extends AnyObject[] = T
+>(
+  proxy: ResolverProxy<T, R>,
+  context: AnyObject,
+  subProxy?: ResolverProxy<T, R>,
+  descriptorDefaults?: DescriptorDefaults
+) {
+  const cache: ContextCache<T, R> = {
     _cacheable: false,
     _proxy: proxy,
     _context: context,
     _subProxy: subProxy,
     _stack: new Set(),
     _descriptors: _descriptors(proxy, descriptorDefaults),
-    setContext: (ctx) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
-    override: (scope) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
+    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
+    override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
   };
   return new Proxy(cache, {
     /**
@@ -115,7 +147,7 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     /**
      * A trap for getting property values.
      */
-    get(target, prop, receiver) {
+    get(target, prop: string, receiver) {
       return _cached(target, prop,
         () => _resolveWithContext(target, prop, receiver));
     },
@@ -159,13 +191,16 @@ export function _attachContext(proxy, context, subProxy, descriptorDefaults) {
       delete target[prop]; // remove from cache
       return true;
     }
-  });
+  }) as ContextProxy<T, R>;
 }
 
 /**
  * @private
  */
-export function _descriptors(proxy, defaults = {scriptable: true, indexable: true}) {
+export function _descriptors(
+  proxy: ResolverCache,
+  defaults: DescriptorDefaults = {scriptable: true, indexable: true}
+): Descriptor {
   const {_scriptable = defaults.scriptable, _indexable = defaults.indexable, _allKeys = defaults.allKeys} = proxy;
   return {
     allKeys: _allKeys,
@@ -176,11 +211,15 @@ export function _descriptors(proxy, defaults = {scriptable: true, indexable: tru
   };
 }
 
-const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
-const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters' &&
+const readKey = (prefix: string, name: string) => prefix ? prefix + _capitalize(name) : name;
+const needsSubResolver = (prop: string, value: unknown) => isObject(value) && prop !== 'adapters' &&
   (Object.getPrototypeOf(value) === null || value.constructor === Object);
 
-function _cached(target, prop, resolve) {
+function _cached(
+  target: AnyObject,
+  prop: string,
+  resolve: () => unknown
+) {
   if (Object.prototype.hasOwnProperty.call(target, prop)) {
     return target[prop];
   }
@@ -191,7 +230,11 @@ function _cached(target, prop, resolve) {
   return value;
 }
 
-function _resolveWithContext(target, prop, receiver) {
+function _resolveWithContext(
+  target: ContextCache,
+  prop: string,
+  receiver: AnyObject
+) {
   const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
   let value = _proxy[prop]; // resolve from proxy
 
@@ -209,14 +252,18 @@ function _resolveWithContext(target, prop, receiver) {
   return value;
 }
 
-function _resolveScriptable(prop, value, target, receiver) {
+function _resolveScriptable(
+  prop: string,
+  getValue: (ctx: AnyObject, sub: AnyObject) => unknown,
+  target: ContextCache,
+  receiver: AnyObject
+) {
   const {_proxy, _context, _subProxy, _stack} = target;
   if (_stack.has(prop)) {
-    // @ts-ignore
     throw new Error('Recursion detected: ' + Array.from(_stack).join('->') + '->' + prop);
   }
   _stack.add(prop);
-  value = value(_context, _subProxy || receiver);
+  let value = getValue(_context, _subProxy || receiver);
   _stack.delete(prop);
   if (needsSubResolver(prop, value)) {
     // When scriptable option returns an object, create a resolver on that.
@@ -225,11 +272,16 @@ function _resolveScriptable(prop, value, target, receiver) {
   return value;
 }
 
-function _resolveArray(prop, value, target, isIndexable) {
+function _resolveArray(
+  prop: string,
+  value: unknown[],
+  target: ContextCache,
+  isIndexable: (key: string) => boolean
+) {
   const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
 
-  if (defined(_context.index) && isIndexable(prop)) {
-    value = value[_context.index % value.length];
+  if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
+    return value[_context.index % value.length];
   } else if (isObject(value[0])) {
     // Array of objects, return array or resolvers
     const arr = value;
@@ -243,25 +295,35 @@ function _resolveArray(prop, value, target, isIndexable) {
   return value;
 }
 
-function resolveFallback(fallback, prop, value) {
+function resolveFallback(
+  fallback: ResolverObjectKey | ((prop: ResolverObjectKey, value: unknown) => ResolverObjectKey),
+  prop: ResolverObjectKey,
+  value: unknown
+) {
   return isFunction(fallback) ? fallback(prop, value) : fallback;
 }
 
-const getScope = (key, parent) => key === true ? parent
+const getScope = (key: ResolverObjectKey, parent: AnyObject) => key === true ? parent
   : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
 
-function addScopes(set, parentScopes, key, parentFallback, value) {
+function addScopes(
+  set: Set<AnyObject>,
+  parentScopes: AnyObject[],
+  key: ResolverObjectKey,
+  parentFallback: ResolverObjectKey,
+  value: unknown
+) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
     if (scope) {
       set.add(scope);
       const fallback = resolveFallback(scope._fallback, key, value);
-      if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
+      if (typeof fallback !== 'undefined' && fallback !== key && fallback !== parentFallback) {
         // When we reach the descriptor that defines a new _fallback, return that.
         // The fallback will resume to that new scope.
         return fallback;
       }
-    } else if (scope === false && defined(parentFallback) && key !== parentFallback) {
+    } else if (scope === false && typeof parentFallback !== 'undefined' && key !== parentFallback) {
       // Fallback to `false` results to `false`, when falling back to different key.
       // For example `interaction` from `hover` or `plugins.tooltip` and `animation` from `animations`
       return null;
@@ -270,34 +332,49 @@ function addScopes(set, parentScopes, key, parentFallback, value) {
   return false;
 }
 
-function createSubResolver(parentScopes, resolver, prop, value) {
+function createSubResolver(
+  parentScopes: AnyObject[],
+  resolver: ResolverCache,
+  prop: ResolverObjectKey,
+  value: unknown
+) {
   const rootScopes = resolver._rootScopes;
   const fallback = resolveFallback(resolver._fallback, prop, value);
   const allScopes = [...parentScopes, ...rootScopes];
-  const set = new Set();
+  const set = new Set<AnyObject>();
   set.add(value);
   let key = addScopesFromKey(set, allScopes, prop, fallback || prop, value);
   if (key === null) {
     return false;
   }
-  if (defined(fallback) && fallback !== prop) {
+  if (typeof fallback !== 'undefined' && fallback !== prop) {
     key = addScopesFromKey(set, allScopes, fallback, key, value);
     if (key === null) {
       return false;
     }
   }
   return _createResolver(Array.from(set), [''], rootScopes, fallback,
-    () => subGetTarget(resolver, prop, value));
+    () => subGetTarget(resolver, prop as string, value));
 }
 
-function addScopesFromKey(set, allScopes, key, fallback, item) {
+function addScopesFromKey(
+  set: Set<AnyObject>,
+  allScopes: AnyObject[],
+  key: ResolverObjectKey,
+  fallback: ResolverObjectKey,
+  item: unknown
+) {
   while (key) {
     key = addScopes(set, allScopes, key, fallback, item);
   }
   return key;
 }
 
-function subGetTarget(resolver, prop, value) {
+function subGetTarget(
+  resolver: ResolverCache,
+  prop: string,
+  value: unknown
+) {
   const parent = resolver._getTarget();
   if (!(prop in parent)) {
     parent[prop] = {};
@@ -310,11 +387,16 @@ function subGetTarget(resolver, prop, value) {
   return target || {};
 }
 
-function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
-  let value;
+function _resolveWithPrefixes(
+  prop: string,
+  prefixes: string[],
+  scopes: AnyObject[],
+  proxy: ResolverProxy
+) {
+  let value: unknown;
   for (const prefix of prefixes) {
     value = _resolve(readKey(prefix, prop), scopes);
-    if (defined(value)) {
+    if (typeof value !== 'undefined') {
       return needsSubResolver(prop, value)
         ? createSubResolver(scopes, proxy, prop, value)
         : value;
@@ -322,19 +404,19 @@ function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
   }
 }
 
-function _resolve(key, scopes) {
+function _resolve(key: string, scopes: AnyObject[]) {
   for (const scope of scopes) {
     if (!scope) {
       continue;
     }
     const value = scope[key];
-    if (defined(value)) {
+    if (typeof value !== 'undefined') {
       return value;
     }
   }
 }
 
-function getKeysFromAllScopes(target) {
+function getKeysFromAllScopes(target: ResolverCache) {
   let keys = target._keys;
   if (!keys) {
     keys = target._keys = resolveKeysFromAllScopes(target._scopes);
@@ -342,8 +424,8 @@ function getKeysFromAllScopes(target) {
   return keys;
 }
 
-function resolveKeysFromAllScopes(scopes) {
-  const set = new Set();
+function resolveKeysFromAllScopes(scopes: AnyObject[]) {
+  const set = new Set<string>();
   for (const scope of scopes) {
     for (const key of Object.keys(scope).filter(k => !k.startsWith('_'))) {
       set.add(key);
@@ -352,11 +434,16 @@ function resolveKeysFromAllScopes(scopes) {
   return Array.from(set);
 }
 
-export function _parseObjectDataRadialScale(meta, data, start, count) {
+export function _parseObjectDataRadialScale(
+  meta: ChartMeta<'line' | 'scatter'>,
+  data: AnyObject[],
+  start: number,
+  count: number
+) {
   const {iScale} = meta;
   const {key = 'r'} = this._parsing;
-  const parsed = new Array(count);
-  let i, ilen, index, item;
+  const parsed = new Array<{r: unknown}>(count);
+  let i: number, ilen: number, index: number, item: AnyObject;
 
   for (i = 0, ilen = count; i < ilen; ++i) {
     index = i + start;

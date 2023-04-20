@@ -611,7 +611,7 @@ export default class TimeScale extends Scale {
     const timeOpts = this.options.time;
     const displayFormats = timeOpts.displayFormats;
 
-    // pick the longest format (milliseconds) for guestimation
+    // pick the longest format (milliseconds) for guesstimation
     const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
     const exampleLabel = this._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(this, [exampleTime], this._majorUnit), format);
     const size = this._getLabelSize(exampleLabel);
