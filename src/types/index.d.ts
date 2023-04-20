@@ -532,6 +532,7 @@ export declare class Chart<
   getDataVisibility(index: number): boolean;
   hide(datasetIndex: number, dataIndex?: number): void;
   show(datasetIndex: number, dataIndex?: number): void;
+  getContext(): ScriptableChartContext;
 
   getActiveElements(): ActiveElement[];
   setActiveElements(active: ActiveDataPoint[]): void;
@@ -1786,6 +1787,23 @@ export interface Segment {
   start: number;
   end: number;
   loop: boolean;
+  style?: SegmentStyle;
+}
+
+export interface SegmentStyle {
+  backgroundColor: Scriptable<Color | undefined, ScriptableLineSegmentContext>,
+  borderColor: Scriptable<Color | undefined, ScriptableLineSegmentContext>,
+  borderCapStyle: Scriptable<CanvasLineCap | undefined, ScriptableLineSegmentContext>;
+  borderDash: Scriptable<number[] | undefined, ScriptableLineSegmentContext>;
+  borderDashOffset: Scriptable<number | undefined, ScriptableLineSegmentContext>;
+  borderJoinStyle: Scriptable<CanvasLineJoin | undefined, ScriptableLineSegmentContext>;
+  borderWidth: Scriptable<number | undefined, ScriptableLineSegmentContext>;
+}
+
+export interface SegmentBounds {
+  property: string;
+  start: number;
+  end: number;
 }
 
 export interface ArcBorderRadius {
@@ -1898,15 +1916,7 @@ export interface LineOptions extends CommonElementOptions {
    */
   spanGaps: boolean | number;
 
-  segment: {
-    backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-    borderColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
-    borderCapStyle: Scriptable<CanvasLineCap|undefined, ScriptableLineSegmentContext>;
-    borderDash: Scriptable<number[]|undefined, ScriptableLineSegmentContext>;
-    borderDashOffset: Scriptable<number|undefined, ScriptableLineSegmentContext>;
-    borderJoinStyle: Scriptable<CanvasLineJoin|undefined, ScriptableLineSegmentContext>;
-    borderWidth: Scriptable<number|undefined, ScriptableLineSegmentContext>;
-  };
+  segment: SegmentStyle;
 }
 
 export interface LineHoverOptions extends CommonHoverOptions {
@@ -1918,15 +1928,19 @@ export interface LineHoverOptions extends CommonHoverOptions {
 
 export interface LineElement<T extends LineProps = LineProps, O extends LineOptions = LineOptions>
   extends Element<T, O>,
-  VisualElement {
+  Pick<VisualElement, 'draw'> {
   updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void;
-  points: Point[];
+  points: PointElement[];
   readonly segments: Segment[];
   first(): Point | false;
   last(): Point | false;
   interpolate(point: Point, property: 'x' | 'y'): undefined | Point | Point[];
   pathSegment(ctx: CanvasRenderingContext2D, segment: Segment, params: AnyObject): undefined | boolean;
   path(ctx: CanvasRenderingContext2D): boolean;
+  _loop: boolean;
+  _fullLoop: boolean;
+  _datasetIndex: number;
+  _chart: Chart;
 }
 
 export declare const LineElement: ChartComponent & {
