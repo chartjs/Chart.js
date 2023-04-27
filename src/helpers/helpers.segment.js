@@ -1,5 +1,6 @@
 import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
 import {createContext} from './helpers.options.js';
+import {isPatternOrGradient} from './helpers.color.js';
 
 /**
  * @typedef { import('../elements/element.line.js').default } LineElement
@@ -346,5 +347,18 @@ function readStyle(options) {
 }
 
 function styleChanged(style, prevStyle) {
-  return prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle);
+  if (!prevStyle) {
+    return false;
+  }
+  const cache = [];
+  const replacer = function(key, value) {
+    if (!isPatternOrGradient(value)) {
+      return value;
+    }
+    if (!cache.includes(value)) {
+      cache.push(value);
+    }
+    return cache.indexOf(value);
+  };
+  return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
