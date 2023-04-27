@@ -3500,10 +3500,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     borderRadius: Scriptable<number | BorderRadius, ScriptableScalePointLabelContext>;
 
     /**
-     * if true, point labels are shown.
+     * if true, point labels are shown. When `display: 'auto'`, the label is hidden if it overlaps with another label.
      * @default true
      */
-    display: boolean;
+    display: boolean | 'auto';
     /**
      * Color of label
      * @see Defaults.color
