@@ -101,11 +101,11 @@ export interface BarControllerDatasetOptions
   /**
    * The ID of the x axis to plot this dataset on.
    */
-  xAxisID: string;
+  xAxis: string;
   /**
    * The ID of the y axis to plot this dataset on.
    */
-  yAxisID: string;
+  yAxis: string;
 
   /**
    * Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other.
@@ -166,11 +166,11 @@ export interface BubbleControllerDatasetOptions
   /**
    * The ID of the x axis to plot this dataset on.
    */
-  xAxisID: string;
+  xAxis: string;
   /**
    * The ID of the y axis to plot this dataset on.
    */
-  yAxisID: string;
+  yAxis: string;
 }
 
 export interface BubbleDataPoint extends Point {
@@ -198,11 +198,11 @@ export interface LineControllerDatasetOptions
   /**
    * The ID of the x axis to plot this dataset on.
    */
-  xAxisID: string;
+  xAxis: string;
   /**
    * The ID of the y axis to plot this dataset on.
    */
-  yAxisID: string;
+  yAxis: string;
 
   /**
    * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
@@ -405,11 +405,11 @@ export interface RadarControllerDatasetOptions
   /**
    * The ID of the x axis to plot this dataset on.
    */
-  xAxisID: string;
+  xAxis: string;
   /**
    * The ID of the y axis to plot this dataset on.
    */
-  yAxisID: string;
+  yAxis: string;
 
   /**
    * If true, lines will be drawn between points with no or null data. If false, points with NaN data will create a break in the line. Can also be a number specifying the maximum gap length to span. The unit of the value depends on the scale used.
@@ -447,8 +447,8 @@ interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement ex
 
   hidden: boolean;
 
-  xAxisID?: string;
-  yAxisID?: string;
+  xAxis?: string;
+  yAxis?: string;
   rAxisID?: string;
   iAxisID: string;
   vAxisID: string;
