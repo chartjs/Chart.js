@@ -66,9 +66,12 @@ const config = {
         type: 'time',
         display: true,
         offset: true,
+        ticks: {
+          source: 'data'
+        },
         time: {
           unit: 'day'
-        }
+        },
       },
     },
   },
