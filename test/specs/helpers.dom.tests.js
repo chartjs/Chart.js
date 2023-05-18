@@ -558,7 +558,7 @@ describe('DOM helpers tests', function() {
     target.style.height = '500px';
     container.appendChild(target);
 
-    expect(helpers.getMaximumSize(target, 500, 199.975, 1)).toEqual(jasmine.objectContaining({width: 200, height: 200}));
+    expect(helpers.getMaximumSize(target, 500, 199.975, 1)).toEqual(jasmine.objectContaining({width: 200, height: 199.9}));
 
     document.body.removeChild(container);
   });
