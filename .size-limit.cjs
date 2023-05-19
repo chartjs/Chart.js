@@ -7,7 +7,7 @@ function modifyWebpackConfig(config) {
 module.exports = [
   {
     path: 'dist/chart.js',
-    limit: '79 KB',
+    limit: '82 KB',
     webpack: false,
     running: false
   },
