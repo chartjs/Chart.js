@@ -4,7 +4,7 @@ Welcome to Chart.js!
 
 * **[Get started with Chart.js](./getting-started/) — best if you're new to Chart.js**
 * Migrate from [Chart.js v3](./migration/v4-migration.html) or [Chart.js v2](./migration/v3-migration.html)
-* Join the community on [Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw) and [Twitter](https://twitter.com/chartjs)
+* Join the community on [Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1vdtibucn-tqbjBY~YAm_sP8iNFpU7Gg) and [Twitter](https://twitter.com/chartjs)
 * Post a question tagged with `chart.js` on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js)
 * [Contribute to Chart.js](./developers/contributing.html)
 
@@ -30,7 +30,7 @@ Chart.js comes with built-in TypeScript typings and is compatible with all popul
 
 ### Developer experience
 
-Chart.js has very thorough documentation (yes, you're reading it), [API reference](./api/), and [examples](./samples/information.html). Maintainers and community members eagerly engage in conversations on [Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw), [GitHub Discussions](https://github.com/chartjs/Chart.js/discussions), and [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) where more than 11,000 questions are tagged with `chart.js`.
+Chart.js has very thorough documentation (yes, you're reading it), [API reference](./api/), and [examples](./samples/information.html). Maintainers and community members eagerly engage in conversations on [Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1vdtibucn-tqbjBY~YAm_sP8iNFpU7Gg), [GitHub Discussions](https://github.com/chartjs/Chart.js/discussions), and [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) where more than 11,000 questions are tagged with `chart.js`.
 
 ### Canvas rendering
 

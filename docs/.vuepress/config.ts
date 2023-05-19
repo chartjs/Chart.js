@@ -130,7 +130,7 @@ export default defineConfig({
         ariaLabel: 'Community Menu',
         items: [
           { text: 'Awesome', link: 'https://github.com/chartjs/awesome' },
-          { text: 'Slack', link: 'https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw' },
+          // { text: 'Slack', link: 'https://join.slack.com/t/chartjs/shared_invite/zt-1vdtibucn-tqbjBY~YAm_sP8iNFpU7Gg' }, Don't show slack link since vuepress can't handle the `~` symbol
           { text: 'Stack Overflow', link: 'https://stackoverflow.com/questions/tagged/chart.js' }
         ]
       }
