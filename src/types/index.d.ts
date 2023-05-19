@@ -1597,7 +1597,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    */
   responsive: boolean;
   /**
-   * Maintain the original canvas aspect ratio (width / height) when resizing.
+   * Maintain the original canvas aspect ratio (width / height) when resizing. For this option to work properly the chart must be in its own dedicated container.
    * @default true
    */
   maintainAspectRatio: boolean;
