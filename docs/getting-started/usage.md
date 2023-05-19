@@ -586,6 +586,6 @@ By importing and registering only select components, we’ve removed more than 5
 
 Now you’re familiar with all major concepts of Chart.js: chart types and elements, datasets, customization, plugins, components, and tree-shaking.
 
-Feel free to review many [examples of charts](../samples/information.html) in the documentation and check the [awesome list](https://github.com/chartjs/awesome) of Chart.js plugins and additional chart types as well as [framework integrations](https://github.com/chartjs/awesome#integrations) (e.g., React, Vue, Svelte, etc.). Also, don’t hesitate to join [Chart.js Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1lo81skkk-AZk6ollhOdrjt9GzPeOsLw) and follow [Chart.js on Twitter](https://twitter.com/chartjs).
+Feel free to review many [examples of charts](../samples/information.html) in the documentation and check the [awesome list](https://github.com/chartjs/awesome) of Chart.js plugins and additional chart types as well as [framework integrations](https://github.com/chartjs/awesome#integrations) (e.g., React, Vue, Svelte, etc.). Also, don’t hesitate to join [Chart.js Slack](https://join.slack.com/t/chartjs/shared_invite/zt-1vdtibucn-tqbjBY~YAm_sP8iNFpU7Gg) and follow [Chart.js on Twitter](https://twitter.com/chartjs).
 
 Have fun and good luck building with Chart.js!
