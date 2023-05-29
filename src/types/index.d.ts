@@ -1597,7 +1597,7 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    */
   responsive: boolean;
   /**
-   * Maintain the original canvas aspect ratio (width / height) when resizing.
+   * Maintain the original canvas aspect ratio (width / height) when resizing. For this option to work properly the chart must be in its own dedicated container.
    * @default true
    */
   maintainAspectRatio: boolean;
@@ -3500,10 +3500,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
     borderRadius: Scriptable<number | BorderRadius, ScriptableScalePointLabelContext>;
 
     /**
-     * if true, point labels are shown.
+     * if true, point labels are shown. When `display: 'auto'`, the label is hidden if it overlaps with another label.
      * @default true
      */
-    display: boolean;
+    display: boolean | 'auto';
     /**
      * Color of label
      * @see Defaults.color

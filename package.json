@@ -2,7 +2,7 @@
     "name": "chart.js",
     "homepage": "https://www.chartjs.org",
     "description": "Simple HTML5 charts using the canvas element.",
-    "version": "4.2.1",
+    "version": "4.3.0",
     "license": "MIT",
     "type": "module",
     "sideEffects": [
