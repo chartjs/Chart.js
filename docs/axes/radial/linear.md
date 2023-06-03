@@ -18,7 +18,7 @@ Namespace: `options.scales[scaleId]`
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
 | `startAngle` | `number` | `0` | Starting angle of the scale. In degrees, 0 is at top.
 
-### Common options to all axes
+### Common options for all axes
 
 Namespace: `options.scales[scaleId]`
 
@@ -75,7 +75,7 @@ The scriptable context is described in [Options](../general/options.md#tick) sec
 
 Given the number of axis range settings, it is important to understand how they all interact with each other.
 
-The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto fit behaviour.
+The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto-fit behaviour.
 
 ```javascript
 let minDataValue = Math.min(mostNegativeValue, options.ticks.suggestedMin);

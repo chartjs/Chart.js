@@ -272,7 +272,7 @@ Sample:     |==================|
 
 ## Data Structure
 
-All of the supported [data structures](../general/data-structures.md) can be used with bar charts.
+All the supported [data structures](../general/data-structures.md) can be used with bar charts.
 
 ## Stacked Bar Chart
 
@@ -298,7 +298,7 @@ const stackedBar = new Chart(ctx, {
 ## Horizontal Bar Chart
 
 A horizontal bar chart is a variation on a vertical bar chart. It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
-To achieve this you will have to set the `indexAxis` property in the options object to `'y'`.
+To achieve this, you will have to set the `indexAxis` property in the options object to `'y'`.
 The default for this property is `'x'` and thus will show vertical bars.
 
 ```js chart-editor

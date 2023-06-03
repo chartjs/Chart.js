@@ -14,7 +14,7 @@ A Unicode BCP 47 locale identifier consists of
 
 with all present components separated by hyphens.
 
-By default the chart is using the default locale of the platform which is running on.
+By default, the chart is using the default locale of the platform which is running on.
 
 ## Configuration Options
 

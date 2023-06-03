@@ -183,7 +183,7 @@ const chart = new Chart(ctx, {
 
 ### Label Point Style Callback
 
-For example, to draw triangles instead of the regular color box for each item in the tooltip you could do:
+For example, to draw triangles instead of the regular color box for each item in the tooltip, you could do:
 
 ```javascript
 const chart = new Chart(ctx, {

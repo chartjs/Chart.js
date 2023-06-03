@@ -26,7 +26,7 @@ function removeData(chart) {
 
 ## Updating Options
 
-To update the options, mutating the options property in place or passing in a new options object are supported.
+To update the options, mutating the `options` property in place or passing in a new options object are supported.
 
 - If the options are mutated in place, other option properties would be preserved, including those calculated by Chart.js.
 - If created as a new object, it would be like creating a new chart with the options - old options would be discarded.
@@ -84,7 +84,7 @@ function updateScales(chart) {
 }
 ```
 
-You can also update a specific scale either by its id.
+You can update a specific scale by its id as well.
 
 ```javascript
 function updateScale(chart) {
