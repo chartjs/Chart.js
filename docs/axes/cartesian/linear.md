@@ -56,7 +56,7 @@ let options = {
 
 ## Grace
 
-If the value is string ending with `%`, its treat as percentage. If number, its treat as value.
+If the value is a string ending with `%`, it's treated as a percentage. If a number, it's treated as a value.
 The value is added to the maximum data value and subtracted from the minimum data. This extends the scale range as if the data values were that much greater.
 
 ```js chart-editor
