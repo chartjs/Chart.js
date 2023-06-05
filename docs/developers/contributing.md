@@ -6,7 +6,7 @@ New contributions to the library are welcome, but we ask that you please follow 
 - Consider whether your changes are useful for all users, or if creating a Chart.js [plugin](plugins.md) would be more appropriate.
 - Check that your code will pass tests and `eslint` code standards. `pnpm test` will run both the linter and tests for you.
 - Add unit tests and document new functionality (in the `test/` and `docs/` directories respectively).
-- Avoid breaking changes unless there is an upcoming major release, which is infrequent. We encourage people to write plugins for most new advanced features, and care a lot about backward compatibility.
+- Avoid breaking changes unless there is an upcoming major release, which is infrequent. We encourage people to write plugins for the most new advanced features, and care a lot about backward compatibility.
 - We strongly prefer new methods to be added as private whenever possible. A method can be made private either by making a top-level `function` outside of a class or by prefixing it with `_` and adding `@private` JSDoc if inside a class. Public APIs take considerable time to review and become locked once implemented as we have limited ability to change them without breaking backward compatibility. Private APIs allow the flexibility to address unforeseen cases.
 
 ## Joining the project
@@ -56,7 +56,7 @@ You can create a new image-based test by following the steps below:
 - Add a [describe line](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/specs/plugin.filler.tests.js#L10) to the beginning of `test/specs/{spec.name}.tests.js` if it doesn't exist yet.
 - Run `pnpm run dev`.
 - Click the *"Debug"* button (top/right): a test should fail with the associated canvas visible.
-- Right click on the chart and *"Save image as..."* `test/fixtures/{spec.name}/{feature-name}.png` making sure not to activate the tooltip or any hover functionality
+- Right-click on the chart and *"Save image as..."* `test/fixtures/{spec.name}/{feature-name}.png` making sure not to activate the tooltip or any hover functionality
 - Refresh the browser page (`CTRL+R`): test should now pass
 - Verify test relevancy by changing the feature values *slightly* in the JSON file.
 
@@ -68,7 +68,7 @@ When a test fails, the expected and actual images are shown. If you'd like to se
 
 Please report these on the GitHub page - at <a href="https://github.com/chartjs/Chart.js" target="_blank">github.com/chartjs/Chart.js</a>. Please do not use issues for support requests. For help using Chart.js, please take a look at the [`chart.js`](https://stackoverflow.com/questions/tagged/chart.js) tag on Stack Overflow.
 
-Well structured, detailed bug reports are hugely valuable for the project.
+Well-structured, detailed bug reports are hugely valuable for the project.
 
 Guidelines for reporting bugs:
 

@@ -357,9 +357,9 @@ export default class DatasetController {
     const data = dataset.data || (dataset.data = []);
     const _data = this._data;
 
-    // In order to correctly handle data addition/deletion animation (an thus simulate
+    // In order to correctly handle data addition/deletion animation (and thus simulate
     // real-time charts), we need to monitor these data modifications and synchronize
-    // the internal meta data accordingly.
+    // the internal metadata accordingly.
 
     if (isObject(data)) {
       this._data = convertObjectDataToArray(data);

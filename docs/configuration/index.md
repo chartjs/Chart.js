@@ -8,9 +8,9 @@ The top level structure of Chart.js configuration:
 
 ```javascript
 const config = {
-  type: 'line'
-  data: {}
-  options: {}
+  type: 'line',
+  data: {},
+  options: {},
   plugins: []
 }
 ```
@@ -38,7 +38,7 @@ More about plugins in the [developers section](../developers/plugins.md).
 
 This concept was introduced in Chart.js 1.0 to keep configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
-Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults`. The defaults for each chart type are discussed in the documentation for that chart type.
+Chart.js merges the `options` object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults`. The defaults for each chart type are discussed in the documentation for that chart type.
 
 The following example would set the interaction mode to 'nearest' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
 

@@ -4,7 +4,7 @@ Developer features allow extending and enhancing Chart.js in many different ways
 
 ## Latest resources
 
-Latest documentation and samples, including unreleased features, are available at:
+The latest documentation and samples, including unreleased features, are available at:
 
 - <https://www.chartjs.org/docs/master/>
 - <https://www.chartjs.org/samples/master/>

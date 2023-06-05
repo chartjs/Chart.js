@@ -139,7 +139,7 @@ Items passed to the legend `onClick` function are the ones returned from `labels
 
 ## Example
 
-The following example will create a chart with the legend enabled and turn all of the text red in color.
+The following example will create a chart with the legend enabled and turn all the text red in color.
 
 ```javascript
 const chart = new Chart(ctx, {
@@ -178,7 +178,7 @@ function(e, legendItem, legend) {
 }
 ```
 
-Lets say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
+Let's say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
 
 ```javascript
 const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;

@@ -117,7 +117,7 @@ const cfg = {
 ```
 
 :::warning
-When using object notation in a radar chart you still need a labels array with labels for the chart to show correctly.
+When using object notation in a radar chart, you still need a labels array with labels for the chart to show correctly.
 :::
 
 ## Object

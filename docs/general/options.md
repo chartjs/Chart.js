@@ -134,7 +134,7 @@ The context object contains the following properties:
 
 In addition to [chart](#chart)
 
-* `active`: true if element is active (hovered)
+* `active`: true if an element is active (hovered)
 * `dataset`: dataset at index `datasetIndex`
 * `datasetIndex`: index of the current dataset
 * `index`: same as `datasetIndex`
@@ -145,7 +145,7 @@ In addition to [chart](#chart)
 
 In addition to [dataset](#dataset)
 
-* `active`: true if element is active (hovered)
+* `active`: true if an element is active (hovered)
 * `dataIndex`: index of the current data
 * `parsed`: the parsed data values for the given `dataIndex` and `datasetIndex`
 * `raw`: the raw data values for the given `dataIndex` and `datasetIndex`

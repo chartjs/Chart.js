@@ -1,6 +1,6 @@
 # Scatter Chart
 
-Scatter charts are based on basic line charts with the x axis changed to a linear axis. To use a scatter chart, data must be passed as objects containing X and Y properties. The example below creates a scatter chart with 4 points.
+Scatter charts are based on basic line charts with the x-axis changed to a linear axis. To use a scatter chart, data must be passed as objects containing X and Y properties. The example below creates a scatter chart with 4 points.
 
 ```js chart-editor
 // <block:setup:1>
@@ -56,10 +56,10 @@ Namespaces:
 * `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
 * `options` - options for the whole chart
 
-The scatter chart supports all of the same properties as the [line chart](./line.md#dataset-properties).
+The scatter chart supports all the same properties as the [line chart](./line.md#dataset-properties).
 By default, the scatter chart will override the showLine property of the line chart to `false`.
 
-The index scale is of the type `linear`. This means if you are using the labels array the values have to be numbers or parsable to numbers, the same applies to the object format for the keys.
+The index scale is of the type `linear`. This means, if you are using the labels array, the values have to be numbers or parsable to numbers, the same applies to the object format for the keys.
 
 ## Data Structure
 

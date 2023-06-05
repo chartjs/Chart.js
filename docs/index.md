@@ -34,14 +34,14 @@ Chart.js has very thorough documentation (yes, you're reading it), [API refere
 
 ### Canvas rendering
 
-Chart.js renders chart elements on an HTML5 canvas unlike several other, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you will have to use built-in options for that, or create a custom plugin or chart type to render everything to your liking.
+Chart.js renders chart elements on an HTML5 canvas unlike several others, mostly D3.js-based, charting libraries that render as SVG. Canvas rendering makes Chart.js very performant, especially for large datasets and complex visualizations that would otherwise require thousands of SVG nodes in the DOM tree. At the same time, canvas rendering disallows CSS styling, so you will have to use built-in options for that, or create a custom plugin or chart type to render everything to your liking.
 
 ### Performance
 
-Chart.js is very well suited for large datasets. Such datasets can be efficiently ingested using the internal format so you can skip data [parsing](./general/performance.html#parsing) and [normalization](./general/performance.html#data-normalization). Alternatively, [data decimation](./configuration/decimation.html) can be configured to sample the dataset and reduce its size before rendering.
+Chart.js is very well suited for large datasets. Such datasets can be efficiently ingested using the internal format, so you can skip data [parsing](./general/performance.html#parsing) and [normalization](./general/performance.html#data-normalization). Alternatively, [data decimation](./configuration/decimation.html) can be configured to sample the dataset and reduce its size before rendering.
 
-In the end, the canvas rendering that Chart.js uses reduces the toll on your DOM tree in comparison to SVG rendering. Also, tree-shaking support allows you to include minimal parts of Chart.js code into your bundle, reducing bundle size and page load time.
+In the end, the canvas rendering that Chart.js uses reduces the toll on your DOM tree in comparison to SVG rendering. Also, tree-shaking support allows you to include minimal parts of Chart.js code in your bundle, reducing bundle size and page load time.
 
 ### Community
 
-Chart.js is [actively developed](https://github.com/chartjs/Chart.js/pulls?q=is%3Apr+is%3Aclosed) and maintained by the community. With minor [releases](https://github.com/chartjs/Chart.js/releases) on an approximately bi-monthly basis and major releases with breaking changes every couple of years, Chart.js keeps the balance between adding new features and making it a hassle to keep up with them. 
+Chart.js is [actively developed](https://github.com/chartjs/Chart.js/pulls?q=is%3Apr+is%3Aclosed) and maintained by the community. With minor [releases](https://github.com/chartjs/Chart.js/releases) on an approximately bi-monthly basis and major releases with breaking changes every couple of years, Chart.js keeps the balance between adding new features and making it a hassle to keep up with them.

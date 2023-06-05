@@ -163,7 +163,7 @@ If left untouched (`undefined`), the global `options.elements.line.cubicInterpol
 
 ### Segment
 
-Line segment styles can be overridden by scriptable options in the `segment` object. Currently all of the `border*` and `backgroundColor` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
+Line segment styles can be overridden by scriptable options in the `segment` object. Currently, all of the `border*` and `backgroundColor` options are supported. The segment styles are resolved for each section of the line between each point. `undefined` fallbacks to main line styles.
 
 :::tip
 To be able to style gaps, you need the [`spanGaps`](#line-styling) option enabled.
@@ -204,7 +204,7 @@ Chart.overrides.line.spanGaps = true;
 
 ## Data Structure
 
-All of the supported [data structures](../general/data-structures.md) can be used with line charts.
+All the supported [data structures](../general/data-structures.md) can be used with line charts.
 
 ## Stacked Area Chart
 
@@ -227,7 +227,7 @@ const stackedLine = new Chart(ctx, {
 ## Vertical Line Chart
 
 A vertical line chart is a variation on the horizontal line chart.
-To achieve this you will have to set the `indexAxis` property in the options object to `'y'`.
+To achieve this, you will have to set the `indexAxis` property in the options object to `'y'`.
 The default for this property is `'x'` and thus will show horizontal lines.
 
 ```js chart-editor

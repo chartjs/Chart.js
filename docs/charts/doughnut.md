@@ -201,7 +201,7 @@ We can also change these default values for each Doughnut type that is created, 
 
 ## Data Structure
 
-For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all of the numbers and calculate the relative proportion of each.
+For a pie chart, datasets need to contain an array of data points. The data points should be a number, Chart.js will total all the numbers and calculate the relative proportion of each.
 
 You also need to specify an array of labels so that tooltips appear correctly.
 

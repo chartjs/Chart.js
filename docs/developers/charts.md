@@ -69,9 +69,9 @@ The following methods may optionally be overridden by derived dataset controller
 
 ## Extending Existing Chart Types
 
-Extending or replacing an existing controller type is easy. Simply replace the constructor for one of the built in types with your own.
+Extending or replacing an existing controller type is easy. Simply replace the constructor for one of the built-in types with your own.
 
-The built in controller types are:
+The built-in controller types are:
 
 * `BarController`
 * `BubbleController`
