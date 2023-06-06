@@ -61,6 +61,7 @@ const htmlLegendPlugin = {
       boxSpan.style.borderColor = item.strokeStyle;
       boxSpan.style.borderWidth = item.lineWidth + 'px';
       boxSpan.style.display = 'inline-block';
+      boxSpan.style.flexShrink = 0;
       boxSpan.style.height = '20px';
       boxSpan.style.marginRight = '10px';
       boxSpan.style.width = '20px';
