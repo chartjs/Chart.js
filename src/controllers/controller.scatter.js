@@ -70,6 +70,10 @@ export default class ScatterController extends DatasetController {
 
     if (this.options.showLine) {
 
+      // https://github.com/chartjs/Chart.js/issues/11333
+      if (!this.datasetElementType) {
+        this.addElements();
+      }
       const {dataset: line, _dataset} = meta;
 
       // Update Line
@@ -84,6 +88,10 @@ export default class ScatterController extends DatasetController {
         animated: !animationsDisabled,
         options
       }, mode);
+    } else if (this.datasetElementType) {
+      // https://github.com/chartjs/Chart.js/issues/11333
+      delete meta.dataset;
+      this.datasetElementType = false;
     }
 
     // Update Points
