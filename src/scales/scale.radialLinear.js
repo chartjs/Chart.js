@@ -669,6 +669,8 @@ export default class RadialLinearScale extends LinearScaleBase {
 
       renderText(ctx, tick.label, 0, -offset, tickFont, {
         color: optsAtIndex.color,
+        strokeColor: optsAtIndex.textStrokeColor,
+        strokeWidth: optsAtIndex.textStrokeWidth,
       });
     });
 
