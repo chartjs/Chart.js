@@ -4,13 +4,13 @@ It's pretty common to want to update charts after they've been created. When the
 
 ## Adding or Removing Data
 
-Adding and removing data is supported by changing the data array. To add data, just add data into the data array as seen in this example.
+Adding and removing data is supported by changing the data array. To add data, just add data into the data array as seen in this example, to remove it you can pop it again.
 
 ```javascript
-function addData(chart, label, data) {
+function addData(chart, label, newData) {
     chart.data.labels.push(label);
     chart.data.datasets.forEach((dataset) => {
-        dataset.data.push(data);
+        dataset.data.push(newData);
     });
     chart.update();
 }
