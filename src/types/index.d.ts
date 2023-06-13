@@ -3151,6 +3151,11 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   bounds: 'ticks' | 'data';
 
   /**
+   * Background color of the scale area.
+   */
+  backgroundColor: Color;
+
+  /**
    * Position of the axis.
    */
   position: 'left' | 'top' | 'right' | 'bottom' | 'center' | { [scale: string]: number };
