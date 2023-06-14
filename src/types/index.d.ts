@@ -1167,6 +1167,10 @@ export interface CoreScaleOptions {
    */
   alignToPixels: boolean;
   /**
+   * Background color of the scale area.
+   */
+  backgroundColor: Color;
+  /**
    * Reverse the scale.
    * @default false
    */
@@ -3149,11 +3153,6 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
    * @default 'ticks'
    */
   bounds: 'ticks' | 'data';
-
-  /**
-   * Background color of the scale area.
-   */
-  backgroundColor: Color;
 
   /**
    * Position of the axis.
