@@ -428,7 +428,7 @@ export class Legend extends Element {
         cursor.x += width + padding;
       } else if (typeof legendItem.text !== 'string') {
         const fontLineHeight = labelFont.lineHeight;
-        cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight);
+        cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight) + padding;
       } else {
         cursor.y += lineHeight;
       }
