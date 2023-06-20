@@ -817,6 +817,12 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
   id: string;
 
   /**
+   * The events option defines the browser events that the plugin should listen.
+   * @default ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
+   */
+  events?: (keyof HTMLElementEventMap)[]
+
+  /**
    * @desc Called when plugin is installed for this chart instance. This hook is also invoked for disabled plugins (options === false).
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
