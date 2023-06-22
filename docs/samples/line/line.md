@@ -115,4 +115,4 @@ module.exports = {
 
 ## Docs
 * [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
