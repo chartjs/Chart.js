@@ -57,7 +57,7 @@ export default class LineController extends DatasetController {
     line._chart = this.chart;
     line._datasetIndex = this.index;
     line._decimated = !!_dataset._decimated;
-    line.points = points;
+    line.points = points.slice(Math.max(this._drawStart - 1, 0), this._drawStart + this._drawCount);
 
     const options = this.resolveDatasetElementOptions(mode);
     if (!this.options.showLine) {
