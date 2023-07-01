@@ -2400,6 +2400,10 @@ export interface LegendOptions<TType extends ChartType> {
      */
     padding: number;
     /**
+     * If usePointStyle is true, the width of the point style used for the legend.
+     */
+    pointStyleWidth: number;
+    /**
      * Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See Legend Item for details.
      */
     generateLabels(chart: Chart): LegendItem[];
