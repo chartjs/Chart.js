@@ -23,7 +23,7 @@ const plugin = {
 
     for (let i = 0; i < datasets.length; i += 1) {
       const dataset = datasets[i];
-      hasData |= dataset.data.length > 0;
+      hasData = dataset.data.length > 0;
     }
 
     if (!hasData) {
