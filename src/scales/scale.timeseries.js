@@ -112,10 +112,10 @@ class TimeSeriesScale extends TimeScale {
 
   /**
     * Generates all timestamps defined in the data.
-	* Important: this method can return ticks outside the min and max range, it's the
-	* responsibility of the calling code to clamp values if needed.
-	* @protected
-	*/
+    * Important: this method can return ticks outside the min and max range, it's the
+    * responsibility of the calling code to clamp values if needed.
+    * @protected
+    */
   _generate() {
     const min = this.min;
     const max = this.max;
