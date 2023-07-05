@@ -3308,6 +3308,61 @@ export declare const LogarithmicScale: ChartComponent & {
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
 
+export type TimeScaleTimeOptions = {
+  /**
+   * Custom parser for dates.
+   */
+  parser: string | ((v: unknown) => number);
+  /**
+   * If defined, dates will be rounded to the start of this unit. See Time Units below for the allowed units.
+   */
+  round: false | TimeUnit;
+  /**
+   * If boolean and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
+   * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
+   * @default false
+   */
+  isoWeekday: boolean | number;
+  /**
+   * Sets how different time units are displayed.
+   */
+  displayFormats: {
+    [key: string]: string;
+  };
+  /**
+   * The format string to use for the tooltip.
+   */
+  tooltipFormat: string;
+  /**
+   * If defined, will force the unit to be a certain type. See Time Units section below for details.
+   * @default false
+   */
+  unit: false | TimeUnit;
+  /**
+   * The minimum display format to be used for a time unit.
+   * @default 'millisecond'
+   */
+  minUnit: TimeUnit;
+};
+
+export type TimeScaleTickOptions = {
+  /**
+   * Ticks generation input values:
+   * - 'auto': generates "optimal" ticks based on scale size and time options.
+   * - 'data': generates ticks from data (including labels from data `{t|x|y}` objects).
+   * - 'labels': generates ticks from user given `data.labels` values ONLY.
+   * @see https://github.com/chartjs/Chart.js/pull/4507
+   * @since 2.7.0
+   * @default 'auto'
+   */
+  source: 'labels' | 'auto' | 'data';
+  /**
+   * The number of units between grid lines.
+   * @default 1
+   */
+  stepSize: number;
+};
+
 export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
   min: string | number;
   max: string | number;
@@ -3336,60 +3391,9 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
     date: unknown;
   };
 
-  time: {
-    /**
-     * Custom parser for dates.
-     */
-    parser: string | ((v: unknown) => number);
-    /**
-     * If defined, dates will be rounded to the start of this unit. See Time Units below for the allowed units.
-     */
-    round: false | TimeUnit;
-    /**
-     * If boolean and true and the unit is set to 'week', then the first day of the week will be Monday. Otherwise, it will be Sunday.
-     * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
-     * @default false
-     */
-    isoWeekday: boolean | number;
-    /**
-     * Sets how different time units are displayed.
-     */
-    displayFormats: {
-      [key: string]: string;
-    };
-    /**
-     * The format string to use for the tooltip.
-     */
-    tooltipFormat: string;
-    /**
-     * If defined, will force the unit to be a certain type. See Time Units section below for details.
-     * @default false
-     */
-    unit: false | TimeUnit;
-    /**
-     * The minimum display format to be used for a time unit.
-     * @default 'millisecond'
-     */
-    minUnit: TimeUnit;
-  };
+  time: TimeScaleTimeOptions;
 
-  ticks: {
-    /**
-     * Ticks generation input values:
-     * - 'auto': generates "optimal" ticks based on scale size and time options.
-     * - 'data': generates ticks from data (including labels from data `{t|x|y}` objects).
-     * - 'labels': generates ticks from user given `data.labels` values ONLY.
-     * @see https://github.com/chartjs/Chart.js/pull/4507
-     * @since 2.7.0
-     * @default 'auto'
-     */
-    source: 'labels' | 'auto' | 'data';
-    /**
-     * The number of units between grid lines.
-     * @default 1
-     */
-    stepSize: number;
-  };
+  ticks: TimeScaleTickOptions;
 };
 
 export interface TimeScale<O extends TimeScaleOptions = TimeScaleOptions> extends Scale<O> {
