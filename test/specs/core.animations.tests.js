@@ -130,6 +130,50 @@ describe('Chart.animations', function() {
     }, 250);
   });
 
+  it('should update multiple path properties with the same root to target during animation', function(done) {
+    const chart = {
+      draw: function() {},
+      options: {
+      }
+    };
+    const anims = new Chart.Animations(chart, {value: {properties: ['level.value1', 'level.value2'], type: 'number', duration: 500}});
+
+    const from = 0;
+    const to = 100;
+    const target = {
+      level: {
+        value1: from,
+        value2: from
+      }
+    };
+    expect(anims.update(target, {
+      level: {
+        value1: to,
+        value2: to
+      }
+    })).toBeTrue();
+
+    const ended = function() {
+      const value1 = target.level.value1;
+      expect(value1 === to).toBeTrue();
+      const value2 = target.level.value2;
+      expect(value2 === to).toBeTrue();
+      Chart.animator.remove(chart);
+      done();
+    };
+
+    Chart.animator.listen(chart, 'complete', ended);
+    Chart.animator.start(chart);
+    setTimeout(function() {
+      const value1 = target.level.value1;
+      const value2 = target.level.value2;
+      expect(value1 > from).toBeTrue();
+      expect(value1 < to).toBeTrue();
+      expect(value2 > from).toBeTrue();
+      expect(value2 < to).toBeTrue();
+    }, 250);
+  });
+
   it('should not update path properties to target during animation because not an object', function() {
     const chart = {
       draw: function() {},

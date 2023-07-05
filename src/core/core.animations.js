@@ -110,13 +110,15 @@ export default class Animations {
         animations.push(...this._animateOptions(target, values));
         continue;
       }
-      const item = pathAnimatedProps.get(prop);
-      if (item) {
-        const newTarget = getInnerObject(target, item);
-        const newValues = newTarget && getInnerObject(values, item);
-        if (newValues) {
-          manageItem(newTarget, newValues, item.prop, item.key);
-        }
+      const propValue = pathAnimatedProps.get(prop);
+      if (propValue) {
+        propValue.forEach(function(item) {
+          const newTarget = getInnerObject(target, item);
+          const newValues = newTarget && getInnerObject(values, item);
+          if (newValues) {
+            manageItem(newTarget, newValues, item.prop, item.key);
+          }
+        });
       } else {
         manageItem(target, values, prop);
       }
@@ -154,7 +156,7 @@ function loadPathOptions(props, pathProps) {
       const mapKey = value.path[0];
       const mapValue = pathProps.get(mapKey) || [];
       mapValue.push(value);
-      pathProps.set(mapKey, value);
+      pathProps.set(mapKey, mapValue);
     }
   });
 }
