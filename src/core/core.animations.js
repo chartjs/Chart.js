@@ -110,11 +110,12 @@ export default class Animations {
         animations.push(...this._animateOptions(target, values));
         continue;
       }
-      if (prop.includes('.')) {
-        const newTarget = resolveObjectKey(target, prop);
-        const newValues = newTarget && resolveObjectKey(values, prop);
+      const item = pathAnimatedProps.get(prop);
+      if (item) {
+        const newTarget = getInnerObject(target, item);
+        const newValues = newTarget && getInnerObject(values, item);
         if (newValues) {
-          manageItem(newTarget, newValues, prop, prop.split('.').pop());
+          manageItem(newTarget, newValues, item.prop, item.key);
         }
       } else {
         manageItem(target, values, prop);
