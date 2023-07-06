@@ -33,12 +33,13 @@ module.exports = {
             autoSkip: true,
             autoSkipPadding: 75,
             maxRotation: 0,
-            sampleSize: 100
+            sampleSize: 100,
+            maxTicksLimit: 3
           },
           // manually set major ticks so that test passes in all time zones with moment adapter
           afterBuildTicks: function(scale) {
-            const major = [0, 12, 24];
             const ticks = scale.ticks;
+            const major = [0, 264, 522];
             for (let i = 0; i < ticks.length; i++) {
               ticks[i].major = major.indexOf(i) >= 0;
             }

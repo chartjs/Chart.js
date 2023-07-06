@@ -126,7 +126,7 @@ class TimeSeriesScale extends TimeScale {
     if (!timestamps.includes(max) || timestamps.length === 1) {
       timestamps.push(max);
     }
-    return timestamps.sort((a, b) => a - b).map(x => +x);
+    return timestamps.sort((a, b) => a - b);
   }
 
   /**
