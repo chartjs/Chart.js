@@ -101,7 +101,7 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
   return e;
 }
 
-function getSizeFromArea(scale, chartArea, field) {
+function getSizeForArea(scale, chartArea, field) {
   return scale.options.clip ? scale[field] : chartArea[field];
 }
 
@@ -109,10 +109,10 @@ function getDatasetArea(meta, chartArea) {
   const {xScale, yScale} = meta;
   if (xScale && yScale) {
     return {
-      left: getSizeFromArea(xScale, chartArea, 'left'),
-      right: getSizeFromArea(xScale, chartArea, 'right'),
-      top: getSizeFromArea(yScale, chartArea, 'top'),
-      bottom: getSizeFromArea(yScale, chartArea, 'bottom')
+      left: getSizeForArea(xScale, chartArea, 'left'),
+      right: getSizeForArea(xScale, chartArea, 'right'),
+      top: getSizeForArea(yScale, chartArea, 'top'),
+      bottom: getSizeForArea(yScale, chartArea, 'bottom')
     };
   }
   return chartArea;
