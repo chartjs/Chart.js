@@ -663,7 +663,7 @@ export interface DatasetControllerChartComponent extends ChartComponent {
   };
 }
 
-export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType> {
+export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, DefaultsPluginChartOptions<ChartType> {
 
   scale: ScaleOptionsByType;
   scales: {
@@ -701,7 +701,7 @@ export type Overrides = {
   [key in ChartType]:
   CoreChartOptions<key> &
   ElementChartOptions<key> &
-  PluginChartOptions<key> &
+  DefaultsPluginChartOptions<key> &
   DatasetChartOptions<ChartType> &
   ScaleChartOptions<key> &
   ChartTypeRegistry[key]['chartOptions'];
@@ -2912,7 +2912,7 @@ export interface TooltipItem<TType extends ChartType> {
   element: Element;
 }
 
-export interface PluginOptionsByType<TType extends ChartType> {
+export interface DefaultsPluginOptionsByType<TType extends ChartType> {
   colors: ColorsPluginOptions;
   decimation: DecimationOptions;
   filler: FillerOptions;
@@ -2921,8 +2921,23 @@ export interface PluginOptionsByType<TType extends ChartType> {
   title: TitleOptions;
   tooltip: TooltipOptions<TType>;
 }
+
+export interface PluginOptionsByType<TType extends ChartType> {
+  colors: ColorsPluginOptions | false;
+  decimation: DecimationOptions | false;
+  filler: FillerOptions | false;
+  legend: LegendOptions<TType> | false;
+  subtitle: TitleOptions | false;
+  title: TitleOptions | false;
+  tooltip: TooltipOptions<TType> | false;
+}
+
+export interface DefaultsPluginChartOptions<TType extends ChartType> {
+  plugins: DefaultsPluginOptionsByType<TType>;
+}
+
 export interface PluginChartOptions<TType extends ChartType> {
-  plugins: PluginOptionsByType<TType>;
+  plugins: PluginOptionsByType<TType> | false;
 }
 
 export interface BorderOptions {
