@@ -16,6 +16,8 @@ export function applyScaleDefaults(defaults) {
      */
     bounds: 'ticks',
 
+    clip: true,
+
     /**
      * Addition grace added to max and reduced from min data value.
      * @since 3.0.0

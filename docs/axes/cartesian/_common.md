@@ -5,6 +5,7 @@ Namespace: `options.scales[scaleId]`
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `bounds` | `string` | `'ticks'` | Determines the scale bounds. [more...](./index.md#scale-bounds)
+| `clip` | `boolean` | `true` | If true, clip the dataset drawing against the size of the scale instead of chart area
 | `position` | `string` \| `object` | | Position of the axis. [more...](./index.md#axis-position)
 | `stack` | `string` | | Stack group. Axes at the same `position` with same `stack` are stacked.
 | `stackWeight` | `number` | 1 | Weight of the scale in stack group. Used to determine the amount of allocated space for the scale within the group.

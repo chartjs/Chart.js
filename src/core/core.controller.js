@@ -101,16 +101,19 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
   return e;
 }
 
-function getDatasetArea(meta) {
+function getDatasetArea(meta, chartArea) {
   const {xScale, yScale} = meta;
   if (xScale && yScale) {
+    const xClip = xScale.options.clip;
+    const yClip = yScale.options.clip;
     return {
-      left: xScale.left,
-      right: xScale.right,
-      top: yScale.top,
-      bottom: yScale.bottom
+      left: xClip ? xScale.left : chartArea.left,
+      right: xClip ? xScale.right : chartArea.right,
+      top: yClip ? yScale.top : chartArea.top,
+      bottom: yClip ? yScale.bottom : chartArea.bottom
     };
   }
+  return chartArea;
 }
 
 class Chart {
@@ -796,7 +799,7 @@ class Chart {
     const ctx = this.ctx;
     const clip = meta._clip;
     const useClip = !clip.disabled;
-    const area = getDatasetArea(meta) || this.chartArea;
+    const area = getDatasetArea(meta, this.chartArea);
     const args = {
       meta,
       index: meta.index,
