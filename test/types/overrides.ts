@@ -1,8 +1,8 @@
-import { Chart } from '../../src/types.js';
+import { Chart, TitleOptions } from '../../src/types.js';
 
 Chart.overrides.bar.scales.x.type = 'time';
 
-Chart.overrides.bar.plugins.title.display = false;
+(Chart.overrides.bar.plugins.title as TitleOptions).display = false;
 
 Chart.overrides.line.datasets.bar.backgroundColor = 'red';
 

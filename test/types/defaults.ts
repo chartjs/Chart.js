@@ -1,8 +1,8 @@
-import { Chart } from '../../src/types.js';
+import { Chart, TitleOptions, TooltipOptions } from '../../src/types.js';
 
 Chart.defaults.scales.time.time.minUnit = 'day';
 
-Chart.defaults.plugins.title.display = false;
+(Chart.defaults.plugins.title as TitleOptions).display = false;
 
 Chart.defaults.datasets.bar.backgroundColor = 'red';
 
@@ -27,4 +27,4 @@ Chart.defaults.layout = {
   },
 };
 
-Chart.defaults.plugins.tooltip.boxPadding = 3;
+(Chart.defaults.plugins.tooltip as TooltipOptions).boxPadding = 3;

@@ -194,13 +194,6 @@ For example, to provide typings for the [`canvas backgroundColor plugin`](../con
 import {ChartType, Plugin} from 'chart.js';
 
 declare module 'chart.js' {
-  // For defaults options
-  interface DefaultsPluginOptionsByType<TType extends ChartType> {
-    customCanvasBackgroundColor?: {
-      color?: string
-    }
-  }
-  // for chart options
   interface PluginOptionsByType<TType extends ChartType> {
     customCanvasBackgroundColor?: {
       color?: string
