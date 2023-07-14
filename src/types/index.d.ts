@@ -2921,7 +2921,6 @@ export interface PluginOptionsByType<TType extends ChartType> {
   title: TitleOptions | false;
   tooltip: TooltipOptions<TType> | false;
 }
-
 export interface PluginChartOptions<TType extends ChartType> {
   plugins: PluginOptionsByType<TType>;
 }
