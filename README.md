@@ -29,6 +29,10 @@ All the links point to the new version 4 of the lib.
 
 In case you are looking for an older version of the docs, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
+## Usage Trends
+
+[Usage Trends of Common Chart Packages](https://npm-compare.com/chart.js,recharts,echarts,apexcharts,victory-chart,chartist,billboard.js)
+
 ## Contributing
 
 Instructions on building and testing Chart.js can be found in [the documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) with the `chart.js` tag.
