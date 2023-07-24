@@ -98,7 +98,7 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
     if (minDefined) {
       start = _limitValue(Math.min(
         // @ts-expect-error Need to type _parsed
-        _lookupByKey(_parsed, iScale.axis, min).lo,
+        _lookupByKey(_parsed, axis, min).lo,
         // @ts-expect-error Need to fix types on _lookupByKey
         animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
       0, pointCount - 1);
