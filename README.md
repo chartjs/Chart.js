@@ -31,7 +31,7 @@ In case you are looking for an older version of the docs, you will have to speci
 
 ## Usage Trends
 
-[Usage Trends of Common Chart Packages](https://npm-compare.com/chart.js,recharts,echarts,apexcharts,victory-chart,chartist,billboard.js)
+[npm downloads trend of chart.js](https://npm-compare.com/chart.js/#timeRange=THREE_YEARS)
 
 ## Contributing
 
