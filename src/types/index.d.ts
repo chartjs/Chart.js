@@ -3447,8 +3447,6 @@ export type RadialTickOptions = TickOptions & {
 }
 
 export type RadialLinearScaleOptions = CoreScaleOptions & {
-  backgroundColor: Color;
-
   animate: boolean;
 
   startAngle: number;
