@@ -1177,6 +1177,22 @@ export interface CoreScaleOptions {
    */
   weight: number;
   /**
+   * User defined minimum value for the scale, overrides minimum value from data.
+   */
+  min: unknown;
+  /**
+   * User defined maximum value for the scale, overrides maximum value from data.
+   */
+  max: unknown;
+  /**
+   * Adjustment used when calculating the maximum data value.
+   */
+  suggestedMin: unknown;
+  /**
+   * Adjustment used when calculating the minimum data value.
+   */
+  suggestedMax: unknown;
+  /**
    * Callback called before the update process starts.
    */
   beforeUpdate(axis: Scale): void;
@@ -1316,7 +1332,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
   getBasePixel(): number;
 
   init(options: O): void;
-  parse(raw: unknown, index: number): unknown;
+  parse(raw: unknown, index?: number): unknown;
   getUserBounds(): { min: number; max: number; minDefined: boolean; maxDefined: boolean };
   getMinMax(canStack: boolean): { min: number; max: number };
   getTicks(): Tick[];
