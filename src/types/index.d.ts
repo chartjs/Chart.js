@@ -2929,13 +2929,13 @@ export interface TooltipItem<TType extends ChartType> {
 }
 
 export interface PluginOptionsByType<TType extends ChartType> {
-  colors: ColorsPluginOptions | false;
-  decimation: DecimationOptions | false;
-  filler: FillerOptions | false;
-  legend: LegendOptions<TType> | false;
-  subtitle: TitleOptions | false;
-  title: TitleOptions | false;
-  tooltip: TooltipOptions<TType> | false;
+  colors: ColorsPluginOptions;
+  decimation: DecimationOptions;
+  filler: FillerOptions;
+  legend: LegendOptions<TType>;
+  subtitle: TitleOptions;
+  title: TitleOptions;
+  tooltip: TooltipOptions<TType>;
 }
 export interface PluginChartOptions<TType extends ChartType> {
   plugins: PluginOptionsByType<TType>;
