@@ -10,7 +10,7 @@ Welcome to Chart.js!
 
 ## Why Chart.js
 
-Among [many charting libraries](https://awesome.cube.dev/?tools=charts&ref=eco-chartjs) for JavaScript application developers, Chart.js is currently the most popular one according to [GitHub stars](https://github.com/chartjs/Chart.js) (~60,000) and [npm downloads](https://www.npmjs.com/package/chart.js) (~2,400,000 weekly).
+Among [many charting libraries](https://awesome.cube.dev/?tools=charts&ref=eco-chartjs) for JavaScript application developers, Chart.js is currently the [most popular](https://npm-compare.com/chart.js,recharts,echarts,apexcharts,victory-chart,chartist,billboard.js) one according to [GitHub stars](https://github.com/chartjs/Chart.js) (~60,000) and [npm downloads](https://www.npmjs.com/package/chart.js) (~2,400,000 weekly).
 
 Chart.js was created and [announced](https://twitter.com/_nnnick/status/313599208387137536) in 2013 but has come a long way since then. It’s open-source, licensed under the very permissive [MIT license](https://github.com/chartjs/Chart.js/blob/master/LICENSE.md), and maintained by an active community.
 
