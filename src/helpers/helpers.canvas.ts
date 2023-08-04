@@ -498,7 +498,7 @@ export function addRoundedRectPath(
   const {x, y, w, h, radius} = rect;
 
   // top left arc
-  ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
+  ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, 1.5 * PI, PI, true);
 
   // line from top left to bottom left
   ctx.lineTo(x, y + h - radius.bottomLeft);
