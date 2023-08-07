@@ -64,6 +64,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Plugins](../../developers/plugins.html)
+* [Line](../../charts/line.md)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Plugins](../../developers/plugins.md)

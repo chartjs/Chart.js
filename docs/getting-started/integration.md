@@ -122,7 +122,7 @@ const { Chart } = await import('chart.js');
 
 ## RequireJS
 
-**Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.html), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.js`).
+**Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.md), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.js`).
 
 ```javascript
 require(['path/to/chartjs/dist/chart.umd.js'], function(Chart){

@@ -98,10 +98,10 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
-    * [Tick Context](../../general/options.html#tick)
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Axes Styling](../../axes/styling.html)
-  * [Grid Line Configuration](../../axes/styling.html#grid-line-configuration)
+* [Line](../../charts/line.md)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)
+    * [Tick Context](../../general/options.md#tick)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Axes Styling](../../axes/styling.md)
+  * [Grid Line Configuration](../../axes/styling.md#grid-line-configuration)

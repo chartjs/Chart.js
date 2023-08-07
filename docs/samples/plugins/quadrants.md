@@ -80,6 +80,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Plugins](../../developers/plugins.html)
-* [Scatter](../../charts/scatter.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Plugins](../../developers/plugins.md)
+* [Scatter](../../charts/scatter.md)

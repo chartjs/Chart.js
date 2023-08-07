@@ -71,6 +71,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Bar](../../charts/bar.html)
-  * [`borderRadius`](../../charts/bar.html#borderradius)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Bar](../../charts/bar.md)
+  * [`borderRadius`](../../charts/bar.md#borderradius)
+* [Data structures (`labels`)](../../general/data-structures.md)

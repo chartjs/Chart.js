@@ -72,6 +72,6 @@ module.exports = {
 };
 ```
 ## Docs
-* [Bar](../../charts/bar.html)
-  * [Stacked Bar Chart](../../charts/bar.html#stacked-bar-chart)
+* [Bar](../../charts/bar.md)
+  * [Stacked Bar Chart](../../charts/bar.md#stacked-bar-chart)
 

@@ -172,9 +172,9 @@ module.exports = {
 ```
 
 ## Docs
-* [Area](../../charts/area.html)
-  * [Filling modes](../../charts/area.html#filling-modes)
-* [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Area](../../charts/area.md)
+  * [Filling modes](../../charts/area.md#filling-modes)
+* [Line](../../charts/line.md)
+* [Data structures (`labels`)](../../general/data-structures.md)
 * [Axes scales](../../axes/)
   * [Common options to all axes (`stacked`)](../../axes/#common-options-to-all-axes)

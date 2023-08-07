@@ -70,5 +70,5 @@ module.exports = {
 };
 ```
 ## Docs
-* [Bar](../../charts/bar.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Bar](../../charts/bar.md)
+* [Data structures (`labels`)](../../general/data-structures.md)

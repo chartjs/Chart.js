@@ -165,8 +165,8 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Tooltip](../../configuration/tooltip.html)
-  * [External (Custom) Tooltips](../../configuration/tooltip.html#external-custom-tooltips)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Tooltip](../../configuration/tooltip.md)
+  * [External (Custom) Tooltips](../../configuration/tooltip.md#external-custom-tooltips)
   

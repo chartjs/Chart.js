@@ -78,10 +78,10 @@ module.exports = {
 };
 ```
 ## Docs
-* [Animations](../../configuration/animations.html)
-  * [animation (`delay`)](../../configuration/animations.html#animation)
-  * [Animation Callbacks](../../configuration/animations.html#animation-callbacks)
-* [Bar](../../charts/bar.html)
-  * [Stacked Bar Chart](../../charts/bar.html#stacked-bar-chart)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Animations](../../configuration/animations.md)
+  * [animation (`delay`)](../../configuration/animations.md#animation)
+  * [Animation Callbacks](../../configuration/animations.md#animation-callbacks)
+* [Bar](../../charts/bar.md)
+  * [Stacked Bar Chart](../../charts/bar.md#stacked-bar-chart)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)

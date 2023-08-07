@@ -94,6 +94,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
-* [Radar](../../charts/radar.html)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)
+* [Radar](../../charts/radar.md)

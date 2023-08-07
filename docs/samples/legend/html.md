@@ -134,8 +134,8 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Legend](../../configuration/legend.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Legend](../../configuration/legend.md)
   * `display: false`
-* [Plugins](../../developers/plugins.html)  
+* [Plugins](../../developers/plugins.md)  

@@ -46,5 +46,5 @@ module.exports = {
 <<< @/scripts/derived-bubble.js
 
 ## Docs
-* [Bubble Chart](../../charts/bubble.html)
-* [New Charts](../../developers/charts.html)
+* [Bubble Chart](../../charts/bubble.md)
+* [New Charts](../../developers/charts.md)

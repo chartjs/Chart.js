@@ -71,7 +71,7 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
+* [Line](../../charts/line.md)
 * [Axes scales](../../axes/)
   * [Stacking](../../axes/#stacking)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Data structures (`labels`)](../../general/data-structures.md)

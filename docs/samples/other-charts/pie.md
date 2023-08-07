@@ -111,4 +111,4 @@ module.exports = {
 };
 ```
 ## Docs
-* [Doughnut and Pie Charts](../../charts/doughnut.html)
+* [Doughnut and Pie Charts](../../charts/doughnut.md)

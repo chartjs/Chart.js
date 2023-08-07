@@ -16,8 +16,8 @@ In a new folder, create the `package.json` file with the following contents:
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "dev": "parcel src/index.md",
+    "build": "parcel build src/index.md"
   },
   "devDependencies": {
     "parcel": "^2.6.2"
@@ -31,7 +31,7 @@ In a new folder, create the `package.json` file with the following contents:
 
 Modern front-end applications often use JavaScript module bundlers, so we’ve picked [Parcel](https://parceljs.org) as a nice zero-configuration build tool. We’re also installing Chart.js v4 and a JavaScript client for [Cube](https://cube.dev/?ref=eco-chartjs), an open-source API for data apps we’ll use to fetch real-world data (more on that later).
 
-Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies, then create the `src` folder. Inside that folder, we’ll need a very simple `index.html` file:
+Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies, then create the `src` folder. Inside that folder, we’ll need a very simple `index.md` file:
 
 ```html
 <!doctype html>
@@ -49,7 +49,7 @@ Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies
 </html>
 ```
 
-As you can see, Chart.js requires minimal markup: a `canvas` tag with an `id` by which we’ll reference the chart later. By default, Chart.js charts are [responsive](../configuration/responsive.html) and take the whole enclosing container. So, we set the width of the `div` to control chart width.
+As you can see, Chart.js requires minimal markup: a `canvas` tag with an `id` by which we’ll reference the chart later. By default, Chart.js charts are [responsive](../configuration/responsive.md) and take the whole enclosing container. So, we set the width of the `div` to control chart width.
 
 Lastly, let’s create the `src/acquisitions.js` file with the following contents:
 
@@ -96,7 +96,7 @@ Time to run the example with `npm run dev`, `yarn dev`, or `pnpm dev` and naviga
 
 ![result](./usage-1.png)
 
-With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.html), [grid lines](../samples/scale-options/grid.html), [ticks](../samples/scale-options/ticks.html), and [tooltips](../configuration/tooltip.html) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.html#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets). 
+With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.md), [grid lines](../samples/scale-options/grid.md), [ticks](../samples/scale-options/ticks.md), and [tooltips](../configuration/tooltip.md) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.md#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets). 
 
 ### Simple customizations
 
@@ -133,7 +133,7 @@ Replace the `new Chart(...);` invocation in `src/acquisitions.js` with the follo
   );
 ```
 
-As you can see, we’ve added the `options` property to the second argument—that’s how you can specify all kinds of customization options for Chart.js. The [animation is disabled](../configuration/animations.html#disabling-animation) with a boolean flag provided via `animation`. Most chart-wide options (e.g., [responsiveness](../configuration/responsive.html) or [device pixel ratio](../configuration/device-pixel-ratio.html)) are configured like this.
+As you can see, we’ve added the `options` property to the second argument—that’s how you can specify all kinds of customization options for Chart.js. The [animation is disabled](../configuration/animations.md#disabling-animation) with a boolean flag provided via `animation`. Most chart-wide options (e.g., [responsiveness](../configuration/responsive.md) or [device pixel ratio](../configuration/device-pixel-ratio.md)) are configured like this.
 
 The legend and tooltips are hidden with boolean flags provided under the respective sections in `plugins`. Note that some of Chart.js features are extracted into plugins: self-contained, separate pieces of code. A few of them are available as a part of [Chart.js distribution](https://github.com/chartjs/Chart.js/tree/master/src/plugins), other plugins are maintained independently and can be located in the [awesome list](https://github.com/chartjs/awesome) of plugins, framework integrations, and additional chart types.
 
@@ -252,9 +252,9 @@ We’re done with the bar chart. Let’s try another Chart.js chart type.
 
 Chart.js supports many common chart types.
 
-For instance, [Bubble chart](../charts/bubble.html) allows to display three dimensions of data at the same time: locations on `x` and `y` axes represent two dimensions, and the third dimension is represented by the size of the individual bubbles.
+For instance, [Bubble chart](../charts/bubble.md) allows to display three dimensions of data at the same time: locations on `x` and `y` axes represent two dimensions, and the third dimension is represented by the size of the individual bubbles.
 
-To create the chart, stop the already running application, then go to `src/index.html`, and uncomment the following two lines:
+To create the chart, stop the already running application, then go to `src/index.md`, and uncomment the following two lines:
 
 ```html
 <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/>
@@ -301,7 +301,7 @@ Now, reset caches with `rm -rf .parcel-cache` and start the application again wi
 
 Well, it doesn’t look pretty.
 
-First of all, the chart is not square. Artworks’ width and height are equally important so we’d like to make the chart width equal to its height as well. By default, Chart.js charts have the [aspect ratio](../configuration/responsive.html) of either 1 (for all radial charts, e.g., a doughnut chart) or 2 (for all the rest). Let’s modify the aspect ratio for our chart:
+First of all, the chart is not square. Artworks’ width and height are equally important so we’d like to make the chart width equal to its height as well. By default, Chart.js charts have the [aspect ratio](../configuration/responsive.md) of either 1 (for all radial charts, e.g., a doughnut chart) or 2 (for all the rest). Let’s modify the aspect ratio for our chart:
 
 ```jsx
 // ...
@@ -349,7 +349,7 @@ Great! Behold the updated chart:
 
 ![result](./usage-5.png)
 
-However, there’s one more nitpick: what are these numbers? It’s not very obvious that the units are centimetres. Let’s apply a [custom tick format](../axes/labelling.html#creating-custom-tick-formats) to both axes to make things clear. We’ll provide a callback function that would be called to format each tick value. Here’s the updated axes configuration:
+However, there’s one more nitpick: what are these numbers? It’s not very obvious that the units are centimetres. Let’s apply a [custom tick format](../axes/labelling.md#creating-custom-tick-formats) to both axes to make things clear. We’ll provide a callback function that would be called to format each tick value. Here’s the updated axes configuration:
 
 ```jsx
 // ...
@@ -434,13 +434,13 @@ As you can see, we define three datasets with different labels. Each dataset get
 
 ![result](./usage-7.png)
 
-Here we rely on the default color palette. However, keep in mind every chart type supports a lot of [dataset options](../charts/bubble.html#dataset-properties) that you can feel free to customize.
+Here we rely on the default color palette. However, keep in mind every chart type supports a lot of [dataset options](../charts/bubble.md#dataset-properties) that you can feel free to customize.
 
 ### Plugins
 
-Another—and very powerful!—way to customize Chart.js charts is to use plugins. You can find some in the [plugin directory](https://github.com/chartjs/awesome#plugins) or create your own, ad-hoc ones. In Chart.js ecosystem, it’s idiomatic and expected to fine tune charts with plugins. For example, you can customize [canvas background](../configuration/canvas-background.html) or [add a border](../samples/plugins/chart-area-border.html) to it with simple ad-hoc plugins. Let’s try the latter.
+Another—and very powerful!—way to customize Chart.js charts is to use plugins. You can find some in the [plugin directory](https://github.com/chartjs/awesome#plugins) or create your own, ad-hoc ones. In Chart.js ecosystem, it’s idiomatic and expected to fine tune charts with plugins. For example, you can customize [canvas background](../configuration/canvas-background.md) or [add a border](../samples/plugins/chart-area-border.md) to it with simple ad-hoc plugins. Let’s try the latter.
 
-Plugins have an [extensive API](../developers/plugins.html) but, in a nutshell, a plugin is defined as an object with a `name` and one or more callback functions defined in the extension points. Insert the following snippet before and in place of the `new Chart(...);` invocation in `src/dimensions.js`:
+Plugins have an [extensive API](../developers/plugins.md) but, in a nutshell, a plugin is defined as an object with a `name` and one or more callback functions defined in the extension points. Insert the following snippet before and in place of the `new Chart(...);` invocation in `src/dimensions.js`:
 
 ```jsx
 // ...
@@ -497,10 +497,10 @@ Let’s inspect our example application. What’s the bundle size? You can stop 
 ```bash
 % yarn build
 yarn run v1.22.17
-$ parcel build src/index.html
+$ parcel build src/index.md
 ✨ Built in 88ms
 
-dist/index.html              381 B   164ms
+dist/index.md              381 B   164ms
 dist/index.74a47636.js   265.48 KB   1.25s
 dist/index.ba0c2e17.js       881 B    63ms
 ✨ Done in 0.51s.
@@ -556,7 +556,7 @@ Chart.register(
 );
 ```
 
-You can see that, in addition to the `Chart` class, we’re also loading a controller for the chart type, scales, and other chart elements (e.g., bars or points). You can look all available components up in the [documentation](./integration.html#bundle-optimization).
+You can see that, in addition to the `Chart` class, we’re also loading a controller for the chart type, scales, and other chart elements (e.g., bars or points). You can look all available components up in the [documentation](./integration.md#bundle-optimization).
 
 Alternatively, you can follow Chart.js advice in the console. For example, if you forget to import `BarController` for your bar chart, you’ll see the following message in the browser console:
 
@@ -571,10 +571,10 @@ Now, let’s inspect our application once again. Run `yarn build` and you’ll g
 ```bash
 % yarn build
 yarn run v1.22.17
-$ parcel build src/index.html
+$ parcel build src/index.md
 ✨ Built in 88ms
 
-dist/index.html              381 B   176ms
+dist/index.md              381 B   176ms
 dist/index.5888047.js    208.66 KB   1.23s
 dist/index.dcb2e865.js       932 B    58ms
 ✨ Done in 0.51s.
@@ -586,6 +586,6 @@ By importing and registering only select components, we’ve removed more than 5
 
 Now you’re familiar with all major concepts of Chart.js: chart types and elements, datasets, customization, plugins, components, and tree-shaking.
 
-Feel free to review many [examples of charts](../samples/information.html) in the documentation and check the [awesome list](https://github.com/chartjs/awesome) of Chart.js plugins and additional chart types as well as [framework integrations](https://github.com/chartjs/awesome#integrations) (e.g., React, Vue, Svelte, etc.). Also, don’t hesitate to join [Chart.js Discord](https://discord.gg/HxEguTK6av) and follow [Chart.js on Twitter](https://twitter.com/chartjs).
+Feel free to review many [examples of charts](../samples/information.md) in the documentation and check the [awesome list](https://github.com/chartjs/awesome) of Chart.js plugins and additional chart types as well as [framework integrations](https://github.com/chartjs/awesome#integrations) (e.g., React, Vue, Svelte, etc.). Also, don’t hesitate to join [Chart.js Discord](https://discord.gg/HxEguTK6av) and follow [Chart.js on Twitter](https://twitter.com/chartjs).
 
 Have fun and good luck building with Chart.js!

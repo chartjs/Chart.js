@@ -3,10 +3,10 @@
 Welcome to Chart.js!
 
 * **[Get started with Chart.js](./getting-started/) — best if you're new to Chart.js**
-* Migrate from [Chart.js v3](./migration/v4-migration.html) or [Chart.js v2](./migration/v3-migration.html)
+* Migrate from [Chart.js v3](./migration/v4-migration.md) or [Chart.js v2](./migration/v3-migration.md)
 * Join the community on [Discord](https://discord.gg/HxEguTK6av) and [Twitter](https://twitter.com/chartjs)
 * Post a question tagged with `chart.js` on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js)
-* [Contribute to Chart.js](./developers/contributing.html)
+* [Contribute to Chart.js](./developers/contributing.md)
 
 ## Why Chart.js
 
@@ -16,7 +16,7 @@ Chart.js was created and [announced](https://twitter.com/_nnnick/status/31359920
 
 ### Features
 
-Chart.js provides a set of frequently used chart types, plugins, and customization options. In addition to a reasonable set of [built-in chart types](./charts/area.html), you can use additional community-maintained [chart types](https://github.com/chartjs/awesome#charts). On top of that, it’s possible to combine several chart types into a [mixed chart](./charts/mixed.html) (essentially, blending multiple chart types into one on the same canvas).
+Chart.js provides a set of frequently used chart types, plugins, and customization options. In addition to a reasonable set of [built-in chart types](./charts/area.md), you can use additional community-maintained [chart types](https://github.com/chartjs/awesome#charts). On top of that, it’s possible to combine several chart types into a [mixed chart](./charts/mixed.md) (essentially, blending multiple chart types into one on the same canvas).
 
 Chart.js is highly customizable with [custom plugins](https://github.com/chartjs/awesome#plugins) to create annotations, zoom, or drag-and-drop functionalities to name a few things.
 
@@ -30,7 +30,7 @@ Chart.js comes with built-in TypeScript typings and is compatible with all popul
 
 ### Developer experience
 
-Chart.js has very thorough documentation (yes, you're reading it), [API reference](./api/), and [examples](./samples/information.html). Maintainers and community members eagerly engage in conversations on [Discord](https://discord.gg/HxEguTK6av), [GitHub Discussions](https://github.com/chartjs/Chart.js/discussions), and [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) where more than 11,000 questions are tagged with `chart.js`.
+Chart.js has very thorough documentation (yes, you're reading it), [API reference](./api/), and [examples](./samples/information.md). Maintainers and community members eagerly engage in conversations on [Discord](https://discord.gg/HxEguTK6av), [GitHub Discussions](https://github.com/chartjs/Chart.js/discussions), and [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) where more than 11,000 questions are tagged with `chart.js`.
 
 ### Canvas rendering
 
@@ -38,7 +38,7 @@ Chart.js renders chart elements on an HTML5 canvas unlike several others, mostly
 
 ### Performance
 
-Chart.js is very well suited for large datasets. Such datasets can be efficiently ingested using the internal format, so you can skip data [parsing](./general/performance.html#parsing) and [normalization](./general/performance.html#data-normalization). Alternatively, [data decimation](./configuration/decimation.html) can be configured to sample the dataset and reduce its size before rendering.
+Chart.js is very well suited for large datasets. Such datasets can be efficiently ingested using the internal format, so you can skip data [parsing](./general/performance.md#parsing) and [normalization](./general/performance.md#data-normalization). Alternatively, [data decimation](./configuration/decimation.md) can be configured to sample the dataset and reduce its size before rendering.
 
 In the end, the canvas rendering that Chart.js uses reduces the toll on your DOM tree in comparison to SVG rendering. Also, tree-shaking support allows you to include minimal parts of Chart.js code in your bundle, reducing bundle size and page load time.
 
