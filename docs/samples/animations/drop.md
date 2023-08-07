@@ -124,13 +124,13 @@ module.exports = {
 };
 ```
 ## Docs
-* [Area](../../charts/area.html)
-* [Animations](../../configuration/animations.html)
-  * [animation (`easing`)](../../configuration/animations.html#animation)
-  * [animations (`from`)](../../configuration/animations.html#animations-2)
-* [Line](../../charts/line.html)
-  * [Line Styling](../../charts/line.html#line-styling)
+* [Area](../../charts/area.md)
+* [Animations](../../configuration/animations.md)
+  * [animation (`easing`)](../../configuration/animations.md#animation)
+  * [animations (`from`)](../../configuration/animations.md#animations-2)
+* [Line](../../charts/line.md)
+  * [Line Styling](../../charts/line.md#line-styling)
     * `fill`
     * `tension`
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)

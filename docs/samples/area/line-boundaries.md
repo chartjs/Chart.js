@@ -120,8 +120,8 @@ module.exports = {
 ```
 
 ## Docs
-* [Area](../../charts/area.html)
-  * [Filling modes](../../charts/area.html#filling-modes)
+* [Area](../../charts/area.md)
+  * [Filling modes](../../charts/area.md#filling-modes)
     * Boundary: `'start'`, `'end'`, `'origin'`
-* [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.md)
+* [Data structures (`labels`)](../../general/data-structures.md)

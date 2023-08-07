@@ -145,6 +145,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-  * [Point Styling](../../charts/line.html#point-styling)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+  * [Point Styling](../../charts/line.md#point-styling)

@@ -112,7 +112,7 @@ module.exports = {
 };
 ```
 ## Docs
-* [Data Decimation](../../configuration/decimation.html)
-* [Line](../../charts/line.html)
-* [Time Scale](../../axes/cartesian/time.html)
+* [Data Decimation](../../configuration/decimation.md)
+* [Line](../../charts/line.md)
+* [Time Scale](../../axes/cartesian/time.md)
 

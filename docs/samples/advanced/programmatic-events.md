@@ -105,11 +105,11 @@ module.exports = {
 ## API
 * [Chart](../../api/classes/Chart.md)
   * [`setActiveElements`](../../api/classes/Chart.md#setactiveelements)
-* [TooltipModel](../../api/interfaces/TooltipModel.html)
-  * [`setActiveElements`](../../api/interfaces/TooltipModel.html#setactiveelements)
+* [TooltipModel](../../api/interfaces/TooltipModel.md)
+  * [`setActiveElements`](../../api/interfaces/TooltipModel.md#setactiveelements)
 
 ## Docs
-* [Bar](../../charts/bar.html)
-    * [Interactions (`hoverBorderColor`)](../../charts/bar.html#interactions)
-* [Interactions](../../configuration/interactions.html)
-* [Tooltip](../../configuration/tooltip.html)
+* [Bar](../../charts/bar.md)
+    * [Interactions (`hoverBorderColor`)](../../charts/bar.md#interactions)
+* [Interactions](../../configuration/interactions.md)
+* [Tooltip](../../configuration/tooltip.md)

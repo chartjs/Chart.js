@@ -74,8 +74,8 @@ module.exports = {
 ```
 
 ## Docs
-* [Bar](../../charts/bar.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
-  * [Dataset Configuration (`stack`)](../../general/data-structures.html#dataset-configuration)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Bar](../../charts/bar.md)
+* [Data structures (`labels`)](../../general/data-structures.md)
+  * [Dataset Configuration (`stack`)](../../general/data-structures.md#dataset-configuration)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)

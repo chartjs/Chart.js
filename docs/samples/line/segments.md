@@ -45,9 +45,9 @@ module.exports = {
 ```
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-  * [Line Styling](../../charts/line.html#line-styling)
-  * [Segment](../../charts/line.html#segment)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+  * [Line Styling](../../charts/line.md#line-styling)
+  * [Segment](../../charts/line.md#segment)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)

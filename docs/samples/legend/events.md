@@ -57,7 +57,7 @@ module.exports = {
 ```
 
 ## Docs
-* [Doughnut and Pie Charts](../../charts/doughnut.html)
-* [Legend](../../configuration/legend.html)
+* [Doughnut and Pie Charts](../../charts/doughnut.md)
+* [Legend](../../configuration/legend.md)
   * `onHover`
   * `onLeave`

@@ -18,7 +18,7 @@ Latest builds are available for testing at:
 
 :::warning Warning
 
-Development builds **must not** be used for production purposes or as replacement for a CDN. See [available CDNs](../getting-started/installation.html#cdn).
+Development builds **must not** be used for production purposes or as replacement for a CDN. See [available CDNs](../getting-started/installation.md#cdn).
 
 :::
 

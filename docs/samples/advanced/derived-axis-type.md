@@ -50,6 +50,6 @@ module.exports = {
 <<< @/scripts/log2.js
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [New Axes](../../developers/axes.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [New Axes](../../developers/axes.md)

@@ -77,6 +77,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)
 * [Polar Area Chart](../../charts/polar.md)

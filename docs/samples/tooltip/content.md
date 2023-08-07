@@ -66,7 +66,7 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Tooltip](../../configuration/tooltip.html)
-  * [Tooltip Callbacks](../../configuration/tooltip.html#tooltip-callbacks)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Tooltip](../../configuration/tooltip.md)
+  * [Tooltip Callbacks](../../configuration/tooltip.md#tooltip-callbacks)

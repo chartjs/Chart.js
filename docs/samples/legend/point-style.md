@@ -59,11 +59,11 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Legend](../../configuration/legend.html)
-  * [Legend Label Configuration](../../configuration/legend.html#legend-label-configuration)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Legend](../../configuration/legend.md)
+  * [Legend Label Configuration](../../configuration/legend.md#legend-label-configuration)
     * `usePointStyle`
-* [Elements](../../configuration/elements.html)
-  * [Point Configuration](../../configuration/elements.html#point-configuration)
-  * [Point Styles](../../configuration/elements.html#point-styles)
+* [Elements](../../configuration/elements.md)
+  * [Point Configuration](../../configuration/elements.md#point-configuration)
+  * [Point Styles](../../configuration/elements.md#point-styles)

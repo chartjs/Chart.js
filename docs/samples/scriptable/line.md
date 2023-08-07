@@ -91,9 +91,9 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-  * [Point Styling](../../charts/line.html#point-styling)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.md)
+  * [Point Styling](../../charts/line.md#point-styling)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)
+* [Data structures (`labels`)](../../general/data-structures.md)
 

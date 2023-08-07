@@ -173,17 +173,17 @@ module.exports = {
 ## Api 
 * [Chart](../../api/classes/Chart.md)
   * [`getDatasetMeta`](../../api/classes/Chart.md#getdatasetmeta)
-* [Scale](../../api/classes/Scale.html)
-  * [`getPixelForValue`](../../api/classes/Scale.html#getpixelforvalue)
+* [Scale](../../api/classes/Scale.md)
+  * [`getPixelForValue`](../../api/classes/Scale.md#getpixelforvalue)
 ## Docs
-* [Animations](../../configuration/animations.html)
-  * [animation](../../configuration/animations.html#animation)
+* [Animations](../../configuration/animations.md)
+  * [animation](../../configuration/animations.md#animation)
     * `delay`
     * `duration`
     * `easing`
     * `loop`
-  * [Easing](../../configuration/animations.html#easing)
-* [Line](../../charts/line.html)
-* [Options](../../general/options.html)
-  * [Scriptable Options](../../general/options.html#scriptable-options)
-    * [Data Context](../../general/options.html#data)
+  * [Easing](../../configuration/animations.md#easing)
+* [Line](../../charts/line.md)
+* [Options](../../general/options.md)
+  * [Scriptable Options](../../general/options.md#scriptable-options)
+    * [Data Context](../../general/options.md#data)

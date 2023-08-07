@@ -109,4 +109,4 @@ module.exports = {
 ```
 
 ## Docs
-* [Scatter](../../charts/scatter.html)
+* [Scatter](../../charts/scatter.md)

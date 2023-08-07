@@ -101,8 +101,8 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Tooltip](../../configuration/tooltip.html)
-  * [Position Modes](../../configuration/tooltip.html#position-modes)
-  * [Custom Position Modes](../../configuration/tooltip.html#custom-position-modes)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Tooltip](../../configuration/tooltip.md)
+  * [Position Modes](../../configuration/tooltip.md#position-modes)
+  * [Custom Position Modes](../../configuration/tooltip.md#custom-position-modes)

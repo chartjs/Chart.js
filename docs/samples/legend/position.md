@@ -68,7 +68,7 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Legend](../../configuration/legend.html)
-  * [Position](../../configuration/legend.html#position)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Legend](../../configuration/legend.md)
+  * [Position](../../configuration/legend.md#position)

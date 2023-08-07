@@ -126,6 +126,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-  * [`spanGaps`](../../charts/line.html#line-styling)
-* [Time Scale](../../axes/cartesian/time.html)
+* [Line](../../charts/line.md)
+  * [`spanGaps`](../../charts/line.md#line-styling)
+* [Time Scale](../../axes/cartesian/time.md)
