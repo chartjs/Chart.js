@@ -1167,6 +1167,10 @@ export interface CoreScaleOptions {
    */
   alignToPixels: boolean;
   /**
+   * Background color of the scale area.
+   */
+  backgroundColor: Color;
+  /**
    * Reverse the scale.
    * @default false
    */
@@ -3464,8 +3468,6 @@ export type RadialTickOptions = TickOptions & {
 }
 
 export type RadialLinearScaleOptions = CoreScaleOptions & {
-  backgroundColor: Color;
-
   animate: boolean;
 
   startAngle: number;
