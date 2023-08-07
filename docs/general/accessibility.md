@@ -4,7 +4,7 @@ Chart.js charts are rendered on user provided `canvas` elements. Thus, it is up 
 
 With `canvas`, the accessibility has to be added with ARIA attributes on the `canvas` element or added using internal fallback content placed within the opening and closing canvas tags.
 
-This [website](http://pauljadam.com/demos/canvas.md) has a more detailed explanation of `canvas` accessibility as well as in depth examples.
+This [website](http://pauljadam.com/demos/canvas.html) has a more detailed explanation of `canvas` accessibility as well as in depth examples.
 
 ## Examples
 
