@@ -1172,6 +1172,11 @@ export interface CoreScaleOptions {
    */
   reverse: boolean;
   /**
+   * Clip the dataset drawing against the size of the scale instead of chart area.
+   * @default true
+   */
+  clip: boolean;
+  /**
    * The weight used to sort the axis. Higher weights are further away from the chart area.
    * @default true
    */
