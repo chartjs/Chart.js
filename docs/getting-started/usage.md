@@ -16,8 +16,8 @@ In a new folder, create the `package.json` file with the following contents:
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel src/index.md",
-    "build": "parcel build src/index.md"
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
   },
   "devDependencies": {
     "parcel": "^2.6.2"
@@ -31,7 +31,7 @@ In a new folder, create the `package.json` file with the following contents:
 
 Modern front-end applications often use JavaScript module bundlers, so we’ve picked [Parcel](https://parceljs.org) as a nice zero-configuration build tool. We’re also installing Chart.js v4 and a JavaScript client for [Cube](https://cube.dev/?ref=eco-chartjs), an open-source API for data apps we’ll use to fetch real-world data (more on that later).
 
-Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies, then create the `src` folder. Inside that folder, we’ll need a very simple `index.md` file:
+Run `npm install`, `yarn install`, or `pnpm install` to install the dependencies, then create the `src` folder. Inside that folder, we’ll need a very simple `index.html` file:
 
 ```html
 <!doctype html>
@@ -254,7 +254,7 @@ Chart.js supports many common chart types.
 
 For instance, [Bubble chart](../charts/bubble.md) allows to display three dimensions of data at the same time: locations on `x` and `y` axes represent two dimensions, and the third dimension is represented by the size of the individual bubbles.
 
-To create the chart, stop the already running application, then go to `src/index.md`, and uncomment the following two lines:
+To create the chart, stop the already running application, then go to `src/index.html`, and uncomment the following two lines:
 
 ```html
 <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/>
@@ -497,10 +497,10 @@ Let’s inspect our example application. What’s the bundle size? You can stop 
 ```bash
 % yarn build
 yarn run v1.22.17
-$ parcel build src/index.md
+$ parcel build src/index.html
 ✨ Built in 88ms
 
-dist/index.md              381 B   164ms
+dist/index.html              381 B   164ms
 dist/index.74a47636.js   265.48 KB   1.25s
 dist/index.ba0c2e17.js       881 B    63ms
 ✨ Done in 0.51s.
@@ -571,10 +571,10 @@ Now, let’s inspect our application once again. Run `yarn build` and you’ll g
 ```bash
 % yarn build
 yarn run v1.22.17
-$ parcel build src/index.md
+$ parcel build src/index.html
 ✨ Built in 88ms
 
-dist/index.md              381 B   176ms
+dist/index.html              381 B   176ms
 dist/index.5888047.js    208.66 KB   1.23s
 dist/index.dcb2e865.js       932 B    58ms
 ✨ Done in 0.51s.
