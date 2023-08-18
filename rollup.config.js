@@ -58,6 +58,20 @@ export default [
     },
   },
 
+  // UMD build with min.js extension for sri with jsdeliver (https://github.com/chartjs/Chart.js/issues/11455)
+  // dist/chart.umd.js
+  {
+    input: 'src/index.umd.ts',
+    plugins: plugins(true),
+    output: {
+      name: 'Chart',
+      file: 'dist/chart.umd.min.js',
+      format: 'umd',
+      indent: false,
+      sourcemap: true,
+    },
+  },
+
   // ES6 builds
   // dist/chart.js
   // helpers/*.js
