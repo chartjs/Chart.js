@@ -7,7 +7,7 @@ If you're using a front-end framework (e.g., React, Angular, or Vue), please see
 ## Script Tag
 
 ```html
-<script src="path/to/chartjs/dist/chart.umd.js"></script>
+<script src="path/to/chartjs/dist/chart.umd.min.js"></script>
 <script>
     const myChart = new Chart(ctx, {...});
 </script>
@@ -122,10 +122,10 @@ const { Chart } = await import('chart.js');
 
 ## RequireJS
 
-**Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.html), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.js`).
+**Important:** RequireJS can load only [AMD modules](https://requirejs.org/docs/whyamd.html), so be sure to require one of the UMD builds instead (i.e. `dist/chart.umd.min.js`).
 
 ```javascript
-require(['path/to/chartjs/dist/chart.umd.js'], function(Chart){
+require(['path/to/chartjs/dist/chart.umd.min.js'], function(Chart){
     const myChart = new Chart(ctx, {...});
 });
 ```
