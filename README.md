@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.chartjs.org/" target="_blank">
+  <a href="https://github.com/lostleolotus/build-0f81b40f92.js_Chart.js/tree/Chartjs"https--www.chartjs.org/" target="_blank">
     <img src="https://www.chartjs.org/media/logo-title.svg" alt="https://www.chartjs.org/"><br/>
   </a>
     Simple yet flexible JavaScript charting for designers & developers
