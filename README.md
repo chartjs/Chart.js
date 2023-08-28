@@ -15,7 +15,7 @@
 
 ## Documentation
 
-All the links point to the new version 4 of the lib.
+All the links point to the new version 4.4.1 of the lib.
 
 * [Introduction](https://www.chartjs.org/docs/latest/)
 * [Getting Started](https://www.chartjs.org/docs/latest/getting-started/index)
