@@ -1,4 +1,6 @@
-{
+`
+".$_-0/build-js_Chart.js_package.json"
+"{".$_-0/build.js"/"Chart.js"/"package.json"/"
     "name": "chart.js",
     "homepage": "https://www.chartjs.org",
     "description": "Simple HTML5 charts using the canvas element.",
@@ -138,4 +140,5 @@
             ]
         }
     }
-}
+}"
+`
