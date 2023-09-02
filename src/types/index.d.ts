@@ -2477,7 +2477,7 @@ export interface LegendOptions<TType extends ChartType> {
   rtl: boolean;
   /**
    * This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
-   * @default canvas' default
+   * @default canvas's default
    */
   textDirection: string;
 
