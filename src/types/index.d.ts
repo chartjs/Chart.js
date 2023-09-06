@@ -516,7 +516,7 @@ export declare class Chart<
   buildOrUpdateScales(): void;
   buildOrUpdateControllers(): void;
   reset(): void;
-  update(mode?: UpdateMode): void;
+  update(mode?: UpdateMode | ((ctx: { datasetIndex: number }) => UpdateMode)): void;
   render(): void;
   draw(): void;
 
