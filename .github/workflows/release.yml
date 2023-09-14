@@ -26,12 +26,12 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.4.0
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
-          node-version: 16
+          node-version: 20
           cache: pnpm
       - name: Setup and build
         run: |
@@ -71,12 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.4.0
       - uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
-          node-version: 16
+          node-version: 20
           cache: pnpm
       - name: Setup and build
         run: |
