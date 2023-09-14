@@ -8,11 +8,10 @@
     "sideEffects": [
         "./auto/auto.js",
         "./auto/auto.cjs",
-        "./dist/chart.umd.js",
-        "./dist/chart.umd.min.js"
+        "./dist/chart.umd.js"
     ],
-    "jsdelivr": "./dist/chart.umd.min.js",
-    "unpkg": "./dist/chart.umd.min.js",
+    "jsdelivr": "./dist/chart.umd.js",
+    "unpkg": "./dist/chart.umd.js",
     "main": "./dist/chart.cjs",
     "module": "./dist/chart.js",
     "exports": {
