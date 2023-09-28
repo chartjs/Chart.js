@@ -92,27 +92,13 @@ Chart.js provides a wide range of configuration options that allow you to custom
 ### Type of Chart
 
 - **Option Name**: `type`
-- **Description**: Specifies the type of chart to create (e.g., bar, line, pie).
-- **Example**: To create a bar chart, set `type: 'bar'`.
-
+- **Description**: Specifies the type of chart to create (e.g., bar, line, pie)
+  
 ### Data
 
 - **Option Name**: `data`
 - **Description**: Provides data for the chart, including labels and datasets.
-- **Example**:
 
-```javascript
-data: {
-    labels: ['Label1', 'Label2', 'Label3'],
-    datasets: [{
-        label: 'Dataset 1',
-        data: [10, 20, 30],
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1
-    }]
-}
-```
 ## Contributing
 
 Instructions on building and testing Chart.js can be found in [the documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) with the `chart.js` tag.
