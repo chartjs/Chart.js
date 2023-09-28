@@ -29,6 +29,104 @@ All the links point to the new version 4 of the lib.
 
 In case you are looking for an older version of the docs, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
+##A simple chart usage example
+# Chart.js Bar Chart Example
+
+This is a simple example of how to create a bar chart using Chart.js. In this example, we'll create a basic bar chart to visualize data.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- A web browser to view the chart.
+- Internet connectivity to load Chart.js from a CDN.
+
+## Getting Started
+
+To view the bar chart, follow these steps:
+
+1. Create an HTML file (e.g., `index.html`) and paste the following code:
+
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title>Chart.js Bar Chart Example</title>
+       <!-- Include Chart.js library -->
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   </head>
+   <body>
+       <!-- Create a canvas element to render the chart -->
+       <canvas id="myChart"></canvas>
+
+       <script>
+           const ctx = document.getElementById('myChart');
+
+           new Chart(ctx, {
+               type: 'bar',
+               data: {
+                   labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                   datasets: [{
+                       label: '# of Votes',
+                       data: [12, 19, 3, 5, 2, 3],
+                       borderWidth: 1
+                   }]
+               },
+               options: {
+                   scales: {
+                       y: {
+                           beginAtZero: true
+                       }
+                   }
+               }
+           });
+       </script>
+   </body>
+   </html>
+
+## Configuration Options
+<h2>Colors</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'colors'</li>
+  <li><h5>Deacription</h5>: 'Customise the colors of chart elements'</li>
+</ul>
+<h2>Axes Configuration</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'Scales'</li>
+  <li><h5>Deacription</h5>: 'Configure the appearance and scaling of the chart's axes.'</li>
+</ul>
+<h2>Legend</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'plugins.legend'</li>
+  <li><h5>Deacription</h5>: 'Customize the legend, which explains the data series in the chart'</li>
+</ul>
+<h2>Tooltips</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'plugins.tooltip'</li>
+  <li><h5>Deacription</h5>: 'Configure tooltips that provide additional information on hover.'</li>
+</ul>
+<h2>Animation</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'Animation'</li>
+  <li><h5>Deacription</h5>: 'Set animation options for chart rendering.'</li>
+</ul>
+<h2>Layout</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'layout'</li>
+  <li><h5>Deacription</h5>: 'Customize the layout of the chart, including padding and margins.'</li>
+</ul>
+<h2>Interacity</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'interacity'</li>
+  <li><h5>Deacription</h5>: 'Enable or disable interactivity features like zooming and panning.'</li>
+</ul>
+<h2>Callbacks</h2>
+<ul>
+  <li><h5>Option Name</h5>: 'callbacks'</li>
+  <li><h5>Deacription</h5>: ' Define callback functions for chart events, such as clicks or updates.'</li>
+</ul>
+
 ## Contributing
 
 Instructions on building and testing Chart.js can be found in [the documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) with the `chart.js` tag.
