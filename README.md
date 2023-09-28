@@ -86,46 +86,33 @@ To view the bar chart, follow these steps:
    </html>
 
 ## Configuration Options
-<h2>Colors</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'colors'</li>
-  <li><h5>Deacription</h5>: 'Customise the colors of chart elements'</li>
-</ul>
-<h2>Axes Configuration</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'Scales'</li>
-  <li><h5>Deacription</h5>: 'Configure the appearance and scaling of the chart's axes.'</li>
-</ul>
-<h2>Legend</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'plugins.legend'</li>
-  <li><h5>Deacription</h5>: 'Customize the legend, which explains the data series in the chart'</li>
-</ul>
-<h2>Tooltips</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'plugins.tooltip'</li>
-  <li><h5>Deacription</h5>: 'Configure tooltips that provide additional information on hover.'</li>
-</ul>
-<h2>Animation</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'Animation'</li>
-  <li><h5>Deacription</h5>: 'Set animation options for chart rendering.'</li>
-</ul>
-<h2>Layout</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'layout'</li>
-  <li><h5>Deacription</h5>: 'Customize the layout of the chart, including padding and margins.'</li>
-</ul>
-<h2>Interacity</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'interacity'</li>
-  <li><h5>Deacription</h5>: 'Enable or disable interactivity features like zooming and panning.'</li>
-</ul>
-<h2>Callbacks</h2>
-<ul>
-  <li><h5>Option Name</h5>: 'callbacks'</li>
-  <li><h5>Deacription</h5>: ' Define callback functions for chart events, such as clicks or updates.'</li>
-</ul>
+
+Chart.js provides a wide range of configuration options that allow you to customize the appearance and behavior of your charts. Below is a list of common configuration options and their descriptions:
+
+### Type of Chart
+
+- **Option Name**: `type`
+- **Description**: Specifies the type of chart to create (e.g., bar, line, pie).
+- **Example**: To create a bar chart, set `type: 'bar'`.
+
+### Data
+
+- **Option Name**: `data`
+- **Description**: Provides data for the chart, including labels and datasets.
+- **Example**:
+
+```javascript
+data: {
+    labels: ['Label1', 'Label2', 'Label3'],
+    datasets: [{
+        label: 'Dataset 1',
+        data: [10, 20, 30],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+    }]
+}
+
 
 ## Contributing
 
