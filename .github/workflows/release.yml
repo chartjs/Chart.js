@@ -16,7 +16,7 @@ jobs:
       version: ${{ steps.trim.outputs.version }}
     steps:
       - id: trim
-        run: echo "::set-output name=version::${TAG:1}"
+        run: echo "version=${TAG:1}" >> $GITHUB_OUTPUT
         env:
           TAG: ${{ github.event.release.tag_name }}
 
