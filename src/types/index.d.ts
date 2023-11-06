@@ -829,7 +829,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since 3.0.0
    */
-  install?(chart: Chart, args: EmptyObject, options: O): void;
+  install?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called when a plugin is starting. This happens when chart is created or plugin is enabled.
    * @param {Chart} chart - The chart instance.
@@ -837,7 +837,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since 3.0.0
    */
-  start?(chart: Chart, args: EmptyObject, options: O): void;
+  start?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called when a plugin stopping. This happens when chart is destroyed or plugin is disabled.
    * @param {Chart} chart - The chart instance.
@@ -845,21 +845,21 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since 3.0.0
    */
-  stop?(chart: Chart, args: EmptyObject, options: O): void;
+  stop?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before initializing `chart`.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  beforeInit?(chart: Chart, args: EmptyObject, options: O): void;
+  beforeInit?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called after `chart` has been initialized and before the first update.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterInit?(chart: Chart, args: EmptyObject, options: O): void;
+  afterInit?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before updating `chart`. If any plugin returns `false`, the update
    * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
@@ -869,7 +869,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart update.
    */
-  beforeUpdate?(chart: Chart, args: { mode: UpdateMode, cancelable: true }, options: O): boolean | void;
+  beforeUpdate?(chart: Chart<TType>, args: { mode: UpdateMode, cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after `chart` has been updated and before rendering. Note that this
    * hook will not be called if the chart update has been previously cancelled.
@@ -878,7 +878,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {UpdateMode} args.mode - The update mode
    * @param {object} options - The plugin options.
    */
-  afterUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): void;
+  afterUpdate?(chart: Chart<TType>, args: { mode: UpdateMode }, options: O): void;
   /**
    * @desc Called during the update process, before any chart elements have been created.
    * This can be used for data decimation by changing the data array inside a dataset.
@@ -886,7 +886,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  beforeElementsUpdate?(chart: Chart, args: EmptyObject, options: O): void;
+  beforeElementsUpdate?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called during chart reset
    * @param {Chart} chart - The chart instance.
@@ -894,7 +894,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since version 3.0.0
    */
-  reset?(chart: Chart, args: EmptyObject, options: O): void;
+  reset?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
    * the datasets update is cancelled until another `update` is triggered.
@@ -905,7 +905,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @returns {boolean} false to cancel the datasets update.
    * @since version 2.1.5
    */
-  beforeDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode }, options: O): boolean | void;
+  beforeDatasetsUpdate?(chart: Chart<TType>, args: { mode: UpdateMode }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` datasets have been updated. Note that this hook
    * will not be called if the datasets update has been previously cancelled.
@@ -915,7 +915,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since version 2.1.5
    */
-  afterDatasetsUpdate?(chart: Chart, args: { mode: UpdateMode, cancelable: true }, options: O): void;
+  afterDatasetsUpdate?(chart: Chart<TType>, args: { mode: UpdateMode, cancelable: true }, options: O): void;
   /**
    * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
    * returns `false`, the datasets update is cancelled until another `update` is triggered.
@@ -927,7 +927,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart datasets drawing.
    */
-  beforeDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: true }, options: O): boolean | void;
+  beforeDatasetUpdate?(chart: Chart<TType>, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` datasets at the given `args.index` has been updated. Note
    * that this hook will not be called if the datasets update has been previously cancelled.
@@ -938,7 +938,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {UpdateMode} args.mode - The update mode.
    * @param {object} options - The plugin options.
    */
-  afterDatasetUpdate?(chart: Chart, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: false }, options: O): void;
+  afterDatasetUpdate?(chart: Chart<TType>, args: { index: number; meta: ChartMeta, mode: UpdateMode, cancelable: false }, options: O): void;
   /**
    * @desc Called before laying out `chart`. If any plugin returns `false`,
    * the layout update is cancelled until another `update` is triggered.
@@ -947,7 +947,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart layout.
    */
-  beforeLayout?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
+  beforeLayout?(chart: Chart<TType>, args: { cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called before scale data limits are calculated. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
@@ -955,7 +955,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {Scale} args.scale - The scale.
    * @param {object} options - The plugin options.
    */
-  beforeDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
+  beforeDataLimits?(chart: Chart<TType>, args: { scale: Scale }, options: O): void;
   /**
    * @desc Called after scale data limits are calculated. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
@@ -963,7 +963,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {Scale} args.scale - The scale.
    * @param {object} options - The plugin options.
    */
-  afterDataLimits?(chart: Chart, args: { scale: Scale }, options: O): void;
+  afterDataLimits?(chart: Chart<TType>, args: { scale: Scale }, options: O): void;
   /**
    * @desc Called before scale builds its ticks. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
@@ -971,7 +971,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {Scale} args.scale - The scale.
    * @param {object} options - The plugin options.
    */
-  beforeBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): void;
+  beforeBuildTicks?(chart: Chart<TType>, args: { scale: Scale }, options: O): void;
   /**
    * @desc Called after scale has build its ticks. This hook is called separately for each scale in the chart.
    * @param {Chart} chart - The chart instance.
@@ -979,7 +979,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {Scale} args.scale - The scale.
    * @param {object} options - The plugin options.
    */
-  afterBuildTicks?(chart: Chart, args: { scale: Scale }, options: O): void;
+  afterBuildTicks?(chart: Chart<TType>, args: { scale: Scale }, options: O): void;
   /**
    * @desc Called after the `chart` has been laid out. Note that this hook will not
    * be called if the layout update has been previously cancelled.
@@ -987,7 +987,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterLayout?(chart: Chart, args: EmptyObject, options: O): void;
+  afterLayout?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before rendering `chart`. If any plugin returns `false`,
    * the rendering is cancelled until another `render` is triggered.
@@ -996,7 +996,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart rendering.
    */
-  beforeRender?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
+  beforeRender?(chart: Chart<TType>, args: { cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` has been fully rendered (and animation completed). Note
    * that this hook will not be called if the rendering has been previously cancelled.
@@ -1004,7 +1004,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterRender?(chart: Chart, args: EmptyObject, options: O): void;
+  afterRender?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before drawing `chart` at every animation frame. If any plugin returns `false`,
    * the frame drawing is cancelled untilanother `render` is triggered.
@@ -1013,7 +1013,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart drawing.
    */
-  beforeDraw?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
+  beforeDraw?(chart: Chart<TType>, args: { cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` has been drawn. Note that this hook will not be called
    * if the drawing has been previously cancelled.
@@ -1021,7 +1021,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterDraw?(chart: Chart, args: EmptyObject, options: O): void;
+  afterDraw?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
    * the datasets drawing is cancelled until another `render` is triggered.
@@ -1030,7 +1030,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart datasets drawing.
    */
-  beforeDatasetsDraw?(chart: Chart, args: { cancelable: true }, options: O): boolean | void;
+  beforeDatasetsDraw?(chart: Chart<TType>, args: { cancelable: true }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` datasets have been drawn. Note that this hook
    * will not be called if the datasets drawing has been previously cancelled.
@@ -1038,7 +1038,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterDatasetsDraw?(chart: Chart, args: EmptyObject, options: O, cancelable: false): void;
+  afterDatasetsDraw?(chart: Chart<TType>, args: EmptyObject, options: O, cancelable: false): void;
   /**
    * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
    * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
@@ -1050,7 +1050,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @returns {boolean} `false` to cancel the chart datasets drawing.
    */
-  beforeDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): boolean | void;
+  beforeDatasetDraw?(chart: Chart<TType>, args: { index: number; meta: ChartMeta }, options: O): boolean | void;
   /**
    * @desc Called after the `chart` datasets at the given `args.index` have been drawn
    * (datasets are drawn in the reverse order). Note that this hook will not be called
@@ -1061,7 +1061,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} args.meta - The dataset metadata.
    * @param {object} options - The plugin options.
    */
-  afterDatasetDraw?(chart: Chart, args: { index: number; meta: ChartMeta }, options: O): void;
+  afterDatasetDraw?(chart: Chart<TType>, args: { index: number; meta: ChartMeta }, options: O): void;
   /**
    * @desc Called before processing the specified `event`. If any plugin returns `false`,
    * the event will be discarded.
@@ -1072,7 +1072,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {boolean} args.inChartArea - The event position is inside chartArea
    * @param {object} options - The plugin options.
    */
-  beforeEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, cancelable: true, inChartArea: boolean }, options: O): boolean | void;
+  beforeEvent?(chart: Chart<TType>, args: { event: ChartEvent, replay: boolean, cancelable: true, inChartArea: boolean }, options: O): boolean | void;
   /**
    * @desc Called after the `event` has been consumed. Note that this hook
    * will not be called if the `event` has been previously discarded.
@@ -1084,7 +1084,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {boolean} [args.changed] - Set to true if the plugin needs a render. Should only be changed to true, because this args object is passed through all plugins.
    * @param {object} options - The plugin options.
    */
-  afterEvent?(chart: Chart, args: { event: ChartEvent, replay: boolean, changed?: boolean, cancelable: false, inChartArea: boolean }, options: O): void;
+  afterEvent?(chart: Chart<TType>, args: { event: ChartEvent, replay: boolean, changed?: boolean, cancelable: false, inChartArea: boolean }, options: O): void;
   /**
    * @desc Called after the chart as been resized.
    * @param {Chart} chart - The chart instance.
@@ -1092,21 +1092,21 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {number} args.size - The new canvas display size (eq. canvas.style width & height).
    * @param {object} options - The plugin options.
    */
-  resize?(chart: Chart, args: { size: { width: number, height: number } }, options: O): void;
+  resize?(chart: Chart<TType>, args: { size: { width: number, height: number } }, options: O): void;
   /**
    * Called before the chart is being destroyed.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  beforeDestroy?(chart: Chart, args: EmptyObject, options: O): void;
+  beforeDestroy?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * Called after the chart has been destroyed.
    * @param {Chart} chart - The chart instance.
    * @param {object} args - The call arguments.
    * @param {object} options - The plugin options.
    */
-  afterDestroy?(chart: Chart, args: EmptyObject, options: O): void;
+  afterDestroy?(chart: Chart<TType>, args: EmptyObject, options: O): void;
   /**
    * Called after chart is destroyed on all plugins that were installed for that chart. This hook is also invoked for disabled plugins (options === false).
    * @param {Chart} chart - The chart instance.
@@ -1114,7 +1114,7 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {object} options - The plugin options.
    * @since 3.0.0
    */
-  uninstall?(chart: Chart, args: EmptyObject, options: O): void;
+  uninstall?(chart: Chart<TType>, args: EmptyObject, options: O): void;
 
   /**
    * Default options used in the plugin
