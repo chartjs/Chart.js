@@ -3817,6 +3817,7 @@ export interface ChartConfiguration<
   data: ChartData<TType, TData, TLabel>;
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
+  platform?: typeof BasePlatform;
 }
 
 export interface ChartConfigurationCustomTypesPerDataset<
