@@ -1,3 +1,5 @@
+/* eslint-disable max-statements */
+/* eslint-disable complexity */
 import Element from './core.element.js';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas.js';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core.js';
@@ -1287,6 +1289,13 @@ export default class Scale extends Element {
           break;
         case 'right':
           left -= width;
+          break;
+        case 'inner':
+          if (i === ilen - 1) {
+            left -= width;
+          } else if (i > 0) {
+            left -= width / 2;
+          }
           break;
         default:
           break;
