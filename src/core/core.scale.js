@@ -1,5 +1,3 @@
-/* eslint-disable max-statements */
-/* eslint-disable complexity */
 import Element from './core.element.js';
 import {_alignPixel, _measureText, renderText, clipArea, unclipArea} from '../helpers/helpers.canvas.js';
 import {callback as call, each, finiteOrDefault, isArray, isFinite, isNullOrUndef, isObject, valueOrDefault} from '../helpers/helpers.core.js';
