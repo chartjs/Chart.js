@@ -16,14 +16,25 @@ module.exports = {
     },
     options: {
       scales: {
+        y: {
+          ticks: {
+            display: false,
+          },
+          grid: {
+            lineWidth: 0
+          }
+        },
         x: {
           position: 'top',
           ticks: {
-            color: 'green',
+            color: 'transparent',
             backdropColor: 'red',
             showLabelBackdrop: true,
             align: 'inner',
           },
+          grid: {
+            lineWidth: 0
+          }
         }
       }
     }
