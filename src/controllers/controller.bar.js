@@ -365,15 +365,18 @@ export default class BarController extends DatasetController {
     const meta = this._cachedMeta;
     const {iScale, vScale} = meta;
     const parsed = this.getParsed(index);
-    const custom = parsed._custom;
-    const value = isFloatBar(custom)
-      ? '[' + custom.start + ', ' + custom.end + ']'
-      : '' + vScale.getLabelForValue(parsed[vScale.axis]);
-
-    return {
-      label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
-      value
-    };
+    if (parsed) {
+      const custom = parsed._custom;
+      const value = isFloatBar(custom)
+        ? '[' + custom.start + ', ' + custom.end + ']'
+        : '' + vScale.getLabelForValue(parsed[vScale.axis]);
+  
+      return {
+        label: '' + iScale.getLabelForValue(parsed[iScale.axis]),
+        value
+      };
+    }
+    return {label: '', value: 0};
   }
 
   initialize() {
