@@ -376,7 +376,7 @@ export default class BarController extends DatasetController {
         value
       };
     }
-    return {label: '', value: 0};
+    return {label: '', value: ''};
   }
 
   initialize() {
