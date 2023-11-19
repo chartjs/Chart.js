@@ -262,8 +262,10 @@ export const supportsEventListenerOptions = (function() {
       }
     } as EventListenerOptions;
 
-    window.addEventListener('test', null, options);
-    window.removeEventListener('test', null, options);
+    if (_isDomSupported()) {
+      window.addEventListener('test', null, options);
+      window.removeEventListener('test', null, options);
+    }
   } catch (e) {
     // continue regardless of error
   }
