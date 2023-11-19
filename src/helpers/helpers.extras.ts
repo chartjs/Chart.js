@@ -3,21 +3,23 @@ import type {ChartMeta, PointElement} from '../types/index.js';
 import {_limitValue} from './helpers.math.js';
 import {_lookupByKey} from './helpers.collection.js';
 
+const supportsRequestAnimationFrame = typeof requestAnimationFrame !== 'undefined';
+
 export function fontString(pixelSize: number, fontStyle: string, fontFamily: string) {
   return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
 }
 
 /**
-* Request animation polyfill
+* Request animation frame polyfill
 */
-export const requestAnimFrame = (function() {
-  if (typeof window === 'undefined') {
-    return function(callback) {
-      return callback();
-    };
-  }
-  return window.requestAnimationFrame;
-}());
+function requestAnimationFrameFallback(callback: FrameRequestCallback): number {
+  callback(-1);
+  return 1;
+}
+
+export const requestAnimFrame = (callback: FrameRequestCallback): number => {
+  return supportsRequestAnimationFrame ? requestAnimationFrame(callback) : requestAnimationFrameFallback(callback);
+};
 
 /**
  * Throttles calling `fn` once per animation frame
@@ -35,7 +37,7 @@ export function throttled<TArgs extends Array<any>>(
     argsToUse = args;
     if (!ticking) {
       ticking = true;
-      requestAnimFrame.call(window, () => {
+      requestAnimFrame(() => {
         ticking = false;
         fn.apply(thisArg, argsToUse);
       });
