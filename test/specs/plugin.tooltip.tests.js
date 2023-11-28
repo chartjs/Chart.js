@@ -1667,7 +1667,7 @@ describe('Plugin.Tooltip', function() {
     });
   });
 
-  it('should tolerate datasets removed or added on events outside chartArea', async function() {
+  it('should tolerate datasets removed on events outside chartArea', async function() {
     const dataset1 = {
       label: 'Dataset 1',
       data: [10, 20, 30],
@@ -1692,9 +1692,9 @@ describe('Plugin.Tooltip', function() {
       }
     });
 
-    var meta = chart.getDatasetMeta(0);
-    var point = meta.data[1];
-    var expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
+    const meta = chart.getDatasetMeta(0);
+    const point = meta.data[1];
+    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
 
     await jasmine.triggerMouseEvent(chart, 'mousemove', point);
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
@@ -1707,6 +1707,49 @@ describe('Plugin.Tooltip', function() {
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
     expect(chart.tooltip.getActiveElements()).toEqual([expectedPoints[0]]);
+  });
+
+  it('should tolerate elements removed on events outside chartArea', async function() {
+    const dataset1 = {
+      label: 'Dataset 1',
+      data: [10, 20, 30],
+    };
+    const dataset2 = {
+      label: 'Dataset 2',
+      data: [10, 25, 35],
+    };
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [dataset1, dataset2],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        }
+      }
+    });
+
+    const meta = chart.getDatasetMeta(0);
+    const point = meta.data[1];
+    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
+
+    expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
+
+    dataset1.data = dataset1.data.slice(0, 1);
+    chart.data.datasets = [dataset1];
+    chart.update();
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
+
+    expect(chart.tooltip.getActiveElements()).toEqual([]);
   });
 
   describe('events', function() {
