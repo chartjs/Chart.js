@@ -1182,7 +1182,11 @@ export class Tooltip extends Element {
 
     if (!inChartArea) {
       // Let user control the active elements outside chartArea. Eg. using Legend.
-      return lastActive;
+      // But make sure that active elements are still valid.
+      return lastActive.filter(i =>
+        this.chart.data.datasets[i.datasetIndex] &&
+        this.chart.getDatasetMeta(i.datasetIndex).controller.getParsed(i.index) !== undefined
+      );
     }
 
     // Find Active Elements for tooltips
