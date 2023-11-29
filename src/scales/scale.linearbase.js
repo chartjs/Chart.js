@@ -1,5 +1,3 @@
-/* eslint-disable complexity */
-/* eslint-disable max-statements */
 import {isNullOrUndef} from '../helpers/helpers.core.js';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math.js';
 import Scale from '../core/core.scale.js';
