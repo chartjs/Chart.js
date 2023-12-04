@@ -1777,7 +1777,7 @@ export interface FontSpec {
   /**
    * Default font weight (boldness). (see MDN).
    */
-  weight: string | null;
+  weight: 'normal' | 'bold' | 'lighter' | 'bolder' | number | null;
   /**
    * Height of an individual line of text (see MDN).
    * @default 1.2
