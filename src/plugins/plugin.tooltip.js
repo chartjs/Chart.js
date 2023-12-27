@@ -24,7 +24,7 @@ const positioners = {
     }
 
     let i, len;
-    let x = 0;
+    let xSet = new Set();
     let y = 0;
     let count = 0;
 
@@ -32,14 +32,16 @@ const positioners = {
       const el = items[i].element;
       if (el && el.hasValue()) {
         const pos = el.tooltipPosition();
-        x += pos.x;
+        xSet.add(pos.x);
         y += pos.y;
         ++count;
       }
     }
 
+    const xAverage = [...xSet].reduce((a, b) => a + b) / xSet.size;
+
     return {
-      x: x / count,
+      x: xAverage,
       y: y / count
     };
   },
