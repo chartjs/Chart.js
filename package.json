@@ -122,9 +122,9 @@
         "yargs": "^17.5.1"
     },
     "engines": {
-        "pnpm": ">=7"
+        "pnpm": ">=8"
     },
-    "packageManager": "pnpm@7.9.0",
+    "packageManager": "pnpm@8.13.0",
     "pnpm": {
         "overrides": {
             "html-entities": "1.4.0"
