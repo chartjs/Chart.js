@@ -2,9 +2,9 @@
 
 Let's get started with Chart.js!
 
-* **[Follow a step-by-step guide](./usage) to get up to speed with Chart.js**
-* [Install Chart.js](./installation) from npm or a CDN 
-* [Integrate Chart.js](./integration) with bundlers, loaders, and front-end frameworks
+* **[Follow a step-by-step guide](./usage.md) to get up to speed with Chart.js**
+* [Install Chart.js](./installation.md) from npm or a CDN 
+* [Integrate Chart.js](./integration.md) with bundlers, loaders, and front-end frameworks
 
 Alternatively, see the example below or check [samples](../samples).
 
@@ -90,4 +90,4 @@ Finally, we can create a chart. We add a script that acquires the `myChart` canv
 </script>
 ```
 
-You can see all the ways to use Chart.js in the [step-by-step guide](./usage).
+You can see all the ways to use Chart.js in the [step-by-step guide](./usage.md).
