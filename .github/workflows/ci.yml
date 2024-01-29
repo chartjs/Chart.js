@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: 16
           cache: pnpm
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
