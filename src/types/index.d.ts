@@ -177,7 +177,7 @@ export interface BubbleDataPoint extends Point {
   /**
    * Bubble radius in pixels (not scaled).
    */
-  r: number;
+  r?: number;
 }
 
 export type BubbleController = DatasetController
