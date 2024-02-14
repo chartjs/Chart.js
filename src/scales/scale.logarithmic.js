@@ -6,15 +6,15 @@ import LinearScaleBase from './scale.linearbase.js';
 import Ticks from '../core/core.ticks.js';
 
 const log10Floor = v => Math.floor(log10(v));
-const changeExponent = (v, m) => Math.pow(10, log10Floor(v) + m);
+const changeExponent = (v, m) => 10**(log10Floor(v) + m);
 
 function isMajor(tickVal) {
-  const remain = tickVal / (Math.pow(10, log10Floor(tickVal)));
+  const remain = tickVal / (10**log10Floor(tickVal));
   return remain === 1;
 }
 
 function steps(min, max, rangeExp) {
-  const rangeStep = Math.pow(10, rangeExp);
+  const rangeStep = 10**rangeExp;
   const start = Math.floor(min / rangeStep);
   const end = Math.ceil(max / rangeStep);
   return end - start;
@@ -44,13 +44,13 @@ function generateTicks(generationOptions, {min, max}) {
   const ticks = [];
   const minExp = log10Floor(min);
   let exp = startExp(min, max);
-  let precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
-  const stepSize = Math.pow(10, exp);
-  const base = minExp > exp ? Math.pow(10, minExp) : 0;
+  let precision = exp < 0 ? 10**Math.abs(exp) : 1;
+  const stepSize = 10**exp;
+  const base = minExp > exp ? 10**minExp : 0;
   const start = Math.round((min - base) * precision) / precision;
   const offset = Math.floor((min - base) / stepSize / 10) * stepSize * 10;
-  let significand = Math.floor((start - offset) / Math.pow(10, exp));
-  let value = finiteOrDefault(generationOptions.min, Math.round((base + offset + significand * Math.pow(10, exp)) * precision) / precision);
+  let significand = Math.floor((start - offset) / 10**exp);
+  let value = finiteOrDefault(generationOptions.min, Math.round((base + offset + significand * 10**exp) * precision) / precision);
   while (value < max) {
     ticks.push({value, major: isMajor(value), significand});
     if (significand >= 10) {
@@ -63,7 +63,7 @@ function generateTicks(generationOptions, {min, max}) {
       significand = 2;
       precision = exp >= 0 ? 1 : precision;
     }
-    value = Math.round((base + offset + significand * Math.pow(10, exp)) * precision) / precision;
+    value = Math.round((base + offset + significand * 10**exp) * precision) / precision;
   }
   const lastTick = finiteOrDefault(generationOptions.max, value);
   ticks.push({value: lastTick, major: isMajor(lastTick), significand});
@@ -221,6 +221,6 @@ export default class LogarithmicScale extends Scale {
 
   getValueForPixel(pixel) {
     const decimal = this.getDecimalForPixel(pixel);
-    return Math.pow(10, this._startValue + decimal * this._valueRange);
+    return 10**(this._startValue + decimal * this._valueRange);
   }
 }

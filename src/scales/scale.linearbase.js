@@ -54,7 +54,7 @@ function generateTicks(generationOptions, dataRange) {
 
   if (!isNullOrUndef(precision)) {
     // If the user specified a precision, round to that number of decimal places
-    factor = Math.pow(10, precision);
+    factor = 10**precision;
     spacing = Math.ceil(spacing * factor) / factor;
   }
 
@@ -101,7 +101,7 @@ function generateTicks(generationOptions, dataRange) {
     _decimalPlaces(spacing),
     _decimalPlaces(niceMin)
   );
-  factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
+  factor = 10**(isNullOrUndef(precision) ? decimalPlaces : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
 
