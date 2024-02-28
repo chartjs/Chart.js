@@ -95,11 +95,15 @@ function initCanvas(canvas, aspectRatio) {
 const eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
 function addListener(node, type, listener) {
-  node.addEventListener(type, listener, eventListenerOptions);
+  if (node) {
+    node.addEventListener(type, listener, eventListenerOptions);
+  }
 }
 
 function removeListener(chart, type, listener) {
-  chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+  if (chart && chart.canvas) {
+    chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+  }
 }
 
 function fromNativeEvent(event, chart) {
