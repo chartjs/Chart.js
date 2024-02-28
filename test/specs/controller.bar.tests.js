@@ -1721,4 +1721,23 @@ describe('Chart.controllers.bar', function() {
       after: []
     }]);
   });
+
+  it('should treat and render indexAxis y as indexAxis x can without setting data labels', function() {
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [
+          {
+            label: '# of Votes',
+            data: {a: 1, b: 3, c: 2},
+          },
+        ],
+      },
+      options: {
+        indexAxis: 'y',
+      },
+    });
+
+    expect(chart.data.labels.length).toBe(3);
+  });
 });

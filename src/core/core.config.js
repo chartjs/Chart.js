@@ -132,6 +132,11 @@ function initConfig(config) {
 
   initOptions(config);
 
+  if (config.options.indexAxis === 'y' && config.data.labels.length === 0) {
+    config.data.labels = Object.keys(config.data.datasets[0].data);
+    config.data.datasets[0].data = Object.values(config.data.datasets[0].data);
+  }
+
   return config;
 }
 
