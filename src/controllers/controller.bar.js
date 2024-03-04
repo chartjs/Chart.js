@@ -543,7 +543,7 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _calculateBarValuePixels(index) {
-    const {_cachedMeta: {vScale, _stacked}, options: {base: baseValue}} = this;
+    const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {base: baseValue, minBarLength}} = this;
     const actualBase = baseValue || 0;
     const parsed = this.getParsed(index);
     const custom = parsed._custom;
@@ -557,6 +557,7 @@ export default class BarController extends DatasetController {
       start = length - value;
       length = value;
     }
+
     if (floating) {
       value = custom.barStart;
       length = custom.barEnd - custom.barStart;
@@ -570,55 +571,20 @@ export default class BarController extends DatasetController {
     const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
     let base = vScale.getPixelForValue(startValue);
 
-    head = this._computeHeadForVisibility(index, base, start, vScale);
-
-    let computedSizeWithMinBarLength = this._computeSizeWithMinBarLength(index, size, base, head, floating);
-    head = computedSizeWithMinBarLength.head;
-    base = computedSizeWithMinBarLength.base;
-    size = computedSizeWithMinBarLength.size;
-
-    if (base === vScale.getPixelForValue(actualBase)) {
-      const halfGrid = sign(size) * vScale.getLineWidthForValue(actualBase) / 2;
-      base += halfGrid;
-      size -= halfGrid;
-    }
-
-    return {
-      size,
-      base,
-      head,
-      center: head + size / 2
-    };
-  }
-
-  /**
-   * @private
-   */
-  _computeHeadForVisibility(index, base, start, vScale) {
-    let head;
     if (this.chart.getDataVisibility(index)) {
       head = vScale.getPixelForValue(start + length);
     } else {
       // When not visible, no height
       head = base;
     }
-    return head;
-  }
 
-  /**
-   * @private
-   */
-  _computeSizeWithMinBarLength(index, size, base, head, floating) {
     size = head - base;
-    const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {base: baseValue, minBarLength}} = this;
-    const actualBase = baseValue || 0;
-    const parsed = this.getParsed(index);
-    const value = parsed[vScale.axis];
-    size = barSign(size, vScale, actualBase) * minBarLength;
-    if (value === actualBase) {
-      base -= size / 2;
-    }
+
     if (Math.abs(size) < minBarLength) {
+      size = barSign(size, vScale, actualBase) * minBarLength;
+      if (value === actualBase) {
+        base -= size / 2;
+      }
       const startPixel = vScale.getPixelForDecimal(0);
       const endPixel = vScale.getPixelForDecimal(1);
       const min = Math.min(startPixel, endPixel);
@@ -637,10 +603,17 @@ export default class BarController extends DatasetController {
       }
     }
 
+    if (base === vScale.getPixelForValue(actualBase)) {
+      const halfGrid = sign(size) * vScale.getLineWidthForValue(actualBase) / 2;
+      base += halfGrid;
+      size -= halfGrid;
+    }
+
     return {
+      size,
       base,
       head,
-      size
+      center: head + size / 2
     };
   }
 
