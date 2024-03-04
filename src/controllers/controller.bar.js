@@ -584,8 +584,13 @@ export default class BarController extends DatasetController {
       const endPixel = vScale.getPixelForDecimal(1);
       const min = Math.min(startPixel, endPixel);
       const max = Math.max(startPixel, endPixel);
-      base = Math.max(Math.min(base, max), min);
-      head = base + size;
+      if (floating === true) {
+        head = Math.max(Math.min(base + size / 2, max), min);
+        base = Math.max(Math.min(base - size / 2, max), min);
+      } else {
+        base = Math.max(Math.min(base, max), min);
+        head = base + size;
+      }
 
       if (_stacked && !floating) {
         // visual data coordinates after applying minBarLength
