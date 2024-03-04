@@ -404,15 +404,7 @@ export default class BarController extends DatasetController {
       const ipixels = this._calculateBarIndexPixels(i, ruler);
       const stack = (parsed._stacks || {})[vScale.axis];
 
-      const properties = {
-        horizontal,
-        base: vpixels.base,
-        enableBorderRadius: !stack || isFloatBar(parsed._custom) || (index === stack._top || index === stack._bottom),
-        x: horizontal ? vpixels.head : ipixels.center,
-        y: horizontal ? ipixels.center : vpixels.head,
-        height: horizontal ? ipixels.size : Math.abs(vpixels.size),
-        width: horizontal ? Math.abs(vpixels.size) : ipixels.size
-      };
+      const properties = this._getProperties(horizontal, vpixels, stack, parsed, index, ipixels);
 
       if (includeOptions) {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
@@ -422,6 +414,19 @@ export default class BarController extends DatasetController {
       setInflateAmount(properties, options, ruler.ratio);
       this.updateElement(bars[i], i, properties, mode);
     }
+  }
+
+  _getProperties(horizontal, vpixels, stack, parsed, index, ipixels) {
+    const prop = {
+      horizontal,
+      base: vpixels.base,
+      enableBorderRadius: !stack || isFloatBar(parsed._custom) || (index === stack._top || index === stack._bottom),
+      x: horizontal ? vpixels.head : ipixels.center,
+      y: horizontal ? ipixels.center : vpixels.head,
+      height: horizontal ? ipixels.size : Math.abs(vpixels.size),
+      width: horizontal ? Math.abs(vpixels.size) : ipixels.size
+    };
+    return prop;
   }
 
   /**
