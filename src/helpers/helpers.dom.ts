@@ -142,7 +142,7 @@ function getContainerSize(canvas: HTMLCanvasElement, width: number, height: numb
   let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
-    const container = _getParentNode(canvas);
+    const container = canvas && _getParentNode(canvas);
     if (!container) {
       width = canvas.clientWidth;
       height = canvas.clientHeight;
