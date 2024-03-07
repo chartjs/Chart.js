@@ -383,6 +383,10 @@ export default class DomPlatform extends BasePlatform {
 	 * @param {HTMLCanvasElement} canvas
 	 */
   isAttached(canvas) {
+    if (!canvas) {
+      return false;
+    }
+
     const container = _getParentNode(canvas);
     return !!(container && container.isConnected);
   }
