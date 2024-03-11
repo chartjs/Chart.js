@@ -92,15 +92,18 @@ function applyStack(stack, value, dsIndex, options = {}) {
   return value;
 }
 
-function convertObjectDataToArray(data) {
+function convertObjectDataToArray(data, meta) {
+  const {iScale, vScale} = meta;
+  const iAxisKey = iScale.axis === 'x' ? 'x' : 'y';
+  const vAxisKey = vScale.axis === 'x' ? 'x' : 'y';
   const keys = Object.keys(data);
   const adata = new Array(keys.length);
   let i, ilen, key;
   for (i = 0, ilen = keys.length; i < ilen; ++i) {
     key = keys[i];
     adata[i] = {
-      x: key,
-      y: data[key]
+      [iAxisKey]: key,
+      [vAxisKey]: data[key]
     };
   }
   return adata;
@@ -362,7 +365,8 @@ export default class DatasetController {
     // the internal metadata accordingly.
 
     if (isObject(data)) {
-      this._data = convertObjectDataToArray(data);
+      const meta = this._cachedMeta;
+      this._data = convertObjectDataToArray(data, meta);
     } else if (_data !== data) {
       if (_data) {
         // This case happens when the user replaced the data array instance.
