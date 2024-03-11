@@ -200,7 +200,7 @@ export function getMaximumSize(
   const maintainHeight = bbWidth !== undefined || bbHeight !== undefined;
 
   if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height) {
-    height = containerSize.height;
+    height = Math.round(containerSize.height);
     width = round1(Math.floor(height * aspectRatio));
   }
 
