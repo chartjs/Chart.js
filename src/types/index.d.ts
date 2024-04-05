@@ -153,7 +153,12 @@ export interface BarControllerChartOptions {
   skipNull?: boolean;
 }
 
+export interface ExtendedPoint {
+  [key: string]: string | number | null | ExtendedPoint
+}
+
 export type BarController = DatasetController
+export type BarDataPoint = number | [number, number] | ExtendedPoint;
 export declare const BarController: ChartComponent & {
   prototype: BarController;
   new (chart: Chart, datasetIndex: number): BarController;
@@ -3660,7 +3665,7 @@ export interface ChartTypeRegistry {
   bar: {
     chartOptions: BarControllerChartOptions;
     datasetOptions: BarControllerDatasetOptions;
-    defaultDataPoint: number | [number, number] | null;
+    defaultDataPoint: BarDataPoint | null;
     metaExtensions: {};
     parsedDataType: BarParsedData,
     scales: keyof CartesianScaleTypeRegistry;
