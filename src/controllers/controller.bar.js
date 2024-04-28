@@ -647,8 +647,7 @@ export default class BarController extends DatasetController {
     let i = 0;
 
     for (; i < ilen; ++i) {
-      if (this.getParsed(i)[vScale.axis] !== null) {
-        if(rects[i].hidden) continue;
+      if (this.getParsed(i)[vScale.axis] !== null && !rects[i].hidden) {
         rects[i].draw(this._ctx);
       }
     }
