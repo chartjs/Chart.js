@@ -220,7 +220,7 @@ function _cached(
   prop: string,
   resolve: () => unknown
 ) {
-  if (Object.prototype.hasOwnProperty.call(target, prop)) {
+  if (Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor') {
     return target[prop];
   }
 
