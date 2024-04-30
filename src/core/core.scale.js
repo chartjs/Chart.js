@@ -1565,7 +1565,7 @@ export default class Scale extends Element {
     const ctx = this.ctx;
 
     const area = this._computeLabelArea();
-    if (area) {
+    if (area && this.labelRotation <= 90) {
       clipArea(ctx, area);
     }
 
@@ -1578,7 +1578,7 @@ export default class Scale extends Element {
       renderText(ctx, label, 0, y, tickFont, renderTextOptions);
     }
 
-    if (area) {
+    if (area && this.labelRotation <= 90) {
       unclipArea(ctx);
     }
   }
