@@ -456,6 +456,11 @@ export function renderText(
 
   ctx.save();
   ctx.font = font.string;
+
+  if (opts.rotation < -1 * (Math.PI / 2) && opts.rotation > -1 * Math.PI) {
+    opts.rotation = opts.rotation - Math.PI;
+  }
+  
   setRenderOpts(ctx, opts);
 
   for (i = 0; i < lines.length; ++i) {
