@@ -21,6 +21,16 @@ describe('Chart.helpers.canvas', function() {
       expect(chart.ctx.clearRect.calls.first().object).toBe(chart.ctx);
       expect(chart.ctx.clearRect.calls.first().args).toEqual([0, 0, 150, 245]);
     });
+
+    it('should not throw error when chart is null', function() {
+      function createChart() {
+        return acquireChart({}, {
+          canvas: null
+        });
+      }
+
+      expect(createChart).not.toThrow();
+    });
   });
 
   describe('isPointInArea', function() {
