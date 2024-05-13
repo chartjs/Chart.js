@@ -23,13 +23,15 @@ describe('Chart.helpers.canvas', function() {
     });
 
     it('should not throw error when chart is null', function() {
-      function createChart() {
-        return acquireChart({}, {
+      function createAndClearChart() {
+        var chart = acquireChart({}, {
           canvas: null
         });
+
+        helpers.clearCanvas(chart.canvas, chart.ctx);
       }
 
-      expect(createChart).not.toThrow();
+      expect(createAndClearChart).not.toThrow();
     });
   });
 
