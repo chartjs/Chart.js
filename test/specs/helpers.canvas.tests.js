@@ -28,8 +28,8 @@ describe('Chart.helpers.canvas', function() {
           canvas: null
         });
         // explicitly set canvas and ctx to null since setting it in acquireChart doesn't do anything
-        chart.canvas = null
-        chart.ctx = null
+        chart.canvas = null;
+        chart.ctx = null;
 
         helpers.clearCanvas(chart.canvas, chart.ctx);
       }
