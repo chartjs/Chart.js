@@ -1264,7 +1264,7 @@ class Chart {
   /**
    * @param {ChartEvent} e - The event
    * @param {import('../types/index.js').ActiveElement[]} lastActive - Previously active elements
-   * @param {boolean} inChartArea - Is the envent inside chartArea
+   * @param {boolean} inChartArea - Is the event inside chartArea
    * @param {boolean} useFinalPosition - Should the evaluation be done with current or final (after animation) element positions
    * @returns {import('../types/index.js').ActiveElement[]} - The active elements
    * @pravate
