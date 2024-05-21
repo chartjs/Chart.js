@@ -28,7 +28,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * If the tooltip callback returns `undefined`, then the default callback will be used.
 * `maintainAspectRatio` respects container height.
 * Time and timeseries scales use `ticks.stepSize` instead of `time.stepSize`, which has been removed.
-* `maxTickslimit` wont be used for the ticks in `autoSkip` if the determined max ticks is less then the `maxTicksLimit`.
+* `maxTickslimit` won't be used for the ticks in `autoSkip` if the determined max ticks is less then the `maxTicksLimit`.
 * `dist/chart.js` has been removed.
 * `dist/chart.min.js` has been renamed to `dist/chart.umd.js`.
 * `dist/chart.esm.js` has been renamed to `dist/chart.js`.

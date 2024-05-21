@@ -293,7 +293,7 @@ describe('Chart.helpers.config', function() {
         });
       });
 
-      it('should fallback throuhg multiple routes', function() {
+      it('should fallback through multiple routes', function() {
         const descriptors = {
           _fallback: 'level1',
           level1: {
