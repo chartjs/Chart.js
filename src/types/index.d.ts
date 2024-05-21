@@ -3815,7 +3815,7 @@ export interface ChartConfiguration<
 > {
   type: TType;
   data: ChartData<TType, TData, TLabel>;
-  options?: ChartOptions<TType>;
+  options?: ChartOptions<TType> | undefined;
   plugins?: Plugin<TType>[];
   platform?: typeof BasePlatform;
 }
@@ -3826,6 +3826,6 @@ export interface ChartConfigurationCustomTypesPerDataset<
   TLabel = unknown
 > {
   data: ChartDataCustomTypesPerDataset<TType, TData, TLabel>;
-  options?: ChartOptions<TType>;
+  options?: ChartOptions<TType> | undefined;
   plugins?: Plugin<TType>[];
 }
