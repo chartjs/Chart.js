@@ -2,7 +2,10 @@ module.exports = {
   config: {
     type: 'radar',
     data: {
-      labels: ['A', 'B', 'C', 'D', 'E']
+      labels: ['A', 'B', 'C', 'D', 'E'],
+      datasets: [{
+        data: [1, 1, 2, 3, 5]
+      }]
     },
     options: {
       responsive: false,
@@ -20,10 +23,13 @@ module.exports = {
             display: false
           },
           ticks: {
-            display: false
+            display: true,
           }
         }
       }
     }
+  },
+  options: {
+    spriteText: true,
   }
 };
