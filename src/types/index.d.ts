@@ -2344,6 +2344,7 @@ export interface LegendElement<TType extends ChartType> extends Element<AnyObjec
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
   options: LegendOptions<TType>;
+  fit(): void;
 }
 
 export interface LegendOptions<TType extends ChartType> {
