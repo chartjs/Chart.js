@@ -1,4 +1,4 @@
-import {finiteOrDefault, isFinite} from '../helpers/helpers.core.js';
+import {callback as call, finiteOrDefault, isFinite} from '../helpers/helpers.core.js';
 import {formatNumber} from '../helpers/helpers.intl.js';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math.js';
 import Scale from '../core/core.scale.js';
