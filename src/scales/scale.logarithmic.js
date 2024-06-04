@@ -116,7 +116,7 @@ export default class LogarithmicScale extends Scale {
       }
     }
 
-    return super(canStack);
+    return super.getMinMax(canStack);
   }
 
   setZeroValue() {
