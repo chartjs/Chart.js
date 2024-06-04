@@ -2,11 +2,11 @@ module.exports = {
   config: {
     type: 'line',
     data: {
-      labels: [0, 1, 2, 3, 4, 5],
+      labels: [0, 1, 2, 3, 4, 5, 6],
       datasets: [
         {
           // option in dataset
-          data: [0, 5, 10, null, -10, -5],
+          data: [0, 5, 10, null, -10, -5, 0],
           pointBackgroundColor: '#ff0000',
           pointBorderColor: '#ff0000',
           pointStyle: [
@@ -16,11 +16,12 @@ module.exports = {
             'dash',
             'line',
             'rect',
+            false
           ]
         },
         {
           // option in element (fallback)
-          data: [4, -5, -10, null, 10, 5],
+          data: [4, -5, -10, null, 10, 5, -4],
         }
       ]
     },

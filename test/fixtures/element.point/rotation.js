@@ -1,10 +1,10 @@
 var gradient;
 
-var datasets = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle'].map(function(style, y) {
+var datasets = ['circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle', false].map(function(style, y) {
   return {
     pointStyle: style,
     data: Array.apply(null, Array(17)).map(function(v, x) {
-      return {x: x, y: 10 - y};
+      return {x: x, y: 11 - y};
     })
   };
 });

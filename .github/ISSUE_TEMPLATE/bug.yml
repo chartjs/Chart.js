@@ -10,11 +10,11 @@ body:
   
   - type: markdown
     attributes:
-      value: "Bug reports MUST be submitted with an interactive example: https://codepen.io/pen?template=BapRepQ."
+      value: "Bug reports MUST be submitted with an interactive example: https://codepen.io/leelenaleee/pen/WNyJXEe."
 
   - type: markdown
     attributes:
-      value: Chart.js versions lower then 3.x are NOT supported anymore, new issues will be disregarded.
+      value: Chart.js versions lower then 4.x are NOT supported anymore, new issues will be disregarded.
 
   - type: textarea
     attributes:
@@ -35,17 +35,17 @@ body:
       label: Reproducible sample
       description: |
         Please provide issue reproduction.
-        You can use [this codepen](https://codepen.io/pen?template=BapRepQ) to make a reproducible sample.
+        You can use [this codepen](https://codepen.io/leelenaleee/pen/WNyJXEe) to make a reproducible sample.
 
         Major framework wrappers for chart.js templates:
         [vue-chart-3 sandbox (Vue)](https://codesandbox.io/s/vue-chart-3-chart-js-issue-template-bpg7k?file=/src/App.vue)
         [ng2-charts sandbox (Angular)](https://codesandbox.io/s/ng2charts-chart-js-issue-template-fhezt?file=/src/app/app.component.ts)
-        [react-chartjs-2 sandbox (React)](https://codesandbox.io/s/react-chartjs-2-chart-js-issue-template-cg7b5?file=/src/App.tsx)
+        [react-chartjs-2 sandbox (React)](https://codesandbox.io/p/sandbox/react-chartjs-2-chart-js-issue-template-v4-forked-lqz5tn?file=%2Fsrc%2FApp.tsx)
 
         For typescript issues you can make use of [this TS Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgYQBYENZwL5wGZQQhwDkAxhrAHQBWAziQNwCwAUGwG6ZxkwAecALxwAJhDIBXEAFMAdjCoBzaTACiAG2kz5AIQCeASREAKAEQg9aTDFMBKOOjpwAEgBUAsgBlk6WVzoaWnIwLKxcUHAWVljCstIA7iiUMMa8fAA0iGxwOXAwemDSAFyk6sBxJOnZuSLoMOglCNW5ueroAEbS6nQlANqmAErSIqaZpjrqEtKjcKYAml3qEPEzpgDiUNJyqwAKElBgmqsA8lC+yqYAulWsLS219XQqPXC9Tbd3n22d6iUkAMRwCB4OAANQgMGkDBun0+DwarwAjAAmTKIgCcmQAzJkAKyZVFwLHXZp3bCXUnYGG5CBgGDACCyF7vT50MjoTTM0ktPiNbl3fk5KmCuB6PkfWFwEXYfkyiU4NjYWyMIA) to make a reproducible sample.
 
         If filing a bug against `master`, you may reference the latest code via
-        https://www.chartjs.org/dist/master/chart.min.js (changing the filename to
+        https://www.chartjs.org/dist/master/chart.umd.js (changing the filename to
         point at the file you need as appropriate). Do not rely on these files for
         production purposes as they may be removed at any time.
     validations:

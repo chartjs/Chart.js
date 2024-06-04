@@ -114,5 +114,5 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Line](../../charts/line.md)
+* [Data structures (`labels`)](../../general/data-structures.md)

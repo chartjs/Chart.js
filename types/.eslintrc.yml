@@ -1,7 +1,0 @@
-rules:
-  # These rules were set to warning to make the linting pass initially,
-  # without making any major changes to types.
-  object-curly-spacing: ["warn", "always"]
-  '@typescript-eslint/no-empty-interface': "warn"
-  '@typescript-eslint/ban-types': "warn"
-  '@typescript-eslint/adjacent-overload-signatures': "warn"

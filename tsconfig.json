@@ -11,10 +11,16 @@
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     /* Modules */
-    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "rootDir": "src",
     "types": ["offscreencanvas"],
     /* Emit */
     "declaration": true,
+    "importsNotUsedAsValues": "error",
+    "inlineSourceMap": true,
     "outDir": "dist",
     /* JavaScript Support */
     "allowJs": true,
@@ -27,18 +33,16 @@
   },
   "typedocOptions": {
     "name": "Chart.js",
-    "entryPoints": ["types/index.d.ts"],
+    "entryPoints": ["src/types/index.d.ts"],
     "readme": "none",
     "excludeExternals": true,
     "includeVersion": true,
     "out": "./dist/docs/typedoc"
   },
   "include": [
-    "./src/**/*",
-    "./types"
+    "./src/**/*"
   ],
   "exclude": [
-    "./types/tests",
     "./dist/**"
   ]
 }

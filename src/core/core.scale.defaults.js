@@ -1,4 +1,4 @@
-import Ticks from './core.ticks';
+import Ticks from './core.ticks.js';
 
 export function applyScaleDefaults(defaults) {
   defaults.set('scale', {
@@ -15,6 +15,8 @@ export function applyScaleDefaults(defaults) {
      * @since 3.0.0
      */
     bounds: 'ticks',
+
+    clip: true,
 
     /**
      * Addition grace added to max and reduced from min data value.

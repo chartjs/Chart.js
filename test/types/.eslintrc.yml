@@ -1,0 +1,6 @@
+rules:
+  '@typescript-eslint/no-unused-vars': 'off'
+  object-curly-spacing: ["warn", "always"]
+  '@typescript-eslint/no-empty-interface': "warn"
+  '@typescript-eslint/ban-types': "warn"
+  '@typescript-eslint/adjacent-overload-signatures': "warn"

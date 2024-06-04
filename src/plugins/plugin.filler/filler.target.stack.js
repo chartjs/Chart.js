@@ -1,12 +1,12 @@
 /**
- * @typedef { import('../../core/core.controller').default } Chart
- * @typedef { import('../../core/core.scale').default } Scale
- * @typedef { import('../../elements/element.point').default } PointElement
+ * @typedef { import('../../core/core.controller.js').default } Chart
+ * @typedef { import('../../core/core.scale.js').default } Scale
+ * @typedef { import('../../elements/element.point.js').default } PointElement
  */
 
-import {LineElement} from '../../elements';
-import {_isBetween} from '../../helpers';
-import {_createBoundaryLine} from './filler.helper';
+import {LineElement} from '../../elements/index.js';
+import {_isBetween} from '../../helpers/index.js';
+import {_createBoundaryLine} from './filler.helper.js';
 
 /**
  * @param {{ chart: Chart; scale: Scale; index: number; line: LineElement; }} source

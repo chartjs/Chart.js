@@ -481,6 +481,35 @@ describe('Core.scale', function() {
       expect(scale._layers().length).toEqual(3);
     });
 
+    it('should create the chart with custom scale ids without axis or position options', function() {
+      function createChart() {
+        return window.acquireChart({
+          type: 'scatter',
+          data: {
+            datasets: [{
+              data: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}],
+              xAxisID: 'customIDx',
+              yAxisID: 'customIDy'
+            }]
+          },
+          options: {
+            scales: {
+              customIDx: {
+                type: 'linear',
+                display: false
+              },
+              customIDy: {
+                type: 'linear',
+                display: false
+              }
+            }
+          }
+        });
+      }
+
+      expect(createChart).not.toThrow();
+    });
+
     it('should default to one layer for custom scales', function() {
       class CustomScale extends Chart.Scale {
         draw() {}
@@ -512,6 +541,63 @@ describe('Core.scale', function() {
       var scale = chart.scales.x;
       expect(scale._layers().length).toEqual(1);
       expect(scale._layers()[0].z).toEqual(20);
+    });
+
+    it('should default to one layer for custom scales for axis', function() {
+      class CustomScale1 extends Chart.Scale {
+        draw() {}
+        convertTicksToLabels() {
+          return ['tick'];
+        }
+      }
+      CustomScale1.id = 'customScale1';
+      CustomScale1.defaults = {axis: 'x'};
+      Chart.register(CustomScale1);
+
+      var chart = window.acquireChart({
+        type: 'line',
+        options: {
+          scales: {
+            my: {
+              type: 'customScale1',
+              grid: {
+                z: 10
+              },
+              ticks: {
+                z: 20
+              }
+            }
+          }
+        }
+      });
+
+      var scale = chart.scales.my;
+      expect(scale._layers().length).toEqual(1);
+      expect(scale._layers()[0].z).toEqual(20);
+    });
+
+    it('should fail for custom scales without any axis or position', function() {
+      class CustomScale2 extends Chart.Scale {
+        draw() {}
+      }
+      CustomScale2.id = 'customScale2';
+      CustomScale2.defaults = {};
+      Chart.register(CustomScale2);
+
+      function createChart() {
+        return window.acquireChart({
+          type: 'line',
+          options: {
+            scales: {
+              my: {
+                type: 'customScale2'
+              }
+            }
+          }
+        });
+      }
+
+      expect(createChart).toThrow(new Error('Cannot determine type of \'my\' axis. Please provide \'axis\' or \'position\' option.'));
     });
 
     it('should return 3 layers when z is not equal between ticks and grid', function() {
@@ -699,6 +785,36 @@ describe('Core.scale', function() {
       });
 
       expect(chart.scales.xavier.axis).toBe('y');
+    });
+    it('should center labels when rotated in x axis', () => {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3]
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                minRotation: 90,
+              }
+            }
+          }
+        }
+      });
+      const mapper = item => parseFloat(item.options.translation[0].toFixed(2));
+      const expected = [20.15, 113.6, 207.05, 300.5, 393.95, 487.4];
+      const actual = chart.scales.x.getLabelItems().map(mapper);
+      const len = expected.length;
+      for (let i = 0; i < len; ++i) {
+        const actualValue = actual[i];
+        const expectedValue = expected[i];
+        expect(actualValue).toBeCloseTo(expectedValue, 1);
+      }
     });
   });
 });

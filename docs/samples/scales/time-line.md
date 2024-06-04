@@ -112,5 +112,5 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-* [Time Cartesian Axis](../../axes/cartesian/time.html)
+* [Line](../../charts/line.md)
+* [Time Cartesian Axis](../../axes/cartesian/time.md)

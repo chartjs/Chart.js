@@ -13,6 +13,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -35,6 +36,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -68,6 +70,27 @@ describe('Arc element tests', function() {
       options: {
         spacing: 10,
         offset: 0,
+        borderWidth: 0
+      }
+    });
+
+    expect(arc.inRange(7, 0)).toBe(false);
+    expect(arc.inRange(15, 0)).toBe(true);
+  });
+
+  it ('should include borderWidth for in range check', function() {
+    // Mock out the arc as if the controller put it there
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: Math.PI / 2,
+      x: 0,
+      y: 0,
+      innerRadius: 5,
+      outerRadius: 10,
+      options: {
+        spacing: 0,
+        offset: 0,
+        borderWidth: 10
       }
     });
 
@@ -88,6 +111,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -106,6 +130,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -126,6 +151,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -146,6 +172,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 10,
         offset: 10,
+        borderWidth: 0
       }
     });
 
@@ -166,6 +193,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -194,6 +222,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -211,6 +240,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0
       }
     });
 
@@ -230,6 +260,7 @@ describe('Arc element tests', function() {
       options: {
         spacing: 0,
         offset: 0,
+        borderWidth: 0,
         scales: {
           r: {
             grid: {

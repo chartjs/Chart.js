@@ -1,7 +1,7 @@
-import DatasetController from '../core/core.datasetController';
-import {isNullOrUndef} from '../helpers';
-import {isNumber} from '../helpers/helpers.math';
-import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras';
+import DatasetController from '../core/core.datasetController.js';
+import {isNullOrUndef} from '../helpers/index.js';
+import {isNumber} from '../helpers/helpers.math.js';
+import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras.js';
 
 export default class ScatterController extends DatasetController {
 
@@ -70,6 +70,10 @@ export default class ScatterController extends DatasetController {
 
     if (this.options.showLine) {
 
+      // https://github.com/chartjs/Chart.js/issues/11333
+      if (!this.datasetElementType) {
+        this.addElements();
+      }
       const {dataset: line, _dataset} = meta;
 
       // Update Line
@@ -84,6 +88,10 @@ export default class ScatterController extends DatasetController {
         animated: !animationsDisabled,
         options
       }, mode);
+    } else if (this.datasetElementType) {
+      // https://github.com/chartjs/Chart.js/issues/11333
+      delete meta.dataset;
+      this.datasetElementType = false;
     }
 
     // Update Points

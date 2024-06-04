@@ -34,7 +34,7 @@ export default defineConfig({
     }],
     ['vuepress-plugin-code-copy', true],
     ['vuepress-plugin-typedoc', {
-        entryPoints: ['../../types/index.d.ts'],
+        entryPoints: ['../../src/types/index.d.ts'],
         hideInPageTOC: true,
         tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
       },
@@ -130,7 +130,7 @@ export default defineConfig({
         ariaLabel: 'Community Menu',
         items: [
           { text: 'Awesome', link: 'https://github.com/chartjs/awesome' },
-          { text: 'Slack', link: 'https://chartjs-slack.herokuapp.com/' },
+          { text: 'Discord', link: 'https://discord.gg/HxEguTK6av' },
           { text: 'Stack Overflow', link: 'https://stackoverflow.com/questions/tagged/chart.js' }
         ]
       }

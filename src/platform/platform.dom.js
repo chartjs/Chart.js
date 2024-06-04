@@ -2,13 +2,13 @@
  * Chart.Platform implementation for targeting a web browser
  */
 
-import BasePlatform from './platform.base';
-import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize, getMaximumSize} from '../helpers/helpers.dom';
-import {throttled} from '../helpers/helpers.extras';
-import {isNullOrUndef} from '../helpers/helpers.core';
+import BasePlatform from './platform.base.js';
+import {_getParentNode, getRelativePosition, supportsEventListenerOptions, readUsedSize, getMaximumSize} from '../helpers/helpers.dom.js';
+import {throttled} from '../helpers/helpers.extras.js';
+import {isNullOrUndef} from '../helpers/helpers.core.js';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import('../core/core.controller.js').default } Chart
  */
 
 const EXPANDO_KEY = '$chartjs';
@@ -95,11 +95,15 @@ function initCanvas(canvas, aspectRatio) {
 const eventListenerOptions = supportsEventListenerOptions ? {passive: true} : false;
 
 function addListener(node, type, listener) {
-  node.addEventListener(type, listener, eventListenerOptions);
+  if (node) {
+    node.addEventListener(type, listener, eventListenerOptions);
+  }
 }
 
 function removeListener(chart, type, listener) {
-  chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+  if (chart && chart.canvas) {
+    chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+  }
 }
 
 function fromNativeEvent(event, chart) {
@@ -242,10 +246,7 @@ function createProxyAndListen(chart, type, listener) {
     if (chart.ctx !== null) {
       listener(fromNativeEvent(event, chart));
     }
-  }, chart, (args) => {
-    const event = args[0];
-    return [event, event.offsetX, event.offsetY];
-  });
+  }, chart);
 
   addListener(canvas, type, proxy);
 
@@ -382,7 +383,7 @@ export default class DomPlatform extends BasePlatform {
 	 * @param {HTMLCanvasElement} canvas
 	 */
   isAttached(canvas) {
-    const container = _getParentNode(canvas);
+    const container = canvas && _getParentNode(canvas);
     return !!(container && container.isConnected);
   }
 }

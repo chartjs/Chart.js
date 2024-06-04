@@ -1,4 +1,4 @@
-import {_limitValue, _lookupByKey, isNullOrUndef, resolve} from '../helpers';
+import {_limitValue, _lookupByKey, isNullOrUndef, resolve} from '../helpers/index.js';
 
 function lttbDecimation(data, start, count, availableWidth, options) {
   /**
@@ -158,7 +158,12 @@ function cleanDecimatedDataset(dataset) {
     const data = dataset._data;
     delete dataset._decimated;
     delete dataset._data;
-    Object.defineProperty(dataset, 'data', {value: data});
+    Object.defineProperty(dataset, 'data', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: data,
+    });
   }
 }
 

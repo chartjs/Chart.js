@@ -16,7 +16,7 @@ jobs:
       version: ${{ steps.trim.outputs.version }}
     steps:
       - id: trim
-        run: echo "::set-output name=version::${TAG:1}"
+        run: echo "version=${TAG:1}" >> $GITHUB_OUTPUT
         env:
           TAG: ${{ github.event.release.tag_name }}
 
@@ -26,18 +26,18 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.0.0
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
+          node-version: 16
           cache: pnpm
       - name: Setup and build
         run: |
           pnpm install
           pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
-          json -I -f package-lock.json -e "this.version=\"$VERSION\""
           pnpm run build
           ./scripts/docs-config.sh "$VERSION" release
           pnpm run docs
@@ -71,18 +71,18 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.0.0
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
+          node-version: 16
           cache: pnpm
       - name: Setup and build
         run: |
           pnpm install
           pnpm install -g json
           json -I -f package.json -e "this.version=\"$VERSION\""
-          json -I -f package-lock.json -e "this.version=\"$VERSION\""
           pnpm run build
           ./scripts/docs-config.sh "$VERSION"
           pnpm run docs

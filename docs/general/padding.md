@@ -1,12 +1,12 @@
 # Padding
 
-Padding values in Chart options can be supplied in couple of different formats.
+Padding values in Chart options can be supplied in a couple of different formats.
 
 ## Number
 
 If this value is a number, it is applied to all sides (left, top, right, bottom).
 
-For example, defining a 20px padding to all sides of chart:
+For example, defining a 20px padding to all sides of the chart:
 
 ```javascript
 let chart = new Chart(ctx, {
@@ -22,10 +22,10 @@ let chart = new Chart(ctx, {
 
 ## {top, left, bottom, right} object
 
-If this value is an object, the `left` property defines the left padding. Similarly the `right`, `top` and `bottom` properties can also be specified.
+If this value is an object, the `left` property defines the left padding. Similarly, the `right`, `top` and `bottom` properties can also be specified.
 Omitted properties default to `0`.
 
-Lets say you wanted to add 50px of padding to the left side of the chart canvas, you would do:
+Let's say you wanted to add 50px of padding to the left side of the chart canvas, you would do:
 
 ```javascript
 let chart = new Chart(ctx, {

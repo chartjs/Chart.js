@@ -78,6 +78,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Plugins](../../developers/plugins.html)
-* [Doughnut and Pie Charts](../../charts/doughnut.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Plugins](../../developers/plugins.md)
+* [Doughnut and Pie Charts](../../charts/doughnut.md)

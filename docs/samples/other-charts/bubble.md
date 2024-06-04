@@ -109,4 +109,4 @@ module.exports = {
 ```
 
 ## Docs
-* [Bubble](../../charts/bubble.html)
+* [Bubble](../../charts/bubble.md)

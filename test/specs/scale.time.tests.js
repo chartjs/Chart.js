@@ -413,6 +413,49 @@ describe('Time scale tests', function() {
     expect(xScale.getLabelForValue(value)).toBe('Jan 1, 2015, 8:00:00 pm');
   });
 
+  it('should get the correct label for a data value by format', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          data: [null, 10, 3]
+        }],
+        labels: ['2015-01-01T20:00:00', '2015-01-02T21:00:00', '2015-01-03T22:00:00', '2015-01-05T23:00:00', '2015-01-07T03:00', '2015-01-08T10:00', '2015-01-10T12:00'], // days
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'YYYY-MM-DD'
+              }
+            },
+            position: 'bottom',
+            ticks: {
+              source: 'labels',
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    var xScale = chart.scales.x;
+    for (const lbl of chart.data.labels) {
+      var dd = xScale._adapter.parse(lbl);
+      var parsed = lbl.split('T');
+      expect(xScale.format(dd)).toBe(parsed[0]);
+    }
+    for (const lbl of chart.data.labels) {
+      var mm = xScale._adapter.parse(lbl);
+      var yearMonth = lbl.substring(0, 7);
+      expect(xScale.format(mm, 'YYYY-MM')).toBe(yearMonth);
+    }
+  });
+
   it('should round to isoWeekday', function() {
     var chart = window.acquireChart({
       type: 'line',

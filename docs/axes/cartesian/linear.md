@@ -38,7 +38,7 @@ Namespace: `options.scales[scaleId].ticks`
 
 If set, the scale ticks will be enumerated by multiple of `stepSize`, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
-This example sets up a chart with a y axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
+This example sets up a chart with a y-axis that creates ticks at `0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5`.
 
 ```javascript
 let options = {
@@ -56,7 +56,7 @@ let options = {
 
 ## Grace
 
-If the value is string ending with `%`, its treat as percentage. If number, its treat as value.
+If the value is a string ending with `%`, it's treated as a percentage. If a number, it's treated as a value.
 The value is added to the maximum data value and subtracted from the minimum data. This extends the scale range as if the data values were that much greater.
 
 ```js chart-editor

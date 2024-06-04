@@ -1,4 +1,4 @@
-import DoughnutController from './controller.doughnut';
+import DoughnutController from './controller.doughnut.js';
 
 // Pie charts are Doughnut chart with different defaults
 export default class PieController extends DoughnutController {
@@ -18,7 +18,7 @@ export default class PieController extends DoughnutController {
     // The total circumference of the chart.
     circumference: 360,
 
-    // The outr radius of the chart
+    // The outer radius of the chart
     radius: '100%'
   };
 }

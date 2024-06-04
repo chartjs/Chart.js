@@ -130,7 +130,7 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Tooltip](../../configuration/tooltip.html)
-* [Interactions](../../configuration/interactions.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Tooltip](../../configuration/tooltip.md)
+* [Interactions](../../configuration/interactions.md)

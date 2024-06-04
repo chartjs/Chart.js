@@ -286,9 +286,11 @@ describe('Platform.dom', function() {
         }
       });
 
-      expect(chart).toBeChartOfSize({
-        dw: 214, dh: 350,
-        rw: 214, rh: 350,
+      waitForResize(chart, () => {
+        expect(chart).toBeChartOfSize({
+          dw: 214, dh: 350,
+          rw: 214, rh: 350,
+        });
       });
     });
   });

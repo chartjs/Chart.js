@@ -80,10 +80,10 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Tooltip](../../configuration/tooltip.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Tooltip](../../configuration/tooltip.md)
   * `usePointStyle`
-* [Elements](../../configuration/elements.html)
-  * [Point Styles](../../configuration/elements.html#point-styles)
+* [Elements](../../configuration/elements.md)
+  * [Point Styles](../../configuration/elements.md#point-styles)
 

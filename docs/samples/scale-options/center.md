@@ -89,6 +89,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Scatter](../../charts/scatter.html)
+* [Scatter](../../charts/scatter.md)
 * [Cartesian Axes](../../axes/cartesian/)
   * [Axis Position](../../axes/cartesian/#axis-position)

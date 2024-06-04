@@ -114,8 +114,8 @@ module.exports = {
 };
 ```
 ## Docs
-* [Area](../../charts/area.html)
-  * [Configuration (`drawTime`)](../../charts/area.html#configuration)
-* [Line](../../charts/line.html)
-  * [Line Styling (`tension`)](../../charts/line.html#line-styling)
-* [Data structures (`labels`)](../../general/data-structures.html)
+* [Area](../../charts/area.md)
+  * [Configuration (`drawTime`)](../../charts/area.md#configuration)
+* [Line](../../charts/line.md)
+  * [Line Styling (`tension`)](../../charts/line.md#line-styling)
+* [Data structures (`labels`)](../../general/data-structures.md)

@@ -1,7 +1,7 @@
-import DatasetController from '../core/core.datasetController';
-import {isNullOrUndef} from '../helpers';
-import {isNumber} from '../helpers/helpers.math';
-import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras';
+import DatasetController from '../core/core.datasetController.js';
+import {isNullOrUndef} from '../helpers/index.js';
+import {isNumber} from '../helpers/helpers.math.js';
+import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras.js';
 
 export default class LineController extends DatasetController {
 

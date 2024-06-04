@@ -1,8 +1,8 @@
-import DatasetController from './core.datasetController';
-import Element from './core.element';
-import Scale from './core.scale';
-import TypedRegistry from './core.typedRegistry';
-import {each, callback as call, _capitalize} from '../helpers/helpers.core';
+import DatasetController from './core.datasetController.js';
+import Element from './core.element.js';
+import Scale from './core.scale.js';
+import TypedRegistry from './core.typedRegistry.js';
+import {each, callback as call, _capitalize} from '../helpers/helpers.core.js';
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -129,13 +129,13 @@ export class Registry {
       } else {
         // Handle loopable args
         // Use case:
-        //  import * as plugins from './plugins';
+        //  import * as plugins from './plugins.js';
         //  Chart.register(plugins);
         each(arg, item => {
           // If there are mixed types in the loopable, make sure those are
           // registered in correct registry
           // Use case: (treemap exporting controller, elements etc)
-          //  import * as treemap from 'chartjs-chart-treemap';
+          //  import * as treemap from 'chartjs-chart-treemap.js';
           //  Chart.register(treemap);
 
           const itemReg = typedRegistry || this._getRegistryForType(item);

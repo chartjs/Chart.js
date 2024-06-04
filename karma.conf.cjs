@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const jasmineSeedReporter = require('./test/seed-reporter.cjs');
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
@@ -37,8 +38,10 @@ module.exports = async function(karma) {
   // https://github.com/pnpm/pnpm/issues/720#issuecomment-954120387
   const plugins = Object.keys(require('./package').devDependencies).flatMap(
     (packageName) => {
-      if (!packageName.startsWith('karma-')) return []
-      return [require(packageName)]
+      if (!packageName.startsWith('karma-')) {
+        return [];
+      }
+      return [require(packageName)];
     }
   );
 
@@ -53,7 +56,7 @@ module.exports = async function(karma) {
 
     client: {
       jasmine: {
-        failFast: !!karma.autoWatch
+        stopOnSpecFailure: !!karma.autoWatch
       }
     },
 
@@ -70,6 +73,7 @@ module.exports = async function(karma) {
     // Explicitly disable hardware acceleration to make image
     // diff more stable when ran on Travis and dev machine.
     // https://github.com/chartjs/Chart.js/pull/5629
+    // Since FF 110 https://github.com/chartjs/Chart.js/issues/11164
     customLaunchers: {
       chrome: {
         base: 'Chrome',
@@ -83,7 +87,8 @@ module.exports = async function(karma) {
       firefox: {
         base: 'Firefox',
         prefs: {
-          'layers.acceleration.disabled': true
+          'layers.acceleration.disabled': true,
+          'gfx.canvas.accelerated': false
         }
       },
       safari: {

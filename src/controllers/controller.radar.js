@@ -1,5 +1,5 @@
-import DatasetController from '../core/core.datasetController';
-import {_parseObjectDataRadialScale} from '../helpers/index';
+import DatasetController from '../core/core.datasetController.js';
+import {_parseObjectDataRadialScale} from '../helpers/index.js';
 
 export default class RadarController extends DatasetController {
 

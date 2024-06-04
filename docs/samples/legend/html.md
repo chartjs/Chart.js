@@ -1,6 +1,7 @@
 # HTML Legend
 
-This example shows how to create a custom HTML legend using a plugin and connect it to the chart in lieu of the default on-canvas legend.
+This example shows how to create a custom HTML legend using a plugin and connect it to the chart in lieu of the default on-canvas legend.  
+For an html legend to work you need to place an empty div at your web page with the ID you provide in the options to bind to like so: `<div id="legend-container"></div>`.  
 
 <div id="legend-container"></div>
 
@@ -61,6 +62,7 @@ const htmlLegendPlugin = {
       boxSpan.style.borderColor = item.strokeStyle;
       boxSpan.style.borderWidth = item.lineWidth + 'px';
       boxSpan.style.display = 'inline-block';
+      boxSpan.style.flexShrink = 0;
       boxSpan.style.height = '20px';
       boxSpan.style.marginRight = '10px';
       boxSpan.style.width = '20px';
@@ -133,8 +135,8 @@ module.exports = {
 ```
 
 ## Docs 
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-* [Legend](../../configuration/legend.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+* [Legend](../../configuration/legend.md)
   * `display: false`
-* [Plugins](../../developers/plugins.html)  
+* [Plugins](../../developers/plugins.md)  

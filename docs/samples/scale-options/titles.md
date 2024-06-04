@@ -76,10 +76,10 @@ module.exports = {
 ```
 
 ## Docs
-* [Line](../../charts/line.html)
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Axes Styling](../../axes/styling.html)
+* [Line](../../charts/line.md)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Axes Styling](../../axes/styling.md)
 * [Cartesian Axes](../../axes/cartesian/)
   * [Common options to all cartesian axes](../../axes/cartesian/#common-options-to-all-cartesian-axes)
-* [Labeling Axes](../../axes/labelling.html)
-  * [Scale Title Configuration](../../axes/labelling.html#scale-title-configuration)
+* [Labeling Axes](../../axes/labelling.md)
+  * [Scale Title Configuration](../../axes/labelling.md#scale-title-configuration)

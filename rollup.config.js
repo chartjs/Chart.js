@@ -3,7 +3,6 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {swc} from 'rollup-plugin-swc3';
 import {terser} from 'rollup-plugin-terser';
-import dts from 'rollup-plugin-dts';
 import {readFileSync} from 'fs';
 
 const {version, homepage} = JSON.parse(readFileSync('./package.json'));
@@ -68,6 +67,7 @@ export default [
       'dist/helpers': 'src/helpers/index.ts'
     },
     plugins: plugins(),
+    external: _ => (/node_modules/).test(_),
     output: {
       dir: './',
       chunkFileNames: 'dist/chunks/[name].js',
@@ -79,20 +79,24 @@ export default [
     },
   },
 
-  // Types
-  // dist/types.d.ts
-  // dist/helpers.d.ts
+  // CommonJS builds
+  // dist/chart.js
+  // helpers/*.js
   {
     input: {
-      'dist/types': 'src/types.ts',
-      'dist/helpers': 'src/helpers/types.ts'
+      'dist/chart': 'src/index.ts',
+      'dist/helpers': 'src/helpers/index.ts'
     },
-    plugins: [dts()],
+    plugins: plugins(),
+    external: _ => (/node_modules/).test(_),
     output: {
       dir: './',
-      chunkFileNames: 'dist/chunks/[name].d.ts',
-      entryFileNames: '[name].d.ts',
-      format: 'es'
-    }
+      chunkFileNames: 'dist/chunks/[name].cjs',
+      entryFileNames: '[name].cjs',
+      banner,
+      format: 'commonjs',
+      indent: false,
+      sourcemap: true,
+    },
   }
 ];

@@ -1,7 +1,7 @@
-import {isNullOrUndef} from '../helpers/helpers.core';
-import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math';
-import Scale from '../core/core.scale';
-import {formatNumber} from '../helpers/helpers.intl';
+import {isNullOrUndef} from '../helpers/helpers.core.js';
+import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math.js';
+import Scale from '../core/core.scale.js';
+import {formatNumber} from '../helpers/helpers.intl.js';
 
 /**
  * Generate a set of linear ticks for an axis
@@ -123,7 +123,11 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   for (; j < numSpaces; ++j) {
-    ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
+    const tickValue = Math.round((niceMin + j * spacing) * factor) / factor;
+    if (maxDefined && tickValue > max) {
+      break;
+    }
+    ticks.push({value: tickValue});
   }
 
   if (maxDefined && includeBounds && niceMax !== max) {

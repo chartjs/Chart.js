@@ -1,10 +1,10 @@
-import DatasetController from '../core/core.datasetController';
-import {isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core';
-import {formatNumber} from '../helpers/helpers.intl';
-import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math';
+import DatasetController from '../core/core.datasetController.js';
+import {isObject, resolveObjectKey, toPercentage, toDimension, valueOrDefault} from '../helpers/helpers.core.js';
+import {formatNumber} from '../helpers/helpers.intl.js';
+import {toRadians, PI, TAU, HALF_PI, _angleBetween} from '../helpers/helpers.math.js';
 
 /**
- * @typedef { import("../core/core.controller").default } Chart
+ * @typedef { import('../core/core.controller.js').default } Chart
  */
 
 function getRatioAndOffset(rotation, circumference, cutout) {
@@ -65,7 +65,7 @@ export default class DoughnutController extends DatasetController {
     // The total circumference of the chart.
     circumference: 360,
 
-    // The outr radius of the chart
+    // The outer radius of the chart
     radius: '100%',
 
     // Spacing between arcs
@@ -76,7 +76,7 @@ export default class DoughnutController extends DatasetController {
 
   static descriptors = {
     _scriptable: (name) => name !== 'spacing',
-    _indexable: (name) => name !== 'spacing',
+    _indexable: (name) => name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
   };
 
   /**
@@ -92,7 +92,7 @@ export default class DoughnutController extends DatasetController {
           generateLabels(chart) {
             const data = chart.data;
             if (data.labels.length && data.datasets.length) {
-              const {labels: {pointStyle}} = chart.legend.options;
+              const {labels: {pointStyle, color}} = chart.legend.options;
 
               return data.labels.map((label, i) => {
                 const meta = chart.getDatasetMeta(0);
@@ -102,6 +102,7 @@ export default class DoughnutController extends DatasetController {
                   text: label,
                   fillStyle: style.backgroundColor,
                   strokeStyle: style.borderColor,
+                  fontColor: color,
                   lineWidth: style.borderWidth,
                   pointStyle: pointStyle,
                   hidden: !chart.getDataVisibility(i),
@@ -182,7 +183,7 @@ export default class DoughnutController extends DatasetController {
     let max = -TAU;
 
     for (let i = 0; i < this.chart.data.datasets.length; ++i) {
-      if (this.chart.isDatasetVisible(i)) {
+      if (this.chart.isDatasetVisible(i) && this.chart.getDatasetMeta(i).type === this._type) {
         const controller = this.chart.getDatasetMeta(i).controller;
         const rotation = controller._getRotation();
         const circumference = controller._getCircumference();

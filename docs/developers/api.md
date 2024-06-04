@@ -136,7 +136,7 @@ const x = meta.data[0].x;
 
 ## getVisibleDatasetCount
 
-Returns the amount of datasets that are currently not hidden.
+Returns the number of datasets that are currently not hidden.
 
 ```javascript
 const numberOfVisibleDatasets = chart.getVisibleDatasetCount();
@@ -162,7 +162,7 @@ chart.update(); // chart now renders with item hidden
 
 ## getDataVisibility(index)
 
-Returns the stored visibility state of an data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset controller should use this method to determine if an item should not be visible.
+Returns the stored visibility state of a data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset controller should use this method to determine if an item should not be visible.
 
 ```javascript
 const visible = chart.getDataVisibility(2);

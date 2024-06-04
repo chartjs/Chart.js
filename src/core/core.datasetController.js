@@ -1,12 +1,12 @@
-import Animations from './core.animations';
-import defaults from './core.defaults';
-import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core';
-import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection';
-import {createContext, sign} from '../helpers';
+import Animations from './core.animations.js';
+import defaults from './core.defaults.js';
+import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core.js';
+import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
+import {createContext, sign} from '../helpers/index.js';
 
 /**
- * @typedef { import("./core.controller").default } Chart
- * @typedef { import("./core.scale").default } Scale
+ * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('./core.scale.js').default } Scale
  */
 
 function scaleClip(scale, allowedOverflow) {
@@ -92,15 +92,18 @@ function applyStack(stack, value, dsIndex, options = {}) {
   return value;
 }
 
-function convertObjectDataToArray(data) {
+function convertObjectDataToArray(data, meta) {
+  const {iScale, vScale} = meta;
+  const iAxisKey = iScale.axis === 'x' ? 'x' : 'y';
+  const vAxisKey = vScale.axis === 'x' ? 'x' : 'y';
   const keys = Object.keys(data);
   const adata = new Array(keys.length);
   let i, ilen, key;
   for (i = 0, ilen = keys.length; i < ilen; ++i) {
     key = keys[i];
     adata[i] = {
-      x: key,
-      y: data[key]
+      [iAxisKey]: key,
+      [vAxisKey]: data[key]
     };
   }
   return adata;
@@ -158,6 +161,9 @@ function updateStacks(controller, parsed) {
 
     stack._top = getLastIndexInStack(stack, vScale, true, meta.type);
     stack._bottom = getLastIndexInStack(stack, vScale, false, meta.type);
+
+    const visualValues = stack._visualValues || (stack._visualValues = {});
+    visualValues[datasetIndex] = value;
   }
 }
 
@@ -207,6 +213,9 @@ function clearStacks(meta, items) {
       return;
     }
     delete stacks[axis][datasetIndex];
+    if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
+      delete stacks[axis]._visualValues[datasetIndex];
+    }
   }
 }
 
@@ -351,12 +360,13 @@ export default class DatasetController {
     const data = dataset.data || (dataset.data = []);
     const _data = this._data;
 
-    // In order to correctly handle data addition/deletion animation (an thus simulate
+    // In order to correctly handle data addition/deletion animation (and thus simulate
     // real-time charts), we need to monitor these data modifications and synchronize
-    // the internal meta data accordingly.
+    // the internal metadata accordingly.
 
     if (isObject(data)) {
-      this._data = convertObjectDataToArray(data);
+      const meta = this._cachedMeta;
+      this._data = convertObjectDataToArray(data, meta);
     } else if (_data !== data) {
       if (_data) {
         // This case happens when the user replaced the data array instance.
@@ -578,7 +588,7 @@ export default class DatasetController {
     const value = parsed[scale.axis];
     const stack = {
       keys: getSortedDatasetIndices(chart, true),
-      values: parsed._stacks[scale.axis]
+      values: parsed._stacks[scale.axis]._visualValues
     };
     return applyStack(stack, value, meta.index, {mode});
   }
@@ -799,7 +809,7 @@ export default class DatasetController {
     const names = Object.keys(defaults.elements[elementType]);
     // context is provided as a function, and is called only if needed,
     // so we don't create a context for each element if not needed.
-    const context = () => this.getContext(index, active);
+    const context = () => this.getContext(index, active, mode);
     const values = config.resolveNamedOptions(scopes, names, context, prefixes);
 
     if (values.$shared) {
@@ -1030,31 +1040,19 @@ export default class DatasetController {
     this.chart._dataChanges.push([this.index, ...args]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataPush() {
     const count = arguments.length;
     this._sync(['_insertElements', this.getDataset().data.length - count, count]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataPop() {
     this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataShift() {
     this._sync(['_removeElements', 0, 1]);
   }
 
-  /**
-	 * @private
-	 */
   _onDataSplice(start, count) {
     if (count) {
       this._sync(['_removeElements', start, count]);
@@ -1065,9 +1063,6 @@ export default class DatasetController {
     }
   }
 
-  /**
-	 * @private
-	 */
   _onDataUnshift() {
     this._sync(['_insertElements', 0, arguments.length]);
   }

@@ -1,6 +1,6 @@
 # 4.x Migration Guide
 
-Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amount of breaking changes to a minimum. For some features and bug fixes it was necessary to break backwars compatibility, but we aimed to do so only when worth the benefit.
+Chart.js 4.0 introduces a number of breaking changes. We tried keeping the amount of breaking changes to a minimum. For some features and bug fixes it was necessary to break backwards compatibility, but we aimed to do so only when worth the benefit.
 
 ## End user migration
 
@@ -28,12 +28,22 @@ A number of changes were made to the configuration options passed to the `Chart`
 * If the tooltip callback returns `undefined`, then the default callback will be used.
 * `maintainAspectRatio` respects container height.
 * Time and timeseries scales use `ticks.stepSize` instead of `time.stepSize`, which has been removed.
-* `maxTickslimit` wont be used for the ticks in `autoSkip` if the determined max ticks is less then the `maxTicksLimit`.
+* `maxTickslimit` won't be used for the ticks in `autoSkip` if the determined max ticks is less then the `maxTicksLimit`.
+* `dist/chart.js` has been removed.
+* `dist/chart.min.js` has been renamed to `dist/chart.umd.js`.
+* `dist/chart.esm.js` has been renamed to `dist/chart.js`.
 
 #### Type changes
 * The order of the `ChartMeta` parameters have been changed from `<Element, DatasetElement, Type>` to `<Type, Element, DatasetElement>`.
 
 ### General
+* Chart.js becomes an [ESM-only package](https://nodejs.org/api/esm.html) ([the UMD bundle is still available](../getting-started/installation.md#cdn)). To use Chart.js, your project should also be an ES module. Make sure to have this in your `package.json`:
+  ```json
+  {
+    "type": "module"
+  }
+  ```
+  If you are experiencing problems with [Jest](https://jestjs.io), follow its [documentation](https://jestjs.io/docs/ecmascript-modules) to enable the ESM support. Or, we can recommend you migrating to [Vitest](https://vitest.dev/). Vitest has the ESM support out of the box and [almost the same API as Jest](https://vitest.dev/guide/migration.html#migrating-from-jest). See an [example of migration](https://github.com/reactchartjs/react-chartjs-2/commit/7f3ec96101d21e43cae8cbfe5e09a46a17cff1ef).
 * Removed fallback to `fontColor` for the legend text and strikethrough color.
 * Removed `config._chart` fallback for `this.chart` in the filler plugin.
 * Removed `this._chart` in the filler plugin.

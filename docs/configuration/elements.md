@@ -1,10 +1,10 @@
 # Elements
 
-While chart types provide settings to configure the styling of each dataset, you sometimes want to style **all datasets the same way**. A common example would be to stroke all of the bars in a bar chart with the same colour but change the fill per dataset. Options can be configured for four different types of elements: **[arc](#arc-configuration)**, **[lines](#line-configuration)**, **[points](#point-configuration)**, and **[bars](#bar-configuration)**. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
+While chart types provide settings to configure the styling of each dataset, you sometimes want to style **all datasets the same way**. A common example would be to stroke all the bars in a bar chart with the same colour but change the fill per dataset. Options can be configured for four different types of elements: **[arc](#arc-configuration)**, **[lines](#line-configuration)**, **[points](#point-configuration)**, and **[bars](#bar-configuration)**. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
 
 ## Global Configuration
 
-The element options can be specified per chart or globally. The global options for elements are defined in `Chart.defaults.elements`. For example, to set the border width of all bar charts globally you would do:
+The element options can be specified per chart or globally. The global options for elements are defined in `Chart.defaults.elements`. For example, to set the border width of all bar charts globally, you would do:
 
 ```javascript
 Chart.defaults.elements.bar.borderWidth = 2;
@@ -47,6 +47,7 @@ When a string is provided, the following values are supported:
 - `'rectRot'`
 - `'star'`
 - `'triangle'`
+- `false`
 
 If the value is an image or a canvas element, that image or canvas element is drawn on the canvas using [drawImage](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/drawImage).
 
@@ -99,6 +100,8 @@ Namespace: `options.elements.arc`, global arc options: `Chart.defaults.elements.
 | `backgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.backgroundColor` | Arc fill color.
 | `borderAlign` | `'center'`\|`'inner'` | `'center'` | Arc stroke alignment.
 | `borderColor` | [`Color`](/general/colors.md) | `'#fff'` | Arc stroke color.
+| `borderDash` | `number[]` | `[]` | Arc line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `borderDashOffset` | `number` | `0.0` | Arc line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `borderJoinStyle` | `'round'`\|`'bevel'`\|`'miter'` | `'bevel'`\|`'round'` | Line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin). The default is `'round'` when `borderAlign` is `'inner'`
 | `borderWidth`| `number` | `2` | Arc stroke width.
 | `circular` | `boolean` | `true` | By default the Arc is curved. If `circular: false` the Arc will be flat

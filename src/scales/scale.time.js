@@ -1,13 +1,13 @@
-import adapters from '../core/core.adapters';
-import {callback as call, isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core';
-import {toRadians, isNumber, _limitValue} from '../helpers/helpers.math';
-import Scale from '../core/core.scale';
-import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection';
+import adapters from '../core/core.adapters.js';
+import {callback as call, isFinite, isNullOrUndef, mergeIf, valueOrDefault} from '../helpers/helpers.core.js';
+import {toRadians, isNumber, _limitValue} from '../helpers/helpers.math.js';
+import Scale from '../core/core.scale.js';
+import {_arrayUnique, _filterBetween, _lookup} from '../helpers/helpers.collection.js';
 
 /**
- * @typedef { import("../core/core.adapters").TimeUnit } Unit
+ * @typedef { import('../core/core.adapters.js').TimeUnit } Unit
  * @typedef {{common: boolean, size: number, steps?: number}} Interval
- * @typedef { import("../core/core.adapters").DateAdapter } DateAdapter
+ * @typedef { import('../core/core.adapters.js').DateAdapter } DateAdapter
  */
 
 /**
@@ -56,7 +56,7 @@ function parse(scale, input) {
     value = parser(value);
   }
 
-  // Only parse if its not a timestamp already
+  // Only parse if it's not a timestamp already
   if (!isFinite(value)) {
     value = typeof parser === 'string'
       ? adapter.parse(value, /** @type {Unit} */ (parser))
@@ -445,7 +445,7 @@ export default class TimeScale extends Scale {
 	 * `minor` unit using the given scale time `options`.
 	 * Important: this method can return ticks outside the min and max range, it's the
 	 * responsibility of the calling code to clamp values if needed.
-	 * @private
+	 * @protected
 	 */
   _generate() {
     const adapter = this._adapter;
@@ -485,7 +485,7 @@ export default class TimeScale extends Scale {
     }
 
     // @ts-ignore
-    return Object.keys(ticks).sort((a, b) => a - b).map(x => +x);
+    return Object.keys(ticks).sort(sorter).map(x => +x);
   }
 
   /**
@@ -500,6 +500,19 @@ export default class TimeScale extends Scale {
       return adapter.format(value, timeOpts.tooltipFormat);
     }
     return adapter.format(value, timeOpts.displayFormats.datetime);
+  }
+
+  /**
+	 * @param {number} value
+	 * @param {string|undefined} format
+	 * @return {string}
+	 */
+  format(value, format) {
+    const options = this.options;
+    const formats = options.time.displayFormats;
+    const unit = this._unit;
+    const fmt = format || formats[unit];
+    return this._adapter.format(value, fmt);
   }
 
   /**
@@ -598,7 +611,7 @@ export default class TimeScale extends Scale {
     const timeOpts = this.options.time;
     const displayFormats = timeOpts.displayFormats;
 
-    // pick the longest format (milliseconds) for guestimation
+    // pick the longest format (milliseconds) for guesstimation
     const format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
     const exampleLabel = this._tickFormatFunction(exampleTime, 0, ticksFromTimestamps(this, [exampleTime], this._majorUnit), format);
     const size = this._getLabelSize(exampleLabel);

@@ -93,6 +93,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
-  * [Stepped](../../charts/line.html#stepped)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
+  * [Stepped](../../charts/line.md#stepped)

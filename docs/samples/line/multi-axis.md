@@ -89,6 +89,6 @@ module.exports = {
 * [Axes scales](../../axes/)
 * [Cartesian Axes](../../axes/cartesian/)
   * [Axis Position](../../axes/cartesian/#axis-position)
-* [Data structures (`labels`)](../../general/data-structures.html)
-* [Line](../../charts/line.html)
+* [Data structures (`labels`)](../../general/data-structures.md)
+* [Line](../../charts/line.md)
 

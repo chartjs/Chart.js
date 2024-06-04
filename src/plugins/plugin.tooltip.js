@@ -1,17 +1,17 @@
-import Animations from '../core/core.animations';
-import Element from '../core/core.element';
-import {addRoundedRectPath} from '../helpers/helpers.canvas';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core';
-import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options';
-import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl';
-import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math';
-import {createContext, drawPoint} from '../helpers';
+import Animations from '../core/core.animations.js';
+import Element from '../core/core.element.js';
+import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core.js';
+import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
+import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl.js';
+import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math.js';
+import {createContext, drawPoint} from '../helpers/index.js';
 
 /**
- * @typedef { import("../platform/platform.base").Chart } Chart
- * @typedef { import("../../types").ChartEvent } ChartEvent
- * @typedef { import("../../types").ActiveElement } ActiveElement
- * @typedef { import("../core/core.interaction").InteractionItem } InteractionItem
+ * @typedef { import('../platform/platform.base.js').Chart } Chart
+ * @typedef { import('../types/index.js').ChartEvent } ChartEvent
+ * @typedef { import('../types/index.js').ActiveElement } ActiveElement
+ * @typedef { import('../core/core.interaction.js').InteractionItem } InteractionItem
  */
 
 const positioners = {
@@ -24,7 +24,7 @@ const positioners = {
     }
 
     let i, len;
-    let x = 0;
+    let xSet = new Set();
     let y = 0;
     let count = 0;
 
@@ -32,14 +32,16 @@ const positioners = {
       const el = items[i].element;
       if (el && el.hasValue()) {
         const pos = el.tooltipPosition();
-        x += pos.x;
+        xSet.add(pos.x);
         y += pos.y;
         ++count;
       }
     }
 
+    const xAverage = [...xSet].reduce((a, b) => a + b) / xSet.size;
+
     return {
-      x: x / count,
+      x: xAverage,
       y: y / count
     };
   },
@@ -780,9 +782,9 @@ export class Tooltip extends Element {
 	 * @private
 	 */
   _drawColorBox(ctx, pt, i, rtlHelper, options) {
-    const labelColors = this.labelColors[i];
+    const labelColor = this.labelColors[i];
     const labelPointStyle = this.labelPointStyles[i];
-    const {boxHeight, boxWidth, boxPadding} = options;
+    const {boxHeight, boxWidth} = options;
     const bodyFont = toFont(options.bodyFont);
     const colorX = getAlignedX(this, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
@@ -807,20 +809,20 @@ export class Tooltip extends Element {
       drawPoint(ctx, drawOptions, centerX, centerY);
 
       // Draw the point
-      ctx.strokeStyle = labelColors.borderColor;
-      ctx.fillStyle = labelColors.backgroundColor;
+      ctx.strokeStyle = labelColor.borderColor;
+      ctx.fillStyle = labelColor.backgroundColor;
       drawPoint(ctx, drawOptions, centerX, centerY);
     } else {
       // Border
-      ctx.lineWidth = isObject(labelColors.borderWidth) ? Math.max(...Object.values(labelColors.borderWidth)) : (labelColors.borderWidth || 1); // TODO, v4 remove fallback
-      ctx.strokeStyle = labelColors.borderColor;
-      ctx.setLineDash(labelColors.borderDash || []);
-      ctx.lineDashOffset = labelColors.borderDashOffset || 0;
+      ctx.lineWidth = isObject(labelColor.borderWidth) ? Math.max(...Object.values(labelColor.borderWidth)) : (labelColor.borderWidth || 1); // TODO, v4 remove fallback
+      ctx.strokeStyle = labelColor.borderColor;
+      ctx.setLineDash(labelColor.borderDash || []);
+      ctx.lineDashOffset = labelColor.borderDashOffset || 0;
 
       // Fill a white rect so that colours merge nicely if the opacity is < 1
-      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth - boxPadding);
-      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - boxPadding - 2);
-      const borderRadius = toTRBLCorners(labelColors.borderRadius);
+      const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
+      const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
+      const borderRadius = toTRBLCorners(labelColor.borderRadius);
 
       if (Object.values(borderRadius).some(v => v !== 0)) {
         ctx.beginPath();
@@ -836,7 +838,7 @@ export class Tooltip extends Element {
         ctx.stroke();
 
         // Inner square
-        ctx.fillStyle = labelColors.backgroundColor;
+        ctx.fillStyle = labelColor.backgroundColor;
         ctx.beginPath();
         addRoundedRectPath(ctx, {
           x: innerX,
@@ -852,7 +854,7 @@ export class Tooltip extends Element {
         ctx.fillRect(outerX, colorY, boxWidth, boxHeight);
         ctx.strokeRect(outerX, colorY, boxWidth, boxHeight);
         // Inner square
-        ctx.fillStyle = labelColors.backgroundColor;
+        ctx.fillStyle = labelColor.backgroundColor;
         ctx.fillRect(innerX, colorY + 1, boxWidth - 2, boxHeight - 2);
       }
     }
@@ -1182,7 +1184,11 @@ export class Tooltip extends Element {
 
     if (!inChartArea) {
       // Let user control the active elements outside chartArea. Eg. using Legend.
-      return lastActive;
+      // But make sure that active elements are still valid.
+      return lastActive.filter(i =>
+        this.chart.data.datasets[i.datasetIndex] &&
+        this.chart.getDatasetMeta(i.datasetIndex).controller.getParsed(i.index) !== undefined
+      );
     }
 
     // Find Active Elements for tooltips

@@ -293,7 +293,7 @@ describe('Chart.helpers.config', function() {
         });
       });
 
-      it('should fallback throuhg multiple routes', function() {
+      it('should fallback through multiple routes', function() {
         const descriptors = {
           _fallback: 'level1',
           level1: {
@@ -689,7 +689,6 @@ describe('Chart.helpers.config', function() {
       const resolver = _createResolver([options, defaults, descriptors]);
       const opts = _attachContext(resolver, {dymmy: true});
       const item0 = opts.items[0];
-      console.warn(opts._proxy._scopes);
       expect(item0.test).toEqual(true);
       expect(spy).toHaveBeenCalledWith('items', options.items[0]);
     });

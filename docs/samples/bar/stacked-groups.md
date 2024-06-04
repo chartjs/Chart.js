@@ -81,8 +81,8 @@ module.exports = {
 ```
 
 ## Docs
-* [Bar](../../charts/bar.html)
-  * [Stacked Bar Chart](../../charts/bar.html#stacked-bar-chart)
-* [Data structures (`labels`)](../../general/data-structures.html)
-  * [Dataset Configuration (`stack`)](../../general/data-structures.html#dataset-configuration)
+* [Bar](../../charts/bar.md)
+  * [Stacked Bar Chart](../../charts/bar.md#stacked-bar-chart)
+* [Data structures (`labels`)](../../general/data-structures.md)
+  * [Dataset Configuration (`stack`)](../../general/data-structures.md#dataset-configuration)
 

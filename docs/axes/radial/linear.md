@@ -18,7 +18,7 @@ Namespace: `options.scales[scaleId]`
 | `pointLabels` | `object` | | Point label configuration. [more...](#point-label-options)
 | `startAngle` | `number` | `0` | Starting angle of the scale. In degrees, 0 is at top.
 
-### Common options to all axes
+### Common options for all axes
 
 Namespace: `options.scales[scaleId]`
 
@@ -75,7 +75,7 @@ The scriptable context is described in [Options](../general/options.md#tick) sec
 
 Given the number of axis range settings, it is important to understand how they all interact with each other.
 
-The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto fit behaviour.
+The `suggestedMax` and `suggestedMin` settings only change the data values that are used to scale the axis. These are useful for extending the range of the axis while maintaining the auto-fit behaviour.
 
 ```javascript
 let minDataValue = Math.min(mostNegativeValue, options.ticks.suggestedMin);
@@ -142,7 +142,7 @@ Namespace: `options.scales[scaleId].angleLines`
 
   1. the `borderDash` setting only accepts a static value or a function. Passing an array of arrays is not supported.
 
-The scriptable context is described in [Options](../../general/options.md#scale) section.
+The scriptable context is described in [Options](../../general/options.md#pointLabel) section.
 
 ## Point Label Options
 
@@ -154,14 +154,14 @@ Namespace: `options.scales[scaleId].pointLabels`
 | `backdropColor` | [`Color`](../../general/colors.md) | `true` | `undefined` | Background color of the point label.
 | `backdropPadding` | [`Padding`](../../general/padding.md) | | `2` | Padding of label backdrop.
 | `borderRadius` | `number`\|`object` | `true` | `0` | Border radius of the point label
-| `display` | `boolean` | | `true` | If true, point labels are shown.
+| `display` | `boolean`\|`string` | | `true` | If true, point labels are shown.  When `display: 'auto'`, the label is hidden if it overlaps with another label.
 | `callback` | `function` | | | Callback function to transform data labels to point labels. The default implementation simply returns the current string.
 | `color` | [`Color`](../../general/colors.md) | Yes | `Chart.defaults.color` | Color of label.
 | `font` | `Font` | Yes | `Chart.defaults.font` | See [Fonts](../../general/fonts.md)
 | `padding` | `number` | Yes | 5 | Padding between chart and point labels.
 | [`centerPointLabels`](../../samples/other-charts/polar-area-center-labels.md) | `boolean` | | `false` | If true, point labels are centered.
 
-The scriptable context is described in [Options](../../general/options.md#scale) section.
+The scriptable context is described in [Options](../../general/options.md#pointLabel) section.
 
 ## Internal data format
 

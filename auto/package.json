@@ -3,7 +3,12 @@
     "private": true,
     "description": "Auto registering package. Exists to support bundlers without exports support such as webpack 4.",
     "type": "module",
-    "main": "auto.js",
-    "exports": "./auto.js",
-    "types": "auto.d.ts"
+    "main": "./auto.cjs",
+    "module": "./auto.js",
+    "exports": {
+        "types": "./auto.d.ts",
+        "import": "./auto.js",
+        "require": "./auto.cjs"
+    },
+    "types": "./auto.d.ts"
 }

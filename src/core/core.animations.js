@@ -1,7 +1,7 @@
-import animator from './core.animator';
-import Animation from './core.animation';
-import defaults from './core.defaults';
-import {isArray, isObject} from '../helpers/helpers.core';
+import animator from './core.animator.js';
+import Animation from './core.animation.js';
+import defaults from './core.defaults.js';
+import {isArray, isObject} from '../helpers/helpers.core.js';
 
 export default class Animations {
   constructor(chart, config) {

@@ -1,5 +1,5 @@
-import TimeScale from './scale.time';
-import {_lookupByKey} from '../helpers/helpers.collection';
+import TimeScale from './scale.time.js';
+import {_lookupByKey} from '../helpers/helpers.collection.js';
 
 /**
  * Linearly interpolates the given source `val` using the table. If value is out of bounds, values
@@ -108,6 +108,25 @@ class TimeSeriesScale extends TimeScale {
       }
     }
     return table;
+  }
+
+  /**
+    * Generates all timestamps defined in the data.
+    * Important: this method can return ticks outside the min and max range, it's the
+    * responsibility of the calling code to clamp values if needed.
+    * @protected
+    */
+  _generate() {
+    const min = this.min;
+    const max = this.max;
+    let timestamps = super.getDataTimestamps();
+    if (!timestamps.includes(min) || !timestamps.length) {
+      timestamps.splice(0, 0, min);
+    }
+    if (!timestamps.includes(max) || timestamps.length === 1) {
+      timestamps.push(max);
+    }
+    return timestamps.sort((a, b) => a - b);
   }
 
   /**

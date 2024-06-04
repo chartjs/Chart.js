@@ -1,4 +1,4 @@
-import {_boundSegment, _boundSegments, _normalizeAngle} from '../../helpers';
+import {_boundSegment, _boundSegments, _normalizeAngle} from '../../helpers/index.js';
 
 export function _segments(line, target, property) {
   const segments = line.segments;

@@ -22,10 +22,15 @@ jasmine.triggerMouseEvent = triggerMouseEvent;
 // more stable test results.
 window.moment.tz.setDefault('Etc/UTC');
 
-beforeEach(function() {
+beforeAll(() => {
+  // Disable colors plugin for tests.
+  window.Chart.defaults.plugins.colors.enabled = false;
+});
+
+beforeEach(() => {
   addMatchers();
 });
 
-afterEach(function() {
+afterEach(() => {
   releaseCharts();
 });

@@ -1,4 +1,4 @@
-import {TAU} from '../../helpers';
+import {TAU} from '../../helpers/index.js';
 
 // TODO: use elements.ArcElement instead
 export class simpleArc {

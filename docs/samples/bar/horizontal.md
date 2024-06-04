@@ -123,6 +123,6 @@ module.exports = {
 ```
 
 ## Docs
-* [Bar](../../charts/bar.html)
-  * [Horizontal Bar Chart](../../charts/bar.html#horizontal-bar-chart)
+* [Bar](../../charts/bar.md)
+  * [Horizontal Bar Chart](../../charts/bar.md#horizontal-bar-chart)
 

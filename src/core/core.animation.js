@@ -1,12 +1,17 @@
-import effects from '../helpers/helpers.easing';
-import {resolve} from '../helpers/helpers.options';
-import {color as helpersColor} from '../helpers/helpers.color';
+import effects from '../helpers/helpers.easing.js';
+import {resolve} from '../helpers/helpers.options.js';
+import {color as helpersColor} from '../helpers/helpers.color.js';
 
 const transparent = 'transparent';
 const interpolators = {
   boolean(from, to, factor) {
     return factor > 0.5 ? to : from;
   },
+  /**
+   * @param {string} from
+   * @param {string} to
+   * @param {number} factor
+   */
   color(from, to, factor) {
     const c0 = helpersColor(from || transparent);
     const c1 = c0.valid && helpersColor(to || transparent);
