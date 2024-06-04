@@ -104,23 +104,11 @@ export default class LogarithmicScale extends Scale {
     return isFinite(value) && value >= 0 ? value : null;
   }
 
-  getMinMax(canStack) {
-    let {min, max, minDefined, maxDefined} = this.getUserBounds();
-    let range;
-    this._zero = false;
+  getMinMax(canStack) {    
+    let {min} = this.getUserBounds();
     this._minNotZero = min;
-    if (minDefined && maxDefined) {
-      return {min, max};
-    }
     const metas = this.getMatchingVisibleMetas();
     for (let i = 0, ilen = metas.length; i < ilen; ++i) {
-      range = metas[i].controller.getMinMax(this, canStack);
-      if (!minDefined) {
-        min = Math.min(min, range.min);
-      }
-      if (!maxDefined) {
-        max = Math.max(max, range.max);
-      }
       for (let j = 0, jlen = metas[i]._dataset.data.length; j < jlen; ++j) {
         if (metas[i]._dataset.data[j] > 0) {
           this._minNotZero = Math.min(this._minNotZero, metas[i]._dataset.data[j]);
@@ -128,14 +116,13 @@ export default class LogarithmicScale extends Scale {
       }
     }
 
-    // Make sure min <= max when only min or max is defined by user and the data is outside that range
-    min = maxDefined && min > max ? max : min;
-    max = minDefined && min > max ? min : max;
+    return super(canStack);
+  }
 
-    return {
-      min: finiteOrDefault(min, finiteOrDefault(max, min)),
-      max: finiteOrDefault(max, finiteOrDefault(min, max))
-    };
+  setZeroValue() {
+    if (this.min === 0 || this.options.beginAtZero) {
+      this._zero = true;
+    }
   }
 
   determineDataLimits() {
@@ -144,10 +131,7 @@ export default class LogarithmicScale extends Scale {
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
 
-    if (this.min === 0 || this.options.beginAtZero) {
-      this._zero = true;
-    }
-
+    setZeroValue();    
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
     if (this._zero && this.min !== this._suggestedMin && !isFinite(this._userMin)) {
