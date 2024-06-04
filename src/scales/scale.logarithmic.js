@@ -1,5 +1,4 @@
 import {callback as call, finiteOrDefault, isFinite} from '../helpers/helpers.core.js';
-import {formatNumber} from '../helpers/helpers.intl.js';
 import {_setMinAndMaxByKey, log10} from '../helpers/helpers.math.js';
 import Scale from '../core/core.scale.js';
 import LinearScaleBase from './scale.linearbase.js';
@@ -104,7 +103,7 @@ export default class LogarithmicScale extends Scale {
     return isFinite(value) && value >= 0 ? value : null;
   }
 
-  getMinMax(canStack) {    
+  getMinMax(canStack) {
     let {min} = this.getUserBounds();
     this._minNotZero = min;
     const metas = this.getMatchingVisibleMetas();
@@ -131,7 +130,7 @@ export default class LogarithmicScale extends Scale {
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
 
-    this.setZeroValue();    
+    this.setZeroValue();
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
     if (this._zero && this.min !== this._suggestedMin && !isFinite(this._userMin)) {
