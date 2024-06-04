@@ -131,7 +131,7 @@ export default class LogarithmicScale extends Scale {
     this.min = isFinite(min) ? Math.max(0, min) : null;
     this.max = isFinite(max) ? Math.max(0, max) : null;
 
-    setZeroValue();    
+    this.setZeroValue();    
     // if data has `0` in it or `beginAtZero` is true, min (non zero) value is at bottom
     // of scale, and it does not equal suggestedMin, lower the min bound by one exp.
     if (this._zero && this.min !== this._suggestedMin && !isFinite(this._userMin)) {
