@@ -53,8 +53,7 @@ function parseMaxStyle(styleValue: string | number, node: HTMLElement, parentPro
 const getComputedStyle = (element: HTMLElement): CSSStyleDeclaration =>
   element.ownerDocument.defaultView.getComputedStyle(element, null);
 
-// @ts-ignore
-export function getStyle(el?: HTMLElement, property: string): string {
+export function getStyle(property: string, el?: HTMLElement): string {
   if (!el) {
     return '';
   }
@@ -145,8 +144,7 @@ export function getRelativePosition(
   };
 }
 
-// @ts-ignore
-function getContainerSize(canvas?: HTMLCanvasElement, width: number, height: number): Partial<Scale> {
+function getContainerSize(width: number, height: number, canvas?: HTMLCanvasElement): Partial<Scale> {
   let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
@@ -191,7 +189,7 @@ export function getMaximumSize(
   const margins = getPositionedStyle(style, 'margin');
   const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
   const maxHeight = parseMaxStyle(style.maxHeight, canvas, 'clientHeight') || INFINITY;
-  const containerSize = getContainerSize(canvas, bbWidth, bbHeight);
+  const containerSize = getContainerSize(bbWidth, bbHeight, canvas);
   let {width, height} = containerSize;
 
   if (style.boxSizing === 'content-box') {
@@ -299,7 +297,7 @@ export function readUsedSize(
   element: HTMLElement,
   property: 'width' | 'height'
 ): number | undefined {
-  const value = getStyle(element, property);
+  const value = getStyle(property, element);
   const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
   return matches ? +matches[1] : undefined;
 }
