@@ -1,0 +1,52 @@
+{
+  "config": {
+    "type": "doughnut",
+    "data": {
+      "labels": [
+        "Label 1",
+        "Label 2",
+        "Label 3",
+        "Label 4",
+        "Label 5",
+        "Label 6",
+        "Label 7",
+        "Label 8",
+        "Label 9",
+        "Label 10",
+        "Label 11",
+        "Label 12",
+        "Label 13",
+        "Label 14",
+        "Label 15"
+      ],
+      "datasets": [
+        {
+          "data": [
+            10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150
+          ],
+          "backgroundColor": "#00ff00",
+          "borderWidth": 0
+        }
+      ]
+    },
+    "options": {
+      "plugins": {
+        "legend": {
+          "position": "right",
+          "align": "start",
+          "navigation": {
+            "display": true,
+            "maxCols": 2,
+            "align": "end"
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "canvas": {
+      "height": 256,
+      "width": 512
+    }
+  }
+}
