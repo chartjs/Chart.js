@@ -57,10 +57,7 @@ export class Legend extends Element {
  		 */
     this._hoveredItem = null;
 
-    /**
-     * @private
-     */
-    this._navigation = {
+    this.navigation = {
       active: false,
       page: 0,
       totalPages: 0,
@@ -68,16 +65,16 @@ export class Legend extends Element {
       itemHeight: 0,
       navWidth: 0,
       navHeight: 0,
-      width: 0,
-      height: 0,
-      maxWidth: 0,
-      maxHeight: 0,
       maxBlocks: 0,
       blocks: undefined,
       text: undefined,
       prev: undefined,
       next: undefined,
-      legendItems: undefined
+      legendItems: undefined,
+      _width: 0,
+      _height: 0,
+      _maxWidth: 0,
+      _maxHeight: 0,
     };
 
     // Are we in doughnut mode which has a different data type
@@ -142,7 +139,7 @@ export class Legend extends Element {
       legendItems.reverse();
     }
 
-    this._navigation.legendItems = this.legendItems = legendItems;
+    this.navigation.legendItems = this.legendItems = legendItems;
     this._computeNavigation();
   }
 
@@ -150,8 +147,8 @@ export class Legend extends Element {
    * @private
    */
   _resetNavigation() {
-    if (this._navigation.active) {
-      Object.assign(this._navigation, {
+    if (this.navigation.active) {
+      Object.assign(this.navigation, {
         active: false,
         page: 0,
         totalPages: 0,
@@ -159,16 +156,16 @@ export class Legend extends Element {
         itemHeight: 0,
         navWidth: 0,
         navHeight: 0,
-        width: 0,
-        height: 0,
-        maxWidth: 0,
-        maxHeight: 0,
         maxBlocks: 0,
         blocks: undefined,
         text: undefined,
         prev: undefined,
         next: undefined,
-        legendItems: this.legendItems
+        legendItems: this.legendItems,
+        _width: 0,
+        _height: 0,
+        _maxWidth: 0,
+        _maxHeight: 0,
       });
     }
   }
@@ -186,12 +183,12 @@ export class Legend extends Element {
     }
     const isHorizontal = this.isHorizontal();
 
-    this._navigation.active = true;
-    this._navigation.totalPages = 0;
-    this._navigation.width = this._navigation.height = 0;
-    this._navigation.maxWidth = this._navigation.maxHeight = 0;
-    this._navigation.itemWidth = this._navigation.itemHeight = 0;
-    this._navigation.maxBlocks = 0;
+    this.navigation.active = true;
+    this.navigation.totalPages = 0;
+    this.navigation._width = this.navigation._height = 0;
+    this.navigation._maxWidth = this.navigation._maxHeight = 0;
+    this.navigation.itemWidth = this.navigation.itemHeight = 0;
+    this.navigation.maxBlocks = 0;
 
     const {arrowSize} = navOpts;
     const labelFont = toFont(labelOpts.font);
@@ -199,13 +196,13 @@ export class Legend extends Element {
     const font = toFont(navOpts.font);
 
     const padding = toPadding(navOpts.padding);
-    this._navigation.navHeight = Math.max(font.size, arrowSize) + padding.height;
+    this.navigation.navHeight = Math.max(font.size, arrowSize) + padding.height;
 
     const grid = getGridAxis(navOpts.grid);
 
     // Find the largest width to keep all items the same width
     if (grid.x) {
-      this._navigation.itemWidth = this.legendItems.reduce((max, legendItem) => {
+      this.navigation.itemWidth = this.legendItems.reduce((max, legendItem) => {
         const width = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
         return Math.max(max, width);
       }, 0);
@@ -213,7 +210,7 @@ export class Legend extends Element {
 
     // Find the greatest height to keep all items the same height
     if (grid.y) {
-      this._navigation.itemHeight = this.legendItems.reduce((max, legendItem) => {
+      this.navigation.itemHeight = this.legendItems.reduce((max, legendItem) => {
         const height = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
         return Math.max(max, height);
       }, 0);
@@ -227,9 +224,9 @@ export class Legend extends Element {
       this._computeVerticalNavigation(titleHeight, _itemHeight, boxWidth, labelFont);
     }
 
-    this._navigation.blocks.forEach((block) => {
-      this._navigation.maxWidth = Math.max(this._navigation.maxWidth, block.width);
-      this._navigation.maxHeight = Math.max(this._navigation.maxHeight, block.height);
+    this.navigation.blocks.forEach((block) => {
+      this.navigation._maxWidth = Math.max(this.navigation._maxWidth, block.width);
+      this.navigation._maxHeight = Math.max(this.navigation._maxHeight, block.height);
     });
   }
 
@@ -238,10 +235,10 @@ export class Legend extends Element {
    */
   _computeHorizontalNavigation(titleHeight, _itemHeight, boxWidth, labelFont) {
     const {labels: labelOpts, navigation: navOpts, maxHeight = this.maxHeight} = this.options;
-    const {navHeight} = this._navigation;
+    const {navHeight} = this.navigation;
 
     const widthLimit = this.maxWidth - labelOpts.padding;
-    const rows = this._navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, bottom: 0}];
+    const rows = this.navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, bottom: 0}];
     let maxItemHeight = 0;
 
     this.legendItems.forEach((legendItem, i) => {
@@ -260,13 +257,13 @@ export class Legend extends Element {
     });
 
     const totalRows = rows.length;
-    const maxRows = this._navigation.maxBlocks = Math.min(
+    const maxRows = this.navigation.maxBlocks = Math.min(
       totalRows,
       navOpts.maxRows || Infinity,
       maxHeight ? Math.floor((maxHeight - navHeight - labelOpts.padding) / (maxItemHeight + labelOpts.padding)) || 1 : Infinity
     );
 
-    this._navigation.totalPages = Math.ceil(totalRows / maxRows);
+    this.navigation.totalPages = Math.ceil(totalRows / maxRows);
 
     // Find minimum height required to fit any page
     let height = 0;
@@ -276,7 +273,7 @@ export class Legend extends Element {
       height = Math.max(height, r - l);
     }
 
-    this._navigation.height = titleHeight + labelOpts.padding + height + navHeight + 10;
+    this.navigation._height = titleHeight + labelOpts.padding + height + navHeight + 10;
   }
 
   /**
@@ -284,10 +281,10 @@ export class Legend extends Element {
    */
   _computeVerticalNavigation(titleHeight, _itemHeight, boxWidth, labelFont) {
     const {labels: labelOpts, navigation: navOpts, maxWidth = this.maxWidth} = this.options;
-    const {navHeight} = this._navigation;
+    const {navHeight} = this.navigation;
 
     const heightLimit = this.maxHeight - titleHeight - navHeight - labelOpts.padding;
-    const columns = this._navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, right: 0}];
+    const columns = this.navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, right: 0}];
     let maxItemWidth = 0;
 
     this.legendItems.forEach((legendItem, i) => {
@@ -307,13 +304,13 @@ export class Legend extends Element {
 
     const totalCols = columns.length;
 
-    const maxCols = this._navigation.maxBlocks = Math.min(
+    const maxCols = this.navigation.maxBlocks = Math.min(
       totalCols,
       navOpts.maxCols || Infinity,
       maxWidth ? Math.floor((maxWidth - labelOpts.padding) / (maxItemWidth + labelOpts.padding)) || 1 : Infinity,
     );
 
-    this._navigation.totalPages = Math.ceil(totalCols / maxCols);
+    this.navigation.totalPages = Math.ceil(totalCols / maxCols);
 
     // Find minimum width required to fit any page
     let width = 0;
@@ -324,12 +321,12 @@ export class Legend extends Element {
     }
 
     const titleWidth = this._computeTitleWidth();
-    this._navigation.width = Math.max(titleWidth, width) + 10;
+    this.navigation._width = Math.max(titleWidth, width) + 10;
   }
 
   buildNavigation() {
     const {ctx, options: {align, navigation: navOpts, labels: labelOpts}} = this;
-    const {active, totalPages, navHeight} = this._navigation;
+    const {active, totalPages, navHeight} = this.navigation;
 
     if (!active) {
       return;
@@ -342,8 +339,8 @@ export class Legend extends Element {
       return;
     }
 
-    const page = this._navigation.page = Math.max(0, Math.min(totalPages - 1, this._navigation.page));
-    const text = this._navigation.text = `${page + 1}/${totalPages}`;
+    const page = this.navigation.page = Math.max(0, Math.min(totalPages - 1, this.navigation.page));
+    const text = this.navigation.text = `${page + 1}/${totalPages}`;
 
     ctx.save();
     ctx.font = font.string;
@@ -351,32 +348,36 @@ export class Legend extends Element {
     ctx.restore();
 
     const padding = toPadding(navOpts.padding);
-    const navWidth = this._navigation.navWidth = (navOpts.arrowSize * 2) + padding.width + textWidth + font.size;
+    const navWidth = this.navigation.navWidth = (navOpts.arrowSize * 2) + padding.width + textWidth + font.size;
 
     let left = this.left;
     let right = this.right;
 
     if (this.isHorizontal()) {
-      const maxWidth = this._navigation.maxWidth + labelOpts.padding;
+      const maxWidth = this.navigation._maxWidth + labelOpts.padding;
       left = _alignStartEnd(align, this.left, right - maxWidth);
       right = left + maxWidth;
     }
 
-    const prev = this._navigation.prev = {
+    const prev = this.navigation.prev = {
       x: _alignStartEnd(navOpts.align, left + padding.left, right - (navWidth - padding.left)),
       y: (this.top || 0) + this.height - navHeight + padding.top,
+      width: navOpts.arrowSize,
+      height: navOpts.arrowSize
     };
-    this._navigation.next = {
+    this.navigation.next = {
       x: prev.x + navOpts.arrowSize + textWidth + font.size,
       y: prev.y,
+      width: navOpts.arrowSize,
+      height: navOpts.arrowSize
     };
 
-    const {blocks: columns, maxBlocks: maxCols} = this._navigation;
+    const {blocks: columns, maxBlocks: maxCols} = this.navigation;
     const startIdx = Math.min(columns.length - 1, page * maxCols);
     const endIdx = Math.min(columns.length - 1, startIdx + (maxCols - 1));
     const start = columns[startIdx].start;
     const end = columns[endIdx].end;
-    this._navigation.legendItems = totalPages > 1 ? this.legendItems.slice(start, end) : this.legendItems;
+    this.navigation.legendItems = totalPages > 1 ? this.legendItems.slice(start, end) : this.legendItems;
   }
 
   /**
@@ -393,7 +394,7 @@ export class Legend extends Element {
    */
   _getLegendItemWidth(legendItem, boxWidth, labelFont) {
     const hitboxWidth = calculateItemWidth(legendItem, boxWidth, labelFont, this.ctx);
-    const itemWidth = this._navigation.itemWidth || hitboxWidth;
+    const itemWidth = this.navigation.itemWidth || hitboxWidth;
     return {itemWidth, hitboxWidth};
   }
 
@@ -402,7 +403,7 @@ export class Legend extends Element {
    */
   _getLegendItemHeight(legendItem, _itemHeight, labelFont) {
     const hitboxHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
-    const itemHeight = this._navigation.itemHeight || hitboxHeight;
+    const itemHeight = this.navigation.itemHeight || hitboxHeight;
     return {itemHeight, hitboxHeight};
   }
 
@@ -439,8 +440,8 @@ export class Legend extends Element {
 
     const maxWidth = isHorizontal ? this.maxWidth : (options.maxWidth || this.maxWidth);
     const maxHeight = isHorizontal ? (options.maxHeight || this.maxHeight) : this.maxHeight;
-    this.width = Math.min(this._navigation.width || width, maxWidth);
-    this.height = Math.min(this._navigation.height || height, maxHeight);
+    this.width = Math.min(this.navigation._width || width, maxWidth);
+    this.height = Math.min(this.navigation._height || height, maxHeight);
   }
 
   /**
@@ -459,7 +460,7 @@ export class Legend extends Element {
     let row = 0;
     let top = 0;
     let currentLineHeight = 0;
-    this._navigation.legendItems.forEach((legendItem, i) => {
+    this.navigation.legendItems.forEach((legendItem, i) => {
       const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
 
       if (i > 0 && lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
@@ -486,7 +487,7 @@ export class Legend extends Element {
     const {maxHeight, options: {labels: {padding}}} = this;
     const hitboxes = this.legendHitBoxes = [];
     const columnSizes = this.columnSizes = [];
-    const heightLimit = maxHeight - titleHeight - this._navigation.navHeight;
+    const heightLimit = maxHeight - titleHeight - this.navigation.navHeight;
 
     let totalWidth = padding;
     let currentColWidth = 0;
@@ -495,7 +496,7 @@ export class Legend extends Element {
     let left = 0;
     let col = 0;
 
-    this._navigation.legendItems.forEach((legendItem, i) => {
+    this.navigation.legendItems.forEach((legendItem, i) => {
       const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
 
       // If too tall, go to new column
@@ -544,7 +545,7 @@ export class Legend extends Element {
         left += hitbox.offsetWidth + padding;
       }
     } else {
-      const bottom = this.bottom - this._navigation.navHeight;
+      const bottom = this.bottom - this.navigation.navHeight;
 
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, bottom - this.columnSizes[col].height);
@@ -673,7 +674,7 @@ export class Legend extends Element {
     // Horizontal
     const isHorizontal = this.isHorizontal();
     const titleHeight = this._computeTitleHeight();
-    const bottom = this.bottom - this._navigation.navHeight;
+    const bottom = this.bottom - this.navigation.navHeight;
 
     if (isHorizontal) {
       cursor = {
@@ -692,7 +693,7 @@ export class Legend extends Element {
     overrideTextDirection(this.ctx, opts.textDirection);
 
     let currentLineHeight = 0;
-    this._navigation.legendItems.forEach((legendItem, i) => {
+    this.navigation.legendItems.forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -745,7 +746,7 @@ export class Legend extends Element {
    */
   _drawNavigation() {
     const {ctx, options: {navigation: navOpts}} = this;
-    const {active, page, totalPages, maxBlocks, prev, next, text} = this._navigation;
+    const {active, page, totalPages, maxBlocks, prev, next, text} = this.navigation;
 
     if (!active || (totalPages <= 1 && navOpts.display === 'auto')) {
       return;
@@ -812,13 +813,13 @@ export class Legend extends Element {
 
     if (this.isHorizontal()) {
       // Move left / right so that the title is above the legend lines
-      maxWidth = (this._navigation.maxWidth || Math.max(...this.lineWidths)) + labelOpts.padding;
+      maxWidth = (this.navigation._maxWidth || Math.max(...this.lineWidths)) + labelOpts.padding;
       y = this.top + topPaddingPlusHalfFontSize;
       left = _alignStartEnd(options.align, left, this.right - maxWidth);
     } else {
       // Move down so that the title is above the legend stack in every alignment
-      const maxHeight = (this._navigation.maxHeight || this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0))
-        + labelOpts.padding + this._computeTitleHeight() + this._navigation.navHeight;
+      const maxHeight = (this.navigation._maxHeight || this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0))
+        + labelOpts.padding + this._computeTitleHeight() + this.navigation.navHeight;
       y = topPaddingPlusHalfFontSize + _alignStartEnd(options.align, this.top, this.bottom - maxHeight);
     }
 
@@ -888,7 +889,7 @@ export class Legend extends Element {
    * @private
    */
   _getNavigationDirAt(x, y) {
-    const {prev, next} = this._navigation;
+    const {prev, next} = this.navigation;
 
     if (!(prev && next)) {
       return 0;
@@ -926,7 +927,7 @@ export class Legend extends Element {
         if (_isBetween(x, hitBox.left, hitBox.left + hitBox.width)
           && _isBetween(y, hitBox.top, hitBox.top + hitBox.height)) {
           // Touching an element
-          return this._navigation.legendItems[i];
+          return this.navigation.legendItems[i];
         }
       }
     }
@@ -941,9 +942,9 @@ export class Legend extends Element {
     if (e.type === 'click') {
       const dir = this._getNavigationDirAt(e.x, e.y);
       if (dir) {
-        const {page, totalPages} = this._navigation;
+        const {page, totalPages} = this.navigation;
         const lastPage = totalPages - 1;
-        const newPage = this._navigation.page = Math.max(0, Math.min(lastPage, this._navigation.page + dir));
+        const newPage = this.navigation.page = Math.max(0, Math.min(lastPage, this.navigation.page + dir));
 
         if (newPage !== page) {
           this.buildNavigation();
@@ -960,7 +961,7 @@ export class Legend extends Element {
 	 * @param {ChartEvent} e - The event to handle
 	 */
   handleEvent(e) {
-    if (this._navigation.totalPages > 1) {
+    if (this.navigation.totalPages > 1) {
       this._handleNavigationEvent(e);
     }
 
@@ -1145,6 +1146,7 @@ export default {
         top: 0
       },
       align: 'start',
+      grid: true,
       activeColor: (ctx) => ctx.chart.options.color,
       inactiveColor: (ctx) => new Color(ctx.chart.options.color).alpha(0.4).rgbString(),
       font: {
