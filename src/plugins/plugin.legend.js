@@ -1148,7 +1148,7 @@ export default {
       align: 'start',
       grid: true,
       activeColor: (ctx) => ctx.chart.options.color,
-      inactiveColor: (ctx) => new Color(ctx.chart.options.color).alpha(0.4).rgbString(),
+      inactiveColor: (ctx) => new Color(ctx.chart.options.plugins.legend.navigation.activeColor).alpha(0.4).rgbString(),
       font: {
         weight: 'bold',
         size: 14
