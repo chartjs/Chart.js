@@ -18,7 +18,7 @@
           "align": "center",
           "title": {
             "display": true,
-            "text": ["Title", "Multiline", "Example"]
+            "text": ["", "", ""]
           }
         }
       }
