@@ -1490,7 +1490,7 @@ export default class Scale extends Element {
     };
 
     if (grid.display) {
-      for (i = 0, ilen = items.length; i < ilen; ++i) {
+      for (i = 0, ilen = items.length; i < ilen; i += (grid.step || 1)) {
         const item = items[i];
 
         if (grid.drawOnChartArea) {
