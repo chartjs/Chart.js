@@ -1676,6 +1676,92 @@ describe('Chart.controllers.bar', function() {
     expect(unevenChart).not.toThrow();
   });
 
+  it('should correctly count the number of stacks when skipNull and different order datasets', function() {
+
+    const chart = window.acquireChart({
+      type: "bar",
+      data: {
+        datasets: [
+          {
+            id: "1",
+            label: "USA",
+            data: [
+              {
+                xScale: "First",
+                Country: "USA",
+                yScale: 524
+              },
+              {
+                xScale: "Second",
+                Country: "USA",
+                yScale: 325
+              }
+            ],
+
+            yAxisID: "yScale",
+            xAxisID: "xScale",
+
+            parsing: {
+              yAxisKey: "yScale",
+              xAxisKey: "xScale"
+            }
+          },
+          {
+            id: "2",
+            label: "BRA",
+            data: [
+              {
+                xScale: "Second",
+                Country: "BRA",
+                yScale: 183
+              },
+              {
+                xScale: "First",
+                Country: "BRA",
+                yScale: 177
+              }
+            ],
+
+            yAxisID: "yScale",
+            xAxisID: "xScale",
+        
+            parsing: {
+              yAxisKey: "yScale",
+              xAxisKey: "xScale"
+            }
+          },
+          {
+            id: "3",
+            label: "DEU",
+            data: [
+              {
+                xScale: "First",
+                Country: "DEU",
+                yScale: 162
+              }
+            ],
+
+            yAxisID: "yScale",
+            xAxisID: "xScale",
+
+            parsing: {
+              yAxisKey: "yScale",
+              xAxisKey: "xScale"
+            }
+          }
+        ]
+      },
+      options: {
+        skipNull: true
+      }
+    })
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.controller._getStackCount(0)).toBe(3);
+    expect(meta.controller._getStackCount(1)).toBe(2);
+
+  });
+
   it('should not override tooltip title and label callbacks', async() => {
     const chart = window.acquireChart({
       type: 'bar',
