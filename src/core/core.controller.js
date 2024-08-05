@@ -717,8 +717,9 @@ class Chart {
     let i;
     if (this._resizeBeforeDraw) {
       const {width, height} = this._resizeBeforeDraw;
-      this._resize(width, height);
+      // Unset pending draw now to avoid possible recursion within _resize
       this._resizeBeforeDraw = null;
+      this._resize(width, height);
     }
     this.clear();
 
