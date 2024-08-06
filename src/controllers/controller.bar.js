@@ -437,9 +437,11 @@ export default class BarController extends DatasetController {
       .filter(meta => meta.controller.options.grouped);
     const stacked = iScale.options.stacked;
     const stacks = [];
+    const currentParsed = this._cachedMeta.controller.getParsed(dataIndex);
+    const iScaleValue = currentParsed && currentParsed[iScale.axis];
 
     const skipNull = (meta) => {
-      const parsed = meta.controller.getParsed(dataIndex);
+      const parsed = meta._parsed.find(item => item[iScale.axis] === iScaleValue);
       const val = parsed && parsed[meta.vScale.axis];
 
       if (isNullOrUndef(val) || isNaN(val)) {
