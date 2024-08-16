@@ -1149,8 +1149,8 @@ describe('Plugin.Tooltip', function() {
       const averagePositioner = tooltipPlugin.positioners.average;
 
       // Simulate `hasValue` returns false
-      expect(averagePositioner(() => [{x: 'invalidNumber', y: 'invalidNumber'}])).not.toThrow();
-      expect(averagePositioner(() => [{x: 'invalidNumber', y: 'invalidNumber'}])).toBe(false);
+      expect(() => averagePositioner([{x: 'invalidNumber', y: 'invalidNumber'}])).not.toThrow();
+      expect(() => averagePositioner([{x: 'invalidNumber', y: 'invalidNumber'}])).toBe(false);
     });
   });
 
