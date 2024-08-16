@@ -3740,13 +3740,16 @@ export type ScaleChartOptions<TType extends ChartType = ChartType> = {
   };
 };
 
-export type ChartOptions<TType extends ChartType = ChartType> = DeepPartial<
-CoreChartOptions<TType> &
-ElementChartOptions<TType> &
-PluginChartOptions<TType> &
-DatasetChartOptions<TType> &
-ScaleChartOptions<TType> &
-ChartTypeRegistry[TType]['chartOptions']
+export type ChartOptions<TType extends ChartType = ChartType> = Exclude<
+  DeepPartial<
+    CoreChartOptions<TType> &
+    ElementChartOptions<TType> &
+    PluginChartOptions<TType> &
+    DatasetChartOptions<TType> &
+    ScaleChartOptions<TType> &
+    ChartTypeRegistry[TType]['chartOptions']
+  >,
+  DeepPartial<unknown[]>
 >;
 
 export type DefaultDataPoint<TType extends ChartType> = DistributiveArray<ChartTypeRegistry[TType]['defaultDataPoint']>;
