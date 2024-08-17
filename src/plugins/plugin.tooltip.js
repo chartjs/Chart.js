@@ -38,6 +38,11 @@ const positioners = {
       }
     }
 
+    // No visible items where found, return false so we don't have to divide by 0 which reduces in NaN
+    if (count === 0 || xSet.size === 0) {
+      return false;
+    }
+
     const xAverage = [...xSet].reduce((a, b) => a + b) / xSet.size;
 
     return {

@@ -301,7 +301,6 @@ export default class Scale extends Element {
 	 * @since 3.0
 	 */
   getMinMax(canStack) {
-    // eslint-disable-next-line prefer-const
     let {min, max, minDefined, maxDefined} = this.getUserBounds();
     let range;
 

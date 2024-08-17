@@ -1144,6 +1144,15 @@ describe('Plugin.Tooltip', function() {
       expect(tooltipModel.caretX).not.toBe(xPositionArrayAverage);
       expect(tooltipModel.caretX).toBe(xPositionSetAverage);
     });
+
+    it('Should not fail with all hiden data elements on the average positioner', function() {
+      const averagePositioner = tooltipPlugin.positioners.average;
+
+      // Simulate `hasValue` returns false
+      expect(() => averagePositioner([{x: 'invalidNumber', y: 'invalidNumber'}])).not.toThrow();
+      const result = averagePositioner([{x: 'invalidNumber', y: 'invalidNumber'}]);
+      expect(result).toBe(false);
+    });
   });
 
   it('Should avoid tooltip truncation in x axis if there is enough space to show tooltip without truncation', async function() {
