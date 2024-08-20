@@ -211,7 +211,7 @@ function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
   let intersectsItem = false;
 
   evaluateInteractionItems(chart, axis, position, (element, datasetIndex, index) => {
-    if (element[rangeMethod](position[axis], useFinalPosition)) {
+    if (element[rangeMethod] && element[rangeMethod](position[axis], useFinalPosition)) {
       items.push({element, datasetIndex, index});
       intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
     }
