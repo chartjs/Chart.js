@@ -92,3 +92,4 @@ module.exports = {
 
 ## Docs
 * [Polar Area Chart](../../charts/polar.md)
+* [Radial linear scale](../../axes/radial/linear.md)
