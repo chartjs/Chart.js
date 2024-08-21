@@ -2934,16 +2934,20 @@ export interface TooltipItem<TType extends ChartType> {
 }
 
 export interface PluginOptionsByType<TType extends ChartType> {
+  legend: LegendOptions<TType>;
+  tooltip: TooltipOptions<TType>;
+}
+
+export interface PluginOptions {
   colors: ColorsPluginOptions;
   decimation: DecimationOptions;
   filler: FillerOptions;
-  legend: LegendOptions<TType>;
   subtitle: TitleOptions;
   title: TitleOptions;
-  tooltip: TooltipOptions<TType>;
 }
+
 export interface PluginChartOptions<TType extends ChartType> {
-  plugins: PluginOptionsByType<TType>;
+  plugins: PluginOptionsByType<TType> | PluginOptions;
 }
 
 export interface BorderOptions {

@@ -186,12 +186,22 @@ The `destroy` hook has been deprecated since Chart.js version 3.7.0, use the `af
 
 If you want your plugin to be statically typed, you must provide a `.d.ts` TypeScript declaration file. Chart.js provides a way to augment built-in types with user-defined ones, by using the concept of "declaration merging".
 
-When adding a plugin, `PluginOptionsByType` must contain the declarations for the plugin.
+When adding a plugin, `PluginOptions` must contain the declarations for the plugin, in case you need extra information about the chart type you can use the `PluginOptionsByType` interface.
 
 For example, to provide typings for the [`canvas backgroundColor plugin`](../configuration/canvas-background.md), you would add a `.d.ts` containing:
 
 ```ts
-import {ChartType, Plugin} from 'chart.js';
+declare module 'chart.js' {
+  interface PluginOptions {
+    customCanvasBackgroundColor?: {
+      color?: string
+    }
+  }
+}
+```
+
+```ts
+import {ChartType} from 'chart.js';
 
 declare module 'chart.js' {
   interface PluginOptionsByType<TType extends ChartType> {
