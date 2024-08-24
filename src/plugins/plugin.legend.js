@@ -57,26 +57,6 @@ export class Legend extends Element {
  		 */
     this._hoveredItem = null;
 
-    this.navigation = {
-      active: false,
-      page: 0,
-      totalPages: 0,
-      itemWidth: 0,
-      itemHeight: 0,
-      navWidth: 0,
-      navHeight: 0,
-      maxBlocks: 0,
-      blocks: undefined,
-      text: undefined,
-      prev: undefined,
-      next: undefined,
-      legendItems: undefined,
-      _width: 0,
-      _height: 0,
-      _maxWidth: 0,
-      _maxHeight: 0,
-    };
-
     // Are we in doughnut mode which has a different data type
     this.doughnutMode = false;
 
@@ -98,6 +78,7 @@ export class Legend extends Element {
     this.position = undefined;
     this.weight = undefined;
     this.fullSize = undefined;
+    this.navigation = undefined;
   }
 
   update(maxWidth, maxHeight, margins) {
@@ -139,17 +120,16 @@ export class Legend extends Element {
       legendItems.reverse();
     }
 
-    this.navigation.legendItems = this.legendItems = legendItems;
+    this.legendItems = legendItems;
     this._computeNavigation();
   }
 
   /**
    * @private
    */
-  _resetNavigation() {
-    if (this.navigation.active) {
-      Object.assign(this.navigation, {
-        active: false,
+  _initNavigation(override) {
+    if (!this.navigation) {
+      this.navigation = {
         page: 0,
         totalPages: 0,
         itemWidth: 0,
@@ -166,7 +146,11 @@ export class Legend extends Element {
         _height: 0,
         _maxWidth: 0,
         _maxHeight: 0,
-      });
+      };
+    }
+
+    if (override) {
+      Object.assign(this.navigation, override);
     }
   }
 
@@ -178,25 +162,28 @@ export class Legend extends Element {
     const {navigation: navOpts, labels: labelOpts} = options;
 
     if (!(navOpts && navOpts.display)) {
-      this._resetNavigation();
+      this.navigation = undefined;
       return;
     }
     const isHorizontal = this.isHorizontal();
 
-    this.navigation.active = true;
-    this.navigation.totalPages = 0;
-    this.navigation._width = this.navigation._height = 0;
-    this.navigation._maxWidth = this.navigation._maxHeight = 0;
-    this.navigation.itemWidth = this.navigation.itemHeight = 0;
-    this.navigation.maxBlocks = 0;
+    this._initNavigation({
+      totalPages: 0,
+      _width: 0,
+      _height: 0,
+      _maxWidth: 0,
+      _maxHeight: 0,
+      itemWidth: 0,
+      itemHeight: 0,
+      maxBlocks: 0,
+    });
 
-    const {arrowSize} = navOpts;
     const labelFont = toFont(labelOpts.font);
     const {boxWidth, itemHeight: _itemHeight} = getBoxSize(labelOpts, labelFont.size);
     const font = toFont(navOpts.font);
 
     const padding = toPadding(navOpts.padding);
-    this.navigation.navHeight = Math.max(font.size, arrowSize) + padding.height;
+    this.navigation.navHeight = Math.max(font.size, navOpts.arrowSize) + padding.height;
 
     const grid = getGridAxis(navOpts.grid);
 
@@ -325,17 +312,16 @@ export class Legend extends Element {
   }
 
   buildNavigation() {
-    const {ctx, options: {align, navigation: navOpts, labels: labelOpts}} = this;
-    const {active, totalPages, navHeight} = this.navigation;
-
-    if (!active) {
+    if (!this.navigation) {
       return;
     }
+    const {ctx, options: {align, navigation: navOpts, labels: labelOpts}} = this;
+    const {totalPages, navHeight} = this.navigation;
 
     const font = toFont(navOpts.font);
 
     if (totalPages < 1 || (totalPages === 1 && navOpts.display === 'auto')) {
-      this._resetNavigation();
+      this.navigation = undefined;
       return;
     }
 
@@ -394,7 +380,12 @@ export class Legend extends Element {
    */
   _getLegendItemWidth(legendItem, boxWidth, labelFont) {
     const hitboxWidth = calculateItemWidth(legendItem, boxWidth, labelFont, this.ctx);
-    const itemWidth = this.navigation.itemWidth || hitboxWidth;
+    let itemWidth = hitboxWidth;
+
+    if (this.navigation && this.navigation.itemWidth) {
+      itemWidth = this.navigation.itemWidth;
+    }
+
     return {itemWidth, hitboxWidth};
   }
 
@@ -403,8 +394,23 @@ export class Legend extends Element {
    */
   _getLegendItemHeight(legendItem, _itemHeight, labelFont) {
     const hitboxHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
-    const itemHeight = this.navigation.itemHeight || hitboxHeight;
+    let itemHeight = hitboxHeight;
+
+    if (this.navigation && this.navigation.itemHeight) {
+      itemHeight = this.navigation.itemHeight;
+    }
+
     return {itemHeight, hitboxHeight};
+  }
+
+  /**
+   * @private
+   */
+  _getVisibleLegendItems() {
+    if (this.navigation) {
+      return this.navigation.legendItems;
+    }
+    return this.legendItems;
   }
 
   fit() {
@@ -433,15 +439,23 @@ export class Legend extends Element {
     if (isHorizontal) {
       width = this.maxWidth; // fill all the width
       height = this._fitRows(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+
+      if (this.navigation) {
+        height = this.navigation._height;
+      }
     } else {
       height = this.maxHeight; // fill all the height
       width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+
+      if (this.navigation) {
+        width = this.navigation._width;
+      }
     }
 
     const maxWidth = isHorizontal ? this.maxWidth : (options.maxWidth || this.maxWidth);
     const maxHeight = isHorizontal ? (options.maxHeight || this.maxHeight) : this.maxHeight;
-    this.width = Math.min(this.navigation._width || width, maxWidth);
-    this.height = Math.min(this.navigation._height || height, maxHeight);
+    this.width = Math.min(width, maxWidth);
+    this.height = Math.min(height, maxHeight);
   }
 
   /**
@@ -460,7 +474,8 @@ export class Legend extends Element {
     let row = 0;
     let top = 0;
     let currentLineHeight = 0;
-    this.navigation.legendItems.forEach((legendItem, i) => {
+
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
       const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
 
       if (i > 0 && lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
@@ -487,7 +502,11 @@ export class Legend extends Element {
     const {maxHeight, options: {labels: {padding}}} = this;
     const hitboxes = this.legendHitBoxes = [];
     const columnSizes = this.columnSizes = [];
-    const heightLimit = maxHeight - titleHeight - this.navigation.navHeight;
+    let heightLimit = maxHeight - titleHeight;
+
+    if (this.navigation) {
+      heightLimit -= this.navigation.navHeight;
+    }
 
     let totalWidth = padding;
     let currentColWidth = 0;
@@ -496,7 +515,7 @@ export class Legend extends Element {
     let left = 0;
     let col = 0;
 
-    this.navigation.legendItems.forEach((legendItem, i) => {
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
       const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
 
       // If too tall, go to new column
@@ -545,7 +564,11 @@ export class Legend extends Element {
         left += hitbox.offsetWidth + padding;
       }
     } else {
-      const bottom = this.bottom - this.navigation.navHeight;
+      let bottom = this.bottom;
+
+      if (this.navigation) {
+        bottom -= this.navigation.navHeight;
+      }
 
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, bottom - this.columnSizes[col].height);
@@ -674,7 +697,11 @@ export class Legend extends Element {
     // Horizontal
     const isHorizontal = this.isHorizontal();
     const titleHeight = this._computeTitleHeight();
-    const bottom = this.bottom - this.navigation.navHeight;
+    let bottom = this.bottom;
+
+    if (this.navigation) {
+      bottom -= this.navigation.navHeight;
+    }
 
     if (isHorizontal) {
       cursor = {
@@ -693,7 +720,7 @@ export class Legend extends Element {
     overrideTextDirection(this.ctx, opts.textDirection);
 
     let currentLineHeight = 0;
-    this.navigation.legendItems.forEach((legendItem, i) => {
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -745,10 +772,13 @@ export class Legend extends Element {
    * @private
    */
   _drawNavigation() {
+    if (!this.navigation) {
+      return;
+    }
     const {ctx, options: {navigation: navOpts}} = this;
-    const {active, page, totalPages, maxBlocks, prev, next, text} = this.navigation;
+    const {page, totalPages, maxBlocks, prev, next, text} = this.navigation;
 
-    if (!active || (totalPages <= 1 && navOpts.display === 'auto')) {
+    if (totalPages <= 1 && navOpts.display === 'auto') {
       return;
     }
 
@@ -813,13 +843,20 @@ export class Legend extends Element {
 
     if (this.isHorizontal()) {
       // Move left / right so that the title is above the legend lines
-      maxWidth = (this.navigation._maxWidth || Math.max(...this.lineWidths)) + labelOpts.padding;
+      maxWidth = (this.navigation ? this.navigation._maxWidth : Math.max(...this.lineWidths)) + labelOpts.padding;
       y = this.top + topPaddingPlusHalfFontSize;
       left = _alignStartEnd(options.align, left, this.right - maxWidth);
     } else {
       // Move down so that the title is above the legend stack in every alignment
-      const maxHeight = (this.navigation._maxHeight || this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0))
-        + labelOpts.padding + this._computeTitleHeight() + this.navigation.navHeight;
+      let maxHeight;
+
+      if (this.navigation) {
+        maxHeight = this.navigation._maxHeight + this.navigation.navHeight;
+      } else {
+        maxHeight = this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
+      }
+
+      maxHeight += labelOpts.padding + this._computeTitleHeight();
       y = topPaddingPlusHalfFontSize + _alignStartEnd(options.align, this.top, this.bottom - maxHeight);
     }
 
@@ -889,11 +926,10 @@ export class Legend extends Element {
    * @private
    */
   _getNavigationDirAt(x, y) {
-    const {prev, next} = this.navigation;
-
-    if (!(prev && next)) {
+    if (!(this.navigation && this.navigation.prev && this.navigation.next)) {
       return 0;
     }
+    const {prev, next} = this.navigation;
 
     const {arrowSize} = this.options.navigation;
     // Add a padding to the clickable area (30% of the arrow size)
@@ -915,19 +951,20 @@ export class Legend extends Element {
 	 * @private
 	 */
   _getLegendItemAt(x, y) {
-    let i, hitBox, lh;
-
     if (_isBetween(x, this.left, this.right)
       && _isBetween(y, this.top, this.bottom)) {
       // See if we are touching one of the dataset boxes
-      lh = this.legendHitBoxes;
-      for (i = 0; i < lh.length; ++i) {
+      const lh = this.legendHitBoxes;
+      const legendItems = this._getVisibleLegendItems();
+      let hitBox;
+
+      for (let i = 0; i < lh.length; ++i) {
         hitBox = lh[i];
 
         if (_isBetween(x, hitBox.left, hitBox.left + hitBox.width)
           && _isBetween(y, hitBox.top, hitBox.top + hitBox.height)) {
           // Touching an element
-          return this.navigation.legendItems[i];
+          return legendItems[i];
         }
       }
     }
@@ -939,20 +976,25 @@ export class Legend extends Element {
    * @private
    */
   _handleNavigationEvent(e) {
-    if (e.type === 'click') {
-      const dir = this._getNavigationDirAt(e.x, e.y);
-      if (dir) {
-        const {page, totalPages} = this.navigation;
-        const lastPage = totalPages - 1;
-        const newPage = this.navigation.page = Math.max(0, Math.min(lastPage, this.navigation.page + dir));
+    if (!this.navigation || this.navigation.totalPages < 2 || e.type !== 'click') {
+      return;
+    }
 
-        if (newPage !== page) {
-          this.buildNavigation();
-          this.fit();
-          this.adjustHitBoxes();
-          this.chart.render();
-        }
-      }
+    const dir = this._getNavigationDirAt(e.x, e.y);
+
+    if (!dir) {
+      return;
+    }
+
+    const {page, totalPages} = this.navigation;
+    const lastPage = totalPages - 1;
+    const newPage = this.navigation.page = Math.max(0, Math.min(lastPage, this.navigation.page + dir));
+
+    if (newPage !== page) {
+      this.buildNavigation();
+      this.fit();
+      this.adjustHitBoxes();
+      this.chart.render();
     }
   }
 
@@ -961,9 +1003,7 @@ export class Legend extends Element {
 	 * @param {ChartEvent} e - The event to handle
 	 */
   handleEvent(e) {
-    if (this.navigation.totalPages > 1) {
-      this._handleNavigationEvent(e);
-    }
+    this._handleNavigationEvent(e);
 
     const opts = this.options;
     if (!isListened(e.type, opts)) {

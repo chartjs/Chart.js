@@ -1229,7 +1229,7 @@ describe('Legend block tests', function() {
         }
       });
 
-      expect(chart.legend.navigation.active).toBe(true);
+      expect(chart.legend.navigation).toBeTruthy();
       expect(chart.legend.legendItems.length).toBe(10);
       expect(chart.legend.navigation.legendItems.length).toBe(4);
     });
@@ -1255,9 +1255,9 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should not show navigation if display false', function() {
@@ -1282,9 +1282,9 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should not show navigation if options is false', function() {
@@ -1312,9 +1312,9 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should show navigation if display true', function() {
@@ -1345,7 +1345,7 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(3);
         expect(chart.legend.navigation.legendItems.length).toBe(3);
       });
@@ -1378,9 +1378,9 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(2);
-        expect(chart.legend.navigation.legendItems.length).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(2);
       });
 
       it('should show navigation if display auto and low space', function() {
@@ -1406,7 +1406,7 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
       });
@@ -1436,7 +1436,7 @@ describe('Legend block tests', function() {
 
         expect(chart.legend.legendItems.length).toBe(10);
         expect(chart.legend.legendHitBoxes.length).toBe(4);
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.navigation.page).toBe(0);
 
         const next = {
@@ -1514,14 +1514,15 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
 
         chart.options.plugins.legend.navigation.display = true;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendItems.length).toBe(10);
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
       });
@@ -1554,16 +1555,17 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendItems.length).toBe(10);
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
 
         chart.options.plugins.legend.navigation.display = false;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should show navigation after adding labels when display auto', function() {
@@ -1589,18 +1591,53 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
-        expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(4);
 
         chart.data.labels.push('Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10');
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should hide navigation after removing labels when display auto', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: 'auto',
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.data.labels.splice(4, 6);
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
       });
 
       it('should respect max rows', function() {
@@ -1626,7 +1663,7 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(10);
@@ -1634,7 +1671,7 @@ describe('Legend block tests', function() {
         chart.options.plugins.legend.navigation.maxRows = 2;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(8);
         expect(chart.legend.navigation.legendItems.length).toBe(8);
         expect(chart.legend.legendItems.length).toBe(10);
@@ -1642,9 +1679,8 @@ describe('Legend block tests', function() {
         chart.options.plugins.legend.navigation.maxRows = 3;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
         expect(chart.legend.legendItems.length).toBe(10);
       });
 
@@ -1674,7 +1710,7 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
 
         const largestLabel = chart.legend.legendHitBoxes[0];
 
@@ -1716,7 +1752,7 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
 
         const padding = chart.options.plugins.legend.labels.padding;
         let highestLabel = chart.legend.legendHitBoxes[0];
@@ -1775,14 +1811,15 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(8);
         expect(chart.legend.legendItems.length).toBe(8);
 
         chart.resize(512, 512);
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(5);
+        expect(chart.legend.navigation.legendItems.length).toBe(5);
         expect(chart.legend.legendItems.length).toBe(8);
       });
     });
@@ -1814,9 +1851,9 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(15);
-        expect(chart.legend.navigation.legendItems.length).toBe(15);
+        expect(chart.legend.legendItems.length).toBe(15);
       });
 
       it('should not show navigation if display false', function() {
@@ -1841,9 +1878,9 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should not show navigation if options is false', function() {
@@ -1866,9 +1903,9 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should show navigation if display true', function() {
@@ -1894,7 +1931,7 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(3);
         expect(chart.legend.navigation.legendItems.length).toBe(3);
       });
@@ -1922,9 +1959,9 @@ describe('Legend block tests', function() {
           }
         });
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(2);
-        expect(chart.legend.navigation.legendItems.length).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(2);
       });
 
       it('should show navigation if display auto and low space', function() {
@@ -1956,9 +1993,10 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should change pages when clicking on the navigation', async function() {
@@ -1992,7 +2030,7 @@ describe('Legend block tests', function() {
 
         expect(chart.legend.legendItems.length).toBe(10);
         expect(chart.legend.legendHitBoxes.length).toBe(4);
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.navigation.page).toBe(0);
 
         const next = {
@@ -2071,16 +2109,17 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
 
         chart.options.plugins.legend.navigation.display = true;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should hide navigation after changing the options', function() {
@@ -2111,16 +2150,17 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
 
         chart.options.plugins.legend.navigation.display = false;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
       });
 
       it('should show navigation after adding labels when display auto', function() {
@@ -2152,18 +2192,59 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
-        expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(4);
 
         chart.data.labels.push('Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10');
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should hide navigation after removing labels when display auto', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.data.labels.splice(4, 6);
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
       });
 
       it('should respect max cols', function() {
@@ -2195,7 +2276,7 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
         expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(10);
@@ -2203,7 +2284,7 @@ describe('Legend block tests', function() {
         chart.options.plugins.legend.navigation.maxCols = 2;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(8);
         expect(chart.legend.navigation.legendItems.length).toBe(8);
         expect(chart.legend.legendItems.length).toBe(10);
@@ -2211,9 +2292,8 @@ describe('Legend block tests', function() {
         chart.options.plugins.legend.navigation.maxCols = 3;
         chart.update();
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(10);
-        expect(chart.legend.navigation.legendItems.length).toBe(10);
         expect(chart.legend.legendItems.length).toBe(10);
       });
 
@@ -2250,7 +2330,7 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
 
         const padding = chart.options.plugins.legend.labels.padding;
         let largestLabel = chart.legend.legendHitBoxes[0];
@@ -2315,7 +2395,7 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
 
         const highestLabel = chart.legend.legendHitBoxes[0];
 
@@ -2360,14 +2440,15 @@ describe('Legend block tests', function() {
           }
         );
 
-        expect(chart.legend.navigation.active).toBe(false);
+        expect(chart.legend.navigation).toBeUndefined();
         expect(chart.legend.legendHitBoxes.length).toBe(8);
         expect(chart.legend.legendItems.length).toBe(8);
 
         chart.resize(512, 130);
 
-        expect(chart.legend.navigation.active).toBe(true);
+        expect(chart.legend.navigation).toBeTruthy();
         expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
         expect(chart.legend.legendItems.length).toBe(8);
       });
     });
