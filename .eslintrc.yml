@@ -36,6 +36,8 @@ rules:
   es/no-regexp-s-flag: "error"
   es/no-regexp-unicode-property-escapes: "error"
   es/no-dynamic-import: "off"
+  es/no-optional-chaining: "off"
+  es/no-nullish-coalescing-operators: "off"
 
 overrides:
   - files: ['**/*.ts']
