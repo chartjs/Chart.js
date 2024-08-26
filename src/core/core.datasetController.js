@@ -420,6 +420,7 @@ export default class DatasetController {
     // if stack changed, update stack values for the whole dataset
     if (stackChanged || oldStacked !== meta._stacked) {
       updateStacks(this, meta._parsed);
+      meta._stacked = isStacked(meta.vScale, meta);
     }
   }
 
