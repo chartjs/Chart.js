@@ -26,6 +26,6 @@
         "vuepress-plugin-tabs": "^0.3.0",
         "vuepress-plugin-typedoc": "^0.11.0",
         "vuepress-theme-chartjs": "^0.2.0",
-        "webpack": "^4.46.0"
+        "webpack": "^5.94.0"
     }
 }
