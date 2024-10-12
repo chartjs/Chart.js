@@ -1,4 +1,4 @@
-import {DoughnutController, PolarAreaController} from '../index.js';
+import {DoughnutController, PolarAreaController, defaults} from '../index.js';
 import type {Chart, ChartDataset} from '../types.js';
 
 export interface ColorsPluginOptions {
@@ -87,6 +87,10 @@ function containsColorsDefinition(
   return descriptor && (descriptor.borderColor || descriptor.backgroundColor);
 }
 
+function containsDefaultColorsDefenitions() {
+  return defaults.borderColor !== 'rgba(0,0,0,0.1)' || defaults.backgroundColor !== 'rgba(0,0,0,0.1)';
+}
+
 export default {
   id: 'colors',
 
@@ -106,7 +110,13 @@ export default {
     } = chart.config;
     const {elements} = chartOptions;
 
-    if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || (elements && containsColorsDefinitions(elements)))) {
+    const containsColorDefenition = (
+      containsColorsDefinitions(datasets) ||
+      containsColorsDefinition(chartOptions) ||
+      (elements && containsColorsDefinitions(elements)) ||
+      containsDefaultColorsDefenitions());
+
+    if (!options.forceOverride && containsColorDefenition) {
       return;
     }
 
