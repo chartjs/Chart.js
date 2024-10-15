@@ -1611,12 +1611,22 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * base background color
    * @see Defaults.backgroundColor
    */
-  backgroundColor: Scriptable<Color, ScriptableContext<TType>>;
+  backgroundColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
+  /**
+   * base hover background color
+   * @see Defaults.hoverBackgroundColor
+   */
+  hoverBackgroundColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
   /**
    * base border color
    * @see Defaults.borderColor
    */
-  borderColor: Scriptable<Color, ScriptableContext<TType>>;
+  borderColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
+  /**
+   * base hover border color
+   * @see Defaults.hoverBorderColor
+   */
+  hoverBorderColor: ScriptableAndArray<Color, ScriptableContext<TType>>;
   /**
    * base font
    * @see Defaults.font
