@@ -76,9 +76,11 @@ function applyStack(stack, value, dsIndex, options = {}) {
     return;
   }
 
+  let found = false;
   for (i = 0, ilen = keys.length; i < ilen; ++i) {
     datasetIndex = +keys[i];
     if (datasetIndex === dsIndex) {
+      found = true;
       if (options.all) {
         continue;
       }
@@ -89,6 +91,11 @@ function applyStack(stack, value, dsIndex, options = {}) {
       value += otherValue;
     }
   }
+
+  if (!found && !options.all) {
+    return 0;
+  }
+
   return value;
 }
 
