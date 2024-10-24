@@ -53,7 +53,11 @@ function parseMaxStyle(styleValue: string | number, node: HTMLElement, parentPro
 const getComputedStyle = (element: HTMLElement): CSSStyleDeclaration =>
   element.ownerDocument.defaultView.getComputedStyle(element, null);
 
-export function getStyle(el: HTMLElement, property: string): string {
+export function getStyle(property: string, el?: HTMLElement): string {
+  if (!el) {
+    return '';
+  }
+
   return getComputedStyle(el).getPropertyValue(property);
 }
 
@@ -105,20 +109,22 @@ function getCanvasPosition(
 
 /**
  * Gets an event's x, y coordinates, relative to the chart area
- * @param event
- * @param chart
  * @returns x and y coordinates of the event
  */
 
 export function getRelativePosition(
   event: Event | ChartEvent | TouchEvent | MouseEvent,
-  chart: Chart
+  chart?: Chart
 ): { x: number; y: number } {
   if ('native' in event) {
     return event;
   }
 
   const {canvas, currentDevicePixelRatio} = chart;
+  if (!canvas) {
+    return {x: 0, y: 0};
+  }
+
   const style = getComputedStyle(canvas);
   const borderBox = style.boxSizing === 'border-box';
   const paddings = getPositionedStyle(style, 'padding');
@@ -138,19 +144,20 @@ export function getRelativePosition(
   };
 }
 
-function getContainerSize(canvas: HTMLCanvasElement, width: number, height: number): Partial<Scale> {
+function getContainerSize(width: number, height: number, canvas?: HTMLCanvasElement): Partial<Scale> {
   let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
     const container = canvas && _getParentNode(canvas);
     if (!container) {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
+      width = canvas?.clientWidth ?? 0;
+      height = canvas?.clientHeight ?? 0;
     } else {
       const rect = container.getBoundingClientRect(); // this is the border box of the container
       const containerStyle = getComputedStyle(container);
       const containerBorder = getPositionedStyle(containerStyle, 'border', 'width');
       const containerPadding = getPositionedStyle(containerStyle, 'padding');
+
       width = rect.width - containerPadding.width - containerBorder.width;
       height = rect.height - containerPadding.height - containerBorder.height;
       maxWidth = parseMaxStyle(containerStyle.maxWidth, container, 'clientWidth');
@@ -169,16 +176,20 @@ const round1 = (v: number) => Math.round(v * 10) / 10;
 
 // eslint-disable-next-line complexity
 export function getMaximumSize(
-  canvas: HTMLCanvasElement,
+  canvas?: HTMLCanvasElement,
   bbWidth?: number,
   bbHeight?: number,
   aspectRatio?: number
 ): { width: number; height: number } {
+  if (!canvas) {
+    return {width: 0, height: 0};
+  }
+
   const style = getComputedStyle(canvas);
   const margins = getPositionedStyle(style, 'margin');
   const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
   const maxHeight = parseMaxStyle(style.maxHeight, canvas, 'clientHeight') || INFINITY;
-  const containerSize = getContainerSize(canvas, bbWidth, bbHeight);
+  const containerSize = getContainerSize(bbWidth, bbHeight, canvas);
   let {width, height} = containerSize;
 
   if (style.boxSizing === 'content-box') {
@@ -286,7 +297,7 @@ export function readUsedSize(
   element: HTMLElement,
   property: 'width' | 'height'
 ): number | undefined {
-  const value = getStyle(element, property);
+  const value = getStyle(property, element);
   const matches = value && value.match(/^(\d+)(\.\d+)?px$/);
   return matches ? +matches[1] : undefined;
 }
