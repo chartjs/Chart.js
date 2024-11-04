@@ -17,7 +17,7 @@ export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
 export {default as PointElement, PointProps} from '../elements/element.point.js';
 export {Animation, Animations, Animator, AnimationEvent} from './animation.js';
 export {Color} from './color.js';
-export {ChartArea, Point} from './geometric.js';
+export {ChartArea, Point, TRBL} from './geometric.js';
 export {LayoutItem, LayoutPosition} from './layout.js';
 
 export interface ScriptableContext<TType extends ChartType> {
