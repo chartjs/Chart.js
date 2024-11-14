@@ -404,30 +404,31 @@ class Chart {
     const metasets = this._metasets;
     const numData = this.data.datasets.length;
     const numMeta = metasets.length;
+    const sortedMetasetByIndex = this.data.datasets.map(currentDataset => metasets.find(currentMetaset => currentMetaset._dataset === currentDataset));
 
-    metasets.sort((a, b) => a.index - b.index);
     if (numMeta > numData) {
       for (let i = numData; i < numMeta; ++i) {
         this._destroyDatasetMeta(i);
       }
-      metasets.splice(numData, numMeta - numData);
+      sortedMetasetByIndex.splice(numData, numMeta - numData);
     }
-    this._sortedMetasets = metasets.slice(0).sort(compare2Level('order', 'index'));
+    this._metasets = sortedMetasetByIndex;
+    this._sortedMetasets = sortedMetasetByIndex.slice(0).sort(compare2Level('order', 'index'));
   }
 
   /**
-	 * @private
-	 */
-  _removeUnreferencedMetasets() {
+   * @private
+   */
+  _rebuildMetasets() {
     const {_metasets: metasets, data: {datasets}} = this;
-    if (metasets.length > datasets.length) {
-      delete this._stacks;
-    }
-    metasets.forEach((meta, index) => {
-      if (datasets.filter(x => x === meta._dataset).length === 0) {
-        this._destroyDatasetMeta(index);
-      }
+    const newMetasets = [];
+
+    datasets.forEach((dataset) => {
+      const matchingMetaset = metasets.find(metaset => dataset === metaset._dataset);
+      newMetasets.push(matchingMetaset);
     });
+
+    this._metasets = newMetasets;
   }
 
   buildOrUpdateControllers() {
@@ -435,11 +436,12 @@ class Chart {
     const datasets = this.data.datasets;
     let i, ilen;
 
-    this._removeUnreferencedMetasets();
+    this._rebuildMetasets();
 
     for (i = 0, ilen = datasets.length; i < ilen; i++) {
       const dataset = datasets[i];
       let meta = this.getDatasetMeta(i);
+
       const type = dataset.type || this.config.type;
 
       if (meta.type && meta.type !== type) {
