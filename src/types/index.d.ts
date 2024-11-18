@@ -281,7 +281,7 @@ export interface DoughnutControllerDatasetOptions
   spacing: number;
 }
 
-export interface DoughnutAnimationOptions {
+export interface DoughnutAnimationOptions extends AnimationSpec<'doughnut'> {
   /**
    *   If true, the chart will animate in with a rotation animation. This property is in the options.animation object.
    * @default true
