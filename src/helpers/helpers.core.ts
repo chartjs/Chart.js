@@ -26,7 +26,7 @@ export const uid = (() => {
  * @since 2.7.0
  */
 export function isNullOrUndef(value: unknown): value is null | undefined {
-  return value === null || typeof value === 'undefined';
+  return value === null || value === undefined;
 }
 
 /**
