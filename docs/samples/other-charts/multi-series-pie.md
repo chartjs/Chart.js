@@ -74,9 +74,9 @@ const config = {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
-            const labelIndex = (context.datasetIndex * 2) + context.dataIndex;
-            return context.chart.data.labels[labelIndex] + ': ' + context.formattedValue;
+          title: function(context) {
+            const labelIndex = (context[0].datasetIndex * 2) + context[0].dataIndex;
+            return context[0].chart.data.labels[labelIndex] + ': ' + context[0].formattedValue;
           }
         }
       }
