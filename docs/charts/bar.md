@@ -88,6 +88,7 @@ Only the `data` option needs to be specified in the dataset namespace.
 | [`indexAxis`](#general) | `string` | - | - | `'x'`
 | [`inflateAmount`](#inflateamount) | `number`\|`'auto'` | Yes | Yes | `'auto'`
 | [`maxBarThickness`](#maxbarthickness) | `number` | - | - | |
+| [`minBarThickness`](#minbarthickness) | `number` | - | - | |
 | [`minBarLength`](#styling) | `number` | - | - | |
 | [`label`](#general) | `string` | - | - | `''`
 | [`order`](#general) | `number` | - | - | `0`

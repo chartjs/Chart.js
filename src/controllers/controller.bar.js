@@ -617,6 +617,7 @@ export default class BarController extends DatasetController {
     const options = this.options;
     const skipNull = options.skipNull;
     const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
+    const minBarThickness = valueOrDefault(options.minBarThickness, Infinity);
     let center, size;
     if (ruler.grouped) {
       const stackCount = skipNull ? this._getStackCount(index) : ruler.stackCount;
@@ -626,11 +627,11 @@ export default class BarController extends DatasetController {
 
       const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined);
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
-      size = Math.min(maxBarThickness, range.chunk * range.ratio);
+      size = Math.max(minBarThickness, Math.min(maxBarThickness, range.chunk * range.ratio));
     } else {
       // For non-grouped bar charts, exact pixel values are used
       center = scale.getPixelForValue(this.getParsed(index)[scale.axis], index);
-      size = Math.min(maxBarThickness, ruler.min * ruler.ratio);
+      size = Math.max(minBarThickness, Math.min(maxBarThickness, ruler.min * ruler.ratio));
     }
 
     return {

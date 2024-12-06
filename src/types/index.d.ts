@@ -129,6 +129,11 @@ export interface BarControllerDatasetOptions
   maxBarThickness: number;
 
   /**
+   * Set this to ensure that bars are not sized thiner than this.
+   */
+  minBarThickness: number;
+
+  /**
    * Set this to ensure that bars have a minimum length in pixels.
    */
   minBarLength: number;
