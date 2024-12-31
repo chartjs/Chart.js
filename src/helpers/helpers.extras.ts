@@ -91,25 +91,33 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
   let count = pointCount;
 
   if (meta._sorted) {
-    const {iScale, _parsed} = meta;
+    const {iScale, vScale, _parsed, dataset: {options: {spanGaps} = {}}} = meta;
     const axis = iScale.axis;
     const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
 
     if (minDefined) {
-      start = _limitValue(Math.min(
+      start = Math.min(
         // @ts-expect-error Need to type _parsed
         _lookupByKey(_parsed, axis, min).lo,
         // @ts-expect-error Need to fix types on _lookupByKey
-        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
-      0, pointCount - 1);
+        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo);
+      if (spanGaps) {
+        const lastDefinedLo = _parsed.slice(0, start + 1).findLastIndex(point => point[vScale.axis]);
+        start = lastDefinedLo !== -1 ? lastDefinedLo : start;
+      }
+      start = _limitValue(start, 0, pointCount - 1);
     }
     if (maxDefined) {
-      count = _limitValue(Math.max(
+      let end = Math.max(
         // @ts-expect-error Need to type _parsed
         _lookupByKey(_parsed, iScale.axis, max, true).hi + 1,
         // @ts-expect-error Need to fix types on _lookupByKey
-        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1),
-      start, pointCount) - start;
+        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1);
+      if (spanGaps) {
+        const lastDefinedHi = _parsed.slice(end - 1).findIndex(point => point[vScale.axis]);
+        end += lastDefinedHi !== -1 ? lastDefinedHi : 0;
+      }
+      count = _limitValue(end, start, pointCount) - start;
     } else {
       count = pointCount - start;
     }
