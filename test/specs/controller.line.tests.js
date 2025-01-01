@@ -1079,6 +1079,7 @@ describe('Chart.controllers.line', function() {
         datasets: [{
           data: [3, null, 2, 3, null, 3],
           spanGaps: true,
+          tension: 0.4
         }]
       },
       options: {
@@ -1107,6 +1108,7 @@ describe('Chart.controllers.line', function() {
         datasets: [{
           data: [null, null, 2, 3, null, null],
           spanGaps: true,
+          tension: 0.4
         }]
       },
       options: {
@@ -1135,6 +1137,7 @@ describe('Chart.controllers.line', function() {
         datasets: [{
           data: [3, null, 2, 3, null, 3],
           spanGaps: false,
+          tension: 0.4
         }]
       },
       options: {
