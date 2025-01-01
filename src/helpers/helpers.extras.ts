@@ -91,7 +91,8 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
   let count = pointCount;
 
   if (meta._sorted) {
-    const {iScale, vScale, _parsed, dataset: {options: {spanGaps} = {}}} = meta;
+    const {iScale, vScale, _parsed} = meta;
+    const spanGaps = meta.dataset ? meta.dataset.options ? meta.dataset.options.spanGaps : null : null;
     const axis = iScale.axis;
     const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
 
