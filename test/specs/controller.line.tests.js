@@ -1075,20 +1075,20 @@ describe('Chart.controllers.line', function() {
     var chart = window.acquireChart({
       type: 'line',
       data: {
-          labels: [0, 10, 20, 30, 40, 50],
-          datasets: [{
-              data: [3, null, 2, 3, null, 3],
-              spanGaps: true,
-          }]
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, null, 2, 3, null, 3],
+          spanGaps: true,
+        }]
       },
       options: {
-          scales: {
-              x: {
-                  type: 'linear',
-                  min: 11,
-                  max: 40,
-              }
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
           }
+        }
       }
     });
 
@@ -1103,20 +1103,20 @@ describe('Chart.controllers.line', function() {
     var chart = window.acquireChart({
       type: 'line',
       data: {
-          labels: [0, 10, 20, 30, 40, 50],
-          datasets: [{
-              data: [null, null, 2, 3, null, null],
-              spanGaps: true,
-          }]
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [null, null, 2, 3, null, null],
+          spanGaps: true,
+        }]
       },
       options: {
-          scales: {
-              x: {
-                  type: 'linear',
-                  min: 11,
-                  max: 40,
-              }
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
           }
+        }
       }
     });
 
@@ -1131,20 +1131,20 @@ describe('Chart.controllers.line', function() {
     var chart = window.acquireChart({
       type: 'line',
       data: {
-          labels: [0, 10, 20, 30, 40, 50],
-          datasets: [{
-              data: [3, null, 2, 3, null, 3],
-              spanGaps: false,
-          }]
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, null, 2, 3, null, 3],
+          spanGaps: false,
+        }]
       },
       options: {
-          scales: {
-              x: {
-                  type: 'linear',
-                  min: 11,
-                  max: 40,
-              }
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
           }
+        }
       }
     });
 
