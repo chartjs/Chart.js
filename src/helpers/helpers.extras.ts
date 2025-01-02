@@ -103,8 +103,8 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
         // @ts-expect-error Need to fix types on _lookupByKey
         animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo);
       if (spanGaps) {
-        const lastDefinedLo = _parsed.slice(0, start + 1).findLastIndex(point => point[vScale.axis]);
-        start = lastDefinedLo !== -1 ? lastDefinedLo : start;
+        const distanceToDefinedLo = _parsed.slice(0, start + 1).reverse().findIndex(point => point[vScale.axis]);
+        start = distanceToDefinedLo !== -1 ? start - distanceToDefinedLo : start;
       }
       start = _limitValue(start, 0, pointCount - 1);
     }
@@ -115,8 +115,8 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
         // @ts-expect-error Need to fix types on _lookupByKey
         animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1);
       if (spanGaps) {
-        const lastDefinedHi = _parsed.slice(end - 1).findIndex(point => point[vScale.axis]);
-        end += lastDefinedHi !== -1 ? lastDefinedHi : 0;
+        const definedHiIndex = _parsed.slice(end - 1).findIndex(point => point[vScale.axis]);
+        end += definedHiIndex !== -1 ? definedHiIndex : 0;
       }
       count = _limitValue(end, start, pointCount) - start;
     } else {
