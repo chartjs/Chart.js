@@ -20,35 +20,32 @@ import {_isPointInArea} from '../helpers/index.js';
  * @returns {{lo:number, hi:number}} indices to search data array between
  */
 function binarySearch(metaset, axis, value, intersect) {
-  console.log("BINARY SEARCH");
-  console.log("Metaset");
-  console.log(metaset);
-
   const {controller, data, _sorted} = metaset;
   const iScale = controller._cachedMeta.iScale;
-  const spanGaps = metaset.dataset.options.spanGaps;
-  console.log(`spanGaps: ${spanGaps}`);
+  const spanGaps = metaset.dataset ? metaset.dataset.options ? metaset.dataset.options.spanGaps : null : null;
 
   if (iScale && axis === iScale.axis && axis !== 'r' && _sorted && data.length) {
     const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
     if (!intersect) {
-      const result = lookupMethod(data, axis, value)
-      
+      const result = lookupMethod(data, axis, value);
       if (spanGaps) {
-        const vAxis = controller._cachedMeta.vScale.axis;
-        const { _parsed } = metaset;
+        const {vScale} = controller._cachedMeta;
+        const {_parsed} = metaset;
 
-        const distanceToDefinedLo = _parsed.slice(0, result.lo).reverse().findIndex(point => point[vAxis]);
-        console.log(data);
-        result.lo = distanceToDefinedLo !== -1 ? result.lo - distanceToDefinedLo : result.lo;
-        console.log(distanceToDefinedLo);
+        const distanceToDefinedLo = (_parsed
+          .slice(0, result.lo + 1)
+          .reverse()
+          .findIndex(
+            point => point[vScale.axis] || point[vScale.axis] === 0));
+        result.lo -= Math.max(0, distanceToDefinedLo);
 
-        const distanceToDefinedHi = _parsed.slice(result.hi - 1).findIndex(point => point[vAxis]);
-        result.hi = distanceToDefinedHi !== -1 ? result.hi + distanceToDefinedHi : result.hi;
+        const distanceToDefinedHi = (_parsed
+          .slice(result.hi - 1)
+          .findIndex(
+            point => point[vScale.axis] || point[vScale.axis] === 0));
+        result.hi += Math.max(0, distanceToDefinedHi);
       }
-      console.log(`lo ${result.lo}, hi ${result.hi}`);
       return result;
-
     } else if (controller._sharedOptions) {
       // _sharedOptions indicates that each element has equal options -> equal proportions
       // So we can do a ranged binary search based on the range of first element and
@@ -75,19 +72,11 @@ function binarySearch(metaset, axis, value, intersect) {
  * @param {boolean} [intersect] - consider intersecting items
  */
 function evaluateInteractionItems(chart, axis, position, handler, intersect) {
-  //console.log("evaluateInteractionItems");
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
-  //console.log(`value: ${value}`);
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
-    //console.log("metaset");
-    //console.log(metasets[i]);
     const {index, data} = metasets[i];
-    const spanGaps = metasets[i].dataset.options.spanGaps;
-    //console.log(`spanGaps: ${spanGaps}`);
     const {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
-    //console.log(`lo: ${lo}`);
-    //console.log(`hi: ${hi}`);
     for (let j = lo; j <= hi; ++j) {
       const element = data[j];
       if (!element.skip) {
