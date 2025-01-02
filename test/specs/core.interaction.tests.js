@@ -912,4 +912,62 @@ describe('Core.Interaction', function() {
       expect(elements).toContain(firstElement);
     });
   });
+
+  it('should select closest non-null elements if spanGaps=true and closest non-null element is to the left', function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        datasets: [{
+          data: [12, 19, null, null, null, null, 5, 2, 3],
+          spanGaps: true,
+        }]
+      }
+    });
+    chart.update();
+    const interactionPointIndex = 3;
+    const meta = chart.getDatasetMeta(0);
+    const point = meta.data[interactionPointIndex];
+
+    const evt = {
+      type: 'click',
+      chart: chart,
+      native: true, // needed otherwise things its a DOM event
+      x: point.x,
+      y: point.y,
+    };
+
+    const expectedInteractionPointIndex = 1;
+    const elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
+    expect(elements).toEqual([meta.data[expectedInteractionPointIndex]]);
+  });
+
+  it('should select closest non-null elements if spanGaps=true and closest non-null element is to the right', function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        datasets: [{
+          data: [12, 19, null, null, null, null, 5, 2, 3],
+          spanGaps: true,
+        }]
+      }
+    });
+    chart.update();
+    const interactionPointIndex = 4;
+    const meta = chart.getDatasetMeta(0);
+    const point = meta.data[interactionPointIndex];
+
+    const evt = {
+      type: 'click',
+      chart: chart,
+      native: true, // needed otherwise things its a DOM event
+      x: point.x,
+      y: point.y,
+    };
+
+    const expectedInteractionPointIndex = 6;
+    const elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
+    expect(elements).toEqual([meta.data[expectedInteractionPointIndex]]);
+  });
 });
