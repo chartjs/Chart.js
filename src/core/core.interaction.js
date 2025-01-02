@@ -166,7 +166,6 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
  * @return {InteractionItem[]} the nearest items
  */
 function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
-
   let items = [];
   const distanceMetric = getDistanceMetricForAxis(axis);
   let minDistance = Number.POSITIVE_INFINITY;
