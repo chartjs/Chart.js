@@ -1,7 +1,7 @@
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection.js';
 import {getRelativePosition} from '../helpers/helpers.dom.js';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math.js';
-import {_isPointInArea} from '../helpers/index.js';
+import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
@@ -36,13 +36,13 @@ function binarySearch(metaset, axis, value, intersect) {
           .slice(0, result.lo + 1)
           .reverse()
           .findIndex(
-            point => point[vScale.axis] || point[vScale.axis] === 0));
+            point => !isNullOrUndef(point[vScale.axis])));
         result.lo -= Math.max(0, distanceToDefinedLo);
 
         const distanceToDefinedHi = (_parsed
           .slice(result.hi - 1)
           .findIndex(
-            point => point[vScale.axis] || point[vScale.axis] === 0));
+            point => !isNullOrUndef(point[vScale.axis])));
         result.hi += Math.max(0, distanceToDefinedHi);
       }
       return result;
