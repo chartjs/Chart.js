@@ -91,25 +91,41 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
   let count = pointCount;
 
   if (meta._sorted) {
-    const {iScale, _parsed} = meta;
+    const {iScale, vScale, _parsed} = meta;
+    const spanGaps = meta.dataset ? meta.dataset.options ? meta.dataset.options.spanGaps : null : null;
     const axis = iScale.axis;
     const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
 
     if (minDefined) {
-      start = _limitValue(Math.min(
+      start = Math.min(
         // @ts-expect-error Need to type _parsed
         _lookupByKey(_parsed, axis, min).lo,
         // @ts-expect-error Need to fix types on _lookupByKey
-        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo),
-      0, pointCount - 1);
+        animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo);
+      if (spanGaps) {
+        const distanceToDefinedLo = (_parsed
+          .slice(0, start + 1)
+          .reverse()
+          .findIndex(
+            point => point[vScale.axis] || point[vScale.axis] === 0));
+        start -= Math.max(0, distanceToDefinedLo);
+      }
+      start = _limitValue(start, 0, pointCount - 1);
     }
     if (maxDefined) {
-      count = _limitValue(Math.max(
+      let end = Math.max(
         // @ts-expect-error Need to type _parsed
         _lookupByKey(_parsed, iScale.axis, max, true).hi + 1,
         // @ts-expect-error Need to fix types on _lookupByKey
-        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1),
-      start, pointCount) - start;
+        animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1);
+      if (spanGaps) {
+        const distanceToDefinedHi = (_parsed
+          .slice(end - 1)
+          .findIndex(
+            point => point[vScale.axis] || point[vScale.axis] === 0));
+        end += Math.max(0, distanceToDefinedHi);
+      }
+      count = _limitValue(end, start, pointCount) - start;
     } else {
       count = pointCount - start;
     }
