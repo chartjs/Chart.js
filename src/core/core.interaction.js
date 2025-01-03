@@ -1,7 +1,7 @@
 import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection.js';
 import {getRelativePosition} from '../helpers/helpers.dom.js';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math.js';
-import {_isPointInArea} from '../helpers/index.js';
+import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
@@ -22,10 +22,30 @@ import {_isPointInArea} from '../helpers/index.js';
 function binarySearch(metaset, axis, value, intersect) {
   const {controller, data, _sorted} = metaset;
   const iScale = controller._cachedMeta.iScale;
+  const spanGaps = metaset.dataset ? metaset.dataset.options ? metaset.dataset.options.spanGaps : null : null;
+
   if (iScale && axis === iScale.axis && axis !== 'r' && _sorted && data.length) {
     const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
     if (!intersect) {
-      return lookupMethod(data, axis, value);
+      const result = lookupMethod(data, axis, value);
+      if (spanGaps) {
+        const {vScale} = controller._cachedMeta;
+        const {_parsed} = metaset;
+
+        const distanceToDefinedLo = (_parsed
+          .slice(0, result.lo + 1)
+          .reverse()
+          .findIndex(
+            point => !isNullOrUndef(point[vScale.axis])));
+        result.lo -= Math.max(0, distanceToDefinedLo);
+
+        const distanceToDefinedHi = (_parsed
+          .slice(result.hi - 1)
+          .findIndex(
+            point => !isNullOrUndef(point[vScale.axis])));
+        result.hi += Math.max(0, distanceToDefinedHi);
+      }
+      return result;
     } else if (controller._sharedOptions) {
       // _sharedOptions indicates that each element has equal options -> equal proportions
       // So we can do a ranged binary search based on the range of first element and

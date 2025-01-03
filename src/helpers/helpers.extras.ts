@@ -2,6 +2,7 @@ import type {ChartMeta, PointElement} from '../types/index.js';
 
 import {_limitValue} from './helpers.math.js';
 import {_lookupByKey} from './helpers.collection.js';
+import {isNullOrUndef} from './helpers.core.js';
 
 export function fontString(pixelSize: number, fontStyle: string, fontFamily: string) {
   return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
@@ -107,7 +108,7 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
           .slice(0, start + 1)
           .reverse()
           .findIndex(
-            point => point[vScale.axis] || point[vScale.axis] === 0));
+            point => !isNullOrUndef(point[vScale.axis])));
         start -= Math.max(0, distanceToDefinedLo);
       }
       start = _limitValue(start, 0, pointCount - 1);
@@ -122,7 +123,7 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
         const distanceToDefinedHi = (_parsed
           .slice(end - 1)
           .findIndex(
-            point => point[vScale.axis] || point[vScale.axis] === 0));
+            point => !isNullOrUndef(point[vScale.axis])));
         end += Math.max(0, distanceToDefinedHi);
       }
       count = _limitValue(end, start, pointCount) - start;

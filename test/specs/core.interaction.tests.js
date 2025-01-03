@@ -912,4 +912,94 @@ describe('Core.Interaction', function() {
       expect(elements).toContain(firstElement);
     });
   });
+
+  const testCases = [
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 0,
+      expectedNearestPointIndex: 0
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 1,
+      expectedNearestPointIndex: 1},
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 2,
+      expectedNearestPointIndex: 1
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 3,
+      expectedNearestPointIndex: 1
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 4,
+      expectedNearestPointIndex: 6
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 5,
+      expectedNearestPointIndex: 6
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 6,
+      expectedNearestPointIndex: 6
+    },
+    {
+      data: [12, 19, null, null, null, null, 5, 2],
+      clickPointIndex: 7,
+      expectedNearestPointIndex: 7
+    },
+    {
+      data: [12, 0, null, null, null, null, 0, 2],
+      clickPointIndex: 3,
+      expectedNearestPointIndex: 1
+    },
+    {
+      data: [12, 0, null, null, null, null, 0, 2],
+      clickPointIndex: 4,
+      expectedNearestPointIndex: 6
+    },
+    {
+      data: [12, -1, null, null, null, null, -1, 2],
+      clickPointIndex: 3,
+      expectedNearestPointIndex: 1
+    },
+    {
+      data: [12, -1, null, null, null, null, -1, 2],
+      clickPointIndex: 4,
+      expectedNearestPointIndex: 6
+    }
+  ];
+  testCases.forEach(({data, clickPointIndex, expectedNearestPointIndex}, i) => {
+    it(`should select nearest non-null element with index ${expectedNearestPointIndex} when clicking on element with index ${clickPointIndex} in test case ${i + 1} if spanGaps=true`, function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+          datasets: [{
+            data: data,
+            spanGaps: true,
+          }]
+        }
+      });
+      chart.update();
+      const meta = chart.getDatasetMeta(0);
+      const point = meta.data[clickPointIndex];
+
+      const evt = {
+        type: 'click',
+        chart: chart,
+        native: true, // needed otherwise things its a DOM event
+        x: point.x,
+        y: point.y,
+      };
+
+      const elements = Chart.Interaction.modes.nearest(chart, evt, {axis: 'x', intersect: false}).map(item => item.element);
+      expect(elements).toEqual([meta.data[expectedNearestPointIndex]]);
+    });
+  });
 });
