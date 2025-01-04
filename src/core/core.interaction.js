@@ -40,7 +40,7 @@ function binarySearch(metaset, axis, value, intersect) {
         result.lo -= Math.max(0, distanceToDefinedLo);
 
         const distanceToDefinedHi = (_parsed
-          .slice(result.hi - 1)
+          .slice(result.hi)
           .findIndex(
             point => !isNullOrUndef(point[vScale.axis])));
         result.hi += Math.max(0, distanceToDefinedHi);
